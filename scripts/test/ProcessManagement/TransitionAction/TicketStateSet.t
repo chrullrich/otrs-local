@@ -25,6 +25,9 @@ my $HelperObject = Kernel::System::UnitTest::Helper->new(
     UnitTestObject             => $Self,
     RestoreSystemConfiguration => 0,
 );
+
+$HelperObject->FixedTimeSet();
+
 my $ConfigObject = Kernel::Config->new();
 my $TicketObject = Kernel::System::Ticket->new(
     %{$Self},
@@ -262,13 +265,13 @@ for my $Test (@Tests) {
                 "$ModuleName - Test:'$Test->{Name}' | Attribute: $Attribute for TicketID:"
                     . " $TicketID match expected value",
             );
-            if ( $Test->{Config}->{Config}->{PendingTimeDiff} ){
+            if ( $Test->{Config}->{Config}->{PendingTimeDiff} ) {
                 $Self->Is(
                     $Ticket{UntilTime},
                     $Test->{Config}->{Config}->{PendingTimeDiff},
                     "$ModuleName - Test:'$Test->{Name}' | Attribute: UntilTime for TicketID:"
-                    . " $TicketID match expected value",
-                    
+                        . " $TicketID match expected value",
+
                 );
             }
         }
