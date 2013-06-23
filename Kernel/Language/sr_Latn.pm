@@ -12,9 +12,6 @@ package Kernel::Language::sr_Latn;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.48 $) [1];
-
 sub Data {
     my $Self = shift;
 
@@ -229,6 +226,7 @@ sub Data {
         'Please contact your administrator' => 'Molimo kontaktirajte vašeg administratora',
         'Logout' => 'Odjava',
         'Logout successful. Thank you for using OTRS!' => 'Uspešno ste se odjavili! Hvala što ste koristili "OTRS"!',
+        'Logout successful. Thank you for using %s!' => 'Uspešno ste se odjavili! Hvala što ste koristili "%s"!',
         'Feature not active!' => 'Funkcija nije aktivna!',
         'Agent updated!' => 'Ažuriran operater',
         'Create Database' => 'Kreiraj bazu podataka',

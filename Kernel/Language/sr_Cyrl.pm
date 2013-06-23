@@ -12,9 +12,6 @@ package Kernel::Language::sr_Cyrl;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.48 $) [1];
-
 sub Data {
     my $Self = shift;
 
@@ -229,6 +226,7 @@ sub Data {
         'Please contact your administrator' => 'Молимо контактирајте вашег администратора',
         'Logout' => 'Одјава',
         'Logout successful. Thank you for using OTRS!' => 'Успешно сте се одјавили! Хвала што сте користили "OTRS"!',
+        'Logout successful. Thank you for using %s!' => 'Успешно сте се одјавили! Хвала што сте користили "%s"!',
         'Feature not active!' => 'Функција није активна!',
         'Agent updated!' => 'Ажуриран оператер',
         'Create Database' => 'Креирај базу података',

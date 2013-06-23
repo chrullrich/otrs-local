@@ -15,9 +15,6 @@ use Kernel::System::VariableCheck qw(:all);
 
 use utf8;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.2 $) [1];
-
 =head1 NAME
 
 Kernel::System::ProcessManagement::TransitionAction::TicketArticleCreate - A module to create an article
@@ -144,6 +141,8 @@ sub new {
             ExcludeMuteNotificationToUserID => [ 43,56 ],               # the same as ExcludeNotificationToUserID but only the
                                                                         # sending gets muted, agent will still shown in To:
                                                                         # line of article
+
+            UserID => 123,                                              # optional, to override the UserID from the logged user
         }
     );
     Ticket contains the result of TicketGet including DynamicFields
@@ -187,6 +186,12 @@ sub Run {
         return;
     }
 
+    # override UserID if specified as a parameter in the TA config
+    if ( IsNumber( $Param{Config}->{UserID} ) ) {
+        $Param{UserID} = $Param{Config}->{UserID};
+        delete $Param{Config}->{UserID};
+    }
+
     # Check ArticleType
     if ( $Param{Config}->{ArticleType} =~ m{\A email }msxi ) {
         $Self->{LogObject}->Log(
@@ -224,9 +229,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=head1 VERSION
-
-$Revision: 1.2 $ $Date: 2013-02-01 19:20:38 $
 
 =cut

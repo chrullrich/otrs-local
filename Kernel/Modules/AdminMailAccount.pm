@@ -16,9 +16,6 @@ use Kernel::System::Queue;
 use Kernel::System::MailAccount;
 use Kernel::System::Valid;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.30 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 

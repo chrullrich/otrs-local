@@ -18,8 +18,7 @@ use Kernel::System::Email;
 use Kernel::System::MailAccount;
 use Kernel::System::ReferenceData;
 
-use vars qw($VERSION %INC);
-$VERSION = qw($Revision: 1.101 $) [1];
+use vars qw(%INC);
 
 sub new {
     my ( $Type, %Param ) = @_;

@@ -15,9 +15,6 @@ use warnings;
 use Kernel::Output::HTML::Layout;
 use Kernel::System::State;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.24 $) [1];
-
 =head1 NAME
 
 Kernel::Output::HTML::LinkObjectTicket - layout backend module
@@ -529,11 +526,5 @@ This software is part of the OTRS project (http://otrs.org/).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.24 $ $Date: 2012-11-20 14:59:56 $
 
 =cut

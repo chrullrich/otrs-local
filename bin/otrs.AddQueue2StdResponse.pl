@@ -28,9 +28,6 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.5 $) [1];
-
 use Getopt::Std;
 use Kernel::Config;
 use Kernel::System::Encode;
@@ -59,7 +56,7 @@ my %Opts;
 getopts( 'hq:r:', \%Opts );
 if ( $Opts{h} ) {
     print
-        "otrs.AddQueue2StdResponse.pl <Revision $VERSION> - assign Queues to Standard responses\n";
+        "otrs.AddQueue2StdResponse.pl - assign Queues to Standard responses\n";
     print
         "usage: otrs.AddQueue2StdResponse.pl -r <RESPONSE> -q <QUEUE>\n";
     exit 1;
@@ -73,7 +70,6 @@ if ( !$Opts{q} ) {
     print STDERR "ERROR: Need -q <QUEUE>\n";
     exit 1;
 }
-
 
 # check queue
 my $QueueID = $CommonObject{QueueObject}->QueueLookup( Queue => $Opts{q} );

@@ -12,8 +12,7 @@ package Kernel::Output::HTML::LayoutAJAX;
 use strict;
 use warnings;
 
-use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.31 $) [1];
+use vars qw(@ISA);
 
 =item BuildSelectionJSON()
 

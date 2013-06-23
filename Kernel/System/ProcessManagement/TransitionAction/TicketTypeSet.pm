@@ -15,9 +15,6 @@ use Kernel::System::VariableCheck qw(:all);
 
 use utf8;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.2 $) [1];
-
 =head1 NAME
 
 Kernel::System::ProcessManagement::TransitionAction::TicketTypeSet - A Module to set the type of a Ticket
@@ -119,6 +116,8 @@ sub new {
             Type => 'Default',
             # or
             TypeID => 1,
+            UserID => 123,                                 # optional, to override the UserID from the logged user
+
         }
     );
     Ticket contains the result of TicketGet including DynamicFields
@@ -158,6 +157,12 @@ sub Run {
             Message  => "Config has no values!",
         );
         return;
+    }
+
+    # override UserID if specified as a parameter in the TA config
+    if ( IsNumber( $Param{Config}->{UserID} ) ) {
+        $Param{UserID} = $Param{Config}->{UserID};
+        delete $Param{Config}->{UserID};
     }
 
     if ( !$Param{Config}->{TypeID} && !$Param{Config}->{Type} ) {
@@ -227,9 +232,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=head1 VERSION
-
-$Revision: 1.2 $ $Date: 2013-01-11 21:53:23 $
 
 =cut

@@ -12,9 +12,6 @@ package Kernel::Language::xx_AgentZoom;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.12 $) [1];
-
 sub Data {
     my $Self = shift;
 

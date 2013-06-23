@@ -17,9 +17,6 @@ use Kernel::System::DynamicFieldValue;
 use Kernel::System::Time;
 use Kernel::System::DynamicField::Backend::BackendCommon;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.61 $) [1];
-
 =head1 NAME
 
 Kernel::System::DynamicField::Backend::Date
@@ -897,11 +894,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.61 $ $Date: 2013-01-10 16:26:46 $
 
 =cut

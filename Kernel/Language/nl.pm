@@ -18,9 +18,6 @@ package Kernel::Language::nl;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.202 $) [1];
-
 sub Data {
     my $Self = shift;
 
@@ -235,6 +232,7 @@ sub Data {
         'Please contact your administrator' => 'Neem contact op met uw beheerder',
         'Logout' => 'Uitloggen',
         'Logout successful. Thank you for using OTRS!' => 'U bent afgemeld. Bedankt voor het gebruiken van OTRS.',
+        'Logout successful. Thank you for using %s!' => 'U bent afgemeld. Bedankt voor het gebruiken van %s.',
         'Feature not active!' => 'Deze functie is niet actief.',
         'Agent updated!' => 'Behandelaar aangepast.',
         'Create Database' => 'Database aanmaken',

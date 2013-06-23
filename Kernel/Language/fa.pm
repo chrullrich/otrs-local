@@ -14,9 +14,6 @@ package Kernel::Language::fa;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.125 $) [1];
-
 sub Data {
     my $Self = shift;
 

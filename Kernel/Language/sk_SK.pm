@@ -12,9 +12,6 @@ package Kernel::Language::sk_SK;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.111 $) [1];
-
 sub Data {
     my $Self = shift;
 
@@ -229,6 +226,7 @@ sub Data {
         'Please contact your administrator' => '',
         'Logout' => 'Odhlásenie ',
         'Logout successful. Thank you for using OTRS!' => 'Odhlásenie úspešné. Ďakujeme za používanie OTRS!',
+        'Logout successful. Thank you for using %s!' => 'Odhlásenie úspešné. Ďakujeme za používanie %s!',
         'Feature not active!' => 'Funkcia neaktívna!',
         'Agent updated!' => '',
         'Create Database' => 'Vytvor databázu',

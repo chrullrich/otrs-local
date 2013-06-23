@@ -12,8 +12,7 @@ package Kernel::System::VariableCheck;
 use strict;
 use warnings;
 
-use vars qw(@ISA $VERSION @EXPORT_OK %EXPORT_TAGS);
-$VERSION = qw($Revision: 1.10 $) [1];
+use vars qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 
 use Exporter;
 %EXPORT_TAGS = (    ## no critic
@@ -538,11 +537,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.10 $ $Date: 2012-11-20 15:41:22 $
 
 =cut

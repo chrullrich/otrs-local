@@ -19,9 +19,6 @@ use Kernel::System::TemplateGenerator;
 use Kernel::System::VariableCheck qw(:all);
 use Mail::Address;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.61 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 

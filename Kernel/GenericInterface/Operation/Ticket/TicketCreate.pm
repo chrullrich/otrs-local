@@ -24,8 +24,7 @@ use Kernel::GenericInterface::Operation::Common;
 use Kernel::GenericInterface::Operation::Ticket::Common;
 use Kernel::System::VariableCheck qw(IsArrayRefWithData IsHashRefWithData IsStringWithData);
 
-use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.39 $) [1];
+use vars qw(@ISA);
 
 =head1 NAME
 
@@ -1422,11 +1421,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.39 $ $Date: 2013-02-07 12:06:31 $
 
 =cut

@@ -21,9 +21,6 @@ use Kernel::System::SysConfig;
 use Kernel::System::WebUserAgent;
 use Kernel::System::XML;
 
-use vars qw($VERSION $S);
-$VERSION = qw($Revision: 1.142 $) [1];
-
 =head1 NAME
 
 Kernel::System::Package - to manage application packages/modules
@@ -2211,10 +2208,17 @@ sub _CheckFramework {
 
             # regexp modify
             my $Framework = $FW->{Content};
-            $Framework =~ s/\./\\\./g;
-            $Framework =~ s/x/.+?/gi;
+            $Framework =~ s/x.*$/0/gi;
 
-            next FW if $CurrentFramework !~ /^$Framework$/i;
+            my $CurrentFrameworkCheck = $CurrentFramework;
+            $CurrentFrameworkCheck =~ s/x.*$/0/gi;
+
+            next FW if ! $Self->_CheckVersion(
+                VersionNew          => $Framework,
+                VersionInstalled    => $CurrentFrameworkCheck,
+                Type                => 'Min',
+            );
+
 
             $FWCheck = 1;
 
@@ -2567,6 +2571,7 @@ sub _FileInstall {
         if ( $Param{File}->{Type} && $Param{File}->{Type} =~ /^replace$/i ) {
             if ( !$Param{Reinstall} || ( $Param{Reinstall} && !-e "$RealFile.backup" ) ) {
                 move( $RealFile, "$RealFile.backup" );
+                print STDERR "Notice: Create backup: $RealFile.backup\n";
             }
         }
         else {
@@ -2593,6 +2598,7 @@ sub _FileInstall {
             # if it's no reinstall or reinstall and framework file but different, back it up
             if ( !$Param{Reinstall} || ( $Param{Reinstall} && $Save ) ) {
                 move( $RealFile, "$RealFile.save" );
+                print STDERR "Notice: Create backup: $RealFile.save\n";
             }
         }
     }
@@ -2836,11 +2842,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.142 $ $Date: 2012-11-20 15:37:04 $
 
 =cut

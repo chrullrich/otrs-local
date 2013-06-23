@@ -59,6 +59,50 @@ $TestUserID = $GlobalUserObject->UserAdd(
     ChangeUserID  => 1,
 ) || die "Could not create test user";
 
+my @Tests = (
+    {
+        Password   => 'simple',
+        AuthResult => $UserRand1,
+    },
+    {
+        Password   => 'very long password line which is unusual',
+        AuthResult => $UserRand1,
+    },
+    {
+        Password   => 'Переводчик',
+        AuthResult => $UserRand1,
+    },
+    {
+        Password   => 'كل ما تحب معرفته عن',
+        AuthResult => $UserRand1,
+    },
+    {
+        Password   => ' ',
+        AuthResult => $UserRand1,
+    },
+    {
+        Password   => "\n",
+        AuthResult => $UserRand1,
+    },
+    {
+        Password   => "\t",
+        AuthResult => $UserRand1,
+    },
+    {
+        Password   => "a" x 64, # max length for plain
+        AuthResult => $UserRand1,
+    },
+    # SQL security tests
+    {
+        Password   => "'UNION'",
+        AuthResult => $UserRand1,
+    },
+    {
+        Password   => "';",
+        AuthResult => $UserRand1,
+    },
+);
+
 for my $CryptType (qw(plain crypt md5 sha1 sha2)) {
 
     $ConfigObject->Set(
@@ -83,55 +127,21 @@ for my $CryptType (qw(plain crypt md5 sha1 sha2)) {
         GroupObject  => $GroupObject,
     );
 
-    # set pw
-
-    my @Tests = (
-        {
-            Password => 'simple',
-            Result   => 1,
-        },
-        {
-            Password => 'very long password line which is unusual',
-            Result   => 1,
-        },
-        {
-            Password => 'Переводчик',
-            Result   => 1,
-        },
-        {
-            Password => 'كل ما تحب معرفته عن',
-            Result   => 1,
-        },
-        {
-            Password => ' ',
-            Result   => 1,
-        },
-        {
-            Password => "\n",
-            Result   => 1,
-        },
-        {
-            Password => "\t",
-            Result   => 1,
-        },
-
-        # SQL security tests
-        {
-            Password => "'UNION'",
-            Result   => 1,
-        },
-        {
-            Password => "';",
-            Result   => 1,
-        },
-    );
-
+    TEST:
     for my $Test (@Tests) {
 
         my $PasswordSet = $UserObject->SetPassword(
             UserLogin => $UserRand1,
             PW        => $Test->{Password},
         );
+
+        if ( $CryptType eq 'plain' && $Test->{PlainFail} ) {
+            $Self->False(
+                $PasswordSet,
+                "Password set"
+            );
+            next TEST;
+        }
 
         $Self->True(
             $PasswordSet,
@@ -143,8 +153,9 @@ for my $CryptType (qw(plain crypt md5 sha1 sha2)) {
             Pw   => $Test->{Password},
         );
 
-        $Self->True(
+        $Self->Is(
             $AuthResult,
+            $Test->{AuthResult},
             "CryptType $CryptType Password '$Test->{Password}'",
         );
 
@@ -153,8 +164,9 @@ for my $CryptType (qw(plain crypt md5 sha1 sha2)) {
             Pw   => $Test->{Password},
         );
 
-        $Self->True(
+        $Self->Is(
             $AuthResult,
+            $Test->{AuthResult},
             "CryptType $CryptType Password '$Test->{Password}' (cached)",
         );
 

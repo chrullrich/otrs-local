@@ -28,9 +28,6 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.20 $) [1];
-
 use Getopt::Long;
 
 use Kernel::Config;
@@ -87,7 +84,7 @@ GetOptions(
 );
 
 if ( $Opts{h} || !$Opts{n} ) {
-    print "otrs.GenerateStats.pl <Revision $VERSION> - OTRS cmd stats\n";
+    print "otrs.GenerateStats.pl - OTRS cmd stats\n";
     print "Copyright (C) 2001-2013 OTRS AG, http://otrs.com/\n";
     print
         "usage: otrs.GenerateStats.pl -n <StatNumber> [-p <PARAM_STRING>] [-o <DIRECTORY>] [-r <RECIPIENT> -r ... -s <SENDER>] [-m <MESSAGE>] [-l <LANGUAGE>] [-f CSV|Print] [-S <SEPARATOR>] [-F <FILENAME> [-R]\n";
@@ -350,7 +347,7 @@ if ( $Format eq 'Print' && $CommonObject{PDFObject} ) {
     # return the document
     my $PDFString = $CommonObject{PDFObject}->DocumentOutput();
 
-    # save the csv with the title and timestamp as filename, or read it from param
+    # save the pdf with the title and timestamp as filename, or read it from param
     my $Filename;
     if ( $Opts{F} ) {
         $Filename = $Opts{F};

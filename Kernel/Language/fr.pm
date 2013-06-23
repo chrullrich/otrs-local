@@ -19,9 +19,6 @@ package Kernel::Language::fr;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.183 $) [1];
-
 sub Data {
     my $Self = shift;
 
@@ -236,6 +233,7 @@ sub Data {
         'Please contact your administrator' => 'SVP contactez votre administrateur',
         'Logout' => 'Déconnexion',
         'Logout successful. Thank you for using OTRS!' => 'Déconnexion réussie. Merci d\'avoir utilisé OTRS !',
+        'Logout successful. Thank you for using %s!' => 'Déconnexion réussie. Merci d\'avoir utilisé %s !',
         'Feature not active!' => 'Cette fonctionnalité n\'est pas activée !',
         'Agent updated!' => 'Information de l\'opérateur mises à jour',
         'Create Database' => 'Créer la base de données',

@@ -12,9 +12,6 @@ package Kernel::System::Ticket::Event::ForceUnlock;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.13 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 

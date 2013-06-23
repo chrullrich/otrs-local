@@ -20,9 +20,6 @@ use Kernel::System::SysConfig;
 use Kernel::System::Time;
 use Kernel::System::Valid;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.143 $) [1];
-
 =head1 NAME
 
 Kernel::System::Queue - queue lib
@@ -1170,11 +1167,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.143 $ $Date: 2013-01-17 15:18:33 $
 
 =cut

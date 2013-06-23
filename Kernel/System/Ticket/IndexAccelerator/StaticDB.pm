@@ -12,9 +12,6 @@ package Kernel::System::Ticket::IndexAccelerator::StaticDB;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.82 $) [1];
-
 sub TicketAcceleratorUpdate {
     my ( $Self, %Param ) = @_;
 

@@ -12,9 +12,6 @@ package Kernel::Modules::AdminGenericInterfaceDebugger;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.9 $) [1];
-
 use Kernel::System::GenericInterface::Webservice;
 use Kernel::System::GenericInterface::DebugLog;
 

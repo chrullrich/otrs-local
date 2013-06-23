@@ -12,9 +12,6 @@ package Kernel::System::Web::UploadCache::FS;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.29 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 

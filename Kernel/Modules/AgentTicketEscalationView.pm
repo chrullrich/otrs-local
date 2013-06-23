@@ -12,9 +12,6 @@ package Kernel::Modules::AgentTicketEscalationView;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.21 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 

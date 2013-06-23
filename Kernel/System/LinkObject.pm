@@ -16,8 +16,7 @@ use Kernel::System::CacheInternal;
 use Kernel::System::CheckItem;
 use Kernel::System::Valid;
 
-use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.69 $) [1];
+use vars qw(@ISA);
 
 =head1 NAME
 
@@ -2248,6 +2247,45 @@ sub StateList {
     return %StateList;
 }
 
+=item ObjectPermission()
+
+checks read permission for a given object and UserID.
+
+    $Permission = $LinkObject->ObjectPermission(
+        Object  => 'Ticket',
+        Key     => 123,
+        UserID  => 1,
+    );
+
+=cut
+
+sub ObjectPermission {
+    my ( $Self, %Param ) = @_;
+
+    # check needed stuff
+    for my $Argument (qw(Object Key UserID)) {
+        if ( !$Param{$Argument} ) {
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $Argument!",
+            );
+            return;
+        }
+    }
+
+    my $BackendObject = $Self->_LoadBackend(
+        Object => $Param{Object},
+        UserID => $Param{UserID},
+    );
+
+    return if !$BackendObject;
+    return 1 if !$BackendObject->can('ObjectPermission');
+
+    return $BackendObject->ObjectPermission(
+        %Param,
+    );
+}
+
 =item ObjectDescriptionGet()
 
 return a hash of object descriptions
@@ -2430,11 +2468,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.69 $ $Date: 2013-01-21 16:14:26 $
 
 =cut

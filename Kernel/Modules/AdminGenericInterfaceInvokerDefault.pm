@@ -12,9 +12,6 @@ package Kernel::Modules::AdminGenericInterfaceInvokerDefault;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.9 $) [1];
-
 use Kernel::System::GenericInterface::Webservice;
 
 use Kernel::System::VariableCheck qw(:all);

@@ -16,8 +16,7 @@ use Encode;
 use Encode::Locale;
 use IO::Interactive qw(is_interactive);
 
-use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.53 $) [1];
+use vars qw(@ISA);
 
 =head1 NAME
 
@@ -39,8 +38,8 @@ create an encode object
 
     use Kernel::System::Encode;
 
-    my $EncodeObject = Kernel::System::Encode->new();  
-        
+    my $EncodeObject = Kernel::System::Encode->new();
+
 =cut
 
 sub new {
@@ -56,16 +55,23 @@ sub new {
     # check if the encodeobject is used from the command line
     # if so, we need to decode @ARGV
     if ( !is_interactive() ) {
+
         # encode STDOUT and STDERR
         $Self->SetIO( \*STDOUT, \*STDERR );
     }
     else {
         # use "locale" as an arg to encode/decode
-        @ARGV = map { decode(locale => $_, 1) } @ARGV if -t STDIN;
-        binmode STDOUT, ":encoding(console_out)" if -t STDOUT;
-        binmode STDERR, ":encoding(console_out)" if -t STDERR;
+        if ( is_interactive(*STDIN) ) {
+            @ARGV = map { decode( locale => $_, 1 ) } @ARGV;
+        }
+        if ( is_interactive(*STDOUT) ) {
+            binmode STDOUT, ":encoding(console_out)";
+        }
+        if ( is_interactive(*STDERR) ) {
+            binmode STDERR, ":encoding(console_out)";
+        }
     }
-    
+
     return $Self;
 }
 
@@ -359,11 +365,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.53 $ $Date: 2013-01-28 12:36:04 $
 
 =cut
