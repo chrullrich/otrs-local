@@ -1,0 +1,43 @@
+# --
+# ActivityDialogFooter.dtl - provides ActivityDialogFooter HTML for the AgentTicketProcess.pm
+# Copyright (C) 2003-2012 OTRS AG, http://otrs.com/
+# --
+# $Id: ActivityDialogFooter.dtl,v 1.6 2012/12/11 17:00:14 cr Exp $
+# --
+# This software comes with ABSOLUTELY NO WARRANTY. For details, see
+# the enclosed file COPYING for license information (AGPL). If you
+# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# --
+                    </fieldset>
+                </div>
+<!-- dtl:block:Footer -->
+                <div class="$QData{"FooterCSSClass"}">
+<!-- dtl:block:SubmitAdviceText -->
+                    <p class="SubmitInfo">$QData{"AdviceText"}</p>
+<!-- dtl:block:SubmitAdviceText -->
+                    <button class="Primary" id="$QData{"ButtonID"}" accesskey="g" title="$Text{"$Data{"ButtonTitle"}"} (g)" type="submit" value="$Text{"$Data{"ButtonText"}"}">$Text{"$Data{"ButtonText"}"}</button>
+                </div>
+<!-- dtl:block:Footer -->
+            </div>
+        </form>
+    </div>
+</div>
+<!-- dtl:block:ParentReload -->
+<!--dtl:js_on_document_complete-->
+<script type="text/javascript">//<![CDATA[
+window.opener.Core.UI.Popup.FirePopupEvent('Reload');
+//]]></script>
+<!--dtl:js_on_document_complete-->
+<!-- dtl:block:ParentReload -->
+
+<!-- dtl:js_on_document_complete -->
+<script type="text/javascript">//<![CDATA[
+Core.Form.Validate.Init();
+//]]></script>
+<!-- dtl:js_on_document_complete -->
+
+<!-- dtl:block:FooterJS -->
+<script type="text/javascript">
+    $Data{"Bindings"}
+</script>
+<!-- dtl:block:FooterJS -->
