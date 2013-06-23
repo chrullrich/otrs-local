@@ -1,0 +1,37 @@
+# --
+# AgentCustomerInformationCenterSearch.dtl - provides HTML form for AgentCustomerInformationCenterSearch
+# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
+# --
+# $Id: AgentCustomerInformationCenterSearch.dtl,v 1.6 2012/11/20 15:16:05 mh Exp $
+# --
+# This software comes with ABSOLUTELY NO WARRANTY. For details, see
+# the enclosed file COPYING for license information (AGPL). If you
+# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# --
+
+<!-- dtl:block:CustomerSearchAutoComplete -->
+<script type="text/javascript">//<![CDATA[
+    Core.Config.Set('Autocomplete.QueryDelay', "$QData{"queryDelay"}");
+    Core.Config.Set('Autocomplete.MaxResultsDisplayed', "$QData{"maxResultsDisplayed"}");
+    Core.Config.Set('Autocomplete.MinQueryLength', "$QData{"minQueryLength"}");
+//]]></script>
+<!-- dtl:block:CustomerSearchAutoComplete -->
+
+<div class="InnerContent">
+    <form action="$Env{"CGIHandle"}" method="post" id="AgentCustomerInformationCenterSearchForm">
+        <input type="hidden" name="Action" value="$Env{"Action"}"/>
+        <input type="hidden" name="Subaction" value="Redirect"/>
+        <fieldset class="TableLike">
+            <label>$Text{"Customer ID"}:</label>
+            <div class="Field">
+                <input type="text" id="AgentCustomerInformationCenterSearchCustomerID" class="W90pc" />
+            </div>
+            <div class="Clear"></div>
+            <label>$Text{"Customer User"}:</label>
+            <div class="Field">
+                <input type="text" id="AgentCustomerInformationCenterSearchCustomerUser" class="W90pc" />
+            </div>
+            <div class="Clear"></div>
+        </fieldset>
+    </form>
+</div>
