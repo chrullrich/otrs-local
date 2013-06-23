@@ -14,9 +14,6 @@ use warnings;
 
 use Kernel::System::FileTemp;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.37 $) [1];
-
 =head1 NAME
 
 Kernel::System::Spelling - spelling lib
@@ -294,9 +291,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=head1 VERSION
-
-$Revision: 1.37 $ $Date: 2012-11-20 15:38:15 $
 
 =cut

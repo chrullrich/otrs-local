@@ -12,8 +12,7 @@ package Kernel::GenericInterface::Provider;
 use strict;
 use warnings;
 
-use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.26 $) [1];
+use vars qw(@ISA);
 
 use Kernel::Config;
 use Kernel::System::Log;
@@ -404,11 +403,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.26 $ $Date: 2012-11-20 14:27:36 $
 
 =cut

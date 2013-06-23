@@ -13,9 +13,6 @@ use strict;
 use warnings;
 use MIME::Base64;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.5 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -140,7 +137,6 @@ sub Write {
         Compress => $Self->{Compress},
         Crypt    => $Self->{Crypt},
         Mode     => $Param{Mode},
-        Version  => $VERSION,
     );
 
     return $BackendKey;

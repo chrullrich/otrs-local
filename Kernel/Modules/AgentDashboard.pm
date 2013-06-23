@@ -15,9 +15,6 @@ use warnings;
 use Kernel::System::Cache;
 use Kernel::System::VariableCheck qw(:all);
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.32 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 

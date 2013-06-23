@@ -28,9 +28,6 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.12 $) [1];
-
 use Kernel::Config;
 use Kernel::System::Encode;
 use Kernel::System::Log;
@@ -54,7 +51,7 @@ $CommonObject{SessionObject} = Kernel::System::AuthSession->new(%CommonObject);
 
 # check args
 my $Command = shift || '--help';
-print "otrs.DeleteSessionIDs.pl <Revision $VERSION> - delete all existing or expired session ids\n";
+print "otrs.DeleteSessionIDs.pl - delete all existing or expired session ids\n";
 print "Copyright (C) 2001-2013 OTRS AG, http://otrs.com/\n";
 
 # show/delete all session ids

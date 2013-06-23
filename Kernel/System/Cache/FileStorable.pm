@@ -18,8 +18,7 @@ use Digest::MD5 qw();
 use File::Path qw();
 use File::Find qw();
 
-use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.13 $) [1];
+use vars qw(@ISA);
 
 sub new {
     my ( $Type, %Param ) = @_;

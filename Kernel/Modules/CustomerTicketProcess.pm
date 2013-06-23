@@ -23,9 +23,6 @@ use Kernel::System::Web::UploadCache;
 use Kernel::System::CustomerUser;
 use Kernel::System::VariableCheck qw(:all);
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.14 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -137,7 +134,7 @@ sub Run {
 
         # here is safe to use $Self->{UserID}, since it will be compared vs ticket customer in
         # ticket permission modules
-        UserID   => $Self->{UserID}
+        UserID => $Self->{UserID}
     );
 
     # error screen, don't show ticket

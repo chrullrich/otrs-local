@@ -21,8 +21,7 @@ use Kernel::System::Cache;
 
 use Kernel::System::VariableCheck qw(:all);
 
-use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.40 $) [1];
+use vars qw(@ISA);
 
 =head1 NAME
 
@@ -170,7 +169,7 @@ sub WebserviceAdd {
         );
         return;
     }
-    for my $CommunicationType (qw(Provider Requester) ) {
+    for my $CommunicationType (qw(Provider Requester)) {
         if ( defined $Param{Config}->{$CommunicationType} ) {
             if ( !IsHashRefWithData( $Param{Config}->{$CommunicationType} ) ) {
                 $Self->{LogObject}->Log(
@@ -384,7 +383,7 @@ sub WebserviceUpdate {
         );
         return;
     }
-    for my $CommunicationType (qw(Provider Requester) ) {
+    for my $CommunicationType (qw(Provider Requester)) {
         if ( defined $Param{Config}->{$CommunicationType} ) {
             if ( !IsHashRefWithData( $Param{Config}->{$CommunicationType} ) ) {
                 $Self->{LogObject}->Log(
@@ -584,11 +583,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.40 $ $Date: 2013-01-17 03:39:21 $
 
 =cut

@@ -29,7 +29,6 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 
 use vars qw($VERSION);
-$VERSION = qw($Revision: 1.13 $) [1];
 
 use Getopt::Std qw();
 use Kernel::Config;
@@ -59,7 +58,7 @@ EOF
     }
 
     # UID check if not on Windows
-    if ( $^O ne 'MSWin32' && $> == 0) { # $EFFECTIVE_USER_ID
+    if ( $^O ne 'MSWin32' && $> == 0 ) {    # $EFFECTIVE_USER_ID
         die "Cannot run this program as root. Please run it as the 'otrs' user.\n";
     }
 

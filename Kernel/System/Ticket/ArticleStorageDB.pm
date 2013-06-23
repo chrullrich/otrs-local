@@ -17,9 +17,6 @@ use MIME::Words qw(:all);
 
 use Kernel::System::VariableCheck qw(:all);
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.83 $) [1];
-
 sub ArticleStorageInit {
     my ( $Self, %Param ) = @_;
 
@@ -171,7 +168,7 @@ sub ArticleDeleteAttachment {
         Bind => [ \$Param{ArticleID} ],
     );
 
-    # return of only delete in my backend
+    # return if only delete in my backend
     return 1 if $Param{OnlyMyBackend};
 
     # delete from fs

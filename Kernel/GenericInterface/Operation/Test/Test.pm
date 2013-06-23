@@ -14,8 +14,7 @@ use warnings;
 
 use Kernel::System::VariableCheck qw(IsHashRefWithData);
 
-use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.13 $) [1];
+use vars qw(@ISA);
 
 =head1 NAME
 
@@ -148,11 +147,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.13 $ $Date: 2012-11-20 14:28:46 $
 
 =cut

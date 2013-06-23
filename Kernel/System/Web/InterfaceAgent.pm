@@ -12,8 +12,7 @@ package Kernel::System::Web::InterfaceAgent;
 use strict;
 use warnings;
 
-use vars qw($VERSION @INC);
-$VERSION = qw($Revision: 1.73 $) [1];
+use vars qw(@INC);
 
 use Kernel::Config;
 use Kernel::System::Log;
@@ -435,7 +434,7 @@ sub Run {
         $LayoutObject->Print(
             Output => \$LayoutObject->Login(
                 Title   => 'Logout',
-                Message => 'Logout successful. Thank you for using OTRS!',
+                Message => 'Logout successful. Thank you for using %s!", "$Config{"ProductName"}',
                 %Param,
             ),
         );
@@ -931,11 +930,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.73 $ $Date: 2012-11-20 16:02:07 $
 
 =cut

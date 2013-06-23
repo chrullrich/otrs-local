@@ -20,9 +20,6 @@ use Kernel::System::EmailParser;
 
 use Kernel::System::VariableCheck qw(:all);
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.328 $) [1];
-
 =head1 NAME
 
 Kernel::System::Ticket::Article - sub module of Kernel::System::Ticket
@@ -3475,11 +3472,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.328 $ $Date: 2013-02-06 08:55:18 $
 
 =cut

@@ -15,9 +15,6 @@ use warnings;
 #use Kernel::System::CustomerCompany;
 #use Kernel::System::Valid;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.6 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 

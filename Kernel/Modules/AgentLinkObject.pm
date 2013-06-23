@@ -14,9 +14,6 @@ use warnings;
 
 use Kernel::System::LinkObject;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.68 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -58,6 +55,20 @@ sub Run {
         return $Self->{LayoutObject}->ErrorScreen(
             Message => "Need SourceObject and SourceKey!",
             Comment => 'Please contact the admin.',
+        );
+    }
+
+    # permission check
+    my $Permission = $Self->{LinkObject}->ObjectPermission(
+        Object => $Form{SourceObject},
+        Key    => $Form{SourceKey},
+        UserID => $Self->{UserID},
+    );
+
+    if ( !$Permission ) {
+        return $Self->{LayoutObject}->NoPermission(
+            WithHeaderMessage    => 'You need ro permission!',
+            WithHeader => 'yes',
         );
     }
 
@@ -137,6 +148,14 @@ sub Run {
                 next IDENTIFIER if !$Target[0];    # TargetObject
                 next IDENTIFIER if !$Target[1];    # TargetKey
                 next IDENTIFIER if !$Target[2];    # LinkType
+
+                my $DeletePermission = $Self->{LinkObject}->ObjectPermission(
+                    Object => $Target[0],
+                    Key    => $Target[1],
+                    UserID => $Self->{UserID},
+                );
+
+                next IDENTIFIER if !$DeletePermission;
 
                 # delete link from database
                 my $Success = $Self->{LinkObject}->LinkDelete(
@@ -333,6 +352,14 @@ sub Run {
                         $TargetObject = $Form{TargetObject};
                         $TargetKey    = $TargetKeyOrg;
                     }
+
+                    my $AddPermission = $Self->{LinkObject}->ObjectPermission(
+                        Object => $TargetObject,
+                        Key    => $TargetKey,
+                        UserID => $Self->{UserID},
+                    );
+
+                    next TARGETKEYORG if !$AddPermission;
 
                     # add links to database
                     my $Success = $Self->{LinkObject}->LinkAdd(

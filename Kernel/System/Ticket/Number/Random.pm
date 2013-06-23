@@ -17,9 +17,6 @@ package Kernel::System::Ticket::Number::Random;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.27 $) [1];
-
 sub TicketCreateNumber {
     my $Self = shift;
 

@@ -17,9 +17,6 @@ use Scalar::Util;
 use Kernel::System::VariableCheck qw(:all);
 use Kernel::System::Ticket;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.13 $) [1];
-
 =head1 NAME
 
 Kernel::System::DynamicField::ObjectType::Ticket
@@ -181,11 +178,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.13 $ $Date: 2012-12-03 11:51:01 $
 
 =cut

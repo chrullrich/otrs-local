@@ -28,13 +28,10 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.10 $) [1];
-
 use File::Find;
 use Getopt::Long;
 
-print "bin/otrs.SetPermissions.pl <$VERSION> - set OTRS file permissions\n";
+print "bin/otrs.SetPermissions.pl - set OTRS file permissions\n";
 print "Copyright (C) 2001-2013 OTRS AG, http://otrs.com/\n";
 
 my $Secure             = 0;
@@ -90,6 +87,7 @@ EOF
         exit 0;
     }
 }
+
 my $DestDir = $ARGV[0];
 
 # check params
@@ -128,12 +126,18 @@ print "Setting permissions on $DestDir\n";
 if ($Secure) {
 
     # In secure mode, make files read-only by default
-    find( \&MakeReadOnly, $DestDir );
+    find( \&MakeReadOnly, $DestDir . "/" ); # append / to follow symlinks
+
+    # Also change the toplevel directory/symlink itself
+    MakeReadOnly($DestDir);
 }
 else {
 
     # set all files writeable for webserver user (needed for package manager)
-    find( \&MakeWritable, $DestDir );
+    find( \&MakeWritable, $DestDir . "/" ); # append / to follow symlinks
+
+    # Also change the toplevel directory/symlink itself
+    MakeWritable($DestDir);
 
     # set the $HOME to the OTRS user
     if ( !$NotRoot ) {
@@ -146,7 +150,7 @@ my @EmptyFiles = (
     "$DestDir/var/log/TicketCounter.log",
 );
 for my $File (@EmptyFiles) {
-    open( my $Fh, '>>', $File );    ## no critic
+    open( my $Fh, '>>', $File ) || die "Could not open $File: $!\n";    ## no critic
     print $Fh '';
     close $Fh;
 }
@@ -180,37 +184,34 @@ print "Setting permissions on $DestDir/bin/*\n";
 find( \&MakeExecutable, "$DestDir/bin" );
 
 # set all scripts/* as executable
-print "Setting permissions on $DestDir/scripts/*.pl\n";
-my @FileListScripts = glob("$DestDir/scripts/*.pl");
-for (@FileListScripts) {
-    MakeExecutable();
-}
-
-# set all scripts/tools/* as executable
-print "Setting permissions on $DestDir/scripts/tools/*.pl\n";
-my @FileListTools = glob("$DestDir/scripts/tools/*.pl");
-for (@FileListTools) {
-    MakeExecutable();
+print "Setting permissions on $DestDir/scripts/\n";
+my @FileListScripts = (
+    glob("$DestDir/scripts/*.pl"),
+    glob("$DestDir/scripts/*.sh"),
+    glob("$DestDir/scripts/tools/*.pl"),
+    glob("$DestDir/scripts/auto_build/*.pl"),
+    "$DestDir/scripts/otrs-scheduler-linux",
+    "$DestDir/scripts/suse-rcotrs",
+);
+for my $ExecutableFile (@FileListScripts) {
+    MakeExecutable($ExecutableFile);
 }
 
 # set write permission for web installer
 if ( !$Secure ) {
     print "Setting permissions on Kernel/Config.pm\n";
-    $_ = "$DestDir/Kernel/Config.pm";
-    MakeWritable();
+    MakeWritable("$DestDir/Kernel/Config.pm");
 }
 
 # set owner rw and group ro
-@Dirs = (
-    "$DestDir/",
+my @MailConfigFiles = (
     "$DestDir/.procmailrc",
     "$DestDir/.fetchmailrc",
 );
-for my $Dir (@Dirs) {
-    if ( -e $Dir ) {
-        print "Setting owner rw and group ro permissions on $Dir\n";
-        $_ = $Dir;
-        MakeReadOnly();
+for my $MailConfigFile (@MailConfigFiles) {
+    if ( -e $MailConfigFile ) {
+        print "Setting owner rw and group ro permissions on $MailConfigFile\n";
+        MakeReadOnly($MailConfigFile);
     }
 }
 
@@ -219,7 +220,8 @@ exit(0);
 ## no critic (ProhibitLeadingZeros)
 
 sub MakeReadOnly {
-    my $File = $_;
+    my $File = $File::Find::name || $_[0];
+
     if ( !$NotRoot ) {
         SafeChown( $AdminUserID, $AdminGroupID, $File );
     }
@@ -234,7 +236,7 @@ sub MakeReadOnly {
 }
 
 sub MakeWritable {
-    my $File = $_;
+    my $File = $File::Find::name || $_[0];
     my $Mode;
 
     if ( -d $File ) {
@@ -254,7 +256,7 @@ sub MakeWritable {
 }
 
 sub MakeWritableSetGid {
-    my $File = $_;
+    my $File = $File::Find::name || $_[0];
     my $Mode;
 
     if ( -d $File ) {
@@ -274,7 +276,7 @@ sub MakeWritableSetGid {
 }
 
 sub MakeExecutable {
-    my $File = $_;
+    my $File = $File::Find::name || $_[0];
     my $Mode = ( lstat($File) )[2];
     if ( defined $Mode ) {
         $Mode |= 0111;

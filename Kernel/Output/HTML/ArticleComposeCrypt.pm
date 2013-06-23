@@ -15,9 +15,6 @@ use warnings;
 use Mail::Address;
 use Kernel::System::Crypt;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.24 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 

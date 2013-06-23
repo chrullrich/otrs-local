@@ -12,9 +12,6 @@ package Kernel::Output::HTML::DashboardCustomerUserList;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.10 $) [1];
-
 use Kernel::System::CustomerUser;
 
 sub new {

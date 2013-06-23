@@ -15,9 +15,6 @@ use warnings;
 use Kernel::System::CacheInternal;
 use Kernel::System::VariableCheck qw(:all);
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.21 $) [1];
-
 =head1 NAME
 
 Kernel::System::GenericInterface::DebugLog - log interface for generic interface
@@ -860,11 +857,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.21 $ $Date: 2012-11-20 15:49:02 $
 
 =cut

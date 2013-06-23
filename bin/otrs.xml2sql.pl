@@ -28,9 +28,6 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.13 $) [1];
-
 use Getopt::Std;
 
 use Kernel::Config;
@@ -45,7 +42,7 @@ my %Opts = ();
 getopt( 'hton', \%Opts );
 if ( $Opts{'h'} || !%Opts ) {
     print <<"EOF";
-$0 <Revision $VERSION> - tool to generate database specific SQL from the XML database definition files used by OTRS
+$0 - tool to generate database specific SQL from the XML database definition files used by OTRS
 
 Copyright (C) 2001-2010 OTRS AG, http://otrs.org/
 

@@ -24,9 +24,6 @@ use Kernel::System::ProcessManagement::Transition;
 use Kernel::System::ProcessManagement::TransitionAction;
 use Kernel::System::VariableCheck qw(:all);
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.108 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -490,13 +487,13 @@ sub Run {
             return $Output;
         }
 
-        # unlock ticket if agent is on vacation
+        # unlock ticket if agent is on vacation or invalid
         my $LockAction;
         if ( $Ticket{OwnerID} ) {
             my %User = $Self->{AgentUserObject}->GetUserData(
                 UserID => $Ticket{OwnerID},
             );
-            if ( %User && $User{OutOfOffice} && $User{OutOfOfficeMessage} ) {
+            if ( %User && ( $User{OutOfOfficeMessage} || $User{ValidID} ne '1' ) ) {
                 $LockAction = 'unlock';
             }
         }
