@@ -1,8 +1,6 @@
 # --
 # 010-Language.t - frontend tests for admin area
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: 010-Language.t,v 1.10 2012/11/20 16:12:27 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -24,7 +22,7 @@ if ( !$Self->{ConfigObject}->Get('SeleniumTestsActive') ) {
     return 1;
 }
 
-require Kernel::System::UnitTest::Selenium;
+require Kernel::System::UnitTest::Selenium;    ## no critic
 
 my $Helper = Kernel::System::UnitTest::Helper->new(
     UnitTestObject => $Self,
@@ -36,7 +34,7 @@ my $TestUserLogin = $Helper->TestUserCreate() || die "Did not get test user";
 
 for my $SeleniumScenario ( @{ $Helper->SeleniumScenariosGet() } ) {
     eval {
-        my $sel = Kernel::System::UnitTest::Selenium->new(
+        my $Selenium = Kernel::System::UnitTest::Selenium->new(
             Verbose        => 1,
             UnitTestObject => $Self,
             %{$SeleniumScenario},
@@ -44,7 +42,7 @@ for my $SeleniumScenario ( @{ $Helper->SeleniumScenariosGet() } ) {
 
         eval {
 
-            $sel->Login(
+            $Selenium->Login(
                 Type     => 'Agent',
                 User     => $TestUserLogin,
                 Password => $TestUserLogin,
@@ -52,8 +50,8 @@ for my $SeleniumScenario ( @{ $Helper->SeleniumScenariosGet() } ) {
 
             my $ScriptAlias = $Self->{ConfigObject}->Get('ScriptAlias');
 
-            $sel->open_ok("${ScriptAlias}index.pl?Action=AgentPreferences");
-            $sel->wait_for_page_to_load_ok("30000");
+            $Selenium->open_ok("${ScriptAlias}index.pl?Action=AgentPreferences");
+            $Selenium->wait_for_page_to_load_ok("30000");
 
             my @Languages = sort keys %{ $Self->{ConfigObject}->Get('DefaultUsedLanguages') };
 
@@ -61,14 +59,14 @@ for my $SeleniumScenario ( @{ $Helper->SeleniumScenariosGet() } ) {
             for my $Language (@Languages) {
 
                 # check for the language selection box
-                $sel->is_element_present_ok("css=select#UserLanguage");
+                $Selenium->is_element_present_ok("css=select#UserLanguage");
 
                 # select the current language
-                $sel->select_ok( "UserLanguage", "value=$Language" );
+                $Selenium->select_ok( "UserLanguage", "value=$Language" );
 
                 # reload the page
-                $sel->click_ok("UserLanguageUpdate");
-                $sel->wait_for_page_to_load_ok("30000");
+                $Selenium->click_ok("UserLanguageUpdate");
+                $Selenium->wait_for_page_to_load_ok("30000");
 
                 # now check if the language was correctly applied in the interface
                 my $LanguageObject = Kernel::Language->new(
@@ -79,8 +77,8 @@ for my $SeleniumScenario ( @{ $Helper->SeleniumScenariosGet() } ) {
                     UserLanguage => $Language,
                 );
 
-                $sel->text_is( "//h1", $LanguageObject->Get('Edit your preferences') );
-                $sel->is_text_present_ok(
+                $Selenium->text_is( "//h1", $LanguageObject->Get('Edit your preferences') );
+                $Selenium->is_text_present_ok(
                     $LanguageObject->Get('Preferences updated successfully!')
                 );
             }

@@ -14,7 +14,7 @@
 # this stuff is worth it, you can buy me a beer in return.   Poul-Henning Kamp
 # ----------------------------------------------------------------------------
 # 
-# $Id: PasswdMD5.pm,v 1.3 2004/02/17 11:21:38 lem Exp $
+# $Id: PasswdMD5.pm,v 1.2 2006-12-14 19:15:59 mh Exp $
 #
 ################
 
@@ -177,7 +177,7 @@ None by default.
 
 =head1 HISTORY
 
-$Id: PasswdMD5.pm,v 1.3 2004/02/17 11:21:38 lem Exp $
+$Id: PasswdMD5.pm,v 1.2 2006-12-14 19:15:59 mh Exp $
 
  19980710 luismunoz@cpan.org: Initial release
  19990402 bryan@eai.com: Added apache_md5_crypt to create a valid hash
@@ -186,7 +186,7 @@ $Id: PasswdMD5.pm,v 1.3 2004/02/17 11:21:38 lem Exp $
 			exported by default.
  20010706 luismunoz@cpan.org: Use Digest::MD5 instead of the (obsolete) MD5.
 
-$Log: PasswdMD5.pm,v $
+$Log: not supported by cvs2svn $
 Revision 1.3  2004/02/17 11:21:38  lem
 Modified the POD so that ABSTRACT can work
 Added usage example for apache_md5_crypt()

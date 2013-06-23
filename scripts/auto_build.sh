@@ -3,8 +3,6 @@
 # auto_build.sh - build automatically OTRS tar, rpm and src-rpm
 # Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
 # --
-# $Id: auto_build.sh,v 1.119 2013/01/24 11:18:34 mg Exp $
-# --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
 # the Free Software Foundation; either version 3 of the License, or
@@ -130,10 +128,8 @@ echo "BUILDHOST = `hostname -f`" >> $RELEASEFILE
 # --
 cd $PACKAGE_BUILD_DIR/$ARCHIVE_DIR/ || exit 1;
 
-# remove CVS dirs
-find $PACKAGE_BUILD_DIR/$ARCHIVE_DIR/ -name CVS | xargs rm -rf || exit 1;
 # remove .cvs ignore files
-find -name ".cvsignore" | xargs rm -rf
+find -name ".gitignore" | xargs rm -rf
 
 #
 # remove old sessions, articles and spool and other stuff

@@ -1,4 +1,4 @@
-# $Id: DBI.pm 1140245 2011-06-27 17:25:53Z phred $
+# $Id: DBI.pm,v 1.3 2011-11-28 12:28:37 mb Exp $
 package Apache::DBI;
 use strict;
 

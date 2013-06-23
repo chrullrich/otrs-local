@@ -1,8 +1,6 @@
 # --
 # Kernel/System/AuthSession/DB.pm - provides session db backend
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: DB.pm,v 1.72 2012/11/22 09:19:35 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -277,16 +275,16 @@ sub CreateSessionID {
     my $RemoteUserAgent = $ENV{HTTP_USER_AGENT} || 'none';
 
     # create session id
-    my $md5 = Digest::MD5->new();
-    $md5->add(
+    my $MD5 = Digest::MD5->new();
+    $MD5->add(
         ( $TimeNow . int( rand 999999999 ) . $Self->{SystemID} ) . $RemoteAddr . $RemoteUserAgent
     );
-    my $SessionID = $Self->{SystemID} . $md5->hexdigest;
+    my $SessionID = $Self->{SystemID} . $MD5->hexdigest();
 
     # create challenge token
-    $md5 = Digest::MD5->new();
-    $md5->add( $TimeNow . $SessionID );
-    my $ChallengeToken = $md5->hexdigest;
+    $MD5 = Digest::MD5->new();
+    $MD5->add( $TimeNow . $SessionID );
+    my $ChallengeToken = $MD5->hexdigest();
 
     my %Data;
     KEY:
@@ -478,7 +476,7 @@ sub CleanUp {
 
     # use trancate if possible to reset the auto increment value
     if (
-        $Self->{DBType}    eq 'mysql'
+        $Self->{DBType} eq 'mysql'
         || $Self->{DBType} eq 'postgresql'
         || $Self->{DBType} eq 'oracle'
         || $Self->{DBType} eq 'mssql'
@@ -596,7 +594,7 @@ sub _SQLCreate {
             my $Serialized = 0;
 
             if (
-                ref $Value    eq 'HASH'
+                ref $Value eq 'HASH'
                 || ref $Value eq 'ARRAY'
                 || ref $Value eq 'SCALAR'
                 )
@@ -643,7 +641,7 @@ sub _SQLCreate {
 
             if (
                 !defined $Value
-                || $Value     eq ''
+                || $Value eq ''
                 || ref $Value eq 'HASH'
                 || ref $Value eq 'ARRAY'
                 || ref $Value eq 'SCALAR'
@@ -699,7 +697,7 @@ sub _SQLCreate {
             my $Serialized = 0;
 
             if (
-                ref $Value    eq 'HASH'
+                ref $Value eq 'HASH'
                 || ref $Value eq 'ARRAY'
                 || ref $Value eq 'SCALAR'
                 )

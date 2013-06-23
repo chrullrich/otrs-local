@@ -1,8 +1,6 @@
 # --
 # Kernel/System/WebUserAgent.pm - a web user agent
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: WebUserAgent.pm,v 1.7 2012/11/20 15:41:40 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -164,6 +162,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.7 $ $Date: 2012/11/20 15:41:40 $
+$Revision: 1.7 $ $Date: 2012-11-20 15:41:40 $
 
 =cut

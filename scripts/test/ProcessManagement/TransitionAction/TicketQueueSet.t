@@ -1,8 +1,6 @@
 # --
 # TicketQueueSet.t - TicketQueueSet testscript
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: TicketQueueSet.t,v 1.2 2013/01/11 06:18:01 cr Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you

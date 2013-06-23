@@ -1,8 +1,6 @@
 # --
 # ObjectLockStatePerformance.t - ObjectLockState performance tests
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: ObjectLockStatePerformance.t,v 1.5 2012/11/22 14:59:43 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -41,6 +39,11 @@ my $WebserviceID = $WebserviceObject->WebserviceAdd(
     Config => {
         Debugger => {
             DebugThreshold => 'debug',
+        },
+        Provider => {
+            Transport => {
+                Type => '',
+            },
         },
     },
     Name    => "Test$RandomNumber",

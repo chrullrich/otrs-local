@@ -1,8 +1,6 @@
 # --
 # Kernel/System/YAML.pm - YAML wrapper
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: YAML.pm,v 1.5 2013/01/17 09:47:23 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -131,6 +129,10 @@ sub Load {
             Priority => 'error',
             Message  => 'Loading the YAML string failed: ' . $@,
         );
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => 'YAML data was: "' . $Param{Data} . '"',
+        );
         return;
     }
 
@@ -209,6 +211,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.5 $ $Date: 2013/01/17 09:47:23 $
+$Revision: 1.5 $ $Date: 2013-01-17 09:47:23 $
 
 =cut

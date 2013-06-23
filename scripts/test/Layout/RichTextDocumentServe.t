@@ -1,8 +1,6 @@
 # --
 # scripts/test/Layout/RichTextDocumentServe.t - layout testscript
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: RichTextDocumentServe.t,v 1.7 2012/11/20 16:10:38 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you

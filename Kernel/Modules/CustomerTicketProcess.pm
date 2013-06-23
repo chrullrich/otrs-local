@@ -1,8 +1,6 @@
 # --
 # Kernel/Modules/CustomerTicketProcess.pm - to create process tickets
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: CustomerTicketProcess.pm,v 1.14 2013/01/15 23:02:44 cr Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -136,6 +134,9 @@ sub Run {
     my $Access = $Self->{TicketObject}->TicketCustomerPermission(
         Type     => $ActivityDialogPermission,
         TicketID => $Self->{TicketID},
+
+        # here is safe to use $Self->{UserID}, since it will be compared vs ticket customer in
+        # ticket permission modules
         UserID   => $Self->{UserID}
     );
 
@@ -1407,7 +1408,7 @@ sub _StoreActivityDialog {
                 DynamicFieldConfig => $DynamicFieldConfig,
                 ObjectID           => $TicketID,
                 Value              => $TicketParam{$CurrentField},
-                UserID             => $Self->{UserID},
+                UserID             => $Self->{ConfigObject}->Get('CustomerPanelUserID'),
             );
             if ( !$Success ) {
                 $Self->{LayoutObject}->CustomerFatalError(
@@ -1440,13 +1441,13 @@ sub _StoreActivityDialog {
                     From           => $From,
                     MimeType       => $MimeType,
                     Charset        => $Self->{LayoutObject}->{UserCharset},
-                    UserID         => $Self->{UserID},
+                    UserID         => $Self->{ConfigObject}->Get('CustomerPanelUserID'),
                     HistoryType    => 'AddNote',
                     HistoryComment => '%%Note',
                     Body           => $Param{GetParam}{Body},
                     Subject        => $Param{GetParam}{Subject},
                     ArticleType =>
-                        $ActivityDialog->{Fields}->{Article}->{Config}->{CustomerArticleType},
+                        $ActivityDialog->{Fields}->{Article}->{Config}->{ArticleType},
                 );
                 if ( !$ArticleID ) {
                     return $Self->{LayoutObject}->CustomerErrorScreen();
@@ -1491,7 +1492,7 @@ sub _StoreActivityDialog {
                     $Self->{TicketObject}->ArticleWriteAttachment(
                         %{$Attachment},
                         ArticleID => $ArticleID,
-                        UserID    => $Self->{UserID},
+                        UserID    => $Self->{ConfigObject}->Get('CustomerPanelUserID'),
                     );
                 }
 

@@ -1,8 +1,6 @@
 # --
 # StandardResponse.t - StandardResponse tests
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: StandardResponse.t,v 1.7 2012/11/20 16:07:57 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you

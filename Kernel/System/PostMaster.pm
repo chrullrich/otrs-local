@@ -1,8 +1,6 @@
 # --
 # Kernel/System/PostMaster.pm - the global PostMaster module for OTRS
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: PostMaster.pm,v 1.94 2013/02/04 11:12:54 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -689,6 +687,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.94 $ $Date: 2013/02/04 11:12:54 $
+$Revision: 1.94 $ $Date: 2013-02-04 11:12:54 $
 
 =cut

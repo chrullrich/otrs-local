@@ -1,8 +1,6 @@
 # --
 # Kernel/System/VirtualFS.pm - all virtual fs functions
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: VirtualFS.pm,v 1.13 2012/11/20 15:41:33 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -523,6 +521,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.13 $ $Date: 2012/11/20 15:41:33 $
+$Revision: 1.13 $ $Date: 2012-11-20 15:41:33 $
 
 =cut

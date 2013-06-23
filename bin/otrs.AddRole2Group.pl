@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.AddRole2Group.pl - Assign Roles to Groups from CLI
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.AddRole2Group.pl,v 1.10 2013/01/22 10:14:09 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -43,12 +41,24 @@ use Kernel::System::Queue;
 use Kernel::System::Group;
 use Kernel::System::Main;
 
+# create common objects
+my %CommonObject = ();
+$CommonObject{ConfigObject} = Kernel::Config->new(%CommonObject);
+$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
+$CommonObject{LogObject}    = Kernel::System::Log->new(
+    LogPrefix => 'OTRS-otrs.AddRole2Group.pl',
+    %CommonObject,
+);
+$CommonObject{MainObject}  = Kernel::System::Main->new(%CommonObject);
+$CommonObject{DBObject}    = Kernel::System::DB->new(%CommonObject);
+$CommonObject{GroupObject} = Kernel::System::Group->new(%CommonObject);
+
 # get options
-my %Opts = ();
+my %Opts;
 getopts( 'hg:r:R:M:C:N:O:P:W:', \%Opts );
 if ( $Opts{h} ) {
     print "otrs.AddRole2Group.pl <Revision $VERSION> - assign Roles to Groups\n";
-    print "Copyright (C) 2001-2013 OTRS AG, http://otrs.org/\n";
+    print "Copyright (C) 2001-2013 OTRS AG, http://otrs.com/\n";
     print
         "usage: otrs.AddRole2Group.pl -g <GROUP> -r <ROLE> [-R<READ> -M<MOVE_INTO> -C<CREATE> -N<NOTE> -O<OWNER> -P<PRIORITY> -W<RW>] \n";
     print "For Options: R,M,C,N,O,P,W setting to 0 or 1 is expected \n";
@@ -63,18 +73,6 @@ if ( !$Opts{g} ) {
     print STDERR "ERROR: Need -g <GROUP>\n";
     exit 1;
 }
-
-# create common objects
-my %CommonObject = ();
-$CommonObject{ConfigObject} = Kernel::Config->new(%CommonObject);
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.AddRole2Group.pl',
-    %CommonObject,
-);
-$CommonObject{MainObject}  = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject}    = Kernel::System::DB->new(%CommonObject);
-$CommonObject{GroupObject} = Kernel::System::Group->new(%CommonObject);
 
 # check group
 my $GroupID = $CommonObject{GroupObject}->GroupLookup( Group => $Opts{g} );
@@ -112,6 +110,6 @@ if (
     exit 1;
 }
 else {
-    print "Added Group '$Opts{g} to Role '$Opts{r}'.'\n";
+    print "Added Group '$Opts{g}' to Role '$Opts{r}'.\n";
     exit(0);
 }

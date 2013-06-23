@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.GenerateStats.pl - send stats output via email
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.GenerateStats.pl,v 1.20 2013/01/16 09:14:00 mb Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -90,7 +88,7 @@ GetOptions(
 
 if ( $Opts{h} || !$Opts{n} ) {
     print "otrs.GenerateStats.pl <Revision $VERSION> - OTRS cmd stats\n";
-    print "Copyright (C) 2001-2013 OTRS AG, http://otrs.org/\n";
+    print "Copyright (C) 2001-2013 OTRS AG, http://otrs.com/\n";
     print
         "usage: otrs.GenerateStats.pl -n <StatNumber> [-p <PARAM_STRING>] [-o <DIRECTORY>] [-r <RECIPIENT> -r ... -s <SENDER>] [-m <MESSAGE>] [-l <LANGUAGE>] [-f CSV|Print] [-S <SEPARATOR>] [-F <FILENAME> [-R]\n";
     print
@@ -408,7 +406,7 @@ else {
 
 # write output
 if ( $Opts{o} ) {
-    if ( open my $Filehandle, '>', "$Opts{o}/$Attachment{Filename}" ) {
+    if ( open my $Filehandle, '>', "$Opts{o}/$Attachment{Filename}" ) {    ## no critic
         print $Filehandle $Attachment{Content};
         close $Filehandle;
         print "NOTICE: Writing file $Opts{o}/$Attachment{Filename}.\n";

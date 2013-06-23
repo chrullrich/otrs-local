@@ -1,8 +1,6 @@
 # --
 # Kernel/System/DynamicField/Backend.pm - Interface for DynamicField backends
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: Backend.pm,v 1.77 2013/01/10 15:20:08 ub Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -2207,6 +2205,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.77 $ $Date: 2013/01/10 15:20:08 $
+$Revision: 1.77 $ $Date: 2013-01-10 15:20:08 $
 
 =cut

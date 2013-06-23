@@ -1,8 +1,6 @@
 # --
 # Kernel/System/ProcessManagement/TransitionAction/TicketArticleCreate.pm - A Module to create an article
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: TicketArticleCreate.pm,v 1.2 2013/02/01 19:20:38 cr Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -229,6 +227,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.2 $ $Date: 2013/02/01 19:20:38 $
+$Revision: 1.2 $ $Date: 2013-02-01 19:20:38 $
 
 =cut

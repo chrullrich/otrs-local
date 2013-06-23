@@ -1,9 +1,7 @@
 # --
 # Kernel/Language/de.pm - provides German language translation
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # Copyright (C) 2010 Thomas Kaltenbrunner <tkaltenbrunner at opc.de>
-# --
-# $Id: de.pm,v 1.364 2013/02/07 09:16:32 mab Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -21,7 +19,7 @@ sub Data {
     my $Self = shift;
 
     # $$START$$
-    # Last translation file sync: 2013-01-31 13:59:31
+    # Last translation file sync: 2013-03-07 10:55:06
 
     # possible charsets
     $Self->{Charset} = ['utf-8', ];
@@ -874,6 +872,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Kunden-Verwaltung',
+        'Back to search result' => 'Zurück zum Suchergebnis',
         'Add customer' => 'Kunden hinzufügen',
         'Select' => 'Auswahl',
         'Hint' => 'Hinweis',
@@ -1597,9 +1596,11 @@ sub Data {
         'ArticleType' => 'Artikeltyp',
         'Display' => 'Anzeige',
         'Edit Field Details' => 'Feld-Details bearbeiten',
+        'Customer interface does not support internal article types.' => 'Die Kundenoberfläche unterstützt keine internen Artikeltypen.',
 
         # Template: AdminProcessManagementPath
         'Path' => 'Pfad',
+        'Edit this transition' => 'Diesen Übergang bearbeiten',
         'Transition Actions' => 'Übergangs-Aktionen',
         'You can assign Transition Actions to this Transition by dragging the elements with the mouse from the left list to the right list.' =>
             'Die können diesem Übergang Übergangs-Aktionen zuweisen, indem Sie sie mit der Maus aus der rechten Liste in die linke Liste verschieben.',
@@ -1607,7 +1608,6 @@ sub Data {
         'Available Transition Actions' => 'Verfügbare Übergangs-Aktionen',
         'Create New Transition Action' => 'Neue Übergangs-Aktion erstellen',
         'Assigned Transition Actions' => 'Zugewiesene Übergangs-Aktionen',
-        'Edit this transition' => 'Diesen Übergang bearbeiten',
 
         # Template: AdminProcessManagementPopupResponse
 
@@ -1623,10 +1623,10 @@ sub Data {
 
         # Template: AdminProcessManagementProcessEdit
         'Edit Process' => 'Prozess bearbeiten',
+        'Print process information' => 'Prozess-Informationen drucken',
         'Delete Process' => 'Prozess löschen',
         'Delete Inactive Process' => 'Inaktive Prozesse löschen',
         'Available Process Elements' => 'Verfügbare Prozess-Elemente',
-        'Print process information' => 'Prozess-Informationen drucken',
         'The Elements listed above in this sidebar can be moved to the canvas area on the right by using drag\'n\'drop.' =>
             'Die in der Seitenleiste aufgelisteten Elemente können mit der Maus in den Zeichenbereich gezogen werden.',
         'You can place Activities on the canvas area to assign this Activity to the Process.' =>
@@ -1644,14 +1644,18 @@ sub Data {
         'Extend the width of the Canvas' => 'Die Breite der Zeichenfläche vergrößern',
         'Extend the height of the Canvas' => 'Die Höhe der Zeichenfläche vergrößern',
         'Remove the Activity from this Process' => 'Aktivität aus diesem Prozess entfernen',
-        'Remove Entity from canvas' => 'Entität entfernen',
         'Do you really want to delete this Process?' => 'Möchten Sie diesen Prozess wirklich löschen?',
         'Do you really want to delete this Activity?' => 'Möchten Sie diese Aktivität wirklich löschen?',
         'Do you really want to delete this Activity Dialog?' => 'Möchten Sie diesen Aktivitäts-Dialog wirklich löschen?',
         'Do you really want to delete this Transition?' => 'Möchten Sie diesen Übergang wirklich löschen?',
         'Do you really want to delete this Transition Action?' => 'Möchten Sie diese Übergangs-Aktion wirklich löschen?',
+        'Do you really want to remove this activity from the canvas? This can only be undone by leaving this screen without saving.' =>
+            'Möchten Sie diese Aktivität wirklich von der Zeichenfläche entfernen? Das kann nur rückgängig gemacht werden, wenn Sie dieses Fenster ohne Speichern verlassen.',
+        'Do you really want to remove this transition from the canvas? This can only be undone by leaving this screen without saving.' =>
+            'Möchten Sie diesen Übergang wirklich von der Zeichenfläche entfernen? Das kann nur rückgängig gemacht werden, wenn Sie dieses Fenster ohne Speichern verlassen.',
         'Hide EntityIDs' => 'EntityIDs ausblenden',
         'Delete Entity' => 'Entität löschen',
+        'Remove Entity from canvas' => 'Entität entfernen',
         'This Activity is already used in the Process. You cannot add it twice!' =>
             'Diese Aktivität wird bereits im Prozess verwendet. Sie können sie nicht erneut hinzufügen!',
         'This Activity cannot be deleted because it is the Start Activity.' =>
@@ -1662,10 +1666,6 @@ sub Data {
             'Diese Übergangsaktion wird bereits in diesem Pfad verwendet. Sie können sie nicht erneut hinzufügen!',
         'No TransitionActions assigned.' => 'Keine Übergangsaktionen zugewiesen.',
         'The Start Event cannot loose the Start Transition!' => 'Das Startereignis kann den Start-Übergang nicht verlieren.',
-        'Do you really want to remove this activity from the canvas? This can only be undone by leaving this screen without saving.' =>
-            'Möchten Sie diese Aktivität wirklich von der Zeichenfläche entfernen? Das kann nur rückgängig gemacht werden, wenn Sie dieses Fenster ohne Speichern verlassen.',
-        'Do you really want to remove this transition from the canvas? This can only be undone by leaving this screen without saving.' =>
-            'Möchten Sie diesen Übergang wirklich von der Zeichenfläche entfernen? Das kann nur rückgängig gemacht werden, wenn Sie dieses Fenster ohne Speichern verlassen.',
         'No dialogs assigned yet. Just pick an activity dialog from the list on the left and drag it here.' =>
             'Es sind noch keine Dialoge zugewiesen. Wählen Sie einfach einen Aktivitäts-Dialog in der linken Liste aus und ziehen Sie ihn in die rechte Liste.',
 
@@ -1674,11 +1674,15 @@ sub Data {
             'Hier können Sie einen neuen Prozess erstellen. Um ihn für die Benutzer verfügbar zu machen, sollten Sie seinen Status auf "Aktiv" setzen und als Abschluss Ihrer Arbeit die Synchronisation durchführen.',
 
         # Template: AdminProcessManagementProcessPrint
+        'Start Activity' => 'Start-Aktivität',
         'Contains %s dialog(s)' => 'Enthält %s Dialog(e)',
         'Assigned dialogs' => 'Zugewiesene Dialoge',
         'Activities are not being used in this process.' => 'In diesem Prozess werden keine Aktivitäten verwendet.',
         'Assigned fields' => 'Zugewiesene Felder',
         'Activity dialogs are not being used in this process.' => 'In diesem Prozess werden keine Aktivitäts-Dialoge verwendet.',
+        'Condition linking' => 'Verknüpfung der Bedingungen',
+        'Conditions' => 'Bedingungen',
+        'Condition' => 'Bedingung',
         'Transitions are not being used in this process.' => 'In diesem Prozess werden keine Übergänge verwendet.',
         'Module name' => 'Modulname',
         'Configuration' => 'Konfiguration',
@@ -1689,9 +1693,7 @@ sub Data {
             'Achtung: Änderungen an diesem Übergang wirken sich auf folgende Prozesse aus',
         'Transition' => 'Übergang',
         'Transition Name' => 'Name des Übergangs',
-        'Conditions' => 'Bedingungen',
         'Type of Linking between Conditions' => 'Verknüpfung zwischen den Bedingungen',
-        'Condition' => 'Bedingung',
         'Remove this Condition' => 'Bedingung entfernen',
         'Type of Linking' => 'Typ der Verknüpfung',
         'Remove this Field' => 'Feld entfernen',
@@ -2614,7 +2616,7 @@ sub Data {
         'A new database user with limited rights will be created for this OTRS system.' =>
             'Ein neuer Datenbank-Benutzer mit beschränkten Rechten wird für dieses OTRS-System erstellt.',
         'default \'hot\'' => 'voreingestellt \'hot\'',
-        'DB--- host' => 'Datenbank-Host',
+        'DB host' => 'Datenbank-Host',
         'Check database settings' => 'Datenbankeinstellungen prüfen',
         'Result of database check' => 'Ergebnis der Datenbankprüfung',
 
@@ -3481,6 +3483,8 @@ sub Data {
             '',
         'Determines the next possible ticket states, after the creation of a new phone ticket in the agent interface.' =>
             '',
+        'Determines the next possible ticket states, for process tickets in the agent interface.' =>
+            '',
         'Determines the next screen after new customer ticket in the customer interface.' =>
             '',
         'Determines the next screen after the follow up screen of a zoomed ticket in the customer interface.' =>
@@ -3840,8 +3844,6 @@ sub Data {
         'Maximum number of tickets to be displayed in the result of a search in the agent interface.' =>
             '',
         'Maximum number of tickets to be displayed in the result of a search in the customer interface.' =>
-            '',
-        'Maximum size (in characters) of the customer info table in the queue view.' =>
             '',
         'Maximum size (in characters) of the customer information table in the ticket zoom view.' =>
             '',

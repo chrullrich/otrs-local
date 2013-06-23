@@ -1,8 +1,6 @@
 # --
 # ActivityDialogACL.t - ActivityDialog ACL testscript
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: ActivityDialogACL.t,v 1.10 2013/01/15 18:36:41 cr Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -445,7 +443,7 @@ DYNAMICFIELDLOOP:
 for my $Fieldname ( sort keys %NewDynamicFields ) {
     next DYNAMICFIELDLOOP
         if (
-        $NewDynamicFields{$Fieldname}{FieldType}    ne 'Dropdown'
+        $NewDynamicFields{$Fieldname}{FieldType} ne 'Dropdown'
         && $NewDynamicFields{$Fieldname}{FieldType} ne 'Multiselect'
         && $NewDynamicFields{$Fieldname}{FieldType} ne 'Checkbox'
         );
@@ -479,17 +477,17 @@ my $ProcessConfigSub = sub {
     my %DynamicFieldsLookup = map {
 
         # Assign the hashkey (e.g. dynamic field name)
-        # to $key
-        my $key = $_;
+        # to $Key
+        my $Key = $_;
 
         # remove the nummeric part that is generated
         # for the testing
-        $key =~ s/(\D+)\d+/$1/;
+        $Key =~ s/(\D+)\d+/$1/;
 
         # form it as hashkey and value in order to
         # get a translation hash
         # DynamicField_Fieldname => DynamicField_Fieldname839391ß,
-        "DynamicField_$key" => "DynamicField_$_"
+        "DynamicField_$Key" => "DynamicField_$_"
     } ( sort keys %{$DynamicFields} );
 
     # OrderStatus Provider OrderNumberProvider System
@@ -1032,7 +1030,7 @@ for my $Fieldname ( sort keys %NewDynamicFields ) {
     # skip the loop if we have no fields with defaultvalues
     next DYNAMICFIELDLOOP
         if (
-        $NewDynamicFields{$Fieldname}{FieldType}    ne 'Dropdown'
+        $NewDynamicFields{$Fieldname}{FieldType} ne 'Dropdown'
         && $NewDynamicFields{$Fieldname}{FieldType} ne 'Multiselect'
         && $NewDynamicFields{$Fieldname}{FieldType} ne 'Checkbox'
         );

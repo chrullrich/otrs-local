@@ -1,8 +1,6 @@
 # --
 # Kernel/System/Queue.pm - lib for queue functions
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: Queue.pm,v 1.143 2013/01/17 15:18:33 mb Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -1177,6 +1175,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.143 $ $Date: 2013/01/17 15:18:33 $
+$Revision: 1.143 $ $Date: 2013-01-17 15:18:33 $
 
 =cut

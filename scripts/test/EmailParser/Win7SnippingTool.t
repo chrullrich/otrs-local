@@ -1,8 +1,6 @@
 # --
 # Win7SnippingTool.t - email parser tests
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: Win7SnippingTool.t,v 1.1 2013/01/29 15:18:00 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -27,11 +25,11 @@ my $Home = $Self->{ConfigObject}->Get('Home');
 
 # test for bug#1970
 my @Array = ();
-open( IN, "< $Home/scripts/test/sample/EmailParser/Win7SnippingTool.box" );
-while (<IN>) {
+open( my $IN, "<", "$Home/scripts/test/sample/EmailParser/Win7SnippingTool.box" );    ## no critic
+while (<$IN>) {
     push( @Array, $_ );
 }
-close(IN);
+close($IN);
 
 # create local object
 my $EmailParserObject = Kernel::System::EmailParser->new(

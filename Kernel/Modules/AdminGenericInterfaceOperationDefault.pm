@@ -1,8 +1,6 @@
 # --
 # Kernel/Modules/AdminGenericInterfaceOperationDefault.pm - provides a log view for admins
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: AdminGenericInterfaceOperationDefault.pm,v 1.11 2012/11/20 14:38:22 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -249,9 +247,9 @@ sub _Change {
     }
 
     if (
-        ref $WebserviceData->{Config}                                           ne 'HASH'
-        || ref $WebserviceData->{Config}->{Provider}                            ne 'HASH'
-        || ref $WebserviceData->{Config}->{Provider}->{Operation}               ne 'HASH'
+        ref $WebserviceData->{Config} ne 'HASH'
+        || ref $WebserviceData->{Config}->{Provider} ne 'HASH'
+        || ref $WebserviceData->{Config}->{Provider}->{Operation} ne 'HASH'
         || ref $WebserviceData->{Config}->{Provider}->{Operation}->{$Operation} ne 'HASH'
         )
     {
@@ -297,8 +295,8 @@ sub _ChangeAction {
 
     # Get config data of existing operation.
     if (
-        ref $WebserviceData->{Config}                             ne 'HASH'
-        || ref $WebserviceData->{Config}->{Provider}              ne 'HASH'
+        ref $WebserviceData->{Config} ne 'HASH'
+        || ref $WebserviceData->{Config}->{Provider} ne 'HASH'
         || ref $WebserviceData->{Config}->{Provider}->{Operation} ne 'HASH'
         || ref $WebserviceData->{Config}->{Provider}->{Operation}->{ $GetParam{OldOperation} } ne
         'HASH'

@@ -1,8 +1,6 @@
 # --
 # LinkObject.t - link object module testscript
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: LinkObject.t,v 1.24 2013/01/21 15:04:10 ub Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -2840,10 +2838,11 @@ for my $Test ( @{$LinkData} ) {
     $Data::Dumper::Indent = 0;
 
     # dump the results from LinkList()
-    my $LinksString = Data::Dumper::Dumper($Links);
+    my $LinksString = Data::Dumper::Dumper($Links);    ## no critic
 
     # dump the reference data
-    my $LinksReferenceString = Data::Dumper::Dumper( $ReferenceData->{LinkListReference} );
+    my $LinksReferenceString
+        = Data::Dumper::Dumper( $ReferenceData->{LinkListReference} );    ## no critic
 
     # get objects lists
     my @ReferenceObjects = sort keys %{ $ReferenceData->{LinkListReference} };

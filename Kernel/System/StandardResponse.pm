@@ -1,8 +1,6 @@
 # --
 # Kernel/System/StandardResponse.pm - lib for std responses
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: StandardResponse.pm,v 1.5 2012/11/20 15:38:22 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -386,6 +384,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.5 $ $Date: 2012/11/20 15:38:22 $
+$Revision: 1.5 $ $Date: 2012-11-20 15:38:22 $
 
 =cut

@@ -1,8 +1,6 @@
 # --
 # Kernel/System/Encode.pm - character encodings
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: Encode.pm,v 1.53 2013/01/28 12:36:04 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,6 +13,8 @@ use strict;
 use warnings;
 
 use Encode;
+use Encode::Locale;
+use IO::Interactive qw(is_interactive);
 
 use vars qw(@ISA $VERSION);
 $VERSION = qw($Revision: 1.53 $) [1];
@@ -35,12 +35,12 @@ This module will use Perl's Encode module (Perl 5.8.0 or higher is required).
 
 =item new()
 
-create a language object
+create an encode object
 
     use Kernel::System::Encode;
 
-    my $EncodeObject = Kernel::System::Encode->new();
-
+    my $EncodeObject = Kernel::System::Encode->new();  
+        
 =cut
 
 sub new {
@@ -53,9 +53,19 @@ sub new {
     # 0=off; 1=on;
     $Self->{Debug} = 0;
 
-    # encode STDOUT and STDERR
-    $Self->SetIO( \*STDOUT, \*STDERR );
-
+    # check if the encodeobject is used from the command line
+    # if so, we need to decode @ARGV
+    if ( !is_interactive() ) {
+        # encode STDOUT and STDERR
+        $Self->SetIO( \*STDOUT, \*STDERR );
+    }
+    else {
+        # use "locale" as an arg to encode/decode
+        @ARGV = map { decode(locale => $_, 1) } @ARGV if -t STDIN;
+        binmode STDOUT, ":encoding(console_out)" if -t STDOUT;
+        binmode STDERR, ":encoding(console_out)" if -t STDERR;
+    }
+    
     return $Self;
 }
 
@@ -354,6 +364,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.53 $ $Date: 2013/01/28 12:36:04 $
+$Revision: 1.53 $ $Date: 2013-01-28 12:36:04 $
 
 =cut

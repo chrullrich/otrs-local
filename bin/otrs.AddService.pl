@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.AddService.pl - add new Services
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.AddService.pl,v 1.7 2013/01/22 10:14:09 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -45,6 +43,15 @@ use Kernel::System::Service;
 my %Param;
 my %CommonObject;
 
+# create common objects
+$CommonObject{ConfigObject} = Kernel::Config->new();
+$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
+$CommonObject{LogObject}
+    = Kernel::System::Log->new( %CommonObject, LogPrefix => 'OTRS-otrs.AddService' );
+$CommonObject{MainObject}    = Kernel::System::Main->new(%CommonObject);
+$CommonObject{DBObject}      = Kernel::System::DB->new(%CommonObject);
+$CommonObject{ServiceObject} = Kernel::System::Service->new(%CommonObject);
+
 my $NoOptions = $ARGV[0] ? 0 : 1;
 
 # get options
@@ -60,15 +67,6 @@ if ( !$Opts{n} ) {
     print STDERR "ERROR: Need -n <Name>\n";
     exit 1;
 }
-
-# create common objects
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}
-    = Kernel::System::Log->new( %CommonObject, LogPrefix => 'OTRS-otrs.AddService' );
-$CommonObject{MainObject}    = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject}      = Kernel::System::DB->new(%CommonObject);
-$CommonObject{ServiceObject} = Kernel::System::Service->new(%CommonObject);
 
 my $ServiceName;
 

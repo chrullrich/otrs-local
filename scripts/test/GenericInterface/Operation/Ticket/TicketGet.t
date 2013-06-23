@@ -1,8 +1,6 @@
 # --
 # TicketGet.t - TicketConnector interface tests for TicketConnector backend
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: TicketGet.t,v 1.24 2012/11/20 16:10:08 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -665,7 +663,16 @@ $Self->Is(
 
 my $WebserviceID = $WebserviceObject->WebserviceAdd(
     Name    => $WebserviceName,
-    Config  => {},
+    Config  => {
+        Debugger => {
+            DebugThreshold => 'debug',
+        },
+        Provider => {
+            Transport => {
+                Type => '',
+            },
+        },
+    },
     ValidID => 1,
     UserID  => 1,
 );
