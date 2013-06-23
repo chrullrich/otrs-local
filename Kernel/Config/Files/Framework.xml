@@ -2420,7 +2420,7 @@
         <Group>Framework</Group>
         <SubGroup>Core::Web</SubGroup>
         <Setting>
-            <String Regex="^[0-9]{1,11}$">16777216</String>
+            <String Regex="^[0-9]{1,11}$">24000000</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="WebUploadCacheModule" Required="1" Valid="1" ConfigLevel="200">
@@ -5880,14 +5880,14 @@ M
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Loader::Agent::Skin###001-slim" Required="0" Valid="1">
-        <Description Translatable="1">Experimental "Slim" skin which tries to save screen space for power users.</Description>
+        <Description Translatable="1">"Slim" Skin which tries to save screen space for power users.</Description>
         <Group>Framework</Group>
         <SubGroup>Frontend::Agent</SubGroup>
         <Setting>
             <Hash>
                 <Item Key="InternalName">slim</Item>
                 <Item Key="VisibleName">Slim</Item>
-                <Item Key="Description">Experimental "Slim" skin which tries to save screen space for power users.</Item>
+                <Item Key="Description">"Slim" skin which tries to save screen space for power users.</Item>
                 <Item Key="HomePage">www.otrs.org</Item>
             </Hash>
         </Setting>

@@ -755,8 +755,8 @@ sub LoadDefaults {
     # Web Settings
     # --------------------------------------------------- #
     # WebMaxFileUpload
-    # (Max size for browser file uploads - default 16 MB)
-    $Self->{WebMaxFileUpload} = 1024 * 1024 * 16;
+    # (Max size for browser file uploads - default ~ 24 MB)
+    $Self->{WebMaxFileUpload} = 24000000;
 
     # WebUploadCacheModule
     # (select you WebUploadCacheModule module, default DB [DB|FS])
@@ -1464,6 +1464,11 @@ Your OTRS Notification Master
 #            Password => '',
             Table => 'customer_company',
 #            ForeignDB => 0,    # set this to 1 if your table does not have create_time, create_by, change_time and change_by fields
+
+            # CaseSensitive will control if the SQL statements need LOWER()
+            #   function calls to work case insensitively. Setting this to
+            #   1 will improve performance dramatically on large databases.
+            CaseSensitive => 0,
         },
 
         # company unique id
