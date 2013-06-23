@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.PendingJobs.pl - check pending tickets
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.PendingJobs.pl,v 1.14 2013/01/22 10:14:09 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -63,7 +61,7 @@ $CommonObject{StateObject}  = Kernel::System::State->new(%CommonObject);
 # check args
 my $Command = shift || '--help';
 print "otrs.PendingJobs.pl <Revision $VERSION> - check pending tickets\n";
-print "Copyright (C) 2001-2013 OTRS AG, http://otrs.org/\n";
+print "Copyright (C) 2001-2013 OTRS AG, http://otrs.com/\n";
 
 # do ticket auto jobs
 my @PendingAutoStateIDs = $CommonObject{StateObject}->StateGetStatesByType(
@@ -253,8 +251,8 @@ if (@PendingReminderStateIDs) {
             my $Sent = 0;
             for my $Line (@Lines) {
                 if (
-                    $Line->{Name}          =~ /PendingReminder/
-                    && $Line->{Name}       =~ /\Q$Preferences{UserEmail}\E/i
+                    $Line->{Name} =~ /PendingReminder/
+                    && $Line->{Name} =~ /\Q$Preferences{UserEmail}\E/i
                     && $Line->{CreateTime} =~ /$Year-$Month-$Day/
                     )
                 {

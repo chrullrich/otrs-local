@@ -1,8 +1,6 @@
 # --
 # Kernel/System/ProcessManagement/TransitionAction/TicketQueueSet.pm - A Module to move a Ticket from to a new queue
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: TicketQueueSet.pm,v 1.2 2013/01/11 06:18:00 cr Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -225,6 +223,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.2 $ $Date: 2013/01/11 06:18:00 $
+$Revision: 1.2 $ $Date: 2013-01-11 06:18:00 $
 
 =cut

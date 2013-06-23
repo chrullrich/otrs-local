@@ -266,7 +266,7 @@ __END__
 
 =head1 VERSION
 
-$Id: InnerFile.pm,v 1.4 2005/02/10 21:21:53 dfs Exp $
+$Id: InnerFile.pm,v 1.3 2006-12-14 19:24:50 mh Exp $
 
 
 =head1 AUTHOR

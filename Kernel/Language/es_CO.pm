@@ -2,8 +2,6 @@
 # Kernel/Language/es_CO.pm - provides Spanish language translation for Colombia
 # Copyright (C) 2013 John Edisson Ortiz Roman <jortiz@slabinfo.com.co>
 # --
-# $Id: es_CO.pm,v 1.2 2013/01/31 13:10:44 mg Exp $
-# --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
@@ -21,7 +19,7 @@ sub Data {
     my $Self = shift;
 
     # $$START$$
-    # Last translation file sync: 2013-01-31 14:23:54
+    # Last translation file sync: 2013-03-07 10:55:09
 
     # possible charsets
     $Self->{Charset} = ['utf-8', ];
@@ -874,6 +872,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Gesti√≥n de Clientes',
+        'Back to search result' => '',
         'Add customer' => 'A√±adir cliente',
         'Select' => 'Seleccionar',
         'Hint' => 'Pista',
@@ -1597,9 +1596,11 @@ sub Data {
         'ArticleType' => '',
         'Display' => '',
         'Edit Field Details' => '',
+        'Customer interface does not support internal article types.' => '',
 
         # Template: AdminProcessManagementPath
         'Path' => '',
+        'Edit this transition' => '',
         'Transition Actions' => '',
         'You can assign Transition Actions to this Transition by dragging the elements with the mouse from the left list to the right list.' =>
             '',
@@ -1622,6 +1623,7 @@ sub Data {
 
         # Template: AdminProcessManagementProcessEdit
         'Edit Process' => '',
+        'Print process information' => '',
         'Delete Process' => '',
         'Delete Inactive Process' => '',
         'Available Process Elements' => '',
@@ -1647,8 +1649,13 @@ sub Data {
         'Do you really want to delete this Activity Dialog?' => '',
         'Do you really want to delete this Transition?' => '',
         'Do you really want to delete this Transition Action?' => '',
+        'Do you really want to remove this activity from the canvas? This can only be undone by leaving this screen without saving.' =>
+            '',
+        'Do you really want to remove this transition from the canvas? This can only be undone by leaving this screen without saving.' =>
+            '',
         'Hide EntityIDs' => '',
         'Delete Entity' => '',
+        'Remove Entity from canvas' => '',
         'This Activity is already used in the Process. You cannot add it twice!' =>
             '',
         'This Activity cannot be deleted because it is the Start Activity.' =>
@@ -1659,10 +1666,6 @@ sub Data {
             '',
         'No TransitionActions assigned.' => '',
         'The Start Event cannot loose the Start Transition!' => '',
-        'Do you really want to remove this activity from the canvas? This can only be undone by leaving this screen without saving.' =>
-            '',
-        'Do you really want to remove this transition from the canvas? This can only be undone by leaving this screen without saving.' =>
-            '',
         'No dialogs assigned yet. Just pick an activity dialog from the list on the left and drag it here.' =>
             '',
 
@@ -1671,11 +1674,15 @@ sub Data {
             '',
 
         # Template: AdminProcessManagementProcessPrint
+        'Start Activity' => '',
         'Contains %s dialog(s)' => '',
         'Assigned dialogs' => '',
         'Activities are not being used in this process.' => '',
         'Assigned fields' => '',
         'Activity dialogs are not being used in this process.' => '',
+        'Condition linking' => '',
+        'Conditions' => '',
+        'Condition' => '',
         'Transitions are not being used in this process.' => '',
         'Module name' => '',
         'Configuration' => '',
@@ -1686,9 +1693,7 @@ sub Data {
             '',
         'Transition' => '',
         'Transition Name' => '',
-        'Conditions' => '',
         'Type of Linking between Conditions' => '',
-        'Condition' => '',
         'Remove this Condition' => '',
         'Type of Linking' => '',
         'Remove this Field' => '',
@@ -2611,7 +2616,7 @@ sub Data {
         'A new database user with limited rights will be created for this OTRS system.' =>
             'Un usuario nuevo, con permisos limitados, se crear√° en este sistema OTRS, para la base de datos.',
         'default \'hot\'' => 'por defecto \'hot\'',
-        'DB--- host' => '',
+        'DB host' => '',
         'Check database settings' => 'Verificar las configuraciones de la base de datos',
         'Result of database check' => 'Resultado de la verificaci√≥n de la base de datos',
 
@@ -3478,6 +3483,8 @@ sub Data {
             'Define la lista de posibles estados siguientes de ticket, luego de haber creado un ticket de correo electr√≥nico nuevo en la interfaz del agente.',
         'Determines the next possible ticket states, after the creation of a new phone ticket in the agent interface.' =>
             'Define la lista de posibles estados siguientes de ticket, luego de haber creado un ticket telef√≥nico nuevo en la interfaz del agente.',
+        'Determines the next possible ticket states, for process tickets in the agent interface.' =>
+            '',
         'Determines the next screen after new customer ticket in the customer interface.' =>
             'Determina la pantalla siguiente, luego de haber creado un ticket en la interfaz del cliente.',
         'Determines the next screen after the follow up screen of a zoomed ticket in the customer interface.' =>
@@ -3838,8 +3845,6 @@ sub Data {
             'N√∫mero m√°ximo de tickets para ser mostrados en el resultado de una b√∫squeda, en la interfaz del agente.',
         'Maximum number of tickets to be displayed in the result of a search in the customer interface.' =>
             'N√∫mero m√°ximo de tickets para ser mostrados en el resultado de una b√∫squeda, en la interfaz del cliente.',
-        'Maximum size (in characters) of the customer info table in the queue view.' =>
-            'N√∫mero m√°ximo (en caracteres) de la tabla de informaci√≥n del cliente en la vista de filas.',
         'Maximum size (in characters) of the customer information table in the ticket zoom view.' =>
             'N√∫mero m√°ximo (en caracteres) de la tabla de informaci√≥n del cliente en la vista detallada del ticket.',
         'Module for To-selection in new ticket screen in the customer interface.' =>
@@ -5174,6 +5179,8 @@ sub Data {
         'Match' => 'Coincidir',
         'Max. displayed tickets' => 'N√∫mero m√°ximo de tickets mostrados.',
         'Max. shown Tickets a page' => 'N√∫mero m√°ximo de tickets mostrados por p√°gina',
+        'Maximum size (in characters) of the customer info table in the queue view.' =>
+            'N√∫mero m√°ximo (en caracteres) de la tabla de informaci√≥n del cliente en la vista de filas.',
         'Merge this ticket!' => 'Fusionar este ticket',
         'Message for new Owner' => 'Mensaje para el nuevo propietario',
         'Message sent to' => 'Mensaje enviado a',

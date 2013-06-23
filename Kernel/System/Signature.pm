@@ -1,8 +1,6 @@
 # --
 # Kernel/System/Signature.pm - All signature related function should be here eventually
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: Signature.pm,v 1.20 2012/11/20 15:38:09 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -275,6 +273,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.20 $ $Date: 2012/11/20 15:38:09 $
+$Revision: 1.20 $ $Date: 2012-11-20 15:38:09 $
 
 =cut

@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.AddQueue.pl - Add Queue from CLI
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.AddQueue.pl,v 1.12 2013/01/22 10:14:09 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -44,13 +42,27 @@ use Kernel::System::Group;
 use Kernel::System::SystemAddress;
 use Kernel::System::Main;
 
+# create common objects
+my %CommonObject;
+$CommonObject{ConfigObject} = Kernel::Config->new(%CommonObject);
+$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
+$CommonObject{LogObject}    = Kernel::System::Log->new(
+    LogPrefix => 'OTRS-otrs.AddQueue.pl',
+    %CommonObject,
+);
+$CommonObject{MainObject}          = Kernel::System::Main->new(%CommonObject);
+$CommonObject{DBObject}            = Kernel::System::DB->new(%CommonObject);
+$CommonObject{QueueObject}         = Kernel::System::Queue->new(%CommonObject);
+$CommonObject{GroupObject}         = Kernel::System::Group->new(%CommonObject);
+$CommonObject{SystemAddressObject} = Kernel::System::SystemAddress->new(%CommonObject);
+
 # get options
 my %Opts;
 getopts( 'hg:n:s:S:c:r:u:l:C:', \%Opts );
 
 if ( $Opts{h} ) {
     print STDOUT "otrs.AddQueue.pl <Revision $VERSION> - add new queue\n";
-    print STDOUT "Copyright (C) 2001-2013 OTRS AG, http://otrs.org/\n";
+    print STDOUT "Copyright (C) 2001-2013 OTRS AG, http://otrs.com/\n";
     print STDOUT "usage: otrs.AddQueue.pl -n <NAME> -g <GROUP> [-s <SYSTEMADDRESSID> -S \n";
     print STDOUT
         "<SYSTEMADDRESS> -c <COMMENT> -r <FirstResponseTime> -u <UpdateTime> \n";
@@ -66,20 +78,6 @@ if ( !$Opts{g} ) {
     print STDERR "ERROR: Need -g <GROUP>\n";
     exit 1;
 }
-
-# create common objects
-my %CommonObject;
-$CommonObject{ConfigObject} = Kernel::Config->new(%CommonObject);
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.AddQueue.pl',
-    %CommonObject,
-);
-$CommonObject{MainObject}          = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject}            = Kernel::System::DB->new(%CommonObject);
-$CommonObject{QueueObject}         = Kernel::System::Queue->new(%CommonObject);
-$CommonObject{GroupObject}         = Kernel::System::Group->new(%CommonObject);
-$CommonObject{SystemAddressObject} = Kernel::System::SystemAddress->new(%CommonObject);
 
 # check group
 my $GroupID = $CommonObject{GroupObject}->GroupLookup( Group => $Opts{g} );

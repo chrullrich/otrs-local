@@ -107,7 +107,7 @@ Don't think I won't.
 
 =head1 VERSION
 
-$Id: Stringy.pm,v 1.3 2005/02/10 21:24:05 dfs Exp $
+$Id: Stringy.pm,v 1.3 2006-12-14 19:24:50 mh Exp $
 
 
 

@@ -1,8 +1,6 @@
 # --
 # Kernel/System/MailAccount/IMAPS.pm - lib for imap accounts
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: IMAPS.pm,v 1.15 2013/01/04 19:15:38 mb Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you

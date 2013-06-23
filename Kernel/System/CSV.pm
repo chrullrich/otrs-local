@@ -1,8 +1,6 @@
 # --
 # Kernel/System/CSV.pm - all csv functions
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: CSV.pm,v 1.30 2012/11/20 15:32:51 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -236,6 +234,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.30 $ $Date: 2012/11/20 15:32:51 $
+$Revision: 1.30 $ $Date: 2012-11-20 15:32:51 $
 
 =cut

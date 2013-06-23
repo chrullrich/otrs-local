@@ -1,8 +1,6 @@
 # --
 # Kernel/System/Ticket/ArticleSearchIndex/StaticDB.pm - article search index backend static
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: StaticDB.pm,v 1.25 2013/01/17 00:09:30 marb Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you

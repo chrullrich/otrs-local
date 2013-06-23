@@ -1,10 +1,8 @@
 # --
 # Kernel/Language/ja.pm - provides Japanese language translation
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # Copyright (C) 2010-2011 Kaz Kamimura <kamypus at yahoo.co.jp>
 # Copyright (C) 2011/12/08 Kaoru Hayama TIS Inc.
-# --
-# $Id: ja.pm,v 1.48 2013/01/31 13:10:43 mg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -22,7 +20,7 @@ sub Data {
     my $Self = shift;
 
     # $$START$$
-    # Last translation file sync: 2013-01-31 13:59:46
+    # Last translation file sync: 2013-03-07 10:55:20
 
     # possible charsets
     $Self->{Charset} = ['utf-8', ];
@@ -875,6 +873,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => '顧客管理',
+        'Back to search result' => '',
         'Add customer' => '顧客を追加',
         'Select' => '選択',
         'Hint' => 'ヒント',
@@ -1598,9 +1597,11 @@ sub Data {
         'ArticleType' => '',
         'Display' => '',
         'Edit Field Details' => '',
+        'Customer interface does not support internal article types.' => '',
 
         # Template: AdminProcessManagementPath
         'Path' => '',
+        'Edit this transition' => '',
         'Transition Actions' => '',
         'You can assign Transition Actions to this Transition by dragging the elements with the mouse from the left list to the right list.' =>
             '',
@@ -1623,6 +1624,7 @@ sub Data {
 
         # Template: AdminProcessManagementProcessEdit
         'Edit Process' => '',
+        'Print process information' => '',
         'Delete Process' => '',
         'Delete Inactive Process' => '',
         'Available Process Elements' => '',
@@ -1648,8 +1650,13 @@ sub Data {
         'Do you really want to delete this Activity Dialog?' => '',
         'Do you really want to delete this Transition?' => '',
         'Do you really want to delete this Transition Action?' => '',
+        'Do you really want to remove this activity from the canvas? This can only be undone by leaving this screen without saving.' =>
+            '',
+        'Do you really want to remove this transition from the canvas? This can only be undone by leaving this screen without saving.' =>
+            '',
         'Hide EntityIDs' => '',
         'Delete Entity' => '',
+        'Remove Entity from canvas' => '',
         'This Activity is already used in the Process. You cannot add it twice!' =>
             '',
         'This Activity cannot be deleted because it is the Start Activity.' =>
@@ -1660,10 +1667,6 @@ sub Data {
             '',
         'No TransitionActions assigned.' => '',
         'The Start Event cannot loose the Start Transition!' => '',
-        'Do you really want to remove this activity from the canvas? This can only be undone by leaving this screen without saving.' =>
-            '',
-        'Do you really want to remove this transition from the canvas? This can only be undone by leaving this screen without saving.' =>
-            '',
         'No dialogs assigned yet. Just pick an activity dialog from the list on the left and drag it here.' =>
             '',
 
@@ -1672,11 +1675,15 @@ sub Data {
             '',
 
         # Template: AdminProcessManagementProcessPrint
+        'Start Activity' => '',
         'Contains %s dialog(s)' => '',
         'Assigned dialogs' => '',
         'Activities are not being used in this process.' => '',
         'Assigned fields' => '',
         'Activity dialogs are not being used in this process.' => '',
+        'Condition linking' => '',
+        'Conditions' => '',
+        'Condition' => '',
         'Transitions are not being used in this process.' => '',
         'Module name' => '',
         'Configuration' => '',
@@ -1687,9 +1694,7 @@ sub Data {
             '',
         'Transition' => '',
         'Transition Name' => '',
-        'Conditions' => '',
         'Type of Linking between Conditions' => '',
-        'Condition' => '',
         'Remove this Condition' => '',
         'Type of Linking' => '',
         'Remove this Field' => '',
@@ -2612,7 +2617,7 @@ sub Data {
         'A new database user with limited rights will be created for this OTRS system.' =>
             'このOTRSシステム用に限られた権限の新規データベースユーザーが作成されます。',
         'default \'hot\'' => '既定パスワード \'hot\'',
-        'DB--- host' => 'データベース - ホスト',
+        'DB host' => 'データベース - ホスト',
         'Check database settings' => 'データベース設定をチェック',
         'Result of database check' => 'データベースチェックの結果',
 
@@ -3479,6 +3484,8 @@ sub Data {
             '担当者インタフェースで、Eメール・チケットを作成した後の、可能性ある次のチケット状態を定義します。',
         'Determines the next possible ticket states, after the creation of a new phone ticket in the agent interface.' =>
             '担当者インタフェースで、新規電話チケットを作成した後の、次の可能性あるチケット状態を定義します。',
+        'Determines the next possible ticket states, for process tickets in the agent interface.' =>
+            '',
         'Determines the next screen after new customer ticket in the customer interface.' =>
             '顧客インタフェースで、新規顧客チケットの後の次の画面を決定します。',
         'Determines the next screen after the follow up screen of a zoomed ticket in the customer interface.' =>
@@ -3841,8 +3848,6 @@ SystemAddressに関して"<Realname> <<Email>>"は受信者の名前およびE�
             '担当者インタフェースの検索結果で、表示されるチケットの最大数です。',
         'Maximum number of tickets to be displayed in the result of a search in the customer interface.' =>
             '顧客インタフェースの検索結果で表示される、チケットの最大数です。',
-        'Maximum size (in characters) of the customer info table in the queue view.' =>
-            'キュー・ビューにおける、顧客情報テーブル（電話およびEメール）の最大サイズ（文字）です。',
         'Maximum size (in characters) of the customer information table in the ticket zoom view.' =>
             'チケット･ズーム・ビューにおける、顧客情報テーブル（電話およびEメール）の最大サイズ（文字）です。',
         'Module for To-selection in new ticket screen in the customer interface.' =>
@@ -4533,6 +4538,8 @@ SystemAddressに関して"<Realname> <<Email>>"は受信者の名前およびE�
             '担当者インタフェースのチケット検索で、検索条件の拡張を許可します。この機能により、利用者はw. g.を次のような条件で検索できます"(key1&&key2)" または "(key1||key2)"。',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If set to "No", the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If not active, it also disables the GenericAgent, PackageManager and SQL Box (to avoid the use of destructive queries, such as DROP DATABASE, and also to steal user passwords).' =>
             'ウェブ・インストーラーを無効にし(http://yourhost.example.com/otrs/installer.pl)、システムがハイジャックされるのを防ぎます。もし、“No”に設定されている場合は、システムは再インストールすることができ、現在の基本設定がインストーラー・スクリプト内の質問に事前投入されます。もしアクティブでなれけば、Generic Agent、パッケージ・マネジャー、SQLボックスも無効にします（これは、DROP DATABASEなどの破壊的クエリーの使用を避け、ユーザ・パスワードの盗難を防ぐためです）。',
+        'Maximum size (in characters) of the customer info table in the queue view.' =>
+            'キュー・ビューにおける、顧客情報テーブル（電話およびEメール）の最大サイズ（文字）です。',
         'Secure mode must be disabled in order to reinstall using the web-installer.' =>
             'セキュアモードで実行中のため、Webインストーラーで再インストールするには無効にする必要があります。',
 

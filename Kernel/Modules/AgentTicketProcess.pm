@@ -1,8 +1,6 @@
 # --
 # Kernel/Modules/AgentTicketProcess.pm - to create process tickets
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: AgentTicketProcess.pm,v 1.44 2013/02/14 14:53:48 cr Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -34,7 +32,7 @@ use Kernel::System::Type;
 use Kernel::System::VariableCheck qw(:all);
 
 use vars qw($VERSION);
-$VERSION = qw($Revision: 1.44 $) [1];
+$VERSION = qw($Revision: 1.48 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -565,8 +563,9 @@ sub _RenderAjax {
                     Name         => $Self->{NameToID}{$CurrentField},
                     Data         => $Data,
                     SelectedID   => $Param{GetParam}{ $Self->{NameToID}{$CurrentField} },
-                    PossibleNone => 0,
+                    PossibleNone => 1,
                     Translation  => 0,
+                    TreeView     => $TreeView,
                     Max          => 100,
                 },
             );
@@ -671,7 +670,9 @@ sub _RenderAjax {
     );
 }
 
-=item _GetParam()
+=cut
+
+_GetParam()
 
 returns the current data state of the submitted information
 
@@ -1044,7 +1045,7 @@ sub _GetParam {
         $GetParam{LockID} = $Self->{LockObject}->LockLookup( Lock => $GetParam{Lock} );
     }
     if ( $GetParam{Priority} && !$GetParam{PriorityID} ) {
-        $GetParam{PrioriyID} = $Self->{PriorityObject}->PriorityLookup(
+        $GetParam{PriorityID} = $Self->{PriorityObject}->PriorityLookup(
             Priority => $GetParam{Priority},
         );
     }
@@ -3190,26 +3191,23 @@ sub _RenderPriority {
         );
     }
 
-    # get field default value from the config
-    my $DefaultPriority = $Param{ActivityDialogField}->{DefaultValue} || '';
-
     if ( $Param{FieldName} eq 'Priority' ) {
 
-        if ( !$SelectedValue && $DefaultPriority ) {
+        if ( !$SelectedValue ) {
 
-            # check if default value exist in the system
+            # Fetch DefaultValue from Config
             $SelectedValue = $Self->{PriorityObject}->PriorityLookup(
-                Priority => $DefaultPriority,
+                Priority => $Param{ActivityDialogField}->{DefaultValue} || '',
             );
             if ($SelectedValue) {
-                $SelectedValue = $DefaultPriority;
+                $SelectedValue = $Param{ActivityDialogField}->{DefaultValue};
             }
         }
     }
     else {
-        if ( !$SelectedValue && $DefaultPriority ) {
+        if ( !$SelectedValue ) {
             $SelectedValue = $Self->{PriorityObject}->PriorityLookup(
-                PriorityID => $DefaultPriority,
+                PriorityID => $Param{ActivityDialogField}->{DefaultValue} || '',
             );
         }
     }
@@ -3331,7 +3329,7 @@ sub _RenderQueue {
         if ( !$SelectedValue ) {
             $SelectedValue = $Self->{QueueObject}->QueueLookup(
                 QueueID => $Param{ActivityDialogField}->{DefaultValue} || '',
-                )
+            );
         }
     }
 
@@ -3346,6 +3344,12 @@ sub _RenderQueue {
         $ServerError = 'ServerError';
     }
 
+    # get list type
+    my $TreeView = 0;
+    if ( $Self->{ConfigObject}->Get('Ticket::Frontend::ListType') eq 'tree' ) {
+        $TreeView = 1;
+    }
+
     # build next queues string
     $Data{Content} = $Self->{LayoutObject}->BuildSelection(
         Data          => $Queues,
@@ -3353,6 +3357,9 @@ sub _RenderQueue {
         Translation   => 1,
         SelectedValue => $SelectedValue,
         Class         => $ServerError,
+        TreeView      => $TreeView,
+        Sort          => 'TreeView',
+        PossibleNone  => 1,
     );
 
     $Data{FieldsToUpdate} = $Self->_GetFieldsToUpdateStrg(
@@ -3881,6 +3888,11 @@ sub _StoreActivityDialog {
         for my $Needed (qw(Queue State Lock Priority)) {
 
             if ( !$TicketParam{ $Self->{NameToID}->{$Needed} } ) {
+
+                # if a required field has no value call _CheckField as filed is hidden
+                # (No Display param = Display => 0) and no DefaultValue, to use global default as
+                # fallback. One reason for this to happen is that ActivityDialog DefaultValue tried
+                # to set before, was not valid.
                 my $Result = $Self->_CheckField(
                     Field => $Self->{NameToID}->{$Needed},
                 );
@@ -3899,7 +3911,11 @@ sub _StoreActivityDialog {
         if ( !IsHashRefWithData( \%Error ) ) {
 
             $TicketParam{UserID} = $Self->{UserID};
-            $TicketParam{OwnerID} = $Param{GetParam}{OwnerID} || 1;
+
+            if ( !$TicketParam{OwnerID} ) {
+
+                $TicketParam{OwnerID} = $Param{GetParam}{OwnerID} || 1;
+            }
 
             # if StartActivityDialog does not provide a ticket title set a default value
             if ( !$TicketParam{Title} ) {
@@ -4407,20 +4423,38 @@ sub _DisplayProcessList {
     return $Output;
 }
 
-=item _CheckField()
+=cut
 
-checks all the possible ticket fields (required, correct value...) and
-returns the ID (if possible) value of the field, if valid and checks are successfull
+_CheckField()
+
+checks all the possible ticket fields and returns the ID (if possible) value of the field, if valid
+and checks are successfull
+
+if Display param is set to 0 or not given, it uses ActivityDialog field default value for all fields
+or global default value as fallback only for certain fields
+
+if Display param is set to 1 or 2 it uses the value from the web request
 
     my $PriorityID = $AgentTicketProcessObject->_CheckField(
-        Priority => '3 normal',
+        Field        => 'PriorityID',
+        Display      => 1,                   # optional, 0 or 1 or 2
+        DefaultValue => '3 normal',          # ActivityDialog field default value (it uses global
+                                             #    default value as fall back for mandatory fields
+                                             #    (Queue, Sate, Lock and Priority)
     );
-    $Priority = 1;
+
+Returns:
+    $PriorityID = 1;                         # if PriorityID is set to 1 in the web request
 
     my $PriorityID = $AgentTicketProcessObject->_CheckField(
-        Priority => 'unknownpriority1234',
+        Field        => 'PriorityID',
+        Display      => 0,
+        DefaultValue => '3 normal',
     );
-    $PriorityID = undef;
+
+Returns:
+    $PriorityID = 3;                        # since ActivityDialog default value is '3 normal' and
+                                            #     field is hidden
 
 =cut
 
@@ -4445,12 +4479,12 @@ sub _CheckField {
     # if no Display (or Display == 0) is commited
     if ( !$Param{Display} ) {
 
-        # Check if a DefaultValue ist given
+        # Check if a DefaultValue is given
         if ( $Param{DefaultValue} ) {
 
             # check if the given field param is valid
             $Value = $Self->_LookupValue(
-                Field => $Param{Field},
+                Field => $FieldWithoutID,
                 Value => $Param{DefaultValue},
             );
         }
@@ -4521,7 +4555,6 @@ sub _CheckField {
             }
         }
         else {
-
             $Value = $Self->_LookupValue(
                 Field => $Param{Field},
                 Value => $Self->{ParamObject}->GetParam( Param => $Param{Field} ) || '',
@@ -4532,7 +4565,9 @@ sub _CheckField {
     return $Value;
 }
 
-=item _LookupValue()
+=cut
+
+_LookupValue()
 
 returns the ID (if possible) of nearly all ticket fields and/or checks if its valid.
 Can handle IDs or Strings.
@@ -4588,13 +4623,28 @@ sub _LookupValue {
     my $ObjectName;
     my $FunctionName;
 
-    # sadly we need an exception for Owner(ID) and Responsible(ID), because the Ticket*Set subs
-    # need NewUserID as param
-    if ( scalar grep { $Self->{NameToID}{ $Param{Field} } eq $_ } qw( OwnerID ResponsibleID ) ) {
+    # owner(ID) and responsible(ID) lookup needs UserID as parameter
+    if ( scalar grep { $Param{Field} eq $_ } qw( OwnerID ResponsibleID ) ) {
         $LookupFieldName = 'UserID';
         $ObjectName      = 'UserObject';
         $FunctionName    = 'UserLookup';
     }
+
+    # owner and responsible lookup needs UserLogin as parameter
+    elsif ( scalar grep { $Param{Field} eq $_ } qw( Owner Responsible ) ) {
+        $LookupFieldName = 'UserLogin';
+        $ObjectName      = 'UserObject';
+        $FunctionName    = 'UserLookup';
+    }
+
+    # service and SLA lookup needs Name as parameter (While ServiceID an SLAID uses standard)
+    elsif ( scalar grep { $Param{Field} eq $_ } qw( Service SLA ) ) {
+        $LookupFieldName = 'Name';
+        $ObjectName      = $FieldWithoutID . 'Object';
+        $FunctionName    = $FieldWithoutID . 'Lookup';
+    }
+
+    # other fields can use standard parameter names as Priority or PriorityID
     else {
         $LookupFieldName = $Param{Field};
         $ObjectName      = $FieldWithoutID . 'Object';
@@ -4956,8 +5006,6 @@ sub _GetQueues {
         }
     }
 
-    # add empty selection
-    $NewQueues{''} = '-';
     return \%NewQueues;
 }
 

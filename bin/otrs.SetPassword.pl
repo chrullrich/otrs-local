@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.SetPassword.pl - Changes or Sets password for a user
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.SetPassword.pl,v 1.10 2013/01/22 10:14:09 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -43,15 +41,6 @@ use Kernel::System::User;
 use Kernel::System::Main;
 use Kernel::System::Time;
 
-my %Opts = ();
-getopt( 'h', \%Opts );
-if ( $Opts{h} ) {
-    print "$0 <Revision $VERSION> - set a new agent password\n";
-    print "Copyright (C) 2001-2013 OTRS AG, http://otrs.org/\n";
-    print "usage: otrs.SetPassword user password\n";
-    exit 1;
-}
-
 # create common objects
 my %CommonObject = ();
 $CommonObject{ConfigObject} = Kernel::Config->new(%CommonObject);
@@ -65,6 +54,15 @@ $CommonObject{TimeObject} = Kernel::System::Time->new(%CommonObject);
 $CommonObject{DBObject}   = Kernel::System::DB->new(%CommonObject);
 $CommonObject{UserObject} = Kernel::System::User->new(%CommonObject);
 
+my %Opts;
+getopt( 'h', \%Opts );
+if ( $Opts{h} ) {
+    print "$0 <Revision $VERSION> - set a new agent password\n";
+    print "Copyright (C) 2001-2013 OTRS AG, http://otrs.com/\n";
+    print "usage: otrs.SetPassword user password\n";
+    exit 1;
+}
+
 my $User = shift;
 my $Pw   = shift;
 
@@ -77,10 +75,15 @@ if ( !$Pw ) {
     exit 1;
 }
 
-# user id of the person Changing the record
-$CommonObject{UserObject}->SetPassword(
+my $Result = $CommonObject{UserObject}->SetPassword(
     UserLogin => $User,
     PW        => $Pw,
 );
 
+if ( !$Result ) {
+    print "Failed to set password!\n";
+    exit 1;
+}
+
+print "Done.\n";
 exit 0;

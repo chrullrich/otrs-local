@@ -1,8 +1,6 @@
 # --
 # Kernel/Modules/SpellingInline.pm - spelling module
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: SpellingInline.pm,v 1.6 2012/11/20 14:55:16 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -44,7 +42,7 @@ sub Run {
         || $Self->{UserSpellDict}
         || $Self->{ConfigObject}->Get('SpellCheckerDictDefault');
 
-    # inline spell checker of richt text
+    # inline spell checker of rich text
 
     my $JSData = '';
     my @Text = $Self->{ParamObject}->GetArray( Param => 'textinputs[]' );

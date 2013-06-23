@@ -1,8 +1,6 @@
 # --
 # Kernel/Modules/AdminGenericInterfaceDebugger.pm - provides a log view for admins
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: AdminGenericInterfaceDebugger.pm,v 1.9 2012/11/20 14:37:50 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you

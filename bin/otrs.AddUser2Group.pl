@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.AddUser2Group.pl - Add User to a Group
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.AddUser2Group.pl,v 1.10 2013/01/22 10:14:09 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -42,18 +40,7 @@ use Kernel::System::Main;
 use Kernel::System::User;
 use Kernel::System::Group;
 
-my %Param;
 my %CommonObject;
-my %Opts;
-
-use Getopt::Std;
-getopt( 'guph', \%Opts );
-
-if ( $Opts{h} || !$Opts{g} || !$Opts{u} || !$Opts{p} ) {
-    print STDERR
-        "Usage: $0 -g groupname -u username -p ro|rw\n";
-    exit;
-}
 
 # create common objects
 $CommonObject{ConfigObject} = Kernel::Config->new(%CommonObject);
@@ -67,6 +54,18 @@ $CommonObject{MainObject}  = Kernel::System::Main->new(%CommonObject);
 $CommonObject{DBObject}    = Kernel::System::DB->new(%CommonObject);
 $CommonObject{UserObject}  = Kernel::System::User->new(%CommonObject);
 $CommonObject{GroupObject} = Kernel::System::Group->new(%CommonObject);
+
+my %Param;
+my %Opts;
+
+use Getopt::Std;
+getopt( 'guph', \%Opts );
+
+if ( $Opts{h} || !$Opts{g} || !$Opts{u} || !$Opts{p} ) {
+    print STDERR
+        "Usage: $0 -g groupname -u username -p ro|rw\n";
+    exit;
+}
 
 # user id
 $Param{UserID} = '1';

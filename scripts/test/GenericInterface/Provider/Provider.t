@@ -1,8 +1,6 @@
 # --
 # Provider.t - Provider tests
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: Provider.t,v 1.15 2012/11/20 16:10:16 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -175,43 +173,6 @@ my @Tests = (
         ResponseData    => {},
         ResponseSuccess => 0,
     },
-    {
-        Name             => 'Webservice without debugger config',
-        WebserviceConfig => {
-            Provider => {
-                Transport => {
-                    Type   => 'HTTP::Test',
-                    Config => {
-                        Fail => 0,
-                    },
-                },
-                Operation => {
-                    test_operation => {
-                        Type           => 'Test::Test',
-                        MappingInbound => {
-                            Type   => 'Test',
-                            Config => {
-                                TestOption => 'ToUpper',
-                                }
-                        },
-                        MappingOutbound => {
-                            Type => 'Test',
-                        },
-                    },
-                },
-            },
-        },
-        RequestData => {
-            A => 'A',
-            b => 'b',
-        },
-        ResponseData => {
-            A => 'A',
-            b => 'B',
-        },
-        ResponseSuccess => 0,
-        EarlyError      => 1,
-    },
 );
 
 my $CreateQueryString = sub {
@@ -329,11 +290,11 @@ for my $Test (@Tests) {
 
                 # redirect STDIN from String so that the transport layer will use this data
                 local *STDIN;
-                open STDIN, '<:utf8', \$RequestData;
+                open STDIN, '<:utf8', \$RequestData;    ## no critic
 
                 # redirect STDOUT from String so that the transport layer will write there
                 local *STDOUT;
-                open STDOUT, '>:utf8', \$ResponseData;
+                open STDOUT, '>:utf8', \$ResponseData;    ## no critic
 
                 # reset CGI object from previous runs
                 CGI::initialize_globals();
@@ -403,7 +364,7 @@ for my $Test (@Tests) {
             else {    # POST
                 $Response = LWP::UserAgent->new()->$RequestMethod( $URL, Content => $QueryString );
             }
-            chomp( $ResponseData = $Response->decoded_content );
+            chomp( $ResponseData = $Response->decoded_content() );
 
             if ( $Test->{ResponseSuccess} ) {
                 for my $Key ( sort keys %{ $Test->{ResponseData} || {} } ) {
@@ -420,14 +381,14 @@ for my $Test (@Tests) {
                 }
 
                 $Self->Is(
-                    $Response->code,
+                    $Response->code(),
                     200,
                     "$Test->{Name} $WebserviceAccess real HTTP $RequestMethod request (needs configured and running webserver) result success status",
                 );
             }
             else {
                 $Self->Is(
-                    $Response->code,
+                    $Response->code(),
                     500,
                     "$Test->{Name} $WebserviceAccess real HTTP $RequestMethod request (needs configured and running webserver) result error status"
                     ,
@@ -457,10 +418,10 @@ for my $RequestMethod (qw(get post)) {
     my $ResponseData;
 
     my $Response = LWP::UserAgent->new()->$RequestMethod($URL);
-    chomp( $ResponseData = $Response->decoded_content );
+    chomp( $ResponseData = $Response->decoded_content() );
 
     $Self->Is(
-        $Response->code,
+        $Response->code(),
         500,
         "Nonexisting Webservice real HTTP $RequestMethod request result error status",
     );

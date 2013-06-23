@@ -19,7 +19,7 @@ use Carp 'croak';
 #   http://search.cpan.org/dist/CGI.pm
 
 # The revision is no longer being updated since moving to git. 
-$CGI::revision = '$Id: CGI.pm,v 1.266 2009/07/30 16:32:34 lstein Exp $';
+$CGI::revision = '$Id: CGI.pm,v 1.27 2012-11-15 20:14:22 mh Exp $';
 $CGI::VERSION='3.63';
 
 # HARD-CODED LOCATION FOR FILE UPLOAD TEMPORARY FILES.

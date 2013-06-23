@@ -1,8 +1,6 @@
 # --
 # Kernel/System/Stats/Dynamic/TicketList.pm - reporting via ticket lists
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: TicketList.pm,v 1.28 2013/01/14 13:29:42 jh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -885,9 +883,9 @@ sub GetStatTable {
             # checking if they are in the %StateList hash
             # then taking all ValidState ID's and return a hash
             # holding { StateID => Name }
-            my %tmp = map { $_ => $StateList{$_} }
+            my %Tmp = map { $_ => $StateList{$_} }
                 grep { $StateList{$_} } @{ $Param{Restrictions}->{StateIDsHistoric} };
-            %StateIDs = ( %StateIDs, %tmp );
+            %StateIDs = ( %StateIDs, %Tmp );
         }
 
         $SQL = 'SELECT ticket_id, state_id, create_time FROM ticket_history WHERE ' . $SQL;
@@ -1125,7 +1123,7 @@ sub ExportWrapper {
                 }
             }
             elsif (
-                $ElementName    eq 'OwnerIDs'
+                $ElementName eq 'OwnerIDs'
                 || $ElementName eq 'CreatedUserIDs'
                 || $ElementName eq 'ResponsibleIDs'
                 )
@@ -1215,7 +1213,7 @@ sub ImportWrapper {
                 }
             }
             elsif (
-                $ElementName    eq 'OwnerIDs'
+                $ElementName eq 'OwnerIDs'
                 || $ElementName eq 'CreatedUserIDs'
                 || $ElementName eq 'ResponsibleIDs'
                 )

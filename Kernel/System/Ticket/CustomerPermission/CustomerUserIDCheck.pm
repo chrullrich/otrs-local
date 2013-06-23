@@ -1,9 +1,7 @@
 # --
 # Kernel/System/Ticket/CustomerPermission/CustomerUserIDCheck.pm - the sub
 # module of the global ticket handle
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: CustomerUserIDCheck.pm,v 1.11 2012/11/20 16:00:12 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -54,7 +52,7 @@ sub Run {
     my %CustomerData = $Self->{CustomerUserObject}->CustomerUserDataGet( User => $Param{UserID} );
 
     # check user login, return access if customer user id is the same
-    return if !$Ticket{CustomerUserID};
+    return   if !$Ticket{CustomerUserID};
     return 1 if ( lc $Ticket{CustomerUserID} eq lc $CustomerData{UserLogin} );
 
     # return no access

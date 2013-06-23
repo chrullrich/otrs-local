@@ -473,7 +473,7 @@ I<Here there be dragons>.
 
 =head1 VERSION
 
-$Id: WrapTie.pm,v 1.2 2005/02/10 21:21:53 dfs Exp $
+$Id: WrapTie.pm,v 1.3 2006-12-14 19:24:50 mh Exp $
 
 
 =head1 AUTHOR

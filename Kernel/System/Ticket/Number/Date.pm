@@ -1,8 +1,6 @@
 # --
 # Ticket/Number/Date.pm - a date ticket number generator
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: Date.pm,v 1.34 2013/02/01 13:14:05 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you

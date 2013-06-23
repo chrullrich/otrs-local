@@ -1,8 +1,6 @@
 # --
 # HTMLUtils.t - HTMLUtils tests
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: HTMLUtils.t,v 1.53 2012/11/20 16:06:32 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -336,7 +334,7 @@ bgColor=#ffffff>
 for my $Test (@Tests) {
 
     # these 2 lines are for Windows check-out
-    $Test->{Input}  =~ s{\r\n}{\n}smxg;
+    $Test->{Input} =~ s{\r\n}{\n}smxg;
     $Test->{Result} =~ s{\r\n}{\n}smxg;
     my $Ascii = $HTMLUtilsObject->DocumentStrip(
         String => $Test->{Input},

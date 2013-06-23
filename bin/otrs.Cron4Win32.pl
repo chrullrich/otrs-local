@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.Cron4Win32.pl - a script to generate a full crontab file for OTRS
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.Cron4Win32.pl,v 1.13 2013/01/21 16:54:46 mb Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -24,9 +22,8 @@
 use strict;
 use warnings;
 
-use Path::Class;
-
 use File::Basename;
+use File::Spec;
 use FindBin qw($RealBin);
 use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
@@ -39,7 +36,7 @@ $VERSION = qw($Revision: 1.13 $) [1];
 my $CronTabFile = "";
 
 my $OTRSHome = dirname($RealBin);
-my $CronDir = dir( $OTRSHome, 'var/cron' );
+my $CronDir = File::Spec->catfile( $OTRSHome, 'var/cron' );
 
 # if $CronTabFile is not set by windows installer, for instance
 # with a manual installation, require an argument for the location
@@ -54,19 +51,24 @@ if ( !$CronTabFile ) {
     }
 }
 
-opendir( my $DirHandle, $CronDir ) or die "ERROR: Can't open $CronDir: $!";
+opendir( my $DirHandle, $CronDir ) || die "ERROR: Can't open $CronDir: $!";
 
 my @Entries = readdir($DirHandle);
 closedir($DirHandle);
+
+## no critic
 open my $CronTab, '>', $CronTabFile
-    or die "ERROR: Can't write to file $CronTabFile: $!";
+    || die "ERROR: Can't write to file $CronTabFile: $!";
+## use critic
 print "Writing to $CronTabFile...\n\n";
 CRONFILE:
 for my $CronData (@Entries) {
     next CRONFILE if ( !-f "$CronDir/$CronData" );
     next CRONFILE if ( $CronData eq 'postmaster.dist' );
+    ## no critic
     open( my $Data, '<', "$CronDir/$CronData" )
-        or die "ERROR: Can't open file $CronDir/$CronData: $!";
+        || die "ERROR: Can't open file $CronDir/$CronData: $!";
+    ## use critic
     LINE:
     while ( my $Line = <$Data> ) {
         next LINE if ( $Line =~ m{ \A \# }xms );

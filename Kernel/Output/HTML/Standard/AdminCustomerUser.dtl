@@ -1,8 +1,6 @@
 # --
 # AdminCustomerUser.dtl - provides HTML form for AdminCustomerUser
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: AdminCustomerUser.dtl,v 1.41 2013/01/11 12:35:18 mn Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -23,6 +21,9 @@
 <!-- dtl:block:ActionOverview -->
                     <li>
                         <a href="$Env{"Baselink"}Action=$Env{"Action"};Nav=$LQData{"Nav"}" class="CallForAction"><span>$Text{"Go to overview"}</span></a>
+                    </li>
+                    <li>
+                        <a href="$Env{"Baselink"}Action=$Env{"Action"};Subaction=Search;Search=$QData{"Search"}" class="CallForAction"><span>$Text{"Back to search result"}</span></a>
                     </li>
 <!-- dtl:block:ActionOverview -->
 <!-- dtl:block:ActionSearch -->

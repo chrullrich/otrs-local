@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.DeleteCache.pl - delete all caches
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.DeleteCache.pl,v 1.12 2013/01/22 10:14:09 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -53,12 +51,16 @@ GetOptions(
     'type|t=s'  => \$Opts{t},
 );
 
+print "otrs.DeleteCache.pl <Revision $VERSION> - delete OTRS cache\n";
+print "Copyright (C) 2001-2013 OTRS AG, http://otrs.com/\n\n";
+
 if ( $Opts{h} ) {
-    print "otrs.DeleteCache.pl <Revision $VERSION> - delete OTRS cache\n";
-    print "Copyright (C) 2001-2013 OTRS AG, http://otrs.org/\n";
     print "usage: otrs.DeleteCache.pl [--expired] [--type TYPE]\n";
     exit 1;
 }
+
+print "Deleting cache... ";
+
 my %Options;
 if ( $Opts{e} ) {
     $Options{Expired} = 1;
@@ -88,4 +90,6 @@ $CommonObject{CacheObject} = Kernel::System::Cache->new(%CommonObject);
 if ( !$CommonObject{CacheObject}->CleanUp(%Options) ) {
     exit 1;
 }
+
+print "Done.\n";
 exit;

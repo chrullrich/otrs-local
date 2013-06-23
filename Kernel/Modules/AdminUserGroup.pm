@@ -1,8 +1,6 @@
 # --
 # Kernel/Modules/AdminUserGroup.pm - to add/update/delete groups <-> users
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: AdminUserGroup.pm,v 1.60 2012/12/10 15:02:01 mb Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -256,7 +254,7 @@ sub _Change {
         );
         for my $Type ( @{ $Self->{ConfigObject}->Get('System::Permission') } ) {
             next if !$Type;
-            my $Mark = $Type eq 'rw' ? "Highlight" : '';
+            my $Mark     = $Type eq 'rw'        ? "Highlight"          : '';
             my $Selected = $Param{$Type}->{$ID} ? ' checked="checked"' : '';
 
             $Self->{LayoutObject}->Block(

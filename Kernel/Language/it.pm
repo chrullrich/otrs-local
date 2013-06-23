@@ -9,8 +9,6 @@
 # Copyright (C) 2010 Alessandro Grassi <alessandro.grassi at devise.it>
 # Copyright (C) 2012,2013 Massimo Bianchi <mxbianchi at tiscali.it>
 # --
-# $Id: it.pm,v 1.152 2013/01/31 13:10:44 mg Exp $
-# --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
@@ -28,7 +26,7 @@ sub Data {
     my $Self = shift;
 
     # $$START$$
-    # Last translation file sync: 2013-01-31 13:59:43
+    # Last translation file sync: 2013-03-07 10:55:19
 
     # possible charsets
     $Self->{Charset} = ['utf-8', ];
@@ -881,6 +879,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Gestione clienti',
+        'Back to search result' => '',
         'Add customer' => 'Aggiungi cliente',
         'Select' => 'Seleziona',
         'Hint' => 'Suggerimento',
@@ -1604,9 +1603,11 @@ sub Data {
         'ArticleType' => 'Tipologia Articolo',
         'Display' => 'Mostra',
         'Edit Field Details' => 'Modifica i dettagli per il campo',
+        'Customer interface does not support internal article types.' => '',
 
         # Template: AdminProcessManagementPath
         'Path' => 'percorso',
+        'Edit this transition' => '',
         'Transition Actions' => 'Azioni di transizione',
         'You can assign Transition Actions to this Transition by dragging the elements with the mouse from the left list to the right list.' =>
             'Puoi assegnare azioni di transizione a questo transizione trascinando gli elementi con il mouse dalla lista di sinistra a quella di destra.',
@@ -1629,6 +1630,7 @@ sub Data {
 
         # Template: AdminProcessManagementProcessEdit
         'Edit Process' => 'Modifica Processo',
+        'Print process information' => '',
         'Delete Process' => 'Cancella Processo',
         'Delete Inactive Process' => 'Cancella Processo inattivo',
         'Available Process Elements' => 'Elementi di Processo disponibili',
@@ -1654,8 +1656,13 @@ sub Data {
         'Do you really want to delete this Activity Dialog?' => 'Vuoi veramente cancellare questo interazione dell\'attività ',
         'Do you really want to delete this Transition?' => 'Vuoi veramente cancellare questa Transizione ?',
         'Do you really want to delete this Transition Action?' => 'Vuoi veramente cancellare questa azione di Transizione',
+        'Do you really want to remove this activity from the canvas? This can only be undone by leaving this screen without saving.' =>
+            'Vuoi veramente rimuovere questa attività dal riquadro ? Questo può essere annullato solo uscendo dalla schermata senza salvare.',
+        'Do you really want to remove this transition from the canvas? This can only be undone by leaving this screen without saving.' =>
+            'Vuoi veramente rimuovere questa transizione dal riquadro ? Questo può essere annullato solo uscendo dalla schermata senza salvare.',
         'Hide EntityIDs' => 'Nasconti gli identificativi EntityID',
         'Delete Entity' => 'Cancella l\'entità',
+        'Remove Entity from canvas' => '',
         'This Activity is already used in the Process. You cannot add it twice!' =>
             'Questa attività è già in uso nel Processo. Non puoi aggiungerla due volte!.',
         'This Activity cannot be deleted because it is the Start Activity.' =>
@@ -1666,10 +1673,6 @@ sub Data {
             'Questa Azione di Transizione è già in uso in questo percorso. Non puoi usarla due volte!.',
         'No TransitionActions assigned.' => 'Non ci sono Azioni di Transizione Assegnate.',
         'The Start Event cannot loose the Start Transition!' => 'L\'evento di inizio non può perdere la Transizione d\'inizio!',
-        'Do you really want to remove this activity from the canvas? This can only be undone by leaving this screen without saving.' =>
-            'Vuoi veramente rimuovere questa attività dal riquadro ? Questo può essere annullato solo uscendo dalla schermata senza salvare.',
-        'Do you really want to remove this transition from the canvas? This can only be undone by leaving this screen without saving.' =>
-            'Vuoi veramente rimuovere questa transizione dal riquadro ? Questo può essere annullato solo uscendo dalla schermata senza salvare.',
         'No dialogs assigned yet. Just pick an activity dialog from the list on the left and drag it here.' =>
             'Non ci sono interazioni assegnate. Selezionana una interazione dalla lista sulla sinistra e trascinala qui.',
 
@@ -1678,11 +1681,15 @@ sub Data {
             'In questa schermata potete creare un nuovo processo. per rendere il nuovo processo disponibile agli utenti, occorre mettere lo stato in \'Attivo\' ed effettuare la sincronizzazione al termine del lavoro.',
 
         # Template: AdminProcessManagementProcessPrint
+        'Start Activity' => '',
         'Contains %s dialog(s)' => '',
         'Assigned dialogs' => '',
         'Activities are not being used in this process.' => '',
         'Assigned fields' => '',
         'Activity dialogs are not being used in this process.' => '',
+        'Condition linking' => '',
+        'Conditions' => 'Condizioni',
+        'Condition' => 'Condizione',
         'Transitions are not being used in this process.' => '',
         'Module name' => '',
         'Configuration' => '',
@@ -1693,9 +1700,7 @@ sub Data {
             'Attenzione, i cambiamenti a questa transizione impattano sui seguenti processi',
         'Transition' => 'Transizione',
         'Transition Name' => 'Nome della Transizione',
-        'Conditions' => 'Condizioni',
         'Type of Linking between Conditions' => 'Tipo del collegamento tra le Condizioni',
-        'Condition' => 'Condizione',
         'Remove this Condition' => 'Rimuovi questa Condizione',
         'Type of Linking' => 'Tipo di Collegamento',
         'Remove this Field' => 'Rimuovi questo campo',
@@ -2618,7 +2623,7 @@ sub Data {
         'A new database user with limited rights will be created for this OTRS system.' =>
             'Verrà creato un nuovo database a permessi limitati per questo sistema OTRS',
         'default \'hot\'' => '\'hot\' predefinito',
-        'DB--- host' => '',
+        'DB host' => '',
         'Check database settings' => 'Controlla impostazioni database',
         'Result of database check' => 'Risultato del controllo database',
 
@@ -3485,6 +3490,8 @@ sub Data {
             '',
         'Determines the next possible ticket states, after the creation of a new phone ticket in the agent interface.' =>
             '',
+        'Determines the next possible ticket states, for process tickets in the agent interface.' =>
+            '',
         'Determines the next screen after new customer ticket in the customer interface.' =>
             '',
         'Determines the next screen after the follow up screen of a zoomed ticket in the customer interface.' =>
@@ -3844,8 +3851,6 @@ sub Data {
         'Maximum number of tickets to be displayed in the result of a search in the agent interface.' =>
             '',
         'Maximum number of tickets to be displayed in the result of a search in the customer interface.' =>
-            '',
-        'Maximum size (in characters) of the customer info table in the queue view.' =>
             '',
         'Maximum size (in characters) of the customer information table in the ticket zoom view.' =>
             '',

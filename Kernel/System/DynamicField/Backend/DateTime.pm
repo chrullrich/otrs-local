@@ -1,8 +1,6 @@
 # --
 # Kernel/System/DynamicField/Backend/DateTime.pm - Delegate for DynamicField DateTime backend
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: DateTime.pm,v 1.72 2013/01/10 20:48:22 ub Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -865,6 +863,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.72 $ $Date: 2013/01/10 20:48:22 $
+$Revision: 1.72 $ $Date: 2013-01-10 20:48:22 $
 
 =cut

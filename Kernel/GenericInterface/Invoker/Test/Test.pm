@@ -1,8 +1,6 @@
 # --
 # Kernel/GenericInterface/Invoker/Test.pm - GenericInterface test data Invoker backend
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: Test.pm,v 1.15 2012/11/20 14:28:01 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -188,6 +186,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.15 $ $Date: 2012/11/20 14:28:01 $
+$Revision: 1.15 $ $Date: 2012-11-20 14:28:01 $
 
 =cut

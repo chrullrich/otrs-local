@@ -1,8 +1,6 @@
 # --
 # Kernel/System/CheckItem.pm - the global spelling module
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: CheckItem.pm,v 1.44 2012/11/20 15:33:10 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -177,7 +175,7 @@ sub CheckEmail {
     # mx check
     elsif (
         $Self->{ConfigObject}->Get('CheckMXRecord')
-        && eval { require Net::DNS }
+        && eval { require Net::DNS }    ## no critic
         )
     {
 
@@ -198,8 +196,8 @@ sub CheckEmail {
             }
 
             # A recorde lookup
-            my $packet = $Resolver->send( $Host, 'A' );
-            if ( !$packet ) {
+            my $Packet = $Resolver->send( $Host, 'A' );
+            if ( !$Packet ) {
                 $Self->{ErrorType} = 'InvalidDNS';
                 $Error = "DNS problem: " . $Resolver->errorstring();
                 $Self->{LogObject}->Log(
@@ -207,16 +205,16 @@ sub CheckEmail {
                     Message  => "DNS problem: " . $Resolver->errorstring(),
                 );
             }
-            elsif ( $packet->header->ancount() ) {
+            elsif ( $Packet->header()->ancount() ) {
 
                 # OK
-                # print STDERR "OK A $Host ".$packet->header->ancount()."\n";
+                # print STDERR "OK A $Host ".$Packet->header->ancount()."\n";
             }
 
             # mx recorde lookup
             else {
-                my $packet = $Resolver->send( $Host, 'MX' );
-                if ( !$packet ) {
+                my $Packet = $Resolver->send( $Host, 'MX' );
+                if ( !$Packet ) {
                     $Self->{ErrorType} = 'InvalidDNS';
                     $Error = "DNS problem: " . $Resolver->errorstring();
                     $Self->{LogObject}->Log(
@@ -224,10 +222,10 @@ sub CheckEmail {
                         Message  => "DNS problem: " . $Resolver->errorstring(),
                     );
                 }
-                elsif ( $packet->header->ancount() ) {
+                elsif ( $Packet->header()->ancount() ) {
 
                     # OK
-                    # print STDERR "OK MX $Host ".$packet->header->ancount()."\n";
+                    # print STDERR "OK MX $Host ".$Packet->header->ancount()."\n";
                 }
                 else {
                     $Error = "no mail exchanger (mx) found!";
@@ -367,6 +365,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.44 $ $Date: 2012/11/20 15:33:10 $
+$Revision: 1.44 $ $Date: 2012-11-20 15:33:10 $
 
 =cut

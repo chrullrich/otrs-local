@@ -1,8 +1,6 @@
 # --
 # Kernel/GenericInterface/Transport/HTTP/Test.pm - GenericInterface network transport interface for testing
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: Test.pm,v 1.21 2012/11/20 14:30:16 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -173,7 +171,7 @@ sub ProviderGenerateResponse {
         $Response = HTTP::Response->new( 200 => "OK" );
         $Response->protocol('HTTP/1.0');
         $Response->content_type("text/plain; charset=UTF-8");
-        $Response->add_content_utf8( $Request->content );
+        $Response->add_content_utf8( $Request->content() );
         $Response->date(time);
     }
 
@@ -234,7 +232,7 @@ sub RequesterPerformRequest {
     return {
         Success => 1,
         Data    => {
-            ResponseContent => $Response->content,
+            ResponseContent => $Response->content(),
         },
     };
 }
@@ -268,7 +266,7 @@ sub new {
     return $Class->SUPER::new(@_);
 }
 
-sub request {
+sub request {    ## no critic
     my $Self = shift;
 
     my ( $Request, $Proxy, $Arg, $Size, $Timeout ) = @_;
@@ -276,11 +274,11 @@ sub request {
     my $Response = HTTP::Response->new( 200 => "OK" );
     $Response->protocol('HTTP/1.0');
     $Response->content_type("text/plain; charset=UTF-8");
-    $Response->add_content_utf8( $Request->content );
+    $Response->add_content_utf8( $Request->content() );
     $Response->date(time);
 
-    #print $Request->as_string;
-    #print $Response->as_string;
+    #print $Request->as_string();
+    #print $Response->as_string();
 
     return $Response;
 }
@@ -301,6 +299,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.21 $ $Date: 2012/11/20 14:30:16 $
+$Revision: 1.21 $ $Date: 2012-11-20 14:30:16 $
 
 =cut

@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.CheckModules.pl - to check needed cpan framework modules
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.CheckModules.pl,v 1.51 2013/02/01 13:39:33 mb Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -34,7 +32,9 @@ use lib dirname($RealBin) . '/Custom';
 # turn off colors if it is not available
 BEGIN {
     if ( $^O eq 'MSWin32' ) {
+        ## no critic
         eval "use Win32::Console::ANSI";
+        ## use critic
         $ARGV[0] = 'nocolors' if $@;
     }
 }
@@ -142,16 +142,6 @@ my @NeededModules = (
             },
             {
                 Module   => 'GD::Graph',
-                Required => 0,
-                Comment  => 'Required for stats.',
-            },
-            {
-                Module   => 'GD::Graph::lines',
-                Required => 0,
-                Comment  => 'Required for stats.',
-            },
-            {
-                Module   => 'GD::Text::Align',
                 Required => 0,
                 Comment  => 'Required for stats.',
             },
@@ -524,9 +514,11 @@ sub _Check {
         my $ErrorMessage;
 
         # test if all module dependencies are installed by requiring the module
+        ## no critic
         if ( !eval "require $Module->{Module}" ) {
             $ErrorMessage .= 'Not all prerequisites for this module correctly installed. ';
         }
+        ## use critic
 
         if ( $Module->{NotSupported} ) {
 

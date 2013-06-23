@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/cgi-bin/rpc.pl - soap handle
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: rpc.pl,v 1.22 2013/01/22 10:14:09 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -49,7 +47,7 @@ use Kernel::System::LinkObject;
 use vars qw($VERSION);
 $VERSION = qw($Revision: 1.22 $) [1];
 
-SOAP::Transport::HTTP::CGI->dispatch_to('Core')->handle;
+SOAP::Transport::HTTP::CGI->dispatch_to('Core')->handle();
 
 package Core;
 

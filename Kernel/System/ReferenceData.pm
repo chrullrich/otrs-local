@@ -1,8 +1,6 @@
 # --
 # Kernel/System/ReferenceData.pm - Provides reference data to OTRS
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: ReferenceData.pm,v 1.7 2012/11/20 15:37:33 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -14,7 +12,7 @@ package Kernel::System::ReferenceData;
 use strict;
 use warnings;
 
-use Locale::Codes::Country qw(all_country_names);
+use Locale::Country qw(all_country_names);
 
 use vars qw(@ISA $VERSION);
 $VERSION = qw($Revision: 1.7 $) [1];
@@ -114,7 +112,7 @@ sub CountryList {
         return \%CountryJustNames;
     }
 
-    my @CountryNames = all_country_names('alpha-2');
+    my @CountryNames = all_country_names();
 
     if ( $Param{Result} ) {
 
@@ -148,6 +146,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.7 $ $Date: 2012/11/20 15:37:33 $
+$Revision: 1.7 $ $Date: 2012-11-20 15:37:33 $
 
 =cut

@@ -1,8 +1,6 @@
 # --
 # Kernel/System/NotificationEvent.pm - notification system module
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: NotificationEvent.pm,v 1.14 2012/11/20 15:36:27 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -451,6 +449,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.14 $ $Date: 2012/11/20 15:36:27 $
+$Revision: 1.14 $ $Date: 2012-11-20 15:36:27 $
 
 =cut

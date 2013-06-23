@@ -1,8 +1,6 @@
 # --
 # Kernel/Output/HTML/PreferencesSkin.pm
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: PreferencesSkin.pm,v 1.8 2012/11/20 15:03:03 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you

@@ -1,8 +1,6 @@
 # --
 # Daemon.t - Scheduler tests
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: Daemon.t,v 1.19 2012/11/20 16:12:12 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -73,7 +71,7 @@ my $CheckAction = sub {
     # special sleep for windows
     if ( $^O =~ /^mswin/i ) {
         if (
-            $Param{Action}    eq 'start'
+            $Param{Action} eq 'start'
             || $Param{Action} eq 'stop'
             || $Param{Action} eq 'reload'
             )

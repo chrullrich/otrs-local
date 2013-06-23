@@ -1,8 +1,6 @@
 # --
 # WebUploadCache.t - test of the web upload cache mechanism
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: WebUploadCache.t,v 1.21 2012/11/20 16:08:39 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -75,6 +73,13 @@ for my $Module (qw(DB FS)) {
             Disposition => $Disposition,
         );
 
+        my $Filename = "UploadCache Test1äöüß.$File";
+
+        # Mac OS (HFS+) will store all filenames as NFD internally.
+        if ( $^O eq 'darwin' && $Module eq 'FS' ) {
+            $Filename = Unicode::Normalize::NFD($Filename);
+        }
+
         $Self->True(
             $Add || '',
             "#$Module - FormIDAddFile() - ." . $File,
@@ -90,9 +95,10 @@ for my $Module (qw(DB FS)) {
                 $ContentID,
                 "#$Module - FormIDGetAllFilesData() - ContentID ." . $File,
             );
+
             $Self->Is(
                 $File{Filename},
-                "UploadCache Test1äöüß.$File",
+                $Filename,
                 "#$Module - FormIDGetAllFilesData() - Filename ." . $File,
             );
             $Self->True(
@@ -115,9 +121,10 @@ for my $Module (qw(DB FS)) {
                 $ContentID,
                 "#$Module - FormIDGetAllFilesMeta() - ContentID ." . $File,
             );
+
             $Self->Is(
                 $File{Filename},
-                "UploadCache Test1äöüß.$File",
+                $Filename,
                 "#$Module - FormIDGetAllFilesMeta() - Filename ." . $File,
             );
         }
@@ -139,6 +146,7 @@ for my $Module (qw(DB FS)) {
             Location => $Location,
             Mode     => 'binmode',
         );
+
         my $Content = ${$ContentRef};
         $EncodeObject->EncodeOutput( \$Content );
         my $MD5         = md5_hex($Content);
@@ -154,6 +162,13 @@ for my $Module (qw(DB FS)) {
             Disposition => $Disposition,
         );
 
+        my $Filename = "UploadCache Test1äöüß.$File";
+
+        # Mac OS (HFS+) will store all filenames as NFD internally.
+        if ( $^O eq 'darwin' && $Module eq 'FS' ) {
+            $Filename = Unicode::Normalize::NFD($Filename);
+        }
+
         $Self->True(
             $Add || '',
             "#$Module - FormIDAddFile() - ." . $File,
@@ -164,9 +179,10 @@ for my $Module (qw(DB FS)) {
         );
         if (@Data) {
             my %File = %{ $Data[$#Data] };
+
             $Self->Is(
                 $File{Filename},
-                "UploadCache Test1äöüß.$File",
+                $Filename,
                 "#$Module - FormIDGetAllFilesData() - Filename ." . $File,
             );
             $Self->True(
@@ -186,7 +202,7 @@ for my $Module (qw(DB FS)) {
             my %File = %{ $Data[$#Data] };
             $Self->Is(
                 $File{Filename},
-                "UploadCache Test1äöüß.$File",
+                $Filename,
                 "#$Module - FormIDGetAllFilesMeta() - Filename ." . $File,
             );
         }

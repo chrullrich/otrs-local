@@ -1,8 +1,6 @@
 # --
 # Kernel/System/Stats/Dynamic/Ticket.pm - all advice functions
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: Ticket.pm,v 1.42 2012/11/20 15:56:38 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -622,7 +620,7 @@ sub ExportWrapper {
                 }
             }
             elsif (
-                $ElementName    eq 'OwnerIDs'
+                $ElementName eq 'OwnerIDs'
                 || $ElementName eq 'CreatedUserIDs'
                 || $ElementName eq 'ResponsibleIDs'
                 )
@@ -712,7 +710,7 @@ sub ImportWrapper {
                 }
             }
             elsif (
-                $ElementName    eq 'OwnerIDs'
+                $ElementName eq 'OwnerIDs'
                 || $ElementName eq 'CreatedUserIDs'
                 || $ElementName eq 'ResponsibleIDs'
                 )

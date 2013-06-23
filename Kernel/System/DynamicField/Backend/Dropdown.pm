@@ -1,8 +1,6 @@
 # --
 # Kernel/System/DynamicField/Backend/Dropdown.pm - Delegate for DynamicField Dropdown backend
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: Dropdown.pm,v 1.73 2012/12/20 16:07:23 cr Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -860,6 +858,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.73 $ $Date: 2012/12/20 16:07:23 $
+$Revision: 1.73 $ $Date: 2012-12-20 16:07:23 $
 
 =cut

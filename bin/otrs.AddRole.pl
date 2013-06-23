@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.AddRole.pl - add new system roles
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.AddRole.pl,v 1.10 2013/01/22 10:14:09 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -40,22 +38,7 @@ use Kernel::System::DB;
 use Kernel::System::Group;
 use Kernel::System::Main;
 
-my %Param;
 my %CommonObject;
-my %opts;
-
-use Getopt::Std;
-getopts( 'c:n:h', \%opts );
-
-if ( $opts{h} ) {
-    print STDERR "Usage: $0 [-c <comment>] -n <rolename>\n";
-    exit;
-}
-
-if ( !$opts{n} ) {
-    print STDERR "ERROR: Need -n <rolename>\n";
-    exit 1;
-}
 
 # create common objects
 $CommonObject{ConfigObject} = Kernel::Config->new();
@@ -68,16 +51,32 @@ $CommonObject{MainObject}  = Kernel::System::Main->new(%CommonObject);
 $CommonObject{DBObject}    = Kernel::System::DB->new(%CommonObject);
 $CommonObject{GroupObject} = Kernel::System::Group->new(%CommonObject);
 
+my %Param;
+my %Options;
+
+use Getopt::Std;
+getopts( 'c:n:h', \%Options );
+
+if ( $Options{h} ) {
+    print STDERR "Usage: $0 [-c <comment>] -n <rolename>\n";
+    exit;
+}
+
+if ( !$Options{n} ) {
+    print STDERR "ERROR: Need -n <rolename>\n";
+    exit 1;
+}
+
 # user id of the person adding the record
 $Param{UserID} = '1';
 
 # Validrecord
 $Param{ValidID} = '1';
-$Param{Comment} = $opts{c} || '';
-$Param{Name}    = $opts{n} || '';
+$Param{Comment} = $Options{c} || '';
+$Param{Name}    = $Options{n} || '';
 
 if ( my $RID = $CommonObject{GroupObject}->RoleAdd(%Param) ) {
-    print "Role '$opts{n}' added. Role id is '$RID'\n";
+    print "Role '$Options{n}' added. Role id is '$RID'\n";
 }
 else {
     print STDERR "ERROR: Can't add role\n";

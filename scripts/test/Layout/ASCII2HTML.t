@@ -1,8 +1,6 @@
 # --
 # scripts/test/Layout/ASCII2HTML.t - layout testscript
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: ASCII2HTML.t,v 1.3 2012/11/20 16:10:30 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -332,20 +330,26 @@ for my $Test (@Tests) {
     {
         Name   => 'Ascii2Html() - Max check #1',
         String => 'some Text',
-        Result => 'some [...]',
+        Result => '[...]',
         Max    => 5,
     },
     {
         Name   => 'Ascii2Html() - Max check #2',
         String => 'some Text',
-        Result => 'some Tex[...]',
+        Result => 'som[...]',
         Max    => 8,
     },
     {
-        Name   => 'Ascii2Html() - Max check #2',
+        Name   => 'Ascii2Html() - Max check #3',
         String => 'some Text',
         Result => 'some Text',
         Max    => 9,
+    },
+    {
+        Name   => 'Ascii2Html() - Max check #3',
+        String => 'søme Text',
+        Result => 'søm[...]',
+        Max    => 8,
     },
     {
         Name   => 'Ascii2Html()',

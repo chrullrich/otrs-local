@@ -1,9 +1,7 @@
 # --
 # Kernel/Language/lt.pm - provides Lithuanian language translation
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # Copyright (C) 2011 Edgaras Lukoševičius <edgaras[eta]kauko.lt or admin[eta]sysadmin.lt>
-# --
-# $Id: lt.pm,v 1.38 2013/01/31 13:10:43 mg Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -21,7 +19,7 @@ sub Data {
     my $Self = shift;
 
     # $$START$$
-    # Last translation file sync: 2013-01-31 13:59:47
+    # Last translation file sync: 2013-03-07 10:55:21
 
     # possible charsets
     $Self->{Charset} = ['utf-8', ];
@@ -874,6 +872,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Klientų valdymas',
+        'Back to search result' => '',
         'Add customer' => 'Pridėti klientą',
         'Select' => 'Pasirinkti',
         'Hint' => 'Užuomina',
@@ -1597,9 +1596,11 @@ sub Data {
         'ArticleType' => '',
         'Display' => '',
         'Edit Field Details' => '',
+        'Customer interface does not support internal article types.' => '',
 
         # Template: AdminProcessManagementPath
         'Path' => '',
+        'Edit this transition' => '',
         'Transition Actions' => '',
         'You can assign Transition Actions to this Transition by dragging the elements with the mouse from the left list to the right list.' =>
             '',
@@ -1622,6 +1623,7 @@ sub Data {
 
         # Template: AdminProcessManagementProcessEdit
         'Edit Process' => '',
+        'Print process information' => '',
         'Delete Process' => '',
         'Delete Inactive Process' => '',
         'Available Process Elements' => '',
@@ -1647,8 +1649,13 @@ sub Data {
         'Do you really want to delete this Activity Dialog?' => '',
         'Do you really want to delete this Transition?' => '',
         'Do you really want to delete this Transition Action?' => '',
+        'Do you really want to remove this activity from the canvas? This can only be undone by leaving this screen without saving.' =>
+            '',
+        'Do you really want to remove this transition from the canvas? This can only be undone by leaving this screen without saving.' =>
+            '',
         'Hide EntityIDs' => '',
         'Delete Entity' => '',
+        'Remove Entity from canvas' => '',
         'This Activity is already used in the Process. You cannot add it twice!' =>
             '',
         'This Activity cannot be deleted because it is the Start Activity.' =>
@@ -1659,10 +1666,6 @@ sub Data {
             '',
         'No TransitionActions assigned.' => '',
         'The Start Event cannot loose the Start Transition!' => '',
-        'Do you really want to remove this activity from the canvas? This can only be undone by leaving this screen without saving.' =>
-            '',
-        'Do you really want to remove this transition from the canvas? This can only be undone by leaving this screen without saving.' =>
-            '',
         'No dialogs assigned yet. Just pick an activity dialog from the list on the left and drag it here.' =>
             '',
 
@@ -1671,11 +1674,15 @@ sub Data {
             '',
 
         # Template: AdminProcessManagementProcessPrint
+        'Start Activity' => '',
         'Contains %s dialog(s)' => '',
         'Assigned dialogs' => '',
         'Activities are not being used in this process.' => '',
         'Assigned fields' => '',
         'Activity dialogs are not being used in this process.' => '',
+        'Condition linking' => '',
+        'Conditions' => '',
+        'Condition' => '',
         'Transitions are not being used in this process.' => '',
         'Module name' => '',
         'Configuration' => '',
@@ -1686,9 +1693,7 @@ sub Data {
             '',
         'Transition' => '',
         'Transition Name' => '',
-        'Conditions' => '',
         'Type of Linking between Conditions' => '',
-        'Condition' => '',
         'Remove this Condition' => '',
         'Type of Linking' => '',
         'Remove this Field' => '',
@@ -2611,7 +2616,7 @@ sub Data {
         'A new database user with limited rights will be created for this OTRS system.' =>
             'Šiai OTRS sistemai bus sukurtas naujas, apribotas teises turintis, duomenų bazės naudotojas.',
         'default \'hot\'' => 'standartiškai \'hot\'',
-        'DB--- host' => 'Duomenų bazės serveris',
+        'DB host' => 'Duomenų bazės serveris',
         'Check database settings' => 'Patikrinti duomenų bazės nustatymus',
         'Result of database check' => 'Duomenų bazės nustatymų patikrinimo rezultatas',
 
@@ -3478,6 +3483,8 @@ sub Data {
             '',
         'Determines the next possible ticket states, after the creation of a new phone ticket in the agent interface.' =>
             '',
+        'Determines the next possible ticket states, for process tickets in the agent interface.' =>
+            '',
         'Determines the next screen after new customer ticket in the customer interface.' =>
             '',
         'Determines the next screen after the follow up screen of a zoomed ticket in the customer interface.' =>
@@ -3837,8 +3844,6 @@ sub Data {
         'Maximum number of tickets to be displayed in the result of a search in the agent interface.' =>
             '',
         'Maximum number of tickets to be displayed in the result of a search in the customer interface.' =>
-            '',
-        'Maximum size (in characters) of the customer info table in the queue view.' =>
             '',
         'Maximum size (in characters) of the customer information table in the ticket zoom view.' =>
             '',

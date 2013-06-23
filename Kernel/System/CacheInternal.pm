@@ -1,8 +1,6 @@
 # --
 # Kernel/System/CacheInternal.pm - all cache functions
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: CacheInternal.pm,v 1.14 2013/01/14 13:24:57 mb Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -273,6 +271,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.14 $ $Date: 2013/01/14 13:24:57 $
+$Revision: 1.14 $ $Date: 2013-01-14 13:24:57 $
 
 =cut

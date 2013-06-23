@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # syncuser_csv2otrs.pl - sync csv user list or otrs
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: syncuser_csv2otrs.pl,v 1.17 2013/01/22 10:14:10 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -20,6 +18,9 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 # or see http://www.gnu.org/licenses/agpl.txt.
 # --
+
+use strict;
+use warnings;
 
 # example of csv file (0;1;2;...)
 # [...]
@@ -40,8 +41,6 @@ use File::Basename;
 use FindBin qw($RealBin);
 use lib dirname($RealBin);
 use lib dirname($RealBin) . "/Kernel/cpan-lib";
-use strict;
-use warnings;
 
 use Getopt::Std;
 use Kernel::Config;
@@ -74,7 +73,7 @@ if ( !$Opts{s} ) {
 }
 
 # read csv file
-open my $In, '<', $Opts{s} or die "Can't read $Opts{s}: $!";
+open my $In, '<', $Opts{s} || die "Can't read $Opts{s}: $!";    ## no critic
 while (<$In>) {
     my @Line = split( /;/, $_ );
 

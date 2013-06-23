@@ -1,8 +1,6 @@
 # --
 # Simple.t - Mapping tests
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: Simple.t,v 1.16 2012/11/20 16:09:31 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -28,7 +26,17 @@ my $RandomID = $HelperObject->GetRandomID();
 my $WebserviceObject = Kernel::System::GenericInterface::Webservice->new( %{$Self} );
 
 my $WebserviceID = $WebserviceObject->WebserviceAdd(
-    Config  => {},
+    Config  => {
+        Debugger    => {
+            DebugThreshold => 'debug',
+            TestMode       => 1,
+        },
+        Provider => {
+            Transport => {
+                Type => '',
+            },
+        },
+    },
     Name    => "$RandomID webservice",
     ValidID => 1,
     UserID  => 1,
@@ -674,7 +682,8 @@ my @MappingTests = (
 TEST:
 for my $Test (@MappingTests) {
 
-    my $StartSeconds = $Self->{TimeObject}->SystemTime() if ( $Test->{CheckTime} );
+    my $StartSeconds;
+    $StartSeconds = $Self->{TimeObject}->SystemTime() if ( $Test->{CheckTime} );
 
     # instanciate mapping object to catch config errors
     my $MappingObject = Kernel::GenericInterface::Mapping->new(

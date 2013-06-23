@@ -1,8 +1,6 @@
 # --
 # Kernel/System/ProcessManagement/Activity.pm - Process Management DB Activity backend
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: Activity.pm,v 1.14 2013/01/17 03:39:21 cr Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -517,7 +515,7 @@ sub ActivityUpdate {
     if ($CurrentEntityID) {
 
         return 1 if $CurrentEntityID eq $Param{EntityID}
-            && $CurrentName   eq $Param{Name}
+            && $CurrentName eq $Param{Name}
             && $CurrentConfig eq $Config;
     }
 
@@ -720,6 +718,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.14 $ $Date: 2013/01/17 03:39:21 $
+$Revision: 1.14 $ $Date: 2013-01-17 03:39:21 $
 
 =cut
