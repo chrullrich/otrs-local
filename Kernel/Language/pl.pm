@@ -18,7 +18,7 @@ sub Data {
     my $Self = shift;
 
     # $$START$$
-    # Last translation file sync: 2013-03-07 10:55:25
+    # Last translation file sync: 2013-04-04 19:16:02
 
     # possible charsets
     $Self->{Charset} = ['utf-8', ];
@@ -227,7 +227,6 @@ sub Data {
         'There is no acount with that user name.' => 'Nie ma konta z taką nazwą użytkownika.',
         'Please contact your administrator' => 'Prosimy, skontaktuj się ze swoim administratorem',
         'Logout' => 'Wyloguj',
-        'Logout successful. Thank you for using OTRS!' => 'Wylogowanie zakończone! Dziękujemy za używanie OTRS!',
         'Logout successful. Thank you for using %s!' => 'Wylogowanie zakończone! Dziękujemy za używanie %s!',
         'Feature not active!' => 'Funkcja nie aktywna!',
         'Agent updated!' => 'Agent został zaktualizowany!',
@@ -1541,6 +1540,7 @@ sub Data {
         'Configuration import' => '',
         'Here you can upload a configuration file to import a process to your system. The file needs to be in .yml format as exported by process management module.' =>
             '',
+        'Overwrite existing entities' => '',
         'Upload process configuration' => '',
         'Import process configuration' => '',
         'To create a new Process you can either import a Process that was exported from another system or create a complete new one.' =>
@@ -2350,6 +2350,8 @@ sub Data {
         'Output' => 'Format wyjściowy',
         'Fulltext' => 'Pełnotekstowe',
         'Remove' => 'Usuń',
+        'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.' =>
+            '',
         'Customer User Login' => 'Login Klienta',
         'Created in Queue' => 'Utworzono w kolejce',
         'Lock state' => 'Stan blokady',
@@ -4530,6 +4532,7 @@ sub Data {
         # OBSOLETE ENTRIES FOR REFERENCE, DO NOT TRANSLATE!
         #
         ' (work units)' => ' (jednostek roboczych)',
+        'Logout successful. Thank you for using OTRS!' => 'Wylogowanie zakończone! Dziękujemy za używanie OTRS!',
         'Secure mode must be disabled in order to reinstall using the web-installer.' =>
             'Tryb bezpieczny musi być wyłączony aby reinstalować przy użyciu instalatora web.',
 

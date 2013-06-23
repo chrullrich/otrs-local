@@ -16,7 +16,7 @@ sub Data {
     my $Self = shift;
 
     # $$START$$
-    # Last translation file sync: 2013-03-07 10:55:09
+    # Last translation file sync: 2013-04-04 19:15:46
 
     # possible charsets
     $Self->{Charset} = ['utf-8', ];
@@ -225,7 +225,7 @@ sub Data {
         'There is no acount with that user name.' => 'No existe una cuenta para ese nombre de usuario',
         'Please contact your administrator' => 'Favor de contactar a su administrador',
         'Logout' => 'Cerrar Sesi√≥n',
-        'Logout successful. Thank you for using OTRS!' => 'Sesi√≥n terminada satisfactoriamente.',
+        'Logout successful. Thank you for using %s!' => '',
         'Feature not active!' => 'Funcionalidad inactiva.',
         'Agent updated!' => '¬°Agente actualizado!',
         'Create Database' => 'Crear Base de Datos',
@@ -1538,6 +1538,7 @@ sub Data {
         'Configuration import' => '',
         'Here you can upload a configuration file to import a process to your system. The file needs to be in .yml format as exported by process management module.' =>
             '',
+        'Overwrite existing entities' => '',
         'Upload process configuration' => '',
         'Import process configuration' => '',
         'To create a new Process you can either import a Process that was exported from another system or create a complete new one.' =>
@@ -2347,6 +2348,8 @@ sub Data {
         'Output' => 'Modelo de Resultados',
         'Fulltext' => 'Texto Completo',
         'Remove' => 'Quitar',
+        'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.' =>
+            '',
         'Customer User Login' => 'Nombre de inicio de sesi√≥n del cliente',
         'Created in Queue' => 'Creado en Fila',
         'Lock state' => 'Estado de bloqueo',
@@ -5170,6 +5173,7 @@ sub Data {
         'Logfile too large, you need to reset it!' => 'Archivo de log muy grande, necesita reinicializarlo',
         'Login failed! Your username or password was entered incorrectly.' =>
             'Inicio de sesi√≥n fallido. El nombre de usuario o contrase√±a fue introducido incorrectamente.',
+        'Logout successful. Thank you for using OTRS!' => 'Sesi√≥n terminada satisfactoriamente.',
         'Lookup' => 'Observar',
         'Mail Management' => 'Administraci√≥n de Correo',
         'Mailbox' => 'Buz√≥n',
