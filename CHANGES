@@ -1,3 +1,28 @@
+3.2.6 2013-04-23
+ - 2013-04-18 Fixed bug#9310 - AgentTicketProcess has the same shortkey "o" as AgentTicketQueue.
+ - 2013-04-18 Fixed bug#9280 - Database upgrade procedure problems when upgrading database to 3.2 that
+    has been upgraded from 2.4 previously.
+ - 2013-04-16 Updated Hungarian translation, thanks to Csaba Németh!
+ - 2013-04-15 Added Malay translation.
+ - 2013-04-12 Fixed bug#9264 - Dynamic ticket text fields are displayed with value "1" if enabled
+    and displayed by default in ticket search screen.
+ - 2013-04-12 Fixed bug#8960 - AgentTicketSearch.pm SearchProfile problem.
+ - 2013-04-12 Fixed bug#9328 - Notification event does not work on process ticket.
+ - 2013-04-11 Fixed broken process import.
+ - 2013-04-11 Follow-up for bug#9215 - Process import always creates new process.
+    The overwrite optionwas removed again because of logical problems.
+ - 2013-04-09 Added parameter "-t dbonly" to backup.pl to only backup the database
+    (if files are backed up otherwise).
+ - 2013-04-09 Fixed bug#9302 - Process Management: Misleading description for activities without dialogs.
+ - 2013-04-08 Fixed bug#9182 - Customer Search Function -> If you go into a ticket and go back you got not the search results
+ - 2013-04-08 Fixed bug#9297 - customer information widget losing data
+ - 2013-04-08 Fixed bug#9244 - Process Management: Transitions on Activities does not scale well
+ - 2013-04-08 Fixed bug#9287 - Process Management: strange placement of target point for new transitions.
+ - 2013-04-08 Fixed bug#9294 - Process Management: Activity hover window not displayed properly if
+    activity is very close to bottom canvas border.
+ - 2013-04-08 Fixed bug#9314 - Process Management: Unexpected redirection after creating a new process.
+ - 2013-04-08 Fixed bug#9312 - LinkObject permission check problem.
+
 3.2.5 2013-04-09
  - 2013-04-04 Fixed bug#9313 - No such file or directory in otrs.SetPermission.pl.
  - 2013-04-04 Updated Brazilian Portugese translation, thanks to Alexandre!
