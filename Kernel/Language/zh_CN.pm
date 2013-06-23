@@ -21,7 +21,7 @@ sub Data {
     my $Self = shift;
 
     # $$START$$
-    # Last translation file sync: 2013-03-07 10:55:38
+    # Last translation file sync: 2013-04-04 19:16:13
 
     # possible charsets
     $Self->{Charset} = ['utf-8', ];
@@ -230,7 +230,7 @@ sub Data {
         'There is no acount with that user name.' => '没有此用户。',
         'Please contact your administrator' => '请联系管理员',
         'Logout' => '注销',
-        'Logout successful. Thank you for using OTRS!' => '成功注销，谢谢使用!',
+        'Logout successful. Thank you for using %s!' => '',
         'Feature not active!' => '该特性尚未激活!',
         'Agent updated!' => '服务人员已被更新！',
         'Create Database' => '创建数据库',
@@ -1543,6 +1543,7 @@ sub Data {
         'Configuration import' => '',
         'Here you can upload a configuration file to import a process to your system. The file needs to be in .yml format as exported by process management module.' =>
             '',
+        'Overwrite existing entities' => '',
         'Upload process configuration' => '',
         'Import process configuration' => '',
         'To create a new Process you can either import a Process that was exported from another system or create a complete new one.' =>
@@ -2352,6 +2353,8 @@ sub Data {
         'Output' => '搜索结果显示为',
         'Fulltext' => '全文',
         'Remove' => '删除',
+        'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.' =>
+            '',
         'Customer User Login' => '客户登录用户名',
         'Created in Queue' => '创建队列',
         'Lock state' => '锁定状态',
@@ -4532,6 +4535,7 @@ sub Data {
         # OBSOLETE ENTRIES FOR REFERENCE, DO NOT TRANSLATE!
         #
         ' (work units)' => '工作单元',
+        'Logout successful. Thank you for using OTRS!' => '成功注销，谢谢使用!',
         'Secure mode must be disabled in order to reinstall using the web-installer.' =>
             '为了重新用Web 界面安装，安全模式必须禁用',
 
