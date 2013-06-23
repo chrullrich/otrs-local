@@ -15,9 +15,6 @@ use warnings;
 use Scalar::Util qw(weaken);
 use Kernel::System::VariableCheck qw(:all);
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.77 $) [1];
-
 =head1 NAME
 
 Kernel::System::DynamicField::Backend
@@ -2200,11 +2197,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.77 $ $Date: 2013-01-10 15:20:08 $
 
 =cut

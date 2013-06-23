@@ -12,8 +12,7 @@ package Kernel::GenericInterface::Transport::HTTP::REST;
 use strict;
 use warnings;
 
-use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.6 $) [1];
+use vars qw(@ISA);
 
 =head1 NAME
 
@@ -78,11 +77,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.6 $ $Date: 2012-11-20 14:30:01 $
 
 =cut

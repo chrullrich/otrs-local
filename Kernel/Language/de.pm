@@ -12,9 +12,6 @@ package Kernel::Language::de;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.364 $) [1];
-
 sub Data {
     my $Self = shift;
 
@@ -229,6 +226,7 @@ sub Data {
         'Please contact your administrator' => 'Bitte kontaktieren Sie Ihren Administrator',
         'Logout' => 'Abmelden',
         'Logout successful. Thank you for using OTRS!' => 'Abmeldung erfolgreich! Danke für die Benutzung von  OTRS!',
+        'Logout successful. Thank you for using %s!' => 'Abmeldung erfolgreich! Danke für die Benutzung von  %s!',
         'Feature not active!' => 'Funktion nicht aktiviert!',
         'Agent updated!' => 'Agent aktualisiert!',
         'Create Database' => 'Datenbank erstellen',
@@ -545,7 +543,7 @@ sub Data {
         'Queues' => 'Queues',
         'Priority' => 'Priorität',
         'Priorities' => 'Prioritäten',
-        'Priority Update' => 'Priorität aktualisieren',
+        'Priority Update' => 'Änderung der Priorität',
         'Priority added!' => 'Priorität hinzugefügt!',
         'Priority updated!' => 'Priorität aktualisiert!',
         'Signature added!' => 'Signatur hinzugefügt!',

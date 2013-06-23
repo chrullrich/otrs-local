@@ -19,9 +19,6 @@ use Kernel::System::ProcessManagement::DB::TransitionAction;
 
 use Kernel::System::VariableCheck qw(:all);
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.14 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 

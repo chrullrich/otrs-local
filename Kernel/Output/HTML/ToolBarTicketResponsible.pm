@@ -12,9 +12,6 @@ package Kernel::Output::HTML::ToolBarTicketResponsible;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.11 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 

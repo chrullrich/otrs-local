@@ -77,9 +77,6 @@ create an object
 
 =cut
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.41 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -157,6 +154,39 @@ sub LinkListWithData {
     }
 
     return 1;
+}
+
+=item ObjectPermission()
+
+checks read permission for a given object and UserID.
+
+    $Permission = $LinkObject->ObjectPermission(
+        Object  => 'Ticket',
+        Key     => 123,
+        UserID  => 1,
+    );
+
+=cut
+
+sub ObjectPermission {
+    my ( $Self, %Param ) = @_;
+
+    # check needed stuff
+    for my $Argument (qw(Object Key UserID)) {
+        if ( !$Param{$Argument} ) {
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $Argument!",
+            );
+            return;
+        }
+    }
+
+    return $Self->{TicketObject}->TicketPermission(
+        Type     => 'ro',
+        TicketID => $Param{Key},
+        UserID   => $Param{UserID},
+    );
 }
 
 =item ObjectDescriptionGet()
@@ -609,9 +639,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=head1 VERSION
-
-$Revision: 1.41 $ $Date: 2012-11-20 15:49:39 $
 
 =cut

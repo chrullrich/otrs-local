@@ -18,9 +18,6 @@ use Kernel::System::CheckItem;
 use Kernel::System::DynamicField;
 use Kernel::System::DynamicField::Backend;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.22 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 

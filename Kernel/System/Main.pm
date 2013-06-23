@@ -19,9 +19,6 @@ use Unicode::Normalize;
 
 use Kernel::System::Encode;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.69 $) [1];
-
 =head1 NAME
 
 Kernel::System::Main - main object
@@ -976,11 +973,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.69 $ $Date: 2013-02-05 10:43:07 $
 
 =cut

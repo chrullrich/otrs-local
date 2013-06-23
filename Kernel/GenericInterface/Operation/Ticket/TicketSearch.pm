@@ -19,8 +19,7 @@ use Kernel::System::VariableCheck qw( :all );
 use Kernel::GenericInterface::Operation::Common;
 use Kernel::GenericInterface::Operation::Ticket::Common;
 
-use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.23 $) [1];
+use vars qw(@ISA);
 
 =head1 NAME
 
@@ -754,11 +753,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.23 $ $Date: 2013-01-10 15:20:08 $
 
 =cut

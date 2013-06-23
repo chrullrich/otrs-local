@@ -19,9 +19,6 @@ use Kernel::System::VariableCheck qw(:all);
 
 use Kernel::System::ProcessManagement::DB::ActivityDialog;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.14 $) [1];
-
 =head1 NAME
 
 Kernel::System::ProcessManagement::DB::Activity.pm
@@ -713,11 +710,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.14 $ $Date: 2013-01-17 03:39:21 $
 
 =cut

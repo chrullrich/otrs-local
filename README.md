@@ -6,38 +6,46 @@ AFFERO General Public License (AGPL) and tested on Linux, Solaris, AIX,
 Windows, FreeBSD, OpenBSD and Mac OS 10.x. Do you receive many e-mails and
 want to answer them with a team of agents? You're going to love OTRS!
 
-You can find a list of features at:
-http://doc.otrs.org/3.2/en/html/features-of-otrs.html
+You can find a list of features in the [online documentation](http://doc.otrs.org/3.2/en/html/features-of-otrs.html).
 
 
-License:
-========
+License
+=======
 It is distributed under the AFFERO GNU General Public License - see the
-accompanying COPYING file for more details.
+accompanying [COPYING](COPYING) file for more details.
 
-Documentation:
-==============
+
+Documentation
+=============
 You can find quick documentation in README.* and the long version online at
 http://doc.otrs.org/.
 
-Software requirements:
-======================
+
+Professional Services
+=====================
+[OTRS Group](http://www.otrs.com), the source code owner, provides world-wide enterprise support, consulting and engineering
+including process design, implementation, customization, application support, and fully managed service.
+
+
+Software requirements
+=====================
 Perl
 * Perl 5.8.8 or higher
 
 Webserver
 * Webserver with CGI support (CGI is not recommended)
-* Apache2+mod_perl2 or higher (recommended, mod_perl is really fast!)
+* Apache2 + mod_perl2 or higher (recommended, mod_perl is really fast!)
 * IIS6 or higher
 
 Databases
-* MySQL 4.1 or higher
+* MySQL 5.0 or higher
 * PostgreSQL 8.0 or higher
 * Oracle 10g or higher
 * Microsoft SQL Server 2005 or higher
 
-Directories & Files:
-====================
+
+Directories & Files
+===================
     $HOME (e. g. /opt/otrs/)
     |
     |  (all executables)

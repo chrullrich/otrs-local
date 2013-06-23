@@ -28,9 +28,6 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.12 $) [1];
-
 use Kernel::Config;
 use Kernel::System::Encode;
 use Kernel::System::Log;

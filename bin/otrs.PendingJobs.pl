@@ -28,9 +28,6 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.14 $) [1];
-
 use Kernel::Config;
 use Kernel::System::Encode;
 use Kernel::System::Time;
@@ -60,7 +57,7 @@ $CommonObject{StateObject}  = Kernel::System::State->new(%CommonObject);
 
 # check args
 my $Command = shift || '--help';
-print "otrs.PendingJobs.pl <Revision $VERSION> - check pending tickets\n";
+print "otrs.PendingJobs.pl - check pending tickets\n";
 print "Copyright (C) 2001-2013 OTRS AG, http://otrs.com/\n";
 
 # do ticket auto jobs

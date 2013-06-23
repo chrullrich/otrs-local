@@ -21,9 +21,6 @@ use Kernel::System::VariableCheck qw(:all);
 # to get it writable for the otrs group (just in case)
 umask 002;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.84 $) [1];
-
 sub ArticleStorageInit {
     my ( $Self, %Param ) = @_;
 

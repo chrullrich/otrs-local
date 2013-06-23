@@ -12,9 +12,6 @@ package Kernel::System::Log::File;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.24 $) [1];
-
 umask "002";
 
 sub new {

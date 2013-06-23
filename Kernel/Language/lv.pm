@@ -11,9 +11,6 @@ package Kernel::Language::lv;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.61 $) [1];
-
 sub Data {
     my $Self = shift;
 
@@ -228,6 +225,7 @@ sub Data {
         'Please contact your administrator' => '',
         'Logout' => 'Atteikties',
         'Logout successful. Thank you for using OTRS!' => 'Atteikšanās veiksmīga! Paldies, ka izmantojāt OTRS problēmu pieteikumu sistēmu!',
+        'Logout successful. Thank you for using %s!' => 'Atteikšanās veiksmīga! Paldies, ka izmantojāt %s problēmu pieteikumu sistēmu!',
         'Feature not active!' => 'Papildiespēja nav aktivizēta!',
         'Agent updated!' => '',
         'Create Database' => 'Izveidot datubāzi',

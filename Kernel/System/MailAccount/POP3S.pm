@@ -20,9 +20,6 @@ use Mail::POP3Client;
 use IO::Socket::SSL;
 use Kernel::System::PostMaster;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.15 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 

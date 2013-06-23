@@ -13,7 +13,6 @@ use strict;
 use warnings;
 
 use vars qw($VERSION);
-$VERSION = qw($Revision: 1.2 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -76,6 +75,29 @@ sub LinkListWithData {
         }
     }
 
+    return 1;
+}
+
+#
+#
+#
+
+sub ObjectPermission {
+    my ( $Self, %Param ) = @_;
+
+    # check needed stuff
+    for my $Argument (qw(Object Key UserID)) {
+        if ( !$Param{$Argument} ) {
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $Argument!",
+            );
+            return;
+        }
+    }
+
+    # deny access for admin
+    return if $Param{UserID} == 1;
     return 1;
 }
 

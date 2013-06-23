@@ -28,9 +28,6 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.6 $) [1];
-
 use IO::Socket;
 
 my $Client = IO::Socket::INET->new(

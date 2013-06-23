@@ -16,9 +16,6 @@ use File::Path qw();
 
 use Kernel::System::CheckItem;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.48 $) [1];
-
 =head1 NAME
 
 Kernel::System::Web::Request - global CGI interface
@@ -375,11 +372,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.48 $ $Date: 2012-12-03 14:18:02 $
 
 =cut

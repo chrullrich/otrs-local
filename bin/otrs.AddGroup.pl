@@ -28,9 +28,6 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.11 $) [1];
-
 use Kernel::Config;
 use Kernel::System::Encode;
 use Kernel::System::Log;
@@ -50,7 +47,6 @@ $CommonObject{MainObject}  = Kernel::System::Main->new(%CommonObject);
 $CommonObject{DBObject}    = Kernel::System::DB->new(%CommonObject);
 $CommonObject{GroupObject} = Kernel::System::Group->new(%CommonObject);
 
-
 my %Options;
 
 use Getopt::Std;
@@ -65,7 +61,6 @@ if ( !$Options{n} ) {
     print STDERR "ERROR: Need -n groupname\n";
     exit 1;
 }
-
 
 # user id of the person adding the record
 my %Param;

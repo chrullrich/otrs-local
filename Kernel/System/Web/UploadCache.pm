@@ -12,9 +12,6 @@ package Kernel::System::Web::UploadCache;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.27 $) [1];
-
 =head1 NAME
 
 Kernel::System::Web::UploadCache - an upload file system cache
@@ -233,11 +230,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.27 $ $Date: 2012-11-20 16:02:18 $
 
 =cut

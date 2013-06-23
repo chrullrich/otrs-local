@@ -17,9 +17,6 @@ package Kernel::System::Ticket::Number::Date;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.34 $) [1];
-
 sub TicketCreateNumber {
     my ( $Self, $JumpCounter ) = @_;
     if ( !$JumpCounter ) {

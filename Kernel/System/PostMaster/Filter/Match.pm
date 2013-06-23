@@ -12,9 +12,6 @@ package Kernel::System::PostMaster::Filter::Match;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.23 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 

@@ -14,9 +14,6 @@ package Kernel::Language::pl;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.146 $) [1];
-
 sub Data {
     my $Self = shift;
 
@@ -231,6 +228,7 @@ sub Data {
         'Please contact your administrator' => 'Prosimy, skontaktuj się ze swoim administratorem',
         'Logout' => 'Wyloguj',
         'Logout successful. Thank you for using OTRS!' => 'Wylogowanie zakończone! Dziękujemy za używanie OTRS!',
+        'Logout successful. Thank you for using %s!' => 'Wylogowanie zakończone! Dziękujemy za używanie %s!',
         'Feature not active!' => 'Funkcja nie aktywna!',
         'Agent updated!' => 'Agent został zaktualizowany!',
         'Create Database' => 'Stwórz bazę danych',

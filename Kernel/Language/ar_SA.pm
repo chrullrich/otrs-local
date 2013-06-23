@@ -11,9 +11,6 @@ package Kernel::Language::ar_SA;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.94 $) [1];
-
 sub Data {
     my $Self = shift;
 
@@ -231,6 +228,7 @@ sub Data {
         'Please contact your administrator' => '',
         'Logout' => 'تسجيل الخروج',
         'Logout successful. Thank you for using OTRS!' => 'تم الخروج من النظام بنجاح. شكراً لإستخدامك OTRS!',
+        'Logout successful. Thank you for using %s!' => 'تم الخروج من النظام بنجاح. شكراً لإستخدامك %s!',
         'Feature not active!' => 'الخاصية غير مفعلة!',
         'Agent updated!' => '',
         'Create Database' => '',

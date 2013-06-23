@@ -14,9 +14,6 @@ use warnings;
 
 use Kernel::System::Crypt;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.17 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 

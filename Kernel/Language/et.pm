@@ -12,9 +12,6 @@ package Kernel::Language::et;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.85 $) [1];
-
 sub Data {
     my $Self = shift;
 

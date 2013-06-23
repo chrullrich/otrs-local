@@ -16,9 +16,6 @@ use Kernel::System::VariableCheck qw(:all);
 use utf8;
 use Kernel::System::SLA;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.1 $) [1];
-
 =head1 NAME
 
 Kernel::System::ProcessManagement::TransitionAction::TicketSLASet - A module to set the ticket SLA
@@ -126,7 +123,8 @@ sub new {
         Config      => {
             SLA => 'MySLA',
             # or
-            SLAID => 123,
+            SLAID  => 123,
+            UserID => 123,                                  # optional, to override the UserID from the logged user
         }
     );
     Ticket contains the result of TicketGet including DynamicFields
@@ -166,6 +164,12 @@ sub Run {
             Message  => "Config has no values!",
         );
         return;
+    }
+
+    # override UserID if specified as a parameter in the TA config
+    if ( IsNumber( $Param{Config}->{UserID} ) ) {
+        $Param{UserID} = $Param{Config}->{UserID};
+        delete $Param{Config}->{UserID};
     }
 
     if ( !$Param{Config}->{SLAID} && !$Param{Config}->{SLA} ) {
@@ -369,9 +373,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=head1 VERSION
-
-$Revision: 1.1 $ $Date: 2013-01-11 06:09:05 $
 
 =cut

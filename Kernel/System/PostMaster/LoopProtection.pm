@@ -12,9 +12,6 @@ package Kernel::System::PostMaster::LoopProtection;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.19 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 

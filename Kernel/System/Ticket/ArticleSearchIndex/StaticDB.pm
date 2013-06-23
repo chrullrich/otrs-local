@@ -12,9 +12,6 @@ package Kernel::System::Ticket::ArticleSearchIndex::StaticDB;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.25 $) [1];
-
 sub ArticleIndexBuild {
     my ( $Self, %Param ) = @_;
 

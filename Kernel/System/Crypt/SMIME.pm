@@ -12,9 +12,6 @@ package Kernel::System::Crypt::SMIME;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.73 $) [1];
-
 =head1 NAME
 
 Kernel::System::Crypt::SMIME - smime crypt backend lib
@@ -2510,11 +2507,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.73 $ $Date: 2013-02-08 23:01:42 $
 
 =cut

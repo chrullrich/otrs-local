@@ -17,8 +17,7 @@ use DBI;
 use Kernel::System::Time;
 use Kernel::System::VariableCheck qw(:all);
 
-use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.156 $) [1];
+use vars qw(@ISA);
 
 =head1 NAME
 
@@ -135,7 +134,7 @@ sub new {
     elsif ( $Self->{DSN} =~ /:db2/i ) {
         $Self->{'DB::Type'} = 'db2';
     }
-    elsif ( $Self->{DSN} =~ /:(mssql|sybase)/i ) {
+    elsif ( $Self->{DSN} =~ /(mssql|sybase|sql server)/i ) {
         $Self->{'DB::Type'} = 'mssql';
     }
 
@@ -1472,11 +1471,5 @@ This software is part of the OTRS project (L<http://otrs.org/>).
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
-
-=head1 VERSION
-
-$Revision: 1.156 $ $Date: 2013-01-17 07:14:45 $
 
 =cut

@@ -16,8 +16,7 @@ use Kernel::System::User;
 use Kernel::System::Email;
 use Kernel::System::Queue;
 
-use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.27 $) [1];
+use vars qw(@ISA);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -106,7 +105,7 @@ sub Run {
     # send each agent the escalation notification
     for my $UserID (@UserIDs) {
         my %User = $Self->{UserObject}->GetUserData( UserID => $UserID, Valid => 1 );
-        next if !%User || $User{OutOfOffice};
+        next if !%User || $User{OutOfOfficeMessage};
 
         # check if today a reminder is already sent
         my ( $Sec, $Min, $Hour, $Day, $Month, $Year ) = $Self->{TimeObject}->SystemTime2Date(

@@ -14,9 +14,6 @@ use warnings;
 
 use Kernel::System::Web::UploadCache;
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.12 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 

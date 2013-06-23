@@ -20,9 +20,6 @@ use Kernel::System::ProcessManagement::DB::Transition;
 
 use Kernel::System::VariableCheck qw(:all);
 
-use vars qw($VERSION);
-$VERSION = qw($Revision: 1.17 $) [1];
-
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -516,7 +513,7 @@ sub _ShowEdit {
             Sort => 'AlphanumericKey',
             Translation   => 1,
             Class         => 'W50pc',
-            SelectedValue => $TransitionData->{Config}->{ConditionLinking},
+            SelectedID    => $TransitionData->{Config}->{ConditionLinking},
         );
 
         my @Conditions = sort keys %{ $TransitionData->{Config}->{Condition} };
@@ -531,7 +528,7 @@ sub _ShowEdit {
                 Sort => 'AlphanumericKey',
                 Translation   => 1,
                 Class         => 'W50pc',
-                SelectedValue => $ConditionData{ConditionLinking},
+                SelectedID    => $ConditionData{Type},
             );
 
             $Self->{LayoutObject}->Block(
@@ -560,7 +557,7 @@ sub _ShowEdit {
                     Name          => "ConditionFieldType[$Condition][$Field]",
                     Sort          => 'AlphanumericKey',
                     Translation   => 1,
-                    SelectedValue => $FieldData{Type},
+                    SelectedID    => $FieldData{Type},
                 );
 
                 # show fields
