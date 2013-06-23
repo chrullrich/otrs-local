@@ -1,8 +1,6 @@
 # --
 # Kernel/GenericInterface/Operation/Common.pm - common operation functions
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: Common.pm,v 1.11 2012/11/20 14:28:27 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -165,8 +163,10 @@ sub Auth {
 
     # check if a valid SessionID is present
     if ($SessionID) {
-        my $ValidSessionID =
-            $Self->{SessionObject}->CheckSessionID( SessionID => $SessionID ) if $SessionID;
+        my $ValidSessionID;
+        if ($SessionID) {
+            $ValidSessionID = $Self->{SessionObject}->CheckSessionID( SessionID => $SessionID );
+        }
         return 0 if !$ValidSessionID;
 
         # get session data
@@ -341,6 +341,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.11 $ $Date: 2012/11/20 14:28:27 $
+$Revision: 1.11 $ $Date: 2012-11-20 14:28:27 $
 
 =cut

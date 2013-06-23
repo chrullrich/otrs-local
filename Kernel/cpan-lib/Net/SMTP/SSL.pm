@@ -1,5 +1,5 @@
 package Net::SMTP::SSL;
-# $Id: SSL.pm,v 1.1 2004/07/20 03:22:18 cwest Exp $
+# $Id: SSL.pm,v 1.1 2009-04-07 07:58:37 martin Exp $
 use strict;
 
 use vars qw[$VERSION @ISA];

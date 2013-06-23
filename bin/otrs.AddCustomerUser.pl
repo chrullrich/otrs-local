@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.AddCustomerUser.pl - Add User from CLI
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.AddCustomerUser.pl,v 1.11 2013/01/22 10:14:09 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -33,17 +31,6 @@ use lib dirname($RealBin) . '/Custom';
 use vars qw($VERSION);
 $VERSION = qw($Revision: 1.11 $) [1];
 
-my %opts;
-use Getopt::Std;
-getopt( 'flpgec', \%opts );
-unless ( $ARGV[0] ) {
-    print
-        "$FindBin::Script [-f firstname] [-l lastname] [-p password] [-g groupname] [-e email] [-c CustomerID] username\n";
-    print "\tif you define -g with a valid group name then the user will be added that group\n";
-    print "\n";
-    exit;
-}
-
 use Kernel::Config;
 use Kernel::System::Encode;
 use Kernel::System::Log;
@@ -53,7 +40,7 @@ use Kernel::System::DB;
 use Kernel::System::CustomerUser;
 
 # create common objects
-my %CommonObject = ();
+my %CommonObject;
 $CommonObject{ConfigObject} = Kernel::Config->new(%CommonObject);
 $CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
 $CommonObject{LogObject}
@@ -63,8 +50,18 @@ $CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
 $CommonObject{DBObject}   = Kernel::System::DB->new(%CommonObject);
 $CommonObject{UserObject} = Kernel::System::CustomerUser->new(%CommonObject);
 
+my %Options;
+use Getopt::Std;
+getopt( 'flpgec', \%Options );
+unless ( $ARGV[0] ) {
+    print
+        "$FindBin::Script [-f firstname] [-l lastname] [-p password] [-g groupname] [-e email] [-c CustomerID] username\n";
+    print "\tif you define -g with a valid group name then the user will be added that group\n";
+    print "\n";
+    exit;
+}
+
 my %Param;
-undef %Param;
 
 #user id of the person adding the record
 $Param{UserID} = '1';
@@ -73,12 +70,12 @@ $Param{UserID} = '1';
 $Param{ValidID} = '1';
 
 $Param{Source}         = 'CustomerUser';
-$Param{UserFirstname}  = $opts{f};
-$Param{UserLastname}   = $opts{l};
-$Param{UserCustomerID} = defined $opts{c} ? $opts{c} : $ARGV[0];
+$Param{UserFirstname}  = $Options{f};
+$Param{UserLastname}   = $Options{l};
+$Param{UserCustomerID} = defined $Options{c} ? $Options{c} : $ARGV[0];
 $Param{UserLogin}      = $ARGV[0];
-$Param{UserPassword}   = $opts{p};
-$Param{UserEmail}      = $opts{e};
+$Param{UserPassword}   = $Options{p};
+$Param{UserEmail}      = $Options{e};
 
 if ( $Param{UID} = $CommonObject{UserObject}->CustomerUserAdd( %Param, ChangeUserID => 1 ) ) {
     print "Customer user added. Username is $Param{UID}\n";

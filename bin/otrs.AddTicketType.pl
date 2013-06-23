@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.AddTicketType.pl - add new Ticket Types
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.AddTicketType.pl,v 1.9 2013/01/22 10:14:09 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -40,22 +38,7 @@ use Kernel::System::DB;
 use Kernel::System::Type;
 use Kernel::System::Main;
 
-my %Param;
 my %CommonObject;
-my %opts;
-
-use Getopt::Std;
-getopts( 'n:h', \%opts );
-
-if ( $opts{h} ) {
-    print STDERR "Usage: $FindBin::Script -n <Type>\n";
-    exit;
-}
-
-if ( !$opts{n} ) {
-    print STDERR "ERROR: Need -n <Type>\n";
-    exit 1;
-}
 
 # create common objects
 $CommonObject{ConfigObject} = Kernel::Config->new();
@@ -66,15 +49,31 @@ $CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
 $CommonObject{DBObject}   = Kernel::System::DB->new(%CommonObject);
 $CommonObject{TypeObject} = Kernel::System::Type->new(%CommonObject);
 
+my %Param;
+my %Options;
+
+use Getopt::Std;
+getopts( 'n:h', \%Options );
+
+if ( $Options{h} ) {
+    print STDERR "Usage: $FindBin::Script -n <Type>\n";
+    exit;
+}
+
+if ( !$Options{n} ) {
+    print STDERR "ERROR: Need -n <Type>\n";
+    exit 1;
+}
+
 # user id of the person adding the record
 $Param{UserID} = '1';
 
 # Validrecord
 $Param{ValidID} = '1';
-$Param{Name} = $opts{n} || '';
+$Param{Name} = $Options{n} || '';
 
 if ( my $RID = $CommonObject{TypeObject}->TypeAdd(%Param) ) {
-    print "Ticket type '$opts{n}' added. Type id is '$RID'\n";
+    print "Ticket type '$Options{n}' added. Type id is '$RID'\n";
 }
 else {
     print STDERR "ERROR: Can't add type\n";

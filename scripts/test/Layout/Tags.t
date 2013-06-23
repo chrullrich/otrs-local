@@ -1,8 +1,6 @@
 # --
 # scripts/test/Layout/Tags.t - layout testscript
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: Tags.t,v 1.3 2012/11/20 16:10:40 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -62,17 +60,12 @@ my @Tests = (
     {
         Name   => 'QuoteAndCut()',
         String => '$Quote{"some Text","6"}',
-        Result => 'some T[...]',
+        Result => 's[...]',
     },
     {
         Name   => 'QuoteAndCut()',
-        String => '$Quote{"some Text", "6"}',
-        Result => 'some T[...]',
-    },
-    {
-        Name   => 'QuoteAndCut()',
-        String => '$Quote{"some Text",   "6"}',
-        Result => 'some T[...]',
+        String => '$Quote{"some Text", "8"}',
+        Result => 'som[...]',
     },
     {
         Name   => 'QuoteAndCut()',
@@ -86,18 +79,18 @@ my @Tests = (
     },
     {
         Name   => 'QuoteAndCut()',
-        String => '$QData{"Key4","10"}',
-        Result => 'Value&quot;4&quot;Va[...]',
+        String => '$QData{"Key4","12"}',
+        Result => 'Value&quot;4[...]',
     },
     {
         Name   => 'QuoteAndCut()',
-        String => '$QData{"Key4", "10"}',
-        Result => 'Value&quot;4&quot;Va[...]',
+        String => '$QData{"Key4", "12"}',
+        Result => 'Value&quot;4[...]',
     },
     {
         Name   => 'QuoteAndCut()',
-        String => '$QData{"Key4",   "10"}',
-        Result => 'Value&quot;4&quot;Va[...]',
+        String => '$QData{"Key4",   "12"}',
+        Result => 'Value&quot;4[...]',
     },
     {
         Name   => 'QuoteAndCut()',

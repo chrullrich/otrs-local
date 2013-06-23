@@ -1,8 +1,6 @@
 # --
 # Kernel/System/Email.pm - the global email send module
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: Email.pm,v 1.92 2012/11/20 15:34:23 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -347,7 +345,7 @@ sub Send {
     my $Entity = MIME::Entity->build( %Header, Data => $Param{Body} );
 
     # set In-Reply-To and References header
-    my $Header = $Entity->head;
+    my $Header = $Entity->head();
     if ( $Param{InReplyTo} ) {
         $Param{'In-Reply-To'} = $Param{InReplyTo};
     }
@@ -525,12 +523,12 @@ sub Send {
             $EntityCopy->make_multipart( 'mixed;', Force => 1, );
 
             # get header to remember
-            my $head = $EntityCopy->head();
-            $head->delete('MIME-Version');
-            $head->delete('Content-Type');
-            $head->delete('Content-Disposition');
-            $head->delete('Content-Transfer-Encoding');
-            my $Header = $head->as_string();
+            my $Head = $EntityCopy->head();
+            $Head->delete('MIME-Version');
+            $Head->delete('Content-Type');
+            $Head->delete('Content-Disposition');
+            $Head->delete('Content-Transfer-Encoding');
+            my $Header = $Head->as_string();
 
             # get string to sign
             my $T = $EntityCopy->parts(0)->as_string();
@@ -559,7 +557,7 @@ sub Send {
     if (
         $Param{Crypt}
         && $Param{Crypt}->{Type}
-        && $Param{Crypt}->{Type}    eq 'PGP'
+        && $Param{Crypt}->{Type} eq 'PGP'
         && $Param{Crypt}->{SubType} eq 'Detached'
         )
     {
@@ -635,12 +633,12 @@ sub Send {
         $Entity->make_multipart( 'mixed;', Force => 1, );
 
         # get header to remember
-        my $head = $Entity->head;
-        $head->delete('MIME-Version');
-        $head->delete('Content-Type');
-        $head->delete('Content-Disposition');
-        $head->delete('Content-Transfer-Encoding');
-        my $Header = $head->as_string();
+        my $Head = $Entity->head();
+        $Head->delete('MIME-Version');
+        $Head->delete('Content-Type');
+        $Head->delete('Content-Disposition');
+        $Head->delete('Content-Transfer-Encoding');
+        my $Header = $Head->as_string();
 
         my $T = $Entity->parts(0)->as_string();
 
@@ -661,7 +659,7 @@ sub Send {
     }
 
     # get header from Entity
-    my $Head = $Entity->head;
+    my $Head = $Entity->head();
     $Param{Header} = $Head->as_string();
 
     # remove not needed folding of email heads, we do have many problems with email clients
@@ -839,7 +837,7 @@ sub _EncodeMIMEWords {
     return '' if !defined $Param{Line};
 
     # check if MIME::EncWords is installed
-    if ( eval { require MIME::EncWords } ) {
+    if ( eval { require MIME::EncWords } ) {    ## no critic
         return MIME::EncWords::encode_mimewords(
             Encode::encode(
                 $Param{Charset},
@@ -858,7 +856,7 @@ sub _EncodeMIMEWords {
     # as fallback use MIME::Words of MIME::Tools (but it lakes on some utf8
     # issues, see pod of MIME::Words)
     else {
-        require MIME::Words;
+        require MIME::Words;    ## no critic
         return MIME::Words::encode_mimewords(
             Encode::encode(
                 $Param{Charset},
@@ -898,6 +896,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.92 $ $Date: 2012/11/20 15:34:23 $
+$Revision: 1.92 $ $Date: 2012-11-20 15:34:23 $
 
 =cut

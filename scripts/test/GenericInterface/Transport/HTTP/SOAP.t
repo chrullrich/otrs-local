@@ -1,8 +1,6 @@
 # --
 # SOAP.t - GenericInterface transport interface tests for SOAP backend
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: SOAP.t,v 1.19 2012/11/20 16:10:23 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -39,7 +37,16 @@ $Self->Is(
 my $WebserviceName = 'SOAPTest' . $HelperObject->GetRandomID();
 my $WebserviceID   = $WebserviceObject->WebserviceAdd(
     Name    => $WebserviceName,
-    Config  => {},
+    Config  => {
+        Debugger => {
+            DebugThreshold => 'debug',
+        },
+        Provider => {
+            Transport => {
+                Type => '',
+            },
+        },
+    },
     ValidID => 1,
     UserID  => 1,
 );
@@ -87,7 +94,17 @@ my @Tests = (
                 Blah => 'Fasel',
             },
         },
-        WebserviceConfig => {},
+        WebserviceConfig => {
+            Debugger    => {
+                DebugThreshold => 'debug',
+                TestMode       => 1,
+            },
+            Provider => {
+                Transport => {
+                    Type   => 'HTTP::SOAP',
+                },
+            },
+        },
     },
 
     {
@@ -99,6 +116,11 @@ my @Tests = (
             Debugger    => {
                 DebugThreshold => 'debug',
                 TestMode       => 1,
+            },
+            Provider => {
+                Transport => {
+                    Type   => 'HTTP::SOAP',
+                },
             },
         },
     },

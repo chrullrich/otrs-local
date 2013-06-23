@@ -1,8 +1,6 @@
 # --
 # XML.t - XML tests
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: XML.t,v 1.34 2012/11/20 16:08:46 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -572,11 +570,11 @@ my $Path = $Self->{ConfigObject}->Get('Home');
 $Path .= "/scripts/test/sample/XML/";
 my $File = 'XML-Test-file.xml';
 $String = '';
-if ( open( DATA, "< $Path/$File" ) ) {
-    while (<DATA>) {
+if ( open( my $DATA, "<", "$Path/$File" ) ) {    ## no critic
+    while (<$DATA>) {
         $String .= $_;
     }
-    close(DATA);
+    close($DATA);
 
     # charset test - use file form the filesystem and parse it
     @XMLHash = $XMLObject->XMLParse2XMLHash( String => $String );

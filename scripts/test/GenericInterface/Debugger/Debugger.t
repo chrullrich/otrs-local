@@ -1,8 +1,6 @@
 # --
 # Debugger.t - GenericInterface debugger tests
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: Debugger.t,v 1.10 2012/11/20 16:09:09 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -28,7 +26,17 @@ my $RandomID = $HelperObject->GetRandomID();
 my $WebserviceObject = Kernel::System::GenericInterface::Webservice->new( %{$Self} );
 
 my $WebserviceID = $WebserviceObject->WebserviceAdd(
-    Config  => {},
+    Config  => {
+        Debugger    => {
+            DebugThreshold => 'debug',
+            TestMode       => 1,
+        },
+        Provider => {
+            Transport => {
+                Type => '',
+            },
+        },
+    },
     Name    => "$RandomID webservice",
     ValidID => 1,
     UserID  => 1,
@@ -270,7 +278,17 @@ for my $Test (@Tests) {
     my $WebserviceObject = Kernel::System::GenericInterface::Webservice->new( %{$Self} );
 
     my $WebserviceID = $WebserviceObject->WebserviceAdd(
-        Config  => {},
+        Config  => {
+            Debugger    => {
+                DebugThreshold => 'debug',
+                TestMode       => 1,
+            },
+            Provider => {
+                Transport => {
+                    Type => '',
+                },
+            },
+        },
         Name    => "$RandomID webservice",
         ValidID => 1,
         UserID  => 1,
@@ -338,8 +356,8 @@ for my $Test (@Tests) {
         my $AuxDebugLevel = $DebugLevel;
         for my $DataFromDB ( @{ $LogData->{Data} } ) {
             if (
-                $DataFromDB->{Data}       eq $AuxData &&
-                $DataFromDB->{Summary}    eq $AuxSummary &&
+                $DataFromDB->{Data} eq $AuxData       &&
+                $DataFromDB->{Summary} eq $AuxSummary &&
                 $DataFromDB->{DebugLevel} eq lc $AuxDebugLevel
                 )
             {

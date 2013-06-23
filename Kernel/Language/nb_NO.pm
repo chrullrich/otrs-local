@@ -9,8 +9,6 @@
 # Copyright (C) 2011 Espen Stefansen <espen.stefansen at imr.no>
 # Copyright (C) 2012 Lars Magnus Herland <lars.magnus at herland.priv.no>
 # --
-# $Id: nb_NO.pm,v 1.146 2013/01/31 13:10:41 mg Exp $
-# --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
@@ -28,7 +26,7 @@ sub Data {
     my $Self = shift;
 
     # $$START$$
-    # Last translation file sync: 2013-01-31 13:59:49
+    # Last translation file sync: 2013-03-07 10:55:23
 
     # possible charsets
     $Self->{Charset} = ['utf-8', ];
@@ -881,6 +879,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Administrasjon: Kunder',
+        'Back to search result' => '',
         'Add customer' => 'Legg til kunde',
         'Select' => 'Velg',
         'Hint' => 'Hint',
@@ -1604,9 +1603,11 @@ sub Data {
         'ArticleType' => '',
         'Display' => '',
         'Edit Field Details' => '',
+        'Customer interface does not support internal article types.' => '',
 
         # Template: AdminProcessManagementPath
         'Path' => '',
+        'Edit this transition' => '',
         'Transition Actions' => '',
         'You can assign Transition Actions to this Transition by dragging the elements with the mouse from the left list to the right list.' =>
             '',
@@ -1629,6 +1630,7 @@ sub Data {
 
         # Template: AdminProcessManagementProcessEdit
         'Edit Process' => '',
+        'Print process information' => '',
         'Delete Process' => '',
         'Delete Inactive Process' => '',
         'Available Process Elements' => '',
@@ -1654,8 +1656,13 @@ sub Data {
         'Do you really want to delete this Activity Dialog?' => '',
         'Do you really want to delete this Transition?' => '',
         'Do you really want to delete this Transition Action?' => '',
+        'Do you really want to remove this activity from the canvas? This can only be undone by leaving this screen without saving.' =>
+            '',
+        'Do you really want to remove this transition from the canvas? This can only be undone by leaving this screen without saving.' =>
+            '',
         'Hide EntityIDs' => '',
         'Delete Entity' => '',
+        'Remove Entity from canvas' => '',
         'This Activity is already used in the Process. You cannot add it twice!' =>
             '',
         'This Activity cannot be deleted because it is the Start Activity.' =>
@@ -1666,10 +1673,6 @@ sub Data {
             '',
         'No TransitionActions assigned.' => '',
         'The Start Event cannot loose the Start Transition!' => '',
-        'Do you really want to remove this activity from the canvas? This can only be undone by leaving this screen without saving.' =>
-            '',
-        'Do you really want to remove this transition from the canvas? This can only be undone by leaving this screen without saving.' =>
-            '',
         'No dialogs assigned yet. Just pick an activity dialog from the list on the left and drag it here.' =>
             '',
 
@@ -1678,11 +1681,15 @@ sub Data {
             '',
 
         # Template: AdminProcessManagementProcessPrint
+        'Start Activity' => '',
         'Contains %s dialog(s)' => '',
         'Assigned dialogs' => '',
         'Activities are not being used in this process.' => '',
         'Assigned fields' => '',
         'Activity dialogs are not being used in this process.' => '',
+        'Condition linking' => '',
+        'Conditions' => '',
+        'Condition' => '',
         'Transitions are not being used in this process.' => '',
         'Module name' => '',
         'Configuration' => '',
@@ -1693,9 +1700,7 @@ sub Data {
             '',
         'Transition' => '',
         'Transition Name' => '',
-        'Conditions' => '',
         'Type of Linking between Conditions' => '',
-        'Condition' => '',
         'Remove this Condition' => '',
         'Type of Linking' => '',
         'Remove this Field' => '',
@@ -2618,7 +2623,7 @@ sub Data {
         'A new database user with limited rights will be created for this OTRS system.' =>
             'En ny databasebruker med begrensede rettigheter vil bli opprettet for denne OTRS-installasjonen.',
         'default \'hot\'' => 'Standard \'hot\'',
-        'DB--- host' => 'DB-tjener',
+        'DB host' => 'DB-tjener',
         'Check database settings' => 'Sjekk database-oppsett',
         'Result of database check' => 'Resultat for databasesjekken',
 
@@ -3485,6 +3490,8 @@ sub Data {
             '',
         'Determines the next possible ticket states, after the creation of a new phone ticket in the agent interface.' =>
             '',
+        'Determines the next possible ticket states, for process tickets in the agent interface.' =>
+            '',
         'Determines the next screen after new customer ticket in the customer interface.' =>
             '',
         'Determines the next screen after the follow up screen of a zoomed ticket in the customer interface.' =>
@@ -3845,8 +3852,6 @@ sub Data {
             'Maks. antall viste saker i søkeresultater (agentdelen)',
         'Maximum number of tickets to be displayed in the result of a search in the customer interface.' =>
             'Maks. antall viste saker i søkeresultater (kundeportalen)',
-        'Maximum size (in characters) of the customer info table in the queue view.' =>
-            'Maks. størrelse (antall tegn) i kundeinfo-tabellen i kølisten.',
         'Maximum size (in characters) of the customer information table in the ticket zoom view.' =>
             'Maks. størrelse (antall tegn) i kundeinfo-tabellen i saksdetaljer-visningen.',
         'Module for To-selection in new ticket screen in the customer interface.' =>
@@ -4534,6 +4539,8 @@ sub Data {
         ' (work units)' => ' (arbeidsenheter)',
         'Allows extended search conditions in ticket search of the agent interface. With this feature you can search w. g. with this kind of conditions like "(key1&&key2)" or "(key1||key2)".' =>
             'Tillater avanserte søkekriterier i søk etter saker for saksbehandlere. Med denne funksjonaliteten kan du søke med kriterier som "(søk1&&søk2)" eller "(søk1||søk2)".',
+        'Maximum size (in characters) of the customer info table in the queue view.' =>
+            'Maks. størrelse (antall tegn) i kundeinfo-tabellen i kølisten.',
         'Secure mode must be disabled in order to reinstall using the web-installer.' =>
             'Sikkermodus må skrus av for å re-installere via web-installerer.',
 

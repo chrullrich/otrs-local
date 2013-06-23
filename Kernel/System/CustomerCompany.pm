@@ -1,8 +1,6 @@
 # --
 # Kernel/System/CustomerCompany.pm - All customer company related function should be here eventually
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: CustomerCompany.pm,v 1.39 2012/12/03 10:37:10 jh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -655,6 +653,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.39 $ $Date: 2012/12/03 10:37:10 $
+$Revision: 1.39 $ $Date: 2012-12-03 10:37:10 $
 
 =cut

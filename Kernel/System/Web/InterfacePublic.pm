@@ -1,8 +1,6 @@
 # --
 # Kernel/System/Web/InterfacePublic.pm - the public interface file
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: InterfacePublic.pm,v 1.36 2012/11/20 16:02:15 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -239,7 +237,9 @@ sub Run {
             $QueryString = 'Action=' . $Param{Action} . '&Subaction=' . $Param{Subaction};
         }
         my $File = $Self->{ConfigObject}->Get('PerformanceLog::File');
+        ## no critic
         if ( open my $Out, '>>', $File ) {
+            ## use critic
             print $Out time()
                 . '::Public::'
                 . ( time() - $Self->{PerformanceLogStart} )
@@ -293,6 +293,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.36 $ $Date: 2012/11/20 16:02:15 $
+$Revision: 1.36 $ $Date: 2012-11-20 16:02:15 $
 
 =cut

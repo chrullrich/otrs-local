@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/fcgi-bin/installer.pl - the global FastCGI handle for installer
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: installer.pl,v 1.8 2013/01/22 10:14:10 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by

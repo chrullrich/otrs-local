@@ -1,8 +1,6 @@
 # --
 # Kernel/System/GenericInterface/DebugLog.pm - log interface for generic interface
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: DebugLog.pm,v 1.21 2012/11/20 15:49:02 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -849,9 +847,9 @@ sub _LogAddChain {
     return 1;
 }
 
-=end Internal:
-
 1;
+
+=end Internal:
 
 =back
 
@@ -867,6 +865,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.21 $ $Date: 2012/11/20 15:49:02 $
+$Revision: 1.21 $ $Date: 2012-11-20 15:49:02 $
 
 =cut

@@ -1,8 +1,6 @@
 # --
 # Kernel/Modules/AgentTicketZoom.pm - to get a closer view
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: AgentTicketZoom.pm,v 1.198 2013/01/15 18:36:41 cr Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -73,7 +71,7 @@ sub new {
     # strip html and ascii attachments of content
     $Self->{StripPlainBodyAsAttachment} = 1;
 
-    # check if rich text is enabled, if not only stip ascii attachments
+    # check if rich text is enabled, if not only strip ascii attachments
     if ( !$Self->{RichText} ) {
         $Self->{StripPlainBodyAsAttachment} = 2;
     }
@@ -82,7 +80,7 @@ sub new {
     if ( !$Self->{TicketID} && $Self->{ParamObject}->GetParam( Param => 'TicketNumber' ) ) {
         $Self->{TicketID} = $Self->{TicketObject}->TicketIDLookup(
             TicketNumber => $Self->{ParamObject}->GetParam( Param => 'TicketNumber' ),
-            UserID => $Self->{UserID},
+            UserID       => $Self->{UserID},
         );
     }
     $Self->{CustomerUserObject} = Kernel::System::CustomerUser->new(%Param);
@@ -164,7 +162,7 @@ sub Run {
     );
     my %AclAction = $Self->{TicketObject}->TicketAclActionData();
 
-    # check if ACL resctictions if exist
+    # check if ACL restrictions exist
     if ( IsHashRefWithData( \%AclAction ) ) {
 
         # show error screen if ACL prohibits this action
@@ -1187,6 +1185,7 @@ sub MaskAgentZoom {
                             $Self->{LayoutObject}->Block(
                                 Name => 'ProcessWidgetDynamicFieldLink',
                                 Data => {
+                                    %Ticket,
                                     Value          => $Field->{Value},
                                     Title          => $Field->{Title},
                                     Link           => $Field->{Link},
@@ -1258,6 +1257,7 @@ sub MaskAgentZoom {
                 $Self->{LayoutObject}->Block(
                     Name => 'ProcessWidgetDynamicFieldLink',
                     Data => {
+                        %Ticket,
                         Value          => $Field->{Value},
                         Title          => $Field->{Title},
                         Link           => $Field->{Link},
@@ -1291,6 +1291,7 @@ sub MaskAgentZoom {
             $Self->{LayoutObject}->Block(
                 Name => 'TicketDynamicFieldLink',
                 Data => {
+                    %Ticket,
                     Value          => $Field->{Value},
                     Title          => $Field->{Title},
                     Link           => $Field->{Link},
@@ -2196,6 +2197,7 @@ sub _ArticleItem {
             $Self->{LayoutObject}->Block(
                 Name => 'ArticleDynamicFieldLink',
                 Data => {
+                    %Ticket,
                     Value                       => $ValueStrg->{Value},
                     Title                       => $ValueStrg->{Title},
                     Link                        => $ValueStrg->{Link},

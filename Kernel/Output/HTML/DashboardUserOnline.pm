@@ -1,8 +1,6 @@
 # --
 # Kernel/Output/HTML/DashboardUserOnline.pm
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: DashboardUserOnline.pm,v 1.27 2012/11/22 23:12:43 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you

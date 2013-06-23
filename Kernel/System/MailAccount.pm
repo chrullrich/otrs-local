@@ -1,8 +1,6 @@
 # --
 # Kernel/System/MailAccount.pm - lib for mail accounts
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: MailAccount.pm,v 1.20 2012/11/20 15:36:06 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -373,7 +371,7 @@ sub MailAccountBackendList {
         my $GenericModule = "Kernel::System::MailAccount::$File";
 
         # try to load module $GenericModule
-        if ( eval "require $GenericModule" ) {
+        if ( eval "require $GenericModule" ) {    ## no critic
             if ( eval { $GenericModule->new( %{$Self} ) } ) {
                 $Backends{$File} = $File;
             }
@@ -486,6 +484,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.20 $ $Date: 2012/11/20 15:36:06 $
+$Revision: 1.20 $ $Date: 2012-11-20 15:36:06 $
 
 =cut

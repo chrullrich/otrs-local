@@ -1,8 +1,6 @@
 # --
 # Kernel/System/Ticket.pm - all ticket functions
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: Ticket.pm,v 1.587 2013/01/14 12:28:01 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -906,23 +904,23 @@ sub TicketSubjectClean {
     my $TicketSubjectFwd = $Self->{ConfigObject}->Get('Ticket::SubjectFwd');
 
     # remove all possible ticket hook formats with []
-    $Subject =~ s/\[$TicketHook: $Param{TicketNumber}\]\s*//g;
-    $Subject =~ s/\[$TicketHook:$Param{TicketNumber}\]\s*//g;
-    $Subject =~ s/\[$TicketHook$TicketHookDivider$Param{TicketNumber}\]\s*//g;
+    $Subject =~ s/\[\Q$TicketHook: $Param{TicketNumber}\E\]\s*//g;
+    $Subject =~ s/\[\Q$TicketHook:$Param{TicketNumber}\E\]\s*//g;
+    $Subject =~ s/\[\Q$TicketHook$TicketHookDivider$Param{TicketNumber}\E\]\s*//g;
 
     # remove all ticket numbers with []
     if ( $Self->{ConfigObject}->Get('Ticket::SubjectCleanAllNumbers') ) {
-        $Subject =~ s/\[$TicketHook$TicketHookDivider\d+?\]\s*//g;
+        $Subject =~ s/\[\Q$TicketHook$TicketHookDivider\E\d+?\]\s*//g;
     }
 
     # remove all possible ticket hook formats without []
-    $Subject =~ s/$TicketHook: $Param{TicketNumber}\s*//g;
-    $Subject =~ s/$TicketHook:$Param{TicketNumber}\s*//g;
-    $Subject =~ s/$TicketHook$TicketHookDivider$Param{TicketNumber}\s*//g;
+    $Subject =~ s/\Q$TicketHook: $Param{TicketNumber}\E\s*//g;
+    $Subject =~ s/\Q$TicketHook:$Param{TicketNumber}\E\s*//g;
+    $Subject =~ s/\Q$TicketHook$TicketHookDivider$Param{TicketNumber}\E\s*//g;
 
     # remove all ticket numbers without []
     if ( $Self->{ConfigObject}->Get('Ticket::SubjectCleanAllNumbers') ) {
-        $Subject =~ s/$TicketHook$TicketHookDivider\d+?\s*//g;
+        $Subject =~ s/\Q$TicketHook$TicketHookDivider\E\d+?\s*//g;
     }
 
     # remove leading "..:\s" and "..[\d+]:\s" e. g. "Re: " or "Re[5]: "
@@ -4826,7 +4824,7 @@ sub HistoryTicketGet {
             }
         }
         elsif (
-            $Row[1]    eq 'StateUpdate'
+            $Row[1] eq 'StateUpdate'
             || $Row[1] eq 'Close successful'
             || $Row[1] eq 'Close unsuccessful'
             || $Row[1] eq 'Open'
@@ -4834,7 +4832,7 @@ sub HistoryTicketGet {
             )
         {
             if (
-                $Row[0]    =~ /^\%\%(.+?)\%\%(.+?)(\%\%|)$/
+                $Row[0] =~ /^\%\%(.+?)\%\%(.+?)(\%\%|)$/
                 || $Row[0] =~ /^Old: '(.+?)' New: '(.+?)'/
                 || $Row[0] =~ /^Changed Ticket State from '(.+?)' to '(.+?)'/
                 )
@@ -7970,6 +7968,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.587 $ $Date: 2013/01/14 12:28:01 $
+$Revision: 1.587 $ $Date: 2013-01-14 12:28:01 $
 
 =cut

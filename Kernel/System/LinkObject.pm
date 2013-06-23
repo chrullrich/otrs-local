@@ -1,8 +1,6 @@
 # --
 # Kernel/System/LinkObject.pm - to link objects
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: LinkObject.pm,v 1.69 2013/01/21 16:14:26 ub Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -2437,6 +2435,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.69 $ $Date: 2013/01/21 16:14:26 $
+$Revision: 1.69 $ $Date: 2013-01-21 16:14:26 $
 
 =cut

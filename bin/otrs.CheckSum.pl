@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
-# bin/otrs.CheckSum.pl - a tool to compare changes in a installation
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.CheckSum.pl,v 1.16 2013/01/22 10:14:09 mg Exp $
+# bin/otrs.CheckSum.pl - a tool to compare changes in an installation
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -47,7 +45,7 @@ my %Opts;
 getopt( 'habd', \%Opts );
 if ( exists $Opts{h} || !keys %Opts ) {
     print "otrs.CheckSum.pl <Revision $VERSION> - OTRS check sum\n";
-    print "Copyright (C) 2001-2013 OTRS AG, http://otrs.org/\n";
+    print "Copyright (C) 2001-2013 OTRS AG, http://otrs.com/\n";
     print
         "usage: otrs.CheckSum.pl -a create|compare [-b /path/to/ARCHIVE] [-d /path/to/framework]\n";
     exit 1;
@@ -66,12 +64,14 @@ else {
     $Archive = $Start . 'ARCHIVE';
 }
 
+my $Output;
+
 if ( $Action eq 'create' ) {
     print "Writing $Archive ...";
-    open( OUT, '>', $Archive ) || die "ERROR: Can't open: $Archive";
+    open( $Output, '>', $Archive ) || die "ERROR: Can't open: $Archive";    ## no critic
 }
 else {
-    open( my $In, '<', $Archive ) || die "ERROR: Can't open: $Archive";
+    open( my $In, '<', $Archive ) || die "ERROR: Can't open: $Archive";     ## no critic
     while (<$In>) {
         my @Row = split( /::/, $_ );
         chomp $Row[1];
@@ -89,13 +89,15 @@ for my $File ( sort keys %Compare ) {
 }
 if ( $Action eq 'create' ) {
     print " done.\n";
-    close OUT;
+    close $Output;
 }
 
 sub R {
     my $In = shift;
 
     my @List = glob("$In/*");
+
+    FILE:
     for my $File (@List) {
 
         # clean up directory name
@@ -104,13 +106,13 @@ sub R {
         # always stay in OTRS directory
         next FILE if $File !~ /^\Q$Start\E/;
 
-        # ignote cvs directories
-        next if $File =~ /Entries|Repository|Root|CVS|ARCHIVE/;
+        # ignore source code directories, ARCHIVE file
+        next if $File =~ /Entries|Repository|Root|CVS|.git|ARCHIVE/;
 
         # if it's a directory
         if ( -d $File ) {
             R($File);
-            next;
+            next FILE;
 
             # print "Directory: $File\n";
         }
@@ -124,21 +126,21 @@ sub R {
         $File =~ s/^\/(.*)$/$1/;
 
         # ignore directories
-        next if $File =~ /^doc\//;
-        next if $File =~ /^var\/tmp/;
-        next if $File =~ /^var\/article/;
-        next if $File =~ /js-cache/;
-        next if $File =~ /css-cache/;
+        next      if $File =~ /^doc\//;
+        next FILE if $File =~ /^var\/tmp/;
+        next FILE if $File =~ /^var\/article/;
+        next FILE if $File =~ /js-cache/;
+        next FILE if $File =~ /css-cache/;
 
         # next if not readable
         # print "File: $File\n";
-        open( my $In, '<', $OrigFile ) || die "ERROR: $!";
-        my $ctx = Digest::MD5->new;
-        $ctx->addfile($In);
-        my $Digest = $ctx->hexdigest();
+        open( my $In, '<', $OrigFile ) || die "ERROR: $!";    ## no critic
+        my $DigestGenerator = Digest::MD5->new();
+        $DigestGenerator->addfile($In);
+        my $Digest = $DigestGenerator->hexdigest();
         close $In;
         if ( $Action eq 'create' ) {
-            print OUT $Digest . '::' . $File . "\n";
+            print $Output $Digest . '::' . $File . "\n";
         }
         else {
             if ( !$Compare{$File} ) {

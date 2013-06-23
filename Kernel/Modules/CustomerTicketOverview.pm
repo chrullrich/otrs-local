@@ -1,8 +1,6 @@
 # --
 # Kernel/Modules/CustomerTicketOverview.pm - status for all open tickets
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: CustomerTicketOverview.pm,v 1.18 2013/02/11 10:43:29 mn Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you

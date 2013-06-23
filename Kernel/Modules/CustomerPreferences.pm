@@ -1,8 +1,6 @@
 # --
 # Kernel/Modules/CustomerPreferences.pm - provides agent preferences
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: CustomerPreferences.pm,v 1.36 2012/11/20 14:53:29 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -109,7 +107,7 @@ sub Run {
             );
         }
 
-        # rediect
+        # redirect
         return $Self->{LayoutObject}->Redirect(
             OP => "Action=CustomerPreferences;Priority=$Priority;Message=$Message",
         );

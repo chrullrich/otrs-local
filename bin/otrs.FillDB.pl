@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.FillDB.pl - fill db with demo data
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.FillDB.pl,v 1.21 2013/02/04 14:48:31 mb Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -340,10 +338,11 @@ EOF
                 . '/scripts/test/sample/PostMaster/PostMaster-Test*.box';
             my $File    = $Files[ int( rand( $#Files + 1 ) ) ];
             my @Content = ();
-            open( IN, '<', $File ) || die $!;
+            my $Input;
+            open( $Input, '<', $File ) || die $!;    ## no critic
 
             #    binmode(IN);
-            while ( my $Line = <IN> ) {
+            while ( my $Line = <$Input> ) {
                 if ( $Line =~ /^Subject:/ ) {
                     $Line = 'Subject: ' . $CommonObjects->{TicketObject}->TicketSubjectBuild(
                         TicketNumber => $Ticket{TicketNumber},
@@ -352,7 +351,7 @@ EOF
                 }
                 push( @Content, $Line );
             }
-            close(IN);
+            close($Input);
 
             my $PostMasterObject = Kernel::System::PostMaster->new(
                 %{$CommonObjects},

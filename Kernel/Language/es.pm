@@ -7,8 +7,6 @@
 # Copyright (C) 2009 Emiliano Gonzalez <egonzalez@ergio.com.ar>
 # Copyright (C) 2013 Enrique Matías Sánchez <quique@unizar.es>
 # --
-# $Id: es.pm,v 1.164 2013/02/14 11:45:45 mg Exp $
-# --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
@@ -26,7 +24,7 @@ sub Data {
     my $Self = shift;
 
     # $$START$$
-    # Last translation file sync: 2013-02-14 13:01:32
+    # Last translation file sync: 2013-03-07 10:55:08
 
     # possible charsets
     $Self->{Charset} = ['utf-8', ];
@@ -879,6 +877,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Gestión de clientes',
+        'Back to search result' => '',
         'Add customer' => 'Añadir un cliente',
         'Select' => 'Seleccionar',
         'Hint' => 'Consejo',
@@ -1602,6 +1601,7 @@ sub Data {
         'ArticleType' => '',
         'Display' => '',
         'Edit Field Details' => '',
+        'Customer interface does not support internal article types.' => '',
 
         # Template: AdminProcessManagementPath
         'Path' => '',
@@ -2621,7 +2621,7 @@ sub Data {
         'A new database user with limited rights will be created for this OTRS system.' =>
             '',
         'default \'hot\'' => 'por defecto \'hot\'',
-        'DB--- host' => '',
+        'DB host' => '',
         'Check database settings' => '',
         'Result of database check' => '',
 
@@ -3488,6 +3488,8 @@ sub Data {
             '',
         'Determines the next possible ticket states, after the creation of a new phone ticket in the agent interface.' =>
             '',
+        'Determines the next possible ticket states, for process tickets in the agent interface.' =>
+            '',
         'Determines the next screen after new customer ticket in the customer interface.' =>
             '',
         'Determines the next screen after the follow up screen of a zoomed ticket in the customer interface.' =>
@@ -3847,8 +3849,6 @@ sub Data {
         'Maximum number of tickets to be displayed in the result of a search in the agent interface.' =>
             '',
         'Maximum number of tickets to be displayed in the result of a search in the customer interface.' =>
-            '',
-        'Maximum size (in characters) of the customer info table in the queue view.' =>
             '',
         'Maximum size (in characters) of the customer information table in the ticket zoom view.' =>
             '',
@@ -4534,6 +4534,7 @@ sub Data {
         #
         # OBSOLETE ENTRIES FOR REFERENCE, DO NOT TRANSLATE!
         #
+
     };
     # $$STOP$$
     return;

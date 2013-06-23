@@ -1,8 +1,6 @@
 # --
 # Kernel/GenericInterface/Requester.pm - GenericInterface Requester handler
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: Requester.pm,v 1.15 2012/11/20 14:27:43 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -260,7 +258,7 @@ sub Run {
                 Summary => 'MappingOut could not be initialized',
                 Data    => $MappingOutObject,
             );
-            return $Self->DebuggerObject->Error(
+            return $Self->{DebuggerObject}->Error(
                 Summary => $FunctionResult->{ErrorMessage},
             );
         }
@@ -270,7 +268,7 @@ sub Run {
         );
 
         if ( !$FunctionResult->{Success} ) {
-            return $Self->DebuggerObject->Error(
+            return $Self->{DebuggerObject}->Error(
                 Summary => $FunctionResult->{ErrorMessage},
             );
         }
@@ -405,6 +403,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.15 $ $Date: 2012/11/20 14:27:43 $
+$Revision: 1.15 $ $Date: 2012-11-20 14:27:43 $
 
 =cut

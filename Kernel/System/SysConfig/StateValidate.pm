@@ -1,8 +1,6 @@
 # --
 # Kernel/System/SysConfig/StateValidate.pm - all StateValidate functions
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: StateValidate.pm,v 1.7 2012/11/20 15:58:03 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -315,7 +313,7 @@ sub _GetAutoCorrectValue {
     my %State2ID = reverse %States;
 
     # try to find the state 'open'
-    if ( $State2ID{open} ) {
+    if ( $State2ID{'open'} ) {
         return 'open';
     }
 
@@ -357,6 +355,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.7 $ $Date: 2012/11/20 15:58:03 $
+$Revision: 1.7 $ $Date: 2012-11-20 15:58:03 $
 
 =cut

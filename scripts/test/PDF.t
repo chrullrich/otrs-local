@@ -1,8 +1,6 @@
 # --
 # PDF.t - PDF tests
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: PDF.t,v 1.23 2012/11/20 16:07:17 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -12,6 +10,7 @@
 use strict;
 use warnings;
 use vars (qw($Self));
+use utf8;
 
 use Kernel::System::PDF;
 
@@ -64,7 +63,7 @@ $Self->True(
 );
 
 # test _StringWidth() - test width calculation
-my $StringWidthText   = 'abcikwAXIJWZ 123 öäüß !$-';
+my $StringWidthText   = 'abcikwAXIJWZ 123 Ã¶Ã¤Ã¼ÃŸ !$-';
 my @StringWidthReturn = (
     123.38, 117.82, 115.04, 112.26, 106.15, 100.59, 95.03, 89.47, 86.69, 81.13,
     75.57, 70.01, 67.23, 61.12, 51.68, 46.68, 43.9, 37.23, 30.56, 23.34, 18.34,
@@ -347,9 +346,9 @@ for ( sort keys %TextCalculateData ) {
     if (
         $Return{State} eq $TextCalculateData{$Test}{State}
         &&
-        $Return{RequiredWidth}  eq $TextCalculateData{$Test}{RequiredWidth} &&
+        $Return{RequiredWidth} eq $TextCalculateData{$Test}{RequiredWidth}   &&
         $Return{RequiredHeight} eq $TextCalculateData{$Test}{RequiredHeight} &&
-        $Return{LeftOver}       eq $TextCalculateData{$Test}{LeftOver} &&
+        $Return{LeftOver} eq $TextCalculateData{$Test}{LeftOver}             &&
         $PossibleRowsOK
         )
     {
@@ -529,9 +528,9 @@ for ( sort keys %TextData ) {
     if (
         $Return{State} eq $TextData{$Test}{State}
         &&
-        $Return{RequiredWidth}  eq $TextData{$Test}{RequiredWidth} &&
+        $Return{RequiredWidth} eq $TextData{$Test}{RequiredWidth}   &&
         $Return{RequiredHeight} eq $TextData{$Test}{RequiredHeight} &&
-        $Return{LeftOver}       eq $TextData{$Test}{LeftOver}
+        $Return{LeftOver} eq $TextData{$Test}{LeftOver}
         )
     {
         $TestOk = 1;
@@ -725,11 +724,11 @@ for ( sort keys %TextData2 ) {
     if (
         $Return{State} eq $TextData2{$Test}{State}
         &&
-        $Return{RequiredWidth}  eq $TextData2{$Test}{RequiredWidth} &&
+        $Return{RequiredWidth} eq $TextData2{$Test}{RequiredWidth}   &&
         $Return{RequiredHeight} eq $TextData2{$Test}{RequiredHeight} &&
-        $Return{LeftOver}       eq $TextData2{$Test}{LeftOver} &&
-        $Position{X}            eq $TextData2{$Test}{PositionReturnX} &&
-        $Position{Y}            eq $TextData2{$Test}{PositionReturnY}
+        $Return{LeftOver} eq $TextData2{$Test}{LeftOver}             &&
+        $Position{X} eq $TextData2{$Test}{PositionReturnX}           &&
+        $Position{Y} eq $TextData2{$Test}{PositionReturnY}
         )
     {
         $TestOk = 1;
@@ -1771,9 +1770,9 @@ for ( sort keys %TableCalculate ) {
             $Return{ColumnData}->[$CounterColumn]->{Width} eq $Column->{Width}
             &&
             $Return{ColumnData}->[$CounterColumn]->{EstimateWidth} eq $Column->{EstimateWidth} &&
-            $Return{ColumnData}->[$CounterColumn]->{TextWidth}     eq $Column->{TextWidth} &&
-            $Return{ColumnData}->[$CounterColumn]->{OutputWidth}   eq $Column->{OutputWidth} &&
-            $Return{ColumnData}->[$CounterColumn]->{Block}         eq $Column->{Block}
+            $Return{ColumnData}->[$CounterColumn]->{TextWidth} eq $Column->{TextWidth}         &&
+            $Return{ColumnData}->[$CounterColumn]->{OutputWidth} eq $Column->{OutputWidth}     &&
+            $Return{ColumnData}->[$CounterColumn]->{Block} eq $Column->{Block}
             )
         {
             $TestColumnOk = 1;
@@ -2387,10 +2386,10 @@ for ( sort keys %TableBlockNextCalculate ) {
     if (
         $Return{State} eq $TableBlockNextCalculate{$Test}{State}
         &&
-        $Return{ReturnBlock}       eq $TableBlockNextCalculate{$Test}{ReturnBlock} &&
-        $Return{ReturnRowStart}    eq $TableBlockNextCalculate{$Test}{ReturnRowStart} &&
+        $Return{ReturnBlock} eq $TableBlockNextCalculate{$Test}{ReturnBlock}             &&
+        $Return{ReturnRowStart} eq $TableBlockNextCalculate{$Test}{ReturnRowStart}       &&
         $Return{ReturnColumnStart} eq $TableBlockNextCalculate{$Test}{ReturnColumnStart} &&
-        $Return{ReturnColumnStop}  eq $TableBlockNextCalculate{$Test}{ReturnColumnStop}
+        $Return{ReturnColumnStop} eq $TableBlockNextCalculate{$Test}{ReturnColumnStop}
         )
     {
         $TestOk = 1;
@@ -2722,14 +2721,15 @@ $Self->True(
 );
 
 my %CharsetTestData1;
-open( IN,
-    "< " . $Self->{ConfigObject}->Get('Home') . "/scripts/test/sample/PDF/PDF-test1-iso-8859-1.txt"
-    )
+## no critic
+open my $IN1, '<',
+    $Self->{ConfigObject}->Get('Home') . '/scripts/test/sample/PDF/PDF-test1-iso-8859-1.txt'
     || die $!;
-while (<IN>) {
+## use critic
+while (<$IN1>) {
     $CharsetTestData1{Text} .= $_;
 }
-close(IN);
+close $IN1;
 
 $CharsetTestData1{Type}           = 'ReturnLeftOver';
 $CharsetTestData1{Font}           = 'Testfont2';
@@ -2756,9 +2756,9 @@ my $CharsetTest1Ok = 0;
 if (
     $ReturnCharsetTestData1{State} eq $CharsetTestData1{State}
     &&
-    $ReturnCharsetTestData1{RequiredWidth}  eq $CharsetTestData1{RequiredWidth} &&
+    $ReturnCharsetTestData1{RequiredWidth} eq $CharsetTestData1{RequiredWidth}   &&
     $ReturnCharsetTestData1{RequiredHeight} eq $CharsetTestData1{RequiredHeight} &&
-    $ReturnCharsetTestData1{LeftOver}       eq $CharsetTestData1{LeftOver}
+    $ReturnCharsetTestData1{LeftOver} eq $CharsetTestData1{LeftOver}
     )
 {
     $CharsetTest1Ok = 1;
@@ -2808,14 +2808,14 @@ $Self->True(
 );
 
 my %CharsetTestData2;
-open( IN,
-    "< " . $Self->{ConfigObject}->Get('Home') . "/scripts/test/sample/PDF/PDF-test1-utf-8.txt"
-    )
-    || die $!;
-while (<IN>) {
+## no critic
+open my $IN2, '<',
+    $Self->{ConfigObject}->Get('Home') . '/scripts/test/sample/PDF/PDF-test1-utf-8.txt' || die $!;
+## use critic
+while (<$IN2>) {
     $CharsetTestData2{Text} .= $_;
 }
-close(IN);
+close $IN2;
 
 $CharsetTestData2{Type}           = 'ReturnLeftOver';
 $CharsetTestData2{Font}           = 'Testfont2';
@@ -2842,9 +2842,9 @@ my $CharsetTest2Ok = 0;
 if (
     $ReturnCharsetTestData2{State} eq $CharsetTestData2{State}
     &&
-    $ReturnCharsetTestData2{RequiredWidth}  eq $CharsetTestData2{RequiredWidth} &&
+    $ReturnCharsetTestData2{RequiredWidth} eq $CharsetTestData2{RequiredWidth}   &&
     $ReturnCharsetTestData2{RequiredHeight} eq $CharsetTestData2{RequiredHeight} &&
-    $ReturnCharsetTestData2{LeftOver}       eq $CharsetTestData2{LeftOver}
+    $ReturnCharsetTestData2{LeftOver} eq $CharsetTestData2{LeftOver}
     )
 {
     $CharsetTest2Ok = 1;
@@ -2894,14 +2894,14 @@ $Self->True(
 );
 
 my %CharsetTestData3;
-open( IN,
-    "< " . $Self->{ConfigObject}->Get('Home') . "/scripts/test/sample/PDF/PDF-test2-utf-8.txt"
-    )
-    || die $!;
-while (<IN>) {
+## no critic
+open my $IN3, '<',
+    $Self->{ConfigObject}->Get('Home') . '/scripts/test/sample/PDF/PDF-test2-utf-8.txt' || die $!;
+## use critic
+while (<$IN3>) {
     $CharsetTestData3{Text} .= $_;
 }
-close(IN);
+close $IN3;
 
 $CharsetTestData3{Type}           = 'ReturnLeftOver';
 $CharsetTestData3{Font}           = 'Testfont1';
@@ -2928,9 +2928,9 @@ my $CharsetTest3Ok = 0;
 if (
     $ReturnCharsetTestData3{State} eq $CharsetTestData3{State}
     &&
-    $ReturnCharsetTestData3{RequiredWidth}  eq $CharsetTestData3{RequiredWidth} &&
+    $ReturnCharsetTestData3{RequiredWidth} eq $CharsetTestData3{RequiredWidth}   &&
     $ReturnCharsetTestData3{RequiredHeight} eq $CharsetTestData3{RequiredHeight} &&
-    $ReturnCharsetTestData3{LeftOver}       eq $CharsetTestData3{LeftOver}
+    $ReturnCharsetTestData3{LeftOver} eq $CharsetTestData3{LeftOver}
     )
 {
     $CharsetTest3Ok = 1;

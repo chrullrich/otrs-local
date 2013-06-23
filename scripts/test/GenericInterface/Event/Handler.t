@@ -1,8 +1,6 @@
 # --
 # Handler.t - GenericInterface event handler tests
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: Handler.t,v 1.16 2012/12/12 05:34:18 cr Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -135,13 +133,18 @@ my @Tests = (
         ValidID      => 2,
         Success      => 0,
     },
+    # to add the Web Service is needed to have the Requester Transport and Type
     {
         Name             => 'Synchronous event call - Empty Requester configuration',
         WebserviceConfig => {
             Debugger => {
                 DebugThreshold => 'debug',
             },
-            Requester => {},
+            Requester => {
+                Transport => {
+                    Type => '',
+                },
+            },
         },
         Asynchronous => 0,
         ValidID      => 1,
@@ -488,7 +491,7 @@ $CurrentSchedulerStatus = `$Scheduler -a status`;
 
 # remove the process id
 $PreviousSchedulerStatus =~ s{\d}{}g;
-$CurrentSchedulerStatus  =~ s{\d}{}g;
+$CurrentSchedulerStatus =~ s{\d}{}g;
 
 $Self->Is(
     $CurrentSchedulerStatus,

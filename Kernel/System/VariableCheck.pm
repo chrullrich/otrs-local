@@ -1,8 +1,6 @@
 # --
 # Kernel/System/VariableCheck.pm - helpers to check variables
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: VariableCheck.pm,v 1.10 2012/11/20 15:41:22 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -18,7 +16,7 @@ use vars qw(@ISA $VERSION @EXPORT_OK %EXPORT_TAGS);
 $VERSION = qw($Revision: 1.10 $) [1];
 
 use Exporter;
-%EXPORT_TAGS = (
+%EXPORT_TAGS = (    ## no critic
     all => [
         'IsArrayRefWithData',
         'IsHashRefWithData',
@@ -164,7 +162,7 @@ returns 1 if data matches criteria or undef otherwise
 sub IsArrayRefWithData {
     my $TestData = $_[0];
 
-    return if scalar @_     ne 1;
+    return if scalar @_ ne 1;
     return if ref $TestData ne 'ARRAY';
     return if !@{$TestData};
 
@@ -189,7 +187,7 @@ returns 1 if data matches criteria or undef otherwise
 sub IsHashRefWithData {
     my $TestData = $_[0];
 
-    return if scalar @_     ne 1;
+    return if scalar @_ ne 1;
     return if ref $TestData ne 'HASH';
     return if !%{$TestData};
 
@@ -545,6 +543,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.10 $ $Date: 2012/11/20 15:41:22 $
+$Revision: 1.10 $ $Date: 2012-11-20 15:41:22 $
 
 =cut

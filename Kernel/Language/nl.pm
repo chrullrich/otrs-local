@@ -6,9 +6,7 @@
 # Copyright (C) 2005-2007 Jurgen Rutgers <jurgen 'at' besite.nl>
 # Copyright (C) 2005-2007 Richard Hinkamp <richard 'at' besite.nl>
 # Copyright (C) 2010 Ton van Boven <ton 'at' avebo.nl>
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: nl.pm,v 1.202 2013/01/31 13:10:44 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -27,7 +25,7 @@ sub Data {
     my $Self = shift;
 
     # $$START$$
-    # Last translation file sync: 2013-01-31 13:59:50
+    # Last translation file sync: 2013-03-07 10:55:24
 
     # possible charsets
     $Self->{Charset} = ['utf-8', ];
@@ -880,6 +878,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Beheer klanten',
+        'Back to search result' => '',
         'Add customer' => 'Nieuwe klant',
         'Select' => 'Selecteer',
         'Hint' => 'Opmerking',
@@ -1603,9 +1602,11 @@ sub Data {
         'ArticleType' => 'Interactie-type',
         'Display' => 'Weergave',
         'Edit Field Details' => 'Bewerk veld-details',
+        'Customer interface does not support internal article types.' => '',
 
         # Template: AdminProcessManagementPath
         'Path' => 'Pad',
+        'Edit this transition' => 'Bewerk transitie',
         'Transition Actions' => 'Transitie-acties',
         'You can assign Transition Actions to this Transition by dragging the elements with the mouse from the left list to the right list.' =>
             'U kunt transitie-acties aan deze transitie toevoegen door de elementen met de muis van links naar rechts te slepen.',
@@ -1628,6 +1629,7 @@ sub Data {
 
         # Template: AdminProcessManagementProcessEdit
         'Edit Process' => 'Bewerk proces',
+        'Print process information' => 'Print proces',
         'Delete Process' => 'Verwijder proces',
         'Delete Inactive Process' => 'Verwijder inactief proces',
         'Available Process Elements' => 'Beschikbare proces-elementen',
@@ -1653,8 +1655,13 @@ sub Data {
         'Do you really want to delete this Activity Dialog?' => 'Wilt u deze dialoog verwijderen?',
         'Do you really want to delete this Transition?' => 'Wilt u deze transitie verwijderen?',
         'Do you really want to delete this Transition Action?' => 'Wilt u deze transitie-actie verwijderen?',
+        'Do you really want to remove this activity from the canvas? This can only be undone by leaving this screen without saving.' =>
+            'Wilt u deze activiteit van de canvas verwijderen? Dit kan alleen ongedaan worden gemaakt door dit scherm te verlaten zonder opslaan.',
+        'Do you really want to remove this transition from the canvas? This can only be undone by leaving this screen without saving.' =>
+            'Wilt u deze transitie van de canvas verwijderen? Dit kan alleen ongedaan worden gemaakt door dit scherm te verlaten zonder opslaan.',
         'Hide EntityIDs' => 'Verberg ID\'s',
         'Delete Entity' => 'Verwijderen',
+        'Remove Entity from canvas' => 'Verwijder van canvas',
         'This Activity is already used in the Process. You cannot add it twice!' =>
             'Deze activiteit wordt al gebruikt in dit proces. U kunt het niet tweemaal gebruiken.',
         'This Activity cannot be deleted because it is the Start Activity.' =>
@@ -1665,10 +1672,6 @@ sub Data {
             'Deze transitie-actie wordt al gebruikt in dit pad. U kunt het niet tweemaal gebruiken.',
         'No TransitionActions assigned.' => 'Geen transitie-acties toegewezen.',
         'The Start Event cannot loose the Start Transition!' => 'Het start-event kan niet de start-transitie kwijtraken.',
-        'Do you really want to remove this activity from the canvas? This can only be undone by leaving this screen without saving.' =>
-            'Wilt u deze activiteit van de canvas verwijderen? Dit kan alleen ongedaan worden gemaakt door dit scherm te verlaten zonder opslaan.',
-        'Do you really want to remove this transition from the canvas? This can only be undone by leaving this screen without saving.' =>
-            'Wilt u deze transitie van de canvas verwijderen? Dit kan alleen ongedaan worden gemaakt door dit scherm te verlaten zonder opslaan.',
         'No dialogs assigned yet. Just pick an activity dialog from the list on the left and drag it here.' =>
             'Er zijn nog geen dialogen toegewezen. Kies een dialoog uit de lijst en sleep deze hiernaartoe.',
 
@@ -1677,24 +1680,26 @@ sub Data {
             'In dit scherm kunt u een nieuw proces aanmaken. Om het nieuwe proces beschikbaar te maken voor uw gebruikers moet u de status op \'Actief\' zetten en vervolgens een synchronisatie uitvoeren.',
 
         # Template: AdminProcessManagementProcessPrint
-        'Contains %s dialog(s)' => '',
-        'Assigned dialogs' => '',
-        'Activities are not being used in this process.' => '',
-        'Assigned fields' => '',
-        'Activity dialogs are not being used in this process.' => '',
-        'Transitions are not being used in this process.' => '',
-        'Module name' => '',
-        'Configuration' => '',
-        'Transition actions are not being used in this process.' => '',
+        'Start Activity' => 'Start activiteit',
+        'Contains %s dialog(s)' => 'Bevat %s dialoog(en)',
+        'Assigned dialogs' => 'Toegewezen dialogen',
+        'Activities are not being used in this process.' => 'Er zijn geen activiteiten in dit proces.',
+        'Assigned fields' => 'Toegewezen velden',
+        'Activity dialogs are not being used in this process.' => 'Er zijn geen dialogen in dit proces.',
+        'Condition linking' => 'Contities koppelen',
+        'Conditions' => 'Condities',
+        'Condition' => 'Conditie',
+        'Transitions are not being used in this process.' => 'Er zijn geen overgangen in dit proces.',
+        'Module name' => 'Modulenaam',
+        'Configuration' => 'Configuratie',
+        'Transition actions are not being used in this process.' => 'Er zijn geen transitie-acties in dit proces.',
 
         # Template: AdminProcessManagementTransition
         'Please note that changing this transition will affect the following processes' =>
             'Let op: het wijzigen van deze transitie heeft invloed op de volgende processen',
         'Transition' => 'Transitie',
         'Transition Name' => 'Naam',
-        'Conditions' => 'Condities',
         'Type of Linking between Conditions' => 'Type koppeling tussen condities',
-        'Condition' => 'Conditie',
         'Remove this Condition' => 'Verwijder conditie',
         'Type of Linking' => 'Type koppeling',
         'Remove this Field' => 'Verwijder dit veld',
@@ -2617,7 +2622,7 @@ sub Data {
         'A new database user with limited rights will be created for this OTRS system.' =>
             'Een nieuwe database gebruiker met beperkte permissies wordt aangemaakt voor deze OTRS omgeving.',
         'default \'hot\'' => 'Standaard \'hot\'',
-        'DB--- host' => 'Database host',
+        'DB host' => 'Database host',
         'Check database settings' => 'Test database instellingen',
         'Result of database check' => 'Resultaat van database test',
 
@@ -3484,6 +3489,8 @@ sub Data {
             '',
         'Determines the next possible ticket states, after the creation of a new phone ticket in the agent interface.' =>
             '',
+        'Determines the next possible ticket states, for process tickets in the agent interface.' =>
+            '',
         'Determines the next screen after new customer ticket in the customer interface.' =>
             '',
         'Determines the next screen after the follow up screen of a zoomed ticket in the customer interface.' =>
@@ -3843,8 +3850,6 @@ sub Data {
         'Maximum number of tickets to be displayed in the result of a search in the agent interface.' =>
             '',
         'Maximum number of tickets to be displayed in the result of a search in the customer interface.' =>
-            '',
-        'Maximum size (in characters) of the customer info table in the queue view.' =>
             '',
         'Maximum size (in characters) of the customer information table in the ticket zoom view.' =>
             '',

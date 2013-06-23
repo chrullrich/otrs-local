@@ -1,8 +1,6 @@
 # --
 # Kernel/GenericInterface/Transport/HTTP/SOAP.pm - GenericInterface network transport interface for HTTP::SOAP
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: SOAP.pm,v 1.54 2012/12/05 15:06:21 cr Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -184,8 +182,10 @@ sub ProviderProcessRequest {
     }
 
     # convert charset if necessary
-    my $ContentCharset = $1
-        if $ENV{'CONTENT_TYPE'} =~ m{ \A .* charset= ["']? ( [^"']+ ) ["']? \z }xmsi;
+    my $ContentCharset;
+    if ( $ENV{'CONTENT_TYPE'} =~ m{ \A .* charset= ["']? ( [^"']+ ) ["']? \z }xmsi ) {
+        $ContentCharset = $1;
+    }
     if ( $ContentCharset && $ContentCharset !~ m{ \A utf [-]? 8 \z }xmsi ) {
         $Content = $Self->{EncodeObject}->Convert2CharsetInternal(
             Text => $Content,
@@ -816,7 +816,7 @@ sub _Output {
     # this solution to set the binmode in the constructor and then :utf8 layer before the response
     # is sent  apparently works in all situations. ( linux circumstances to requires :raw was no
     # reproducible, and not tested in this solution).
-    binmode STDOUT, ':utf8';
+    binmode STDOUT, ':utf8';    ## no critic
 
     # print data to http - '\r' is required according to HTTP RFCs
     my $StatusMessage = HTTP::Status::status_message( $Param{HTTPCode} );
@@ -1188,6 +1188,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.54 $ $Date: 2012/12/05 15:06:21 $
+$Revision: 1.54 $ $Date: 2012-12-05 15:06:21 $
 
 =cut

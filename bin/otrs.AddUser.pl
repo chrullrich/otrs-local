@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.AddUser.pl - Add User from CLI
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.AddUser.pl,v 1.9 2013/01/22 10:14:09 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -33,17 +31,6 @@ use lib dirname($RealBin) . '/Custom';
 use vars qw($VERSION);
 $VERSION = qw($Revision: 1.9 $) [1];
 
-my %opts;
-use Getopt::Std;
-getopt( 'flpge', \%opts );
-unless ( $ARGV[0] ) {
-    print
-        "$FindBin::Script [-f firstname] [-l lastname] [-p password] [-g groupname] [-e email] username\n";
-    print "\tif you define -g with a valid group name then the user will be added that group\n";
-    print "\n";
-    exit;
-}
-
 use Kernel::Config;
 use Kernel::System::Encode;
 use Kernel::System::Log;
@@ -51,6 +38,7 @@ use Kernel::System::Time;
 use Kernel::System::Main;
 use Kernel::System::DB;
 use Kernel::System::User;
+use Kernel::System::Group;
 
 # create common objects
 my %CommonObject = ();
@@ -65,8 +53,18 @@ $CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
 $CommonObject{DBObject}   = Kernel::System::DB->new(%CommonObject);
 $CommonObject{UserObject} = Kernel::System::User->new(%CommonObject);
 
+my %Options;
+use Getopt::Std;
+getopt( 'flpge', \%Options );
+unless ( $ARGV[0] ) {
+    print
+        "$FindBin::Script [-f firstname] [-l lastname] [-p password] [-g groupname] [-e email] username\n";
+    print "\tif you define -g with a valid group name then the user will be added that group\n";
+    print "\n";
+    exit;
+}
+
 my %Param;
-undef %Param;
 
 #user id of the person adding the record
 $Param{UserID} = '1';
@@ -74,24 +72,21 @@ $Param{UserID} = '1';
 #Validrecord
 $Param{ValidID} = '1';
 
-$Param{UserFirstname} = $opts{f};
-$Param{UserLastname}  = $opts{l};
-$Param{UserPw}        = $opts{p};
+$Param{UserFirstname} = $Options{f};
+$Param{UserLastname}  = $Options{l};
+$Param{UserPw}        = $Options{p};
 $Param{UserLogin}     = $ARGV[0];
-$Param{UserEmail}     = $opts{e};
+$Param{UserEmail}     = $Options{e};
 
 if ( $Param{UID} = $CommonObject{UserObject}->UserAdd( %Param, ChangeUserID => 1 ) ) {
     print "User added. user  id is $Param{UID}\n";
 }
 
-if ( $opts{g} ) {
+if ( $Options{g} ) {
 
-    # bring in the groups module
-    require Kernel::System::Group;
-    import Kernel::System::Group;
     $CommonObject{GroupObject} = Kernel::System::Group->new(%CommonObject);
 
-    $Param{Group} = $opts{g};
+    $Param{Group} = $Options{g};
 
     if ( $Param{GID} = $CommonObject{GroupObject}->GroupLookup(%Param) ) {
         print "Found Group.. GID is $Param{GID}", "\n";

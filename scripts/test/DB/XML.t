@@ -1,8 +1,6 @@
 # --
 # XML.t - database tests
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: XML.t,v 1.1 2013/01/29 10:46:24 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -410,7 +408,7 @@ $Self->True(
 );
 
 $Self->True(
-    ref( $DBObject->FetchrowArray() )     eq '' &&
+    ref( $DBObject->FetchrowArray() ) eq ''     &&
         ref( $DBObject->FetchrowArray() ) eq '' &&
         ref( $DBObject->FetchrowArray() ) eq '' &&
         ref( $DBObject->FetchrowArray() ) eq '',
@@ -823,11 +821,11 @@ my $Counter = 0;
 
 for my $Character (@SpecialCharacters) {
     $Self->{EncodeObject}->EncodeInput( \$Character );
-    my $name_b = $DBObject->Quote($Character);
+    my $NameB = $DBObject->Quote($Character);
 
     # insert
     my $Result = $DBObject->Do(
-        SQL => "INSERT INTO test_d (name_a, name_b) VALUES ( '$Counter', '$name_b' )",
+        SQL => "INSERT INTO test_d (name_a, name_b) VALUES ( '$Counter', '$NameB' )",
     );
     $Self->True(
         $Result,
@@ -860,7 +858,7 @@ for my $Character (@SpecialCharacters) {
 
     # select = value
     $Result = $DBObject->Prepare(
-        SQL   => "SELECT name_b FROM test_d WHERE name_b = '$name_b'",
+        SQL   => "SELECT name_b FROM test_d WHERE name_b = '$NameB'",
         Limit => 1,
     );
     $Self->True(
@@ -883,9 +881,9 @@ for my $Character (@SpecialCharacters) {
     }
 
     # select like value
-    $name_b = $DBObject->Quote( $Character, 'Like' );
+    $NameB = $DBObject->Quote( $Character, 'Like' );
     $Result = $DBObject->Prepare(
-        SQL   => "SELECT name_b FROM test_d WHERE name_b LIKE '$name_b'",
+        SQL   => "SELECT name_b FROM test_d WHERE name_b LIKE '$NameB'",
         Limit => 1,
     );
     $Self->True(
@@ -915,8 +913,8 @@ for my $Character (@SpecialCharacters) {
 {
 
     # select like value (with space)
-    my $name_b = $DBObject->Quote( 'otrs test', 'Like' );
-    my $SQL = "SELECT COUNT(name_b) FROM test_d WHERE name_b LIKE '$name_b'";
+    my $NameB = $DBObject->Quote( 'otrs test', 'Like' );
+    my $SQL = "SELECT COUNT(name_b) FROM test_d WHERE name_b LIKE '$NameB'";
 
     my $Result = $DBObject->Prepare(
         SQL   => $SQL,
@@ -924,7 +922,7 @@ for my $Character (@SpecialCharacters) {
     );
     $Self->True(
         $Result,
-        "#5.$Counter Prepare() SELECT COUNT LIKE $name_b (space)",
+        "#5.$Counter Prepare() SELECT COUNT LIKE $NameB (space)",
     );
     my $Count;
     while ( my @Row = $DBObject->FetchrowArray() ) {
@@ -937,8 +935,8 @@ for my $Character (@SpecialCharacters) {
     );
 
     # select like value (with underscore)
-    $name_b = $DBObject->Quote( 'otrs_test', 'Like' );
-    $SQL = "SELECT COUNT(name_b) FROM test_d WHERE name_b LIKE '$name_b'";
+    $NameB = $DBObject->Quote( 'otrs_test', 'Like' );
+    $SQL = "SELECT COUNT(name_b) FROM test_d WHERE name_b LIKE '$NameB'";
 
     # proof of concept that oracle needs special treatment
     # with underscores in LIKE argument, it always needs the ESCAPE parameter
@@ -955,7 +953,7 @@ for my $Character (@SpecialCharacters) {
     );
     $Self->True(
         $Result,
-        "#5.$Counter Prepare() SELECT COUNT LIKE $name_b (underscore)",
+        "#5.$Counter Prepare() SELECT COUNT LIKE $NameB (underscore)",
     );
     while ( my @Row = $DBObject->FetchrowArray() ) {
         $Count = $Row[0];
@@ -968,14 +966,14 @@ for my $Character (@SpecialCharacters) {
 
     # do the same again for oracle but without the ESCAPE and expect this to fail
     if ( $DBObject->GetDatabaseFunction('Type') eq 'oracle' ) {
-        $SQL    = "SELECT COUNT(name_b) FROM test_d WHERE name_b LIKE '$name_b'";
+        $SQL    = "SELECT COUNT(name_b) FROM test_d WHERE name_b LIKE '$NameB'";
         $Result = $DBObject->Prepare(
             SQL   => $SQL,
             Limit => 1,
         );
         $Self->True(
             $Result,
-            "#5.$Counter Prepare() SELECT COUNT LIKE $name_b (underscore)",
+            "#5.$Counter Prepare() SELECT COUNT LIKE $NameB (underscore)",
         );
         while ( my @Row = $DBObject->FetchrowArray() ) {
             $Count = $Row[0];

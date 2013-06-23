@@ -1,8 +1,6 @@
 # --
 # CustomerGroup.t - Customer Group tests
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: CustomerGroup.t,v 1.7 2012/11/20 16:05:40 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -510,7 +508,7 @@ $ResetMembership->(
             },
         ],
         ExpectedResult => [ $GroupObject->GroupLookup( GroupID => $GID1 ) ],
-        Success => 1,
+        Success        => 1,
         ResetMembership => 0,
     },
     {
@@ -534,7 +532,7 @@ $ResetMembership->(
             GroupID => undef,
         },
         ExpectedResult => { $GID1 => $GroupObject->GroupLookup( GroupID => $GID1 ), },
-        Success => 1,
+        Success        => 1,
         ResetMembership => 1,
     },
     {
@@ -561,7 +559,7 @@ $ResetMembership->(
             },
         ],
         ExpectedResult => [ $GroupObject->GroupLookup( GroupID => $GID1 ) ],
-        Success => 1,
+        Success        => 1,
         ResetMembership => 0,
     },
     {
@@ -585,7 +583,7 @@ $ResetMembership->(
             GroupID => $GID1,
         },
         ExpectedResult => { $UID => $GroupObject->GroupLookup( GroupID => $GID1 ), },
-        Success => 1,
+        Success        => 1,
         ResetMembership => 1,
     },
     {
@@ -923,7 +921,7 @@ for my $Test (@Tests) {
             GroupID => $GID1,
         },
         ExpectedResult => $GroupObject->GroupLookup( GroupID => $GID1 ),
-        Success => 1,
+        Success        => 1,
     },
 );
 

@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.CreateTranslationFile.pl - create new translation file
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: otrs.CreateTranslationFile.pl,v 1.40 2013/01/31 13:12:28 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -245,7 +243,7 @@ sub HandleLanguage {
     print "\nReading template files:\n";
 
     for my $File (@List) {
-        if ( open my $In, '<', $File ) {
+        if ( open my $In, '<', $File ) {    ## no critic
             my $Content = '';
             while ( my $Line = <$In> ) {
                 if ( $Line !~ /^#/ ) {
@@ -422,7 +420,7 @@ sub HandleLanguage {
 
             my $Translation = $LanguageObject->{Translation}->{$Key};
             $Translation =~ s/'/\\'/g;
-            $Key         =~ s/'/\\'/g;
+            $Key =~ s/'/\\'/g;
 
             # if a string was previously in a DTL, but has not yet been translated,
             # there's no need to preserve it in the translation file.
@@ -466,9 +464,7 @@ sub HandleLanguage {
         $NewOut = <<"EOF";
 $Separator
 # Kernel/Language/${Language}_$Module.pm - translation file
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-$Separator
-# \$Id\$
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 $Separator
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -490,7 +486,7 @@ EOF
 
     # translating the core
     else {
-        open( my $In, '<', $LanguageFile ) || die "Can't open: $LanguageFile\n";
+        open( my $In, '<', $LanguageFile ) || die "Can't open: $LanguageFile\n";    ## no critic
         while (<$In>) {
             if ( !$MetaData{DataPrinted} ) {
                 $NewOut .= $_;
@@ -553,7 +549,7 @@ EOF
     }
 
     print "Writing $TargetFile\n";
-    open( my $Out, '>', $TargetFile ) || die $!;
+    open( my $Out, '>', $TargetFile ) || die $!;    ## no critic
     print $Out $NewOut;
     close $Out;
 }

@@ -1,8 +1,6 @@
 # --
 # Kernel/Output/HTML/Layout.pm - provides generic HTML output
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: Layout.pm,v 1.420 2013/02/13 17:04:57 ub Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -22,7 +20,7 @@ use Mail::Address;
 use URI::Escape qw();
 
 use vars qw(@ISA $VERSION);
-$VERSION = qw($Revision: 1.420 $) [1];
+$VERSION = qw($Revision: 1.421 $) [1];
 
 =head1 NAME
 
@@ -547,7 +545,9 @@ sub Output {
         else {
             $File = "$Self->{TemplateDir}/../Standard/$Param{TemplateFile}.dtl";
         }
+        ## no critic
         if ( open my $TEMPLATEIN, '<', $File ) {
+            ## use critic
             $TemplateString = do { local $/; <$TEMPLATEIN> };
             close $TEMPLATEIN;
         }
@@ -1860,8 +1860,8 @@ sub Ascii2Html {
     }
 
     # max width
-    if ( $Param{Max} ) {
-        ${$Text} =~ s/^(.{$Param{Max}}).+?$/$1\[\.\.\.\]/gs;
+    if ( $Param{Max} && length ${$Text} > $Param{Max} ) {
+        ${$Text} = substr( ${$Text}, 0, $Param{Max} - 5 ) . '[...]';
     }
 
     # newline
@@ -3684,7 +3684,7 @@ sub CustomerNavigationBar {
             if (
                 !$SelectedFlag
                 && $NavBarModule{$Item}->{Link} =~ /Action=$Self->{Action}/
-                && $NavBarModule{$Item}->{Link} =~ /$Self->{Subaction}/     # Subaction can be empty
+                && $NavBarModule{$Item}->{Link} =~ /$Self->{Subaction}/    # Subaction can be empty
                 )
             {
                 $NavBarModule{$Item}->{Class} .= ' Selected';
@@ -3716,7 +3716,7 @@ sub CustomerNavigationBar {
                 if (
                     !$SelectedFlag
                     && $ItemSub->{Link} =~ /Action=$Self->{Action}/
-                    && $ItemSub->{Link} =~ /$Self->{Subaction}/       # Subaction can be empty
+                    && $ItemSub->{Link} =~ /$Self->{Subaction}/    # Subaction can be empty
                     )
                 {
                     $NavBarModule{$Item}->{Class} .= ' Selected';
@@ -3860,7 +3860,8 @@ sub CustomerNoPermission {
     $Param{Message} ||= 'No Permission!';
 
     # create output
-    my $Output = $Self->CustomerHeader( Title => 'No Permission' ) if ( $WithHeader eq 'yes' );
+    my $Output;
+    $Output = $Self->CustomerHeader( Title => 'No Permission' ) if ( $WithHeader eq 'yes' );
     $Output .= $Self->Output( TemplateFile => 'NoPermission', Data => \%Param );
     $Output .= $Self->CustomerFooter() if ( $WithHeader eq 'yes' );
 
@@ -4061,7 +4062,7 @@ sub RichTextDocumentServe {
 
             # replace charset in content
             $Param{Data}->{ContentType} =~ s/\Q$Charset\E/utf-8/gi;
-            $Param{Data}->{Content}     =~ s/(charset=("|'|))\Q$Charset\E/$1utf-8/gi;
+            $Param{Data}->{Content} =~ s/(charset=("|'|))\Q$Charset\E/$1utf-8/gi;
         }
     }
 
@@ -5239,6 +5240,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.420 $ $Date: 2013/02/13 17:04:57 $
+$Revision: 1.421 $ $Date: 2013-02-15 14:34:45 $
 
 =cut

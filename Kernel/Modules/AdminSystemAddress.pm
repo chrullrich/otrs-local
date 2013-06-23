@@ -1,8 +1,6 @@
 # --
 # Kernel/Modules/AdminSystemAddress.pm - to add/update/delete system addresses
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: AdminSystemAddress.pm,v 1.47 2012/11/20 14:45:25 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you

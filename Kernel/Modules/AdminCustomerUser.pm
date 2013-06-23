@@ -1,8 +1,6 @@
 # --
 # Kernel/Modules/AdminCustomerUser.pm - to add/update/delete customer user and preferences
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: AdminCustomerUser.pm,v 1.105 2012/11/20 14:36:18 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -40,7 +38,7 @@ sub new {
         }
     }
 
-    # create additonal objects
+    # create additional objects
     $Self->{CustomerUserObject}    = Kernel::System::CustomerUser->new(%Param);
     $Self->{CustomerGroupObject}   = Kernel::System::CustomerGroup->new(%Param);
     $Self->{CustomerCompanyObject} = Kernel::System::CustomerCompany->new(%Param);
@@ -1036,7 +1034,7 @@ sub _Edit {
                                 Data => {%Param},
                             );
                             if (
-                                ref $ParamItem->{Data}   eq 'HASH'
+                                ref $ParamItem->{Data} eq 'HASH'
                                 || ref $Preference{Data} eq 'HASH'
                                 )
                             {

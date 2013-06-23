@@ -1,8 +1,6 @@
 # --
 # TicketCreate.t - GenericInterface TicketCreate tests for TicketConnector backend
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: TicketCreate.t,v 1.19 2013/01/15 17:43:27 mg Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -378,7 +376,16 @@ my $WebserviceName = '-Test-' . $RandomID;
 
 my $WebserviceID = $WebserviceObject->WebserviceAdd(
     Name    => $WebserviceName,
-    Config  => {},
+    Config  => {
+        Debugger => {
+            DebugThreshold => 'debug',
+        },
+        Provider => {
+            Transport => {
+                Type => '',
+            },
+        },
+    },
     ValidID => 1,
     UserID  => 1,
 );

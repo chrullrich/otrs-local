@@ -1,8 +1,6 @@
 # --
 # Kernel/Modules/AgentTicketCustomer.pm - to set the ticket customer and show the customer history
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: AgentTicketCustomer.pm,v 1.45 2012/11/20 14:48:23 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -103,7 +101,7 @@ sub Run {
     );
     my %AclAction = $Self->{TicketObject}->TicketAclActionData();
 
-    # check if ACL resctictions if exist
+    # check if ACL restrictions exist
     if ( IsHashRefWithData( \%AclAction ) ) {
 
         # show error screen if ACL prohibits this action

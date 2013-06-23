@@ -9,8 +9,6 @@
 # Copyright (C) 2009-2010 Olivier Sallou <olivier.sallou at irisa.fr>
 # Copyright (C) 2013 Evans Bernier <ebernier@libergia.com>
 # --
-# $Id: fr_CA.pm,v 1.1 2013/02/13 09:57:05 mg Exp $
-# --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
@@ -28,7 +26,7 @@ sub Data {
     my $Self = shift;
 
     # $$START$$
-    # Last translation file sync: 2013-02-13 11:09:31
+    # Last translation file sync: 2013-03-07 10:55:15
 
     # possible charsets
     $Self->{Charset} = ['utf-8', ];
@@ -881,6 +879,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Gestion des clients',
+        'Back to search result' => '',
         'Add customer' => 'Ajouter un client',
         'Select' => 'Sélectionner',
         'Hint' => 'Conseil',
@@ -1604,6 +1603,7 @@ sub Data {
         'ArticleType' => '',
         'Display' => '',
         'Edit Field Details' => '',
+        'Customer interface does not support internal article types.' => '',
 
         # Template: AdminProcessManagementPath
         'Path' => '',
@@ -2623,7 +2623,7 @@ sub Data {
         'A new database user with limited rights will be created for this OTRS system.' =>
             'Un nouvel utilisateur de la base de données avec des droits limités sera créé pour ce système OTRS.',
         'default \'hot\'' => '« hot » par défaut',
-        'DB--- host' => 'Base de données - hôte',
+        'DB host' => 'Base de données - hôte',
         'Check database settings' => 'Vérifier la configuration de la base de données',
         'Result of database check' => 'Résultat du contrôle de la base de données',
 
@@ -3490,6 +3490,8 @@ sub Data {
             'Détermine les nouveaux états de la demande après la création d\'une demande par courriel dans l\'interface agent.',
         'Determines the next possible ticket states, after the creation of a new phone ticket in the agent interface.' =>
             'Détermine les nouveaux états de la demande après la création d\'une demande téléphonique dans l\'interface agent.',
+        'Determines the next possible ticket states, for process tickets in the agent interface.' =>
+            '',
         'Determines the next screen after new customer ticket in the customer interface.' =>
             'Détermine l\'écran suivant une nouvelle demande du client dans l\'interface client.',
         'Determines the next screen after the follow up screen of a zoomed ticket in the customer interface.' =>
@@ -3850,8 +3852,6 @@ sub Data {
             'Le nombre maximal de demandes à afficher dans les résultats de recherche de l\'interface agent.',
         'Maximum number of tickets to be displayed in the result of a search in the customer interface.' =>
             'Le nombre maximal de demandes à afficher dans les résultats de recherche de l\'interface client.',
-        'Maximum size (in characters) of the customer info table in the queue view.' =>
-            'Le nombre maximal de caractères dans la table de renseignements du client dans la vue des files.',
         'Maximum size (in characters) of the customer information table in the ticket zoom view.' =>
             'Le nombre maximal de caractères dans la table de renseignements du client dans la synthèse de la demande.',
         'Module for To-selection in new ticket screen in the customer interface.' =>
@@ -6355,6 +6355,8 @@ sub Data {
         'Mauritania' => 'Mauritanie',
         'Mauritius' => 'Maurice',
         'Max. shown Tickets a page' => 'Nombre maximum de demandes par page.',
+        'Maximum size (in characters) of the customer info table in the queue view.' =>
+            'Le nombre maximal de caractères dans la table de renseignements du client dans la vue des files.',
         'Mayotte' => 'Mayotte',
         'Merge this ticket!' => 'Fusionner cette demande.',
         'Merged' => 'Fusionné',

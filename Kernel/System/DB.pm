@@ -1,8 +1,6 @@
 # --
 # Kernel/System/DB.pm - the global database wrapper to support different databases
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
-# --
-# $Id: DB.pm,v 1.156 2013/01/17 07:14:45 mb Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -464,9 +462,9 @@ sub Do {
     if ( bytes::length( $Param{SQL} ) > 4 * 1024 ) {
         $Self->{LogObject}->Log(
             Caller   => 1,
-            Priority => 'error',
+            Priority => 'notice',
             Message  => 'Your SQL is longer than 4k, this does not work on many '
-                . 'databases. Use bind instead!',
+                . 'databases. Use bind instead! SQL: ' . $Param{SQL},
         );
     }
 
@@ -478,7 +476,7 @@ sub Do {
     if ( !$Self->{dbh}->do( $Param{SQL}, undef, @Array ) ) {
         $Self->{LogObject}->Log(
             Caller   => 1,
-            Priority => 'Error',
+            Priority => 'error',
             Message  => "$DBI::errstr, SQL: '$Param{SQL}'",
         );
         return;
@@ -820,7 +818,7 @@ sub SQLProcessor {
 
             # unique
             elsif (
-                $Tag->{Tag}    eq 'Unique'
+                $Tag->{Tag} eq 'Unique'
                 || $Tag->{Tag} eq 'UniqueCreate'
                 || $Tag->{Tag} eq 'UniqueDrop'
                 )
@@ -834,7 +832,7 @@ sub SQLProcessor {
 
             # index
             elsif (
-                $Tag->{Tag}    eq 'Index'
+                $Tag->{Tag} eq 'Index'
                 || $Tag->{Tag} eq 'IndexCreate'
                 || $Tag->{Tag} eq 'IndexDrop'
                 )
@@ -848,7 +846,7 @@ sub SQLProcessor {
 
             # foreign keys
             elsif (
-                $Tag->{Tag}    eq 'ForeignKey'
+                $Tag->{Tag} eq 'ForeignKey'
                 || $Tag->{Tag} eq 'ForeignKeyCreate'
                 || $Tag->{Tag} eq 'ForeignKeyDrop'
                 )
@@ -1479,6 +1477,6 @@ did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =head1 VERSION
 
-$Revision: 1.156 $ $Date: 2013/01/17 07:14:45 $
+$Revision: 1.156 $ $Date: 2013-01-17 07:14:45 $
 
 =cut

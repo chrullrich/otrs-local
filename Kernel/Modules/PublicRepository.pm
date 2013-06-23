@@ -1,8 +1,6 @@
 # --
 # Kernel/Modules/PublicRepository.pm - provides a local repository
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: PublicRepository.pm,v 1.14 2012/11/20 14:55:10 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you

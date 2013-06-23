@@ -1,8 +1,6 @@
 # --
 # Kernel/Output/HTML/OutputFilterTextAutoLink.pm - Auto article links filter
-# Copyright (C) 2001-2012 OTRS AG, http://otrs.org/
-# --
-# $Id: OutputFilterTextAutoLink.pm,v 1.8 2012/11/20 15:01:39 mh Exp $
+# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -68,7 +66,7 @@ sub Post {
         # iterage through regular expressions and create a hash with found keywords
         my %Keywords = ();
         for my $RegExp ( @{ $Link->{RegExp} } ) {
-            my @Count = $RegExp =~ m{\(}gx;
+            my @Count    = $RegExp =~ m{\(}gx;
             my $Elements = scalar @Count;
             if ( my @MatchData = ${ $Param{Data} } =~ m{([\s:]$RegExp)}gxi ) {
                 my $Counter = 0;
