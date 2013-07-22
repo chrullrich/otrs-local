@@ -874,7 +874,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Управљање корисницима',
-        'Back to search result' => '',
+        'Back to search results' => '',
         'Add customer' => 'Додај корисника',
         'Select' => 'Изабери',
         'Hint' => 'Савет',
@@ -911,7 +911,7 @@ sub Data {
         'Select the customer:group permissions.' => 'Изабери дозволе за корисник:група',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             'Ако ништа није изабрано, онда нема дозвола у овој групи (тикети неће бити доступни кориснику).',
-        'Search Result:' => 'Резултат претраге:',
+        'Search Results' => 'Резултат претраге',
         'Customers' => 'Корисници',
         'Groups' => 'Групе',
         'No matches found.' => 'Ништа није пронађено.',

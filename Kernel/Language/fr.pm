@@ -881,7 +881,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Gestion des clients',
-        'Back to search result' => '',
+        'Back to search results' => '',
         'Add customer' => 'Ajouter client',
         'Select' => 'Sélectionner',
         'Hint' => 'Conseil',
@@ -918,7 +918,7 @@ sub Data {
         'Select the customer:group permissions.' => 'Selectionner les permissions client::groupe',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             'Si rien n\'est sélectionné, alors il n\'y aura aucune permission dans ce groupe (les tickets ne seront pas accessibles au client).',
-        'Search Result:' => 'Résultat de recherche:',
+        'Search Results' => 'Résultat de recherche',
         'Customers' => 'Clients',
         'Groups' => 'Groupes',
         'No matches found.' => 'Aucun résultat.',
@@ -1128,7 +1128,7 @@ sub Data {
         'Param %s value' => 'Valeur Param %s',
         'Save Changes' => 'Enregistrer les Modifications',
         'Results' => 'Résultat',
-        '%s Tickets affected! What do you want to do?' => '% Tickets impactés! Que voulez vous faire?',
+        '%s Tickets affected! What do you want to do?' => '%s Tickets impactés! Que voulez vous faire?',
         'Warning: You used the DELETE option. All deleted tickets will be lost!' =>
             'Attention: Vous devriez utiliser l\'option DELETE. Tous les tickets effacés seront perdus!',
         'Edit job' => 'Editer tâche',

@@ -874,7 +874,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Klientide haldamine',
-        'Back to search result' => '',
+        'Back to search results' => '',
         'Add customer' => 'Lisa klient',
         'Select' => 'Vali',
         'Hint' => 'Vihje',
@@ -911,7 +911,7 @@ sub Data {
         'Select the customer:group permissions.' => '',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             '',
-        'Search Result:' => 'Otsingu tulemus:',
+        'Search Results' => 'Otsingu tulemus',
         'Customers' => 'Kliendid',
         'Groups' => 'Rühmad',
         'No matches found.' => 'Vasteid ei leitud.',

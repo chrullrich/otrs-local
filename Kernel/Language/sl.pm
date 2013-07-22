@@ -878,7 +878,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Upravljanje s strankami',
-        'Back to search result' => '',
+        'Back to search results' => '',
         'Add customer' => 'Dodaj stranko',
         'Select' => 'Izberi',
         'Hint' => 'Nasvet',
@@ -915,7 +915,7 @@ sub Data {
         'Select the customer:group permissions.' => 'Izberi dovoljenja za uporabnika:skupina',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             'Če ni nič izbrano, potem ni nobenih dovoljenj v tej skupini (zahtevki ne bodo na voljo za stranke).',
-        'Search Result:' => 'Rezultati iskanja:',
+        'Search Results' => 'Rezultati iskanja',
         'Customers' => 'Stranke',
         'Groups' => 'Skupine',
         'No matches found.' => 'Ni zadetkov.',

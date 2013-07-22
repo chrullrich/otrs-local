@@ -875,7 +875,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => '顧客管理',
-        'Back to search result' => '',
+        'Back to search results' => '',
         'Add customer' => '顧客を追加',
         'Select' => '選択',
         'Hint' => 'ヒント',
@@ -912,7 +912,7 @@ sub Data {
         'Select the customer:group permissions.' => '顧客：グループ権限を選択',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             '何も選択しない場合、このグループは権限がありません (チケットは顧客が使用できません)',
-        'Search Result:' => '検索結果:',
+        'Search Results' => '検索結果',
         'Customers' => '顧客',
         'Groups' => 'グループ',
         'No matches found.' => '一致しませんでした。',

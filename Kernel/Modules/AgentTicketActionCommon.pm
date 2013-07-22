@@ -672,7 +672,7 @@ sub Run {
                 );
             }
 
-            my $From = "$Self->{UserFirstname} $Self->{UserLastname} <$Self->{UserEmail}>";
+            my $From = "\"$Self->{UserFirstname} $Self->{UserLastname}\" <$Self->{UserEmail}>";
             my @NotifyUserIDs = ( @{ $Self->{InformUserID} }, @{ $Self->{InvolvedUserID} } );
             $ArticleID = $Self->{TicketObject}->ArticleCreate(
                 TicketID                        => $Self->{TicketID},
@@ -921,6 +921,7 @@ sub Run {
             my $ACL = $Self->{TicketObject}->TicketAcl(
                 %GetParam,
                 Action        => $Self->{Action},
+                TicketID      => $Self->{TicketID},
                 QueueID       => $QueueID,
                 ReturnType    => 'Ticket',
                 ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},

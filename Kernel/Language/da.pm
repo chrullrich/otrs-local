@@ -875,7 +875,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Administrer Kunde',
-        'Back to search result' => '',
+        'Back to search results' => '',
         'Add customer' => 'Tilføj kunde',
         'Select' => 'Vælg',
         'Hint' => 'Tip',
@@ -912,7 +912,7 @@ sub Data {
         'Select the customer:group permissions.' => 'Vælg kunde:gruppe-tilladelser.',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             'Hvis intet er velgt, er der ingen tilladelser i denne gruppe (sager vil ikke være tilgængelige for kunden).',
-        'Search Result:' => 'Søgeresultat:',
+        'Search Results' => 'Søgeresultat',
         'Customers' => 'Kunder',
         'Groups' => 'Grupper',
         'No matches found.' => 'Intet fundet',
