@@ -876,7 +876,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Διαχειριση Πελατων',
-        'Back to search result' => '',
+        'Back to search results' => '',
         'Add customer' => 'Προσθηνη Πελάτη',
         'Select' => 'Επιλογή',
         'Hint' => '',
@@ -913,7 +913,7 @@ sub Data {
         'Select the customer:group permissions.' => '',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             '',
-        'Search Result:' => 'Αποτέλεσμα Αναζήτησης',
+        'Search Results' => 'Αποτέλεσμα Αναζήτησης',
         'Customers' => 'Πελατες',
         'Groups' => 'Ομάδες',
         'No matches found.' => 'Δεν βρεθηκαν στοιχεία',

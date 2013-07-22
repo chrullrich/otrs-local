@@ -876,7 +876,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Pengurusan Pelanggan',
-        'Back to search result' => '',
+        'Back to search results' => '',
         'Add customer' => 'menambah Pelanggan',
         'Select' => 'Pilih',
         'Hint' => 'Petunjuk',
@@ -913,7 +913,7 @@ sub Data {
         'Select the customer:group permissions.' => 'Pilih pelanggan: dari kumpulan hak',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             'Jika tiada apa yang dipilih, maka terdapat tiada kebenaran dalam kumpulan ini (tiket tidak akan disediakan untuk pelanggan).',
-        'Search Result:' => 'Search Results:',
+        'Search Results' => 'Search Results',
         'Customers' => 'Pelanggan',
         'Groups' => 'Kumpulan',
         'No matches found.' => 'Tiada padanan ditemui.',
