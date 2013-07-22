@@ -879,7 +879,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Ügyfél kezelés',
-        'Back to search result' => '',
+        'Back to search results' => '',
         'Add customer' => 'Ügyfél hozzáadása',
         'Select' => 'Kiválasztás',
         'Hint' => 'Tipp',
@@ -916,7 +916,7 @@ sub Data {
         'Select the customer:group permissions.' => '',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             '',
-        'Search Result:' => 'Keresési eredmény:',
+        'Search Results' => 'Keresési eredmény',
         'Customers' => 'Ügyfelek',
         'Groups' => 'Csoportok',
         'No matches found.' => '',

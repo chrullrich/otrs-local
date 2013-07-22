@@ -879,7 +879,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => '客户管理',
-        'Back to search result' => '',
+        'Back to search results' => '',
         'Add customer' => '新增客户',
         'Select' => '选择',
         'Hint' => '提示',
@@ -916,7 +916,7 @@ sub Data {
         'Select the customer:group permissions.' => '选择客户:群组设定权限。',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             '如果没有选择，将无法给客户设定群组权限（票单将对该客户不可用）。',
-        'Search Result:' => '搜索结果',
+        'Search Results' => '搜索结果',
         'Customers' => '客户',
         'Groups' => '群组',
         'No matches found.' => '没有找到相匹配的.',

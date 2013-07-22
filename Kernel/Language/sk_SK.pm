@@ -874,7 +874,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => '',
-        'Back to search result' => '',
+        'Back to search results' => '',
         'Add customer' => '',
         'Select' => '',
         'Hint' => '',
@@ -911,7 +911,7 @@ sub Data {
         'Select the customer:group permissions.' => '',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             '',
-        'Search Result:' => '',
+        'Search Results' => '',
         'Customers' => '',
         'Groups' => '',
         'No matches found.' => '',

@@ -874,7 +874,7 @@ sub Data {
 
         # Template: AdminCustomerUser
         'Customer Management' => 'Gestió de Clients',
-        'Back to search result' => '',
+        'Back to search results' => '',
         'Add customer' => 'Afegir al client',
         'Select' => 'Seleccionar',
         'Hint' => 'Indici',
@@ -911,7 +911,7 @@ sub Data {
         'Select the customer:group permissions.' => 'Seleccioni el client: permisos de grup.',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             'Si no se selecciona gens, llavors no hi ha permisos en aquest grup (els tiquets no estaran disponibles per al client).',
-        'Search Result:' => 'Resultats de la recerca:',
+        'Search Results' => 'Resultats de la recerca',
         'Customers' => 'Clients',
         'Groups' => 'Grups',
         'No matches found.' => 'No es va trobar resultat.',
