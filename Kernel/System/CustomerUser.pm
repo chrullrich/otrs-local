@@ -361,6 +361,8 @@ sub CustomerUserDataGet {
             %Company = $Self->{CustomerCompanyObject}->CustomerCompanyGet(
                 CustomerID => $Customer{UserCustomerID},
             );
+            
+            $Company{CustomerCompanyValidID} = $Company{ValidID};
         }
 
         # return customer data

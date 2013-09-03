@@ -346,7 +346,11 @@ sub Run {
             }
 
             my $CustomerKey = '';
-            if ( defined $CustomerDataFrom{UserEmail} && $CustomerDataFrom{UserEmail} eq $EmailAddress ) {
+            if (
+                defined $CustomerDataFrom{UserEmail}
+                && $CustomerDataFrom{UserEmail} eq $EmailAddress
+                )
+            {
                 $CustomerKey = $Article{CustomerUserID};
             }
 
@@ -692,10 +696,12 @@ sub Run {
             }
         }
 
-        # rewrap body if exists
-        if ( $Self->{LayoutObject}->{BrowserRichText} && $GetParam{Body} ) {
-            $GetParam{Body}
-                =~ s/(^>.+|.{4,$Self->{ConfigObject}->Get('Ticket::Frontend::TextAreaNote')})(?:\s|\z)/$1\n/gm;
+        # rewrap body if no rich text is used
+        if ( $GetParam{Body} && !$Self->{LayoutObject}->{BrowserRichText} ) {
+            $GetParam{Body} = $Self->{LayoutObject}->WrapPlainText(
+                MaxCharacters => $Self->{ConfigObject}->Get('Ticket::Frontend::TextAreaNote'),
+                PlainText     => $GetParam{Body},
+            );
         }
 
         # attachment delete
@@ -1414,7 +1420,7 @@ sub Run {
                 %ACLCompatGetParam,
                 CustomerUserID => $CustomerUser || '',
                 Action         => $Self->{Action},
-                QueueID        => $QueueID || 0,
+                QueueID        => $QueueID      || 0,
                 ReturnType     => 'Ticket',
                 ReturnSubType  => 'DynamicField_' . $DynamicFieldConfig->{Name},
                 Data           => \%AclData,

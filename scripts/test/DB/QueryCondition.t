@@ -48,6 +48,7 @@ my %Fill = (
     Some6 => 'customer&id&with&ampersands',
     Some7 => 'Test (with) (brackets)',
     Some8 => 'Test (with) (brackets) and & and |',
+    Some9 => 'Test for franz!gans merged with exclamation mark',
 );
 for my $Key ( sort keys %Fill ) {
     my $SQL = "INSERT INTO test_condition (name_a, name_b) VALUES ('$Key', '$Fill{$Key}')";
@@ -360,6 +361,20 @@ my @Queries = (
         },
     },
     {
+        Query  => 'franz!gans',
+        Result => {
+            Some1 => 0,
+            Some2 => 0,
+            Some3 => 0,
+            Some4 => 0,
+            Some5 => 0,
+            Some6 => 0,
+            Some7 => 0,
+            Some8 => 0,
+            Some9 => 1,
+        },
+    },
+    {
         Query  => '!franz*',
         Result => {
             Some1 => 1,
@@ -634,6 +649,19 @@ my @Queries = (
     },
     {
         Query  => 'smith',
+        Result => {
+            Some1 => 1,
+            Some2 => 0,
+            Some3 => 1,
+            Some4 => 1,
+            Some5 => 0,
+            Some6 => 0,
+            Some7 => 0,
+            Some8 => 0,
+        },
+    },
+    {
+        Query  => 'smith ()',
         Result => {
             Some1 => 1,
             Some2 => 0,
