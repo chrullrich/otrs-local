@@ -21,6 +21,7 @@ use Kernel::System::Loader;
 use Kernel::System::SysConfig;
 use Kernel::System::WebUserAgent;
 use Kernel::System::XML;
+use Kernel::System::VariableCheck qw(:all);
 
 =head1 NAME
 
@@ -305,6 +306,11 @@ sub RepositoryAdd {
 
     # get package attributes
     my %Structure = $Self->PackageParse(%Param);
+
+    if ( !IsHashRefWithData( \%Structure ) ) {
+        $Self->{LogObject}->Log( Priority => 'error', Message => 'Invalid Package!' );
+        return;
+    }
     if ( !$Structure{Name} ) {
         $Self->{LogObject}->Log( Priority => 'error', Message => 'Need Name!' );
         return;
@@ -1400,8 +1406,10 @@ sub PackageVerify {
 
     # define package verification info
     my $PackageVerifyInfo = {
-        Description => "<br>If you continue to install this package, the following issues may occur!<br><br>&nbsp;-Security problems<br>&nbsp;-Stability problems<br>&nbsp;-Performance problems<br><br>Please note that issues that are caused by working with this package are not covered by OTRS service contracts!<br><br>",
-        Title       => 'Package not verified by the OTRS Group! It is recommended not to use this package.',
+        Description =>
+            "<br>If you continue to install this package, the following issues may occur!<br><br>&nbsp;-Security problems<br>&nbsp;-Stability problems<br>&nbsp;-Performance problems<br><br>Please note that issues that are caused by working with this package are not covered by OTRS service contracts!<br><br>",
+        Title =>
+            'Package not verified by the OTRS Group! It is recommended not to use this package.',
     };
 
     # investigate name
@@ -1465,7 +1473,7 @@ sub PackageVerify {
         Type  => 'PackageVerification',
         Key   => $Sum,
         Value => $PackageVerify,
-        TTL   => 30 * 24 * 60 * 60,  # 30 days
+        TTL   => 30 * 24 * 60 * 60,       # 30 days
     );
 
     return $PackageVerify;
@@ -1593,7 +1601,7 @@ sub PackageVerifyAll {
             Type  => 'PackageVerification',
             Key   => $PackageList{$Package},
             Value => $PackageVerify,
-            TTL   => 30 * 24 * 60 * 60,  # 30 days
+            TTL   => 30 * 24 * 60 * 60,        # 30 days
         );
     }
 
@@ -1941,7 +1949,17 @@ sub PackageParse {
         return %{$Cache} if $Cache;
     }
 
-    my @XMLARRAY = $Self->{XMLObject}->XMLParse(%Param);
+    my @XMLARRAY = eval {
+        $Self->{XMLObject}->XMLParse(%Param);
+    };
+
+    if ( !IsArrayRefWithData( \@XMLARRAY ) ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "Invalid XMLParse in PackageParse()!",
+        );
+        return;
+    }
 
     # cleanup global vars
     undef $Self->{Package};
@@ -2060,7 +2078,16 @@ sub PackageParse {
         }
     }
 
-    # return package structur
+    # check if a structure is present
+    if ( !IsHashRefWithData( $Self->{Package} ) ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "Invalid package structure in PackageParse()!",
+        );
+        return;
+    }
+
+    # return package structure
     my %Return = %{ $Self->{Package} };
     undef $Self->{Package};
 

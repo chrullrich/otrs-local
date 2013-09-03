@@ -2119,7 +2119,7 @@ sub Run {
 
             if ( $Self->{ConfigObject}->Get('PreferencesGroups')->{CSVSeparator}->{Active} ) {
                 my %UserData = $Self->{UserObject}->GetUserData( UserID => $Self->{UserID} );
-                $UserCSVSeparator = $UserData{UserCSVSeparator};
+                $UserCSVSeparator = $UserData{UserCSVSeparator} if $UserData{UserCSVSeparator};
             }
             $Output .= $Self->{CSVObject}->Array2CSV(
                 Head      => $HeadArrayRef,
@@ -2679,10 +2679,10 @@ sub _ColumnAndRowTranslation {
         # sort
         my $DisableDefaultResultSort = grep {
             $_->{DisableDefaultResultSort}
-            && $_->{DisableDefaultResultSort} == 1
+                && $_->{DisableDefaultResultSort} == 1
         } @{ $Param{StatRef}->{UseAsXvalue} };
 
-        if (!$DisableDefaultResultSort) {
+        if ( !$DisableDefaultResultSort ) {
             @{ $Param{StatArrayRef} } = sort { $a->[0] cmp $b->[0] } @{ $Param{StatArrayRef} };
         }
 

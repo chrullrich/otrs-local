@@ -94,7 +94,7 @@ sub Run {
             TicketID => $Self->{TicketID},
             UserID   => $Self->{UserID},
         );
-        if (!$Access) {
+        if ( !$Access ) {
             return $Self->{LayoutObject}->NoPermission( WithHeader => 'yes' );
         }
 
@@ -150,6 +150,8 @@ sub Run {
         }
         return $Self->{LayoutObject}->Redirect( OP => $Self->{LastScreenView} );
     }
+
+    $Self->{LayoutObject}->ErrorScreen( Message => 'Invalid subaction' );
 }
 
 1;

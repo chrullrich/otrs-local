@@ -1,3 +1,48 @@
+#3.2.10 2013-08-27
+ - 2013-08-20 Fixed bug#[9617](http://bugs.otrs.org/show_bug.cgi?id=9617) - Event-based notifications are not sent for process-tickets.
+ - 2013-08-14 Fixed bug#[9666](http://bugs.otrs.org/show_bug.cgi?id=9666) - Installing an invalid package cause an server error on package manager.
+ - 2013-08-06 Fixed bug#[8408](http://bugs.otrs.org/show_bug.cgi?id=8408) - No separator used in CSV files if UserCSVSeparator enabled and not set.
+ - 2013-08-01 Fixed bug#[9635](http://bugs.otrs.org/show_bug.cgi?id=9635) - article_search not updated on ticket merges.
+ - 2013-07-31 Fixed bug#[9629](http://bugs.otrs.org/show_bug.cgi?id=9629) - ORA-936 error in AgentTicketSearch with some search clauses.
+ - 2013-07-30 Fixed bug#[9631](http://bugs.otrs.org/show_bug.cgi?id=9631) - BuildSelection() Selected does not work if value contains strings that are HTML-escaped.
+ - 2013-07-30 Fixed bug#[9630](http://bugs.otrs.org/show_bug.cgi?id=9630) - Dynamic Fields of type Date can record wrong date when TimeZoneSettings are used.
+ - 2013-07-25 Fixed bug#[9316](http://bugs.otrs.org/show_bug.cgi?id=9316) - Under nginx CustomerInformationCenter search returns Bad Gateway.
+ - 2013-07-25 Fixed bug#[9610](http://bugs.otrs.org/show_bug.cgi?id=9610) - When email does not specify charset, content is not displayed in IE10.
+ - 2013-07-24 Fixed bug#[9622](http://bugs.otrs.org/show_bug.cgi?id=9622) - Actions in Small ticket overview don't work when cookies are turned off.
+ - 2013-07-24 Updated Danish translation, thanks to Lars Jørgensen!
+ - 2013-07-22 Fixed bug#[9541](http://bugs.otrs.org/show_bug.cgi?id=9541) - Package manager cannot use https proxy.
+ - 2013-07-22 Fixed bug pull#[83](https://github.com/OTRS/otrs/pull/83) - Pagination next page link, thanks to Renée Bäcker.
+ - 2013-07-17 Updated Turkish translation, thanks to Sefer Şimşek @ Network Group!
+ - 2013-07-17 Fixed bug#[9594](http://bugs.otrs.org/show_bug.cgi?id=9594) - No auro-reply sent with multiple From addresses in
+    AgentTicketPhone on PostgreSQL and Oracle.
+ - 2013-07-12 Fixed bug#[3434](http://bugs.otrs.org/show_bug.cgi?id=3434) - Validity of search time frame not checked by OTRS.
+ - 2013-07-12 Fixed bug#[5475](http://bugs.otrs.org/show_bug.cgi?id=5475) - Incorrectly limited ticket list queries in queue view.
+ - 2013-07-12 Fixed bug#[8667](http://bugs.otrs.org/show_bug.cgi?id=8667) - No error Message when tryiing to Merge Ticket with itself.
+ - 2013-07-12 Fixed bug#[6985](http://bugs.otrs.org/show_bug.cgi?id=6985) - SMTPTLS backend requires username and password.
+ - 2013-07-12 Fixed bug#[3434](http://bugs.otrs.org/show_bug.cgi?id=3434) - Validity of search time frame not checked by OTRS.
+ - 2013-07-10 Fixed bug#[9598](http://bugs.otrs.org/show_bug.cgi?id=9598) - Typo in vacation message for German locale.
+ - 2013-07-10 Fixed bug#[9595](http://bugs.otrs.org/show_bug.cgi?id=9595) - Incomplete page reload handling in merge and bounce.
+ - 2013-07-10 Fixed bug#[5307](http://bugs.otrs.org/show_bug.cgi?id=5307) - Tickets can be raised against an invalid Customer Company.
+ - 2013-07-10 Fixed bug#[9596](http://bugs.otrs.org/show_bug.cgi?id=9596) - On merge and bounce screens is confusing when fill or not 'To',  'Subject' and 'Body' fields.
+ - 2013-07-10 Fixed bug#[9514](http://bugs.otrs.org/show_bug.cgi?id=9514) - Bulk action (send email) uses senders address instead of customer id.
+ - 2013-07-10 Fixed bug#[9595](http://bugs.otrs.org/show_bug.cgi?id=9595) - Incomplete page reload handling in merge and bounce.
+ - 2013-07-10 Fixed bug#[9570](http://bugs.otrs.org/show_bug.cgi?id=9570) - AgentTicketSearch with exclamation mark emits invalid SQL
+ - 2013-07-09 Fixed bug#[3007](http://bugs.otrs.org/show_bug.cgi?id=3007) - CheckMXRecord and CheckEmailAddresses have no effect on AgentTicketBounce.
+ - 2013-07-09 Fixed bug#[9512](http://bugs.otrs.org/show_bug.cgi?id=9512) - Database error for invalid date in AgentTicketSearch.
+ - 2013-07-09 Fixed bug#[4465](http://bugs.otrs.org/show_bug.cgi?id=4465) - Spell checker ispell ignores some characters such German umlauts.
+ - 2013-07-09 Fixed bug#[8428](http://bugs.otrs.org/show_bug.cgi?id=8428) - Bad usability of multiple sender/recipient feature.
+ - 2013-07-09 Fixed bug#[9556](http://bugs.otrs.org/show_bug.cgi?id=9556) - Bounce and merge require notification recipient, subject and body even if no notification is sent.
+ - 2013-07-09 Fixed bug#[9584](http://bugs.otrs.org/show_bug.cgi?id=9584) - No server side validation of To/Subject/Body in merge mask.
+ - 2013-07-09 Fixed bug#[9578](http://bugs.otrs.org/show_bug.cgi?id=9578) - DynamicField sorting does not work on TicketSearch results in Customer Interface.
+ - 2013-07-08 Fixed bug#[9579](http://bugs.otrs.org/show_nug.cgi?id=9579) - SOAP Serializer used in Kernel/GenericInterface/Transport/HTTP/SOAP.pm does not correctly set namespace.
+ - 2013-07-08 Fixed bug#[9577](http://bugs.otrs.org/show_bug.cgi?id=9577) - Engine translate date to dado from english to pt_BR.
+ - 2013-07-08 Fixed bug#[7359](http://bugs.otrs.org/show_bug.cgi?id=7359) - Setting pending states via generic agent does not set pending time.
+ - 2013-07-08 Fixed bug#[5920](http://bugs.otrs.org/show_bug.cgi?id=5920) - Search restriction for dates is not displayed in customer interface.
+ - 2013-07-08 Fixed bug#[8380](http://bugs.otrs.org/show_bug.cgi?id=8380) - Middle name not displayed in AdminCustomerUser.
+ - 2013-07-05 Fixed bug#[9576](http://bugs.otrs.org/show_bug.cgi?id=9576) - GI TicketSearch Date and Date/Time dynamic fields are ignored.
+ - 2013-07-04 Changed Dynamic Field SearchFieldParameterBuild() API, LayoutObject is now optional.
+ - 2013-07-04 Fixed bug#[9573](http://bugs.otrs.org/show_bug.cgi?id=9573) - Date and DateTime dynamic fields not considered in GenericAgent Jobs.
+
 #3.2.9 2013-07-09
  - 2013-07-03 Fixed bug#[9561](http://bugs.otrs.org/show_bug.cgi?id=9561) - ACL restriction with CustomerID for DynamicFields at new Ticket screen not working.
  - 2013-07-02 Fixed bug#[8728](http://bugs.otrs.org/show_bug.cgi?id=8728) - Problem loading otrs-initial_insert.oracle.sql.

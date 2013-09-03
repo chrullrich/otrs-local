@@ -1919,6 +1919,56 @@ $Self->Is(
     "TicketPendingTimeSet() - Set to new - Pending Time not set",
 );
 
+# check that searches with NewerDate in the future are not executed
+$HelperObject->FixedTimeAddSeconds( - 60 * 60 );
+
+# Test TicketCreateTimeNewerDate (future date)
+$SystemTime = $Self->{TimeObject}->SystemTime();
+%TicketIDs = $TicketObject->TicketSearch(
+    Result                    => 'HASH',
+    Limit                     => 100,
+    TicketCreateTimeNewerDate => $Self->{TimeObject}->SystemTime2TimeStamp(
+        SystemTime => $SystemTime + ( 60 * 60 ),
+    ),
+    UserID     => 1,
+    Permission => 'rw',
+);
+$Self->False(
+    $TicketIDs{$TicketID},
+    'TicketSearch() (HASH:TicketCreateTimeNewerDate => -60)',
+);
+
+# Test ArticleCreateTimeNewerDate (future date)
+$SystemTime = $Self->{TimeObject}->SystemTime();
+%TicketIDs  = $TicketObject->TicketSearch(
+    Result                     => 'HASH',
+    Limit                      => 100,
+    ArticleCreateTimeNewerDate => $Self->{TimeObject}->SystemTime2TimeStamp(
+        SystemTime => $SystemTime + ( 60 * 60 ),
+    ),
+    UserID     => 1,
+    Permission => 'rw',
+);
+$Self->False(
+    $TicketIDs{$TicketID},
+    'TicketSearch() (HASH:ArticleCreateTimeNewerDate => -60)',
+);
+
+# Test TicketCloseTimeNewerDate (future date)
+%TicketIDs = $TicketObject->TicketSearch(
+    Result                   => 'HASH',
+    Limit                    => 100,
+    TicketCloseTimeNewerDate => $Self->{TimeObject}->SystemTime2TimeStamp(
+        SystemTime => $SystemTime + ( 60 * 60 ),
+    ),
+    UserID     => 1,
+    Permission => 'rw',
+);
+$Self->False(
+    $TicketIDs{$TicketID},
+    'TicketSearch() (HASH:TicketCloseTimeNewerDate => -60)',
+);
+
 # the ticket is no longer needed
 $TicketObject->TicketDelete(
     TicketID => $TicketID,
@@ -1966,6 +2016,25 @@ for my $NewStateID (@NewStates) {
         ValidID => 1,
         UserID  => 1,
     );
+}
+
+# check response of ticket search for invalid timestamps
+for my $SearchParam (qw(ArticleCreateTime TicketCreateTime TicketPendingTime)) {
+    for my $ParamOption (qw(OlderDate NewerDate)) {
+        $TicketObject->TicketSearch(
+            $SearchParam . $ParamOption => '2000-02-31 00:00:00',
+            UserID                      => 1,
+        );
+        my $ErrorMessage = $Self->{LogObject}->GetLogEntry(
+            Type => 'error',
+            What => 'Message',
+        );
+        $Self->Is(
+            $ErrorMessage,
+            "Search not executed due to invalid time '2000-02-31 00:00:00'!",
+            "TicketSearch() (Handling invalid timestamp in '$SearchParam$ParamOption')",
+        );
+    }
 }
 
 1;
