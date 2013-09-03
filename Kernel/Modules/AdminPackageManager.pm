@@ -1208,6 +1208,12 @@ sub Run {
             },
         );
 
+        if ( $VerificationData{ $Package->{Name}->{Content} } && $VerificationData{ $Package->{Name}->{Content} } eq 'verified' ) {
+            $Self->{LayoutObject}->Block(
+                Name => 'ShowLocalPackageVerifyLogo',
+            );
+        }
+
         # show documentation link
         my %DocFile = $Self->_DocumentationGet( Filelist => $Package->{Filelist} );
         if (%DocFile) {
@@ -1268,7 +1274,8 @@ sub Run {
         if (
             $VerificationData{ $Package->{Name}->{Content} }
             && $VerificationData{ $Package->{Name}->{Content} } eq 'not_verified'
-        ) {
+            )
+        {
             $NotVerifiedPackages{ $Package->{Name}->{Content} } = $Package->{Version}->{Content};
         }
     }
@@ -1486,7 +1493,7 @@ sub _InstallHandling {
 
     # vendor screen
     if ( !$IntroInstallVendor && !$IntroInstallPre && $Verified ne 'verified' ) {
-        
+
         $Self->{LayoutObject}->Block(
             Name => 'Intro',
             Data => {
@@ -1498,11 +1505,11 @@ sub _InstallHandling {
                 Version   => $Structure{Version}->{Content},
             },
         );
-        
+
         $Self->{LayoutObject}->Block(
             Name => 'IntroCancel',
         );
-        
+
         my $Output = $Self->{LayoutObject}->Header();
         $Output .= $Self->{LayoutObject}->NavigationBar();
         $Output .= $Self->{LayoutObject}->Output(
@@ -1532,6 +1539,13 @@ sub _InstallHandling {
                 Version   => $Structure{Version}->{Content},
             },
         );
+
+        if ($Verified eq 'verified') {
+            $Self->{LayoutObject}->Block(
+                Name => 'OTRSVerifyLogo',
+            );
+        }
+
         $Self->{LayoutObject}->Block(
             Name => 'IntroCancel',
         );
@@ -1564,6 +1578,13 @@ sub _InstallHandling {
                     Version   => $Structure{Version}->{Content},
                 },
             );
+
+            if ($Verified eq 'verified') {
+                $Self->{LayoutObject}->Block(
+                    Name => 'OTRSVerifyLogo',
+                );
+            }
+
             my $Output = $Self->{LayoutObject}->Header();
             $Output .= $Self->{LayoutObject}->NavigationBar();
             $Output .= $Self->{LayoutObject}->Output(

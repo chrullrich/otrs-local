@@ -4749,7 +4749,8 @@ sub HistoryTicketGet {
         $Param{$DateParameter} = sprintf( "%02d", $Param{$DateParameter} );
     }
 
-    my $CacheKey = 'HistoryTicketGet::' . join( '::', map { ($_ || 0) . "::$Param{$_}"} sort keys %Param );
+    my $CacheKey = 'HistoryTicketGet::'
+        . join( '::', map { ( $_ || 0 ) . "::$Param{$_}" } sort keys %Param );
 
     my $Cached = $Self->{CacheInternalObject}->Get( Key => $CacheKey );
     if ( ref $Cached eq 'HASH' && !$Param{Force} ) {
@@ -4823,7 +4824,7 @@ sub HistoryTicketGet {
             }
         }
         elsif (
-            $Row[1]    eq 'StateUpdate'
+            $Row[1] eq 'StateUpdate'
             || $Row[1] eq 'Close successful'
             || $Row[1] eq 'Close unsuccessful'
             || $Row[1] eq 'Open'
@@ -4831,7 +4832,7 @@ sub HistoryTicketGet {
             )
         {
             if (
-                $Row[0]    =~ /^\%\%(.+?)\%\%(.+?)(\%\%|)$/
+                $Row[0] =~ /^\%\%(.+?)\%\%(.+?)(\%\%|)$/
                 || $Row[0] =~ /^Old: '(.+?)' New: '(.+?)'/
                 || $Row[0] =~ /^Changed Ticket State from '(.+?)' to '(.+?)'/
                 )
@@ -4853,7 +4854,7 @@ sub HistoryTicketGet {
             if ( $Row[0] =~ /^\%\%FieldName\%\%(.+?)\%\%Value\%\%(?:(.+?))?$/ ) {
 
                 my $FieldName = $1;
-                my $Value     = $2 || '';
+                my $Value = $2 || '';
                 $Ticket{$FieldName} = $Value;
 
                 # Backward compatibility for TicketFreeText and TicketFreeTime
@@ -5337,6 +5338,13 @@ sub TicketMerge {
         SQL => 'UPDATE article SET ticket_id = ?, change_time = current_timestamp, '
             . ' change_by = ? WHERE ticket_id = ?',
         Bind => [ \$Param{MainTicketID}, \$Param{UserID}, \$Param{MergeTicketID} ],
+    );
+
+    # bug 9635
+    # do the same with article_search (harmless if not used)
+    return if !$Self->{DBObject}->Do(
+        SQL => 'UPDATE article_search SET ticket_id = ? WHERE ticket_id = ?',
+        Bind => [\$Param{MainTicketID}, \$Param{MergeTicketID}],
     );
 
     # reassign article history

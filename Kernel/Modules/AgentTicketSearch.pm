@@ -832,7 +832,7 @@ sub Run {
 
             # create head (actual head and head for data fill)
             my @TmpCSVHead = @{ $Self->{Config}->{SearchCSVData} };
-            my @CSVHead = @{ $Self->{Config}->{SearchCSVData} };
+            my @CSVHead    = @{ $Self->{Config}->{SearchCSVData} };
 
             # include the selected dynamic fields in CVS results
             DYNAMICFIELD:
@@ -842,7 +842,7 @@ sub Run {
                 next DYNAMICFIELD if $DynamicFieldConfig->{Name} eq '';
 
                 push @TmpCSVHead, 'DynamicField_' . $DynamicFieldConfig->{Name};
-                push @CSVHead, $DynamicFieldConfig->{Label};
+                push @CSVHead,    $DynamicFieldConfig->{Label};
             }
 
             my @CSVData;
@@ -943,7 +943,7 @@ sub Run {
 
             if ( $Self->{ConfigObject}->Get('PreferencesGroups')->{CSVSeparator}->{Active} ) {
                 my %UserData = $Self->{UserObject}->GetUserData( UserID => $Self->{UserID} );
-                $UserCSVSeparator = $UserData{UserCSVSeparator};
+                $UserCSVSeparator = $UserData{UserCSVSeparator} if $UserData{UserCSVSeparator};
             }
 
             my %HeaderMap = (
@@ -1000,7 +1000,7 @@ sub Run {
 
                     # set missing information
                     $Data{Subject} = $Data{Title};
-                    $Data{From} = '--';
+                    $Data{From}    = '--';
                 }
 
                 # customer info
