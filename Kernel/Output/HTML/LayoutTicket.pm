@@ -121,21 +121,27 @@ sub AgentCustomerViewTable {
                 Data => \%Record,
             );
 
-            if ( $Param{Data}->{Config}->{CustomerCompanySupport} && $Field->[0] eq 'CustomerCompanyName' ) {
-                my $CompanyValidID = $Param{Data}->{ CustomerCompanyValidID };
+            if (
+                $Param{Data}->{Config}->{CustomerCompanySupport}
+                && $Field->[0] eq 'CustomerCompanyName'
+                )
+            {
+                my $CompanyValidID = $Param{Data}->{CustomerCompanyValidID};
 
-                if ( !$Self->{MainObject}->Require( 'Kernel::System::Valid' ) ) {
-                    $Self->FatalDie();
-                }
-                
-                my $ValidObject    = Kernel::System::Valid->new( %{$Self} );
-                my @ValidIDs       = $ValidObject->ValidIDsGet();
-                my $CompanyIsValid = grep { $CompanyValidID == $_ } @ValidIDs;
+                if ($CompanyValidID) {
+                    if ( !$Self->{MainObject}->Require('Kernel::System::Valid') ) {
+                        $Self->FatalDie();
+                    }
 
-                if ( !$CompanyIsValid ) {
-                    $Self->Block(
-                        Name => 'CustomerRowCustomerCompanyInvalid',
-                    );
+                    my $ValidObject    = Kernel::System::Valid->new( %{$Self} );
+                    my @ValidIDs       = $ValidObject->ValidIDsGet();
+                    my $CompanyIsValid = grep { $CompanyValidID == $_ } @ValidIDs;
+
+                    if ( !$CompanyIsValid ) {
+                        $Self->Block(
+                            Name => 'CustomerRowCustomerCompanyInvalid',
+                        );
+                    }
                 }
             }
         }
@@ -640,7 +646,7 @@ sub ArticleQuote {
     else {
         $Article{Body} = $Self->WrapPlainText(
             MaxCharacters => $Self->{ConfigObject}->Get('Ticket::Frontend::TextAreaEmail') || 82,
-            PlainText     => $Article{Body},
+            PlainText => $Article{Body},
         );
     }
 
@@ -797,7 +803,7 @@ sub TicketListShow {
     );
 
     # build shown ticket per page
-    $Param{RequestedURL}    = "Action=$Self->{Action}";
+    $Param{RequestedURL}    = $Param{RequestedURL} || "Action=$Self->{Action}";
     $Param{Group}           = $Group;
     $Param{PreferencesKey}  = $PageShownPreferencesKey;
     $Param{PageShownString} = $Self->BuildSelection(
