@@ -3025,6 +3025,7 @@ sub BuildDateSelection {
         && $Param{ $Prefix . 'Year' }
         && $Param{ $Prefix . 'Month' }
         && $Param{ $Prefix . 'Day' }
+        && !$Param{OverrideTimeZone}
         )
     {
         my $TimeStamp = $Self->{TimeObject}->TimeStamp2SystemTime(
@@ -3687,7 +3688,7 @@ sub CustomerNavigationBar {
             if (
                 !$SelectedFlag
                 && $NavBarModule{$Item}->{Link} =~ /Action=$Self->{Action}/
-                && $NavBarModule{$Item}->{Link} =~ /$Self->{Subaction}/    # Subaction can be empty
+                && $NavBarModule{$Item}->{Link} =~ /$Self->{Subaction}/     # Subaction can be empty
                 )
             {
                 $NavBarModule{$Item}->{Class} .= ' Selected';
@@ -3719,7 +3720,7 @@ sub CustomerNavigationBar {
                 if (
                     !$SelectedFlag
                     && $ItemSub->{Link} =~ /Action=$Self->{Action}/
-                    && $ItemSub->{Link} =~ /$Self->{Subaction}/    # Subaction can be empty
+                    && $ItemSub->{Link} =~ /$Self->{Subaction}/       # Subaction can be empty
                     )
                 {
                     $NavBarModule{$Item}->{Class} .= ' Selected';
@@ -4055,7 +4056,7 @@ sub RichTextDocumentServe {
             $Charset = $2;
             $Charset =~ s/"|'//g;
         }
-        if (!$Charset) {
+        if ( !$Charset ) {
             $Charset = 'us-ascii';
             $Param{Data}->{ContentType} .= '; charset="us-ascii"';
         }
@@ -4070,7 +4071,7 @@ sub RichTextDocumentServe {
 
             # replace charset in content
             $Param{Data}->{ContentType} =~ s/\Q$Charset\E/utf-8/gi;
-            $Param{Data}->{Content} =~ s/(charset=("|'|))\Q$Charset\E/$1utf-8/gi;
+            $Param{Data}->{Content}     =~ s/(charset=("|'|))\Q$Charset\E/$1utf-8/gi;
         }
     }
 
@@ -5255,7 +5256,7 @@ sub WrapPlainText {
 
     # Return if we did not get MaxCharacters
     # or MaxCharacters doesn't contain just an int
-    if ( ! IsPositiveInteger($Param{MaxCharacters}) ) {
+    if ( !IsPositiveInteger( $Param{MaxCharacters} ) ) {
         $Self->{LogObject}->Log(
             Priority => 'error',
             Message  => "Got no or invalid MaxCharacters!",
@@ -5264,9 +5265,10 @@ sub WrapPlainText {
     }
 
     # Return if we didn't get PlainText
-    if ( ! defined $Param{PlainText} ) {
+    if ( !defined $Param{PlainText} ) {
         return;
     }
+
     # Return if we got no Scalar
     if ( ref $Param{PlainText} ) {
         $Self->{LogObject}->Log(
@@ -5275,6 +5277,7 @@ sub WrapPlainText {
         );
         return;
     }
+
     # Return PlainText if we have less than MaxCharacters
     if ( length $Param{PlainText} < $Param{MaxCharacters} ) {
         return $Param{PlainText};
