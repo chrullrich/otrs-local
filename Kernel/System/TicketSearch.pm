@@ -1027,6 +1027,25 @@ sub TicketSearch {
                 # check search attribute, we do not need to search for *
                 next if $Text =~ /^\%{1,3}$/;
 
+                # validate data type
+                my $ValidateSuccess = $Self->{DynamicFieldBackendObject}->ValueValidate(
+                    DynamicFieldConfig => $DynamicField,
+                    Value              => $Text,
+                    UserID             => $Param{UserID},
+                );
+                if ( !$ValidateSuccess ) {
+                    $Self->{LogObject}->Log(
+                        Priority => 'error',
+                        Message =>
+                            "Search not executed due to invalid value '"
+                            . $Text
+                            . "' on field '"
+                            . $DynamicField->{Name}
+                            . "'!",
+                    );
+                    return;
+                }
+
                 $SQLExtSub .= ' OR ' if ($Counter);
                 $SQLExtSub .= $Self->{DynamicFieldBackendObject}->SearchSQLGet(
                     DynamicFieldConfig => $DynamicField,
@@ -1633,7 +1652,8 @@ sub TicketSearch {
         return if $TimeStamp > $CurrentSystemTime;
 
         # don't execute queries if older/newer date restriction show now valid timeframe
-        return if $ComparePendingTimeOlderNewerDate && $TimeStamp > $ComparePendingTimeOlderNewerDate;
+        return
+            if $ComparePendingTimeOlderNewerDate && $TimeStamp > $ComparePendingTimeOlderNewerDate;
 
         $SQLExt .= " AND st.until_time >= $TimeStamp";
     }

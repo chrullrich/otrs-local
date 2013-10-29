@@ -1,3 +1,24 @@
+#3.2.11 2013-10-08
+ - 2013-10-01 Fixed bug#[9542](http://bugs.otrs.org/show_bug.cgi?id=9542) - Uninitialized value in AgentTicketForward.
+ - 2013-09-30 Fixed bug#[9765](http://bugs.otrs.org/show_bug.cgi?id=9765) - Dynamic Field values are completely removed if one entry contains a dash.
+ - 2013-09-27 Fixed bug#[9764](http://bugs.otrs.org/show_bug.cgi?id=9764) - ACL, Queue will ignored with customerID.
+ - 2013-09-27 Fixed bug#[9762](http://bugs.otrs.org/show_bug.cgi?id=9762) - Queue View - S / M / L views - not saved after logout.
+ - 2013-09-26 Fixed bug#[9580](http://bugs.otrs.org/show_bug.cgi?id=9580) - Time fields in TicketGetResponse Ticket element do not comply with xsd:DateTime format.
+ - 2013-09-26 Fixed bug#[9748](http://bugs.otrs.org/show_bug.cgi?id=9748) - ProcessManagement: Duplicate articles in a process-ticket (TransitionAction).
+ - 2013-09-26 Fixed bug#[9759](http://bugs.otrs.org/show_bug.cgi?id=9759) - Installer Error DB - max key length is 767 bytes.
+ - 2013-09-26 Fixed bug#[9747](http://bugs.otrs.org/show_bug.cgi?id=9747) - Only first selected process displays the RichText editor.
+ - 2013-09-25 Fixed bug#[9688](http://bugs.otrs.org/show_bug.cgi?id=9688) - ORA-01839 error occurs at DynamicField in TicketSearch.
+ - 2013-09-25 Fixed bug#[9751](http://bugs.otrs.org/show_bug.cgi?id=9751) - TimeUnits are not accepted with a value of 0.
+ - 2013-09-20 Fixed bug#[9739](http://bugs.otrs.org/show_bug.cgi?id=9739) - Customer interface not working with MySQL 5.6.
+ - 2013-09-20 Fixed bug#[8489](http://bugs.otrs.org/show_bug.cgi?id=8489) - setting Tickets per page resets AgentTicketQueue.
+ - 2013-09-20 Fixed bug#[9732](http://bugs.otrs.org/show_bug.cgi?id=9732) - German translation file de.pm incomplete.
+ - 2013-09-12 Fixed bug#[9728](http://bugs.otrs.org/show_bug.cgi?id=9728) - Bulk action (send email) ignores reply-to address from unknown customers.
+ - 2013-09-06 Fixed bug#[9661](http://bugs.otrs.org/show_bug.cgi?id=9661) - Useless code in DynamicField backend.
+ - 2013-09-06 Fixed bug#[9701](http://bugs.otrs.org/show_bug.cgi?id=9701) - Ticket overview Queue Sort Filter is missing.
+ - 2013-09-04 Fixed bug#[8173](http://bugs.otrs.org/show_bug.cgi?id=8173) - Dashboard Widget "Online" does not save state.
+ - 2013-09-04 Fixed bug#[9188](http://bugs.otrs.org/show_bug.cgi?id=9188) - AgentTicketEmail always loads a signature, even if no queue is selected.
+ - 2013-09-02 Fixed bug#[9672](http://bugs.otrs.org/show_bug.cgi?id=9672) - Undecrypted HTML part displayed when viewing a multipart/alternative PGP encrypted HTML mail.
+
 #3.2.10 2013-08-27
  - 2013-08-20 Fixed bug#[9617](http://bugs.otrs.org/show_bug.cgi?id=9617) - Event-based notifications are not sent for process-tickets.
  - 2013-08-14 Fixed bug#[9666](http://bugs.otrs.org/show_bug.cgi?id=9666) - Installing an invalid package cause an server error on package manager.
