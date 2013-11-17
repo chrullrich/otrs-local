@@ -123,13 +123,7 @@ sub Run {
     # generate pdf output
     if ( $Self->{PDFObject} ) {
         my $PrintedBy = $Self->{LayoutObject}->{LanguageObject}->Get('printed by');
-        my $Time      = $Self->{LayoutObject}->Output( Template => '$Env{"Time"}' );
-        my $Url       = ' ';
-        if ( $ENV{REQUEST_URI} ) {
-            $Url = $Self->{ConfigObject}->Get('HttpType') . '://'
-                . $Self->{ConfigObject}->Get('FQDN')
-                . $ENV{REQUEST_URI};
-        }
+        my $Time = $Self->{LayoutObject}->Output( Template => '$Env{"Time"}' );
         my %Page;
 
         # get maximum number of pages
@@ -157,7 +151,7 @@ sub Run {
             . $Self->{UserLastname} . ' ('
             . $Self->{UserEmail} . ') '
             . $Time;
-        $Page{FooterLeft} = $Url;
+        $Page{FooterLeft} = '';
         $Page{PageText}   = $Self->{LayoutObject}->{LanguageObject}->Get('Page');
         $Page{PageCount}  = 1;
 
@@ -446,6 +440,13 @@ sub _PDFOutputTicketDynamicFields {
     for my $DynamicFieldConfig ( @{$DynamicField} ) {
         next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
+        # skip dynamic field if is not desinged for customer interface
+        my $IsCustomerInterfaceCapable = $Self->{BackendObject}->HasBehavior(
+            DynamicFieldConfig => $DynamicFieldConfig,
+            Behavior           => 'IsCustomerInterfaceCapable',
+        );
+        next DYNAMICFIELD if !$IsCustomerInterfaceCapable;
+
         my $Value = $Self->{BackendObject}->ValueGet(
             DynamicFieldConfig => $DynamicFieldConfig,
             ObjectID           => $Ticket{TicketID},
@@ -727,6 +728,13 @@ sub _PDFOutputArticles {
         for my $DynamicFieldConfig ( @{$DynamicField} ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
+            # skip the dynamic field if is not desinged for customer interface
+            my $IsCustomerInterfaceCapable = $Self->{BackendObject}->HasBehavior(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                Behavior           => 'IsCustomerInterfaceCapable',
+            );
+            next DYNAMICFIELD if !$IsCustomerInterfaceCapable;
+
             my $Value = $Self->{BackendObject}->ValueGet(
                 DynamicFieldConfig => $DynamicFieldConfig,
                 ObjectID           => $Article{ArticleID},
@@ -924,6 +932,13 @@ sub _HTMLMask {
     for my $DynamicFieldConfig ( @{$DynamicField} ) {
         next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
+        # skip the dynamic field if is not desinged for customer interface
+        my $IsCustomerInterfaceCapable = $Self->{BackendObject}->HasBehavior(
+            DynamicFieldConfig => $DynamicFieldConfig,
+            Behavior           => 'IsCustomerInterfaceCapable',
+        );
+        next DYNAMICFIELD if !$IsCustomerInterfaceCapable;
+
         my $Value = $Self->{BackendObject}->ValueGet(
             DynamicFieldConfig => $DynamicFieldConfig,
             ObjectID           => $Param{TicketID},
@@ -1050,6 +1065,13 @@ sub _HTMLMask {
         DYNAMICFIELD:
         for my $DynamicFieldConfig ( @{$DynamicField} ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
+
+            # skip the dynamic field if is not desinged for customer interface
+            my $IsCustomerInterfaceCapable = $Self->{BackendObject}->HasBehavior(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                Behavior           => 'IsCustomerInterfaceCapable',
+            );
+            next DYNAMICFIELD if !$IsCustomerInterfaceCapable;
 
             my $Value = $Self->{BackendObject}->ValueGet(
                 DynamicFieldConfig => $DynamicFieldConfig,

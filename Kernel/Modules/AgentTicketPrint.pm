@@ -128,14 +128,13 @@ sub Run {
 
     # check if only one article need printed
     if ($ArticleID) {
-        my @NewArticleBox;
+
+        ARTICLE:
         for my $Article (@ArticleBox) {
             if ( $Article->{ArticleID} == $ArticleID ) {
-                @NewArticleBox = ($Article);
+                @ArticleBox = ($Article);
+                last ARTICLE;
             }
-        }
-        if (@NewArticleBox) {
-            @ArticleBox = @NewArticleBox;
         }
     }
 
@@ -188,13 +187,7 @@ sub Run {
     # generate pdf output
     if ( $Self->{PDFObject} ) {
         my $PrintedBy = $Self->{LayoutObject}->{LanguageObject}->Get('printed by');
-        my $Time      = $Self->{LayoutObject}->Output( Template => '$Env{"Time"}' );
-        my $Url       = ' ';
-        if ( $ENV{REQUEST_URI} ) {
-            $Url = $Self->{ConfigObject}->Get('HttpType') . '://'
-                . $Self->{ConfigObject}->Get('FQDN')
-                . $ENV{REQUEST_URI};
-        }
+        my $Time = $Self->{LayoutObject}->Output( Template => '$Env{"Time"}' );
         my %Page;
 
         # get maximum number of pages
@@ -222,7 +215,7 @@ sub Run {
             . $Self->{UserLastname} . ' ('
             . $Self->{UserEmail} . ') '
             . $Time;
-        $Page{FooterLeft} = $Url;
+        $Page{FooterLeft} = '';
         $Page{PageText}   = $Self->{LayoutObject}->{LanguageObject}->Get('Page');
         $Page{PageCount}  = 1;
 

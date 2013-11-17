@@ -171,8 +171,9 @@ sub Run {
             );
             if ( !$AccessOk ) {
                 my $Output = $Self->{LayoutObject}->Header(
-                    Type  => 'Small',
-                    Value => $Ticket{Number},
+                    Type      => 'Small',
+                    Value     => $Ticket{Number},
+                    BodyClass => 'Popup',
                 );
                 $Output .= $Self->{LayoutObject}->Warning(
                     Message => $Self->{LayoutObject}->{LanguageObject}
@@ -282,8 +283,13 @@ sub Run {
         my $IsUpload = 0;
 
         # attachment delete
+        my @AttachmentIDs = map {
+            my ($ID) = $_ =~ m{ \A AttachmentDelete (\d+) \z }xms;
+            $ID ? $ID : ();
+        } $Self->{ParamObject}->GetParamNames();
+
         COUNT:
-        for my $Count ( 1 .. 32 ) {
+        for my $Count ( reverse sort @AttachmentIDs ) {
             my $Delete = $Self->{ParamObject}->GetParam( Param => "AttachmentDelete$Count" );
             next COUNT if !$Delete;
             %Error = ();
@@ -301,8 +307,7 @@ sub Run {
             %Error                   = ();
             $Error{AttachmentUpload} = 1;
             my %UploadStuff = $Self->{ParamObject}->GetUploadAll(
-                Param  => 'FileUpload',
-                Source => 'string',
+                Param => 'FileUpload',
             );
             $Self->{UploadCacheObject}->FormIDAddFile(
                 FormID => $Self->{FormID},
@@ -349,7 +354,7 @@ sub Run {
         }
 
         if ( !$IsUpload ) {
-            if ( $Self->{Config}->{Note} ) {
+            if ( $Self->{Config}->{Note} && $Self->{Config}->{NoteMandatory} ) {
 
                 # check subject
                 if ( !$GetParam{Subject} ) {
@@ -399,6 +404,28 @@ sub Run {
                 $Error{'ServiceInvalid'} = ' ServerError';
             }
 
+            # check mandatory service
+            if (
+                $Self->{ConfigObject}->Get('Ticket::Service')
+                && $Self->{Config}->{Service}
+                && $Self->{Config}->{ServiceMandatory}
+                && !$GetParam{ServiceID}
+                )
+            {
+                $Error{'ServiceInvalid'} = ' ServerError';
+            }
+
+            # check mandatory sla
+            if (
+                $Self->{ConfigObject}->Get('Ticket::Service')
+                && $Self->{Config}->{Service}
+                && $Self->{Config}->{SLAMandatory}
+                && !$GetParam{SLAID}
+                )
+            {
+                $Error{'SLAInvalid'} = ' ServerError';
+            }
+
             # check time units, but only if the current screen has a note
             #   (accounted time can only be stored if and article is generated)
             if (
@@ -427,30 +454,43 @@ sub Run {
 
             my $PossibleValuesFilter;
 
-            # check if field has PossibleValues property in its configuration
-            if ( IsHashRefWithData( $DynamicFieldConfig->{Config}->{PossibleValues} ) ) {
+            my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                Behavior           => 'IsACLReducible',
+            );
 
-                # convert possible values key => value to key => key for ACLs usign a Hash slice
-                my %AclData = %{ $DynamicFieldConfig->{Config}->{PossibleValues} };
-                @AclData{ keys %AclData } = keys %AclData;
+            if ($IsACLReducible) {
 
-                # set possible values filter from ACLs
-                my $ACL = $Self->{TicketObject}->TicketAcl(
-                    %GetParam,
-                    Action        => $Self->{Action},
-                    TicketID      => $Self->{TicketID},
-                    ReturnType    => 'Ticket',
-                    ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},
-                    Data          => \%AclData,
-                    UserID        => $Self->{UserID},
+                # get PossibleValues
+                my $PossibleValues = $Self->{BackendObject}->PossibleValuesGet(
+                    DynamicFieldConfig => $DynamicFieldConfig,
                 );
-                if ($ACL) {
-                    my %Filter = $Self->{TicketObject}->TicketAclData();
 
-                    # convert Filer key => key back to key => value using map
-                    %{$PossibleValuesFilter}
-                        = map { $_ => $DynamicFieldConfig->{Config}->{PossibleValues}->{$_} }
-                        keys %Filter;
+                # check if field has PossibleValues property in its configuration
+                if ( IsHashRefWithData($PossibleValues) ) {
+
+                    # convert possible values key => value to key => key for ACLs using a Hash slice
+                    my %AclData = %{$PossibleValues};
+                    @AclData{ keys %AclData } = keys %AclData;
+
+                    # set possible values filter from ACLs
+                    my $ACL = $Self->{TicketObject}->TicketAcl(
+                        %GetParam,
+                        Action        => $Self->{Action},
+                        TicketID      => $Self->{TicketID},
+                        ReturnType    => 'Ticket',
+                        ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},
+                        Data          => \%AclData,
+                        UserID        => $Self->{UserID},
+                    );
+                    if ($ACL) {
+                        my %Filter = $Self->{TicketObject}->TicketAclData();
+
+                        # convert Filer key => key back to key => value using map
+                        %{$PossibleValuesFilter}
+                            = map { $_ => $PossibleValues->{$_} }
+                            keys %Filter;
+                    }
                 }
             }
 
@@ -501,8 +541,9 @@ sub Run {
         if (%Error) {
 
             my $Output = $Self->{LayoutObject}->Header(
-                Type  => 'Small',
-                Value => $Ticket{TicketNumber},
+                Type      => 'Small',
+                Value     => $Ticket{TicketNumber},
+                BodyClass => 'Popup',
             );
             $Output .= $Self->_Mask(
                 Attachments       => \@Attachments,
@@ -659,7 +700,18 @@ sub Run {
 
         # add note
         my $ArticleID = '';
-        if ( $Self->{Config}->{Note} ) {
+        if ( $Self->{Config}->{Note} && ( $GetParam{Subject} || $GetParam{Body} ) ) {
+
+            if ( !$GetParam{Subject} ) {
+                if ( $Self->{Config}->{Subject} ) {
+                    my $Subject = $Self->{LayoutObject}->Output(
+                        Template => $Self->{Config}->{Subject},
+                    );
+                    $GetParam{Subject} = $Subject;
+                }
+                $GetParam{Subject} = $GetParam{Subject}
+                    || $Self->{LayoutObject}->{LanguageObject}->Get('No subject');
+            }
 
             # if there is no ArticleTypeID, use the default value
             if ( !defined $GetParam{ArticleTypeID} ) {
@@ -712,8 +764,7 @@ sub Run {
 
             # get submit attachment
             my %UploadStuff = $Self->{ParamObject}->GetUploadAll(
-                Param  => 'FileUpload',
-                Source => 'String',
+                Param => 'FileUpload',
             );
             if (%UploadStuff) {
                 push @Attachments, \%UploadStuff;
@@ -907,13 +958,15 @@ sub Run {
         DYNAMICFIELD:
         for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
-            next DYNAMICFIELD
-                if !$Self->{BackendObject}->IsAJAXUpdateable(
-                DynamicFieldConfig => $DynamicFieldConfig,
-                );
             next DYNAMICFIELD if $DynamicFieldConfig->{ObjectType} ne 'Ticket';
 
-            my $PossibleValues = $Self->{BackendObject}->AJAXPossibleValuesGet(
+            my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                Behavior           => 'IsACLReducible',
+            );
+            next DYNAMICFIELD if !$IsACLReducible;
+
+            my $PossibleValues = $Self->{BackendObject}->PossibleValuesGet(
                 DynamicFieldConfig => $DynamicFieldConfig,
             );
 
@@ -939,12 +992,18 @@ sub Run {
                 %{$PossibleValues} = map { $_ => $PossibleValues->{$_} } keys %Filter;
             }
 
+            my $DataValues = $Self->{BackendObject}->BuildSelectionDataGet(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                PossibleValues     => $PossibleValues,
+                Value              => $DynamicFieldValues{ $DynamicFieldConfig->{Name} },
+            ) || $PossibleValues;
+
             # add dynamic field to the list of fields to update
             push(
                 @DynamicFieldAJAX,
                 {
                     Name        => 'DynamicField_' . $DynamicFieldConfig->{Name},
-                    Data        => $PossibleValues,
+                    Data        => $DataValues,
                     SelectedID  => $DynamicFieldValues{ $DynamicFieldConfig->{Name} },
                     Translation => $DynamicFieldConfig->{Config}->{TranslatableValues} || 0,
                     Max         => 100,
@@ -1053,30 +1112,43 @@ sub Run {
 
             my $PossibleValuesFilter;
 
-            # check if field has PossibleValues property in its configuration
-            if ( IsHashRefWithData( $DynamicFieldConfig->{Config}->{PossibleValues} ) ) {
+            my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                Behavior           => 'IsACLReducible',
+            );
 
-                # convert possible values key => value to key => key for ACLs usign a Hash slice
-                my %AclData = %{ $DynamicFieldConfig->{Config}->{PossibleValues} };
-                @AclData{ keys %AclData } = keys %AclData;
+            if ($IsACLReducible) {
 
-                # set possible values filter from ACLs
-                my $ACL = $Self->{TicketObject}->TicketAcl(
-                    %GetParam,
-                    Action        => $Self->{Action},
-                    TicketID      => $Self->{TicketID},
-                    ReturnType    => 'Ticket',
-                    ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},
-                    Data          => \%AclData,
-                    UserID        => $Self->{UserID},
+                # get PossibleValues
+                my $PossibleValues = $Self->{BackendObject}->PossibleValuesGet(
+                    DynamicFieldConfig => $DynamicFieldConfig,
                 );
-                if ($ACL) {
-                    my %Filter = $Self->{TicketObject}->TicketAclData();
 
-                    # convert Filer key => key back to key => value using map
-                    %{$PossibleValuesFilter}
-                        = map { $_ => $DynamicFieldConfig->{Config}->{PossibleValues}->{$_} }
-                        keys %Filter;
+                # check if field has PossibleValues property in its configuration
+                if ( IsHashRefWithData($PossibleValues) ) {
+
+                    # convert possible values key => value to key => key for ACLs using a Hash slice
+                    my %AclData = %{$PossibleValues};
+                    @AclData{ keys %AclData } = keys %AclData;
+
+                    # set possible values filter from ACLs
+                    my $ACL = $Self->{TicketObject}->TicketAcl(
+                        %GetParam,
+                        Action        => $Self->{Action},
+                        TicketID      => $Self->{TicketID},
+                        ReturnType    => 'Ticket',
+                        ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},
+                        Data          => \%AclData,
+                        UserID        => $Self->{UserID},
+                    );
+                    if ($ACL) {
+                        my %Filter = $Self->{TicketObject}->TicketAclData();
+
+                        # convert Filer key => key back to key => value using map
+                        %{$PossibleValuesFilter}
+                            = map { $_ => $PossibleValues->{$_} }
+                            keys %Filter;
+                    }
                 }
             }
 
@@ -1108,8 +1180,9 @@ sub Run {
 
         # print form ...
         my $Output = $Self->{LayoutObject}->Header(
-            Type  => 'Small',
-            Value => $Ticket{TicketNumber},
+            Type      => 'Small',
+            Value     => $Ticket{TicketNumber},
+            BodyClass => 'Popup',
         );
         $Output .= $Self->_Mask(
             TimeUnitsRequired => (
@@ -1149,18 +1222,10 @@ sub _Mask {
         OnlyDynamicFields => 1,
     );
 
-    # create a string with the quoted dynamic field names separated by a commas
+    # create a string with the quoted dynamic field names separated by commas
     if ( IsArrayRefWithData($DynamicFieldNames) ) {
-        my $FirstItem = 1;
-        FIELD:
         for my $Field ( @{$DynamicFieldNames} ) {
-            if ($FirstItem) {
-                $FirstItem = 0;
-            }
-            else {
-                $Param{DynamicFieldNamesStrg} .= ', ';
-            }
-            $Param{DynamicFieldNamesStrg} .= "'" . $Field . "'";
+            $Param{DynamicFieldNamesStrg} .= ", '" . $Field . "'";
         }
     }
 
@@ -1201,39 +1266,86 @@ sub _Mask {
             $Param{ServiceID} = '';
         }
 
-        $Param{ServiceStrg} = $Self->{LayoutObject}->BuildSelection(
-            Data         => $Services,
-            Name         => 'ServiceID',
-            SelectedID   => $Param{ServiceID},
-            Class        => $Param{ServiceInvalid} || ' ',
-            PossibleNone => 1,
-            TreeView     => $TreeView,
-            Sort         => 'TreeView',
-            Translation  => 0,
-            Max          => 200,
-        );
-        $Self->{LayoutObject}->Block(
-            Name => 'Service',
-            Data => {%Param},
-        );
+        if ( $Self->{Config}->{ServiceMandatory} ) {
+
+            $Param{ServiceStrg} = $Self->{LayoutObject}->BuildSelection(
+                Data         => $Services,
+                Name         => 'ServiceID',
+                SelectedID   => $Param{ServiceID},
+                Class        => 'Validate_Required ' . ( $Param{ServiceInvalid} || ' ' ),
+                PossibleNone => 1,
+                TreeView     => $TreeView,
+                Sort         => 'TreeView',
+                Translation  => 0,
+                Max          => 200,
+            );
+
+            $Self->{LayoutObject}->Block(
+                Name => 'ServiceMandatory',
+                Data => {%Param},
+            );
+        }
+        else {
+
+            $Param{ServiceStrg} = $Self->{LayoutObject}->BuildSelection(
+                Data         => $Services,
+                Name         => 'ServiceID',
+                SelectedID   => $Param{ServiceID},
+                Class        => $Param{ServiceInvalid} || ' ',
+                PossibleNone => 1,
+                TreeView     => $TreeView,
+                Sort         => 'TreeView',
+                Translation  => 0,
+                Max          => 200,
+            );
+
+            $Self->{LayoutObject}->Block(
+                Name => 'Service',
+                Data => {%Param},
+            );
+        }
+
         my %SLA = $Self->{TicketObject}->TicketSLAList(
             %Param,
             Action => $Self->{Action},
             UserID => $Self->{UserID},
         );
-        $Param{SLAStrg} = $Self->{LayoutObject}->BuildSelection(
-            Data         => \%SLA,
-            Name         => 'SLAID',
-            SelectedID   => $Param{SLAID},
-            PossibleNone => 1,
-            Sort         => 'AlphanumericValue',
-            Translation  => 0,
-            Max          => 200,
-        );
-        $Self->{LayoutObject}->Block(
-            Name => 'SLA',
-            Data => {%Param},
-        );
+
+        if ( $Self->{Config}->{SLAMandatory} ) {
+
+            $Param{SLAStrg} = $Self->{LayoutObject}->BuildSelection(
+                Data         => \%SLA,
+                Name         => 'SLAID',
+                SelectedID   => $Param{SLAID},
+                Class        => 'Validate_Required ' . ( $Param{SLAInvalid} || ' ' ),
+                PossibleNone => 1,
+                Sort         => 'AlphanumericValue',
+                Translation  => 0,
+                Max          => 200,
+            );
+
+            $Self->{LayoutObject}->Block(
+                Name => 'SLAMandatory',
+                Data => {%Param},
+            );
+        }
+        else {
+
+            $Param{SLAStrg} = $Self->{LayoutObject}->BuildSelection(
+                Data         => \%SLA,
+                Name         => 'SLAID',
+                SelectedID   => $Param{SLAID},
+                PossibleNone => 1,
+                Sort         => 'AlphanumericValue',
+                Translation  => 0,
+                Max          => 200,
+            );
+
+            $Self->{LayoutObject}->Block(
+                Name => 'SLA',
+                Data => {%Param},
+            );
+        }
     }
 
     if ( $Self->{Config}->{Queue} ) {
@@ -1254,6 +1366,7 @@ sub _Mask {
             Class          => 'NewQueueID',
             Name           => 'NewQueueID',
             SelectedID     => $Param{NewQueueID},
+            TreeView       => $TreeView,
             CurrentQueueID => $Param{QueueID},
             OnChangeSubmit => 0,
         );
@@ -1298,13 +1411,20 @@ sub _Mask {
             Size         => 1,
             PossibleNone => 1,
         );
-        my %UserHash;
+        my @OldOwners;
+        my %SeenOldOwner;
         if (@OldUserInfo) {
             my $Counter = 1;
             for my $User ( reverse @OldUserInfo ) {
-                next if $UserHash{ $User->{UserID} };
-                $UserHash{ $User->{UserID} } = "$Counter: $User->{UserLastname} "
-                    . "$User->{UserFirstname} ($User->{UserLogin})";
+
+                # skip if old owner is already in the list
+                next if $SeenOldOwner{ $User->{UserID} };
+                $SeenOldOwner{ $User->{UserID} } = 1;
+                push @OldOwners, {
+                    Key   => $User->{UserID},
+                    Value => "$Counter: $User->{UserLastname} "
+                        . "$User->{UserFirstname} ($User->{UserLogin})"
+                };
                 $Counter++;
             }
         }
@@ -1319,12 +1439,13 @@ sub _Mask {
 
         # build string
         $Param{OldOwnerStrg} = $Self->{LayoutObject}->BuildSelection(
-            Data         => \%UserHash,
+            Data         => \@OldOwners,
             SelectedID   => $OldOwnerSelectedID,
             Name         => 'OldOwnerID',
             Class        => $Param{OldOwnerInvalid} || ' ',
             PossibleNone => 1,
         );
+
         if ( $Param{NewOwnerType} && $Param{NewOwnerType} eq 'Old' ) {
             $Param{'NewOwnerType::Old'} = 'checked = "checked"';
         }
@@ -1464,6 +1585,12 @@ sub _Mask {
     }
 
     if ( $Self->{Config}->{Note} ) {
+
+        if ( $Self->{Config}->{NoteMandatory} ) {
+            $Param{SubjectRequired} = 'Validate_Required';
+            $Param{BodyRequired}    = 'Validate_Required';
+        }
+
         $Self->{LayoutObject}->Block(
             Name => 'Note',
             Data => {%Param},
@@ -1479,6 +1606,23 @@ sub _Mask {
             $Self->{LayoutObject}->Block(
                 Name => 'RichText',
                 Data => \%Param,
+            );
+        }
+
+        if ( $Self->{Config}->{NoteMandatory} ) {
+            $Self->{LayoutObject}->Block(
+                Name => 'SubjectLabelMandatory',
+            );
+            $Self->{LayoutObject}->Block(
+                Name => 'RichTextLabelMandatory',
+            );
+        }
+        else {
+            $Self->{LayoutObject}->Block(
+                Name => 'SubjectLabel',
+            );
+            $Self->{LayoutObject}->Block(
+                Name => 'RichTextLabel',
             );
         }
 
@@ -1521,25 +1665,31 @@ sub _Mask {
                 TicketID => $Self->{TicketID},
             );
 
-            my %UserHash;
+            my @InvolvedAgents;
+            my %SeenInvolvedAgents;
             my $Counter = 1;
 
             USER:
             for my $User ( reverse @UserIDs ) {
 
-                next USER if $UserHash{ $User->{UserID} };
+                next USER if $SeenInvolvedAgents{ $User->{UserID} };
 
-                $UserHash{ $User->{UserID} }
-                    = "$Counter: $User->{UserLastname} $User->{UserFirstname} ($User->{UserLogin})";
-            }
-            continue {
+                my $Value = "$Counter: $User->{UserFullname}";
+                if ( $User->{OutOfOfficeMessage} ) {
+                    $Value .= " $User->{OutOfOfficeMessage}";
+                }
+
+                push @InvolvedAgents, {
+                    Key   => $User->{UserID},
+                    Value => $Value,
+                };
                 $Counter++;
             }
 
             my $InvolvedAgentSize
                 = $Self->{ConfigObject}->Get('Ticket::Frontend::InvolvedAgentMaxSize') || 3;
             $Param{InvolvedAgentStrg} = $Self->{LayoutObject}->BuildSelection(
-                Data       => \%UserHash,
+                Data       => \@InvolvedAgents,
                 SelectedID => $Self->{InvolvedUserID},
                 Name       => 'InvolvedUserID',
                 Multiple   => 1,
@@ -1870,11 +2020,11 @@ sub _GetFieldsToUpdate {
     for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
         next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
-        my $Updateable = $Self->{BackendObject}->IsAJAXUpdateable(
+        my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
             DynamicFieldConfig => $DynamicFieldConfig,
+            Behavior           => 'IsACLReducible',
         );
-
-        next DYNAMICFIELD if !$Updateable;
+        next DYNAMICFIELD if !$IsACLReducible;
 
         push @UpdatableFields, 'DynamicField_' . $DynamicFieldConfig->{Name};
     }

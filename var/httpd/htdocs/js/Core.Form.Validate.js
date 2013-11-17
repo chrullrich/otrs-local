@@ -92,7 +92,7 @@ Core.Form.Validate = (function (TargetNS) {
         // if the field has a servererror class and the value was not changed,
         // keep the error class.
         if ($Element.is('input:checkbox, input:radio')) {
-            $Element.data('ValidateOldValue', $Element.attr('checked'));
+            $Element.data('ValidateOldValue', $Element.prop('checked'));
         }
         else {
             $Element.data('ValidateOldValue', $Element.val());
@@ -100,12 +100,12 @@ Core.Form.Validate = (function (TargetNS) {
 
         // Get the target element and find the associated hidden div with the
         // error message.
-        InputErrorMessageHTML = $(Core.App.EscapeSelector('#' + $Element.attr('id') + ErrorType)).html();
-        InputErrorMessageText = $(Core.App.EscapeSelector('#' + $Element.attr('id') + ErrorType)).text();
+        InputErrorMessageHTML = $('#' + Core.App.EscapeSelector($Element.attr('id')) + ErrorType).html();
+        InputErrorMessageText = $('#' + Core.App.EscapeSelector($Element.attr('id')) + ErrorType).text();
 
         if (InputErrorMessageHTML && InputErrorMessageHTML.length) {
             // if error field is a RTE, it is a little bit more difficult
-            if ($('#cke_' + Element.id).length) {
+            if ($('#cke_' + Core.App.EscapeSelector(Element.id)).length) {
                 Core.Form.ErrorTooltips.InitRTETooltip($Element, InputErrorMessageHTML);
             } else {
                 Core.Form.ErrorTooltips.InitTooltip($Element, InputErrorMessageHTML);
@@ -138,7 +138,7 @@ Core.Form.Validate = (function (TargetNS) {
         // if the field value has not changed, do not remove error class
         if ($Element.hasClass(Options.ServerErrorClass)) {
             if ($Element.is('input:checkbox, input:radio')) {
-                ElementValue = $Element.attr('checked');
+                ElementValue = $Element.prop('checked');
             }
             else {
                 ElementValue = $Element.val();
@@ -161,7 +161,7 @@ Core.Form.Validate = (function (TargetNS) {
             $Element.attr('aria-invalid', false);
 
             // if error field is a RTE, it is a little bit more difficult
-            if ($('#cke_' + Element.id).length) {
+            if ($('#cke_' + Core.App.EscapeSelector(Element.id)).length) {
                 Core.Form.ErrorTooltips.RemoveRTETooltip($Element);
             } else {
                 Core.Form.ErrorTooltips.RemoveTooltip($Element);

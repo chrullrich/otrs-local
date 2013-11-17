@@ -13,70 +13,28 @@ use vars (qw($Self));
 
 use Kernel::System::Group;
 use Kernel::System::User;
-
-# create local config object
-my $ConfigObject = Kernel::Config->new();
-$ConfigObject->Set(
-    Key   => 'CheckEmailInvalidAddress',
-    Value => 0,
-);
+use Kernel::System::UnitTest::Helper;
 
 # create local objects
-my $GroupObject = Kernel::System::Group->new(
+my $HelperObject = Kernel::System::UnitTest::Helper->new(
+    UnitTestObject => $Self,
     %{$Self},
-    ConfigObject => $ConfigObject,
+    RestoreSystemConfiguration => 0,
 );
 my $UserObject = Kernel::System::User->new(
     %{$Self},
-    ConfigObject => $ConfigObject,
+);
+my $GroupObject = Kernel::System::Group->new(
+    %{$Self},
 );
 
 # add three users
-my $UserRand1 = 'example-user' . int( rand(1000000) );
-my $UserRand2 = 'example-user' . int( rand(1000000) );
-my $UserRand3 = 'example-user' . int( rand(1000000) );
-
-my $UserID1 = $UserObject->UserAdd(
-    UserFirstname => 'Test1',
-    UserLastname  => 'Test1',
-    UserLogin     => $UserRand1,
-    UserEmail     => $UserRand1 . '@example.com',
-    ValidID       => 1,
-    ChangeUserID  => 1,
-);
-
-$Self->True(
-    $UserID1,
-    'UserAdd1()',
-);
-
-my $UserID2 = $UserObject->UserAdd(
-    UserFirstname => 'Test2',
-    UserLastname  => 'Test2',
-    UserLogin     => $UserRand2,
-    UserEmail     => $UserRand2 . '@example.com',
-    ValidID       => 1,
-    ChangeUserID  => 1,
-);
-
-$Self->True(
-    $UserID2,
-    'UserAdd2()',
-);
-
-my $UserID3 = $UserObject->UserAdd(
-    UserFirstname => 'Test3',
-    UserLastname  => 'Test3',
-    UserLogin     => $UserRand3,
-    UserEmail     => $UserRand3 . '@example.com',
-    ValidID       => 1,
-    ChangeUserID  => 1,
-);
-
-$Self->True(
-    $UserID3,
-    'UserAdd3()',
-);
+my $UserLogin1 = $HelperObject->TestUserCreate();
+my $UserLogin2 = $HelperObject->TestUserCreate();
+my $UserLogin3 = $HelperObject->TestUserCreate();
+my $UserID1    = $UserObject->UserLookup( UserLogin => $UserLogin1 );
+my $UserID2    = $UserObject->UserLookup( UserLogin => $UserLogin2 );
+my $UserID3    = $UserObject->UserLookup( UserLogin => $UserLogin3 );
 
 # add three groups
 my $GroupRand1 = 'example-group1' . int( rand(1000000) );
@@ -589,6 +547,38 @@ if ( !$MemberList3{$GroupID2} || !$MemberList3{$GroupID3} ) {
 $Self->True(
     $GroupMemberList3,
     'GroupMemberList3()',
+);
+
+my %GroupUserRoleMemberlist1 = $GroupObject->GroupUserRoleMemberList(
+    UserID => $UserID1,
+    Result => 'HASH',
+);
+
+$Self->True(
+    $GroupUserRoleMemberlist1{$RoleID1},
+    "GroupUserRoleMemberList - UserID - HASH - key",
+);
+
+$Self->Is(
+    $GroupUserRoleMemberlist1{$RoleID1},
+    $RoleRand1 . '1',
+    "GroupUserRoleMemberList - UserID - HASH - value",
+);
+
+my %GroupUserRoleMemberRolelist1 = $GroupObject->GroupUserRoleMemberList(
+    RoleID => $RoleID1,
+    Result => 'HASH',
+);
+
+$Self->True(
+    $GroupUserRoleMemberRolelist1{$UserID1},
+    "GroupUserRoleMemberList - RoleID - HASH - key",
+);
+
+$Self->Is(
+    $GroupUserRoleMemberRolelist1{$UserID1},
+    $UserLogin1,
+    "GroupUserRoleMemberList - RoleID - HASH - value",
 );
 
 # check groupmembers of Group1

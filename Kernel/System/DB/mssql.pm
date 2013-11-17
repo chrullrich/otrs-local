@@ -33,8 +33,13 @@ sub LoadPreferences {
     $Self->{'DB::QuoteSemicolon'}       = '';
     $Self->{'DB::QuoteUnderscoreStart'} = '[';
     $Self->{'DB::QuoteUnderscoreEnd'}   = ']';
-    $Self->{'DB::CaseInsensitive'}      = 1;
+    $Self->{'DB::CaseSensitive'}        = 0;
     $Self->{'DB::LikeEscapeString'}     = '';
+
+# how to determine server version
+# @@VERSION returns "Microsoft SQL Server 2012 - 11.0.2218.0 (X64) Jun 12 2012 13:05:25 Copyright..."
+# we only take what is left of the minus; our version string: "Microsoft SQL Server 2012"
+    $Self->{'DB::Version'} = 'SELECT LEFT( @@VERSION, (CHARINDEX ( \'-\' ,@@VERSION) -2) )';
 
     # dbi attributes
     $Self->{'DB::Attribute'} = {
@@ -757,9 +762,6 @@ sub Insert {
             }
         }
         else {
-            if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
-                $Tmp =~ s/\n/\r/g;
-            }
             $Value .= $Tmp;
         }
     }

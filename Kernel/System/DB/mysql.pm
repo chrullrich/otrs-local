@@ -33,8 +33,15 @@ sub LoadPreferences {
     $Self->{'DB::QuoteSemicolon'}       = '\\';
     $Self->{'DB::QuoteUnderscoreStart'} = '\\';
     $Self->{'DB::QuoteUnderscoreEnd'}   = '';
-    $Self->{'DB::CaseInsensitive'}      = 1;
+    $Self->{'DB::CaseSensitive'}        = 0;
     $Self->{'DB::LikeEscapeString'}     = '';
+
+    # how to determine server version
+    # version can have package prefix, we need to extract that
+    # example of VERSION() output: '5.5.32-0ubuntu0.12.04.1'
+    # if VERSION() contains 'MariaDB', add MariaDB, otherwise MySQL.
+    $Self->{'DB::Version'}
+        = "SELECT CONCAT( IF (INSTR( VERSION(),'MariaDB'),'MariaDB ','MySQL '), SUBSTRING_INDEX(VERSION(),'-',1))";
 
     # DBI/DBD::mysql attributes
     # disable automatic reconnects as they do not execute DB::Connect, which will
@@ -56,8 +63,7 @@ sub LoadPreferences {
     #$Self->{'DB::ShellConnect'} = '';
 
     # init sql setting on db connect
-    if ( !$Self->{ConfigObject}->Get('Database::ShellOutput') )
-    {
+    if ( !$Self->{ConfigObject}->Get('Database::ShellOutput') ) {
         $Self->{'DB::Connect'} = 'SET NAMES utf8';
     }
 
@@ -708,9 +714,6 @@ sub Insert {
             }
         }
         else {
-            if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
-                $Tmp =~ s/\n/\r/g;
-            }
             $Value .= $Tmp;
         }
     }

@@ -57,8 +57,6 @@ Core.Form = (function (TargetNS) {
             $Form
                 .find("input:not([type='hidden']), textarea, select")
                 .attr('readonly', 'readonly')
-                // trigger custom "readonly" event for Core.UI.IE7Fixes
-                .trigger('readonly')
                 .end()
                 .find('button')
                 .attr('disabled', 'disabled');
@@ -85,8 +83,6 @@ Core.Form = (function (TargetNS) {
         $Form
             .find("input:not([type=hidden]), textarea, select")
             .removeAttr('readonly')
-            // trigger custom "readonly" event for Core.UI.IE7Fixes
-            .trigger('readonly')
             .end()
             .find('button')
             .removeAttr('disabled');
@@ -138,7 +134,7 @@ Core.Form = (function (TargetNS) {
                     $SelectAllCheckbox.prop('checked', true);
                 }
                 else {
-                    $SelectAllCheckbox.removeAttr('checked');
+                    $SelectAllCheckbox.prop('checked', false);
                 }
             }
         }

@@ -13,12 +13,11 @@ use strict;
 use warnings;
 
 use Crypt::PasswdMD5 qw(unix_md5_crypt);
+use Digest::SHA;
 
 use Kernel::System::CacheInternal;
 use Kernel::System::CheckItem;
 use Kernel::System::Valid;
-
-use vars qw(@ISA);
 
 =head1 NAME
 
@@ -110,7 +109,7 @@ sub new {
 
     # set lower if database is case sensitive
     $Self->{Lower} = '';
-    if ( !$Self->{DBObject}->GetDatabaseFunction('CaseInsensitive') ) {
+    if ( $Self->{DBObject}->GetDatabaseFunction('CaseSensitive') ) {
         $Self->{Lower} = 'LOWER';
     }
 
@@ -153,6 +152,9 @@ sub GetUserData {
         return;
     }
 
+    # get configuration for the full name order
+    my $FirstnameLastNameOrder = $Self->{ConfigObject}->Get('FirstnameLastnameOrder') || 0;
+
     # check if result is cached
     if ( $Param{Valid} ) {
         $Param{Valid} = 1;
@@ -173,6 +175,7 @@ sub GetUserData {
             = 'GetUserData::User::'
             . $Param{User} . '::'
             . $Param{Valid} . '::'
+            . $FirstnameLastNameOrder . '::'
             . $Param{NoOutOfOffice};
     }
     else {
@@ -180,6 +183,7 @@ sub GetUserData {
             = 'GetUserData::UserID::'
             . $Param{UserID} . '::'
             . $Param{Valid} . '::'
+            . $FirstnameLastNameOrder . '::'
             . $Param{NoOutOfOffice};
     }
 
@@ -258,6 +262,40 @@ sub GetUserData {
             return;
         }
     }
+
+    # generate the full name and save it in the hash
+    my $UserFullname;
+    if ( $FirstnameLastNameOrder eq '0' ) {
+        $UserFullname = $Data{UserFirstname} . ' '
+            . $Data{UserLastname};
+    }
+    elsif ( $FirstnameLastNameOrder eq '1' ) {
+        $UserFullname = $Data{UserLastname} . ', '
+            . $Data{UserFirstname};
+    }
+    elsif ( $FirstnameLastNameOrder eq '2' ) {
+        $UserFullname = $Data{UserFirstname} . ' '
+            . $Data{UserLastname} . ' ('
+            . $Data{UserLogin} . ')';
+    }
+    elsif ( $FirstnameLastNameOrder eq '3' ) {
+        $UserFullname = $Data{UserLastname} . ', '
+            . $Data{UserFirstname} . ' ('
+            . $Data{UserLogin} . ')';
+    }
+    elsif ( $FirstnameLastNameOrder eq '4' ) {
+        $UserFullname = '(' . $Data{UserLogin}
+            . ') ' . $Data{UserFirstname}
+            . ' ' . $Data{UserLastname};
+    }
+    elsif ( $FirstnameLastNameOrder eq '5' ) {
+        $UserFullname = '(' . $Data{UserLogin}
+            . ') ' . $Data{UserLastname}
+            . ', ' . $Data{UserFirstname};
+    }
+
+    # save the generated fullname in the hash.
+    $Data{UserFullname} = $UserFullname;
 
     # get preferences
     my %Preferences = $Self->GetPreferences( UserID => $Data{UserID} );
@@ -423,25 +461,8 @@ sub UserAdd {
     $Self->SetPreferences( UserID => $UserID, Key => 'UserEmail', Value => $Param{UserEmail} );
 
     # delete cache
-    my @CacheKeys = (
-        'GetUserData::User::' . $Param{UserLogin} . '::0::0',
-        'GetUserData::User::' . $Param{UserLogin} . '::0::1',
-        'GetUserData::User::' . $Param{UserLogin} . '::1::0',
-        'GetUserData::User::' . $Param{UserLogin} . '::1::1',
-        'GetUserData::UserID::' . $UserID . '::0::0',
-        'GetUserData::UserID::' . $UserID . '::0::1',
-        'GetUserData::UserID::' . $UserID . '::1::0',
-        'GetUserData::UserID::' . $UserID . '::1::1',
-        'UserLookup::Login::' . $UserID,
-        'UserLookup::ID::' . $Param{UserLogin},
-        'UserList::Short::0',
-        'UserList::Short::1',
-        'UserList::Long::0',
-        'UserList::Long::1',
-    );
-    for my $CacheKey (@CacheKeys) {
-        $Self->{CacheInternalObject}->Delete( Key => $CacheKey );
-    }
+    $Self->{CacheInternalObject}->CleanUp();
+    $Self->{CacheInternalObject}->CleanUp( OtherType => 'Group' );
 
     return $UserID;
 }
@@ -662,7 +683,7 @@ sub SetPassword {
     my $CryptedPw = '';
 
     # get crypt type
-    my $CryptType = $Self->{ConfigObject}->Get('AuthModule::DB::CryptType') || 'sha256';
+    my $CryptType = $Self->{ConfigObject}->Get('AuthModule::DB::CryptType') || 'sha2';
 
     # crypt plain (no crypt at all)
     if ( $CryptType eq 'plain' ) {
@@ -692,14 +713,7 @@ sub SetPassword {
     # crypt with sha1
     elsif ( $CryptType eq 'sha1' ) {
 
-        my $SHAObject;
-        if ( $Self->{MainObject}->Require('Digest::SHA') ) {
-            $SHAObject = Digest::SHA->new('sha1');
-        }
-        else {
-            $Self->{MainObject}->Require('Digest::SHA::PurePerl');
-            $SHAObject = Digest::SHA::PurePerl->new('sha1');
-        }
+        my $SHAObject = Digest::SHA->new('sha1');
 
         # encode output, needed by sha1_hex() only non utf8 signs
         $Self->{EncodeObject}->EncodeOutput( \$Pw );
@@ -708,18 +722,43 @@ sub SetPassword {
         $CryptedPw = $SHAObject->hexdigest();
     }
 
-    # crypt with sha256
-    # if $CryptType is set to anything else including sha2
+    # bcrypt
+    elsif ( $CryptType eq 'bcrypt' ) {
+
+        if ( !$Self->{MainObject}->Require('Crypt::Eksblowfish::Bcrypt') ) {
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message =>
+                    "User: '$User{UserLogin}' tried to store password with bcrypt but 'Crypt::Eksblowfish::Bcrypt' is not installed!",
+            );
+            return;
+        }
+
+        my $Cost = 9;
+        my $Salt = $Self->{MainObject}->GenerateRandomString( Length => 16 );
+
+        # remove UTF8 flag, required by Crypt::Eksblowfish::Bcrypt
+        $Self->{EncodeObject}->EncodeOutput( \$Pw );
+
+        # calculate password hash
+        my $Octets = Crypt::Eksblowfish::Bcrypt::bcrypt_hash(
+            {
+                key_nul => 1,
+                cost    => 9,
+                salt    => $Salt,
+            },
+            $Pw
+        );
+
+        # We will store cost and salt in the password string so that it can be decoded
+        #   in future even if we use a higher cost by default.
+        $CryptedPw = "BCRYPT:$Cost:$Salt:" . Crypt::Eksblowfish::Bcrypt::en_base64($Octets);
+    }
+
+    # crypt with sha256 as fallback
     else {
 
-        my $SHAObject;
-        if ( $Self->{MainObject}->Require('Digest::SHA') ) {
-            $SHAObject = Digest::SHA->new('sha256');
-        }
-        else {
-            $Self->{MainObject}->Require('Digest::SHA::PurePerl');
-            $SHAObject = Digest::SHA::PurePerl->new('sha256');
-        }
+        my $SHAObject = Digest::SHA->new('sha256');
 
         # encode output, needed by sha256_hex() only non utf8 signs
         $Self->{EncodeObject}->EncodeOutput( \$Pw );
@@ -863,7 +902,7 @@ sub UserName {
     my %User = $Self->GetUserData(%Param);
 
     return if !%User;
-    return "$User{UserFirstname} $User{UserLastname}";
+    return $User{UserFullname};
 }
 
 =item UserList()
@@ -881,34 +920,68 @@ sub UserList {
     my ( $Self, %Param ) = @_;
 
     my $Type = $Param{Type} || 'Short';
-    if ( $Param{Valid} ) {
-        $Param{Valid} = 1;
+
+    # set valid option
+    my $Valid = $Param{Valid};
+    if ( !defined $Valid || $Valid ) {
+        $Valid = 1;
     }
     else {
-        $Param{Valid} = 0;
+        $Valid = 0;
     }
 
+    # get configuration for the full name order
+    my $FirstnameLastNameOrder = $Self->{ConfigObject}->Get('FirstnameLastnameOrder') || 0;
+
     # check cache
-    my $CacheKey = 'UserList::' . $Type . '::' . $Param{Valid};
-    my $Cache = $Self->{CacheInternalObject}->Get( Key => $CacheKey );
+    my $CacheKey = 'UserList::' . $Type . '::' . $Valid
+        . '::' . $FirstnameLastNameOrder;
+    my $Cache = $Self->{CacheInternalObject}->Get(
+        Key => $CacheKey,
+    );
     return %{$Cache} if $Cache;
 
+    my $SelectStr;
     if ( $Type eq 'Short' ) {
-        $Param{What} = "$Self->{ConfigObject}->{DatabaseUserTableUserID}, "
+        $SelectStr = "$Self->{ConfigObject}->{DatabaseUserTableUserID}, "
             . " $Self->{ConfigObject}->{DatabaseUserTableUser}";
     }
     else {
-        $Param{What} = "$Self->{ConfigObject}->{DatabaseUserTableUserID}, "
+        $SelectStr = "$Self->{ConfigObject}->{DatabaseUserTableUserID}, "
             . " last_name, first_name, "
             . " $Self->{ConfigObject}->{DatabaseUserTableUser}";
     }
 
-    my %Users = $Self->{DBObject}->GetTableData(
-        What  => $Param{What},
-        Table => $Self->{ConfigObject}->{DatabaseUserTable},
-        Clamp => 1,
-        Valid => $Param{Valid},
-    );
+    # sql query
+    if ($Valid) {
+        return if !$Self->{DBObject}->Prepare(
+            SQL =>
+                "SELECT $SelectStr FROM $Self->{ConfigObject}->{DatabaseUserTable} WHERE valid_id IN "
+                . "( ${\(join ', ', $Self->{ValidObject}->ValidIDsGet())} )",
+        );
+    }
+    else {
+        return if !$Self->{DBObject}->Prepare(
+            SQL => "SELECT $SelectStr FROM $Self->{ConfigObject}->{DatabaseUserTable}",
+        );
+    }
+
+    # fetch the result
+    my %UsersRaw;
+    my %Users;
+    while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+        $UsersRaw{ $Row[0] } = $Row[1];
+    }
+
+    if ( $Type eq 'Short' ) {
+        %Users = %UsersRaw;
+    }
+    else {
+        for my $CurrentUserID ( sort keys %UsersRaw ) {
+            my $UserFullname = $Self->UserName( UserID => $CurrentUserID );
+            $Users{$CurrentUserID} = $UserFullname;
+        }
+    }
 
     # check vacation option
     for my $UserID ( sort keys %Users ) {
@@ -923,7 +996,10 @@ sub UserList {
     }
 
     # set cache
-    $Self->{CacheInternalObject}->Set( Key => $CacheKey, Value => \%Users );
+    $Self->{CacheInternalObject}->Set(
+        Key   => $CacheKey,
+        Value => \%Users,
+    );
 
     return %Users;
 }
@@ -948,19 +1024,9 @@ sub GenerateRandomPassword {
     # Generated passwords are eight characters long by default.
     my $Size = $Param{Size} || 8;
 
-    # The list of characters that can appear in a randomly generated password.
-    # Note that users can put any character into a password they choose themselves.
-    my @PwChars
-        = ( 0 .. 9, 'A' .. 'Z', 'a' .. 'z', '-', '_', '!', '@', '#', '$', '%', '^', '&', '*' );
-
-    # The number of characters in the list.
-    my $PwCharsLen = scalar @PwChars;
-
-    # Generate the password.
-    my $Password = '';
-    for ( my $i = 0; $i < $Size; $i++ ) {
-        $Password .= $PwChars[ rand($PwCharsLen) ];
-    }
+    my $Password = $Self->{MainObject}->GenerateRandomString(
+        Length => $Size,
+    );
 
     # Return the password.
     return $Password;
@@ -1000,23 +1066,7 @@ sub SetPreferences {
 
     # delete cache
     my $Login = $Self->UserLookup( UserID => $Param{UserID} );
-    my @CacheKeys = (
-        'GetUserData::User::' . $Login . '::0::0',
-        'GetUserData::User::' . $Login . '::0::1',
-        'GetUserData::User::' . $Login . '::1::0',
-        'GetUserData::User::' . $Login . '::1::1',
-        'GetUserData::UserID::' . $Param{UserID} . '::0::0',
-        'GetUserData::UserID::' . $Param{UserID} . '::0::1',
-        'GetUserData::UserID::' . $Param{UserID} . '::1::0',
-        'GetUserData::UserID::' . $Param{UserID} . '::1::1',
-        'UserList::Short::0',
-        'UserList::Short::1',
-        'UserList::Long::0',
-        'UserList::Long::1',
-    );
-    for my $CacheKey (@CacheKeys) {
-        $Self->{CacheInternalObject}->Delete( Key => $CacheKey );
-    }
+    $Self->{CacheInternalObject}->CleanUp();
 
     # set preferences
     return $Self->{PreferencesObject}->SetPreferences(%Param);
@@ -1044,7 +1094,7 @@ search in user preferences
 
     my %UserList = $UserObject->SearchPreferences(
         Key   => 'UserEmail',
-        Value => 'email@example.com',
+        Value => 'email@example.com',   # optional, limit to a certain value/pattern
     );
 
 =cut
@@ -1073,18 +1123,9 @@ sub TokenGenerate {
         $Self->{LogObject}->Log( Priority => 'error', Message => "Need UserID!" );
         return;
     }
-
-    # The list of characters that can appear in a randomly generated token.
-    my @Chars = ( 0 .. 9, 'A' .. 'Z', 'a' .. 'z' );
-
-    # The number of characters in the list.
-    my $CharsLen = scalar @Chars;
-
-    # Generate the token.
-    my $Token = 'A';
-    for ( my $i = 0; $i < 14; $i++ ) {
-        $Token .= $Chars[ rand($CharsLen) ];
-    }
+    my $Token = $Self->{MainObject}->GenerateRandomString(
+        Length => 15,
+    );
 
     # save token in preferences
     $Self->SetPreferences(

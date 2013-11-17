@@ -12,8 +12,6 @@ package Kernel::System::Web::InterfaceAgent;
 use strict;
 use warnings;
 
-use vars qw(@INC);
-
 use Kernel::Config;
 use Kernel::System::Log;
 use Kernel::System::Main;
@@ -340,10 +338,12 @@ sub Run {
         $LayoutObject = Kernel::Output::HTML::Layout->new(
             SetCookies => {
                 SessionIDCookie => $Self->{ParamObject}->SetCookie(
-                    Key     => $Param{SessionName},
-                    Value   => $NewSessionID,
-                    Expires => $Expires,
-                    Secure  => scalar $SecureAttribute,
+                    Key      => $Param{SessionName},
+                    Value    => $NewSessionID,
+                    Expires  => $Expires,
+                    Path     => $Self->{ConfigObject}->Get('ScriptAlias'),
+                    Secure   => scalar $SecureAttribute,
+                    HTTPOnly => 1,
                 ),
             },
             SessionID   => $NewSessionID,

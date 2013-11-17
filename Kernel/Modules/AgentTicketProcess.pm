@@ -8,6 +8,7 @@
 # --
 
 package Kernel::Modules::AgentTicketProcess;
+## nofilter(TidyAll::Plugin::OTRS::Perl::DBObject)
 
 use strict;
 use warnings;
@@ -286,6 +287,18 @@ sub Run {
         );
     }
 
+    # validate the ProcessList with stored acls
+    $Self->{TicketObject}->TicketAcl(
+        ReturnType    => 'Ticket',
+        ReturnSubType => '-',
+        Data          => $ProcessList,
+        UserID        => $Self->{UserID},
+    );
+
+    $ProcessList = $Self->{TicketObject}->TicketAclProcessData(
+        Processes => $ProcessList,
+    );
+
     # If we have no Subaction or Subaction is 'Create' and submitted ProcessEntityID is invalid
     # Display the ProcessList
     if (
@@ -297,6 +310,13 @@ sub Run {
         )
         )
     {
+
+        # get process id (if any, a process should be pre-selected)
+        $Param{ProcessID} = $Self->{ParamObject}->GetParam( Param => 'ID' );
+        if ( $Param{ProcessID} ) {
+            $Param{PreSelectProcess} = 1;
+        }
+
         return $Self->_DisplayProcessList(
             %Param,
             ProcessList     => $ProcessList,
@@ -494,17 +514,20 @@ sub _RenderAjax {
                 = ( grep { $_->{Name} eq $DynamicFieldName } @{ $Self->{DynamicField} } )[0];
 
             next DIALOGFIELD if !IsHashRefWithData($DynamicFieldConfig);
-            next DIALOGFIELD if !$Self->{BackendObject}->IsAJAXUpdateable(
-                DynamicFieldConfig => $DynamicFieldConfig,
-            );
 
-            my $PossibleValues = $Self->{BackendObject}->AJAXPossibleValuesGet(
+            my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                Behavior           => 'IsACLReducible',
+            );
+            next DIALOGFIELD if !$IsACLReducible;
+
+            my $PossibleValues = $Self->{BackendObject}->PossibleValuesGet(
                 DynamicFieldConfig => $DynamicFieldConfig,
             );
             my %DynamicFieldCheckParam = map { $_ => $Param{GetParam}{$_} }
                 grep {m{^DynamicField_}xms} ( keys %{ $Param{GetParam} } );
 
-            # convert possible values key => value to key => key for ACLs usign a Hash slice
+            # convert possible values key => value to key => key for ACLs using a Hash slice
             my %AclData = %{$PossibleValues};
             @AclData{ keys %AclData } = keys %AclData;
 
@@ -525,12 +548,18 @@ sub _RenderAjax {
                 %{$PossibleValues} = map { $_ => $PossibleValues->{$_} } keys %Filter;
             }
 
+            my $DataValues = $Self->{BackendObject}->BuildSelectionDataGet(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                PossibleValues     => $PossibleValues,
+                Value              => $DynamicFieldValues{ $DynamicFieldConfig->{Name} },
+            ) || $PossibleValues;
+
             # add dynamic field to the JSONCollector
             push(
                 @JSONCollector,
                 {
                     Name        => 'DynamicField_' . $DynamicFieldConfig->{Name},
-                    Data        => $PossibleValues,
+                    Data        => $DataValues,
                     SelectedID  => $DynamicFieldValues{ $DynamicFieldConfig->{Name} },
                     Translation => $DynamicFieldConfig->{Config}->{TranslatableValues} || 0,
                     Max         => 100,
@@ -667,6 +696,14 @@ sub _RenderAjax {
         }
         elsif ( $Self->{NameToID}{$CurrentField} eq 'SLAID' ) {
             next DIALOGFIELD if $FieldsProcessed{ $Self->{NameToID}{$CurrentField} };
+
+            # if SLA is render before service (by it order in the fields) it needs to create
+            # the service list
+            if ( !IsHashRefWithData($Services) ) {
+                $Services = $Self->_GetServices(
+                    %{ $Param{GetParam} },
+                );
+            }
 
             my $Data = $Self->_GetSLAs(
                 %{ $Param{GetParam} },
@@ -2097,34 +2134,47 @@ sub _RenderDynamicField {
 
     my $PossibleValuesFilter;
 
-    # All Ticket DynamicFields
-    # used for ACL checking
-    my %DynamicFieldCheckParam = map { $_ => $Param{GetParam}{$_} }
-        grep {m{^DynamicField_}xms} ( keys %{ $Param{GetParam} } );
+    my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
+        DynamicFieldConfig => $DynamicFieldConfig,
+        Behavior           => 'IsACLReducible',
+    );
 
-    # check if field has PossibleValues property in its configuration
-    if ( IsHashRefWithData( $DynamicFieldConfig->{Config}->{PossibleValues} ) ) {
+    if ($IsACLReducible) {
 
-        # convert possible values key => value to key => key for ACLs usign a Hash slice
-        my %AclData = %{ $DynamicFieldConfig->{Config}->{PossibleValues} };
-        @AclData{ keys %AclData } = keys %AclData;
-
-        # set possible values filter from ACLs
-        my $ACL = $Self->{TicketObject}->TicketAcl(
-            %{ $Param{GetParam} },
-            DynamicField  => \%DynamicFieldCheckParam,
-            Action        => $Self->{Action},
-            ReturnType    => 'Ticket',
-            ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},
-            Data          => \%AclData,
-            UserID        => $Self->{UserID},
+        # get PossibleValues
+        my $PossibleValues = $Self->{BackendObject}->PossibleValuesGet(
+            DynamicFieldConfig => $DynamicFieldConfig,
         );
-        if ($ACL) {
-            my %Filter = $Self->{TicketObject}->TicketAclData();
 
-            # convert Filer key => key back to key => value using map
-            %{$PossibleValuesFilter}
-                = map { $_ => $DynamicFieldConfig->{Config}->{PossibleValues}->{$_} } keys %Filter;
+        # All Ticket DynamicFields
+        # used for ACL checking
+        my %DynamicFieldCheckParam = map { $_ => $Param{GetParam}{$_} }
+            grep {m{^DynamicField_}xms} ( keys %{ $Param{GetParam} } );
+
+        # check if field has PossibleValues property in its configuration
+        if ( IsHashRefWithData($PossibleValues) ) {
+
+            # convert possible values key => value to key => key for ACLs using a Hash slice
+            my %AclData = %{$PossibleValues};
+            @AclData{ keys %AclData } = keys %AclData;
+
+            # set possible values filter from ACLs
+            my $ACL = $Self->{TicketObject}->TicketAcl(
+                %{ $Param{GetParam} },
+                DynamicField  => \%DynamicFieldCheckParam,
+                Action        => $Self->{Action},
+                ReturnType    => 'Ticket',
+                ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},
+                Data          => \%AclData,
+                UserID        => $Self->{UserID},
+            );
+            if ($ACL) {
+                my %Filter = $Self->{TicketObject}->TicketAclData();
+
+                # convert Filer key => key back to key => value using map
+                %{$PossibleValuesFilter}
+                    = map { $_ => $PossibleValues->{$_} } keys %Filter;
+            }
         }
     }
 
@@ -2404,9 +2454,6 @@ sub _RenderCustomer {
         };
     }
 
-    my $AutoCompleteConfig
-        = $Self->{ConfigObject}->Get('Ticket::Frontend::CustomerSearchAutoComplete');
-
     my %CustomerUserData = ();
 
     my $SubmittedCustomerUserID = $Param{GetParam}{CustomerUserID};
@@ -2437,12 +2484,6 @@ sub _RenderCustomer {
     # set some customer search autocomplete properties
     $Self->{LayoutObject}->Block(
         Name => 'CustomerSearchAutoComplete',
-        Data => {
-            minQueryLength      => $AutoCompleteConfig->{MinQueryLength}      || 2,
-            queryDelay          => $AutoCompleteConfig->{QueryDelay}          || 100,
-            maxResultsDisplayed => $AutoCompleteConfig->{MaxResultsDisplayed} || 20,
-            ActiveAutoComplete  => $AutoCompleteConfig->{Active},
-        },
     );
 
     if (
@@ -3712,8 +3753,13 @@ sub _StoreActivityDialog {
     my $IsUpload = 0;
 
     # attachment delete
+    my @AttachmentIDs = map {
+        my ($ID) = $_ =~ m{ \A AttachmentDelete (\d+) \z }xms;
+        $ID ? $ID : ();
+    } $Self->{ParamObject}->GetParamNames();
+
     COUNT:
-    for my $Count ( 1 .. 32 ) {
+    for my $Count ( reverse sort @AttachmentIDs ) {
         my $Delete = $Self->{ParamObject}->GetParam( Param => "AttachmentDelete$Count" );
         next COUNT if !$Delete;
         %Error = ();
@@ -3731,8 +3777,7 @@ sub _StoreActivityDialog {
         %Error                   = ();
         $Error{AttachmentUpload} = 1;
         my %UploadStuff = $Self->{ParamObject}->GetUploadAll(
-            Param  => 'FileUpload',
-            Source => 'string',
+            Param => 'FileUpload',
         );
         $Self->{UploadCacheObject}->FormIDAddFile(
             FormID => $Self->{FormID},
@@ -4199,8 +4244,7 @@ sub _StoreActivityDialog {
 
                 # get submit attachment
                 my %UploadStuff = $Self->{ParamObject}->GetUploadAll(
-                    Param  => 'FileUpload',
-                    Source => 'String',
+                    Param => 'FileUpload',
                 );
                 if (%UploadStuff) {
                     push @Attachments, \%UploadStuff;
@@ -4471,6 +4515,15 @@ sub _DisplayProcessList {
         $Self->{LayoutObject}->Block(
             Name => 'RichText',
             Data => \%Param,
+        );
+    }
+
+    if ( $Param{PreSelectProcess} && $Param{ProcessID} ) {
+        $Self->{LayoutObject}->Block(
+            Name => 'PreSelectProcess',
+            Data => {
+                ProcessID => $Param{ProcessID},
+            },
         );
     }
 
@@ -5026,6 +5079,14 @@ sub _GetPriorities {
 sub _GetQueues {
     my ( $Self, %Param ) = @_;
 
+    # check which type of permission is needed: if the process ticket
+    # already exists (= TicketID is present), we need the 'move_into'
+    # permission otherwise the 'create' permission
+    my $PermissionType = 'create';
+    if ( $Param{TicketID} ) {
+        $PermissionType = 'move_into';
+    }
+
     # check own selection
     my %NewQueues;
     if ( $Self->{ConfigObject}->Get('Ticket::Frontend::NewQueueOwnSelection') ) {
@@ -5038,7 +5099,7 @@ sub _GetQueues {
         if ( $Self->{ConfigObject}->Get('Ticket::Frontend::NewQueueSelectionType') eq 'Queue' ) {
             %Queues = $Self->{TicketObject}->MoveList(
                 %Param,
-                Type    => 'create',
+                Type    => $PermissionType,
                 Action  => $Self->{Action},
                 QueueID => $Self->{QueueID},
                 UserID  => $Self->{UserID},
@@ -5053,10 +5114,10 @@ sub _GetQueues {
             );
         }
 
-        # get create permission queues
+        # get permission queues
         my %UserGroups = $Self->{GroupObject}->GroupMemberList(
             UserID => $Self->{UserID},
-            Type   => 'create',
+            Type   => $PermissionType,
             Result => 'HASH',
         );
 
@@ -5155,13 +5216,12 @@ sub _GetAJAXUpdatableFields {
             # skip any field with wrong config
             next FIELD if !IsHashRefWithData($DynamicFieldConfig);
 
-            # get field update status
-            my $Updateable = $Self->{BackendObject}->IsAJAXUpdateable(
+            # skip field if is not IsACLReducible (updatable)
+            my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
                 DynamicFieldConfig => $DynamicFieldConfig,
+                Behavior           => 'IsACLReducible',
             );
-
-            # skip field if is not updatable
-            next FIELD if !$Updateable;
+            next FIELD if !$IsACLReducible;
 
             push @UpdatableFields, $Field;
         }

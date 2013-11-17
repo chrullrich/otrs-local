@@ -104,8 +104,8 @@ sub new {
         $Self->{$Needed} = $Param{$Needed};
     }
 
-    $Self->{DynamicFieldObject}        = Kernel::System::DynamicField->new(%Param);
-    $Self->{DynamicFieldBackendObject} = Kernel::System::DynamicField::Backend->new(%Param);
+    $Self->{DynamicFieldObject}        = Kernel::System::DynamicField->new( %{$Self} );
+    $Self->{DynamicFieldBackendObject} = Kernel::System::DynamicField::Backend->new( %{$Self} );
     return $Self;
 }
 
@@ -116,10 +116,10 @@ sub new {
     my $DynamicFieldSetResult = $DynamicFieldSetActionObject->Run(
         UserID                   => 123,
         Ticket                   => \%Ticket,   # required
-        ProcessEntityID          => 'P123',     # optional
-        ActivityEntityID         => 'A123',     # optional
-        TransitionEntityID       => 'T123',     # optional
-        TransitionActionEntityID => 'TA123',    # optional
+        ProcessEntityID          => 'P123',
+        ActivityEntityID         => 'A123',
+        TransitionEntityID       => 'T123',
+        TransitionActionEntityID => 'TA123',
         Config                   => {
             MasterSlave => 'Master',
             Approved    => '1',
@@ -143,7 +143,12 @@ sub new {
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    for my $Needed (qw(UserID Ticket Config)) {
+    for my $Needed (
+        qw(UserID Ticket ProcessEntityID ActivityEntityID TransitionEntityID
+        TransitionActionEntityID Config
+        )
+        )
+    {
         if ( !defined $Param{$Needed} ) {
             $Self->{LogObject}->Log(
                 Priority => 'error',
@@ -154,29 +159,9 @@ sub Run {
     }
 
     # define a common message to output in case of any error
-    my $CommonMessage;
-    if ( $Param{ProcessEntityID} ) {
-        $CommonMessage .= "Process: $Param{ProcessEntityID}";
-    }
-    if ( $Param{ActivityEntityID} ) {
-        $CommonMessage .= " Activity: $Param{ActivityEntityID}";
-    }
-    if ( $Param{TransitionEntityID} ) {
-        $CommonMessage .= " Transition: $Param{TransitionEntityID}";
-    }
-    if ( $Param{TransitionActionEntityID} ) {
-        $CommonMessage .= " TransitionAction: $Param{TransitionActionEntityID}";
-    }
-    if ($CommonMessage) {
-
-        # add a separator
-        $CommonMessage .= " - ";
-    }
-    else {
-
-        # otherwise at least define it to prevent errors
-        $CommonMessage = '';
-    }
+    my $CommonMessage = "Process: $Param{ProcessEntityID} Activity: $Param{ActivityEntityID}"
+        . " Transition: $Param{TransitionEntityID}"
+        . " TransitionAction: $Param{TransitionActionEntityID} - ";
 
     # Check if we have Ticket to deal with
     if ( !IsHashRefWithData( $Param{Ticket} ) ) {

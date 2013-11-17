@@ -13,7 +13,6 @@ use warnings;
 use vars qw($Self);
 
 use Kernel::System::UnitTest::Helper;
-use Time::HiRes qw(sleep);
 
 if ( !$Self->{ConfigObject}->Get('SeleniumTestsActive') ) {
     $Self->True( 1, 'Selenium testing is not active' );
@@ -71,9 +70,9 @@ for my $SeleniumScenario ( @{ $Helper->SeleniumScenariosGet() } ) {
                 AdminPriority
                 AdminQueue
                 AdminQueueAutoResponse
-                AdminQueueResponses
-                AdminResponse
-                AdminResponseAttachment
+                AdminQueueTemplates
+                AdminTemplate
+                AdminTemplateAttachment
                 AdminRole
                 AdminRoleGroup
                 AdminRoleUser

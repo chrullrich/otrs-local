@@ -65,6 +65,12 @@ Core.Agent.Search = (function (TargetNS) {
 
                     return false;
                 });
+
+            // Register event for tree selection dialog
+            Core.UI.TreeSelection.InitTreeSelection();
+
+            // Initially display dynamic fields with TreeMode = 1 correctly
+            Core.UI.TreeSelection.InitDynamicFieldTreeViewRestore();
         }
 
         return false;
@@ -218,7 +224,7 @@ Core.Agent.Search = (function (TargetNS) {
                     return;
                 }
 
-                Core.UI.Dialog.ShowContentDialog(HTML, Core.Config.Get('SearchMsg'), '10px', 'Center', true, undefined, true, true);
+                Core.UI.Dialog.ShowContentDialog(HTML, Core.Config.Get('SearchMsg'), '10px', 'Center', true, undefined, true);
 
                 // hide add template block
                 $('#SearchProfileAddBlock').hide();
@@ -239,7 +245,7 @@ Core.Agent.Search = (function (TargetNS) {
                     $('#SaveProfile').parent().show().prev().show().prev().show();
 
                     // set SaveProfile to 0
-                    $('#SaveProfile').removeAttr('checked');
+                    $('#SaveProfile').prop('checked', false);
                 }
 
                 // register add of attribute
@@ -247,6 +253,12 @@ Core.Agent.Search = (function (TargetNS) {
                     var Attribute = $('#Attribute').val();
                     TargetNS.SearchAttributeAdd(Attribute);
                     TargetNS.AdditionalAttributeSelectionRebuild();
+
+                    // Register event for tree selection dialog
+                    $('.ShowTreeSelection').unbind('click').bind('click', function (Event) {
+                        Core.UI.TreeSelection.ShowTreeSelection($(this));
+                        return false;
+                    });
 
                     return false;
                 });
@@ -332,7 +344,7 @@ Core.Agent.Search = (function (TargetNS) {
                     $Element1 = $('#SearchProfile').children().first().clone();
                     $Element1.text(Name);
                     $Element1.attr('value', Name);
-                    $Element1.attr('selected', 'selected');
+                    $Element1.prop('selected', true);
                     $('#SearchProfile').append($Element1);
 
                     // set input box to empty
@@ -345,7 +357,7 @@ Core.Agent.Search = (function (TargetNS) {
                     $('#SaveProfile').parent().hide().prev().hide().prev().hide();
 
                     // set SaveProfile to 1
-                    $('#SaveProfile').attr('checked', 'checked');
+                    $('#SaveProfile').prop('checked', true);
 
                     // show delete button
                     $('#SearchProfileDelete').show();

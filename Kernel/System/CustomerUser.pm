@@ -13,8 +13,9 @@ use strict;
 use warnings;
 
 use Kernel::System::CustomerCompany;
+use Kernel::System::EventHandler;
 
-use vars qw(@ISA);
+use base qw(Kernel::System::EventHandler);
 
 =head1 NAME
 
@@ -86,7 +87,7 @@ sub new {
     my $GeneratorModule = $Self->{ConfigObject}->Get('CustomerPreferences')->{Module}
         || 'Kernel::System::CustomerUser::Preferences::DB';
     if ( $Self->{MainObject}->Require($GeneratorModule) ) {
-        $Self->{PreferencesObject} = $GeneratorModule->new(%Param);
+        $Self->{PreferencesObject} = $GeneratorModule->new( %{$Self} );
     }
 
     # load customer user backend module
@@ -101,13 +102,22 @@ sub new {
         }
         $Self->{"CustomerUser$Count"} = $GenericModule->new(
             Count => $Count,
-            %Param,
+            %{$Self},
             PreferencesObject => $Self->{PreferencesObject},
             CustomerUserMap   => $Self->{ConfigObject}->Get("CustomerUser$Count"),
         );
     }
 
-    $Self->{CustomerCompanyObject} = Kernel::System::CustomerCompany->new(%Param);
+    $Self->{CustomerCompanyObject} = Kernel::System::CustomerCompany->new( %{$Self} );
+
+    # init of event handler
+    $Self->EventHandlerInit(
+        Config     => 'CustomerUser::EventModulePost',
+        BaseObject => 'CustomerUserObject',
+        Objects    => {
+            %{$Self},
+        },
+    );
 
     return $Self;
 }
@@ -415,7 +425,21 @@ sub CustomerUserAdd {
         }
     }
 
-    return $Self->{ $Param{Source} }->CustomerUserAdd(%Param);
+    my $Result = $Self->{ $Param{Source} }->CustomerUserAdd(%Param);
+    return if !$Result;
+
+    # trigger event
+    $Self->EventHandler(
+        Event => 'CustomerUserAdd',
+        Data  => {
+            UserLogin => $Param{UserLogin},
+            NewData   => \%Param,
+        },
+        UserID => $Param{UserID},
+    );
+
+    return $Result;
+
 }
 
 =item CustomerUserUpdate()
@@ -441,7 +465,7 @@ sub CustomerUserUpdate {
 
     # check needed stuff
     if ( !$Param{UserLogin} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => "User UserLogin!" );
+        $Self->{LogObject}->Log( Priority => 'error', Message => "Need UserLogin!" );
         return;
     }
 
@@ -466,7 +490,22 @@ sub CustomerUserUpdate {
         );
         return;
     }
-    return $Self->{ $User{Source} }->CustomerUserUpdate(%Param);
+    my $Result = $Self->{ $User{Source} }->CustomerUserUpdate(%Param);
+    return if !$Result;
+
+    # trigger event
+    $Self->EventHandler(
+        Event => 'CustomerUserUpdate',
+        Data  => {
+            UserLogin => $Param{ID} || $Param{UserLogin},
+            NewData   => \%Param,
+            OldData   => \%User,
+        },
+        UserID => $Param{UserID},
+    );
+
+    return $Result;
+
 }
 
 =item SetPassword()
@@ -538,7 +577,7 @@ sub SetPreferences {
 
     # check needed stuff
     if ( !$Param{UserID} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'User UserID!' );
+        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need UserID!' );
         return;
     }
 
@@ -576,7 +615,7 @@ sub GetPreferences {
 
     # check needed stuff
     if ( !$Param{UserID} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'User UserID!' );
+        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need UserID!' );
         return;
     }
 
@@ -605,7 +644,7 @@ search in user preferences
 
     my %UserList = $CustomerUserObject->SearchPreferences(
         Key   => 'UserSomeKey',
-        Value => 'SomeValue',
+        Value => 'SomeValue',   # optional, limit to a certain value/pattern
     );
 
 =cut
@@ -655,17 +694,9 @@ sub TokenGenerate {
         return;
     }
 
-    # the list of characters that can appear in a randomly generated token
-    my @Chars = ( 0 .. 9, 'A' .. 'Z', 'a' .. 'z' );
-
-    # the number of characters in the list
-    my $CharsLen = scalar @Chars;
-
-    # generate the token
-    my $Token = 'C';
-    for ( my $i = 0; $i < 14; $i++ ) {
-        $Token .= $Chars[ rand $CharsLen ];
-    }
+    my $Token = $Self->{MainObject}->GenerateRandomString(
+        Length => 14,
+    );
 
     # save token in preferences
     $Self->SetPreferences(

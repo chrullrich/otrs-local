@@ -15,8 +15,6 @@ use warnings;
 use Kernel::System::VariableCheck qw(IsHashRefWithData IsStringWithData);
 use Kernel::GenericInterface::Requester;
 
-use vars qw(@ISA);
-
 =head1 NAME
 
 Kernel::Scheduler::TaskHandler::GenericInterface - GenericInterface backend of the TaskHandler for the Scheduler
@@ -126,7 +124,7 @@ sub Run {
         };
     }
 
-    # log and exit succesfully
+    # log and exit successfully
     $Self->{LogObject}->Log(
         Priority => 'notice',
         Message  => 'GenericInterface task executed correctly!',

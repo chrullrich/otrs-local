@@ -868,9 +868,6 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         // based on the saved layout information (if available)
         $('#Canvas').width(CanvasWidth).height(CanvasHeight);
 
-        // Init JsPlumb in Canvas mode (because of bugs with SVG in jQ1.6 in IE9)
-        jsPlumb.setRenderMode(jsPlumb.CANVAS);
-
         // reset, because at this point (initial draw or redraw), there cannot be a saved connection
         TargetNS.LatestConnectionTransitionID = undefined;
 

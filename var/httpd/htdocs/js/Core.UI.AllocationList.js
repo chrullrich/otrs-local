@@ -65,7 +65,7 @@ Core.UI.AllocationList = (function (TargetNS) {
      *      The Callback which is called if an element is removed from a list
      * @return nothing
      */
-    TargetNS.Init = function (ListSelector, ConnectorSelector, ReceiveCallback, RemoveCallback) {
+    TargetNS.Init = function (ListSelector, ConnectorSelector, ReceiveCallback, RemoveCallback, SortStopCallback) {
         var $Lists = $(ListSelector);
 
         if (!$Lists.length) {
@@ -84,6 +84,11 @@ Core.UI.AllocationList = (function (TargetNS) {
                 remove: function (Event, UI) {
                     if ($.isFunction(RemoveCallback)) {
                         RemoveCallback(Event, UI);
+                    }
+                },
+                stop: function (Event, UI) {
+                    if ($.isFunction(SortStopCallback)) {
+                        SortStopCallback(Event, UI);
                     }
                 }
             }).disableSelection();

@@ -1,5 +1,5 @@
 # --
-# Kernel/Modules/AdminAttachment.pm - provides admin std response module
+# Kernel/Modules/AdminAttachment.pm - provides admin std template module
 # Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -74,8 +74,7 @@ sub Run {
 
         # get attachment
         my %UploadStuff = $Self->{ParamObject}->GetUploadAll(
-            Param  => 'FileUpload',
-            Source => 'string',
+            Param => 'FileUpload',
         );
 
         # check needed data
@@ -161,8 +160,7 @@ sub Run {
 
         # get attachment
         my %UploadStuff = $Self->{ParamObject}->GetUploadAll(
-            Param  => 'FileUpload',
-            Source => 'string',
+            Param => 'FileUpload',
         );
 
         # check needed data

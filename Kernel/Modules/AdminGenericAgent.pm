@@ -18,6 +18,7 @@ use Kernel::System::Service;
 use Kernel::System::SLA;
 use Kernel::System::State;
 use Kernel::System::Type;
+use Kernel::System::Event;
 use Kernel::System::GenericAgent;
 use Kernel::System::CheckItem;
 use Kernel::System::DynamicField;
@@ -47,6 +48,10 @@ sub new {
     $Self->{GenericAgentObject} = Kernel::System::GenericAgent->new(%Param);
     $Self->{DynamicFieldObject} = Kernel::System::DynamicField->new(%Param);
     $Self->{BackendObject}      = Kernel::System::DynamicField::Backend->new(%Param);
+    $Self->{EventObject}        = Kernel::System::Event->new(
+        %Param,
+        DynamicFieldObject => $Self->{DynamicFieldObject},
+    );
 
     # get the dynamic fields for ticket object
     $Self->{DynamicField} = $Self->{DynamicFieldObject}->DynamicFieldListGet(
@@ -65,7 +70,7 @@ sub Run {
 
     # secure mode message (don't allow this action till secure mode is enabled)
     if ( !$Self->{ConfigObject}->Get('SecureMode') ) {
-        $Self->{LayoutObject}->SecureMode();
+        return $Self->{LayoutObject}->SecureMode();
     }
 
     # get config data
@@ -93,6 +98,11 @@ sub Run {
 
         # redirect
         return $Self->{LayoutObject}->ErrorScreen();
+    }
+
+    if ( $Self->{Subaction} eq 'Run' ) {
+
+        return $Self->_MaskRun();
     }
 
     # --------------------------------------------------------------- #
@@ -200,6 +210,7 @@ sub Run {
             qw(LockIDs StateIDs StateTypeIDs QueueIDs PriorityIDs OwnerIDs ResponsibleIDs
             TypeIDs ServiceIDs SLAIDs
             ScheduleDays ScheduleMinutes ScheduleHours
+            EventValues
             )
             )
         {
@@ -216,18 +227,30 @@ sub Run {
         for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
-            # extract the dynamic field value form the web request
-            my $DynamicFieldValue = $Self->{BackendObject}->SearchFieldValueGet(
-                DynamicFieldConfig     => $DynamicFieldConfig,
-                ParamObject            => $Self->{ParamObject},
-                ReturnProfileStructure => 1,
-                LayoutObject           => $Self->{LayoutObject},
+            # get search field preferences
+            my $SearchFieldPreferences = $Self->{BackendObject}->SearchFieldPreferences(
+                DynamicFieldConfig => $DynamicFieldConfig,
             );
 
-            # set the complete value structure in %DynamicFieldValues
-            # to store it later in the Generic Agent Job
-            if ( IsHashRefWithData($DynamicFieldValue) ) {
-                %DynamicFieldValues = ( %DynamicFieldValues, %{$DynamicFieldValue} );
+            next DYNAMICFIELD if !IsArrayRefWithData($SearchFieldPreferences);
+
+            PREFERENCE:
+            for my $Preference ( @{$SearchFieldPreferences} ) {
+
+                # extract the dynamic field value from the web request
+                my $DynamicFieldValue = $Self->{BackendObject}->SearchFieldValueGet(
+                    DynamicFieldConfig     => $DynamicFieldConfig,
+                    ParamObject            => $Self->{ParamObject},
+                    ReturnProfileStructure => 1,
+                    LayoutObject           => $Self->{LayoutObject},
+                    Type                   => $Preference->{Type},
+                );
+
+                # set the complete value structure in %DynamicFieldValues to store it later in the
+                # Generic Agent Job
+                if ( IsHashRefWithData($DynamicFieldValue) ) {
+                    %DynamicFieldValues = ( %DynamicFieldValues, %{$DynamicFieldValue} );
+                }
             }
         }
 
@@ -258,231 +281,9 @@ sub Run {
                 UserID => $Self->{UserID},
             );
 
-            # get time settings
-            my %Map = (
-                TicketCreate             => 'Time',
-                TicketChange             => 'ChangeTime',
-                TicketClose              => 'CloseTime',
-                TicketPending            => 'TimePending',
-                TicketEscalation         => 'EscalationTime',
-                TicketEscalationResponse => 'EscalationResponseTime',
-                TicketEscalationUpdate   => 'EscalationUpdateTime',
-                TicketEscalationSolution => 'EscalationSolutionTime',
+            return $Self->{LayoutObject}->Redirect(
+                OP => "Action=$Self->{Action}",
             );
-            for my $Type (
-                qw(
-                TicketCreate           TicketClose
-                TicketChange           TicketPending
-                TicketEscalation       TicketEscalationResponse
-                TicketEscalationUpdate TicketEscalationSolution
-                )
-                )
-            {
-                my $SearchType = $Map{$Type} . 'SearchType';
-                if ( !$GetParam{$SearchType} || $GetParam{$SearchType} eq 'None' ) {
-
-                    # do nothing with time stuff
-                }
-                elsif ( $GetParam{$SearchType} eq 'TimeSlot' ) {
-                    for my $DatePart (qw(Month Day)) {
-                        $GetParam{ $Type . "TimeStart$DatePart" }
-                            = sprintf( '%02d', $GetParam{ $Type . "TimeStart$DatePart" } );
-                        $GetParam{ $Type . "TimeStop$DatePart" }
-                            = sprintf( '%02d', $GetParam{ $Type . "TimeStop$DatePart" } );
-                    }
-                    if (
-                        $GetParam{ $Type . 'TimeStartDay' }
-                        && $GetParam{ $Type . 'TimeStartMonth' }
-                        && $GetParam{ $Type . 'TimeStartYear' }
-                        )
-                    {
-                        $GetParam{ $Type . 'TimeNewerDate' }
-                            = $GetParam{ $Type . 'TimeStartYear' } . '-'
-                            . $GetParam{ $Type . 'TimeStartMonth' } . '-'
-                            . $GetParam{ $Type . 'TimeStartDay' }
-                            . ' 00:00:01';
-                    }
-                    if (
-                        $GetParam{ $Type . 'TimeStopDay' }
-                        && $GetParam{ $Type . 'TimeStopMonth' }
-                        && $GetParam{ $Type . 'TimeStopYear' }
-                        )
-                    {
-                        $GetParam{ $Type . 'TimeOlderDate' }
-                            = $GetParam{ $Type . 'TimeStopYear' } . '-'
-                            . $GetParam{ $Type . 'TimeStopMonth' } . '-'
-                            . $GetParam{ $Type . 'TimeStopDay' }
-                            . ' 23:59:59';
-                    }
-                }
-                elsif ( $GetParam{$SearchType} eq 'TimePoint' ) {
-                    if (
-                        $GetParam{ $Type . 'TimePoint' }
-                        && $GetParam{ $Type . 'TimePointStart' }
-                        && $GetParam{ $Type . 'TimePointFormat' }
-                        )
-                    {
-                        my $Time = 0;
-                        if ( $GetParam{ $Type . 'TimePointFormat' } eq 'minute' ) {
-                            $Time = $GetParam{ $Type . 'TimePoint' };
-                        }
-                        elsif ( $GetParam{ $Type . 'TimePointFormat' } eq 'hour' ) {
-                            $Time = $GetParam{ $Type . 'TimePoint' } * 60;
-                        }
-                        elsif ( $GetParam{ $Type . 'TimePointFormat' } eq 'day' ) {
-                            $Time = $GetParam{ $Type . 'TimePoint' } * 60 * 24;
-                        }
-                        elsif ( $GetParam{ $Type . 'TimePointFormat' } eq 'week' ) {
-                            $Time = $GetParam{ $Type . 'TimePoint' } * 60 * 24 * 7;
-                        }
-                        elsif ( $GetParam{ $Type . 'TimePointFormat' } eq 'month' ) {
-                            $Time = $GetParam{ $Type . 'TimePoint' } * 60 * 24 * 30;
-                        }
-                        elsif ( $GetParam{ $Type . 'TimePointFormat' } eq 'year' ) {
-                            $Time = $GetParam{ $Type . 'TimePoint' } * 60 * 24 * 365;
-                        }
-                        if ( $GetParam{ $Type . 'TimePointStart' } eq 'Before' ) {
-                            $GetParam{ $Type . 'TimeOlderMinutes' } = $Time;
-                        }
-                        else {
-                            $GetParam{ $Type . 'TimeNewerMinutes' } = $Time;
-                        }
-                    }
-                }
-            }
-
-            if ( $Self->{ConfigObject}->Get('Ticket::ArchiveSystem') ) {
-
-                $GetParam{SearchInArchive} ||= '';
-                if ( $GetParam{SearchInArchive} eq 'AllTickets' ) {
-                    $GetParam{ArchiveFlags} = [ 'y', 'n' ];
-                }
-                elsif ( $GetParam{SearchInArchive} eq 'ArchivedTickets' ) {
-                    $GetParam{ArchiveFlags} = ['y'];
-                }
-                else {
-                    $GetParam{ArchiveFlags} = ['n'];
-                }
-            }
-
-            # focus of "From To Cc Subject Body"
-            for my $Parameter (qw(From To Cc Subject Body)) {
-                if ( defined $GetParam{$Parameter} && $GetParam{$Parameter} ne '' ) {
-                    $GetParam{$Parameter} = $GetParam{$Parameter};
-                }
-            }
-
-            # dynamic fields search parameters for ticket search
-            my %DynamicFieldSearchParameters;
-
-            # cycle trough the activated Dynamic Fields for this screen
-            DYNAMICFIELD:
-            for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
-                next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
-                next DYNAMICFIELD
-                    if !$DynamicFieldValues{ 'Search_DynamicField_' . $DynamicFieldConfig->{Name} };
-
-                # extract the dynamic field value form the profile
-                my $SearchParameter = $Self->{BackendObject}->SearchFieldParameterBuild(
-                    DynamicFieldConfig => $DynamicFieldConfig,
-                    Profile            => \%DynamicFieldValues,
-                    LayoutObject       => $Self->{LayoutObject},
-                );
-
-                # set search parameter
-                if ( defined $SearchParameter ) {
-                    $DynamicFieldSearchParameters{ 'DynamicField_' . $DynamicFieldConfig->{Name} }
-                        = $SearchParameter->{Parameter};
-                }
-            }
-
-            # perform ticket search
-            my $Counter = $Self->{TicketObject}->TicketSearch(
-                Result          => 'COUNT',
-                SortBy          => 'Age',
-                OrderBy         => 'Down',
-                UserID          => 1,
-                Limit           => 60_000,
-                ConditionInline => 1,
-                %GetParam,
-                %DynamicFieldSearchParameters,
-            ) || 0;
-            my @TicketIDs = $Self->{TicketObject}->TicketSearch(
-                Result          => 'ARRAY',
-                SortBy          => 'Age',
-                OrderBy         => 'Down',
-                UserID          => 1,
-                Limit           => 30,
-                ConditionInline => 1,
-                %GetParam,
-                %DynamicFieldSearchParameters,
-            );
-
-            $Self->{LayoutObject}->Block( Name => 'ActionList', );
-            $Self->{LayoutObject}->Block( Name => 'ActionOverview', );
-            $Self->{LayoutObject}->Block(
-                Name => 'Result',
-                Data => {
-                    %Param,
-                    Name        => $Self->{Profile},
-                    AffectedIDs => $Counter,
-                },
-            );
-
-            if (@TicketIDs) {
-                $Self->{LayoutObject}->Block( Name => 'ResultBlock' );
-                for my $TicketID (@TicketIDs) {
-
-                    # get first article data
-                    my %Data = $Self->{TicketObject}->ArticleFirstArticle(
-                        TicketID      => $TicketID,
-                        DynamicFields => 0,
-                    );
-
-                    if ( !%Data ) {
-
-                        # get ticket data instead
-                        %Data = $Self->{TicketObject}->TicketGet(
-                            TicketID      => $TicketID,
-                            DynamicFields => 0,
-                        );
-
-                        # set missing information
-                        $Data{Subject} = $Data{Title};
-                    }
-
-                    $Data{Age}
-                        = $Self->{LayoutObject}->CustomerAge( Age => $Data{Age}, Space => ' ' );
-                    $Data{css} = "PriorityID-$Data{PriorityID}";
-
-                    # user info
-                    my %UserInfo = $Self->{UserObject}->GetUserData(
-                        User => $Data{Owner},
-                    );
-                    $Data{UserLastname}  = $UserInfo{UserLastname};
-                    $Data{UserFirstname} = $UserInfo{UserFirstname};
-
-                    $Self->{LayoutObject}->Block(
-                        Name => 'Ticket',
-                        Data => \%Data,
-                    );
-                }
-                if ( $GetParam{NewDelete} ) {
-                    $Self->{LayoutObject}->Block( Name => 'DeleteWarning' );
-                }
-            }
-
-            # html search mask output
-            my $Output = $Self->{LayoutObject}->Header( Title => 'Affected Tickets' );
-            $Output .= $Self->{LayoutObject}->NavigationBar();
-            $Output .= $Self->{LayoutObject}->Output(
-                TemplateFile => 'AdminGenericAgent',
-                Data         => \%Param,
-            );
-
-            # build footer
-            $Output .= $Self->{LayoutObject}->Footer();
-            return $Output;
         }
 
         # something went wrong
@@ -600,6 +401,12 @@ sub _MaskUpdate {
         %JobData = $Self->{GenericAgentObject}->JobGet( Name => $Self->{Profile} );
     }
     $JobData{Profile} = $Self->{Profile};
+
+    # get list type
+    my $TreeView = 0;
+    if ( $Self->{ConfigObject}->Get('Ticket::Frontend::ListType') eq 'tree' ) {
+        $TreeView = 1;
+    }
 
     my %ShownUsers = $Self->{UserObject}->UserList(
         Type  => 'Long',
@@ -726,6 +533,7 @@ sub _MaskUpdate {
         Multiple           => 1,
         Name               => 'QueueIDs',
         SelectedIDRefArray => $JobData{QueueIDs},
+        TreeView           => $TreeView,
         OnChangeSubmit     => 0,
     );
     $JobData{NewQueuesStrg} = $Self->{LayoutObject}->AgentQueueListOption(
@@ -734,6 +542,7 @@ sub _MaskUpdate {
         Multiple       => 0,
         Name           => 'NewQueueID',
         SelectedID     => $JobData{NewQueueID},
+        TreeView       => $TreeView,
         OnChangeSubmit => 0,
     );
     $JobData{PrioritiesStrg} = $Self->{LayoutObject}->BuildSelection(
@@ -805,8 +614,9 @@ sub _MaskUpdate {
         );
         $JobData{ $Type . 'TimePointStart' } = $Self->{LayoutObject}->BuildSelection(
             Data => {
-                Last   => 'last',
-                Before => 'before',
+                Last   => 'within the last ...',
+                Next   => 'within the next ...',
+                Before => 'more than ... ago',
             },
             Name => $Type . 'TimePointStart',
             SelectedID => $JobData{ $Type . 'TimePointStart' } || 'Last',
@@ -948,13 +758,13 @@ sub _MaskUpdate {
             UserID       => $Self->{UserID},
         );
         my %NewService = %Service;
-
         $JobData{ServicesStrg} = $Self->{LayoutObject}->BuildSelection(
             Data        => \%Service,
             Name        => 'ServiceIDs',
             SelectedID  => $JobData{ServiceIDs},
             Size        => 5,
             Multiple    => 1,
+            TreeView    => $TreeView,
             Translation => 0,
             Max         => 200,
         );
@@ -964,6 +774,7 @@ sub _MaskUpdate {
             SelectedID  => $JobData{NewServiceID},
             Size        => 5,
             Multiple    => 1,
+            TreeView    => $TreeView,
             Translation => 0,
             Max         => 200,
         );
@@ -1068,31 +879,43 @@ sub _MaskUpdate {
     for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
         next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
-        # get field html
-        my $DynamicFieldHTML = $Self->{BackendObject}->SearchFieldRender(
+        # get search field preferences
+        my $SearchFieldPreferences = $Self->{BackendObject}->SearchFieldPreferences(
             DynamicFieldConfig => $DynamicFieldConfig,
-            Profile            => \%JobData,
-            DefaultValue =>
-                $Self->{Config}->{Defaults}->{DynamicField}->{ $DynamicFieldConfig->{Name} },
-            LayoutObject           => $Self->{LayoutObject},
-            ConfirmationCheckboxes => 1,
         );
 
-        next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldHTML);
+        next DYNAMICFIELD if !IsArrayRefWithData($SearchFieldPreferences);
 
-        if ($PrintDynamicFieldsSearchHeader) {
-            $Self->{LayoutObject}->Block( Name => 'DynamicField' );
-            $PrintDynamicFieldsSearchHeader = 0;
+        PREFERENCE:
+        for my $Preference ( @{$SearchFieldPreferences} ) {
+
+            # get field html
+            my $DynamicFieldHTML = $Self->{BackendObject}->SearchFieldRender(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                Profile            => \%JobData,
+                DefaultValue =>
+                    $Self->{Config}->{Defaults}->{DynamicField}->{ $DynamicFieldConfig->{Name} },
+                LayoutObject           => $Self->{LayoutObject},
+                ConfirmationCheckboxes => 1,
+                Type                   => $Preference->{Type},
+            );
+
+            next PREFERENCE if !IsHashRefWithData($DynamicFieldHTML);
+
+            if ($PrintDynamicFieldsSearchHeader) {
+                $Self->{LayoutObject}->Block( Name => 'DynamicField' );
+                $PrintDynamicFieldsSearchHeader = 0;
+            }
+
+            # output dynamic field
+            $Self->{LayoutObject}->Block(
+                Name => 'DynamicFieldElement',
+                Data => {
+                    Label => $DynamicFieldHTML->{Label},
+                    Field => $DynamicFieldHTML->{Field},
+                },
+            );
         }
-
-        # output dynamic field
-        $Self->{LayoutObject}->Block(
-            Name => 'DynamicFieldElement',
-            Data => {
-                Label => $DynamicFieldHTML->{Label},
-                Field => $DynamicFieldHTML->{Field},
-            },
-        );
     }
 
     # create dynamic field HTML for set with historical data options
@@ -1105,29 +928,42 @@ sub _MaskUpdate {
 
         my $PossibleValuesFilter;
 
-        # check if field has PossibleValues property in its configuration
-        if ( IsHashRefWithData( $DynamicFieldConfig->{Config}->{PossibleValues} ) ) {
+        my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
+            DynamicFieldConfig => $DynamicFieldConfig,
+            Behavior           => 'IsACLReducible',
+        );
 
-            # convert possible values key => value to key => key for ACLs usign a Hash slice
-            my %AclData = %{ $DynamicFieldConfig->{Config}->{PossibleValues} };
-            @AclData{ keys %AclData } = keys %AclData;
+        if ($IsACLReducible) {
 
-            # set possible values filter from ACLs
-            my $ACL = $Self->{TicketObject}->TicketAcl(
-                Action        => $Self->{Action},
-                Type          => 'DynamicField_' . $DynamicFieldConfig->{Name},
-                ReturnType    => 'Ticket',
-                ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},
-                Data          => \%AclData,
-                UserID        => $Self->{UserID},
+            # get PossibleValues
+            my $PossibleValues = $Self->{BackendObject}->PossibleValuesGet(
+                DynamicFieldConfig => $DynamicFieldConfig,
             );
-            if ($ACL) {
-                my %Filter = $Self->{TicketObject}->TicketAclData();
 
-                # convert Filer key => key back to key => value using map
-                %{$PossibleValuesFilter}
-                    = map { $_ => $DynamicFieldConfig->{Config}->{PossibleValues}->{$_} }
-                    keys %Filter;
+            # check if field has PossibleValues property in its configuration
+            if ( IsHashRefWithData($PossibleValues) ) {
+
+                # convert possible values key => value to key => key for ACLs using a Hash slice
+                my %AclData = %{$PossibleValues};
+                @AclData{ keys %AclData } = keys %AclData;
+
+                # set possible values filter from ACLs
+                my $ACL = $Self->{TicketObject}->TicketAcl(
+                    Action        => $Self->{Action},
+                    Type          => 'DynamicField_' . $DynamicFieldConfig->{Name},
+                    ReturnType    => 'Ticket',
+                    ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},
+                    Data          => \%AclData,
+                    UserID        => $Self->{UserID},
+                );
+                if ($ACL) {
+                    my %Filter = $Self->{TicketObject}->TicketAclData();
+
+                    # convert Filer key => key back to key => value using map
+                    %{$PossibleValuesFilter}
+                        = map { $_ => $PossibleValues->{$_} }
+                        keys %Filter;
+                }
             }
         }
 
@@ -1159,7 +995,238 @@ sub _MaskUpdate {
             },
         );
     }
+
+    # get registered event triggers from the config
+    my %RegisteredEvents = $Self->{EventObject}->EventList(
+        ObjectTypes => [ 'Ticket', 'Article' ],
+    );
+
+    # create the event triggers table
+    for my $Event ( @{ $JobData{EventValues} || [] } ) {
+
+        # set the event type ( event object like Article or Ticket)
+        my $EventType;
+        EVENTTYPE:
+        for my $Type ( sort keys %RegisteredEvents ) {
+            if ( grep { $_ eq $Event } @{ $RegisteredEvents{$Type} } ) {
+                $EventType = $Type;
+                last EVENTTYPE;
+            }
+        }
+
+        # paint each event row in event triggers table
+        $Self->{LayoutObject}->Block(
+            Name => 'EventRow',
+            Data => {
+                Event => $Event,
+                EventType => $EventType || '-',
+            },
+        );
+    }
+
+    my @EventTypeList;
+    my $SelectedEventType = $Self->{ParamObject}->GetParam( Param => 'EventType' ) || 'Ticket';
+
+    # create event trigger selectors (one for each type)
+    TYPE:
+    for my $Type ( sort keys %RegisteredEvents ) {
+
+        # refresh event list for each event type
+
+        # hide inactive event lists
+        my $EventListHidden = '';
+        if ( $Type ne $SelectedEventType ) {
+            $EventListHidden = 'Hidden';
+        }
+
+        # paint each selector
+        my $EventStrg = $Self->{LayoutObject}->BuildSelection(
+            Data => $RegisteredEvents{$Type} || [],
+            Name => $Type . 'Event',
+            Sort => 'AlphanumericValue',
+            PossibleNone => 0,
+            Class        => 'EventList GenericInterfaceSpacing ' . $EventListHidden,
+            Title        => $Self->{LayoutObject}->{LanguageObject}->Get('Event'),
+        );
+
+        $Self->{LayoutObject}->Block(
+            Name => 'EventAdd',
+            Data => {
+                EventStrg => $EventStrg,
+            },
+        );
+
+        push @EventTypeList, $Type;
+    }
+
+    # create event type selector
+    my $EventTypeStrg = $Self->{LayoutObject}->BuildSelection(
+        Data          => \@EventTypeList,
+        Name          => 'EventType',
+        Sort          => 'AlphanumericValue',
+        SelectedValue => $SelectedEventType,
+        PossibleNone  => 0,
+        Class         => '',
+        Title         => $Self->{LayoutObject}->{LanguageObject}->Get('Type'),
+    );
+    $Self->{LayoutObject}->Block(
+        Name => 'EventTypeStrg',
+        Data => {
+            EventTypeStrg => $EventTypeStrg,
+        },
+    );
+
     return \%JobData;
+}
+
+sub _MaskRun {
+    my ( $Self, %Param ) = @_;
+
+    my %JobData;
+
+    if ( $Self->{Profile} ) {
+        %JobData = $Self->{GenericAgentObject}->JobGet( Name => $Self->{Profile} );
+    }
+    else {
+        $Self->{LayoutObject}->FatalError( Message => "Need Profile!" );
+    }
+    $JobData{Profile} = $Self->{Profile};
+
+    # dynamic fields search parameters for ticket search
+    my %DynamicFieldSearchParameters;
+
+    # cycle trough the activated Dynamic Fields for this screen
+    DYNAMICFIELD:
+    for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
+        next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
+
+        # get search field preferences
+        my $SearchFieldPreferences = $Self->{BackendObject}->SearchFieldPreferences(
+            DynamicFieldConfig => $DynamicFieldConfig,
+        );
+
+        next DYNAMICFIELD if !IsArrayRefWithData($SearchFieldPreferences);
+
+        PREFERENCE:
+        for my $Preference ( @{$SearchFieldPreferences} ) {
+
+            if (
+                !$JobData{
+                    'Search_DynamicField_'
+                        . $DynamicFieldConfig->{Name}
+                        . $Preference->{Type}
+                }
+                )
+            {
+                next PREFERENCE;
+            }
+
+            # extract the dynamic field value from the profile
+            my $SearchParameter = $Self->{BackendObject}->SearchFieldParameterBuild(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                Profile            => \%JobData,
+                LayoutObject       => $Self->{LayoutObject},
+                Type               => $Preference->{Type},
+            );
+
+            # set search parameter
+            if ( defined $SearchParameter ) {
+                $DynamicFieldSearchParameters{ 'DynamicField_' . $DynamicFieldConfig->{Name} }
+                    = $SearchParameter->{Parameter};
+            }
+        }
+    }
+
+    # perform ticket search
+    my $Counter = $Self->{TicketObject}->TicketSearch(
+        Result          => 'COUNT',
+        SortBy          => 'Age',
+        OrderBy         => 'Down',
+        UserID          => 1,
+        Limit           => 60_000,
+        ConditionInline => 1,
+        %JobData,
+        %DynamicFieldSearchParameters,
+    ) || 0;
+
+    my @TicketIDs = $Self->{TicketObject}->TicketSearch(
+        Result          => 'ARRAY',
+        SortBy          => 'Age',
+        OrderBy         => 'Down',
+        UserID          => 1,
+        Limit           => 30,
+        ConditionInline => 1,
+        %JobData,
+        %DynamicFieldSearchParameters,
+    );
+
+    $Self->{LayoutObject}->Block( Name => 'ActionList', );
+    $Self->{LayoutObject}->Block( Name => 'ActionOverview', );
+    $Self->{LayoutObject}->Block(
+        Name => 'Result',
+        Data => {
+            %Param,
+            Name        => $Self->{Profile},
+            AffectedIDs => $Counter,
+        },
+    );
+
+    if (@TicketIDs) {
+        $Self->{LayoutObject}->Block( Name => 'ResultBlock' );
+        for my $TicketID (@TicketIDs) {
+
+            # get first article data
+            my %Data = $Self->{TicketObject}->ArticleFirstArticle(
+                TicketID      => $TicketID,
+                DynamicFields => 0,
+            );
+
+            # Fallback for tickets without articles
+            if ( !%Data ) {
+
+                # get ticket data instead
+                %Data = $Self->{TicketObject}->TicketGet(
+                    TicketID      => $TicketID,
+                    DynamicFields => 0,
+                );
+
+                # set missing information
+                $Data{Subject} = $Data{Title};
+            }
+
+            $Data{Age}
+                = $Self->{LayoutObject}->CustomerAge( Age => $Data{Age}, Space => ' ' );
+            $Data{css} = "PriorityID-$Data{PriorityID}";
+
+            # user info
+            my %UserInfo = $Self->{UserObject}->GetUserData(
+                User => $Data{Owner},
+            );
+            $Data{UserLastname}  = $UserInfo{UserLastname};
+            $Data{UserFirstname} = $UserInfo{UserFirstname};
+
+            $Self->{LayoutObject}->Block(
+                Name => 'Ticket',
+                Data => \%Data,
+            );
+        }
+
+        if ( $JobData{NewDelete} ) {
+            $Self->{LayoutObject}->Block( Name => 'DeleteWarning' );
+        }
+    }
+
+    # html search mask output
+    my $Output = $Self->{LayoutObject}->Header( Title => 'Affected Tickets' );
+    $Output .= $Self->{LayoutObject}->NavigationBar();
+    $Output .= $Self->{LayoutObject}->Output(
+        TemplateFile => 'AdminGenericAgent',
+        Data         => \%Param,
+    );
+
+    # build footer
+    $Output .= $Self->{LayoutObject}->Footer();
+    return $Output;
 }
 
 1;

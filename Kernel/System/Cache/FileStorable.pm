@@ -11,14 +11,12 @@ package Kernel::System::Cache::FileStorable;
 
 use strict;
 use warnings;
-umask 002;
 
+use POSIX;
 use Storable qw();
 use Digest::MD5 qw();
 use File::Path qw();
 use File::Find qw();
-
-use vars qw(@ISA);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -38,7 +36,7 @@ sub new {
     for my $Directory ( $TempDir, $Self->{CacheDirectory} ) {
         if ( !-e $Directory ) {
             ## no critic
-            if ( !mkdir( $Directory, 0775 ) ) {
+            if ( !mkdir( $Directory, 0770 ) ) {
                 ## use critic
                 $Self->{LogObject}->Log(
                     Priority => 'error',
@@ -50,7 +48,7 @@ sub new {
 
     # Specify how many levels of subdirectories to use, can be 0, 1 or more.
     $Self->{'Cache::SubdirLevels'} = $Self->{ConfigObject}->Get('Cache::SubdirLevels');
-    $Self->{'Cache::SubdirLevels'} = 2 if !defined $Self->{'Cache::SubdirLevels'};
+    $Self->{'Cache::SubdirLevels'} //= 2;
 
     return $Self;
 }
@@ -78,7 +76,7 @@ sub Set {
 
         # Create directory. This could fail if another process creates the
         #   same directory, so don't use the return value.
-        File::Path::mkpath( $CacheDirectory, 0, 0775 );    ## no critic
+        File::Path::mkpath( $CacheDirectory, 0, 0770 );    ## no critic
 
         if ( !-e $CacheDirectory ) {
             $Self->{LogObject}->Log(
@@ -94,7 +92,7 @@ sub Set {
         Content    => \$Dump,
         Type       => 'Local',
         Mode       => 'binmode',
-        Permission => '664',
+        Permission => '660',
     );
 
     return if !$FileLocation;
@@ -164,7 +162,7 @@ sub CleanUp {
         Filter => $Param{Type} || '*',
     );
 
-    return if !@TypeList;
+    return 1 if !@TypeList;
 
     my $FileCallback = sub {
 
@@ -190,8 +188,10 @@ sub CleanUp {
             }
         }
 
-        # delete all cache files
-        if ( !unlink $CacheFile ) {
+        # Delete all cache files; don't error out when the file doesn't
+        # exist anymore, it was probably just another process deleting it.
+        my $Success = unlink $CacheFile;
+        if ( !$Success && $! != POSIX::ENOENT ) {
             $Self->{LogObject}->Log(
                 Priority => 'error',
                 Message  => "Can't remove file $CacheFile: $!",

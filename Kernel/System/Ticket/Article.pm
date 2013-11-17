@@ -113,7 +113,7 @@ sub ArticleCreate {
         return;
     }
 
-    # lockups if no ids!!!
+    # lookups if no ids are passed
     if ( $Param{ArticleType} && !$Param{ArticleTypeID} ) {
         $Param{ArticleTypeID} = $Self->ArticleTypeLookup( ArticleType => $Param{ArticleType} );
     }
@@ -243,6 +243,11 @@ sub ArticleCreate {
     my @Index = $Self->ArticleIndex( TicketID => $Param{TicketID} );
     my $FirstArticle = scalar @Index ? 0 : 1;
 
+    # calculate MD5 of Message ID
+    if ( $Param{MessageID} ) {
+        $Param{MD5} = $Self->{MainObject}->MD5sum( String => $Param{MessageID} );
+    }
+
     # if the original article body contains just one pasted picture and no text, at this point of
     # the code the body is an empty string, Oracle databases will transform the empty string value
     # to NULL and will try to insert a NULL value in a field that should not be NULL. see bug 7533.
@@ -259,15 +264,16 @@ sub ArticleCreate {
     return if !$Self->{DBObject}->Do(
         SQL => 'INSERT INTO article '
             . '(ticket_id, article_type_id, article_sender_type_id, a_from, a_reply_to, a_to, '
-            . 'a_cc, a_subject, a_message_id, a_in_reply_to, a_references, a_body, a_content_type, '
+            . 'a_cc, a_subject, a_message_id, a_message_id_md5, a_in_reply_to, a_references, a_body, a_content_type, '
             . 'content_path, valid_id, incoming_time, create_time, create_by, change_time, change_by) '
             . 'VALUES '
-            . '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?, current_timestamp, ?)',
+            . '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?, current_timestamp, ?)',
         Bind => [
-            \$Param{TicketID},  \$Param{ArticleTypeID}, \$Param{SenderTypeID},
-            \$Param{From},      \$Param{ReplyTo},       \$Param{To},
-            \$Param{Cc},        \$Param{Subject},       \$Param{MessageID},
-            \$Param{InReplyTo}, \$Param{References},    \$Param{Body},
+            \$Param{TicketID}, \$Param{ArticleTypeID}, \$Param{SenderTypeID},
+            \$Param{From},     \$Param{ReplyTo},       \$Param{To},
+            \$Param{Cc},       \$Param{Subject},       \$Param{MessageID},
+            \$Param{MD5},
+            \$Param{InReplyTo}, \$Param{References}, \$Param{Body},
             \$Param{ContentType}, \$Self->{ArticleContentPath}, \$ValidID,
             \$IncomingTime, \$Param{UserID}, \$Param{UserID},
         ],
@@ -730,7 +736,7 @@ sub ArticleCreate {
 get ticket id of given message id
 
     my $TicketID = $TicketObject->ArticleGetTicketIDOfMessageID(
-        MessageID=> '<13231231.1231231.32131231@example.com>',
+        MessageID => '<13231231.1231231.32131231@example.com>',
     );
 
 =cut
@@ -743,11 +749,12 @@ sub ArticleGetTicketIDOfMessageID {
         $Self->{LogObject}->Log( Priority => 'error', Message => 'Need MessageID!' );
         return;
     }
+    my $MD5 = $Self->{MainObject}->MD5sum( String => $Param{MessageID} );
 
     # sql query
     return if !$Self->{DBObject}->Prepare(
-        SQL   => 'SELECT ticket_id FROM article WHERE a_message_id = ?',
-        Bind  => [ \$Param{MessageID} ],
+        SQL   => 'SELECT ticket_id FROM article WHERE a_message_id_md5 = ?',
+        Bind  => [ \$MD5 ],
         Limit => 10,
     );
     my $TicketID;
@@ -763,11 +770,11 @@ sub ArticleGetTicketIDOfMessageID {
     # one found
     return $TicketID if $Count == 1;
 
-    # more then one found! that should not be, a message_id should be unique!
+    # more than one found! that should not be, a message_id should be unique!
     $Self->{LogObject}->Log(
         Priority => 'notice',
         Message  => "The MessageID '$Param{MessageID}' is in your database "
-            . "more then one time! That should not be, a message_id should be unique!",
+            . "more than one time! That should not be, a message_id should be unique!",
     );
     return;
 }
@@ -2085,7 +2092,7 @@ sub ArticleSend {
 
     # log
     $Self->{LogObject}->Log(
-        Priority => 'notice',
+        Priority => 'info',
         Message  => "Sent email to '$ToOrig' from '$Param{From}'. "
             . "HistoryType => $HistoryType, Subject => $Param{Subject};",
     );
@@ -2293,7 +2300,7 @@ sub SendAgentNotification {
 
     # log event
     $Self->{LogObject}->Log(
-        Priority => 'notice',
+        Priority => 'info',
         Message  => "Sent agent '$Param{Type}' notification to '$User{UserEmail}'.",
     );
 
@@ -2379,7 +2386,7 @@ sub SendCustomerNotification {
         )
     {
         $Self->{LogObject}->Log(
-            Priority => 'notice',
+            Priority => 'info',
             Message  => 'Send no customer notification because no customer is set!',
         );
         return;
@@ -2392,7 +2399,7 @@ sub SendCustomerNotification {
         );
         if ( !$CustomerUser{UserEmail} ) {
             $Self->{LogObject}->Log(
-                Priority => 'notice',
+                Priority => 'info',
                 Message  => "Send no customer notification because of missing "
                     . "customer email (CustomerUserID=$CustomerUser{CustomerUserID})!",
             );
@@ -2460,17 +2467,19 @@ sub SendCustomerNotification {
     }
 
     # replace config options
-    $Notification{Body} =~ s{<OTRS_CONFIG_(.+?)>}{$Self->{ConfigObject}->Get($1)}egx;
+    $Notification{Body}    =~ s{<OTRS_CONFIG_(.+?)>}{$Self->{ConfigObject}->Get($1)}egx;
     $Notification{Subject} =~ s{<OTRS_CONFIG_(.+?)>}{$Self->{ConfigObject}->Get($1)}egx;
 
     # cleanup
     $Notification{Subject} =~ s/<OTRS_CONFIG_.+?>/-/gi;
-    $Notification{Body} =~ s/<OTRS_CONFIG_.+?>/-/gi;
+    $Notification{Body}    =~ s/<OTRS_CONFIG_.+?>/-/gi;
 
     # COMPAT
     $Notification{Body} =~ s/<OTRS_TICKET_ID>/$Param{TicketID}/gi;
     $Notification{Body} =~ s/<OTRS_TICKET_NUMBER>/$Article{TicketNumber}/gi;
-    $Notification{Body} =~ s/<OTRS_QUEUE>/$Param{Queue}/gi if ( $Param{Queue} );
+    if ( $Param{Queue} ) {
+        $Notification{Body} =~ s/<OTRS_QUEUE>/$Param{Queue}/gi;
+    }
 
     # ticket data
     my %Ticket = $Self->TicketGet(
@@ -2479,40 +2488,40 @@ sub SendCustomerNotification {
     );
     for ( sort keys %Ticket ) {
         if ( defined $Ticket{$_} ) {
-            $Notification{Body} =~ s/<OTRS_TICKET_$_>/$Ticket{$_}/gi;
+            $Notification{Body}    =~ s/<OTRS_TICKET_$_>/$Ticket{$_}/gi;
             $Notification{Subject} =~ s/<OTRS_TICKET_$_>/$Ticket{$_}/gi;
         }
     }
 
     # cleanup
     $Notification{Subject} =~ s/<OTRS_TICKET_.+?>/-/gi;
-    $Notification{Body} =~ s/<OTRS_TICKET_.+?>/-/gi;
+    $Notification{Body}    =~ s/<OTRS_TICKET_.+?>/-/gi;
 
     # get current user data
     my %CurrentPreferences = $Self->{UserObject}->GetUserData( UserID => $Param{UserID} );
     for ( sort keys %CurrentPreferences ) {
         if ( $CurrentPreferences{$_} ) {
-            $Notification{Body} =~ s/<OTRS_CURRENT_$_>/$CurrentPreferences{$_}/gi;
+            $Notification{Body}    =~ s/<OTRS_CURRENT_$_>/$CurrentPreferences{$_}/gi;
             $Notification{Subject} =~ s/<OTRS_CURRENT_$_>/$CurrentPreferences{$_}/gi;
         }
     }
 
     # cleanup
     $Notification{Subject} =~ s/<OTRS_CURRENT_.+?>/-/gi;
-    $Notification{Body} =~ s/<OTRS_CURRENT_.+?>/-/gi;
+    $Notification{Body}    =~ s/<OTRS_CURRENT_.+?>/-/gi;
 
     # get owner data
     my %OwnerPreferences = $Self->{UserObject}->GetUserData( UserID => $Article{OwnerID}, );
     for ( sort keys %OwnerPreferences ) {
         if ( $OwnerPreferences{$_} ) {
-            $Notification{Body} =~ s/<OTRS_OWNER_$_>/$OwnerPreferences{$_}/gi;
+            $Notification{Body}    =~ s/<OTRS_OWNER_$_>/$OwnerPreferences{$_}/gi;
             $Notification{Subject} =~ s/<OTRS_OWNER_$_>/$OwnerPreferences{$_}/gi;
         }
     }
 
     # cleanup
     $Notification{Subject} =~ s/<OTRS_OWNER_.+?>/-/gi;
-    $Notification{Body} =~ s/<OTRS_OWNER_.+?>/-/gi;
+    $Notification{Body}    =~ s/<OTRS_OWNER_.+?>/-/gi;
 
     # get responsible data
     my %ResponsiblePreferences = $Self->{UserObject}->GetUserData(
@@ -2520,20 +2529,20 @@ sub SendCustomerNotification {
     );
     for ( sort keys %ResponsiblePreferences ) {
         if ( $ResponsiblePreferences{$_} ) {
-            $Notification{Body} =~ s/<OTRS_RESPONSIBLE_$_>/$ResponsiblePreferences{$_}/gi;
+            $Notification{Body}    =~ s/<OTRS_RESPONSIBLE_$_>/$ResponsiblePreferences{$_}/gi;
             $Notification{Subject} =~ s/<OTRS_RESPONSIBLE_$_>/$ResponsiblePreferences{$_}/gi;
         }
     }
 
     # cleanup
     $Notification{Subject} =~ s/<OTRS_RESPONSIBLE_.+?>/-/gi;
-    $Notification{Body} =~ s/<OTRS_RESPONSIBLE_.+?>/-/gi;
+    $Notification{Body}    =~ s/<OTRS_RESPONSIBLE_.+?>/-/gi;
 
     # get ref of email params
     my %GetParam = %{ $Param{CustomerMessageParams} };
     for ( sort keys %GetParam ) {
         if ( $GetParam{$_} ) {
-            $Notification{Body} =~ s/<OTRS_CUSTOMER_DATA_$_>/$GetParam{$_}/gi;
+            $Notification{Body}    =~ s/<OTRS_CUSTOMER_DATA_$_>/$GetParam{$_}/gi;
             $Notification{Subject} =~ s/<OTRS_CUSTOMER_DATA_$_>/$GetParam{$_}/gi;
         }
     }
@@ -2547,21 +2556,23 @@ sub SendCustomerNotification {
         # replace customer stuff with tags
         for ( sort keys %CustomerUser ) {
             if ( $CustomerUser{$_} ) {
-                $Notification{Body} =~ s/<OTRS_CUSTOMER_DATA_$_>/$CustomerUser{$_}/gi;
+                $Notification{Body}    =~ s/<OTRS_CUSTOMER_DATA_$_>/$CustomerUser{$_}/gi;
                 $Notification{Subject} =~ s/<OTRS_CUSTOMER_DATA_$_>/$CustomerUser{$_}/gi;
             }
         }
     }
 
     # cleanup all not needed <OTRS_CUSTOMER_DATA_ tags
-    $Notification{Body} =~ s/<OTRS_CUSTOMER_DATA_.+?>/-/gi;
+    $Notification{Body}    =~ s/<OTRS_CUSTOMER_DATA_.+?>/-/gi;
     $Notification{Subject} =~ s/<OTRS_CUSTOMER_DATA_.+?>/-/gi;
 
     # format body
-    $Article{Body} =~ s/(^>.+|.{4,72})(?:\s|\z)/$1\n/gm if ( $Article{Body} );
+    if ( $Article{Body} ) {
+        $Article{Body} =~ s/(^>.+|.{4,72})(?:\s|\z)/$1\n/gm;
+    }
     for ( sort keys %Article ) {
         if ( $Article{$_} ) {
-            $Notification{Body} =~ s/<OTRS_CUSTOMER_$_>/$Article{$_}/gi;
+            $Notification{Body}    =~ s/<OTRS_CUSTOMER_$_>/$Article{$_}/gi;
             $Notification{Subject} =~ s/<OTRS_CUSTOMER_$_>/$Article{$_}/gi;
         }
     }
@@ -2573,7 +2584,7 @@ sub SendCustomerNotification {
     );
     if ( $Notification{Subject} =~ /<OTRS_CUSTOMER_SUBJECT\[(.+?)\]>/ ) {
         my $SubjectChar = $1;
-        $Article{Subject} =~ s/^(.{$SubjectChar}).*$/$1 [...]/;
+        $Article{Subject}      =~ s/^(.{$SubjectChar}).*$/$1 [...]/;
         $Notification{Subject} =~ s/<OTRS_CUSTOMER_SUBJECT\[.+?\]>/$Article{Subject}/g;
     }
     $Notification{Subject} = $Self->TicketSubjectBuild(
@@ -2599,7 +2610,7 @@ sub SendCustomerNotification {
     }
 
     # cleanup all not needed <OTRS_CUSTOMER_ tags
-    $Notification{Body} =~ s/<OTRS_CUSTOMER_.+?>/-/gi;
+    $Notification{Body}    =~ s/<OTRS_CUSTOMER_.+?>/-/gi;
     $Notification{Subject} =~ s/<OTRS_CUSTOMER_.+?>/-/gi;
 
     # send notify
@@ -2622,7 +2633,7 @@ sub SendCustomerNotification {
 
     # log event
     $Self->{LogObject}->Log(
-        Priority => 'notice',
+        Priority => 'info',
         Message  => "Sent customer '$Param{Type}' notification to '$Article{From}'.",
     );
 
@@ -2737,7 +2748,7 @@ sub SendAutoResponse {
             CreateUserID => $Param{UserID},
         );
         $Self->{LogObject}->Log(
-            Priority => 'notice',
+            Priority => 'info',
             Message  => "Sent no '$Param{AutoResponseType}' for Ticket ["
                 . "$Ticket{TicketNumber}] ($OrigHeader{From}) because the "
                 . "sender doesn't want an auto-response (e. g. loop or precedence header)"
@@ -2800,14 +2811,14 @@ sub SendAutoResponse {
             $Self->{LogObject}->Log(
                 Priority => 'notice',
                 Message  => "Sent no '$Param{AutoResponseType}' for Ticket ["
-                    . "$Ticket{TicketNumber}] ($Email) "
+                    . "$Ticket{TicketNumber}] ($Email) because of loop protection."
             );
             next ADDRESS;
         }
         else {
+
             # increase loop count
             return if !$LoopProtectionObject->SendEmail( To => $Email );
-
         }
 
         # check if sender is e. g. MAILER-DAEMON or Postmaster
@@ -2824,7 +2835,7 @@ sub SendAutoResponse {
 
             # log
             $Self->{LogObject}->Log(
-                Priority => 'notice',
+                Priority => 'info',
                 Message  => "Sent no auto response to '$Email' because config"
                     . " option SendNoAutoResponseRegExp (/$NoAutoRegExp/i) matched.",
             );
@@ -2888,7 +2899,7 @@ sub SendAutoResponse {
 
     # log
     $Self->{LogObject}->Log(
-        Priority => 'notice',
+        Priority => 'info',
         Message  => "Sent auto response ($HistoryType) for Ticket [$Ticket{TicketNumber}]"
             . " (TicketID=$Param{TicketID}, ArticleID=$ArticleID) to '$AutoReplyAddresses'."
     );

@@ -227,7 +227,6 @@ gets file upload data.
 
     my %File = $ParamObject->GetUploadAll(
         Param  => 'FileParam',  # the name of the request parameter containing the file data
-        Source => 'string',     # 'string' or 'file', how the data is stored/returned, see below
     );
 
     returns (
@@ -235,10 +234,6 @@ gets file upload data.
         ContentType => 'text/plain',
         Content     => 'Some text',
     );
-
-    If you send Source => 'string', the data will be returned directly in
-    the return value ('Content'). If you send 'file' instead, the data
-    will be stored in a file and 'Content' will just return the file name.
 
 =cut
 
@@ -261,34 +256,10 @@ sub GetUploadAll {
 
     # return a string
     my $Content;
-    if ( $Param{Source} && lc $Param{Source} eq 'string' ) {
-
-        while (<$Upload>) {
-            $Content .= $_;
-        }
-        close $Upload;
+    while (<$Upload>) {
+        $Content .= $_;
     }
-
-    # return file location in file system
-    else {
-
-        # delete upload dir if exists
-        my $Path = "/tmp/$$";
-        if ( -d $Path ) {
-            File::Path::remove_tree($Path);
-        }
-
-        # create upload dir
-        File::Path::make_path( $Path, { mode => 0700 } );    ## no critic
-
-        $Content = "$Path/$NewFileName";
-
-        open my $Out, '>', $Content || die $!;               ## no critic
-        while (<$Upload>) {
-            print $Out $_;
-        }
-        close $Out;
-    }
+    close $Upload;
 
     # Check if content is there, IE is always sending file uploads without content.
     return if !$Content;
@@ -329,7 +300,9 @@ set a cookie
         Key     => ID,
         Value   => 123456,
         Expires => '+3660s',
+        Path    => 'otrs/',     # optional, only allow cookie for given path
         Secure  => 1,           # optional, set secure attribute to disable cookie on HTTP (HTTPS only)
+        HTTPOnly => 1,          # optional, sets HttpOnly attribute of cookie to prevent access via JavaScript
     );
 
 =cut
@@ -337,11 +310,15 @@ set a cookie
 sub SetCookie {
     my ( $Self, %Param ) = @_;
 
+    $Param{Path} ||= '';
+
     return $Self->{Query}->cookie(
-        -name    => $Param{Key},
-        -value   => $Param{Value},
-        -expires => $Param{Expires},
-        -secure  => $Param{Secure},
+        -name     => $Param{Key},
+        -value    => $Param{Value},
+        -expires  => $Param{Expires},
+        -secure   => $Param{Secure} || '',
+        -httponly => $Param{HTTPOnly} || '',
+        -path     => '/' . $Param{Path},
     );
 }
 

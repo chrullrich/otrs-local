@@ -69,7 +69,7 @@ $Self->True(
     'TicketCreate()',
 );
 
-my %Ticket = $TicketObject->TicketGet( TicketID => $TicketID );
+my %Ticket = $TicketObject->TicketGet( TicketID => $TicketID, Extended => 1 );
 $Self->Is(
     $Ticket{Title},
     'Some Ticket_Title',
@@ -134,6 +134,11 @@ $Self->Is(
     $Ticket{TypeID},
     '1',
     'TicketGet() (TypeID)',
+);
+$Self->Is(
+    $Ticket{SolutionTime},
+    $Ticket{Created},
+    'Ticket created as closed as Solution Time = Creation Time',
 );
 
 my $TestUserLogin = $HelperObject->TestUserCreate(
@@ -313,6 +318,18 @@ $Self->True(
 $Self->True(
     $TicketIDs{$TicketID},
     'TicketSearch() (HASH:TicketNumber)',
+);
+
+my $Count = $TicketObject->TicketSearch(
+    Result       => 'COUNT',
+    TicketNumber => $Ticket{TicketNumber},
+    UserID       => 1,
+    Permission   => 'rw',
+);
+$Self->Is(
+    $Count,
+    1,
+    'TicketSearch() (COUNT:TicketNumber)',
 );
 
 %TicketIDs = $TicketObject->TicketSearch(
@@ -499,6 +516,34 @@ $Self->True(
     'TicketSearch() (HASH:Body,StateType:Open)',
 );
 
+$TicketObject->MoveTicket(
+    Queue              => 'Junk',
+    TicketID           => $TicketID,
+    SendNoNotification => 1,
+    UserID             => 1,
+);
+
+$TicketObject->MoveTicket(
+    Queue              => 'Raw',
+    TicketID           => $TicketID,
+    SendNoNotification => 1,
+    UserID             => 1,
+);
+
+my %HD = $TicketObject->HistoryTicketGet(
+    StopYear  => 4000,
+    StopMonth => 1,
+    StopDay   => 1,
+    TicketID  => $TicketID,
+    Force     => 1,
+);
+my $QueueLookupID = $QueueObject->QueueLookup( Queue => $HD{Queue} );
+$Self->Is(
+    $QueueLookupID,
+    $HD{QueueID},
+    'HistoryTicketGet() Check history queue',
+);
+
 my $TicketMove = $TicketObject->MoveTicket(
     Queue              => 'Junk',
     TicketID           => $TicketID,
@@ -664,6 +709,24 @@ $Self->IsNot(
     $ChangeTime,
     $TicketData{Changed},
     'Change_time updated in TicketTitleUpdate()',
+);
+
+# check if we have a Ticket Title Update history record
+my @HistoryLines = $TicketObject->HistoryGet(
+    TicketID => $TicketID,
+    UserID   => 1,
+);
+my $HistoryItem = pop @HistoryLines;
+$Self->Is(
+    $HistoryItem->{HistoryType},
+    'TitleUpdate',
+    "TicketTitleUpdate - found HistoryItem",
+);
+
+$Self->Is(
+    $HistoryItem->{Name},
+    '%%Some Ticket_Title%%Some Title 1234567',
+    "TicketTitleUpdate - Found new title",
 );
 
 # get updated ticket data
@@ -1651,6 +1714,21 @@ $Self->Is(
     'TicketTicketSearch() - ticket sort/order by (Age (Up))',
 );
 
+$Count = $TicketObject->TicketSearch(
+    Result       => 'COUNT',
+    Title        => '%sort/order by test%',
+    Queues       => ['Raw'],
+    CustomerID   => $CustomerNo,
+    CustomerUser => 'customer@example.com',
+    UserID       => 1,
+    Limit        => 1,
+);
+$Self->Is(
+    $Count,
+    4,
+    'TicketTicketSearch() - ticket count for created tickets',
+);
+
 for my $TicketIDDelete (
     $TicketIDSortOrder1, $TicketIDSortOrder2, $TicketIDSortOrder3,
     $TicketIDSortOrder4
@@ -1760,6 +1838,30 @@ $Self->Is(
     $TicketPending{UntilTime},
     '0',
     "TicketPendingTimeSet() - Pending Time - not set",
+);
+
+my $Diff               = 60;
+my $CurrentSystemTime  = $Self->{TimeObject}->SystemTime();
+my $PendingTimeSetDiff = $TicketObject->TicketPendingTimeSet(
+    Diff     => $Diff,
+    TicketID => $TicketID,
+    UserID   => 1,
+);
+
+$Self->True(
+    $PendingTimeSetDiff,
+    "TicketPendingTimeSet() - Pending Time - set diff",
+);
+
+%TicketPending = $TicketObject->TicketGet(
+    TicketID => $TicketID,
+    UserID   => 1,
+);
+
+$Self->Is(
+    $TicketPending{RealTillTimeNotUsed},
+    $CurrentSystemTime + $Diff * 60,
+    "TicketPendingTimeSet() - diff time check",
 );
 
 my $PendingTimeSet = $TicketObject->TicketPendingTimeSet(

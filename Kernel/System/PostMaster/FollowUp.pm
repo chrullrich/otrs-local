@@ -18,17 +18,20 @@ sub new {
     my ( $Type, %Param ) = @_;
 
     # allocate new hash for object
-    my $Self = {%Param};
+    my $Self = {};
     bless( $Self, $Type );
 
-    $Self->{Debug} = $Param{Debug} || 0;
-
-    # check needed Objects
-    for (qw(DBObject ConfigObject TicketObject LogObject TimeObject ParserObject)) {
+    # check needed objects
+    for (
+        qw(DBObject ConfigObject TicketObject LogObject TimeObject ParserObject MainObject EncodeObject)
+        )
+    {
         $Self->{$_} = $Param{$_} || die "Got no $_!";
     }
 
-    $Self->{UserObject} = Kernel::System::User->new(%Param);
+    $Self->{Debug} = $Param{Debug} || 0;
+
+    $Self->{UserObject} = Kernel::System::User->new( %{$Self} );
 
     return $Self;
 }
@@ -132,8 +135,39 @@ sub Run {
 
     # set pending time
     if ( $GetParam{'X-OTRS-FollowUp-State-PendingTime'} ) {
+
+# You can specify absolute dates like "2010-11-20 00:00:00" or relative dates, based on the arrival time of the email.
+# Use the form "+ $Number $Unit", where $Unit can be 's' (seconds), 'm' (minutes), 'h' (hours) or 'd' (days).
+# Only one unit can be specified. Examples of valid settings: "+50s" (pending in 50 seconds), "+30m" (30 minutes),
+# "+12d" (12 days). Note that settings like "+1d 12h" are not possible. You can specify "+36h" instead.
+
+        my $TargetTimeStamp = $GetParam{'X-OTRS-FollowUp-State-PendingTime'};
+
+        my ( $Sign, $Number, $Unit )
+            = $TargetTimeStamp =~ m{^\s*([+-]?)\s*(\d+)\s*([smhd]?)\s*$}smx;
+
+        if ($Number) {
+            $Sign ||= '+';
+            $Unit ||= 's';
+
+            my $Seconds = $Sign eq '-' ? ( $Number * -1 ) : $Number;
+
+            my %UnitMultiplier = (
+                s => 1,
+                m => 60,
+                h => 60 * 60,
+                d => 60 * 60 * 24,
+            );
+
+            $Seconds = $Seconds * $UnitMultiplier{$Unit};
+
+            $TargetTimeStamp = $Self->{TimeObject}->SystemTime2TimeStamp(
+                SystemTime => $Self->{TimeObject}->SystemTime() + $Seconds,
+            );
+        }
+
         my $Updated = $Self->{TicketObject}->TicketPendingTimeSet(
-            String   => $GetParam{'X-OTRS-FollowUp-State-PendingTime'},
+            String   => $TargetTimeStamp,
             TicketID => $Param{TicketID},
             UserID   => $Param{InmailUserID},
         );
@@ -342,15 +376,10 @@ sub Run {
     # debug
     if ( $Self->{Debug} > 0 ) {
         print "Follow up Ticket\n";
-        print "TicketNumber: $Param{Tn}\n";
-        print "From: $GetParam{From}\n"       if ( $GetParam{From} );
-        print "ReplyTo: $GetParam{ReplyTo}\n" if ( $GetParam{ReplyTo} );
-        print "To: $GetParam{To}\n"           if ( $GetParam{To} );
-        print "Cc: $GetParam{Cc}\n"           if ( $GetParam{Cc} );
-        print "Subject: $GetParam{Subject}\n";
-        print "MessageID: $GetParam{'Message-ID'}\n";
-        print "ArticleType: $GetParam{'X-OTRS-FollowUp-ArticleType'}\n";
-        print "SenderType: $GetParam{'X-OTRS-FollowUp-SenderType'}\n";
+        for my $Attribute ( sort keys %GetParam ) {
+            next if !$GetParam{$Attribute};
+            print "$Attribute: $GetParam{$Attribute}\n";
+        }
     }
 
     # write plain email to the storage

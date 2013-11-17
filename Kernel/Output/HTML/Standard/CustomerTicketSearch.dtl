@@ -74,6 +74,21 @@
             </fieldset>
             <fieldset class="Columns">
                 <div class="Column">
+                    <h2><label for="ServiceIDs">$Text{"Services"}:</label></h2>
+                    <div>
+                        $Data{"ServicesStrg"}
+                    </div>
+                </div>
+                <div class="Column">
+                    <h2><label for="TypeIDs">$Text{"Types"}:</label></h2>
+                    <div>
+                        $Data{"TypesStrg"}
+                    </div>
+                </div>
+                <div class="Clear"></div>
+            </fieldset>
+            <fieldset class="Columns">
+                <div class="Column">
                     <h2><label for="PriorityIDs">$Text{"Priority"}:</label></h2>
                     <div>
                         $Data{"PrioritiesStrg"}

@@ -23,6 +23,7 @@ Core.App.Ready(function () {
         // config
         Baselink: '$Env{"Baselink"}',
         CGIHandle: '$Env{"CGIHandle"}',
+        WebPath: '$Config{"Frontend::WebPath"}',
         Action: '$QEnv{"Action"}',
         SessionIDCookie: '$QEnv{"SessionIDCookie"}',
         SessionName: '$Config{"SessionName"}',
@@ -34,6 +35,9 @@ Core.App.Ready(function () {
         CheckEmailAddresses: parseInt('$Config{"CheckEmailAddresses"}', 10),
         AnimationEnabled: parseInt('$Config{"Frontend::AnimationEnabled"}', 10),
         OpenMainMenuOnHover: parseInt('$Config{"OpenMainMenuOnHover"}', 10),
+<!-- dtl:block:AutoCompleteConfig -->
+        Autocomplete: Core.JSON.Parse('$Data{"AutocompleteConfig"}'),
+<!-- dtl:block:AutoCompleteConfig -->
         // translations
         ValidateServerErrorTitle: '$JSText{"Error"}',
         ValidateServerErrorMsg: '$JSText{"One or more errors occurred!"}',
@@ -43,7 +47,11 @@ Core.App.Ready(function () {
         PopupAlreadyOpenMsg: '$JSText{"A popup of this screen is already open. Do you want to close it and load this one instead?"}',
         LoadingMsg: '$JSText{"Loading..."}',
         EmptySearchMsg: '$JSText{"Please enter at least one search value or * to find anything."}',
-        SearchMsg: '$JSText{"Search"}'
+        SearchMsg: '$JSText{"Search"}',
+        ValidationErrorMsg: '$JSText{"Please check the fields marked as red for valid inputs."}',
+        DeleteMsg: '$JSText{"Delete"}',
+        ApplyButtonText: '$JSText{"Apply"}',
+        NoElementsToSelectFromMsg: '$JSText{"There are currently no elements available to select from."}'
     });
 
     Core.Agent.Init();
@@ -55,6 +63,7 @@ $Include{"Datepicker"}
     $('#nav-Tickets-Newemailticket a').attr('target', '_blank');
     $('.PhoneTicket a').attr('target', '_blank');
     $('.EmailTicket a').attr('target', '_blank');
+    $('.ProcessTicket a').attr('target', '_blank');
 <!-- dtl:block:NewTicketInNewWindow -->
 
 });

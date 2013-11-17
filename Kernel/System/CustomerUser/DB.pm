@@ -13,13 +13,12 @@ use strict;
 use warnings;
 
 use Crypt::PasswdMD5 qw(unix_md5_crypt);
+use Digest::SHA;
 
 use Kernel::System::Cache;
 use Kernel::System::CheckItem;
 use Kernel::System::Time;
 use Kernel::System::Valid;
-
-use vars qw(@ISA);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -725,7 +724,7 @@ sub CustomerUserAdd {
 
     # log notice
     $Self->{LogObject}->Log(
-        Priority => 'notice',
+        Priority => 'info',
         Message  => "CustomerUser: '$Param{UserLogin}' created successfully ($Param{UserID})!",
     );
 
@@ -849,26 +848,16 @@ sub CustomerUserUpdate {
     # check if we need to update Customer Preferences
     if ( $Param{UserLogin} ne $UserData{UserLogin} ) {
 
-        # preferences table data
-        $Self->{PreferencesTable}
-            = $Self->{ConfigObject}->Get('CustomerPreferences')->{Params}->{Table}
-            || 'customer_preferences';
-        $Self->{PreferencesTableUserID}
-            = $Self->{ConfigObject}->Get('CustomerPreferences')->{Params}->{TableUserID}
-            || 'user_id';
-
         # update the preferences
-        return if !$Self->{DBObject}->Prepare(
-            SQL => "UPDATE $Self->{PreferencesTable} "
-                . "SET $Self->{PreferencesTableUserID} = ? "
-                . "WHERE $Self->{PreferencesTableUserID} = ?",
-            Bind => [ \$Param{UserLogin}, \$Param{ID}, ],
+        $Self->{PreferencesObject}->RenamePreferences(
+            NewUserID => $Param{UserLogin},
+            OldUserID => $UserData{UserLogin},
         );
     }
 
     # log notice
     $Self->{LogObject}->Log(
-        Priority => 'notice',
+        Priority => 'info',
         Message  => "CustomerUser: '$Param{UserLogin}' updated successfully ($Param{UserID})!",
     );
 
@@ -905,7 +894,7 @@ sub SetPassword {
     my $CryptedPw = '';
 
     # get crypt type
-    my $CryptType = $Self->{ConfigObject}->Get('Customer::AuthModule::DB::CryptType') || '';
+    my $CryptType = $Self->{ConfigObject}->Get('Customer::AuthModule::DB::CryptType') || 'sha2';
 
     # crypt plain (no crypt at all)
     if ( $CryptType eq 'plain' ) {
@@ -937,14 +926,7 @@ sub SetPassword {
     # crypt with sha1
     elsif ( $CryptType eq 'sha1' ) {
 
-        my $SHAObject;
-        if ( $Self->{MainObject}->Require('Digest::SHA') ) {
-            $SHAObject = Digest::SHA->new('sha1');
-        }
-        else {
-            $Self->{MainObject}->Require('Digest::SHA::PurePerl');
-            $SHAObject = Digest::SHA::PurePerl->new('sha1');
-        }
+        my $SHAObject = Digest::SHA->new('sha1');
 
         # encode output, needed by sha1_hex() only non utf8 signs
         $Self->{EncodeObject}->EncodeOutput( \$Pw );
@@ -953,18 +935,43 @@ sub SetPassword {
         $CryptedPw = $SHAObject->hexdigest();
     }
 
-    # crypt with sha2
-    # if CrypType is set to anything else, including sha2
+    # bcrypt
+    elsif ( $CryptType eq 'bcrypt' ) {
+
+        if ( !$Self->{MainObject}->Require('Crypt::Eksblowfish::Bcrypt') ) {
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message =>
+                    "CustomerUser: '$Login' tried to store password with bcrypt but 'Crypt::Eksblowfish::Bcrypt' is not installed!",
+            );
+            return;
+        }
+
+        my $Cost = 9;
+        my $Salt = $Self->{MainObject}->GenerateRandomString( Length => 16 );
+
+        # remove UTF8 flag, required by Crypt::Eksblowfish::Bcrypt
+        $Self->{EncodeObject}->EncodeOutput( \$Pw );
+
+        # calculate password hash
+        my $Octets = Crypt::Eksblowfish::Bcrypt::bcrypt_hash(
+            {
+                key_nul => 1,
+                cost    => 9,
+                salt    => $Salt,
+            },
+            $Pw
+        );
+
+        # We will store cost and salt in the password string so that it can be decoded
+        #   in future even if we use a higher cost by default.
+        $CryptedPw = "BCRYPT:$Cost:$Salt:" . Crypt::Eksblowfish::Bcrypt::en_base64($Octets);
+    }
+
+    # crypt with sha2 as fallback
     else {
 
-        my $SHAObject;
-        if ( $Self->{MainObject}->Require('Digest::SHA') ) {
-            $SHAObject = Digest::SHA->new('sha256');
-        }
-        else {
-            $Self->{MainObject}->Require('Digest::SHA::PurePerl');
-            $SHAObject = Digest::SHA::PurePerl->new('sha256');
-        }
+        my $SHAObject = Digest::SHA->new('sha256');
 
         # encode output, needed by sha256_hex() only non utf8 signs
         $Self->{EncodeObject}->EncodeOutput( \$Pw );
@@ -1029,23 +1036,14 @@ sub SetPassword {
 sub GenerateRandomPassword {
     my ( $Self, %Param ) = @_;
 
-    # generated passwords are eight characters long by default.
+    # Generated passwords are eight characters long by default.
     my $Size = $Param{Size} || 8;
 
-    # The list of characters that can appear in a randomly generated password.
-    # Note that users can put any character into a password they choose themselves.
-    my @PwChars
-        = ( 0 .. 9, 'A' .. 'Z', 'a' .. 'z', '-', '_', '!', '@', '#', '$', '%', '^', '&', '*' );
+    my $Password = $Self->{MainObject}->GenerateRandomString(
+        Length => $Size,
+    );
 
-    # number of characters in the list.
-    my $PwCharsLen = scalar(@PwChars);
-
-    # generate the password.
-    my $Password = '';
-    for ( my $i = 0; $i < $Size; $i++ ) {
-        $Password .= $PwChars[ rand $PwCharsLen ];
-    }
-
+    # Return the password.
     return $Password;
 }
 
