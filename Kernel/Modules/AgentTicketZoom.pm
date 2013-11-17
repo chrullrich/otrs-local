@@ -77,7 +77,7 @@ sub new {
     if ( !$Self->{TicketID} && $Self->{ParamObject}->GetParam( Param => 'TicketNumber' ) ) {
         $Self->{TicketID} = $Self->{TicketObject}->TicketIDLookup(
             TicketNumber => $Self->{ParamObject}->GetParam( Param => 'TicketNumber' ),
-            UserID       => $Self->{UserID},
+            UserID => $Self->{UserID},
         );
     }
     $Self->{CustomerUserObject} = Kernel::System::CustomerUser->new(%Param);
@@ -93,7 +93,7 @@ sub new {
             $Self->{ConfigObject}->Get("Ticket::Frontend::AgentTicketZoom")
                 ->{ProcessWidgetDynamicField}
                 || {}
-        },
+            },
     };
 
     # create additional objects for process management
@@ -139,7 +139,15 @@ sub Run {
 
     # error screen, don't show ticket
     if ( !$Access ) {
-        return $Self->{LayoutObject}->NoPermission( WithHeader => 'yes' );
+        my $TranslatableMessage = $Self->{LayoutObject}->{LanguageObject}->Get(
+            "We are sorry, you do not have permissions anymore to access this ticket in its"
+                . " current state. "
+        );
+
+        return $Self->{LayoutObject}->NoPermission(
+            Message    => $TranslatableMessage,
+            WithHeader => 'yes',
+        );
     }
 
     # get ticket attributes
@@ -185,6 +193,51 @@ sub Run {
         );
     }
 
+    if ( $Self->{Subaction} eq 'MarkAsImportant' ) {
+
+        # Owner and Responsible can mark articles as important or remove mark
+        if (
+            $Self->{UserID} == $Ticket{OwnerID}
+            || (
+                $Self->{ConfigObject}->Get('Ticket::Responsible')
+                && $Self->{UserID} == $Ticket{ResponsibleID}
+            )
+            )
+        {
+
+            # Always use user id 1 because other users also have to see the important flag
+            my %ArticleFlag = $Self->{TicketObject}->ArticleFlagGet(
+                ArticleID => $Self->{ArticleID},
+                UserID    => 1,
+            );
+
+            my $ArticleIsImportant = $ArticleFlag{Important};
+            if ($ArticleIsImportant) {
+
+                # Always use user id 1 because other users also have to see the important flag
+                $Self->{TicketObject}->ArticleFlagDelete(
+                    ArticleID => $Self->{ArticleID},
+                    Key       => 'Important',
+                    UserID    => 1,
+                );
+            }
+            else {
+
+                # Always use user id 1 because other users also have to see the important flag
+                $Self->{TicketObject}->ArticleFlagSet(
+                    ArticleID => $Self->{ArticleID},
+                    Key       => 'Important',
+                    Value     => 1,
+                    UserID    => 1,
+                );
+            }
+        }
+
+        return $Self->{LayoutObject}->Redirect(
+            OP => "Action=AgentTicketZoom;TicketID=$Self->{TicketID};ArticleID=$Self->{ArticleID}",
+        );
+    }
+
     # mark shown article as seen
     if ( $Self->{Subaction} eq 'MarkAsSeen' ) {
         my $Success = 1;
@@ -220,17 +273,24 @@ sub Run {
         );
         $Article{Atms} = \%AtmIndex;
 
-        # fetch all std. responses
-        my %StandardResponses = $Self->{QueueObject}->GetStandardResponses(
-            QueueID => $Ticket{QueueID},
+        # fetch all std. templates
+        my %StandardTemplates = $Self->{QueueObject}->QueueStandardTemplateMemberList(
+            QueueID       => $Ticket{QueueID},
+            TemplateTypes => 1,
+            Valid         => 1,
         );
 
-        my $Content = $Self->_ArticleItem(
+        $Self->_ArticleItem(
             Ticket            => \%Ticket,
             Article           => \%Article,
             AclAction         => \%AclAction,
-            StandardResponses => \%StandardResponses,
+            StandardResponses => $StandardTemplates{Answer},
+            StandardForwards  => $StandardTemplates{Forward},
             Type              => 'OnLoad',
+        );
+        my $Content = $Self->{LayoutObject}->Output(
+            TemplateFile => 'AgentTicketZoom',
+            Data => { %Ticket, %Article, %AclAction },
         );
         if ( !$Content ) {
             $Self->{LayoutObject}->FatalError(
@@ -313,15 +373,6 @@ sub Run {
             Content     => $JSON,
             Type        => 'inline',
             NoCache     => 1,
-        );
-    }
-
-    # store last screen
-    if ( $Self->{Subaction} ne 'ShowHTMLeMail' ) {
-        $Self->{SessionObject}->UpdateSessionID(
-            SessionID => $Self->{SessionID},
-            Key       => 'LastScreenView',
-            Value     => $Self->{RequestedURL},
         );
     }
 
@@ -414,9 +465,11 @@ sub MaskAgentZoom {
         Type     => 'move_into',
     );
 
-    # fetch all std. responses
-    my %StandardResponses
-        = $Self->{QueueObject}->GetStandardResponses( QueueID => $Ticket{QueueID} );
+    # fetch all std. templates
+    my %StandardTemplates = $Self->{QueueObject}->QueueStandardTemplateMemberList(
+        QueueID       => $Ticket{QueueID},
+        TemplateTypes => 1,
+    );
 
     # owner info
     my %OwnerInfo = $Self->{UserObject}->GetUserData(
@@ -464,7 +517,7 @@ sub MaskAgentZoom {
             # ignore system sender type
             next ARTICLE
                 if $Self->{ConfigObject}->Get('Ticket::NewArticleIgnoreSystemSender')
-                && $Article->{SenderType} eq 'system';
+                    && $Article->{SenderType} eq 'system';
 
             next ARTICLE if $ArticleFlags{ $Article->{ArticleID} }->{Seen};
             $ArticleID = $Article->{ArticleID};
@@ -619,15 +672,20 @@ sub MaskAgentZoom {
             }
         }
 
-        $Param{ArticleItems} .= $Self->_ArticleItem(
+        $Self->_ArticleItem(
             Ticket            => \%Ticket,
             Article           => \%Article,
             AclAction         => \%AclAction,
-            StandardResponses => \%StandardResponses,
+            StandardResponses => $StandardTemplates{Answer},
+            StandardForwards  => $StandardTemplates{Forward},
             ActualArticleID   => $ArticleID,
             Type              => 'Static',
         );
     }
+    $Param{ArticleItems} .= $Self->{LayoutObject}->Output(
+        TemplateFile => 'AgentTicketZoom',
+        Data => { %Ticket, %AclAction },
+    );
 
     # always show archived tickets as seen
     if ( $Self->{ZoomExpand} && $Ticket{ArchiveFlag} ne 'y' ) {
@@ -1105,7 +1163,9 @@ sub MaskAgentZoom {
             DynamicFieldConfig => $DynamicFieldConfig,
             Value              => $Ticket{ 'DynamicField_' . $DynamicFieldConfig->{Name} },
             LayoutObject       => $Self->{LayoutObject},
-            ValueMaxChars => 18,    # limit for sidebar display
+            ValueMaxChars      => $Self->{ConfigObject}->
+                Get('Ticket::Frontend::DynamicFieldsZoomMaxSizeSidebar')
+                || 18,    # limit for sidebar display
         );
 
         if (
@@ -1424,7 +1484,7 @@ sub MaskAgentZoom {
         # ignore system sender type
         next ARTICLE
             if $Self->{ConfigObject}->Get('Ticket::NewArticleIgnoreSystemSender')
-            && $Article->{SenderType} eq 'system';
+                && $Article->{SenderType} eq 'system';
 
         # last if article was not shown
         if ( !$ArticleFlags{ $Article->{ArticleID} }->{Seen} ) {
@@ -1594,10 +1654,10 @@ sub _ArticleTree {
 
             # show ticket flags
             if ($ShowMeta) {
-                $Class .= ' Important';
+                $Class .= ' Remarkable';
             }
             else {
-                $Class .= ' Unimportant';
+                $Class .= ' Ordinary';
             }
         }
 
@@ -1623,6 +1683,21 @@ sub _ArticleTree {
                 ZoomExpandSort => $Self->{ZoomExpandSort},
             },
         );
+
+        # get article flags
+        # Always use user id 1 because other users also have to see the important flag
+        my %ArticleImportantFlags = $Self->{TicketObject}->ArticleFlagGet(
+            ArticleID => $Article{ArticleID},
+            UserID    => 1,
+        );
+
+        # show important flag
+        if ( $ArticleImportantFlags{Important} ) {
+            $Self->{LayoutObject}->Block(
+                Name => 'TreeItemImportantArticle',
+                Data => {},
+            );
+        }
 
         # always show archived tickets as seen
         if ( $NewArticle && $Ticket{ArchiveFlag} ne 'y' ) {
@@ -1777,7 +1852,8 @@ sub _ArticleItem {
     # cleanup subject
     $Article{Subject} = $Self->{TicketObject}->TicketSubjectClean(
         TicketNumber => $Article{TicketNumber},
-        Subject => $Article{Subject} || '',
+        Subject      => $Article{Subject} || '',
+        Size         => 0,
     );
 
     $Self->{LayoutObject}->Block(
@@ -1857,6 +1933,7 @@ sub _ArticleItem {
                     }
                 }
             }
+
             if ($Access) {
 
                 # get StandardResponsesStrg
@@ -1986,17 +2063,53 @@ sub _ArticleItem {
                 }
             }
             if ($Access) {
-                $Self->{LayoutObject}->Block(
-                    Name => 'ArticleMenu',
-                    Data => {
-                        %Ticket, %Article, %AclAction,
-                        Description => 'Forward article via mail',
-                        Name        => 'Forward',
-                        Class       => 'AsPopup PopupType_TicketAction',
-                        Link =>
-                            'Action=AgentTicketForward;TicketID=$Data{"TicketID"};ArticleID=$Data{"ArticleID"}'
-                    },
-                );
+                if ( IsHashRefWithData( $Param{StandardForwards} ) ) {
+
+                    # get StandarForwardsStrg
+                    $Param{StandardForwards}->{0}
+                        = '- ' . $Self->{LayoutObject}->{LanguageObject}->Get('Forward') . ' -';
+
+                    # build html string
+                    my $StandarForwardsStrg = $Self->{LayoutObject}->BuildSelection(
+                        Name => 'ForwardTemplateID',
+                        ID   => 'ForwardTemplateID',
+                        Data => $Param{StandardForwards},
+                    );
+
+                    $Self->{LayoutObject}->Block(
+                        Name => 'ArticleForwardAsDropdown',
+                        Data => {
+                            %Ticket, %Article, %AclAction,
+                            StandarForwardsStrg => $StandarForwardsStrg,
+                            Name                => 'Forward',
+                            Class               => 'AsPopup PopupType_TicketAction',
+                            Action              => 'AgentTicketForward',
+                            FormID              => 'Forward' . $Article{ArticleID},
+                            ForwardElementID    => 'ForwardTemplateID',
+                        },
+                    );
+
+                    $Self->{LayoutObject}->Block(
+                        Name => 'ArticleForwardAsDropdownJS' . $Param{Type},
+                        Data => {
+                            %Ticket, %Article, %AclAction,
+                            FormID => 'Forward' . $Article{ArticleID},
+                        },
+                    );
+                }
+                else {
+                    $Self->{LayoutObject}->Block(
+                        Name => 'ArticleMenu',
+                        Data => {
+                            %Ticket, %Article, %AclAction,
+                            Description => 'Forward article via mail',
+                            Name        => 'Forward',
+                            Class       => 'AsPopup PopupType_TicketAction',
+                            Link =>
+                                'Action=AgentTicketForward;TicketID=$Data{"TicketID"};ArticleID=$Data{"ArticleID"}'
+                        },
+                    );
+                }
             }
         }
 
@@ -2128,6 +2241,43 @@ sub _ArticleItem {
         }
     }
 
+    # Owner and Responsible can mark articles as important or remove mark
+    if (
+        $Self->{UserID} == $Ticket{OwnerID}
+        || (
+            $Self->{ConfigObject}->Get('Ticket::Responsible')
+            && $Self->{UserID} == $Ticket{ResponsibleID}
+        )
+        )
+    {
+
+        # Always use user id 1 because other users also have to see the important flag
+        my %ArticleFlags = $Self->{TicketObject}->ArticleFlagGet(
+            ArticleID => $Article{ArticleID},
+            UserID    => 1,
+        );
+
+        my $ArticleIsImportant = $ArticleFlags{Important};
+
+        my $Link
+            = 'Action=AgentTicketZoom;Subaction=MarkAsImportant;TicketID=$Data{"TicketID"};ArticleID=$Data{"ArticleID"}';
+        my $Description = 'Mark';
+        if ($ArticleIsImportant) {
+            $Description = 'Unmark';
+        }
+
+        # set important menu item
+        $Self->{LayoutObject}->Block(
+            Name => 'ArticleMenu',
+            Data => {
+                %Ticket, %Article, %AclAction,
+                Description => $Description,
+                Name        => $Description,
+                Link        => $Link,
+            },
+        );
+    }
+
     # do some strips && quoting
     KEY:
     for my $Key (qw(From To Cc)) {
@@ -2184,8 +2334,10 @@ sub _ArticleItem {
         my $ValueStrg = $Self->{BackendObject}->DisplayValueRender(
             DynamicFieldConfig => $DynamicFieldConfig,
             Value              => $Value,
-            ValueMaxChars      => 160,
-            LayoutObject       => $Self->{LayoutObject},
+            ValueMaxChars      => $Self->{ConfigObject}->
+                Get('Ticket::Frontend::DynamicFieldsZoomMaxSizeArticle')
+                || 160,    # limit for article display
+            LayoutObject => $Self->{LayoutObject},
         );
 
         my $Label = $DynamicFieldConfig->{Label};
@@ -2406,6 +2558,14 @@ sub _ArticleItem {
         }
     }
 
+    # security="restricted" may break SSO - disable this feature if requested
+    if ( $Self->{ConfigObject}->Get('DisableMSIFrameSecurityRestricted') ) {
+        $Article{MSSecurityRestricted} = '';
+    }
+    else {
+        $Article{MSSecurityRestricted} = 'security="restricted"';
+    }
+
     # show body
     # Create a reference to an anonymous copy of %Article and pass it to
     # the LayoutObject, because %Article may be modified afterwards.
@@ -2419,10 +2579,7 @@ sub _ArticleItem {
         $Article{Body} = $Article{BodyPlain};
     }
 
-    # return output
-    return $Self->{LayoutObject}->Output(
-        TemplateFile => 'AgentTicketZoom',
-        Data => { %Param, %Ticket, %AclAction },
-    );
+    return 1;
 }
+
 1;

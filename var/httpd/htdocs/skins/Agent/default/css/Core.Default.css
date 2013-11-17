@@ -311,8 +311,42 @@ dd {
 
 .MainBox > h1 {
     margin: 0;
-    padding: 5px 8px 8px;
+    padding: 10px 8px 8px;
     position: relative;
+}
+
+.MainBox > .AsteriskExplanation {
+    padding-left: 8px;
+    margin-bottom: 10px;
+}
+
+.RTL .MainBox > .AsteriskExplanation {
+    padding-left: 0px;
+    padding-right: 8px;
+}
+
+.AsteriskExplanation {
+    color: #999;
+}
+
+.MainBox.FormScreen > h1,
+.MainBox.FormScreen > .AsteriskExplanation {
+    margin-left: 24%;
+}
+
+.MainBox.FormScreen.NoSidebar > h1,
+.MainBox.FormScreen.NoSidebar > .AsteriskExplanation {
+    margin-left: 30%;
+}
+
+.RTL .MainBox.FormScreen > h1,
+.RTL .MainBox.FormScreen > .AsteriskExplanation {
+    margin-right: 24%;
+}
+
+.RTL .MainBox.FormScreen.NoSidebar > h1,
+.RTL .MainBox.FormScreen.NoSidebar > .AsteriskExplanation {
+    margin-right: 30%;
 }
 
 .OverviewBox > h1 {
@@ -344,12 +378,20 @@ dd {
     width: 50%;
 }
 
+.W60pc {
+    width: 60%;
+}
+
 .W70pc {
     width: 70%;
 }
 
 .W75pc {
     width: 75%;
+}
+
+.W80pc {
+    width: 80%;
 }
 
 .W90pc {
@@ -389,13 +431,8 @@ dd {
     margin: -2px 18px 0 10px;
     border: 1px solid #B9821C;
     background: #F39C19;
-    -webkit-border-bottom-right-radius: 4px;
-    -webkit-border-bottom-left-radius: 4px;
-    -moz-border-radius-bottomright: 4px;
-    -moz-border-radius-bottomleft: 4px;
     border-bottom-right-radius: 4px;
     border-bottom-left-radius: 4px;
-    -moz-box-shadow: 0 1px 0 rgba(0,0,0,0.1);
     -webkit-box-shadow: 0 1px 0 rgba(0,0,0,0.1);
     box-shadow: 0 1px 0 rgba(0,0,0,0.1);
     position: relative;
@@ -411,10 +448,6 @@ dd {
     font-weight: bold;
     border-left: 1px solid #F6AF2F;
     border-right: 1px solid #F6AF2F;
-    -webkit-border-bottom-right-radius: 2px;
-    -webkit-border-bottom-left-radius: 2px;
-    -moz-border-radius-bottomright: 2px;
-    -moz-border-radius-bottomleft: 2px;
     border-bottom-right-radius: 2px;
     border-bottom-left-radius: 2px;
 }
@@ -526,22 +559,60 @@ dd {
  */
 span.UnreadArticles {
     display: block;
-    text-indent: -9999px;
-    background: transparent url(../img/stars.png) no-repeat;
     width: 16px;
-    height: 20px;
+    height: 15px;
+    margin-left: 6px;
+    font-weight: normal;
+    position: relative;
+    padding: 0px 3px !important;
 }
 
-span.UnreadArticles.Important {
-    background-position: top;
+span.UnreadArticles i {
+    display: block;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 2;
+    font-size: 14px;
+    color: #ddd;
 }
 
-span.UnreadArticles.Unimportant {
-    background-position: 0 -20px;
+span.UnreadArticles em {
+    display: none;
 }
 
-tbody tr:hover span.UnreadArticles {
-    background-position: 0 -40px;
+span.UnreadArticles i:first-child {
+    color: #777 !important;
+    font-size: 16px;
+    z-index: 1;
+    left: -1px;
+    top: -1px;
+}
+
+span.UnreadArticles.Remarkable i {
+    color: #F7DE7B;
+}
+
+span.UnreadArticles.Ordinary {
+    color: #ddd;
+}
+
+tbody tr:hover span.UnreadArticles i {
+    color: #fff;
+}
+
+span.ImportantArticles {
+    display: block;
+    width: 16px;
+    height: 16px;
+    float: right;
+    margin: -2px 0px 0px 23px;
+    color: #C10505;
+    font-size: 13px;
+}
+
+span.ImportantArticles em {
+    display: none;
 }
 
 /**
@@ -558,8 +629,6 @@ tbody tr:hover span.UnreadArticles {
     color: #FFF;
     font-size: 11px;
     opacity: 0.8;
-    -moz-border-radius: 8px;
-    -webkit-border-radius: 8px;
     border-radius: 8px;
     position: absolute;
 }
@@ -583,7 +652,13 @@ tbody tr:hover span.UnreadArticles {
 /* Vacation Days */
 td.Highlight a.ui-state-default {
     border: 1px solid #fad42e;
-    background: url(../img/datepicker_vacation_days.png) repeat-x;
+    background: #ffe45c;
+    background: -moz-linear-gradient(top,  #fff0a5 0%, #ffe45c 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fff0a5), color-stop(100%,#ffe45c));
+    background: -webkit-linear-gradient(top,  #fff0a5 0%,#ffe45c 100%);
+    background: -o-linear-gradient(top,  #fff0a5 0%,#ffe45c 100%);
+    background: -ms-linear-gradient(top,  #fff0a5 0%,#ffe45c 100%);
+    background: linear-gradient(to bottom,  #fff0a5 0%,#ffe45c 100%);
 }
 
 /* Today */
@@ -669,8 +744,8 @@ iframe.TextOption.Customer {
 }
 
 #ArticleFilterDialogForm {
-    width: 450px;
-    height: 300px;
+    width: 480px;
+    max-height: 300px;
 }
 
 #ContextSettingsDialog {
@@ -693,6 +768,10 @@ iframe.TextOption.Customer {
 */
 .ui-menu-item {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.ui-menu .ui-menu-item a {
+    border: 1px solid #fff;
 }
 
 } /* end @media */

@@ -10,8 +10,9 @@
 <script src="$Config{"Frontend::RichTextPath"}ckeditor.js" type="text/javascript"></script>
 <!-- dtl:block:RichText -->
 
-<div class="MainBox ARIARoleMain">
+<div class="MainBox ARIARoleMain FormScreen">
     <h1>$Text{"Create New Process Ticket"}</h1>
+    <p class="AsteriskExplanation">$Text{"All fields marked with an asterisk (*) are mandatory."}</p>
     <div class="ContentColumn">
         <form action="$Env{"CGIHandle"}" method="post" enctype="multipart/form-data" name="compose" id="NewProcessTicket" class="Validate PreventMultipleSubmits">
             <input type="hidden" name="Action" value="$Env{"Action"}"/>
@@ -65,6 +66,7 @@
             Core.AJAX.FunctionCall('$Env{"Baselink"}', 'Action=$Env{"Action"};Subaction=DisplayActivityDialogAJAX;AJAXDialog=1;ProcessEntityID=' + $('#ProcessEntityID').val(), function (Response) {
                 var $ElementToUpdate = $('#ActivityDialogContent'),
                     JavaScriptString = '';
+
                 if (!Response) {
 
                     // We are out of the OTRS App scope, that's why an exception would not be caught. Therefor we handle the error manually.
@@ -96,8 +98,16 @@
                     }
 
                     Core.Form.Validate.Init();
+
+                    // Register event for tree selection dialog
+                    Core.UI.TreeSelection.InitTreeSelection();
+
+                    // Initially display dynamic fields with TreeMode = 1 correctly
+                    Core.UI.TreeSelection.InitDynamicFieldTreeViewRestore();
+
                     $('#AJAXLoader').addClass('Hidden');
                     $('#AJAXDialog').val('1');
+
                 }
                 else {
 
@@ -115,4 +125,9 @@
         return false;
     });
 //]]></script>
+<!-- dtl:block:PreSelectProcess -->
+<script type="text/javascript">//<![CDATA[
+$('#ProcessEntityID').val('$QData{"ProcessID"}').trigger('change');
+//]]></script>
+<!-- dtl:block:PreSelectProcess -->
 <!-- dtl:js_on_document_complete -->

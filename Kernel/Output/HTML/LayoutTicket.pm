@@ -12,7 +12,23 @@ package Kernel::Output::HTML::LayoutTicket;
 use strict;
 use warnings;
 
-use vars qw(@ISA);
+use Kernel::System::VariableCheck qw(:all);
+
+=head1 NAME
+
+Kernel::Output::HTML::LayoutTicket - all Ticket-related HTML functions
+
+=head1 SYNOPSIS
+
+All Ticket-related HTML functions
+
+=head1 PUBLIC INTERFACE
+
+=over 4
+
+=item AgentCustomerViewTable()
+
+=cut
 
 sub AgentCustomerViewTable {
     my ( $Self, %Param ) = @_;
@@ -179,10 +195,6 @@ sub AgentCustomerViewTable {
         }
     }
 
-    # Acivity Index: History
-    # CTI
-    # vCard
-    # Bugzilla Status
     # create & return output
     return $Self->Output( TemplateFile => 'AgentCustomerTableView', Data => \%Param );
 }
@@ -205,6 +217,7 @@ sub AgentQueueListOption {
     my $Class          = defined( $Param{Class} )          ? $Param{Class}          : '';
     my $SelectedIDRefArray = $Param{SelectedIDRefArray} || '';
     my $Multiple       = $Param{Multiple}                  ? 'multiple = "multiple"' : '';
+    my $TreeView       = $Param{TreeView}                  ? $Param{TreeView}        : 0;
     my $OptionTitle    = defined( $Param{OptionTitle} )    ? $Param{OptionTitle}     : 0;
     my $OnChangeSubmit = defined( $Param{OnChangeSubmit} ) ? $Param{OnChangeSubmit}  : '';
     if ($OnChangeSubmit) {
@@ -310,7 +323,7 @@ sub AgentQueueListOption {
                 # useful for ACLs and complex permission settings
                 for my $Index ( 0 .. ( scalar @Queue - 2 ) ) {
 
-                    # get the Full Queue Name (with all it's parents separed by '::') this will
+                    # get the Full Queue Name (with all its parents separated by '::') this will
                     # make a unique name and will be used to set the %DisabledQueueAlreadyUsed
                     # using unique names will prevent erroneous hide of Sub-Queues with the
                     # same name, refer to bug#8148
@@ -353,7 +366,7 @@ sub AgentQueueListOption {
                 $OptionTitleHTMLValue = ' title="' . $HTMLValue . '"';
             }
             if (
-                $SelectedID eq $_
+                $SelectedID  eq $_
                 || $Selected eq $Param{Data}->{$_}
                 || $Param{SelectedIDRefArrayOK}->{$_}
                 )
@@ -384,6 +397,11 @@ sub AgentQueueListOption {
         }
     }
     $Param{MoveQueuesStrg} .= "</select>\n";
+
+    if ( $Param{TreeView} ) {
+        $Param{MoveQueuesStrg}
+            .= ' <a href="#" title="$Text{"Show Tree Selection"}" class="ShowTreeSelection">$Text{"Show Tree Selection"}</a>';
+    }
 
     return $Param{MoveQueuesStrg};
 }
@@ -513,7 +531,7 @@ sub ArticleQuote {
                 ATMCOUNT:
                 for my $AttachmentID ( sort keys %Attachments ) {
 
-                    # next is cid is not matchin
+                    # next if cid is not matching
                     if ( lc $Attachments{$AttachmentID}->{ContentID} ne lc "<$ContentID>" ) {
                         next ATMCOUNT;
                     }
@@ -529,7 +547,7 @@ sub ArticleQuote {
                     $AttachmentPicture{ContentID} =~ s/^<//;
                     $AttachmentPicture{ContentID} =~ s/>$//;
 
-                    # find cid, add attachment URL and remeber, file is already uploaded
+                    # find cid, add attachment URL and remember, file is already uploaded
                     $ContentID = $AttachmentLink . $Self->LinkEncode( $AttachmentPicture{ContentID} );
 
                     # add to upload cache if not uploaded and remember
@@ -552,7 +570,7 @@ sub ArticleQuote {
                 $Start . $ContentID . $End;
             }egxi;
 
-            # find inlines images using Content-Location instead of Content-ID
+            # find inline images using Content-Location instead of Content-ID
             for my $AttachmentID ( sort keys %Attachments ) {
 
                 next if !$Attachments{$AttachmentID}->{ContentID};
@@ -576,7 +594,7 @@ sub ArticleQuote {
                     my $ContentID = $2;
                     my $End = $3;
 
-                    # find cid, add attachment URL and remeber, file is already uploaded
+                    # find cid, add attachment URL and remember, file is already uploaded
                     $ContentID = $AttachmentLink . $Self->LinkEncode( $AttachmentPicture{ContentID} );
 
                     # add to upload cache if not uploaded and remember
@@ -697,7 +715,7 @@ sub TicketListShow {
         $Param{View} = $Self->{ 'UserTicketOverview' . $Env->{Action} };
     }
 
-    # set defaut view mode to 'small'
+    # set default view mode to 'small'
     my $View = $Param{View} || 'Small';
 
     # set default view mode for AgentTicketQueue
@@ -755,6 +773,13 @@ sub TicketListShow {
     }
     my $Object = $Backends->{$View}->{Module}->new( %{$Env} );
     return if !$Object;
+
+    # retireve filter values
+    if ( $Param{FilterContentOnly} ) {
+        return $Object->FilterContent(
+            %Param,
+        );
+    }
 
     # run action row backend module
     $Param{ActionRow} = $Object->ActionRow(
@@ -930,6 +955,60 @@ sub TicketListShow {
                     %Param,
                 },
             );
+
+            # show column filter preferences
+            if ( $View eq 'Small' ) {
+
+                # set preferences keys
+                my $PrefKeyColumns = 'UserFilterColumnsEnabled' . '-' . $Env->{Action};
+
+                # create extra needed objects
+                my $JSONObject = Kernel::System::JSON->new( %{$Self} );
+
+                # configure columns
+                my @ColumnsEnabled = @{ $Object->{ColumnsEnabled} };
+                my @ColumnsAvailable;
+
+                for my $ColumnName ( sort { $a cmp $b } @{ $Object->{ColumnsAvailable} } ) {
+                    if ( !grep { $_ eq $ColumnName } @ColumnsEnabled ) {
+                        push @ColumnsAvailable, $ColumnName;
+                    }
+                }
+
+                my %Columns;
+                for my $ColumnName ( sort @ColumnsAvailable ) {
+                    $Columns{Columns}->{$ColumnName}
+                        = ( grep { $ColumnName eq $_ } @ColumnsEnabled ) ? 1 : 0;
+                }
+
+                $Env->{LayoutObject}->Block(
+                    Name => 'FilterColumnSettings',
+                    Data => {
+                        Columns          => $JSONObject->Encode( Data => \%Columns ),
+                        ColumnsEnabled   => $JSONObject->Encode( Data => \@ColumnsEnabled ),
+                        ColumnsAvailable => $JSONObject->Encode( Data => \@ColumnsAvailable ),
+                        NamePref         => $PrefKeyColumns,
+                        Desc             => 'Shown Columns',
+                        Name             => $Env->{Action},
+                        View             => $View,
+                        GroupName        => 'TicketOverviewFilterSettings',
+                        %Param,
+                    },
+                );
+
+                # check if there was stored filters, and print a link to delete them
+                if ( IsHashRefWithData( $Object->{StoredFilters} ) ) {
+                    $Env->{LayoutObject}->Block(
+                        Name => 'DocumentActionRowRemoveColumnFilters',
+                        Data => {
+                            CSS => "ContextSettings RemoveFilters",
+                            %Param,
+                        },
+                    );
+                }
+
+            }    # end show column filters preferences
+
         }
     }
 
@@ -1041,7 +1120,7 @@ sub TicketMetaItems {
                 Image      => $Image,
                 Title      => 'Unread article(s) available',
                 Class      => 'UnreadArticles',
-                ClassSpan  => 'UnreadArticles Important',
+                ClassSpan  => 'UnreadArticles Remarkable',
                 ClassTable => 'UnreadArticles',
             };
         }
@@ -1050,7 +1129,7 @@ sub TicketMetaItems {
                 Image      => $Image,
                 Title      => 'Unread article(s) available',
                 Class      => 'UnreadArticles',
-                ClassSpan  => 'UnreadArticles Unimportant',
+                ClassSpan  => 'UnreadArticles Ordinary',
                 ClassTable => 'UnreadArticles',
             };
         }
@@ -1060,3 +1139,15 @@ sub TicketMetaItems {
 }
 
 1;
+
+=back
+
+=head1 TERMS AND CONDITIONS
+
+This software is part of the OTRS project (L<http://otrs.org/>).
+
+This software comes with ABSOLUTELY NO WARRANTY. For details, see
+the enclosed file COPYING for license information (AGPL). If you
+did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
+
+=cut

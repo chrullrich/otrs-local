@@ -38,6 +38,10 @@ $('select').each(function() {
     }
 });
 Core.Form.Validate.Init();
+
+// Register event for tree selection dialog
+Core.UI.TreeSelection.InitTreeSelection();
+
 //]]></script>
 <!-- dtl:js_on_document_complete -->
 

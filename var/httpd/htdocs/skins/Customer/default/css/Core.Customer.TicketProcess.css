@@ -11,6 +11,24 @@
 
 @media screen,projection,tv,handheld {
 
+
+/**
+ * @subsection  Ticket Process
+ */
+
+.TicketProcess .Content {
+    margin: 0;
+}
+.TicketProcess fieldset{
+    margin: 8px 0 13px;
+    padding-bottom: 5px;
+    min-width: 500px;
+}
+
+.Center {
+    text-align: center;
+}
+
 /**
  * @subsection  Extensions for popup dialog
  */
@@ -33,7 +51,13 @@
 }
 
 .PopupHeader {
-    background: -moz-linear-gradient(center top , #F9F9F9, #ECEEEE) repeat scroll 0 0 transparent;
+    background: #eceeee;
+    background: -moz-linear-gradient(top,  #f9f9f9 0%, #eceeee 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f9f9f9), color-stop(100%,#eceeee));
+    background: -webkit-linear-gradient(top,  #f9f9f9 0%,#eceeee 100%);
+    background: -o-linear-gradient(top,  #f9f9f9 0%,#eceeee 100%);
+    background: -ms-linear-gradient(top,  #f9f9f9 0%,#eceeee 100%);
+    background: linear-gradient(to bottom,  #f9f9f9 0%,#eceeee 100%);
     border: 1px solid #B8BBBB;
     padding: 9px 9px 0px;
 }
@@ -61,7 +85,13 @@ fieldset.TableLike > .Field, fieldset.TableLike > .Row > .Field {
 }
 
 .PopupFooter {
-    background: -moz-linear-gradient(center top , #F9F9F9, #ECEEEE) repeat scroll 0 0 transparent;
+    background: #eceeee;
+    background: -moz-linear-gradient(top,  #f9f9f9 0%, #eceeee 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f9f9f9), color-stop(100%,#eceeee));
+    background: -webkit-linear-gradient(top,  #f9f9f9 0%,#eceeee 100%);
+    background: -o-linear-gradient(top,  #f9f9f9 0%,#eceeee 100%);
+    background: -ms-linear-gradient(top,  #f9f9f9 0%,#eceeee 100%);
+    background: linear-gradient(to bottom,  #f9f9f9 0%,#eceeee 100%);
     border: 1px solid #B8BBBB;
     padding: 5px 9px;
 }

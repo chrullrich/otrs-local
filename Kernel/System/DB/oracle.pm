@@ -33,8 +33,12 @@ sub LoadPreferences {
     $Self->{'DB::QuoteSemicolon'}       = '';
     $Self->{'DB::QuoteUnderscoreStart'} = '\\';
     $Self->{'DB::QuoteUnderscoreEnd'}   = '';
-    $Self->{'DB::CaseInsensitive'}      = 0;
+    $Self->{'DB::CaseSensitive'}        = 1;
     $Self->{'DB::LikeEscapeString'}     = q{ESCAPE '\\'};
+
+    # how to determine server version
+    $Self->{'DB::Version'}
+        = "SELECT CONCAT('Oracle ', version) FROM product_component_version WHERE product LIKE 'Oracle Database%'";
 
     # dbi attributes
     $Self->{'DB::Attribute'} = {
@@ -241,7 +245,16 @@ sub TableCreate {
                 $Shell = "/\n--";
             }
             push( @Return2, "DROP SEQUENCE $Sequence" );
-            push( @Return2, "CREATE SEQUENCE $Sequence" );
+            push(
+                @Return2,
+                "CREATE SEQUENCE $Sequence\n"
+                    . "INCREMENT BY 1\n"
+                    . "START WITH 1\n"
+                    . "NOMAXVALUE\n"
+                    . "NOCYCLE\n"
+                    . "CACHE 20\n"
+                    . "ORDER",
+            );
             push(
                 @Return2,
                 "CREATE OR REPLACE TRIGGER $Sequence"
@@ -796,9 +809,6 @@ sub Insert {
             }
         }
         else {
-            if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
-                $Tmp =~ s/\n/\r/g;
-            }
             $Value .= $Tmp;
         }
     }

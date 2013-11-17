@@ -477,8 +477,7 @@ sub Run {
 
         # get the webservice config file from the http request
         my %ConfigFile = $Self->{ParamObject}->GetUploadAll(
-            Param  => 'ConfigFile',
-            Source => 'string',
+            Param => 'ConfigFile',
         );
 
         # check for file

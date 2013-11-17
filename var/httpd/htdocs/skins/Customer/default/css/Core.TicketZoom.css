@@ -38,11 +38,6 @@
     float: right;
 }
 
-.TicketHeader .TicketHook {
-    color: #666;
-    font-size: 12px;
-}
-
 .Flag span.PriorityID-1 {
     background-color:#03c4f0;
 }
@@ -71,7 +66,6 @@
     line-height: 16px;
     text-indent: -9999px;
     position: absolute;
-    -moz-box-shadow: 0 1px 0 #EEE;
     -webkit-box-shadow: 0 1px 0 #EEE;
     box-shadow: 0 1px 0 #EEE;
     display: block;
@@ -104,11 +98,8 @@
     border: 1px solid #E9E9E9;
     border-bottom: 1px solid #DDD;
     border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
     border-radius: 5px;
     -webkit-box-shadow: 0 0 3px #EEE;
-    -moz-box-shadow: 0 0 3px #EEE;
     box-shadow: 0 0 2px #EEE;
 }
 
@@ -132,6 +123,9 @@
 
 #Metadata li {
     padding: 2px 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #Metadata li.Header {
@@ -219,11 +213,8 @@
     border: 1px solid #E9E9E9;
     border-bottom: 1px solid #DDD;
     border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
     border-radius: 5px;
     -webkit-box-shadow: 0 0 3px #EEE;
-    -moz-box-shadow: 0 0 3px #EEE;
     box-shadow: 0 0 2px #EEE;
     position: relative;
     z-index: 10;
@@ -238,10 +229,6 @@
 
 #Messages li:first-child,
 #Messages li:first-child .MessageHeader {
-    -webkit-border-top-left-radius: 5px;
-    -webkit-border-top-right-radius: 5px;
-    -moz-border-radius-topleft: 5px;
-    -moz-border-radius-topright: 5px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
@@ -249,10 +236,6 @@
 #Messages li:last-child,
 #Messages li:last-child .MessageHeader,
 #Messages li:last-child .MessageContent {
-    -webkit-border-bottom-right-radius: 5px;
-    -webkit-border-bottom-left-radius: 5px;
-    -moz-border-radius-bottomright: 5px;
-    -moz-border-radius-bottomleft: 5px;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
 }
@@ -263,8 +246,6 @@
 }
 
 #Messages li.Visible:last-child .MessageHeader {
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
     border-radius: 0;
     border-width: 1px;
 }
@@ -272,7 +253,12 @@
 .MessageHeader {
     padding: 5px 8px 3px;
     color: #6A6A6A;
-    background: #A7AAAA url("../img/GradientSmall.png") repeat-x 0 0;
+    background: -moz-linear-gradient(top,  #f6f6f6 0%, #b6b6b6 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6f6f6), color-stop(100%,#b6b6b6));
+    background: -webkit-linear-gradient(top,  #f6f6f6 0%,#b6b6b6 100%);
+    background: -o-linear-gradient(top,  #f6f6f6 0%,#b6b6b6 100%);
+    background: -ms-linear-gradient(top,  #f6f6f6 0%,#b6b6b6 100%);
+    background: linear-gradient(to bottom,  #f6f6f6 0%,#b6b6b6 100%);
     border-bottom: 1px solid #D6D6D6;
     text-shadow: 0 1px 0 #FFF;
     position: relative;
@@ -289,11 +275,14 @@
 
 .MessageHeader h3 {
     font-weight: bold;
-    float: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 90%;
 }
 
 .RTL .MessageHeader h3 {
-    float: right;
+    padding-left: 100px;
 }
 
 .MessageHeader h3 span {
@@ -301,11 +290,13 @@
 }
 
 .MessageHeader .Age {
-    float: right;
+    position: absolute;
+    top: 5px;
+    right: 8px;
 }
 
 .RTL .MessageHeader .Age {
-    float: left;
+    left: 8px;
 }
 
 .MessageBody {
@@ -321,11 +312,8 @@
     border: 1px solid #E9E9E9;
     border-bottom: 1px solid #DDD;
     border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
     border-radius: 5px;
     -webkit-box-shadow: 0 0 3px #EEE;
-    -moz-box-shadow: 0 0 3px #EEE;
     box-shadow: 0 0 2px #EEE;
     position: relative;
     z-index: 10;
@@ -344,8 +332,12 @@
     border-top: 1px solid #FFF;
     border-bottom: 1px solid #E8E8E8;
     background: #FCFCFC;
-    background: -moz-linear-gradient(top, #FFF, #FCFCFC);
-    background: -webkit-gradient(linear, left top, left bottom, from(#FDFDFD), to(#F7F7F7));
+    background: -moz-linear-gradient(top,  #ffffff 0%, #fcfcfc 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#fcfcfc));
+    background: -webkit-linear-gradient(top,  #ffffff 0%,#fcfcfc 100%);
+    background: -o-linear-gradient(top,  #ffffff 0%,#fcfcfc 100%);
+    background: -ms-linear-gradient(top,  #ffffff 0%,#fcfcfc 100%);
+    background: linear-gradient(to bottom,  #ffffff 0%,#fcfcfc 100%);
 }
 
 .Details {
@@ -354,6 +346,13 @@
     color: #525252;
     line-height: 16px;
 }
+
+.Details > div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .Details .Label {
     width: 65px;
     margin: 0 3px;
@@ -412,18 +411,18 @@
     margin: 0 13px 8px;
     color: #6A6A6A;
     background: #F0F0F0;
-    background: -moz-linear-gradient(top, #F9F9F9, #F0F0F0);
-    background: -webkit-gradient(linear, left top, left bottom, from(#F9F9F9), to(#F0F0F0));
+    background: -moz-linear-gradient(top,  #f9f9f9 0%, #f0f0f0 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f9f9f9), color-stop(100%,#f0f0f0));
+    background: -webkit-linear-gradient(top,  #f9f9f9 0%,#f0f0f0 100%);
+    background: -o-linear-gradient(top,  #f9f9f9 0%,#f0f0f0 100%);
+    background: -ms-linear-gradient(top,  #f9f9f9 0%,#f0f0f0 100%);
+    background: linear-gradient(to bottom,  #f9f9f9 0%,#f0f0f0 100%);
     border-left: 1px solid #D6D6D6;
     border-right: 1px solid #D6D6D6;
-    -webkit-border-bottom-right-radius: 5px;
-    -webkit-border-bottom-left-radius: 5px;
-    -moz-border-radius-bottomright: 5px;
-    -moz-border-radius-bottomleft: 5px;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
     position: relative;
-    width: 621px;
+    width: 77%;
     float: left;
 }
 
@@ -447,13 +446,9 @@
 
 #Messenger #Subject {
     width: 300px;
-    margin: 8px 8px 0;
     color: #444;
     background: transparent;
-    border: none;
     border-radius: 0;
-    -moz-border-radius: 0;
-    -webkit-border-radius: 0;
 }
 
 #Messenger textarea {
@@ -482,10 +477,6 @@
     padding: 8px 13px;
     background-position: -30px;
     border: 1px solid #B8BBBB;
-    -webkit-border-bottom-right-radius: 3px;
-    -webkit-border-bottom-left-radius: 3px;
-    -moz-border-radius-bottomright: 3px;
-    -moz-border-radius-bottomleft: 3px;
     border-bottom-right-radius: 3px;
     border-bottom-left-radius: 3px;
     text-shadow: none;
@@ -498,20 +489,19 @@
     padding: 4px 8px 7px 24px;
     color: #999;
     background: #F0F0F0 url(../img/reply.png) no-repeat 6px 6px;
-    background: url(../img/reply.png) no-repeat 6px 6px, -moz-linear-gradient(top, #F0F0F0, #EEE);
-    background: url(../img/reply.png) no-repeat 6px 6px, -webkit-gradient(linear, left top, left bottom, from(#F0F0F0), to(#EEE));
+    background: url(../img/reply.png) -moz-linear-gradient(top,  #f0f0f0 0%, #eeeeee 100%);
+    background: url(../img/reply.png) -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f0f0f0), color-stop(100%,#eeeeee));
+    background: url(../img/reply.png) -webkit-linear-gradient(top,  #f0f0f0 0%,#eeeeee 100%);
+    background: url(../img/reply.png) -o-linear-gradient(top,  #f0f0f0 0%,#eeeeee 100%);
+    background: url(../img/reply.png) -ms-linear-gradient(top,  #f0f0f0 0%,#eeeeee 100%);
+    background: url(../img/reply.png) linear-gradient(to bottom,  #f0f0f0 0%,#eeeeee 100%);
     border: 1px solid #D6D6D6;
     border-top: none;
-    -webkit-border-bottom-right-radius: 5px;
-    -webkit-border-bottom-left-radius: 5px;
-    -moz-border-radius-bottomright: 5px;
-    -moz-border-radius-bottomleft: 5px;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
     display: none;
     position: absolute;
     -webkit-box-shadow: 0 0 3px #F6F9F9;
-    -moz-box-shadow: 0 0 3px #F6F9F9;
     box-shadow: 0 0 2px #F6F9F9;
 }
 

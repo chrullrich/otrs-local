@@ -89,13 +89,24 @@ sub Run {
         if ( !$Self->{ConfigObject}->Get('SessionUseCookieAfterBrowserClose') ) {
             $Expires = '';
         }
+
+        my $SecureAttribute;
+        if ( $Self->{ConfigObject}->Get('HttpType') eq 'https' ) {
+
+            # Restrict Cookie to HTTPS if it is used.
+            $SecureAttribute = 1;
+        }
+
         my $LayoutObject = Kernel::Output::HTML::Layout->new(
             %{$Self},
             SetCookies => {
                 SessionIDCookie => $Self->{ParamObject}->SetCookie(
-                    Key     => $Self->{ConfigObject}->Get('SessionName'),
-                    Value   => $NewSessionID,
-                    Expires => $Expires,
+                    Key      => $Self->{ConfigObject}->Get('SessionName'),
+                    Value    => $NewSessionID,
+                    Expires  => $Expires,
+                    Path     => $Self->{ConfigObject}->Get('ScriptAlias'),
+                    Secure   => scalar $SecureAttribute,
+                    HTTPOnly => 1,
                 ),
             },
             SessionID   => $NewSessionID,
@@ -305,7 +316,7 @@ sub Run {
         }
         $GetParam{Preferences} = $Self->{ParamObject}->GetParam( Param => 'Preferences' ) || '';
 
-        for my $Needed (qw(UserFirstname UserLastname UserLogin UserEmail ValidID UserPw)) {
+        for my $Needed (qw(UserFirstname UserLastname UserLogin UserEmail ValidID)) {
             if ( !$GetParam{$Needed} ) {
                 $Errors{ $Needed . 'Invalid' } = 'ServerError';
             }
@@ -469,9 +480,9 @@ sub _Edit {
     else {
         $Self->{LayoutObject}->Block( Name => 'HeaderAdd' );
         $Self->{LayoutObject}->Block( Name => 'MarkerMandatory' );
-        $Param{ClassMandatory} = 'Mandatory';
-        $Param{UserPwRequired} = 'Validate_Required';
-
+        $Self->{LayoutObject}->Block(
+            Name => 'ShowPasswordHint',
+        );
     }
 
     # add the correct server error msg

@@ -56,23 +56,23 @@ Core.UI.Accessibility = (function (TargetNS) {
      */
     TargetNS.AccessibleNavigation = function() {
 
-        $('#Navigation > ul > li a').bind('focus', function() {
+        $('#Navigation > ul > li a').on('focus', function() {
             $(this)
                 .next('ul')
                 .addClass('Expanded');
         });
 
-        $('#Navigation > ul > li > ul').bind('mouseleave', function() {
+        $('#Navigation > ul > li > ul').on('mouseleave', function() {
             $(this).removeClass('Expanded');
         });
 
-        $('#Navigation > ul > li > ul li a').bind('focus', function() {
+        $('#Navigation > ul > li > ul li a').on('focus', function() {
             $(this)
                 .closest('ul')
                 .addClass('Expanded');
         });
 
-        $('#Navigation > ul > li > ul li:last-child').prev('li').find('a').bind('focusout', function() {
+        $('#Navigation > ul > li > ul li:last-child').prev('li').find('a').on('focusout', function() {
             $(this)
                 .closest('ul')
                 .removeClass('Expanded');

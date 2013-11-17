@@ -33,7 +33,7 @@ sub LoadPreferences {
     $Self->{'DB::QuoteSemicolon'}       = '\\';
     $Self->{'DB::QuoteUnderscoreStart'} = '\\\\';
     $Self->{'DB::QuoteUnderscoreEnd'}   = '';
-    $Self->{'DB::CaseInsensitive'}      = 0;
+    $Self->{'DB::CaseSensitive'}        = 1;
     $Self->{'DB::LikeEscapeString'}     = '';
 
     # dbi attributes
@@ -675,9 +675,6 @@ sub Insert {
             }
         }
         else {
-            if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
-                $Tmp =~ s/\n/\r/g;
-            }
             $Value .= $Tmp;
         }
     }

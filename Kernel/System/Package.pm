@@ -138,7 +138,7 @@ sub new {
     $Self->{PackageMapFileList} = { File => 'ARRAY', };
 
     $Self->{PackageVerifyURL}
-        = 'https://pav.otrs.com/otrs/public.pl?Action=PublicPackageVerification;';
+        = 'https://pav.otrs.com/otrs/public.pl';
 
     $Self->{Home} = $Self->{ConfigObject}->Get('Home');
 
@@ -195,14 +195,21 @@ sub RepositoryList {
             Status  => $Row[2],
         );
 
+        # correct any 'dos-style' line endings - http://bugs.otrs.org/show_bug.cgi?id=9838
+        $Row[3] =~ s{\r\n}{\n}xmsg;
+        $Package{MD5sum} = $Self->{MainObject}->MD5sum( String => \$Row[3] );
+
         # get package attributes
         if ( $Row[3] && $Result eq 'Short' ) {
-            $Package{MD5sum} = $Self->{MainObject}->MD5sum( String => \$Row[3] );
+
             push @Data, {%Package};
+
         }
         elsif ( $Row[3] ) {
+
             my %Structure = $Self->PackageParse( String => \$Row[3] );
             push @Data, { %Package, %Structure };
+
         }
     }
 
@@ -1415,6 +1422,9 @@ sub PackageVerify {
     # investigate name
     my $Name = $Param{Structure}->{Name}->{Content} || $Param{Name};
 
+    # correct any 'dos-style' line endings - http://bugs.otrs.org/show_bug.cgi?id=9838
+    $Param{Package} =~ s{\r\n}{\n}xmsg;
+
     # create MD5 sum
     my $Sum = $Self->{MainObject}->MD5sum( String => $Param{Package} );
 
@@ -1441,9 +1451,13 @@ sub PackageVerify {
 
     # verify package at web server
     my %Response = $WebUserAgentObject->Request(
-        URL => $Self->{PackageVerifyURL} . 'Package=' . $Name . '::' . $Sum,
+        URL  => $Self->{PackageVerifyURL},
+        Type => 'POST',
+        Data => {
+            Action  => 'PublicPackageVerification',
+            Package => $Name . '::' . $Sum,
+            }
     );
-
     return 'verified' if !$Response{Status};
     return 'verified' if $Response{Status} ne '200 OK';
     return 'verified' if !$Response{Content};
@@ -1544,13 +1558,12 @@ sub PackageVerifyAll {
         }
         else {
             $Result{ $Package->{Name} } = 'verified';
-            push @PackagesToVerify, 'Package=' . $Package->{Name} . '::' . $Package->{MD5sum};
+            push @PackagesToVerify, 'Package';
+            push @PackagesToVerify, $Package->{Name} . '::' . $Package->{MD5sum};
         }
     }
 
     return %Result if !@PackagesToVerify;
-
-    my $PackagesString = join ';', @PackagesToVerify;
 
     # create new web user agent object -> note proxy is different from Package::Proxy
     my $WebUserAgentObject = Kernel::System::WebUserAgent->new(
@@ -1565,7 +1578,12 @@ sub PackageVerifyAll {
 
     # verify package at web server
     my %Response = $WebUserAgentObject->Request(
-        URL => $Self->{PackageVerifyURL} . $PackagesString,
+        URL  => $Self->{PackageVerifyURL},
+        Type => 'POST',
+        Data => [
+            Action => 'PublicPackageVerification',
+            @PackagesToVerify
+            ]
     );
 
     return %Result if !$Response{Status};
@@ -1755,12 +1773,6 @@ sub PackageBuild {
                 $XML .= $Self->_Encode( $OldParam{Content} ) . "</$TagSub>\n";
             }
         }
-        else {
-
-#            $XML .= "  <$Tag></$Tag>\n";
-#            $Self->{LogObject}->Log(Priority => 'error', Message => "Invalid Ref data in tag $Tag!");
-#            return;
-        }
     }
 
     # don't use Build* in index mode
@@ -1855,7 +1867,7 @@ sub PackageBuild {
                         for ( sort keys %{$Tag} ) {
 
                             if (
-                                $_ ne 'Tag'
+                                $_    ne 'Tag'
                                 && $_ ne 'Content'
                                 && $_ ne 'TagType'
                                 && $_ ne 'TagLevel'
@@ -1935,7 +1947,7 @@ sub PackageParse {
 
     $Self->{EncodeObject}->EncodeOutput( \$CookedString );
 
-    # create cecksum
+    # create checksum
     my $Checksum = $Self->{MainObject}->MD5sum(
         String => \$CookedString,
     );
@@ -2218,7 +2230,7 @@ sub PackageInstallDefaultFiles {
 
         next LOCATION if !$ContentSCALARRef;
 
-        # install package (use eval to be save)
+        # install package (use eval to be safe)
         eval {
             $Self->PackageInstall( String => ${$ContentSCALARRef} );
         };
@@ -2314,7 +2326,7 @@ sub _Code {
         return;
     }
 
-    # code exec
+    # execute code
     CODE:
     for my $Code ( @{ $Param{Code} } ) {
 
@@ -2491,7 +2503,7 @@ sub _CheckVersion {
     # if it is not an external package, and the versions are different
     # we want to add a 0 at the end of the shorter version number
     # (1.2.3 will be modified to 1.2.3.0)
-    # This is important to compare with a test releaseversion number
+    # This is important to compare with a test-release version number
     if ( !$Param{ExternalPackage} && $Parts{VersionNewNum} ne $Parts{VersionInstalledNum} ) {
 
         TYPE:
@@ -2702,7 +2714,7 @@ sub _PackageFileCheck {
         return;
     }
 
-    # check if one of this files is already intalled by an other package
+    # check if one of the files is already installed by another package
     PACKAGE:
     for my $Package ( $Self->RepositoryList() ) {
 
@@ -2772,7 +2784,7 @@ sub _FileInstall {
         }
         else {
 
-            # check if we reinstall the same file, create a .save it not the same one
+            # check if we reinstall the same file, create a .save if it is not the same
             my $Save = 0;
             if ( $Param{Reinstall} && !-e "$RealFile.save" ) {
 
@@ -2783,7 +2795,7 @@ sub _FileInstall {
                 );
                 if ( $Content && ${$Content} ne $Param{File}->{Content} ) {
 
-                    # check if it's framework file, create .save file
+                    # check if it's a framework file, create .save file
                     my %File = $Self->_ReadDistArchive( Home => $Home );
                     if ( $File{ $Param{File}->{Location} } ) {
                         $Save = 1;
@@ -2890,7 +2902,7 @@ sub _FileRemove {
         }
     }
 
-    # check if it's framework file and if $RealFile.(backup|save) exists
+    # check if it's a framework file and if $RealFile.(backup|save) exists
     # then do not remove it!
     my %File = $Self->_ReadDistArchive( Home => $Home );
     if ( $File{ $Param{File}->{Location} } && ( !-e "$RealFile.backup" && !-e "$RealFile.save" ) ) {
@@ -3022,6 +3034,134 @@ sub _Encode {
     $Text =~ s/"/&quot;/g;
 
     return $Text;
+}
+
+=item _PackageUninstallMerged()
+
+ONLY CALL THIS METHOD FROM A DATABASE UPGRADING SCRIPT DURING FRAMEWORK UPDATES
+OR FROM A CODEUPGRADE SECTION IN AN SOPM FILE OF A PACKAGE THAT INCLUDES A MERGED FEATURE ADDON.
+
+Uninstall an already framework (or module) merged package.
+
+Package files that are not in the framework ARCHIVE file will be deleted, DatabaseUninstall() and
+CodeUninstall are not called.
+
+    $Success = $PackageObject->_PackageUninstallMerged(
+        Name        => 'some package name',
+        Home        => 'OTRS Home path',      # Optional
+        DeleteSaved => 1,                     # or 0, 1 Default, Optional: if set to 1 it also
+                                              # delete .save files
+    );
+
+=cut
+
+sub _PackageUninstallMerged {
+    my ( $Self, %Param ) = @_;
+
+    # check needed stuff
+    if ( !$Param{Name} ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => 'Need Name (Name of the package)!'
+        );
+        return;
+    }
+
+    my $Home = $Param{Home} || $Self->{Home};
+
+    # check Home
+    if ( !-e $Home ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "No such home directory: $Home!",
+        );
+        return;
+    }
+
+    if ( !defined $Param{DeleteSaved} ) {
+        $Param{DeleteSaved} = 1;
+    }
+
+    # check if the package is installed, otherwise return success (nothing to do)
+    my $PackageInstalled = $Self->PackageIsInstalled(
+        Name => $Param{Name},
+    );
+    return 1 if !$PackageInstalled;
+
+    # get the package details
+    my @PackageList       = $Self->RepositoryList();
+    my %PackageListLookup = map { $_->{Name}->{Content} => $_ } @PackageList;
+    my %PackageDetails    = %{ $PackageListLookup{ $Param{Name} } };
+
+    # get the list of framework files
+    my %FrameworkFiles = $Self->_ReadDistArchive( Home => $Home );
+
+    # can not continue if there are no framework files
+    return if !%FrameworkFiles;
+
+    # remove unneeded files (if exists)
+    if ( IsArrayRefWithData( $PackageDetails{Filelist} ) ) {
+
+        FILE:
+        for my $FileHash ( @{ $PackageDetails{Filelist} } ) {
+
+            my $File = $FileHash->{Location};
+
+            # get real file name in fs
+            my $RealFile = $Home . '/' . $File;
+            $RealFile =~ s/\/\//\//g;
+
+            # check if file exists
+            if ( -e $RealFile ) {
+
+                # check framework files (use $File instead of $RealFile)
+                if ( $FrameworkFiles{$File} ) {
+
+                    if ( $Param{DeleteSaved} ) {
+
+                        # check if file was overridden by the package
+                        my $SavedFile = $RealFile . '.save';
+                        if ( -e $SavedFile ) {
+
+                            # remove old file
+                            if ( !$Self->{MainObject}->FileDelete( Location => $SavedFile ) ) {
+                                $Self->{LogObject}->Log(
+                                    Priority => 'error',
+                                    Message  => "Can't remove file $SavedFile: $!!",
+                                );
+                                return;
+                            }
+                            print STDERR "Notice: Removed old backup file: $SavedFile\n";
+                        }
+                    }
+
+                    # skip framework file
+                    print STDERR "Notice: Skiped framework file: $RealFile\n";
+                    next FILE;
+                }
+
+                # remove old file
+                if ( !$Self->{MainObject}->FileDelete( Location => $RealFile ) ) {
+                    $Self->{LogObject}->Log(
+                        Priority => 'error',
+                        Message  => "Can't remove file $RealFile: $!!",
+                    );
+                    return;
+                }
+                print STDERR "Notice: Removed file: $RealFile\n";
+            }
+        }
+    }
+
+    # delete package from the database
+    my $PackageRemove = $Self->RepositoryRemove(
+        Name => $Param{Name},
+    );
+
+    $Self->{CacheObject}->CleanUp();
+    $Self->{LoaderObject}->CacheDelete();
+
+    return $PackageRemove;
 }
 
 1;

@@ -16,8 +16,6 @@ use YAML::Any qw();
 use YAML qw();
 use Encode qw();
 
-use vars qw(@ISA);
-
 =head1 NAME
 
 Kernel::System::YAML - YAML wrapper functions
@@ -158,8 +156,10 @@ sub Load {
     }
 
     # YAML does not set the UTF8 flag on strings that need it,
-    #   do that manually now.
-    _AddUTF8Flag( \$Result ) if defined $Result;
+    #   do that manually now
+    if ( defined $Result ) {
+        _AddUTF8Flag( \$Result );
+    }
 
     return $Result;
 }

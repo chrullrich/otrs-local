@@ -67,6 +67,7 @@ my $String = '<?xml version="1.0" encoding="utf-8" ?>
   <Description Lang="en">A test package (some test &lt; &gt; &amp;).</Description>
   <Description Lang="de">Ein Test Paket (some test &lt; &gt; &amp;).</Description>
   <ModuleRequired Version="1.112">Encode</ModuleRequired>
+  <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
   <Framework>3.0.x</Framework>
@@ -109,6 +110,36 @@ my $String = '<?xml version="1.0" encoding="utf-8" ?>
 </otrs_package>
 ';
 
+my $StringSecond = '<?xml version="1.0" encoding="utf-8" ?>
+<otrs_package version="1.0">
+  <Name>TestSecond</Name>
+  <Version>0.0.1</Version>
+  <Vendor>OTRS AG</Vendor>
+  <URL>http://otrs.org/</URL>
+  <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
+  <ChangeLog>2005-11-10 New package (some test &lt; &gt; &amp;).</ChangeLog>
+  <Description Lang="en">A test package (some test &lt; &gt; &amp;).</Description>
+  <Description Lang="de">Ein Test Paket (some test &lt; &gt; &amp;).</Description>
+  <ModuleRequired Version="1.112">Encode</ModuleRequired>
+  <Framework>3.3.x</Framework>
+  <Framework>3.2.x</Framework>
+  <Framework>3.1.x</Framework>
+  <Framework>3.0.x</Framework>
+  <Framework>2.5.x</Framework>
+  <Framework>2.4.x</Framework>
+  <Framework>2.3.x</Framework>
+  <Framework>2.2.x</Framework>
+  <Framework>2.1.x</Framework>
+  <Framework>2.0.x</Framework>
+  <BuildDate>2005-11-10 21:17:16</BuildDate>
+  <BuildHost>yourhost.example.com</BuildHost>
+  <Filelist>
+    <File Location="TestSecond" Permission="644" Encode="Base64">aGVsbG8K</File>
+    <File Location="var/TestSecond" Permission="644" Encode="Base64">aGVsbG8K</File>
+  </Filelist>
+</otrs_package>
+';
+
 my $Verification = $PackageObject->PackageVerify(
     Package => $String,
     Name    => 'Test',
@@ -139,6 +170,20 @@ $Self->Is(
     $Verification,
     'verified',
     "PackageVerify() - package 'Support' is verified",
+);
+
+# test again with changed line endings, see http://bugs.otrs.org/show_bug.cgi?id=9838
+$Download =~ s{\n}{\r\n}xmsg;
+
+$Verification = $PackageObject->PackageVerify(
+    Package => $Download,
+    Name    => 'Support',
+);
+
+$Self->Is(
+    $Verification,
+    'verified',
+    "PackageVerify() - package 'Support' with changed line endings is verified",
 );
 
 # check if the package is already installed - check by name
@@ -191,6 +236,23 @@ $Self->True(
     '#1 PackageInstall()',
 );
 
+$PackageInstall = $PackageObject->PackageInstall( String => $StringSecond );
+
+$Self->True(
+    $PackageInstall,
+    '#1 PackageInstall() 2',
+);
+
+my %VerifyAll = $PackageObject->PackageVerifyAll();
+
+for my $PackageName (qw( Test TestSecond )) {
+    $Self->Is(
+        $VerifyAll{$PackageName},
+        'not_verified',
+        "VerifyAll - result for $PackageName",
+    );
+}
+
 $CacheClearedCheck->();
 
 # check if the package is already installed - check by name
@@ -217,6 +279,44 @@ $Self->True(
     '#1 DeployCheck()',
 );
 
+# write to var/test
+my $Write = $Self->{MainObject}->FileWrite(
+    Location   => $Home . '/var/Test',
+    Content    => \'aaaa',
+    Mode       => 'binmode',
+    Permission => '644',
+);
+
+$Self->True(
+    $Write,
+    '#1 FileWrite()',
+);
+
+$DeployCheck = $PackageObject->DeployCheck(
+    Name    => 'Test',
+    Version => '0.0.1',
+);
+
+$Self->False(
+    $DeployCheck,
+    '#1 DeployCheck after FileWrite()',
+);
+
+$Self->True(
+    $PackageObject->PackageReinstall( String => $String ),
+    '#1 Reinstall after FileWrite',
+);
+
+$DeployCheck = $PackageObject->DeployCheck(
+    Name    => 'Test',
+    Version => '0.0.1',
+);
+
+$Self->True(
+    $DeployCheck,
+    '#1 DeployCheck after Reinstall()',
+);
+
 my %Structure = $PackageObject->PackageParse( String => $String );
 
 my $PackageBuild = $PackageObject->PackageBuild(%Structure);
@@ -231,6 +331,13 @@ my $PackageUninstall = $PackageObject->PackageUninstall( String => $String );
 $Self->True(
     $PackageUninstall,
     '#1 PackageUninstall()',
+);
+
+$PackageUninstall = $PackageObject->PackageUninstall( String => $StringSecond );
+
+$Self->True(
+    $PackageUninstall,
+    '#1 PackageUninstall() Second',
 );
 
 $CachePopulate->();
@@ -328,6 +435,7 @@ $String = '<?xml version="1.0" encoding="utf-8" ?>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
   <PackageRequired Version="0.1">SomeNotExistingModule</PackageRequired>
+  <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
   <Framework>3.0.x</Framework>
@@ -361,6 +469,7 @@ $String = '<?xml version="1.0" encoding="utf-8" ?>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
   <OS>NonExistingOS</OS>
+  <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
   <Framework>3.0.x</Framework>
@@ -397,6 +506,7 @@ $String = '<?xml version="1.0" encoding="utf-8" ?>
   <OS>linux</OS>
   <OS>freebsd</OS>
   <OS>MSWin32</OS>
+  <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
   <Framework>3.0.x</Framework>
@@ -437,6 +547,7 @@ $String = '<?xml version="1.0" encoding="utf-8" ?>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
   <ModuleRequired Version="0.1">SomeNotExistingModule</ModuleRequired>
+  <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
   <Framework>3.0.x</Framework>
@@ -469,6 +580,7 @@ $String = '<?xml version="1.0" encoding="utf-8" ?>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
   <ModuleRequired Version="12.999">Encode</ModuleRequired>
+  <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
   <Framework>3.0.x</Framework>
@@ -502,6 +614,7 @@ my $String1 = '<?xml version="1.0" encoding="utf-8" ?>
   <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
+  <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
   <Framework>3.0.x</Framework>
@@ -532,6 +645,7 @@ my $String2 = '<?xml version="1.0" encoding="utf-8" ?>
   <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
+  <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
   <Framework>3.0.x</Framework>
@@ -563,6 +677,7 @@ my $String3 = '<?xml version="1.0" encoding="utf-8" ?>
   <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
+  <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
   <Framework>3.0.x</Framework>
@@ -589,6 +704,7 @@ my $String3a = '<?xml version="1.0" encoding="utf-8" ?>
   <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
+  <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
   <Framework>3.0.x</Framework>
@@ -623,6 +739,7 @@ my $String3b = '<?xml version="1.0" encoding="utf-8" ?>
   <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
+  <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
   <Framework>3.0.x</Framework>
@@ -1062,6 +1179,7 @@ $String = '<?xml version="1.0" encoding="utf-8" ?>
   <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
+  <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
   <Framework>3.0.x</Framework>
@@ -1134,6 +1252,7 @@ $String = '<?xml version="1.0" encoding="utf-8" ?>
   <License>GNU GENERAL PUBLIC LICENSE Version 2, June 110101</License>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
+  <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
   <Framework>3.0.x</Framework>
@@ -1216,6 +1335,7 @@ my $FileNotAllowedString = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
   <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
   <Description Lang=\"en\">A test package.</Description>
   <Description Lang=\"de\">Ein Test Paket.</Description>
+  <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
   <Framework>3.0.x</Framework>
@@ -1292,6 +1412,7 @@ if ( !$DeveloperSystem ) {
       <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
       <Description Lang="en">A test package.</Description>
       <Description Lang="de">Ein Test Paket.</Description>
+      <Framework>3.3.x</Framework>
       <Framework>3.2.x</Framework>
       <Framework>3.1.x</Framework>
       <Framework>3.0.x</Framework>
@@ -1374,6 +1495,7 @@ if ( !$DeveloperSystem ) {
       <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
       <Description Lang="en">A test package.</Description>
       <Description Lang="de">Ein Test Paket.</Description>
+      <Framework>3.3.x</Framework>
       <Framework>3.2.x</Framework>
       <Framework>3.1.x</Framework>
       <Framework>3.0.x</Framework>
@@ -1472,6 +1594,150 @@ if ( !$DeveloperSystem ) {
         $SaveFileFramework . '.orig',
         $SaveFileFramework
     );
+
+    # return the correct permissions to otrs.CheckDB.pl
+    chmod 0755, $Home . '/' . 'bin/otrs.CheckDB.pl';
+
+    # tests for  PackageUnintallMerged
+    # install package normally
+    $String = '<?xml version="1.0" encoding="utf-8" ?>
+    <otrs_package version="1.0">
+      <Name>Test</Name>
+      <Version>0.0.1</Version>
+      <Vendor>OTRS AG</Vendor>
+      <URL>http://otrs.org/</URL>
+      <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
+      <ChangeLog>2005-11-10 New package (some test &lt; &gt; &amp;).</ChangeLog>
+      <Description Lang="en">A test package (some test &lt; &gt; &amp;).</Description>
+      <Description Lang="de">Ein Test Paket (some test &lt; &gt; &amp;).</Description>
+      <ModuleRequired Version="1.112">Encode</ModuleRequired>
+      <Framework>3.3.x</Framework>
+      <Framework>3.2.x</Framework>
+      <Framework>3.1.x</Framework>
+      <Framework>3.0.x</Framework>
+      <Framework>2.5.x</Framework>
+      <Framework>2.4.x</Framework>
+      <Framework>2.3.x</Framework>
+      <Framework>2.2.x</Framework>
+      <Framework>2.1.x</Framework>
+      <Framework>2.0.x</Framework>
+      <BuildDate>2005-11-10 21:17:16</BuildDate>
+      <BuildHost>yourhost.example.com</BuildHost>
+      <Filelist>
+        <File Location="Test" Permission="644" Encode="Base64">aGVsbG8K</File>
+        <File Location="var/Test" Permission="644" Encode="Base64">aGVsbG8K</File>
+      </Filelist>
+    </otrs_package>
+    ';
+    $PackageInstall = $PackageObject->PackageInstall( String => $String );
+
+    # check that the package is installed and files exists
+    $Self->True(
+        $PackageInstall,
+        '#14 TestPackageUninstallMerged PackageInstall() - package installed with true',
+    );
+    for my $File (qw( Test var/Test )) {
+        my $RealFile = $Home . '/' . $File;
+        $RealFile =~ s/\/\//\//g;
+        $Self->True(
+            -e $RealFile,
+            "#14 TestPackageUninstallMerged FileExists - $RealFile with true",
+        );
+    }
+
+    # modify the installed package including one framework file, this will simulate that the
+    # package was installed before feature merge into the framework, the idea is that the package
+    # will be uninstalled, the not framewrok files will be removed and the framework files will
+    # remain
+    $String = '<?xml version="1.0" encoding="utf-8" ?>
+    <otrs_package version="1.0">
+      <Name>Test</Name>
+      <Version>0.0.1</Version>
+      <Vendor>OTRS AG</Vendor>
+      <URL>http://otrs.org/</URL>
+      <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
+      <ChangeLog>2005-11-10 New package (some test &lt; &gt; &amp;).</ChangeLog>
+      <Description Lang="en">A test package (some test &lt; &gt; &amp;).</Description>
+      <Description Lang="de">Ein Test Paket (some test &lt; &gt; &amp;).</Description>
+      <ModuleRequired Version="1.112">Encode</ModuleRequired>
+      <Framework>3.3.x</Framework>
+      <Framework>3.2.x</Framework>
+      <Framework>3.1.x</Framework>
+      <Framework>3.0.x</Framework>
+      <Framework>2.5.x</Framework>
+      <Framework>2.4.x</Framework>
+      <Framework>2.3.x</Framework>
+      <Framework>2.2.x</Framework>
+      <Framework>2.1.x</Framework>
+      <Framework>2.0.x</Framework>
+      <BuildDate>2005-11-10 21:17:16</BuildDate>
+      <BuildHost>yourhost.example.com</BuildHost>
+      <Filelist>
+        <File Location="Test" Permission="644" Encode="Base64">aGVsbG8K</File>
+        <File Location="var/Test" Permission="644" Encode="Base64">aGVsbG8K</File>
+        <File Location="bin/otrs.CheckDB.pl" Permission="755" Encode="Base64">aGVsbG8K</File>
+      </Filelist>
+    </otrs_package>
+    ';
+    my $PackageName = 'Test';
+
+    # the modifications has to be at DB level, otherwise a .save file will be generated for the
+    # framework file, and we are trying to prvent it
+    $Self->{DBObject}->Do(
+        SQL => '
+            UPDATE package_repository
+            SET content = ?
+            WHERE name = ?',
+        Bind => [ \$String, \$PackageName ],
+    );
+
+    # now create an .save file for the framework file, content doesn't matter as it will be deleted
+    $Write = $Self->{MainObject}->FileWrite(
+        Location   => $Home . '/bin/otrs.CheckDB.pl.save',
+        Content    => \$Content,
+        Mode       => 'binmode',
+        Permission => '644',
+    );
+    $Self->True(
+        $Write,
+        '#14 TestPackageUninstallMerged FileWrite() - bin/otrs.CheckDB.pl.save',
+    );
+
+    # create PackageObject again to make sure cache is cleared
+    my $PackageObject = Kernel::System::Package->new( %{$Self} );
+
+    # run PackageUninstallMerged()
+    my $PackageUninstallMerged = $PackageObject->_PackageUninstallMerged( Name => $PackageName );
+
+    # check that the original files from the package does not exists anymore
+    # this files are supose to be old files that are not required any more by the merged package
+    for my $File (qw( Test var/Test bin/otrs.CheckDB.pl.save )) {
+        my $RealFile = $Home . '/' . $File;
+        $RealFile =~ s/\/\//\//g;
+        $Self->False(
+            -e $RealFile,
+            "#14 TestPackageUninstallMerged FileExists - $RealFile with false",
+        );
+    }
+
+    # check that the framework file still exists
+    for my $File (qw( bin/otrs.CheckDB.pl )) {
+        my $RealFile = $Home . '/' . $File;
+        $RealFile =~ s/\/\//\//g;
+        $Self->True(
+            -e $RealFile,
+            "#14 TestPackageUninstallMerged FileExists - $RealFile with true",
+        );
+    }
+
+    # check that the package is uninstalled
+    my $PackageInstalled = $PackageObject->PackageIsInstalled(
+        Name => $PackageName,
+    );
+    $Self->False(
+        $PackageInstalled,
+        '#14 TestPackageUninstallMerged PackageIsInstalled() - with false',
+    );
 }
 
 # PackageParse method basic test
@@ -1525,6 +1791,7 @@ my $StringNormal = '<?xml version="1.0" encoding="utf-8" ?>
       <Description Lang="en">A test package (some test &lt; &gt; &amp;).</Description>
       <Description Lang="de">Ein Test Paket (some test &lt; &gt; &amp;).</Description>
       <ModuleRequired Version="1.112">Encode</ModuleRequired>
+      <Framework>3.3.x</Framework>
       <Framework>3.2.x</Framework>
       <Framework>3.1.x</Framework>
       <Framework>3.0.x</Framework>

@@ -17,8 +17,6 @@ use Kernel::System::Valid;
 use Kernel::System::CacheInternal;
 use Kernel::System::VariableCheck qw(:all);
 
-use vars qw(@ISA);
-
 =head1 NAME
 
 Kernel::System::Service - service lib
@@ -97,7 +95,7 @@ sub new {
     my $GeneratorModule = $Self->{ConfigObject}->Get('Service::PreferencesModule')
         || 'Kernel::System::Service::PreferencesDB';
     if ( $Self->{MainObject}->Require($GeneratorModule) ) {
-        $Self->{PreferencesObject} = $GeneratorModule->new(%Param);
+        $Self->{PreferencesObject} = $GeneratorModule->new( %{$Self} );
     }
 
     return $Self;
@@ -652,9 +650,7 @@ sub ServiceAdd {
     }
 
     # reset cache
-    $Self->{CacheInternalObject}->CleanUp(
-        Type => 'Service',
-    );
+    $Self->{CacheInternalObject}->CleanUp();
 
     return $ServiceID;
 }
@@ -802,9 +798,7 @@ sub ServiceUpdate {
     }
 
     # reset cache
-    $Self->{CacheInternalObject}->CleanUp(
-        Type => 'Service',
-    );
+    $Self->{CacheInternalObject}->CleanUp();
 
     return 1;
 }
@@ -906,9 +900,12 @@ sub CustomerUserServiceMemberList {
         return;
     }
 
-    # set default
-    if ( !defined $Param{DefaultServices} ) {
+    # set default (only 1 or 0 is allowed to correctly set the cache key)
+    if ( !defined $Param{DefaultServices} || $Param{DefaultServices} ) {
         $Param{DefaultServices} = 1;
+    }
+    else {
+        $Param{DefaultServices} = 0;
     }
 
     # get options for default services for unknown customers
@@ -935,7 +932,7 @@ sub CustomerUserServiceMemberList {
 
     # create cache key
     my $CacheKey = 'CustomerUserServiceMemberList::' . $Param{Result} . '::'
-        . 'DefaultServices::' . $Param{DefaultServices} . '..';
+        . 'DefaultServices::' . $Param{DefaultServices} . '::';
     if ( $Param{ServiceID} ) {
         $CacheKey .= 'ServiceID::' . $Param{ServiceID};
     }
@@ -981,7 +978,6 @@ sub CustomerUserServiceMemberList {
 
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
 
-        my $Key   = '';
         my $Value = '';
         if ( $Param{ServiceID} ) {
             $Data{ $Row[1] } = $Row[0];
@@ -1024,6 +1020,8 @@ sub CustomerUserServiceMemberList {
 
 to add a member to a service
 
+if 'Active' is 0, the customer is removed from the service
+
     $ServiceObject->CustomerUserServiceMemberAdd(
         CustomerUserLogin => 'Test1',
         ServiceID         => 6,
@@ -1055,7 +1053,7 @@ sub CustomerUserServiceMemberAdd {
 
     # return if relation is not active
     if ( !$Param{Active} ) {
-        $Self->{CacheInternalObject}->CleanUp( Type => 'Service' );
+        $Self->{CacheInternalObject}->CleanUp();
         return;
     }
 
@@ -1066,7 +1064,8 @@ sub CustomerUserServiceMemberAdd {
             . 'VALUES (?, ?, current_timestamp, ?)',
         Bind => [ \$Param{CustomerUserLogin}, \$Param{ServiceID}, \$Param{UserID} ]
     );
-    $Self->{CacheInternalObject}->CleanUp( Type => 'Service' );
+
+    $Self->{CacheInternalObject}->CleanUp();
     return $Success;
 }
 
@@ -1088,9 +1087,7 @@ sub ServicePreferencesSet {
 
     $Self->{PreferencesObject}->ServicePreferencesSet(@_);
 
-    $Self->{CacheInternalObject}->CleanUp(
-        Type => 'Service',
-    );
+    $Self->{CacheInternalObject}->CleanUp();
     return 1;
 }
 

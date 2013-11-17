@@ -86,21 +86,21 @@ sub FormIDAddFile {
         Filename   => "$Param{FormID}.$Param{Filename}",
         Content    => \$Param{Content},
         Mode       => 'binmode',
-        Permission => '644',
+        Permission => '640',
     );
     return if !$Self->{MainObject}->FileWrite(
         Directory  => $Self->{TempDir},
         Filename   => "$Param{FormID}.$Param{Filename}.ContentType",
         Content    => \$Param{ContentType},
         Mode       => 'binmode',
-        Permission => '644',
+        Permission => '640',
     );
     return if !$Self->{MainObject}->FileWrite(
         Directory  => $Self->{TempDir},
         Filename   => "$Param{FormID}.$Param{Filename}.ContentID",
         Content    => \$ContentID,
         Mode       => 'binmode',
-        Permission => '644',
+        Permission => '640',
     );
     return 1;
 }
@@ -160,7 +160,9 @@ sub FormIDGetAllFilesData {
         if ($FileSize) {
 
             # remove meta data in files
-            $FileSize = $FileSize - 30 if ( $FileSize > 30 );
+            if ( $FileSize > 30 ) {
+                $FileSize = $FileSize - 30
+            }
             if ( $FileSize > 1048576 ) {    # 1024 * 1024
                 $FileSize = sprintf "%.1f MBytes", ( $FileSize / 1048576 );    # 1024 * 1024
             }
@@ -240,7 +242,9 @@ sub FormIDGetAllFilesMeta {
         if ($FileSize) {
 
             # remove meta data in files
-            $FileSize = $FileSize - 30 if ( $FileSize > 30 );
+            if ( $FileSize > 30 ) {
+                $FileSize = $FileSize - 30
+            }
             if ( $FileSize > 1048576 ) {    # 1024 * 1024
                 $FileSize = sprintf "%.1f MBytes", ( $FileSize / 1048576 );    # 1024 * 1024
             }

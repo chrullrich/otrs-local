@@ -39,8 +39,15 @@ sub LoadPreferences {
     #$Self->{'DB::QuoteUnderscoreStart'} = '\\\\';
     $Self->{'DB::QuoteUnderscoreStart'} = '\\';
     $Self->{'DB::QuoteUnderscoreEnd'}   = '';
-    $Self->{'DB::CaseInsensitive'}      = 0;
+    $Self->{'DB::CaseSensitive'}        = 1;
     $Self->{'DB::LikeEscapeString'}     = '';
+
+    # how to determine server version
+    # version string can contain a suffix, we only need what's on the left of it
+    # example of full string: "PostgreSQL 9.2.4, compiled by Visual C++ build 1600, 64-bit"
+    # another example: "PostgreSQL 9.1.9 on i686-pc-linux-gnu"
+    # our results: "PostgreSQL 9.2.4", "PostgreSQL 9.1.9".
+    $Self->{'DB::Version'} = "SELECT SUBSTRING(VERSION(), 'PostgreSQL [0-9\.]*')";
 
     # dbi attributes
     $Self->{'DB::Attribute'} = {};
@@ -674,9 +681,6 @@ sub Insert {
             }
         }
         else {
-            if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
-                $Tmp =~ s/\n/\r/g;
-            }
             $Value .= $Tmp;
         }
     }

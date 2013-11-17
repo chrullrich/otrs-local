@@ -318,8 +318,6 @@ ul#ProcessElements li.AccordionElement div.Content .ProcessElementButton {
     width: 30px;
     height: 30px;
     border: 2px solid #000;
-    -moz-border-radius: 16px;
-    -webkit-border-radius: 16px;
     border-radius: 16px;
     background-color: #72C177;
     position: absolute;
@@ -331,8 +329,6 @@ ul#ProcessElements li.AccordionElement div.Content .ProcessElementButton {
     height: 80px;
     background-color: #e5e5e5;
     border: 1px solid #949494;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
     border-radius: 10px;
     position: absolute;
     z-index: 100;
@@ -408,8 +404,6 @@ em.EntityID {
     top: 0px;
     margin-top: 0px;
     margin-left: 0px;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
     border-radius: 3px;
 }
 
@@ -449,11 +443,10 @@ em.EntityID {
     position: relative;
     z-index: 103;
     cursor: default;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
     border-radius: 3px;
     -moz-user-select: none;
-    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
     user-select: none;
     max-width: 150px;
     text-align: center;
@@ -547,8 +540,6 @@ ul.Path li.Transition {
 ul.Path li.StartActivity, ul.Path li.EndActivity {
     background-color: #e5e5e5;
     border: 1px solid #444;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
     border-radius: 5px;
     margin: 0px 20px;
     position: relative;

@@ -144,12 +144,12 @@ else {
 
     # Also change the toplevel directory/symlink itself.
     # This must be readonly, otherwise procmail will refuse to read .procmailrc.
-    # See bug#9391
+    # See bug#9391.
     MakeReadOnly($DestDir);
 
     # set the $HOME to the OTRS user
     if ( !$NotRoot ) {
-        SafeChown( $OtrsUserID, $OtrsGroupID, $DestDir );
+        SafeChown( $OtrsUserID, $WebGroupID, $DestDir );
     }
 }
 
@@ -243,10 +243,10 @@ sub MakeReadOnly {
     }
     my $Mode;
     if ( -d $File ) {
-        $Mode = 0755;
+        $Mode = 0750;
     }
     else {
-        $Mode = 0644;
+        $Mode = 0640;
     }
     SafeChmod( $Mode, $File );
 }
@@ -257,10 +257,10 @@ sub MakeWritable {
     my $Mode;
 
     if ( -d $File ) {
-        $Mode = 0775;
+        $Mode = 0770;
     }
     else {
-        $Mode = 0664;
+        $Mode = 0660;
     }
     if ($NotRoot) {
         $Mode |= 2;
@@ -278,10 +278,10 @@ sub MakeWritableSetGid {
     my $Mode;
 
     if ( -d $File ) {
-        $Mode = 02775;
+        $Mode = 02770;
     }
     else {
-        $Mode = 0664;
+        $Mode = 0660;
     }
     if ($NotRoot) {
         $Mode |= 2;
@@ -298,7 +298,7 @@ sub MakeExecutable {
     $File = $_[0] if !defined $File;
     my $Mode = ( lstat($File) )[2];
     if ( defined $Mode ) {
-        $Mode |= 0111;
+        $Mode |= 0110;
         SafeChmod( $Mode, $File );
     }
 }

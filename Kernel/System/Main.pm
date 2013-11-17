@@ -17,6 +17,7 @@ use Digest::MD5 qw(md5_hex);
 use Data::Dumper;
 use File::stat;
 use Unicode::Normalize;
+use List::Util qw();
 
 use Kernel::System::Encode;
 
@@ -73,7 +74,7 @@ sub new {
 
     # get or create encode object
     $Self->{EncodeObject} = $Param{EncodeObject};
-    $Self->{EncodeObject} ||= Kernel::System::Encode->new(%Param);
+    $Self->{EncodeObject} ||= Kernel::System::Encode->new( %{$Self} );
 
     # set debug mode
     $Self->{Debug} = $Param{Debug} || 0;
@@ -85,12 +86,15 @@ sub new {
 
 require/load a module
 
-    my $Loaded = $MainObject->Require('Kernel::System::Example');
+    my $Loaded = $MainObject->Require(
+        'Kernel::System::Example',
+        Silent => 1,                # optional, no log entry if module was not found
+    );
 
 =cut
 
 sub Require {
-    my ( $Self, $Module ) = @_;
+    my ( $Self, $Module, %Param ) = @_;
 
     if ( !$Module ) {
         $Self->{LogObject}->Log(
@@ -125,25 +129,27 @@ sub Require {
     # if there was an error
     if ($@) {
 
-        # log error
-        $Self->{LogObject}->Log(
-            Caller   => 1,
-            Priority => 'error',
-            Message  => "$@",
-        );
+        if ( !$Param{Silent} ) {
+            $Self->{LogObject}->Log(
+                Caller   => 1,
+                Priority => 'error',
+                Message  => "$@",
+            );
+        }
 
         return;
     }
 
-    # return true if module is loaded
+    # check result value, should be true
     if ( !$Result ) {
 
-        # if there is no file, show not found error
-        $Self->{LogObject}->Log(
-            Caller   => 1,
-            Priority => 'error',
-            Message  => "Module $Module not found!",
-        );
+        if ( !$Param{Silent} ) {
+            $Self->{LogObject}->Log(
+                Caller   => 1,
+                Priority => 'error',
+                Message  => "Module $Module not found/could not be loaded!",
+            );
+        }
 
         return;
     }
@@ -158,6 +164,38 @@ sub Require {
             Message  => "Module: $Module loaded!",
         );
     }
+
+    return 1;
+}
+
+=item RequireBaseClass()
+
+require/load a module and add it as a base class to the
+calling package, if not already present (this check is needed
+for persistent environments).
+
+    my $Loaded = $MainObject->RequireBaseClass(
+        'Kernel::System::Example',
+    );
+
+=cut
+
+sub RequireBaseClass {
+    my ( $Self, $Module ) = @_;
+
+    # Load the module, if not already loaded.
+    return if !$Self->Require($Module);
+
+    no strict 'refs';    ## no critic
+    my $CallingClass = caller(0);
+
+    # Check if the base class was already loaded.
+    # This can happen in persistent environments as mod_perl (see bug#9686).
+    if ( List::Util::first { $_ eq $Module } @{"${CallingClass}::ISA"} ) {
+        return 1;    # nothing to do now
+    }
+
+    push @{"${CallingClass}::ISA"}, $Module;
 
     return 1;
 }
@@ -752,7 +790,7 @@ sub Dump {
     # sort hash keys
     $Data::Dumper::Sortkeys = 1;
 
-    # This Dump() is using Data::Dumer with a utf8 workarounds to handle
+    # This Dump() is using Data::Dumper with a utf8 workarounds to handle
     # the bug [rt.cpan.org #28607] Data::Dumper::Dumper is dumping utf8
     # strings as latin1/8bit instead of utf8. Use Storable module used for
     # workaround.
@@ -760,8 +798,8 @@ sub Dump {
     if ( $Self->Require('Storable') && $Type eq 'binary' ) {
 
         # Clone the data because we need to disable the utf8 flag in all
-        # reference variables and we want not to do this in the orig.
-        # variables because this will still used in the system.
+        # reference variables and do not to want to do this in the orig.
+        # variables because they will still used in the system.
         my $DataNew = Storable::dclone( \$Data );
 
         # Disable utf8 flag.
@@ -795,6 +833,14 @@ reads a directory and returns an array with results.
         Filter    => '*',
     );
 
+read all files in subdirectories as well (recursive):
+
+    my @FilesInDirectory = $MainObject->DirectoryRead(
+        Directory => $Path,
+        Filter    => '*',
+        Recursive => 1,
+    );
+
 You can pass several additional filters at once:
 
     my @FilesInDirectory = $MainObject->DirectoryRead(
@@ -802,8 +848,7 @@ You can pass several additional filters at once:
         Filter    => \@MyFilters,
     );
 
-The result strings are absolute paths, and they are converted to the
-internally used charset utf-8, if it is configured.
+The result strings are absolute paths, and they are converted to utf8.
 
 Use the 'Silent' parameter to suppress log messages when a directory
 does not have to exist:
@@ -865,6 +910,7 @@ sub DirectoryRead {
 
         # look for repeated values
         for my $GlobName (@Glob) {
+
             next if !-e $GlobName;
             if ( !$Seen{$GlobName} ) {
                 push @GlobResults, $GlobName;
@@ -873,7 +919,36 @@ sub DirectoryRead {
         }
     }
 
-    # if clean results
+    if ( $Param{Recursive} ) {
+
+        # loop protection to prevent symlinks causing lockups
+        $Param{LoopProtection}++;
+        last if $Param{LoopProtection} > 100;
+
+        # check all files in current directory
+        my @Directories = glob "$Param{Directory}/*";
+        for my $Directory (@Directories) {
+
+            # return if file is not a directory
+            next if !-d $Directory;
+
+            # repeat same glob for directory
+            my @SubResult = $Self->DirectoryRead(
+                %Param,
+                Directory => $Directory,
+            );
+
+            # add result to hash
+            for my $Result (@SubResult) {
+                if ( !$Seen{$Result} ) {
+                    push @GlobResults, $Result;
+                    $Seen{$Result} = 1;
+                }
+            }
+        }
+    }
+
+    # if no results
     return if !@GlobResults;
 
     # compose normalize every name in the file list
@@ -893,6 +968,69 @@ sub DirectoryRead {
     @Results = sort @Results;
     return @Results;
 
+}
+
+=item GenerateRandomString()
+
+generate a random string of defined lenght, and of a defined alphabet.
+defaults to a length of 16 and alphanumerics ( 0..9, A-Z and a-z).
+
+    my $String = $MainObject->GenerateRandomString();
+
+    returns
+
+    $String = 'mHLOx7psWjMe5Pj7';
+
+    with specific length:
+
+    my $String = $MainObject->GenerateRandomString(
+        Length => 32,
+    );
+
+    returns
+
+    $String = 'azzHab72wIlAXDrxHexsI5aENsESxAO7';
+
+    with specific length and alphabet:
+
+    my $String = $MainObject->GenerateRandomString(
+        Length     => 32,
+        Dictionary => [ 0..9, 'a'..'f' ], # hexadecimal
+        );
+
+    returns
+
+    $String = '9fec63d37078fe72f5798d2084fea8ad';
+
+
+=cut
+
+sub GenerateRandomString {
+    my ( $Self, %Param ) = @_;
+
+    my $Length = $Param{Length} || 16;
+
+    # The standard list of characters in the dictionary. Don't use special chars here.
+    my @DictionaryChars = ( 0 .. 9, 'A' .. 'Z', 'a' .. 'z' );
+
+    # override dictionary with custom list if given
+    if ( $Param{Dictionary} && ref $Param{Dictionary} eq 'ARRAY' ) {
+        @DictionaryChars = @{ $Param{Dictionary} };
+    }
+
+    my $DictionaryLength = scalar @DictionaryChars;
+
+    # generate the string
+    my $String;
+
+    for ( 1 .. $Length ) {
+
+        my $Key = int rand $DictionaryLength;
+
+        $String .= $DictionaryChars[$Key];
+    }
+
+    return $String;
 }
 
 =begin Internal:

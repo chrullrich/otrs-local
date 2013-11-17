@@ -26,16 +26,18 @@ table.Overview {
 }
 
 .Overview thead {
-    background: #A7AAAA url("../img/GradientSmall.png") repeat-x 0 -31px;
+    background: #DCDDDD;
+    background: -moz-linear-gradient(top,  #E8E9E9 0%, #b6b6b6 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#E8E9E9), color-stop(100%,#b6b6b6));
+    background: -webkit-linear-gradient(top,  #E8E9E9 0%,#b6b6b6 100%);
+    background: -o-linear-gradient(top,  #E8E9E9 0%,#b6b6b6 100%);
+    background: -ms-linear-gradient(top,  #E8E9E9 0%,#b6b6b6 100%);
+    background: linear-gradient(to bottom,  #E8E9E9 0%,#b6b6b6 100%);
     display: none;
 }
 
 .Sortable thead {
     display: table-header-group;
-}
-
-.SearchResults thead {
-    background-position: 0 -54px;
 }
 
 .Overview thead th {
@@ -62,6 +64,8 @@ table.Overview {
     text-transform: uppercase;
     display: block;
     text-shadow: 0 1px 0 #EEE;
+    position: relative;
+    white-space: nowrap;
 }
 
 .Overview thead span {
@@ -79,12 +83,43 @@ table.Overview {
     color: #222;
     font-weight: 600;
     text-align: left;
-    background: url(../img/sortable_bg.png) no-repeat top right;
+    background: #c4c4c4;
+    background: -moz-linear-gradient(top,  #c4c4c4 0%, #bababa 50%, #aaaaaa 50%, #a9a9a9 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#c4c4c4), color-stop(50%,#bababa), color-stop(50%,#aaaaaa), color-stop(100%,#a9a9a9));
+    background: -webkit-linear-gradient(top,  #c4c4c4 0%,#bababa 50%,#aaaaaa 50%,#a9a9a9 100%);
+    background: -o-linear-gradient(top,  #c4c4c4 0%,#bababa 50%,#aaaaaa 50%,#a9a9a9 100%);
+    background: -ms-linear-gradient(top,  #c4c4c4 0%,#bababa 50%,#aaaaaa 50%,#a9a9a9 100%);
+    background: linear-gradient(to bottom,  #c4c4c4 0%,#bababa 50%,#aaaaaa 50%,#a9a9a9 100%);
     text-shadow: 0 1px 0 #BBB;
+    padding-right: 20px;
 }
 
 .Overview thead .SortDescending a {
-    background-position: bottom right;
+    background: #c4c4c4;
+    background: -moz-linear-gradient(top,  #c4c4c4 0%, #bababa 50%, #aaaaaa 50%, #a9a9a9 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#c4c4c4), color-stop(50%,#bababa), color-stop(50%,#aaaaaa), color-stop(100%,#a9a9a9));
+    background: -webkit-linear-gradient(top,  #c4c4c4 0%,#bababa 50%,#aaaaaa 50%,#a9a9a9 100%);
+    background: -o-linear-gradient(top,  #c4c4c4 0%,#bababa 50%,#aaaaaa 50%,#a9a9a9 100%);
+    background: -ms-linear-gradient(top,  #c4c4c4 0%,#bababa 50%,#aaaaaa 50%,#a9a9a9 100%);
+    background: linear-gradient(to bottom,  #c4c4c4 0%,#bababa 50%,#aaaaaa 50%,#a9a9a9 100%);
+}
+
+.Overview thead .SortDescending a:after {
+    content: "\25BC";
+    display: block;
+    position: absolute;
+    right: 2px;
+    top: 0px;
+    text-shadow: 1px 1px 0px #fff;
+}
+
+.Overview thead .SortAscending a:after {
+    content: "\25B2";
+    display: block;
+    position: absolute;
+    right: 2px;
+    top: 0px;
+    text-shadow: 1px 1px 0px #fff;
 }
 
 .Overview tbody {

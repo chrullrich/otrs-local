@@ -12,8 +12,6 @@ package Kernel::System::TicketSearch;
 use strict;
 use warnings;
 
-use vars qw(@ISA);
-
 use Kernel::System::DynamicField;
 use Kernel::System::DynamicField::Backend;
 
@@ -39,6 +37,9 @@ To find tickets in your system.
 
         # result limit
         Limit => 100,
+
+        # Use TicketSearch as a ticket filter on a single ticket
+        TicketID     => 1234,
 
         # ticket number (optional) as STRING or as ARRAYREF
         TicketNumber => '%123546%',
@@ -460,6 +461,12 @@ sub TicketSearch {
 
     my $SQLExt = ' WHERE 1=1';
 
+    # Limit the search to just one TicketID (used by the GenericAgent
+    #   to filter for events on single tickets with the job's ticket filter).
+    if ( $Param{TicketID} ) {
+        $SQLExt .= ' AND st.id = ' . $Self->{DBObject}->Quote( $Param{TicketID}, 'Integer' );
+    }
+
     # add ticket flag table
     if ( $Param{TicketFlag} ) {
         my $Index = 1;
@@ -777,7 +784,7 @@ sub TicketSearch {
         if (@CustomerIDs) {
 
             my $Lower = '';
-            if ( !$Self->{DBObject}->GetDatabaseFunction('CaseInsensitive') ) {
+            if ( $Self->{DBObject}->GetDatabaseFunction('CaseSensitive') ) {
                 $Lower = 'LOWER';
             }
 
@@ -1046,7 +1053,9 @@ sub TicketSearch {
                     return;
                 }
 
-                $SQLExtSub .= ' OR ' if ($Counter);
+                if ($Counter) {
+                    $SQLExtSub .= ' OR ';
+                }
                 $SQLExtSub .= $Self->{DynamicFieldBackendObject}->SearchSQLGet(
                     DynamicFieldConfig => $DynamicField,
                     TableAlias         => "dfv$DynamicFieldJoinCounter",

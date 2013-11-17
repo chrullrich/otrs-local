@@ -13,8 +13,6 @@ use warnings;
 use utf8;
 use vars (qw($Self));
 
-use Time::HiRes qw( usleep );
-
 use Kernel::Config;
 use Kernel::System::Ticket;
 use Kernel::System::State;
@@ -109,7 +107,7 @@ my @Tests = (
                         PriorityID  => 3,
                         State       => 'new',
                         HistoryType => 'NewTicket',
-                        Type        => 'default',
+                        Type        => 'Unclassified',
                     },
                     {
                         CreateBy    => 1,
@@ -119,7 +117,7 @@ my @Tests = (
                         PriorityID  => 3,
                         State       => 'new',
                         HistoryType => 'CustomerUpdate',
-                        Type        => 'default',
+                        Type        => 'Unclassified',
                     },
                     {
                         CreateBy    => 1,
@@ -129,7 +127,7 @@ my @Tests = (
                         PriorityID  => 3,
                         State       => 'new',
                         HistoryType => 'OwnerUpdate',
-                        Type        => 'default',
+                        Type        => 'Unclassified',
                     },
                     {
                         CreateBy    => 1,
@@ -139,7 +137,7 @@ my @Tests = (
                         PriorityID  => 3,
                         State       => 'new',
                         HistoryType => 'OwnerUpdate',
-                        Type        => 'default',
+                        Type        => 'Unclassified',
                     },
                 ],
             },

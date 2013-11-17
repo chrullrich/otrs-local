@@ -15,10 +15,16 @@ use strict;
 use warnings;
 
 use DBI;
-use Kernel::System::SysConfig;
+use Net::Domain qw(hostfqdn);
+
+use Kernel::System::DB;
 use Kernel::System::Email;
+use Kernel::System::JSON;
 use Kernel::System::MailAccount;
 use Kernel::System::ReferenceData;
+use Kernel::System::SysConfig;
+use Kernel::System::User;
+use Kernel::System::XML;
 
 use vars qw(%INC);
 
@@ -35,6 +41,9 @@ sub new {
             $Self->{LayoutObject}->FatalError( Message => "Got no $_!" );
         }
     }
+
+    # create additional object
+    $Self->{JSONObject} = Kernel::System::JSON->new( %{$Self} );
 
     return $Self;
 }
@@ -57,7 +66,7 @@ sub Run {
         );
     }
 
-    # check/get sql source files
+    # check/get sql schema dir
     my $DirOfSQLFiles = $Self->{Path} . '/scripts/database';
     if ( !-d $DirOfSQLFiles ) {
         $Self->{LayoutObject}->FatalError(
@@ -65,68 +74,90 @@ sub Run {
             Comment => 'Contact your Admin!',
         );
     }
-    elsif ( !-f "$DirOfSQLFiles/otrs-schema.xml" ) {
-        $Self->{LayoutObject}->FatalError(
-            Message => "File '$DirOfSQLFiles/otrs-schema.xml' not found!",
-            Comment => 'Contact your Admin!',
+
+    # read installer.json if it exists
+    # it contains options set by Windows Installer
+    if ( -f "$Self->{Path}/var/tmp/installer.json" ) {
+        my $JSONString = $Self->{MainObject}->FileRead(
+            Location => "$Self->{Path}/var/tmp/installer.json",
+        );
+        $Self->{Options} = $Self->{JSONObject}->Decode(
+            Data => $$JSONString,
         );
     }
 
-    # check dist
-    my %Dist;
-    $Dist{Vendor}    = 'Unix/Linux';
-    $Dist{Webserver} = 'restart your webserver';
-    if ( -f '/etc/SuSE-release' ) {
-        $Dist{Vendor} = 'SuSE';
-        if ( exists $ENV{MOD_PERL} ) {
-            eval 'require mod_perl';    ## no critic
-            if ( defined $mod_perl::VERSION ) {    ## no critic
-                $Dist{Webserver} = 'rcapache2 restart';
+    # check if License option needs to be skipped
+    if ( $Self->{Subaction} eq 'License' && $Self->{Options}->{SkipLicense} ) {
+        $Self->{Subaction} = 'Start';
+    }
+
+    # check if Database option needs to be skipped
+    if ( $Self->{Subaction} eq 'Start' && $Self->{Options}->{DBType} ) {
+        $Self->{Subaction} = 'DBCreate';
+    }
+
+    $Self->{Subaction} = 'Intro' if !$Self->{Subaction};
+
+    # build steps
+    my @Steps = qw(License Database General Finish);
+    my $StepCounter;
+
+    # no license step needed if defined in .json file
+    shift @Steps if $Self->{Options}->{SkipLicense};
+
+    # build header - but only if we're not in AJAX mode
+    if ( $Self->{Subaction} ne 'CheckRequirements' ) {
+        $Self->{LayoutObject}->Block(
+            Name => 'Steps',
+            Data => { Steps => scalar @Steps, },
+        );
+
+        # mapping of subactions to steps
+        my %Steps = (
+            Intro         => 'Intro',
+            License       => 'License',
+            Start         => 'Database',
+            DB            => 'Database',
+            DBCreate      => 'Database',
+            ConfigureMail => 'General',
+            System        => 'General',
+            Finish        => 'Finish',
+        );
+
+        # on the intro screen no steps should be highlighted
+        my $Highlight = ( $Self->{Subaction} eq 'Intro' ) ? '' : 'Highlighted NoLink';
+
+        my $Counter;
+
+        for my $Step (@Steps) {
+            $Counter++;
+
+            # is the current step active?
+            my $Active = ( $Steps{ $Self->{Subaction} } eq $Step ) ? 'Active' : '';
+            $Self->{LayoutObject}->Block(
+                Name => 'Step' . $Step,
+                Data => {
+                    Step      => $Counter,
+                    Highlight => $Highlight,
+                    Active    => $Active,
+                },
+            );
+
+            # if this is the actual step
+            if ( $Steps{ $Self->{Subaction} } eq $Step ) {
+
+                # no more highlights from now on
+                $Highlight = '',
+
+                    # step calculation: 2/5 etc.
+                    $StepCounter = $Counter . "/" . scalar @Steps;
             }
         }
-        else {
-            $Dist{Webserver} = '';
-        }
-    }
-    elsif ( -f '/etc/redhat-release' ) {
-        $Dist{Vendor}    = 'Redhat';
-        $Dist{Webserver} = 'service httpd restart';
-    }
-    elsif ( exists $ENV{MOD_PERL} ) {
-        eval 'require mod_perl';    ## no critic
-        if ( defined $mod_perl::VERSION ) {    ## no critic
-            $Dist{Webserver} = 'Apache2 + mod_perl2';
-        }
-    }
-    elsif (
-        exists $ENV{'GATEWAY_INTERFACE'}
-        && $ENV{'GATEWAY_INTERFACE'} eq "CGI-PerlEx"
-        )
-    {
-        $Dist{Vendor}    = '';
-        $Dist{Webserver} = '';
-    }
-
-    # check if Apache::Reload is loaded
-    for my $Module ( sort keys %INC ) {
-        $Module =~ s/\//::/g;
-        $Module =~ s/\.pm$//g;
-        if ( $Module eq 'Apache2::Reload' ) {
-            $Dist{Vendor}    = '';
-            $Dist{Webserver} = '';
-        }
-    }
-
-    # if the user skipped the mail configuration dialog, we don't walk through the registration
-    # because we don't have enough data
-    if ( $Self->{Subaction} eq 'Registration' && $Self->{ParamObject}->GetParam( Param => 'Skip' ) )
-    {
-        $Self->{Subaction} = 'Finish';
     }
 
     # print intro form
     my $Title = $Self->{LayoutObject}->{LanguageObject}->Get('Install OTRS');
-    if ( !$Self->{Subaction} ) {
+    if ( $Self->{Subaction} eq 'Intro' ) {
         my $Output =
             $Self->{LayoutObject}->Header(
             Title => "$Title - "
@@ -155,7 +186,7 @@ sub Run {
             Name => 'License',
             Data => {
                 Item => 'License',
-                Step => '1/5',
+                Step => $StepCounter,
             },
         );
         $Self->{LayoutObject}->Block(
@@ -170,7 +201,7 @@ sub Run {
         return $Output;
     }
 
-    # do database settings
+    # database selection screen
     elsif ( $Self->{Subaction} eq 'Start' ) {
         if ( !-w "$Self->{Path}/Kernel/Config.pm" ) {
             my $Output =
@@ -187,23 +218,36 @@ sub Run {
             return $Output;
         }
 
+        my %Databases = (
+            mysql      => "MySQL",
+            postgresql => "PostgreSQL",
+            mssql      => "SQL Server (Microsoft)",
+            oracle     => "Oracle",
+        );
+
+        # OTRS can only run on SQL Server if OTRS is on Windows as well
+        if ( $^O ne 'MSWin32' ) {
+            delete $Databases{mssql};
+        }
+
         # build the select field for the InstallerDBStart.dtl
         $Param{SelectDBType} = $Self->{LayoutObject}->BuildSelection(
-            Data => { MySQL => 'MySQL', },
-            Name => 'DBType',
-            SelectedID => 'MySQL',
+            Data       => \%Databases,
+            Name       => 'DBType',
+            Size       => scalar keys %Databases,
+            SelectedID => 'mysql',
         );
 
         my $Output =
             $Self->{LayoutObject}->Header(
             Title => "$Title - "
-                . $Self->{LayoutObject}->{LanguageObject}->Get('Create Database')
+                . $Self->{LayoutObject}->{LanguageObject}->Get('Database Selection')
             );
         $Self->{LayoutObject}->Block(
             Name => 'DatabaseStart',
             Data => {
-                Item         => 'Create Database',
-                Step         => '2/5',
+                Item         => 'Database Selection',
+                Step         => $StepCounter,
                 SelectDBType => $Param{SelectDBType},
                 }
         );
@@ -222,7 +266,17 @@ sub Run {
 
         # check DB requirements
         if ( $CheckMode eq 'DB' ) {
-            %Result = $Self->CheckDBRequirements();
+            my %DBCredentials;
+            for my $Param (
+                qw(DBUser DBPassword DBHost DBType DBPort DBSID DBName InstallType OTRSDBUser OTRSDBPassword)
+                )
+            {
+                $DBCredentials{$Param} = $Self->{ParamObject}->GetParam( Param => $Param ) || '';
+            }
+
+            %Result = $Self->CheckDBRequirements(
+                %DBCredentials,
+            );
         }
 
         # check mail configuration
@@ -251,11 +305,203 @@ sub Run {
         );
     }
 
-    # do database settings
     elsif ( $Self->{Subaction} eq 'DB' ) {
 
+        my $DBType        = $Self->{ParamObject}->GetParam( Param => 'DBType' );
+        my $DBInstallType = $Self->{ParamObject}->GetParam( Param => 'DBInstallType' );
+
+        # use MainObject to generate a password
+        my $GeneratedPassword = $Self->{MainObject}->GenerateRandomString();
+
+        if ( $DBType eq 'mysql' ) {
+            my $PasswordExplanation
+                = $DBInstallType eq 'CreateDB'
+                ? $Self->{LayoutObject}->{LanguageObject}->Get(
+                'If you have set a root password for your database, it must be entered here. If not, leave this field empty.'
+                )
+                : $Self->{LayoutObject}->{LanguageObject}
+                ->Get('Enter the password for the database user.');
+            my $Output =
+                $Self->{LayoutObject}->Header(
+                Title => "$Title - "
+                    . $Self->{LayoutObject}->{LanguageObject}->Get('Database') . ' MySQL'
+                );
+            $Self->{LayoutObject}->Block(
+                Name => 'DatabaseMySQL',
+                Data => {
+                    Item                => 'Configure MySQL',
+                    Step                => $StepCounter,
+                    InstallType         => $DBInstallType,
+                    DefaultDBUser       => $DBInstallType eq 'CreateDB' ? 'root' : 'otrs',
+                    PasswordExplanation => $PasswordExplanation,
+                },
+            );
+            if ( $DBInstallType eq 'CreateDB' ) {
+                $Self->{LayoutObject}->Block(
+                    Name => 'DatabaseMySQLCreate',
+                    Data => {
+                        Password => $GeneratedPassword,
+                    },
+                );
+            }
+            else {
+                $Self->{LayoutObject}->Block(
+                    Name => 'DatabaseMySQLUseExisting',
+                );
+            }
+
+            $Output .= $Self->{LayoutObject}->Output(
+                TemplateFile => 'Installer',
+                Data         => {
+                    Item => 'Configure MySQL',
+                    Step => $StepCounter,
+                    }
+            );
+            $Output .= $Self->{LayoutObject}->Footer();
+            return $Output;
+        }
+        elsif ( $DBType eq 'mssql' ) {
+            my $PasswordExplanation
+                = $DBInstallType eq 'CreateDB'
+                ? $Self->{LayoutObject}->{LanguageObject}
+                ->Get('Enter the password for the administrative database user.')
+                : $Self->{LayoutObject}->{LanguageObject}
+                ->Get('Enter the password for the database user.');
+            my $Output =
+                $Self->{LayoutObject}->Header(
+                Title => "$Title - "
+                    . $Self->{LayoutObject}->{LanguageObject}->Get('Database')
+                    . ' Microsoft SQL Server'
+                );
+            $Self->{LayoutObject}->Block(
+                Name => 'DatabaseMSSQL',
+                Data => {
+                    Item          => 'Database',
+                    Step          => $StepCounter,
+                    InstallType   => $DBInstallType,
+                    DefaultDBUser => $DBInstallType eq 'CreateDB' ? 'sa' : 'otrs',
+                },
+            );
+
+            if ( $DBInstallType eq 'CreateDB' ) {
+                $Self->{LayoutObject}->Block(
+                    Name => 'DatabaseMSSQLCreate',
+                    Data => {
+                        Password => $GeneratedPassword,
+                    },
+                );
+            }
+            else {
+                $Self->{LayoutObject}->Block(
+                    Name => 'DatabaseMSSQLUseExisting',
+                );
+            }
+
+            $Output .= $Self->{LayoutObject}->Output(
+                TemplateFile => 'Installer',
+                Data         => {
+                    Item        => 'Configure Microsoft SQL Server',
+                    Step        => $StepCounter,
+                    InstallType => $DBInstallType,
+                    }
+            );
+            $Output .= $Self->{LayoutObject}->Footer();
+            return $Output;
+        }
+        elsif ( $DBType eq 'postgresql' ) {
+            my $PasswordExplanation
+                = $DBInstallType eq 'CreateDB'
+                ? $Self->{LayoutObject}->{LanguageObject}
+                ->Get('Enter the password for the administrative database user.')
+                : $Self->{LayoutObject}->{LanguageObject}
+                ->Get('Enter the password for the database user.');
+            my $Output =
+                $Self->{LayoutObject}->Header(
+                Title => "$Title - "
+                    . $Self->{LayoutObject}->{LanguageObject}->Get('Database') . ' PostgreSQL'
+                );
+            $Self->{LayoutObject}->Block(
+                Name => 'DatabasePostgreSQL',
+                Data => {
+                    Item          => 'Database',
+                    Step          => $StepCounter,
+                    InstallType   => $DBInstallType,
+                    DefaultDBUser => $DBInstallType eq 'CreateDB' ? 'postgres' : 'otrs',
+                },
+            );
+            if ( $DBInstallType eq 'CreateDB' ) {
+                $Self->{LayoutObject}->Block(
+                    Name => 'DatabasePostgreSQLCreate',
+                    Data => {
+                        Password => $GeneratedPassword,
+                    },
+                );
+            }
+            else {
+                $Self->{LayoutObject}->Block(
+                    Name => 'DatabasePostgreSQLUseExisting',
+                );
+            }
+
+            $Output .= $Self->{LayoutObject}->Output(
+                TemplateFile => 'Installer',
+                Data         => {
+                    Item => 'Configure PostgreSQL',
+                    Step => $StepCounter,
+                    }
+            );
+            $Output .= $Self->{LayoutObject}->Footer();
+            return $Output;
+        }
+
+        elsif ( $DBType eq 'oracle' ) {
+            my $Output =
+                $Self->{LayoutObject}->Header(
+                Title => "$Title - "
+                    . $Self->{LayoutObject}->{LanguageObject}->Get('Database') . ' Oracle'
+                );
+            $Self->{LayoutObject}->Block(
+                Name => 'DatabaseOracle',
+                Data => {
+                    Item => 'Database',
+                    Step => $StepCounter,
+                },
+            );
+
+            $Output .= $Self->{LayoutObject}->Output(
+                TemplateFile => 'Installer',
+                Data         => {
+                    Item => 'Configure Oracle',
+                    Step => $StepCounter,
+                    }
+            );
+            $Output .= $Self->{LayoutObject}->Footer();
+            return $Output;
+        }
+
+        else {
+            $Self->{LayoutObject}->FatalError(
+                Message => "Unknown database type '$DBType'.",
+                Comment => 'Please go back',
+            );
+        }
+    }
+
+    # do database settings
+    elsif ( $Self->{Subaction} eq 'DBCreate' ) {
+
+        my %DBCredentials;
+        for my $Param (
+            qw(DBUser DBPassword DBHost DBType DBName DBSID DBPort InstallType OTRSDBUser OTRSDBPassword)
+            )
+        {
+            $DBCredentials{$Param} = $Self->{ParamObject}->GetParam( Param => $Param ) || '';
+        }
+        %DBCredentials = %{ $Self->{Options} } if $Self->{Options}->{DBType};
+
         # get and check params and connect to DB
-        my %Result = $Self->ConnectToDB();
+        my %Result = $Self->ConnectToDB(%DBCredentials);
+
         my %DB;
         my $DBH;
         if ( ref $Result{DB} ne 'HASH' || !$Result{DBH} ) {
@@ -269,374 +515,255 @@ sub Run {
             $DBH = $Result{DBH};
         }
 
-        if ( $DB{DBAction} eq 'Create' ) {
-
-            my $Output =
-                $Self->{LayoutObject}->Header(
-                Title => $Title . '-'
-                    . $Self->{LayoutObject}->{LanguageObject}->Get(
-                    'Create Database'
-                    )
-                );
-
-            # FIXME !!! use $DB{Type}!!!
-            $Self->{LayoutObject}->Block(
-                Name => 'DatabaseResult',
-                Data => {
-                    Item => 'Create Database',
-                    Step => '2/5',
-                },
-            );
-
-            # create db
-            my $DBCreate = '';
-            $DBCreate = " CREATE DATABASE $DB{Database} charset utf8";
-
-            $Self->{LayoutObject}->Block(
-                Name => 'DatabaseResultItem',
-                Data => { Item => "Creating database '$DB{Database}'", },
-            );
-            if ( !$DBH->do($DBCreate) ) {
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultItemFalse',
-                    Data => {},
-                );
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultItemMessage',
-                    Data => { Message => $DBI::errstr, },
-                );
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultBack',
-                    Data => {},
-                );
-                $Output .= $Self->{LayoutObject}->Output(
-                    TemplateFile => 'Installer',
-                    Data         => {},
-                );
-                $Output .= $Self->{LayoutObject}->Footer();
-                return $Output;
-            }
-            else {
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultItemDone',
-                    Data => {},
-                );
-            }
-
-            # create db tables
-            # read otrs-schema.mysql.sql and process stuff
-            my @SQL =
-                $Self->ParseSQLFile("$DirOfSQLFiles/otrs-schema.mysql.sql");
-            $DBH->do("use $DB{Database}");
-            $Self->{LayoutObject}->Block(
-                Name => 'DatabaseResultItem',
-                Data => { Item => "Creating tables 'otrs-schema.mysql.sql'", },
-            );
-            for (@SQL) {
-                if ( !$DBH->do($_) ) {
-                    $Self->{LayoutObject}->Block(
-                        Name => 'DatabaseResultItemFalse',
-                        Data => {},
-                    );
-                    $Self->{LayoutObject}->Block(
-                        Name => 'DatabaseResultItemMessage',
-                        Data => { Message => $DBI::errstr, },
-                    );
-                    $Self->{LayoutObject}->Block(
-                        Name => 'DatabaseResultBack',
-                        Data => {},
-                    );
-                    print STDERR "ERR: $DBI::errstr - $_\n";    ## no critic
-                    $Output .= $Self->{LayoutObject}->Output(
-                        TemplateFile => 'Installer',
-                        Data         => {},
-                    );
-                    $Output .= $Self->{LayoutObject}->Footer();
-                    return $Output;
-                }
-            }
-            $Self->{LayoutObject}->Block(
-                Name => 'DatabaseResultItemDone',
-                Data => {},
-            );
-
-            # initial insert
-            # - read otrs-initial_insert.mysql.sql and process stuff -
-            @SQL = $Self->ParseSQLFile(
-                "$DirOfSQLFiles/otrs-initial_insert.mysql.sql"
-            );
-            $Self->{LayoutObject}->Block(
-                Name => 'DatabaseResultItem',
-                Data => {
-                    Item =>
-                        "Inserting initial inserts 'otrs-initial_insert.mysql.sql'",
-                },
-            );
-            for (@SQL) {
-                if ( !$DBH->do($_) ) {
-                    $Self->{LayoutObject}->Block(
-                        Name => 'DatabaseResultItemFalse',
-                        Data => {},
-                    );
-                    $Self->{LayoutObject}->Block(
-                        Name => 'DatabaseResultItemMessage',
-                        Data => { Message => $DBI::errstr, },
-                    );
-                    $Self->{LayoutObject}->Block(
-                        Name => 'DatabaseResultBack',
-                        Data => {},
-                    );
-                    print STDERR "ERR: $DBI::errstr - $_\n";    ## no critic
-                    $Output .= $Self->{LayoutObject}->Output(
-                        TemplateFile => 'Installer',
-                        Data         => {},
-                    );
-                    $Output .= $Self->{LayoutObject}->Footer();
-                    return $Output;
-                }
-            }
-            $Self->{LayoutObject}->Block(
-                Name => 'DatabaseResultItemDone',
-                Data => {},
-            );
-
-            # foreign key
-            # - read otrs-schema-post.mysql.sql and process stuff -
-            @SQL =
-                $Self->ParseSQLFile("$DirOfSQLFiles/otrs-schema-post.mysql.sql");
-            $Self->{LayoutObject}->Block(
-                Name => 'DatabaseResultItem',
-                Data =>
-                    { Item => "Foreign Keys 'otrs-schema-post.mysql.sql'", },
-            );
-            for (@SQL) {
-                if ( !$DBH->do($_) ) {
-                    $Self->{LayoutObject}->Block(
-                        Name => 'DatabaseResultItemFalse',
-                        Data => {},
-                    );
-                    $Self->{LayoutObject}->Block(
-                        Name => 'DatabaseResultItemMessage',
-                        Data => { Message => $DBI::errstr, },
-                    );
-                    $Self->{LayoutObject}->Block(
-                        Name => 'DatabaseResultBack',
-                        Data => {},
-                    );
-                    print STDERR "ERR: $DBI::errstr - $_\n";    ## no critic
-                    $Output .= $Self->{LayoutObject}->Output(
-                        TemplateFile => 'Installer',
-                        Data         => {},
-                    );
-                    $Output .= $Self->{LayoutObject}->Footer();
-                    return $Output;
-                }
-            }
-            $Self->{LayoutObject}->Block(
-                Name => 'DatabaseResultItemDone',
-                Data => {},
-            );
-
-            # user add
-            $Self->{LayoutObject}->Block(
-                Name => 'DatabaseResultItem',
-                Data => {
-                    Item =>
-                        "Creating database user '$DB{DatabaseUser}\@$DB{NewHost}'",
-                },
-            );
-            if (
-                !$DBH->do(
-                    "GRANT ALL PRIVILEGES ON $DB{Database}.* TO $DB{DatabaseUser}\@$DB{NewHost} IDENTIFIED BY '$DB{DatabasePw}' WITH GRANT OPTION;"
+        my $Output = $Self->{LayoutObject}->Header(
+            Title => $Title . '-'
+                . $Self->{LayoutObject}->{LanguageObject}->Get(
+                'Create Database'
                 )
-                )
-            {
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultItemFalse',
-                    Data => {},
-                );
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultItemMessage',
-                    Data => { Message => $DBI::errstr, },
-                );
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultBack',
-                    Data => {},
-                );
-                $Output .= $Self->{LayoutObject}->Output(
-                    TemplateFile => 'Installer',
-                    Data         => {},
-                );
-                $Output .= $Self->{LayoutObject}->Footer();
-                return $Output;
-            }
-            else {
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultItemDone',
-                    Data => {},
-                );
-            }
-
-            # Reload the grant tables of your mysql-daemon
-            $Self->{LayoutObject}->Block(
-                Name => 'DatabaseResultItem',
-                Data => { Item => 'Reloading grant tables', },
-            );
-            if ( !$DBH->do('FLUSH PRIVILEGES') ) {
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultItemFalse',
-                    Data => {},
-                );
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultItemMessage',
-                    Data => { Message => $DBI::errstr, },
-                );
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultBack',
-                    Data => {},
-                );
-                $Output .= $Self->{LayoutObject}->Output(
-                    TemplateFile => 'Installer',
-                    Data         => {},
-                );
-                $Output .= $Self->{LayoutObject}->Footer();
-                return $Output;
-            }
-            else {
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultItemDone',
-                    Data => {},
-                );
-            }
-
-            # ReConfigure Config.pm
-            my $ReConfigure = $Self->ReConfigure(
-                DatabaseHost => $DB{DatabaseHost},
-                Database     => $DB{Database},
-                DatabaseUser => $DB{DatabaseUser},
-                DatabasePw   => $DB{DatabasePw},
-            );
-
-            if ($ReConfigure) {
-                my $Output =
-                    $Self->{LayoutObject}->Header(
-                    Title => 'Install OTRS - Error'
-                    );
-                $Output .= $Self->{LayoutObject}->Warning(
-                    Message => "Kernel/Config.pm isn't writable!",
-                    Comment => 'If you want to use the installer, set the '
-                        . 'Kernel/Config.pm writable for the webserver user!',
-                );
-                $Output .= $Self->{LayoutObject}->Footer();
-                return $Output;
-            }
-
-            # if running under PerlEx, reload the application (and thus the configuration)
-            if (
-                exists $ENV{'GATEWAY_INTERFACE'}
-                && $ENV{'GATEWAY_INTERFACE'} eq "CGI-PerlEx"
-                )
-            {
-                PerlEx::ReloadAll();
-            }
-
-            $Self->{LayoutObject}->Block(
-                Name => 'DatabaseResultItemMessage',
-                Data => {
-                    Message => $Self->{LayoutObject}->{LanguageObject}->Get(
-                        'Database setup successful!'
-                    ),
-                },
-            );
-            $Self->{LayoutObject}->Block(
-                Name => 'DatabaseResultNext',
-                Data => {},
-            );
-            $Output .= $Self->{LayoutObject}->Output(
-                TemplateFile => 'Installer',
-                Data         => {},
-            );
-            $Output .= $Self->{LayoutObject}->Footer();
-            return $Output;
-        }
-        elsif ( $DB{DBAction} eq 'Delete' ) {
-
-            my $Output =
-                $Self->{LayoutObject}->Header(
-                Title => "$Title - "
-                    . $Self->{LayoutObject}->{LanguageObject}->Get('Database')
-                );
-
-            # drop database
-            $Self->{LayoutObject}->Block(
-                Name => 'DatabaseResult',
-                Data => {
-                    Item => 'Database',
-                    Step => '2/5',
-                },
-            );
-            $Self->{LayoutObject}->Block(
-                Name => 'DatabaseResultItem',
-                Data => { Item => "Drop database '$DB{Database}'", },
-            );
-            if ( !$DBH->do("DROP DATABASE $DB{Database}") ) {
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultItemFalse',
-                    Data => {},
-                );
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultItemMessage',
-                    Data => { Message => $DBI::errstr, },
-                );
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultBack',
-                    Data => {},
-                );
-                $Output .= $Self->{LayoutObject}->Output(
-                    TemplateFile => 'Installer',
-                    Data         => {},
-                );
-                $Output .= $Self->{LayoutObject}->Footer();
-                return $Output;
-            }
-            else {
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultItemDone',
-                    Data => {},
-                );
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultItemMessage',
-                    Data => {
-                        Message => $Self->{LayoutObject}->{LanguageObject}->Get(
-                            'Database deleted.'
-                            )
-                    },
-                );
-                $Self->{LayoutObject}->Block(
-                    Name => 'DatabaseResultBack',
-                    Data => {},
-                );
-            }
-            $Output .= $Self->{LayoutObject}->Output(
-                TemplateFile => 'Installer',
-                Data         => {
-                    Item => 'Drop Database',
-                    Step => '4/5',
-                    }
-            );
-            $Output .= $Self->{LayoutObject}->Footer();
-            return $Output;
-        }
-        $Self->{LayoutObject}->FatalError(
-            Message => "Unknown DBAction '$DB{DBAction}'!!",
-            Comment => 'Please go back',
         );
+
+        $Self->{LayoutObject}->Block(
+            Name => 'DatabaseResult',
+            Data => {
+                Item => 'Create Database',
+                Step => $StepCounter,
+            },
+        );
+
+        my @Statements;
+
+        # create database, add user
+        if ( $DB{DBType} eq 'mysql' ) {
+
+            if ( $DB{InstallType} eq 'CreateDB' ) {
+
+                # determine current host for MySQL account
+                my $ConnectionID;
+                my $StatementHandle = $DBH->prepare("select connection_id()");
+                $StatementHandle->execute();
+                while ( my @Row = $StatementHandle->fetchrow_array() ) {
+                    $ConnectionID = $Row[0];
+                }
+
+                $StatementHandle = $DBH->prepare("show processlist");
+                $StatementHandle->execute();
+                PROCESSLIST:
+                while ( my @Row = $StatementHandle->fetchrow_array() ) {
+                    if ( $Row[0] eq $ConnectionID ) {
+                        $DB{Host} = $Row[2];
+                        last PROCESSLIST;
+                    }
+                }
+
+                # strip off port, i.e. 'localhost:14962' should become 'localhost'
+                $DB{Host} =~ s{:\d*\z}{}xms;
+
+                @Statements = (
+                    "CREATE DATABASE `$DB{DBName}` charset utf8",
+                    "GRANT ALL PRIVILEGES ON `$DB{DBName}`.* TO `$DB{OTRSDBUser}`\@`$DB{Host}` IDENTIFIED BY '$DB{OTRSDBPassword}' WITH GRANT OPTION;",
+                    "FLUSH PRIVILEGES",
+                );
+            }
+
+            # set DSN for Config.pm
+            $DB{ConfigDSN} = 'DBI:mysql:database=$Self->{Database};host=$Self->{DatabaseHost}';
+            $DB{DSN}       = "DBI:mysql:database=$DB{DBName};host=$DB{DBHost}";
+        }
+        elsif ( $DB{DBType} eq 'mssql' ) {
+
+            if ( $DB{InstallType} eq 'CreateDB' ) {
+                @Statements = (
+                    "CREATE DATABASE [$DB{DBName}]",
+                    "CREATE LOGIN [$DB{OTRSDBUser}] WITH PASSWORD = '$DB{OTRSDBPassword}'",
+                    "USE [$DB{DBName}]",
+                    "CREATE USER  [$DB{OTRSDBUser}] FOR LOGIN [$DB{OTRSDBUser}]",
+                    "exec sp_addrolemember 'db_owner', '$DB{OTRSDBUser}'",
+                    "exec sp_defaultdb '$DB{OTRSDBUser}', '$DB{DBName}'",
+                );
+            }
+
+            # set DSN for Config.pm
+            $DB{ConfigDSN}
+                = 'DBI:ODBC:driver={SQL Server};Database=$Self->{Database};Server=$Self->{DatabaseHost}';
+            $DB{DSN} = "DBI:ODBC:driver={SQL Server};Database=$DB{DBName};Server=$DB{DBHost}";
+        }
+        elsif ( $DB{DBType} eq 'postgresql' ) {
+
+            if ( $DB{InstallType} eq 'CreateDB' ) {
+                @Statements = (
+                    "CREATE ROLE \"$DB{OTRSDBUser}\" WITH LOGIN PASSWORD '$DB{OTRSDBPassword}'",
+                    "CREATE DATABASE \"$DB{DBName}\" OWNER=\"$DB{OTRSDBUser}\" ENCODING 'utf-8'",
+                );
+            }
+
+            # set DSN for Config.pm
+            $DB{ConfigDSN}
+                = 'DBI:Pg:dbname=$Self->{Database};host=$Self->{DatabaseHost}';
+            $DB{DSN} = "DBI:Pg:dbname=$DB{DBName};host=$DB{DBHost}";
+        }
+        elsif ( $DB{DBType} eq 'oracle' ) {
+
+            # set DSN for Config.pm
+            $DB{ConfigDSN}
+                = 'DBI:Oracle:host=$Self->{DatabaseHost};' . "sid=$DB{DBSID};port=$DB{DBPort}";
+            $DB{DSN} = "DBI:Oracle:host=$DB{DBHost};sid=$DB{DBSID};port=$DB{DBPort}";
+            $Self->{ConfigObject}->Set(
+                Key   => 'Database::Connect',
+                Value => "ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD HH24:MI:SS'",
+            );
+        }
+
+        # execute database statements
+        for my $Statement (@Statements) {
+            my @Description = split( ' ', $Statement );
+            $Self->{LayoutObject}->Block(
+                Name => 'DatabaseResultItem',
+                Data => { Item => "$Description[0] $Description[1] $Description[2]" },
+            );
+            if ( !$DBH->do($Statement) ) {
+                $Self->{LayoutObject}->Block(
+                    Name => 'DatabaseResultItemFalse',
+                    Data => {},
+                );
+                $Self->{LayoutObject}->Block(
+                    Name => 'DatabaseResultItemMessage',
+                    Data => { Message => $DBI::errstr, },
+                );
+                $Self->{LayoutObject}->Block(
+                    Name => 'DatabaseResultBack',
+                    Data => {},
+                );
+                $Output .= $Self->{LayoutObject}->Output(
+                    TemplateFile => 'Installer',
+                    Data         => {},
+                );
+                $Output .= $Self->{LayoutObject}->Footer();
+                return $Output;
+            }
+            else {
+                $Self->{LayoutObject}->Block(
+                    Name => 'DatabaseResultItemDone',
+                    Data => {},
+                );
+            }
+        }
+
+        # ReConfigure Config.pm
+        my $ReConfigure = $Self->ReConfigure(
+            DatabaseDSN  => $DB{ConfigDSN},
+            DatabaseHost => $DB{DBHost},
+            Database     => $DB{DBName},
+            DatabaseUser => $DB{OTRSDBUser},
+            DatabasePw   => $DB{OTRSDBPassword},
+        );
+
+        if ($ReConfigure) {
+            my $Output =
+                $Self->{LayoutObject}->Header(
+                Title => 'Install OTRS - Error'
+                );
+            $Output .= $Self->{LayoutObject}->Warning(
+                Message => "Kernel/Config.pm isn't writable!",
+                Comment => 'If you want to use the installer, set the '
+                    . 'Kernel/Config.pm writable for the webserver user!',
+            );
+            $Output .= $Self->{LayoutObject}->Footer();
+            return $Output;
+        }
+
+        # we need a database object to be able to parse the XML
+        # connect to database using given credentials
+        $Self->{DBObject} = Kernel::System::DB->new(
+            %{$Self},
+            DatabaseDSN  => $DB{DSN},
+            DatabaseUser => $DB{OTRSDBUser},
+            DatabasePw   => $DB{OTRSDBPassword},
+            Type         => $DB{DBType},
+        );
+        $Self->{XMLObject} = Kernel::System::XML->new( %{$Self} );
+
+        # create database tables and insert initial values
+        my @SQLPost;
+        for my $SchemaFile (qw(otrs-schema otrs-initial_insert)) {
+            if ( !-f "$DirOfSQLFiles/$SchemaFile.xml" ) {
+                $Self->{LayoutObject}->FatalError(
+                    Message => "File '$DirOfSQLFiles/$SchemaFile.xml' not found!",
+                    Comment => 'Contact your Admin!',
+                );
+            }
+
+            $Self->{LayoutObject}->Block(
+                Name => 'DatabaseResultItem',
+                Data => { Item => "Processing $SchemaFile" },
+            );
+
+            my $XML = $Self->{MainObject}->FileRead(
+                Directory => $DirOfSQLFiles,
+                Filename  => $SchemaFile . '.xml',
+            );
+            my @XMLArray = $Self->{XMLObject}->XMLParse(
+                String => $XML,
+            );
+
+            my @SQL = $Self->{DBObject}->SQLProcessor(
+                Database => \@XMLArray,
+            );
+
+            # if we parsed the schema, catch post instructions
+            @SQLPost = $Self->{DBObject}->SQLProcessorPost() if $SchemaFile eq 'otrs-schema';
+
+            for my $SQL (@SQL) {
+                $Self->{DBObject}->Do( SQL => $SQL );
+            }
+
+            $Self->{LayoutObject}->Block(
+                Name => 'DatabaseResultItemDone',
+            );
+
+        }
+
+        # execute post SQL statements (indexes, constraints)
+
+        $Self->{LayoutObject}->Block(
+            Name => 'DatabaseResultItem',
+            Data => { Item => "Processing post statements" },
+        );
+
+        for my $SQL (@SQLPost) {
+            $Self->{DBObject}->Do( SQL => $SQL );
+        }
+
+        $Self->{LayoutObject}->Block(
+            Name => 'DatabaseResultItemDone',
+        );
+
+        # if running under PerlEx, reload the application (and thus the configuration)
+        if (
+            exists $ENV{'GATEWAY_INTERFACE'}
+            && $ENV{'GATEWAY_INTERFACE'} eq "CGI-PerlEx"
+            )
+        {
+            PerlEx::ReloadAll();
+        }
+
+        $Self->{LayoutObject}->Block(
+            Name => 'DatabaseResultSuccess',
+        );
+        $Self->{LayoutObject}->Block(
+            Name => 'DatabaseResultNext',
+        );
+        $Output .= $Self->{LayoutObject}->Output(
+            TemplateFile => 'Installer',
+        );
+        $Output .= $Self->{LayoutObject}->Footer();
+        return $Output;
     }
 
-    # do system settings
+    # show system settings page, pre-install packages
     elsif ( $Self->{Subaction} eq 'System' ) {
 
-        # save config values in DB
+        # create new DB object in order to setup sysconfig object
+
         $Self->{DBObject} = Kernel::System::DB->new( %{$Self} );
         if ( !$Self->{DBObject} ) {
             $Self->{LayoutObject}->FatalError();
@@ -658,15 +785,12 @@ sub Run {
             }
         }
 
-        my %SystemIDs;
-        for ( 1 .. 99 ) {
-            my $Tmp = sprintf( "%02d", $_ );
-            $SystemIDs{"$Tmp"} = "$Tmp";
-        }
+        my @SystemIDs = map { sprintf "%02d", $_ } ( 0 .. 99 );
+
         $Param{SystemIDString} = $Self->{LayoutObject}->BuildSelection(
-            Data       => \%SystemIDs,
+            Data       => \@SystemIDs,
             Name       => 'SystemID',
-            SelectedID => $Self->{ConfigObject}->Get('SystemID'),
+            SelectedID => $SystemIDs[ int( rand(100) ) ],    # random system ID
         );
         $Param{LanguageString} = $Self->{LayoutObject}->BuildSelection(
             Data       => $Self->{ConfigObject}->Get('DefaultUsedLanguages'),
@@ -674,17 +798,8 @@ sub Run {
             HTMLQuote  => 0,
             SelectedID => $Self->{LayoutObject}->{UserLanguage},
         );
-        $Param{LogModuleString} = $Self->{LayoutObject}->BuildSelection(
-            Data => {
-                'Kernel::System::Log::SysLog' => 'Syslog',
-                'Kernel::System::Log::File'   => 'File',
-            },
-            Name       => 'LogModule',
-            HTMLQuote  => 0,
-            SelectedID => $Self->{ConfigObject}->Get('LogModule'),
-        );
 
-        # build the select field for the InstallerDBStart.dtl
+        # build the selection field for the MX check
         $Param{SelectCheckMXRecord} = $Self->{LayoutObject}->BuildSelection(
             Data => {
                 1 => 'Yes',
@@ -694,19 +809,40 @@ sub Run {
             SelectedID => '1',
         );
 
+        # read FQDN using Net::Domain and prepopulate the field
+        $Param{FQDN} = hostfqdn();
+
         my $Output =
             $Self->{LayoutObject}->Header(
             Title => "$Title - "
                 . $Self->{LayoutObject}->{LanguageObject}->Get('System Settings')
             );
+
         $Self->{LayoutObject}->Block(
             Name => 'System',
             Data => {
                 Item => 'System Settings',
-                Step => '3/5',
+                Step => $StepCounter,
                 %Param,
             },
         );
+
+        if ( !$Self->{Options}->{SkipLog} ) {
+            $Param{LogModuleString} = $Self->{LayoutObject}->BuildSelection(
+                Data => {
+                    'Kernel::System::Log::SysLog' => 'Syslog',
+                    'Kernel::System::Log::File'   => 'File',
+                },
+                Name       => 'LogModule',
+                HTMLQuote  => 0,
+                SelectedID => $Self->{ConfigObject}->Get('LogModule'),
+            );
+            $Self->{LayoutObject}->Block(
+                Name => 'LogModule',
+                Data => \%Param,
+            );
+        }
+
         $Output .= $Self->{LayoutObject}->Output(
             TemplateFile => 'Installer',
             Data         => {},
@@ -785,7 +921,7 @@ sub Run {
             Name => 'ConfigureMail',
             Data => {
                 Item             => 'Mail Configuration',
-                Step             => '3/5',
+                Step             => $StepCounter,
                 InboundMailType  => $InboundMailTypeSelection,
                 OutboundMailType => $OutboundMailTypeSelection,
                 OutboundPorts    => $OutboundMailDefaultPorts,
@@ -799,56 +935,19 @@ sub Run {
         return $Output;
     }
 
-    # print registration from
-    elsif ( $Self->{Subaction} eq 'Registration' ) {
-        my $Output =
-            $Self->{LayoutObject}->Header(
-            Title => "$Title - "
-                . $Self->{LayoutObject}->{LanguageObject}->Get('Registration')
-            );
-
-        $Self->{LayoutObject}->Block(
-            Name => 'Registration',
-            Data => {
-                Item => 'Register your OTRS',
-                Step => '4/5',
-            },
-        );
-
-        $Self->{ReferenceDataObject} = Kernel::System::ReferenceData->new( %{$Self} );
-        my $CountryList = $Self->{ReferenceDataObject}->CountryList();
-        my $CountryStr  = $Self->{LayoutObject}->BuildSelection(
-            Data => { %$CountryList, },
-            Name => 'Country',
-            ID   => 'Country',
-            Sort => 'AlphanumericValue',
-        );
-
-        $Self->{LayoutObject}->Block(
-            Name => 'CountryStr',
-            Data => { CountryStr => $CountryStr, },
-        );
-        $Output .= $Self->{LayoutObject}->Output(
-            TemplateFile => 'Installer',
-            Data         => {},
-        );
-        $Output .= $Self->{LayoutObject}->Footer();
-        return $Output;
-    }
-
     elsif ( $Self->{Subaction} eq 'Finish' ) {
 
         $Self->{DBObject} = Kernel::System::DB->new( %{$Self} );
 
-        # create sys config object
+        # create sysconfig object
         my $SysConfigObject = Kernel::System::SysConfig->new( %{$Self} );
 
-        # take care that default config file is existing
+        # make sure the default config file exists
         if ( !$SysConfigObject->WriteDefault() ) {
             return $Self->{LayoutObject}->FatalError();
         }
 
-        # update config item via sys config object
+        # update config item via sysconfig object
         my $Result = $SysConfigObject->ConfigItemUpdate(
             Valid => 1,
             Key   => 'SecureMode',
@@ -860,6 +959,9 @@ sub Run {
             );
         }
 
+        # 'rebuild' the configuration to prevent duplicate rows in ZZZAuto.pm
+        $SysConfigObject->WriteDefault();
+
         # if running under PerlEx, reload the application (and thus the configuration)
         if (
             exists $ENV{'GATEWAY_INTERFACE'}
@@ -869,66 +971,44 @@ sub Run {
             PerlEx::ReloadAll();
         }
 
-        # check if the user wants to register
-        my $DoRegistration   = 1;
-        my $RegistrationDone = 0;
-        my %RegistrationInfo;
-        my @FieldsMandatory = qw(Lastname Firstname Organization Email);
-        for my $Key (
-            qw(Lastname Firstname Organization Position Email Country Phone Skip)
-            )
-        {
-            $RegistrationInfo{$Key} =
-                $Self->{ParamObject}->GetParam( Param => $Key );
+        # set a generated password for the 'root@localhost' account
+        $Self->{UserObject} = Kernel::System::User->new( %{$Self} );
+        my $Password = $Self->{UserObject}->GenerateRandomPassword( Size => 16 );
+        $Self->{UserObject}->SetPassword(
+            UserLogin => 'root@localhost',
+            PW        => $Password,
+        );
+
+        # remove installer file with preconfigured options
+        if ( -f "$Self->{Path}/var/tmp/installer.json" ) {
+            unlink "$Self->{Path}/var/tmp/installer.json";
         }
 
-        if ( $RegistrationInfo{Skip} ) {
+        # check web server - is a restart needed?
+        my $Webserver;
 
-            $DoRegistration = 0;
-        }
-        else {
-
-            MANDATORYFIELD:
-            for my $Field (@FieldsMandatory) {
-
-                if ( $RegistrationInfo{$Field} eq '' ) {
-                    $DoRegistration = 0;
-                    last MANDATORYFIELD;
+        # only if we have mod_perl we have to restart
+        if ( exists $ENV{MOD_PERL} ) {
+            eval 'require mod_perl';    ## no critic
+            if ( defined $mod_perl::VERSION ) {    ## no critic
+                $Webserver = 'Apache2 + mod_perl';
+                if ( -f '/etc/SuSE-release' ) {
+                    $Webserver = 'rcapache2 restart';
+                }
+                elsif ( -f '/etc/redhat-release' ) {
+                    $Webserver = 'service httpd restart';
                 }
             }
         }
 
-        if ($DoRegistration) {
+        # check if Apache::Reload is loaded
+        for my $Module ( sort keys %INC ) {
+            $Module =~ s/\//::/g;
+            $Module =~ s/\.pm$//g;
 
-            my $Mailtext = <<"MAILTEXT";
-
-A user wants to register at OTRS. He/she provided the following data:
-
-Lastname: $RegistrationInfo{Lastname}
-Firstname: $RegistrationInfo{Firstname}
-Organization: $RegistrationInfo{Organization}
-Position: $RegistrationInfo{Position}
-Email: $RegistrationInfo{Email}
-Country: $RegistrationInfo{Country}
-Phone: $RegistrationInfo{Phone}
-
-MAILTEXT
-
-            eval {
-
-                $Self->{DBObject} = Kernel::System::DB->new( %{$Self} );
-                my $SendObject = Kernel::System::Email->new( %{$Self} );
-                my $From
-                    = "$RegistrationInfo{Firstname} $RegistrationInfo{Lastname} <$RegistrationInfo{Email}>";
-                my $RegistrationDone = $SendObject->Send(
-                    From     => $From,
-                    To       => 'register@otrs.com',
-                    Subject  => 'New user registration from the OTRS installer',
-                    Charset  => 'utf-8',
-                    MimeType => 'text/plain',
-                    Body     => $Mailtext,
-                );
-            };
+            if ( $Module eq 'Apache2::Reload' ) {
+                $Webserver = '';
+            }
         }
 
         my $OTRSHandle = $ENV{SCRIPT_NAME};
@@ -942,17 +1022,19 @@ MAILTEXT
             Name => 'Finish',
             Data => {
                 Item       => 'Finished',
-                Step       => '5/5',
+                Step       => $StepCounter,
                 Host       => $ENV{HTTP_HOST} || $Self->{ConfigObject}->Get('FQDN'),
                 OTRSHandle => $OTRSHandle,
-                %Dist,
+                Webserver  => $Webserver,
+                Password   => $Password,
             },
         );
-        if ( $Dist{Webserver} ) {
+        if ($Webserver) {
             $Self->{LayoutObject}->Block(
                 Name => 'Restart',
-                Data => \%Dist,
-                ,
+                Data => {
+                    Webserver => $Webserver,
+                },
             );
         }
         $Output .= $Self->{LayoutObject}->Output(
@@ -963,7 +1045,7 @@ MAILTEXT
         return $Output;
     }
 
-    # else! error!
+    # else error!
     $Self->{LayoutObject}->FatalError(
         Message => "Unknown Subaction $Self->{Subaction}!",
         Comment => 'Please contact your administrator',
@@ -973,8 +1055,12 @@ MAILTEXT
 sub ReConfigure {
     my ( $Self, %Param ) = @_;
 
-    # perl quote
+    # perl quote and set via ConfigObject
     for my $Key ( sort keys %Param ) {
+        $Self->{ConfigObject}->Set(
+            Key   => $Key,
+            Value => $Param{$Key},
+        );
         if ( $Param{$Key} ) {
             $Param{$Key} =~ s/'/\\'/g;
         }
@@ -988,7 +1074,9 @@ sub ReConfigure {
     ## use critic
     my $Config = '';
     while (<$In>) {
-        if ( $_ =~ /^#/ ) {
+
+        # skip empty lines or comments
+        if ( !$_ || $_ =~ /^\s*#/ || $_ =~ /^\s*$/ ) {
             $Config .= $_;
         }
         else {
@@ -996,13 +1084,16 @@ sub ReConfigure {
 
             # replace config with %Param
             for my $Key ( sort keys %Param ) {
-                if ( $Param{$Key} =~ /^[0-9]+$/ && $Param{$Key} !~ /^0/ ) {
+
+             # database passwords can contain characters like '@' or '$' and should be single-quoted
+             # same goes for database hosts which can be like 'myserver\instance name' for MS SQL
+                if ( $Key eq 'DatabasePw' || $Key eq 'DatabaseHost' ) {
                     $NewConfig =~
-                        s/(\$Self->{("|'|)$Key("|'|)} =.+?);/\$Self->{'$Key'} = $Param{$Key};/g;
+                        s/(\$Self->{("|'|)$Key("|'|)} =.+?('|"));/\$Self->{'$Key'} = '$Param{$Key}';/g;
                 }
                 else {
                     $NewConfig =~
-                        s/(\$Self->{("|'|)$Key("|'|)} =.+?');/\$Self->{'$Key'} = '$Param{$Key}';/g;
+                        s/(\$Self->{("|'|)$Key("|'|)} =.+?('|"));/\$Self->{'$Key'} = "$Param{$Key}";/g;
                 }
             }
             $Config .= $NewConfig;
@@ -1021,78 +1112,82 @@ sub ReConfigure {
     return;
 }
 
-sub ParseSQLFile {
-    my ( $Self, $File ) = @_;
-
-    my @SQL;
-    if ( open( my $In, '<', $File ) ) {    ## no critic
-        my $SQLEnd       = 0;
-        my $SQLStatement = '';
-        while (<$In>) {
-            if ( $_ !~ /^(#|--)/ ) {
-                if ( $_ =~ /^(.*)(;|;\s)$/ || $_ =~ /^(\));/ ) {
-                    $SQLStatement .= $1;
-                    $SQLEnd = 1;
-                }
-                else {
-                    $SQLStatement .= $_;
-                }
-            }
-            if ($SQLEnd) {
-                push @SQL, $SQLStatement;
-                $SQLEnd       = 0;
-                $SQLStatement = '';
-            }
-        }
-        close $In;
-    }
-    else {
-        if ( !$Self->{$_} ) {
-            $Self->{LayoutObject}->FatalError(
-                Message => "Can't open $File: $!"
-            );
-        }
-    }
-    return @SQL;
-}
-
 sub ConnectToDB {
     my ( $Self, %Param ) = @_;
 
-    my %DB;
-    $DB{User} = $Self->{ParamObject}->GetParam( Param => 'DBUser' ) || '';
-    $DB{Password} = $Self->{ParamObject}->GetParam( Param => 'DBPassword' )
-        || '';
-    $DB{DatabaseHost} = $Self->{ParamObject}->GetParam( Param => 'DBHost' )
-        || '';
-    $DB{Type}     = $Self->{ParamObject}->GetParam( Param => 'DBType' )   || '';
-    $DB{Database} = $Self->{ParamObject}->GetParam( Param => 'DBName' )   || '';
-    $DB{DBAction} = $Self->{ParamObject}->GetParam( Param => 'DBAction' ) || '';
-    $DB{DatabaseUser} = $Self->{ParamObject}->GetParam( Param => 'OTRSDBUser' )
-        || '';
-    $DB{DatabasePw} =
-        $Self->{ParamObject}->GetParam( Param => 'OTRSDBPassword' ) || '';
-    $DB{NewHost} =
-        $Self->{ParamObject}->GetParam( Param => 'OTRSDBConnectHost' ) || '';
-
     # check params
-    for my $Key ( sort keys %DB ) {
-        if ( !$DB{$Key} && $Key !~ /^(Password)$/ ) {
+    my @NeededKeys = qw(DBType DBHost DBUser DBPassword);
+
+    if ( $Param{InstallType} eq 'CreateDB' ) {
+        push @NeededKeys, qw(OTRSDBUser OTRSDBPassword);
+    }
+
+    # for Oracle we require DBSID and DBPort
+    if ( $Param{DBType} eq 'oracle' ) {
+        push @NeededKeys, qw(DBSID DBPort);
+    }
+
+    # for existing databases we require the database name
+    if ( $Param{DBType} ne 'oracle' && $Param{InstallType} eq 'UseDB' ) {
+        push @NeededKeys, 'DBName';
+    }
+
+    for my $Key (@NeededKeys) {
+        if ( !$Param{$Key} && $Key !~ /^(DBPassword)$/ ) {
             return (
                 Successful => 0,
                 Message    => "You need '$Key'!!",
-                Comment    => 'Please go back',
                 DB         => undef,
                 DBH        => undef,
             );
         }
     }
 
-    # connect to database
+    # if we do not need to create a database for OTRS OTRSDBuser equals DBUser
+    if ( $Param{InstallType} ne 'CreateDB' ) {
+        $Param{OTRSDBUser}     = $Param{DBUser};
+        $Param{OTRSDBPassword} = $Param{DBPassword};
+    }
+
+    # create DSN string for backend
+    if ( $Param{DBType} eq 'mysql' && $Param{InstallType} eq 'CreateDB' ) {
+        $Param{DSN} = "DBI:mysql:database=;host=$Param{DBHost};";
+    }
+    elsif ( $Param{DBType} eq 'mysql' && $Param{InstallType} eq 'UseDB' ) {
+        $Param{DSN} = "DBI:mysql:database=;host=$Param{DBHost};database=$Param{DBName}";
+    }
+    elsif ( $Param{DBType} eq 'mssql' && $Param{InstallType} eq 'CreateDB' ) {
+        $Param{DSN} = "DBI:ODBC:driver={SQL Server};Server=$Param{DBHost};";
+    }
+    elsif ( $Param{DBType} eq 'mssql' && $Param{InstallType} eq 'UseDB' ) {
+        $Param{DSN} = "DBI:ODBC:driver={SQL Server};Server=$Param{DBHost};Database=$Param{DBName}";
+    }
+    elsif ( $Param{DBType} eq 'postgresql' && $Param{InstallType} eq 'CreateDB' ) {
+        $Param{DSN} = "DBI:Pg:host=$Param{DBHost};";
+    }
+    elsif ( $Param{DBType} eq 'postgresql' && $Param{InstallType} eq 'UseDB' ) {
+        $Param{DSN} = "DBI:Pg:host=$Param{DBHost};dbname=$Param{DBName}";
+    }
+    elsif ( $Param{DBType} eq 'oracle' ) {
+        $Param{DSN} = "DBI:Oracle:host=$Param{DBHost};sid=$Param{DBSID};port=$Param{DBPort};"
+    }
+
+    # extract driver to load for install test
+    my ($Driver) = ( $Param{DSN} =~ /^DBI:(.*?):/ );
+    if ( !$Self->{MainObject}->Require( 'DBD::' . $Driver ) ) {
+        return (
+            Successful => 0,
+            Message    => "Can't connect to database, Perl module DBD::$Driver not installed!",
+            Comment    => "",
+            DB         => undef,
+            DBH        => undef,
+        );
+    }
+
     my $DBH = DBI->connect(
-        "DBI:mysql:database=;host=$DB{DatabaseHost};",
-        $DB{User}, $DB{Password},
+        $Param{DSN}, $Param{DBUser}, $Param{DBPassword},
     );
+
     if ( !$DBH ) {
         return (
             Successful => 0,
@@ -1103,11 +1198,27 @@ sub ConnectToDB {
         );
     }
 
+    # if we use an existing database, check if it already contains tables
+    if ( $Param{InstallType} ne 'CreateDB' ) {
+
+        my $Data = $DBH->selectall_arrayref('SELECT * FROM valid');
+        if ($Data) {
+            return (
+                Successful => 0,
+                Message    => $Self->{LayoutObject}->{LanguageObject}
+                    ->Get("Database already contains data - it should be empty!"),
+                Comment => "",
+                DB      => undef,
+                DBH     => undef,
+            );
+        }
+    }
+
     return (
         Successful => 1,
         Message    => '',
         Comment    => '',
-        DB         => \%DB,
+        DB         => \%Param,
         DBH        => $DBH,
     );
 }
@@ -1115,7 +1226,9 @@ sub ConnectToDB {
 sub CheckDBRequirements {
     my ( $Self, %Param ) = @_;
 
-    my %Result = $Self->ConnectToDB();
+    my %Result = $Self->ConnectToDB(
+        %Param,
+    );
 
     # delete not necessary key/value pairs
     delete $Result{DB};
@@ -1235,7 +1348,7 @@ sub CheckMailConfiguration {
         );
     }
 
-    # now check inbound mail config. if outbound config threw error, theres no need to carry on
+    # now check inbound mail config. return if the outbound config threw an error
     if ( !$Result{Successful} ) {
         return %Result;
     }

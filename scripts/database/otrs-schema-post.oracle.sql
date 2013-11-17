@@ -1,8 +1,11 @@
 -- ----------------------------------------------------------
---  driver: oracle, generated: 2013-09-23 13:35:42
+--  driver: oracle
 -- ----------------------------------------------------------
 SET DEFINE OFF;
 SET SQLBLANKLINES ON;
+ALTER TABLE acl ADD CONSTRAINT FK_acl_create_by_id FOREIGN KEY (create_by) REFERENCES users (id);
+ALTER TABLE acl ADD CONSTRAINT FK_acl_change_by_id FOREIGN KEY (change_by) REFERENCES users (id);
+ALTER TABLE acl ADD CONSTRAINT FK_acl_valid_id_id FOREIGN KEY (valid_id) REFERENCES valid (id);
 ALTER TABLE valid ADD CONSTRAINT FK_valid_create_by_id FOREIGN KEY (create_by) REFERENCES users (id);
 ALTER TABLE valid ADD CONSTRAINT FK_valid_change_by_id FOREIGN KEY (change_by) REFERENCES users (id);
 ALTER TABLE users ADD CONSTRAINT FK_users_create_by_id FOREIGN KEY (create_by) REFERENCES users (id);
@@ -129,20 +132,20 @@ ALTER TABLE time_accounting ADD CONSTRAINT FK_time_accounting_article_i95 FOREIG
 ALTER TABLE time_accounting ADD CONSTRAINT FK_time_accounting_ticket_id91 FOREIGN KEY (ticket_id) REFERENCES ticket (id);
 ALTER TABLE time_accounting ADD CONSTRAINT FK_time_accounting_create_bybb FOREIGN KEY (create_by) REFERENCES users (id);
 ALTER TABLE time_accounting ADD CONSTRAINT FK_time_accounting_change_byff FOREIGN KEY (change_by) REFERENCES users (id);
-ALTER TABLE standard_response ADD CONSTRAINT FK_standard_response_create_21 FOREIGN KEY (create_by) REFERENCES users (id);
-ALTER TABLE standard_response ADD CONSTRAINT FK_standard_response_change_a1 FOREIGN KEY (change_by) REFERENCES users (id);
-ALTER TABLE standard_response ADD CONSTRAINT FK_standard_response_valid_ife FOREIGN KEY (valid_id) REFERENCES valid (id);
-ALTER TABLE queue_standard_response ADD CONSTRAINT FK_queue_standard_response_q4c FOREIGN KEY (queue_id) REFERENCES queue (id);
-ALTER TABLE queue_standard_response ADD CONSTRAINT FK_queue_standard_response_s29 FOREIGN KEY (standard_response_id) REFERENCES standard_response (id);
-ALTER TABLE queue_standard_response ADD CONSTRAINT FK_queue_standard_response_c10 FOREIGN KEY (create_by) REFERENCES users (id);
-ALTER TABLE queue_standard_response ADD CONSTRAINT FK_queue_standard_response_c38 FOREIGN KEY (change_by) REFERENCES users (id);
+ALTER TABLE standard_template ADD CONSTRAINT FK_standard_template_create_e4 FOREIGN KEY (create_by) REFERENCES users (id);
+ALTER TABLE standard_template ADD CONSTRAINT FK_standard_template_change_15 FOREIGN KEY (change_by) REFERENCES users (id);
+ALTER TABLE standard_template ADD CONSTRAINT FK_standard_template_valid_i25 FOREIGN KEY (valid_id) REFERENCES valid (id);
+ALTER TABLE queue_standard_template ADD CONSTRAINT FK_queue_standard_template_q01 FOREIGN KEY (queue_id) REFERENCES queue (id);
+ALTER TABLE queue_standard_template ADD CONSTRAINT FK_queue_standard_template_s29 FOREIGN KEY (standard_template_id) REFERENCES standard_template (id);
+ALTER TABLE queue_standard_template ADD CONSTRAINT FK_queue_standard_template_c93 FOREIGN KEY (create_by) REFERENCES users (id);
+ALTER TABLE queue_standard_template ADD CONSTRAINT FK_queue_standard_template_cdd FOREIGN KEY (change_by) REFERENCES users (id);
 ALTER TABLE standard_attachment ADD CONSTRAINT FK_standard_attachment_creat32 FOREIGN KEY (create_by) REFERENCES users (id);
 ALTER TABLE standard_attachment ADD CONSTRAINT FK_standard_attachment_changb4 FOREIGN KEY (change_by) REFERENCES users (id);
 ALTER TABLE standard_attachment ADD CONSTRAINT FK_standard_attachment_valid6c FOREIGN KEY (valid_id) REFERENCES valid (id);
-ALTER TABLE standard_response_attachment ADD CONSTRAINT FK_standard_response_attachm3d FOREIGN KEY (standard_attachment_id) REFERENCES standard_attachment (id);
-ALTER TABLE standard_response_attachment ADD CONSTRAINT FK_standard_response_attachmb9 FOREIGN KEY (standard_response_id) REFERENCES standard_response (id);
-ALTER TABLE standard_response_attachment ADD CONSTRAINT FK_standard_response_attachme5 FOREIGN KEY (create_by) REFERENCES users (id);
-ALTER TABLE standard_response_attachment ADD CONSTRAINT FK_standard_response_attachmfb FOREIGN KEY (change_by) REFERENCES users (id);
+ALTER TABLE standard_template_attachment ADD CONSTRAINT FK_standard_template_attachm17 FOREIGN KEY (standard_attachment_id) REFERENCES standard_attachment (id);
+ALTER TABLE standard_template_attachment ADD CONSTRAINT FK_standard_template_attachm7e FOREIGN KEY (standard_template_id) REFERENCES standard_template (id);
+ALTER TABLE standard_template_attachment ADD CONSTRAINT FK_standard_template_attachm64 FOREIGN KEY (create_by) REFERENCES users (id);
+ALTER TABLE standard_template_attachment ADD CONSTRAINT FK_standard_template_attachm83 FOREIGN KEY (change_by) REFERENCES users (id);
 ALTER TABLE auto_response_type ADD CONSTRAINT FK_auto_response_type_create90 FOREIGN KEY (create_by) REFERENCES users (id);
 ALTER TABLE auto_response_type ADD CONSTRAINT FK_auto_response_type_change40 FOREIGN KEY (change_by) REFERENCES users (id);
 ALTER TABLE auto_response_type ADD CONSTRAINT FK_auto_response_type_valid_75 FOREIGN KEY (valid_id) REFERENCES valid (id);
@@ -188,6 +191,8 @@ ALTER TABLE link_relation ADD CONSTRAINT FK_link_relation_target_obje18 FOREIGN 
 ALTER TABLE link_relation ADD CONSTRAINT FK_link_relation_state_id_id FOREIGN KEY (state_id) REFERENCES link_state (id);
 ALTER TABLE link_relation ADD CONSTRAINT FK_link_relation_type_id_id FOREIGN KEY (type_id) REFERENCES link_type (id);
 ALTER TABLE link_relation ADD CONSTRAINT FK_link_relation_create_by_id FOREIGN KEY (create_by) REFERENCES users (id);
+ALTER TABLE system_data ADD CONSTRAINT FK_system_data_create_by_id FOREIGN KEY (create_by) REFERENCES users (id);
+ALTER TABLE system_data ADD CONSTRAINT FK_system_data_change_by_id FOREIGN KEY (change_by) REFERENCES users (id);
 ALTER TABLE virtual_fs_preferences ADD CONSTRAINT FK_virtual_fs_preferences_vib1 FOREIGN KEY (virtual_fs_id) REFERENCES virtual_fs (id);
 ALTER TABLE package_repository ADD CONSTRAINT FK_package_repository_createa6 FOREIGN KEY (create_by) REFERENCES users (id);
 ALTER TABLE package_repository ADD CONSTRAINT FK_package_repository_changea2 FOREIGN KEY (change_by) REFERENCES users (id);

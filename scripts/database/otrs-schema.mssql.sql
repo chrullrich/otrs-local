@@ -1,6 +1,34 @@
 -- ----------------------------------------------------------
---  driver: mssql, generated: 2013-09-23 13:35:42
+--  driver: mssql
 -- ----------------------------------------------------------
+-- ----------------------------------------------------------
+--  create table acl
+-- ----------------------------------------------------------
+CREATE TABLE acl (
+    id INTEGER NOT NULL IDENTITY(1,1) ,
+    name NVARCHAR (200) NOT NULL,
+    comments NVARCHAR (250) NULL,
+    description NVARCHAR (250) NULL,
+    valid_id SMALLINT NOT NULL,
+    stop_after_match SMALLINT NULL,
+    config_match NVARCHAR (MAX) NULL,
+    config_change NVARCHAR (MAX) NULL,
+    create_time DATETIME NOT NULL,
+    create_by INTEGER NOT NULL,
+    change_time DATETIME NOT NULL,
+    change_by INTEGER NOT NULL,
+    PRIMARY KEY(id),
+    CONSTRAINT acl_name UNIQUE (name)
+);
+-- ----------------------------------------------------------
+--  create table acl_sync
+-- ----------------------------------------------------------
+CREATE TABLE acl_sync (
+    acl_id NVARCHAR (200) NOT NULL,
+    sync_state NVARCHAR (30) NOT NULL,
+    create_time DATETIME NOT NULL,
+    change_time DATETIME NOT NULL
+);
 -- ----------------------------------------------------------
 --  create table valid
 -- ----------------------------------------------------------
@@ -38,7 +66,7 @@ CREATE TABLE users (
 CREATE TABLE user_preferences (
     user_id INTEGER NOT NULL,
     preferences_key NVARCHAR (150) NOT NULL,
-    preferences_value NVARCHAR (250) NULL
+    preferences_value NVARCHAR (MAX) NULL
 );
 CREATE INDEX user_preferences_user_id ON user_preferences (user_id);
 -- ----------------------------------------------------------
@@ -530,6 +558,7 @@ CREATE TABLE article (
     a_cc NVARCHAR (3800) NULL,
     a_subject NVARCHAR (3800) NULL,
     a_message_id NVARCHAR (3800) NULL,
+    a_message_id_md5 NVARCHAR (32) NULL,
     a_in_reply_to NVARCHAR (3800) NULL,
     a_references NVARCHAR (3800) NULL,
     a_content_type NVARCHAR (250) NULL,
@@ -545,7 +574,7 @@ CREATE TABLE article (
 );
 CREATE INDEX article_article_sender_type_id ON article (article_sender_type_id);
 CREATE INDEX article_article_type_id ON article (article_type_id);
-CREATE INDEX article_message_id ON article (a_message_id);
+CREATE INDEX article_message_id_md5 ON article (a_message_id_md5);
 CREATE INDEX article_ticket_id ON article (ticket_id);
 -- ----------------------------------------------------------
 --  create table article_search
@@ -559,14 +588,12 @@ CREATE TABLE article_search (
     a_to NVARCHAR (3800) NULL,
     a_cc NVARCHAR (3800) NULL,
     a_subject NVARCHAR (3800) NULL,
-    a_message_id NVARCHAR (3800) NULL,
     a_body NVARCHAR (MAX) NOT NULL,
     incoming_time INTEGER NOT NULL,
     PRIMARY KEY(id)
 );
 CREATE INDEX article_search_article_sender_type_id ON article_search (article_sender_type_id);
 CREATE INDEX article_search_article_type_id ON article_search (article_type_id);
-CREATE INDEX article_search_message_id ON article_search (a_message_id);
 CREATE INDEX article_search_ticket_id ON article_search (ticket_id);
 -- ----------------------------------------------------------
 --  create table article_plain
@@ -617,13 +644,14 @@ CREATE TABLE time_accounting (
 );
 CREATE INDEX time_accounting_ticket_id ON time_accounting (ticket_id);
 -- ----------------------------------------------------------
---  create table standard_response
+--  create table standard_template
 -- ----------------------------------------------------------
-CREATE TABLE standard_response (
+CREATE TABLE standard_template (
     id INTEGER NOT NULL IDENTITY(1,1) ,
     name NVARCHAR (200) NOT NULL,
     text NVARCHAR (MAX) NULL,
     content_type NVARCHAR (250) NULL,
+    template_type NVARCHAR (100) NOT NULL,
     comments NVARCHAR (250) NULL,
     valid_id SMALLINT NOT NULL,
     create_time DATETIME NOT NULL,
@@ -631,14 +659,15 @@ CREATE TABLE standard_response (
     change_time DATETIME NOT NULL,
     change_by INTEGER NOT NULL,
     PRIMARY KEY(id),
-    CONSTRAINT standard_response_name UNIQUE (name)
+    CONSTRAINT standard_template_name UNIQUE (name)
 );
+ALTER TABLE standard_template ADD CONSTRAINT DF_standard_template_template_type DEFAULT ('Answer') FOR template_type;
 -- ----------------------------------------------------------
---  create table queue_standard_response
+--  create table queue_standard_template
 -- ----------------------------------------------------------
-CREATE TABLE queue_standard_response (
+CREATE TABLE queue_standard_template (
     queue_id INTEGER NOT NULL,
-    standard_response_id INTEGER NOT NULL,
+    standard_template_id INTEGER NOT NULL,
     create_time DATETIME NOT NULL,
     create_by INTEGER NOT NULL,
     change_time DATETIME NOT NULL,
@@ -663,12 +692,12 @@ CREATE TABLE standard_attachment (
     CONSTRAINT standard_attachment_name UNIQUE (name)
 );
 -- ----------------------------------------------------------
---  create table standard_response_attachment
+--  create table standard_template_attachment
 -- ----------------------------------------------------------
-CREATE TABLE standard_response_attachment (
+CREATE TABLE standard_template_attachment (
     id INTEGER NOT NULL IDENTITY(1,1) ,
     standard_attachment_id INTEGER NOT NULL,
-    standard_response_id INTEGER NOT NULL,
+    standard_template_id INTEGER NOT NULL,
     create_time DATETIME NOT NULL,
     create_by INTEGER NOT NULL,
     change_time DATETIME NOT NULL,
@@ -897,7 +926,8 @@ CREATE TABLE postmaster_filter (
     f_stop SMALLINT NULL,
     f_type NVARCHAR (20) NOT NULL,
     f_key NVARCHAR (200) NOT NULL,
-    f_value NVARCHAR (200) NOT NULL
+    f_value NVARCHAR (200) NOT NULL,
+    f_not SMALLINT NULL
 );
 CREATE INDEX postmaster_filter_f_name ON postmaster_filter (f_name);
 -- ----------------------------------------------------------
@@ -1040,6 +1070,18 @@ CREATE TABLE link_relation (
     create_time DATETIME NOT NULL,
     create_by INTEGER NOT NULL,
     CONSTRAINT link_relation_view UNIQUE (source_object_id, source_key, target_object_id, target_key, type_id)
+);
+-- ----------------------------------------------------------
+--  create table system_data
+-- ----------------------------------------------------------
+CREATE TABLE system_data (
+    data_key NVARCHAR (160) NOT NULL,
+    data_value NVARCHAR (MAX) NULL,
+    create_time DATETIME NOT NULL,
+    create_by INTEGER NOT NULL,
+    change_time DATETIME NOT NULL,
+    change_by INTEGER NOT NULL,
+    PRIMARY KEY(data_key)
 );
 -- ----------------------------------------------------------
 --  create table xml_storage
@@ -1219,9 +1261,9 @@ CREATE TABLE dynamic_field_value (
     value_int BIGINT NULL,
     PRIMARY KEY(id)
 );
-CREATE INDEX index_field_values ON dynamic_field_value (field_id, object_id);
-CREATE INDEX index_search_date ON dynamic_field_value (field_id, value_date);
-CREATE INDEX index_search_int ON dynamic_field_value (field_id, value_int);
+CREATE INDEX dynamic_field_value_field_values ON dynamic_field_value (object_id);
+CREATE INDEX dynamic_field_value_search_date ON dynamic_field_value (field_id, value_date);
+CREATE INDEX dynamic_field_value_search_int ON dynamic_field_value (field_id, value_int);
 -- ----------------------------------------------------------
 --  create table dynamic_field
 -- ----------------------------------------------------------

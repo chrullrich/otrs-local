@@ -81,12 +81,8 @@ else {
     push @DatabaseType, $Opts{t};
 }
 
-# read xml file
-my @File       = <STDIN>;
-my $FileString = '';
-for my $Line (@File) {
-    $FileString .= $Line;
-}
+# read xml data from STDIN
+my $FileString = do { local $/; <STDIN> };
 
 for my $DatabaseType (@DatabaseType) {
 
@@ -117,15 +113,10 @@ for my $DatabaseType (@DatabaseType) {
     # parse xml package
     my @XMLARRAY = $CommonObject{XMLObject}->XMLParse( String => $FileString );
 
-    # remember header
-    my ( $Sec, $Min, $Hour, $Day, $Month, $Year ) = $CommonObject{TimeObject}->SystemTime2Date(
-        SystemTime => $CommonObject{TimeObject}->SystemTime(),
-    );
-
     my $Head = $CommonObject{DBObject}->{Backend}->{'DB::Comment'}
         . "----------------------------------------------------------\n";
     $Head .= $CommonObject{DBObject}->{Backend}->{'DB::Comment'}
-        . " driver: $DatabaseType, generated: $Year-$Month-$Day $Hour:$Min:$Sec\n";
+        . " driver: $DatabaseType\n";
     $Head .= $CommonObject{DBObject}->{Backend}->{'DB::Comment'}
         . "----------------------------------------------------------\n";
 

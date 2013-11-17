@@ -13,6 +13,8 @@ use strict;
 use warnings;
 
 use Kernel::System::GenericInterface::Webservice;
+use Kernel::System::DynamicField;
+use Kernel::System::Event;
 
 use Kernel::System::VariableCheck qw(:all);
 
@@ -28,7 +30,12 @@ sub new {
         }
     }
 
-    $Self->{WebserviceObject} = Kernel::System::GenericInterface::Webservice->new( %{$Self} );
+    $Self->{WebserviceObject}   = Kernel::System::GenericInterface::Webservice->new( %{$Self} );
+    $Self->{DynamicFieldObject} = Kernel::System::DynamicField->new( %{$Self} );
+    $Self->{EventObject}        = Kernel::System::Event->new(
+        %{$Self},
+        DynamicFieldObject => $Self->{DynamicFieldObject},
+    );
 
     return $Self;
 }
@@ -266,9 +273,9 @@ sub _Change {
     }
 
     if (
-        ref $WebserviceData->{Config} ne 'HASH'
-        || ref $WebserviceData->{Config}->{Requester} ne 'HASH'
-        || ref $WebserviceData->{Config}->{Requester}->{Invoker} ne 'HASH'
+        ref $WebserviceData->{Config}                                        ne 'HASH'
+        || ref $WebserviceData->{Config}->{Requester}                        ne 'HASH'
+        || ref $WebserviceData->{Config}->{Requester}->{Invoker}             ne 'HASH'
         || ref $WebserviceData->{Config}->{Requester}->{Invoker}->{$Invoker} ne 'HASH'
         )
     {
@@ -314,8 +321,8 @@ sub _ChangeAction {
 
     # Get config data of existing invoker.
     if (
-        ref $WebserviceData->{Config} ne 'HASH'
-        || ref $WebserviceData->{Config}->{Requester} ne 'HASH'
+        ref $WebserviceData->{Config}                            ne 'HASH'
+        || ref $WebserviceData->{Config}->{Requester}            ne 'HASH'
         || ref $WebserviceData->{Config}->{Requester}->{Invoker} ne 'HASH'
         || ref $WebserviceData->{Config}->{Requester}->{Invoker}->{ $GetParam{OldInvoker} } ne
         'HASH'
@@ -578,8 +585,7 @@ sub _ShowScreen {
         );
     }
 
-    # get registered event triggers from the config
-    my $RegisteredEvents = $Self->{ConfigObject}->Get('GenericInterface::Invoker::Event');
+    my %RegisteredEvents = $Self->{EventObject}->EventList();
 
     my %InvokerEventLookup;
 
@@ -600,8 +606,8 @@ sub _ShowScreen {
         # but left if is needed in future
         my $EventType;
         EVENTTYPE:
-        for my $Type ( sort keys %{$RegisteredEvents} ) {
-            if ( $RegisteredEvents->{$Type}->{ $Event->{Event} } ) {
+        for my $Type ( sort keys %RegisteredEvents ) {
+            if ( grep { $_ eq $Event->{Event} } @{ $RegisteredEvents{$Type} || [] } ) {
                 $EventType = $Type;
                 last EVENTTYPE;
             }
@@ -624,16 +630,14 @@ sub _ShowScreen {
 
     # create event trigger selectors (one for each type)
     TYPE:
-    for my $Type ( sort keys %{$RegisteredEvents} ) {
-        next TYPE if !$Type;
+    for my $Type ( sort keys %RegisteredEvents ) {
 
         # refresh event list for each event type
         my @EventList;
 
         EVENT:
-        for my $Event ( sort keys %{ $RegisteredEvents->{$Type} } ) {
-            next EVENT if !$RegisteredEvents->{$Type}->{$Event};
-            next EVENT if $InvokerEventLookup{$Event};
+        for my $Event ( @{ $RegisteredEvents{$Type} || [] } ) {
+            next EVENT if $InvokerEventLookup{$Event};    # only add events that are not used yet
             push @EventList, $Event;
         }
 
@@ -649,6 +653,7 @@ sub _ShowScreen {
             Name         => $Type . 'Event',
             Sort         => 'AlphanumericValue',
             PossibleNone => 0,
+            Title        => $Self->{LayoutObject}->{LanguageObject}->Get('Event'),
             Class        => 'EventList GenericInterfaceSpacing ' . $EventListHidden,
         );
 
@@ -706,9 +711,9 @@ sub _AddEvent {
 
     # Get config data of existing invoker.
     if (
-        ref $WebserviceData->{Config} ne 'HASH'
-        || ref $WebserviceData->{Config}->{Requester} ne 'HASH'
-        || ref $WebserviceData->{Config}->{Requester}->{Invoker} ne 'HASH'
+        ref $WebserviceData->{Config}                                                    ne 'HASH'
+        || ref $WebserviceData->{Config}->{Requester}                                    ne 'HASH'
+        || ref $WebserviceData->{Config}->{Requester}->{Invoker}                         ne 'HASH'
         || ref $WebserviceData->{Config}->{Requester}->{Invoker}->{ $GetParam{Invoker} } ne
         'HASH'
         )
@@ -781,9 +786,9 @@ sub _DeleteEvent {
 
     # Get config data of existing invoker.
     if (
-        ref $WebserviceData->{Config} ne 'HASH'
-        || ref $WebserviceData->{Config}->{Requester} ne 'HASH'
-        || ref $WebserviceData->{Config}->{Requester}->{Invoker} ne 'HASH'
+        ref $WebserviceData->{Config}                                                    ne 'HASH'
+        || ref $WebserviceData->{Config}->{Requester}                                    ne 'HASH'
+        || ref $WebserviceData->{Config}->{Requester}->{Invoker}                         ne 'HASH'
         || ref $WebserviceData->{Config}->{Requester}->{Invoker}->{ $GetParam{Invoker} } ne
         'HASH'
         )

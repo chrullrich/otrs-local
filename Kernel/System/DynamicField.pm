@@ -97,7 +97,7 @@ sub new {
 
     # set lower if database is case sensitive
     $Self->{Lower} = '';
-    if ( !$Self->{DBObject}->GetDatabaseFunction('CaseInsensitive') ) {
+    if ( $Self->{DBObject}->GetDatabaseFunction('CaseSensitive') ) {
         $Self->{Lower} = 'LOWER';
     }
 
@@ -193,17 +193,20 @@ sub DynamicFieldAdd {
         SQL =>
             'INSERT INTO dynamic_field (internal_field, name, label, field_Order, field_type, object_type,'
             .
-            'config, valid_id, create_time, create_by, change_time, change_by)' .
+            ' config, valid_id, create_time, create_by, change_time, change_by)' .
             ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?, current_timestamp, ?)',
         Bind => [
             \$InternalField, \$Param{Name}, \$Param{Label}, \$Param{FieldOrder}, \$Param{FieldType},
-            \$Param{ObjectType}, \$Config, \$Param{ValidID}, \$Param{UserID}, \$Param{UserID},
+            \$Param{ObjectType}, \$Config, \$Param{ValidID}, \$Param{UserID}, \$Param{UserID}
         ],
     );
 
     # delete cache
     $Self->{CacheObject}->CleanUp(
         Type => 'DynamicField',
+    );
+    $Self->{CacheObject}->CleanUp(
+        Type => 'DynamicFieldValue',
     );
 
     my $DynamicField = $Self->DynamicFieldGet(
@@ -439,6 +442,9 @@ sub DynamicFieldUpdate {
     $Self->{CacheObject}->CleanUp(
         Type => 'DynamicField',
     );
+    $Self->{CacheObject}->CleanUp(
+        Type => 'DynamicFieldValue',
+    );
 
     # re-order field list if a change in the order was made
     if ( $Reorder && $ChangedOrder ) {
@@ -504,6 +510,9 @@ sub DynamicFieldDelete {
     # delete cache
     $Self->{CacheObject}->CleanUp(
         Type => 'DynamicField',
+    );
+    $Self->{CacheObject}->CleanUp(
+        Type => 'DynamicFieldValue',
     );
 
     return 1;
@@ -1289,7 +1298,7 @@ sub _DynamicFieldReorder {
     return 1;
 }
 
-1;
+=end Internal:
 
 =back
 
@@ -1302,3 +1311,5 @@ the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =cut
+
+1;
