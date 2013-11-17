@@ -133,7 +133,7 @@ creates a random ID that can be used in tests as a unique identifier.
 sub GetRandomID {
     my ( $Self, %Param ) = @_;
 
-    return 'test-' . int( rand(1000000) )
+    return 'test' . int( rand(1000000) )
 }
 
 =item TestUserCreate()
@@ -290,8 +290,7 @@ time will be used again.
 sub FixedTimeSet {
     my ( $Self, $TimeToSave ) = @_;
 
-    $TimeToSave = CORE::time() if ( !defined $TimeToSave );
-    $FixedTime = $TimeToSave;
+    $FixedTime = $TimeToSave // CORE::time();
 
     # This is needed to reload objects that directly use the time functions
     #   to get a hold of the overrides.

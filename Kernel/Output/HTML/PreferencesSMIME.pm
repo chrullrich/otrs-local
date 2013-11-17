@@ -54,8 +54,7 @@ sub Run {
     my ( $Self, %Param ) = @_;
 
     my %UploadStuff = $Self->{ParamObject}->GetUploadAll(
-        Param  => 'UserSMIMEKey',
-        Source => 'String',
+        Param => 'UserSMIMEKey',
     );
     return 1 if !$UploadStuff{Content};
 

@@ -140,13 +140,24 @@ sub Run {
         if ( !$Self->{ConfigObject}->Get('SessionUseCookieAfterBrowserClose') ) {
             $Expires = '';
         }
+
+        my $SecureAttribute;
+        if ( $Self->{ConfigObject}->Get('HttpType') eq 'https' ) {
+
+            # Restrict Cookie to HTTPS if it is used.
+            $SecureAttribute = 1;
+        }
+
         my $LayoutObject = Kernel::Output::HTML::Layout->new(
             %{$Self},
             SetCookies => {
                 SessionIDCookie => $Self->{ParamObject}->SetCookie(
-                    Key     => $SessionName,
-                    Value   => $NewSessionID,
-                    Expires => $Expires,
+                    Key      => $SessionName,
+                    Value    => $NewSessionID,
+                    Expires  => $Expires,
+                    Path     => $Self->{ConfigObject}->Get('ScriptAlias'),
+                    Secure   => scalar $SecureAttribute,
+                    HTTPOnly => 1,
                 ),
             },
             SessionID   => $NewSessionID,
@@ -163,7 +174,7 @@ sub Run {
         # build URL to customer interface
         my $URL = $Self->{ConfigObject}->Get('HttpType')
             . '://'
-            . $ENV{HTTP_HOST}
+            . $Self->{ConfigObject}->Get('FQDN')
             . '/'
             . $Self->{ConfigObject}->Get('ScriptAlias')
             . 'customer.pl';
@@ -690,7 +701,8 @@ sub _Overview {
                     Name => 'OverviewResultRow',
                     Data => {
                         Valid => $ValidList{ $UserData{ValidID} || '' } || '-',
-                        Search => $Param{Search},
+                        Search      => $Param{Search},
+                        CustomerKey => $ListKey,
                         %UserData,
                     },
                 );
@@ -698,7 +710,8 @@ sub _Overview {
                     $Self->{LayoutObject}->Block(
                         Name => 'OverviewResultRowLinkNone',
                         Data => {
-                            Search => $Param{Search},
+                            Search      => $Param{Search},
+                            CustomerKey => $ListKey,
                             %UserData,
                         },
                     );
@@ -707,8 +720,9 @@ sub _Overview {
                     $Self->{LayoutObject}->Block(
                         Name => 'OverviewResultRowLink',
                         Data => {
-                            Search => $Param{Search},
-                            Nav    => $Param{Nav},
+                            Search      => $Param{Search},
+                            Nav         => $Param{Nav},
+                            CustomerKey => $ListKey,
                             %UserData,
                         },
                     );
@@ -1036,7 +1050,7 @@ sub _Edit {
                                 Data => {%Param},
                             );
                             if (
-                                ref $ParamItem->{Data}   eq 'HASH'
+                                ref $ParamItem->{Data} eq 'HASH'
                                 || ref $Preference{Data} eq 'HASH'
                                 )
                             {

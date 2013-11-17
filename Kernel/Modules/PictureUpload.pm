@@ -78,8 +78,7 @@ sub Run {
 
     # get uploaded file
     my %File = $Self->{ParamObject}->GetUploadAll(
-        Param  => 'upload',
-        Source => 'string',
+        Param => 'upload',
     );
 
     # return error if no file is there

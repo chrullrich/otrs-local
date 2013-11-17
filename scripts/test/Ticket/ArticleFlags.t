@@ -13,8 +13,6 @@ use warnings;
 use utf8;
 use vars (qw($Self));
 
-use Time::HiRes qw( usleep );
-
 use Kernel::Config;
 use Kernel::System::Ticket;
 
@@ -115,7 +113,7 @@ $TicketObject->ArticleFlagDelete(
 
 for my $Test (@Tests) {
 
-    # Set for article 1
+    # set for article 1
     my %Flag = $TicketObject->ArticleFlagGet(
         ArticleID => $ArticleID,
         UserID    => 1,
@@ -135,7 +133,7 @@ for my $Test (@Tests) {
         'ArticleFlagSet() article 1',
     );
 
-    # Set for article 2
+    # set for article 2
     %Flag = $TicketObject->ArticleFlagGet(
         ArticleID => $ArticleID2,
         UserID    => 1,
@@ -164,7 +162,7 @@ for my $Test (@Tests) {
         'ArticleFlagGet() article 2',
     );
 
-    # Get all flags of ticket
+    # get all flags of ticket
     %Flag = $TicketObject->ArticleFlagsOfTicketGet(
         TicketID => $TicketID,
         UserID   => 1,
@@ -182,7 +180,7 @@ for my $Test (@Tests) {
         'ArticleFlagsOfTicketGet() both articles',
     );
 
-    # Delete for article 1
+    # delete for article 1
     my $Delete = $TicketObject->ArticleFlagDelete(
         ArticleID => $ArticleID,
         Key       => $Test->{Key},
@@ -215,7 +213,7 @@ for my $Test (@Tests) {
         'ArticleFlagsOfTicketGet() only one article',
     );
 
-    # Delete for article 2
+    # delete for article 2
     $Delete = $TicketObject->ArticleFlagDelete(
         ArticleID => $ArticleID2,
         Key       => $Test->{Key},

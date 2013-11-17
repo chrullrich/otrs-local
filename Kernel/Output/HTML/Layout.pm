@@ -17,10 +17,7 @@ use Kernel::System::HTMLUtils;
 use Kernel::System::JSON;
 use Kernel::System::VariableCheck qw(:all);
 
-use Mail::Address;
 use URI::Escape qw();
-
-use vars qw(@ISA);
 
 =head1 NAME
 
@@ -121,6 +118,9 @@ sub new {
 
     # reset block data
     delete $Self->{BlockData};
+
+    # empty action if not defined
+    $Self->{Action} = '' if !defined $Self->{Action};
 
     # get/set some common params
     if ( !$Self->{UserTheme} ) {
@@ -408,10 +408,10 @@ sub new {
         for my $File (@Files) {
             if ( $File !~ /Layout.pm$/ ) {
                 $File =~ s{\A.*\/(.+?).pm\z}{$1}xms;
-                if ( !$Self->{MainObject}->Require("Kernel::Output::HTML::$File") ) {
+                my $ClassName = "Kernel::Output::HTML::$File";
+                if ( !$Self->{MainObject}->RequireBaseClass($ClassName) ) {
                     $Self->FatalError();
                 }
-                push @ISA, "Kernel::Output::HTML::$File";
             }
         }
     }
@@ -548,11 +548,12 @@ sub Output {
         else {
             $File = "$Self->{TemplateDir}/../Standard/$Param{TemplateFile}.dtl";
         }
-        ## no critic
-        if ( open my $TEMPLATEIN, '<', $File ) {
-            ## use critic
-            $TemplateString = do { local $/; <$TEMPLATEIN> };
-            close $TEMPLATEIN;
+        my $ResultRef = $Self->{MainObject}->FileRead(
+            Location => $File,
+            Mode     => 'utf8',
+        );
+        if ( ref $ResultRef ) {
+            $TemplateString = ${$ResultRef};
         }
         else {
             $Self->{LogObject}->Log(
@@ -856,7 +857,7 @@ sub Output {
 
         # find document ready
         $Output =~ s{
-                <!--\s{0,1}dtl:js_on_document_complete\s{0,1}-->(.+?)<!--\s{0,1}dtl:js_on_document_complete\s{0,1}-->
+                <!--[ ]?dtl:js_on_document_complete[ ]?-->(.+?)<!--[ ]?dtl:js_on_document_complete[ ]?-->
         }
         {
                 if (!$Self->{JSOnDocumentComplete}->{$1}) {
@@ -869,7 +870,7 @@ sub Output {
         # replace document ready placeholder (only if it's not included via $Include{""})
         if ( !$Param{Include} ) {
             $Output =~ s{
-                <!--\s{0,1}dtl:js_on_document_complete_placeholder\s{0,1}-->
+                <!--[ ]?dtl:js_on_document_complete_placeholder[ ]?-->
             }
             {
                 if ( $Self->{EnvRef}->{JSOnDocumentComplete} ) {
@@ -980,14 +981,15 @@ sub Redirect {
         $Param{Redirect} .= $Param{OP};
     }
 
-    # check if IIS is used, add absolute url for IIS workaround
+    # check if IIS 6 is used, add absolute url for IIS workaround
     # see also:
     #  o http://bugs.otrs.org/show_bug.cgi?id=2230
+    #  o http://bugs.otrs.org/show_bug.cgi?id=9835
     #  o http://support.microsoft.com/default.aspx?scid=kb;en-us;221154
-    if ( $ENV{SERVER_SOFTWARE} =~ /^microsoft\-iis/i ) {
+    if ( $ENV{SERVER_SOFTWARE} =~ /^microsoft\-iis\/6/i ) {
         my $Host = $ENV{HTTP_HOST} || $Self->{ConfigObject}->Get('FQDN');
         my $HttpType = $Self->{ConfigObject}->Get('HttpType');
-        $Param{Redirect} = $HttpType . '://' . $Host . '/' . $Param{Redirect};
+        $Param{Redirect} = $HttpType . '://' . $Host . $Param{Redirect};
     }
     my $Output = $Cookies . $Self->Output( TemplateFile => 'Redirect', Data => \%Param );
 
@@ -1182,8 +1184,7 @@ sub SecureMode {
     my $Output = $Self->Header( Area => 'Frontend', Title => 'Secure Mode' );
     $Output .= $Self->Output( TemplateFile => 'AdminSecureMode', Data => \%Param );
     $Output .= $Self->Footer();
-    $Self->Print( Output => \$Output );
-    exit;
+    return $Output;
 }
 
 sub FatalDie {
@@ -1478,9 +1479,11 @@ sub Header {
 
     # area and title
     if ( !$Param{Area} ) {
-        $Param{Area}
-            = $Self->{ConfigObject}->Get('Frontend::Module')->{ $Self->{Action} }->{NavBarName}
-            || '';
+        $Param{Area} = (
+            defined $Self->{Action}
+            ? $Self->{ConfigObject}->Get('Frontend::Module')->{ $Self->{Action} }->{NavBarName}
+            : ''
+        );
     }
     if ( !$Param{Title} ) {
         $Param{Title} = $Self->{ConfigObject}->Get('Frontend::Module')->{ $Self->{Action} }->{Title}
@@ -1601,7 +1604,7 @@ sub Footer {
     if ($HasDatepicker) {
         my $VacationDays     = $Self->DatepickerGetVacationDays();
         my $VacationDaysJSON = $Self->JSONEncode(
-            Data => $VacationDays
+            Data => $VacationDays,
         );
 
         my $TextDirection = $Self->{LanguageObject}->{TextDirection} || '';
@@ -1618,14 +1621,33 @@ sub Footer {
     # NewTicketInNewWindow
     if ( $Self->{ConfigObject}->Get('NewTicketInNewWindow::Enabled') ) {
         $Self->Block(
-            Name => 'NewTicketInNewWindow'
+            Name => 'NewTicketInNewWindow',
         );
     }
+
+    # AutoComplete-Config
+    my $AutocompleteConfig = $Self->{ConfigObject}->Get('AutoComplete::Agent');
+
+    for my $ConfigElement ( sort keys %{$AutocompleteConfig} ) {
+        $AutocompleteConfig->{$ConfigElement}->{ButtonText}
+            = $Self->{LanguageObject}->Get( $AutocompleteConfig->{$ConfigElement}->{ButtonText} );
+    }
+
+    my $AutocompleteConfigJSON = $Self->JSONEncode(
+        Data => $AutocompleteConfig,
+    );
+
+    $Self->Block(
+        Name => 'AutoCompleteConfig',
+        Data => {
+            AutocompleteConfig => $AutocompleteConfigJSON,
+        },
+    );
 
     # Banner
     if ( !$Self->{ConfigObject}->Get('Secure::DisableBanner') ) {
         $Self->Block(
-            Name => 'Banner'
+            Name => 'Banner',
         );
     }
 
@@ -1768,7 +1790,7 @@ convert ascii to html string
 also string ref is possible
 
     my $HTMLStringRef = $LayoutObject->Ascii2Html(
-        Text => \$Sting,
+        Text => \$String,
     );
 
 =cut
@@ -2282,6 +2304,7 @@ sub BuildSelection {
         AttributeRef => $AttributeRef,
         DataRef      => $DataRef,
         OptionTitle  => $Param{OptionTitle},
+        TreeView     => $Param{TreeView},
     );
     return $String;
 }
@@ -2290,7 +2313,35 @@ sub NoPermission {
     my ( $Self, %Param ) = @_;
 
     my $WithHeader = $Param{WithHeader} || 'yes';
-    $Param{Message} = 'Insufficient Rights.' if ( !$Param{Message} );
+
+    my $TranslatableMessage = $Self->{LanguageObject}->Get(
+        "We are sorry, you do not have permissions anymore to access this ticket in its'current state. "
+    );
+    $TranslatableMessage .= '<br/>';
+    $TranslatableMessage .= $Self->{LanguageObject}->Get(" You can take one of the next actions:");
+    $Param{Message} = $TranslatableMessage if ( !$Param{Message} );
+
+    # get config option for possible next actions
+    my $PossibleNextActions = $Self->{ConfigObject}->Get('PossibleNextActions');
+
+    POSSIBLE:
+    if ( IsHashRefWithData($PossibleNextActions) ) {
+        $Self->Block(
+            Name => 'PossibleNextActionContainer',
+        );
+        for my $Key ( sort keys %{$PossibleNextActions} ) {
+            next POSSIBLE if !$Key;
+            next POSSIBLE if !$PossibleNextActions->{$Key};
+
+            $Self->Block(
+                Name => 'PossibleNextActionRow',
+                Data => {
+                    Link        => $PossibleNextActions->{$Key},
+                    Description => $Key,
+                },
+            );
+        }
+    }
 
     # create output
     my $Output;
@@ -2900,6 +2951,13 @@ sub NavigationBar {
         }
     }
 
+    # show search icon if any search router is configured
+    if ( IsHashRefWithData( $Self->{ConfigObject}->Get('Frontend::Search') ) ) {
+        $Self->Block(
+            Name => 'SearchIcon',
+        );
+    }
+
     # create & return output
     my $Output = $Self->Output( TemplateFile => 'AgentNavigationBar', Data => \%Param );
 
@@ -3081,11 +3139,7 @@ sub BuildDateSelection {
 
     # month
     if ( $DateInputStyle eq 'Option' ) {
-        my %Month;
-        for ( 1 .. 12 ) {
-            my $Tmp = sprintf( "%02d", $_ );
-            $Month{$_} = $Tmp;
-        }
+        my %Month = map { $_ => sprintf( "%02d", $_ ); } ( 1 .. 12 );
         $Param{Month} = $Self->BuildSelection(
             Name        => $Prefix . 'Month',
             Data        => \%Month,
@@ -3117,11 +3171,7 @@ sub BuildDateSelection {
 
     # day
     if ( $DateInputStyle eq 'Option' ) {
-        my %Day;
-        for ( 1 .. 31 ) {
-            my $Tmp = sprintf( "%02d", $_ );
-            $Day{$_} = $Tmp;
-        }
+        my %Day = map { $_ => sprintf( "%02d", $_ ); } ( 1 .. 31 );
         $Param{Day} = $Self->BuildSelection(
             Name        => $Prefix . 'Day',
             Data        => \%Day,
@@ -3144,11 +3194,7 @@ sub BuildDateSelection {
 
         # hour
         if ( $DateInputStyle eq 'Option' ) {
-            my %Hour;
-            for ( 0 .. 23 ) {
-                my $Tmp = sprintf( "%02d", $_ );
-                $Hour{$_} = $Tmp;
-            }
+            my %Hour = map { $_ => sprintf( "%02d", $_ ); } ( 0 .. 23 );
             $Param{Hour} = $Self->BuildSelection(
                 Name       => $Prefix . 'Hour',
                 Data       => \%Hour,
@@ -3176,11 +3222,7 @@ sub BuildDateSelection {
 
         # minute
         if ( $DateInputStyle eq 'Option' ) {
-            my %Minute;
-            for ( 0 .. 59 ) {
-                my $Tmp = sprintf( "%02d", $_ );
-                $Minute{$_} = $Tmp;
-            }
+            my %Minute = map { $_ => sprintf( "%02d", $_ ); } ( 0 .. 59 );
             $Param{Minute} = $Self->BuildSelection(
                 Name       => $Prefix . 'Minute',
                 Data       => \%Minute,
@@ -3219,11 +3261,11 @@ sub BuildDateSelection {
     # Datepicker
     $DatepickerHTML = '<!--dtl:js_on_document_complete--><script type="text/javascript">//<![CDATA[
         Core.UI.Datepicker.Init({
-            Day: $(\'#' . $Prefix . 'Day\'),
-            Month: $(\'#' . $Prefix . 'Month\'),
-            Year: $(\'#' . $Prefix . 'Year\'),
-            Hour: $(\'#' . $Prefix . 'Hour\'),
-            Minute: $(\'#' . $Prefix . 'Minute\'),
+            Day: $("#" + Core.App.EscapeSelector("' . $Prefix . '") + "Day"),
+            Month: $("#" + Core.App.EscapeSelector("' . $Prefix . '") + "Month"),
+            Year: $("#" + Core.App.EscapeSelector("' . $Prefix . '") + "Year"),
+            Hour: $("#" + Core.App.EscapeSelector("' . $Prefix . '") + "Hour"),
+            Minute: $("#" + Core.App.EscapeSelector("' . $Prefix . '") + "Minute"),
             DateInFuture: ' . ( $ValidateDateInFuture ? 'true' : 'false' ) . ',
             WeekDayStart: ' . $WeekDayStart . '
         });
@@ -3533,6 +3575,25 @@ sub CustomerFooter {
             Name => 'Banner',
         );
     }
+
+    # AutoComplete-Config
+    my $AutocompleteConfig = $Self->{ConfigObject}->Get('AutoComplete::Customer');
+
+    for my $ConfigElement ( sort keys %{$AutocompleteConfig} ) {
+        $AutocompleteConfig->{$ConfigElement}->{ButtonText}
+            = $Self->{LanguageObject}->Get( $AutocompleteConfig->{$ConfigElement}{ButtonText} );
+    }
+
+    my $AutocompleteConfigJSON = $Self->JSONEncode(
+        Data => $AutocompleteConfig,
+    );
+
+    $Self->Block(
+        Name => 'AutoCompleteConfig',
+        Data => {
+            AutocompleteConfig => $AutocompleteConfigJSON,
+        },
+    );
 
     # create & return output
     return $Self->Output( TemplateFile => "CustomerFooter$Type", Data => \%Param );
@@ -4165,10 +4226,10 @@ sub RichTextDocumentServe {
             $End = '"' . $End;
         }
 
-        # find matching attachment and replace it with runtlime url to image
+        # find matching attachment and replace it with runtime url to image
         for my $AttachmentID (  sort keys %{ $Param{Attachments} }) {
             next if lc $Param{Attachments}->{$AttachmentID}->{ContentID} ne lc "<$ContentID>";
-            $ContentID = $AttachmentLink . $AttachmentID . ';' . $SessionID;
+            $ContentID = $AttachmentLink . $AttachmentID . $SessionID;
             last;
         }
 
@@ -4205,7 +4266,7 @@ sub RichTextDocumentServe {
         }
 
         # return new runtime url
-        $ContentID = $AttachmentLink . $AttachmentID . ';' . $SessionID;
+        $ContentID = $AttachmentLink . $AttachmentID . $SessionID;
         $Start . $ContentID . $End;
     }egxi;
     }
@@ -4241,15 +4302,15 @@ sub RichTextDocumentCleanup {
 
 =cut
 
-sub _BlockTemplatePreferences {
+sub _BlocksByLayer {
     my ( $Self, %Param ) = @_;
 
     my %TagsOpen;
-    my @Preferences;
     my $LastLayerCount = 0;
-    my $Layer          = 0;
-    my $LastLayer      = '';
-    my $CurrentLayer   = '';
+    my $Layer          = -1;
+    my @Layer;
+    my $LastLayer    = '';
+    my $CurrentLayer = '';
     my %UsedNames;
     my $TemplateFile = $Param{TemplateFile} || '';
     if ( !defined $Param{Template} ) {
@@ -4262,7 +4323,7 @@ sub _BlockTemplatePreferences {
     }
 
     $Param{Template} =~ s{
-        <!--\s{0,1}dtl:block:(.+?)\s{0,1}-->
+        <!--[ ]?dtl:block:(.+?)[ ]?-->
     }
     {
         my $BlockName = $1;
@@ -4270,7 +4331,7 @@ sub _BlockTemplatePreferences {
             $Layer++;
             $TagsOpen{$BlockName} = 1;
             my $CL = '';
-            if ($Layer == 1) {
+            if ($Layer == 0) {
                 $LastLayer = '';
                 $CurrentLayer = $BlockName;
             }
@@ -4283,11 +4344,7 @@ sub _BlockTemplatePreferences {
             }
             $LastLayerCount = $Layer;
             if (!$UsedNames{$BlockName}) {
-                push (@Preferences, {
-                    Name => $BlockName,
-                    Layer => $Layer,
-                    },
-                );
+                push @{ $Layer[$Layer] }, $BlockName;
                 $UsedNames{$BlockName} = 1;
             }
         }
@@ -4311,10 +4368,10 @@ sub _BlockTemplatePreferences {
 
     # remember block data
     if ($TemplateFile) {
-        $Self->{PrasedBlockTemplatePreferences}->{$TemplateFile} = \@Preferences;
+        $Self->{PrasedBlockTemplatePreferences}->{$TemplateFile} = \@Layer;
     }
 
-    return \@Preferences;
+    return \@Layer;
 }
 
 sub _BlockTemplatesReplace {
@@ -4327,22 +4384,28 @@ sub _BlockTemplatesReplace {
     my $TemplateString = $Param{Template};
 
     # get availabe template block preferences
-    my $BlocksRef = $Self->_BlockTemplatePreferences(
+    my $BlocksByLayer = $Self->_BlocksByLayer(
         Template => $$TemplateString,
         TemplateFile => $Param{TemplateFile} || '',
     );
     my %BlockLayer;
     my %BlockTemplates;
-    for my $Block ( reverse @{$BlocksRef} ) {
+
+    for ( my $Layer = $#$BlocksByLayer; $Layer >= 0; $Layer-- ) {
+        my $Blocks = $BlocksByLayer->[$Layer];
+        my $Names = join '|', map { quotemeta $_ } @$Blocks;
         $$TemplateString =~ s{
-            <!--\s{0,1}dtl:block:$Block->{Name}\s{0,1}-->(.+?)<!--\s{0,1}dtl:block:$Block->{Name}\s{0,1}-->
+            <!--[ ]?dtl:block:($Names)[ ]?-->(.+?)<!--[ ]?dtl:block:\1[ ]?-->
         }
         {
-            $BlockTemplates{$Block->{Name}} = $1;
-            "<!-- dtl:place_block:$Block->{Name} -->";
+            $BlockTemplates{$1} = $2;
+            "<!-- dtl:place_block:$1 -->";
         }segxm;
-        $BlockLayer{ $Block->{Name} } = $Block->{Layer};
+        for my $Name (@$Blocks) {
+            $BlockLayer{$Name} = $Layer + 1;
+        }
     }
+    undef $BlocksByLayer;
 
     # create block template string
     my @BR;
@@ -5035,9 +5098,9 @@ sub _BuildSelectionDataRefCreate {
         for my $Row ( @{$DataRef} ) {
 
             # REMARK: This is the same solution as in Ascii2Html
-            $Row->{Value} =~ s/^(.{$OptionRef->{Max}}).+?$/$1\[\.\.\]/gs;
-
-            #$Row->{Value} = substr( $Row->{Value}, 0, $OptionRef->{Max} );
+            if ( length $Row > $OptionRef->{Max} ) {
+                $Row = substr( $Row, 0, $OptionRef->{Max} - 5 ) . '[...]';
+            }
         }
     }
 
@@ -5106,7 +5169,8 @@ create the html string
 
     my $HTMLString = $LayoutObject->_BuildSelectionOutput(
         AttributeRef => $AttributeRef,
-        DataRef => $DataRef,
+        DataRef      => $DataRef,
+        TreeView     => 0, # optional, see BuildSelection()
     );
 
     my $AttributeRef = {
@@ -5173,6 +5237,12 @@ sub _BuildSelectionOutput {
             $String .= "  <option value=\"$Key\"$SelectedDisabled$OptionTitle>$Value</option>\n";
         }
         $String .= '</select>';
+
+        if ( $Param{TreeView} ) {
+            $String
+                .= ' <a href="#" title="$Text{"Show Tree Selection"}" class="ShowTreeSelection">$Text{"Show Tree Selection"}</a>';
+        }
+
     }
     return $String;
 }

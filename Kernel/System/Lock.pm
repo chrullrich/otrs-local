@@ -1,5 +1,5 @@
 # --
-# Kernel/System/Lock.pm - All Groups related function should be here eventually
+# Kernel/System/Lock.pm - All Lock functions
 # Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -14,8 +14,6 @@ use warnings;
 
 use Kernel::System::CacheInternal;
 use Kernel::System::Valid;
-
-use vars qw(@ISA);
 
 =head1 NAME
 
@@ -85,9 +83,9 @@ sub new {
     for (qw(DBObject ConfigObject LogObject MainObject EncodeObject)) {
         $Self->{$_} = $Param{$_} || die "Got no $_!";
     }
-    $Self->{ValidObject}         = Kernel::System::Valid->new(%Param);
+    $Self->{ValidObject}         = Kernel::System::Valid->new( %{$Self} );
     $Self->{CacheInternalObject} = Kernel::System::CacheInternal->new(
-        %Param,
+        %{$Self},
         Type => 'Lock',
         TTL  => 60 * 60 * 24 * 20,
     );

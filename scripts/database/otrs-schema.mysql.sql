@@ -1,6 +1,34 @@
 # ----------------------------------------------------------
-#  driver: mysql, generated: 2013-09-23 13:35:42
+#  driver: mysql
 # ----------------------------------------------------------
+# ----------------------------------------------------------
+#  create table acl
+# ----------------------------------------------------------
+CREATE TABLE acl (
+    id INTEGER NOT NULL AUTO_INCREMENT,
+    name VARCHAR (200) NOT NULL,
+    comments VARCHAR (250) NULL,
+    description VARCHAR (250) NULL,
+    valid_id SMALLINT NOT NULL,
+    stop_after_match SMALLINT NULL,
+    config_match LONGBLOB NULL,
+    config_change LONGBLOB NULL,
+    create_time DATETIME NOT NULL,
+    create_by INTEGER NOT NULL,
+    change_time DATETIME NOT NULL,
+    change_by INTEGER NOT NULL,
+    PRIMARY KEY(id),
+    UNIQUE INDEX acl_name (name)
+);
+# ----------------------------------------------------------
+#  create table acl_sync
+# ----------------------------------------------------------
+CREATE TABLE acl_sync (
+    acl_id VARCHAR (200) NOT NULL,
+    sync_state VARCHAR (30) NOT NULL,
+    create_time DATETIME NOT NULL,
+    change_time DATETIME NOT NULL
+);
 # ----------------------------------------------------------
 #  create table valid
 # ----------------------------------------------------------
@@ -38,7 +66,7 @@ CREATE TABLE users (
 CREATE TABLE user_preferences (
     user_id INTEGER NOT NULL,
     preferences_key VARCHAR (150) NOT NULL,
-    preferences_value VARCHAR (250) NULL,
+    preferences_value LONGBLOB NULL,
     INDEX user_preferences_user_id (user_id)
 );
 # ----------------------------------------------------------
@@ -529,6 +557,7 @@ CREATE TABLE article (
     a_cc TEXT NULL,
     a_subject TEXT NULL,
     a_message_id TEXT NULL,
+    a_message_id_md5 VARCHAR (32) NULL,
     a_in_reply_to TEXT NULL,
     a_references TEXT NULL,
     a_content_type VARCHAR (250) NULL,
@@ -543,7 +572,7 @@ CREATE TABLE article (
     PRIMARY KEY(id),
     INDEX article_article_sender_type_id (article_sender_type_id),
     INDEX article_article_type_id (article_type_id),
-    INDEX article_message_id (a_message_id(255)),
+    INDEX article_message_id_md5 (a_message_id_md5),
     INDEX article_ticket_id (ticket_id)
 );
 # ----------------------------------------------------------
@@ -558,13 +587,11 @@ CREATE TABLE article_search (
     a_to TEXT NULL,
     a_cc TEXT NULL,
     a_subject TEXT NULL,
-    a_message_id TEXT NULL,
     a_body MEDIUMTEXT NOT NULL,
     incoming_time INTEGER NOT NULL,
     PRIMARY KEY(id),
     INDEX article_search_article_sender_type_id (article_sender_type_id),
     INDEX article_search_article_type_id (article_type_id),
-    INDEX article_search_message_id (a_message_id(255)),
     INDEX article_search_ticket_id (ticket_id)
 );
 # ----------------------------------------------------------
@@ -616,13 +643,14 @@ CREATE TABLE time_accounting (
     INDEX time_accounting_ticket_id (ticket_id)
 );
 # ----------------------------------------------------------
-#  create table standard_response
+#  create table standard_template
 # ----------------------------------------------------------
-CREATE TABLE standard_response (
+CREATE TABLE standard_template (
     id INTEGER NOT NULL AUTO_INCREMENT,
     name VARCHAR (200) NOT NULL,
     text TEXT NULL,
     content_type VARCHAR (250) NULL,
+    template_type VARCHAR (100) NOT NULL DEFAULT 'Answer',
     comments VARCHAR (250) NULL,
     valid_id SMALLINT NOT NULL,
     create_time DATETIME NOT NULL,
@@ -630,14 +658,14 @@ CREATE TABLE standard_response (
     change_time DATETIME NOT NULL,
     change_by INTEGER NOT NULL,
     PRIMARY KEY(id),
-    UNIQUE INDEX standard_response_name (name)
+    UNIQUE INDEX standard_template_name (name)
 );
 # ----------------------------------------------------------
-#  create table queue_standard_response
+#  create table queue_standard_template
 # ----------------------------------------------------------
-CREATE TABLE queue_standard_response (
+CREATE TABLE queue_standard_template (
     queue_id INTEGER NOT NULL,
-    standard_response_id INTEGER NOT NULL,
+    standard_template_id INTEGER NOT NULL,
     create_time DATETIME NOT NULL,
     create_by INTEGER NOT NULL,
     change_time DATETIME NOT NULL,
@@ -662,12 +690,12 @@ CREATE TABLE standard_attachment (
     UNIQUE INDEX standard_attachment_name (name)
 );
 # ----------------------------------------------------------
-#  create table standard_response_attachment
+#  create table standard_template_attachment
 # ----------------------------------------------------------
-CREATE TABLE standard_response_attachment (
+CREATE TABLE standard_template_attachment (
     id INTEGER NOT NULL AUTO_INCREMENT,
     standard_attachment_id INTEGER NOT NULL,
-    standard_response_id INTEGER NOT NULL,
+    standard_template_id INTEGER NOT NULL,
     create_time DATETIME NOT NULL,
     create_by INTEGER NOT NULL,
     change_time DATETIME NOT NULL,
@@ -897,6 +925,7 @@ CREATE TABLE postmaster_filter (
     f_type VARCHAR (20) NOT NULL,
     f_key VARCHAR (200) NOT NULL,
     f_value VARCHAR (200) NOT NULL,
+    f_not SMALLINT NULL,
     INDEX postmaster_filter_f_name (f_name)
 );
 # ----------------------------------------------------------
@@ -1039,6 +1068,18 @@ CREATE TABLE link_relation (
     create_time DATETIME NOT NULL,
     create_by INTEGER NOT NULL,
     UNIQUE INDEX link_relation_view (source_object_id, source_key, target_object_id, target_key, type_id)
+);
+# ----------------------------------------------------------
+#  create table system_data
+# ----------------------------------------------------------
+CREATE TABLE system_data (
+    data_key VARCHAR (160) NOT NULL,
+    data_value LONGBLOB NULL,
+    create_time DATETIME NOT NULL,
+    create_by INTEGER NOT NULL,
+    change_time DATETIME NOT NULL,
+    change_by INTEGER NOT NULL,
+    PRIMARY KEY(data_key)
 );
 # ----------------------------------------------------------
 #  create table xml_storage
@@ -1217,9 +1258,9 @@ CREATE TABLE dynamic_field_value (
     value_date DATETIME NULL,
     value_int BIGINT NULL,
     PRIMARY KEY(id),
-    INDEX index_field_values (field_id, object_id),
-    INDEX index_search_date (field_id, value_date),
-    INDEX index_search_int (field_id, value_int)
+    INDEX dynamic_field_value_field_values (object_id),
+    INDEX dynamic_field_value_search_date (field_id, value_date),
+    INDEX dynamic_field_value_search_int (field_id, value_int)
 );
 # ----------------------------------------------------------
 #  create table dynamic_field

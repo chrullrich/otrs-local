@@ -46,7 +46,7 @@ sub Connect {
         Server   => $Param{Host},
         User     => $Param{Login},
         Password => $Param{Password},
-        Starttls => 1,                  # may need to change to param
+        Starttls => [ SSL_verify_mode => 0 ],
         Debug    => $Param{Debug},
         Uid      => 1,
 
@@ -272,7 +272,7 @@ sub _ProcessFailed {
         Content    => \$Param{Email},
         Mode       => 'binmode',
         Type       => 'Local',
-        Permission => '644',
+        Permission => '640',
     );
 }
 

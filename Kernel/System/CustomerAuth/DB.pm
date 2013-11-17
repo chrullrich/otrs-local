@@ -13,6 +13,7 @@ use strict;
 use warnings;
 
 use Crypt::PasswdMD5 qw(unix_md5_crypt);
+use Digest::SHA;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -146,14 +147,7 @@ sub Auth {
         # sha256 pw
         elsif ( $GetPw =~ m{\A .{64} \z}xms ) {
 
-            my $SHAObject;
-            if ( $Self->{MainObject}->Require('Digest::SHA') ) {
-                $SHAObject = Digest::SHA->new('sha256');
-            }
-            else {
-                $Self->{MainObject}->Require('Digest::SHA::PurePerl');
-                $SHAObject = Digest::SHA::PurePerl->new('sha256');
-            }
+            my $SHAObject = Digest::SHA->new('sha256');
 
             # encode output, needed by sha256_hex() only non utf8 signs
             $Self->{EncodeObject}->EncodeOutput( \$Pw );
@@ -163,17 +157,41 @@ sub Auth {
             $Self->{EncodeObject}->EncodeInput( \$CryptedPw );
         }
 
+        elsif ( $GetPw =~ m{^BCRYPT:} ) {
+
+            # require module, log errors if module was not found
+            if ( !$Self->{MainObject}->Require('Crypt::Eksblowfish::Bcrypt') ) {
+                $Self->{LogObject}->Log(
+                    Priority => 'error',
+                    Message =>
+                        "User: '$User' tried to authenticate with bcrypt but 'Crypt::Eksblowfish::Bcrypt' is not installed!",
+                );
+                return;
+            }
+
+            # get salt and cost from stored PW string
+            my ( $Cost, $Salt, $Base64Hash ) = $GetPw =~ m{^BCRYPT:(\d+):(.{16}):(.*)$}xms;
+
+            # remove UTF8 flag, required by Crypt::Eksblowfish::Bcrypt
+            $Self->{EncodeObject}->EncodeOutput( \$Pw );
+
+            # calculate password hash with the same cost and hash settings
+            my $Octets = Crypt::Eksblowfish::Bcrypt::bcrypt_hash(
+                {
+                    key_nul => 1,
+                    cost    => $Cost,
+                    salt    => $Salt,
+                },
+                $Pw
+            );
+
+            $CryptedPw = "BCRYPT:$Cost:$Salt:" . Crypt::Eksblowfish::Bcrypt::en_base64($Octets);
+        }
+
         # sha1 pw
         else {
 
-            my $SHAObject;
-            if ( $Self->{MainObject}->Require('Digest::SHA') ) {
-                $SHAObject = Digest::SHA->new('sha1');
-            }
-            else {
-                $Self->{MainObject}->Require('Digest::SHA::PurePerl');
-                $SHAObject = Digest::SHA::PurePerl->new('sha1');
-            }
+            my $SHAObject = Digest::SHA->new('sha1');
 
             # encode output, needed by sha1_hex() only non utf8 signs
             $Self->{EncodeObject}->EncodeOutput( \$Pw );

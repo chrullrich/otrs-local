@@ -8,9 +8,10 @@
 # --
 
 $Include{"AgentCustomerSearch"}
-<div class="MainBox ARIARoleMain">
+<div class="MainBox ARIARoleMain FormScreen">
 
     <h1>$Text{"Create New Email Ticket"}</h1>
+    <p class="AsteriskExplanation">$Text{"All fields marked with an asterisk (*) are mandatory."}</p>
 
     <div class="LayoutFixedSidebar SidebarLast">
 
@@ -57,7 +58,7 @@ $Include{"AgentCustomerSearch"}
 <!--dtl:js_on_document_complete-->
 <script type="text/javascript">//<![CDATA[
 $('#TypeID').bind('change', function (Event) {
-    Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'TypeID', [ 'Dest', 'NewUserID', 'NewResponsibleID', 'NextStateID', 'PriorityID', 'ServiceID', 'SLAID', 'SignKeyID', 'CryptKeyID', $Data{"DynamicFieldNamesStrg"}, 'To', 'Cc', 'Bcc']);
+    Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'TypeID', [ 'Dest', 'NewUserID', 'NewResponsibleID', 'NextStateID', 'PriorityID', 'ServiceID', 'SLAID', 'SignKeyID', 'CryptKeyID', 'To', 'Cc', 'Bcc', 'StandardTemplateID' $Data{"DynamicFieldNamesStrg"}]);
 });
 //]]></script>
 <!--dtl:js_on_document_complete-->
@@ -74,7 +75,7 @@ $('#TypeID').bind('change', function (Event) {
 <script type="text/javascript">//<![CDATA[
 $('#Dest').bind('change', function (Event) {
     var SignatureURL = '$Env{"Baselink"}Action=$Env{"Action"};Subaction=Signature;Dest=' + $(this).val();
-    Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'Dest', ['Signature', 'NewUserID', 'NewResponsibleID', 'NextStateID', 'PriorityID', 'ServiceID', 'SLAID', 'SignKeyID', 'CryptKeyID', $Data{"DynamicFieldNamesStrg"}, 'To', 'Cc', 'Bcc']);
+    Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'Dest', ['Signature', 'NewUserID', 'NewResponsibleID', 'NextStateID', 'PriorityID', 'ServiceID', 'SLAID', 'SignKeyID', 'CryptKeyID', 'To', 'Cc', 'Bcc', 'StandardTemplateID' $Data{"DynamicFieldNamesStrg"}]);
     if (!Core.Config.Get('SessionIDCookie')) {
         SignatureURL += ';' + Core.Config.Get('SessionName') + '=' + Core.Config.Get('SessionID');
     }
@@ -85,56 +86,6 @@ $('#Dest').bind('change', function (Event) {
                     </div>
                     <div class="Clear"></div>
 
-
-                    <div class="Field $QData{"CustomerHiddenContainer"}">
-                        <div class="CustomerTicketTemplateToCustomer SpacingTopSmall Hidden">
-                            <input name="CustomerSelected" id="CustomerSelected" class="CustomerTicketRadio" type="radio" value=""/>
-                            <input name="CustomerKey" id="CustomerKey" class="CustomerKey" type="hidden" value=""/>
-                            <input class="CustomerTicketText W75pc" name="CustomerTicketText" id="CustomerTicketText" type="text" value="" readonly="readonly" />
-                            <button type="button" id="RemoveCustomerTicket" class="Remove CustomerTicketRemove" value="$Text{"Remove Ticket Customer"}">$Text{"Remove Ticket Customer"}</button>
-                        </div>
-
-                        <div id="TicketCustomerContentToCustomer" class="CustomerContainer">
-<!-- dtl:block:MultipleCustomer -->
-                            <div class="SpacingTopSmall ">
-                                <input name="CustomerSelected" id="CustomerSelected" class="CustomerTicketRadio" type="radio" value="$QData{"Count"}" $QData{"CustomerSelected"}  $QData{"CustomerDisabled"} />
-                                <input name="CustomerKey_$QData{"Count"}" id="CustomerKey_$QData{"Count"}" class="CustomerKey" type="hidden" value="$QData{"CustomerKey"}"/>
-                                <input class="CustomerTicketText W75pc $QData{"CustomerError"}" name="CustomerTicketText_$Data{"Count"}" id="CustomerTicketText_$Data{"Count"}" type="text" value="$QData{"CustomerElement"}" readonly="readonly" />
-                                <button type="button" id="RemoveCustomerTicket_$Data{"Count"}" class="Remove CustomerTicketRemove" value="$Text{"Remove Ticket Customer"}">$Text{"Remove Ticket Customer"}</button>
-
-<!-- dtl:block:CustomerErrorExplantion -->
-                                <p class="Explanation Error">$Text{"Please remove this entry and enter a new one with the correct value."}</p>
-<!-- dtl:block:CustomerErrorExplantion -->
-
-                                <div id="CustomerTicketText_$Data{"Count"}ServerError" class="TooltipErrorMessage">
-<!-- dtl:block:CustomerGenericServerErrorMsg -->
-                                    <p>$Text{"This field is required."}</p>
-<!-- dtl:block:CustomerGenericServerErrorMsg -->
-<!-- dtl:block:InvalidConfigServerErrorMsg -->
-                                    <p>$Text{"This email address is not allowed due to the system configuration."}</p>
-<!-- dtl:block:InvalidConfigServerErrorMsg -->
-<!-- dtl:block:InvalidMXServerErrorMsg -->
-                                    <p>$Text{"This email address failed MX check."}</p>
-<!-- dtl:block:InvalidMXServerErrorMsg -->
-<!-- dtl:block:InvalidDNSServerErrorMsg -->
-                                    <p>$Text{"DNS problem, please check your configuration and the error log."}</p>
-<!-- dtl:block:InvalidDNSServerErrorMsg -->
-<!-- dtl:block:InvalidSyntaxServerErrorMsg -->
-                                    <p>$Text{"The syntax of this email address is incorrect."}</p>
-<!-- dtl:block:InvalidSyntaxServerErrorMsg -->
-<!-- dtl:block:IsDuplicatedServerErrorMsg -->
-                                    <p>$Text{"This address already exists on the address list."}</p>
-<!-- dtl:block:IsDuplicatedServerErrorMsg -->
-                                </div>
-                            </div>
-<!-- dtl:block:MultipleCustomer -->
-
-                        </div>
-<!-- dtl:block:MultipleCustomerCounter -->
-                        <input name="CustomerTicketCounterToCustomer" id="CustomerTicketCounterToCustomer" type="hidden" value="$QData{"CustomerCounter"}"/>
-<!-- dtl:block:MultipleCustomerCounter -->
-                    </div>
-                    <div class="Clear"></div>
 <!--dtl:js_on_document_complete-->
 <script type="text/javascript">//<![CDATA[
     $('.CustomerTicketRadio').bind('change', function () {
@@ -163,29 +114,86 @@ $('#Dest').bind('change', function (Event) {
 <!--dtl:js_on_document_complete-->
 <!-- dtl:block:FromExternalCustomer -->
 
-                    <label for="ToCustomer" class="Mandatory"><span class="Marker">*</span>$Text{"To customer"}:</label>
+                    <label for="ToCustomer" class="Mandatory"><span class="Marker">*</span>$Text{"To customer user"}:</label>
                     <div class="Field">
                         <input id="ToCustomer" type="text" name="ToCustomer" value="" class="CustomerAutoComplete W75pc $QData{"ToInvalid"}" autocomplete="off" />
                         <div id="ToCustomerServerError" class="TooltipErrorMessage">
 <!-- dtl:block:ToServerErrorMsg -->
-                            <p>$Text{"Please include at least one customer for the ticket."}</p>
+                            <p>$Text{"Please include at least one customer user for the ticket."}</p>
 <!-- dtl:block:ToServerErrorMsg -->
                         </div>
+                    </div>
+                    <div class="Clear"></div>
+
+                    <div class="Field $QData{"CustomerHiddenContainer"}">
+                        <div class="CustomerTicketTemplateToCustomer Hidden">
+                            <input name="CustomerSelected" title="$Text{"Select this customer as the main customer."}" id="CustomerSelected" class="CustomerTicketRadio" type="radio" value=""/>
+                            <input name="CustomerKey" id="CustomerKey" class="CustomerKey" type="hidden" value=""/>
+                            <input class="CustomerTicketText Radio" title="$Text{"To customer user"}" name="CustomerTicketText" id="CustomerTicketText" type="text" value="" readonly="readonly" />
+                            <button type="button" id="RemoveCustomerTicket" class="Remove CustomerTicketRemove" value="$Text{"Remove Ticket Customer User"}">$Text{"Remove Ticket Customer User"}</button>
+                        </div>
+
+                        <div id="TicketCustomerContentToCustomer" class="CustomerContainer">
+                            <span class="BoxLabel">$Text{"To"}</span>
+<!-- dtl:block:MultipleCustomer -->
+                            <div>
+                                <input name="CustomerSelected" title="$Text{"Select this customer as the main customer."}" id="CustomerSelected" class="CustomerTicketRadio" type="radio" value="$QData{"Count"}" $QData{"CustomerSelected"}  $QData{"CustomerDisabled"} />
+                                <input name="CustomerKey_$QData{"Count"}" id="CustomerKey_$QData{"Count"}" class="CustomerKey" type="hidden" value="$QData{"CustomerKey"}"/>
+                                <input class="CustomerTicketText $QData{"CustomerError"}" name="CustomerTicketText_$Data{"Count"}" id="CustomerTicketText_$Data{"Count"}" type="text" value="$QData{"CustomerElement"}" readonly="readonly" />
+                                <button type="button" id="RemoveCustomerTicket_$Data{"Count"}" class="Remove CustomerTicketRemove" value="$Text{"Remove Ticket Customer User"}">$Text{"Remove Ticket Customer User"}</button>
+
+<!-- dtl:block:CustomerErrorExplantion -->
+                                <p class="Explanation Error">$Text{"Please remove this entry and enter a new one with the correct value."}</p>
+<!-- dtl:block:CustomerErrorExplantion -->
+
+                                <div id="CustomerTicketText_$Data{"Count"}ServerError" class="TooltipErrorMessage">
+<!-- dtl:block:CustomerGenericServerErrorMsg -->
+                                    <p>$Text{"This field is required."}</p>
+<!-- dtl:block:CustomerGenericServerErrorMsg -->
+<!-- dtl:block:InvalidConfigServerErrorMsg -->
+                                    <p>$Text{"This email address is not allowed due to the system configuration."}</p>
+<!-- dtl:block:InvalidConfigServerErrorMsg -->
+<!-- dtl:block:InvalidMXServerErrorMsg -->
+                                    <p>$Text{"This email address failed MX check."}</p>
+<!-- dtl:block:InvalidMXServerErrorMsg -->
+<!-- dtl:block:InvalidDNSServerErrorMsg -->
+                                    <p>$Text{"DNS problem, please check your configuration and the error log."}</p>
+<!-- dtl:block:InvalidDNSServerErrorMsg -->
+<!-- dtl:block:InvalidSyntaxServerErrorMsg -->
+                                    <p>$Text{"The syntax of this email address is incorrect."}</p>
+<!-- dtl:block:InvalidSyntaxServerErrorMsg -->
+<!-- dtl:block:IsDuplicatedServerErrorMsg -->
+                                    <p>$Text{"This address already exists on the address list."}</p>
+<!-- dtl:block:IsDuplicatedServerErrorMsg -->
+                                </div>
+                            </div>
+<!-- dtl:block:MultipleCustomer -->
+                        </div>
+<!-- dtl:block:MultipleCustomerCounter -->
+                        <input name="CustomerTicketCounterToCustomer" id="CustomerTicketCounterToCustomer" type="hidden" value="$QData{"CustomerCounter"}"/>
+<!-- dtl:block:MultipleCustomerCounter -->
+                    </div>
+                    <div class="Clear"></div>
+
+                    <label for="CcCustomer">$Text{"Cc"}:</label>
+                    <div class="Field">
+                        <input id="CcCustomer" type="text" name="CcCustomer" value="" class="CustomerAutoComplete W75pc $QData{"CcInvalid"}" autocomplete="off" />
                     </div>
                     <div class="Clear"></div>
 
                     <div class="Field $QData{"CcCustomerHiddenContainer"}">
                         <div class="CustomerTicketTemplateCcCustomer SpacingTopSmall Hidden">
                             <input name="CcCustomerKey" id="CcCustomerKey" class="CustomerKey" type="hidden" value=""/>
-                            <input class="CustomerTicketText W75pc" name="CcCustomerTicketText" id="CcCustomerTicketText" type="text" value="" readonly="readonly" />
+                            <input class="CustomerTicketText" title="$Text{"Cc"}" name="CcCustomerTicketText" id="CcCustomerTicketText" type="text" value="" readonly="readonly" />
                             <button type="button" id="CcRemoveCustomerTicket" class="Remove CustomerTicketRemove" value="$Text{"Remove Cc"}">$Text{"Remove Cc"}</button>
                         </div>
 
-                        <div id="TicketCustomerContentCcCustomer">
+                        <div id="TicketCustomerContentCcCustomer" class="CcCustomerContainer">
+                            <span class="BoxLabel">$Text{"Cc"}</span>
 <!-- dtl:block:CcMultipleCustomer -->
-                            <div class="SpacingTopSmall ">
+                            <div>
                                 <input name="CcCustomerKey_$QData{"Count"}" id="CcCustomerKey_$QData{"Count"}" class="CustomerKey" type="hidden" value="$QData{"CustomerKey"}"/>
-                                <input class="CustomerTicketText W75pc $QData{"CustomerError"}" name="CcCustomerTicketText_$Data{"Count"}" id="CcCustomerTicketText_$Data{"Count"}" type="text" value="$QData{"CustomerElement"}" readonly="readonly" />
+                                <input class="CustomerTicketText $QData{"CustomerError"}" name="CcCustomerTicketText_$Data{"Count"}" id="CcCustomerTicketText_$Data{"Count"}" type="text" value="$QData{"CustomerElement"}" readonly="readonly" />
                                 <button type="button" id="CcRemoveCustomerTicket_$Data{"Count"}" class="Remove CustomerTicketRemove" value="$Text{"Remove Cc"}">$Text{"Remove Cc"}</button>
 
 <!-- dtl:block:CcCustomerErrorExplantion -->
@@ -222,24 +230,25 @@ $('#Dest').bind('change', function (Event) {
                     </div>
                     <div class="Clear"></div>
 
-                    <label for="CcCustomer">$Text{"Cc"}:</label>
+                    <label for="BccCustomer">$Text{"Bcc"}:</label>
                     <div class="Field">
-                        <input id="CcCustomer" type="text" name="CcCustomer" value="" class="CustomerAutoComplete W75pc $QData{"CcInvalid"}" autocomplete="off" />
+                        <input id="BccCustomer" type="text" name="BccCustomer" value="" class="CustomerAutoComplete W75pc $QData{"BccInvalid"}" autocomplete="off" />
                     </div>
                     <div class="Clear"></div>
 
                     <div class="Field $QData{"BccCustomerHiddenContainer"}">
                         <div class="CustomerTicketTemplateBccCustomer SpacingTopSmall Hidden">
                             <input name="BccCustomerKey" id="BccCustomerKey" class="CustomerKey" type="hidden" value=""/>
-                            <input class="CustomerTicketText W75pc" name="BccCustomerTicketText" id="BccCustomerTicketText" type="text" value="" readonly="readonly" />
+                            <input class="CustomerTicketText" title="$Text{"Bcc"}" name="BccCustomerTicketText" id="BccCustomerTicketText" type="text" value="" readonly="readonly" />
                             <button type="button" id="BccRemoveCustomerTicket" class="Remove CustomerTicketRemove" value="$Text{"Remove Bcc"}">$Text{"Remove Bcc"}</button>
                         </div>
 
-                        <div id="TicketCustomerContentBccCustomer">
+                        <div id="TicketCustomerContentBccCustomer" class="BccCustomerContainer">
+                            <span class="BoxLabel">$Text{"Bcc"}</span>
 <!-- dtl:block:BccMultipleCustomer -->
-                            <div class="SpacingTopSmall ">
+                            <div>
                                 <input name="BccCustomerKey_$QData{"Count"}" id="BccCustomerKey_$QData{"Count"}" class="CustomerKey" type="hidden" value="$QData{"CustomerKey"}"/>
-                                <input class="CustomerTicketText W75pc $QData{"CustomerError"}" name="BccCustomerTicketText_$Data{"Count"}" id="BccCustomerTicketText_$Data{"Count"}" type="text" value="$QData{"CustomerElement"}" readonly="readonly" />
+                                <input class="CustomerTicketText $QData{"CustomerError"}" name="BccCustomerTicketText_$Data{"Count"}" id="BccCustomerTicketText_$Data{"Count"}" type="text" value="$QData{"CustomerElement"}" readonly="readonly" />
                                 <button type="button" id="BccRemoveCustomerTicket_$Data{"Count"}" class="Remove CustomerTicketRemove" value="$Text{"Remove Bcc"}">$Text{"Remove Bcc"}</button>
 
 <!-- dtl:block:BccCustomerErrorExplantion -->
@@ -276,9 +285,9 @@ $('#Dest').bind('change', function (Event) {
                     </div>
                     <div class="Clear"></div>
 
-                    <label for="BccCustomer">$Text{"Bcc"}:</label>
+                    <label for="CustomerID">$Text{"CustomerID"}:</label>
                     <div class="Field">
-                        <input id="BccCustomer" type="text" name="BccCustomer" value="" class="CustomerAutoComplete W75pc $QData{"BccInvalid"}" autocomplete="off" />
+                        <input type="text" name="CustomerID" id="CustomerID" value="$QData{"CustomerID"}" class="W75pc"/>
                     </div>
                     <div class="Clear"></div>
 
@@ -289,14 +298,31 @@ $('#Dest').bind('change', function (Event) {
                         <div id="ServiceIDServerError" class="TooltipErrorMessage"><p>$Text{"Service invalid."}</p></div>
 <!--dtl:js_on_document_complete-->
 <script type="text/javascript">//<![CDATA[
-$('#ServiceID').bind('change', function (Event) {
-    Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'ServiceID', ['TypeID', 'Dest', 'NewUserID', 'NewResponsibleID', 'NextStateID', 'PriorityID', 'SLAID', 'SignKeyID', 'CryptKeyID', $Data{"DynamicFieldNamesStrg"}, 'To', 'Cc', 'Bcc']);
-});
+    $('#ServiceID').bind('change', function (Event) {
+        Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'ServiceID', ['TypeID', 'Dest', 'NewUserID', 'NewResponsibleID', 'NextStateID', 'PriorityID', 'SLAID', 'SignKeyID', 'CryptKeyID', 'To', 'Cc', 'Bcc', 'StandardTemplateID' $Data{"DynamicFieldNamesStrg"}]);
+    });
 //]]></script>
 <!--dtl:js_on_document_complete-->
                     </div>
                     <div class="Clear"></div>
 <!-- dtl:block:TicketService -->
+
+<!-- dtl:block:TicketServiceMandatory -->
+                    <label class="Mandatory" for="ServiceID"><span class="Marker">*</span> $Text{"Service"}:</label>
+                    <div class="Field">
+                        $Data{"ServiceStrg"}
+                        <div id="ServiceIDError" class="TooltipErrorMessage" ><p>$Text{"This field is required."}</p></div>
+                        <div id="ServiceIDServerError" class="TooltipErrorMessage"><p>$Text{"Service invalid."}</p></div>
+<!--dtl:js_on_document_complete-->
+<script type="text/javascript">//<![CDATA[
+    $('#ServiceID').bind('change', function (Event) {
+        Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'ServiceID', ['TypeID', 'Dest', 'NewUserID', 'NewResponsibleID', 'NextStateID', 'PriorityID', 'SLAID', 'SignKeyID', 'CryptKeyID', 'To', 'Cc', 'Bcc', 'StandardTemplateID' $Data{"DynamicFieldNamesStrg"}]);
+    });
+//]]></script>
+<!--dtl:js_on_document_complete-->
+                    </div>
+                    <div class="Clear"></div>
+<!-- dtl:block:TicketServiceMandatory -->
 
 <!-- dtl:block:TicketSLA -->
                     <label for="SLAID">$Text{"Service Level Agreement"}:</label>
@@ -304,14 +330,31 @@ $('#ServiceID').bind('change', function (Event) {
                         $Data{"SLAStrg"}
 <!--dtl:js_on_document_complete-->
 <script type="text/javascript">//<![CDATA[
-$('#SLAID').bind('change', function (Event) {
-    Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'SLAID', ['TypeID', 'Dest', 'NewUserID', 'NewResponsibleID', 'ServiceID', 'NextStateID', 'PriorityID', 'SignKeyID', 'CryptKeyID', $Data{"DynamicFieldNamesStrg"}, 'To', 'Cc', 'Bcc']);
-});
+    $('#SLAID').bind('change', function (Event) {
+        Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'SLAID', ['TypeID', 'Dest', 'NewUserID', 'NewResponsibleID', 'ServiceID', 'NextStateID', 'PriorityID', 'SignKeyID', 'CryptKeyID', 'To', 'Cc', 'Bcc', 'StandardTemplateID' $Data{"DynamicFieldNamesStrg"}]);
+    });
 //]]></script>
 <!--dtl:js_on_document_complete-->
                     </div>
                     <div class="Clear"></div>
 <!-- dtl:block:TicketSLA -->
+
+<!-- dtl:block:TicketSLAMandatory -->
+                    <label class="Mandatory" for="SLAID"><span class="Marker">*</span> $Text{"Service Level Agreement"}:</label>
+                    <div class="Field">
+                        $Data{"SLAStrg"}
+                        <div id="SLAIDError" class="TooltipErrorMessage" ><p>$Text{"This field is required."}</p></div>
+                        <div id="SLAIDServerError" class="TooltipErrorMessage"><p>$Text{"This field is required."}</p></div>
+<!--dtl:js_on_document_complete-->
+<script type="text/javascript">//<![CDATA[
+    $('#SLAID').bind('change', function (Event) {
+        Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'SLAID', ['TypeID', 'Dest', 'NewUserID', 'NewResponsibleID', 'ServiceID', 'NextStateID', 'PriorityID', 'SignKeyID', 'CryptKeyID', 'To', 'Cc', 'Bcc', 'StandardTemplateID' $Data{"DynamicFieldNamesStrg"}]);
+    });
+//]]></script>
+<!--dtl:js_on_document_complete-->
+                    </div>
+                    <div class="Clear"></div>
+<!-- dtl:block:TicketSLAMandatory -->
 
 <!-- dtl:block:OwnerSelection -->
                     <label for="NewUserID">$Text{"Owner"}:</label>
@@ -329,7 +372,7 @@ $('#OwnerSelectionGetAll').bind('click', function (Event) {
 });
 
 $('#NewUserID').bind('change', function (Event) {
-    Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'NewUserID', [ 'TypeID', 'Dest', 'NewResponsibleID', 'NextStateID', 'PriorityID', 'ServiceID', 'SLAID', 'SignKeyID', 'CryptKeyID', $Data{"DynamicFieldNamesStrg"}, 'To', 'Cc', 'Bcc']);
+    Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'NewUserID', [ 'TypeID', 'Dest', 'NewResponsibleID', 'NextStateID', 'PriorityID', 'ServiceID', 'SLAID', 'SignKeyID', 'CryptKeyID', 'To', 'Cc', 'Bcc', 'StandardTemplateID' $Data{"DynamicFieldNamesStrg"}]);
 });
 //]]></script>
 <!--dtl:js_on_document_complete-->
@@ -353,7 +396,7 @@ $('#ResponsibleSelectionGetAll').bind('click', function (Event) {
 });
 
 $('#NewResponsibleID').bind('change', function (Event) {
-    Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'NewResponsibleID', [ 'TypeID', 'Dest', 'NewUserID', 'NextStateID', 'PriorityID', 'ServiceID', 'SLAID', 'SignKeyID', 'CryptKeyID', $Data{"DynamicFieldNamesStrg"}, 'To', 'Cc', 'Bcc']);
+    Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'NewResponsibleID', [ 'TypeID', 'Dest', 'NewUserID', 'NextStateID', 'PriorityID', 'ServiceID', 'SLAID', 'SignKeyID', 'CryptKeyID', 'To', 'Cc', 'Bcc', 'StandardTemplateID' $Data{"DynamicFieldNamesStrg"}]);
 });
 //]]></script>
 <!--dtl:js_on_document_complete-->
@@ -391,7 +434,7 @@ $('#NewResponsibleID').bind('change', function (Event) {
                         <a href="#" id="OptionAddressBook">[ $Text{"Address book"} ]</a>
 <!-- dtl:block:AddressBook -->
 <!-- dtl:block:OptionCustomer -->
-                        <a href="#" id="OptionCustomer">[ $Text{"Customer"} ]</a>
+                        <a href="#" id="OptionCustomer">[ $Text{"Customer user"} ]</a>
 <!-- dtl:block:OptionCustomer -->
 
 <!-- OutputFilterHook_TicketOptionsEnd -->
@@ -402,8 +445,25 @@ $('#NewResponsibleID').bind('change', function (Event) {
 
 <!-- OutputFilterHook_NoTicketOptionsFallback -->
 
+<!-- dtl:block:StandardTemplate -->
+                    <label for="StandardTemplateID">$Text{"Text Template"}:</label>
+                    <div class="Field">
+                        $Data{"StandardTemplateStrg"}
+                        <p class="FieldExplanation">Setting a template will overwrite any text or attachment.</p>
+                    </div>
+                    <div class="Clear"></div>
+<!--dtl:js_on_document_complete-->
+<script type="text/javascript">//<![CDATA[
+    $('#StandardTemplateID').bind('change', function (Event) {
+        Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'StandardTemplateID', ['RichTextField']);
+        return false;
+    });
+//]]></script>
+<!--dtl:js_on_document_complete-->
+<!-- dtl:block:StandardTemplate -->
+
                     <label class="Mandatory" for="RichText"><span class="Marker">*</span> $Text{"Text"}:</label>
-                    <div class="RichTextField">
+                    <div id="RichTextField" class="RichTextField">
 
 <!-- dtl:block:RichText -->
 $Include{"RichTextEditor"}
@@ -461,19 +521,13 @@ $('#FileUpload').bind('change', function () {
                     </div>
                     <div class="Clear"></div>
 
-                    <label for="CustomerID">$Text{"CustomerID"}:</label>
-                    <div class="Field">
-                        <input type="text" name="CustomerID" id="CustomerID" value="$QData{"CustomerID"}" class="W50pc"/>
-                    </div>
-                    <div class="Clear"></div>
-
                     <label for="NextStateID">$Text{"Next ticket state"}:</label>
                     <div class="Field">
                         $Data{"NextStatesStrg"}
 <!--dtl:js_on_document_complete-->
 <script type="text/javascript">//<![CDATA[
     $('#NextStateID').bind('change', function (Event) {
-        Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'NextStateID', [ 'TypeID', 'Dest', 'NewUserID','NewResponsibleID', 'PriorityID', 'ServiceID', 'SLAID', 'SignKeyID', 'CryptKeyID', $Data{"DynamicFieldNamesStrg"}, 'To', 'Cc', 'Bcc']);
+        Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'NextStateID', [ 'TypeID', 'Dest', 'NewUserID','NewResponsibleID', 'PriorityID', 'ServiceID', 'SLAID', 'SignKeyID', 'CryptKeyID', 'To', 'Cc', 'Bcc', 'StandardTemplateID' $Data{"DynamicFieldNamesStrg"}]);
     });
 //]]></script>
 <!--dtl:js_on_document_complete-->
@@ -494,7 +548,7 @@ $('#FileUpload').bind('change', function () {
 <!--dtl:js_on_document_complete-->
 <script type="text/javascript">//<![CDATA[
     $('#PriorityID').bind('change', function (Event) {
-        Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'PriorityID', [ 'TypeID', 'Dest', 'NewUserID','NewResponsibleID', 'NextStateID', 'ServiceID', 'SLAID', 'SignKeyID', 'CryptKeyID', $Data{"DynamicFieldNamesStrg"}, 'To', 'Cc', 'Bcc']);
+        Core.AJAX.FormUpdate($('#NewEmailTicket'), 'AJAXUpdate', 'PriorityID', [ 'TypeID', 'Dest', 'NewUserID','NewResponsibleID', 'NextStateID', 'ServiceID', 'SLAID', 'SignKeyID', 'CryptKeyID', 'To', 'Cc', 'Bcc', 'StandardTemplateID' $Data{"DynamicFieldNamesStrg"}]);
     });
 //]]></script>
 <!--dtl:js_on_document_complete-->
@@ -534,14 +588,14 @@ $('#FileUpload').bind('change', function () {
 #<!-- dtl:block:DynamicField_Field2 -->
 
 <!-- dtl:block:TimeUnitsLabel -->
-                    <label for="TimeUnits">$Text{"Time units"}$Text{"$Config{"Ticket::Frontend::TimeUnits"}"}:</label>
+                    <label for="TimeUnits">$Text{"Time units"} $Text{"$Config{"Ticket::Frontend::TimeUnits"}"}:</label>
 <!-- dtl:block:TimeUnitsLabel -->
 <!-- dtl:block:TimeUnitsLabelMandatory -->
-                    <label class="Mandatory" for="TimeUnits"><span class="Marker">*</span> $Text{"Time units"}$Text{"$Config{"Ticket::Frontend::TimeUnits"}"}:</label>
+                    <label class="Mandatory" for="TimeUnits"><span class="Marker">*</span> $Text{"Time units"} $Text{"$Config{"Ticket::Frontend::TimeUnits"}"}:</label>
 <!-- dtl:block:TimeUnitsLabelMandatory -->
 <!-- dtl:block:TimeUnits -->
                     <div class="Field">
-                        <input type="text" class="W25pc Validate_TimeUnits $QData{"TimeUnitsRequired"} $QData{"TimeUnitsInvalid"}" name="TimeUnits" id="TimeUnits" value="$QData{"TimeUnits"}"/>
+                        <input type="text" class="W50pc Validate_TimeUnits $QData{"TimeUnitsRequired"} $QData{"TimeUnitsInvalid"}" name="TimeUnits" id="TimeUnits" value="$QData{"TimeUnits"}"/>
                         <div id="TimeUnitsError" class="TooltipErrorMessage"><p>$Text{"Invalid time!"}</p></div>
                         <div id="TimeUnitsServerError" class="TooltipErrorMessage"><p>$Text{"This field is required."}</p></div>
                     </div>
@@ -549,7 +603,7 @@ $('#FileUpload').bind('change', function () {
 <!-- dtl:block:TimeUnits -->
 
                     <div class="Field SpacingTop">
-                        <button class="Primary" id="submitRichText" accesskey="g" title="$Text{"Send mail!"} (g)" type="submit" value="$Text{"Send mail!"}" >$Text{"Send mail!"}</button>
+                        <button class="Primary CallForAction" id="submitRichText" accesskey="g" title="$Text{"Send mail"} (g)" type="submit" value="$Text{"Send mail"}" ><span><i class="icon-envelope-alt"></i> $Text{"Send mail"}</span></button>
                     </div>
                 </fieldset>
             </form>
@@ -561,6 +615,7 @@ $('#FileUpload').bind('change', function () {
 <!--dtl:js_on_document_complete-->
 <script type="text/javascript">//<![CDATA[
 Core.Agent.TicketAction.Init();
+Core.Config.Set('Localization.Delete', "$JSText{"Delete"}");
 //]]></script>
 <!--dtl:js_on_document_complete-->
 

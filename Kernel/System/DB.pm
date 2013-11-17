@@ -18,8 +18,6 @@ use DBI;
 use Kernel::System::Time;
 use Kernel::System::VariableCheck qw(:all);
 
-use vars qw(@ISA);
-
 =head1 NAME
 
 Kernel::System::DB - global database interface
@@ -178,7 +176,7 @@ sub new {
     # check/get extra database configuration options
     # (overwrite with params)
     for (
-        qw(Type Limit DirectBlob Attribute QuoteSingle QuoteBack Connect Encode CaseInsensitive LcaseLikeInLargeText)
+        qw(Type Limit DirectBlob Attribute QuoteSingle QuoteBack Connect Encode CaseSensitive LcaseLikeInLargeText)
         )
     {
         if ( defined $Param{$_} ) {
@@ -206,7 +204,7 @@ sub new {
 
                     next KEY;
                 }
-                my $Instance = $Object->new(%Param);
+                my $Instance = $Object->new( %{$Self} );
                 if ( ref $Instance ne $Object ) {
                     $Self->{'LogObject'}->Log(
                         'Priority' => 'error',
@@ -302,6 +300,31 @@ sub Disconnect {
     return 1;
 }
 
+=item Version()
+
+to get the database version
+
+    my $DBVersion = $DBObject->Version();
+
+    returns: "MySQL 5.1.1";
+
+=cut
+
+sub Version {
+    my ( $Self, %Param ) = @_;
+
+    my $Version = 'unknown';
+
+    if ( $Self->{Backend}->{'DB::Version'} ) {
+        $Self->Prepare( SQL => $Self->{Backend}->{'DB::Version'} );
+        while ( my @Row = $Self->FetchrowArray() ) {
+            $Version = $Row[0];
+        }
+    }
+
+    return $Version;
+}
+
 =item Quote()
 
 to quote sql parameters
@@ -335,7 +358,7 @@ sub Quote {
 
     # quote integers
     if ( $Type eq 'Integer' ) {
-        if ( $Text !~ /^(\+|\-|)\d{1,16}$/ ) {
+        if ( $Text !~ m{\A [+-]? \d{1,16} \z}xms ) {
             $Self->{LogObject}->Log(
                 Caller   => 1,
                 Priority => 'error',
@@ -348,7 +371,7 @@ sub Quote {
 
     # quote numbers
     if ( $Type eq 'Number' ) {
-        if ( $Text !~ /^(\+|\-|)(\d{1,20}|\d{1,20}\.\d{1,20})$/ ) {
+        if ( $Text !~ m{ \A [+-]? \d{1,20} (?:\.\d{1,20})? \z}xms ) {
             $Self->{LogObject}->Log(
                 Caller   => 1,
                 Priority => 'error',
@@ -705,6 +728,32 @@ sub FetchrowArray {
     return @Row;
 }
 
+=item GetColumnNames()
+
+to retrieve the column names of a database statement
+
+    $DBObject->Prepare(
+        SQL   => "SELECT * FROM table",
+        Limit => 10
+    );
+
+    my @Names = $DBObject->GetColumnNames();
+
+=cut
+
+sub GetColumnNames {
+    my $Self = shift;
+
+    my $ColumnNames = $Self->{Cursor}->{NAME};
+
+    my @Result;
+    if ( ref $ColumnNames eq 'ARRAY' ) {
+        @Result = @{$ColumnNames};
+    }
+
+    return @Result;
+}
+
 =item SelectAll()
 
 returns all available records of a SELECT statement.
@@ -818,7 +867,7 @@ sub SQLProcessor {
 
             # unique
             elsif (
-                $Tag->{Tag} eq 'Unique'
+                $Tag->{Tag}    eq 'Unique'
                 || $Tag->{Tag} eq 'UniqueCreate'
                 || $Tag->{Tag} eq 'UniqueDrop'
                 )
@@ -832,7 +881,7 @@ sub SQLProcessor {
 
             # index
             elsif (
-                $Tag->{Tag} eq 'Index'
+                $Tag->{Tag}    eq 'Index'
                 || $Tag->{Tag} eq 'IndexCreate'
                 || $Tag->{Tag} eq 'IndexDrop'
                 )
@@ -846,7 +895,7 @@ sub SQLProcessor {
 
             # foreign keys
             elsif (
-                $Tag->{Tag} eq 'ForeignKey'
+                $Tag->{Tag}    eq 'ForeignKey'
                 || $Tag->{Tag} eq 'ForeignKeyCreate'
                 || $Tag->{Tag} eq 'ForeignKeyDrop'
                 )
@@ -956,7 +1005,9 @@ sub GetTableData {
     my %Data;
 
     my $SQL = "SELECT $What FROM $Table ";
-    $SQL .= ' WHERE ' . $Where if ($Where);
+    if ($Where) {
+        $SQL .= ' WHERE ' . $Where;
+    }
 
     if ( !$Where && $Valid ) {
         my @ValidIDs;
@@ -1239,11 +1290,11 @@ sub QueryCondition {
 
 # check if database supports LIKE in large text types
 # the first condition is a little bit opaque
-# CaseInsensitive of the database defines, if the database handles case sensitivity or not
+# CaseSensitive of the database defines, if the database handles case sensitivity or not
 # and the parameter $CaseSensitive defines, if the customer database should do case sensitive statements or not.
 # so if the database dont support case sensitivity or the configuration of the customer database want to do this
 # then we prevent the LOWER() statements.
-                    if ( $Self->GetDatabaseFunction('CaseInsensitive') || $CaseSensitive ) {
+                    if ( !$Self->GetDatabaseFunction('CaseSensitive') || $CaseSensitive ) {
                         $SQLA .= "$Key $Type '$Word'";
                     }
                     elsif ( $Self->GetDatabaseFunction('LcaseLikeInLargeText') ) {
@@ -1276,11 +1327,11 @@ sub QueryCondition {
 
 # check if database supports LIKE in large text types
 # the first condition is a little bit opaque
-# CaseInsensitive of the database defines, if the database handles case sensitivity or not
+# CaseSensitive of the database defines, if the database handles case sensitivity or not
 # and the parameter $CaseSensitive defines, if the customer database should do case sensitive statements or not.
 # so if the database dont support case sensitivity or the configuration of the customer database want to do this
 # then we prevent the LOWER() statements.
-                    if ( $Self->GetDatabaseFunction('CaseInsensitive') || $CaseSensitive ) {
+                    if ( !$Self->GetDatabaseFunction('CaseSensitive') || $CaseSensitive ) {
                         $SQLA .= "$Key $Type '$Word'";
                     }
                     elsif ( $Self->GetDatabaseFunction('LcaseLikeInLargeText') ) {

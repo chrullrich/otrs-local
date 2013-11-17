@@ -14,7 +14,7 @@ use warnings;
 
 use LWP::UserAgent;
 
-use vars qw(@ISA);
+use Kernel::System::VariableCheck qw(:all);
 
 =head1 NAME
 
@@ -92,17 +92,35 @@ sub new {
 
 =item Request()
 
-return the content of requested URL
+return the content of requested URL.
+
+Simple GET request:
 
     my %Response = $WebUserAgentObject->Request(
         URL => 'http://example.com/somedata.xml',
     );
 
+Or a POST request; attributes can be a hashref like this:
+
+    my %Response = $WebUserAgentObject->Request(
+        URL  => 'http://example.com/someurl',
+        Type => 'POST',
+        Data => { Attribute1 => 'Value', Attribute2 => 'Value2' },
+    );
+
+alternatively, you can use an arrayref like this:
+
+    my %Response = $WebUserAgentObject->Request(
+        URL  => 'http://example.com/someurl',
+        Type => 'POST',
+        Data => [ Attribute => 'Value', Attribute => 'OtherValue' ],
+    );
+
 returns
 
     %Response = (
-        Status  => 200,         # http status
-        Content => $ContentRef, # content of requested site
+        Status  => '200 OK',    # http status
+        Content => $ContentRef, # content of requested URL
     );
 
 =cut
@@ -110,14 +128,18 @@ returns
 sub Request {
     my ( $Self, %Param ) = @_;
 
+    # define method - default to GET
+    $Param{Type} ||= 'GET';
+
     my $Response;
 
     {
+
         # set HTTPS proxy for ssl requests, localize %ENV because of mod_perl
         local %ENV = %ENV;
 
         # if a proxy is set, extract it and use it as environment variables for HTTPS
-        if ( defined $Self->{Proxy} && $Self->{Proxy} =~ /:\/\/(.*)\// ) {
+        if ( $Self->{Proxy} =~ /:\/\/(.*)\// ) {
             my $ProxyAddress = $1;
 
             # extract authentication information if needed
@@ -151,17 +173,36 @@ sub Request {
             $UserAgent->proxy( [ 'http', 'ftp' ], $Self->{Proxy} );
         }
 
-        # get file
-        $Response = $UserAgent->get( $Param{URL} );
-        if ( !$Response->is_success() ) {
-            $Self->{LogObject}->Log(
-                Priority => 'error',
-                Message  => "Can't get file from $Param{URL}: " . $Response->status_line(),
-            );
-            return (
-                Status => $Response->status_line(),
-            );
+        if ( $Param{Type} eq 'GET' ) {
+
+            # perform get request on URL
+            $Response = $UserAgent->get( $Param{URL} );
         }
+
+        else {
+
+            # check for Data param
+            if ( !IsArrayRefWithData( $Param{Data} ) && !IsHashRefWithData( $Param{Data} ) ) {
+                $Self->{LogObject}->Log(
+                    Priority => 'error',
+                    Message =>
+                        'WebUserAgent POST: Need Data param containing a hashref or arrayref with data.',
+                );
+                return ( Status => 0 );
+            }
+
+            # perform post request plus data
+            $Response = $UserAgent->post( $Param{URL}, $Param{Data} );
+        }
+    }
+    if ( !$Response->is_success() ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "Can't perform $Param{Type} on $Param{URL}: " . $Response->status_line(),
+        );
+        return (
+            Status => $Response->status_line(),
+        );
     }
 
     # return request

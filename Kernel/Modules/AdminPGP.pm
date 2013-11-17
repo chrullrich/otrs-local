@@ -161,8 +161,7 @@ sub Run {
             Value     => '',
         );
         my %UploadStuff = $Self->{ParamObject}->GetUploadAll(
-            Param  => 'FileUpload',
-            Source => 'String',
+            Param => 'FileUpload',
         );
         if ( !%UploadStuff ) {
             $Errors{FileUploadInvalid} = 'ServerError';

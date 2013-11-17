@@ -1,8 +1,59 @@
 -- ----------------------------------------------------------
---  driver: oracle, generated: 2013-09-23 13:35:42
+--  driver: oracle
 -- ----------------------------------------------------------
 SET DEFINE OFF;
 SET SQLBLANKLINES ON;
+-- ----------------------------------------------------------
+--  create table acl
+-- ----------------------------------------------------------
+CREATE TABLE acl (
+    id NUMBER (12, 0) NOT NULL,
+    name VARCHAR2 (200) NOT NULL,
+    comments VARCHAR2 (250) NULL,
+    description VARCHAR2 (250) NULL,
+    valid_id NUMBER (5, 0) NOT NULL,
+    stop_after_match NUMBER (5, 0) NULL,
+    config_match CLOB NULL,
+    config_change CLOB NULL,
+    create_time DATE NOT NULL,
+    create_by NUMBER (12, 0) NOT NULL,
+    change_time DATE NOT NULL,
+    change_by NUMBER (12, 0) NOT NULL,
+    CONSTRAINT acl_name UNIQUE (name)
+);
+ALTER TABLE acl ADD CONSTRAINT PK_acl PRIMARY KEY (id);
+DROP SEQUENCE SE_acl;
+CREATE SEQUENCE SE_acl
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
+CREATE OR REPLACE TRIGGER SE_acl_t
+before insert on acl
+for each row
+begin
+  if :new.id IS NULL then
+    select SE_acl.nextval
+    into :new.id
+    from dual;
+  end if;
+end;
+/
+--;
+CREATE INDEX FK_acl_change_by ON acl (change_by);
+CREATE INDEX FK_acl_create_by ON acl (create_by);
+CREATE INDEX FK_acl_valid_id ON acl (valid_id);
+-- ----------------------------------------------------------
+--  create table acl_sync
+-- ----------------------------------------------------------
+CREATE TABLE acl_sync (
+    acl_id VARCHAR2 (200) NOT NULL,
+    sync_state VARCHAR2 (30) NOT NULL,
+    create_time DATE NOT NULL,
+    change_time DATE NOT NULL
+);
 -- ----------------------------------------------------------
 --  create table valid
 -- ----------------------------------------------------------
@@ -17,7 +68,13 @@ CREATE TABLE valid (
 );
 ALTER TABLE valid ADD CONSTRAINT PK_valid PRIMARY KEY (id);
 DROP SEQUENCE SE_valid;
-CREATE SEQUENCE SE_valid;
+CREATE SEQUENCE SE_valid
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_valid_t
 before insert on valid
 for each row
@@ -51,7 +108,13 @@ CREATE TABLE users (
 );
 ALTER TABLE users ADD CONSTRAINT PK_users PRIMARY KEY (id);
 DROP SEQUENCE SE_users;
-CREATE SEQUENCE SE_users;
+CREATE SEQUENCE SE_users
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_users_t
 before insert on users
 for each row
@@ -73,7 +136,7 @@ CREATE INDEX FK_users_valid_id ON users (valid_id);
 CREATE TABLE user_preferences (
     user_id NUMBER (12, 0) NOT NULL,
     preferences_key VARCHAR2 (150) NOT NULL,
-    preferences_value VARCHAR2 (250) NULL
+    preferences_value CLOB NULL
 );
 CREATE INDEX user_preferences_user_id ON user_preferences (user_id);
 -- ----------------------------------------------------------
@@ -92,7 +155,13 @@ CREATE TABLE groups (
 );
 ALTER TABLE groups ADD CONSTRAINT PK_groups PRIMARY KEY (id);
 DROP SEQUENCE SE_groups;
-CREATE SEQUENCE SE_groups;
+CREATE SEQUENCE SE_groups
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_groups_t
 before insert on groups
 for each row
@@ -175,7 +244,13 @@ CREATE TABLE roles (
 );
 ALTER TABLE roles ADD CONSTRAINT PK_roles PRIMARY KEY (id);
 DROP SEQUENCE SE_roles;
-CREATE SEQUENCE SE_roles;
+CREATE SEQUENCE SE_roles
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_roles_t
 before insert on roles
 for each row
@@ -233,7 +308,13 @@ CREATE TABLE salutation (
 );
 ALTER TABLE salutation ADD CONSTRAINT PK_salutation PRIMARY KEY (id);
 DROP SEQUENCE SE_salutation;
-CREATE SEQUENCE SE_salutation;
+CREATE SEQUENCE SE_salutation
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_salutation_t
 before insert on salutation
 for each row
@@ -267,7 +348,13 @@ CREATE TABLE signature (
 );
 ALTER TABLE signature ADD CONSTRAINT PK_signature PRIMARY KEY (id);
 DROP SEQUENCE SE_signature;
-CREATE SEQUENCE SE_signature;
+CREATE SEQUENCE SE_signature
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_signature_t
 before insert on signature
 for each row
@@ -302,7 +389,13 @@ CREATE TABLE system_address (
 );
 ALTER TABLE system_address ADD CONSTRAINT PK_system_address PRIMARY KEY (id);
 DROP SEQUENCE SE_system_address;
-CREATE SEQUENCE SE_system_address;
+CREATE SEQUENCE SE_system_address
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_system_address_t
 before insert on system_address
 for each row
@@ -334,7 +427,13 @@ CREATE TABLE follow_up_possible (
 );
 ALTER TABLE follow_up_possible ADD CONSTRAINT PK_follow_up_possible PRIMARY KEY (id);
 DROP SEQUENCE SE_follow_up_possible;
-CREATE SEQUENCE SE_follow_up_possible;
+CREATE SEQUENCE SE_follow_up_possible
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_follow_up_possible_t
 before insert on follow_up_possible
 for each row
@@ -381,7 +480,13 @@ CREATE TABLE queue (
 );
 ALTER TABLE queue ADD CONSTRAINT PK_queue PRIMARY KEY (id);
 DROP SEQUENCE SE_queue;
-CREATE SEQUENCE SE_queue;
+CREATE SEQUENCE SE_queue
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_queue_t
 before insert on queue
 for each row
@@ -426,7 +531,13 @@ CREATE TABLE ticket_priority (
 );
 ALTER TABLE ticket_priority ADD CONSTRAINT PK_ticket_priority PRIMARY KEY (id);
 DROP SEQUENCE SE_ticket_priority;
-CREATE SEQUENCE SE_ticket_priority;
+CREATE SEQUENCE SE_ticket_priority
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_ticket_priority_t
 before insert on ticket_priority
 for each row
@@ -456,7 +567,13 @@ CREATE TABLE ticket_type (
 );
 ALTER TABLE ticket_type ADD CONSTRAINT PK_ticket_type PRIMARY KEY (id);
 DROP SEQUENCE SE_ticket_type;
-CREATE SEQUENCE SE_ticket_type;
+CREATE SEQUENCE SE_ticket_type
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_ticket_type_t
 before insert on ticket_type
 for each row
@@ -487,7 +604,13 @@ CREATE TABLE ticket_lock_type (
 );
 ALTER TABLE ticket_lock_type ADD CONSTRAINT PK_ticket_lock_type PRIMARY KEY (id);
 DROP SEQUENCE SE_ticket_lock_type;
-CREATE SEQUENCE SE_ticket_lock_type;
+CREATE SEQUENCE SE_ticket_lock_type
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_ticket_lock_type_t
 before insert on ticket_lock_type
 for each row
@@ -520,7 +643,13 @@ CREATE TABLE ticket_state (
 );
 ALTER TABLE ticket_state ADD CONSTRAINT PK_ticket_state PRIMARY KEY (id);
 DROP SEQUENCE SE_ticket_state;
-CREATE SEQUENCE SE_ticket_state;
+CREATE SEQUENCE SE_ticket_state
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_ticket_state_t
 before insert on ticket_state
 for each row
@@ -552,7 +681,13 @@ CREATE TABLE ticket_state_type (
 );
 ALTER TABLE ticket_state_type ADD CONSTRAINT PK_ticket_state_type PRIMARY KEY (id);
 DROP SEQUENCE SE_ticket_state_type;
-CREATE SEQUENCE SE_ticket_state_type;
+CREATE SEQUENCE SE_ticket_state_type
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_ticket_state_type_t
 before insert on ticket_state_type
 for each row
@@ -602,7 +737,13 @@ CREATE TABLE ticket (
 );
 ALTER TABLE ticket ADD CONSTRAINT PK_ticket PRIMARY KEY (id);
 DROP SEQUENCE SE_ticket;
-CREATE SEQUENCE SE_ticket;
+CREATE SEQUENCE SE_ticket
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_ticket_t
 before insert on ticket
 for each row
@@ -677,7 +818,13 @@ CREATE TABLE ticket_history (
 );
 ALTER TABLE ticket_history ADD CONSTRAINT PK_ticket_history PRIMARY KEY (id);
 DROP SEQUENCE SE_ticket_history;
-CREATE SEQUENCE SE_ticket_history;
+CREATE SEQUENCE SE_ticket_history
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_ticket_history_t
 before insert on ticket_history
 for each row
@@ -718,7 +865,13 @@ CREATE TABLE ticket_history_type (
 );
 ALTER TABLE ticket_history_type ADD CONSTRAINT PK_ticket_history_type PRIMARY KEY (id);
 DROP SEQUENCE SE_ticket_history_type;
-CREATE SEQUENCE SE_ticket_history_type;
+CREATE SEQUENCE SE_ticket_history_type
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_ticket_history_type_t
 before insert on ticket_history_type
 for each row
@@ -796,7 +949,13 @@ CREATE TABLE article_type (
 );
 ALTER TABLE article_type ADD CONSTRAINT PK_article_type PRIMARY KEY (id);
 DROP SEQUENCE SE_article_type;
-CREATE SEQUENCE SE_article_type;
+CREATE SEQUENCE SE_article_type
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_article_type_t
 before insert on article_type
 for each row
@@ -828,7 +987,13 @@ CREATE TABLE article_sender_type (
 );
 ALTER TABLE article_sender_type ADD CONSTRAINT PK_article_sender_type PRIMARY KEY (id);
 DROP SEQUENCE SE_article_sender_type;
-CREATE SEQUENCE SE_article_sender_type;
+CREATE SEQUENCE SE_article_sender_type
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_article_sender_type_t
 before insert on article_sender_type
 for each row
@@ -871,6 +1036,7 @@ CREATE TABLE article (
     a_cc VARCHAR2 (3800) NULL,
     a_subject VARCHAR2 (3800) NULL,
     a_message_id VARCHAR2 (3800) NULL,
+    a_message_id_md5 VARCHAR2 (32) NULL,
     a_in_reply_to VARCHAR2 (3800) NULL,
     a_references VARCHAR2 (3800) NULL,
     a_content_type VARCHAR2 (250) NULL,
@@ -885,7 +1051,13 @@ CREATE TABLE article (
 );
 ALTER TABLE article ADD CONSTRAINT PK_article PRIMARY KEY (id);
 DROP SEQUENCE SE_article;
-CREATE SEQUENCE SE_article;
+CREATE SEQUENCE SE_article
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_article_t
 before insert on article
 for each row
@@ -903,7 +1075,7 @@ CREATE INDEX FK_article_create_by ON article (create_by);
 CREATE INDEX FK_article_valid_id ON article (valid_id);
 CREATE INDEX article_article_sender_type_id ON article (article_sender_type_id);
 CREATE INDEX article_article_type_id ON article (article_type_id);
-CREATE INDEX article_message_id ON article (a_message_id);
+CREATE INDEX article_message_id_md5 ON article (a_message_id_md5);
 CREATE INDEX article_ticket_id ON article (ticket_id);
 -- ----------------------------------------------------------
 --  create table article_search
@@ -917,14 +1089,12 @@ CREATE TABLE article_search (
     a_to VARCHAR2 (3800) NULL,
     a_cc VARCHAR2 (3800) NULL,
     a_subject VARCHAR2 (3800) NULL,
-    a_message_id VARCHAR2 (3800) NULL,
     a_body CLOB NOT NULL,
     incoming_time NUMBER (12, 0) NOT NULL
 );
 ALTER TABLE article_search ADD CONSTRAINT PK_article_search PRIMARY KEY (id);
 CREATE INDEX article_search_article_sendec7 ON article_search (article_sender_type_id);
 CREATE INDEX article_search_article_type_id ON article_search (article_type_id);
-CREATE INDEX article_search_message_id ON article_search (a_message_id);
 CREATE INDEX article_search_ticket_id ON article_search (ticket_id);
 -- ----------------------------------------------------------
 --  create table article_plain
@@ -940,7 +1110,13 @@ CREATE TABLE article_plain (
 );
 ALTER TABLE article_plain ADD CONSTRAINT PK_article_plain PRIMARY KEY (id);
 DROP SEQUENCE SE_article_plain;
-CREATE SEQUENCE SE_article_plain;
+CREATE SEQUENCE SE_article_plain
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_article_plain_t
 before insert on article_plain
 for each row
@@ -975,7 +1151,13 @@ CREATE TABLE article_attachment (
 );
 ALTER TABLE article_attachment ADD CONSTRAINT PK_article_attachment PRIMARY KEY (id);
 DROP SEQUENCE SE_article_attachment;
-CREATE SEQUENCE SE_article_attachment;
+CREATE SEQUENCE SE_article_attachment
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_article_attachment_t
 before insert on article_attachment
 for each row
@@ -1006,7 +1188,13 @@ CREATE TABLE time_accounting (
 );
 ALTER TABLE time_accounting ADD CONSTRAINT PK_time_accounting PRIMARY KEY (id);
 DROP SEQUENCE SE_time_accounting;
-CREATE SEQUENCE SE_time_accounting;
+CREATE SEQUENCE SE_time_accounting
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_time_accounting_t
 before insert on time_accounting
 for each row
@@ -1024,54 +1212,61 @@ CREATE INDEX FK_time_accounting_change_by ON time_accounting (change_by);
 CREATE INDEX FK_time_accounting_create_by ON time_accounting (create_by);
 CREATE INDEX time_accounting_ticket_id ON time_accounting (ticket_id);
 -- ----------------------------------------------------------
---  create table standard_response
+--  create table standard_template
 -- ----------------------------------------------------------
-CREATE TABLE standard_response (
+CREATE TABLE standard_template (
     id NUMBER (12, 0) NOT NULL,
     name VARCHAR2 (200) NOT NULL,
     text CLOB NULL,
     content_type VARCHAR2 (250) NULL,
+    template_type VARCHAR2 (100) DEFAULT 'Answer' NOT NULL,
     comments VARCHAR2 (250) NULL,
     valid_id NUMBER (5, 0) NOT NULL,
     create_time DATE NOT NULL,
     create_by NUMBER (12, 0) NOT NULL,
     change_time DATE NOT NULL,
     change_by NUMBER (12, 0) NOT NULL,
-    CONSTRAINT standard_response_name UNIQUE (name)
+    CONSTRAINT standard_template_name UNIQUE (name)
 );
-ALTER TABLE standard_response ADD CONSTRAINT PK_standard_response PRIMARY KEY (id);
-DROP SEQUENCE SE_standard_response;
-CREATE SEQUENCE SE_standard_response;
-CREATE OR REPLACE TRIGGER SE_standard_response_t
-before insert on standard_response
+ALTER TABLE standard_template ADD CONSTRAINT PK_standard_template PRIMARY KEY (id);
+DROP SEQUENCE SE_standard_template;
+CREATE SEQUENCE SE_standard_template
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
+CREATE OR REPLACE TRIGGER SE_standard_template_t
+before insert on standard_template
 for each row
 begin
   if :new.id IS NULL then
-    select SE_standard_response.nextval
+    select SE_standard_template.nextval
     into :new.id
     from dual;
   end if;
 end;
 /
 --;
-CREATE INDEX FK_standard_response_change_by ON standard_response (change_by);
-CREATE INDEX FK_standard_response_create_by ON standard_response (create_by);
-CREATE INDEX FK_standard_response_valid_id ON standard_response (valid_id);
+CREATE INDEX FK_standard_template_change_by ON standard_template (change_by);
+CREATE INDEX FK_standard_template_create_by ON standard_template (create_by);
+CREATE INDEX FK_standard_template_valid_id ON standard_template (valid_id);
 -- ----------------------------------------------------------
---  create table queue_standard_response
+--  create table queue_standard_template
 -- ----------------------------------------------------------
-CREATE TABLE queue_standard_response (
+CREATE TABLE queue_standard_template (
     queue_id NUMBER (12, 0) NOT NULL,
-    standard_response_id NUMBER (12, 0) NOT NULL,
+    standard_template_id NUMBER (12, 0) NOT NULL,
     create_time DATE NOT NULL,
     create_by NUMBER (12, 0) NOT NULL,
     change_time DATE NOT NULL,
     change_by NUMBER (12, 0) NOT NULL
 );
-CREATE INDEX FK_queue_standard_response_c24 ON queue_standard_response (change_by);
-CREATE INDEX FK_queue_standard_response_c28 ON queue_standard_response (create_by);
-CREATE INDEX FK_queue_standard_response_q92 ON queue_standard_response (queue_id);
-CREATE INDEX FK_queue_standard_response_s15 ON queue_standard_response (standard_response_id);
+CREATE INDEX FK_queue_standard_template_c33 ON queue_standard_template (change_by);
+CREATE INDEX FK_queue_standard_template_c0d ON queue_standard_template (create_by);
+CREATE INDEX FK_queue_standard_template_q63 ON queue_standard_template (queue_id);
+CREATE INDEX FK_queue_standard_template_s54 ON queue_standard_template (standard_template_id);
 -- ----------------------------------------------------------
 --  create table standard_attachment
 -- ----------------------------------------------------------
@@ -1091,7 +1286,13 @@ CREATE TABLE standard_attachment (
 );
 ALTER TABLE standard_attachment ADD CONSTRAINT PK_standard_attachment PRIMARY KEY (id);
 DROP SEQUENCE SE_standard_attachment;
-CREATE SEQUENCE SE_standard_attachment;
+CREATE SEQUENCE SE_standard_attachment
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_standard_attachment_t
 before insert on standard_attachment
 for each row
@@ -1108,36 +1309,42 @@ CREATE INDEX FK_standard_attachment_chang1b ON standard_attachment (change_by);
 CREATE INDEX FK_standard_attachment_creat8b ON standard_attachment (create_by);
 CREATE INDEX FK_standard_attachment_validfe ON standard_attachment (valid_id);
 -- ----------------------------------------------------------
---  create table standard_response_attachment
+--  create table standard_template_attachment
 -- ----------------------------------------------------------
-CREATE TABLE standard_response_attachment (
+CREATE TABLE standard_template_attachment (
     id NUMBER (12, 0) NOT NULL,
     standard_attachment_id NUMBER (12, 0) NOT NULL,
-    standard_response_id NUMBER (12, 0) NOT NULL,
+    standard_template_id NUMBER (12, 0) NOT NULL,
     create_time DATE NOT NULL,
     create_by NUMBER (12, 0) NOT NULL,
     change_time DATE NOT NULL,
     change_by NUMBER (12, 0) NOT NULL
 );
-ALTER TABLE standard_response_attachment ADD CONSTRAINT PK_standard_response_attachm02 PRIMARY KEY (id);
-DROP SEQUENCE SE_standard_response_attace7;
-CREATE SEQUENCE SE_standard_response_attace7;
-CREATE OR REPLACE TRIGGER SE_standard_response_attace7_t
-before insert on standard_response_attachment
+ALTER TABLE standard_template_attachment ADD CONSTRAINT PK_standard_template_attachmb7 PRIMARY KEY (id);
+DROP SEQUENCE SE_standard_template_attacc3;
+CREATE SEQUENCE SE_standard_template_attacc3
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
+CREATE OR REPLACE TRIGGER SE_standard_template_attacc3_t
+before insert on standard_template_attachment
 for each row
 begin
   if :new.id IS NULL then
-    select SE_standard_response_attace7.nextval
+    select SE_standard_template_attacc3.nextval
     into :new.id
     from dual;
   end if;
 end;
 /
 --;
-CREATE INDEX FK_standard_response_attachmeb ON standard_response_attachment (change_by);
-CREATE INDEX FK_standard_response_attachmf2 ON standard_response_attachment (create_by);
-CREATE INDEX FK_standard_response_attachmce ON standard_response_attachment (standard_attachment_id);
-CREATE INDEX FK_standard_response_attachmea ON standard_response_attachment (standard_response_id);
+CREATE INDEX FK_standard_template_attachmbd ON standard_template_attachment (change_by);
+CREATE INDEX FK_standard_template_attachmb7 ON standard_template_attachment (create_by);
+CREATE INDEX FK_standard_template_attachm9e ON standard_template_attachment (standard_attachment_id);
+CREATE INDEX FK_standard_template_attachm29 ON standard_template_attachment (standard_template_id);
 -- ----------------------------------------------------------
 --  create table auto_response_type
 -- ----------------------------------------------------------
@@ -1154,7 +1361,13 @@ CREATE TABLE auto_response_type (
 );
 ALTER TABLE auto_response_type ADD CONSTRAINT PK_auto_response_type PRIMARY KEY (id);
 DROP SEQUENCE SE_auto_response_type;
-CREATE SEQUENCE SE_auto_response_type;
+CREATE SEQUENCE SE_auto_response_type
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_auto_response_type_t
 before insert on auto_response_type
 for each row
@@ -1193,7 +1406,13 @@ CREATE TABLE auto_response (
 );
 ALTER TABLE auto_response ADD CONSTRAINT PK_auto_response PRIMARY KEY (id);
 DROP SEQUENCE SE_auto_response;
-CREATE SEQUENCE SE_auto_response;
+CREATE SEQUENCE SE_auto_response
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_auto_response_t
 before insert on auto_response
 for each row
@@ -1225,7 +1444,13 @@ CREATE TABLE queue_auto_response (
 );
 ALTER TABLE queue_auto_response ADD CONSTRAINT PK_queue_auto_response PRIMARY KEY (id);
 DROP SEQUENCE SE_queue_auto_response;
-CREATE SEQUENCE SE_queue_auto_response;
+CREATE SEQUENCE SE_queue_auto_response
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_queue_auto_response_t
 before insert on queue_auto_response
 for each row
@@ -1258,7 +1483,13 @@ CREATE TABLE service (
 );
 ALTER TABLE service ADD CONSTRAINT PK_service PRIMARY KEY (id);
 DROP SEQUENCE SE_service;
-CREATE SEQUENCE SE_service;
+CREATE SEQUENCE SE_service
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_service_t
 before insert on service
 for each row
@@ -1317,7 +1548,13 @@ CREATE TABLE sla (
 );
 ALTER TABLE sla ADD CONSTRAINT PK_sla PRIMARY KEY (id);
 DROP SEQUENCE SE_sla;
-CREATE SEQUENCE SE_sla;
+CREATE SEQUENCE SE_sla
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_sla_t
 before insert on sla
 for each row
@@ -1363,7 +1600,13 @@ CREATE TABLE sessions (
 );
 ALTER TABLE sessions ADD CONSTRAINT PK_sessions PRIMARY KEY (id);
 DROP SEQUENCE SE_sessions;
-CREATE SEQUENCE SE_sessions;
+CREATE SEQUENCE SE_sessions
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_sessions_t
 before insert on sessions
 for each row
@@ -1407,7 +1650,13 @@ CREATE TABLE customer_user (
 );
 ALTER TABLE customer_user ADD CONSTRAINT PK_customer_user PRIMARY KEY (id);
 DROP SEQUENCE SE_customer_user;
-CREATE SEQUENCE SE_customer_user;
+CREATE SEQUENCE SE_customer_user
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_customer_user_t
 before insert on customer_user
 for each row
@@ -1473,7 +1722,13 @@ CREATE TABLE mail_account (
 );
 ALTER TABLE mail_account ADD CONSTRAINT PK_mail_account PRIMARY KEY (id);
 DROP SEQUENCE SE_mail_account;
-CREATE SEQUENCE SE_mail_account;
+CREATE SEQUENCE SE_mail_account
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_mail_account_t
 before insert on mail_account
 for each row
@@ -1497,7 +1752,8 @@ CREATE TABLE postmaster_filter (
     f_stop NUMBER (5, 0) NULL,
     f_type VARCHAR2 (20) NOT NULL,
     f_key VARCHAR2 (200) NOT NULL,
-    f_value VARCHAR2 (200) NOT NULL
+    f_value VARCHAR2 (200) NOT NULL,
+    f_not NUMBER (5, 0) NULL
 );
 CREATE INDEX postmaster_filter_f_name ON postmaster_filter (f_name);
 -- ----------------------------------------------------------
@@ -1561,7 +1817,13 @@ CREATE TABLE notifications (
 );
 ALTER TABLE notifications ADD CONSTRAINT PK_notifications PRIMARY KEY (id);
 DROP SEQUENCE SE_notifications;
-CREATE SEQUENCE SE_notifications;
+CREATE SEQUENCE SE_notifications
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_notifications_t
 before insert on notifications
 for each row
@@ -1596,7 +1858,13 @@ CREATE TABLE notification_event (
 );
 ALTER TABLE notification_event ADD CONSTRAINT PK_notification_event PRIMARY KEY (id);
 DROP SEQUENCE SE_notification_event;
-CREATE SEQUENCE SE_notification_event;
+CREATE SEQUENCE SE_notification_event
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_notification_event_t
 before insert on notification_event
 for each row
@@ -1638,7 +1906,13 @@ CREATE TABLE link_type (
 );
 ALTER TABLE link_type ADD CONSTRAINT PK_link_type PRIMARY KEY (id);
 DROP SEQUENCE SE_link_type;
-CREATE SEQUENCE SE_link_type;
+CREATE SEQUENCE SE_link_type
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_link_type_t
 before insert on link_type
 for each row
@@ -1669,7 +1943,13 @@ CREATE TABLE link_state (
 );
 ALTER TABLE link_state ADD CONSTRAINT PK_link_state PRIMARY KEY (id);
 DROP SEQUENCE SE_link_state;
-CREATE SEQUENCE SE_link_state;
+CREATE SEQUENCE SE_link_state
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_link_state_t
 before insert on link_state
 for each row
@@ -1695,7 +1975,13 @@ CREATE TABLE link_object (
 );
 ALTER TABLE link_object ADD CONSTRAINT PK_link_object PRIMARY KEY (id);
 DROP SEQUENCE SE_link_object;
-CREATE SEQUENCE SE_link_object;
+CREATE SEQUENCE SE_link_object
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_link_object_t
 before insert on link_object
 for each row
@@ -1728,6 +2014,20 @@ CREATE INDEX FK_link_relation_state_id ON link_relation (state_id);
 CREATE INDEX FK_link_relation_target_obje99 ON link_relation (target_object_id);
 CREATE INDEX FK_link_relation_type_id ON link_relation (type_id);
 -- ----------------------------------------------------------
+--  create table system_data
+-- ----------------------------------------------------------
+CREATE TABLE system_data (
+    data_key VARCHAR2 (160) NOT NULL,
+    data_value CLOB NULL,
+    create_time DATE NOT NULL,
+    create_by NUMBER (12, 0) NOT NULL,
+    change_time DATE NOT NULL,
+    change_by NUMBER (12, 0) NOT NULL
+);
+ALTER TABLE system_data ADD CONSTRAINT PK_system_data PRIMARY KEY (data_key);
+CREATE INDEX FK_system_data_change_by ON system_data (change_by);
+CREATE INDEX FK_system_data_create_by ON system_data (create_by);
+-- ----------------------------------------------------------
 --  create table xml_storage
 -- ----------------------------------------------------------
 CREATE TABLE xml_storage (
@@ -1750,7 +2050,13 @@ CREATE TABLE virtual_fs (
 );
 ALTER TABLE virtual_fs ADD CONSTRAINT PK_virtual_fs PRIMARY KEY (id);
 DROP SEQUENCE SE_virtual_fs;
-CREATE SEQUENCE SE_virtual_fs;
+CREATE SEQUENCE SE_virtual_fs
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_virtual_fs_t
 before insert on virtual_fs
 for each row
@@ -1786,7 +2092,13 @@ CREATE TABLE virtual_fs_db (
 );
 ALTER TABLE virtual_fs_db ADD CONSTRAINT PK_virtual_fs_db PRIMARY KEY (id);
 DROP SEQUENCE SE_virtual_fs_db;
-CREATE SEQUENCE SE_virtual_fs_db;
+CREATE SEQUENCE SE_virtual_fs_db
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_virtual_fs_db_t
 before insert on virtual_fs_db
 for each row
@@ -1820,7 +2132,13 @@ CREATE TABLE package_repository (
 );
 ALTER TABLE package_repository ADD CONSTRAINT PK_package_repository PRIMARY KEY (id);
 DROP SEQUENCE SE_package_repository;
-CREATE SEQUENCE SE_package_repository;
+CREATE SEQUENCE SE_package_repository
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_package_repository_t
 before insert on package_repository
 for each row
@@ -1853,7 +2171,13 @@ CREATE TABLE gi_webservice_config (
 );
 ALTER TABLE gi_webservice_config ADD CONSTRAINT PK_gi_webservice_config PRIMARY KEY (id);
 DROP SEQUENCE SE_gi_webservice_config;
-CREATE SEQUENCE SE_gi_webservice_config;
+CREATE SEQUENCE SE_gi_webservice_config
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_gi_webservice_config_t
 before insert on gi_webservice_config
 for each row
@@ -1885,7 +2209,13 @@ CREATE TABLE gi_webservice_config_history (
 );
 ALTER TABLE gi_webservice_config_history ADD CONSTRAINT PK_gi_webservice_config_hist06 PRIMARY KEY (id);
 DROP SEQUENCE SE_gi_webservice_config_hi2f;
-CREATE SEQUENCE SE_gi_webservice_config_hi2f;
+CREATE SEQUENCE SE_gi_webservice_config_hi2f
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_gi_webservice_config_hi2f_t
 before insert on gi_webservice_config_history
 for each row
@@ -1915,7 +2245,13 @@ CREATE TABLE scheduler_task_list (
 );
 ALTER TABLE scheduler_task_list ADD CONSTRAINT PK_scheduler_task_list PRIMARY KEY (id);
 DROP SEQUENCE SE_scheduler_task_list;
-CREATE SEQUENCE SE_scheduler_task_list;
+CREATE SEQUENCE SE_scheduler_task_list
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_scheduler_task_list_t
 before insert on scheduler_task_list
 for each row
@@ -1942,7 +2278,13 @@ CREATE TABLE gi_debugger_entry (
 );
 ALTER TABLE gi_debugger_entry ADD CONSTRAINT PK_gi_debugger_entry PRIMARY KEY (id);
 DROP SEQUENCE SE_gi_debugger_entry;
-CREATE SEQUENCE SE_gi_debugger_entry;
+CREATE SEQUENCE SE_gi_debugger_entry
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_gi_debugger_entry_t
 before insert on gi_debugger_entry
 for each row
@@ -1970,7 +2312,13 @@ CREATE TABLE gi_debugger_entry_content (
 );
 ALTER TABLE gi_debugger_entry_content ADD CONSTRAINT PK_gi_debugger_entry_content PRIMARY KEY (id);
 DROP SEQUENCE SE_gi_debugger_entry_content;
-CREATE SEQUENCE SE_gi_debugger_entry_content;
+CREATE SEQUENCE SE_gi_debugger_entry_content
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_gi_debugger_entry_content_t
 before insert on gi_debugger_entry_content
 for each row
@@ -2017,7 +2365,13 @@ CREATE TABLE smime_signer_cert_relations (
 );
 ALTER TABLE smime_signer_cert_relations ADD CONSTRAINT PK_smime_signer_cert_relations PRIMARY KEY (id);
 DROP SEQUENCE SE_smime_signer_cert_relatef;
-CREATE SEQUENCE SE_smime_signer_cert_relatef;
+CREATE SEQUENCE SE_smime_signer_cert_relatef
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_smime_signer_cert_relatef_t
 before insert on smime_signer_cert_relations
 for each row
@@ -2045,7 +2399,13 @@ CREATE TABLE dynamic_field_value (
 );
 ALTER TABLE dynamic_field_value ADD CONSTRAINT PK_dynamic_field_value PRIMARY KEY (id);
 DROP SEQUENCE SE_dynamic_field_value;
-CREATE SEQUENCE SE_dynamic_field_value;
+CREATE SEQUENCE SE_dynamic_field_value
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_dynamic_field_value_t
 before insert on dynamic_field_value
 for each row
@@ -2059,9 +2419,9 @@ end;
 /
 --;
 CREATE INDEX FK_dynamic_field_value_field90 ON dynamic_field_value (field_id);
-CREATE INDEX index_field_values ON dynamic_field_value (field_id, object_id);
-CREATE INDEX index_search_date ON dynamic_field_value (field_id, value_date);
-CREATE INDEX index_search_int ON dynamic_field_value (field_id, value_int);
+CREATE INDEX dynamic_field_value_field_va6e ON dynamic_field_value (object_id);
+CREATE INDEX dynamic_field_value_search_db3 ON dynamic_field_value (field_id, value_date);
+CREATE INDEX dynamic_field_value_search_int ON dynamic_field_value (field_id, value_int);
 -- ----------------------------------------------------------
 --  create table dynamic_field
 -- ----------------------------------------------------------
@@ -2083,7 +2443,13 @@ CREATE TABLE dynamic_field (
 );
 ALTER TABLE dynamic_field ADD CONSTRAINT PK_dynamic_field PRIMARY KEY (id);
 DROP SEQUENCE SE_dynamic_field;
-CREATE SEQUENCE SE_dynamic_field;
+CREATE SEQUENCE SE_dynamic_field
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_dynamic_field_t
 before insert on dynamic_field
 for each row
@@ -2117,7 +2483,13 @@ CREATE TABLE pm_process (
 );
 ALTER TABLE pm_process ADD CONSTRAINT PK_pm_process PRIMARY KEY (id);
 DROP SEQUENCE SE_pm_process;
-CREATE SEQUENCE SE_pm_process;
+CREATE SEQUENCE SE_pm_process
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_pm_process_t
 before insert on pm_process
 for each row
@@ -2148,7 +2520,13 @@ CREATE TABLE pm_activity (
 );
 ALTER TABLE pm_activity ADD CONSTRAINT PK_pm_activity PRIMARY KEY (id);
 DROP SEQUENCE SE_pm_activity;
-CREATE SEQUENCE SE_pm_activity;
+CREATE SEQUENCE SE_pm_activity
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_pm_activity_t
 before insert on pm_activity
 for each row
@@ -2179,7 +2557,13 @@ CREATE TABLE pm_activity_dialog (
 );
 ALTER TABLE pm_activity_dialog ADD CONSTRAINT PK_pm_activity_dialog PRIMARY KEY (id);
 DROP SEQUENCE SE_pm_activity_dialog;
-CREATE SEQUENCE SE_pm_activity_dialog;
+CREATE SEQUENCE SE_pm_activity_dialog
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_pm_activity_dialog_t
 before insert on pm_activity_dialog
 for each row
@@ -2210,7 +2594,13 @@ CREATE TABLE pm_transition (
 );
 ALTER TABLE pm_transition ADD CONSTRAINT PK_pm_transition PRIMARY KEY (id);
 DROP SEQUENCE SE_pm_transition;
-CREATE SEQUENCE SE_pm_transition;
+CREATE SEQUENCE SE_pm_transition
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_pm_transition_t
 before insert on pm_transition
 for each row
@@ -2241,7 +2631,13 @@ CREATE TABLE pm_transition_action (
 );
 ALTER TABLE pm_transition_action ADD CONSTRAINT PK_pm_transition_action PRIMARY KEY (id);
 DROP SEQUENCE SE_pm_transition_action;
-CREATE SEQUENCE SE_pm_transition_action;
+CREATE SEQUENCE SE_pm_transition_action
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+CACHE 20
+ORDER;
 CREATE OR REPLACE TRIGGER SE_pm_transition_action_t
 before insert on pm_transition_action
 for each row

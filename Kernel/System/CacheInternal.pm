@@ -13,8 +13,6 @@ use strict;
 use warnings;
 use Kernel::System::Cache;
 
-use vars qw(@ISA);
-
 =head1 NAME
 
 Kernel::System::CacheInternal - cache lib
@@ -75,9 +73,6 @@ sub new {
     my $Self = {};
     bless( $Self, $Type );
 
-    # 0=off; 1=set+get_cache; 2=+delete+get_request;
-    $Self->{Debug} = $Param{Debug} || 0;
-
     # check needed objects
     for (qw(MainObject ConfigObject LogObject EncodeObject)) {
         $Self->{$_} = $Param{$_} || die "Got no $_!";
@@ -88,7 +83,7 @@ sub new {
     }
 
     # create additional objects
-    $Self->{CacheObject} = Kernel::System::Cache->new(%Param);
+    $Self->{CacheObject} = Kernel::System::Cache->new( %{$Self} );
 
     # Enforce cache type restriction to make sure it works properly on all file systems.
     if ( $Param{Type} !~ m{ \A [a-zA-Z0-9_]+ \z}smx ) {

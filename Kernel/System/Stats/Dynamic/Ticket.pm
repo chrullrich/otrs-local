@@ -44,8 +44,8 @@ sub new {
     $Self->{ServiceObject}      = Kernel::System::Service->new( %{$Self} );
     $Self->{SLAObject}          = Kernel::System::SLA->new( %{$Self} );
     $Self->{TypeObject}         = Kernel::System::Type->new( %{$Self} );
-    $Self->{DynamicFieldObject} = Kernel::System::DynamicField->new(%Param);
-    $Self->{BackendObject}      = Kernel::System::DynamicField::Backend->new(%Param);
+    $Self->{DynamicFieldObject} = Kernel::System::DynamicField->new( %{$Self} );
+    $Self->{BackendObject}      = Kernel::System::DynamicField::Backend->new( %{$Self} );
 
     # get the dynamic fields for ticket object
     $Self->{DynamicField} = $Self->{DynamicFieldObject}->DynamicFieldListGet(
@@ -60,6 +60,16 @@ sub GetObjectName {
     my ( $Self, %Param ) = @_;
 
     return 'TicketAccumulation';
+}
+
+sub GetObjectBehaviours {
+    my ( $Self, %Param ) = @_;
+
+    my %Behaviours = (
+        ProvidesDashboardWidget => 1,
+    );
+
+    return %Behaviours;
 }
 
 sub GetObjectAttributes {
@@ -108,6 +118,7 @@ sub GetObjectAttributes {
             Element          => 'QueueIDs',
             Block            => 'MultiSelectField',
             Translation      => 0,
+            TreeView         => 1,
             Values           => \%QueueList,
         },
         {
@@ -145,6 +156,7 @@ sub GetObjectAttributes {
             Element          => 'CreatedQueueIDs',
             Block            => 'MultiSelectField',
             Translation      => 0,
+            TreeView         => 1,
             Values           => \%QueueList,
         },
         {
@@ -337,6 +349,7 @@ sub GetObjectAttributes {
                 Element          => 'ServiceIDs',
                 Block            => 'MultiSelectField',
                 Translation      => 0,
+                TreeView         => 1,
                 Values           => \%Service,
             },
             {
@@ -480,27 +493,48 @@ sub GetObjectAttributes {
     for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
         next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
+        # skip all fields not designed to be supported by statistics
+        my $IsStatsCondition = $Self->{BackendObject}->HasBehavior(
+            DynamicFieldConfig => $DynamicFieldConfig,
+            Behavior           => 'IsStatsCondition',
+        );
+
+        next DYNAMICFIELD if !$IsStatsCondition;
+
         my $PossibleValuesFilter;
 
-        # convert possible values key => value to key => key for ACLs usign a Hash slice
-        my %AclData = %{ $DynamicFieldConfig->{Config}->{PossibleValues} || {} };
-        @AclData{ keys %AclData } = keys %AclData;
-
-        # set possible values filter from ACLs
-        my $ACL = $Self->{TicketObject}->TicketAcl(
-            Action        => 'AgentStats',
-            Type          => 'DynamicField_' . $DynamicFieldConfig->{Name},
-            ReturnType    => 'Ticket',
-            ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},
-            Data          => \%AclData || {},
-            UserID        => 1,
+        my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
+            DynamicFieldConfig => $DynamicFieldConfig,
+            Behavior           => 'IsACLReducible',
         );
-        if ($ACL) {
-            my %Filter = $Self->{TicketObject}->TicketAclData();
 
-            # convert Filer key => key back to key => value using map
-            %{$PossibleValuesFilter}
-                = map { $_ => $DynamicFieldConfig->{Config}->{PossibleValues}->{$_} } keys %Filter;
+        if ($IsACLReducible) {
+
+            # get PossibleValues
+            my $PossibleValues = $Self->{BackendObject}->PossibleValuesGet(
+                DynamicFieldConfig => $DynamicFieldConfig,
+            );
+
+            # convert possible values key => value to key => key for ACLs using a Hash slice
+            my %AclData = %{ $PossibleValues || {} };
+            @AclData{ keys %AclData } = keys %AclData;
+
+            # set possible values filter from ACLs
+            my $ACL = $Self->{TicketObject}->TicketAcl(
+                Action        => 'AgentStats',
+                Type          => 'DynamicField_' . $DynamicFieldConfig->{Name},
+                ReturnType    => 'Ticket',
+                ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},
+                Data          => \%AclData || {},
+                UserID        => 1,
+            );
+            if ($ACL) {
+                my %Filter = $Self->{TicketObject}->TicketAclData();
+
+                # convert Filer key => key back to key => value using map
+                %{$PossibleValuesFilter}
+                    = map { $_ => $PossibleValues->{$_} } keys %Filter;
+            }
         }
 
         # get field html
@@ -521,6 +555,8 @@ sub GetObjectAttributes {
                     Block            => 'MultiSelectField',
                     Values           => $DynamicFieldStatsParameter->{Values},
                     Translation      => 0,
+                    IsDynamicField   => 1,
+                    ShowAsTree       => $DynamicFieldConfig->{Config}->{TreeView} || 0,
                 );
                 push @ObjectAttributes, \%ObjectAttribute;
             }
@@ -565,9 +601,17 @@ sub GetStatElement {
                 # without the 'DynamicField_' prefix
                 next DYNAMICFIELD if $DynamicFieldConfig->{Name} ne $1;
 
+                # skip all fields not designed to be supported by statistics
+                my $IsStatsCondition = $Self->{BackendObject}->HasBehavior(
+                    DynamicFieldConfig => $DynamicFieldConfig,
+                    Behavior           => 'IsStatsCondition',
+                );
+
+                next DYNAMICFIELD if !$IsStatsCondition;
+
                 # get new search parameter
                 my $DynamicFieldStatsSearchParameter
-                    = $Self->{BackendObject}->CommonSearchFieldParameterBuild(
+                    = $Self->{BackendObject}->StatsSearchFieldParameterBuild(
                     DynamicFieldConfig => $DynamicFieldConfig,
                     Value              => $Param{$ParameterName},
                     );
@@ -650,7 +694,7 @@ sub ExportWrapper {
                 }
             }
             elsif (
-                $ElementName eq 'OwnerIDs'
+                $ElementName    eq 'OwnerIDs'
                 || $ElementName eq 'CreatedUserIDs'
                 || $ElementName eq 'ResponsibleIDs'
                 )
@@ -740,7 +784,7 @@ sub ImportWrapper {
                 }
             }
             elsif (
-                $ElementName eq 'OwnerIDs'
+                $ElementName    eq 'OwnerIDs'
                 || $ElementName eq 'CreatedUserIDs'
                 || $ElementName eq 'ResponsibleIDs'
                 )

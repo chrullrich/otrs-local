@@ -60,13 +60,13 @@ sub ArticleIndexBuild {
         SQL => '
             INSERT INTO article_search (id, ticket_id, article_type_id,
                 article_sender_type_id, a_from, a_to,
-                a_cc, a_subject, a_message_id, a_body,
+                a_cc, a_subject, a_body,
                 incoming_time)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         Bind => [
             \$Article{ArticleID},    \$Article{TicketID}, \$Article{ArticleTypeID},
             \$Article{SenderTypeID}, \$Article{From},     \$Article{To},
-            \$Article{Cc},           \$Article{Subject},  \$Article{MessageID}, \$Article{Body},
+            \$Article{Cc},           \$Article{Subject},  \$Article{Body},
             \$Article{IncomingTime},
         ],
     );

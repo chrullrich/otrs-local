@@ -23,6 +23,8 @@ use Kernel::System::DynamicField;
 use Kernel::System::DynamicField::Backend;
 use Kernel::System::VariableCheck qw(:all);
 use Kernel::System::TemplateGenerator;
+use Kernel::System::StdAttachment;
+use Kernel::System::StandardTemplate;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -41,13 +43,14 @@ sub new {
         }
     }
 
-    $Self->{SystemAddress}      = Kernel::System::SystemAddress->new(%Param);
-    $Self->{CustomerUserObject} = Kernel::System::CustomerUser->new(%Param);
-    $Self->{CheckItemObject}    = Kernel::System::CheckItem->new(%Param);
-    $Self->{StateObject}        = Kernel::System::State->new(%Param);
-    $Self->{UploadCacheObject}  = Kernel::System::Web::UploadCache->new(%Param);
-    $Self->{DynamicFieldObject} = Kernel::System::DynamicField->new(%Param);
-    $Self->{BackendObject}      = Kernel::System::DynamicField::Backend->new(%Param);
+    $Self->{SystemAddress}          = Kernel::System::SystemAddress->new(%Param);
+    $Self->{CustomerUserObject}     = Kernel::System::CustomerUser->new(%Param);
+    $Self->{CheckItemObject}        = Kernel::System::CheckItem->new(%Param);
+    $Self->{StateObject}            = Kernel::System::State->new(%Param);
+    $Self->{UploadCacheObject}      = Kernel::System::Web::UploadCache->new(%Param);
+    $Self->{DynamicFieldObject}     = Kernel::System::DynamicField->new(%Param);
+    $Self->{BackendObject}          = Kernel::System::DynamicField::Backend->new(%Param);
+    $Self->{StandardTemplateObject} = Kernel::System::StandardTemplate->new(%Param);
 
     # get form id
     $Self->{FormID} = $Self->{ParamObject}->GetParam( Param => 'FormID' );
@@ -156,8 +159,9 @@ sub Run {
             );
             if ( !$AccessOk ) {
                 my $Output = $Self->{LayoutObject}->Header(
-                    Value => $Ticket{Number},
-                    Type  => 'Small',
+                    Value     => $Ticket{Number},
+                    Type      => 'Small',
+                    BodyClass => 'Popup',
                 );
                 $Output .= $Self->{LayoutObject}->Warning(
                     Message => $Self->{LayoutObject}->{LanguageObject}
@@ -187,7 +191,10 @@ sub Run {
 
     # get params
     my %GetParam;
-    for my $Key (qw(Body Subject TimeUnits NextStateID Year Month Day Hour Minute)) {
+    for my $Key (
+        qw(Body Subject TimeUnits NextStateID Year Month Day Hour Minute StandardTemplateID )
+        )
+    {
         $GetParam{$Key} = $Self->{ParamObject}->GetParam( Param => $Key );
     }
 
@@ -261,30 +268,43 @@ sub Run {
 
             my $PossibleValuesFilter;
 
-            # check if field has PossibleValues property in its configuration
-            if ( IsHashRefWithData( $DynamicFieldConfig->{Config}->{PossibleValues} ) ) {
+            my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                Behavior           => 'IsACLReducible',
+            );
 
-                # convert possible values key => value to key => key for ACLs using a Hash slice
-                my %AclData = %{ $DynamicFieldConfig->{Config}->{PossibleValues} };
-                @AclData{ keys %AclData } = keys %AclData;
+            if ($IsACLReducible) {
 
-                # set possible values filter from ACLs
-                my $ACL = $Self->{TicketObject}->TicketAcl(
-                    %GetParam,
-                    Action        => $Self->{Action},
-                    TicketID      => $Self->{TicketID},
-                    ReturnType    => 'Ticket',
-                    ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},
-                    Data          => \%AclData,
-                    UserID        => $Self->{UserID},
+                # get PossibleValues
+                my $PossibleValues = $Self->{BackendObject}->PossibleValuesGet(
+                    DynamicFieldConfig => $DynamicFieldConfig,
                 );
-                if ($ACL) {
-                    my %Filter = $Self->{TicketObject}->TicketAclData();
 
-                    # convert Filer key => key back to key => value using map
-                    %{$PossibleValuesFilter}
-                        = map { $_ => $DynamicFieldConfig->{Config}->{PossibleValues}->{$_} }
-                        keys %Filter;
+                # check if field has PossibleValues property in its configuration
+                if ( IsHashRefWithData($PossibleValues) ) {
+
+                    # convert possible values key => value to key => key for ACLs using a Hash slice
+                    my %AclData = %{$PossibleValues};
+                    @AclData{ keys %AclData } = keys %AclData;
+
+                    # set possible values filter from ACLs
+                    my $ACL = $Self->{TicketObject}->TicketAcl(
+                        %GetParam,
+                        Action        => $Self->{Action},
+                        TicketID      => $Self->{TicketID},
+                        ReturnType    => 'Ticket',
+                        ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},
+                        Data          => \%AclData,
+                        UserID        => $Self->{UserID},
+                    );
+                    if ($ACL) {
+                        my %Filter = $Self->{TicketObject}->TicketAclData();
+
+                        # convert Filer key => key back to key => value using map
+                        %{$PossibleValuesFilter}
+                            = map { $_ => $PossibleValues->{$_} }
+                            keys %Filter;
+                    }
                 }
             }
 
@@ -329,7 +349,8 @@ sub Run {
 
         # print form ...
         my $Output = $Self->{LayoutObject}->Header(
-            Type => 'Small',
+            Type      => 'Small',
+            BodyClass => 'Popup',
         );
         $Output .= $Self->_MaskPhone(
             TicketID     => $Self->{TicketID},
@@ -339,10 +360,11 @@ sub Run {
             NextStates   => $Self->_GetNextStates(
                 %GetParam,
             ),
-            CustomerData     => \%CustomerData,
-            Subject          => $Subject,
-            Body             => $Body,
-            DynamicFieldHTML => \%DynamicFieldHTML,
+            StandardTemplates => $Self->_GetStandardTemplates(%Ticket),
+            CustomerData      => \%CustomerData,
+            Subject           => $Subject,
+            Body              => $Body,
+            DynamicFieldHTML  => \%DynamicFieldHTML,
         );
         $Output .= $Self->{LayoutObject}->Footer(
             Type => 'Small',
@@ -370,9 +392,15 @@ sub Run {
         my $IsUpload = 0;
 
         # attachment delete
-        for my $Count ( 1 .. 32 ) {
+        my @AttachmentIDs = map {
+            my ($ID) = $_ =~ m{ \A AttachmentDelete (\d+) \z }xms;
+            $ID ? $ID : ();
+        } $Self->{ParamObject}->GetParamNames();
+
+        COUNT:
+        for my $Count ( reverse sort @AttachmentIDs ) {
             my $Delete = $Self->{ParamObject}->GetParam( Param => "AttachmentDelete$Count" );
-            next if !$Delete;
+            next COUNT if !$Delete;
             $Error{AttachmentDelete} = 1;
             $Self->{UploadCacheObject}->FormIDRemoveFile(
                 FormID => $Self->{FormID},
@@ -387,8 +415,7 @@ sub Run {
             %Error                   = ();
             $Error{AttachmentUpload} = 1;
             my %UploadStuff = $Self->{ParamObject}->GetUploadAll(
-                Param  => 'FileUpload',
-                Source => 'string',
+                Param => 'FileUpload',
             );
             $Self->{UploadCacheObject}->FormIDAddFile(
                 FormID => $Self->{FormID},
@@ -446,30 +473,43 @@ sub Run {
 
             my $PossibleValuesFilter;
 
-            # check if field has PossibleValues property in its configuration
-            if ( IsHashRefWithData( $DynamicFieldConfig->{Config}->{PossibleValues} ) ) {
+            my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                Behavior           => 'IsACLReducible',
+            );
 
-                # convert possible values key => value to key => key for ACLs using a Hash slice
-                my %AclData = %{ $DynamicFieldConfig->{Config}->{PossibleValues} };
-                @AclData{ keys %AclData } = keys %AclData;
+            if ($IsACLReducible) {
 
-                # set possible values filter from ACLs
-                my $ACL = $Self->{TicketObject}->TicketAcl(
-                    %GetParam,
-                    Action        => $Self->{Action},
-                    TicketID      => $Self->{TicketID},
-                    ReturnType    => 'Ticket',
-                    ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},
-                    Data          => \%AclData,
-                    UserID        => $Self->{UserID},
+                # get PossibleValues
+                my $PossibleValues = $Self->{BackendObject}->PossibleValuesGet(
+                    DynamicFieldConfig => $DynamicFieldConfig,
                 );
-                if ($ACL) {
-                    my %Filter = $Self->{TicketObject}->TicketAclData();
 
-                    # convert Filer key => key back to key => value using map
-                    %{$PossibleValuesFilter}
-                        = map { $_ => $DynamicFieldConfig->{Config}->{PossibleValues}->{$_} }
-                        keys %Filter;
+                # check if field has PossibleValues property in its configuration
+                if ( IsHashRefWithData($PossibleValues) ) {
+
+                    # convert possible values key => value to key => key for ACLs using a Hash slice
+                    my %AclData = %{$PossibleValues};
+                    @AclData{ keys %AclData } = keys %AclData;
+
+                    # set possible values filter from ACLs
+                    my $ACL = $Self->{TicketObject}->TicketAcl(
+                        %GetParam,
+                        Action        => $Self->{Action},
+                        TicketID      => $Self->{TicketID},
+                        ReturnType    => 'Ticket',
+                        ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},
+                        Data          => \%AclData,
+                        UserID        => $Self->{UserID},
+                    );
+                    if ($ACL) {
+                        my %Filter = $Self->{TicketObject}->TicketAclData();
+
+                        # convert Filer key => key back to key => value using map
+                        %{$PossibleValuesFilter}
+                            = map { $_ => $PossibleValues->{$_} }
+                            keys %Filter;
+                    }
                 }
             }
 
@@ -553,7 +593,8 @@ sub Run {
 
             # header
             my $Output = $Self->{LayoutObject}->Header(
-                Type => 'Small',
+                Type      => 'Small',
+                BodyClass => 'Popup',
             );
             $Output .= $OutputNotify;
             $Output .= $Self->_MaskPhone(
@@ -562,8 +603,9 @@ sub Run {
                 NextStates   => $Self->_GetNextStates(
                     %GetParam,
                 ),
-                CustomerData => \%CustomerData,
-                Attachments  => \@Attachments,
+                StandardTemplates => $Self->_GetStandardTemplates(%Ticket),
+                CustomerData      => \%CustomerData,
+                Attachments       => \@Attachments,
                 %GetParam,
                 DynamicFieldHTML => \%DynamicFieldHTML,
                 Errors           => \%Error,
@@ -582,8 +624,7 @@ sub Run {
 
             # get submit attachment
             my %UploadStuff = $Self->{ParamObject}->GetUploadAll(
-                Param  => 'FileUpload',
-                Source => 'String',
+                Param => 'FileUpload',
             );
             if (%UploadStuff) {
                 push @AttachmentData, \%UploadStuff;
@@ -735,16 +776,17 @@ sub Run {
             # the ticket is closed (move to the next task).
             if ( $StateData{TypeName} =~ /^close/i ) {
                 return $Self->{LayoutObject}->PopupClose(
-                    URL => ( $Self->{LastScreenView} || 'Action=AgentDashboard' ),
+                    URL => ( $Self->{LastScreenOverview} || 'Action=AgentDashboard' ),
                 );
             }
 
             return $Self->{LayoutObject}->PopupClose(
-                URL => ( $Self->{LastScreenView} || 'Action=AgentDashboard' ),
+                URL => "Action=AgentTicketZoom;TicketID=$Self->{TicketID};ArticleID=$ArticleID",
             );
         }
     }
     elsif ( $Self->{Subaction} eq 'AJAXUpdate' ) {
+        my $ElementChanged = $Self->{ParamObject}->GetParam( Param => 'ElementChanged' ) || '';
 
         my $NextStates = $Self->_GetNextStates(
             %GetParam,
@@ -757,13 +799,15 @@ sub Run {
         DYNAMICFIELD:
         for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
-            next DYNAMICFIELD
-                if !$Self->{BackendObject}->IsAJAXUpdateable(
-                DynamicFieldConfig => $DynamicFieldConfig,
-                );
             next DYNAMICFIELD if $DynamicFieldConfig->{ObjectType} ne 'Ticket';
 
-            my $PossibleValues = $Self->{BackendObject}->AJAXPossibleValuesGet(
+            my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                Behavior           => 'IsACLReducible',
+            );
+            next DYNAMICFIELD if !$IsACLReducible;
+
+            my $PossibleValues = $Self->{BackendObject}->PossibleValuesGet(
                 DynamicFieldConfig => $DynamicFieldConfig,
             );
 
@@ -788,16 +832,87 @@ sub Run {
                 %{$PossibleValues} = map { $_ => $PossibleValues->{$_} } keys %Filter;
             }
 
+            my $DataValues = $Self->{BackendObject}->BuildSelectionDataGet(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                PossibleValues     => $PossibleValues,
+                Value              => $DynamicFieldValues{ $DynamicFieldConfig->{Name} },
+            ) || $PossibleValues;
+
             # add dynamic field to the list of fields to update
             push(
                 @DynamicFieldAJAX,
                 {
                     Name        => 'DynamicField_' . $DynamicFieldConfig->{Name},
-                    Data        => $PossibleValues,
+                    Data        => $DataValues,
                     SelectedID  => $DynamicFieldValues{ $DynamicFieldConfig->{Name} },
                     Translation => $DynamicFieldConfig->{Config}->{TranslatableValues} || 0,
                     Max         => 100,
                 }
+            );
+        }
+
+        my @TemplateAJAX;
+
+        # update ticket body and attachements if needed.
+        if ( $ElementChanged eq 'StandardTemplateID' ) {
+            my @TicketAttachments;
+            my $TemplateText;
+
+            # remove all attachments from the Upload cache
+            my $RemoveSuccess = $Self->{UploadCacheObject}->FormIDRemove(
+                FormID => $Self->{FormID},
+            );
+            if ( !$RemoveSuccess ) {
+                $Self->{LogObject}->Log(
+                    Priority => 'error',
+                    Message  => "Form attachments coud not be deleted!",
+                );
+            }
+
+            # get the template text and set new attachments if a template is selected
+            if ( IsPositiveInteger( $GetParam{StandardTemplateID} ) ) {
+                my $TemplateGenerator = Kernel::System::TemplateGenerator->new( %{$Self} );
+
+                # set template text, replace smart tags (limited as ticket is not created)
+                $TemplateText = $TemplateGenerator->Template(
+                    TicketID   => $Self->{TicketID},
+                    TemplateID => $GetParam{StandardTemplateID},
+                    UserID     => $Self->{UserID},
+                );
+
+                # create StdAttachmentObject
+                my $StdAttachmentObject = Kernel::System::StdAttachment->new( %{$Self} );
+
+                # add std. attachments to ticket
+                my %AllStdAttachments
+                    = $StdAttachmentObject->StdAttachmentStandardTemplateMemberList(
+                    StandardTemplateID => $GetParam{StandardTemplateID},
+                    );
+                for ( sort keys %AllStdAttachments ) {
+                    my %AttachmentsData = $StdAttachmentObject->StdAttachmentGet( ID => $_ );
+                    $Self->{UploadCacheObject}->FormIDAddFile(
+                        FormID => $Self->{FormID},
+                        %AttachmentsData,
+                    );
+                }
+
+                # send a list of attachments in the upload cache back to the clientside JavaScript
+                # which renders then the list of currently uploaded attachments
+                @TicketAttachments = $Self->{UploadCacheObject}->FormIDGetAllFilesMeta(
+                    FormID => $Self->{FormID},
+                );
+            }
+
+            @TemplateAJAX = (
+                {
+                    Name => 'RichText',
+                    Data => $TemplateText || '',
+                },
+                {
+                    Name     => 'TicketAttachments',
+                    Data     => \@TicketAttachments,
+                    KeepData => 1,
+                },
             );
         }
 
@@ -811,6 +926,7 @@ sub Run {
                     Max         => 100,
                 },
                 @DynamicFieldAJAX,
+                @TemplateAJAX,
             ],
         );
         return $Self->{LayoutObject}->Attachment(
@@ -884,68 +1000,38 @@ sub _GetUsers {
     return \%ShownUsers;
 }
 
-sub _GetTos {
+sub _GetStandardTemplates {
     my ( $Self, %Param ) = @_;
 
-    # check own selection
-    my %NewTos;
-    if ( $Self->{ConfigObject}->{'Ticket::Frontend::NewQueueOwnSelection'} ) {
-        %NewTos = %{ $Self->{ConfigObject}->{'Ticket::Frontend::NewQueueOwnSelection'} };
-    }
-    else {
+    # get create templates
+    my %Templates;
 
-        # SelectionType Queue or SystemAddress?
-        my %Tos;
-        if ( $Self->{ConfigObject}->Get('Ticket::Frontend::NewQueueSelectionType') eq 'Queue' ) {
-            %Tos = $Self->{TicketObject}->MoveList(
-                Type    => 'create',
-                Action  => $Self->{Action},
-                QueueID => $Self->{QueueID},
-                UserID  => $Self->{UserID},
-            );
-        }
-        else {
-            %Tos = $Self->{DBObject}->GetTableData(
-                Table => 'system_address',
-                What  => 'queue_id, id',
-                Valid => 1,
-                Clamp => 1,
-            );
-        }
+    # check needed
+    return \%Templates if !$Param{QueueID} && !$Param{TicketID};
 
-        # get create permission queues
-        my %UserGroups = $Self->{GroupObject}->GroupMemberList(
-            UserID => $Self->{UserID},
-            Type   => 'create',
-            Result => 'HASH',
+    my $QueueID = $Param{QueueID} || '';
+    if ( !$Param{QueueID} && $Param{TicketID} ) {
+
+        # get QueueID from the ticket
+        my %Ticket = $Self->{TicketObject}->TicketGet(
+            TicketID      => $Param{TicketID},
+            DynamicFields => 0,
+            UserID        => $Self->{UserID},
         );
-        for my $KeyTo ( sort keys %Tos ) {
-            if ( $UserGroups{ $Self->{QueueObject}->GetQueueGroupID( QueueID => $KeyTo ) } ) {
-                $NewTos{$KeyTo} = $Tos{$KeyTo};
-            }
-        }
-
-        # build selection string
-        for my $KeyNewTo ( sort keys %NewTos ) {
-            my %QueueData = $Self->{QueueObject}->QueueGet( ID => $KeyNewTo );
-            my $Srting = $Self->{ConfigObject}->Get('Ticket::Frontend::NewQueueSelectionString')
-                || '<Realname> <<Email>> - Queue: <Queue>';
-            $Srting =~ s/<Queue>/$QueueData{Name}/g;
-            $Srting =~ s/<QueueComment>/$QueueData{Comment}/g;
-            if ( $Self->{ConfigObject}->Get('Ticket::Frontend::NewQueueSelectionType') ne 'Queue' )
-            {
-                my %SystemAddressData
-                    = $Self->{SystemAddress}->SystemAddressGet( ID => $NewTos{$KeyNewTo} );
-                $Srting =~ s/<Realname>/$SystemAddressData{Realname}/g;
-                $Srting =~ s/<Email>/$SystemAddressData{Name}/g;
-            }
-            $NewTos{$KeyNewTo} = $Srting;
-        }
+        $QueueID = $Ticket{QueueID} || '';
     }
 
-    # add empty selection
-    $NewTos{''} = '-';
-    return \%NewTos;
+    # fetch all std. templates
+    my %StandardTemplates = $Self->{QueueObject}->QueueStandardTemplateMemberList(
+        QueueID       => $QueueID,
+        TemplateTypes => 1,
+    );
+
+    # return empty hash if there are no templates for this screen
+    return \%Templates if !IsHashRefWithData( $StandardTemplates{PhoneCall} );
+
+    # return just the templates for this screen
+    return $StandardTemplates{PhoneCall};
 }
 
 sub _MaskPhone {
@@ -957,18 +1043,10 @@ sub _MaskPhone {
         OnlyDynamicFields => 1
     );
 
-    # create a string with the quoted dynamic field names separated by a commas
+    # create a string with the quoted dynamic field names separated by commas
     if ( IsArrayRefWithData($DynamicFieldNames) ) {
-        my $FirstItem = 1;
-        FIELD:
         for my $Field ( @{$DynamicFieldNames} ) {
-            if ($FirstItem) {
-                $FirstItem = 0;
-            }
-            else {
-                $Param{DynamicFieldNamesStrg} .= ', ';
-            }
-            $Param{DynamicFieldNamesStrg} .= "'" . $Field . "'";
+            $Param{DynamicFieldNamesStrg} .= ", '" . $Field . "'";
         }
     }
 
@@ -998,6 +1076,29 @@ sub _MaskPhone {
         $Self->{LayoutObject}->Block(
             Name => 'CustomerTable',
             Data => \%Param,
+        );
+    }
+
+    # check if exists create templates regardless the queue
+    my %StandardTemplates = $Self->{StandardTemplateObject}->StandardTemplateList(
+        Valid => 1,
+        Type  => 'PhoneCall',
+    );
+
+    # build text template string
+    if ( IsHashRefWithData( \%StandardTemplates ) ) {
+        $Param{StandardTemplateStrg} = $Self->{LayoutObject}->BuildSelection(
+            Data       => $Param{StandardTemplates}  || {},
+            Name       => 'StandardTemplateID',
+            SelectedID => $Param{StandardTemplateID} || '',
+            PossibleNone => 1,
+            Sort         => 'AlphanumericValue',
+            Translation  => 0,
+            Max          => 200,
+        );
+        $Self->{LayoutObject}->Block(
+            Name => 'StandardTemplate',
+            Data => {%Param},
         );
     }
 
@@ -1131,7 +1232,7 @@ sub _GetFieldsToUpdate {
 
     # set the fields that can be updateable via AJAXUpdate
     if ( !$Param{OnlyDynamicFields} ) {
-        @UpdatableFields = qw( NextStateID );
+        @UpdatableFields = qw( NextStateID StandardTemplateID );
     }
 
     # cycle through the activated Dynamic Fields for this screen
@@ -1139,11 +1240,11 @@ sub _GetFieldsToUpdate {
     for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
         next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
-        my $Updateable = $Self->{BackendObject}->IsAJAXUpdateable(
+        my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
             DynamicFieldConfig => $DynamicFieldConfig,
+            Behavior           => 'IsACLReducible',
         );
-
-        next DYNAMICFIELD if !$Updateable;
+        next DYNAMICFIELD if !$IsACLReducible;
 
         push @UpdatableFields, 'DynamicField_' . $DynamicFieldConfig->{Name};
     }

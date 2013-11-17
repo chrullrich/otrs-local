@@ -13,8 +13,6 @@ use warnings;
 use utf8;
 use vars (qw($Self));
 
-use Time::HiRes qw( usleep );
-
 use Kernel::Config;
 use Kernel::System::Ticket;
 use Kernel::System::Queue;
@@ -119,7 +117,7 @@ for my $SourceBackend (qw(ArticleStorageDB ArticleStorageFS)) {
                 for my $ID ( sort keys %Index ) {
                     next
                         if $ArticleIDs{$ArticleID}->{$AttachmentID}->{Filename} ne
-                        $Index{$ID}->{Filename};
+                            $Index{$ID}->{Filename};
                     for my $Attribute ( sort keys %{ $ArticleIDs{$ArticleID}->{$AttachmentID} } ) {
                         $Self->Is(
                             $Index{$ID}->{$Attribute},
@@ -157,7 +155,7 @@ for my $SourceBackend (qw(ArticleStorageDB ArticleStorageFS)) {
                 for my $ID ( sort keys %Index ) {
                     next
                         if $ArticleIDs{$ArticleID}->{$AttachmentID}->{Filename} ne
-                        $Index{$ID}->{Filename};
+                            $Index{$ID}->{Filename};
                     for my $Attribute ( sort keys %{ $ArticleIDs{$ArticleID}->{$AttachmentID} } ) {
                         $Self->Is(
                             $Index{$ID}->{$Attribute},

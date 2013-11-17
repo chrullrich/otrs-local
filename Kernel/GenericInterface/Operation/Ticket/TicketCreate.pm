@@ -24,8 +24,6 @@ use Kernel::GenericInterface::Operation::Common;
 use Kernel::GenericInterface::Operation::Ticket::Common;
 use Kernel::System::VariableCheck qw(IsArrayRefWithData IsHashRefWithData IsStringWithData);
 
-use vars qw(@ISA);
-
 =head1 NAME
 
 Kernel::GenericInterface::Operation::Ticket::TicketCreate - GenericInterface Ticket TicketCreate Operation backend
@@ -1119,6 +1117,13 @@ sub _TicketCreate {
         User => $Ticket->{CustomerUser},
     );
 
+    my $CustomerID = $CustomerUserData{UserCustomerID} || '';
+
+    # use user defined CustomerID if defined
+    if ( defined $Ticket->{CustomerID} && $Ticket->{CustomerID} ne '' ) {
+        $CustomerID = $Ticket->{CustomerID};
+    }
+
     my $OwnerID;
     if ( $Ticket->{Owner} && !$Ticket->{OwnerID} ) {
         my %OwnerData = $Self->{UserObject}->GetUserData(
@@ -1158,7 +1163,7 @@ sub _TicketCreate {
         PriorityID   => $Ticket->{PriorityID} || '',
         Priority     => $Ticket->{Priority} || '',
         OwnerID      => 1,
-        CustomerNo   => $CustomerUserData{UserCustomerID} || '',
+        CustomerNo   => $CustomerID,
         CustomerUser => $CustomerUserData{UserLogin} || '',
         UserID       => $Param{UserID},
     );
@@ -1166,8 +1171,8 @@ sub _TicketCreate {
     if ( !$TicketID ) {
         return {
             Success      => 0,
-            ErrorMessage => 'Ticket could not be created, please contact the system administrator'
-            }
+            ErrorMessage => 'Ticket could not be created, please contact the system administrator',
+        };
     }
 
     # set lock if specified

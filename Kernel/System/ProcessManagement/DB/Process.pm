@@ -119,7 +119,7 @@ sub new {
 
     # set lower if database is case sensitive
     $Self->{Lower} = '';
-    if ( !$Self->{DBObject}->GetDatabaseFunction('CaseInsensitive') ) {
+    if ( $Self->{DBObject}->GetDatabaseFunction('CaseSensitive') ) {
         $Self->{Lower} = 'LOWER';
     }
 
@@ -789,8 +789,8 @@ sub ProcessList {
             FROM pm_process ';
     if ( $StateEntityIDsStrg ne 'ALL' ) {
 
-        my $StateEntityIDsStrgDB
-            = join ',', map "'" . $Self->{DBObject}->Quote($_) . "'", @{ $Param{StateEntityIDs} };
+        my $StateEntityIDsStrgDB =
+            join ',', map "'" . $Self->{DBObject}->Quote($_) . "'", @{ $Param{StateEntityIDs} };
 
         $SQL .= "WHERE state_entity_id IN ($StateEntityIDsStrgDB)";
     }

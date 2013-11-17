@@ -107,6 +107,10 @@ my @Tests = (
         Valid => 1,
     },
     {
+        Email => '-some.name-@somehost.com',
+        Valid => 1,
+    },
+    {
         Email => 'name.surname@sometext.sometext.sometext',
         Valid => 1,
     },
@@ -295,7 +299,7 @@ for my $Test (@Tests) {
     # copy string to leave the original untouched
     my $String = $Test->{String};
 
-    # start sting preparation
+    # start string preparation
     my $StringRef = $CheckItemObject->StringClean(
         StringRef => \$String,
         %{ $Test->{Params} },
@@ -382,7 +386,7 @@ for my $Test (@Tests) {
     # copy string to leave the original untouched
     my $String = $Test->{String};
 
-    # start sting preparation
+    # start string preparation
     my ( $StringRef, $Found ) = $CheckItemObject->CreditCardClean( StringRef => \$String );
 
     # check result

@@ -8,41 +8,11 @@
 # --
 
 <!-- dtl:block:ConfigureMail-->
-<div class="Center">
-    <ul id="ProgressBar" class="ProgressBarElements5 SpacingTop SpacingBottom">
-        <li class="Highlighted NoLink First">
-            <span>
-                <a href="#">$Text{"Step %s", "1"}<span>$Text{"License"}</span></a>
-            </span>
-        </li>
-        <li class="Highlighted NoLink">
-            <span>
-                <a href="#">$Text{"Step %s", "2"}<span>$Text{"Database Settings"}</span></a>
-            </span>
-        </li>
-        <li class="Highlighted Active NoLink">
-            <span>
-                <a href="#">$Text{"Step %s", "3"}<span>$Text{"General Specifications and Mail Settings"}</span></a>
-            </span>
-        </li>
-        <li>
-            <span>
-                <a href="#">$Text{"Step %s", "4"}<span>$Text{"Registration"}</span></a>
-            </span>
-        </li>
-        <li class="Last">
-            <span>
-                <a href="#">$Text{"Step %s", "5"}<span>$Text{"Finish"}</span></a>
-            </span>
-        </li>
-    </ul>
-</div>
-
-<div class="W50pc SpacingTop SpacingBottom CenterBox">
-    <form action="$Env{"CGIHandle"}" method="post" id="FormMail">
-        <input type="hidden" name="Action" value="Installer"/>
-        <input type="hidden" name="Subaction" value="Registration"/>
-        <input type="hidden" name="Skip" value="0"/>
+<div class="W950px SpacingTop SpacingBottom CenterBox">
+    <form action="$Env{"CGIHandle"}" method="post" id="FormMail" class="PreventMultipleSubmits">
+        <input type="hidden" name="Action" value="Installer">
+        <input type="hidden" name="Subaction" value="Finish">
+        <input type="hidden" name="Skip" value="0">
 
         <div class="WidgetSimple">
             <div class="Header">
@@ -68,7 +38,7 @@
 
                     <label for="SMTPPort">$Text{"Outbound mail port"}:</label>
                     <div class="Field">
-                        <input type="text" id="SMTPPort" name="SMTPPort" value="$QData{"SMTPPort"}" class="W25pc"/>
+                        <input type="text" id="SMTPPort" name="SMTPPort" value="$QData{"SMTPPort"}" class="W25pc">
                         <p class="FieldExplanation">
                             $Text{"Select outbound mail port."}
                         </p>
@@ -79,7 +49,7 @@
                 <fieldset class="TableLike" id="InfoSMTP">
                     <label for="SMTPHost">$Text{"SMTP host"}:</label>
                     <div class="Field">
-                        <input type="text" id="SMTPHost" name="SMTPHost" value="$QData{"SMTPHost"}" class="W33pc"/>
+                        <input type="text" id="SMTPHost" name="SMTPHost" value="$QData{"SMTPHost"}" class="W33pc">
                         <p class="FieldExplanation">
                             $Text{"SMTP host."}
                         </p>
@@ -88,7 +58,7 @@
 
                     <label for="SMTPAuth">$Text{"SMTP authentication"}:</label>
                     <div class="Field">
-                        <input type="checkbox" id="SMTPAuth" name="SMTPAuth"/>
+                        <input type="checkbox" id="SMTPAuth" name="SMTPAuth">
                         <p class="FieldExplanation">
                             $Text{"Does your SMTP host need authentication?"}
                         </p>
@@ -99,7 +69,7 @@
                 <fieldset class="TableLike Hidden" id="InfoSMTPAuth">
                     <label for="SMTPAuthUser">$Text{"SMTP auth user"}:</label>
                     <div class="Field">
-                        <input type="text" id="SMTPAuthUser" name="SMTPAuthUser" value="$QData{"SMTPAuthUser"}" disabled="disabled" class="W33pc" autocomplete="off"/>
+                        <input type="text" id="SMTPAuthUser" name="SMTPAuthUser" value="$QData{"SMTPAuthUser"}" disabled="disabled" class="W33pc" autocomplete="off">
                         <p class="FieldExplanation">
                             $Text{"Username for SMTP auth."}
                         </p>
@@ -108,7 +78,7 @@
 
                     <label for="SMTPAuthPassword">$Text{"SMTP auth password"}:</label>
                     <div class="Field">
-                        <input type="password" id="SMTPAuthPassword" name="SMTPAuthPassword" value="$QData{"SMTPAuthPassword"}" disabled="disabled" class="W33pc" autocomplete="off"/>
+                        <input type="password" id="SMTPAuthPassword" name="SMTPAuthPassword" value="$QData{"SMTPAuthPassword"}" disabled="disabled" class="W33pc" autocomplete="off">
                         <p class="FieldExplanation">
                             $Text{"Password for SMTP auth."}
                         </p>
@@ -133,7 +103,7 @@
 
                     <label for="InboundHost">$Text{"Inbound mail host"}:</label>
                     <div class="Field">
-                        <input type="text" id="InboundHost" name="InboundHost" value="$QData{"InboundHost"}" class="W33pc"/>
+                        <input type="text" id="InboundHost" name="InboundHost" value="$QData{"InboundHost"}" class="W33pc">
                         <p class="FieldExplanation">
                             $Text{"Inbound mail host."}
                         </p>
@@ -142,7 +112,7 @@
 
                     <label for="InboundUser">$Text{"Inbound mail user"}:</label>
                     <div class="Field">
-                        <input type="text" id="InboundUser" name="InboundUser" value="$QData{"InboundUser"}" class="W33pc" autocomplete="off"/>
+                        <input type="text" id="InboundUser" name="InboundUser" value="$QData{"InboundUser"}" class="W33pc" autocomplete="off">
                         <p class="FieldExplanation">
                             $Text{"User for inbound mail."}
                         </p>
@@ -151,7 +121,7 @@
 
                     <label for="InboundPassword">$Text{"Inbound mail password"}:</label>
                     <div class="Field">
-                        <input type="password" id="InboundPassword" name="InboundPassword" value="$QData{"InboundPassword"}" class="W33pc" autocomplete="off"/>
+                        <input type="password" id="InboundPassword" name="InboundPassword" value="$QData{"InboundPassword"}" class="W33pc" autocomplete="off">
                         <p class="FieldExplanation">
                             $Text{"Password for inbound mail."}
                         </p>
@@ -184,9 +154,7 @@
 <script type="text/javascript">//<![CDATA[
     $('#ButtonCheckMail').bind('click', Core.Installer.CheckMailConfig);
     $('#ButtonSkipMail').bind('click', function() {
-        if (confirm("$JSText{"Skipping this step will automatically skip the registration of your OTRS. Are you sure you want to continue?"}")) {
-            Core.Installer.SkipMailConfig();
-        }
+        Core.Installer.SkipMailConfig();
         return false;
     });
     $('#SMTPAuth').bind('change', function () {

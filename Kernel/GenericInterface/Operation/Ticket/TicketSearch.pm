@@ -19,13 +19,9 @@ use Kernel::System::VariableCheck qw( :all );
 use Kernel::GenericInterface::Operation::Common;
 use Kernel::GenericInterface::Operation::Ticket::Common;
 
-use vars qw(@ISA);
-
 =head1 NAME
 
 Kernel::GenericInterface::Operation::Ticket::TicketSearch - GenericInterface Ticket Search Operation backend
-
-=head1 SYNOPSIS
 
 =head1 PUBLIC INTERFACE
 
@@ -302,6 +298,7 @@ sub Run {
     my %DynamicFieldSearchParameters = $Self->_GetDynamicFields( %{ $Param{Data} } );
 
     # perform ticket search
+    $UserType = ( $UserType eq 'Customer' ) ? 'CustomerUserID' : 'UserID';
     my @TicketIDs = $Self->{TicketObject}->TicketSearch(
         %GetParam,
         %DynamicFieldSearchParameters,
@@ -309,7 +306,7 @@ sub Run {
         SortBy              => $Self->{SortBy},
         OrderBy             => $Self->{OrderBy},
         Limit               => $Self->{SearchLimit},
-        UserID              => $UserID,
+        $UserType           => $UserID,
         ConditionInline     => $Self->{Config}->{ExtendedSearchCondition},
         ContentSearchPrefix => '*',
         ContentSearchSuffix => '*',
@@ -734,7 +731,7 @@ sub _CreateTimeSettings {
     return %GetParam;
 }
 
-1;
+=end Internal:
 
 =back
 
@@ -747,3 +744,5 @@ the enclosed file COPYING for license information (AGPL). If you
 did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
 
 =cut
+
+1;

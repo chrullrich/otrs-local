@@ -14,8 +14,6 @@ use warnings;
 
 use Kernel::System::Valid;
 
-use vars qw(@ISA);
-
 =head1 NAME
 
 Kernel::System::Auth - agent authentication module.
@@ -110,7 +108,7 @@ sub new {
 
     $Self->{ValidObject} = Kernel::System::Valid->new( %{$Self} );
 
-    # load auth module
+    # load auth modules
     COUNT:
     for my $Count ( '', 1 .. 10 ) {
 
@@ -122,10 +120,10 @@ sub new {
             $Self->{MainObject}->Die("Can't load backend module $GenericModule! $@");
         }
 
-        $Self->{"AuthBackend$Count"} = $GenericModule->new( %Param, Count => $Count );
+        $Self->{"AuthBackend$Count"} = $GenericModule->new( %{$Self}, Count => $Count );
     }
 
-    # load sync module
+    # load sync modules
     COUNT:
     for my $Count ( '', 1 .. 10 ) {
 
@@ -137,7 +135,7 @@ sub new {
             $Self->{MainObject}->Die("Can't load backend module $GenericModule! $@");
         }
 
-        $Self->{"AuthSyncBackend$Count"} = $GenericModule->new( %Param, Count => $Count );
+        $Self->{"AuthSyncBackend$Count"} = $GenericModule->new( %{$Self}, Count => $Count );
     }
 
     return $Self;

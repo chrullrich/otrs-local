@@ -93,7 +93,7 @@ sub new {
         $Self->{MainObject}->Die("Can't load backend module $GenericModule! $@");
     }
 
-    $Self->{Backend} = $GenericModule->new(%Param);
+    $Self->{Backend} = $GenericModule->new( %{$Self} );
 
     return $Self;
 }
@@ -194,7 +194,7 @@ false (if can't update)
 
     $SessionObject->UpdateSessionID(
         SessionID => '1234567890123456',
-        Key       => 'LastScreenView',
+        Key       => 'LastScreenOverview',
         Value     => 'SomeInfo',
     );
 

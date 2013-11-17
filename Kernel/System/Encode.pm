@@ -16,8 +16,6 @@ use Encode;
 use Encode::Locale;
 use IO::Interactive qw(is_interactive);
 
-use vars qw(@ISA);
-
 =head1 NAME
 
 Kernel::System::Encode - character encodings
@@ -60,6 +58,7 @@ sub new {
         $Self->SetIO( \*STDOUT, \*STDERR );
     }
     else {
+
         # use "locale" as an arg to encode/decode
         if ( is_interactive(*STDIN) ) {
             @ARGV = map { decode( locale => $_, 1 ) } @ARGV;
@@ -77,7 +76,7 @@ sub new {
 
 =item Convert()
 
-Convert one charset to an other charset.
+Convert a string from one charset to another charset.
 
     my $utf8 = $EncodeObject->Convert(
         Text => $iso_8859_1_string,
@@ -92,8 +91,8 @@ Convert one charset to an other charset.
     );
 
 There is also a Force => 1 option if you need to force the
-already converted string. And Check => 1 if the sting result
-should be checked if it's a valid string (e. g. valid utf-8 string).
+already converted string. And Check => 1 if the string result
+should be checked to be a valid string (e. g. valid utf-8 string).
 
 =cut
 

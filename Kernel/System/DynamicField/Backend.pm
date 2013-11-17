@@ -91,7 +91,7 @@ sub new {
     }
 
     # get the Dynamic Field Backends configuration
-    my $DynamicFieldsConfig = $Self->{ConfigObject}->Get('DynamicFields::Backend');
+    my $DynamicFieldsConfig = $Self->{ConfigObject}->Get('DynamicFields::Driver');
 
     # check Configuration format
     if ( !IsHashRefWithData($DynamicFieldsConfig) ) {
@@ -208,6 +208,28 @@ sub new {
         }
     }
 
+    # get the Dynamic Field Backend custmom extensions
+    my $DynamicFieldBackendExtensions
+        = $Self->{ConfigObject}->Get('DynamicFields::Extension::Backend');
+
+    EXTENSION:
+    for my $ExtensionKey ( sort keys %{$DynamicFieldBackendExtensions} ) {
+
+        # skip invalid extensions
+        next EXTENSION if !IsHashRefWithData( $DynamicFieldBackendExtensions->{$ExtensionKey} );
+
+        # create a extension config shortcut
+        my $Extension = $DynamicFieldBackendExtensions->{$ExtensionKey};
+
+        # skip if extension does not contain a backend module
+        next EXTENSION if !$Extension->{Module};
+
+        # check if module can be loaded
+        if ( !$Self->{MainObject}->RequireBaseClass( $Extension->{Module} ) ) {
+            die "Can't load dynamic fields backend module $Extension->{Backend}! $@";
+        }
+    }
+
     return $Self;
 }
 
@@ -243,8 +265,8 @@ creates the field HTML to be used in edit masks.
         AJAXUpdate           => 1,                        # Optional, 0 ir 1. To create JS code for field change to update
                                                           #     the form using ACLs triggered by the field.
         UpdatableFields      => [                         # Optional, to use if AJAXUpdate is 1. List of fields to display a
-            NetxStateID,                                  #     spinning wheel when reloading via AJAXUpdate.
-            PriorityID,
+            'NetxStateID',                                  #     spinning wheel when reloading via AJAXUpdate.
+            'PriorityID',
         ],
     );
 
@@ -316,9 +338,7 @@ sub EditFieldRender {
     }
 
     # call EditFieldRender on the specific backend
-    my $HTMLStrings = $Self->{$DynamicFieldBackend}->EditFieldRender(
-        %Param
-    );
+    my $HTMLStrings = $Self->{$DynamicFieldBackend}->EditFieldRender(%Param);
 
     return $HTMLStrings;
 
@@ -332,7 +352,7 @@ and will transform dates to the current user's timezone.
     my $ValueStrg = $BackendObject->DisplayValueRender(
         DynamicFieldConfig => $DynamicFieldConfig,      # complete config of the DynamicField
         Value              => 'Any value',              # Optional
-        HTMLOutput         => 1,                        # or 0, defult 1, to return HTML ready
+        HTMLOutput         => 1,                        # or 0, default 1, to return HTML ready
                                                         #    values
         ValueMaxChars      => 20,                       # Optional (for HTMLOutput only)
         TitleMaxChars      => 20,                       # Optional (for HTMLOutput only)
@@ -346,6 +366,7 @@ and will transform dates to the current user's timezone.
         Value => $Value,
         Link  => $link,
     }
+
 =cut
 
 sub DisplayValueRender {
@@ -391,9 +412,7 @@ sub DisplayValueRender {
     }
 
     # call DisplayValueRender on the specific backend
-    my $ValueStrg = $Self->{$DynamicFieldBackend}->DisplayValueRender(
-        %Param
-    );
+    my $ValueStrg = $Self->{$DynamicFieldBackend}->DisplayValueRender(%Param);
 
     return $ValueStrg;
 }
@@ -461,8 +480,18 @@ sub ValueSet {
 
     my $NewValue = $Param{Value};
 
-    # do not proceed if there is nothing to update
-    if ( !DataIsDifferent( Data1 => \$OldValue, Data2 => \$NewValue ) ) {
+    # do not proceed if there is nothing to update, each dynamic field requires special handling to
+    #    determine if two values are different or not, this to prevent false update events,
+    #    see bug #9828. Note: (do not send %Param, as $NewValue is a reference and then Value2 could
+    #    have strange values).
+    if (
+        !$Self->ValueIsDifferent(
+            DynamicFieldConfig => $Param{DynamicFieldConfig},
+            Value1             => $OldValue,
+            Value2             => $NewValue,
+        )
+        )
+    {
         return 1;
     }
 
@@ -488,6 +517,74 @@ sub ValueSet {
     }
 
     return 1;
+}
+
+=item ValueIsDifferent()
+
+compares if two dynamic field values are different.
+
+This function relies on Kernel::System::VariableCheck::DataIsDifferent() but with some exeptions
+depending on each field.
+
+    my $Success = $BackendObject->ValueIsDifferent(
+        DynamicFieldConfig => $DynamicFieldConfig,      # complete config of the DynamicField
+                                                        # must be linked to, e. g. TicketID
+        Value1             => $Value1,                  # Dynamic Field Value
+        Value2             => $Value2,                  # Dynamic Field Value
+    );
+
+=cut
+
+sub ValueIsDifferent {
+    my ( $Self, %Param ) = @_;
+
+    # check needed stuff
+    for my $Needed (qw(DynamicFieldConfig)) {
+        if ( !$Param{$Needed} ) {
+            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Needed!" );
+            return;
+        }
+    }
+
+    # check DynamicFieldConfig (general)
+    if ( !IsHashRefWithData( $Param{DynamicFieldConfig} ) ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "The field configuration is invalid",
+        );
+        return;
+    }
+
+    # check DynamicFieldConfig (internally)
+    for my $Needed (qw(ID FieldType ObjectType)) {
+        if ( !$Param{DynamicFieldConfig}->{$Needed} ) {
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $Needed in DynamicFieldConfig!"
+            );
+            return;
+        }
+    }
+
+    # set the dynamic field specific backend
+    my $DynamicFieldBackend = 'DynamicField' . $Param{DynamicFieldConfig}->{FieldType} . 'Object';
+
+    if ( !$Self->{$DynamicFieldBackend} ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "Backend $Param{DynamicFieldConfig}->{FieldType} is invalid!"
+        );
+        return;
+    }
+
+    # use Kernel::System::VariableCheck::DataIsDifferent() as a fall back if function is not
+    #    defined in the backend
+    if ( !$Self->{$DynamicFieldBackend}->can('ValueIsDifferent') ) {
+        return DataIsDifferent( Data1 => \$Param{Value1}, Data2 => \$Param{Value2} );
+    }
+
+    # call ValueIsDifferent on the specific backend
+    return $Self->{$DynamicFieldBackend}->ValueIsDifferent(%Param);
 }
 
 =item ValueDelete()
@@ -676,6 +773,7 @@ get a dynamic field value.
                                                         # Text, $Value =  'a string'
                                                         # DateTime, $Value = '1977-12-12 12:00:00'
                                                         # Checkbox, $Value = 1
+
 =cut
 
 sub ValueGet {
@@ -868,14 +966,14 @@ extracts the value of a dynamic field from the param object.
                                                         #   $Value = 1;
 
     my $Value = $BackendObject->EditFieldValueGet(
-        DynamicFieldConfig   => $DynamicFieldConfig,    # complete config of the DynamicField
-        ParamObject          => $ParamObject,           # the current request data
-        TransformDates       => 0                       # 1 || 0, default 1, to transform the dynamic fields that
+        DynamicFieldConfig      => $DynamicFieldConfig, # complete config of the DynamicField
+        ParamObject             => $ParamObject,        # the current request data
+        TransformDates          => 0                    # 1 || 0, default 1, to transform the dynamic fields that
                                                         #   use dates to the user time zone (i.e. Date, DateTime
                                                         #   dynamic fields)
 
-        Template             => $Template               # stored values from DB like Search profile or Generic Agent job
-        ReturnValueStructure => 1,                      # 0 || 1, default 0
+        Template                => $Template            # stored values from DB like Search profile or Generic Agent job
+        ReturnTemplateStructure => 1,                   # 0 || 1, default 0
                                                         #   Returns the structured values as got from the http request
                                                         #   (only for backend internal use).
     );
@@ -891,6 +989,7 @@ extracts the value of a dynamic field from the param object.
                                                                 Minute => '00'
                                                             },
                                                         #   $Value = 1;
+
 =cut
 
 sub EditFieldValueGet {
@@ -1040,62 +1139,6 @@ sub EditFieldValueValidate {
 
 }
 
-=item IsSortable()
-
-returns if the current field backend is sortable or not.
-
-    my $Sortable = $BackendObject->IsSortable();   # 1 or 0
-
-=cut
-
-sub IsSortable {
-    my ( $Self, %Param ) = @_;
-
-    # check needed stuff
-    for my $Needed (qw(DynamicFieldConfig)) {
-        if ( !$Param{$Needed} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Needed!" );
-            return;
-        }
-    }
-
-    # check DynamicFieldConfig (general)
-    if ( !IsHashRefWithData( $Param{DynamicFieldConfig} ) ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => "The field configuration is invalid",
-        );
-        return;
-    }
-
-    # check DynamicFieldConfig (internally)
-    for my $Needed (qw(ID FieldType ObjectType)) {
-        if ( !$Param{DynamicFieldConfig}->{$Needed} ) {
-            $Self->{LogObject}->Log(
-                Priority => 'error',
-                Message  => "Need $Needed in DynamicFieldConfig!"
-            );
-            return;
-        }
-    }
-
-    # set the dynamic field specific backend
-    my $DynamicFieldBackend = 'DynamicField' . $Param{DynamicFieldConfig}->{FieldType} . 'Object';
-
-    if ( !$Self->{$DynamicFieldBackend} ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => "Backend $Param{DynamicFieldConfig}->{FieldType} is invalid!"
-        );
-        return;
-    }
-
-    # call IsSortable on the specific backend
-    return $Self->{$DynamicFieldBackend}->IsSortable(
-        %Param
-    );
-}
-
 =item SearchFieldRender()
 
 creates the field HTML to be used in search masks.
@@ -1125,8 +1168,10 @@ creates the field HTML to be used in search masks.
                                                           #       . 'DynamicField_' . $DynamicFieldConfig->{Name} . 'StopSecond=59;';
                                                           #
                                                           #   $Value =  1;
-        ConfirmationCheckboxes => 0                       # or 1, to dislay confirmation checkboxes
-        UseLabelHints          => 1                       # or 0, default 1. To display seach hints in labels
+        ConfirmationCheckboxes => 0,                      # or 1, to dislay confirmation checkboxes
+        UseLabelHints          => 1,                      # or 0, default 1. To display seach hints in labels
+        Type                   => 'some type',            # search preference type
+
     );
 
     Returns {
@@ -1183,9 +1228,7 @@ sub SearchFieldRender {
     }
 
     # call SearchFieldRender on the specific backend
-    my $HTMLStrings = $Self->{$DynamicFieldBackend}->SearchFieldRender(
-        %Param
-    );
+    my $HTMLStrings = $Self->{$DynamicFieldBackend}->SearchFieldRender(%Param);
 
     return $HTMLStrings;
 
@@ -1201,6 +1244,7 @@ extracts the value of a dynamic field from the param object or search profile.
         Profile                => $ProfileData,           # the serach profile
         ReturnProfileStructure => 0,                      # 0 || 1, default 0
                                                           #   Returns the structured values as got from the http request
+        Type                   => 'some type',            # search preference type
     );
 
     Returns $Value;                                       # depending on each field type e.g.
@@ -1256,6 +1300,7 @@ extracts the value of a dynamic field from the param object or search profile.
                                                           #   $Value =  {
                                                           #       'DynamicField_' . $DynamicFieldConfig->{Name} = 1;
                                                           #   };
+
 =cut
 
 sub SearchFieldValueGet {
@@ -1327,6 +1372,84 @@ sub SearchFieldValueGet {
     return $Self->{$DynamicFieldBackend}->SearchFieldValueGet(%Param);
 }
 
+=item SearchFieldPreferences()
+
+Returns the search field preferences of the backend.
+
+    my $SearchFieldPreferences = $BackendObject->SearchFieldPreferences(
+        DynamicFieldConfig => $DynamicFieldConfig,       # complete config of the DynamicField
+    );
+
+    Returns (example for Date and DateTime):
+
+    $SearchFieldPreferences = [
+        {
+            Type        => 'TimePoint',
+            LabelSuffix => 'before/after',
+        },
+        {
+            Type        => 'TimeSlot',
+            LabelSuffix => 'between',
+        },
+    ];
+
+=cut
+
+sub SearchFieldPreferences {
+    my ( $Self, %Param ) = @_;
+
+    # check needed stuff
+    for my $Needed (qw(DynamicFieldConfig)) {
+        if ( !$Param{$Needed} ) {
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $Needed!",
+            );
+            return;
+        }
+    }
+
+    # check DynamicFieldConfig (general)
+    if ( !IsHashRefWithData( $Param{DynamicFieldConfig} ) ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "The field configuration is invalid",
+        );
+        return;
+    }
+
+    # check DynamicFieldConfig (internally)
+    for my $Needed (qw(ID FieldType ObjectType)) {
+        if ( !$Param{DynamicFieldConfig}->{$Needed} ) {
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $Needed in DynamicFieldConfig!",
+            );
+            return;
+        }
+    }
+
+    # set the dynamic field specific backend
+    my $DynamicFieldBackend = 'DynamicField' . $Param{DynamicFieldConfig}->{FieldType} . 'Object';
+
+    if ( !$Self->{$DynamicFieldBackend} ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "Backend $Param{DynamicFieldConfig}->{FieldType} is invalid!",
+        );
+        return;
+    }
+
+    # verify if function is available
+    return if !$Self->{$DynamicFieldBackend}->can('SearchFieldPreferences');
+
+    # call SearchFieldPreferences on the specific backend
+    return $Self->{$DynamicFieldBackend}->SearchFieldPreferences(
+        %Param,
+    );
+
+}
+
 =item SearchFieldParameterBuild()
 
 build the search parameters to be passed to the search engine.
@@ -1335,6 +1458,7 @@ build the search parameters to be passed to the search engine.
         DynamicFieldConfig   => $DynamicFieldConfig,    # complete config of the DynamicField
         LayoutObject         => $LayoutObject,          # optional
         Profile              => $ProfileData,           # the search profile
+        Type                 => 'some type',            # search preference type
     );
 
     Returns
@@ -1352,6 +1476,7 @@ build the search parameters to be passed to the search engine.
         },
         Display => $DisplayValue,                       # the value to be displayed in the search terms section
     };
+
 =cut
 
 sub SearchFieldParameterBuild {
@@ -1400,145 +1525,6 @@ sub SearchFieldParameterBuild {
     return $Self->{$DynamicFieldBackend}->SearchFieldParameterBuild(%Param);
 }
 
-=item StatsFieldParameterBuild()
-    my $DynamicFieldStatsParameter =  $BackendObject->StatsFieldParameterBuild(
-        DynamicFieldConfig   => $DynamicFieldConfig,      # complete config of the DynamicField
-        PossibleValuesFilter => ['value1', 'value2'],     # Optional. Some backends may support this.
-                                                          #     This may be needed to realize ACL support for ticket masks,
-                                                          #     where the possible values can be limited with and ACL.
-    );
-
-    returns
-
-    $DynamicFieldStatsParameter = {
-        Values => {
-            $Key1 => $Value1,
-            $Key2 => $Value2,
-        },
-        Name               => 'DynamicField_' . $DynamicFieldConfig->{Label},
-        Element            => 'DynamicField_' . $DynamicFieldConfig->{Name},
-        TranslatableValues => 1,
-    };
-=cut
-
-sub StatsFieldParameterBuild {
-    my ( $Self, %Param ) = @_;
-
-    # check needed stuff
-    for my $Needed (qw(DynamicFieldConfig)) {
-        if ( !$Param{$Needed} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Needed!" );
-            return;
-        }
-    }
-
-    # check DynamicFieldConfig (general)
-    if ( !IsHashRefWithData( $Param{DynamicFieldConfig} ) ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => "The field configuration is invalid",
-        );
-        return;
-    }
-
-    # check DynamicFieldConfig (internally)
-    for my $Needed (qw(ID FieldType ObjectType Name)) {
-        if ( !$Param{DynamicFieldConfig}->{$Needed} ) {
-            $Self->{LogObject}->Log(
-                Priority => 'error',
-                Message  => "Need $Needed in DynamicFieldConfig!"
-            );
-            return;
-        }
-    }
-
-    # set the dynamic field specific backend
-    my $DynamicFieldBackend = 'DynamicField' . $Param{DynamicFieldConfig}->{FieldType} . 'Object';
-
-    if ( !$Self->{$DynamicFieldBackend} ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => "Backend $Param{DynamicFieldConfig}->{FieldType} is invalid!"
-        );
-        return;
-    }
-
-    # return value from the specific backend
-    return $Self->{$DynamicFieldBackend}->StatsFieldParameterBuild(%Param);
-
-}
-
-=item CommonSearchFieldParameterBuild()
-
-build the search parameters to be passed to the search engine within the stats module.
-
-    my $DynamicFieldStatsSearchParameter = $BackendObject->CommonSearchFieldParameterBuild(
-        DynamicFieldConfig   => $DynamicFieldConfig,    # complete config of the DynamicField
-        Value                => $Value,                 # the serach profile
-    );
-
-    Returns
-
-    $DynamicFieldStatsSearchParameter = {
-            Equals => $Value,                           # Available operatiors:
-
-                                                        #   Equals            => 123,
-                                                        #   Like              => 'value*',
-                                                        #   GreaterThan       => '2001-01-01 01:01:01',
-                                                        #   GreaterThanEquals => '2001-01-01 01:01:01',
-                                                        #   SmallerThan       => '2002-02-02 02:02:02',
-                                                        #   SmallerThanEquals => '2002-02-02 02:02:02',
-        },
-    };
-=cut
-
-sub CommonSearchFieldParameterBuild {
-    my ( $Self, %Param ) = @_;
-
-    # check needed stuff
-    for my $Needed (qw(DynamicFieldConfig Value)) {
-        if ( !$Param{$Needed} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Needed!" );
-            return;
-        }
-    }
-
-    # check DynamicFieldConfig (general)
-    if ( !IsHashRefWithData( $Param{DynamicFieldConfig} ) ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => "The field configuration is invalid",
-        );
-        return;
-    }
-
-    # check DynamicFieldConfig (internally)
-    for my $Needed (qw(ID FieldType ObjectType Name)) {
-        if ( !$Param{DynamicFieldConfig}->{$Needed} ) {
-            $Self->{LogObject}->Log(
-                Priority => 'error',
-                Message  => "Need $Needed in DynamicFieldConfig!"
-            );
-            return;
-        }
-    }
-
-    # set the dynamic field specific backend
-    my $DynamicFieldBackend = 'DynamicField' . $Param{DynamicFieldConfig}->{FieldType} . 'Object';
-
-    if ( !$Self->{$DynamicFieldBackend} ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => "Backend $Param{DynamicFieldConfig}->{FieldType} is invalid!"
-        );
-        return;
-    }
-
-    # return value from the specific backend
-    return $Self->{$DynamicFieldBackend}->CommonSearchFieldParameterBuild(%Param);
-
-}
-
 =item ReadableValueRender()
 
 creates value and title strings to be used for storage (e. g. TicketHistory).
@@ -1557,6 +1543,7 @@ Produces text output and does not transform time zones of dates.
         Title => $Title,
         Value => $Value,
     }
+
 =cut
 
 sub ReadableValueRender {
@@ -1600,9 +1587,7 @@ sub ReadableValueRender {
     }
 
     # call DisplayValueRender on the specific backend
-    my $ValueStrg = $Self->{$DynamicFieldBackend}->ReadableValueRender(
-        %Param
-    );
+    my $ValueStrg = $Self->{$DynamicFieldBackend}->ReadableValueRender(%Param);
 
     return $ValueStrg;
 }
@@ -1645,6 +1630,7 @@ Generic Agent job
         'DynamicField_ . '$DynamicFieldConfig->{Name} => 'SCALAR',
         'Search_DynamicField_' . $DynamicFieldConfig->{Name} => 'ARRAY',
     }
+
 =cut
 
 sub TemplateValueTypeGet {
@@ -1695,73 +1681,9 @@ sub TemplateValueTypeGet {
     }
 
     # call TemplateValueTypeGet on the specific backend
-    my $ValueType = $Self->{$DynamicFieldBackend}->TemplateValueTypeGet(
-        %Param
-    );
+    my $ValueType = $Self->{$DynamicFieldBackend}->TemplateValueTypeGet(%Param);
 
     return $ValueType;
-}
-
-=item IsAJAXUpdateable()
-
-returns if the current field backend is updateable via AJAX or not.
-
-    my $Updateable = $BackendObject->IsAJAXUpdateable(
-        DynamicFieldConfig => $DynamicFieldConfig,       # complete config of the DynamicField
-    );
-
-    Returns:
-
-    $Updateable                                 # 1 or 0
-
-=cut
-
-sub IsAJAXUpdateable {
-    my ( $Self, %Param ) = @_;
-
-    # check needed stuff
-    for my $Needed (qw(DynamicFieldConfig)) {
-        if ( !$Param{$Needed} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Needed!" );
-            return;
-        }
-    }
-
-    # check DynamicFieldConfig (general)
-    if ( !IsHashRefWithData( $Param{DynamicFieldConfig} ) ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => "The field configuration is invalid",
-        );
-        return;
-    }
-
-    # check DynamicFieldConfig (internally)
-    for my $Needed (qw(ID FieldType ObjectType)) {
-        if ( !$Param{DynamicFieldConfig}->{$Needed} ) {
-            $Self->{LogObject}->Log(
-                Priority => 'error',
-                Message  => "Need $Needed in DynamicFieldConfig!"
-            );
-            return;
-        }
-    }
-
-    # set the dynamic field specific backend
-    my $DynamicFieldBackend = 'DynamicField' . $Param{DynamicFieldConfig}->{FieldType} . 'Object';
-
-    if ( !$Self->{$DynamicFieldBackend} ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => "Backend $Param{DynamicFieldConfig}->{FieldType} is invalid!"
-        );
-        return;
-    }
-
-    # call IsAJAXUpdateable on the specific backend
-    return $Self->{$DynamicFieldBackend}->IsAJAXUpdateable(
-        %Param
-    );
 }
 
 =item RandomValueSet()
@@ -1781,6 +1703,7 @@ sets a dynamic field random value.
         Success => 1                # or undef
         Value   => $RandomValue     # or undef
     }
+
 =cut
 
 sub RandomValueSet {
@@ -1852,21 +1775,26 @@ sub RandomValueSet {
     return $Result
 }
 
-=item IsMatchable()
+=item HistoricalValuesGet()
 
-returns if the current field backend value can be matched with an object attribute list or not.
+returns the list of database values for a defined dynamic field. This function is used to calculate
+ACLs in Search Dialog
 
-    my $Matchable = $BackendObject->IsMatchable(
+    my $HistorialValues = $BackendObject->HistoricalValuesGet(
         DynamicFieldConfig => $DynamicFieldConfig,       # complete config of the DynamicField
     );
 
     Returns:
 
-    $Matchable                                 # 1 or 0
+    $HistoricalValues = {
+        '1'     => '1',
+        'Item1' => 'Item1',
+        'Item2' => 'Item2',
+    }
 
 =cut
 
-sub IsMatchable {
+sub HistoricalValuesGet {
     my ( $Self, %Param ) = @_;
 
     # check needed stuff
@@ -1908,11 +1836,501 @@ sub IsMatchable {
         return;
     }
 
-    # call IsMatchable on the specific backend
-    return $Self->{$DynamicFieldBackend}->IsMatchable(
-        %Param
-    );
+    # call HistorialValuesGet on the specific backend
+    return $Self->{$DynamicFieldBackend}->HistoricalValuesGet(%Param);
 }
+
+=item ValueLookup()
+
+returns the display value for a value key for a defined Dynamic Field. This function is meaningfull
+for those Dynamic Fields that stores a value different than the value that is shown ( e.g. a
+Dropdown field could store Key = 1 and Display Value = One ) other fields return the same value
+as the value key
+
+    my $Value = $BackendObject->ValueLookup(
+        DynamicFieldConfig => $DynamicFieldConfig,       # complete config of the DynamicField
+        Key                => 'sotred value',             # could also be an array ref for
+                                                         #    MultipleSelect fields
+        LanguageObject     => $LanguageObject,            # optional, used to get value translations
+    );
+
+    Returns:
+
+    $Value = 'value to display';
+
+=cut
+
+sub ValueLookup {
+    my ( $Self, %Param ) = @_;
+
+    # check needed stuff
+    if ( !$Param{DynamicFieldConfig} ) {
+        $Self->{LogObject}->Log( Priority => 'error', Message => "Need DynamicFieldConfig!" );
+        return;
+    }
+
+    # check DynamicFieldConfig (general)
+    if ( !IsHashRefWithData( $Param{DynamicFieldConfig} ) ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "The field configuration is invalid",
+        );
+        return;
+    }
+
+    # check DynamicFieldConfig (internally)
+    for my $Needed (qw(ID FieldType ObjectType Config Name)) {
+        if ( !$Param{DynamicFieldConfig}->{$Needed} ) {
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $Needed in DynamicFieldConfig!"
+            );
+            return;
+        }
+    }
+
+    # set the dynamic field specific backend
+    my $DynamicFieldBackend = 'DynamicField' . $Param{DynamicFieldConfig}->{FieldType} . 'Object';
+
+    if ( !$Self->{$DynamicFieldBackend} ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "Backend $Param{DynamicFieldConfig}->{FieldType} is invalid!"
+        );
+        return;
+    }
+
+    # remove LanguageObject param if is not a real LanguageObject
+    if ( defined $Param{LanguageObject} && ref $Param{LanguageObject} ne 'Kernel::Language' ) {
+        delete $Param{LanguageObject};
+    }
+
+    # call ValueLookup on the specific backend
+    return $Self->{$DynamicFieldBackend}->ValueLookup(%Param);
+}
+
+=item HasBehavior()
+
+checks if the dynamic field as an specified behavior
+
+    my $Success = $BackendObject->HasBehavior(
+        DynamicFieldConfig => $DynamicFieldConfig,       # complete config of the DynamicField
+        Behavior           => 'Some Behavior',           # 'IsACLReducible' to be reduded by ACLs
+                                                         #    and updatable via AJAX
+                                                         # 'IsNotificationEventCondition' to be used
+                                                         #     in the notification events as a
+                                                         #     ticket condition
+                                                         # 'IsSortable' to sort by this field in
+                                                         #     "Small" overviews
+                                                         # 'IsStatsCondition' to be used in
+                                                         #     Statistics as a condition
+                                                         # 'IsCustomerInterfaceCapable' to make
+                                                         #     the field usable in the customer
+                                                         #     interface
+    );
+
+    Returns:
+
+    $Success = 1;                # or undefined (if the dynamic field does not have that behavior)
+
+=cut
+
+sub HasBehavior {
+    my ( $Self, %Param ) = @_;
+
+    # check needed stuff
+    for my $Needed (qw(DynamicFieldConfig Behavior)) {
+        if ( !$Param{$Needed} ) {
+            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Needed!" );
+            return;
+        }
+    }
+
+    # check DynamicFieldConfig (general)
+    if ( !IsHashRefWithData( $Param{DynamicFieldConfig} ) ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "The field configuration is invalid",
+        );
+        return;
+    }
+
+    # check DynamicFieldConfig (internally)
+    for my $Needed (qw(ID FieldType ObjectType)) {
+        if ( !$Param{DynamicFieldConfig}->{$Needed} ) {
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $Needed in DynamicFieldConfig!"
+            );
+            return;
+        }
+    }
+
+    # set the dynamic field specific backend
+    my $DynamicFieldBackend = 'DynamicField' . $Param{DynamicFieldConfig}->{FieldType} . 'Object';
+
+    if ( !$Self->{$DynamicFieldBackend} ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "Backend $Param{DynamicFieldConfig}->{FieldType} is invalid!"
+        );
+        return;
+    }
+
+    # verify if function is available
+    return if !$Self->{$DynamicFieldBackend}->can('HasBehavior');
+
+    # call HasBehavior on the specific backend
+    return $Self->{$DynamicFieldBackend}->HasBehavior(%Param);
+}
+
+=back
+
+=cut
+
+=head2 Functions For IsACLReducible Behavior
+
+The following functions should be only used if the dynamic field has
+IsACLReducible behavior
+
+=over 4
+
+=cut
+
+=item PossibleValuesGet()
+
+returns the list of possible values for a dynamic field
+
+    my $PossibleValues = $BackendObject->PossibleValuesGet(
+        DynamicFieldConfig => $DynamicFieldConfig,       # complete config of the DynamicField
+    );
+
+    Returns:
+
+    $PossibleValues = {
+        ''  => '-',             # 'none' value if defined in the dynamic field configuration
+        '1' => 'Item1',
+        '2' => 'Item2',
+    }
+
+=cut
+
+sub PossibleValuesGet {
+    my ( $Self, %Param ) = @_;
+
+    # check needed stuff
+    for my $Needed (qw(DynamicFieldConfig)) {
+        if ( !$Param{$Needed} ) {
+            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Needed!" );
+            return;
+        }
+    }
+
+    # check DynamicFieldConfig (general)
+    if ( !IsHashRefWithData( $Param{DynamicFieldConfig} ) ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "The field configuration is invalid",
+        );
+        return;
+    }
+
+    # check DynamicFieldConfig (internally)
+    for my $Needed (qw(ID FieldType ObjectType)) {
+        if ( !$Param{DynamicFieldConfig}->{$Needed} ) {
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $Needed in DynamicFieldConfig!"
+            );
+            return;
+        }
+    }
+
+    # set the dynamic field specific backend
+    my $DynamicFieldBackend = 'DynamicField' . $Param{DynamicFieldConfig}->{FieldType} . 'Object';
+
+    if ( !$Self->{$DynamicFieldBackend} ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "Backend $Param{DynamicFieldConfig}->{FieldType} is invalid!"
+        );
+        return;
+    }
+
+    # verify if function is available
+    return if !$Self->{$DynamicFieldBackend}->can('PossibleValuesGet');
+
+    # call PossibleValuesGet on the specific backend
+    return $Self->{$DynamicFieldBackend}->PossibleValuesGet(%Param);
+}
+
+=item BuildSelectionDataGet()
+
+returns the list of possible values for a dynamic field as needed for BuildSelection or
+BuildSelectionJSON if TreeView parameter is set in the DynamicFieldConfig the result will be
+an ArrayHashRef, otherwise the result will be a HashRef.
+
+    my $DataValues = $BackendObject->BuildSelectionDataGet(
+        DynamicFieldConfig => $DynamicFieldConfig,       # complete config of the DynamicField
+        PossibleValues     => $PossibleValues,           # field possible values (could be reduced
+                                                         #    by ACLs)
+        Value              => $Value,                    # optional scalar, ArrayRef or HashRef
+                                                         #    depending on dynamic field the
+    );
+
+    Returns:
+
+    $DataValues = {
+        ''  => '-',
+        '1' => 'Item1',
+        '2' => 'Item2',
+    }
+
+    or
+
+    $DataValues = [
+        {
+            Key   => '',
+            Value => '-',
+        },
+        {
+            Key   => '1',
+            Value => 'Item1'
+        },
+        {
+            Key      => '1::A',
+            Value    => 'Item1-A',
+            Disabled => 1,
+        },
+        {
+            Key      => '1::A::1',
+            Value    => 'Item1-A-1',
+            Selected => 1,
+        },
+        {
+            Key      => '2',
+            Value    => 'Item2',
+        },
+    ];
+
+
+=cut
+
+sub BuildSelectionDataGet {
+    my ( $Self, %Param ) = @_;
+
+    # check needed stuff
+    for my $Needed (qw(DynamicFieldConfig PossibleValues)) {
+        if ( !$Param{$Needed} ) {
+            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Needed!" );
+            return;
+        }
+    }
+
+    # check DynamicFieldConfig (general)
+    if ( !IsHashRefWithData( $Param{DynamicFieldConfig} ) ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "The field configuration is invalid",
+        );
+        return;
+    }
+
+    # check DynamicFieldConfig (internally)
+    for my $Needed (qw(ID FieldType ObjectType)) {
+        if ( !$Param{DynamicFieldConfig}->{$Needed} ) {
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $Needed in DynamicFieldConfig!"
+            );
+            return;
+        }
+    }
+
+    # set the dynamic field specific backend
+    my $DynamicFieldBackend = 'DynamicField' . $Param{DynamicFieldConfig}->{FieldType} . 'Object';
+
+    if ( !$Self->{$DynamicFieldBackend} ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "Backend $Param{DynamicFieldConfig}->{FieldType} is invalid!"
+        );
+        return;
+    }
+
+    # verify if function is available
+    return if !$Self->{$DynamicFieldBackend}->can('BuildSelectionDataGet');
+
+    # call PossibleValuesGet on the specific backend
+    return $Self->{$DynamicFieldBackend}->BuildSelectionDataGet(%Param);
+}
+
+=back
+
+=cut
+
+=head2 Functions For IsStatsCondition Behavior
+
+The following functions should be only used if the dynamic field has IsStatsCondition behavior
+
+=over 4
+
+=cut
+
+=item StatsFieldParameterBuild()
+
+    my $DynamicFieldStatsParameter =  $BackendObject->StatsFieldParameterBuild(
+        DynamicFieldConfig   => $DynamicFieldConfig,      # complete config of the DynamicField
+        PossibleValuesFilter => ['value1', 'value2'],     # Optional. Some backends may support this.
+                                                          #     This may be needed to realize ACL support for ticket masks,
+                                                          #     where the possible values can be limited with and ACL.
+    );
+
+    returns
+
+    $DynamicFieldStatsParameter = {
+        Values => {
+            $Key1 => $Value1,
+            $Key2 => $Value2,
+        },
+        Name               => 'DynamicField_' . $DynamicFieldConfig->{Label},
+        Element            => 'DynamicField_' . $DynamicFieldConfig->{Name},
+        TranslatableValues => 1,
+    };
+
+=cut
+
+sub StatsFieldParameterBuild {
+    my ( $Self, %Param ) = @_;
+
+    # check needed stuff
+    for my $Needed (qw(DynamicFieldConfig)) {
+        if ( !$Param{$Needed} ) {
+            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Needed!" );
+            return;
+        }
+    }
+
+    # check DynamicFieldConfig (general)
+    if ( !IsHashRefWithData( $Param{DynamicFieldConfig} ) ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "The field configuration is invalid",
+        );
+        return;
+    }
+
+    # check DynamicFieldConfig (internally)
+    for my $Needed (qw(ID FieldType ObjectType Name)) {
+        if ( !$Param{DynamicFieldConfig}->{$Needed} ) {
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $Needed in DynamicFieldConfig!"
+            );
+            return;
+        }
+    }
+
+    # set the dynamic field specific backend
+    my $DynamicFieldBackend = 'DynamicField' . $Param{DynamicFieldConfig}->{FieldType} . 'Object';
+
+    if ( !$Self->{$DynamicFieldBackend} ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "Backend $Param{DynamicFieldConfig}->{FieldType} is invalid!"
+        );
+        return;
+    }
+
+    # return value from the specific backend
+    return $Self->{$DynamicFieldBackend}->StatsFieldParameterBuild(%Param);
+
+}
+
+=item StatsSearchFieldParameterBuild()
+
+build the search parameters to be passed to the search engine within the stats module.
+
+    my $DynamicFieldStatsSearchParameter = $BackendObject->StatsSearchFieldParameterBuild(
+        DynamicFieldConfig   => $DynamicFieldConfig,    # complete config of the DynamicField
+        Value                => $Value,                 # the serach profile
+    );
+
+    Returns
+
+    $DynamicFieldStatsSearchParameter = {
+            Equals => $Value,                           # Available operatiors:
+
+                                                        #   Equals            => 123,
+                                                        #   Like              => 'value*',
+                                                        #   GreaterThan       => '2001-01-01 01:01:01',
+                                                        #   GreaterThanEquals => '2001-01-01 01:01:01',
+                                                        #   SmallerThan       => '2002-02-02 02:02:02',
+                                                        #   SmallerThanEquals => '2002-02-02 02:02:02',
+        },
+    };
+
+=cut
+
+sub StatsSearchFieldParameterBuild {
+    my ( $Self, %Param ) = @_;
+
+    # check needed stuff
+    for my $Needed (qw(DynamicFieldConfig Value)) {
+        if ( !$Param{$Needed} ) {
+            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Needed!" );
+            return;
+        }
+    }
+
+    # check DynamicFieldConfig (general)
+    if ( !IsHashRefWithData( $Param{DynamicFieldConfig} ) ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "The field configuration is invalid",
+        );
+        return;
+    }
+
+    # check DynamicFieldConfig (internally)
+    for my $Needed (qw(ID FieldType ObjectType Name)) {
+        if ( !$Param{DynamicFieldConfig}->{$Needed} ) {
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $Needed in DynamicFieldConfig!"
+            );
+            return;
+        }
+    }
+
+    # set the dynamic field specific backend
+    my $DynamicFieldBackend = 'DynamicField' . $Param{DynamicFieldConfig}->{FieldType} . 'Object';
+
+    if ( !$Self->{$DynamicFieldBackend} ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "Backend $Param{DynamicFieldConfig}->{FieldType} is invalid!"
+        );
+        return;
+    }
+
+    # return value from the specific backend
+    return $Self->{$DynamicFieldBackend}->StatsSearchFieldParameterBuild(%Param);
+
+}
+
+=back
+
+=cut
+
+=head2 Functions For IsNotificationEventCondition Behavior
+
+The following functions should be only used if the dynamic field has IsNotificationEventCondition
+behavior
+
+=over 4
+
+=cut
 
 =item ObjectMatch()
 
@@ -1983,219 +2401,96 @@ sub ObjectMatch {
     }
 
     # call ObjectMatch on the specific backend
-    return $Self->{$DynamicFieldBackend}->ObjectMatch(
-        %Param
-    );
+    return $Self->{$DynamicFieldBackend}->ObjectMatch(%Param);
 }
-
-=item AJAXPossibleValuesGet()
-
-returns the list of possible values for a defined dynamic field (including the "none" value if is defined in
-the dynamic field configuration ). This function is used in AJAX update subactions
-
-    my $PossibleValues = $BackendObject->AJAXPossibleValuesGet(
-        DynamicFieldConfig => $DynamicFieldConfig,       # complete config of the DynamicField
-    );
-
-    Returns:
-
-    $PossibleValues = {
-        ''  => '-',                                     # "none" value
-        '1' => 'Item1',
-        '2' => 'Item2',
-    }
-
-=cut
-
-sub AJAXPossibleValuesGet {
-    my ( $Self, %Param ) = @_;
-
-    # check needed stuff
-    for my $Needed (qw(DynamicFieldConfig)) {
-        if ( !$Param{$Needed} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Needed!" );
-            return;
-        }
-    }
-
-    # check DynamicFieldConfig (general)
-    if ( !IsHashRefWithData( $Param{DynamicFieldConfig} ) ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => "The field configuration is invalid",
-        );
-        return;
-    }
-
-    # check DynamicFieldConfig (internally)
-    for my $Needed (qw(ID FieldType ObjectType)) {
-        if ( !$Param{DynamicFieldConfig}->{$Needed} ) {
-            $Self->{LogObject}->Log(
-                Priority => 'error',
-                Message  => "Need $Needed in DynamicFieldConfig!"
-            );
-            return;
-        }
-    }
-
-    # set the dynamic field specific backend
-    my $DynamicFieldBackend = 'DynamicField' . $Param{DynamicFieldConfig}->{FieldType} . 'Object';
-
-    if ( !$Self->{$DynamicFieldBackend} ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => "Backend $Param{DynamicFieldConfig}->{FieldType} is invalid!"
-        );
-        return;
-    }
-
-    # call AJAXPossibleValuesGet on the specific backend
-    return $Self->{$DynamicFieldBackend}->AJAXPossibleValuesGet(
-        %Param
-    );
-}
-
-=item HistoricalValuesGet()
-
-returns the list of database values for a defined dynamic field. This function is used to calculate
-ACLs in Search Dialog
-
-    my $HistorialValues = $BackendObject->HistoricalValuesGet(
-        DynamicFieldConfig => $DynamicFieldConfig,       # complete config of the DynamicField
-    );
-
-    Returns:
-
-    $HistoricalValues = {
-        '1'     => '1',
-        'Item1' => 'Item1',
-        'Item2' => 'Item2',
-    }
-
-=cut
-
-sub HistoricalValuesGet {
-    my ( $Self, %Param ) = @_;
-
-    # check needed stuff
-    for my $Needed (qw(DynamicFieldConfig)) {
-        if ( !$Param{$Needed} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Needed!" );
-            return;
-        }
-    }
-
-    # check DynamicFieldConfig (general)
-    if ( !IsHashRefWithData( $Param{DynamicFieldConfig} ) ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => "The field configuration is invalid",
-        );
-        return;
-    }
-
-    # check DynamicFieldConfig (internally)
-    for my $Needed (qw(ID FieldType ObjectType)) {
-        if ( !$Param{DynamicFieldConfig}->{$Needed} ) {
-            $Self->{LogObject}->Log(
-                Priority => 'error',
-                Message  => "Need $Needed in DynamicFieldConfig!"
-            );
-            return;
-        }
-    }
-
-    # set the dynamic field specific backend
-    my $DynamicFieldBackend = 'DynamicField' . $Param{DynamicFieldConfig}->{FieldType} . 'Object';
-
-    if ( !$Self->{$DynamicFieldBackend} ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => "Backend $Param{DynamicFieldConfig}->{FieldType} is invalid!"
-        );
-        return;
-    }
-
-    # call HistorialValuesGet on the specific backend
-    return $Self->{$DynamicFieldBackend}->HistoricalValuesGet(
-        %Param
-    );
-}
-
-=item ValueLookup()
-
-returns the display value for a value key for a defined Dynamic Field. This function is meaningfull
-for those Dynamic Fields that stores a value different than the value that is shown ( e.g. a
-Dropdown field could store Key = 1 and Display Value = One ) other fields return the same value
-as the value key
-
-    my $Value = $BackendObject->ValueLookup(
-        DynamicFieldConfig => $DynamicFieldConfig,       # complete config of the DynamicField
-        Key                => 'sotred value',             # could also be an array ref for
-                                                         #    MultipleSelect fields
-        LanguageObject     => $LanguageObject,            # optional, used to get value translations
-    );
-
-    Returns:
-
-    $Value = 'value to display';
-
-=cut
-
-sub ValueLookup {
-    my ( $Self, %Param ) = @_;
-
-    # check needed stuff
-    if ( !$Param{DynamicFieldConfig} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => "Need DynamicFieldConfig!" );
-        return;
-    }
-
-    # check DynamicFieldConfig (general)
-    if ( !IsHashRefWithData( $Param{DynamicFieldConfig} ) ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => "The field configuration is invalid",
-        );
-        return;
-    }
-
-    # check DynamicFieldConfig (internally)
-    for my $Needed (qw(ID FieldType ObjectType Config Name)) {
-        if ( !$Param{DynamicFieldConfig}->{$Needed} ) {
-            $Self->{LogObject}->Log(
-                Priority => 'error',
-                Message  => "Need $Needed in DynamicFieldConfig!"
-            );
-            return;
-        }
-    }
-
-    # set the dynamic field specific backend
-    my $DynamicFieldBackend = 'DynamicField' . $Param{DynamicFieldConfig}->{FieldType} . 'Object';
-
-    if ( !$Self->{$DynamicFieldBackend} ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => "Backend $Param{DynamicFieldConfig}->{FieldType} is invalid!"
-        );
-        return;
-    }
-
-    # remove LanguageObject param if is not a real LanguageObject
-    if ( defined $Param{LanguageObject} && ref $Param{LanguageObject} ne 'Kernel::Language' ) {
-        delete $Param{LanguageObject};
-    }
-
-    # call ValueLookup on the specific backend
-    return $Self->{$DynamicFieldBackend}->ValueLookup(
-        %Param,
-    );
-}
-
-1;
 
 =back
+
+=cut
+
+=head2 Functions For IsFiltrable Behavior
+
+The following functions should be only used if the dynamic field has IsFiltrable behavior
+
+=over 4
+
+=cut
+
+=item ColumnFilterValuesGet()
+
+get the list distinct values for a dynamic field from a list of tickets
+
+    my $ColumnFilterValues = $BackendObject->ColumnFilterValuesGet(
+        DynamicFieldConfig => $DynamicFieldConfig,      #DynamicField configuraction
+        LayoutObject       => $LayoutObject,
+        TicketIDs          => [23, 1, 56, 74],          # array ref list of ticket IDs
+    );
+
+    Returns:
+
+    $HistoricalValues{
+        ValueA => 'ValueA',
+        ValueB => 'ValueB',
+        ValueC => 'ValueC'
+    };
+=cut
+
+sub ColumnFilterValuesGet {
+    my ( $Self, %Param ) = @_;
+
+    # check needed stuff
+    for my $Needed (qw(DynamicFieldConfig LayoutObject TicketIDs)) {
+        if ( !$Param{$Needed} ) {
+            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Needed!" );
+            return;
+        }
+    }
+
+    # check DynamicFieldConfig (general)
+    if ( !IsHashRefWithData( $Param{DynamicFieldConfig} ) ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "The field configuration is invalid",
+        );
+        return;
+    }
+
+    # check DynamicFieldConfig (internally)
+    for my $Needed (qw(ID FieldType ObjectType)) {
+        if ( !$Param{DynamicFieldConfig}->{$Needed} ) {
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $Needed in DynamicFieldConfig!"
+            );
+            return;
+        }
+    }
+
+    # set the dynamic filed specific backend
+    my $DynamicFieldBackend = 'DynamicField' . $Param{DynamicFieldConfig}->{FieldType} . 'Object';
+
+    if ( !$Self->{$DynamicFieldBackend} ) {
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => "Backend $Param{DynamicFieldConfig}->{FieldType} is invalid!"
+        );
+        return;
+    }
+
+    # verify if function is available
+    return if !$Self->{$DynamicFieldBackend}->can('ColumnFilterValuesGet');
+
+    # call ColumnFilterValuesGet on the specific backend
+    return $Self->{$DynamicFieldBackend}->ColumnFilterValuesGet(
+        %Param
+    );
+}
+
+=back
+
+=cut
+
+1;
 
 =head1 TERMS AND CONDITIONS
 
