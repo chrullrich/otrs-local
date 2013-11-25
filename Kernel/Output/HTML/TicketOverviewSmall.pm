@@ -176,6 +176,11 @@ sub new {
         'SLA'            => 1,
     };
 
+    # remove queue from filters on AgentTicketQueue
+    if ( $Self->{Action} eq 'AgentTicketQueue' ) {
+        delete $Self->{AvailableFilterableColumns}->{Queue};
+    }
+
     # get filtrable dynamic fields
     # cycle trough the activated dynamic fields for this screen
     DYNAMICFIELD:
@@ -1852,6 +1857,7 @@ sub _ColumnFilterJSON {
                 Data         => $Data,
                 Class        => 'ColumnFilter',
                 Sort         => 'AlphanumericKey',
+                TreeView     => 1,
                 SelectedID   => $Param{SelectedValue},
                 Translation  => $TranslationOption,
                 AutoComplete => 'off',

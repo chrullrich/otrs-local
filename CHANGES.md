@@ -1,3 +1,23 @@
+#3.3.3 2013-12-10
+ - 2013-11-07 Updated Chinese simplified translation, thanks to Michael Shi.
+ - 2013-12-03 Fixed bug#[10022](http://bugs.otrs.org/show_bug.cgi?id=10022) - Ticket form looses To, Cc and Bcc when submitting form.
+ - 2013-12-02 Fixed bug#[9928](http://bugs.otrs.org/show_bug.cgi?id=9928) - Dropdown field in tree mode are not displayed in tree mode in column filters.
+ - 2013-12-02 Fixed bug#[9327](http://bugs.otrs.org/show_bug.cgi?id=9327) - Filter breaks "Select all" functionality.
+ - 2013-11-29 Fixed bug#[10035](http://bugs.otrs.org/show_bug.cgi?id=10035) - Adding a GenericAgent Job with an already existing name, will not be added, no error displayed.
+ - 2013-11-29 Fixed bug#[10036](http://bugs.otrs.org/show_bug.cgi?id=10036) - Reset filters in small overviews does not reset the ticket list.
+ - 2013-11-29 Fixed bug#[9997](http://bugs.otrs.org/show_bug.cgi?id=9997) - After empty ticket list, Column Filters are reset in Overview Small screens.
+ - 2013-11-29 Fixed bug#[10028](http://bugs.otrs.org/show_bug.cgi?id=10028) - Duplicate Access Keys/hardcoded assignments.
+ - 2013-11-29 Fixed bug#[9999](http://bugs.otrs.org/show_bug.cgi?id=9999) - Timestamps in HistoricalValueGet return milliseconds on SQL Server.
+ - 2013-11-29 Fixed bug#[10023](http://bugs.otrs.org/show_bug.cgi?id=10023) - Subject always cleaned from prefixes, irrespective of configuration.
+ - 2013-11-29 Fixed bug#[10027](http://bugs.otrs.org/show_bug.cgi?id=10027) - Added old ticket information to ticket_history.
+ - 2013-11-28 Fixed bug#[10020](http://bugs.otrs.org/show_bug.cgi?id=10020) - Event Information within Events Ticket Calender has wrong translation.
+ - 2013-11-28 Fixed bug#[10019](http://bugs.otrs.org/show_bug.cgi?id=10019) - Tickets via "In line action bar" cannot be moved.
+ - 2013-11-28 Fixed bug#[9911](http://bugs.otrs.org/show_bug.cgi?id=9911) - Column filter by 'Queue' shouldn't be available on 'Queue view'.
+ - 2013-11-28 Fixed bug#[9950](http://bugs.otrs.org/show_bug.cgi?id=9950) - Ticket Split takes uses system address as the customer.
+ - 2013-11-25 Fixed bug#[9975](http://bugs.otrs.org/show_bug.cgi?id=9975) - Generic Interface (TicketSearch Operation) Limit param is ignored.
+ - 2013-11-25 Updated jsPlumb to version 1.5.4.
+ - 2013-11-22 Fixed bug#[10007](http://bugs.otrs.org/show_bug.cgi?id=10007) - StandardTemplateList() generates invalid SQL.
+
 #3.3.2 2013-11-26
  - 2013-11-21 Fixed bug#[9994](http://bugs.otrs.org/show_bug.cgi?id=9994) - Symbolic link used for otrs folder is causing update problems.
  - 2013-11-21 Fixed bug#[9998](http://bugs.otrs.org/show_bug.cgi?id=9998) - Password fields on OTRS 3.3 do not allow typing in blanks.
