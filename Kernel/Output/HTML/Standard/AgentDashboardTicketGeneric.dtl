@@ -104,6 +104,9 @@
             <td class="W10pc">
                 <a href="$Env{"Baselink"}Action=AgentTicketZoom;TicketID=$Data{"TicketID"}" title="$QData{"Title"}" class="AsBlock MasterActionLink">$Data{"TicketNumber"}</a>
             </td>
+            <td class="W7pc">
+                <a href="$Env{"Baselink"}Action=AgentTicketQueue;QueueID=$Data{"QueueID"}" class="MasterActionException">$Text{"$QData{"Queue","20"}"}</a>
+            </td>
             <td class="W50pc">
                 <div title="$QData{"Title"}">$QData{"Title","70"}</div>
             </td>
@@ -125,7 +128,8 @@
 $('.MasterAction').bind('click', function (Event) {
     var $MasterActionLink = $(this).find('.MasterActionLink');
     // only act if the link was not clicked directly
-    if (Event.target !== $MasterActionLink.get(0)) {
+    // of is exempt from the whole-row redirection
+    if (Event.target !== $MasterActionLink.get(0) && !$(Event.target).hasClass('MasterActionException')) {
         window.location = $MasterActionLink.attr('href');
         return false;
     }
