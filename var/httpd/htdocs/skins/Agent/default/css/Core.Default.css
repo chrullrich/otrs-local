@@ -358,6 +358,9 @@ dd {
 /**
  * @subsection  Standard Widths
  */
+.W7pc {
+    width: 7%;
+}
 .W10pc {
     width: 10%;
 }
