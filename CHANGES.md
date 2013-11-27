@@ -1,3 +1,23 @@
+#3.3.2 2013-11-26
+ - 2013-11-21 Fixed bug#[9994](http://bugs.otrs.org/show_bug.cgi?id=9994) - Symbolic link used for otrs folder is causing update problems.
+ - 2013-11-21 Fixed bug#[9998](http://bugs.otrs.org/show_bug.cgi?id=9998) - Password fields on OTRS 3.3 do not allow typing in blanks.
+ - 2013-11-19 Fixed bug#[7337](http://bugs.otrs.org/show_bug.cgi?id=7337) - AJAX Error on new Phone Ticket on IIS when using JSON::XS.
+ - 2013-11-07 Updated Chinese simplified translation, thanks to Michael Shi.
+ - 2013-11-18 Fixed bug#[8991](http://bugs.otrs.org/show_bug.cgi?id=8991) - Back-action does not work when search result returned just  1 ticket.
+ - 2013-11-18 Updated CKEditor to version 4.3.
+ - 2013-11-14 Fixed bug#[9976](http://bugs.otrs.org/show_bug.cgi?id=9976) - Statistic Graphs not showing in IE 10.
+ - 2013-11-14 Fixed bug#[9973](http://bugs.otrs.org/show_bug.cgi?id=9973) - DashboardUserOnline wiget display problems
+ - 2013-11-14 Fixed bug#[9946](http://bugs.otrs.org/show_bug.cgi?id=9946) - Misplaced pagination in ticket overviews.
+ - 2013-11-14 Fixed bug#[9962](http://bugs.otrs.org/show_bug.cgi?id=9962) - Datepicker localization data could not be found! when choosing French canadian language.
+ - 2013-11-14 Fixed bug#[9968](http://bugs.otrs.org/show_bug.cgi?id=9968) - Multiple Result Set problem during DB upgrade on SQL Server 2012.
+ - 2013-11-12 Fixed bug#[9937](http://bugs.otrs.org/show_bug.cgi?id=9937) - Activity-Dialogs in wrong order.
+ - 2013-11-12 Fixed bug#[9935](http://bugs.otrs.org/show_bug.cgi?id=9935) - Dashboard shows internal server error if product.xml content is not valid XML.
+ - 2013-11-12 Fixed bug#[9933](http://bugs.otrs.org/show_bug.cgi?id=9933) - DefaultOverviewColumns under Ticket -> Frontend::Agent Wrong Description.
+ - 2013-11-11 Fixed bug#[9921](http://bugs.otrs.org/show_bug.cgi?id=9921) - Reply to previously signed email breaks PGP verification.
+ - 2013-11-11 Fixed bug#[9945](http://bugs.otrs.org/show_bug.cgi?id=9945) - Cannot search for "Date" dynamic fields.
+ - 2013-11-11 Fixed bug#[9954](http://bugs.otrs.org/show_bug.cgi?id=9954) - PGP Crypted and Signed emails could be wrongly parsed.
+ - 2013-11-07 Follow-up fix for bug#[9931](http://bugs.otrs.org/show_bug.cgi?id=9931) - After upgrading to MIME::Tools 5.504 (without OTRS patches) SMIME signatures are broken.
+
 #3.3.1 2013-11-12
  - 2013-11-07 Updated Chinese simplified translation, thanks to Michael Shi.
  - 2013-11-07 Fixed bug#[9639](http://bugs.otrs.org/show_bug.cgi?id=9639) - TextArea validation message not translated.
