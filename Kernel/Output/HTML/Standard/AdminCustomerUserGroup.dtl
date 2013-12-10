@@ -243,6 +243,7 @@
 <!-- dtl:js_on_document_complete -->
 <script type="text/javascript">//<![CDATA[
     Core.UI.Table.InitTableFilter($('#FilterGroups'), $('#Group'));
+    Core.Form.HideSelectAllCheckboxes($('#Group'), '#Group th input[type=checkbox]');
 //]]></script>
 <!-- dtl:js_on_document_complete -->
 
