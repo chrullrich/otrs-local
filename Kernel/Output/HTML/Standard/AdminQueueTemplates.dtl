@@ -163,6 +163,7 @@ $('input:checkbox[name=ItemsSelected]').bind('click', function () {
     Core.Form.SelectAllCheckboxes($(this), $('#SelectAllItemsSelected'));
 });
 Core.UI.Table.InitTableFilter($('#Filter'), $('#ItemsTable'));
+Core.Form.HideSelectAllCheckboxes($('#ItemsTable'), '#SelectAllItemsSelected');
 //]]></script>
 <!-- dtl:js_on_document_complete -->
 <!-- dtl:block:Change -->

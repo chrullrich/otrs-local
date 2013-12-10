@@ -163,6 +163,7 @@
 <!-- dtl:js_on_document_complete -->
 <script type="text/javascript">//<![CDATA[
     Core.UI.Table.InitTableFilter($('#Filter'), $('#UserRoles'));
+    Core.Form.HideSelectAllCheckboxes($('#UserRoles'), '#SelectAll$QData{"Type"}');
 //]]></script>
 <!-- dtl:js_on_document_complete -->
 
