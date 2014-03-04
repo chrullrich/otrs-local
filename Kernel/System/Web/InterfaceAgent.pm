@@ -134,6 +134,13 @@ sub Run {
         }
     }
 
+    my $CookieSecureAttribute;
+    if ( $Self->{ConfigObject}->Get('HttpType') eq 'https' ) {
+
+        # Restrict Cookie to HTTPS if it is used.
+        $CookieSecureAttribute = 1;
+    }
+
     # check common objects
     $Self->{DBObject} = Kernel::System::DB->new( %{$Self} );
     if ( !$Self->{DBObject} || $Self->{ParamObject}->Error() ) {
@@ -219,7 +226,7 @@ sub Run {
                         Type => 'Info',
                         What => 'Message',
                         )
-                        || 'Login failed! Your username or password was entered incorrectly.',
+                        || 'Login failed! Your user name or password was entered incorrectly.',
                     LoginFailed => 1,
                     User        => $User,
                     %Param,
@@ -328,13 +335,6 @@ sub Run {
             $Expires = '';
         }
 
-        my $SecureAttribute;
-        if ( $Self->{ConfigObject}->Get('HttpType') eq 'https' ) {
-
-            # Restrict Cookie to HTTPS if it is used.
-            $SecureAttribute = 1;
-        }
-
         $LayoutObject = Kernel::Output::HTML::Layout->new(
             SetCookies => {
                 SessionIDCookie => $Self->{ParamObject}->SetCookie(
@@ -342,7 +342,7 @@ sub Run {
                     Value    => $NewSessionID,
                     Expires  => $Expires,
                     Path     => $Self->{ConfigObject}->Get('ScriptAlias'),
-                    Secure   => scalar $SecureAttribute,
+                    Secure   => scalar $CookieSecureAttribute,
                     HTTPOnly => 1,
                 ),
             },
@@ -401,8 +401,12 @@ sub Run {
         my $LayoutObject = Kernel::Output::HTML::Layout->new(
             SetCookies => {
                 SessionIDCookie => $Self->{ParamObject}->SetCookie(
-                    Key   => $Param{SessionName},
-                    Value => '',
+                    Key      => $Param{SessionName},
+                    Value    => '',
+                    Expires  => '-1y',
+                    Path     => $Self->{ConfigObject}->Get('ScriptAlias'),
+                    Secure   => scalar $CookieSecureAttribute,
+                    HTTPOnly => 1,
                 ),
             },
             %{$Self},
@@ -646,8 +650,12 @@ sub Run {
             my $LayoutObject = Kernel::Output::HTML::Layout->new(
                 SetCookies => {
                     SessionIDCookie => $Self->{ParamObject}->SetCookie(
-                        Key   => $Param{SessionName},
-                        Value => '',
+                        Key      => $Param{SessionName},
+                        Value    => '',
+                        Expires  => '-1y',
+                        Path     => $Self->{ConfigObject}->Get('ScriptAlias'),
+                        Secure   => scalar $CookieSecureAttribute,
+                        HTTPOnly => 1,
                     ),
                 },
                 %{$Self},

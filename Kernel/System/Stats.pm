@@ -219,7 +219,11 @@ sub StatsGet {
         $Self->{LogObject}->Log( Priority => 'error', Message => 'Need StatID!' );
     }
 
-    my $CacheKey = 'StatsGet::' . ( join '::', %Param );
+    $Param{NoObjectAttributes} = $Param{NoObjectAttributes} ? 1 : 0;
+
+    my $CacheKey
+        = "StatsGet::StatID::$Param{StatID}::NoObjectAttributes::$Param{NoObjectAttributes}";
+
     my $Cache = $Self->{CacheObject}->Get(
         Type => 'Stats',
         Key  => $CacheKey,
@@ -613,7 +617,9 @@ sub StatsDelete {
 
 fetches all statistics that the current user may see
 
-    my $StatsRef = $StatsObject->StatsListGet();
+    my $StatsRef = $StatsObject->StatsListGet(
+        AccessRw => 1, # Optional, indicates that user may see all statistics
+    );
 
     Returns
 
@@ -675,8 +681,9 @@ sub StatsListGet {
             StatID             => $StatID,
             NoObjectAttributes => 1,
         );
+
         my $UserPermission = 0;
-        if ( $Self->{AccessRw} || $Self->{UserID} == 1 ) {
+        if ( $Param{AccessRw} || $Self->{UserID} == 1 ) {
             $UserPermission = 1;
         }
 
@@ -707,6 +714,7 @@ sub StatsListGet {
 lists all stats id's
 
     my $ArrayRef = $StatsObject->GetStatsList(
+        AccessRw  => 1, # Optional, indicates that user may see all statistics
         OrderBy   => 'ID' || 'Title' || 'Object', # optional
         Direction => 'ASC' || 'DESC',             # optional
     );
@@ -716,18 +724,12 @@ lists all stats id's
 sub GetStatsList {
     my ( $Self, %Param ) = @_;
 
-    my $CacheKey = 'GetStatsList::' . ( join '::', %Param );
-    my $Cache = $Self->{CacheObject}->Get(
-        Type => 'Stats',
-        Key  => $CacheKey,
-    );
-    return $Cache if ref $Cache eq 'ARRAY';
+    $Param{OrderBy}   ||= 'ID';
+    $Param{Direction} ||= 'ASC';
 
-    my %ResultHash = %{ $Self->StatsListGet() || {} };
+    my %ResultHash = %{ $Self->StatsListGet(%Param) || {} };
 
     my @SortArray;
-
-    $Param{OrderBy} ||= 'ID';
 
     if ( $Param{OrderBy} eq 'ID' ) {
         @SortArray = sort { $a <=> $b } keys %ResultHash;
@@ -737,16 +739,9 @@ sub GetStatsList {
             = sort { $ResultHash{$a}->{ $Param{OrderBy} } cmp $ResultHash{$b}->{ $Param{OrderBy} } }
             keys %ResultHash;
     }
-    if ( $Param{Direction} && $Param{Direction} eq 'DESC' ) {
+    if ( $Param{Direction} eq 'DESC' ) {
         @SortArray = reverse @SortArray;
     }
-
-    $Self->{CacheObject}->Set(
-        Type  => 'Stats',
-        Key   => $CacheKey,
-        Value => \@SortArray,
-        TTL   => 24 * 60 * 60,
-    );
 
     return \@SortArray;
 }
@@ -944,7 +939,7 @@ sub GenerateGraph {
         textclr     => $Self->{ConfigObject}->Get('Stats::Graph::textclr')     || 'black',
         dclrs       => $Self->{ConfigObject}->Get('Stats::Graph::dclrs')
             || [
-            qw(red green blue yellow black purple orange pink marine cyan lgray lblue lyellow lgreen lred lpurple lorange lbrown)
+            qw(red green blue yellow purple orange pink marine cyan lgray lblue lyellow lgreen lred lpurple lorange lbrown)
             ],
         x_tick_offset       => 0,
         x_label_position    => 1 / 2,
@@ -1516,7 +1511,7 @@ sub GetObjectName {
 
 get behaviours that a statistic supports
 
-    my %Behaviours = $StatsObject->GetObjectBehaviours(
+    my $Behaviours = $StatsObject->GetObjectBehaviours(
         ObjectModule => 'Kernel::System::Stats::Dynamic::TicketList',
     );
 
@@ -1534,8 +1529,9 @@ sub GetObjectBehaviours {
     my $Module = $Param{ObjectModule};
 
     # check if it is cached
-    return $Self->{'Cache::ObjectBehaviours'}->{$Module}
-        if $Self->{'Cache::ObjectBehaviours'}->{$Module};
+    if ( $Self->{'Cache::ObjectBehaviours'}->{$Module} ) {
+        return $Self->{'Cache::ObjectBehaviours'}->{$Module}
+    }
 
     # load module, return if module does not exist
     # (this is important when stats are uninstalled, see also bug# 4269)
@@ -1548,7 +1544,7 @@ sub GetObjectBehaviours {
     my %ObjectBehaviours = $StatObject->GetObjectBehaviours();
 
     # cache the result
-    $Self->{'Cache::ObjectBehaviours'}->{$Module} = %ObjectBehaviours;
+    $Self->{'Cache::ObjectBehaviours'}->{$Module} = \%ObjectBehaviours;
 
     return \%ObjectBehaviours;
 }

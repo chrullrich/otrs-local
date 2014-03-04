@@ -605,7 +605,7 @@
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent</SubGroup>
         <Setting>
-            <String Regex="^[0-9]{1,6}$">86400</String>
+            <String Regex="^\d+$">86400</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::MaxQueueLevel" Required="1" Valid="1">
@@ -8210,7 +8210,6 @@ $QData{"Body"}
         <Setting>
             <Hash>
                 <Item Key="Ticket">Ticket</Item>
-                <Item Key="Action">Action</Item>
                 <Item Key="ActivityDialog">ActivityDialog</Item>
                 <Item Key="Form">Form</Item>
                 <Item Key="Process">Process</Item>
