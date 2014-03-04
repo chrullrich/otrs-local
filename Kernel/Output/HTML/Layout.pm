@@ -1,6 +1,6 @@
 # --
 # Kernel/Output/HTML/Layout.pm - provides generic HTML output
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -1147,11 +1147,17 @@ sub ChallengeTokenCheck {
     }
 
     # no valid token found
-    $Self->FatalError(
-        Message => 'Invalid Challenge Token!',
-    );
+    if ( $Param{Type} && lc $Param{Type} eq 'customer' ) {
+        $Self->CustomerFatalError(
+            Message => 'Invalid Challenge Token!',
+        );
+    }
+    else {
+        $Self->FatalError(
+            Message => 'Invalid Challenge Token!',
+        );
+    }
 
-    # ChallengeToken ok
     return;
 }
 
@@ -3068,6 +3074,11 @@ sub BuildDateSelection {
     my ( $s, $m, $h, $D, $M, $Y ) = $Self->{UserTimeObject}->SystemTime2Date(
         SystemTime => $Self->{UserTimeObject}->SystemTime() + $DiffTime,
     );
+
+    my ( $Cs, $Cm, $Ch, $CD, $CM, $CY ) = $Self->{UserTimeObject}->SystemTime2Date(
+        SystemTime => $Self->{UserTimeObject}->SystemTime(),
+    );
+
     my $DatepickerHTML = '';
 
     # time zone translation
@@ -3112,6 +3123,15 @@ sub BuildDateSelection {
                 $Year{$_} = $_;
             }
         }
+
+       # Check if the DiffTime is in a future year. In this case, we add the missing years between
+       # $CY (current year) and $Y (year) to allow the user to manually set back the year if needed.
+        if ( $Y > $CY ) {
+            for ( $CY .. $Y ) {
+                $Year{$_} = $_;
+            }
+        }
+
         $Param{Year} = $Self->BuildSelection(
             Name        => $Prefix . 'Year',
             Data        => \%Year,

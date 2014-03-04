@@ -1,3 +1,53 @@
+#3.3.4 2014-01-28
+ - 2014-01-14 Fixed bug#[10158](http://bugs.otrs.org/show_bug.cgi?id=10158) - Missing quoting in State::StateGetStatesByType().
+ - 2014-01-14 Fixed bug#[10048](http://bugs.otrs.org/show_bug.cgi?id=10048) - RPM upgrade breaks permissions on config files.
+ - 2014-01-14 Fixed bug#[8969](http://bugs.otrs.org/show_bug.cgi?id=8969) - FAQ module Language files installation fails (Kernel/Language permissions).
+ - 2014-01-10 Updated traditional Chinese translation.
+ - 2014-01-10 Updated Brazilian Portugese translation, thanks to Murilo Moreira de Oliveira!
+ - 2014-01-10 Fixed bug#[10145](http://bugs.otrs.org/show_bug.cgi?id=10145) - %A is not correctly substituted in Language::Time().
+ - 2014-01-10 Fixed bug#[10079](http://bugs.otrs.org/show_bug.cgi?id=10079) - Cannot operate OTRS on IE7 because of JavaScript error.
+ - 2014-01-10 Fixed bug#[10113](http://bugs.otrs.org/show_bug.cgi?id=10113) - Management dashboard setting doesn't show up when agent only has RO on stats.
+ - 2014-01-10 Fixed bug#[10088](http://bugs.otrs.org/show_bug.cgi?id=10088) - Error messages on recieving mailer daemons.
+ - 2014-01-10 Fixed bug#[10011](http://bugs.otrs.org/show_bug.cgi?id=10011) - Management Dashboard: X-Axis element labels may overlap.
+ - 2014-01-09 Fixed bug#[10012](http://bugs.otrs.org/show_bug.cgi?id=10012) - Management Dashboard: strings not translatable.
+ - 2014-01-07 Fixed bug#[10140](http://bugs.otrs.org/show_bug.cgi?id=10140) - Unable to search using before/after in Date Dynamic Fields.
+ - 2014-01-06 Fixed bug#[10008](http://bugs.otrs.org/show_bug.cgi?id=10008) - Customer user is automatically added to Cc at response for email-internal in AgentTicketCompose.
+ - 2014-01-06 Added Hebrew translation file, thanks to Amir Elion!
+ - 2014-01-03 Fixed bug#[9978](http://bugs.otrs.org/show_bug.cgi?id=9978) - Activity Dialog for Customer shows "No Process configured!".
+ - 2014-01-03 Fixed bug#[10134](http://bugs.otrs.org/show_bug.cgi?id=10134) - Missing information on icon actions for SMIME certificates and keys.
+ - 2014-01-02 Fixed bug#[10116](http://bugs.otrs.org/show_bug.cgi?id=10116) - Random ordering of columns in "Small" ticket lists.
+ - 2013-12-23 Fixed bug#[10094](http://bugs.otrs.org/show_bug.cgi?id=10094) - Former FAO OTRSACLExtensions not available in the ACL Editor.
+ - 2013-12-20 Fixed bug#[10099](http://bugs.otrs.org/show_bug.cgi?id=10099) - Missing challenge token checks on customer interface.
+ - 2013-12-18 Fixed bug#[10110](http://bugs.otrs.org/show_bug.cgi?id=10110) - Stats list may show too few or too many stats.
+ - 2013-12-17 Fixed bug#[10103](http://bugs.otrs.org/show_bug.cgi?id=10103) - ArticleTypeID is always undef in AgentTicketCompose
+ - 2013-12-16 Fixed bug#[10080](http://bugs.otrs.org/show_bug.cgi?id=10080) - Bad group check in otrs-scheduler-linux.
+ - 2013-12-16 Fixed bug#[10097](http://bugs.otrs.org/show_bug.cgi?id=10097) - $Param{NextState} is always undef in AgentTicketCompose.
+ - 2013-12-16 Updated Russian translation, thanks to Yuriy Kolesnikov.
+ - 2013-12-13 Fixed bug#[10074](http://bugs.otrs.org/show_bug.cgi?id=10074) - Error if no queue matched in DashboardEventsTicketCalendar.
+ - 2013-12-12 Fixed bug#[965](http://bugs.otrs.org/show_bug.cgi?id=9650) - Special character in customer id breaks Open Tickets in AgentTicketZoom.
+ - 2013-12-12 Added functionality to disable access to tickets of other customers with the same customer company in customer interface.
+ - 2013-12-12 Fixed bug#[9702](http://bugs.otrs.org/show_bug.cgi?id=9702) - Wrong article type with external ticketnumber recognition i.c.w. follow-up reject option.
+ - 2013-12-11 Fixed bug#[9723](http://bugs.otrs.org/show_bug.cgi?id=9723) - TicketAccountedTime stat does not run on Oracle with many tickets
+ - 2013-12-09 Fixed bug#[10078](http://bugs.otrs.org/show_bug.cgi?id=10078) - Installer: error log after creating mysql database.
+ - 2013-12-09 Fixed bug#[10056](http://bugs.otrs.org/show_bug.cgi?id=10056) - Installer fails when special characters in database user's password.
+ - 2013-12-09 Fixed bug#[10077](http://bugs.otrs.org/show_bug.cgi?id=10077) - regular expressions in postmaster filter return 1 if no regex match.
+ - 2013-12-09 Updated Swedish translation, thanks to Andreas Berger.
+ - 2013-12-09 Fixed bug#[10075](http://bugs.otrs.org/show_bug.cgi?id=10075) - Stats widgets permission group is hardcoded to "stats"
+ - 2013-12-09 Updated Russian translation, thanks to Andrey N. Burdin.
+ - 2013-12-06 Fixed bug#[10070](http://bugs.otrs.org/show_bug.cgi?id=10070) - Wrong error message if Transition contains no transition actions.
+ - 2013-12-06 Fixed bug#[10058](http://bugs.otrs.org/show_bug.cgi?id=10058) - Owner and Responsible are mandatory if enabled.
+ - 2013-12-06 Fixed bug#[7792](http://bugs.otrs.org/show_bug.cgi?id=7792) - Ticket-Action "Change Queue" is hardcoded and should be called "Queue" only.
+ - 2013-12-06 Fixed bug#[9109](http://bugs.otrs.org/show_bug.cgi?id=9109) - Printing ticket does not show the full subject line.
+ - 2013-12-06 Fixed bug#[10064](http://bugs.otrs.org/show_bug.cgi?id=10064) - Translated fields loose sorting in Activity Dialog admin screen.
+ - 2013-12-06 Fixed bug#[10066](http://bugs.otrs.org/show_bug.cgi?id=10066) - Required field isn't marked in AgentTicketCustomer.
+ - 2013-12-05 Fixed bug#[10059](http://bugs.otrs.org/show_bug.cgi?id=10059) - Service selection unavailable if customer selection is possible.
+ - 2013-12-05 Fixed bug#[10062](http://bugs.otrs.org/show_bug.cgi?id=10062) - Text label indent for locale RU - AgentÒicketViewCompose
+ - 2013-12-05 Fixed bug#[10044](http://bugs.otrs.org/show_bug.cgi?id=10044) - PendingDiffTime removes 2013 (current year) when reaching end of the year.
+ - 2013-12-05 Fixed bug#[10049](http://bugs.otrs.org/show_bug.cgi?id=10049) - Transition names in path edit screen ordered by ID instead of name.
+ - 2013-12-05 Fixed bug#[10055](http://bugs.otrs.org/show_bug.cgi?id=10055) - Queue-Treeview not working correctly.
+ - 2013-12-05 Fixed bug#[10061](http://bugs.otrs.org/show_bug.cgi?id=10061) - ArticleType dropdown in graphical ActivityDialog mask loads with empty value
+ - 2013-12-05 Fixed bug#[10060](http://bugs.otrs.org/show_bug.cgi?id=10060) - Field names are not translated in graphical process editor.
+
 #3.3.3 2013-12-10
  - 2013-11-07 Updated Chinese simplified translation, thanks to Michael Shi.
  - 2013-12-03 Fixed bug#[10022](http://bugs.otrs.org/show_bug.cgi?id=10022) - Ticket form looses To, Cc and Bcc when submitting form.
