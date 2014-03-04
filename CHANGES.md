@@ -1,4 +1,65 @@
+#3.3.5 2014-02-25
+ - 2014-02-20 Improved HTML filter.
+ - 2014-02-19 Followup fix for bug#[10116](http://bugs.otrs.org/show_bug.cgi?id=10116) - Random ordering of columns in "Small" ticket lists.
+ - 2014-02-18 Re-implemented Process Management ProcessImport().
+ - 2014-02-18 Fixed bug#[10258](http://bugs.otrs.org/show_bug.cgi?id=10258) - yellow color for UnreadArticles.
+ - 2014-02-17 Updated Japanese translation, thanks to Norihiro Tanaka!
+ - 2014-02-17 Updated Brazilian Portugese translation, thanks to Murilo Moreira de Oliveira!
+ - 2014-02-17 Updated Polish translation, thanks to Wojciech Myrda.
+ - 2014-02-13 Fixed bug#[6323](http://bugs.otrs.org/show_bug.cgi?id=6323) - Graph/Chart generation selects slice/background color identical to text color.
+ - 2014-02-13 Added feature to download report data shown in dashboard stats as CSV and PDF.
+ - 2014-02-13 Fixed bug#[10248](http://bugs.otrs.org/show_bug.cgi?id=10248) - OTRS Portal - Overview of registered systems.
+ - 2014-02-13 Added browser check for IE10 in compatibility mode.
+ - 2014-02-13 Followup for bug#[9011](http://bugs.otrs.org/show_bug.cgi?id=9011) - New value after value mapping can't be 0.
+ - 2014-02-13 Fixed bug#[9673](http://bugs.otrs.org/show_bug.cgi?id=9673) - CustomerTicketMessage does not show loading icon for dynamic fields.
+ - 2014-02-13 Fixed bug#[10249](http://bugs.otrs.org/show_bug.cgi?id=10249) - Restore.pl bugs on Postgresql restore failed on DB.
+ - 2014-02-13 Fixed bug#[7818](http://bugs.otrs.org/show_bug.cgi?id=7818) - Menu simplification is not working for item "responsible".
+ - 2014-02-11 Added new option "bin/otrs.LoaderCache.pl -o generate" to generate the loader cache for all frontend modules. This can be useful in cluster setups.
+ - 2014-02-07 Fixed bug#[10214](http://bugs.otrs.org/show_bug.cgi?id=10214) - Value "0" for DynamicsFields prevents TicketCreation.
+ - 2014-02-07 Fixed bug#[10201](http://bugs.otrs.org/show_bug.cgi?id=10201) - Wrong column sort order in ticketoverview widget.
+ - 2014-02-07 Fixed bug#[10195](http://bugs.otrs.org/show_bug.cgi?id=10195) - Folluw up notification shows old prio after prio change.
+ - 2014-02-07 Fixed bug#[9303](http://bugs.otrs.org/show_bug.cgi?id=9303) - Body of new e-mail/phone ticket not inserting when creating new ticket from customer creation.
+ - 2014-02-07 Fixed bug#[10194](http://bugs.otrs.org/show_bug.cgi?id=10194) - CustomerTicketMessage parsing feild Dest in URI.
+ - 2014-02-04 Follow-up fix for bug#[10110](http://bugs.otrs.org/show_bug.cgi?id=10110) - Stats list may show too few or too many stats.
+ - 2014-02-04 Fixed bug#[10220](http://bugs.otrs.org/show_bug.cgi?id=10220) - Invalid Statistics not displayed in overview.
+ - 2014-02-04 Fixed bug#[10218](http://bugs.otrs.org/show_bug.cgi?id=10218) - Header X-UA-Compatible in HeaderSmall.tt/HeaderSmall.dtl not set.
+ - 2014-02-03 Fixed bug#[10177](http://bugs.otrs.org/show_bug.cgi?id=10177) - Missing sources in tarball.
+ - 2014-02-03 Fixed bug#[9616](http://bugs.otrs.org/show_bug.cgi?id=9616) - Too long activities and transitions are not displayed correctly.
+ - 2014-02-03 Fixed bug#[7440](http://bugs.otrs.org/show_bug.cgi?id=7440) - Ticket overviews don't show column headers for priority and unread articles in small mode.
+ - 2014-02-03 Added process management canvas label spacer to avoid overlapping transition labels.
+ - 2014-01-31 Fixed bug#[10212](http://bugs.otrs.org/show_bug.cgi?id=10212) - My tickets & Company tickets in 3.3.4.
+ - 2014-01-31 Fixed bug#[10211](http://bugs.otrs.org/show_bug.cgi?id=10211) - Dashbord: Widget DefaultColumns is not working.
+ - 2014-01-31 Fixed bug#[10163](http://bugs.otrs.org/show_bug.cgi?id=10163) - subject shows only 30 characters.
+ - 2014-01-31 Fixed bug#[10193](http://bugs.otrs.org/show_bug.cgi?id=10193) - Expired cookie bug in customer interface..
+ - 2014-01-31 Fixed bug#[8729](http://bugs.otrs.org/show_bug.cgi?id=8729) - Oracle ignores NLS_DATE_FORMAT set in environment.
+ - 2014-01-31 Fixed bug#[10207](http://bugs.otrs.org/show_bug.cgi?id=10207) - DynamicField Search-Function in CustomerFrontend is not working.
+ - 2014-01-30 Fixed bug#[9868](http://bugs.otrs.org/show_bug.cgi?id=9868) - Queues in popup box are not sorted by alphabetical order.
+ - 2014-01-30 Fixed bug#[9678](http://bugs.otrs.org/show_bug.cgi?id=9678) - Locked tickets don't unlock when customer closes ticket.
+ - 2014-01-30 Fixed bug#[8656](http://bugs.otrs.org/show_bug.cgi?id=8656) - Clicking the cancel button in the Add Web services screen results in an error no matter what data was filled in.
+ - 2014-01-30 Fixed bug#[10209](http://bugs.otrs.org/show_bug.cgi?id=10209) - When opening tree selection dialog, the search field should get the focus.
+ - 2014-01-28 Fixed bug#[10205](http://bugs.otrs.org/show_bug.cgi?id=10205) - GenericInterface: Mandatory TimeUnits can't be 0.
+ - 2014-01-28 Fixed bug#[10196](http://bugs.otrs.org/show_bug.cgi?id=10196) - Ticket merge action does not notify the owner of the existing ticket.
+ - 2014-01-28 Fixed bug#[10130](http://bugs.otrs.org/show_bug.cgi?id=10130) - Events Ticket Calendar not working.
+ - 2014-01-28 Fixed bug#[9692](http://bugs.otrs.org/show_bug.cgi?id=9692) - On PhoneOutbound articles,  the FROM field shows Customer ID instead Agent ID.
+ - 2014-01-28 Fixed bug#[10147](http://bugs.otrs.org/show_bug.cgi?id=10147) - Cache may remain incorrectly in SearchProfile.
+ - 2014-01-24 Fixed bug#[10189](http://bugs.otrs.org/show_bug.cgi?id=10189) - ProcessManagement: Use article subject if no ticket title is set.
+ - 2014-01-24 Fixed bug#[9654](http://bugs.otrs.org/show_bug.cgi?id=9654) - TicketUpdate operation doesn't work when authenticated as a customer.
+ - 2014-01-24 Fixed bug#[10137](http://bugs.otrs.org/show_bug.cgi?id=10137) - Generic interface TicketCreate operation doesn't work when authenticated as a customer.
+ - 2014-01-24 Fixed bug#[10176](http://bugs.otrs.org/show_bug.cgi?id=10176) - available columns selection in search result view is not scrollable.
+ - 2014-01-24 Fixed bug#[10120](http://bugs.otrs.org/show_bug.cgi?id=10120) - Management Dashboard: page reload erases stat graph settings.
+ - 2014-01-24 Fixed bug#[9276](http://bugs.otrs.org/show_bug.cgi?id=9276) - Auto-reply to ticket entered via Web interface is sent with all lines concatenated to one
+ - 2014-01-24 Fixed bug#[10179](http://bugs.otrs.org/show_bug.cgi?id=10179) - No LinkOption in CustomerNavigationBar.dtl.
+ - 2014-01-24 Fixed bug#[10178](http://bugs.otrs.org/show_bug.cgi?id=10178) - Stat Permissions.
+ - 2014-01-24 Fixed bug#[10188](http://bugs.otrs.org/show_bug.cgi?id=10188) - Inconsistency in graphical ACL editor.
+ - 2014-01-23 Fixed bug#[10155](http://bugs.otrs.org/show_bug.cgi?id=10155) - backup.pl doesn't compress database dump on non-MySQL.
+ - 2014-01-20 Fixed bug#[10106](http://bugs.otrs.org/show_bug.cgi?id=10106) - Sending Articles with ArticleSend() ignores ReplyTo.
+
 #3.3.4 2014-01-28
+ - 2014-01-20 Fixed bug#[10172](http://bugs.otrs.org/show_bug.cgi?id=10172) - Can't create process tickets with disabled richtext.
+ - 2014-01-17 Fixed bug#[10121](http://bugs.otrs.org/show_bug.cgi?id=10121) - QQMails break in OTRS.
+ - 2014-01-17 Fixed bug#[10153](http://bugs.otrs.org/show_bug.cgi?id=10153) - Error shown in SysConfig when Setting PendingDiffTime to 30 Days.
+ - 2014-01-17 Fixed bug#[10161](http://bugs.otrs.org/show_bug.cgi?id=10161) - Edit Stats - 500 internal Server Error.
+ - 2014-01-17 Fixed bug#[10167](http://bugs.otrs.org/show_bug.cgi?id=10167) - Non-deterministic hash key construction in Stats.pm.
  - 2014-01-14 Fixed bug#[10158](http://bugs.otrs.org/show_bug.cgi?id=10158) - Missing quoting in State::StateGetStatesByType().
  - 2014-01-14 Fixed bug#[10048](http://bugs.otrs.org/show_bug.cgi?id=10048) - RPM upgrade breaks permissions on config files.
  - 2014-01-14 Fixed bug#[8969](http://bugs.otrs.org/show_bug.cgi?id=8969) - FAQ module Language files installation fails (Kernel/Language permissions).
