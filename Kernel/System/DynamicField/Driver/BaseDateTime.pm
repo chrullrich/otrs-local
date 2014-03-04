@@ -1,6 +1,6 @@
 # --
 # Kernel/System/DynamicField/Driver/BaseDateTime.pm - Dynamic field Driver functions
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -805,11 +805,20 @@ sub SearchFieldParameterBuild {
     # get field value
     my $Value = $Self->SearchFieldValueGet(%Param);
 
+    my $DisplayValue;
+
+    if ( defined $Value && !$Value ) {
+        $DisplayValue = '';
+    }
+
     # do not search if value was not checked (useful for customer interface)
     if ( !$Value ) {
         return {
-            Equals => '',
-            }
+            Parameter => {
+                Equals => $Value,
+            },
+            Display => $DisplayValue,
+        };
     }
 
     # search for a wild card in the value

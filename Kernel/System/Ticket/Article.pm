@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Ticket/Article.pm - global article module for OTRS kernel
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -962,11 +962,11 @@ sub ArticleTypeLookup {
     my $CacheKey;
     if ( $Param{ArticleType} ) {
         $Key      = $Param{ArticleType};
-        $CacheKey = 'ArticleTypeLookup::' . $Param{ArticleType};
+        $CacheKey = 'ArticleTypeLookup::ArticleType::' . $Param{ArticleType};
     }
     else {
         $Key      = $Param{ArticleTypeID};
-        $CacheKey = 'ArticleTypeLookup::' . $Param{ArticleTypeID};
+        $CacheKey = 'ArticleTypeLookup::ArticleTypeID::' . $Param{ArticleTypeID};
     }
 
     # check cache
@@ -2876,6 +2876,15 @@ sub SendAutoResponse {
     }
     else {
         $HistoryType = 'Misc';
+    }
+
+    if ( !@AutoReplyAddresses && !$Cc ) {
+        $Self->{LogObject}->Log(
+            Priority => 'info',
+            Message  => "No auto response addresses for Ticket [$Ticket{TicketNumber}]"
+                . " (TicketID=$Param{TicketID})."
+        );
+        return;
     }
 
     # send email
