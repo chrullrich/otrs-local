@@ -1,6 +1,6 @@
 # --
 # Kernel/Modules/AdminGenericInterfaceMappingSimple.pm - provides a TransportHTTPSOAP view for admins
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -621,7 +621,7 @@ sub _GetParams {
                 $Self->{DeletedString};
             $ValueIndex++;
             for my $ValueItem (qw(ValueMapTypeStrg ValueName ValueMapNew)) {
-                my $ValAux = $Self->{ParamObject}->GetParam( Param => $ValueItem . $Suffix ) || '';
+                my $ValAux = $Self->{ParamObject}->GetParam( Param => $ValueItem . $Suffix ) // '';
                 $GetParam->{ $ValueItem . $KeyIndex . '_' . $ValueIndex } = $ValAux;
                 $GetParam->{Error}->{ $ValueItem . $KeyIndex . '_' . $ValueIndex } = 'ServerError'
                     if $ValAux eq '';

@@ -1,6 +1,6 @@
 # --
 # AdminRegistration.dtl - provides HTML form for AdminRegistration
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -34,7 +34,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="https://portal.otrs.com/otrs/customer.pl?Action=CustomerRegisteredSystems" target="_blank" class="CallForAction">
+                        <a href="https://portal.otrs.com/otrs/customer.pl?Action=CustomerOTRSSystems" target="_blank" class="CallForAction">
                             <span>$Text{"Overview of registered systems"}</span>
                         </a>
                     </li>

@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Email.pm - the global email send module
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -115,6 +115,8 @@ To send an email without already created header:
     my $Sent = $SendObject->Send(
         From        => 'me@example.com',
         To          => 'friend@example.com',
+        Cc          => 'Some Customer B <customer-b@example.com>',   # not required
+        ReplyTo     => 'Some Customer B <customer-b@example.com>',   # not required, is possible to use 'Reply-To' instead
         Subject     => 'Some words!',
         Charset     => 'iso-8859-15',
         MimeType    => 'text/plain', # "text/plain" or "text/html"
@@ -184,6 +186,11 @@ sub Send {
     # replace all br tags with br tags with a space to show newlines in Lotus Notes
     if ( $Param{MimeType} && lc $Param{MimeType} eq 'text/html' ) {
         $Param{Body} =~ s{\Q<br/>\E}{<br />}xmsgi;
+    }
+
+    # map ReplyTo into Reply-To if present
+    if ( $Param{ReplyTo} ) {
+        $Param{'Reply-To'} = $Param{ReplyTo};
     }
 
     # get sign options for inline

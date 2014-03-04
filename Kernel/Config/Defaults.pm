@@ -168,6 +168,7 @@ sub LoadDefaults {
         'fi' => 'Suomi',
         'fr' => 'Fran&ccedil;ais',
         'fr_CA' => 'Fran&ccedil;ais (Canada)',
+        'he' => 'Hebrew (עִבְרִית)',
         'hi' => 'Hindi',
         'hr' => 'Hrvatski',
         'hu' => 'Magyar',
@@ -364,6 +365,7 @@ sub LoadDefaults {
 
     # in case you want to add always one filter to each ldap query, use
     # this option. e. g. AlwaysFilter => '(mail=*)' or AlwaysFilter => '(objectclass=user)'
+    # or if you want to filter with a locigal OR-Expression, like AlwaysFilter => '(|(mail=*abc.com)(mail=*xyz.com))'
 #    $Self->{'AuthModule::LDAP::AlwaysFilter'} = '';
 
     # in case you want to add a suffix to each login name, then
@@ -436,6 +438,7 @@ sub LoadDefaults {
 
     # in case you want to add always one filter to each ldap query, use
     # this option. e. g. AlwaysFilter => '(mail=*)' or AlwaysFilter => '(objectclass=user)'
+    # or if you want to filter with a logical OR-Expression, like AlwaysFilter => '(|(mail=*abc.com)(mail=*xyz.com))'
 #    $Self->{'AuthSyncModule::LDAP::AlwaysFilter'} = '';
 
     # AuthSyncModule::LDAP::UserSyncMap
@@ -896,7 +899,6 @@ sub LoadDefaults {
 
     # Agent Common JS
     $Self->{'Loader::Agent::CommonJS'}->{'000-Framework'} =  [
-        'thirdparty/json/json2.js',
         'thirdparty/jquery-1.10.0/jquery.js',
         'thirdparty/jquery-browser-detection/jquery-browser-detection.js',
         'thirdparty/jquery-ui-1.10.3/jquery-ui.js',

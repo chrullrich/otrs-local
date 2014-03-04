@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Ticket.pm - all ticket functions
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -3763,9 +3763,10 @@ sub TicketArchiveFlagSet {
 to set a ticket state
 
     my $Success = $TicketObject->TicketStateSet(
-        State    => 'open',
-        TicketID => 123,
-        UserID   => 123,
+        State     => 'open',
+        TicketID  => 123,
+        ArticleID => 123, #optional, for history
+        UserID    => 123,
     );
 
     my $Success = $TicketObject->TicketStateSet(
@@ -5481,6 +5482,13 @@ sub TicketMerge {
         Lock     => 'unlock',
         TicketID => $Param{MergeTicketID},
         UserID   => $Param{UserID},
+    );
+
+    # remove seen flag for all users on the main ticket
+    my $Success = $Self->TicketFlagDelete(
+        TicketID => $Param{MainTicketID},
+        Key      => 'Seen',
+        AllUsers => 1,
     );
 
     # trigger event

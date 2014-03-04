@@ -1,6 +1,6 @@
 # --
 # Kernel/Output/HTML/TicketMenuResponsible.pm
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -20,7 +20,7 @@ sub new {
     bless( $Self, $Type );
 
     # get needed objects
-    for (qw(ConfigObject LogObject DBObject LayoutObject UserID TicketObject)) {
+    for (qw(ConfigObject LogObject DBObject LayoutObject UserID GroupObject TicketObject )) {
         $Self->{$_} = $Param{$_} || die "Got no $_!";
     }
 
@@ -69,6 +69,36 @@ sub Run {
                 return if !$AccessOk;
             }
         }
+    }
+
+    # group check
+    if ( $Param{Config}->{Group} ) {
+        my @Items = split /;/, $Param{Config}->{Group};
+        my $AccessOk;
+        for my $Item (@Items) {
+            my ( $Permission, $Name ) = split /:/, $Item;
+            if ( !$Permission || !$Name ) {
+                $Self->{LogObject}->Log(
+                    Priority => 'error',
+                    Message  => "Invalid config for Key Group: '$Item'! "
+                        . "Need something like '\$Permission:\$Group;'",
+                );
+            }
+            my @Groups = $Self->{GroupObject}->GroupMemberList(
+                UserID => $Self->{UserID},
+                Type   => $Permission,
+                Result => 'Name',
+            );
+            next if !@Groups;
+
+            for my $Group (@Groups) {
+                if ( $Group eq $Name ) {
+                    $AccessOk = 1;
+                    last;
+                }
+            }
+        }
+        return if !$AccessOk;
     }
 
     # check acl

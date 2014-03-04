@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Ticket/Article.pm - global article module for OTRS kernel
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -962,11 +962,11 @@ sub ArticleTypeLookup {
     my $CacheKey;
     if ( $Param{ArticleType} ) {
         $Key      = $Param{ArticleType};
-        $CacheKey = 'ArticleTypeLookup::' . $Param{ArticleType};
+        $CacheKey = 'ArticleTypeLookup::ArticleType::' . $Param{ArticleType};
     }
     else {
         $Key      = $Param{ArticleTypeID};
-        $CacheKey = 'ArticleTypeLookup::' . $Param{ArticleTypeID};
+        $CacheKey = 'ArticleTypeLookup::ArticleTypeID::' . $Param{ArticleTypeID};
     }
 
     # check cache
@@ -1965,7 +1965,7 @@ send article via email and create article with attachments
         From        => 'Some Agent <email@example.com>',                       # not required but useful
         To          => 'Some Customer A <customer-a@example.com>',             # not required but useful
         Cc          => 'Some Customer B <customer-b@example.com>',             # not required but useful
-        ReplyTo     => 'Some Customer B <customer-b@example.com>',             # not required
+        ReplyTo     => 'Some Customer B <customer-b@example.com>',             # not required, is possible to use 'Reply-To' instead
         Subject     => 'some short description',                               # required
         Body        => 'the message text',                                     # required
         InReplyTo   => '<asdasdasd.12@example.com>',                           # not required but useful
@@ -2038,6 +2038,11 @@ sub ArticleSend {
             Message  => 'Need SenderType or SenderTypeID!',
         );
         return;
+    }
+
+    # map ReplyTo into Reply-To if present
+    if ( $Param{ReplyTo} ) {
+        $Param{'Reply-To'} = $Param{ReplyTo};
     }
 
     # clean up
@@ -2876,6 +2881,15 @@ sub SendAutoResponse {
     }
     else {
         $HistoryType = 'Misc';
+    }
+
+    if ( !@AutoReplyAddresses && !$Cc ) {
+        $Self->{LogObject}->Log(
+            Priority => 'info',
+            Message  => "No auto response addresses for Ticket [$Ticket{TicketNumber}]"
+                . " (TicketID=$Param{TicketID})."
+        );
+        return;
     }
 
     # send email

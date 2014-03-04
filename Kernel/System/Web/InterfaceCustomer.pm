@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Web/InterfaceCustomer.pm - the customer interface file (incl. auth)
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -132,6 +132,13 @@ sub Run {
         if ( $Param{SessionIDCookie} ) {
             $Param{SessionID} = $Param{SessionIDCookie};
         }
+    }
+
+    my $CookieSecureAttribute;
+    if ( $Self->{ConfigObject}->Get('HttpType') eq 'https' ) {
+
+        # Restrict Cookie to HTTPS if it is used.
+        $CookieSecureAttribute = 1;
     }
 
     # check common objects
@@ -330,13 +337,6 @@ sub Run {
             $Expires = '';
         }
 
-        my $SecureAttribute;
-        if ( $Self->{ConfigObject}->Get('HttpType') eq 'https' ) {
-
-            # Restrict Cookie to HTTPS if it is used.
-            $SecureAttribute = 1;
-        }
-
         $LayoutObject = Kernel::Output::HTML::Layout->new(
             SetCookies => {
                 SessionIDCookie => $Self->{ParamObject}->SetCookie(
@@ -344,7 +344,7 @@ sub Run {
                     Value    => $NewSessionID,
                     Expires  => $Expires,
                     Path     => $Self->{ConfigObject}->Get('ScriptAlias'),
-                    Secure   => scalar $SecureAttribute,
+                    Secure   => scalar $CookieSecureAttribute,
                     HTTPOnly => 1,
                 ),
             },
@@ -398,8 +398,12 @@ sub Run {
         my $LayoutObject = Kernel::Output::HTML::Layout->new(
             SetCookies => {
                 SessionIDCookie => $Self->{ParamObject}->SetCookie(
-                    Key   => $Param{SessionName},
-                    Value => '',
+                    Key      => $Param{SessionName},
+                    Value    => '',
+                    Expires  => '-1y',
+                    Path     => $Self->{ConfigObject}->Get('ScriptAlias'),
+                    Secure   => scalar $CookieSecureAttribute,
+                    HTTPOnly => 1,
                 ),
             },
             %{$Self},
@@ -785,8 +789,12 @@ sub Run {
             my $LayoutObject = Kernel::Output::HTML::Layout->new(
                 SetCookies => {
                     SessionIDCookie => $Self->{ParamObject}->SetCookie(
-                        Key   => $Param{SessionName},
-                        Value => '',
+                        Key      => $Param{SessionName},
+                        Value    => '',
+                        Expires  => '-1y',
+                        Path     => $Self->{ConfigObject}->Get('ScriptAlias'),
+                        Secure   => scalar $CookieSecureAttribute,
+                        HTTPOnly => 1,
                     ),
                 },
                 %{$Self},

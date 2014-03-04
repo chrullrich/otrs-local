@@ -1,6 +1,6 @@
 # --
 # Kernel/Modules/AgentTicketPhoneCommon.pm - phone calls for existing tickets
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -662,15 +662,20 @@ sub Run {
                 );
             }
 
-            # Use customer data as From, if possible
-            my %LastCustomerArticle = $Self->{TicketObject}->ArticleLastCustomerArticle(
-                TicketID      => $Self->{TicketID},
-                DynamicFields => 0,
-            );
+            my $From;
 
-            my $From = $LastCustomerArticle{From};
+            if ( lc $Self->{Config}->{SenderType} eq 'customer' ) {
 
-            # If we don't have a customer article, use the agent as From
+                # Use customer data as From, if possible
+                my %LastCustomerArticle = $Self->{TicketObject}->ArticleLastCustomerArticle(
+                    TicketID      => $Self->{TicketID},
+                    DynamicFields => 0,
+                );
+
+                $From = $LastCustomerArticle{From};
+            }
+
+          # If we don't have a customer article, or if SenderType is "agent", use the agent as From.
             if ( !$From ) {
                 my $TemplateGenerator = Kernel::System::TemplateGenerator->new( %{$Self} );
                 $From = $TemplateGenerator->Sender(
@@ -865,7 +870,7 @@ sub Run {
             if ( !$RemoveSuccess ) {
                 $Self->{LogObject}->Log(
                     Priority => 'error',
-                    Message  => "Form attachments coud not be deleted!",
+                    Message  => "Form attachments could not be deleted!",
                 );
             }
 

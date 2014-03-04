@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Registration.pm - All Registration functions
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -182,7 +182,6 @@ sub TokenGet {
         URL  => $Self->{RegistrationURL},
         Data => {
             Action     => 'PublicRegistration',
-            Subaction  => 'GetToken',
             Subaction  => 'TokenGet',
             APIVersion => $Self->{APIVersion},
             OTRSID     => $Param{OTRSID},
@@ -551,6 +550,9 @@ sub RegistrationUpdateSend {
         );
         return %Result;
     }
+
+    # convert internal used charset
+    $Self->{EncodeObject}->EncodeInput( $Response{Content} );
 
     # decode JSON data
     my $ResponseData = $Self->{JSONObject}->Decode(

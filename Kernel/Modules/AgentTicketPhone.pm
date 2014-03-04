@@ -1,6 +1,6 @@
 # --
 # Kernel/Modules/AgentTicketPhone.pm - to handle phone calls
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -280,7 +280,7 @@ sub Run {
             # if To is present and is no a queue
             # set To as article from
             if ( IsStringWithData( $Article{To} ) ) {
-                my %Queues = $Self->{QueueObject}->QueueList();
+                my %Queues      = $Self->{QueueObject}->QueueList();
                 my %QueueLookup = reverse %Queues;
                 if ( !defined $QueueLookup{ $Article{To} } ) {
                     $ArticleFrom = $Article{To};
@@ -1076,6 +1076,31 @@ sub Run {
 
         if (%Error) {
 
+            # get and format default subject and body
+            my $Subject = $Self->{LayoutObject}->Output(
+                Template => $Self->{Config}->{Subject} || '',
+            );
+
+            my $Body = $Self->{LayoutObject}->Output(
+                Template => $Self->{Config}->{Body} || '',
+            );
+
+            # make sure body is rich text
+            if ( $Self->{LayoutObject}->{BrowserRichText} ) {
+                $Body = $Self->{LayoutObject}->Ascii2RichText(
+                    String => $Body,
+                );
+            }
+
+            #set Body and Subject parameters for Output
+            if ( !$GetParam{Subject} ) {
+                $GetParam{Subject} = $Subject;
+            }
+
+            if ( !$GetParam{Body} ) {
+                $GetParam{Body} = $Body;
+            }
+
             # get services
             my $Services = $Self->_GetServices(
                 %GetParam,
@@ -1246,6 +1271,12 @@ sub Run {
             );
         }
 
+        my $PlainBody = $GetParam{Body};
+
+        if ( $Self->{LayoutObject}->{BrowserRichText} ) {
+            $PlainBody = $Self->{LayoutObject}->RichText2Ascii( String => $GetParam{Body} );
+        }
+
         # check if new owner is given (then send no agent notify)
         my $NoAgentNotify = 0;
         if ( $GetParam{NewUserID} ) {
@@ -1272,7 +1303,7 @@ sub Run {
                 From    => $GetParam{From},
                 To      => $GetParam{To},
                 Subject => $GetParam{Subject},
-                Body    => $Self->{LayoutObject}->RichText2Ascii( String => $GetParam{Body} ),
+                Body    => $PlainBody,
 
             },
             Queue => $Self->{QueueObject}->QueueLookup( QueueID => $NewQueueID ),
@@ -1572,7 +1603,7 @@ sub Run {
             if ( !$RemoveSuccess ) {
                 $Self->{LogObject}->Log(
                     Priority => 'error',
-                    Message  => "Form attachments coud not be deleted!",
+                    Message  => "Form attachments could not be deleted!",
                 );
             }
 

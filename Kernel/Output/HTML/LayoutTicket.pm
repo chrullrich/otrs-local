@@ -1,6 +1,6 @@
 # --
 # Kernel/Output/HTML/LayoutTicket.pm - provides generic ticket HTML output
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -198,13 +198,6 @@ sub AgentCustomerViewTable {
     # create & return output
     return $Self->Output( TemplateFile => 'AgentCustomerTableView', Data => \%Param );
 }
-
-# AgentQueueListOption()
-#
-# !! DONT USE THIS FUNCTION !! Use BuildSelection() instead.
-#
-# Due to compatibility reason this function is still in use and will be removed
-# in a future release.
 
 sub AgentQueueListOption {
     my ( $Self, %Param ) = @_;

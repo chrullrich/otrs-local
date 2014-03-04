@@ -1,6 +1,6 @@
 # --
 # Kernel/System/TicketSearch.pm - all ticket search functions
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -1038,7 +1038,7 @@ sub TicketSearch {
                 my $ValidateSuccess = $Self->{DynamicFieldBackendObject}->ValueValidate(
                     DynamicFieldConfig => $DynamicField,
                     Value              => $Text,
-                    UserID             => $Param{UserID},
+                    UserID             => $Param{UserID} || 1,
                 );
                 if ( !$ValidateSuccess ) {
                     $Self->{LogObject}->Log(

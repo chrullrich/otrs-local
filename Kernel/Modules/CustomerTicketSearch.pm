@@ -1,6 +1,6 @@
 # --
 # Kernel/Modules/CustomerTicketSearch.pm - Utilities for tickets
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -144,6 +144,10 @@ sub Run {
     $Self->{Order} = $Self->{ParamObject}->GetParam( Param => 'Order' )
         || $Self->{ConfigObject}->Get('Ticket::CustomerTicketSearch::Order::Default')
         || 'Down';
+
+    # disable output of customer company tickets
+    $Self->{DisableCompanyTickets}
+        = $Self->{ConfigObject}->Get('Ticket::Frontend::CustomerDisableCompanyTicketAccess');
 
     $Self->{Profile}        = $Self->{ParamObject}->GetParam( Param => 'Profile' )        || '';
     $Self->{SaveProfile}    = $Self->{ParamObject}->GetParam( Param => 'SaveProfile' )    || '';
@@ -502,6 +506,11 @@ sub Run {
                         = $SearchParameter->{Display};
                 }
             }
+        }
+
+        # disable output of company tickets if configured
+        if ( $Self->{DisableCompanyTickets} ) {
+            $GetParam{CustomerUserLogin} = $Self->{UserID};
         }
 
         # perform ticket search

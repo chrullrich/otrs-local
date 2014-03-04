@@ -1,6 +1,6 @@
 # --
 # Kernel/GenericInterface/Operation/Ticket/TicketUpdate.pm - GenericInterface Ticket TicketUpdate operation backend
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -251,6 +251,10 @@ sub Run {
         );
     }
 
+    if ( $UserType eq 'Customer' ) {
+        $UserID = $Self->{ConfigObject}->Get('CustomerPanelUserID')
+    }
+
     # check TicketID
     my $TicketID;
     if ( $Param{Data}->{TicketNumber} ) {
@@ -453,9 +457,9 @@ sub Run {
         for my $DynamicFieldItem (@DynamicFieldList) {
             if ( !IsHashRefWithData($DynamicFieldItem) ) {
                 return {
-                    ErrorCode => 'TicketCreate.InvalidParameter',
+                    ErrorCode => 'TicketUpdate.InvalidParameter',
                     ErrorMessage =>
-                        "TicketCreate: Ticket->DynamicField parameter is invalid!",
+                        "TicketUpdate: Ticket->DynamicField parameter is invalid!",
                 };
             }
 
@@ -937,7 +941,7 @@ sub _CheckArticle {
     # check Article->TimeUnit
     # TimeUnit could be required or not depending on sysconfig option
     if (
-        !$Article->{TimeUnit}
+        ( !defined $Article->{TimeUnit} || !IsStringWithData( $Article->{TimeUnit} ) )
         && $Self->{ConfigObject}->{'Ticket::Frontend::AccountTime'}
         && $Self->{ConfigObject}->{'Ticket::Frontend::NeedAccountedTime'}
         )
@@ -1035,7 +1039,7 @@ sub _CheckDynamicField {
 
     # check DynamicField item internally
     for my $Needed (qw(Name Value)) {
-        if ( !$DynamicField->{$Needed} ) {
+        if ( !defined $DynamicField->{$Needed} || !IsStringWithData( $DynamicField->{$Needed} ) ) {
             return {
                 ErrorCode    => 'TicketUpdate.MissingParameter',
                 ErrorMessage => "TicketUpdate: DynamicField->$Needed  parameter is missing!",
@@ -1404,7 +1408,7 @@ sub _TicketUpdate {
     my %TicketData = $Self->{TicketObject}->TicketGet(
         TicketID      => $TicketID,
         DynamicFields => 0,
-        UserID        => $Param{UserId},
+        UserID        => $Param{UserID},
     );
 
     # update ticket parameters

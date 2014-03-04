@@ -1,6 +1,6 @@
 # --
 # Kernel/Modules/AgentTicketEmail.pm - to compose initial email to customer
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -1062,6 +1062,31 @@ sub Run {
 
         if (%Error) {
 
+            # get and format default subject and body
+            my $Subject = $Self->{LayoutObject}->Output(
+                Template => $Self->{Config}->{Subject} || '',
+            );
+
+            my $Body = $Self->{LayoutObject}->Output(
+                Template => $Self->{Config}->{Body} || '',
+            );
+
+            # make sure body is rich text
+            if ( $Self->{LayoutObject}->{BrowserRichText} ) {
+                $Body = $Self->{LayoutObject}->Ascii2RichText(
+                    String => $Body,
+                );
+            }
+
+            #set Body and Subject parameters for Output
+            if ( !$GetParam{Subject} ) {
+                $GetParam{Subject} = $Subject;
+            }
+
+            if ( !$GetParam{Body} ) {
+                $GetParam{Body} = $Body;
+            }
+
             # get services
             my $Services = $Self->_GetServices(
                 %GetParam,
@@ -1537,7 +1562,7 @@ sub Run {
             if ( !$RemoveSuccess ) {
                 $Self->{LogObject}->Log(
                     Priority => 'error',
-                    Message  => "Form attachments coud not be deleted!",
+                    Message  => "Form attachments could not be deleted!",
                 );
             }
 

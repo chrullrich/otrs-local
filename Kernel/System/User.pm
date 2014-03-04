@@ -1,6 +1,6 @@
 # --
 # Kernel/System/User.pm - some user functions
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -1062,7 +1062,10 @@ sub SetPreferences {
     );
 
     # no updated needed
-    return 1 if exists $User{ $Param{Key} } && $User{ $Param{Key} } eq $Param{Value};
+    return 1
+        if exists $User{ $Param{Key} }
+        && defined $Param{Value}
+        && $User{ $Param{Key} } eq $Param{Value};
 
     # delete cache
     my $Login = $Self->UserLookup( UserID => $Param{UserID} );
