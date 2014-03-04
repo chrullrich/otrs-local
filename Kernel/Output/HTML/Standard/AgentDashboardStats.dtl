@@ -1,6 +1,6 @@
 # --
 # AgentDashboardStats.dtl - provides stats output as a dashboard widget
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -18,6 +18,10 @@
 <!-- dtl:js_on_document_complete -->
 <script type="text/javascript">//<![CDATA[
 /*global nv, d3 */
+
+// add translations
+Core.Config.Set('Grouped', '$JSText{"Grouped"}');
+Core.Config.Set('Stacked', '$JSText{"Stacked"}');
 
 (function(){
 

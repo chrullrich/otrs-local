@@ -1,6 +1,6 @@
 # --
 # Kernel/System/DynamicField/Driver/Multiselect.pm - Delegate for DynamicField Multiselect Driver
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -615,6 +615,10 @@ sub SearchFieldParameterBuild {
 
     my $DisplayValue;
 
+    if ( defined $Value && !$Value ) {
+        $DisplayValue = '';
+    }
+
     if ($Value) {
         if ( ref $Value eq 'ARRAY' ) {
 
@@ -622,7 +626,8 @@ sub SearchFieldParameterBuild {
             for my $Item ( @{$Value} ) {
 
                 # set the display value
-                my $DisplayItem = $Param{DynamicFieldConfig}->{Config}->{PossibleValues}->{$Item};
+                my $DisplayItem = $Param{DynamicFieldConfig}->{Config}->{PossibleValues}->{$Item}
+                    || $Item;
 
                 # translate the value
                 if (
@@ -642,7 +647,7 @@ sub SearchFieldParameterBuild {
         else {
 
             # set the display value
-            $DisplayValue = $Param{DynamicFieldConfig}->{PossibleValues}->{$Value};
+            $DisplayValue = $Param{DynamicFieldConfig}->{Config}->{PossibleValues}->{$Value};
 
             # translate the value
             if (

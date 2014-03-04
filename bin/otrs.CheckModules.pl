@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 # --
 # bin/otrs.CheckModules.pl - to check needed cpan framework modules
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -134,6 +134,12 @@ my @NeededModules = (
         Module   => 'JSON::XS',
         Required => 0,
         Comment  => 'Recommended for faster AJAX/JavaScript handling.',
+    },
+    {
+        Module   => 'List::Util::XS',
+        Required => 1,
+        Comment =>
+            "Do a 'force install Scalar::Util' via cpan shell to fix this problem. Please make sure to have an c compiler and make installed before.",
     },
     {
         Module   => 'LWP::UserAgent',

@@ -1,6 +1,6 @@
 # --
 # Kernel/Output/HTML/TicketOverviewSmall.pm
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -79,9 +79,9 @@ sub new {
         )
     {
         @ColumnsAvailable = grep { $Self->{Config}->{DefaultColumns}->{$_} ne '0' }
-            keys %{ $Self->{Config}->{DefaultColumns} };
+            sort keys %{ $Self->{Config}->{DefaultColumns} };
         @ColumnsEnabled = grep { $Self->{Config}->{DefaultColumns}->{$_} eq '2' }
-            keys %{ $Self->{Config}->{DefaultColumns} };
+            sort _DefaultColumnSort keys %{ $Self->{Config}->{DefaultColumns} };
     }
 
     # get dynamic fields
@@ -1657,8 +1657,14 @@ sub _GetColumnValues {
             else {
 
                 # get PossibleValues
-                $ColumnFilterValues{$HeaderColumn} = $Self->{BackendObject}->PossibleValuesGet(
+                my $PossibleValues = $Self->{BackendObject}->PossibleValuesGet(
                     DynamicFieldConfig => $DynamicFieldConfig,
+                );
+
+                # transform possible values into the format needed for BuildSelectionJSON
+                $ColumnFilterValues{$HeaderColumn} = $Self->{BackendObject}->BuildSelectionDataGet(
+                    DynamicFieldConfig => $DynamicFieldConfig,
+                    PossibleValues     => $PossibleValues,
                 );
             }
             last;
@@ -1700,6 +1706,10 @@ sub _InitialColumnFilter {
     my $Class = 'ColumnFilter';
     if ( $Param{Css} ) {
         $Class .= ' ' . $Param{Css};
+    }
+
+    if ( $Param{ColumnName} =~ m{ \A DynamicField_ }xms ) {
+        $Class .= ' DynamicFieldWithTreeView';
     }
 
     # build select HTML
@@ -1866,6 +1876,35 @@ sub _ColumnFilterJSON {
     );
 
     return $JSON;
+}
+
+sub _DefaultColumnSort {
+
+    my %DefaultColumns = (
+        TicketNumber           => 100,
+        Age                    => 110,
+        Changed                => 111,
+        PendingTime            => 112,
+        EscalationTime         => 113,
+        EscalationSolutionTime => 114,
+        EscalationResponseTime => 115,
+        EscalationUpdateTime   => 116,
+        Title                  => 120,
+        State                  => 130,
+        Lock                   => 140,
+        Queue                  => 150,
+        Owner                  => 160,
+        Responsible            => 161,
+        CustomerID             => 170,
+        CustomerName           => 171,
+        CustomerUserID         => 172,
+        Type                   => 180,
+        Service                => 191,
+        SLA                    => 192,
+        Priority               => 193,
+    );
+
+    return $DefaultColumns{$a} <=> $DefaultColumns{$b};
 }
 
 1;
