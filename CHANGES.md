@@ -1,3 +1,57 @@
+#3.3.6 2014-04-01
+ - 2014-03-27 Updated French translation, thanks to Guillaume Houdmon..
+ - 2014-03-25 Extended the OTRS system registration to optionally also send the support assessment data along with the system registration data. Support assessment data is improved and extended and can be accessed in the new Service Center module of the admin area.
+ - 2014-03-25 Fixed bug#[10405](http://bugs.otrs.org/show_bug.cgi?id=10405) - When using the search feature of the tree selection overlay, one is not able to expand subtrees of matching entries.
+ - 2014-03-24 Fixed bug#[10340](http://bugs.otrs.org/show_bug.cgi?id=10340) - Dynamic field not visible in queue view screen (AgentTicketOverviewSmall.dtl).
+ - 2014-03-24 Fixed bug#[10400](http://bugs.otrs.org/show_bug.cgi?id=10400) - AgentTicketProccess will not use error messages of dynamic field drivers.
+ - 2014-03-24 Fixed bug#[10397](http://bugs.otrs.org/show_bug.cgi?id=10397) - DynamicField configuration in SysConfig 'DefaultOverviewColumns' causes JS error.
+ - 2014-03-21 Fixed bug#[9592](http://bugs.otrs.org/show_bug.cgi?id=9592) - Ticket history overflows for dynamic field.
+ - 2014-03-21 Fixed bug#[10368](http://bugs.otrs.org/show_bug.cgi?id=10368) - Ticket title isn't shown.
+ - 2014-03-21 Updated Japanese translation, thanks to Toshihiro Takehara..
+ - 2014-03-21 Fixed bug#[10381](http://bugs.otrs.org/show_bug.cgi?id=10381) - AgentTicket*View has invalid SortBy options.
+ - 2014-03-21 Fixed bug#[10383](http://bugs.otrs.org/show_bug.cgi?id=10383) - Missing 'DefaultColumns' SysConfig for AgentTicketSearch view.
+ - 2014-03-21 Fixed bug#[10384](http://bugs.otrs.org/show_bug.cgi?id=10384) - out-of-office information not displayed in Ticket Zoom.
+ - 2014-03-20 Fixed bug#[10379](http://bugs.otrs.org/show_bug.cgi?id=10379) - ACL Not Working.
+ - 2014-03-20 Fixed bug#[10385](http://bugs.otrs.org/show_bug.cgi?id=10385) - Wrong Queue ID for Errors and FormUpdate in AgentTicketActionCommon.
+ - 2014-03-20 Fixed bug#[10369](http://bugs.otrs.org/show_bug.cgi?id=10369) - Ticket::Frontend::Quote does not work with RichText Editor.
+ - 2014-03-20 Improved handling of cachekeys in Stats.pm to prevent cacheing problems in the dashboard stats.
+ - 2014-03-18 Fixed bug#[10334](http://bugs.otrs.org/show_bug.cgi?id=10334) - Deleting the attachment deletes the  recepients too.
+ - 2014-03-18 Fixed bug#[10374](http://bugs.otrs.org/show_bug.cgi?id=10374) - OTRS does not protect against clickjacking.
+ - 2014-03-15 Fixed bug#[10364](http://bugs.otrs.org/show_bug.cgi?id=10364) - Inline images displayed as attachment in SMIME and PGP signed messages.
+ - 2014-03-14 Fixed bug#[10251](http://bugs.otrs.org/show_bug.cgi?id=10251) - SMIME signing fail on mails with attachements.
+ - 2014-03-14 Fixed bug#[10277](http://bugs.otrs.org/show_bug.cgi?id=10277) - Statistics per agent also shows invalid agents.
+ - 2014-03-14 Fixed bug#[10318](http://bugs.otrs.org/show_bug.cgi?id=10318) - Dynamic Field: Multi Select does not allow empty values.
+ - 2014-03-14 Fixed bug#[10365](http://bugs.otrs.org/show_bug.cgi?id=10365) - Custom State types not working with "otrs.PendingJobs.pl" any more.
+ - 2014-03-14 Fixed bug#[10349](http://bugs.otrs.org/show_bug.cgi?id=10349) - System Email notification external not highlighted correctly.
+ - 2014-03-13 Fixed bug#[10361](http://bugs.otrs.org/show_bug.cgi?id=10361) - Incorrect handling of special characters in DynamicFields.
+ - 2014-03-11 Fixed bug#[10324](http://bugs.otrs.org/show_bug.cgi?id=10324) - Customer user field still marked as empty even after providing data.
+ - 2014-03-11 Fixed bug#[10019](http://bugs.otrs.org/show_bug.cgi?id=10019) - Tickets via "In line action bar" cannot be moved.
+ - 2014-03-10 Fixed bug#[10283](http://bugs.otrs.org/show_bug.cgi?id=10283) - MouseOver on the Transitions does not show transition actions.
+ - 2014-03-10 Fixed bug#[10241](http://bugs.otrs.org/show_bug.cgi?id=10241) - ACL-Editor Bug..
+ - 2014-03-10 Fixed bug#[10338](http://bugs.otrs.org/show_bug.cgi?id=10338) - Empty Content-ID causes strange result -> HTML-tags are "corrupted".
+ - 2014-03-07 Fixed bug#[9951](http://bugs.otrs.org/show_bug.cgi?id=9951) - Line breaks at the end of salutation templates are not saved.
+ - 2014-03-07 Fixed bug#[10275](http://bugs.otrs.org/show_bug.cgi?id=10275) - Problem with encoding in attachment.
+ - 2014-03-07 Fixed bug#[10085](http://bugs.otrs.org/show_bug.cgi?id=10085) - Postmaster incorrectly decodes headers, causes garbage in the database.
+ - 2014-03-06 Fixed bug#[10336](http://bugs.otrs.org/show_bug.cgi?id=10336) - Problem with symlinked theme directories.
+ - 2014-03-06 Fixed bug#[10328](http://bugs.otrs.org/show_bug.cgi?id=10328) - Error in AdminPostMasterFilter if the name of DynamicField changed.
+ - 2014-03-04 Fixed bug#[10264](http://bugs.otrs.org/show_bug.cgi?id=10264) - Description (espacially article description) in processes are shown on improper place.
+ - 2014-03-04 Fixed bug#[10244](http://bugs.otrs.org/show_bug.cgi?id=10244) - No mouseover popup for fields in ActivityDialogs.
+ - 2014-03-03 Fixed bug#[10240](http://bugs.otrs.org/show_bug.cgi?id=10240) - Restricting process list by ACLs is only working with UserID.
+ - 2014-03-03 Fixed bug#[10299](http://bugs.otrs.org/show_bug.cgi?id=10299) - "Ouf of Office" shows inactive agents.
+ - 2014-03-03 Fixed bug#[10321](http://bugs.otrs.org/show_bug.cgi?id=10321) - Applying Filters to tickets in Status View or Queue View will log out session..
+ - 2014-03-03 Fixed bug#[9600](http://bugs.otrs.org/show_bug.cgi?id=9600) - When a ticket is deleted by generic agent job,  No such TicketID error.
+ - 2014-02-28 Fixed bug#[10057](http://bugs.otrs.org/show_bug.cgi?id=10057) - Advanced Search Window is Cramped and Confusing.
+ - 2014-02-28 Fixed bug#[9675](http://bugs.otrs.org/show_bug.cgi?id=9675) - No use Ticket::Hook in AgentLinkObject.
+ - 2014-02-28 Updated Japanese translation, thanks to Norihiro Tanaka!
+ - 2014-02-27 Fixed bug#[10300](http://bugs.otrs.org/show_bug.cgi?id=10300) - Special character in customer id cuts off string..
+ - 2014-02-27 Fixed bug#[10309](http://bugs.otrs.org/show_bug.cgi?id=10309) - mails with an empty return-path header must not trigger auto responses in OTRS.
+ - 2014-02-21 Fixed bug#[10245](http://bugs.otrs.org/show_bug.cgi?id=10245) - Use of uninitialized value $Param{"Value2"} in string.
+ - 2014-02-21 Fixed bug#[10182](http://bugs.otrs.org/show_bug.cgi?id=10182) - Customer email suddenly treated by OTRS as 'email-internal'.
+ - 2014-02-21 Fixed bug#[10285](http://bugs.otrs.org/show_bug.cgi?id=10285) - No use Ticket::Hook in CustomerTicketZoom.
+ - 2014-02-21 Fixed bug#[9787](http://bugs.otrs.org/show_bug.cgi?id=9787) - Queue field doesn't appear in ProcessMgmt.
+ - 2014-02-21 Fixed bug#[10222](http://bugs.otrs.org/show_bug.cgi?id=10222) - Customer search during ticket creation - OTRS shows details also if no customer match the search.
+ - 2014-02-20 Fixed bug#[10259](http://bugs.otrs.org/show_bug.cgi?id=10259) - GenericInterface: mapping key can't map from / to 0.
+
 #3.3.5 2014-02-25
  - 2014-02-20 Improved HTML filter.
  - 2014-02-19 Followup fix for bug#[10116](http://bugs.otrs.org/show_bug.cgi?id=10116) - Random ordering of columns in "Small" ticket lists.

@@ -1159,10 +1159,12 @@ sub _OutputActivityDialog {
 
     my $ActivityActivityDialog;
     my %Ticket;
-    my %Error = ();
+    my %Error         = ();
+    my %ErrorMessages = ();
 
     # If we had Errors, we got an Errorhash
-    %Error = %{ $Param{Error} } if ( IsHashRefWithData( $Param{Error} ) );
+    %Error         = %{ $Param{Error} }         if ( IsHashRefWithData( $Param{Error} ) );
+    %ErrorMessages = %{ $Param{ErrorMessages} } if ( IsHashRefWithData( $Param{ErrorMessages} ) );
 
     if ( !$TicketID ) {
         $ActivityActivityDialog = $Self->{ProcessObject}->ProcessStartpointGet(
@@ -1468,8 +1470,10 @@ sub _OutputActivityDialog {
                 ActivityDialogField => $ActivityDialog->{Fields}{$CurrentField},
                 FieldName           => $DynamicFieldName,
                 DescriptionShort    => $ActivityDialog->{Fields}{$CurrentField}{DescriptionShort},
+                DescriptionLong     => $ActivityDialog->{Fields}{$CurrentField}{DescriptionLong},
                 Ticket              => \%Ticket || {},
                 Error               => \%Error || {},
+                ErrorMessages       => \%ErrorMessages || {},
                 FormID              => $Self->{FormID},
                 GetParam            => $Param{GetParam},
                 AJAXUpdatableFields => $AJAXUpdatableFields,
@@ -1507,6 +1511,7 @@ sub _OutputActivityDialog {
                 ActivityDialogField => $ActivityDialog->{Fields}{$CurrentField},
                 FieldName           => $CurrentField,
                 DescriptionShort    => $ActivityDialog->{Fields}{$CurrentField}{DescriptionShort},
+                DescriptionLong     => $ActivityDialog->{Fields}{$CurrentField}{DescriptionLong},
                 Ticket              => \%Ticket || {},
                 Error               => \%Error || {},
                 FormID              => $Self->{FormID},
@@ -1542,6 +1547,7 @@ sub _OutputActivityDialog {
                 ActivityDialogField => $ActivityDialog->{Fields}{$CurrentField},
                 FieldName           => $CurrentField,
                 DescriptionShort    => $ActivityDialog->{Fields}{$CurrentField}{DescriptionShort},
+                DescriptionLong     => $ActivityDialog->{Fields}{$CurrentField}{DescriptionLong},
                 Ticket              => \%Ticket || {},
                 Error               => \%Error || {},
                 FormID              => $Self->{FormID},
@@ -1577,6 +1583,7 @@ sub _OutputActivityDialog {
                 ActivityDialogField => $ActivityDialog->{Fields}{$CurrentField},
                 FieldName           => $CurrentField,
                 DescriptionShort    => $ActivityDialog->{Fields}{$CurrentField}{DescriptionShort},
+                DescriptionLong     => $ActivityDialog->{Fields}{$CurrentField}{DescriptionLong},
                 Ticket              => \%Ticket || {},
                 Error               => \%Error || {},
                 FormID              => $Self->{FormID},
@@ -1612,6 +1619,7 @@ sub _OutputActivityDialog {
                 ActivityDialogField => $ActivityDialog->{Fields}{$CurrentField},
                 FieldName           => $CurrentField,
                 DescriptionShort    => $ActivityDialog->{Fields}{$CurrentField}{DescriptionShort},
+                DescriptionLong     => $ActivityDialog->{Fields}{$CurrentField}{DescriptionLong},
                 Ticket              => \%Ticket || {},
                 Error               => \%Error || {},
                 FormID              => $Self->{FormID},
@@ -1647,6 +1655,7 @@ sub _OutputActivityDialog {
                 ActivityDialogField => $ActivityDialog->{Fields}{$CurrentField},
                 FieldName           => $CurrentField,
                 DescriptionShort    => $ActivityDialog->{Fields}{$CurrentField}{DescriptionShort},
+                DescriptionLong     => $ActivityDialog->{Fields}{$CurrentField}{DescriptionLong},
                 Ticket              => \%Ticket || {},
                 Error               => \%Error || {},
                 FormID              => $Self->{FormID},
@@ -1682,6 +1691,7 @@ sub _OutputActivityDialog {
                 ActivityDialogField => $ActivityDialog->{Fields}{$CurrentField},
                 FieldName           => $CurrentField,
                 DescriptionShort    => $ActivityDialog->{Fields}{$CurrentField}{DescriptionShort},
+                DescriptionLong     => $ActivityDialog->{Fields}{$CurrentField}{DescriptionLong},
                 Ticket              => \%Ticket || {},
                 Error               => \%Error || {},
                 FormID              => $Self->{FormID},
@@ -1717,6 +1727,7 @@ sub _OutputActivityDialog {
                 ActivityDialogField => $ActivityDialog->{Fields}{$CurrentField},
                 FieldName           => $CurrentField,
                 DescriptionShort    => $ActivityDialog->{Fields}{$CurrentField}{DescriptionShort},
+                DescriptionLong     => $ActivityDialog->{Fields}{$CurrentField}{DescriptionLong},
                 Ticket              => \%Ticket || {},
                 Error               => \%Error || {},
                 FormID              => $Self->{FormID},
@@ -1752,6 +1763,7 @@ sub _OutputActivityDialog {
                 ActivityDialogField => $ActivityDialog->{Fields}{$CurrentField},
                 FieldName           => $CurrentField,
                 DescriptionShort    => $ActivityDialog->{Fields}{$CurrentField}{DescriptionShort},
+                DescriptionLong     => $ActivityDialog->{Fields}{$CurrentField}{DescriptionLong},
                 Ticket              => \%Ticket || {},
                 Error               => \%Error || {},
                 FormID              => $Self->{FormID},
@@ -1787,6 +1799,7 @@ sub _OutputActivityDialog {
                 ActivityDialogField => $ActivityDialog->{Fields}{$CurrentField},
                 FieldName           => $CurrentField,
                 DescriptionShort    => $ActivityDialog->{Fields}{$CurrentField}{DescriptionShort},
+                DescriptionLong     => $ActivityDialog->{Fields}{$CurrentField}{DescriptionLong},
                 Ticket              => \%Ticket || {},
                 Error               => \%Error || {},
                 FormID              => $Self->{FormID},
@@ -1840,6 +1853,7 @@ sub _OutputActivityDialog {
                 ActivityDialogField => $ActivityDialog->{Fields}{$CurrentField},
                 FieldName           => $CurrentField,
                 DescriptionShort    => $ActivityDialog->{Fields}{$CurrentField}{DescriptionShort},
+                DescriptionLong     => $ActivityDialog->{Fields}{$CurrentField}{DescriptionLong},
                 Ticket              => \%Ticket || {},
                 Error               => \%Error || {},
                 FormID              => $Self->{FormID},
@@ -1873,6 +1887,7 @@ sub _OutputActivityDialog {
                 ActivityDialogField => $ActivityDialog->{Fields}{$CurrentField},
                 FieldName           => $CurrentField,
                 DescriptionShort    => $ActivityDialog->{Fields}{$CurrentField}{DescriptionShort},
+                DescriptionLong     => $ActivityDialog->{Fields}{$CurrentField}{DescriptionLong},
                 Ticket              => \%Ticket || {},
                 Error               => \%Error || {},
                 FormID              => $Self->{FormID},
@@ -1909,6 +1924,7 @@ sub _OutputActivityDialog {
                 ActivityDialogField => $ActivityDialog->{Fields}{$CurrentField},
                 FieldName           => $CurrentField,
                 DescriptionShort    => $ActivityDialog->{Fields}{$CurrentField}{DescriptionShort},
+                DescriptionLong     => $ActivityDialog->{Fields}{$CurrentField}{DescriptionLong},
                 Ticket              => \%Ticket || {},
                 Error               => \%Error || {},
                 FormID              => $Self->{FormID},
@@ -1947,6 +1963,7 @@ sub _OutputActivityDialog {
                 ActivityDialogField => $ActivityDialog->{Fields}{$CurrentField},
                 FieldName           => $CurrentField,
                 DescriptionShort    => $ActivityDialog->{Fields}{$CurrentField}{DescriptionShort},
+                DescriptionLong     => $ActivityDialog->{Fields}{$CurrentField}{DescriptionLong},
                 Ticket              => \%Ticket || {},
                 Error               => \%Error || {},
                 FormID              => $Self->{FormID},
@@ -2122,6 +2139,15 @@ sub _RenderPendingTime {
         );
     }
 
+    if ( $Param{DescriptionLong} ) {
+        $Self->{LayoutObject}->Block(
+            Name => 'rw:PendingTime:DescriptionLong',
+            Data => {
+                DescriptionLong => $Param{DescriptionLong},
+            },
+        );
+    }
+
     return {
         Success => 1,
         HTML => $Self->{LayoutObject}->Output( TemplateFile => 'ProcessManagement/PendingTime' ),
@@ -2198,6 +2224,16 @@ sub _RenderDynamicField {
             $ServerError = 1;
         }
     }
+    my $ErrorMessage = '';
+    if ( IsHashRefWithData( $Param{ErrorMessages} ) ) {
+        if (
+            defined $Param{ErrorMessages}->{ $Param{FieldName} }
+            && $Param{ErrorMessages}->{ $Param{FieldName} } ne ''
+            )
+        {
+            $ErrorMessage = $Param{ErrorMessages}->{ $Param{FieldName} };
+        }
+    }
 
     my $DynamicFieldHTML = $Self->{BackendObject}->EditFieldRender(
         DynamicFieldConfig   => $DynamicFieldConfig,
@@ -2209,6 +2245,7 @@ sub _RenderDynamicField {
         Mandatory            => $Param{ActivityDialogField}->{Display} == 2,
         UpdatableFields      => $Param{AJAXUpdatableFields},
         ServerError          => $ServerError,
+        ErrorMessage         => $ErrorMessage,
     );
 
     my %Data = (
@@ -2227,6 +2264,15 @@ sub _RenderDynamicField {
                 || 'rw:DynamicField:DescriptionShort',
             Data => {
                 DescriptionShort => $Param{DescriptionShort},
+            },
+        );
+    }
+
+    if ( $Param{DescriptionLong} ) {
+        $Self->{LayoutObject}->Block(
+            Name => 'rw:DynamicField:DescriptionLong',
+            Data => {
+                DescriptionLong => $Param{DescriptionLong},
             },
         );
     }
@@ -2298,6 +2344,15 @@ sub _RenderTitle {
             Name => $Param{ActivityDialogField}->{LayoutBlock} || 'rw:Title:DescriptionShort',
             Data => {
                 DescriptionShort => $Param{DescriptionShort},
+            },
+        );
+    }
+
+    if ( $Param{DescriptionLong} ) {
+        $Self->{LayoutObject}->Block(
+            Name => $Param{ActivityDialogField}->{LayoutBlock} || 'rw:Title:DescriptionLong',
+            Data => {
+                DescriptionLong => $Param{DescriptionLong},
             },
         );
     }
@@ -2389,6 +2444,15 @@ sub _RenderArticle {
             Name => 'rw:Article:DescriptionShort',
             Data => {
                 DescriptionShort => $Param{DescriptionShort},
+            },
+        );
+    }
+
+    if ( $Param{DescriptionLong} ) {
+        $Self->{LayoutObject}->Block(
+            Name => 'rw:Article:DescriptionLong',
+            Data => {
+                DescriptionLong => $Param{DescriptionLong},
             },
         );
     }
@@ -2549,6 +2613,15 @@ sub _RenderCustomer {
         );
     }
 
+    if ( $Param{DescriptionLong} ) {
+        $Self->{LayoutObject}->Block(
+            Name => 'rw:Customer:DescriptionLong',
+            Data => {
+                DescriptionLong => $Param{DescriptionLong},
+            },
+        );
+    }
+
     return {
         Success => 1,
         HTML => $Self->{LayoutObject}->Output( TemplateFile => 'ProcessManagement/Customer' ),
@@ -2700,6 +2773,15 @@ sub _RenderResponsible {
             Name => $Param{ActivityDialogField}->{LayoutBlock} || 'rw:Responsible:DescriptionShort',
             Data => {
                 DescriptionShort => $Param{DescriptionShort},
+            },
+        );
+    }
+
+    if ( $Param{DescriptionLong} ) {
+        $Self->{LayoutObject}->Block(
+            Name => 'rw:Responsible:DescriptionLong',
+            Data => {
+                DescriptionLong => $Param{DescriptionLong},
             },
         );
     }
@@ -2864,6 +2946,15 @@ sub _RenderOwner {
         );
     }
 
+    if ( $Param{DescriptionLong} ) {
+        $Self->{LayoutObject}->Block(
+            Name => 'rw:Owner:DescriptionLong',
+            Data => {
+                DescriptionLong => $Param{DescriptionLong},
+            },
+        );
+    }
+
     return {
         Success => 1,
         HTML => $Self->{LayoutObject}->Output( TemplateFile => 'ProcessManagement/Owner' ),
@@ -2999,6 +3090,15 @@ sub _RenderSLA {
             Name => $Param{ActivityDialogField}->{LayoutBlock} || 'rw:SLA:DescriptionShort',
             Data => {
                 DescriptionShort => $Param{DescriptionShort},
+            },
+        );
+    }
+
+    if ( $Param{DescriptionLong} ) {
+        $Self->{LayoutObject}->Block(
+            Name => 'rw:SLA:DescriptionLong',
+            Data => {
+                DescriptionLong => $Param{DescriptionLong},
             },
         );
     }
@@ -3155,6 +3255,15 @@ sub _RenderService {
         );
     }
 
+    if ( $Param{DescriptionLong} ) {
+        $Self->{LayoutObject}->Block(
+            Name => 'rw:Service:DescriptionLong',
+            Data => {
+                DescriptionLong => $Param{DescriptionLong},
+            },
+        );
+    }
+
     return {
         Success => 1,
         HTML => $Self->{LayoutObject}->Output( TemplateFile => 'ProcessManagement/Service' ),
@@ -3276,6 +3385,15 @@ sub _RenderLock {
         );
     }
 
+    if ( $Param{DescriptionLong} ) {
+        $Self->{LayoutObject}->Block(
+            Name => 'rw:Lock:DescriptionLong',
+            Data => {
+                DescriptionLong => $Param{DescriptionLong},
+            },
+        );
+    }
+
     return {
         Success => 1,
         HTML => $Self->{LayoutObject}->Output( TemplateFile => 'ProcessManagement/Lock' ),
@@ -3393,6 +3511,15 @@ sub _RenderPriority {
             Name => $Param{ActivityDialogField}->{LayoutBlock} || 'rw:Priority:DescriptionShort',
             Data => {
                 DescriptionShort => $Param{DescriptionShort},
+            },
+        );
+    }
+
+    if ( $Param{DescriptionLong} ) {
+        $Self->{LayoutObject}->Block(
+            Name => 'rw:Priority:DescriptionLong',
+            Data => {
+                DescriptionLong => $Param{DescriptionLong},
             },
         );
     }
@@ -3526,6 +3653,15 @@ sub _RenderQueue {
         );
     }
 
+    if ( $Param{DescriptionLong} ) {
+        $Self->{LayoutObject}->Block(
+            Name => 'rw:Queue:DescriptionLong',
+            Data => {
+                DescriptionLong => $Param{DescriptionLong},
+            },
+        );
+    }
+
     return {
         Success => 1,
         HTML => $Self->{LayoutObject}->Output( TemplateFile => 'ProcessManagement/Queue' ),
@@ -3638,6 +3774,15 @@ sub _RenderState {
             Name => $Param{ActivityDialogField}->{LayoutBlock} || 'rw:State:DescriptionShort',
             Data => {
                 DescriptionShort => $Param{DescriptionShort},
+            },
+        );
+    }
+
+    if ( $Param{DescriptionLong} ) {
+        $Self->{LayoutObject}->Block(
+            Name => 'rw:State:DescriptionLong',
+            Data => {
+                DescriptionLong => $Param{DescriptionLong},
             },
         );
     }
@@ -3778,6 +3923,15 @@ sub _RenderType {
         );
     }
 
+    if ( $Param{DescriptionLong} ) {
+        $Self->{LayoutObject}->Block(
+            Name => 'rw:Type:DescriptionLong',
+            Data => {
+                DescriptionLong => $Param{DescriptionLong},
+            },
+        );
+    }
+
     return {
         Success => 1,
         HTML => $Self->{LayoutObject}->Output( TemplateFile => 'ProcessManagement/Type' ),
@@ -3793,6 +3947,7 @@ sub _StoreActivityDialog {
     my $ProcessEntityID;
     my $ActivityEntityID;
     my %Error;
+    my %ErrorMessages;
 
     my %TicketParam;
 
@@ -3886,7 +4041,8 @@ sub _StoreActivityDialog {
             }
 
             if ( $ValidationResult->{ServerError} ) {
-                $Error{ $DynamicFieldConfig->{Name} } = 1;
+                $Error{ $DynamicFieldConfig->{Name} }         = 1;
+                $ErrorMessages{ $DynamicFieldConfig->{Name} } = $ValidationResult->{ErrorMessage};
             }
 
             # if we had an invisible field, use config's default value
@@ -4212,6 +4368,7 @@ sub _StoreActivityDialog {
             TicketID               => $TicketID || undef,
             ActivityDialogEntityID => $ActivityDialogEntityID,
             Error                  => \%Error,
+            ErrorMessages          => \%ErrorMessages,
             GetParam               => $Param{GetParam},
         );
     }

@@ -174,7 +174,7 @@ Core.UI.TreeSelection = (function (TargetNS) {
             SelectedID     = $SelectObj.val(),
             Multiple       = ($SelectObj.attr('multiple') !== '' && $SelectObj.attr('multiple') !== undefined) ? true : false,
             ElementCount   = $SelectObj.find('option').length,
-            DialogTitle    = $SelectObj.parent().prev('label').text(),
+            DialogTitle    = $SelectObj.parent().prev('label').clone().children().remove().end().text(),
             Elements       = {},
             InDialog       = false,
             StyleSheetURL,
@@ -333,6 +333,15 @@ Core.UI.TreeSelection = (function (TargetNS) {
 
         $('#TreeSearch').find('input').bind('keyup', function() {
             $TreeObj.jstree("search", $(this).val());
+
+            // make sure subtrees of matches nodes are expandable
+            $('.jstree-search')
+                .parent()
+                .removeClass('jstree-open')
+                .addClass('jstree-closed')
+                .find('ins').click(function() {
+                    $(this).nextAll('ul').find('li').show();
+                });
         });
 
         $('#TreeSearch').find('span').bind('click', function() {
