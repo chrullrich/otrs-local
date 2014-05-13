@@ -295,9 +295,19 @@ sub Run {
         UserID        => $Self->{UserID},
     );
 
-    $ProcessList = $Self->{TicketObject}->TicketAclProcessData(
-        Processes => $ProcessList,
-    );
+    if ( IsHashRefWithData($ProcessList) ) {
+        $ProcessList = $Self->{TicketObject}->TicketAclProcessData(
+            Processes => $ProcessList,
+        );
+    }
+
+    # get form id
+    $Self->{FormID} = $Self->{ParamObject}->GetParam( Param => 'FormID' );
+
+    # create form id
+    if ( !$Self->{FormID} ) {
+        $Self->{FormID} = $Self->{UploadCacheObject}->FormIDCreate();
+    }
 
     # If we have no Subaction or Subaction is 'Create' and submitted ProcessEntityID is invalid
     # Display the ProcessList
@@ -370,14 +380,6 @@ sub Run {
     my $GetParam = $Self->_GetParam(
         ProcessEntityID => $ProcessEntityID,
     );
-
-    # get form id
-    $Self->{FormID} = $Self->{ParamObject}->GetParam( Param => 'FormID' );
-
-    # create form id
-    if ( !$Self->{FormID} ) {
-        $Self->{FormID} = $Self->{UploadCacheObject}->FormIDCreate();
-    }
 
     if ( $Self->{Subaction} eq 'StoreActivityDialog' && $ProcessEntityID ) {
         $Self->{LayoutObject}->ChallengeTokenCheck();
@@ -493,6 +495,7 @@ sub _RenderAjax {
         $DynamicFieldCheckParam{ 'DynamicField_' . $DynamicField }
             = $DynamicFieldValues{$DynamicField};
     }
+    $Param{GetParam}->{DynamicField} = \%DynamicFieldCheckParam;
 
     # Get the activity dialog's Submit Param's or Config Params
     DIALOGFIELD:
@@ -524,8 +527,6 @@ sub _RenderAjax {
             my $PossibleValues = $Self->{BackendObject}->PossibleValuesGet(
                 DynamicFieldConfig => $DynamicFieldConfig,
             );
-            my %DynamicFieldCheckParam = map { $_ => $Param{GetParam}{$_} }
-                grep {m{^DynamicField_}xms} ( keys %{ $Param{GetParam} } );
 
             # convert possible values key => value to key => key for ACLs using a Hash slice
             my %AclData = %{$PossibleValues};
@@ -534,7 +535,6 @@ sub _RenderAjax {
             # set possible values filter from ACLs
             my $ACL = $Self->{TicketObject}->TicketAcl(
                 %{ $Param{GetParam} },
-                DynamicField  => \%DynamicFieldCheckParam,
                 ReturnType    => 'Ticket',
                 ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},
                 Data          => \%AclData,
@@ -2978,8 +2978,18 @@ sub _RenderSLA {
             Message => "Got no ActivityDialogField in _RenderSLA!",
         };
     }
+
+    # create a local copy of the GetParam
+    my %GetServicesParam = %{ $Param{GetParam} };
+
+    # use ticket information as a fall back if customer was already set, otherwise when the
+    # activity dialog displays the service list will be initially empty, see bug#10059
+    if ( IsHashRefWithData( $Param{Ticket} ) ) {
+        $GetServicesParam{CustomerUserID} ||= $Param{Ticket}->{CustomerUserID} ||= '';
+    }
+
     my $Services = $Self->_GetServices(
-        %{ $Param{GetParam} },
+        %GetServicesParam,
     );
 
     my $SLAs = $Self->_GetSLAs(
@@ -4761,12 +4771,14 @@ sub _DisplayProcessList {
             FormID => $Self->{FormID},
         },
     );
+
     my $Output = $Self->{LayoutObject}->Header();
     $Output .= $Self->{LayoutObject}->NavigationBar();
     $Output .= $Self->{LayoutObject}->Output(
         TemplateFile => 'AgentTicketProcess',
         Data         => {
             %Param,
+            FormID  => $Self->{FormID},
         },
     );
 
