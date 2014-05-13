@@ -3512,7 +3512,7 @@ to lock or unlock a ticket
 
 Optional attribute:
 SendNoNotification, disable or enable agent and customer notification for this
-action. Otherwise a notification will be send to agent and cusomer.
+action. Otherwise a notification will be sent to agent and cusomer.
 
 For example:
 
@@ -3777,7 +3777,7 @@ to set a ticket state
 
 Optional attribute:
 SendNoNotification, disable or enable agent and customer notification for this
-action. Otherwise a notification will be send to agent and cusomer.
+action. Otherwise a notification will be sent to agent and cusomer.
 
 For example:
 
@@ -4067,7 +4067,7 @@ Return:
 
 Optional attribute:
 SendNoNotification, disable or enable agent and customer notification for this
-action. Otherwise a notification will be send to agent and cusomer.
+action. Otherwise a notification will be sent to agent and cusomer.
 
 For example:
 
@@ -4248,7 +4248,7 @@ Return:
 
 Optional attribute:
 SendNoNotification, disable or enable agent and customer notification for this
-action. Otherwise a notification will be send to agent and cusomer.
+action. Otherwise a notification will be sent to agent and cusomer.
 
 For example:
 
@@ -7379,7 +7379,13 @@ sub TicketAcl {
 
         # build new Process data hash (ProcessManagement)
         # for Step{Possible}
-        if ( IsArrayRefWithData( $Step{Possible}{'Process'} ) )
+        if (
+            ( %Checks || %ChecksDatabase )
+            && $Match
+            && $MatchTry
+            && $Step{Possible}{'Process'}
+            && IsArrayRefWithData( $Step{Possible}{'Process'} )
+            )
         {
             $HadPossibleProcesses = 1;
             if ( !%PossibleProcesses ) {
@@ -7402,7 +7408,13 @@ sub TicketAcl {
         }
 
         # for Step{PossibleNot}
-        if ( IsArrayRefWithData( $Step{PossibleNot}{'Process'} ) )
+        if (
+            ( %Checks || %ChecksDatabase )
+            && $Match
+            && $MatchTry
+            && $Step{PossibleNot}{'Process'}
+            && IsArrayRefWithData( $Step{PossibleNot}{'Process'} )
+            )
         {
 
             if ( !%PossibleNotProcesses ) {
