@@ -59,15 +59,20 @@ print "otrs.PendingJobs.pl - check pending tickets\n";
 print "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n";
 
 my @PendingAutoStateIDs = $CommonObject{StateObject}->StateGetStatesByType(
-     Type   => 'PendingAuto',
-     Result => 'ID',
+    Type   => 'PendingAuto',
+    Result => 'ID',
 );
+
+if ( !@PendingAutoStateIDs ) {
+    print STDOUT " No pending auto StateIDs found - skipping script!\n";
+    exit 0;
+}
 
 # do ticket auto jobs
 my @TicketIDs = $CommonObject{TicketObject}->TicketSearch(
-    Result    => 'ARRAY',
+    Result   => 'ARRAY',
     StateIDs => [@PendingAutoStateIDs],
-    UserID    => 1,
+    UserID   => 1,
 );
 
 TICKETID:
