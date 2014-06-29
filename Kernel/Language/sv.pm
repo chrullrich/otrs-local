@@ -23,9 +23,9 @@ sub Data {
     # date formats (%A=WeekDay;%B=LongMonth;%T=Time;%D=Day;%M=Month;%Y=Year;)
     $Self->{DateFormat}          = '%Y-%M-%D %T';
     $Self->{DateFormatLong}      = '%A %D. %B %Y %T';
-    $Self->{DateFormatShort}     = '%D.%M.%Y';
-    $Self->{DateInputFormat}     = '%D.%M.%Y';
-    $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
+    $Self->{DateFormatShort}     = '%Y.%M.%D';
+    $Self->{DateInputFormat}     = '%Y.%M.%D';
+    $Self->{DateInputFormatLong} = '%Y.%M.%D - %T';
 
     # csv separator
     $Self->{Separator} = ';';
@@ -148,7 +148,7 @@ sub Data {
         'CustomerID' => 'KundID',
         'CustomerIDs' => 'KundIDn',
         'customer' => 'kund',
-        'agent' => 'agent',
+        'agent' => 'handläggare',
         'system' => 'System',
         'Customer Info' => 'Kundinfo',
         'Customer Information' => 'Kundinformation',
@@ -164,9 +164,9 @@ sub Data {
         'update' => 'uppdatera',
         'Update' => 'Uppdatera',
         'Updated!' => 'Uppdaterad!',
-        'submit!' => 'Skicka!',
-        'submit' => 'Skicka',
-        'Submit' => 'Skicka',
+        'submit!' => 'Spara!',
+        'submit' => 'Spara',
+        'Submit' => 'Spara',
         'change!' => 'ändra!',
         'Change' => 'Ändra',
         'change' => 'ändra',
@@ -234,10 +234,14 @@ sub Data {
             'Inloggning misslyckades! Felaktigt användarnamn eller lösenord.',
         'There is no acount with that user name.' => 'Det finns inget konto med det användarnamnet',
         'Please contact your administrator' => 'Vänligen kontakta din administratör',
+        'Authentication succeeded, but no customer record is found in the customer backend. Please contact your administrator.' =>
+            '',
+        'This e-mail address already exists. Please log in or reset your password.' =>
+            '',
         'Logout' => 'Logga ut',
         'Logout successful. Thank you for using %s!' => 'Utloggningen lyckades.  Tack för att du använde %s!',
         'Feature not active!' => 'Funktion inte aktiverad!',
-        'Agent updated!' => 'Agent uppdaterad!',
+        'Agent updated!' => 'Handläggare uppdaterad!',
         'Database Selection' => 'Databasval',
         'Create Database' => 'Skapa databas',
         'System Settings' => 'Systeminställningar',
@@ -265,7 +269,7 @@ sub Data {
         'Time Zone' => 'Tidszon',
         'Pending till' => 'Väntande tills',
         'Don\'t use the Superuser account to work with OTRS! Create new Agents and work with these accounts instead.' =>
-            'Använd inte superuser-kontot för att arbeta med OTRS! Skapa nya handläggare och arbeta med dom istället.',
+            'Använd inte superuserkontot för att arbeta med OTRS! Skapa nya handläggare och arbeta med dom istället.',
         'Dispatching by email To: field.' => 'Skickar iväg enligt e-postmeddelandets till-fält.',
         'Dispatching by selected Queue.' => 'Skickar iväg enligt vald kö.',
         'No entry found!' => 'Ingen inmatning funnen!',
@@ -282,7 +286,7 @@ sub Data {
         'Check to activate this date' => 'Kryssa i för att aktivera detta datum',
         'You have Out of Office enabled, would you like to disable it?' =>
             'Du har aktivierat automatiskt svar vid frånvaro. Vill du stänga av det?',
-        'News about OTRS releases!' => '',
+        'News about OTRS releases!' => 'Nyheter om OTRS-releaser!',
         'Customer %s added' => 'Kund %s lades till',
         'Role added!' => 'Roll tillagd!',
         'Role updated!' => 'Roll uppdaterad!',
@@ -307,7 +311,7 @@ sub Data {
         'System e-mail address updated!' => 'E-post för system uppdaterad!',
         'Contract' => 'Kontrakt',
         'Online Customer: %s' => 'Kund online: %s',
-        'Online Agent: %s' => 'Agent online: %s',
+        'Online Agent: %s' => 'Handläggare online: %s',
         'Calendar' => 'Kalender',
         'File' => 'Fil',
         'Filename' => 'Filnamn',
@@ -482,7 +486,7 @@ sub Data {
         # Template: AAAStats
         'Stat' => 'Statistik',
         'Sum' => 'Summa',
-        'Days' => '',
+        'Days' => 'Dagar',
         'No (not supported)' => 'Nej (stöds ej)',
         'Please fill out the required fields!' => 'Fyll i de tvingande fälten!',
         'Please select a file!' => 'Välj en fil!',
@@ -744,7 +748,7 @@ sub Data {
         'This is a' => 'Detta är en',
         'to open it in a new window.' => 'för att öppna i ett nytt fönster',
         'This is a HTML email. Click here to show it.' => 'Detta är ett HTML-email. Klicka här för att visa.',
-        'Free Fields' => 'Fria Fält',
+        'Free Fields' => 'Fria fält',
         'Merge' => 'Sammanfoga',
         'merged' => 'sammanfogat',
         'closed successful' => 'Löst och stängt',
@@ -765,7 +769,7 @@ sub Data {
         'QueueView' => 'Köer',
         'Ticket Escalation View' => 'Ärendeeskaleringsvy',
         'Message from' => 'Meddelande från',
-        'End message' => '',
+        'End message' => 'Meddelandeslut',
         'Forwarded message from' => 'Vidarebefodrat meddelande från',
         'End forwarded message' => '',
         'Bounce Article to a different mail address' => '',
@@ -1053,12 +1057,12 @@ sub Data {
 
         # Template: AdminAttachment
         'Attachment Management' => 'Hantering av bifogade dokument',
-        'Add attachment' => '',
+        'Add attachment' => 'Bifoga dokument',
         'List' => 'Lista',
-        'Download file' => '',
-        'Delete this attachment' => '',
-        'Add Attachment' => '',
-        'Edit Attachment' => '',
+        'Download file' => 'Hämta fil',
+        'Delete this attachment' => 'Radera bilaga',
+        'Add Attachment' => 'Lägg till bilaga',
+        'Edit Attachment' => 'Redigera bilaga',
 
         # Template: AdminAutoResponse
         'Auto Response Management' => 'Autosvar-hantering',
@@ -1073,7 +1077,7 @@ sub Data {
         'To get the first 5 lines of the email.' => 'För att få dom första fem raderna i mejlet',
         'To get the realname of the sender (if given).' => 'För att få avsändarens riktiga namn (om angivet).',
         'To get the article attribute' => '',
-        ' e. g.' => '',
+        ' e. g.' => ' t.ex.',
         'Options of the current customer user data' => '',
         'Ticket owner options' => '',
         'Ticket responsible options' => '',
@@ -1083,16 +1087,16 @@ sub Data {
         'Options of ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
             '',
         'Config options' => '',
-        'Example response' => '',
+        'Example response' => 'Exempelsvar',
 
         # Template: AdminCustomerCompany
-        'Customer Management' => '',
+        'Customer Management' => 'Hantera kunder',
         'Wildcards like \'*\' are allowed.' => '',
-        'Add customer' => '',
+        'Add customer' => 'Lägg till kund',
         'Select' => 'Välj',
         'Please enter a search term to look for customers.' => '',
-        'Add Customer' => '',
-        'Edit Customer' => '',
+        'Add Customer' => 'Lägg till kund',
+        'Edit Customer' => 'Redigera kund',
 
         # Template: AdminCustomerUser
         'Customer User Management' => 'Hantera kundanvändare',
@@ -1183,8 +1187,8 @@ sub Data {
             '',
         'This is the name to be shown on the screens where the field is active.' =>
             '',
-        'Field order' => '',
-        'This field is required and must be numeric.' => '',
+        'Field order' => 'Fältordning',
+        'This field is required and must be numeric.' => 'Detta fält är obilgatoriskt och måste innehålla siffror.',
         'This is the order in which this field will be shown on the screens where is active.' =>
             '',
         'Field type' => 'Fälttyp',
@@ -1642,7 +1646,7 @@ sub Data {
         'Delete this notification' => 'Radera denna notifiering',
         'Add Notification' => 'Lägg till Meddelande',
         'Article Filter' => 'Artikelfilter',
-        'Only for ArticleCreate and ArticleSend event' => '',
+        'Only for ArticleCreate and ArticleSend event' => 'Enbart för ArticleCreate och ArticleSend event',
         'Article type' => 'Artikeltyp',
         'If ArticleCreate or ArticleSend is used as a trigger event, you need to specify an article filter as well. Please select at least one of the article filter fields.' =>
             '',
@@ -2240,26 +2244,26 @@ sub Data {
             '',
         'A support bundle (including: system registration information, support data, a list of installed packages and all locally modified source code files) can be generated by pressing this button:' =>
             '',
-        'Generate Support Bundle' => '',
-        'Generating...' => '',
-        'It was not possible to generate the Support Bundle.' => '',
-        'Generate Result' => '',
-        'Support Bundle' => '',
-        'The mail could not be sent' => '',
+        'Generate Support Bundle' => 'Skapa supportpaket',
+        'Generating...' => 'Skapar...',
+        'It was not possible to generate the Support Bundle.' => 'Det gick inte att skapa supportpaketet.',
+        'Generate Result' => 'Skapa resultat',
+        'Support Bundle' => 'Supportpaket',
+        'The mail could not be sent' => 'E-post kunde inte skickas',
         'The support bundle has been generated.' => '',
-        'Please choose one of the following options.' => '',
-        'Send by Email' => '',
+        'Please choose one of the following options.' => 'Välj ett av följande alternativ:',
+        'Send by Email' => 'Skicka som e-post',
         'The support bundle is too large to send it by email, this option has been disabled.' =>
             '',
         'The email address for this user is invalid, this option has been disabled.' =>
             '',
-        'Sending' => '',
+        'Sending' => 'Skickar',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
             '',
-        'Download File' => '',
+        'Download File' => 'Hämta bilaga',
         'A file containing the support bundle will be downloaded to the local system. Please save the file and send it to the OTRS Group, using an alternate method.' =>
             '',
-        'Support Data' => '',
+        'Support Data' => 'Supportdata',
         'Error: Support data could not be collected (%s).' => '',
 
         # Template: AdminSession
@@ -2277,18 +2281,18 @@ sub Data {
 
         # Template: AdminSignature
         'Signature Management' => 'Signaturer',
-        'Add signature' => '',
-        'Add Signature' => 'Lägg till Signatur',
-        'Edit Signature' => '',
-        'Example signature' => '',
+        'Add signature' => 'Lägg till signatur',
+        'Add Signature' => 'Lägg till signatur',
+        'Edit Signature' => 'Redigera signatur',
+        'Example signature' => 'Exempelsignatur',
 
         # Template: AdminState
         'State Management' => 'Status',
-        'Add state' => '',
+        'Add state' => 'Lägg till status',
         'Please also update the states in SysConfig where needed.' => '',
         'Add State' => 'Lägg till Status',
-        'Edit State' => '',
-        'State type' => '',
+        'Edit State' => 'Redigera status',
+        'State type' => 'Statustyp',
 
         # Template: AdminSysConfig
         'SysConfig' => 'SysConfig',
@@ -2304,7 +2308,7 @@ sub Data {
         'Elements' => 'Element',
 
         # Template: AdminSysConfigEdit
-        'Edit Config Settings' => '',
+        'Edit Config Settings' => 'Redigera inställningar',
         'This config item is only available in a higher config level!' =>
             '',
         'Reset this setting' => '',
@@ -2312,13 +2316,13 @@ sub Data {
         'Error: this directory could not be found.' => '',
         'Error: an invalid value was entered.' => '',
         'Content' => 'Innehåll',
-        'Remove this entry' => '',
-        'Add entry' => '',
-        'Remove entry' => '',
-        'Add new entry' => '',
-        'Delete this entry' => '',
-        'Create new entry' => '',
-        'New group' => '',
+        'Remove this entry' => 'Ta bort denna post',
+        'Add entry' => 'Lägg till post',
+        'Remove entry' => 'Radera post',
+        'Add new entry' => 'Lägg till ny post',
+        'Delete this entry' => 'Radera denna post',
+        'Create new entry' => 'Skapa ny post',
+        'New group' => 'Ny grupp',
         'Group ro' => '',
         'Readonly group' => '',
         'New group ro' => '',
@@ -2331,13 +2335,13 @@ sub Data {
         'Block' => 'Blockera',
         'AccessKey' => 'ÅtkomstTangent',
         'Add NavBar entry' => '',
-        'Year' => '',
-        'Month' => '',
-        'Day' => '',
+        'Year' => 'År',
+        'Month' => 'Månad',
+        'Day' => 'Dag',
         'Invalid year' => '',
         'Invalid month' => '',
         'Invalid day' => '',
-        'Show more' => '',
+        'Show more' => 'Visa fler',
 
         # Template: AdminSystemAddress
         'System Email Addresses Management' => 'System-emailadresser',
@@ -2355,7 +2359,7 @@ sub Data {
         'Manage Templates' => 'Hantera mallar',
         'Add template' => 'Lägg till mall',
         'A template is a default text which helps your agents to write faster tickets, answers or forwards.' =>
-            'En mall är en standardtext som hjälper dina agenter att skriva ärenden, svar eller vidarebefordran snabbare.',
+            'En mall är en standardtext som hjälper dina handläggare att skriva ärenden, svar eller vidarebefordran snabbare.',
         'Don\'t forget to add new templates to queues.' => 'Glöm inte att lägga till nya mallar till köer.',
         'Add Template' => '',
         'Edit Template' => 'Redigera mall',
@@ -2643,7 +2647,7 @@ sub Data {
         'Previous Owner' => 'Tidigare ägare',
         'Inform Agent' => 'Meddela Agent',
         'Optional' => 'Valfri',
-        'Inform involved Agents' => 'Meddela inblandade agenter',
+        'Inform involved Agents' => 'Meddela inblandade handläggare',
         'Spell check' => 'Stavningskontroll',
         'Note type' => 'Anteckningstyp',
         'Next state' => 'Nästa tillstånd',
@@ -2902,6 +2906,7 @@ sub Data {
         # Template: CustomerPreferences
 
         # Template: CustomerRichTextEditor
+        'Split Quote' => '',
 
         # Template: CustomerTicketMessage
         'Service level agreement' => '',
@@ -3301,12 +3306,12 @@ sub Data {
         'Change password' => '',
         'Change queue!' => '',
         'Change the customer for this ticket' => 'Byt kund för detta ärende',
-        'Change the free fields for this ticket' => '',
-        'Change the priority for this ticket' => '',
-        'Change the responsible person for this ticket' => '',
+        'Change the free fields for this ticket' => 'Redigera anpassade fält för detta ärende',
+        'Change the priority for this ticket' => 'Ändra prioritet för detta ärende',
+        'Change the responsible person for this ticket' => 'Ändra ansvarig handläggare för detta ärende',
         'Changes the owner of tickets to everyone (useful for ASP). Normally only agent with rw permissions in the queue of the ticket will be shown.' =>
             '',
-        'Checkbox' => '',
+        'Checkbox' => 'Kryssruta',
         'Checks the SystemID in ticket number detection for follow-ups (use "No" if SystemID has been changed after using the system).' =>
             '',
         'Closed tickets of customer' => '',
@@ -3368,10 +3373,13 @@ sub Data {
         'Custom text for the page shown to customers that have no tickets yet.' =>
             '',
         'Customer Company Administration' => '',
+        'Customer Company Administration.' => '',
         'Customer Company Information' => '',
+        'Customer Information Center.' => '',
         'Customer User <-> Groups' => '',
         'Customer User <-> Services' => '',
         'Customer User Administration' => 'Hantera kundanvändare',
+        'Customer User Administration.' => '',
         'Customer Users' => 'Kundanvändare',
         'Customer item (icon) which shows the closed tickets of this customer as info block. Setting CustomerUserLogin to 1 searches for tickets based on login name rather than CustomerID.' =>
             '',
