@@ -1,3 +1,24 @@
+#3.3.8 2014-06-24
+ - 2014-06-16 Fixed bug#[10524](http://bugs.otrs.org/show_bug.cgi?id=10524) - Internal Dynamic Fields in Activity Dialog.
+ - 2014-06-16 Fixed bug#[10562](http://bugs.otrs.org/show_bug.cgi?id=10562) - Inconsistent displaying of "CustomerID" value.
+ - 2014-06-16 Updated Brazilian Portugese translation, thanks to Murilo Moreira de Oliveira.
+ - 2014-06-13 Fixed bug#[10508](http://bugs.otrs.org/show_bug.cgi?id=10508) - (Agent|Customer)TicketProcess javascript errors when uploading attachments/having server errors.
+ - 2014-06-10 Fixed bug#[10521](http://bugs.otrs.org/show_bug.cgi?id=10521) - OutputFilterText AutoLink CVE.
+ - 2014-06-03 Fixed bug#[10430](http://bugs.otrs.org/show_bug.cgi?id=10430) - backup.pl doesn't work with PostgreSQL unix sockets.
+ - 2014-06-03 Fixed bug#[5012](http://bugs.otrs.org/show_bug.cgi?id=5012) - Merging a watched ticket _into_ another should "transfer" the Watch status to the final ticket, thanks to Michiel Beijen!
+ - 2014-06-02 Fixed bug#[10544](http://bugs.otrs.org/show_bug.cgi?id=10544) - Upgrade to OTRS 3.3.7 breaks connection to external customer user tables.
+ - 2014-05-28 Fixed bug#[10535](http://bugs.otrs.org/show_bug.cgi?id=10535) - ACLListGet() produces DB warning message.
+ - 2014-05-28 Fixed bug#[10163](http://bugs.otrs.org/show_bug.cgi?id=10163) - subject shows only 30 characters, thanks to S7designcreative.
+ - 2014-05-28 Updated Latin Serbian translation, thanks to S7designcreative.
+ - 2014-05-28 Updated Cyrillic Serbian translation, thanks to S7designcreative.
+ - 2014-05-19 Fixed bug#[10519](http://bugs.otrs.org/show_bug.cgi?id=10519) - Opening and closing popups in ProcessManagement leads to performance issues.
+ - 2014-05-15 Fixed bug#[10513](http://bugs.otrs.org/show_bug.cgi?id=10513) - Some SupportData Plugin Identifiers ends with ::.
+ - 2014-05-14 Updated Latin Serbian translation, thanks to S7designcreative.
+ - 2014-05-12 Fixed bug#[8494](http://bugs.otrs.org/show_bug.cgi?id=8494) - Possibility to split quotes in rich text editor.
+ - 2014-05-09 Fixed bug#[10491](http://bugs.otrs.org/show_bug.cgi?id=10491) - CIC not always accessible via TicketZoom.
+ - 2014-05-09 Fixed bug#[10427](http://bugs.otrs.org/show_bug.cgi?id=10427) - Bulk action locks tickets - cancel keeps them locked.
+ - 2014-05-09 Updated Swedish translation, thanks to Peter Krantz.
+
 #3.3.7 2014-05-13
  - 2014-05-08 Fixed bug#[10475](http://bugs.otrs.org/show_bug.cgi?id=10475) - otrs.RebuildFulltextIndex.pl - multiple output lines.
  - 2014-05-07 Updated Japanese translation, thanks to Toshihiro Takehara.
