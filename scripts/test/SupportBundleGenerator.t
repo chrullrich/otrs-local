@@ -79,7 +79,7 @@ if ( !-e $Home . '/ARCHIVE' ) {
 
 # create an ARCHIVE file on developer systems to continue working
 if ($IsDevelopmentSystem) {
-    my $ArchiveGeneratorTool = $Home . '/scripts/auto_build/generate-checksum.pl';
+    my $ArchiveGeneratorTool = $Home . '/bin/otrs.CheckSum.pl';
 
     # if tool is not present we can't continue
     if ( !-e $ArchiveGeneratorTool ) {
@@ -91,7 +91,7 @@ if ($IsDevelopmentSystem) {
     }
 
     # execute ARCHIVE generator tool
-    my $Result = `$ArchiveGeneratorTool`;
+    my $Result = `$ArchiveGeneratorTool -a create`;
 
     if ( !-e $Home . '/ARCHIVE' || -z $Home . '/ARCHIVE' ) {
 
@@ -433,11 +433,13 @@ if (%RegistrationInfo) {
         "GenerateRegistrationInfo() - The size of the RegistrationInfo.json is not 0",
     );
 }
+
+# by encoding an empty string into JSON it will produce '{}' which is exactly 2 bytes
 else {
     $Self->Is(
         bytes::length( ${$Content} ),
-        0,
-        "GenerateRegistrationInfo() - The size of the  RegistrationInfo.json is 0",
+        2,
+        "GenerateRegistrationInfo() - The size of the  RegistrationInfo.json is 2",
     );
 }
 $Self->Is(
@@ -481,6 +483,22 @@ for my $Entry ( @{ $OriginalResult{Result} } ) {
 }
 $OriginalResult{Result} = \%OriginalIdentifiers;
 
+# for some strange reasons if mod_perl is activated, it happnes that some times it uses it and
+# sometimes is doesn't for this test we delete the possible offending identifiers
+for my $Identifier (
+    qw(
+    Kernel::System::SupportDataCollector::Plugin::Webserver::Apache::Performance::ApacheDBIUsed
+    Kernel::System::SupportDataCollector::Plugin::Webserver::Apache::Performance::ApacheReloadUsed
+    Kernel::System::SupportDataCollector::Plugin::Webserver::Apache::Performance::ModDeflateLoaded
+    Kernel::System::SupportDataCollector::Plugin::Webserver::Apache::Performance::ModHeadersLoaded
+    Kernel::System::SupportDataCollector::Plugin::Webserver::EnvironmentVariables::MOD_PERL
+    Kernel::System::SupportDataCollector::Plugin::Webserver::EnvironmentVariables::MOD_PERL_API_VERSION
+    )
+    )
+{
+    delete $OriginalResult{Result}->{$Identifier};
+}
+
 # execute function
 ( $Content, $Filename ) = $SupportBundleGeneratorObject->GenerateSupportData();
 
@@ -513,6 +531,22 @@ for my $Entry ( @{ $PerlStructureScalar->{Result} } ) {
     $NewIdentifiers{ $Entry->{Identifier} } = $Entry->{DisplayPath};
 }
 $PerlStructureScalar->{Result} = \%NewIdentifiers;
+
+# for some strange reasons if mod_perl is activated, it happnes that some times it uses it and
+# sometimes is doesn't for this test we delete the possible offending identifiers
+for my $Identifier (
+    qw(
+    Kernel::System::SupportDataCollector::Plugin::Webserver::Apache::Performance::ApacheDBIUsed
+    Kernel::System::SupportDataCollector::Plugin::Webserver::Apache::Performance::ApacheReloadUsed
+    Kernel::System::SupportDataCollector::Plugin::Webserver::Apache::Performance::ModDeflateLoaded
+    Kernel::System::SupportDataCollector::Plugin::Webserver::Apache::Performance::ModHeadersLoaded
+    Kernel::System::SupportDataCollector::Plugin::Webserver::EnvironmentVariables::MOD_PERL
+    Kernel::System::SupportDataCollector::Plugin::Webserver::EnvironmentVariables::MOD_PERL_API_VERSION
+    )
+    )
+{
+    delete $PerlStructureScalar->{Result}->{$Identifier};
+}
 
 $Self->IsDeeply(
     \%OriginalResult,

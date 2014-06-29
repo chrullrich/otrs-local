@@ -58,6 +58,11 @@ if ( $ENV{nocolors} || $Options =~ m{\A nocolors}msxi ) {
 # config
 my @NeededModules = (
     {
+        Module   => 'Archive::Tar',
+        Required => 1,
+        Comment  => 'Required for compressed file generation.',
+    },
+    {
         Module   => 'Crypt::Eksblowfish::Bcrypt',
         Required => 0,
         Comment  => 'For strong password hashing.',
