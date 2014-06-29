@@ -25,11 +25,11 @@ sub Data {
     $Self->{Charset} = ['us-ascii', 'UTF-8', 'iso-8859-1', 'iso-8859-15', ];
 
     # date formats (%A=WeekDay;%B=LongMonth;%T=Time;%D=Day;%M=Month;%Y=Year;)
-    $Self->{DateFormat}          = '%M/%D/%Y %T';
-    $Self->{DateFormatLong}      = '%T - %M/%D/%Y';
-    $Self->{DateFormatShort}     = '%M/%D/%Y';
-    $Self->{DateInputFormat}     = '%M/%D/%Y';
-    $Self->{DateInputFormatLong} = '%M/%D/%Y - %T';
+    $Self->{DateFormat}          = '%Y-%M-%D %T';
+    $Self->{DateFormatLong}      = '%T - %Y-%M-%D';
+    $Self->{DateFormatShort}     = '%Y-%M-%D';
+    $Self->{DateInputFormat}     = '%Y-%M-%D';
+    $Self->{DateInputFormatLong} = '%Y-%M-%D - %T';
     $Self->{Separator}           = ',';
 
     # maybe nothing ... or help texts
