@@ -12,6 +12,8 @@ package Kernel::Output::HTML::TicketOverviewSmall;
 use strict;
 use warnings;
 
+use Kernel::System::HTMLUtils;
+use URI::Escape ();
 use Kernel::System::JSON;
 use Kernel::System::CustomerUser;
 use Kernel::System::DynamicField;
@@ -39,6 +41,7 @@ sub new {
     $Self->{CustomerUserObject} = Kernel::System::CustomerUser->new(%Param);
     $Self->{DynamicFieldObject} = Kernel::System::DynamicField->new(%Param);
     $Self->{BackendObject}      = Kernel::System::DynamicField::Backend->new(%Param);
+    $Self->{HTMLUtilsObject}    = Kernel::System::HTMLUtils->new(%Param);
 
     $Self->{SmallViewColumnHeader}
         = $Self->{ConfigObject}->Get('Ticket::Frontend::OverviewSmall')->{ColumnHeader};
@@ -453,6 +456,12 @@ sub Run {
                             Data     => \%Article,
                         );
                     }
+
+                    # add the return module to redirect back to the current screen afterwards
+                    my $ReturnPath = URI::Escape::uri_escape(
+                        $Self->{LayoutObject}->{EnvRef}->{RequestedURL}
+                    );
+                    $Item->{Link} .= ';ReturnModule=' . $ReturnPath;
 
                     # add session id if needed
                     if ( !$Self->{LayoutObject}->{SessionIDCookie} && $Item->{Link} ) {
@@ -1005,7 +1014,7 @@ sub Run {
                 );
 
                 if ($IsSortable) {
-                    my $CSS = '';
+                    my $CSS = 'DynamicField_' . $DynamicFieldConfig->{Name};
                     my $OrderBy;
                     if (
                         $Param{SortBy}
@@ -1136,13 +1145,16 @@ sub Run {
                 }
                 else {
 
+                    my $DynamicFieldName = 'DynamicField_' . $DynamicFieldConfig->{Name};
+                    my $CSS              = $DynamicFieldName;
+
                     $Self->{LayoutObject}->Block(
                         Name => 'OverviewNavBarPageDynamicField',
                         Data => {
                             %Param,
+                            CSS => $CSS,
                         },
                     );
-                    my $DynamicFieldName = 'DynamicField_' . $DynamicFieldConfig->{Name};
 
                     if ( $Self->{ValidFilterableColumns}->{$DynamicFieldName} ) {
 
@@ -1427,7 +1439,7 @@ sub Run {
                     $BlockType = 'Translatable';
                     $DataValue = $Article{$TicketColumn} || $UserInfo{$TicketColumn};
                 }
-                elsif ( $TicketColumn eq 'Created' ) {
+                elsif ( $TicketColumn eq 'Created' || $TicketColumn eq 'Changed' ) {
                     $BlockType = 'Time';
                     $DataValue = $Article{$TicketColumn} || $UserInfo{$TicketColumn};
                 }
@@ -1702,7 +1714,19 @@ sub _InitialColumnFilter {
     }
 
     if ( $Param{ColumnName} =~ m{ \A DynamicField_ }xms ) {
-        $Class .= ' DynamicFieldWithTreeView';
+
+        # get the pure dynamic field name without prefix
+        my $DynamicFieldName = substr( $Param{ColumnName}, 13 );
+
+        # get the dynamic field config
+        my $DynamicFieldConfig = $Self->{DynamicFieldObject}->DynamicFieldGet(
+            Name => $DynamicFieldName,
+        );
+
+        # check for active treeview configuration
+        if ( $DynamicFieldConfig->{Config}->{TreeView} ) {
+            $Class .= ' DynamicFieldWithTreeView';
+        }
     }
 
     # build select HTML
