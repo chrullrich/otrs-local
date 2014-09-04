@@ -1,5 +1,3 @@
-syntax: glob
-
 .project
 .externalToolBuilders
 .gnupg
@@ -11,10 +9,11 @@ syntax: glob
 *~
 
 # OTRS
-ARCHIVE
+/ARCHIVE
 doc/manual/en
 Kernel/Config/Files/ZZZ*.pm
 Kernel/Config/GenericAgent.pm
+Kernel/Config.pm
 Kernel/Language/*.old
 bin/cgi-bin/.htaccess
 scripts/apache2-perl-startup2.pl
@@ -59,13 +58,14 @@ Kernel/System/Fred
 Kernel/System/Fred.pm
 Kernel/System/DBListener
 var/fred
-var/httpd/htdocs/js/Fred*js
+var/httpd/htdocs/js/*Fred*js
+var/httpd/htdocs/skins/Agent/default/css/*Fred*css
+var/httpd/htdocs/skins/Customer/default/css/*Fred*css
 
 # Support
 Support.sopm
 CHANGES-Support
 Kernel/Config/Files/Support.xml
-Kernel/cpan-lib/Archive/*
 Kernel/Language/*_Support.pm
 Kernel/Modules/AdminSupport.pm
 Kernel/System/Support
@@ -76,7 +76,7 @@ var/httpd/htdocs/skins/Agent/default/css/Support.Default.css
 # OTRSCodePolicy
 .tidyall.d
 perltidy.LOG.old
-Perl/Critic
+bin/otrs.CodePolicy.pl
 TidyAll
 Kernel/cpan-lib/Pod/Strip.pm
 scripts/install-git-hooks.pl
@@ -86,6 +86,7 @@ OTRSCodePolicy*
 # ITSM
 var/stats/*.xml.installed
 bin/CodeInstall.pl
+bin/ModuleCode.pl
 bin/DatabaseInstall.pl
 perltidy.LOG
 .procmailrc
