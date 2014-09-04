@@ -1,4 +1,34 @@
+#3.3.9 2014-09-09
+ - 2014-08-29 Fixed bug#[10697](http://bugs.otrs.org/show_bug.cgi?id=10697) - Column name in CSV report of stats is lowercase.
+ - 2014-08-29 Fixed bug#[10652](http://bugs.otrs.org/show_bug.cgi?id=10652) - Process tickets without any articles create empty lines in AgentTicketSearch CSV result file.
+ - 2014-08-29 Fixed bug#[10607](http://bugs.otrs.org/show_bug.cgi?id=10607) - SQL Box can change the database.
+ - 2014-08-28 Fixed bug#[10700](http://bugs.otrs.org/show_bug.cgi?id=10700) - Bugfix: TimeUnits not written if E-Mail is sent via BulkAction.
+ - 2014-08-28 Fixed bug#[10699](http://bugs.otrs.org/show_bug.cgi?id=10699) - Cannot add new customer (company).
+ - 2014-08-21 Fixed bug#[10497](http://bugs.otrs.org/show_bug.cgi?id=10497) - CustomerUser secondary database access opens multitude of database connections.
+ - 2014-08-08 Fixed bug#[9756](http://bugs.otrs.org/show_bug.cgi?id=9756) - Owner will be set after QueueMove screen AND undo.
+ - 2014-08-08 Fixed bug#[10606](http://bugs.otrs.org/show_bug.cgi?id=10606) - Dynamic fields in dashboard overview are empty.
+ - 2014-08-07 Updated Danish translation, thanks to Lars Jørgensen.
+ - 2014-08-01 Fixed bug#[10670](http://bugs.otrs.org/show_bug.cgi?id=10670) - It is possible to start the scheduler more than once.
+ - 2014-07-30 Fixed bug#[10515](http://bugs.otrs.org/show_bug.cgi?id=10515) - Problem with column filter sorting
+ - 2014-07-29 Fixed bug#[10598](http://bugs.otrs.org/show_bug.cgi?id=10598) - Field tags not parsed properly in auto response subject.
+ - 2014-07-29 Fixed bug#[10658](http://bugs.otrs.org/show_bug.cgi?id=10658) - Issue with multiple customer company backends.
+ - 2014-07-29 Fixed bug#[10622](http://bugs.otrs.org/show_bug.cgi?id=10622) - eMail address only with uppercases - wrong display.
+ - 2014-07-29 Fixed bug#[10596](http://bugs.otrs.org/show_bug.cgi?id=10596) - Manual Generic Agent Run doesn't show archived tickets as affected.
+ - 2014-07-29 Fixed bug#[10601](http://bugs.otrs.org/show_bug.cgi?id=10601) - ExternalTicketNumberRecognition produces errors in log file.
+ - 2014-07-24 Fixed bug#[9851](http://bugs.otrs.org/show_bug.cgi?id=9851) - Unlocking a ticket in the small view results in AgentTicketZoom.
+ - 2014-07-17 Fixed bug#[10612](http://bugs.otrs.org/show_bug.cgi?id=10612) - Wrong Time in DashboardField "Changed", thanks to S7.
+ - 2014-07-10 Fixed bug#[10595](http://bugs.otrs.org/show_bug.cgi?id=10595) - Standard Replies are false sorted in Ticket Zoom select box.
+ - 2014-07-07 Fixed bug#[10534](http://bugs.otrs.org/show_bug.cgi?id=10534) - Wildcard hacking the customer information center, thanks to S7.
+ - 2014-07-07 Fixed bug#[10597](http://bugs.otrs.org/show_bug.cgi?id=10597) - Process list description column doesn't support line breaks, thanks to S7.
+ - 2014-07-03 Fixed bug#[10586](http://bugs.otrs.org/show_bug.cgi?id=10586) - In Customer Portal no attachments are shown.
+ - 2014-06-30 Fixed bug#[6601](http://bugs.otrs.org/show_bug.cgi?id=6601) - Changing search options changes order of fields, thanks to S7.
+ - 2014-06-23 Fixed bug#[10246](http://bugs.otrs.org/show_bug.cgi?id=10246) - ProcessManagement: ConditionLinking OR in a Transition doesn't work.
+ - 2014-06-23 Fixed bug#[10559](http://bugs.otrs.org/show_bug.cgi?id=10559) - "Previous Owner" don't use the FirstnameLastnameOrder configuration.
+ - 2014-06-23 Fixed bug#[10532](http://bugs.otrs.org/show_bug.cgi?id=10532) - PostMasterMailbox.pl hangs parsing mails.
+ - 2014-06-23 Fixed bug#[10578](http://bugs.otrs.org/show_bug.cgi?id=10578) - Service selection in GA Ticket Action allows multi select.
+
 #3.3.8 2014-06-24
+ - 2014-06-23 Fixed bug#[10522](http://bugs.otrs.org/show_bug.cgi?id=10522) - HTTP 500 error when uploading attachments to ticket on Windows.
  - 2014-06-16 Fixed bug#[10524](http://bugs.otrs.org/show_bug.cgi?id=10524) - Internal Dynamic Fields in Activity Dialog.
  - 2014-06-16 Fixed bug#[10562](http://bugs.otrs.org/show_bug.cgi?id=10562) - Inconsistent displaying of "CustomerID" value.
  - 2014-06-16 Updated Brazilian Portugese translation, thanks to Murilo Moreira de Oliveira.
