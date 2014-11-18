@@ -230,6 +230,12 @@ my @NeededModules = (
         Comment  => 'Required for high resolution timestamps.',
     },
     {
+        # perlcore
+        Module   => 'Time::Piece',
+        Required => 1,
+        Comment  => 'Required for statistics.',
+    },
+    {
         Module   => 'XML::Parser',
         Required => 0,
         Comment  => 'Recommended for faster xml handling.',
@@ -298,9 +304,16 @@ sub _Check {
 
         my $ErrorMessage;
 
-        # test if all module dependencies are installed by requiring the module
+        # Test if all module dependencies are installed by requiring the module.
+        #   Don't do this for Net::DNS as it seems to take very long (>20s) in a
+        #   mod_perl environment sometimes.
+        my %DontRequire = (
+            'Net::DNS'     => 1,
+            'Email::Valid' => 1,    # uses Net::DNS internally
+        );
+
         ## no critic
-        if ( !eval "require $Module->{Module}" ) {
+        if ( !$DontRequire{ $Module->{Module} } && !eval "require $Module->{Module}" ) {
             $ErrorMessage .= 'Not all prerequisites for this module correctly installed. ';
         }
         ## use critic
