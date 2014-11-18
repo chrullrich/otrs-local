@@ -43,7 +43,7 @@ $Text{"Setting character_set_client needs to be utf8."}
 $Text{"Server Database Charset"}
 $Text{"Setting character_set_database needs to be UNICODE or UTF8."}
 $Text{"Table Charset"}
-$Text{"There were tables found which no not have utf8 as charset."}
+$Text{"There were tables found which do not have utf8 as charset."}
 
 # Database/mysql/MaxAllowedPacket.pm
 $Text{"Maximum Query Size"}
@@ -110,9 +110,8 @@ $Text{"Kernel Version"}
 $Text{"Could not determine kernel version."}
 
 # OS/Load.pm
-$Text{"Load"}
-$Text{"The load should be at maximum, the number of procesors the system have (e.g. a load of 8 or less on a 8 CPUs system is OK."}
-$Text{"Could not determine system load."}
+$Text{"System Load"}
+$Text{"The system load should be at maximum the number of CPUs the system has (e.g. a load of 8 or less on a system with 8 CPUs is OK)."}
 
 # OS/PerlModules.pm
 $Text{"Perl Modules"}
