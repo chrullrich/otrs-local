@@ -1023,8 +1023,12 @@ sub Run {
 
             # store last overview screen
             my $URL
-                = "Action=AgentTicketSearch;Subaction=Search;Profile=$Self->{Profile};SortBy=$Self->{SortBy}"
-                . ";OrderBy=$Self->{OrderBy};TakeLastSearch=1;StartHit=$Self->{StartHit}";
+                = "Action=AgentTicketSearch;Subaction=Search"
+                . ";Profile=" . $Self->{LayoutObject}->LinkEncode( $Self->{Profile} )
+                . ";SortBy=" . $Self->{LayoutObject}->LinkEncode( $Self->{SortBy} )
+                . ";OrderBy=" . $Self->{LayoutObject}->LinkEncode( $Self->{OrderBy} )
+                . ";TakeLastSearch=1;StartHit="
+                . $Self->{LayoutObject}->LinkEncode( $Self->{StartHit} );
 
             $Self->{SessionObject}->UpdateSessionID(
                 SessionID => $Self->{SessionID},
@@ -1047,12 +1051,16 @@ sub Run {
                 . ';View=' . $Self->{LayoutObject}->LinkEncode( $Self->{View} )
                 . ';SortBy=' . $Self->{LayoutObject}->LinkEncode( $Self->{SortBy} )
                 . ';OrderBy=' . $Self->{LayoutObject}->LinkEncode( $Self->{OrderBy} )
-                . ';Profile=' . $Self->{Profile} . ';TakeLastSearch=1;Subaction=Search'
+                . ';Profile='
+                . $Self->{LayoutObject}->LinkEncode( $Self->{Profile} )
+                . ';TakeLastSearch=1;Subaction=Search'
                 . ';';
             my $LinkSort = 'Filter='
                 . $Self->{LayoutObject}->LinkEncode( $Self->{Filter} )
                 . ';View=' . $Self->{LayoutObject}->LinkEncode( $Self->{View} )
-                . ';Profile=' . $Self->{Profile} . ';TakeLastSearch=1;Subaction=Search'
+                . ';Profile='
+                . $Self->{LayoutObject}->LinkEncode( $Self->{Profile} )
+                . ';TakeLastSearch=1;Subaction=Search'
                 . ';';
             my $LinkFilter = 'TakeLastSearch=1;Subaction=Search;Profile='
                 . $Self->{LayoutObject}->LinkEncode( $Self->{Profile} )
@@ -1065,7 +1073,9 @@ sub Run {
                 = 'SortBy=' . $Self->{LayoutObject}->LinkEncode( $Self->{SortBy} )
                 . ';OrderBy=' . $Self->{LayoutObject}->LinkEncode( $Self->{OrderBy} )
                 . ';View=' . $Self->{LayoutObject}->LinkEncode( $Self->{View} )
-                . ';Profile=' . $Self->{Profile} . ';TakeLastSearch=1;Subaction=Search'
+                . ';Profile='
+                . $Self->{LayoutObject}->LinkEncode( $Self->{Profile} )
+                . ';TakeLastSearch=1;Subaction=Search'
                 . ';';
             $Output .= $Self->{LayoutObject}->TicketListShow(
                 TicketIDs => \@ViewableTicketIDs,
@@ -1156,28 +1166,63 @@ sub Run {
         }
         my @Attributes = (
             {
-                Key   => 'StateIDs',
-                Value => 'State',
+                Key   => 'TicketNumber',
+                Value => 'Ticket Number',
             },
             {
-                Key   => 'QueueIDs',
-                Value => 'Queue',
+                Key   => 'Fulltext',
+                Value => 'Fulltext',
             },
             {
-                Key   => 'ArticleCreateTimePoint',
-                Value => 'Article Create Time (before/after)',
+                Key   => 'Title',
+                Value => 'Title',
             },
             {
-                Key   => 'ArticleCreateTimeSlot',
-                Value => 'Article Create Time (between)',
+                Key      => '',
+                Value    => '-',
+                Disabled => 1,
+            },
+            {
+                Key   => 'From',
+                Value => 'From',
+            },
+            {
+                Key   => 'To',
+                Value => 'To',
+            },
+            {
+                Key   => 'Cc',
+                Value => 'Cc',
+            },
+            {
+                Key   => 'Subject',
+                Value => 'Subject',
             },
             {
                 Key   => 'Body',
                 Value => 'Body',
             },
+        );
+
+        # show Article Name option only if the ArticleStorage is in the DB
+        if (
+            $Self->{ConfigObject}->Get('Ticket::StorageModule') eq
+            'Kernel::System::Ticket::ArticleStorageDB'
+            )
+        {
+            push @Attributes, (
+                {
+                    Key   => 'AttachmentName',
+                    Value => 'Attachment Name',
+                },
+            );
+        }
+
+        push @Attributes, (
             {
-                Key   => 'Cc',
-                Value => 'Cc',
+                Key      => '',
+                Value    => '-',
+                Disabled => 1,
             },
             {
                 Key   => 'CustomerID',
@@ -1188,29 +1233,77 @@ sub Run {
                 Value => 'Customer User Login',
             },
             {
-                Key   => 'From',
-                Value => 'From',
+                Key   => 'StateIDs',
+                Value => 'State',
             },
             {
-                Key   => 'Fulltext',
-                Value => 'Fulltext',
+                Key   => 'PriorityIDs',
+                Value => 'Priority',
+            },
+            {
+                Key   => 'LockIDs',
+                Value => 'Lock',
+            },
+            {
+                Key   => 'QueueIDs',
+                Value => 'Queue',
+            },
+            {
+                Key   => 'CreatedQueueIDs',
+                Value => 'Created in Queue',
             },
         );
 
-        if ( $Self->{ConfigObject}->Get('Ticket::ArchiveSystem') ) {
+        if ( $Self->{ConfigObject}->Get('Ticket::Type') ) {
             push @Attributes, (
                 {
-                    Key   => 'SearchInArchive',
-                    Value => 'Archive Search',
+                    Key   => 'TypeIDs',
+                    Value => 'Type',
+                },
+            );
+        }
+
+        if ( $Self->{ConfigObject}->Get('Ticket::Service') ) {
+            push @Attributes, (
+                {
+                    Key   => 'ServiceIDs',
+                    Value => 'Service',
+                },
+                {
+                    Key   => 'SLAIDs',
+                    Value => 'SLA',
                 },
             );
         }
 
         push @Attributes, (
             {
-                Key   => 'Subject',
-                Value => 'Subject',
+                Key   => 'OwnerIDs',
+                Value => 'Owner',
             },
+            {
+                Key   => 'CreatedUserIDs',
+                Value => 'Created by',
+            },
+        );
+        if ( $Self->{ConfigObject}->Get('Ticket::Watcher') ) {
+            push @Attributes, (
+                {
+                    Key   => 'WatchUserIDs',
+                    Value => 'Watcher',
+                },
+            );
+        }
+        if ( $Self->{ConfigObject}->Get('Ticket::Responsible') ) {
+            push @Attributes, (
+                {
+                    Key   => 'ResponsibleIDs',
+                    Value => 'Responsible',
+                },
+            );
+        }
+
+        push @Attributes, (
             {
                 Key      => '',
                 Value    => '-',
@@ -1249,81 +1342,20 @@ sub Run {
                 Value => 'Ticket Escalation Time (between)',
             },
             {
-                Key   => 'TicketNumber',
-                Value => 'Ticket Number',
+                Key   => 'ArticleCreateTimePoint',
+                Value => 'Article Create Time (before/after)',
             },
             {
-                Key   => 'Title',
-                Value => 'Title',
-            },
-            {
-                Key   => 'To',
-                Value => 'To',
-            },
-            {
-                Key      => '',
-                Value    => '-',
-                Disabled => 1,
-            },
-            {
-                Key   => 'PriorityIDs',
-                Value => 'Priority',
-            },
-            {
-                Key   => 'OwnerIDs',
-                Value => 'Owner',
-            },
-            {
-                Key   => 'CreatedQueueIDs',
-                Value => 'Created in Queue',
-            },
-            {
-                Key   => 'CreatedUserIDs',
-                Value => 'Created by',
+                Key   => 'ArticleCreateTimeSlot',
+                Value => 'Article Create Time (between)',
             },
         );
 
-        if ( $Self->{ConfigObject}->Get('Ticket::Watcher') ) {
+        if ( $Self->{ConfigObject}->Get('Ticket::ArchiveSystem') ) {
             push @Attributes, (
                 {
-                    Key   => 'WatchUserIDs',
-                    Value => 'Watcher',
-                },
-            );
-        }
-        if ( $Self->{ConfigObject}->Get('Ticket::Responsible') ) {
-            push @Attributes, (
-                {
-                    Key   => 'ResponsibleIDs',
-                    Value => 'Responsible',
-                },
-            );
-        }
-        if ( $Self->{ConfigObject}->Get('Ticket::Type') ) {
-            push @Attributes, (
-                {
-                    Key   => 'TypeIDs',
-                    Value => 'Type',
-                },
-            );
-        }
-
-        push @Attributes, (
-            {
-                Key   => 'LockIDs',
-                Value => 'Lock',
-            },
-        );
-
-        if ( $Self->{ConfigObject}->Get('Ticket::Service') ) {
-            push @Attributes, (
-                {
-                    Key   => 'ServiceIDs',
-                    Value => 'Service',
-                },
-                {
-                    Key   => 'SLAIDs',
-                    Value => 'SLA',
+                    Key   => 'SearchInArchive',
+                    Value => 'Archive Search',
                 },
             );
         }
@@ -1347,7 +1379,6 @@ sub Run {
                         Disabled => 1,
                     },
                 );
-
                 $DynamicFieldSeparator = 0;
             }
 
@@ -1384,17 +1415,6 @@ sub Run {
                     },
                 );
             }
-        }
-
-        # create a separator if a dynamic field attribute was pushed
-        if ( !$DynamicFieldSeparator ) {
-            push @Attributes, (
-                {
-                    Key      => '',
-                    Value    => '-',
-                    Disabled => 1,
-                },
-            );
         }
 
         # create HTML strings for all dynamic fields
@@ -1949,39 +1969,50 @@ sub Run {
             @ShownAttributes = split /;/, $GetParamBackup{ShownAttributes};
         }
         my %AlreadyShown;
-        for my $Item (@Attributes) {
-            my $Key = $Item->{Key};
-            next if !$Key;
 
-            # check if shown
-            if (@ShownAttributes) {
-                my $Show = 0;
-                for my $ShownAttribute (@ShownAttributes) {
-                    if ( 'Label' . $Key eq $ShownAttribute ) {
-                        $Show = 1;
-                        last;
+        if ($Profile) {
+            for my $Item (@Attributes) {
+                my $Key = $Item->{Key};
+                next if !$Key;
+
+                # check if shown
+                if (@ShownAttributes) {
+                    my $Show = 0;
+                    for my $ShownAttribute (@ShownAttributes) {
+                        if ( 'Label' . $Key eq $ShownAttribute ) {
+                            $Show = 1;
+                            last;
+                        }
+                    }
+                    next if !$Show;
+                }
+                else {
+                    # Skip undefined
+                    next if !defined $GetParamBackup{$Key};
+
+                    # Skip empty strings
+                    next if $GetParamBackup{$Key} eq '';
+
+                    # Skip empty arrays
+                    if ( ref $GetParamBackup{$Key} eq 'ARRAY' && !@{ $GetParamBackup{$Key} } ) {
+                        next;
                     }
                 }
-                next if !$Show;
-            }
-            else {
-                next if !defined $GetParamBackup{$Key};
-                next if $GetParamBackup{$Key} eq '';
-            }
 
-            # show attribute
-            next if $AlreadyShown{$Key};
-            $AlreadyShown{$Key} = 1;
-            $Self->{LayoutObject}->Block(
-                Name => 'SearchAJAXShow',
-                Data => {
-                    Attribute => $Key,
-                },
-            );
+                # show attribute
+                next if $AlreadyShown{$Key};
+                $AlreadyShown{$Key} = 1;
+                $Self->{LayoutObject}->Block(
+                    Name => 'SearchAJAXShow',
+                    Data => {
+                        Attribute => $Key,
+                    },
+                );
+            }
         }
 
-        # if no attribute is shown, show fulltext search
-        if ( !$Profile ) {
+        # No profile, show default screen
+        else  {
 
             # Merge regular show/hide settings and the settings for the dynamic fields
             my %Defaults = %{ $Self->{Config}->{Defaults} || {} };
@@ -1991,10 +2022,23 @@ sub Run {
                 }
             }
 
+            my @OrderedDefaults;
             if (%Defaults) {
-                for my $Key ( sort keys %Defaults ) {
-                    next if $Key eq 'DynamicField';    # Ignore entry for DF config
-                    next if $AlreadyShown{$Key};
+
+                # ordering atributes on the same order like in Atributes
+                for my $Item (@Attributes) {
+                    my $KeyAtr = $Item->{Key};
+                    for my $Key ( sort keys %Defaults ) {
+                        if ( $Key eq $KeyAtr ) {
+                            push @OrderedDefaults, $Key;
+                        }
+                    }
+                }
+
+                KEY:
+                for my $Key (@OrderedDefaults) {
+                    next KEY if $Key eq 'DynamicField';    # Ignore entry for DF config
+                    next KEY if $AlreadyShown{$Key};
                     $AlreadyShown{$Key} = 1;
 
                     $Self->{LayoutObject}->Block(
@@ -2005,7 +2049,9 @@ sub Run {
                     );
                 }
             }
-            else {
+
+            # If no attribute is shown, show fulltext search.
+            if ( !keys %AlreadyShown ) {
                 $Self->{LayoutObject}->Block(
                     Name => 'SearchAJAXShow',
                     Data => {
