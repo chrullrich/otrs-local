@@ -1,2 +1,4 @@
 PRODUCT = OTRS
-VERSION = 3.3.x git
+VERSION = 3.3.10
+BUILDDATE = Do Okt 30 11:40:09 CET 2014
+BUILDHOST = otrsbuild.otrs.com
