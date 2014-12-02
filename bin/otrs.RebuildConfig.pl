@@ -28,39 +28,27 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Time;
-use Kernel::System::Log;
-use Kernel::System::Main;
-use Kernel::System::DB;
-use Kernel::System::SysConfig;
+use Kernel::System::ObjectManager;
 
 # ---
-# common objects
+# create object manager
 # ---
-my %CommonObject = ();
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.RebuildConfig.pl',
-    %CommonObject,
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.RebuildConfig.pl',
+    },
 );
-$CommonObject{TimeObject}      = Kernel::System::Time->new(%CommonObject);
-$CommonObject{MainObject}      = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject}        = Kernel::System::DB->new(%CommonObject);
-$CommonObject{SysConfigObject} = Kernel::System::SysConfig->new(%CommonObject);
 
 # ---
 # rebuild
 # ---
 print "otrs.RebuildConfig.pl - OTRS rebuild default config\n";
 print "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n";
-if ( $CommonObject{SysConfigObject}->WriteDefault() ) {
+if ( $Kernel::OM->Get('Kernel::System::SysConfig')->WriteDefault() ) {
     print "Done.\n";
     exit;
 }
 else {
-    $CommonObject{LogObject}->Log( Priority => 'error' );
+    $Kernel::OM->Get('Kernel::System::Log')->Log( Priority => 'error' );
     exit 1;
 }

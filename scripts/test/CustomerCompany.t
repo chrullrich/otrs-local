@@ -6,17 +6,17 @@
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
+
 use strict;
 use warnings;
+use utf8;
+
 use vars (qw($Self));
 
-use Kernel::System::CustomerCompany;
-use Kernel::System::XML;
-use Kernel::Config;
-
-# create local objects
-my $ConfigObject = Kernel::Config->new();
-my $XMLObject    = Kernel::System::XML->new( %{$Self} );
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $DBObject     = $Kernel::OM->Get('Kernel::System::DB');
+my $XMLObject    = $Kernel::OM->Get('Kernel::System::XML');
 
 my $Data         = $ConfigObject->Get('CustomerCompany');
 my $DefaultValue = $Data->{Params}->{Table};
@@ -53,7 +53,7 @@ my $XML = '
 </Table>
 ';
 my @XMLARRAY = $XMLObject->XMLParse( String => $XML );
-my @SQL = $Self->{DBObject}->SQLProcessor( Database => \@XMLARRAY );
+my @SQL = $DBObject->SQLProcessor( Database => \@XMLARRAY );
 $Self->True(
     $SQL[0],
     'SQLProcessor() CREATE TABLE',
@@ -61,7 +61,7 @@ $Self->True(
 
 for my $SQL (@SQL) {
     $Self->True(
-        $Self->{DBObject}->Do( SQL => $SQL ) || 0,
+        $DBObject->Do( SQL => $SQL ) || 0,
         "Do() CREATE TABLE ($SQL)",
     );
 }
@@ -76,15 +76,11 @@ $ConfigObject->Set(
     Value => \%{$Data},
 );
 
-my $CustomerCompanyObject = Kernel::System::CustomerCompany->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+my $CustomerCompanyObject = $Kernel::OM->Get('Kernel::System::CustomerCompany');
 
-for my $Key ( 1 .. 3 ) {
+for my $Key ( 1 .. 3, 'ä', 'カス' ) {
 
     my $CompanyRand = 'Example-Customer-Company' . $Key . int( rand(1000000) );
-    $Self->{EncodeObject}->EncodeInput( \$CompanyRand );
 
     my $CustomerID = $CustomerCompanyObject->CustomerCompanyAdd(
         CustomerID             => $CompanyRand,
@@ -247,7 +243,7 @@ for my $Key ( 1 .. 3 ) {
 
 $XML      = '<TableDrop Name="customer_company_test"/>';
 @XMLARRAY = $XMLObject->XMLParse( String => $XML );
-@SQL      = $Self->{DBObject}->SQLProcessor( Database => \@XMLARRAY );
+@SQL      = $DBObject->SQLProcessor( Database => \@XMLARRAY );
 $Self->True(
     $SQL[0],
     'SQLProcessor() DROP TABLE',
@@ -255,7 +251,7 @@ $Self->True(
 
 for my $SQL (@SQL) {
     $Self->True(
-        $Self->{DBObject}->Do( SQL => $SQL ) || 0,
+        $DBObject->Do( SQL => $SQL ) || 0,
         "Do() DROP TABLE ($SQL)",
     );
 }
@@ -274,15 +270,14 @@ $ConfigObject->Set(
     Value => \%{$Data},
 );
 
-$CustomerCompanyObject = Kernel::System::CustomerCompany->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+# destroy customer company object
+$Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::CustomerCompany'] );
 
-for my $Key ( 1 .. 3 ) {
+$CustomerCompanyObject = $Kernel::OM->Get('Kernel::System::CustomerCompany');
+
+for my $Key ( 1 .. 3, 'ä', 'カス' ) {
 
     my $CompanyRand = 'Example-Customer-Company' . $Key . int( rand(1000000) );
-    $Self->{EncodeObject}->EncodeInput( \$CompanyRand );
 
     my $CustomerID = $CustomerCompanyObject->CustomerCompanyAdd(
         CustomerID             => $CompanyRand,

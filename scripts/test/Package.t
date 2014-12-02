@@ -9,18 +9,23 @@
 
 use strict;
 use warnings;
+use utf8;
+
 use vars (qw($Self));
 
 use File::Copy;
-use Kernel::System::Package;
-use Kernel::System::Cache;
+
 use Kernel::System::VariableCheck qw(:all);
 
-# create local objects
-my $PackageObject = Kernel::System::Package->new( %{$Self} );
-my $CacheObject   = Kernel::System::Cache->new( %{$Self} );
+# get needed objects
+my $ConfigObject  = $Kernel::OM->Get('Kernel::Config');
+my $HelperObject  = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $PackageObject = $Kernel::OM->Get('Kernel::System::Package');
+my $CacheObject   = $Kernel::OM->Get('Kernel::System::Cache');
+my $DBObject      = $Kernel::OM->Get('Kernel::System::DB');
+my $MainObject    = $Kernel::OM->Get('Kernel::System::Main');
 
-my $Home = $Self->{ConfigObject}->Get('Home');
+my $Home = $ConfigObject->Get('Home');
 
 my $CachePopulate = sub {
     my $CacheSet = $CacheObject->Set(
@@ -67,6 +72,7 @@ my $String = '<?xml version="1.0" encoding="utf-8" ?>
   <Description Lang="en">A test package (some test &lt; &gt; &amp;).</Description>
   <Description Lang="de">Ein Test Paket (some test &lt; &gt; &amp;).</Description>
   <ModuleRequired Version="1.112">Encode</ModuleRequired>
+  <Framework>4.0.x</Framework>
   <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
@@ -121,6 +127,7 @@ my $StringSecond = '<?xml version="1.0" encoding="utf-8" ?>
   <Description Lang="en">A test package (some test &lt; &gt; &amp;).</Description>
   <Description Lang="de">Ein Test Paket (some test &lt; &gt; &amp;).</Description>
   <ModuleRequired Version="1.112">Encode</ModuleRequired>
+  <Framework>4.0.x</Framework>
   <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
@@ -139,52 +146,6 @@ my $StringSecond = '<?xml version="1.0" encoding="utf-8" ?>
   </Filelist>
 </otrs_package>
 ';
-
-my $Verification = $PackageObject->PackageVerify(
-    Package => $String,
-    Name    => 'Test',
-);
-
-$Self->Is(
-    $Verification,
-    'not_verified',
-    "PackageVerify() - package 'Test' is NOT verified",
-);
-
-my $Download = $PackageObject->PackageOnlineGet(
-    Source => 'http://ftp.otrs.org/pub/otrs/packages',
-    File   => 'Support-1.4.4.opm',
-);
-
-$Self->True(
-    $Download,
-    "PackageOnlineGet - get Support package from ftp.otrs.org",
-);
-
-$Verification = $PackageObject->PackageVerify(
-    Package => $Download,
-    Name    => 'Support',
-);
-
-$Self->Is(
-    $Verification,
-    'verified',
-    "PackageVerify() - package 'Support' is verified",
-);
-
-# test again with changed line endings, see http://bugs.otrs.org/show_bug.cgi?id=9838
-$Download =~ s{\n}{\r\n}xmsg;
-
-$Verification = $PackageObject->PackageVerify(
-    Package => $Download,
-    Name    => 'Support',
-);
-
-$Self->Is(
-    $Verification,
-    'verified',
-    "PackageVerify() - package 'Support' with changed line endings is verified",
-);
 
 # check if the package is already installed - check by name
 my $PackageIsInstalledByName = $PackageObject->PackageIsInstalled( Name => 'Test' );
@@ -254,16 +215,6 @@ $Self->True(
     '#1 PackageInstall() 2',
 );
 
-my %VerifyAll = $PackageObject->PackageVerifyAll();
-
-for my $PackageName (qw( Test TestSecond )) {
-    $Self->Is(
-        $VerifyAll{$PackageName},
-        'not_verified',
-        "VerifyAll - result for $PackageName",
-    );
-}
-
 $CacheClearedCheck->();
 
 # check if the package is already installed - check by name
@@ -291,7 +242,7 @@ $Self->True(
 );
 
 # write to var/test
-my $Write = $Self->{MainObject}->FileWrite(
+my $Write = $MainObject->FileWrite(
     Location   => $Home . '/var/Test',
     Content    => \'aaaa',
     Mode       => 'binmode',
@@ -446,6 +397,7 @@ $String = '<?xml version="1.0" encoding="utf-8" ?>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
   <PackageRequired Version="0.1">SomeNotExistingModule</PackageRequired>
+  <Framework>4.0.x</Framework>
   <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
@@ -480,6 +432,7 @@ $String = '<?xml version="1.0" encoding="utf-8" ?>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
   <OS>NonExistingOS</OS>
+  <Framework>4.0.x</Framework>
   <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
@@ -517,6 +470,7 @@ $String = '<?xml version="1.0" encoding="utf-8" ?>
   <OS>linux</OS>
   <OS>freebsd</OS>
   <OS>MSWin32</OS>
+  <Framework>4.0.x</Framework>
   <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
@@ -558,6 +512,7 @@ $String = '<?xml version="1.0" encoding="utf-8" ?>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
   <ModuleRequired Version="0.1">SomeNotExistingModule</ModuleRequired>
+  <Framework>4.0.x</Framework>
   <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
@@ -591,6 +546,7 @@ $String = '<?xml version="1.0" encoding="utf-8" ?>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
   <ModuleRequired Version="12.999">Encode</ModuleRequired>
+  <Framework>4.0.x</Framework>
   <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
@@ -625,6 +581,7 @@ my $String1 = '<?xml version="1.0" encoding="utf-8" ?>
   <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
+  <Framework>4.0.x</Framework>
   <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
@@ -656,6 +613,7 @@ my $String2 = '<?xml version="1.0" encoding="utf-8" ?>
   <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
+  <Framework>4.0.x</Framework>
   <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
@@ -688,6 +646,7 @@ my $String3 = '<?xml version="1.0" encoding="utf-8" ?>
   <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
+  <Framework>4.0.x</Framework>
   <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
@@ -715,6 +674,7 @@ my $String3a = '<?xml version="1.0" encoding="utf-8" ?>
   <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
+  <Framework>4.0.x</Framework>
   <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
@@ -740,7 +700,7 @@ $Self->True(
     '#5 PackageUpgrade() - 2/3 File already exists in package X.',
 );
 
-my $TmpDir   = $Self->{ConfigObject}->Get('TempDir');
+my $TmpDir   = $ConfigObject->Get('TempDir');
 my $String3b = '<?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.0">
   <Name>Test3</Name>
@@ -750,6 +710,7 @@ my $String3b = '<?xml version="1.0" encoding="utf-8" ?>
   <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
+  <Framework>4.0.x</Framework>
   <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
@@ -764,35 +725,35 @@ my $String3b = '<?xml version="1.0" encoding="utf-8" ?>
   <BuildHost>yourhost.example.com</BuildHost>
   <CodeUpgrade Type="pre" Version="0.0.4">
         my $Content = "test";
-        $Self->{MainObject}-&gt;FileWrite(
+        $Kernel::OM-&gt;Get(\'Kernel::System::Main\')-&gt;FileWrite(
             Location  =&gt; "' . $TmpDir . '/test1",
             Content   =&gt; \$Content,
         );
   </CodeUpgrade>
   <CodeUpgrade Type="pre" Version="0.0.3">
         my $Content = "test";
-        $Self->{MainObject}-&gt;FileWrite(
+        $Kernel::OM-&gt;Get(\'Kernel::System::Main\')-&gt;FileWrite(
             Location  =&gt; "' . $TmpDir . '/test2",
             Content   =&gt; \$Content,
         );
   </CodeUpgrade>
   <CodeUpgrade Type="pre" Version="0.0.2">
         my $Content = "test";
-        $Self->{MainObject}-&gt;FileWrite(
+        $Kernel::OM-&gt;Get(\'Kernel::System::Main\')-&gt;FileWrite(
             Location  =&gt; "' . $TmpDir . '/test3",
             Content   =&gt; \$Content,
         );
   </CodeUpgrade>
   <CodeUpgrade Type="pre" Version="0.0.1">
         my $Content = "test";
-        $Self->{MainObject}-&gt;FileWrite(
+        $Kernel::OM-&gt;Get(\'Kernel::System::Main\')-&gt;FileWrite(
             Location  =&gt; "' . $TmpDir . '/test3b",
             Content   =&gt; \$Content,
         );
   </CodeUpgrade>
   <CodeUpgrade Type="pre">
         my $Content = "test";
-        $Self->{MainObject}-&gt;FileWrite(
+        $Kernel::OM-&gt;Get(\'Kernel::System::Main\')-&gt;FileWrite(
             Location  =&gt; "' . $TmpDir . '/test4",
             Content   =&gt; \$Content,
         );
@@ -894,292 +855,6 @@ $Self->True(
     '#7 PackageInstall()',
 );
 
-# #8 version check
-my @Tests = (
-
-    # test invalid type
-    {
-        VersionNew       => '1.0.1',
-        VersionInstalled => '1.0.2',
-        Type             => 'Something',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '1.0.2',
-        VersionInstalled => '1.0.1',
-        Type             => 'Something',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-
-    # minimum tests
-    {
-        VersionNew       => '1.0.1',
-        VersionInstalled => '1.0.2',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 1,
-    },
-    {
-        VersionNew       => '1.0.2',
-        VersionInstalled => '1.0.1',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '1.0.2',
-        VersionInstalled => '1.0',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '1.1',
-        VersionInstalled => '1.5.2.1',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 1,
-    },
-    {
-        VersionNew       => '1.0.9.1',
-        VersionInstalled => '1',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '1.3.5',
-        VersionInstalled => '1.3.4',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '1.3.99',
-        VersionInstalled => '1.3.0',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '100.100.100',
-        VersionInstalled => '99.100.100',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '1000.1000.1000',
-        VersionInstalled => '999.1000.1000',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '1000.1000.1000',
-        VersionInstalled => '1000.999.1000',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '1000.1000.1000',
-        VersionInstalled => '1000.1000.999',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '9999.9999.9999.9999',
-        VersionInstalled => '9999.9999.9999.9998',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '1.0.1.2',
-        VersionInstalled => '1.0.1.1',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '1.0.1.2',
-        VersionInstalled => '1.0.1',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '1.0.1.999',
-        VersionInstalled => '1.0.1.1',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '1.0.0.999',
-        VersionInstalled => '1.0.0.1',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '1.1.5',
-        VersionInstalled => '1.1.4.1',
-        Type             => 'Min',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-
-    # maximum tests
-    {
-        VersionNew       => '1.0.1',
-        VersionInstalled => '1.0.2',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '1.0.2',
-        VersionInstalled => '1.0.1',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 1,
-    },
-    {
-        VersionNew       => '1.0',
-        VersionInstalled => '1.0.2',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '1.1',
-        VersionInstalled => '1.5.2.1',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 0,
-    },
-    {
-        VersionNew       => '1.0.9.1',
-        VersionInstalled => '1',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 1,
-    },
-    {
-        VersionNew       => '1.3.5',
-        VersionInstalled => '1.3.4',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 1,
-    },
-    {
-        VersionNew       => '1.3.99',
-        VersionInstalled => '1.3.0',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 1,
-    },
-    {
-        VersionNew       => '100.100.100',
-        VersionInstalled => '99.100.100',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 1,
-    },
-    {
-        VersionNew       => '1000.1000.1000',
-        VersionInstalled => '999.1000.1000',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 1,
-    },
-    {
-        VersionNew       => '1000.1000.1000',
-        VersionInstalled => '1000.999.1000',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 1,
-    },
-    {
-        VersionNew       => '1000.1000.1000',
-        VersionInstalled => '1000.1000.999',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 1,
-    },
-    {
-        VersionNew       => '9999.9999.9999.9999',
-        VersionInstalled => '9999.9999.9999.9998',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 1,
-    },
-    {
-        VersionNew       => '1.0.1.2',
-        VersionInstalled => '1.0.1.1',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 1,
-    },
-    {
-        VersionNew       => '1.0.1.2',
-        VersionInstalled => '1.0.1',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 1,
-    },
-    {
-        VersionNew       => '1.0.1.999',
-        VersionInstalled => '1.0.1.1',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 1,
-    },
-    {
-        VersionNew       => '1.0.0.999',
-        VersionInstalled => '1.0.0.1',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 1,
-    },
-    {
-        VersionNew       => '1.1.5',
-        VersionInstalled => '1.1.4.1',
-        Type             => 'Max',
-        ExternalPackage  => 0,
-        Result           => 1,
-    },
-);
-
-for my $Test (@Tests) {
-
-    my $VersionCheck = $PackageObject->_CheckVersion(
-        VersionNew       => $Test->{VersionNew},
-        VersionInstalled => $Test->{VersionInstalled},
-        Type             => $Test->{Type},
-    );
-
-    my $Name = "#8 _CheckVersion() - $Test->{Type} ($Test->{VersionNew}:$Test->{VersionInstalled})";
-
-    if ( $Test->{Result} ) {
-        $Self->True(
-            $VersionCheck,
-            $Name,
-        );
-    }
-    else {
-        $Self->True(
-            !$VersionCheck,
-            $Name,
-        );
-    }
-}
-
 # 9 pre tests
 $String = '<?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.0">
@@ -1190,6 +865,7 @@ $String = '<?xml version="1.0" encoding="utf-8" ?>
   <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
+  <Framework>4.0.x</Framework>
   <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
@@ -1234,9 +910,9 @@ $Self->True(
     '#9 PackageInstall() - pre',
 );
 
-$Self->{DBObject}->Prepare( SQL => 'SELECT name_b FROM test_package' );
+$DBObject->Prepare( SQL => 'SELECT name_b FROM test_package' );
 my $Result;
-while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+while ( my @Row = $DBObject->FetchrowArray() ) {
     $Result = $Row[0];
 }
 
@@ -1263,6 +939,7 @@ $String = '<?xml version="1.0" encoding="utf-8" ?>
   <License>GNU GENERAL PUBLIC LICENSE Version 2, June 110101</License>
   <Description Lang="en">A test package.</Description>
   <Description Lang="de">Ein Test Paket.</Description>
+  <Framework>4.0.x</Framework>
   <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
@@ -1307,9 +984,9 @@ $Self->True(
     '#10 PackageInstall() - post',
 );
 
-$Self->{DBObject}->Prepare( SQL => 'SELECT name_b FROM test_package' );
+$DBObject->Prepare( SQL => 'SELECT name_b FROM test_package' );
 $Result = '';
-while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+while ( my @Row = $DBObject->FetchrowArray() ) {
     $Result = $Row[0];
 }
 
@@ -1346,6 +1023,7 @@ my $FileNotAllowedString = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
   <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
   <Description Lang=\"en\">A test package.</Description>
   <Description Lang=\"de\">Ein Test Paket.</Description>
+  <Framework>4.0.x</Framework>
   <Framework>3.3.x</Framework>
   <Framework>3.2.x</Framework>
   <Framework>3.1.x</Framework>
@@ -1369,7 +1047,7 @@ $Self->True(
 
 # check content of not allowed files for match against files from package
 for my $FileNotAllowed ( @{$FilesNotAllowed} ) {
-    my $Readfile = $Self->{MainObject}->FileRead(
+    my $Readfile = $MainObject->FileRead(
         Location => $Home . '/' . $FileNotAllowed,
         Mode     => 'binmode',
     );
@@ -1398,7 +1076,7 @@ $Self->True(
 # find out if it is an developer installation with files
 # from the version control system.
 my $DeveloperSystem = 0;
-my $Version         = $Self->{ConfigObject}->Get('Version');
+my $Version         = $ConfigObject->Get('Version');
 if (
     !-e $Home . '/ARCHIVE'
     && $Version =~ m{git}
@@ -1423,6 +1101,7 @@ if ( !$DeveloperSystem ) {
       <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
       <Description Lang="en">A test package.</Description>
       <Description Lang="de">Ein Test Paket.</Description>
+      <Framework>4.0.x</Framework>
       <Framework>3.3.x</Framework>
       <Framework>3.2.x</Framework>
       <Framework>3.1.x</Framework>
@@ -1506,6 +1185,7 @@ if ( !$DeveloperSystem ) {
       <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
       <Description Lang="en">A test package.</Description>
       <Description Lang="de">Ein Test Paket.</Description>
+      <Framework>4.0.x</Framework>
       <Framework>3.3.x</Framework>
       <Framework>3.2.x</Framework>
       <Framework>3.1.x</Framework>
@@ -1532,7 +1212,7 @@ if ( !$DeveloperSystem ) {
 
     # reinstall checks
     my $Content = 'Test 12345678';
-    my $Write   = $Self->{MainObject}->FileWrite(
+    my $Write   = $MainObject->FileWrite(
         Location   => $SaveFileFramework,
         Content    => \$Content,
         Mode       => 'binmode',
@@ -1542,7 +1222,7 @@ if ( !$DeveloperSystem ) {
         $Write,
         '#13 FileWrite() - bin/otrs.CheckDB.pl modified',
     );
-    my $ReadOrig = $Self->{MainObject}->FileRead(
+    my $ReadOrig = $MainObject->FileRead(
         Location => $SaveFileFramework,
         Mode     => 'binmode',
     );
@@ -1588,7 +1268,7 @@ if ( !$DeveloperSystem ) {
         '#13 PackageUninstall()',
     );
 
-    my $ReadLater = $Self->{MainObject}->FileRead(
+    my $ReadLater = $MainObject->FileRead(
         Location => $SaveFileFramework,
         Mode     => 'binmode',
     );
@@ -1608,245 +1288,6 @@ if ( !$DeveloperSystem ) {
 
     # return the correct permissions to otrs.CheckDB.pl
     chmod 0755, $Home . '/' . 'bin/otrs.CheckDB.pl';
-
-    # tests for  PackageUnintallMerged
-    # install package normally
-    $String = '<?xml version="1.0" encoding="utf-8" ?>
-    <otrs_package version="1.0">
-      <Name>Test</Name>
-      <Version>0.0.1</Version>
-      <Vendor>OTRS AG</Vendor>
-      <URL>http://otrs.org/</URL>
-      <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
-      <ChangeLog>2005-11-10 New package (some test &lt; &gt; &amp;).</ChangeLog>
-      <Description Lang="en">A test package (some test &lt; &gt; &amp;).</Description>
-      <Description Lang="de">Ein Test Paket (some test &lt; &gt; &amp;).</Description>
-      <ModuleRequired Version="1.112">Encode</ModuleRequired>
-      <Framework>3.3.x</Framework>
-      <Framework>3.2.x</Framework>
-      <Framework>3.1.x</Framework>
-      <Framework>3.0.x</Framework>
-      <Framework>2.5.x</Framework>
-      <Framework>2.4.x</Framework>
-      <Framework>2.3.x</Framework>
-      <Framework>2.2.x</Framework>
-      <Framework>2.1.x</Framework>
-      <Framework>2.0.x</Framework>
-      <BuildDate>2005-11-10 21:17:16</BuildDate>
-      <BuildHost>yourhost.example.com</BuildHost>
-      <Filelist>
-        <File Location="Test" Permission="644" Encode="Base64">aGVsbG8K</File>
-        <File Location="var/Test" Permission="644" Encode="Base64">aGVsbG8K</File>
-      </Filelist>
-    </otrs_package>
-    ';
-    $PackageInstall = $PackageObject->PackageInstall( String => $String );
-
-    # check that the package is installed and files exists
-    $Self->True(
-        $PackageInstall,
-        '#14 TestPackageUninstallMerged PackageInstall() - package installed with true',
-    );
-    for my $File (qw( Test var/Test )) {
-        my $RealFile = $Home . '/' . $File;
-        $RealFile =~ s/\/\//\//g;
-        $Self->True(
-            -e $RealFile,
-            "#14 TestPackageUninstallMerged FileExists - $RealFile with true",
-        );
-    }
-
-    # modify the installed package including one framework file, this will simulate that the
-    # package was installed before feature merge into the framework, the idea is that the package
-    # will be uninstalled, the not framewrok files will be removed and the framework files will
-    # remain
-    $String = '<?xml version="1.0" encoding="utf-8" ?>
-    <otrs_package version="1.0">
-      <Name>Test</Name>
-      <Version>0.0.1</Version>
-      <Vendor>OTRS AG</Vendor>
-      <URL>http://otrs.org/</URL>
-      <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
-      <ChangeLog>2005-11-10 New package (some test &lt; &gt; &amp;).</ChangeLog>
-      <Description Lang="en">A test package (some test &lt; &gt; &amp;).</Description>
-      <Description Lang="de">Ein Test Paket (some test &lt; &gt; &amp;).</Description>
-      <ModuleRequired Version="1.112">Encode</ModuleRequired>
-      <Framework>3.3.x</Framework>
-      <Framework>3.2.x</Framework>
-      <Framework>3.1.x</Framework>
-      <Framework>3.0.x</Framework>
-      <Framework>2.5.x</Framework>
-      <Framework>2.4.x</Framework>
-      <Framework>2.3.x</Framework>
-      <Framework>2.2.x</Framework>
-      <Framework>2.1.x</Framework>
-      <Framework>2.0.x</Framework>
-      <BuildDate>2005-11-10 21:17:16</BuildDate>
-      <BuildHost>yourhost.example.com</BuildHost>
-      <Filelist>
-        <File Location="Test" Permission="644" Encode="Base64">aGVsbG8K</File>
-        <File Location="var/Test" Permission="644" Encode="Base64">aGVsbG8K</File>
-        <File Location="bin/otrs.CheckDB.pl" Permission="755" Encode="Base64">aGVsbG8K</File>
-      </Filelist>
-    </otrs_package>
-    ';
-    my $PackageName = 'Test';
-
-    # the modifications has to be at DB level, otherwise a .save file will be generated for the
-    # framework file, and we are trying to prvent it
-    $Self->{DBObject}->Do(
-        SQL => '
-            UPDATE package_repository
-            SET content = ?
-            WHERE name = ?',
-        Bind => [ \$String, \$PackageName ],
-    );
-
-    # now create an .save file for the framework file, content doesn't matter as it will be deleted
-    $Write = $Self->{MainObject}->FileWrite(
-        Location   => $Home . '/bin/otrs.CheckDB.pl.save',
-        Content    => \$Content,
-        Mode       => 'binmode',
-        Permission => '644',
-    );
-    $Self->True(
-        $Write,
-        '#14 TestPackageUninstallMerged FileWrite() - bin/otrs.CheckDB.pl.save',
-    );
-
-    # create PackageObject again to make sure cache is cleared
-    my $PackageObject = Kernel::System::Package->new( %{$Self} );
-
-    # run PackageUninstallMerged()
-    my $PackageUninstallMerged = $PackageObject->_PackageUninstallMerged( Name => $PackageName );
-
-    # check that the original files from the package does not exists anymore
-    # this files are supose to be old files that are not required any more by the merged package
-    for my $File (qw( Test var/Test bin/otrs.CheckDB.pl.save )) {
-        my $RealFile = $Home . '/' . $File;
-        $RealFile =~ s/\/\//\//g;
-        $Self->False(
-            -e $RealFile,
-            "#14 TestPackageUninstallMerged FileExists - $RealFile with false",
-        );
-    }
-
-    # check that the framework file still exists
-    for my $File (qw( bin/otrs.CheckDB.pl )) {
-        my $RealFile = $Home . '/' . $File;
-        $RealFile =~ s/\/\//\//g;
-        $Self->True(
-            -e $RealFile,
-            "#14 TestPackageUninstallMerged FileExists - $RealFile with true",
-        );
-    }
-
-    # check that the package is uninstalled
-    my $PackageInstalled = $PackageObject->PackageIsInstalled(
-        Name => $PackageName,
-    );
-    $Self->False(
-        $PackageInstalled,
-        '#14 TestPackageUninstallMerged PackageIsInstalled() - with false',
-    );
 }
-
-# PackageParse method basic test
-
-my $StringNoXML = 'Not a valid structure
-for a package file.';
-
-my $ResultStructure = 1;
-my %StructureFail = $PackageObject->PackageParse( String => $StringNoXML );
-$ResultStructure = 0 if !IsHashRefWithData( \%StructureFail );
-$Self->Is(
-    $ResultStructure,
-    0,
-    "#15 PackageParse() - Wrong package content",
-);
-
-my $StringInvalid = '
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
-    "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-  <head>
-    <title>Page title</title>
-  </head>
-  <body>
-    <div class="Main">
-        <p>This is a invalid content.</p>
-        <p>It can pass the XML parse.</p>
-        <p>But is not possible to retrieve an structure from it.</p>
-    </div>
-  </body>
-</html>
-';
-
-$ResultStructure = 1;
-%StructureFail   = $PackageObject->PackageParse( String => $StringInvalid );
-$ResultStructure = 0 if !IsHashRefWithData( \%StructureFail );
-$Self->Is(
-    $ResultStructure,
-    0,
-    "15 PackageParse() - Invalid package content.",
-);
-
-my $StringNormal = '<?xml version="1.0" encoding="utf-8" ?>
-    <otrs_package version="1.0">
-      <Name>TestPackage</Name>
-      <Version>1.0.1</Version>
-      <Vendor>OTRS AG</Vendor>
-      <URL>http://otrs.org/</URL>
-      <License>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</License>
-      <ChangeLog>2013-08-14 New package (some test &lt; &gt; &amp;).</ChangeLog>
-      <Description Lang="en">A test package (some test &lt; &gt; &amp;).</Description>
-      <Description Lang="de">Ein Test Paket (some test &lt; &gt; &amp;).</Description>
-      <ModuleRequired Version="1.112">Encode</ModuleRequired>
-      <Framework>3.3.x</Framework>
-      <Framework>3.2.x</Framework>
-      <Framework>3.1.x</Framework>
-      <Framework>3.0.x</Framework>
-      <Framework>2.5.x</Framework>
-      <Framework>2.4.x</Framework>
-      <Framework>2.3.x</Framework>
-      <Framework>2.2.x</Framework>
-      <Framework>2.1.x</Framework>
-      <Framework>2.0.x</Framework>
-      <BuildDate>2005-11-10 21:17:16</BuildDate>
-      <BuildHost>yourhost.example.com</BuildHost>
-      <Filelist>
-        <File Location="Test" Permission="644" Encode="Base64">aGVsbG8K</File>
-        <File Location="var/Test" Permission="644" Encode="Base64">aGVsbG8K</File>
-        <File Location="bin/otrs.CheckDB.pl" Permission="755" Encode="Base64">aGVsbG8K</File>
-      </Filelist>
-    </otrs_package>
-';
-
-$ResultStructure = 0;
-my %StructureNormal = $PackageObject->PackageParse( String => $StringNormal );
-$ResultStructure = 1 if IsHashRefWithData( \%StructureNormal );
-$Self->Is(
-    $ResultStructure,
-    1,
-    "15 PackageParse() - Normal package content",
-);
-
-$Self->Is(
-    $StructureNormal{Name}->{Content},
-    'TestPackage',
-    "15 PackageParse() - Normal package content | Name ",
-);
-
-$Self->Is(
-    $StructureNormal{Version}->{Content},
-    '1.0.1',
-    "15 PackageParse() - Normal package content | Version ",
-);
-
-$Self->Is(
-    $StructureNormal{Vendor}->{Content},
-    'OTRS AG',
-    "15 PackageParse() - Normal package content | Vendor ",
-);
 
 1;

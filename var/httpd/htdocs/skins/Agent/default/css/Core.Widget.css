@@ -36,7 +36,6 @@ ul.Tablelike li {
     padding: 0 4px;
     min-height: 20px;
     background-color: #FFF;
-    border-radius: 3px;
 }
 
 ul.Tablelike li.OneRow,
@@ -55,15 +54,7 @@ ul.Tablelike li:nth-child(even) {
 }
 
 ul.Tablelike li:hover {
-    background: #f3960d;
-    background: -moz-linear-gradient(top,  #ffe7bd 0%, #fbba49 20%, #f6ad3e 51%, #f3960d 51%, #e98207 95%, #e07006 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffe7bd), color-stop(20%,#fbba49), color-stop(51%,#f6ad3e), color-stop(51%,#f3960d), color-stop(95%,#e98207), color-stop(100%,#e07006));
-    background: -webkit-linear-gradient(top,  #ffe7bd 0%,#fbba49 20%,#f6ad3e 51%,#f3960d 51%,#e98207 95%,#e07006 100%);
-    background: -o-linear-gradient(top,  #ffe7bd 0%,#fbba49 20%,#f6ad3e 51%,#f3960d 51%,#e98207 95%,#e07006 100%);
-    background: -ms-linear-gradient(top,  #ffe7bd 0%,#fbba49 20%,#f6ad3e 51%,#f3960d 51%,#e98207 95%,#e07006 100%);
-    background: linear-gradient(to bottom,  #ffe7bd 0%,#fbba49 20%,#f6ad3e 51%,#f3960d 51%,#e98207 95%,#e07006 100%);
-    -webkit-box-shadow: 0 1px 0 rgba(0,0,0,0.3);
-    box-shadow: 0 1px 0 rgba(0,0,0,0.3);
+    background: #FCB24B;
 }
 
 ul.Tablelike li:hover a {
@@ -76,15 +67,11 @@ ul.Tablelike li.Header {;
     line-height: 20px;
     text-transform: uppercase;
     background: #eeeeee;
-    background: -moz-linear-gradient(top,  #eeeeee 0%, #e0e0e0 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eeeeee), color-stop(100%,#e0e0e0));
-    background: -webkit-linear-gradient(top,  #eeeeee 0%,#e0e0e0 100%);
-    background: -o-linear-gradient(top,  #eeeeee 0%,#e0e0e0 100%);
-    background: -ms-linear-gradient(top,  #eeeeee 0%,#e0e0e0 100%);
-    background: linear-gradient(to bottom,  #eeeeee 0%,#e0e0e0 100%);
     border-top: 1px solid #FFF;
-    border-bottom: 1px solid #BBB;
-    border-radius: 0;
+}
+
+ul.Tablelike + ul.Tablelike.AllocationList {
+    border-top: 0px;
 }
 
 ul.Tablelike li.Header + li {
@@ -94,32 +81,25 @@ ul.Tablelike li.Header + li {
 /**
  * @subsection  WidgetSimple
  */
+
+.LayoutPopup .Content > .WidgetSimple:last-child {
+    margin-bottom: 0px;
+}
+
 .WidgetSimple {
-    border: 1px solid #CCC;
-    margin-bottom: 10px;
-    border-radius: 2px;
-    background: #f1f1f1;
-    background: -moz-linear-gradient(top,  #f9f9f9 0%, #f1f1f1 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f9f9f9), color-stop(100%,#f1f1f1));
-    background: -webkit-linear-gradient(top,  #f9f9f9 0%,#f1f1f1 100%);
-    background: -o-linear-gradient(top,  #f9f9f9 0%,#f1f1f1 100%);
-    background: -ms-linear-gradient(top,  #f9f9f9 0%,#f1f1f1 100%);
-    background: linear-gradient(to bottom,  #f9f9f9 0%,#f1f1f1 100%);
+    margin-bottom: 15px;
+    background: #f5f5f5;
 }
 
 .WidgetSimple > .Header,
 .WidgetSimple.Collapsed.AnimationRunning > .Header {
-    padding: 2px 5px 3px;
-    border: 1px solid #FFF;
-    border-bottom: 1px solid #CCC;
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
+    padding: 2px 5px 2px 5px;
     position: relative;
+    background-color: #e8e8e8;
 }
 
 .WidgetSimple.Collapsed > .Header {
     border-bottom: none;
-    border-radius: 2px;
 }
 
 .WidgetSimple > .Header h2,
@@ -129,14 +109,11 @@ ul.Tablelike li.Header + li {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 13px;
 }
 
 .WidgetSimple > .Content {
     padding: 8px 8px 10px;
-    border: 1px solid #FFF;
-    border-bottom: none;
-    border-bottom-right-radius: 2px;
-    border-bottom-left-radius: 2px;
     overflow: auto;
     /**
      *   START IE9 Hover Bug Workaround
@@ -151,12 +128,12 @@ ul.Tablelike li.Header + li {
     /* END IE9 Hover Bug Workaround */
 }
 
-.WidgetSimple.Collapsed > .Content {
-    display: none;
+.WidgetSimple.QueueOverview > .Content {
+    padding-bottom: 2px;
 }
 
-.WidgetSimple fieldset {
-    margin-bottom: 15px;
+.WidgetSimple.Collapsed > .Content {
+    display: none;
 }
 
 .WidgetSimple .WidgetSettingsForm fieldset {
@@ -172,19 +149,11 @@ ul.Tablelike li.Header + li {
 }
 
 .WidgetSimple .Buttons {
-    background: #ddd;
-    background: -moz-linear-gradient(top,  #eee 0%, #ddd 50%, #ccc 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eee), color-stop(50%,#ddd), color-stop(100%,#ccc));
-    background: -webkit-linear-gradient(top,  #eee 0%,#ddd 50%,#ccc 100%);
-    background: -o-linear-gradient(top,  #eee 0%,#ddd 50%,#ccc 100%);
-    background: -ms-linear-gradient(top,  #eee 0%,#ddd 50%,#ccc 100%);
-    background: linear-gradient(to bottom,  #eee 0%,#ddd 50%,#ccc 100%);
     border-top: 1px solid #ccc;
     margin: 15px -8px -10px -8px;
     padding: 10px 10px 9px 10px;
     text-align: center;
     font-size: 11px;
-    text-shadow: 1px 1px 1px #fff;
 }
 
 .WidgetSimple .Buttons.NoMargin {
@@ -269,12 +238,6 @@ ul.Tablelike li.Header + li {
 
 .WidgetBox > .Content {
     background: #ffffff;
-    background: -moz-linear-gradient(top,  #ebebeb 0%, #ffffff 50%, #ffffff 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ebebeb), color-stop(50%,#ffffff), color-stop(100%,#ffffff));
-    background: -webkit-linear-gradient(top,  #ebebeb 0%,#ffffff 50%,#ffffff 100%);
-    background: -o-linear-gradient(top,  #ebebeb 0%,#ffffff 50%,#ffffff 100%);
-    background: -ms-linear-gradient(top,  #ebebeb 0%,#ffffff 50%,#ffffff 100%);
-    background: linear-gradient(to bottom,  #ebebeb 0%,#ffffff 50%,#ffffff 100%);
     min-height: 200px;
     border-left: 1px solid #C6C5C4;
     border-right: 1px solid #C6C5C4;
@@ -294,13 +257,9 @@ ul.Tablelike li.Header + li {
  */
 
 .ActionMenu {
-    top: 0;
-    right: 0;
+    top: 4px;
+    right: 3px;
     padding-left: 3px;
-    background: #FFF;
-    border-left: 1px solid #CCC;
-    border-bottom: 1px solid #CCC;
-    border-bottom-left-radius: 2px;
     position: absolute;
     display: none;
 }
@@ -358,16 +317,11 @@ ul.Tablelike li.Header + li {
     color: #555 !important;
 }
 
-#ArticleItems .WidgetAction.Toggle i,
-#DynamicFieldsWidget .WidgetAction.Toggle i {
-    top: -1px;
-}
-
-.Expanded .WidgetAction.Toggle i.icon-caret-right {
+.Expanded .WidgetAction.Toggle i.fa-caret-right {
     display: none !important;
 }
 
-.Collapsed .WidgetAction.Toggle i.icon-caret-down {
+.Collapsed .WidgetAction.Toggle i.fa-caret-down {
     display: none !important;
 }
 
@@ -445,28 +399,42 @@ ul.Tablelike li.Header + li {
     color: #888;
 }
 
-.ActionList form select {
-    margin: 8px 0 2px;
+.WidgetSimple .ActionList select {
+    margin: 0px auto;
+    padding: 2px 3px;
     display: block;
+    width: 249px;
 }
 
-.CallForAction {
-    padding: 0;
-    background: #f2f2f2;
-    background: -moz-linear-gradient(top,  #f2f2f2 0%, #e0e0e0 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f2f2), color-stop(100%,#e0e0e0));
-    background: -webkit-linear-gradient(top,  #f2f2f2 0%,#e0e0e0 100%);
-    background: -o-linear-gradient(top,  #f2f2f2 0%,#e0e0e0 100%);
-    background: -ms-linear-gradient(top,  #f2f2f2 0%,#e0e0e0 100%);
-    background: linear-gradient(to bottom,  #f2f2f2 0%,#e0e0e0 100%);
-    border: 1px solid #999;
-    border-bottom: 1px solid #888;
-    box-shadow: 0 1px 0 #E6E6E6;
-    -webkit-box-shadow: 0 1px 0 #E6E6E6;
-    border-radius: 3px;
+.WidgetSimple .ActionList select + .FieldExplanation {
+    margin-top: 2px;
+}
+
+.WidgetSimple .ActionList .CallForAction ~ select {
+    margin-top: -5px;
+}
+
+.CallForAction, .cke_dialog_footer_buttons a.cke_dialog_ui_button {
+    padding: 0px;
+    background: #eee;
+    border: 1px solid #ccc;
+    border-bottom: 1px solid #bbb;
     display: inline-block;
     cursor: pointer;
-    transition: all ease-in 1s;
+    transition: all ease-in 0.2s;
+}
+
+.cke_dialog_footer_buttons a.cke_dialog_ui_button {
+    font-weight: bold !important;
+}
+
+.cke_dialog_footer_buttons a.cke_dialog_ui_button:hover {
+    background-color: #e5e5e5;
+    border-color: #999;
+}
+
+.CallForAction.Hidden {
+    display: none;
 }
 
 .CallForAction.LittleSpacingTop {
@@ -478,8 +446,14 @@ ul.Tablelike li.Header + li {
 }
 
 .CallForAction.Fullsize {
-    width: 100%;
+    width: 248px;
     text-align: center;
+}
+
+.CallForAction.Fullsize + .FieldExplanation {
+    border: 1px solid #ddd;
+    padding: 5px;
+    margin-top: 5px;
 }
 
 /**
@@ -494,36 +468,51 @@ ul.Tablelike li.Header + li {
 
 .CallForAction:hover {
     color: #000;
-    border-color: #696969;
+    border-color: #aaa;
 }
 
-.CallForAction span {
+.CallForAction span,
+.cke_dialog_footer_buttons td a.cke_dialog_ui_button span {
     height: 12px;
     padding: 3px 7px 6px;
     line-height: 14px;
     vertical-align: middle;
     color: #333;
     font-size: 11px;
-    font-weight: bold;
     border: 1px solid #FFF;
     border-bottom: none;
-    border-radius: 3px;
     display: block;
     text-shadow: 0 1px 0 #FFF;
     cursor: pointer;
+    position: relative;
 }
 
-.CallForAction:active {
-    background-color: #DDD;
-    -webkit-box-shadow: none;
-    box-shadow: none;
+.cke_dialog_footer_buttons td a.cke_dialog_ui_button span {
+    font-size: 11px;
+    line-height: auto;
+    color: #000;
+    font-weight: bold;
 }
 
-.CallForAction:active span {
-    padding: 4px 7px 5px;
-    border-color: #DDD;
-    border-bottom: none;
-    text-shadow: 0 1px 0 #DDD;
+.CallForAction span i {
+    position: relative;
+    left: 0px;
+    top: 1px;
+    font-size: 13px;
+    width: 15px;
+    text-align: center;
+}
+
+.CallForAction.Fullsize.Center span i {
+    position: absolute;
+    left: 4px;
+    top: 4px;
+}
+
+.CallForAction:active,
+.CallForAction:hover {
+    background-color: #e5e5e5;
+    border-color: #999;
 }
 
 .CallForAction.Disabled, .CallForAction.Disabled span {
@@ -531,90 +520,30 @@ ul.Tablelike li.Header + li {
     cursor: default;
 }
 
-.CallForAction.Plus span {
-    background: url(../img/icons/plus-button.png) no-repeat scroll;
-}
-.CallForAction.Download span {
-    background: url(../img/icons/drive-download.png) no-repeat scroll;
-}
-.CallForAction.Upload span {
-    background: url(../img/icons/drive-upload.png) no-repeat scroll;
-}
-.CallForAction.Clone span {
-    background: url(../img/icons/reports.png) no-repeat scroll;
-}
-.CallForAction.Save span {
-    background: url(../img/icons/disk.png) no-repeat scroll;
-}
-.CallForAction.Trash span {
-    background: url(../img/icons/trash-can.png) no-repeat scroll;
-}
-.CallForAction.History span {
-    background: url(../img/icons/book-brown.png) no-repeat scroll;
-}
-.CallForAction.Debug span {
-    background: url(../img/icons/bug--minus.png) no-repeat scroll;
-}
-.CallForAction.Back span {
-    background: url(../img/arrow_left.png) no-repeat scroll;
-}
-.CallForAction.Refresh span {
-    background: url(../img/icons/reload.png) no-repeat scroll;
-}
-
-.CallForAction.Plus span,
-.CallForAction.Download span,
-.CallForAction.Upload span,
-.CallForAction.Clone span,
-.CallForAction.Trash span,
-.CallForAction.History span,
-.CallForAction.Debug span,
-.CallForAction.Refresh span,
-.CallForAction.Save span {
-    padding-left: 23px;
-    background-position: 2px 2px;
-}
-
-.CallForAction.Back span {
-    padding-left: 23px;
-    background-position: 4px 5px;
-}
-
-.CallForAction.Plus:active span,
-.CallForAction.Download:active span,
-.CallForAction.Upload:active span,
-.CallForAction.Clone:active span,
-.CallForAction.Trash:active span,
-.CallForAction.History:active span,
-.CallForAction.Debug:active span,
-.CallForAction.Refresh:active span,
-.CallForAction.Save:active span {
-    background-position: 2px 3px;
-}
-
-.CallForAction.Back:active span {
-    background-position: 4px 6px;
+input.FilterBox {
+    padding: 4px 5px;
+    width: 238px;
 }
 
 .SearchBox {
     position: relative;
+    margin-bottom: 3px;
 }
 
 .SearchBox input[type='text'] {
     height: 15px;
-    margin: 0;
+    margin: 0px;
     padding: 4px 5px;
     font: normal 12px/15px "Helvetica Neue",Helvetica,Arial,sans-serif;
     border-color: #999;
-    border-radius: 3px 0 0 3px;
     border-right: none;
     vertical-align: bottom;
+    width: 213px;
 }
 
 .RTL .SearchBox input[type='text']{
     border-left: none;
     border-right: 1px solid #999;
-    border-radius: 0 3px 3px 0;
 }
 
 .SearchBox input:focus {
@@ -628,19 +557,13 @@ ul.Tablelike li.Header + li {
 
 .SearchBox button {
     height: 25px;
+    width: 25px;
     margin: 0 0 0 -4px;
     padding: 3px 3px 4px;
     color: #333;
     font: bold 11px/14px "Helvetica Neue",Helvetica,Arial,sans-serif;
     background: #f2f2f2;
-    background: -moz-linear-gradient(top,  #f2f2f2 0%, #e0e0e0 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f2f2), color-stop(100%,#e0e0e0));
-    background: -webkit-linear-gradient(top,  #f2f2f2 0%,#e0e0e0 100%);
-    background: -o-linear-gradient(top,  #f2f2f2 0%,#e0e0e0 100%);
-    background: -ms-linear-gradient(top,  #f2f2f2 0%,#e0e0e0 100%);
-    background: linear-gradient(to bottom,  #f2f2f2 0%,#e0e0e0 100%);
     border: 1px solid #888;
-    border-radius: 0 3px 3px 0;
     text-shadow: 0 1px 0 #FFF;
     vertical-align: baseline;
 }
@@ -648,7 +571,6 @@ ul.Tablelike li.Header + li {
 .RTL .SearchBox button {
     height: 25px;
     margin: 0 -4px 0 0;
-    border-radius: 3px 0 0 3px;
     text-shadow: 0 1px 0 #FFF;
     vertical-align: baseline;
     border-right: 1px solid #888;
@@ -662,12 +584,6 @@ ul.Tablelike li.Header + li {
 .SearchBox button:active {
     padding: 4px 3px 3px;
     background: #e4e4e4;
-    background: -moz-linear-gradient(top,  #e4e4e4 0%, #d1d1d1 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e4e4e4), color-stop(100%,#d1d1d1));
-    background: -webkit-linear-gradient(top,  #e4e4e4 0%,#d1d1d1 100%);
-    background: -o-linear-gradient(top,  #e4e4e4 0%,#d1d1d1 100%);
-    background: -ms-linear-gradient(top,  #e4e4e4 0%,#d1d1d1 100%);
-    background: linear-gradient(to bottom,  #e4e4e4 0%,#d1d1d1 100%);
     outline: none;
 }
 
@@ -730,16 +646,9 @@ ul.Tablelike li.Header + li {
     float: left;
     list-style: none;
     border-style: solid;
-    border-width: 1px 0;
+    border-width: 1px 0px;
     border-color: #CCC;
     background-color: #EEE;
-    background: -moz-linear-gradient(top,  #ffffff 0%, #eeeeee 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#eeeeee));
-    background: -webkit-linear-gradient(top,  #ffffff 0%,#eeeeee 100%);
-    background: -o-linear-gradient(top,  #ffffff 0%,#eeeeee 100%);
-    background: -ms-linear-gradient(top,  #ffffff 0%,#eeeeee 100%);
-    background: linear-gradient(to bottom,  #ffffff 0%,#eeeeee 100%);
-
 }
 
 #ProgressBar li > span {
@@ -754,11 +663,10 @@ ul.Tablelike li.Header + li {
     color: #484848;
     text-decoration: none;
     font: 13px/18px Helvetica Neue, sans-serif;
-    text-shadow: 1px solid #FCFCFC;
     display: block;
     height: 42px;
     border-style: solid;
-    border-width: 1px 0;
+    border-width: 1px 0px;
     border-color: #F4F4F4;
     background: url(../img/ProgressBarIsolator.png) no-repeat left 6px;
     cursor: default;
@@ -775,35 +683,25 @@ ul.Tablelike li.Header + li {
 
 #ProgressBar li:first-child, #ProgressBar li.First {
     border-left-width: 1px;
-    border-radius: 4px 0 0 4px;
 }
 
 #ProgressBar li:first-child a, #ProgressBar li.First a {
     border-left-width: 1px;
     padding-left: 14px;
     background: none;
-    border-radius: 4px 0 0 3px;
 }
 
 #ProgressBar li:last-child, #ProgressBar li.Last {
     border-right-width: 1px;
-    border-radius: 0 4px 4px 0;
 }
 
 #ProgressBar li:last-child a, #ProgressBar li.Last a {
     border-right-width: 1px;
     padding-right: 14px;
-    border-radius: 0 4px 4px 0;
 }
 
 #ProgressBar .Highlighted {
     background-color: #fbb42c;
-    background: -moz-linear-gradient(top,  #ffdea3 0%, #fbb42c 20%, #f6af1d 50%, #f3970d 50%, #e87f07 90%, #dd6a05 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffdea3), color-stop(20%,#fbb42c), color-stop(50%,#f6af1d), color-stop(50%,#f3970d), color-stop(90%,#e87f07), color-stop(100%,#dd6a05));
-    background: -webkit-linear-gradient(top,  #ffdea3 0%,#fbb42c 20%,#f6af1d 50%,#f3970d 50%,#e87f07 90%,#dd6a05 100%);
-    background: -o-linear-gradient(top,  #ffdea3 0%,#fbb42c 20%,#f6af1d 50%,#f3970d 50%,#e87f07 90%,#dd6a05 100%);
-    background: -ms-linear-gradient(top,  #ffdea3 0%,#fbb42c 20%,#f6af1d 50%,#f3970d 50%,#e87f07 90%,#dd6a05 100%);
-    background: linear-gradient(to bottom,  #ffdea3 0%,#fbb42c 20%,#f6af1d 50%,#f3970d 50%,#e87f07 90%,#dd6a05 100%);
     border-top-color: #9b6937;
     border-bottom-color: #996634;
 }
@@ -839,22 +737,12 @@ ul.Tablelike li.Header + li {
 
 #ProgressBar .Active {
     border-right: 1px solid #9b6937;
-    border-radius: 0 4px 4px 0;
     position: relative;
     z-index: 2;
 }
 
-#ProgressBar li:first-child.Active {
-    border-radius: 4px;
-}
-
 #ProgressBar .Active a {
     border-right: 1px solid #f2bf5c;
-    border-radius: 0 4px 4px 0;
-}
-
-#ProgressBar li:first-child.Active a {
-    border-radius: 4px;
 }
 
 #ProgressBar .Active + li {
@@ -872,9 +760,6 @@ ul.Tablelike li.Header + li {
 
 #ProgressBar .Visited {
     background-color: #DDD;
-    background: -moz-linear-gradient(top, #EEE, #DDD);
-    background: -webkit-gradient(linear, 0 0, 0 100%, from(#EEE), to(#FFF));
-    background: linear-gradient(top, #EEE, #DDD);
 }
 
 #ProgressBar .Visited.Active {
@@ -883,6 +768,22 @@ ul.Tablelike li.Header + li {
 
 #ProgressBar .Visited.Active a {
     border-right-color: #EEE;
+}
+
+/**
+ * @subsection      Icon colors
+ */
+
+.CallForAction span i.fa-plus-square {
+    color: #35A835;
+}
+
+.CallForAction span i.fa-rocket {
+    color: #C4632F;
+}
+.CallForAction span i.fa-download,
+.CallForAction span i.fa-upload {
+    color: #2D6F9E;
 }
 
 } /* end @media */

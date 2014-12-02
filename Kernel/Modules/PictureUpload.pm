@@ -66,9 +66,10 @@ sub Run {
         my @AttachmentData = $Self->{UploadCacheObject}->FormIDGetAllFilesData(
             FormID => $FormID,
         );
+        ATTACHMENT:
         for my $Attachment (@AttachmentData) {
-            next if !$Attachment->{ContentID};
-            next if $Attachment->{ContentID} ne $ContentID;
+            next ATTACHMENT if !$Attachment->{ContentID};
+            next ATTACHMENT if $Attachment->{ContentID} ne $ContentID;
             return $Self->{LayoutObject}->Attachment(
                 Type => 'inline',
                 %{$Attachment},
@@ -153,10 +154,11 @@ sub Run {
     @AttachmentMeta = $Self->{UploadCacheObject}->FormIDGetAllFilesMeta(
         FormID => $FormID
     );
+    ATTACHMENT:
     for my $Attachment (@AttachmentMeta) {
-        next if $FilenameTmp ne $Attachment->{Filename};
+        next ATTACHMENT if $FilenameTmp ne $Attachment->{Filename};
         $ContentIDNew = $Attachment->{ContentID};
-        last;
+        last ATTACHMENT;
     }
 
     # serve new content id and url to rte

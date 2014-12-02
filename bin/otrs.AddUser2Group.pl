@@ -28,35 +28,20 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Time;
-use Kernel::System::DB;
-use Kernel::System::Main;
-use Kernel::System::User;
-use Kernel::System::Group;
+use Kernel::System::ObjectManager;
 
-my %CommonObject;
-
-# create common objects
-$CommonObject{ConfigObject} = Kernel::Config->new(%CommonObject);
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.AddUser2Group',
-    %CommonObject,
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.AddUser2Group',
+    },
 );
-$CommonObject{TimeObject}  = Kernel::System::Time->new(%CommonObject);
-$CommonObject{MainObject}  = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject}    = Kernel::System::DB->new(%CommonObject);
-$CommonObject{UserObject}  = Kernel::System::User->new(%CommonObject);
-$CommonObject{GroupObject} = Kernel::System::Group->new(%CommonObject);
 
 my %Param;
 my %Opts;
 
 use Getopt::Std;
-getopt( 'guph', \%Opts );
+getopt( 'gup', \%Opts );
 
 if ( $Opts{h} || !$Opts{g} || !$Opts{u} || !$Opts{p} ) {
     print STDERR
@@ -74,19 +59,17 @@ $Param{Permission}->{ $Opts{p} } = 1;
 $Param{UserLogin}                = $Opts{u};
 $Param{Group}                    = $Opts{g};
 
-unless (
-    $Param{UID}
-    =
-    $CommonObject{UserObject}->UserLookup( UserLogin => $Param{UserLogin} )
-    )
+$Param{UID} = $Kernel::OM->Get('Kernel::System::User')->UserLookup( UserLogin => $Param{UserLogin} );
+if ( !$Param{UID} )
 {
     print STDERR "ERROR: Failed to get User ID. Perhaps non-existent user..\n";
     exit 1;
 }
 
-unless ( $Param{GID} = $CommonObject{GroupObject}->GroupLookup(%Param) ) {
-    print STDERR
-        "ERROR: Failed to get Group ID. Perhaps non-existent group..\n";
+$Param{GID} = $Kernel::OM->Get('Kernel::System::Group')->GroupLookup(%Param);
+
+if ( !$Param{GID} ) {
+    print STDERR "ERROR: Failed to get Group ID. Perhaps non-existent group..\n";
     exit;
 }
 
@@ -94,7 +77,7 @@ print "GID: $Param{Group}/$Param{GID} \n";
 print "UID: $Param{UserLogin}/$Param{UID} \n";
 print "Permission: $Opts{p} \n";
 
-if ( !$CommonObject{GroupObject}->GroupMemberAdd(%Param) ) {
+if ( !$Kernel::OM->Get('Kernel::System::Group')->GroupMemberAdd(%Param) ) {
     print STDERR "ERROR: Can't add user to group\n";
     exit 1;
 }

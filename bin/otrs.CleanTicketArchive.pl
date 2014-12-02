@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 # --
-# otrs.CleanTicketArchive.pl - Clean the ticket archive flag
+# bin/otrs.CleanTicketArchive.pl - clean the ticket archive flag
 # Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
@@ -28,42 +28,54 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Time;
-use Kernel::System::DB;
-use Kernel::System::Main;
-use Kernel::System::Ticket;
+use Getopt::Std;
+use Time::HiRes qw(usleep);
 
-# create common objects
-my %CommonObject = ();
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.CleanTicketArchive.pl',
-    %CommonObject,
+use Kernel::System::ObjectManager;
+
+# get options
+my %Opts;
+getopt( 'b', \%Opts );
+if ( $Opts{h} ) {
+    print "otrs.CleanTicketArchive.pl - clean the ticket archive flag\n";
+    print "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n";
+    print "usage: otrs.CleanTicketArchive.pl [-b sleeptime per ticket in microseconds]\n";
+    exit 1;
+}
+
+if ( $Opts{b} && $Opts{b} !~ m{ \A \d+ \z }xms ) {
+    print STDERR "ERROR: sleeptime needs to be a numeric value! e.g. 1000\n";
+    exit 1;
+}
+
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.CleanTicketArchive.pl',
+    },
 );
-$CommonObject{MainObject}   = Kernel::System::Main->new(%CommonObject);
-$CommonObject{TimeObject}   = Kernel::System::Time->new(%CommonObject);
-$CommonObject{DBObject}     = Kernel::System::DB->new(%CommonObject);
-$CommonObject{TicketObject} = Kernel::System::Ticket->new(%CommonObject);
 
-# print header
-print STDOUT "otrs.CleanTicketArchive.pl - clean ticket archive flag\n";
-print STDOUT "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n";
+# disable cache
+$Kernel::OM->Get('Kernel::System::Cache')->Configure(
+    CacheInMemory  => 0,
+    CacheInBackend => 1,
+);
+
+# disable ticket events
+$Kernel::OM->Get('Kernel::Config')->{'Ticket::EventModulePost'} = {};
 
 # check if archive system is activated
-if ( !$CommonObject{ConfigObject}->Get('Ticket::ArchiveSystem') ) {
-
+if ( !$Kernel::OM->Get('Kernel::Config')->Get('Ticket::ArchiveSystem') ) {
     print STDOUT "\nNo action required. The archive system is disabled at the moment!\n";
-
     exit 0;
 }
 
+# get ticket object
+my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
 # get all tickets with an archive flag and an open statetype
-my @TicketIDs = $CommonObject{TicketObject}->TicketSearch(
-    StateType => [ 'new', 'open', 'pending reminder', 'pending auto' ],
+my @TicketIDs = $TicketObject->TicketSearch(
+    StateType    => [ 'new', 'open', 'pending reminder', 'pending auto' ],
     ArchiveFlags => ['y'],
     Result       => 'ARRAY',
     Limit        => 100_000_000,
@@ -73,10 +85,11 @@ my @TicketIDs = $CommonObject{TicketObject}->TicketSearch(
 
 my $TicketNumber = scalar @TicketIDs;
 my $Count        = 1;
+TICKETID:
 for my $TicketID (@TicketIDs) {
 
     # restore ticket from archive
-    $CommonObject{TicketObject}->TicketArchiveFlagSet(
+    $TicketObject->TicketArchiveFlagSet(
         TicketID    => $TicketID,
         UserID      => 1,
         ArchiveFlag => 'n',
@@ -87,9 +100,12 @@ for my $TicketID (@TicketIDs) {
         my $Percent = int( $Count / ( $TicketNumber / 100 ) );
         print STDOUT "NOTICE: $Count of $TicketNumber processed ($Percent% done).\n";
     }
-}
-continue {
+
     $Count++;
+
+    next TICKETID if !$Opts{b};
+
+    Time::HiRes::usleep( $Opts{b} );
 }
 
 print STDOUT "\nNOTICE: Archive cleanup done. $TicketNumber Tickets processed.\n";

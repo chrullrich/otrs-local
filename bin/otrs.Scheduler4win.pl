@@ -33,15 +33,14 @@ use lib dirname($RealBin) . '/Custom';
 
 use Getopt::Std;
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Main;
-use Kernel::System::Time;
-use Kernel::System::DB;
-use Kernel::System::PID;
+use Kernel::System::ObjectManager;
 use Kernel::System::VariableCheck qw(:all);
-use Kernel::Scheduler;
+
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.Scheduler',
+    },
+);
 
 # defie PID name
 my $PIDName = 'otrs.Scheduler';
@@ -53,8 +52,8 @@ my $Service = 'OTRSScheduler';
 my $ServiceStatus = {};
 
 # get options
-my %Opts = ();
-getopt( 'hafw', \%Opts );
+my %Opts;
+getopt( 'aw', \%Opts );
 
 BEGIN {
 
@@ -98,7 +97,7 @@ if ( $Opts{w} ) {
 }
 
 # check if a stop request is sent
-elsif ( $Opts{a} && $Opts{a} eq "stop" ) {
+if ( $Opts{a} && $Opts{a} eq "stop" ) {
 
     my $Force = $Opts{f} ? 1 : '';
 
@@ -143,11 +142,11 @@ elsif ( $Opts{a} && $Opts{a} eq "status" ) {
 # check if a reload request is sent
 elsif ( $Opts{a} && $Opts{a} eq "reload" ) {
 
-    # create common objects
-    my %CommonObject = _CommonObjects();
+    # get PID object
+    my $PIDObject = $Kernel::OM->Get('Kernel::System::PID');
 
     # get the process ID
-    my %SchedulerPID = $CommonObject{PIDObject}->PIDGet( Name => $PIDName );
+    my %SchedulerPID = $PIDObject->PIDGet( Name => $PIDName );
 
     # no process ID means that is not running
     if ( !%SchedulerPID ) {
@@ -156,7 +155,7 @@ elsif ( $Opts{a} && $Opts{a} eq "reload" ) {
     }
 
     # log daemon reload request
-    $CommonObject{LogObject}->Log(
+    $Kernel::OM->Get('Kernel::System::Log')->Log(
         Priority => 'notice',
         Message  => "Scheduler Service reload request: PID $SchedulerPID{PID}",
     );
@@ -170,7 +169,7 @@ elsif ( $Opts{a} && $Opts{a} eq "reload" ) {
     sleep 2;
 
     # delete process ID lock
-    my $PIDDelSuccess = $CommonObject{PIDObject}->PIDDelete(
+    my $PIDDelSuccess = $PIDObject->PIDDelete(
         Name  => $SchedulerPID{Name},
         Force => 1,
     );
@@ -215,26 +214,8 @@ sub _Help {
     return 1;
 }
 
-sub _CommonObjects {
-    my %CommonObject;
-    $CommonObject{ConfigObject} = Kernel::Config->new();
-    $CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-    $CommonObject{LogObject}    = Kernel::System::Log->new(
-        LogPrefix => 'OTRS-otrs.Scheduler',
-        %CommonObject,
-    );
-    $CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
-    $CommonObject{TimeObject} = Kernel::System::Time->new(%CommonObject);
-    $CommonObject{DBObject}   = Kernel::System::DB->new(%CommonObject);
-    $CommonObject{PIDObject}  = Kernel::System::PID->new(%CommonObject);
-    return %CommonObject;
-}
-
 sub _Start {
     my %Param = @_;
-
-    # create common objects
-    my %CommonObject = _CommonObjects();
 
     # get current service status
     # can't use Win32::Daemon because it is called from outside
@@ -247,13 +228,13 @@ sub _Start {
     }
 
     # check if PID is already there
-    my %SchedulerPID = $CommonObject{PIDObject}->PIDGet( Name => $PIDName );
+    my %SchedulerPID = $Kernel::OM->Get('Kernel::System::PID')->PIDGet( Name => $PIDName );
 
     if (%SchedulerPID) {
 
         # get the PID update time
         my $PIDUpdateTime =
-            $CommonObject{ConfigObject}->Get('Scheduler::PIDUpdateTime') || 60.0;
+            $Kernel::OM->Get('Kernel::Config')->Get('Scheduler::PIDUpdateTime') || 60.0;
 
         # get current time
         my $Time = time();
@@ -288,7 +269,7 @@ sub _Start {
                 "NOTICE: otrs.Scheduler4win.pl is already running (use '-f' if you want to start it forced)!\n";
 
             # log daemon already running
-            $CommonObject{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
                 Message =>
                     "Scheduler Service tried to start but found an already running service!\n",
@@ -301,7 +282,7 @@ sub _Start {
             "NOTICE: otrs.Scheduler4win.pl was already running but is starting again (force was used)!\n";
 
         # log daemon forced start
-        $CommonObject{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'notice',
             Message  => "Scheduler Service is forced to start!",
         );
@@ -317,27 +298,29 @@ sub _Start {
 
 sub _ServiceStart {
 
-    # create common objects
-
-    my %CommonObject = _CommonObjects();
-
     # if start is forced, be sure to remove any PID from any host
     my $Force = $Opts{f} ? 1 : '';
 
+    # get PID object
+    my $PIDObject = $Kernel::OM->Get('Kernel::System::PID');
+
     # create new PID on the Database
-    $CommonObject{PIDObject}->PIDCreate(
+    $PIDObject->PIDCreate(
         Name  => $PIDName,
         Force => $Force,
     );
 
     # get the process ID
-    my %SchedulerPID = $CommonObject{PIDObject}->PIDGet(
+    my %SchedulerPID = $PIDObject->PIDGet(
         Name => $PIDName,
     );
 
+    # get PID object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
     # get default log path from configuration
-    my $LogPath = $CommonObject{ConfigObject}->Get('Scheduler::LogPath')
-        || $CommonObject{ConfigObject}->Get('Home') . '/var/log';
+    my $LogPath = $ConfigObject->Get('Scheduler::LogPath')
+        || $ConfigObject->Get('Home') . '/var/log';
 
     # set proper directory separators on windows
     $LogPath =~ s{/}{\\}g;
@@ -345,8 +328,12 @@ sub _ServiceStart {
     # backup old log files
     my $FileStdOut = $LogPath . '\SchedulerOUT.log';
     my $FileStdErr = $LogPath . '\SchedulerERR.log';
+
+    # get PID object
+    my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
+
     use File::Copy;
-    my $SystemTime = $CommonObject{TimeObject}->SystemTime();
+    my $SystemTime = $TimeObject->SystemTime();
     if ( -e $FileStdOut ) {
         move( "$FileStdOut", "$LogPath/SchedulerOUT-$SystemTime.log" );
     }
@@ -355,11 +342,13 @@ sub _ServiceStart {
     }
 
     # delete old log files
-    my $DaysToKeep = $CommonObject{ConfigObject}->Get('Scheduler::Log::DaysToKeep') || 10;
-    my $DaysToKeepSystemTime
-        = $CommonObject{TimeObject}->SystemTime() - $DaysToKeep * 24 * 60 * 60;
+    my $DaysToKeep = $ConfigObject->Get('Scheduler::Log::DaysToKeep') || 10;
+    my $DaysToKeepSystemTime = $TimeObject->SystemTime() - $DaysToKeep * 24 * 60 * 60;
 
     my @LogFiles = glob("$LogPath/*.log");
+
+    # get log object
+    my $LogObject = $Kernel::OM->Get('Kernel::System::Log');
 
     LOGFILE:
     for my $LogFile (@LogFiles) {
@@ -374,7 +363,7 @@ sub _ServiceStart {
         if ( unlink($LogFile) == 0 ) {
 
             # log old backup file cannot be deleted
-            $CommonObject{LogObject}->Log(
+            $LogObject->Log(
                 Priority => 'error',
                 Message  => "Scheduler could not delete old backup file $LogFile! $!",
             );
@@ -383,7 +372,7 @@ sub _ServiceStart {
         else {
 
             # log old backup file deleted
-            $CommonObject{LogObject}->Log(
+            $LogObject->Log(
                 Priority => 'notice',
                 Message  => "Scheduler deleted old backup file $LogFile!",
             );
@@ -394,15 +383,15 @@ sub _ServiceStart {
     my $AlreadyStarted;
 
     # sleep time between loop intervals in seconds
-    my $SleepTime = $CommonObject{ConfigObject}->Get('Scheduler::SleepTime') || 1;
+    my $SleepTime = $ConfigObject->Get('Scheduler::SleepTime') || 1;
 
-    my $RestartAfterSeconds = $CommonObject{ConfigObject}->Get('Scheduler::RestartAfterSeconds')
+    my $RestartAfterSeconds = $ConfigObject->Get('Scheduler::RestartAfterSeconds')
         || ( 60 * 60 * 24 );    # default 1 day
 
-    my $StartTime = $CommonObject{TimeObject}->SystemTime();
+    my $StartTime = $TimeObject->SystemTime();
 
     # get config checksum
-    my $InitConfigMD5 = $CommonObject{ConfigObject}->ConfigChecksum();
+    my $InitConfigMD5 = $ConfigObject->ConfigChecksum();
 
     # start the service
     Win32::Daemon::StartService();
@@ -422,7 +411,7 @@ sub _ServiceStart {
         if ( SERVICE_START_PENDING() == $State ) {
 
             # Log service start-up
-            $CommonObject{LogObject}->Log(
+            $LogObject->Log(
                 Priority => 'notice',
                 Message  => "Scheduler Service is starting...!",
             );
@@ -435,7 +424,7 @@ sub _ServiceStart {
         elsif ( SERVICE_PAUSE_PENDING() == $State ) {
 
             # Log service pause
-            $CommonObject{LogObject}->Log(
+            $LogObject->Log(
                 Priority => 'notice',
                 Message  => "Scheduler Service is pausing...!",
             );
@@ -448,7 +437,7 @@ sub _ServiceStart {
         elsif ( SERVICE_CONTINUE_PENDING() == $State ) {
 
             # Log service resume
-            $CommonObject{LogObject}->Log(
+            $LogObject->Log(
                 Priority => 'notice',
                 Message  => "Scheduler Service resuming...!",
             );
@@ -461,7 +450,7 @@ sub _ServiceStart {
         elsif ( SERVICE_STOP_PENDING() == $State ) {
 
             # Log service stop
-            $CommonObject{LogObject}->Log(
+            $LogObject->Log(
                 Priority => 'notice',
                 Message  => "Scheduler Service is stopping...!",
             );
@@ -474,7 +463,7 @@ sub _ServiceStart {
         elsif ( SERVICE_RUNNING() == $State ) {
 
             if ( !$AlreadyStarted ) {
-                $CommonObject{LogObject}->Log(
+                $LogObject->Log(
                     Priority => 'notice',
                     Message  => "Scheduler Service start! PID $SchedulerPID{PID}",
                 );
@@ -482,7 +471,7 @@ sub _ServiceStart {
             }
 
             # get the process ID
-            my %SchedulerPID = $CommonObject{PIDObject}->PIDGet( Name => $PIDName );
+            my %SchedulerPID = $PIDObject->PIDGet( Name => $PIDName );
 
             # check if process ID was deleted from DB
             if ( !%SchedulerPID ) {
@@ -495,7 +484,7 @@ sub _ServiceStart {
 
             # check if Framework.xml file exists, otherwise quit because the otrs installation
             # might not be OK. for example UnitTest machines during change scenario process
-            my $Home                = $CommonObject{ConfigObject}->Get('Home');
+            my $Home                = $ConfigObject->Get('Home');
             my $FrameworkConfigFile = $Home . '/Kernel/Config/Files/Framework.xml';
 
             # convert FrameworkConfigFile path to windows format
@@ -512,7 +501,7 @@ sub _ServiceStart {
             }
 
             # get config checksum
-            my $CurrConfigMD5 = $CommonObject{ConfigObject}->ConfigChecksum();
+            my $CurrConfigMD5 = $ConfigObject->ConfigChecksum();
 
             # check if checksum changed and restart
             if ( $InitConfigMD5 ne $CurrConfigMD5 ) {
@@ -525,10 +514,10 @@ sub _ServiceStart {
             }
 
             # Call Scheduler
-            my $SchedulerObject = Kernel::Scheduler->new(%CommonObject);
+            my $SchedulerObject = $Kernel::OM->Get('Kernel::System::Scheduler');
             $SchedulerObject->Run();
 
-            my $CurrentTime = $CommonObject{TimeObject}->SystemTime();
+            my $CurrentTime = $TimeObject->SystemTime();
 
             # The Scheduler needs to be restarted from time to time because
             #   of memory leaks in some external perl modules.
@@ -554,15 +543,12 @@ sub _ServiceStart {
 sub _Stop {
     my %Param = @_;
 
-    # create common objects
-    my %CommonObject = _CommonObjects();
-
     my $ExitCode;
 
     if ( $Param{Force} ) {
 
         # delete process ID lock
-        my $PIDDelSuccess = $CommonObject{PIDObject}->PIDDelete(
+        my $PIDDelSuccess = $Kernel::OM->Get('Kernel::System::PID')->PIDDelete(
             Name  => $PIDName,
             Force => 1,
         );
@@ -570,7 +556,7 @@ sub _Stop {
     else {
 
         # get the process ID
-        my %SchedulerPID = $CommonObject{PIDObject}->PIDGet( Name => $PIDName );
+        my %SchedulerPID = $Kernel::OM->Get('Kernel::System::PID')->PIDGet( Name => $PIDName );
 
         # no process ID means that is not running
         if ( !%SchedulerPID ) {
@@ -593,18 +579,18 @@ sub _Stop {
 
 sub _ServiceStop {
 
-    # create common objects
-    my %CommonObject = _CommonObjects();
+    # get database object
+    my $PIDObject = $Kernel::OM->Get('Kernel::System::PID');
 
     # get the process ID
-    my %SchedulerPID = $CommonObject{PIDObject}->PIDGet( Name => $PIDName );
+    my %SchedulerPID = $PIDObject->PIDGet( Name => $PIDName );
 
     # stop the service (this can be called because is part of the main loop)
     Win32::Daemon::StopService();
 
     # delete process ID lock
     # do not delete processes from other hosts at this time
-    my $PIDDelSuccess = $CommonObject{PIDObject}->PIDDelete(
+    my $PIDDelSuccess = $PIDObject->PIDDelete(
         Name => $SchedulerPID{Name},
     );
 
@@ -612,13 +598,13 @@ sub _ServiceStop {
 
     # log daemon stop
     if ( !$PIDDelSuccess ) {
-        $CommonObject{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Process could not be deleted from process table! PID $SchedulerPID{PID}",
         );
         exit 1;
     }
-    $CommonObject{LogObject}->Log(
+    $Kernel::OM->Get('Kernel::System::Log')->Log(
         Priority => 'notice',
         Message  => "Scheduler Service stop! PID $SchedulerPID{PID}",
     );
@@ -638,11 +624,8 @@ sub _Status {
     # 3 => 'The service is stopping.',
     # 1 => 'The service is not running.',
 
-    # create common objects
-    my %CommonObject = _CommonObjects();
-
     # get the process ID
-    my %SchedulerPID = $CommonObject{PIDObject}->PIDGet( Name => $PIDName );
+    my %SchedulerPID = $Kernel::OM->Get('Kernel::System::PID')->PIDGet( Name => $PIDName );
 
     # no process ID means that is not running
     if ( !%SchedulerPID ) {
@@ -650,7 +633,7 @@ sub _Status {
     }
 
     # log daemon stop
-    $CommonObject{LogObject}->Log(
+    $Kernel::OM->Get('Kernel::System::Log')->Log(
         Priority => 'notice',
         Message  => "Scheduler Service status request! PID $SchedulerPID{PID}",
     );
@@ -675,27 +658,30 @@ sub _Status {
 sub _AutoRestart {
     my (%Param) = @_;
 
-    # create common objects
-    my %CommonObject = _CommonObjects();
+    # get PID object
+    my $PIDObject = $Kernel::OM->Get('Kernel::System::PID');
 
     # get the process ID
-    my %SchedulerPID = $CommonObject{PIDObject}->PIDGet( Name => $PIDName );
+    my %SchedulerPID = $PIDObject->PIDGet( Name => $PIDName );
+
+    # get log object
+    my $LogObject = $Kernel::OM->Get('Kernel::System::Log');
 
     # Log daemon start-up
-    $CommonObject{LogObject}->Log(
+    $LogObject->Log(
         Priority => 'notice',
-        Message => $Param{Message} || 'Unknown reason to restart',
+        Message  => $Param{Message} || 'Unknown reason to restart',
     );
 
     # delete process ID lock
-    my $PIDDelSuccess = $CommonObject{PIDObject}->PIDDelete(
+    my $PIDDelSuccess = $PIDObject->PIDDelete(
         Name  => $SchedulerPID{Name},
         Force => 1,
     );
 
     my $ExitCode;
     if ( !$PIDDelSuccess ) {
-        $CommonObject{LogObject}->Log(
+        $LogObject->Log(
             Priority => 'error',
             Message =>
                 "Could not remove Scheduler PID $SchedulerPID{PID} from database to prepare Scheduler restart, exiting.",
@@ -709,13 +695,13 @@ sub _AutoRestart {
     Win32::Daemon::StopService();
 
     # log service stopping
-    $CommonObject{LogObject}->Log(
+    $LogObject->Log(
         Priority => 'notice',
         Message  => "Scheduler service is stopping due a restart.",
     );
 
     # get the scheduler information to restart
-    my $Home      = $CommonObject{ConfigObject}->Get('Home');
+    my $Home      = $Kernel::OM->Get('Kernel::Config')->Get('Home');
     my $Scheduler = $Home . '/bin/otrs.Scheduler4win.pl';
 
     # convert Scheduler path to windows format
@@ -727,7 +713,7 @@ sub _AutoRestart {
     my $StartExitCode = system("\"$^X\" \"$Scheduler\" -a start");
 
     if ($StartExitCode) {
-        $CommonObject{LogObject}->Log(
+        $LogObject->Log(
             Priority => 'error',
             Message  => "Could not start-up new Scheduler instance.",
         );
@@ -743,13 +729,10 @@ sub _AutoRestart {
 sub _AutoStop {
     my (%Param) = @_;
 
-    # create common objects
-    my %CommonObject = _CommonObjects();
-
     if ( $Param{Message} ) {
 
         # log error
-        $CommonObject{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => $Param{Message},
         );
@@ -758,16 +741,19 @@ sub _AutoStop {
     my $ExitCode;
     if ( $Param{DeletePID} ) {
 
+        # get PID object
+        my $PIDObject = $Kernel::OM->Get('Kernel::System::PID');
+
         # get the process ID
-        my %SchedulerPID = $CommonObject{PIDObject}->PIDGet( Name => $PIDName );
+        my %SchedulerPID = $PIDObject->PIDGet( Name => $PIDName );
 
         # delete process ID lock
         # scheduler should not delete PIDs from other hots at this point
-        my $PIDDelSuccess = $CommonObject{PIDObject}->PIDDelete( Name => $SchedulerPID{Name} );
+        my $PIDDelSuccess = $PIDObject->PIDDelete( Name => $SchedulerPID{Name} );
 
         # log daemon stop
         if ( !$PIDDelSuccess ) {
-            $CommonObject{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
                 Message =>
                     "Process could not be deleted from process table! PID $SchedulerPID{PID}",
@@ -795,26 +781,20 @@ sub _AutoStop {
 sub _WatchDog {
     my %Param = @_;
 
-    # create common object
-    my %CommonObject;
-    $CommonObject{ConfigObject} = Kernel::Config->new();
-    $CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-    $CommonObject{LogObject}    = Kernel::System::Log->new(
-        LogPrefix => 'OTRS-otrs.Scheduler-Watchdog',
-        %CommonObject,
-    );
-    $CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
-    $CommonObject{TimeObject} = Kernel::System::Time->new(%CommonObject);
-    $CommonObject{DBObject}   = Kernel::System::DB->new(
-        %CommonObject,
-        AutoConnectNo => 1,
+    local $Kernel::OM = Kernel::System::ObjectManager->new(
+        'Kernel::System::Log' => {
+            LogPrefix => 'OTRS-otrs.Scheduler-Watchdog',
+        },
+        'Kernel::System::DB' => {
+            AutoConnectNo => 1,
+        },
     );
 
     my $ExitCode = 0;
 
     # check if OTRS can connect to the DB
-    if ( !$CommonObject{DBObject}->Connect() ) {
-        $CommonObject{LogObject}->Log(
+    if ( !$Kernel::OM->Get('Kernel::System::DB')->Connect() ) {
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'notice',
             Message  => "Database is not ready!",
         );
@@ -834,7 +814,7 @@ sub _WatchDog {
             $ExitCode = _Start();
         }
         else {
-            $CommonObject{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
                 Message =>
                     'Scheduler was forced to stop but it is still registered, can not continue',

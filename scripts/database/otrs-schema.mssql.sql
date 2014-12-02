@@ -167,6 +167,15 @@ CREATE TABLE personal_queues (
 CREATE INDEX personal_queues_queue_id ON personal_queues (queue_id);
 CREATE INDEX personal_queues_user_id ON personal_queues (user_id);
 -- ----------------------------------------------------------
+--  create table personal_services
+-- ----------------------------------------------------------
+CREATE TABLE personal_services (
+    user_id INTEGER NOT NULL,
+    service_id INTEGER NOT NULL
+);
+CREATE INDEX personal_services_service_id ON personal_services (service_id);
+CREATE INDEX personal_services_user_id ON personal_services (user_id);
+-- ----------------------------------------------------------
 --  create table salutation
 -- ----------------------------------------------------------
 CREATE TABLE salutation (
@@ -211,6 +220,24 @@ CREATE TABLE system_address (
     value3 NVARCHAR (200) NULL,
     queue_id INTEGER NOT NULL,
     comments NVARCHAR (250) NULL,
+    valid_id SMALLINT NOT NULL,
+    create_time DATETIME NOT NULL,
+    create_by INTEGER NOT NULL,
+    change_time DATETIME NOT NULL,
+    change_by INTEGER NOT NULL,
+    PRIMARY KEY(id)
+);
+-- ----------------------------------------------------------
+--  create table system_maintenance
+-- ----------------------------------------------------------
+CREATE TABLE system_maintenance (
+    id INTEGER NOT NULL IDENTITY(1,1) ,
+    start_date INTEGER NOT NULL,
+    stop_date INTEGER NOT NULL,
+    comments NVARCHAR (250) NOT NULL,
+    login_message NVARCHAR (250) NULL,
+    show_login_message SMALLINT NULL,
+    notify_message NVARCHAR (250) NULL,
     valid_id SMALLINT NOT NULL,
     create_time DATETIME NOT NULL,
     create_by INTEGER NOT NULL,
@@ -369,7 +396,6 @@ CREATE TABLE ticket (
     escalation_update_time INTEGER NOT NULL,
     escalation_response_time INTEGER NOT NULL,
     escalation_solution_time INTEGER NOT NULL,
-    valid_id SMALLINT NOT NULL,
     archive_flag SMALLINT NOT NULL,
     create_time_unix BIGINT NOT NULL,
     create_time DATETIME NOT NULL,
@@ -428,7 +454,6 @@ CREATE TABLE ticket_history (
     owner_id INTEGER NOT NULL,
     priority_id SMALLINT NOT NULL,
     state_id SMALLINT NOT NULL,
-    valid_id SMALLINT NOT NULL,
     create_time DATETIME NOT NULL,
     create_by INTEGER NOT NULL,
     change_time DATETIME NOT NULL,
@@ -620,6 +645,7 @@ CREATE TABLE article_attachment (
     content_type NVARCHAR (450) NULL,
     content_id NVARCHAR (250) NULL,
     content_alternative NVARCHAR (50) NULL,
+    disposition NVARCHAR (15) NULL,
     content NVARCHAR (MAX) NOT NULL,
     create_time DATETIME NOT NULL,
     create_by INTEGER NOT NULL,
@@ -970,6 +996,7 @@ CREATE TABLE web_upload_cache (
     content_id NVARCHAR (250) NULL,
     content_size NVARCHAR (30) NULL,
     content_type NVARCHAR (250) NULL,
+    disposition NVARCHAR (15) NULL,
     content NVARCHAR (MAX) NOT NULL,
     create_time_unix BIGINT NOT NULL
 );
@@ -1138,7 +1165,6 @@ CREATE TABLE package_repository (
     vendor NVARCHAR (250) NOT NULL,
     install_status NVARCHAR (250) NOT NULL,
     filename NVARCHAR (250) NULL,
-    content_size NVARCHAR (30) NULL,
     content_type NVARCHAR (250) NULL,
     content NVARCHAR (MAX) NOT NULL,
     create_time DATETIME NOT NULL,
@@ -1261,7 +1287,7 @@ CREATE TABLE dynamic_field_value (
     value_int BIGINT NULL,
     PRIMARY KEY(id)
 );
-CREATE INDEX dynamic_field_value_field_values ON dynamic_field_value (object_id);
+CREATE INDEX dynamic_field_value_field_values ON dynamic_field_value (object_id, field_id);
 CREATE INDEX dynamic_field_value_search_date ON dynamic_field_value (field_id, value_date);
 CREATE INDEX dynamic_field_value_search_int ON dynamic_field_value (field_id, value_int);
 -- ----------------------------------------------------------
@@ -1361,13 +1387,6 @@ CREATE TABLE pm_transition_action (
     change_by INTEGER NOT NULL,
     PRIMARY KEY(id),
     CONSTRAINT pm_transition_action_entity_id UNIQUE (entity_id)
-);
--- ----------------------------------------------------------
---  create table pm_entity
--- ----------------------------------------------------------
-CREATE TABLE pm_entity (
-    entity_type NVARCHAR (50) NOT NULL,
-    entity_counter INTEGER NOT NULL
 );
 -- ----------------------------------------------------------
 --  create table pm_entity_sync

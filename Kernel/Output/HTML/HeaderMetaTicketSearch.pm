@@ -43,12 +43,12 @@ sub Run {
             Rel   => 'search',
             Type  => 'application/opensearchdescription+xml',
             Title => $Title,
-            Href  => '$Env{"Baselink"}Action=' . $Param{Config}->{Action}
+            Href  => $Self->{LayoutObject}->{Baselink} . 'Action=' . $Param{Config}->{Action}
                 . ';Subaction=OpenSearchDescriptionTicketNumber' . $Session,
         },
     );
 
-    my $Fulltext = $Self->{LayoutObject}->{LanguageObject}->Get('Fulltext');
+    my $Fulltext = $Self->{LayoutObject}->{LanguageObject}->Translate('Fulltext');
     $Title = $Self->{ConfigObject}->Get('ProductName');
     $Title .= ' (' . $Fulltext . ')';
     $Self->{LayoutObject}->Block(
@@ -57,7 +57,7 @@ sub Run {
             Rel   => 'search',
             Type  => 'application/opensearchdescription+xml',
             Title => $Title,
-            Href  => '$Env{"Baselink"}Action=' . $Param{Config}->{Action}
+            Href  => $Self->{LayoutObject}->{Baselink} . 'Action=' . $Param{Config}->{Action}
                 . ';Subaction=OpenSearchDescriptionFulltext' . $Session,
         },
     );

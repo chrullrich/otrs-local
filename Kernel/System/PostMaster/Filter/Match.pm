@@ -12,6 +12,10 @@ package Kernel::System::PostMaster::Filter::Match;
 use strict;
 use warnings;
 
+our @ObjectDependencies = (
+    'Kernel::System::Log',
+);
+
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -19,12 +23,10 @@ sub new {
     my $Self = {};
     bless( $Self, $Type );
 
-    $Self->{Debug} = $Param{Debug} || 0;
+    # get parser object
+    $Self->{ParserObject} = $Param{ParserObject} || die "Got no ParserObject!";
 
-    # get needed objects
-    for (qw(ConfigObject LogObject DBObject ParserObject)) {
-        $Self->{$_} = $Param{$_} || die "Got no $_!";
-    }
+    $Self->{Debug} = $Param{Debug} || 0;
 
     return $Self;
 }
@@ -35,7 +37,10 @@ sub Run {
     # check needed stuff
     for (qw(JobConfig GetParam)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -74,6 +79,7 @@ sub Run {
                 Line => $Param{GetParam}->{$_},
             );
             my $LocalMatched;
+            RECIPIENTS:
             for my $Recipients (@EmailAddresses) {
                 my $Email = $Self->{ParserObject}->GetEmailAddress( Email => $Recipients );
                 if ( $Email =~ /^$SearchEmail$/i ) {
@@ -82,12 +88,12 @@ sub Run {
                         $MatchedResult = $SearchEmail;
                     }
                     if ( $Self->{Debug} > 1 ) {
-                        $Self->{LogObject}->Log(
+                        $Kernel::OM->Get('Kernel::System::Log')->Log(
                             Priority => 'debug',
                             Message  => "$Prefix'$Param{GetParam}->{$_}' =~ /$Match{$_}/i matched!",
                         );
                     }
-                    last;
+                    last RECIPIENTS;
                 }
             }
             if ( !$LocalMatched ) {
@@ -108,7 +114,7 @@ sub Run {
                 $MatchedResult = $1;
             }
             if ( $Self->{Debug} > 1 ) {
-                $Self->{LogObject}->Log(
+                $Kernel::OM->Get('Kernel::System::Log')->Log(
                     Priority => 'debug',
                     Message  => "$Prefix'$Param{GetParam}->{$_}' =~ /$Match{$_}/i matched!",
                 );
@@ -117,7 +123,7 @@ sub Run {
         else {
             $MatchedNot = 1;
             if ( $Self->{Debug} > 1 ) {
-                $Self->{LogObject}->Log(
+                $Kernel::OM->Get('Kernel::System::Log')->Log(
                     Priority => 'debug',
                     Message  => "$Prefix'$Param{GetParam}->{$_}' =~ /$Match{$_}/i matched NOT!",
                 );
@@ -130,7 +136,7 @@ sub Run {
         for ( sort keys %Set ) {
             $Set{$_} =~ s/\[\*\*\*\]/$MatchedResult/;
             $Param{GetParam}->{$_} = $Set{$_};
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'notice',
                 Message  => $Prefix
                     . "Set param '$_' to '$Set{$_}' (Message-ID: $Param{GetParam}->{'Message-ID'}) ",
@@ -139,7 +145,7 @@ sub Run {
 
         # stop after match
         if ($StopAfterMatch) {
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'notice',
                 Message  => $Prefix
                     . "Stopped filter processing because of used 'StopAfterMatch' (Message-ID: $Param{GetParam}->{'Message-ID'}) ",

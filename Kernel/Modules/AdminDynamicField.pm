@@ -64,14 +64,14 @@ sub Run {
     );
 }
 
-# AJAX subaction
+# AJAX sub-action
 sub _DynamicFieldDelete {
     my ( $Self, %Param ) = @_;
 
     my $Confirmed = $Self->{ParamObject}->GetParam( Param => 'Confirmed' );
 
     if ( !$Confirmed ) {
-        $Self->{'LogObject'}->Log(
+        $Self->{LogObject}->Log(
             'Priority' => 'error',
             'Message'  => "Need 'Confirmed'!",
         );
@@ -85,7 +85,7 @@ sub _DynamicFieldDelete {
     );
 
     if ( !IsHashRefWithData($DynamicFieldConfig) ) {
-        $Self->{'LogObject'}->Log(
+        $Self->{LogObject}->Log(
             'Priority' => 'error',
             'Message'  => "Could not find DynamicField $ID!",
         );
@@ -93,7 +93,7 @@ sub _DynamicFieldDelete {
     }
 
     if ( $DynamicFieldConfig->{InternalField} ) {
-        $Self->{'LogObject'}->Log(
+        $Self->{LogObject}->Log(
             'Priority' => 'error',
             'Message'  => "Could not delete internal DynamicField $ID!",
         );
@@ -128,7 +128,7 @@ sub _ShowOverview {
     my $Output = $Self->{LayoutObject}->Header();
     $Output .= $Self->{LayoutObject}->NavigationBar();
 
-    # check for posible order collisions or gaps
+    # check for possible order collisions or gaps
     my $OrderSuccess = $Self->{DynamicFieldObject}->DynamicFieldOrderCheck();
     if ( !$OrderSuccess ) {
         return $Self->_DynamicFieldOrderReset(
@@ -136,7 +136,7 @@ sub _ShowOverview {
         );
     }
 
-    # call all needed dtl blocks
+    # call all needed template blocks
     $Self->{LayoutObject}->Block(
         Name => 'Main',
         Data => \%Param,
@@ -154,7 +154,9 @@ sub _ShowOverview {
     # get the field types (backends) and its config dialogs
     FIELDTYPE:
     for my $FieldType ( sort keys %{ $Self->{FieldTypeConfig} } ) {
+
         next FIELDTYPE if !$Self->{FieldTypeConfig}->{$FieldType};
+        next FIELDTYPE if $Self->{FieldTypeConfig}->{$FieldType}->{DisabledAdd};
 
         # add the field type to the list
         $FieldTypes{$FieldType} = $Self->{FieldTypeConfig}->{$FieldType}->{DisplayName};
@@ -170,9 +172,18 @@ sub _ShowOverview {
         );
     }
 
+    # make ObjectTypeConfig local variable to proper sorting
+    my %ObjectTypeConfig = %{ $Self->{ObjectTypeConfig} };
+
     # cycle thought all objects to create the select add field selects
     OBJECTTYPE:
-    for my $ObjectType ( sort keys %{ $Self->{ObjectTypeConfig} } ) {
+    for my $ObjectType (
+        sort {
+            ( int $ObjectTypeConfig{$a}->{Prio} || 0 )
+                <=> ( int $ObjectTypeConfig{$b}->{Prio} || 0 )
+        } keys %ObjectTypeConfig
+        )
+    {
         next OBJECTTYPE if !$Self->{ObjectTypeConfig}->{$ObjectType};
 
         my $SelectName = $ObjectType . 'DynamicField';
@@ -325,18 +336,15 @@ sub _DynamicFieldsListShow {
                 );
 
                 # get the object type display name
-                my $ObjectTypeName
-                    = $Self->{ObjectTypeConfig}->{ $DynamicFieldData->{ObjectType} }->{DisplayName}
+                my $ObjectTypeName = $Self->{ObjectTypeConfig}->{ $DynamicFieldData->{ObjectType} }->{DisplayName}
                     || $DynamicFieldData->{ObjectType};
 
                 # get the field type display name
-                my $FieldTypeName
-                    = $Self->{FieldTypeConfig}->{ $DynamicFieldData->{FieldType} }->{DisplayName}
+                my $FieldTypeName = $Self->{FieldTypeConfig}->{ $DynamicFieldData->{FieldType} }->{DisplayName}
                     || $DynamicFieldData->{FieldType};
 
                 # get the field backend dialog
-                my $ConfigDialog
-                    = $Self->{FieldTypeConfig}->{ $DynamicFieldData->{FieldType} }->{ConfigDialog}
+                my $ConfigDialog = $Self->{FieldTypeConfig}->{ $DynamicFieldData->{FieldType} }->{ConfigDialog}
                     || '';
 
                 # print each dynamic field row
@@ -399,7 +407,7 @@ sub _DynamicFieldOrderReset {
     # show error message if the order reset was not successful
     if ( !$ResetSuccess ) {
         return $Self->{LayoutObject}->ErrorScreen(
-            Message => "Could not reset Dynamic Field order propertly, please check the error log"
+            Message => "Could not reset Dynamic Field order properly, please check the error log"
                 . " for more details",
         );
     }

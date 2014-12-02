@@ -9,18 +9,13 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
 
-use Kernel::System::CheckItem;
-use Kernel::Config;
+use vars (qw($Self));
 
-# create local objects
-my $ConfigObject    = Kernel::Config->new();
-my $CheckItemObject = Kernel::System::CheckItem->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+# get needed objects
+my $ConfigObject    = $Kernel::OM->Get('Kernel::Config');
+my $CheckItemObject = $Kernel::OM->Get('Kernel::System::CheckItem');
 
 # disable dns lookups
 $ConfigObject->Set(
@@ -138,6 +133,14 @@ my @Tests = (
     },
     {
         Email => 'mail@кц.рф',    # must be converted to IDN
+        Valid => 0,
+    },
+
+    # Local part of email address is too long according to RFC.
+    # See http://isemail.info/modperl-uc.1384763750.ffhelkebjhfdihihkbce-michiel.beijen%3Dotrs.com%40perl.apache.org
+    {
+        Email =>
+            'modperl-uc.1384763750.ffhelkebjhfdihihkbce-michiel.beijen=otrs.com@perl.apache.org',
         Valid => 0,
     },
 

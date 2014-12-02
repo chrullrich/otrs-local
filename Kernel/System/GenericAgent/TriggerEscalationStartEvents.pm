@@ -14,8 +14,14 @@ use warnings;
 
 use List::Util qw(first);
 
-use Kernel::System::SLA;
-use Kernel::System::Queue;
+our @ObjectDependencies = (
+    'Kernel::Config',
+    'Kernel::System::Log',
+    'Kernel::System::Queue',
+    'Kernel::System::SLA',
+    'Kernel::System::Ticket',
+    'Kernel::System::Time',
+);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -24,16 +30,8 @@ sub new {
     my $Self = {};
     bless $Self, $Type;
 
-    # check needed objects
-    for (qw(DBObject ConfigObject LogObject MainObject EncodeObject TicketObject TimeObject)) {
-        $Self->{$_} = $Param{$_} || die "Got no $_!";
-    }
-
     # 0=off; 1=on;
     $Self->{Debug} = $Param{Debug} || 0;
-
-    $Self->{SLAObject}   = Kernel::System::SLA->new( %{$Self} );
-    $Self->{QueueObject} = Kernel::System::Queue->new( %{$Self} );
 
     return $Self;
 }
@@ -41,59 +39,45 @@ sub new {
 sub Run {
     my ( $Self, %Param ) = @_;
 
+    # get ticket object
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
     # get ticket data
     # the escalation properties are computed within TicketGet().
-    my %Ticket = $Self->{TicketObject}->TicketGet(
+    my %Ticket = $TicketObject->TicketGet(
         %Param,
         DynamicFields => 0,
     );
 
-    my $Calendar;
+    # get used calendar
+    my $Calendar = $TicketObject->TicketCalendarGet(
+        %Ticket,
+    );
 
-    # check if ticket has an assigned SLA with a defined calendar
-    if ( $Ticket{SLAID} ) {
-        my %SLAData = $Self->{SLAObject}->SLAGet(
-            SLAID  => $Ticket{SLAID},
-            UserID => 1,
-        );
-
-        # set $Calendar if SLA has a defined calendar
-        $Calendar = $SLAData{Calendar} ? $SLAData{Calendar} : '';
-    }
-
-    # check if there was no $Calendar defined via SLA
-    if ( !$Calendar ) {
-
-        # check if ticket queue has a defined calendar
-        if ( $Ticket{QueueID} ) {
-            my %QueueData = $Self->{QueueObject}->QueueGet(
-                ID => $Ticket{QueueID},
-            );
-
-            # set $Calendar if SLA has a defined calendar
-            $Calendar = $QueueData{Calendar} ? $QueueData{Calendar} : '';
-        }
-    }
+    # get time object
+    my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
 
     # do not trigger escalation start events outside busincess hours
-    my $CountedTime = $Self->{TimeObject}->WorkingTime(
-        StartTime => $Self->{TimeObject}->SystemTime() - ( 10 * 60 ),
-        StopTime => $Self->{TimeObject}->SystemTime(),
-        Calendar => $Calendar || '',
+    my $CountedTime = $TimeObject->WorkingTime(
+        StartTime => $TimeObject->SystemTime() - ( 10 * 60 ),
+        StopTime  => $TimeObject->SystemTime(),
+        Calendar  => $Calendar,
     );
     if ( !$CountedTime ) {
+
         if ( $Self->{Debug} ) {
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'debug',
                 Message =>
                     "Send not escalation for Ticket $Ticket{TicketNumber}/$Ticket{TicketID} because currently no working hours!",
             );
         }
+
         return 1;
     }
 
     # needed for deciding whether events should be triggered
-    my @HistoryLines = $Self->{TicketObject}->HistoryGet(
+    my @HistoryLines = $TicketObject->HistoryGet(
         TicketID => $Ticket{TicketID},
         UserID   => 1,
     );
@@ -116,21 +100,20 @@ sub Run {
     for my $Attr ( grep { defined $Ticket{$_} } sort keys %TicketAttr2Event ) {
 
         # the decay time is configured in minutes
-        my $DecayTimeInSeconds
-            = $Self->{ConfigObject}->Get('OTRSEscalationEvents::DecayTime') || 0;
+        my $DecayTimeInSeconds = $Kernel::OM->Get('Kernel::Config')->Get('OTRSEscalationEvents::DecayTime') || 0;
+
         $DecayTimeInSeconds *= 60;
 
         # get the last time this event was triggered
         # search in reverse order, as @HistoryLines sorted ascendingly by CreateTime
         if ($DecayTimeInSeconds) {
-            my $PrevEventLine
-                = first { $_->{HistoryType} eq $TicketAttr2Event{$Attr} }
+            my $PrevEventLine = first { $_->{HistoryType} eq $TicketAttr2Event{$Attr} }
             reverse @HistoryLines;
             if ( $PrevEventLine && $PrevEventLine->{CreateTime} ) {
-                my $PrevEventTime = $Self->{TimeObject}->TimeStamp2SystemTime(
+                my $PrevEventTime = $TimeObject->TimeStamp2SystemTime(
                     String => $PrevEventLine->{CreateTime},
                 );
-                my $TimeSincePrevEvent = $Self->{TimeObject}->SystemTime() - $PrevEventTime;
+                my $TimeSincePrevEvent = $TimeObject->SystemTime() - $PrevEventTime;
 
                 next ATTR if $TimeSincePrevEvent <= $DecayTimeInSeconds;
             }
@@ -143,7 +126,7 @@ sub Run {
     for my $Event (@Events) {
 
         # trigger the event
-        $Self->{TicketObject}->EventHandler(
+        $TicketObject->EventHandler(
             Event  => $Event,
             UserID => 1,
             Data   => {
@@ -153,7 +136,7 @@ sub Run {
         );
 
         # log the triggered event in the history
-        $Self->{TicketObject}->HistoryAdd(
+        $TicketObject->HistoryAdd(
             TicketID     => $Param{TicketID},
             HistoryType  => $Event,
             Name         => "%%$Event%%triggered",

@@ -306,8 +306,9 @@ sub Run {
 
                 # update preferences
                 my %Preferences = %{ $Self->{ConfigObject}->Get('CustomerPreferencesGroups') };
+                GROUP:
                 for my $Group ( sort keys %Preferences ) {
-                    next if $Group eq 'Password';
+                    next GROUP if $Group eq 'Password';
 
                     # get user data
                     my %UserData = $Self->{CustomerUserObject}->CustomerUserDataGet(
@@ -327,11 +328,16 @@ sub Run {
                     if (@Params) {
                         my %GetParam;
                         for my $ParamItem (@Params) {
-                            my @Array
-                                = $Self->{ParamObject}->GetArray( Param => $ParamItem->{Name} );
+                            my @Array = $Self->{ParamObject}->GetArray( Param => $ParamItem->{Name} );
                             $GetParam{ $ParamItem->{Name} } = \@Array;
                         }
-                        if ( !$Object->Run( GetParam => \%GetParam, UserData => \%UserData ) ) {
+                        if (
+                            !$Object->Run(
+                                GetParam => \%GetParam,
+                                UserData => \%UserData
+                            )
+                            )
+                        {
                             $Note .= $Self->{LayoutObject}->Notify( Info => $Object->Error() );
                         }
                     }
@@ -462,8 +468,9 @@ sub Run {
 
                 # update preferences
                 my %Preferences = %{ $Self->{ConfigObject}->Get('CustomerPreferencesGroups') };
+                GROUP:
                 for my $Group ( sort keys %Preferences ) {
-                    next if $Group eq 'Password';
+                    next GROUP if $Group eq 'Password';
 
                     # get user data
                     my %UserData = $Self->{CustomerUserObject}->CustomerUserDataGet(
@@ -479,16 +486,20 @@ sub Run {
                         UserObject => $Self->{CustomerUserObject},
                         Debug      => $Self->{Debug},
                     );
-                    my @Params
-                        = $Object->Param( %{ $Preferences{$Group} }, UserData => \%UserData );
+                    my @Params = $Object->Param( %{ $Preferences{$Group} }, UserData => \%UserData );
                     if (@Params) {
                         my %GetParam;
                         for my $ParamItem (@Params) {
-                            my @Array
-                                = $Self->{ParamObject}->GetArray( Param => $ParamItem->{Name} );
+                            my @Array = $Self->{ParamObject}->GetArray( Param => $ParamItem->{Name} );
                             $GetParam{ $ParamItem->{Name} } = \@Array;
                         }
-                        if ( !$Object->Run( GetParam => \%GetParam, UserData => \%UserData ) ) {
+                        if (
+                            !$Object->Run(
+                                GetParam => \%GetParam,
+                                UserData => \%UserData
+                            )
+                            )
+                        {
                             $Note .= $Self->{LayoutObject}->Notify( Info => $Object->Error() );
                         }
                     }
@@ -529,8 +540,8 @@ sub Run {
                     my $UserQuote     = $Self->{LayoutObject}->Ascii2Html( Text => $User );
                     if ( $Self->{ConfigObject}->Get('Frontend::Module')->{AgentTicketPhone} ) {
                         $URL
-                            .= "<a href=\"\$Env{\"CGIHandle\"}?Action=AgentTicketPhone;Subaction=StoreNew;ExpandCustomerName=2;CustomerUser=$UserHTMLQuote;\$QEnv{\"ChallengeTokenParam\"}\">"
-                            . $Self->{LayoutObject}->{LanguageObject}->Get('New phone ticket')
+                            .= "<a href=\"$Self->{LayoutObject}->{Baselink}Action=AgentTicketPhone;Subaction=StoreNew;ExpandCustomerName=2;CustomerUser=$UserHTMLQuote;$Self->{LayoutObject}->{ChallengeTokenParam}\">"
+                            . $Self->{LayoutObject}->{LanguageObject}->Translate('New phone ticket')
                             . "</a>";
                     }
                     if ( $Self->{ConfigObject}->Get('Frontend::Module')->{AgentTicketEmail} ) {
@@ -538,15 +549,16 @@ sub Run {
                             $URL .= " - ";
                         }
                         $URL
-                            .= "<a href=\"\$Env{\"CGIHandle\"}?Action=AgentTicketEmail;Subaction=StoreNew;ExpandCustomerName=2;CustomerUser=$UserHTMLQuote;\$QEnv{\"ChallengeTokenParam\"}\">"
-                            . $Self->{LayoutObject}->{LanguageObject}->Get('New email ticket')
+                            .= "<a href=\"$Self->{LayoutObject}->{Baselink}Action=AgentTicketEmail;Subaction=StoreNew;ExpandCustomerName=2;CustomerUser=$UserHTMLQuote;$Self->{LayoutObject}->{ChallengeTokenParam}\">"
+                            . $Self->{LayoutObject}->{LanguageObject}->Translate('New email ticket')
                             . "</a>";
                     }
                     if ($URL) {
                         $Output
                             .= $Self->{LayoutObject}->Notify(
-                            Data => $Self->{LayoutObject}->{LanguageObject}->Get(
-                                'Customer %s added", "' . $UserQuote
+                            Data => $Self->{LayoutObject}->{LanguageObject}->Translate(
+                                'Customer %s added',
+                                $UserQuote,
                                 )
                                 . " ( $URL )!",
                             );
@@ -554,8 +566,9 @@ sub Run {
                     else {
                         $Output
                             .= $Self->{LayoutObject}->Notify(
-                            Data => $Self->{LayoutObject}->{LanguageObject}->Get(
-                                'Customer %s added", "' . $UserQuote
+                            Data => $Self->{LayoutObject}->{LanguageObject}->Translate(
+                                'Customer %s added',
+                                $UserQuote,
                                 )
                                 . "!",
                             );
@@ -799,8 +812,9 @@ sub _Edit {
         $Self->{LayoutObject}->Block( Name => 'HeaderAdd' );
     }
 
+    ENTRY:
     for my $Entry ( @{ $Self->{ConfigObject}->Get( $Param{Source} )->{Map} } ) {
-        next if !$Entry->[0];
+        next ENTRY if !$Entry->[0];
 
         my $Block = 'Input';
 
@@ -856,13 +870,11 @@ sub _Edit {
             }
 
             # get the data of the current selection
-            my $SelectionsData
-                = $Self->{ConfigObject}->Get( $Param{Source} )->{Selections}->{ $Entry->[0] };
+            my $SelectionsData = $Self->{ConfigObject}->Get( $Param{Source} )->{Selections}->{ $Entry->[0] };
 
             # make sure the encoding stamp is set
             for my $Key ( sort keys %{$SelectionsData} ) {
-                $SelectionsData->{$Key}
-                    = $Self->{EncodeObject}->EncodeInput( $SelectionsData->{$Key} );
+                $SelectionsData->{$Key} = $Self->{EncodeObject}->EncodeInput( $SelectionsData->{$Key} );
             }
 
             # build option string
@@ -871,7 +883,7 @@ sub _Edit {
                 Name        => $Entry->[0],
                 Translation => 1,
                 SelectedID  => $Param{ $Entry->[0] },
-                Class => $Param{RequiredClass} . ' ' . $Param{Errors}->{ $Entry->[0] . 'Invalid' },
+                Class       => $Param{RequiredClass} . ' ' . $Param{Errors}->{ $Entry->[0] . 'Invalid' },
             );
         }
         elsif ( $Entry->[0] =~ /^ValidID/i ) {
@@ -887,7 +899,7 @@ sub _Edit {
                 Data       => { $Self->{ValidObject}->ValidList(), },
                 Name       => $Entry->[0],
                 SelectedID => defined( $Param{ $Entry->[0] } ) ? $Param{ $Entry->[0] } : 1,
-                Class => $Param{RequiredClass} . ' ' . $Param{Errors}->{ $Entry->[0] . 'Invalid' },
+                Class      => $Param{RequiredClass} . ' ' . $Param{Errors}->{ $Entry->[0] . 'Invalid' },
             );
         }
         elsif (
@@ -919,7 +931,7 @@ sub _Edit {
                 Name       => $Entry->[0],
                 Max        => 80,
                 SelectedID => $Param{ $Entry->[0] } || $Param{CustomerID},
-                Class => $Param{RequiredClass} . ' ' . $Param{Errors}->{ $Entry->[0] . 'Invalid' },
+                Class      => $Param{RequiredClass} . ' ' . $Param{Errors}->{ $Entry->[0] . 'Invalid' },
             );
         }
         else {
@@ -933,7 +945,10 @@ sub _Edit {
         else {
             $Self->{LayoutObject}->Block(
                 Name => 'PreferencesGeneric',
-                Data => { Item => $Entry->[1], %Param },
+                Data => {
+                    Item => $Entry->[1],
+                    %Param
+                },
             );
             $Self->{LayoutObject}->Block(
                 Name => "PreferencesGeneric$Block",
@@ -1019,16 +1034,17 @@ sub _Edit {
             }
 
             # show each preferences setting
+            PRIO:
             for my $Prio ( sort keys %Data ) {
 
                 my $Group = $Data{$Prio};
                 if ( !$Self->{ConfigObject}->{CustomerPreferencesGroups}->{$Group} ) {
-                    next;
+                    next PRIO;
                 }
 
                 my %Preference = %{ $Self->{ConfigObject}->{CustomerPreferencesGroups}->{$Group} };
                 if ( $Group eq 'Password' ) {
-                    next;
+                    next PRIO;
                 }
 
                 my $Module = $Preference{Module}

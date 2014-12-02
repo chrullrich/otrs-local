@@ -146,6 +146,23 @@ em {
 }
 
 /**
+ * @subsection  Regular lists
+ * @note        List elements (ul, ol) are being reset by default to avoid browser styling, so we
+                need to define our own 'default' lists using a class.
+ */
+
+ul.Default {
+    list-style-type: square;
+    margin: 5px 0px;
+    padding-left: 20px;
+}
+
+ul.Default li {
+    line-height: 130%;
+    margin-bottom: 3px;
+}
+
+/**
  * @subsection  Definition lists
  */
 dl {
@@ -315,7 +332,7 @@ dd {
 
 .MainBox > h1 {
     margin: 0;
-    padding: 10px 8px 8px;
+    padding: 10px 8px 15px 8px;
     position: relative;
 }
 
@@ -354,7 +371,7 @@ dd {
 }
 
 .OverviewBox > h1 {
-    margin: 0;
+    margin: 10px 0px;
     padding: 8px 11px 7px;
     position: relative;
 }
@@ -432,15 +449,20 @@ dd {
  */
 
 .MessageBox {
-    margin: -2px 18px 0 10px;
-    border: 1px solid #B9821C;
-    background: #F39C19;
-    border-bottom-right-radius: 4px;
-    border-bottom-left-radius: 4px;
-    -webkit-box-shadow: 0 1px 0 rgba(0,0,0,0.1);
-    box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+    margin: 5px 18px 0 10px;
+    background: #F7AE40;
     position: relative;
     z-index: 1;
+}
+
+.MessageBox.WithIcon {
+    padding-left: 20px;
+}
+
+.MessageBox.WithIcon > i {
+    position: absolute;
+    left: 12px;
+    top: 12px;
 }
 
 .RTL .MessageBox {
@@ -448,12 +470,7 @@ dd {
 }
 
 .MessageBox p {
-    padding: 7px 12px 6px;
-    font-weight: bold;
-    border-left: 1px solid #F6AF2F;
-    border-right: 1px solid #F6AF2F;
-    border-bottom-right-radius: 2px;
-    border-bottom-left-radius: 2px;
+    padding: 10px;
 }
 
 .MessageBox p,
@@ -461,7 +478,7 @@ dd {
     color: #442A0B;
 }
 
-.MessageBox a {
+.MessageBox a:hover {
     text-decoration: underline;
 }
 
@@ -470,12 +487,7 @@ dd {
 }
 
 .MessageBox.Error {
-    border-color: #A6281C;
-    background: #F03432;
-}
-
-.MessageBox.Error p {
-    border-color: #F25146;
+    background: #F25C5C;
 }
 
 .MessageBox.Error p,
@@ -497,33 +509,63 @@ dd {
     color: #044016;
 }
 
+.MessageBox p a:after {
+    content: "\2192";
+    display: inline-block;
+    font-size: 15px;
+}
+
+.MessageBox.Info {
+    background-color: #2A5464;
+}
+
+.MessageBox.Info p,
+.MessageBox.Info a {
+    color: #fff;
+}
+
+.MessageBox a.Button:after {
+    content: "";
+}
+
+.MessageBox a.Button {
+    display: inline;
+    padding: 3px 7px;
+}
+
+.MessageBox a.Button:hover {
+    text-decoration: none;
+}
+
+.MessageBox.Info a.Button {
+    background-color: #3E6C7C;
+}
+
+.MessageBox.Info a.Button:hover {
+    background-color: #4B7C8E;
+}
+
+.MessageBox.Info a.Button i {
+    color: #89C6D1;
+}
+
 /**
  * @subsection  Flag
  */
-.Flag {
-    background: transparent url(../img/flag_shadow.png) no-repeat scroll 0 0;
-    height: 18px;
-    width: 24px;
-}
 
 .Flag.Small {
     width: 17px;
-    height: 10px;
-    background-position: bottom right;
+    height: 8px;
+    margin: 0px auto;
 }
 
 .Flag span {
     display: block;
-    height: 16px;
-    margin-right: 2px;
+    height: 100%;
     text-indent: -9999px;
     cursor: pointer;
     /* set a default color for priorities */
     background-color: #cdcdcd;
-}
-
-.Flag.Small span {
-    height: 8px;
 }
 
 .Flag span.Escalated {
@@ -561,7 +603,8 @@ dd {
 /**
  * @subsection  "Unread" star
  */
-span.UnreadArticles {
+span.UnreadArticles,
+div.UnreadArticles {
     display: block;
     width: 16px;
     height: 15px;
@@ -571,7 +614,8 @@ span.UnreadArticles {
     padding: 0px 3px !important;
 }
 
-span.UnreadArticles i {
+span.UnreadArticles i,
+div.UnreadArticles i {
     display: block;
     position: absolute;
     left: 0px;
@@ -581,11 +625,13 @@ span.UnreadArticles i {
     color: #ddd;
 }
 
-span.UnreadArticles em {
+span.UnreadArticles em,
+div.UnreadArticles em {
     display: none;
 }
 
-span.UnreadArticles i:first-child {
+span.UnreadArticles i:first-child,
+div.UnreadArticles i:first-child {
     color: #777 !important;
     font-size: 16px;
     z-index: 1;
@@ -593,11 +639,13 @@ span.UnreadArticles i:first-child {
     top: -1px;
 }
 
-span.UnreadArticles.Remarkable i {
+span.UnreadArticles.Remarkable i,
+div.UnreadArticles.Remarkable i {
     color: #F2BD0E;
 }
 
-span.UnreadArticles.Ordinary {
+span.UnreadArticles.Ordinary,
+div.UnreadArticles.Ordinary {
     color: #ddd;
 }
 
@@ -617,6 +665,10 @@ span.ImportantArticles {
 
 span.ImportantArticles em {
     display: none;
+}
+
+span.ImportantArticles i {
+    color: #C10505;
 }
 
 /**
@@ -641,12 +693,12 @@ span.ImportantArticles em {
  * @subsection  Datepicker
  */
 .DatepickerIcon {
-    margin: 0 0 0 4px;
+    margin: 1px 0 0 4px;
     height: 16px;
     width: 16px;
-    background: transparent url(../img/icons/calendar.png) no-repeat;
     display: inline-block;
     vertical-align: top;
+    color: #333;
 }
 
 .RTL .DatepickerIcon {
@@ -679,6 +731,13 @@ td.Highlight a.ui-state-default {
 
 .ui-autocomplete {
     z-index: 20 !important;
+    max-height: 200px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.ui-autocomplete .ui-menu-item {
+    font-size: 11px;
 }
 
 .ui-overlay-autocomplete {
@@ -690,18 +749,6 @@ td.Highlight a.ui-state-default {
  */
 .IconInline {
     display: inline-block;
-}
-
-.IconPDF {
-    width: 16px;
-    height: 16px;
-    background-image: url(../img/icons/document-pdf.png);
-}
-
-.IconSave {
-    width: 16px;
-    height: 16px;
-    background-image: url(../img/icons/disk.png);
 }
 
 .IconReady {
@@ -771,6 +818,72 @@ iframe.TextOption.Customer {
  */
 .ArticleBody {
     font-family: monospace,fixed;
+    word-wrap: break-word;
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 10px;
+}
+
+
+/**
+ * @subsection  Chat
+ */
+
+.ArticleChat .Name {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.ArticleChat .Time {
+    padding-right: 5px;
+    color: #888;
+    white-space: nowrap;
+}
+
+.ArticleChat .SystemGenerated .Name {
+    display: none;
+}
+
+.ArticleChat .SystemGenerated .Text {
+    font-style: italic;
+    color: #888;
+}
+
+.ArticleChat .Own .Name {
+    color: red;
+}
+
+.ArticleChat > div {
+    display: table;
+}
+
+.ArticleChat > div > div {
+    display: table-row;
+}
+
+.ArticleChat > div > div > span {
+    display: table-cell;
+}
+
+#ChatStartDialog {
+    width: 500px;
+}
+
+#ChatStartDialog form {
+    display: block;
+    padding: 10px;
+}
+
+#ChatStartDialog form input {
+    width: 375px;
+}
+
+.ChatProtocol {
+    border: 1px solid #ccc;
+    padding: 2px;
+    overflow-y: auto;
+    max-height: 150px;
+    width: 617px;
 }
 
 /**
@@ -785,6 +898,70 @@ iframe.TextOption.Customer {
 
 .ui-menu .ui-menu-item a {
     border: 1px solid #fff;
+}
+
+.ui-corner-all {
+    border-radius: 0px !important;
+}
+
+.ui-widget-header {
+    background: #eee !important;
+    border: 0px !important;
+    font-weight: normal !important;
+}
+
+.ui-state-default, 
+.ui-widget-content .ui-state-default, 
+.ui-widget-header .ui-state-default {
+    background: #f2f2f2 !important;
+}
+
+.ui-state-hover, 
+.ui-widget-content .ui-state-hover, 
+.ui-widget-header .ui-state-hover, 
+.ui-state-focus, 
+.ui-widget-content .ui-state-focus, 
+.ui-widget-header .ui-state-focus {
+    background: #ddd !important;
+} 
+
+/**
+ * @subsection global CKEditor fixes/improvements
+ */
+
+.cke_combo__fontsize .cke_combo_text {
+    width: 40px !important;
+}
+
+#cke_RichText, 
+.cke_toolbar > .cke_toolgroup, 
+.cke_toolbar .cke_combo_button, 
+.cke_inner .cke_contents,
+.cke_dialog_body,
+input.cke_dialog_ui_input_password, 
+input.cke_dialog_ui_input_text, 
+textarea.cke_dialog_ui_input_textarea {
+    border-radius: 0px !important;
+}
+
+.cke_toolgroup .cke_button_on {
+    background-color: #ccc;
+}
+
+input.cke_dialog_ui_input_password:focus, 
+input.cke_dialog_ui_input_text:focus, 
+textarea.cke_dialog_ui_input_textarea:focus {
+    box-shadow: none !important;
+    border-color: #f92 !important;
+}
+
+/**
+ * @subsection global nvd3 improvements/fixes
+ */
+
+.nvtooltip {
+    font-size: 11px !important;
+    border: 0px !important;
 }
 
 } /* end @media */

@@ -13,6 +13,11 @@ package Kernel::System::Log::File;
 use strict;
 use warnings;
 
+our @ObjectDependencies = (
+    'Kernel::Config',
+    'Kernel::System::Encode',
+);
+
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -20,22 +25,15 @@ sub new {
     my $Self = {};
     bless( $Self, $Type );
 
-    # get needed objects
-    for (qw(ConfigObject EncodeObject)) {
-        if ( $Param{$_} ) {
-            $Self->{$_} = $Param{$_};
-        }
-        else {
-            die "Got no $_!";
-        }
-    }
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
     # get logfile location
-    $Self->{LogFile} = $Param{ConfigObject}->Get('LogModule::LogFile')
+    $Self->{LogFile} = $ConfigObject->Get('LogModule::LogFile')
         || die 'Need LogModule::LogFile param in Config.pm';
 
     # get log file suffix
-    if ( $Param{ConfigObject}->Get('LogModule::LogFile::Date') ) {
+    if ( $ConfigObject->Get('LogModule::LogFile::Date') ) {
         my ( $s, $m, $h, $D, $M, $Y, $WD, $YD, $DST ) = localtime( time() );    ## no critic
         $Y = $Y + 1900;
         $M++;
@@ -73,8 +71,10 @@ sub Log {
     }
 
     # write log file
-    $Self->{EncodeObject}->SetIO($FH);
+    $Kernel::OM->Get('Kernel::System::Encode')->SetIO($FH);
+
     print $FH '[' . localtime() . ']';    ## no critic
+
     if ( lc $Param{Priority} eq 'debug' ) {
         print $FH "[Debug][$Param{Module}][$Param{Line}] $Param{Message}\n";
     }
@@ -100,6 +100,7 @@ sub Log {
 
     # close file handle
     close $FH;
+
     return 1;
 }
 

@@ -28,22 +28,14 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Main;
-use Kernel::System::DB;
+use Kernel::System::ObjectManager;
 
-# create common objects
-my %CommonObject = ();
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix    => 'OTRS-otrs.CryptPassword.pl',
-    ConfigObject => $CommonObject{ConfigObject},
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.CryptPassword.pl',
+    },
 );
-$CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject} = Kernel::System::DB->new( %CommonObject, AutoConnectNo => 1 );
 
 # check args
 my $Password = shift;
@@ -56,6 +48,6 @@ if ( !$Password ) {
 }
 else {
     chomp $Password;
-    my $H = $CommonObject{DBObject}->_Encrypt($Password);
+    my $H = $Kernel::OM->Get('Kernel::System::DB')->_Encrypt($Password);
     print "Crypted password: {$H}\n";
 }

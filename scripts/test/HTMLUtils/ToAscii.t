@@ -9,12 +9,13 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
 
-use Kernel::System::HTMLUtils;
+use vars (qw($Self));
 
-my $HTMLUtilsObject = Kernel::System::HTMLUtils->new( %{$Self} );
+use Kernel::System::ObjectManager;
+
+my $HTMLUtilsObject = $Kernel::OM->Get('Kernel::System::HTMLUtils');
 
 # ToAscii tests
 my @Tests = (
@@ -177,21 +178,35 @@ Fifth Line',
         Name   => 'ToAscii - <style> removal'
     },
     {
-        Input  => 'a<style />bc<style type="text/css">d</style >e',
+        Input  => '<!-- asdlfjasdf sdflajsdfj -->',
+        Result => '',
+        Name   => 'ToAscii - comment removal'
+    },
+    {
+        Input  => 'a <!-- asdlfjasdf sdflajsdfj -->   ce',
+        Result => 'a ce',
+        Name   => 'ToAscii - comment removal with content'
+    },
+    {
+        Input  => "a <!-- asdlfjasdf \n sdflajsdfj -->   ce",
+        Result => 'a ce',
+        Name   => 'ToAscii - comment removal with content',
+    },
+    {
+        Input  => 'a<style />bc<style type="text/css">d</style  >e',
         Result => 'abce',
         Name   => 'ToAscii - <style /> removal'
     },
     {
-        Input  => 'a<style type="text/css" />bc<style type="text/css">d</style >e',
+        Input  => 'a<style type="text/css" />bc<style type="text/css">d</style  >e',
         Result => 'abce',
         Name   => 'ToAscii - <style /> (with attributes) removal'
     },
     {
-        Input  => 'a<style/>bc<style type="text/css">d</style >e',
+        Input  => 'a<style/>bc<style type="text/css">d</style  >e',
         Result => 'abce',
         Name   => 'ToAscii - <style/> (no whitespaces) removal'
     },
-
 );
 
 for my $Test (@Tests) {

@@ -9,40 +9,17 @@
 
 use strict;
 use warnings;
-
 use utf8;
+
 use vars (qw($Self));
 
-use Kernel::Config;
-use Kernel::System::Ticket;
-use Kernel::System::State;
-use Kernel::System::Queue;
-use Kernel::System::Type;
+# get needed objects
+my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+my $QueueObject  = $Kernel::OM->Get('Kernel::System::Queue');
+my $TypeObject   = $Kernel::OM->Get('Kernel::System::Type');
+my $StateObject  = $Kernel::OM->Get('Kernel::System::State');
 
-# create local objects
-my $ConfigObject = Kernel::Config->new();
-my $UserObject   = Kernel::System::User->new(
-    ConfigObject => $ConfigObject,
-    %{$Self},
-);
-my $TicketObject = Kernel::System::Ticket->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $QueueObject = Kernel::System::Queue->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $TypeObject = Kernel::System::Type->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $StateObject = Kernel::System::State->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-
-$TicketObject->{CacheInternalObject}->CleanUp();
+$Kernel::OM->Get('Kernel::System::Cache')->CleanUp();
 
 my @Tests = (
     {
@@ -62,13 +39,13 @@ my @Tests = (
             },
             {
                 ArticleCreate => {
-                    ArticleType => 'note-internal',    # email-external|email-internal|phone|fax|...
-                    SenderType  => 'agent',            # agent|system|customer
-                    From    => 'Some Agent <email@example.com>',           # not required but useful
-                    To      => 'Some Customer A <customer-a@example.com>', # not required but useful
-                    Subject => 'some short description',                   # required
-                    Body    => 'the message text',                         # required
-                    Charset => 'ISO-8859-15',
+                    ArticleType => 'note-internal',                     # email-external|email-internal|phone|fax|...
+                    SenderType  => 'agent',                             # agent|system|customer
+                    From        => 'Some Agent <email@example.com>',    # not required but useful
+                    To          => 'Some Customer A <customer-a@example.com>',    # not required but useful
+                    Subject     => 'some short description',                      # required
+                    Body        => 'the message text',                            # required
+                    Charset     => 'ISO-8859-15',
                     MimeType    => 'text/plain',
                     HistoryType => 'OwnerUpdate'
                     ,    # EmailCustomer|Move|AddNote|PriorityUpdate|WebRequestCustomer|...
@@ -80,11 +57,11 @@ my @Tests = (
                 ArticleCreate => {
                     ArticleType => 'note-internal',    # email-external|email-internal|phone|fax|...
                     SenderType  => 'agent',            # agent|system|customer
-                    From    => 'Some other Agent <email2@example.com>',    # not required but useful
-                    To      => 'Some Customer A <customer-a@example.com>', # not required but useful
-                    Subject => 'some short description',                   # required
-                    Body    => 'the message text',                         # required
-                    Charset => 'UTF-8',
+                    From        => 'Some other Agent <email2@example.com>',       # not required but useful
+                    To          => 'Some Customer A <customer-a@example.com>',    # not required but useful
+                    Subject     => 'some short description',                      # required
+                    Body        => 'the message text',                            # required
+                    Charset     => 'UTF-8',
                     MimeType    => 'text/plain',
                     HistoryType => 'OwnerUpdate'
                     ,    # EmailCustomer|Move|AddNote|PriorityUpdate|WebRequestCustomer|...

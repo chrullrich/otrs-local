@@ -73,8 +73,11 @@ sub Run {
     }
 
     # get ACL restrictions
-    $Self->{TicketObject}->TicketAcl(
-        Data          => '-',
+    my %PossibleActions = ( 1 => $Self->{Action} );
+
+    my $ACL = $Self->{TicketObject}->TicketAcl(
+        Data          => \%PossibleActions,
+        Action        => $Self->{Action},
         TicketID      => $Self->{TicketID},
         ReturnType    => 'Action',
         ReturnSubType => '-',
@@ -82,11 +85,13 @@ sub Run {
     );
     my %AclAction = $Self->{TicketObject}->TicketAclActionData();
 
-    # check if ACL resctictions if exist
-    if ( IsHashRefWithData( \%AclAction ) ) {
+    # check if ACL restrictions exist
+    if ( $ACL || IsHashRefWithData( \%AclAction ) ) {
+
+        my %AclActionLookup = reverse %AclAction;
 
         # show error screen if ACL prohibits this action
-        if ( defined $AclAction{ $Self->{Action} } && $AclAction{ $Self->{Action} } eq '0' ) {
+        if ( !$AclActionLookup{ $Self->{Action} } ) {
             return $Self->{LayoutObject}->NoPermission( WithHeader => 'yes' );
         }
     }
@@ -114,7 +119,10 @@ sub Run {
                 # show lock state
                 $Self->{LayoutObject}->Block(
                     Name => 'PropertiesLock',
-                    Data => { %Param, TicketID => $Self->{TicketID}, },
+                    Data => {
+                        %Param,
+                        TicketID => $Self->{TicketID},
+                    },
                 );
             }
         }
@@ -132,8 +140,7 @@ sub Run {
                 $Output .= $Self->{LayoutObject}->Warning(
                     Message => $Self->{LayoutObject}->{LanguageObject}
                         ->Get('Sorry, you need to be the ticket owner to perform this action.'),
-                    Comment => $Self->{LayoutObject}->{LanguageObject}
-                        ->Get('Please change the owner first.'),
+                    Comment => $Self->{LayoutObject}->{LanguageObject}->Get('Please change the owner first.'),
                 );
                 $Output .= $Self->{LayoutObject}->Footer(
                     Type => 'Small',
@@ -257,7 +264,7 @@ sub Run {
 
             $Output .= $Self->{LayoutObject}->Output(
                 TemplateFile => 'AgentTicketMerge',
-                Data => { %Param, %GetParam, %Ticket, %Error },
+                Data         => { %Param, %GetParam, %Ticket, %Error },
             );
             $Output .= $Self->{LayoutObject}->Footer(
                 Type => 'Small',
@@ -311,7 +318,7 @@ sub Run {
 
             $Output .= $Self->{LayoutObject}->Output(
                 TemplateFile => 'AgentTicketMerge',
-                Data => { %Param, %Ticket },
+                Data         => { %Param, %Ticket },
             );
             $Output .= $Self->{LayoutObject}->Footer(
                 Type => 'Small',
@@ -398,7 +405,7 @@ sub Run {
         # prepare subject ...
         $Article{Subject} = $Self->{TicketObject}->TicketSubjectBuild(
             TicketNumber => $Article{TicketNumber},
-            Subject => $Article{Subject} || '',
+            Subject      => $Article{Subject} || '',
         );
 
         # prepare from ...
@@ -440,7 +447,7 @@ sub Run {
 
         $Output .= $Self->{LayoutObject}->Output(
             TemplateFile => 'AgentTicketMerge',
-            Data => { %Param, %Ticket, %Article, }
+            Data         => { %Param, %Ticket, %Article, }
         );
         $Output .= $Self->{LayoutObject}->Footer(
             Type => 'Small',

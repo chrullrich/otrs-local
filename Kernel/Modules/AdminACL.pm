@@ -83,100 +83,49 @@ sub Run {
             Source => 'string',
         );
 
-        my $OverwriteExistingEntities
-            = $Self->{ParamObject}->GetParam( Param => 'OverwriteExistingEntities' ) || '';
+        my $OverwriteExistingEntities = $Self->{ParamObject}->GetParam( Param => 'OverwriteExistingEntities' ) || '';
 
-        my $ACLData = $Self->{YAMLObject}->Load( Data => $UploadStuff{Content} );
+        my $ACLImport = $Self->{ACLObject}->ACLImport(
+            Content                   => $UploadStuff{Content},
+            OverwriteExistingEntities => $OverwriteExistingEntities,
+            UserID                    => $Self->{UserID},
+        );
 
-        if ( ref $ACLData ne 'ARRAY' ) {
+        if ( !$ACLImport->{Success} ) {
+            my $Message = $ACLImport->{Message}
+                || 'ACLs could not be Imported due to a unknown error,'
+                . ' please check OTRS logs for more information';
             return $Self->{LayoutObject}->ErrorScreen(
-                Message =>
-                    "Couldn't read ACL configuration file. Please make sure the file is valid.",
+                Message => $Message,
             );
         }
 
-        my @UpdatedACLs;
-        my @AddedACLs;
-        my @ACLErrors;
-
-        ACL:
-        for my $ACL ( @{$ACLData} ) {
-
-            next ACL if !$ACL;
-            next ACL if ref $ACL ne 'HASH';
-
-            my @ExistingACLs
-                = @{ $Self->{ACLObject}->ACLListGet( UserID => $Self->{UserID} ) || [] };
-            @ExistingACLs = grep { $_->{Name} eq $ACL->{Name} } @ExistingACLs;
-
-            if ( $OverwriteExistingEntities && $ExistingACLs[0] ) {
-                my $Success = $Self->{ACLObject}->ACLUpdate(
-                    %{ $ExistingACLs[0] },
-                    Name           => $ACL->{Name},
-                    Comment        => $ACL->{Comment},
-                    Description    => $ACL->{Description} || '',
-                    StopAfterMatch => $ACL->{StopAfterMatch} || 0,
-                    ConfigMatch    => $ACL->{ConfigMatch} || undef,
-                    ConfigChange   => $ACL->{ConfigChange} || undef,
-                    ValidID        => $ACL->{ValidID} || 1,
-                    UserID         => $Self->{UserID},
-                );
-
-                if ($Success) {
-                    push @UpdatedACLs, $ACL->{Name};
-                }
-                else {
-                    push @ACLErrors, $ACL->{Name};
-                }
-
-            }
-            else {
-
-                # now add the ACL
-                my $Success = $Self->{ACLObject}->ACLAdd(
-                    Name           => $ACL->{Name},
-                    Comment        => $ACL->{Comment},
-                    Description    => $ACL->{Description} || '',
-                    ConfigMatch    => $ACL->{ConfigMatch} || undef,
-                    ConfigChange   => $ACL->{ConfigChange} || undef,
-                    StopAfterMatch => $ACL->{StopAfterMatch},
-                    ValidID        => $ACL->{ValidID} || 1,
-                    UserID         => $Self->{UserID},
-                );
-
-                if ($Success) {
-                    push @AddedACLs, $ACL->{Name};
-                }
-                else {
-                    push @ACLErrors, $ACL->{Name};
-                }
-            }
-        }
-
-        my $UpdatedACLsStrg = join( ', ', @UpdatedACLs ) || '';
-        my $AddedACLsStrg   = join( ', ', @AddedACLs )   || '';
-        my $ACLErrorsStrg   = join( ', ', @ACLErrors )   || '';
-
-        if ($AddedACLsStrg) {
+        if ( $ACLImport->{AddedACLs} ) {
             push @{ $Param{NotifyData} }, {
-                Info => 'The following ACLs have been added successfully: ' . $AddedACLsStrg,
+                Info => 'The following ACLs have been added successfully: '
+                    . $ACLImport->{AddedACLs},
             };
         }
-        if ($UpdatedACLsStrg) {
+        if ( $ACLImport->{UpdatedACLs} ) {
             push @{ $Param{NotifyData} }, {
-                Info => 'The following ACLs have been updated successfully: ' . $UpdatedACLsStrg,
+                Info => 'The following ACLs have been updated successfully: '
+                    . $ACLImport->{UpdatedACLs},
             };
         }
-        if ($ACLErrorsStrg) {
+        if ( $ACLImport->{ACLErrors} ) {
             push @{ $Param{NotifyData} }, {
                 Priority => 'Error',
                 Info     => 'There where errors adding/updating the following ACLs: '
-                    . $ACLErrorsStrg
+                    . $ACLImport->{ACLErrors}
                     . '. Please check the log file for more information.',
             };
         }
 
-        if ( ( $UpdatedACLsStrg || $AddedACLsStrg ) && !$SynchronizedMessageVisible ) {
+        if (
+            ( $ACLImport->{UpdatedACLs} || $ACLImport->{AddedACLs} )
+            && !$SynchronizedMessageVisible
+            )
+        {
 
             $Param{NotifyData} = [
                 @{ $Param{NotifyData} || [] },
@@ -267,8 +216,7 @@ sub Run {
         }
 
         # redirect to edit screen
-        return $Self->{LayoutObject}
-            ->Redirect( OP => "Action=$Self->{Action};Subaction=ACLEdit;ID=$ACLID" );
+        return $Self->{LayoutObject}->Redirect( OP => "Action=$Self->{Action};Subaction=ACLEdit;ID=$ACLID" );
     }
 
     # ------------------------------------------------------------ #
@@ -405,8 +353,7 @@ sub Run {
     # ------------------------------------------------------------ #
     elsif ( $Self->{Subaction} eq 'ACLDeploy' ) {
 
-        my $Location
-            = $Self->{ConfigObject}->Get('Home') . '/Kernel/Config/Files/ZZZACL.pm';
+        my $Location = $Self->{ConfigObject}->Get('Home') . '/Kernel/Config/Files/ZZZACL.pm';
 
         my $ACLDump = $Self->{ACLObject}->ACLDump(
             ResultType => 'FILE',
@@ -525,7 +472,7 @@ sub Run {
         else {
 
             $ACLData = $Self->{ACLObject}->ACLListGet(
-                UserID => 1,
+                UserID   => 1,
                 ValidIDs => [ '1', '2' ],
             );
         }
@@ -566,7 +513,7 @@ sub Run {
         my $ACLName =
             $ACLData->{Name}
             . ' ('
-            . $Self->{LayoutObject}->{LanguageObject}->Get('Copy')
+            . $Self->{LayoutObject}->{LanguageObject}->Translate('Copy')
             . ')';
 
         # otherwise save configuration and return to overview screen
@@ -634,8 +581,7 @@ sub _ShowOverview {
             );
 
             # set the valid state
-            $ACLData->{ValidID}
-                = $Self->{ValidObject}->ValidLookup( ValidID => $ACLData->{ValidID} );
+            $ACLData->{ValidID} = $Self->{ValidObject}->ValidLookup( ValidID => $ACLData->{ValidID} );
 
             # print each ACL in overview table
             $Self->{LayoutObject}->Block(
@@ -722,6 +668,16 @@ sub _ShowEdit {
         PossibleNone => 1,
     );
 
+    my $ACLKeysLevel2PossibleAdd = $Self->{ConfigObject}->Get('ACLKeysLevel2::PossibleAdd') || {};
+    $Param{ACLKeysLevel2PossibleAdd} = $Self->{LayoutObject}->BuildSelection(
+        Data         => $ACLKeysLevel2PossibleAdd,
+        Name         => 'ItemAdd',
+        ID           => 'PossibleAdd',
+        Class        => 'ItemAdd LevelToBeAdded',
+        Translation  => 0,
+        PossibleNone => 1,
+    );
+
     my $ACLKeysLevel2PossibleNot = $Self->{ConfigObject}->Get('ACLKeysLevel2::PossibleNot') || {};
     $Param{ACLKeysLevel2PossibleNot} = $Self->{LayoutObject}->BuildSelection(
         Data         => $ACLKeysLevel2PossibleNot,
@@ -742,8 +698,7 @@ sub _ShowEdit {
         PossibleNone => 1,
     );
 
-    my $ACLKeysLevel2PropertiesDatabase
-        = $Self->{ConfigObject}->Get('ACLKeysLevel2::PropertiesDatabase') || {};
+    my $ACLKeysLevel2PropertiesDatabase = $Self->{ConfigObject}->Get('ACLKeysLevel2::PropertiesDatabase') || {};
     $Param{ACLKeysLevel2PropertiesDatabase} = $Self->{LayoutObject}->BuildSelection(
         Data         => $ACLKeysLevel2PropertiesDatabase,
         Name         => 'ItemAdd',
@@ -755,16 +710,20 @@ sub _ShowEdit {
 
     $Param{ACLKeysLevel4Prefixes} = $Self->{LayoutObject}->BuildSelection(
         Data => {
-            ''         => 'Standard',
-            '[RegExp]' => 'Regex',
-            '[regexp]' => 'Regex (ignore case)',
+            ''            => 'Exact match',
+            '[Not]'       => 'Negated Exact match',
+            '[RegExp]'    => 'Regex',
+            '[regexp]'    => 'Regex (ignore case)',
+            '[NotRegExp]' => 'Negated Regex',
+            '[Notregexp]' => 'Negated Regex (ignore case)',
         },
         Name           => 'ItemPrefix',
         Class          => 'ItemPrefix',
         ID             => 'Prefixes',
         Sort           => 'IndividualKey',
-        SortIndividual => [ '', '[RegExp]', '[regexp]' ],
+        SortIndividual => [ '', '[Not]', '[RegExp]', '[regexp]', '[NotRegExp]', '[Notregexp]' ],
         Translation    => 0,
+        AutoComplete   => 'off',
     );
 
     # get list of all possible dynamic fields
@@ -788,8 +747,7 @@ sub _ShowEdit {
 
     # get list of all possible actions
     my @PossibleActionsList;
-    my $ACLKeysLevel3Actions
-        = $Self->{ConfigObject}->Get('ACLKeysLevel3::Actions') || [];
+    my $ACLKeysLevel3Actions = $Self->{ConfigObject}->Get('ACLKeysLevel3::Actions') || [];
 
     for my $Key ( sort keys %{$ACLKeysLevel3Actions} ) {
         push @PossibleActionsList, @{ $ACLKeysLevel3Actions->{$Key} };
@@ -803,6 +761,8 @@ sub _ShowEdit {
         Translation  => 0,
         PossibleNone => 1,
     );
+
+    $Param{PossibleActionsList} = \@PossibleActionsList;
 
     if ( defined $ACLData->{StopAfterMatch} && $ACLData->{StopAfterMatch} == 1 ) {
         $Param{Checked} = 'checked="checked"';

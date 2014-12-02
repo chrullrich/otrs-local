@@ -62,8 +62,7 @@ sub new {
         }
     }
 
-    $Self->{GetParam}->{ForwardTemplateID}
-        = $Self->{ParamObject}->GetParam( Param => 'ForwardTemplateID' ) || '';
+    $Self->{GetParam}->{ForwardTemplateID} = $Self->{ParamObject}->GetParam( Param => 'ForwardTemplateID' ) || '';
 
     # ACL compatibility translation
     $Self->{ACLCompatGetParam}->{NextStateID} = $Self->{GetParam}->{ComposeStateID};
@@ -92,8 +91,11 @@ sub Run {
     my $Output;
 
     # get ACL restrictions
-    $Self->{TicketObject}->TicketAcl(
-        Data          => '-',
+    my %PossibleActions = ( 1 => $Self->{Action} );
+
+    my $ACL = $Self->{TicketObject}->TicketAcl(
+        Data          => \%PossibleActions,
+        Action        => $Self->{Action},
         TicketID      => $Self->{TicketID},
         ReturnType    => 'Action',
         ReturnSubType => '-',
@@ -102,10 +104,12 @@ sub Run {
     my %AclAction = $Self->{TicketObject}->TicketAclActionData();
 
     # check if ACL restrictions exist
-    if ( IsHashRefWithData( \%AclAction ) ) {
+    if ( $ACL || IsHashRefWithData( \%AclAction ) ) {
+
+        my %AclActionLookup = reverse %AclAction;
 
         # show error screen if ACL prohibits this action
-        if ( defined $AclAction{ $Self->{Action} } && $AclAction{ $Self->{Action} } eq '0' ) {
+        if ( !$AclActionLookup{ $Self->{Action} } ) {
             return $Self->{LayoutObject}->NoPermission( WithHeader => 'yes' );
         }
     }
@@ -205,8 +209,7 @@ sub Form {
                 $Output .= $Self->{LayoutObject}->Warning(
                     Message => $Self->{LayoutObject}->{LanguageObject}
                         ->Get('Sorry, you need to be the ticket owner to perform this action.'),
-                    Comment => $Self->{LayoutObject}->{LanguageObject}
-                        ->Get('Please change the owner first.'),
+                    Comment => $Self->{LayoutObject}->{LanguageObject}->Get('Please change the owner first.'),
                 );
                 $Output .= $Self->{LayoutObject}->Footer(
                     Type => 'Small',
@@ -216,7 +219,10 @@ sub Form {
             else {
                 $Self->{LayoutObject}->Block(
                     Name => 'TicketBack',
-                    Data => { %Param, TicketID => $Self->{TicketID}, },
+                    Data => {
+                        %Param,
+                        TicketID => $Self->{TicketID},
+                    },
                 );
             }
         }
@@ -224,7 +230,10 @@ sub Form {
     else {
         $Self->{LayoutObject}->Block(
             Name => 'TicketBack',
-            Data => { %Param, TicketID => $Self->{TicketID}, },
+            Data => {
+                %Param,
+                TicketID => $Self->{TicketID},
+            },
         );
     }
 
@@ -292,12 +301,12 @@ sub Form {
         # prepare body, subject, ReplyTo ...
         $Data{Body} = '<br/>' . $Data{Body};
         if ( $Data{Created} ) {
-            $Data{Body} = $Self->{LayoutObject}->{LanguageObject}->Get('Date') .
+            $Data{Body} = $Self->{LayoutObject}->{LanguageObject}->Translate('Date') .
                 ": $Data{Created}<br/>" . $Data{Body};
         }
         for my $Key (qw( Subject ReplyTo Reply-To Cc To From )) {
             if ( $Data{$Key} ) {
-                my $KeyText = $Self->{LayoutObject}->{LanguageObject}->Get($Key);
+                my $KeyText = $Self->{LayoutObject}->{LanguageObject}->Translate($Key);
 
                 my $Value = $Self->{LayoutObject}->Ascii2RichText(
                     String => $Data{$Key},
@@ -326,10 +335,8 @@ sub Form {
             String => $Data{From},
         );
 
-        my $ForwardedMessageFrom
-            = $Self->{LayoutObject}->{LanguageObject}->Get('Forwarded message from');
-        my $EndForwardedMessage
-            = $Self->{LayoutObject}->{LanguageObject}->Get('End forwarded message');
+        my $ForwardedMessageFrom = $Self->{LayoutObject}->{LanguageObject}->Translate('Forwarded message from');
+        my $EndForwardedMessage  = $Self->{LayoutObject}->{LanguageObject}->Translate('End forwarded message');
 
         $Data{Body} = "<br/>---- $ForwardedMessageFrom $From ---<br/><br/>" . $Data{Body};
         $Data{Body} .= "<br/>---- $EndForwardedMessage ---<br/>";
@@ -354,20 +361,18 @@ sub Form {
             $Data{Body} = "\n" . $Data{Body};
         }
         if ( $Data{Created} ) {
-            $Data{Body} = $Self->{LayoutObject}->{LanguageObject}->Get('Date') .
+            $Data{Body} = $Self->{LayoutObject}->{LanguageObject}->Translate('Date') .
                 ": $Data{Created}\n" . $Data{Body};
         }
         for (qw(Subject ReplyTo Reply-To Cc To From)) {
             if ( $Data{$_} ) {
-                $Data{Body} = $Self->{LayoutObject}->{LanguageObject}->Get($_) .
+                $Data{Body} = $Self->{LayoutObject}->{LanguageObject}->Translate($_) .
                     ": $Data{$_}\n" . $Data{Body};
             }
         }
 
-        my $ForwardedMessageFrom
-            = $Self->{LayoutObject}->{LanguageObject}->Get('Forwarded message from');
-        my $EndForwardedMessage
-            = $Self->{LayoutObject}->{LanguageObject}->Get('End forwarded message');
+        my $ForwardedMessageFrom = $Self->{LayoutObject}->{LanguageObject}->Translate('Forwarded message from');
+        my $EndForwardedMessage  = $Self->{LayoutObject}->{LanguageObject}->Translate('End forwarded message');
 
         $Data{Body} = "\n---- $ForwardedMessageFrom $Data{From} ---\n\n" . $Data{Body};
         $Data{Body} .= "\n---- $EndForwardedMessage ---\n";
@@ -376,14 +381,14 @@ sub Form {
 
     # add std. attachments to email
     if ( $GetParam{ForwardTemplateID} ) {
-        my %AllStdAttachments
-            = $Self->{StdAttachmentObject}->StdAttachmentStandardTemplateMemberList(
+        my %AllStdAttachments = $Self->{StdAttachmentObject}->StdAttachmentStandardTemplateMemberList(
             StandardTemplateID => $GetParam{ForwardTemplateID},
-            );
+        );
         for ( sort keys %AllStdAttachments ) {
             my %AttachmentsData = $Self->{StdAttachmentObject}->StdAttachmentGet( ID => $_ );
             $Self->{UploadCacheObject}->FormIDAddFile(
-                FormID => $GetParam{FormID},
+                FormID      => $GetParam{FormID},
+                Disposition => 'attachment',
                 %AttachmentsData,
             );
         }
@@ -419,7 +424,10 @@ sub Form {
             if ( !$Self->{MainObject}->Require( $Jobs{$Job}->{Module} ) ) {
                 return $Self->{LayoutObject}->FatalError();
             }
-            my $Object = $Jobs{$Job}->{Module}->new( %{$Self}, Debug => $Self->{Debug}, );
+            my $Object = $Jobs{$Job}->{Module}->new(
+                %{$Self},
+                Debug => $Self->{Debug},
+            );
 
             # get params
             for ( $Object->Option( %Data, %GetParam, Config => $Jobs{$Job} ) ) {
@@ -478,8 +486,7 @@ sub Form {
                     my %Filter = $Self->{TicketObject}->TicketAclData();
 
                     # convert Filer key => key back to key => value using map
-                    %{$PossibleValuesFilter}
-                        = map { $_ => $PossibleValues->{$_} }
+                    %{$PossibleValuesFilter} = map { $_ => $PossibleValues->{$_} }
                         keys %Filter;
                 }
             }
@@ -528,6 +535,7 @@ sub Form {
         TicketID     => $Self->{TicketID},
         Title        => $Ticket{Title},
         QueueID      => $Ticket{QueueID},
+        SLAID        => $Ticket{SLAID},
         NextStates   => $Self->_GetNextStates(
             %GetParam,
             %ACLCompatGetParam,
@@ -591,8 +599,7 @@ sub SendEmail {
         next DYNAMICFIELD if !$DynamicField;
         next DYNAMICFIELD if !$DynamicFieldValues{$DynamicField};
 
-        $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField }
-            = $DynamicFieldValues{$DynamicField};
+        $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField } = $DynamicFieldValues{$DynamicField};
     }
     $GetParam{DynamicField} = \%DynamicFieldACLParameters;
 
@@ -600,7 +607,7 @@ sub SendEmail {
     my %StateData;
 
     if ( $GetParam{ComposeStateID} ) {
-        %StateData = $Self->{TicketObject}->{StateObject}->StateGet(
+        %StateData = $Self->{StateObject}->StateGet(
             ID => $GetParam{ComposeStateID},
         );
     }
@@ -701,8 +708,7 @@ sub SendEmail {
                     my %Filter = $Self->{TicketObject}->TicketAclData();
 
                     # convert Filer key => key back to key => value using map
-                    %{$PossibleValuesFilter}
-                        = map { $_ => $PossibleValues->{$_} }
+                    %{$PossibleValuesFilter} = map { $_ => $PossibleValues->{$_} }
                         keys %Filter;
                 }
             }
@@ -760,12 +766,12 @@ sub SendEmail {
     }
 
     # check some values
+    LINE:
     for my $Line (qw(To Cc Bcc)) {
-        next if !$GetParam{$Line};
+        next LINE if !$GetParam{$Line};
         for my $Email ( Mail::Address->parse( $GetParam{$Line} ) ) {
             if ( !$Self->{CheckItemObject}->CheckEmail( Address => $Email->address() ) ) {
-                $Error{ $Line . 'ErrorType' }
-                    = $Line . $Self->{CheckItemObject}->CheckErrorType() . 'ServerErrorMsg';
+                $Error{ $Line . 'ErrorType' } = $Line . $Self->{CheckItemObject}->CheckErrorType() . 'ServerErrorMsg';
                 $Error{ "$Line" . "Invalid" } = 'ServerError';
             }
             my $IsLocal = $Self->{SystemAddress}->SystemAddressIsLocalAddress(
@@ -787,7 +793,10 @@ sub SendEmail {
             if ( !$Self->{MainObject}->Require( $Jobs{$Job}->{Module} ) ) {
                 return $Self->{LayoutObject}->FatalError();
             }
-            my $Object = $Jobs{$Job}->{Module}->new( %{$Self}, Debug => $Self->{Debug}, );
+            my $Object = $Jobs{$Job}->{Module}->new(
+                %{$Self},
+                Debug => $Self->{Debug},
+            );
 
             # get params
             for ( $Object->Option( %GetParam, Config => $Jobs{$Job} ) ) {
@@ -837,7 +846,8 @@ sub SendEmail {
             Param => 'FileUpload',
         );
         $Self->{UploadCacheObject}->FormIDAddFile(
-            FormID => $GetParam{FormID},
+            FormID      => $GetParam{FormID},
+            Disposition => 'attachment',
             %UploadStuff,
         );
     }
@@ -860,6 +870,7 @@ sub SendEmail {
             Title        => $Ticket{Title},
             TicketID     => $Self->{TicketID},
             QueueID      => $QueueID,
+            SLAID        => $Ticket{SLAID},
             NextStates   => $Self->_GetNextStates(
                 %GetParam,
                 %ACLCompatGetParam,
@@ -902,9 +913,15 @@ sub SendEmail {
 
         # remove unused inline images
         my @NewAttachmentData;
+        ATTACHMENT:
         for my $Attachment (@AttachmentData) {
             my $ContentID = $Attachment->{ContentID};
-            if ( $ContentID && ( $Attachment->{ContentType} =~ /image/i ) ) {
+            if (
+                $ContentID
+                && ( $Attachment->{ContentType} =~ /image/i )
+                && ( $Attachment->{Disposition} eq 'inline' )
+                )
+            {
                 my $ContentIDHTMLQuote = $Self->{LayoutObject}->Ascii2Html(
                     Text => $ContentID,
                 );
@@ -914,7 +931,7 @@ sub SendEmail {
                 $GetParam{Body} =~ s/(ContentID=)$ContentIDLinkEncode/$1$ContentID/g;
 
                 # ignore attachment if not linked in body
-                next if $GetParam{Body} !~ /(\Q$ContentIDHTMLQuote\E|\Q$ContentID\E)/i;
+                next ATTACHMENT if $GetParam{Body} !~ /(\Q$ContentIDHTMLQuote\E|\Q$ContentID\E)/i;
             }
 
             # remember inline images and normal attachments
@@ -930,8 +947,9 @@ sub SendEmail {
 
     # send email
     my $To = '';
+    KEY:
     for my $Key (qw(To Cc Bcc)) {
-        next if !$GetParam{$Key};
+        next KEY if !$GetParam{$Key};
         if ($To) {
             $To .= ', ';
         }
@@ -960,7 +978,9 @@ sub SendEmail {
 
     # error page
     if ( !$ArticleID ) {
-        return $Self->{LayoutObject}->ErrorScreen( Comment => 'Please contact the admin.', );
+        return $Self->{LayoutObject}->ErrorScreen(
+            Comment => 'Please contact the admin.',
+        );
     }
 
     # time accounting
@@ -980,8 +1000,7 @@ sub SendEmail {
         next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
         # set the object ID (TicketID or ArticleID) depending on the field configuration
-        my $ObjectID
-            = $DynamicFieldConfig->{ObjectType} eq 'Article' ? $ArticleID : $Self->{TicketID};
+        my $ObjectID = $DynamicFieldConfig->{ObjectType} eq 'Article' ? $ArticleID : $Self->{TicketID};
 
         # set the value
         my $Success = $Self->{BackendObject}->ValueSet(
@@ -1053,12 +1072,16 @@ sub AjaxUpdate {
     # run compose modules
     if ( ref $Self->{ConfigObject}->Get('Ticket::Frontend::ArticleComposeModule') eq 'HASH' ) {
         my %Jobs = %{ $Self->{ConfigObject}->Get('Ticket::Frontend::ArticleComposeModule') };
+        JOB:
         for my $Job ( sort keys %Jobs ) {
 
             # load module
-            next if !$Self->{MainObject}->Require( $Jobs{$Job}->{Module} );
+            next JOB if !$Self->{MainObject}->Require( $Jobs{$Job}->{Module} );
 
-            my $Object = $Jobs{$Job}->{Module}->new( %{$Self}, Debug => $Self->{Debug}, );
+            my $Object = $Jobs{$Job}->{Module}->new(
+                %{$Self},
+                Debug => $Self->{Debug},
+            );
 
             # get params
             for my $Parameter ( $Object->Option( %GetParam, Config => $Jobs{$Job} ) ) {
@@ -1107,8 +1130,7 @@ sub AjaxUpdate {
         next DYNAMICFIELD if !$DynamicField;
         next DYNAMICFIELD if !$DynamicFieldValues{$DynamicField};
 
-        $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField }
-            = $DynamicFieldValues{$DynamicField};
+        $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField } = $DynamicFieldValues{$DynamicField};
     }
     $GetParam{DynamicField} = \%DynamicFieldACLParameters;
 
@@ -1274,16 +1296,23 @@ sub _Mask {
         }
     }
 
+    # get used calendar
+    my $Calendar = $Self->{TicketObject}->TicketCalendarGet(
+        QueueID => $Param{QueueID},
+        SLAID   => $Param{SLAID},
+    );
+
     # pending data string
     $Param{PendingDateString} = $Self->{LayoutObject}->BuildDateSelection(
         %Param,
-        YearPeriodPast   => 0,
-        YearPeriodFuture => 5,
-        Format           => 'DateInputFormatLong',
-        DiffTime         => $Self->{ConfigObject}->Get('Ticket::Frontend::PendingDiffTime') || 0,
-        Class            => $Param{Errors}->{DateInvalid} || ' ',
-        Validate         => 1,
+        YearPeriodPast       => 0,
+        YearPeriodFuture     => 5,
+        Format               => 'DateInputFormatLong',
+        DiffTime             => $Self->{ConfigObject}->Get('Ticket::Frontend::PendingDiffTime') || 0,
+        Class                => $Param{Errors}->{DateInvalid} || ' ',
+        Validate             => 1,
         ValidateDateInFuture => 1,
+        Calendar             => $Calendar,
     );
 
     # Multiple-Autocomplete
@@ -1501,16 +1530,17 @@ sub _Mask {
     }
 
     # show attachments
+    ATTACHMENT:
     for my $Attachment ( @{ $Param{Attachments} } ) {
         if (
             $Attachment->{ContentID}
             && $Self->{LayoutObject}->{BrowserRichText}
             && ( $Attachment->{ContentType} =~ /image/i )
+            && ( $Attachment->{Disposition} eq 'inline' )
             )
         {
-            next;
+            next ATTACHMENT;
         }
-
         $Self->{LayoutObject}->Block(
             Name => 'Attachment',
             Data => $Attachment,
@@ -1531,7 +1561,10 @@ sub _Mask {
     }
 
     # create & return output
-    return $Self->{LayoutObject}->Output( TemplateFile => 'AgentTicketForward', Data => \%Param );
+    return $Self->{LayoutObject}->Output(
+        TemplateFile => 'AgentTicketForward',
+        Data         => \%Param
+    );
 }
 
 sub _GetFieldsToUpdate {
@@ -1570,15 +1603,13 @@ sub _GetExtendedParams {
     my %AddressesList;
 
     my @MultipleCustomer;
-    my $CustomersNumber
-        = $Self->{ParamObject}->GetParam( Param => 'CustomerTicketCounterToCustomer' ) || 0;
+    my $CustomersNumber = $Self->{ParamObject}->GetParam( Param => 'CustomerTicketCounterToCustomer' ) || 0;
     my $Selected = $Self->{ParamObject}->GetParam( Param => 'CustomerSelected' ) || '';
 
     if ($CustomersNumber) {
         my $CustomerCounter = 1;
         for my $Count ( 1 ... $CustomersNumber ) {
-            my $CustomerElement
-                = $Self->{ParamObject}->GetParam( Param => 'CustomerTicketText_' . $Count );
+            my $CustomerElement = $Self->{ParamObject}->GetParam( Param => 'CustomerTicketText_' . $Count );
             my $CustomerSelected = ( $Selected eq $Count ? 'checked="checked"' : '' );
             my $CustomerKey = $Self->{ParamObject}->GetParam( Param => 'CustomerKey_' . $Count )
                 || '';
@@ -1637,18 +1668,15 @@ sub _GetExtendedParams {
     }
 
     my @MultipleCustomerCc;
-    my $CustomersNumberCc
-        = $Self->{ParamObject}->GetParam( Param => 'CustomerTicketCounterCcCustomer' ) || 0;
+    my $CustomersNumberCc = $Self->{ParamObject}->GetParam( Param => 'CustomerTicketCounterCcCustomer' ) || 0;
 
     if ($CustomersNumberCc) {
         my $CustomerCounterCc = 1;
         for my $Count ( 1 ... $CustomersNumberCc ) {
-            my $CustomerElementCc
-                = $Self->{ParamObject}->GetParam( Param => 'CcCustomerTicketText_' . $Count );
-            my $CustomerKeyCc = $Self->{ParamObject}->GetParam( Param => 'CcCustomerKey_' . $Count )
+            my $CustomerElementCc = $Self->{ParamObject}->GetParam( Param => 'CcCustomerTicketText_' . $Count );
+            my $CustomerKeyCc     = $Self->{ParamObject}->GetParam( Param => 'CcCustomerKey_' . $Count )
                 || '';
-            my $CustomerQueueCc
-                = $Self->{ParamObject}->GetParam( Param => 'CcCustomerQueue_' . $Count )
+            my $CustomerQueueCc = $Self->{ParamObject}->GetParam( Param => 'CcCustomerQueue_' . $Count )
                 || '';
 
             if ($CustomerElementCc) {
@@ -1703,19 +1731,15 @@ sub _GetExtendedParams {
     }
 
     my @MultipleCustomerBcc;
-    my $CustomersNumberBcc
-        = $Self->{ParamObject}->GetParam( Param => 'CustomerTicketCounterBccCustomer' ) || 0;
+    my $CustomersNumberBcc = $Self->{ParamObject}->GetParam( Param => 'CustomerTicketCounterBccCustomer' ) || 0;
 
     if ($CustomersNumberBcc) {
         my $CustomerCounterBcc = 1;
         for my $Count ( 1 ... $CustomersNumberBcc ) {
-            my $CustomerElementBcc
-                = $Self->{ParamObject}->GetParam( Param => 'BccCustomerTicketText_' . $Count );
-            my $CustomerKeyBcc
-                = $Self->{ParamObject}->GetParam( Param => 'BccCustomerKey_' . $Count )
+            my $CustomerElementBcc = $Self->{ParamObject}->GetParam( Param => 'BccCustomerTicketText_' . $Count );
+            my $CustomerKeyBcc     = $Self->{ParamObject}->GetParam( Param => 'BccCustomerKey_' . $Count )
                 || '';
-            my $CustomerQueueBcc
-                = $Self->{ParamObject}->GetParam( Param => 'BccCustomerQueue_' . $Count )
+            my $CustomerQueueBcc = $Self->{ParamObject}->GetParam( Param => 'BccCustomerQueue_' . $Count )
                 || '';
 
             if ($CustomerElementBcc) {

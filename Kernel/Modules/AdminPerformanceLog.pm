@@ -67,7 +67,9 @@ sub Run {
         else {
 
             # redirect
-            return $Self->{LayoutObject}->Redirect( OP => "Action=$Self->{Action}", );
+            return $Self->{LayoutObject}->Redirect(
+                OP => "Action=$Self->{Action}",
+            );
         }
     }
 
@@ -99,7 +101,10 @@ sub Run {
         $Self->{LayoutObject}->Block(
             Name => 'View',
             Data => {
-                Age => $Self->{LayoutObject}->CustomerAge( Age => $MinuteSlot * 60, Space => ' ' ),
+                Age => $Self->{LayoutObject}->CustomerAge(
+                    Age   => $MinuteSlot * 60,
+                    Space => ' '
+                ),
                 Interface => $Interface || '-',
                 Module    => $Module    || '-',
                 Period    => $Slot,
@@ -108,6 +113,7 @@ sub Run {
         my $Minute = 0;
         my $Count  = 1;
         while ( $Count <= $MinuteSlot ) {
+            ROW:
             for my $Row ( reverse @{$Data} ) {
                 if (
                     $Row->[0] < ( time() - ( 60 * $Minute ) )
@@ -124,10 +130,10 @@ sub Run {
                         }
                         if ($Interface) {
                             if ( !$Module && $Row->[1] ne $Interface ) {
-                                next;
+                                next ROW;
                             }
                             if ( $Module && $Module ne $ModuleCurrent ) {
-                                next;
+                                next ROW;
                             }
                         }
 
@@ -156,7 +162,7 @@ sub Run {
                     }
                 }
                 elsif ( $Row->[0] < ( time() - ( 60 * $Minute ) ) ) {
-                    last;
+                    last ROW;
                 }
             }
             $Minute = $Minute + $Slot;
@@ -255,6 +261,7 @@ sub Run {
             my %Sum    = ();
             my %Max    = ();
             my %Min    = ();
+            ROW:
             for my $Row ( reverse @{$Data} ) {
                 if ( $Row->[0] > time() - ( 60 * $Minute ) ) {
 
@@ -287,8 +294,7 @@ sub Run {
                         }
                         $Action{$Module}->{Count}->{ $Row->[1] }++;
                         if ( $Action{$Module}->{Sum}->{ $Row->[1] } ) {
-                            $Action{$Module}->{Sum}->{ $Row->[1] }
-                                = $Action{$Module}->{Sum}->{ $Row->[1] } + $Row->[2];
+                            $Action{$Module}->{Sum}->{ $Row->[1] } = $Action{$Module}->{Sum}->{ $Row->[1] } + $Row->[2];
                         }
                         else {
                             $Action{$Module}->{Sum}->{ $Row->[1] } = $Row->[2];
@@ -308,7 +314,7 @@ sub Run {
                     }
                 }
                 else {
-                    last;
+                    last ROW;
                 }
             }
             if (%Sum) {
@@ -316,7 +322,10 @@ sub Run {
                     Name => 'OverviewTable',
                     Data => {
                         Age =>
-                            $Self->{LayoutObject}->CustomerAge( Age => $Minute * 60, Space => ' ' ),
+                            $Self->{LayoutObject}->CustomerAge(
+                            Age   => $Minute * 60,
+                            Space => ' '
+                            ),
                     },
                 );
             }

@@ -56,7 +56,7 @@ Core.Agent.Search = (function (TargetNS) {
             $Label.next().clone().appendTo('#SearchInsert')
 
                 // bind click function to remove button now
-                .find('.Remove').bind('click', function () {
+                .find('.RemoveButton').bind('click', function () {
                     var $Element = $(this).parent();
                     TargetNS.SearchAttributeRemove($Element);
 
@@ -150,25 +150,40 @@ Core.Agent.Search = (function (TargetNS) {
         var SearchValueFlag = false;
         $('#SearchForm label').each(function () {
             var ElementName,
-                $Element;
+                $Element,
+                $LabelElement = $(this),
+                $FieldElement = $LabelElement.next('.Field');
 
             // those with ID's are used for searching
             if ( $(this).attr('id') ) {
-                    // substring "Label" (e.g. first five characters ) from the
-                    // label id, use the remaining name as name string for accessing
-                    // the form input's value
-                    ElementName = $(this).attr('id').substring(5);
-                    $Element = $('#SearchForm input[name='+ElementName+']');
-                    // If there's no input element with the selected name
-                    // find the next "select" element and use that one for checking
-                    if (!$Element.length) {
-                        $Element = $(this).next().find('select');
+
+                // substring "Label" (e.g. first five characters ) from the
+                // label id, use the remaining name as name string for accessing
+                // the form input's value
+                ElementName = $(this).attr('id').substring(5);
+                $Element = $('#SearchForm input[name='+ElementName+']');
+
+                // If there's no input element with the selected name
+                // find the next "select" element and use that one for checking
+                if (!$Element.length) {
+                    $Element = $(this).next().find('select');
+                }
+
+                // Fix for bug#10845: make sure time slot fields with TimeInputFormat
+                // 'Input' set are being considered correctly, too. As this is only
+                // relevant for search type 'TimeSlot', we check for the first
+                // input type=text elment in the corresponding field element.
+                // All time field elements have to be filled in, but if only one
+                // is missing, we treat the whole field as invalid.
+                if ( $FieldElement.find('input[name$="SearchType"]').val() === 'TimeSlot' && !$FieldElement.find('select').length ) {
+                    $Element = $FieldElement.find('input[type=text]').first();
+                }
+
+                if ($Element.length) {
+                    if ( $Element.val() && $Element.val() !== '' ) {
+                        SearchValueFlag = true;
                     }
-                    if ($Element.length) {
-                        if ( $Element.val() && $Element.val() !== '' ) {
-                            SearchValueFlag = true;
-                        }
-                    }
+                }
             }
         });
         if (!SearchValueFlag) {
@@ -249,7 +264,7 @@ Core.Agent.Search = (function (TargetNS) {
                 }
 
                 // register add of attribute
-                $('.Add').bind('click', function () {
+                $('.AddButton').bind('click', function () {
                     var Attribute = $('#Attribute').val();
                     TargetNS.SearchAttributeAdd(Attribute);
                     TargetNS.AdditionalAttributeSelectionRebuild();

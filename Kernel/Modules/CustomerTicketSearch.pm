@@ -136,8 +136,7 @@ sub Run {
     $Self->{StartHit} = int( $Self->{ParamObject}->GetParam( Param => 'StartHit' ) || 1 );
     $Self->{SearchLimit} = $Self->{ConfigObject}->Get('Ticket::CustomerTicketSearch::SearchLimit')
         || 200;
-    $Self->{SearchPageShown}
-        = $Self->{ConfigObject}->Get('Ticket::CustomerTicketSearch::SearchPageShown') || 40;
+    $Self->{SearchPageShown} = $Self->{ConfigObject}->Get('Ticket::CustomerTicketSearch::SearchPageShown') || 40;
     $Self->{SortBy} = $Self->{ParamObject}->GetParam( Param => 'SortBy' )
         || $Self->{ConfigObject}->Get('Ticket::CustomerTicketSearch::SortBy::Default')
         || 'Age';
@@ -146,8 +145,7 @@ sub Run {
         || 'Down';
 
     # disable output of customer company tickets
-    $Self->{DisableCompanyTickets}
-        = $Self->{ConfigObject}->Get('Ticket::Frontend::CustomerDisableCompanyTicketAccess');
+    $Self->{DisableCompanyTickets} = $Self->{ConfigObject}->Get('Ticket::Frontend::CustomerDisableCompanyTicketAccess');
 
     $Self->{Profile}        = $Self->{ParamObject}->GetParam( Param => 'Profile' )        || '';
     $Self->{SaveProfile}    = $Self->{ParamObject}->GetParam( Param => 'SaveProfile' )    || '';
@@ -182,7 +180,7 @@ sub Run {
     else {
         for my $Key (
             qw(TicketNumber From To Cc Subject Body CustomerID ResultForm TimeSearchType StateType
-            SearchInArchive
+            SearchInArchive AttachmentName
             TicketCreateTimePointFormat TicketCreateTimePoint
             TicketCreateTimePointStart
             TicketCreateTimeStart TicketCreateTimeStartDay TicketCreateTimeStartMonth
@@ -300,8 +298,7 @@ sub Run {
 
         # store search URL in LastScreenOverview to make sure the
         # customer can use the "back" link as expected
-        my $URL
-            = "Action=CustomerTicketSearch;Subaction=Search;Profile=$Self->{Profile};"
+        my $URL = "Action=CustomerTicketSearch;Subaction=Search;Profile=$Self->{Profile};"
             . "SortBy=$Self->{SortBy};Order=$Self->{Order};TakeLastSearch=1;"
             . "StartHit=$Self->{StartHit}";
         $Self->{SessionObject}->UpdateSessionID(
@@ -361,8 +358,7 @@ sub Run {
                     && $GetParam{ $TimeType . 'TimeStartYear' }
                     )
                 {
-                    $GetParam{ $TimeType . 'TimeNewerDate' }
-                        = $GetParam{ $TimeType . 'TimeStartYear' } . '-'
+                    $GetParam{ $TimeType . 'TimeNewerDate' } = $GetParam{ $TimeType . 'TimeStartYear' } . '-'
                         . $GetParam{ $TimeType . 'TimeStartMonth' } . '-'
                         . $GetParam{ $TimeType . 'TimeStartDay' }
                         . ' 00:00:00';
@@ -373,8 +369,7 @@ sub Run {
                     && $GetParam{ $TimeType . 'TimeStopYear' }
                     )
                 {
-                    $GetParam{ $TimeType . 'TimeOlderDate' }
-                        = $GetParam{ $TimeType . 'TimeStopYear' } . '-'
+                    $GetParam{ $TimeType . 'TimeOlderDate' } = $GetParam{ $TimeType . 'TimeStopYear' } . '-'
                         . $GetParam{ $TimeType . 'TimeStopMonth' } . '-'
                         . $GetParam{ $TimeType . 'TimeStopDay' }
                         . ' 23:59:59';
@@ -528,8 +523,12 @@ sub Run {
             %DynamicFieldSearchParameters,
         );
 
-        # CSV output
-        if ( $GetParam{ResultForm} eq 'CSV' ) {
+        # CSV and Excel output
+        if (
+            $GetParam{ResultForm} eq 'CSV'
+            || $GetParam{ResultForm} eq 'Excel'
+            )
+        {
 
             # create head (actual head and head for data fill)
             my @TmpCSVHead = @{ $Self->{Config}->{SearchCSVData} };
@@ -565,17 +564,20 @@ sub Run {
                     );
                     %Data = %Ticket;
                     $Data{Subject} = $Ticket{Title} || 'Untitled';
-                    $Data{Body} = $Self->{LayoutObject}->{LanguageObject}->Get(
+                    $Data{Body} = $Self->{LayoutObject}->{LanguageObject}->Translate(
                         'This item has no articles yet.'
                     );
                     $Data{From} = '--';
                 }
 
                 for my $Key (qw(State Lock)) {
-                    $Data{$Key} = $Self->{LayoutObject}->{LanguageObject}->Get( $Data{$Key} );
+                    $Data{$Key} = $Self->{LayoutObject}->{LanguageObject}->Translate( $Data{$Key} );
                 }
 
-                $Data{Age} = $Self->{LayoutObject}->CustomerAge( Age => $Data{Age}, Space => ' ' );
+                $Data{Age} = $Self->{LayoutObject}->CustomerAge(
+                    Age   => $Data{Age},
+                    Space => ' '
+                );
 
                 # get whole article (if configured!)
                 if ( $Self->{Config}->{SearchArticleCSVTree} && $GetParam{ResultForm} eq 'CSV' ) {
@@ -583,16 +585,6 @@ sub Run {
                         TicketID      => $TicketID,
                         DynamicFields => 0,
                     );
-                    for my $Articles (@Article) {
-                        if ( $Articles->{Body} ) {
-                            $Data{ArticleTree}
-                                .= "\n-->||$Articles->{ArticleType}||$Articles->{From}||"
-                                . $Articles->{Created}
-                                . "||<--------------\n"
-                                . $Articles->{Body};
-                        }
-                    }
-
                     if ( $#Article == -1 ) {
                         $Data{ArticleTree}
                             .= 'This item has no articles yet.';
@@ -683,18 +675,11 @@ sub Run {
                 CustomerName => 'Customer Realname',
             );
 
-            my @CSVHeadTranslated
-                = map { $Self->{LayoutObject}->{LanguageObject}->Get( $HeaderMap{$_} || $_ ); }
+            my @CSVHeadTranslated = map { $Self->{LayoutObject}->{LanguageObject}->Translate( $HeaderMap{$_} || $_ ); }
                 @CSVHead;
 
-            my $CSV = $Self->{CSVObject}->Array2CSV(
-                Head      => \@CSVHeadTranslated,
-                Data      => \@CSVData,
-                Separator => $UserCSVSeparator,
-            );
-
             # return csv to download
-            my $CSVFile = 'ticket_search';
+            my $FileName = 'ticket_search';
             my ( $s, $m, $h, $D, $M, $Y ) = $Self->{TimeObject}->SystemTime2Date(
                 SystemTime => $Self->{TimeObject}->SystemTime(),
             );
@@ -702,12 +687,38 @@ sub Run {
             $D = sprintf( "%02d", $D );
             $h = sprintf( "%02d", $h );
             $m = sprintf( "%02d", $m );
-            return $Self->{LayoutObject}->Attachment(
-                Filename    => $CSVFile . "_" . "$Y-$M-$D" . "_" . "$h-$m.csv",
-                ContentType => "text/csv; charset=" . $Self->{LayoutObject}->{UserCharset},
-                Content     => $CSV,
-            );
+
+            if ( $GetParam{ResultForm} eq 'CSV' ) {
+
+                my $CSV = $Self->{CSVObject}->Array2CSV(
+                    Head => \@CSVHeadTranslated,
+                    Data => \@CSVData,
+                );
+                return $Self->{LayoutObject}->Attachment(
+                    Filename    => $FileName . "_" . "$Y-$M-$D" . "_" . "$h-$m.csv",
+                    ContentType => "text/csv; charset=" . $Self->{LayoutObject}->{UserCharset},
+                    Content     => $CSV,
+                );
+
+            }
+
+            # return Excel to download
+            elsif ( $GetParam{ResultForm} eq 'Excel' ) {
+                my $Excel = $Self->{CSVObject}->Array2CSV(
+                    Head   => \@CSVHeadTranslated,
+                    Data   => \@CSVData,
+                    Format => "Excel",
+                );
+
+                return $Self->{LayoutObject}->Attachment(
+                    Filename => $FileName . "_" . "$Y-$M-$D" . "_" . "$h-$m.xlsx",
+                    ContentType =>
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    Content => $Excel,
+                );
+            }
         }
+
         elsif ( $GetParam{ResultForm} eq 'Print' ) {
             for my $TicketID (@ViewableTicketIDs) {
 
@@ -727,7 +738,7 @@ sub Run {
                     );
                     %Article = %Ticket;
                     $Article{Subject} = $Ticket{Title} || 'Untitled';
-                    $Article{Body} = $Self->{LayoutObject}->{LanguageObject}->Get(
+                    $Article{Body} = $Self->{LayoutObject}->{LanguageObject}->Translate(
                         'This item has no articles yet.'
                     );
                     $Article{From} = '--';
@@ -761,10 +772,12 @@ sub Run {
                 # Condense down the subject
                 my $Subject = $Self->{TicketObject}->TicketSubjectClean(
                     TicketNumber => $Article{TicketNumber},
-                    Subject => $Article{Subject} || '',
+                    Subject      => $Article{Subject} || '',
                 );
-                $Article{Age}
-                    = $Self->{LayoutObject}->CustomerAge( Age => $Article{Age}, Space => ' ' );
+                $Article{Age} = $Self->{LayoutObject}->CustomerAge(
+                    Age   => $Article{Age},
+                    Space => ' '
+                );
 
                 # customer info string
                 if ( $Article{CustomerName} ) {
@@ -783,8 +796,10 @@ sub Run {
             }
             my $Output = $Self->{LayoutObject}->PrintHeader( Width => 800 );
             if ( @ViewableTicketIDs == $Self->{SearchLimit} ) {
-                $Param{Warning} = '$Text{"Reached max. count of %s search hits!", "'
-                    . $Self->{SearchLimit} . '"}';
+                $Param{Warning} = $Self->{LayoutObject}->{LanguageObject}->Translate(
+                    "Reached max. count of %s search hits!",
+                    $Self->{SearchLimit},
+                );
             }
             $Output .= $Self->{LayoutObject}->Output(
                 TemplateFile => 'CustomerTicketSearchResultPrint',
@@ -903,7 +918,7 @@ sub Run {
                     if ( !%Article ) {
                         %Article = %Ticket;
                         $Article{Subject} = $Ticket{Title} || 'Untitled';
-                        $Article{Body} = $Self->{LayoutObject}->{LanguageObject}->Get(
+                        $Article{Body} = $Self->{LayoutObject}->{LanguageObject}->Translate(
                             'This item has no articles yet.'
                         );
                     }
@@ -936,10 +951,12 @@ sub Run {
                     # Condense down the subject
                     my $Subject = $Self->{TicketObject}->TicketSubjectClean(
                         TicketNumber => $Article{TicketNumber},
-                        Subject => $Article{Subject} || '',
+                        Subject      => $Article{Subject} || '',
                     );
-                    $Article{CustomerAge}
-                        = $Self->{LayoutObject}->CustomerAge( Age => $Article{Age}, Space => ' ' );
+                    $Article{CustomerAge} = $Self->{LayoutObject}->CustomerAge(
+                        Age   => $Article{Age},
+                        Space => ' '
+                    );
 
                     # customer info string
                     if ( $Article{CustomerName} ) {
@@ -966,9 +983,9 @@ sub Run {
                         # get field value
                         my $ValueStrg = $Self->{BackendObject}->DisplayValueRender(
                             DynamicFieldConfig => $DynamicFieldConfig,
-                            Value => $Article{ 'DynamicField_' . $DynamicFieldConfig->{Name} },
-                            ValueMaxChars => 20,
-                            LayoutObject  => $Self->{LayoutObject},
+                            Value              => $Article{ 'DynamicField_' . $DynamicFieldConfig->{Name} },
+                            ValueMaxChars      => 20,
+                            LayoutObject       => $Self->{LayoutObject},
                         );
 
                         $Self->{LayoutObject}->Block(
@@ -1033,13 +1050,15 @@ sub Run {
                 Translation => 0,
             },
         );
+
+        KEY:
         for my $Key (
             qw(TicketNumber From To Cc Subject Body CustomerID TimeSearchType StateType
             StateIDs StateTypeIDs PriorityIDs OwnerIDs ResponsibleIDs
             )
             )
         {
-            next if !$GetParam{$Key};
+            next KEY if !$GetParam{$Key};
             my $Attribute = $IDMap{$Key}->{Name}   || $Key;
             my $Object    = $IDMap{$Key}->{Object} || '';
             my $Method    = $IDMap{$Key}->{Method};
@@ -1056,7 +1075,7 @@ sub Run {
                     if ( $Self->{$Object} ) {
                         $Item = $Self->{$Object}->$Method( $MethodKey => $Item );
                         if ($Translation) {
-                            $Item = $Self->{LayoutObject}->{LanguageObject}->Get($Item);
+                            $Item = $Self->{LayoutObject}->{LanguageObject}->Translate($Item);
                         }
                     }
                     $Value .= $Item;
@@ -1067,7 +1086,7 @@ sub Run {
                 if ( $Self->{$Object} ) {
                     $Item = $Self->{$Object}->$Method( $MethodKey => $Item );
                     if ($Translation) {
-                        $Item = $Self->{LayoutObject}->{LanguageObject}->Get($Item);
+                        $Item = $Self->{LayoutObject}->{LanguageObject}->Translate($Item);
                     }
                 }
                 $Value = $Item;
@@ -1091,9 +1110,8 @@ sub Run {
                     );
 
                     $Attribute = 'Created between';
-                    $Value
-                        = $StartDate . ' '
-                        . $Self->{LayoutObject}->{LanguageObject}->Get('and') . ' '
+                    $Value     = $StartDate . ' '
+                        . $Self->{LayoutObject}->{LanguageObject}->Translate('and') . ' '
                         . $StopDate;
                 }
                 else {
@@ -1104,8 +1122,7 @@ sub Run {
                     };
 
                     $Attribute = $Mapping->{ $GetParam{TicketCreateTimePointStart} };
-                    $Value
-                        = $GetParam{TicketCreateTimePoint} . ' '
+                    $Value     = $GetParam{TicketCreateTimePoint} . ' '
                         . $Self->{LayoutObject}->{LanguageObject}
                         ->Get( $GetParam{TicketCreateTimePointFormat} . '(s)' );
                 }
@@ -1346,8 +1363,9 @@ sub MaskForm {
             Normal => 'Normal',
             Print  => 'Print',
             CSV    => 'CSV',
+            Excel  => 'Excel',
         },
-        Name => 'ResultForm',
+        Name       => 'ResultForm',
         SelectedID => $Param{ResultForm} || 'Normal',
     );
     $Param{ProfilesStrg} = $Self->{LayoutObject}->BuildSelection(
@@ -1541,7 +1559,7 @@ sub MaskForm {
                 NotArchivedTickets => 'Unarchived tickets',
                 AllTickets         => 'All tickets',
             },
-            Name => 'SearchInArchive',
+            Name       => 'SearchInArchive',
             SelectedID => $Param{SearchInArchive} || 'NotArchivedTickets',
         );
 
@@ -1584,6 +1602,17 @@ sub MaskForm {
                 },
             );
         }
+    }
+
+    if (
+        $Self->{ConfigObject}->Get('Ticket::StorageModule') eq
+        'Kernel::System::Ticket::ArticleStorageDB'
+        )
+    {
+        $Self->{LayoutObject}->Block(
+            Name => 'Attachment',
+            Data => \%Param
+        );
     }
 
     # html search mask output

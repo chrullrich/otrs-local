@@ -9,26 +9,19 @@
 
 use strict;
 use warnings;
-
 use utf8;
+
 use vars (qw($Self));
 
-use Kernel::Config;
-use Kernel::System::Ticket;
-
-# create local objects
-my $ConfigObject = Kernel::Config->new();
-my $UserObject   = Kernel::System::User->new(
-    ConfigObject => $ConfigObject,
-    %{$Self},
-);
-my $TicketObject = Kernel::System::Ticket->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
 for my $TicketHook ( 'Ticket#', 'Call#', 'Ticket' ) {
+
     for my $TicketSubjectConfig ( 'Right', 'Left' ) {
+
+        # make sure that the TicketObject gets recreated for each loop.
+        $Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::Ticket'] );
 
         $ConfigObject->Set(
             Key   => 'Ticket::Hook',
@@ -51,9 +44,11 @@ for my $TicketHook ( 'Ticket#', 'Call#', 'Ticket' ) {
             Value => 'AW',
         );
 
-        my $TicketObject = Kernel::System::Ticket->new(
-            %{$Self},
-            ConfigObject => $ConfigObject,
+        my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
+        $Self->True(
+            $TicketObject->isa('Kernel::System::Ticket::Number::DateChecksum'),
+            "TicketObject loaded the correct backend",
         );
 
         # check GetTNByString
@@ -91,7 +86,7 @@ for my $TicketHook ( 'Ticket#', 'Call#', 'Ticket' ) {
         # TicketSubjectClean()
         $NewSubject = $TicketObject->TicketSubjectClean(
             TicketNumber => '2004040510440485',
-            Subject => 'Re[5]: [' . $TicketHook . ': 2004040510440485] Re: RE: WG: Some Subject',
+            Subject      => 'Re[5]: [' . $TicketHook . ': 2004040510440485] Re: RE: WG: Some Subject',
         );
         $Self->Is(
             $NewSubject,
@@ -102,7 +97,7 @@ for my $TicketHook ( 'Ticket#', 'Call#', 'Ticket' ) {
         # TicketSubjectClean()
         $NewSubject = $TicketObject->TicketSubjectClean(
             TicketNumber => '2004040510440485',
-            Subject => 'Re[5]: Re: RE: WG: Some Subject [' . $TicketHook . ': 2004040510440485]',
+            Subject      => 'Re[5]: Re: RE: WG: Some Subject [' . $TicketHook . ': 2004040510440485]',
         );
         $Self->Is(
             $NewSubject,
@@ -150,7 +145,7 @@ for my $TicketHook ( 'Ticket#', 'Call#', 'Ticket' ) {
         # TicketSubjectBuild()
         $NewSubject = $TicketObject->TicketSubjectBuild(
             TicketNumber => '2004040510440485',
-            Subject => '[' . $TicketHook . ':2004040510440485] Antwort: Antwort: Some Subject2',
+            Subject      => '[' . $TicketHook . ':2004040510440485] Antwort: Antwort: Some Subject2',
         );
         if ( $TicketSubjectConfig eq 'Left' ) {
             $Self->Is(
@@ -187,7 +182,7 @@ for my $TicketHook ( 'Ticket#', 'Call#', 'Ticket' ) {
         # TicketSubjectBuild()
         $NewSubject = $TicketObject->TicketSubjectBuild(
             TicketNumber => '2004040510440485',
-            Subject => 'Re: [' . $TicketHook . ': 2004040510440485] Re: Antwort: Some Subject2',
+            Subject      => 'Re: [' . $TicketHook . ': 2004040510440485] Re: Antwort: Some Subject2',
         );
         if ( $TicketSubjectConfig eq 'Left' ) {
             $Self->Is(

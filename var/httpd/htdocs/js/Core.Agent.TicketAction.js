@@ -144,6 +144,42 @@ Core.Agent.TicketAction = (function (TargetNS) {
             return false;
         });
 
+        // check if spell check is being used
+        if (parseInt(Core.Config.Get('SpellChecker'), 10) === 1 && parseInt(Core.Config.Get('NeedSpellCheck'), 10) === 1) {
+
+            Core.Config.Set('TextIsSpellChecked', '0');
+            $('#RichTextField, .RichTextField').on('click', '.cke_button__spellcheck', function() {
+                Core.Config.Set('TextIsSpellChecked', '1');
+            });
+            $('#OptionSpellCheck').bind('click', function() {
+                Core.Config.Set('TextIsSpellChecked', '1');
+            });
+
+            if ( parseInt(Core.Config.Get('RichTextSet'), 10) === 0){
+                $('#RichTextField, .RichTextField').on('change', '#RichText', function() {
+                    Core.Config.Set('TextIsSpellChecked', '0');
+                });
+            }
+
+            Core.Form.Validate.SetSubmitFunction($('form[name=compose]'), function(Form) {
+                if ( $('#RichText').val() && !$('#RichText').hasClass('ValidationIgnore') && parseInt(Core.Config.Get('TextIsSpellChecked'), 10) === 0 ) {
+                    Core.App.Publish('Event.Agent.TicketAction.NeedSpellCheck', [$('#RichText')]);
+                    Core.UI.Dialog.ShowContentDialog('<p>' + Core.Config.Get('SpellCheckNeededMsg') + '</p>', '', '150px', 'Center', true, [
+                        {
+                            Label: '<span>' + Core.Config.Get('DialogCloseMsg') + '</span>',
+                            Function: function () {
+                                Core.UI.Dialog.CloseDialog($('.Dialog:visible'));
+                                Core.Form.EnableForm($('#RichText').closest('form'));
+                            },
+                            Class: 'Primary CallForAction'
+                        }
+                    ]);
+                    return false;
+                }
+                $('#RichText').closest('form').get(0).submit();
+            });
+        }
+
         // Subscribe to the reloading of the CustomerInfo box to
         // specially mark the primary customer
         MarkPrimaryCustomer();
@@ -169,6 +205,30 @@ Core.Agent.TicketAction = (function (TargetNS) {
                 return false;
             }
         });
+
+        // Subscribe to ToggleWidget event to handle special behaviour in ticket action screens
+        var WidgetToggleEvent = Core.App.Subscribe('Event.UI.ToggleWidget', function ($WidgetElement) {
+            if ($WidgetElement.attr('id') !== 'WidgetArticle') {
+                return;
+            }
+
+            if ($WidgetElement.hasClass('Expanded')) {
+                // if widget is being opened, add checbkox to create article
+                $('#CreateArticle').prop('checked', true);
+            }
+        });
+
+        // Subscribe to NeedSpellCheck event to open RTE widget if collapsed, if spellcheck is needed on submit
+        Core.App.Subscribe('Event.Agent.TicketAction.NeedSpellCheck', function ($TextElement) {
+            var $Widget = $TextElement.closest('div.WidgetSimple');
+
+            if ($Widget.attr('id') !== 'WidgetArticle' || $Widget.hasClass('Expanded')) {
+                return;
+            }
+
+            $Widget.find('div.WidgetAction.Toggle > a').trigger('click');
+        });
+
     };
 
     /**

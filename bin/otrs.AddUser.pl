@@ -30,28 +30,14 @@ use lib dirname($RealBin) . '/Custom';
 
 use Getopt::Long;
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Time;
-use Kernel::System::Main;
-use Kernel::System::DB;
-use Kernel::System::User;
-use Kernel::System::Group;
+use Kernel::System::ObjectManager;
 
-# create common objects
-my %CommonObject;
-$CommonObject{ConfigObject} = Kernel::Config->new(%CommonObject);
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.AddUser',
-    %CommonObject,
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.AddUser',
+    },
 );
-$CommonObject{TimeObject}  = Kernel::System::Time->new(%CommonObject);
-$CommonObject{MainObject}  = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject}    = Kernel::System::DB->new(%CommonObject);
-$CommonObject{UserObject}  = Kernel::System::User->new(%CommonObject);
-$CommonObject{GroupObject} = Kernel::System::Group->new(%CommonObject);
 
 my %Options;
 GetOptions(
@@ -60,10 +46,11 @@ GetOptions(
     'l=s',
     'p=s',
     'g=s@',
-    'e=s'
+    'e=s',
+    'h=s',
 );
 
-if ( !$ARGV[0] ) {
+if ( !$ARGV[0] || $Options{h} ) {
     print
         "$FindBin::Script [-f firstname] [-l lastname] [-p password] [-g groupname]... [-e email] username\n";
     print "\tif you define -g with a valid group name then the user will be added that group\n";
@@ -88,7 +75,7 @@ $Param{UserEmail}     = $Options{e};
 
 my %Groups;
 if ( $Options{g} ) {
-    my %GroupList = reverse $CommonObject{GroupObject}->GroupList();
+    my %GroupList = reverse $Kernel::OM->Get('Kernel::System::Group')->GroupList();
 
     GROUP:
     for my $Group ( @{ $Options{g} } ) {
@@ -100,7 +87,8 @@ if ( $Options{g} ) {
     }
 }
 
-if ( $Param{UID} = $CommonObject{UserObject}->UserAdd( %Param, ChangeUserID => 1 ) ) {
+if ( $Param{UID} = $Kernel::OM->Get('Kernel::System::User')->UserAdd( %Param, ChangeUserID => 1 ) )
+{
     print "User $Param{UserLogin} added. User id is $Param{UID}.\n";
 }
 else {
@@ -109,7 +97,7 @@ else {
 
 for my $GroupID ( sort keys %Groups ) {
 
-    my $Success = $CommonObject{GroupObject}->GroupMemberAdd(
+    my $Success = $Kernel::OM->Get('Kernel::System::Group')->GroupMemberAdd(
         UID        => $Param{UID},
         GID        => $GroupID,
         Permission => { 'rw' => 1 },

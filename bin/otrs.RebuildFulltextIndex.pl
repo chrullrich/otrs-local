@@ -29,41 +29,41 @@ use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
 use Getopt::Std;
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Time;
-use Kernel::System::DB;
-use Kernel::System::Main;
-use Kernel::System::Ticket;
+use Time::HiRes qw(usleep);
+
+use Kernel::System::ObjectManager;
 
 # get options
-my %Opts = ();
-getopt( 'h', \%Opts );
+my %Opts;
+getopt( 'b', \%Opts );
 if ( $Opts{h} ) {
     print "otrs.RebuildFulltextIndex.pl - rebuild fulltext index\n";
     print "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n";
-    print "usage: otrs.RebuildFulltextIndex.pl\n";
+    print "usage: otrs.RebuildFulltextIndex.pl [-b sleeptime per ticket in microseconds]\n";
     exit 1;
 }
 
-# create common objects
-my %CommonObject = ();
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.RebuildFulltextIndex.pl',
-    %CommonObject,
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.RebuildFulltextIndex.pl',
+    },
 );
-$CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
-$CommonObject{TimeObject} = Kernel::System::Time->new( %CommonObject, );
 
-# create needed objects
-$CommonObject{DBObject}     = Kernel::System::DB->new(%CommonObject);
-$CommonObject{TicketObject} = Kernel::System::Ticket->new(%CommonObject);
+# disable cache
+$Kernel::OM->Get('Kernel::System::Cache')->Configure(
+    CacheInMemory  => 0,
+    CacheInBackend => 1,
+);
+
+# disable ticket events
+$Kernel::OM->Get('Kernel::Config')->{'Ticket::EventModulePost'} = {};
+
+# get ticket object
+my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
 # get all tickets
-my @TicketIDs = $CommonObject{TicketObject}->TicketSearch(
+my @TicketIDs = $TicketObject->TicketSearch(
 
     # result (required)
     Result => 'ARRAY',
@@ -75,27 +75,34 @@ my @TicketIDs = $CommonObject{TicketObject}->TicketSearch(
 );
 
 my $Count = 0;
+TICKETID:
 for my $TicketID (@TicketIDs) {
 
     $Count++;
 
     # get articles
-    my @ArticleIndex = $CommonObject{TicketObject}->ArticleIndex(
+    my @ArticleIndex = $TicketObject->ArticleIndex(
         TicketID => $TicketID,
         UserID   => 1,
     );
 
     for my $ArticleID (@ArticleIndex) {
-        $CommonObject{TicketObject}->ArticleIndexBuild(
+        $TicketObject->ArticleIndexBuild(
             ArticleID => $ArticleID,
             UserID    => 1,
         );
     }
+
     if ( $Count % 5000 == 0 ) {
         my $Percent = int( $Count / ( $#TicketIDs / 100 ) );
         print "NOTICE: $Count of $#TicketIDs processed ($Percent% done).\n";
     }
+
+    next TICKETID if !$Opts{b};
+
+    Time::HiRes::usleep( $Opts{b} );
 }
+
 print "NOTICE: Index creation done.\n";
 
 exit 0;

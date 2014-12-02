@@ -9,20 +9,18 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
 
-use Kernel::System::User;
+use vars (qw($Self));
 
-my $ConfigObject = Kernel::Config->new();
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $TimeObject   = $Kernel::OM->Get('Kernel::System::Time');
+my $UserObject   = $Kernel::OM->Get('Kernel::System::User');
+
 $ConfigObject->Set(
     Key   => 'CheckEmailAddresses',
     Value => 0,
-);
-
-my $UserObject = Kernel::System::User->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
 );
 
 # add users
@@ -40,6 +38,63 @@ my $UserID = $UserObject->UserAdd(
 $Self->True(
     $UserID,
     'UserAdd()',
+);
+
+$ConfigObject->Set(
+    Key   => 'FirstnameLastnameOrder',
+    Value => 0,
+);
+$Self->Is(
+    $UserObject->UserName( UserID => $UserID ),
+    'Firstname Test1 Lastname Test1',
+    'UserName - Order 0',
+);
+
+my %NameCheckList0 = $UserObject->UserList( Type => 'Long' );
+$Self->Is(
+    $NameCheckList0{$UserID},
+    'Firstname Test1 Lastname Test1',
+    'Username in List - Order 0',
+);
+
+$ConfigObject->Set(
+    Key   => 'FirstnameLastnameOrder',
+    Value => 1,
+);
+$Self->Is(
+    $ConfigObject->Get('FirstnameLastnameOrder'),
+    1,
+    'Check if NameOrder option is set correctly',
+);
+
+$Self->Is(
+    $UserObject->UserName( UserID => $UserID ),
+    'Lastname Test1, Firstname Test1',
+    'UserName - Order 1',
+);
+
+my %NameCheckList1 = $UserObject->UserList( Type => 'Long' );
+$Self->Is(
+    $NameCheckList1{$UserID},
+    'Lastname Test1, Firstname Test1',
+    'Username in List - Order 1',
+);
+
+$ConfigObject->Set(
+    Key   => 'FirstnameLastnameOrder',
+    Value => 2,
+);
+$Self->Is(
+    $UserObject->UserName( UserID => $UserID ),
+    "Firstname Test1 Lastname Test1 ($UserRand1)",
+    'UserName - Order 2',
+);
+
+my %NameCheckList2 = $UserObject->UserList( Type => 'Long' );
+$Self->Is(
+    $NameCheckList2{$UserID},
+    "Firstname Test1 Lastname Test1 ($UserRand1)",
+    'Username in List - Order 2',
 );
 
 my %UserData = $UserObject->GetUserData( UserID => $UserID );
@@ -111,9 +166,9 @@ $Self->Is(
 
 my $Update = $UserObject->UserUpdate(
     UserID        => $UserID,
-    UserFirstname => 'Firstname Test2',
-    UserLastname  => 'Lastname Test2',
-    UserLogin     => $UserRand1 . "2",
+    UserFirstname => 'Михаил',
+    UserLastname  => 'Lastname Tëst2',
+    UserLogin     => $UserRand1 . '房治郎',
     UserEmail     => $UserRand1 . '@example2.com',
     ValidID       => 2,
     ChangeUserID  => 1,
@@ -128,17 +183,17 @@ $Self->True(
 
 $Self->Is(
     $UserData{UserFirstname} || '',
-    'Firstname Test2',
+    'Михаил',
     'GetUserData() - UserFirstname',
 );
 $Self->Is(
     $UserData{UserLastname} || '',
-    'Lastname Test2',
+    'Lastname Tëst2',
     'GetUserData() - UserLastname',
 );
 $Self->Is(
     $UserData{UserLogin} || '',
-    $UserRand1 . "2",
+    $UserRand1 . '房治郎',
     'GetUserData() - UserLogin',
 );
 $Self->Is(
@@ -154,7 +209,7 @@ $Self->Is(
 
 $Self->Is(
     $UserList{$UserID},
-    $UserRand1 . "2",
+    $UserRand1 . '房治郎',
     "UserList valid 0",
 );
 
@@ -176,7 +231,7 @@ $Self->Is(
 
 $Self->Is(
     $UserList{$UserID},
-    $UserRand1 . "2",
+    $UserRand1 . '房治郎',
     "UserList valid 0 cached",
 );
 
@@ -189,6 +244,39 @@ $Self->Is(
     $UserList{$UserID},
     undef,
     "UserList valid 1 cached",
+);
+
+my %UserSearch = $UserObject->UserSearch(
+    Search => '*Михаил*',
+    Valid  => 0,
+);
+
+$Self->Is(
+    $UserSearch{$UserID},
+    $UserRand1 . '房治郎',
+    "UserSearch after update",
+);
+
+%UserSearch = $UserObject->UserSearch(
+    UserLogin => '*房治郎*',
+    Valid     => 0,
+);
+
+$Self->Is(
+    $UserSearch{$UserID},
+    $UserRand1 . '房治郎',
+    "UserSearch for login after update",
+);
+
+%UserSearch = $UserObject->UserSearch(
+    PostMasterSearch => $UserRand1 . '@example2.com',
+    Valid            => 0,
+);
+
+$Self->Is(
+    $UserSearch{$UserID},
+    $UserRand1 . '@example2.com',
+    "UserSearch for login after update",
 );
 
 # check token support
@@ -229,7 +317,6 @@ $Self->True(
 );
 
 # testing preferences
-
 my $SetPreferences = $UserObject->SetPreferences(
     Key    => 'UserLanguage',
     Value  => 'fr',
@@ -349,8 +436,8 @@ $Self->False(
     'GetUserData() - OutOfOfficeMessage',
 );
 
-my ( $Sec, $Min, $Hour, $Day, $Month, $Year, $WeekDay ) = $Self->{TimeObject}->SystemTime2Date(
-    SystemTime => $Self->{TimeObject}->SystemTime(),
+my ( $Sec, $Min, $Hour, $Day, $Month, $Year, $WeekDay ) = $TimeObject->SystemTime2Date(
+    SystemTime => $TimeObject->SystemTime(),
 );
 
 my %Values = (

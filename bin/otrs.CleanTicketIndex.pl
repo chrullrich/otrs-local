@@ -28,66 +28,83 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Time;
-use Kernel::System::Log;
-use Kernel::System::Main;
-use Kernel::System::DB;
+use Getopt::Std;
 
-# common objects
-my %CommonObject;
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.CleanTicketIndex.pl',
-    %CommonObject,
+use Kernel::System::ObjectManager;
+
+# get options
+my %Opts;
+getopt( '', \%Opts );
+if ( $Opts{h} ) {
+    print "otrs.CleanTicketIndex.pl - clean static index\n";
+    print "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n";
+    print "usage: otrs.CleanTicketIndex.pl\n";
+    exit 1;
+}
+
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'otrs.CleanTicketIndex.pl',
+    },
 );
-$CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
-$CommonObject{TimeObject} = Kernel::System::Time->new(%CommonObject);
-$CommonObject{DBObject}   = Kernel::System::DB->new(%CommonObject);
 
-# check args
-my $Command = shift || '--help';
-print "otrs.CleanTicketIndex.pl - clean static index\n";
-print "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n";
+my $Module = $Kernel::OM->Get('Kernel::Config')->Get('Ticket::IndexModule');
 
-my $Module = $CommonObject{ConfigObject}->Get('Ticket::IndexModule');
 print "Module is $Module\n";
+
 if ( $Module !~ /StaticDB/ ) {
-    print "OTRS is configured to use $Module as index\n";
-
-    $CommonObject{DBObject}->Prepare(
-        SQL => 'SELECT count(*) from ticket_index'
-    );
-    while ( my @Row = $CommonObject{DBObject}->FetchrowArray() ) {
-        if ( $Row[0] ) {
-            print "Found $Row[0] records in StaticDB index.\n";
-            print "Deleting $Row[0] records...";
-            $CommonObject{DBObject}->Do( SQL => 'DELETE FROM ticket_index' );
-            print " OK!\n";
-        }
-        else { print "No records found in StaticDB index.. OK!\n"; }
-    }
-
-    $CommonObject{DBObject}->Prepare(
-        SQL => 'SELECT count(*) from ticket_lock_index'
-    );
-    while ( my @Row = $CommonObject{DBObject}->FetchrowArray() ) {
-        if ( $Row[0] ) {
-            print "Found $Row[0] records in StaticDB lock_index.\n";
-            print "Deleting $Row[0] records...";
-            $CommonObject{DBObject}->Do(
-                SQL => 'DELETE FROM ticket_lock_index'
-            );
-            print " OK!\n";
-        }
-        else { print "No records found in StaticDB lock_index.. OK!\n"; }
-    }
-
-}
-else {
     print "You are using $Module as index, you should not clean it.\n";
+    exit 0;
 }
 
-exit(0);
+print "OTRS is configured to use $Module as index\n";
+
+# get database object
+my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
+$DBObject->Prepare(
+    SQL => 'SELECT count(*) from ticket_index'
+);
+
+while ( my @Row = $DBObject->FetchrowArray() ) {
+
+    if ( $Row[0] ) {
+
+        print "Found $Row[0] records in StaticDB index.\n";
+        print "Deleting $Row[0] records...";
+
+        $DBObject->Do(
+            SQL => 'DELETE FROM ticket_index',
+        );
+
+        print " OK!\n";
+    }
+    else {
+        print "No records found in StaticDB index.. OK!\n";
+    }
+}
+
+$DBObject->Prepare(
+    SQL => 'SELECT count(*) from ticket_lock_index',
+);
+
+while ( my @Row = $DBObject->FetchrowArray() ) {
+
+    if ( $Row[0] ) {
+
+        print "Found $Row[0] records in StaticDB lock_index.\n";
+        print "Deleting $Row[0] records...";
+
+        $DBObject->Do(
+            SQL => 'DELETE FROM ticket_lock_index',
+        );
+
+        print " OK!\n";
+    }
+    else {
+        print "No records found in StaticDB lock_index.. OK!\n";
+    }
+}
+
+exit 0;

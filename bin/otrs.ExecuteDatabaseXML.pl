@@ -28,24 +28,14 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Time;
-use Kernel::System::Main;
-use Kernel::System::DB;
-use Kernel::System::XML;
+use Kernel::System::ObjectManager;
 
-# create common objects
-my %CommonObject = ();
-$CommonObject{ConfigObject} = Kernel::Config->new(%CommonObject);
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}
-    = Kernel::System::Log->new( %CommonObject, LogPrefix => 'OTRS-otrs.ExecuteDatabaseXML.pl' );
-$CommonObject{TimeObject} = Kernel::System::Time->new(%CommonObject);
-$CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject}   = Kernel::System::DB->new(%CommonObject);
-$CommonObject{XMLObject}  = Kernel::System::XML->new(%CommonObject);
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.ExecuteDatabaseXML.pl',
+    },
+);
 
 print "otrs.ExecuteDatabaseXML.pl - Execute XML DDL in the OTRS database\n";
 print "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n\n";
@@ -61,18 +51,18 @@ if ( !-e $ARGV[0] ) {
 }
 
 # read file
-my $XML = $CommonObject{MainObject}->FileRead(
+my $XML = $Kernel::OM->Get('Kernel::System::Main')->FileRead(
     Location => $ARGV[0],
 );
 
 # convert to array
-my @XMLArray = $CommonObject{XMLObject}->XMLParse( String => $XML );
+my @XMLArray = $Kernel::OM->Get('Kernel::System::XML')->XMLParse( String => $XML );
 
-my @SQL = $CommonObject{DBObject}->SQLProcessor(
+my @SQL = $Kernel::OM->Get('Kernel::System::DB')->SQLProcessor(
     Database => \@XMLArray,
 );
 
-my @SQLPost = $CommonObject{DBObject}->SQLProcessorPost();
+my @SQLPost = $Kernel::OM->Get('Kernel::System::DB')->SQLProcessorPost();
 
 _ExecuteSQL( SQL => \@SQL );
 _ExecuteSQL( SQL => \@SQLPost );
@@ -84,7 +74,7 @@ sub _ExecuteSQL {
 
     for my $SQL ( @{ $Param{SQL} } ) {
         print "$SQL\n";
-        my $Success = $CommonObject{DBObject}->Do( SQL => $SQL );
+        my $Success = $Kernel::OM->Get('Kernel::System::DB')->Do( SQL => $SQL );
         if ( !$Success ) {
             print STDERR "WARNING: Database action failed. Exiting.\n\n";
             exit 1;

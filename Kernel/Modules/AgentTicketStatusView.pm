@@ -130,8 +130,7 @@ sub Run {
 
         # if no filter from web request, try from user preferences
         if ( !defined $FilterValue || $FilterValue eq '' ) {
-            $FilterValue
-                = $StoredFilters->{ 'DynamicField_' . $DynamicFieldConfig->{Name} }->{Equals};
+            $FilterValue = $StoredFilters->{ 'DynamicField_' . $DynamicFieldConfig->{Name} }->{Equals};
         }
 
         next DYNAMICFIELD if !defined $FilterValue;
@@ -151,10 +150,10 @@ sub Run {
     }
     my $Output;
     if ( $Self->{Subaction} ne 'AJAXFilterUpdate' ) {
-        $Output = $Self->{LayoutObject}->Header( Refresh => $Refresh, );
+        $Output = $Self->{LayoutObject}->Header(
+            Refresh => $Refresh,
+        );
         $Output .= $Self->{LayoutObject}->NavigationBar();
-        $Self->{LayoutObject}->Print( Output => \$Output );
-        $Output = '';
     }
 
     # define filter
@@ -359,6 +358,9 @@ sub Run {
         ColumnFilterForm    => {
             Filter => $Self->{Filter} || '',
         },
+
+        # do not print the result earlier, but return complete content
+        Output => 1,
     );
 
     # get page footer

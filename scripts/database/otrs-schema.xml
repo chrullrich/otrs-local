@@ -253,6 +253,24 @@
     </ForeignKey>
 </Table>
 
+<!-- personal_services - stores all "my services" -->
+<Table Name="personal_services">
+    <Column Name="user_id" Required="true" Type="INTEGER"/>
+    <Column Name="service_id" Required="true" Type="INTEGER"/>
+    <Index Name="personal_services_user_id">
+        <IndexColumn Name="user_id"/>
+    </Index>
+    <Index Name="personal_services_service_id">
+        <IndexColumn Name="service_id"/>
+    </Index>
+    <ForeignKey ForeignTable="users">
+        <Reference Local="user_id" Foreign="id"/>
+    </ForeignKey>
+    <ForeignKey ForeignTable="service">
+        <Reference Local="service_id" Foreign="id"/>
+    </ForeignKey>
+</Table>
+
 <!-- salutation - all salutations -->
 <Table Name="salutation">
     <Column Name="id" Required="true" PrimaryKey="true" AutoIncrement="true" Type="SMALLINT"/>
@@ -311,6 +329,29 @@
     <Column Name="value3" Required="false" Size="200" Type="VARCHAR"/>
     <Column Name="queue_id" Required="true" Type="INTEGER"/>
     <Column Name="comments" Required="false" Size="250" Type="VARCHAR"/>
+    <Column Name="valid_id" Required="true" Type="SMALLINT"/>
+    <Column Name="create_time" Required="true" Type="DATE"/>
+    <Column Name="create_by" Required="true" Type="INTEGER"/>
+    <Column Name="change_time" Required="true" Type="DATE"/>
+    <Column Name="change_by" Required="true" Type="INTEGER"/>
+    <ForeignKey ForeignTable="valid">
+        <Reference Local="valid_id" Foreign="id"/>
+    </ForeignKey>
+    <ForeignKey ForeignTable="users">
+        <Reference Local="create_by" Foreign="id"/>
+        <Reference Local="change_by" Foreign="id"/>
+    </ForeignKey>
+</Table>
+
+<!-- system_maintenance - an scheduled system maintenance -->
+<Table Name="system_maintenance">
+    <Column Name="id" Required="true" PrimaryKey="true" AutoIncrement="true" Type="INTEGER"/>
+    <Column Name="start_date" Required="true" Type="INTEGER"/>
+    <Column Name="stop_date" Required="true" Type="INTEGER"/>
+    <Column Name="comments" Required="true" Size="250" Type="VARCHAR"/>
+    <Column Name="login_message" Required="false" Size="250" Type="VARCHAR"/>
+    <Column Name="show_login_message" Required="false" Type="SMALLINT"/>
+    <Column Name="notify_message" Required="false" Size="250" Type="VARCHAR"/>
     <Column Name="valid_id" Required="true" Type="SMALLINT"/>
     <Column Name="create_time" Required="true" Type="DATE"/>
     <Column Name="create_by" Required="true" Type="INTEGER"/>
@@ -541,7 +582,6 @@
     <Column Name="escalation_update_time" Required="true" Type="INTEGER"/>
     <Column Name="escalation_response_time" Required="true" Type="INTEGER"/>
     <Column Name="escalation_solution_time" Required="true" Type="INTEGER"/>
-    <Column Name="valid_id" Required="true" Type="SMALLINT"/>
     <Column Name="archive_flag" Required="true" Default="0" Type="SMALLINT"/>
     <Column Name="create_time_unix" Required="true" Type="BIGINT"/>
     <Column Name="create_time" Required="true" Type="DATE"/>
@@ -612,9 +652,6 @@
     <Index Name="ticket_archive_flag">
         <IndexColumn Name="archive_flag"/>
     </Index>
-    <ForeignKey ForeignTable="valid">
-        <Reference Local="valid_id" Foreign="id"/>
-    </ForeignKey>
     <ForeignKey ForeignTable="queue">
         <Reference Local="queue_id" Foreign="id"/>
     </ForeignKey>
@@ -691,7 +728,6 @@
     <Column Name="owner_id" Required="true" Type="INTEGER"/>
     <Column Name="priority_id" Required="true" Type="SMALLINT"/>
     <Column Name="state_id" Required="true" Type="SMALLINT"/>
-    <Column Name="valid_id" Required="true" Type="SMALLINT"/>
     <Column Name="create_time" Required="true" Type="DATE"/>
     <Column Name="create_by" Required="true" Type="INTEGER"/>
     <Column Name="change_time" Required="true" Type="DATE"/>
@@ -720,9 +756,6 @@
     <Index Name="ticket_history_create_time">
         <IndexColumn Name="create_time"/>
     </Index>
-    <ForeignKey ForeignTable="valid">
-        <Reference Local="valid_id" Foreign="id"/>
-    </ForeignKey>
     <ForeignKey ForeignTable="ticket">
         <Reference Local="ticket_id" Foreign="id"/>
     </ForeignKey>
@@ -1033,6 +1066,7 @@
     <Column Name="content_type" Required="false" Size="450" Type="VARCHAR"/>
     <Column Name="content_id" Required="false" Size="250" Type="VARCHAR"/>
     <Column Name="content_alternative" Required="false" Size="50" Type="VARCHAR"/>
+    <Column Name="disposition" Required="false" Size="15" Type="VARCHAR"/>
     <Column Name="content" Required="true" Type="LONGBLOB"/>
     <Column Name="create_time" Required="true" Type="DATE"/>
     <Column Name="create_by" Required="true" Type="INTEGER"/>
@@ -1511,6 +1545,7 @@
     <Column Name="content_id" Required="false" Size="250" Type="VARCHAR"/>
     <Column Name="content_size" Required="false" Size="30" Type="VARCHAR"/>
     <Column Name="content_type" Required="false" Size="250" Type="VARCHAR"/>
+    <Column Name="disposition" Required="false" Size="15" Type="VARCHAR"/>
     <Column Name="content" Required="true" Type="LONGBLOB"/>
     <Column Name="create_time_unix" Required="true" Type="BIGINT"/>
 </Table>
@@ -1738,7 +1773,6 @@
     <Column Name="vendor" Required="true" Size="250" Type="VARCHAR"/>
     <Column Name="install_status" Required="true" Size="250" Type="VARCHAR"/>
     <Column Name="filename" Required="false" Size="250" Type="VARCHAR"/>
-    <Column Name="content_size" Required="false" Size="30" Type="VARCHAR"/>
     <Column Name="content_type" Required="false" Size="250" Type="VARCHAR"/>
     <Column Name="content" Required="true" Type="LONGBLOB"/>
     <Column Name="create_time" Required="true" Type="DATE"/>
@@ -1910,8 +1944,10 @@
         <IndexColumn Name="field_id"/>
         <IndexColumn Name="value_int"/>
     </Index>
+    <!-- Allow queries for all fields of an object, or for specific fields and objects e.g. search. -->
     <Index Name="dynamic_field_value_field_values">
         <IndexColumn Name="object_id"/>
+        <IndexColumn Name="field_id"/>
     </Index>
     <ForeignKey ForeignTable="dynamic_field">
         <Reference Local="field_id" Foreign="id"/>
@@ -2052,11 +2088,6 @@
         <Reference Local="create_by" Foreign="id"/>
         <Reference Local="change_by" Foreign="id"/>
     </ForeignKey>
-</Table>
-
-<Table Name="pm_entity">
-    <Column Name="entity_type" Required="true" Type="VARCHAR" Size="50"/>
-    <Column Name="entity_counter" Required="true" Type="INTEGER"/>
 </Table>
 
 <Table Name="pm_entity_sync">

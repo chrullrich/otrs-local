@@ -9,55 +9,22 @@
 
 use strict;
 use warnings;
+use utf8;
 
-use vars qw($Self);
+use vars (qw($Self));
 
-use Kernel::System::GenericAgent;
-use Kernel::System::Queue;
-use Kernel::System::Ticket;
-use Kernel::System::Time;
-use Kernel::System::UnitTest::Helper;
-
-my $ConfigObject = Kernel::Config->new();
+# get needed objects
+my $ConfigObject       = $Kernel::OM->Get('Kernel::Config');
+my $GenericAgentObject = $Kernel::OM->Get('Kernel::System::GenericAgent');
+my $HelperObject       = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $QueueObject        = $Kernel::OM->Get('Kernel::System::Queue');
+my $TicketObject       = $Kernel::OM->Get('Kernel::System::Ticket');
+my $TimeObject         = $Kernel::OM->Get('Kernel::System::Time');
 
 # make use to disable EstalationStopEvents modules
 $ConfigObject->Set(
     Key   => 'Ticket::EventModulePost###900-EscalationStopEvents',
     Value => undef,
-);
-
-# create common objects
-my $TimeObject = Kernel::System::Time->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-
-my $QueueObject = Kernel::System::Queue->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-
-# Make sure that Kernel::System::Ticket::new() does not create it's own QueueObject.
-# This will interfere with caching.
-my $TicketObject = Kernel::System::Ticket->new(
-    %{$Self},
-    TimeObject   => $TimeObject,
-    QueueObject  => $QueueObject,
-    ConfigObject => $ConfigObject,
-);
-my $GenericAgentObject = Kernel::System::GenericAgent->new(
-    %{$Self},
-    TimeObject   => $TimeObject,
-    QueueObject  => $QueueObject,
-    TicketObject => $TicketObject,
-    ConfigObject => $ConfigObject,
-);
-
-# creates a local helper object
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %{$Self},
-    ConfigObject   => $ConfigObject,
-    UnitTestObject => $Self,
 );
 
 # set fixed time
@@ -127,8 +94,7 @@ for my $Hours ( sort keys %WorkingHours ) {
         time(),
         int( rand 1_000_000 );
     my $StartingSystemTime = $TimeObject->SystemTime();
-    my $StartingTimeStamp
-        = $TimeObject->SystemTime2TimeStamp( SystemTime => $StartingSystemTime );
+    my $StartingTimeStamp = $TimeObject->SystemTime2TimeStamp( SystemTime => $StartingSystemTime );
 
     # set schedule on each day
     my %Week;
@@ -166,7 +132,7 @@ for my $Hours ( sort keys %WorkingHours ) {
             SalutationID        => 1,
             SignatureID         => 1,
             UserID              => 1,
-            Comment => "Queue for OTRSEscalationEvents.t for test run at $StartingTimeStamp",
+            Comment             => "Queue for OTRSEscalationEvents.t for test run at $StartingTimeStamp",
         );
         $Self->True( $QueueID, "QueueAdd() $QueueName" );
 
@@ -351,7 +317,7 @@ for my $Hours ( sort keys %WorkingHours ) {
 
         if ( $WorkingHours{$Hours} ) {
 
-          # check whether events were triggered: first response escalation, solution time escalation
+            # check whether events were triggered: first response escalation, solution time escalation
             $NumEvents{EscalationSolutionTimeStart}++;
             $NumEvents{EscalationResponseTimeStart}++;
         }

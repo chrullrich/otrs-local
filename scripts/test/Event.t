@@ -9,30 +9,14 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
 
-use Kernel::System::Event;
-use Kernel::Config;
-use Kernel::System::DynamicField;
+use vars (qw($Self));
 
-# create local object
-my $ConfigObject = Kernel::Config->new();
+use Kernel::System::ObjectManager;
 
-my $DynamicFieldObject = Kernel::System::DynamicField->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-
-# test scenarios
-my @Tests = (
-);
-
-my $EventObject = Kernel::System::Event->new(
-    %{$Self},
-    ConfigObject       => $ConfigObject,
-    DynamicFieldObject => $DynamicFieldObject,
-);
+# get needed objects
+my $EventObject = $Kernel::OM->Get('Kernel::System::Event');
 
 my %EventList = $EventObject->EventList();
 
@@ -63,8 +47,5 @@ $Self->Is(
     undef,
     "EventListTicket() Article"
 );
-
-#use Data::Dumper;
-#print STDERR Dumper(\%EventList);
 
 1;

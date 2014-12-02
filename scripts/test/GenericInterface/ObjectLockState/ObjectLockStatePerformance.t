@@ -9,13 +9,14 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
+
+use vars (qw($Self));
 
 use Time::HiRes ();
 
-use Kernel::System::GenericInterface::Webservice;
-use Kernel::System::GenericInterface::ObjectLockState;
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
 =head1 ObjectLockState performance tests
 
@@ -25,13 +26,13 @@ they take not more than 0.5s (default config) each.
 
 =cut
 
-my $WebserviceObject      = Kernel::System::GenericInterface::Webservice->new( %{$Self} );
-my $ObjectLockStateObject = Kernel::System::GenericInterface::ObjectLockState->new( %{$Self} );
+my $WebserviceObject      = $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice');
+my $ObjectLockStateObject = $Kernel::OM->Get('Kernel::System::GenericInterface::ObjectLockState');
 
 my $RandomNumber     = int rand 10000000;
 my $CustomObjectType = "TestObject$RandomNumber";
 
-my $TimeLimit = $Self->{ConfigObject}->Get('GenericInterface::ObjectLockState::TimeLimit') || '0.5';
+my $TimeLimit = $ConfigObject->Get('GenericInterface::ObjectLockState::TimeLimit') || '0.5';
 my $TestDataCount = 10_000;
 
 # add config

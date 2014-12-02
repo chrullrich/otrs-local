@@ -9,31 +9,18 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
 
-use vars qw($Self);
+use vars (qw($Self));
 
-use Data::Dumper;
-use Kernel::System::Service;
-use Kernel::System::SLA;
-use Kernel::System::User;
-use Kernel::Config;
+use Kernel::System::VariableCheck qw(:all);
 
-# create local objects
-my $ConfigObject  = Kernel::Config->new();
-my $ServiceObject = Kernel::System::Service->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $SLAObject = Kernel::System::SLA->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $UserObject = Kernel::System::User->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+# get needed objects
+my $ConfigObject  = $Kernel::OM->Get('Kernel::Config');
+my $HelperObject  = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $ServiceObject = $Kernel::OM->Get('Kernel::System::Service');
+my $SLAObject     = $Kernel::OM->Get('Kernel::System::SLA');
+my $UserObject    = $Kernel::OM->Get('Kernel::System::User');
 
 # ------------------------------------------------------------ #
 # make preparations
@@ -279,9 +266,9 @@ my $ItemData = [
             UserID     => 1,
         },
         AddGet => {
-            ServiceIDs => [ $ServiceIDs[0], $ServiceIDs[1] ],
-            Name       => $SLAName[2],
-            Calendar   => '',
+            ServiceIDs          => [ $ServiceIDs[0], $ServiceIDs[1] ],
+            Name                => $SLAName[2],
+            Calendar            => '',
             FirstResponseTime   => 0,
             FirstResponseNotify => 0,
             UpdateTime          => 0,
@@ -307,9 +294,9 @@ my $ItemData = [
     # this sla must be inserted sucessfully
     {
         Add => {
-            ServiceIDs => [ $ServiceIDs[1], $ServiceIDs[2], $ServiceIDs[0] ],
-            Name       => $SLAName[3],
-            Calendar   => '1',
+            ServiceIDs          => [ $ServiceIDs[1], $ServiceIDs[2], $ServiceIDs[0] ],
+            Name                => $SLAName[3],
+            Calendar            => '1',
             FirstResponseTime   => 10,
             FirstResponseNotify => 20,
             UpdateTime          => 30,
@@ -321,9 +308,9 @@ my $ItemData = [
             UserID              => 1,
         },
         AddGet => {
-            ServiceIDs => [ $ServiceIDs[0], $ServiceIDs[1], $ServiceIDs[2] ],
-            Name       => $SLAName[3],
-            Calendar   => '1',
+            ServiceIDs          => [ $ServiceIDs[0], $ServiceIDs[1], $ServiceIDs[2] ],
+            Name                => $SLAName[3],
+            Calendar            => '1',
             FirstResponseTime   => 10,
             FirstResponseNotify => 20,
             UpdateTime          => 30,
@@ -648,28 +635,13 @@ for my $Item ( @{$ItemData} ) {
             Cache  => 1,
         );
 
-        # turn off all pretty print
-        $Data::Dumper::Indent = 0;
-
         # check sla data after creation of the sla
         for my $SLAAttribute ( sort keys %{ $Item->{AddGet} } ) {
 
-            # dump the given attribute
-            if ( ref $SLAGet{$SLAAttribute} ) {
-                $SLAGet{$SLAAttribute}
-                    = Data::Dumper::Dumper( $SLAGet{$SLAAttribute} );    ## no critic
-            }
-
-            # dump the reference string
-            if ( ref $Item->{AddGet}->{$SLAAttribute} ) {
-                $Item->{AddGet}->{$SLAAttribute} = Data::Dumper::Dumper(    ## no critic
-                    $Item->{AddGet}->{$SLAAttribute},
-                );
-            }
-
-            $Self->Is(
-                $SLAGet{$SLAAttribute} || '',
-                $Item->{AddGet}->{$SLAAttribute} || '',
+            # check attributes
+            $Self->IsDeeply(
+                $SLAGet{$SLAAttribute},
+                $Item->{AddGet}->{$SLAAttribute},
                 "Test $TestCount: SLAGet() - $SLAAttribute",
             );
         }
@@ -714,22 +686,10 @@ for my $Item ( @{$ItemData} ) {
         # check sla data after update
         for my $SLAAttribute ( sort keys %{ $Item->{UpdateGet} } ) {
 
-            # dump the given attribute
-            if ( ref $SLAGet2{$SLAAttribute} ) {
-                $SLAGet2{$SLAAttribute}
-                    = Data::Dumper::Dumper( $SLAGet2{$SLAAttribute} );    ## no critic
-            }
-
-            # dump the reference string
-            if ( ref $Item->{UpdateGet}->{$SLAAttribute} ) {
-                $Item->{UpdateGet}->{$SLAAttribute} = Data::Dumper::Dumper(    ## no critic
-                    $Item->{UpdateGet}->{$SLAAttribute},
-                );
-            }
-
-            $Self->Is(
-                $SLAGet2{$SLAAttribute} || '',
-                $Item->{UpdateGet}->{$SLAAttribute} || '',
+            # check attributes
+            $Self->IsDeeply(
+                $SLAGet2{$SLAAttribute},
+                $Item->{UpdateGet}->{$SLAAttribute},
                 "Test $TestCount: SLAGet() - $SLAAttribute",
             );
         }

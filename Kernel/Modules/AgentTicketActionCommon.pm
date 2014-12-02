@@ -16,6 +16,10 @@ use Kernel::System::State;
 use Kernel::System::Web::UploadCache;
 use Kernel::System::DynamicField;
 use Kernel::System::DynamicField::Backend;
+use Kernel::System::EmailParser;
+use Kernel::System::StandardTemplate;
+use Kernel::System::StdAttachment;
+use Kernel::System::TemplateGenerator;
 use Kernel::System::VariableCheck qw(:all);
 
 sub new {
@@ -27,7 +31,7 @@ sub new {
 
     # check needed objects
     for my $Needed (
-        qw(ParamObject DBObject TicketObject LayoutObject LogObject QueueObject ConfigObject)
+        qw(ParamObject DBObject TicketObject LayoutObject LogObject QueueObject ConfigObject EncodeObject)
         )
     {
         if ( !$Self->{$Needed} ) {
@@ -38,6 +42,12 @@ sub new {
     $Self->{UploadCacheObject}  = Kernel::System::Web::UploadCache->new(%Param);
     $Self->{DynamicFieldObject} = Kernel::System::DynamicField->new(%Param);
     $Self->{BackendObject}      = Kernel::System::DynamicField::Backend->new(%Param);
+    $Self->{EmailParserObject}  = Kernel::System::EmailParser->new(
+        %Param,
+        Mode  => 'Standalone',
+        Debug => 0,
+    );
+    $Self->{StandardTemplateObject} = Kernel::System::StandardTemplate->new(%Param);
 
     # get form id
     $Self->{FormID} = $Self->{ParamObject}->GetParam( Param => 'FormID' );
@@ -50,8 +60,38 @@ sub new {
     my @InvolvedUserID = $Self->{ParamObject}->GetArray( Param => 'InvolvedUserID' );
     $Self->{InvolvedUserID} = \@InvolvedUserID;
 
-    # get return module base64 string
-    $Self->{ReturnModule} = $Self->{ParamObject}->GetParam( Param => 'ReturnModule' ) || '';
+    # get article for whom this should be a reply, if available
+    my $ReplyToArticle = $Self->{ParamObject}->GetParam( Param => 'ReplyToArticle' ) || "";
+
+    # check if ReplyToArticle really belongs to the ticket
+    my %ReplyToArticleContent;
+    my @ReplyToAdresses;
+    if ($ReplyToArticle) {
+        %ReplyToArticleContent = $Self->{TicketObject}->ArticleGet(
+            ArticleID     => $ReplyToArticle,
+            DynamicFields => 0,
+            UserID        => $Self->{UserID},
+        );
+
+        $Self->{ReplyToArticle}        = $ReplyToArticle;
+        $Self->{ReplyToArticleContent} = \%ReplyToArticleContent;
+
+        # get sender of original note (to inform sender about answer)
+        if ( $ReplyToArticleContent{CreatedBy} ) {
+            my @ReplyToSenderID = ( $ReplyToArticleContent{CreatedBy} );
+            $Self->{ReplyToSenderUserID} = \@ReplyToSenderID;
+        }
+
+        # if article belongs to other ticket, don't use it as reply
+        if ( $ReplyToArticleContent{TicketID} ne $Self->{TicketID} ) {
+            $Self->{ReplyToArticle} = "";
+        }
+
+        # if article is not of type note-internal, don't use it as reply
+        if ( $ReplyToArticleContent{ArticleType} !~ /^note-(internal|external)$/i ) {
+            $Self->{ReplyToArticle} = "";
+        }
+    }
 
     # create form id
     if ( !$Self->{FormID} ) {
@@ -106,8 +146,11 @@ sub Run {
     }
 
     # get ACL restrictions
-    $Self->{TicketObject}->TicketAcl(
-        Data          => '-',
+    my %PossibleActions = ( 1 => $Self->{Action} );
+
+    my $ACL = $Self->{TicketObject}->TicketAcl(
+        Data          => \%PossibleActions,
+        Action        => $Self->{Action},
         TicketID      => $Self->{TicketID},
         ReturnType    => 'Action',
         ReturnSubType => '-',
@@ -116,10 +159,12 @@ sub Run {
     my %AclAction = $Self->{TicketObject}->TicketAclActionData();
 
     # check if ACL restrictions exist
-    if ( IsHashRefWithData( \%AclAction ) ) {
+    if ( $ACL || IsHashRefWithData( \%AclAction ) ) {
+
+        my %AclActionLookup = reverse %AclAction;
 
         # show error screen if ACL prohibits this action
-        if ( defined $AclAction{ $Self->{Action} } && $AclAction{ $Self->{Action} } eq '0' ) {
+        if ( !$AclActionLookup{ $Self->{Action} } ) {
             return $Self->{LayoutObject}->NoPermission( WithHeader => 'yes' );
         }
     }
@@ -128,11 +173,12 @@ sub Run {
         TicketID      => $Self->{TicketID},
         DynamicFields => 1,
     );
+
     $Self->{LayoutObject}->Block(
         Name => 'Properties',
         Data => {
-            FormID       => $Self->{FormID},
-            ReturnModule => $Self->{ReturnModule},
+            FormID         => $Self->{FormID},
+            ReplyToArticle => $Self->{ReplyToArticle},
             %Ticket,
             %Param,
         },
@@ -182,8 +228,7 @@ sub Run {
                 $Output .= $Self->{LayoutObject}->Warning(
                     Message => $Self->{LayoutObject}->{LanguageObject}
                         ->Get('Sorry, you need to be the ticket owner to perform this action.'),
-                    Comment => $Self->{LayoutObject}->{LanguageObject}
-                        ->Get('Please change the owner first.'),
+                    Comment => $Self->{LayoutObject}->{LanguageObject}->Get('Please change the owner first.'),
                 );
                 $Output .= $Self->{LayoutObject}->Footer(
                     Type => 'Small',
@@ -217,7 +262,7 @@ sub Run {
         qw(
         NewStateID NewPriorityID TimeUnits ArticleTypeID Title Body Subject NewQueueID
         Year Month Day Hour Minute NewOwnerID NewOwnerType OldOwnerID NewResponsibleID
-        TypeID ServiceID SLAID Expand ReturnModule
+        TypeID ServiceID SLAID Expand ReplyToArticle StandardTemplateID CreateArticle
         )
         )
     {
@@ -233,12 +278,11 @@ sub Run {
         next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
         # extract the dynamic field value form the web request
-        $DynamicFieldValues{ $DynamicFieldConfig->{Name} }
-            = $Self->{BackendObject}->EditFieldValueGet(
+        $DynamicFieldValues{ $DynamicFieldConfig->{Name} } = $Self->{BackendObject}->EditFieldValueGet(
             DynamicFieldConfig => $DynamicFieldConfig,
             ParamObject        => $Self->{ParamObject},
             LayoutObject       => $Self->{LayoutObject},
-            );
+        );
     }
 
     # convert dynamic field values into a structure for ACLs
@@ -248,8 +292,7 @@ sub Run {
         next DYNAMICFIELD if !$DynamicField;
         next DYNAMICFIELD if !$DynamicFieldValues{$DynamicField};
 
-        $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField }
-            = $DynamicFieldValues{$DynamicField};
+        $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField } = $DynamicFieldValues{$DynamicField};
     }
     $GetParam{DynamicField} = \%DynamicFieldACLParameters;
 
@@ -314,7 +357,8 @@ sub Run {
                 Param => 'FileUpload',
             );
             $Self->{UploadCacheObject}->FormIDAddFile(
-                FormID => $Self->{FormID},
+                FormID      => $Self->{FormID},
+                Disposition => 'attachment',
                 %UploadStuff,
             );
         }
@@ -326,7 +370,7 @@ sub Run {
 
         # check pending time
         if ( $GetParam{NewStateID} ) {
-            my %StateData = $Self->{TicketObject}->{StateObject}->StateGet(
+            my %StateData = $Self->{StateObject}->StateGet(
                 ID => $GetParam{NewStateID},
             );
 
@@ -491,8 +535,7 @@ sub Run {
                         my %Filter = $Self->{TicketObject}->TicketAclData();
 
                         # convert Filer key => key back to key => value using map
-                        %{$PossibleValuesFilter}
-                            = map { $_ => $PossibleValues->{$_} }
+                        %{$PossibleValuesFilter} = map { $_ => $PossibleValues->{$_} }
                             keys %Filter;
                     }
                 }
@@ -558,6 +601,7 @@ sub Run {
                 ),
                 %Ticket,
                 DynamicFieldHTML => \%DynamicFieldHTML,
+                IsUpload         => $IsUpload,
                 %GetParam,
                 %Error,
             );
@@ -608,6 +652,8 @@ sub Run {
             }
         }
 
+        my $UnlockOnAway = 1;
+
         # set new owner
         my @NotifyDone;
         if ( $Self->{Config}->{Owner} ) {
@@ -626,6 +672,7 @@ sub Run {
                     NewUserID => $GetParam{OldOwnerID},
                     Comment   => $BodyText,
                 );
+                $UnlockOnAway = 0;
 
                 # remember to not notify owner twice
                 if ( $Success && $Success eq 1 ) {
@@ -644,6 +691,7 @@ sub Run {
                     NewUserID => $GetParam{NewOwnerID},
                     Comment   => $BodyText,
                 );
+                $UnlockOnAway = 0;
 
                 # remember to not notify owner twice
                 if ( $Success && $Success eq 1 ) {
@@ -724,7 +772,7 @@ sub Run {
             );
 
             # unlock the ticket after close
-            my %StateData = $Self->{TicketObject}->{StateObject}->StateGet(
+            my %StateData = $Self->{StateObject}->StateGet(
                 ID => $GetParam{NewStateID},
             );
 
@@ -754,7 +802,12 @@ sub Run {
             }
         }
 
-        if ( $Self->{Config}->{Note} && ( $GetParam{Subject} || $GetParam{Body} ) ) {
+        if (
+            $GetParam{CreateArticle}
+            && $Self->{Config}->{Note}
+            && ( $GetParam{Subject} || $GetParam{Body} )
+            )
+        {
 
             if ( !$GetParam{Subject} ) {
                 if ( $Self->{Config}->{Subject} ) {
@@ -764,7 +817,7 @@ sub Run {
                     $GetParam{Subject} = $Subject;
                 }
                 $GetParam{Subject} = $GetParam{Subject}
-                    || $Self->{LayoutObject}->{LanguageObject}->Get('No subject');
+                    || $Self->{LayoutObject}->{LanguageObject}->Translate('No subject');
             }
 
             # if there is no ArticleTypeID, use the default value
@@ -783,7 +836,17 @@ sub Run {
             }
 
             my $From = "\"$Self->{UserFirstname} $Self->{UserLastname}\" <$Self->{UserEmail}>";
-            my @NotifyUserIDs = ( @{ $Self->{InformUserID} }, @{ $Self->{InvolvedUserID} } );
+            my @NotifyUserIDs;
+            if ( $Self->{ReplyToArticle} ) {
+                @NotifyUserIDs = (
+                    @{ $Self->{ReplyToSenderUserID} },
+                    @{ $Self->{InformUserID} },
+                    @{ $Self->{InvolvedUserID} }
+                );
+            }
+            else {
+                @NotifyUserIDs = ( @{ $Self->{InformUserID} }, @{ $Self->{InvolvedUserID} } );
+            }
             $ArticleID = $Self->{TicketObject}->ArticleCreate(
                 TicketID                        => $Self->{TicketID},
                 SenderType                      => 'agent',
@@ -795,6 +858,7 @@ sub Run {
                 HistoryComment                  => $Self->{Config}->{HistoryComment},
                 ForceNotificationToUserID       => \@NotifyUserIDs,
                 ExcludeMuteNotificationToUserID => \@NotifyDone,
+                UnlockOnAway                    => $UnlockOnAway,
                 %GetParam,
             );
             if ( !$ArticleID ) {
@@ -830,7 +894,13 @@ sub Run {
 
                 # skip, deleted not used inline images
                 my $ContentID = $Attachment->{ContentID};
-                if ($ContentID) {
+                if (
+                    $ContentID
+                    && $Self->{LayoutObject}->{BrowserRichText}
+                    && ( $Attachment->{ContentType} =~ /image/i )
+                    && ( $Attachment->{Disposition} eq 'inline' )
+                    )
+                {
                     my $ContentIDHTMLQuote = $Self->{LayoutObject}->Ascii2Html(
                         Text => $ContentID,
                     );
@@ -863,8 +933,7 @@ sub Run {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
             # set the object ID (TicketID or ArticleID) depending on the field configration
-            my $ObjectID
-                = $DynamicFieldConfig->{ObjectType} eq 'Article' ? $ArticleID : $Self->{TicketID};
+            my $ObjectID = $DynamicFieldConfig->{ObjectType} eq 'Article' ? $ArticleID : $Self->{TicketID};
 
             # set the value
             my $Success = $Self->{BackendObject}->ValueSet(
@@ -875,11 +944,6 @@ sub Run {
             );
         }
 
-        # decode the url if present and set it as return url
-        if ( IsStringWithData( $GetParam{ReturnModule} ) ) {
-            $ReturnURL = $GetParam{ReturnModule};
-        }
-
         # load new URL in parent window and close popup
         $ReturnURL ||= "Action=AgentTicketZoom;TicketID=$Self->{TicketID};ArticleID=$ArticleID";
 
@@ -888,8 +952,9 @@ sub Run {
         );
     }
     elsif ( $Self->{Subaction} eq 'AJAXUpdate' ) {
-        my %Ticket = $Self->{TicketObject}->TicketGet( TicketID => $Self->{TicketID} );
-        my $CustomerUser = $Ticket{CustomerUserID};
+        my %Ticket         = $Self->{TicketObject}->TicketGet( TicketID => $Self->{TicketID} );
+        my $CustomerUser   = $Ticket{CustomerUserID};
+        my $ElementChanged = $Self->{ParamObject}->GetParam( Param => 'ElementChanged' ) || '';
 
         my $ServiceID;
 
@@ -912,8 +977,7 @@ sub Run {
             next DYNAMICFIELD if !$DynamicField;
             next DYNAMICFIELD if !$DynamicFieldValues{$DynamicField};
 
-            $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField }
-                = $DynamicFieldValues{$DynamicField};
+            $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField } = $DynamicFieldValues{$DynamicField};
         }
 
         # get list type
@@ -1022,6 +1086,106 @@ sub Run {
             );
         }
 
+        my $StandardTemplates = $Self->_GetStandardTemplates(
+            %GetParam,
+            QueueID => $QueueID || '',
+        );
+
+        my @TemplateAJAX;
+
+        # update ticket body and attachements if needed.
+        if ( $ElementChanged eq 'StandardTemplateID' ) {
+            my @TicketAttachments;
+            my $TemplateText;
+
+            # remove all attachments from the Upload cache
+            my $RemoveSuccess = $Self->{UploadCacheObject}->FormIDRemove(
+                FormID => $Self->{FormID},
+            );
+            if ( !$RemoveSuccess ) {
+                $Self->{LogObject}->Log(
+                    Priority => 'error',
+                    Message  => "Form attachments could not be deleted!",
+                );
+            }
+
+            # get the template text and set new attachments if a template is selected
+            if ( IsPositiveInteger( $GetParam{StandardTemplateID} ) ) {
+                my $TemplateGenerator = Kernel::System::TemplateGenerator->new( %{$Self} );
+
+                # set template text, replace smart tags (limited as ticket is not created)
+                $TemplateText = $TemplateGenerator->Template(
+                    TemplateID => $GetParam{StandardTemplateID},
+                    TicketID   => $Self->{TicketID},
+                    UserID     => $Self->{UserID},
+                );
+
+                # if ReplyToArticle is given, get this article to generate
+                # the quoted article content
+                if ( $Self->{ReplyToArticle} ) {
+
+                    # get article to quote
+                    my $Body = $Self->{LayoutObject}->ArticleQuote(
+                        TicketID          => $Self->{TicketID},
+                        ArticleID         => $Self->{ReplyToArticle},
+                        FormID            => $Self->{FormID},
+                        UploadCacheObject => $Self->{UploadCacheObject},
+                    );
+
+                    # prepare quoted body content
+                    $Body = $Self->_GetQuotedReplyBody(
+                        %{ $Self->{ReplyToArticleContent} },
+                        Body => $Body,
+                    );
+
+                    if ( $Self->{LayoutObject}->{BrowserRichText} ) {
+                        $TemplateText = $TemplateText . '<br><br>' . $Body;
+                    }
+                    else {
+                        $TemplateText = $TemplateText . "\n\n" . $Body;
+                    }
+                }
+
+                # create StdAttachmentObject
+                my $StdAttachmentObject = Kernel::System::StdAttachment->new( %{$Self} );
+
+                # add std. attachments to ticket
+                my %AllStdAttachments = $StdAttachmentObject->StdAttachmentStandardTemplateMemberList(
+                    StandardTemplateID => $GetParam{StandardTemplateID},
+                );
+                for ( sort keys %AllStdAttachments ) {
+                    my %AttachmentsData = $StdAttachmentObject->StdAttachmentGet( ID => $_ );
+                    $Self->{UploadCacheObject}->FormIDAddFile(
+                        FormID      => $Self->{FormID},
+                        Disposition => 'attachment',
+                        %AttachmentsData,
+                    );
+                }
+
+                # send a list of attachments in the upload cache back to the clientside JavaScript
+                # which renders then the list of currently uploaded attachments
+                @TicketAttachments = $Self->{UploadCacheObject}->FormIDGetAllFilesMeta(
+                    FormID => $Self->{FormID},
+                );
+            }
+
+            @TemplateAJAX = (
+                {
+                    Name => 'UseTemplateNote',
+                    Data => '0',
+                },
+                {
+                    Name => 'RichText',
+                    Data => $TemplateText || '',
+                },
+                {
+                    Name     => 'TicketAttachments',
+                    Data     => \@TicketAttachments,
+                    KeepData => 1,
+                },
+            );
+        }
+
         my $JSON = $Self->{LayoutObject}->BuildSelectionJSON(
             [
 
@@ -1082,7 +1246,16 @@ sub Run {
                     Translation  => 0,
                     Max          => 100,
                 },
+                {
+                    Name         => 'StandardTemplateID',
+                    Data         => $StandardTemplates,
+                    SelectedID   => $GetParam{StandardTemplateID},
+                    PossibleNone => 1,
+                    Translation  => 1,
+                    Max          => 100,
+                },
                 @DynamicFieldAJAX,
+                @TemplateAJAX,
             ],
         );
         return $Self->{LayoutObject}->Attachment(
@@ -1094,11 +1267,29 @@ sub Run {
     }
     else {
 
-        # fillup configured default vars
-        if ( !defined $GetParam{Body} && $Self->{Config}->{Body} ) {
-            $GetParam{Body} = $Self->{LayoutObject}->Output(
-                Template => $Self->{Config}->{Body},
+        my $Body = '';
+
+        # if ReplyToArticle is given, get this article to generate
+        # the quoted article content
+        if ( $Self->{ReplyToArticle} ) {
+
+            # get article to quote
+            $Body = $Self->{LayoutObject}->ArticleQuote(
+                TicketID          => $Self->{TicketID},
+                ArticleID         => $Self->{ReplyToArticle},
+                FormID            => $Self->{FormID},
+                UploadCacheObject => $Self->{UploadCacheObject},
             );
+
+            # prepare quoted body content
+            $Body = $Self->_GetQuotedReplyBody(
+                %{ $Self->{ReplyToArticleContent} },
+                Body => $Body,
+            );
+        }
+
+        # if a body content was pre defined, add this before the quoted article content
+        if ( $GetParam{Body} ) {
 
             # make sure body is rich text
             if ( $Self->{LayoutObject}->{BrowserRichText} ) {
@@ -1106,8 +1297,37 @@ sub Run {
                     String => $GetParam{Body},
                 );
             }
+
+            $Body = $GetParam{Body} . $Body;
         }
-        if ( !defined $GetParam{Subject} && $Self->{Config}->{Subject} ) {
+
+        # fillup configured default vars
+        if ( $Body eq '' && $Self->{Config}->{Body} ) {
+            $Body = $Self->{LayoutObject}->Output(
+                Template => $Self->{Config}->{Body},
+            );
+
+            # make sure body is rich text
+            if ( $Self->{LayoutObject}->{BrowserRichText} ) {
+                $Body = $Self->{LayoutObject}->Ascii2RichText(
+                    String => $Body,
+                );
+            }
+        }
+
+        # set Body var to calculated content
+        $GetParam{Body} = $Body;
+
+        if ( $Self->{ReplyToArticle} && $Self->{Config}->{Subject} ) {
+            my $TicketSubjectRe = $Self->{ConfigObject}->Get('Ticket::SubjectRe');
+            if ($TicketSubjectRe) {
+                $GetParam{Subject} = $TicketSubjectRe . ': ' . $Self->{ReplyToArticleContent}{Subject};
+            }
+            else {
+                $GetParam{Subject} = 'Re: ' . $Self->{ReplyToArticleContent}{Subject};
+            }
+        }
+        elsif ( !defined $GetParam{Subject} && $Self->{Config}->{Subject} ) {
             $GetParam{Subject} = $Self->{LayoutObject}->Output(
                 Template => $Self->{Config}->{Subject},
             );
@@ -1156,8 +1376,7 @@ sub Run {
                         my %Filter = $Self->{TicketObject}->TicketAclData();
 
                         # convert Filer key => key back to key => value using map
-                        %{$PossibleValuesFilter}
-                            = map { $_ => $PossibleValues->{$_} }
+                        %{$PossibleValuesFilter} = map { $_ => $PossibleValues->{$_} }
                             keys %Filter;
                     }
                 }
@@ -1222,6 +1441,24 @@ sub _Mask {
     }
     my %Ticket = $Self->{TicketObject}->TicketGet( TicketID => $Self->{TicketID} );
 
+    # Widget Ticket Actions
+    if (
+        ( $Self->{ConfigObject}->Get('Ticket::Type') && $Self->{Config}->{TicketType} )
+        ||
+        ( $Self->{ConfigObject}->Get('Ticket::Service')     && $Self->{Config}->{Service} )     ||
+        ( $Self->{ConfigObject}->Get('Ticket::Responsible') && $Self->{Config}->{Responsible} ) ||
+        $Self->{Config}->{Title} ||
+        $Self->{Config}->{Queue} ||
+        $Self->{Config}->{Owner} ||
+        $Self->{Config}->{State} ||
+        $Self->{Config}->{Priority}
+        )
+    {
+        $Self->{LayoutObject}->Block(
+            Name => 'WidgetTicketActions',
+        );
+    }
+
     if ( $Self->{Config}->{Title} ) {
         $Self->{LayoutObject}->Block(
             Name => 'Title',
@@ -1264,7 +1501,6 @@ sub _Mask {
 
     # services
     if ( $Self->{ConfigObject}->Get('Ticket::Service') && $Self->{Config}->{Service} ) {
-
         my $Services = $Self->_GetServices(
             %Param,
             Action         => $Self->{Action},
@@ -1371,7 +1607,7 @@ sub _Mask {
 
         # set move queues
         $Param{QueuesStrg} = $Self->{LayoutObject}->AgentQueueListOption(
-            Data => { %MoveQueues, '' => '-' },
+            Data           => { %MoveQueues, '' => '-' },
             Multiple       => 0,
             Size           => 0,
             Class          => 'NewQueueID',
@@ -1426,10 +1662,11 @@ sub _Mask {
         my %SeenOldOwner;
         if (@OldUserInfo) {
             my $Counter = 1;
+            USER:
             for my $User ( reverse @OldUserInfo ) {
 
                 # skip if old owner is already in the list
-                next if $SeenOldOwner{ $User->{UserID} };
+                next USER if $SeenOldOwner{ $User->{UserID} };
                 $SeenOldOwner{ $User->{UserID} } = 1;
                 push @OldOwners, {
                     Key   => $User->{UserID},
@@ -1468,6 +1705,7 @@ sub _Mask {
             Data => \%Param,
         );
     }
+
     if ( $Self->{ConfigObject}->Get('Ticket::Responsible') && $Self->{Config}->{Responsible} ) {
 
         # get user of own groups
@@ -1505,7 +1743,9 @@ sub _Mask {
             Data => \%Param,
         );
     }
+
     if ( $Self->{Config}->{State} ) {
+
         my %State;
         my %StateList = $Self->{TicketObject}->TicketStateList(
             Action   => $Self->{Action},
@@ -1539,9 +1779,14 @@ sub _Mask {
             next STATEID if !$StateID;
 
             # get state data
-            my %StateData = $Self->{TicketObject}->{StateObject}->StateGet( ID => $StateID );
+            my %StateData = $Self->{StateObject}->StateGet( ID => $StateID );
 
             next STATEID if $StateData{TypeName} !~ /pending/i;
+
+            # get used calendar
+            my $Calendar = $Self->{TicketObject}->TicketCalendarGet(
+                %Ticket,
+            );
 
             $Param{DateString} = $Self->{LayoutObject}->BuildDateSelection(
                 %Param,
@@ -1553,6 +1798,7 @@ sub _Mask {
                 Class => $Param{DateInvalid} || ' ',
                 Validate             => 1,
                 ValidateDateInFuture => 1,
+                Calendar             => $Calendar,
             );
 
             $Self->{LayoutObject}->Block(
@@ -1566,6 +1812,7 @@ sub _Mask {
 
     # get priority
     if ( $Self->{Config}->{Priority} ) {
+
         my %Priority;
         my %PriorityList = $Self->{TicketObject}->TicketPriorityList(
             UserID   => $Self->{UserID},
@@ -1594,45 +1841,110 @@ sub _Mask {
         );
     }
 
+    # End Widget Ticket Actions
+
+    # Widget Dynamic Fields
+
+    if ( @{ $Self->{DynamicField} } ) {
+        $Self->{LayoutObject}->Block(
+            Name => 'WidgetDynamicFields',
+        );
+    }
+
+    # Dynamic fields
+    # cycle trough the activated Dynamic Fields for this screen
+    DYNAMICFIELD:
+    for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
+
+        next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
+
+        # skip fields that HTML could not be retrieved
+        next DYNAMICFIELD if !IsHashRefWithData(
+            $Param{DynamicFieldHTML}->{ $DynamicFieldConfig->{Name} }
+        );
+
+        # get the html strings form $Param
+        my $DynamicFieldHTML = $Param{DynamicFieldHTML}->{ $DynamicFieldConfig->{Name} };
+
+        $Self->{LayoutObject}->Block(
+            Name => 'DynamicField',
+            Data => {
+                Name  => $DynamicFieldConfig->{Name},
+                Label => $DynamicFieldHTML->{Label},
+                Field => $DynamicFieldHTML->{Field},
+            },
+        );
+
+        # example of dynamic fields order customization
+        $Self->{LayoutObject}->Block(
+            Name => 'DynamicField_' . $DynamicFieldConfig->{Name},
+            Data => {
+                Name  => $DynamicFieldConfig->{Name},
+                Label => $DynamicFieldHTML->{Label},
+                Field => $DynamicFieldHTML->{Field},
+            },
+        );
+    }
+
+    # End Widget Dynamic Fields
+
+    # Widget Article
     if ( $Self->{Config}->{Note} ) {
 
-        if ( $Self->{Config}->{NoteMandatory} ) {
+        $Param{WidgetStatus} = 'Collapsed';
+
+        if (
+            $Self->{Config}->{NoteMandatory}
+            || $Self->{ConfigObject}->Get('Ticket::Frontend::NeedAccountedTime')
+            || $Param{IsUpload}
+            || $Self->{ReplyToArticle}
+            )
+        {
+            $Param{WidgetStatus} = 'Expanded';
+        }
+
+        if (
+            $Self->{Config}->{NoteMandatory}
+            || $Self->{ConfigObject}->Get('Ticket::Frontend::NeedAccountedTime')
+            )
+        {
             $Param{SubjectRequired} = 'Validate_Required';
             $Param{BodyRequired}    = 'Validate_Required';
         }
+        else {
+            $Param{SubjectRequired} = 'Validate_DependingRequiredAND Validate_Depending_CreateArticle';
+            $Param{BodyRequired}    = 'Validate_DependingRequiredAND Validate_Depending_CreateArticle';
+        }
 
         $Self->{LayoutObject}->Block(
-            Name => 'Note',
+            Name => 'WidgetArticle',
             Data => {%Param},
         );
 
-        # add rich text editor
-        if ( $Self->{LayoutObject}->{BrowserRichText} ) {
-
-            # use height/width defined for this screen
-            $Param{RichTextHeight} = $Self->{Config}->{RichTextHeight} || 0;
-            $Param{RichTextWidth}  = $Self->{Config}->{RichTextWidth}  || 0;
-
-            $Self->{LayoutObject}->Block(
-                Name => 'RichText',
-                Data => \%Param,
+        # check and retrieve involved and informed agents of ReplyTo Note
+        my @ReplyToUsers;
+        my %ReplyToUsersHash;
+        if ( $Self->{ReplyToArticle} ) {
+            my @ReplyToParts = $Self->{EmailParserObject}->SplitAddressLine(
+                Line => $Self->{ReplyToArticleContent}->{To},
             );
+
+            REPLYTOPART:
+            for my $SingleReplyToPart (@ReplyToParts) {
+                my $ReplyToAddress = $Self->{EmailParserObject}->GetEmailAddress(
+                    Email => $SingleReplyToPart,
+                );
+
+                next REPLYTOPART if !$ReplyToAddress;
+                push @ReplyToUsers, $ReplyToAddress;
+            }
+
+            $ReplyToUsersHash{$_}++ for @ReplyToUsers;
         }
 
-        if ( $Self->{Config}->{NoteMandatory} ) {
+        if ( $Self->{Config}->{InformAgent} || $Self->{Config}->{InvolvedAgent} ) {
             $Self->{LayoutObject}->Block(
-                Name => 'SubjectLabelMandatory',
-            );
-            $Self->{LayoutObject}->Block(
-                Name => 'RichTextLabelMandatory',
-            );
-        }
-        else {
-            $Self->{LayoutObject}->Block(
-                Name => 'SubjectLabel',
-            );
-            $Self->{LayoutObject}->Block(
-                Name => 'RichTextLabel',
+                Name => 'InformAdditionalAgents',
             );
         }
 
@@ -1653,6 +1965,22 @@ sub _Mask {
             for my $UserID ( sort keys %MemberList ) {
                 $ShownUsers{$UserID} = $AllGroupsMembers{$UserID};
             }
+
+            if ( $Self->{ReplyToArticle} ) {
+
+                # get email address of all users and compare to replyto-addresses
+                for my $UserID ( sort keys %ShownUsers ) {
+                    my %UserData = $Self->{UserObject}->GetUserData(
+                        UserID => $UserID,
+                    );
+
+                    my $UserEmail = $UserData{UserEmail};
+                    if ( $ReplyToUsersHash{$UserEmail} ) {
+                        push @{ $Self->{InformUserID} }, $UserID;
+                    }
+                }
+            }
+
             my $InformAgentSize = $Self->{ConfigObject}->Get('Ticket::Frontend::InformAgentMaxSize')
                 || 3;
             $Param{OptionStrg} = $Self->{LayoutObject}->BuildSelection(
@@ -1694,10 +2022,14 @@ sub _Mask {
                     Value => $Value,
                 };
                 $Counter++;
+
+                # add involved user, if available in ReplyToAddresses list
+                if ( $Self->{ReplyToArticle} && $ReplyToUsersHash{ $User->{UserEmail} } ) {
+                    push @{ $Self->{InvolvedUserID} }, $User->{UserID};
+                }
             }
 
-            my $InvolvedAgentSize
-                = $Self->{ConfigObject}->Get('Ticket::Frontend::InvolvedAgentMaxSize') || 3;
+            my $InvolvedAgentSize = $Self->{ConfigObject}->Get('Ticket::Frontend::InvolvedAgentMaxSize') || 3;
             $Param{InvolvedAgentStrg} = $Self->{LayoutObject}->BuildSelection(
                 Data       => \@InvolvedAgents,
                 SelectedID => $Self->{InvolvedUserID},
@@ -1711,6 +2043,40 @@ sub _Mask {
             );
         }
 
+        # add rich text editor
+        if ( $Self->{LayoutObject}->{BrowserRichText} ) {
+
+            # use height/width defined for this screen
+            $Param{RichTextHeight} = $Self->{Config}->{RichTextHeight} || 0;
+            $Param{RichTextWidth}  = $Self->{Config}->{RichTextWidth}  || 0;
+
+            $Self->{LayoutObject}->Block(
+                Name => 'RichText',
+                Data => \%Param,
+            );
+        }
+
+        if (
+            $Self->{Config}->{NoteMandatory}
+            || $Self->{ConfigObject}->Get('Ticket::Frontend::NeedAccountedTime')
+            )
+        {
+            $Self->{LayoutObject}->Block(
+                Name => 'SubjectLabelMandatory',
+            );
+            $Self->{LayoutObject}->Block(
+                Name => 'RichTextLabelMandatory',
+            );
+        }
+        else {
+            $Self->{LayoutObject}->Block(
+                Name => 'SubjectLabel',
+            );
+            $Self->{LayoutObject}->Block(
+                Name => 'RichTextLabel',
+            );
+        }
+
         # show spell check
         if ( $Self->{LayoutObject}->{BrowserSpellChecker} ) {
             $Self->{LayoutObject}->Block(
@@ -1721,12 +2087,51 @@ sub _Mask {
             );
         }
 
+        # build text template string
+        my %StandardTemplates = $Self->{StandardTemplateObject}->StandardTemplateList(
+            Valid => 1,
+            Type  => 'Note',
+        );
+
+        my $QueueStandardTemplates = $Self->_GetStandardTemplates(
+            %Param,
+            TicketID => $Self->{TicketID} || '',
+        );
+
+        if (
+            IsHashRefWithData(
+                $QueueStandardTemplates
+                    || ( $Self->{Config}->{Queue} && IsHashRefWithData( \%StandardTemplates ) )
+            )
+            )
+        {
+            $Param{StandardTemplateStrg} = $Self->{LayoutObject}->BuildSelection(
+                Data       => $QueueStandardTemplates    || {},
+                Name       => 'StandardTemplateID',
+                SelectedID => $Param{StandardTemplateID} || '',
+                PossibleNone => 1,
+                Sort         => 'AlphanumericValue',
+                Translation  => 1,
+                Max          => 200,
+            );
+            $Self->{LayoutObject}->Block(
+                Name => 'StandardTemplate',
+                Data => {%Param},
+            );
+        }
+
         # show attachments
         ATTACHMENT:
         for my $Attachment ( @{ $Param{Attachments} } ) {
-
-            next ATTACHMENT if $Attachment->{ContentID} && $Self->{LayoutObject}->{BrowserRichText};
-
+            if (
+                $Attachment->{ContentID}
+                && $Self->{LayoutObject}->{BrowserRichText}
+                && ( $Attachment->{ContentType} =~ /image/i )
+                && ( $Attachment->{Disposition} eq 'inline' )
+                )
+            {
+                next ATTACHMENT;
+            }
             $Self->{LayoutObject}->Block(
                 Name => 'Attachment',
                 Data => $Attachment,
@@ -1735,7 +2140,12 @@ sub _Mask {
 
         # build ArticleTypeID string
         my %ArticleType;
-        if ( !$Param{ArticleTypeID} ) {
+
+        # set article type of this note to the same type as the article for whom this is the reply
+        if ( $Self->{ReplyToArticle} && !$Param{ArticleTypeID} ) {
+            $ArticleType{SelectedID} = $Self->{ReplyToArticleContent}{ArticleTypeID};
+        }
+        elsif ( !$Param{ArticleTypeID} ) {
             $ArticleType{SelectedValue} = $Self->{Config}->{ArticleTypeDefault};
         }
         else {
@@ -1784,43 +2194,13 @@ sub _Mask {
         }
     }
 
-    # Dynamic fields
-    # cycle trough the activated Dynamic Fields for this screen
-    DYNAMICFIELD:
-    for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
-
-        next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
-
-        # skip fields that HTML could not be retrieved
-        next DYNAMICFIELD if !IsHashRefWithData(
-            $Param{DynamicFieldHTML}->{ $DynamicFieldConfig->{Name} }
-        );
-
-        # get the html strings form $Param
-        my $DynamicFieldHTML = $Param{DynamicFieldHTML}->{ $DynamicFieldConfig->{Name} };
-
-        $Self->{LayoutObject}->Block(
-            Name => 'DynamicField',
-            Data => {
-                Name  => $DynamicFieldConfig->{Name},
-                Label => $DynamicFieldHTML->{Label},
-                Field => $DynamicFieldHTML->{Field},
-            },
-        );
-
-        # example of dynamic fields order customization
-        $Self->{LayoutObject}->Block(
-            Name => 'DynamicField_' . $DynamicFieldConfig->{Name},
-            Data => {
-                Name  => $DynamicFieldConfig->{Name},
-                Label => $DynamicFieldHTML->{Label},
-                Field => $DynamicFieldHTML->{Field},
-            },
-        );
-    }
+    # End Widget Article
 
     # get output back
-    return $Self->{LayoutObject}->Output( TemplateFile => $Self->{Action}, Data => \%Param );
+    return $Self->{LayoutObject}->Output(
+        TemplateFile => $Self->{Action},
+        Data         => \%Param
+    );
 }
 
 sub _GetNextStates {
@@ -1933,8 +2313,7 @@ sub _GetOldOwners {
 
             next USER if $UserHash{ $User->{UserID} };
 
-            $UserHash{ $User->{UserID} }
-                = "$Counter: $User->{UserFullname}";
+            $UserHash{ $User->{UserID} } = "$Counter: $User->{UserFullname}";
             $Counter++;
         }
     }
@@ -1960,8 +2339,7 @@ sub _GetServices {
     my %Service;
 
     # get options for default services for unknown customers
-    my $DefaultServiceUnknownCustomer
-        = $Self->{ConfigObject}->Get('Ticket::Service::Default::UnknownCustomer');
+    my $DefaultServiceUnknownCustomer = $Self->{ConfigObject}->Get('Ticket::Service::Default::UnknownCustomer');
 
     # check if no CustomerUserID is selected
     # if $DefaultServiceUnknownCustomer = 0 leave CustomerUserID empty, it will not get any services
@@ -2016,8 +2394,7 @@ sub _GetFieldsToUpdate {
 
     # set the fields that can be updateable via AJAXUpdate
     if ( !$Param{OnlyDynamicFields} ) {
-        @UpdatableFields
-            = qw(
+        @UpdatableFields = qw(
             TypeID ServiceID SLAID NewOwnerID OldOwnerID NewResponsibleID NewStateID
             NewPriorityID
         );
@@ -2038,6 +2415,143 @@ sub _GetFieldsToUpdate {
     }
 
     return \@UpdatableFields;
+}
+
+sub _GetQuotedReplyBody {
+    my ( $Self, %Param ) = @_;
+
+    if ( $Self->{LayoutObject}->{BrowserRichText} ) {
+
+        # rewrap body if exists
+        if ( $Param{Body} ) {
+            $Param{Body} =~ s/\t/ /g;
+            my $Quote = $Self->{LayoutObject}->Ascii2Html(
+                Text => $Self->{ConfigObject}->Get('Ticket::Frontend::Quote') || '',
+                HTMLResultMode => 1,
+            );
+            if ($Quote) {
+
+                # quote text
+                $Param{Body} = "<blockquote type=\"cite\">$Param{Body}</blockquote>\n";
+
+                # cleanup not compat. tags
+                $Param{Body} = $Self->{LayoutObject}->RichTextDocumentCleanup(
+                    String => $Param{Body},
+                );
+
+                my $ResponseFormat = $Self->{LayoutObject}->{LanguageObject}
+                    ->FormatTimeString( $Param{Created}, 'DateFormat', 'NoSeconds' );
+                $ResponseFormat .= ' - ' . $Param{From} . ' ';
+                $ResponseFormat
+                    .= $Self->{LayoutObject}->{LanguageObject}->Translate('wrote') . ':';
+
+                $Param{Body} = $ResponseFormat . $Param{Body};
+
+            }
+            else {
+                $Param{Body} = "<br/>" . $Param{Body};
+
+                if ( $Param{Created} ) {
+                    $Param{Body} = $Self->{LayoutObject}->{LanguageObject}->Translate('Date') .
+                        ": $Param{Created}<br/>" . $Param{Body};
+                }
+
+                for (qw(Subject ReplyTo Reply-To Cc To From)) {
+                    if ( $Param{$_} ) {
+                        $Param{Body} = $Self->{LayoutObject}->{LanguageObject}->Translate($_) .
+                            ": $Param{$_}<br/>" . $Param{Body};
+                    }
+                }
+
+                my $From = $Self->{LayoutObject}->Ascii2RichText(
+                    String => $Param{From},
+                );
+
+                my $MessageFrom = $Self->{LayoutObject}->{LanguageObject}->Translate('Message from');
+                my $EndMessage  = $Self->{LayoutObject}->{LanguageObject}->Translate('End message');
+
+                $Param{Body} = "<br/>---- $MessageFrom $From ---<br/><br/>" . $Param{Body};
+                $Param{Body} .= "<br/>---- $EndMessage ---<br/>";
+            }
+        }
+    }
+    else {
+
+        # prepare body, subject, ReplyTo ...
+        # rewrap body if exists
+        if ( $Param{Body} ) {
+            $Param{Body} =~ s/\t/ /g;
+            my $Quote = $Self->{ConfigObject}->Get('Ticket::Frontend::Quote');
+            if ($Quote) {
+                $Param{Body} =~ s/\n/\n$Quote /g;
+                $Param{Body} = "\n$Quote " . $Param{Body};
+
+                my $ResponseFormat = $Self->{LayoutObject}->{LanguageObject}
+                    ->FormatTimeString( $Param{Created}, 'DateFormat', 'NoSeconds' );
+                $ResponseFormat .= ' - ' . $Param{From} . ' ';
+                $ResponseFormat
+                    .= $Self->{LayoutObject}->{LanguageObject}->Translate('wrote') . ":\n";
+
+                $Param{Body} = $ResponseFormat . $Param{Body};
+            }
+            else {
+                $Param{Body} = "\n" . $Param{Body};
+                if ( $Param{Created} ) {
+                    $Param{Body} = $Self->{LayoutObject}->{LanguageObject}->Translate('Date') .
+                        ": $Param{Created}\n" . $Param{Body};
+                }
+
+                for (qw(Subject ReplyTo Reply-To Cc To From)) {
+                    if ( $Param{$_} ) {
+                        $Param{Body} = $Self->{LayoutObject}->{LanguageObject}->Translate($_) .
+                            ": $Param{$_}\n" . $Param{Body};
+                    }
+                }
+
+                my $MessageFrom = $Self->{LayoutObject}->{LanguageObject}->Translate('Message from');
+                my $EndMessage  = $Self->{LayoutObject}->{LanguageObject}->Translate('End message');
+
+                $Param{Body} = "\n---- $MessageFrom $Param{From} ---\n\n" . $Param{Body};
+                $Param{Body} .= "\n---- $EndMessage ---\n";
+            }
+        }
+    }
+
+    return $Param{Body};
+}
+
+sub _GetStandardTemplates {
+    my ( $Self, %Param ) = @_;
+
+    # get create templates
+    my %Templates;
+
+    # check needed
+    return \%Templates if !$Param{QueueID} && !$Param{TicketID};
+
+    my $QueueID = $Param{QueueID} || '';
+    if ( !$Param{QueueID} && $Param{TicketID} ) {
+
+        # get QueueID from the ticket
+        my %Ticket = $Self->{TicketObject}->TicketGet(
+            TicketID      => $Param{TicketID},
+            DynamicFields => 0,
+            UserID        => $Self->{UserID},
+        );
+        $QueueID = $Ticket{QueueID} || '';
+    }
+
+    # fetch all std. templates
+    my %StandardTemplates = $Self->{QueueObject}->QueueStandardTemplateMemberList(
+        QueueID       => $QueueID,
+        TemplateTypes => 1,
+    );
+
+    # return empty hash if there are no templates for this screen
+    return \%Templates if !IsHashRefWithData( $StandardTemplates{Note} );
+
+    # return just the templates for this screen
+    return $StandardTemplates{Note};
 }
 
 1;

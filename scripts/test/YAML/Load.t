@@ -1,21 +1,21 @@
 # --
-# scripts/test/Load.t - YAML module testscript
+# YAML/Load.t - YAML module testscript
 # Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
+
 use strict;
 use warnings;
 use utf8;
 
-use Kernel::System::YAML;
-
-# declare externally defined variables to avoid errors under 'use strict'
 use vars qw( $Self %Param );
 
-my $YAMLObject = Kernel::System::YAML->new( %{$Self} );
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $YAMLObject   = $Kernel::OM->Get('Kernel::System::YAML');
 
 my @Tests = (
     {
@@ -39,7 +39,7 @@ my @Tests = (
         Name   => 'YAML - simple',
     },
     {
-        Input => [ 1, 2, "3", "Foo", 5 ],
+        Input  => [ 1, 2, "3", "Foo", 5 ],
         Result => "---\n- 1\n- 2\n- '3'\n- Foo\n- 5\n",
         Name   => 'YAML - simple',
     },
@@ -88,6 +88,7 @@ my @Tests = (
 );
 
 for my $Test (@Tests) {
+
     my $YAML = $YAMLObject->Dump(
         Data => $Test->{Input},
     );
@@ -98,8 +99,6 @@ for my $Test (@Tests) {
         $Test->{Name},
     );
 }
-
-# YAML::Load()
 
 @Tests = (
     {
@@ -123,7 +122,7 @@ for my $Test (@Tests) {
         Name      => 'YAML - simple'
     },
     {
-        Result => [ 1, 2, "3", "Foo", 5 ],
+        Result    => [ 1, 2, "3", "Foo", 5 ],
         InputLoad => "---\n- 1\n- 2\n- '3'\n- Foo\n- 5\n",
         Name      => 'YAML - simple'
     },

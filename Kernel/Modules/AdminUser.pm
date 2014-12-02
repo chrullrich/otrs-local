@@ -127,8 +127,7 @@ sub Run {
     # change
     # ------------------------------------------------------------ #
     elsif ( $Self->{Subaction} eq 'Change' ) {
-        my $UserID
-            = $Self->{ParamObject}->GetParam( Param => 'UserID' )
+        my $UserID = $Self->{ParamObject}->GetParam( Param => 'UserID' )
             || $Self->{ParamObject}->GetParam( Param => 'ID' )
             || '';
         my %UserData = $Self->{UserObject}->GetUserData(
@@ -185,12 +184,10 @@ sub Run {
         }
 
         # check if a user with this login (username) already exits
-        my $UserLoginExists
-            = $Self->{UserObject}->UserLoginExistsCheck(
+        my $UserLoginExists = $Self->{UserObject}->UserLoginExistsCheck(
             UserLogin => $GetParam{UserLogin},
             UserID    => $GetParam{UserID}
-            );
-
+        );
         if ($UserLoginExists) {
             $Errors{UserLoginExists} = 1;
             $Errors{'UserLoginInvalid'} = 'ServerError';
@@ -208,8 +205,9 @@ sub Run {
 
             if ($Update) {
                 my %Preferences = %{ $Self->{ConfigObject}->Get('PreferencesGroups') };
+                GROUP:
                 for my $Group ( sort keys %Preferences ) {
-                    next if $Group eq 'Password';
+                    next GROUP if $Group eq 'Password';
 
                     # get user data
                     my %UserData = $Self->{UserObject}->GetUserData(
@@ -226,18 +224,22 @@ sub Run {
                         ConfigItem => $Preferences{$Group},
                         Debug      => $Self->{Debug},
                     );
-                    my @Params
-                        = $Object->Param( %{ $Preferences{$Group} }, UserData => \%UserData );
+                    my @Params = $Object->Param( %{ $Preferences{$Group} }, UserData => \%UserData );
                     if (@Params) {
                         my %GetParam;
                         for my $ParamItem (@Params) {
-                            my @Array
-                                = $Self->{ParamObject}->GetArray( Param => $ParamItem->{Name} );
+                            my @Array = $Self->{ParamObject}->GetArray( Param => $ParamItem->{Name} );
                             if (@Array) {
                                 $GetParam{ $ParamItem->{Name} } = \@Array;
                             }
                         }
-                        if ( !$Object->Run( GetParam => \%GetParam, UserData => \%UserData ) ) {
+                        if (
+                            !$Object->Run(
+                                GetParam => \%GetParam,
+                                UserData => \%UserData
+                            )
+                            )
+                        {
                             $Note .= $Self->{LayoutObject}->Notify( Info => $Object->Error() );
                         }
                     }
@@ -264,12 +266,7 @@ sub Run {
             }
         }
         my $Output = $Self->{LayoutObject}->Header();
-        $Output .= $Note
-            ? $Self->{LayoutObject}->Notify(
-            Priority => 'Error',
-            Info     => $Note,
-            )
-            : '';
+        $Output .= $Note;
         $Output .= $Self->{LayoutObject}->NavigationBar();
         $Self->_Edit(
             Action    => 'Change',
@@ -345,9 +342,7 @@ sub Run {
         }
 
         # check if a user with this login (username) already exits
-        my $UserLoginExists
-            = $Self->{UserObject}->UserLoginExistsCheck( UserLogin => $GetParam{UserLogin} );
-
+        my $UserLoginExists = $Self->{UserObject}->UserLoginExistsCheck( UserLogin => $GetParam{UserLogin} );
         if ($UserLoginExists) {
             $Errors{UserLoginExists} = 1;
             $Errors{'UserLoginInvalid'} = 'ServerError';
@@ -367,8 +362,9 @@ sub Run {
 
                 # update preferences
                 my %Preferences = %{ $Self->{ConfigObject}->Get('PreferencesGroups') };
+                GROUP:
                 for my $Group ( sort keys %Preferences ) {
-                    next if $Group eq 'Password';
+                    next GROUP if $Group eq 'Password';
 
                     # get user data
                     my %UserData = $Self->{UserObject}->GetUserData(
@@ -389,12 +385,17 @@ sub Run {
                             PARAMITEM:
                             for my $ParamItem (@Params) {
                                 next PARAMITEM if !$ParamItem->{Name};
-                                my @Array
-                                    = $Self->{ParamObject}->GetArray( Param => $ParamItem->{Name} );
+                                my @Array = $Self->{ParamObject}->GetArray( Param => $ParamItem->{Name} );
 
                                 $GetParam{ $ParamItem->{Name} } = \@Array;
                             }
-                            if ( !$Object->Run( GetParam => \%GetParam, UserData => \%UserData ) ) {
+                            if (
+                                !$Object->Run(
+                                    GetParam => \%GetParam,
+                                    UserData => \%UserData
+                                )
+                                )
+                            {
                                 $Note .= $Self->{LayoutObject}->Notify( Info => $Object->Error() );
                             }
                         }
@@ -420,7 +421,9 @@ sub Run {
                     );
                 }
                 else {
-                    return $Self->{LayoutObject}->Redirect( OP => 'Action=AdminUser', );
+                    return $Self->{LayoutObject}->Redirect(
+                        OP => 'Action=AdminUser',
+                    );
                 }
             }
             else {
@@ -540,11 +543,12 @@ sub _Edit {
             next GROUP if $Preferences{$Group}->{Column} ne $Column;
 
             if ( $Data{ $Preferences{$Group}->{Prio} } ) {
+                COUNT:
                 for ( 1 .. 151 ) {
                     $Preferences{$Group}->{Prio}++;
                     if ( !$Data{ $Preferences{$Group}->{Prio} } ) {
                         $Data{ $Preferences{$Group}->{Prio} } = $Group;
-                        last;
+                        last COUNT;
                     }
                 }
             }
@@ -558,14 +562,15 @@ sub _Edit {
         }
 
         # show each preferences setting
+        PRIO:
         for my $Prio ( sort keys %Data ) {
             my $Group = $Data{$Prio};
             if ( !$Self->{ConfigObject}->{PreferencesGroups}->{$Group} ) {
-                next;
+                next PRIO;
             }
             my %Preference = %{ $Self->{ConfigObject}->{PreferencesGroups}->{$Group} };
             if ( $Group eq 'Password' ) {
-                next;
+                next PRIO;
             }
             my $Module = $Preference{Module} || 'Kernel::Output::HTML::PreferencesGeneric';
 

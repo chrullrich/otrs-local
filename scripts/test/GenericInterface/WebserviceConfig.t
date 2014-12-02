@@ -10,12 +10,11 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
-use Kernel::System::GenericInterface::Webservice;
 
-use Kernel::System::YAML;
+my $Home = $Kernel::OM->Get('Kernel::Config')->Get('Home');
 
-my $Home = $Self->{ConfigObject}->Get('Home');
 my $PathToTest =
     $Home .
     '/scripts/test/sample/GenericInterface/Webservice/';
@@ -26,11 +25,7 @@ my $WebserviceConfig =
 if ( $^O =~ /^mswin/i ) {
     $WebserviceConfig = "\"$^X\" " . $Home . '/bin/otrs.WebserviceConfig.pl';
 }
-my $ConfigObject = Kernel::Config->new();
-my $YAMLObject   = Kernel::System::YAML->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+my $YAMLObject = $Kernel::OM->Get('Kernel::System::YAML');
 
 my $RandomNumber = int( rand(1000000) );
 
@@ -155,18 +150,18 @@ my @Tests = (
 
 my @WebserviceIDs;
 
+TEST:
 for my $Test (@Tests) {
 
     # add (call with 2>&1 to also get STDERR)
-    my $WebserviceConfigResult
-        = `$WebserviceConfig $Test->{ParamsAdd} $Test->{FileAdd} 2>&1`;
+    my $WebserviceConfigResult = `$WebserviceConfig $Test->{ParamsAdd} $Test->{FileAdd} 2>&1`;
 
     if ( !$Test->{SuccessAdd} ) {
         $Self->True(
             $?,
             "$Test->{Name} - Add - WebserviceConfig $Test->{ParamsAdd} $Test->{FileAdd}",
         );
-        next;
+        next TEST;
     }
     else {
         my $FileExist = -e $Test->{FileAdd} ? 1 : 0;
@@ -203,7 +198,7 @@ for my $Test (@Tests) {
             $?,
             "$Test->{Name} - Read - Webservice $Test->{ParamsRead} $WebserviceID",
         );
-        next;
+        next TEST;
     }
     else {
         $Self->False(
@@ -220,8 +215,11 @@ for my $Test (@Tests) {
         }
     }
 
+    # get main object
+    my $MainObject = $Kernel::OM->Get('Kernel::System::Main');
+
     # compare result with original file
-    my $Content = $Self->{MainObject}->FileRead(
+    my $Content = $MainObject->FileRead(
         Location => $Test->{FileAdd},
     );
     my $OriginalContent = $YAMLObject->Load( Data => ${$Content} );
@@ -234,14 +232,13 @@ for my $Test (@Tests) {
     );
 
     # update config with a modification (call with 2>&1 to also get STDERR)
-    $WebserviceConfigResult
-        = `$WebserviceConfig $Test->{ParamsUpdate} $Test->{FileUpdate} -i $WebserviceID 2>&1`;
+    $WebserviceConfigResult = `$WebserviceConfig $Test->{ParamsUpdate} $Test->{FileUpdate} -i $WebserviceID 2>&1`;
     if ( !$Test->{SuccessUpdate} ) {
         $Self->True(
             $?,
             "$Test->{Name} - Update - Webservice $Test->{ParamsUpdate} $Test->{FileUpdate} -i $WebserviceID",
         );
-        next;
+        next TEST;
     }
     else {
         my $FileExist = -e $Test->{FileUpdate} ? 1 : 0;
@@ -265,7 +262,7 @@ for my $Test (@Tests) {
 
     # compare result with original file
     $WebserviceConfigResult = `$WebserviceConfig $Test->{ParamsRead} $WebserviceID`;
-    $Content                = $Self->{MainObject}->FileRead(
+    $Content                = $MainObject->FileRead(
         Location => $Test->{FileUpdate},
     );
     $OriginalContent = $YAMLObject->Load( Data => ${$Content} );
@@ -300,15 +297,13 @@ $Self->Is(
 
 # delete Webservices
 for my $WebserviceID (@WebserviceIDs) {
-    my $WebserviceConfigDelete
-        = `$WebserviceConfig -a delete -i $WebserviceID`;
+    my $WebserviceConfigDelete = `$WebserviceConfig -a delete -i $WebserviceID`;
     $Self->True(
         $WebserviceConfigDelete,
         "Webservice Delete ID: $WebserviceID",
     );
 
-    $WebserviceConfigDelete
-        = `$WebserviceConfig -a delete -i $WebserviceID`;
+    $WebserviceConfigDelete = `$WebserviceConfig -a delete -i $WebserviceID`;
     $Self->False(
         $WebserviceConfigDelete,
         "Webservice Delete ID: $WebserviceID",

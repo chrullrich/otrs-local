@@ -69,8 +69,8 @@ sub Run {
         }
 
         my $TranslatedValue =
-            $Self->{LanguageObject}->Get('Order by') . ' "' .
-            $Self->{LanguageObject}->Get($CurrentSortByOption) . '"';
+            $Self->{LanguageObject}->Translate('Order by') . ' "' .
+            $Self->{LanguageObject}->Translate($CurrentSortByOption) . '"';
 
         for my $CurrentOrderBy (qw(Down Up)) {
 
@@ -85,7 +85,7 @@ sub Run {
             }
 
             my $OrderByTranslation = $CurrentOrderBy eq 'Down' ? 'ascending' : 'descending';
-            $OrderByTranslation = $Self->{LanguageObject}->Get($OrderByTranslation);
+            $OrderByTranslation = $Self->{LanguageObject}->Translate($OrderByTranslation);
 
             push @SortData, {
                 Key      => "$CurrentSortByOption|$CurrentOrderBy",
@@ -102,7 +102,7 @@ sub Run {
     $ReturnData{HTML} = $Self->{LayoutObject}->BuildSelection(
         Data  => \@SortData,
         Name  => 'SortBy',
-        Title => $Self->{LanguageObject}->Get('Order by'),
+        Title => $Self->{LanguageObject}->Translate('Order by'),
     );
 
     return if !$ReturnData{HTML};
@@ -143,9 +143,7 @@ sub Run {
         }
     }
 
-    $ReturnData{HTML} .= <<"JS";
-<!-- dtl:js_on_document_complete -->
-<script type="text/javascript">//<![CDATA[
+    $Self->{LayoutObject}->AddJSOnDocumentComplete( Code => <<"JS" );
 \$("#SortBy").change(function(){
     var Selection = \$(this).val().split('|');
     if ( Selection.length === 2 ) {
@@ -154,8 +152,6 @@ sub Run {
         });
     }
 });
-//]]></script>
-<!-- dtl:js_on_document_complete -->
 JS
 
     $ReturnData{HTML} = '<li class="AlwaysPresent SortBy">'

@@ -16,11 +16,6 @@
  * @subsubsection     Icon Definition
  */
 
-a.Export {
-    background: url("../img/database_export.png") no-repeat left center;
-    padding-left: 24px;
-}
-
 a.Copy {
     background: url(../img/icons/reports.png) no-repeat left center;
     padding-left: 24px;
@@ -49,19 +44,10 @@ a.Print span {
     margin-left: 5px;
 }
 
-.Icon_Delete {
-    background-image: url(../img/icons/trash-can.png);
-}
-
-.Icon_Edit {
-    background-image: url(../img/icons/edit.png);
-}
-
 .AvailableIn {
     background-color: #ccc;
     color: #555;
-    display: block;
-    float: right;
+    display: inline-block;
     font-size: 10px !important;
     height: 13px;
     line-height: 100%;
@@ -88,6 +74,10 @@ ul#ProcessElements * {
     font-size: 11px;
 }
 
+ul#ProcessElements i {
+    font-size: 13px;
+}
+
 ul#ProcessElements li.AccordionElement h2 {
     margin-bottom: 0px;
     border: 1px solid #FFF;
@@ -103,14 +93,29 @@ ul#ProcessElements li.AccordionElement h2 a {
 
 ul#ProcessElements li.AccordionElement h2 a span {
     display: block;
-    background: url(../img/toggle_arrow.png) no-repeat left top;
     width: 12px;
     height: 12px;
     position: absolute;
-    left: 3px;
+    left: 6px;
     top: 4px;
     opacity: 0.3;
     filter: Alpha(opacity=30);
+}
+
+ul#ProcessElements li.AccordionElement h2 a span i {
+    color: #333;
+    font-size: 15px;
+    display: block;
+    text-align: center;
+}
+
+ul#ProcessElements li.AccordionElement h2 a span i.fa-caret-down,
+ul#ProcessElements li.AccordionElement.Active h2 a span i.fa-caret-right {
+    display: none;
+}
+
+ul#ProcessElements li.AccordionElement.Active h2 a span i.fa-caret-down {
+    display: inline-block;
 }
 
 ul#ProcessElements li.AccordionElement.Active h2 a {
@@ -177,6 +182,13 @@ ul#ProcessElements li.AccordionElement div.Content ul li > span {
     top: 2px;
 }
 
+ul#ProcessElements li.AccordionElement div.Content ul li > span a {
+    color: #777;
+    line-height: 100%;
+    vertical-align: middle;
+    margin-left: 2px;
+}
+
 ul#ProcessElements li.AccordionElement div.Content .ProcessElementButton {
     width: 234px;
     display: block;
@@ -223,12 +235,12 @@ ul#ProcessElements li.AccordionElement div.Content .ProcessElementButton {
     opacity: 1.0;
 }
 
-.CanvasActions a#ExtendCanvasHeight {
-    background: url(../img/icon_resize_vertical.png) no-repeat center;
-}
-
+.CanvasActions a#ExtendCanvasHeight,
 .CanvasActions a#ExtendCanvasWidth {
-    background: url(../img/icon_resize_horizontal.png) no-repeat center;
+    font-size: 15px;
+    color: #555;
+    margin-top: 2px;
+    margin-left: 5px;
 }
 
 #DiagramTooltip {
@@ -295,11 +307,12 @@ ul#ProcessElements li.AccordionElement div.Content .ProcessElementButton {
     border-radius: 13px;
     display: block;
     font-family: tahoma;
-    font-size: 9px;
+    font-size: 12px;
+    line-height: 19px;
+    vertical-align: middle;
     font-weight: bold;
-    height: 10px;
-    width: 10px;
-    padding: 5px;
+    height: 20px;
+    width: 20px;
     text-align: center;
     color: #aaa;
 }
@@ -309,17 +322,22 @@ ul#ProcessElements li.AccordionElement div.Content .ProcessElementButton {
     color: #FF9922;
 }
 
+.TaskTypeIcon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
 
 /**
  * @subsubsection     Diagram Canvas Elements
  */
 
 #Canvas #StartEvent {
-    width: 30px;
-    height: 30px;
-    border: 2px solid #000;
+    width: 31px;
+    height: 31px;
+    border: 1px solid #000;
     border-radius: 16px;
-    background-color: #72C177;
+    background-color: #fff;
     position: absolute;
     z-index: 100;
 }
@@ -327,34 +345,60 @@ ul#ProcessElements li.AccordionElement div.Content .ProcessElementButton {
 #Canvas .Activity {
     width: 110px;
     height: 80px;
-    background-color: #e5e5e5;
+    background-color: #fff;
     border: 1px solid #949494;
     border-radius: 10px;
     position: absolute;
     z-index: 100;
     cursor: move;
+    opacity: 0.9;
 }
 
 em.EntityID {
     position: absolute;
     background: #FF9922;
-    border: 1px solid #000;
-    border-radius: 5px;
+    border-radius: 2px;
     display: block;
     font-family: tahoma;
     font-size: 10px;
-    height: 10px;
-    padding: 5px 5px 6px 5px;
+    white-space: nowrap;
+    padding: 3px 4px;
     text-align: center;
     color: #fff;
     font-style: normal;
-    top: -10px;
-    left: -20px;
+    top: -25px;
+    width: 290px;
+    left: 50%;
+    margin-left: -149px;
+}
+
+em.EntityID input {
+    border: 0px;
+    background: #FF9922;
+    font-size: 10px;
+    padding: 0px;
+    margin: 0px;
+    width: 100%;
+    box-shadow: none;
+    text-align: center;
+}
+
+em.EntityID:after {
+    top: 100%;
+    left: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: rgba(255, 153, 34, 0);
+    border-top-color: #FF9922;
+    border-width: 5px;
+    margin-left: -5px;
 }
 
 .TransitionLabel em.EntityID {
-    left: auto;
-    right: -20px;
     z-index: 103;
 }
 
@@ -479,9 +523,10 @@ em.EntityID {
     display: block;
     font-family: tahoma;
     font-size: 12px;
-    height: 10px;
-    width: 10px;
-    padding: 3px 5px 7px 5px;
+    line-height: 19px;
+    vertical-align: middle;
+    height: 20px;
+    width: 20px;
     text-align: center;
     color: #aaa;
     position: absolute;

@@ -9,25 +9,16 @@
 
 use strict;
 use warnings;
-
 use utf8;
+
 use vars (qw($Self));
 
 use Unicode::Normalize;
 
-use Kernel::Config;
-use Kernel::System::Ticket;
-
-# create local objects
-my $ConfigObject = Kernel::Config->new();
-my $UserObject   = Kernel::System::User->new(
-    ConfigObject => $ConfigObject,
-    %{$Self},
-);
-my $TicketObject = Kernel::System::Ticket->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $MainObject   = $Kernel::OM->Get('Kernel::System::Main');
+my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
 my $TicketID = $TicketObject->TicketCreate(
     Title        => 'Some Ticket_Title',
@@ -57,7 +48,7 @@ my $ArticleID = $TicketObject->ArticleCreate(
     HistoryType    => 'OwnerUpdate',
     HistoryComment => 'Some free text!',
     UserID         => 1,
-    NoAgentNotify => 1,    # if you don't want to send agent notifications
+    NoAgentNotify  => 1,                                          # if you don't want to send agent notifications
 );
 
 $Self->True(
@@ -67,22 +58,30 @@ $Self->True(
 
 # article attachment checks
 for my $Backend (qw(DB FS)) {
+
+    # make sure that the TicketObject gets recreated for each loop.
+    $Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::Ticket'] );
+
     $ConfigObject->Set(
         Key   => 'Ticket::StorageModule',
         Value => 'Kernel::System::Ticket::ArticleStorage' . $Backend,
     );
-    $TicketObject = Kernel::System::Ticket->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
+
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
+    $Self->True(
+        $TicketObject->isa( 'Kernel::System::Ticket::ArticleStorage' . $Backend ),
+        "TicketObject loaded the correct backend",
     );
+
     for my $File (
         qw(Ticket-Article-Test1.xls Ticket-Article-Test1.txt Ticket-Article-Test1.doc
         Ticket-Article-Test1.png Ticket-Article-Test1.pdf Ticket-Article-Test-utf8-1.txt Ticket-Article-Test-utf8-1.bin)
         )
     {
-        my $Location = $Self->{ConfigObject}->Get('Home')
+        my $Location = $ConfigObject->Get('Home')
             . "/scripts/test/sample/Ticket/$File";
-        my $ContentRef = $Self->{MainObject}->FileRead(
+        my $ContentRef = $MainObject->FileRead(
             Location => $Location,
             Mode     => 'binmode',
         );
@@ -95,7 +94,7 @@ for my $Backend (qw(DB FS)) {
         {
             my $Content                = ${$ContentRef};
             my $FileNew                = $FileName . $File;
-            my $MD5Orig                = $Self->{MainObject}->MD5sum( String => $Content );
+            my $MD5Orig                = $MainObject->MD5sum( String => $Content );
             my $ArticleWriteAttachment = $TicketObject->ArticleWriteAttachment(
                 Content     => $Content,
                 Filename    => $FileNew,
@@ -147,7 +146,7 @@ for my $Backend (qw(DB FS)) {
                 $Data{ContentType} eq 'image/png',
                 "$Backend ArticleWriteAttachment() / ArticleAttachment() - $File",
             );
-            my $MD5New = $Self->{MainObject}->MD5sum( String => $Data{Content} );
+            my $MD5New = $MainObject->MD5sum( String => $Data{Content} );
             $Self->Is(
                 $MD5Orig || '1',
                 $MD5New  || '2',
@@ -178,13 +177,20 @@ for my $Backend (qw(DB FS)) {
 
 # filename collision checks
 for my $Backend (qw(DB FS)) {
+
+    # Make sure that the TicketObject gets recreated for each loop.
+    $Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::Ticket'] );
+
     $ConfigObject->Set(
         Key   => 'Ticket::StorageModule',
         Value => 'Kernel::System::Ticket::ArticleStorage' . $Backend,
     );
-    $TicketObject = Kernel::System::Ticket->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
+
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
+    $Self->True(
+        $TicketObject->isa( 'Kernel::System::Ticket::ArticleStorage' . $Backend ),
+        "TicketObject loaded the correct backend",
     );
 
     # Store file 2 times
@@ -238,10 +244,8 @@ for my $Backend (qw(DB FS)) {
         "$Backend ArticleWriteAttachment() - collision check number of attachments",
     );
 
-    my ($Entry1)
-        = grep { $AttachmentIndex{$_}->{Filename} eq "$TargetFilename.pdf" } keys %AttachmentIndex;
-    my ($Entry2)
-        = grep { $AttachmentIndex{$_}->{Filename} eq "$TargetFilename-1.pdf" }
+    my ($Entry1) = grep { $AttachmentIndex{$_}->{Filename} eq "$TargetFilename.pdf" } keys %AttachmentIndex;
+    my ($Entry2) = grep { $AttachmentIndex{$_}->{Filename} eq "$TargetFilename-1.pdf" }
         keys %AttachmentIndex;
 
     $Self->IsDeeply(
@@ -252,7 +256,8 @@ for my $Backend (qw(DB FS)) {
             'ContentType'        => 'image/png',
             'Filename'           => "$TargetFilename.pdf",
             'Filesize'           => '3 Bytes',
-            'FilesizeRaw'        => '3'
+            'FilesizeRaw'        => '3',
+            'Disposition'        => 'attachment',
         },
         "$Backend ArticleAttachmentIndex - collision check entry 1",
     );
@@ -265,7 +270,8 @@ for my $Backend (qw(DB FS)) {
             'ContentType'        => 'image/png',
             'Filename'           => "$TargetFilename-1.pdf",
             'Filesize'           => '3 Bytes',
-            'FilesizeRaw'        => '3'
+            'FilesizeRaw'        => '3',
+            'Disposition'        => 'attachment',
         },
         "$Backend ArticleAttachmentIndex - collision check entry 2",
     );
@@ -288,7 +294,7 @@ for my $Backend (qw(DB FS)) {
     $Self->IsDeeply(
         \%AttachmentIndex,
         {},
-        "$Backend ArticleAttachmentIndex() after delete"
+        "$Backend ArticleAttachmentIndex() after delete",
     );
 }
 

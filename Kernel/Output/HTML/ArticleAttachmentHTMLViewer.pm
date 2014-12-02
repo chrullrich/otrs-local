@@ -32,7 +32,10 @@ sub Run {
     # check needed stuff
     for (qw(File Article)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -44,8 +47,8 @@ sub Run {
                 return (
                     %{ $Param{File} },
                     Action => 'Viewer',
-                    Link =>
-                        "\$Env{\"Baselink\"}Action=AgentTicketAttachment;ArticleID=$Param{Article}->{ArticleID};FileID=$Param{File}->{FileID};Viewer=1",
+                    Link   => $Self->{LayoutObject}->{Baselink} .
+                        "Action=AgentTicketAttachment;ArticleID=$Param{Article}->{ArticleID};FileID=$Param{File}->{FileID};Viewer=1",
                     Target => 'target="attachment"',
                     Class  => 'ViewAttachment',
                 );

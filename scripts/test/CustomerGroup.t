@@ -9,38 +9,15 @@
 
 use strict;
 use warnings;
+use utf8;
+
 use vars (qw($Self));
 
-use Kernel::Config;
-use Kernel::System::CustomerGroup;
-use Kernel::System::CustomerUser;
-use Kernel::System::Group;
-use Kernel::System::UnitTest::Helper;
 use Kernel::System::VariableCheck qw(:all);
 
-# Create Helper instance which will restore system configuration in destructor
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %{$Self},
-    UnitTestObject             => $Self,
-    RestoreSystemConfiguration => 1,
-);
-
-my $ConfigObject = Kernel::Config->new();
-
-# create local objects
-my $CustomerGroupObject = Kernel::System::CustomerGroup->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $CustomerUserObject = Kernel::System::CustomerUser->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-
-my $GroupObject = Kernel::System::Group->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
 $ConfigObject->Set(
     Key   => 'CustomerGroupAlwaysGroups',
@@ -50,6 +27,11 @@ $ConfigObject->Set(
     Key   => 'CustomerGroupSupport',
     Value => 1,
 );
+
+# create local objects
+my $CustomerGroupObject = $Kernel::OM->Get('Kernel::System::CustomerGroup');
+my $CustomerUserObject  = $Kernel::OM->Get('Kernel::System::CustomerUser');
+my $GroupObject         = $Kernel::OM->Get('Kernel::System::Group');
 
 my $RandomID = $HelperObject->GetRandomID();
 my $UserID   = 1;
@@ -101,20 +83,6 @@ my @Tests = (
         },
         Success => 0,
     },
-
-    # TODO GroupMemberAdd() requires UserID but does not check for it
-    #    {
-    #        Name   => 'No $UserID',
-    #        Config => {
-    #            GID => $GID1,
-    #            UID => undef,
-    #            Permission => {
-    #                ro => 1,
-    #            },
-    #            UserID => $UserID,
-    #        },
-    #        Success => 0,
-    #    },
     {
         Name   => 'Empty permission',
         Config => {
@@ -168,14 +136,17 @@ my @Tests = (
 );
 
 for my $Test (@Tests) {
+
     my $MemberAddSuccess = $CustomerGroupObject->GroupMemberAdd( %{ $Test->{Config} } );
 
     if ( $Test->{Success} ) {
 
         # create permission string
         my @Permissions;
+
+        PERMISSION:
         for my $Permission ( sort keys %{ $Test->{Config}->{Permission} } ) {
-            next if !$Test->{Config}->{Permission}->{$Permission};
+            next PERMISSION if !$Test->{Config}->{Permission}->{$Permission};
 
             push @Permissions, $Permission;
         }
@@ -186,13 +157,17 @@ for my $Test (@Tests) {
             "GroupMemberAdd() Test: $Test->{Name} - User: $Test->{Config}->{UID}, Group: $Test->{Config}->{GID}, Permissions:[$PermissionsStrg] with true",
         );
 
+        PERMISSION:
         for my $Permission ( sort keys %{ $Test->{Config}->{Permission} } ) {
-            next if !$Test->{Config}->{Permission}->{$Permission};
+
+            next PERMISSION if !$Test->{Config}->{Permission}->{$Permission};
 
             # check cache internal is empty
-            my $CacheKey
-                = "GroupMemberList::" . $Permission . "::ID::UserID::$Test->{Config}->{UID}";
-            my $Cache = $CustomerGroupObject->{CacheInternalObject}->Get( Key => $CacheKey );
+            my $CacheKey = "GroupMemberList::" . $Permission . "::ID::UserID::$Test->{Config}->{UID}";
+            my $Cache    = $Kernel::OM->Get('Kernel::System::Cache')->Get(
+                Type => 'CustomerGroup',
+                Key  => $CacheKey,
+            );
 
             $Self->Is(
                 $Cache,
@@ -214,7 +189,10 @@ for my $Test (@Tests) {
             );
 
             # check cache internal is not empty
-            $Cache = $CustomerGroupObject->{CacheInternalObject}->Get( Key => $CacheKey );
+            $Cache = $Kernel::OM->Get('Kernel::System::Cache')->Get(
+                Type => 'CustomerGroup',
+                Key  => $CacheKey
+            );
             $Self->IsDeeply(
                 $Cache,
                 \@MemberList,
@@ -295,7 +273,10 @@ my $ResetMembership = sub {
 
         # check cache internal is empty
         my $CacheKey = "GroupMemberList::" . $Permission . "::ID::UserID::$Param{UID}";
-        my $Cache = $CustomerGroupObject->{CacheInternalObject}->Get( Key => $CacheKey );
+        my $Cache    = $Kernel::OM->Get('Kernel::System::Cache')->Get(
+            Type => 'CustomerGroup',
+            Key  => $CacheKey,
+        );
 
         $Self->Is(
             $Cache,
@@ -322,7 +303,10 @@ my $ResetMembership = sub {
         );
 
         # check cache internal is empty
-        $Cache = $CustomerGroupObject->{CacheInternalObject}->Get( Key => $CacheKey );
+        $Cache = $Kernel::OM->Get('Kernel::System::Cache')->Get(
+            Type => 'CustomerGroup',
+            Key  => $CacheKey,
+        );
 
         $Self->IsDeeply(
             $Cache,
@@ -340,7 +324,7 @@ $ResetMembership->(
 
 # set AlwaysGroups
 $ConfigObject->Set(
-    Key => 'CustomerGroupAlwaysGroups',
+    Key   => 'CustomerGroupAlwaysGroups',
     Value => [ $GroupObject->GroupLookup( GroupID => $GID1 ) ],
 );
 
@@ -507,8 +491,8 @@ $ResetMembership->(
                 UserID => $UserID,
             },
         ],
-        ExpectedResult => [ $GroupObject->GroupLookup( GroupID => $GID1 ) ],
-        Success        => 1,
+        ExpectedResult  => [ $GroupObject->GroupLookup( GroupID => $GID1 ) ],
+        Success         => 1,
         ResetMembership => 0,
     },
     {
@@ -531,8 +515,10 @@ $ResetMembership->(
             UserID  => $UID,
             GroupID => undef,
         },
-        ExpectedResult => { $GID1 => $GroupObject->GroupLookup( GroupID => $GID1 ), },
-        Success        => 1,
+        ExpectedResult => {
+            $GID1 => $GroupObject->GroupLookup( GroupID => $GID1 ),
+        },
+        Success         => 1,
         ResetMembership => 1,
     },
     {
@@ -558,8 +544,8 @@ $ResetMembership->(
                 UserID => $UserID,
             },
         ],
-        ExpectedResult => [ $GroupObject->GroupLookup( GroupID => $GID1 ) ],
-        Success        => 1,
+        ExpectedResult  => [ $GroupObject->GroupLookup( GroupID => $GID1 ) ],
+        Success         => 1,
         ResetMembership => 0,
     },
     {
@@ -582,8 +568,10 @@ $ResetMembership->(
             UserID  => undef,
             GroupID => $GID1,
         },
-        ExpectedResult => { $UID => $GroupObject->GroupLookup( GroupID => $GID1 ), },
-        Success        => 1,
+        ExpectedResult => {
+            $UID => $GroupObject->GroupLookup( GroupID => $GID1 ),
+        },
+        Success         => 1,
         ResetMembership => 1,
     },
     {
@@ -814,8 +802,7 @@ for my $Test (@Tests) {
         }
 
         # set cache key
-        my $CacheKey
-            = 'GroupMemberList::'
+        my $CacheKey = 'GroupMemberList::'
             . $Test->{Config}->{Type} . '::'
             . $Test->{Config}->{Result} . '::';
         if ( $Test->{Config}->{UserID} ) {
@@ -826,7 +813,10 @@ for my $Test (@Tests) {
         }
 
         # check cache
-        my $Cache = $CustomerGroupObject->{CacheInternalObject}->Get( Key => $CacheKey );
+        my $Cache = $Kernel::OM->Get('Kernel::System::Cache')->Get(
+            Type => 'CustomerGroup',
+            Key  => $CacheKey,
+        );
 
         $Self->IsDeeply(
             $Cache,
@@ -908,7 +898,7 @@ for my $Test (@Tests) {
     {
         Name   => 'Correct Group',
         Config => {
-            Group => $GroupObject->GroupLookup( GroupID => $GID1 ),
+            Group   => $GroupObject->GroupLookup( GroupID => $GID1 ),
             GroupID => undef,
         },
         ExpectedResult => $GID1,
@@ -946,7 +936,10 @@ for my $Test (@Tests) {
         }
 
         # check cache (cahce is an scalar reference)
-        my $Cache = $CustomerGroupObject->{CacheInternalObject}->Get( Key => $CacheKey );
+        my $Cache = $Kernel::OM->Get('Kernel::System::Cache')->Get(
+            Type => 'CustomerGroup',
+            Key  => $CacheKey,
+        );
 
         $Self->Is(
             ${$Cache},

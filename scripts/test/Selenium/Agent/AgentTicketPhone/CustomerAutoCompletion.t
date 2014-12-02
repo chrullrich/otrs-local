@@ -9,31 +9,36 @@
 
 use strict;
 use warnings;
+use utf8;
 
-use vars qw($Self);
-
-use Kernel::System::UnitTest::Helper;
-use Kernel::System::User;
-use Kernel::System::CustomerUser;
-use Kernel::System::UnitTest::Selenium;
+use vars (qw($Self));
 
 use Time::HiRes qw(sleep);
+
+use Kernel::System::UnitTest::Helper;
+use Kernel::System::UnitTest::Selenium;
+
+# get config object
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
+# do not checkmx
+$ConfigObject->Set(
+    Key   => 'CheckEmailAddresses',
+    Value => 0,
+);
+
+my $Selenium = Kernel::System::UnitTest::Selenium->new(
+    Verbose => 1,
+);
 
 # This test checks if the customer auto completion works correctly.
 # Special case: it must also work when called up directly via GET-Parameter.
 # http://bugs.otrs.org/show_bug.cgi?id=7158
 
-my $Selenium = Kernel::System::UnitTest::Selenium->new(
-    Verbose        => 1,
-    UnitTestObject => $Self,
-);
-
 $Selenium->RunTest(
     sub {
 
         my $Helper = Kernel::System::UnitTest::Helper->new(
-            UnitTestObject => $Self,
-            %{$Self},
             RestoreSystemConfiguration => 0,
         );
 
@@ -47,20 +52,7 @@ $Selenium->RunTest(
             Password => $TestUserLogin,
         );
 
-        my $ScriptAlias = $Self->{ConfigObject}->Get('ScriptAlias');
-
-        # create local objects
-        my $ConfigObject = Kernel::Config->new();
-
-        $ConfigObject->Set(
-            Key   => 'CheckEmailAddresses',
-            Value => 0,
-        );
-
-        my $CustomerUserObject = Kernel::System::CustomerUser->new(
-            %{$Self},
-            ConfigObject => $ConfigObject,
-        );
+        my $CustomerUserObject = $Kernel::OM->Get('Kernel::System::CustomerUser');
 
         # create a test customer
         my $TestCustomerUser1 = $Helper->TestCustomerUserCreate()
@@ -101,24 +93,25 @@ $Selenium->RunTest(
 
         $Self->True( $Success, "Updated test user 2" );
 
+        my $ScriptAlias = $ConfigObject->Get('ScriptAlias');
+
         # Normal autocomplete tests
         $Selenium->get("${ScriptAlias}index.pl?Action=AgentTicketPhone");
 
-        my %AutoCompleteExptected = (
+        my %AutoCompleteExpected = (
             "$RandomID"             => 2,
             "$RandomID-1"           => 1,
             "$RandomID-2"           => 1,
             "$RandomID-nonexisting" => 0,
         );
 
-        for my $AutocompleteInput ( sort keys %AutoCompleteExptected ) {
+        for my $AutocompleteInput ( sort keys %AutoCompleteExpected ) {
 
             # Workaround: type_keys_ok() does not workin Safari.
             # Use type_ok() instead and emulate the key events.
             # see http://jira.openqa.org/browse/SRC-760
             $Selenium->find_element( "input.CustomerAutoComplete", 'css' )->clear();
-            $Selenium->find_element( "input.CustomerAutoComplete", 'css' )
-                ->send_keys($AutocompleteInput);
+            $Selenium->find_element( "input.CustomerAutoComplete", 'css' )->send_keys($AutocompleteInput);
 
             # wait for autocomplete to load
             sleep 0.2;
@@ -136,7 +129,7 @@ $Selenium->RunTest(
 
             $Self->Is(
                 $AutoCompleteEntries,
-                $AutoCompleteExptected{$AutocompleteInput},
+                $AutoCompleteExpected{$AutocompleteInput},
                 "Found entries in the autocomplete dropdown for input string $AutocompleteInput",
             );
         }

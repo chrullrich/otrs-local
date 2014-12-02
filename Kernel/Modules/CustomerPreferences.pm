@@ -82,13 +82,19 @@ sub Run {
         for my $ParamItem (@Params) {
             my @Array = $Self->{ParamObject}->GetArray(
                 Param => $ParamItem->{Name},
-                Raw => $ParamItem->{Raw} || 0,
+                Raw   => $ParamItem->{Raw} || 0,
             );
             $GetParam{ $ParamItem->{Name} } = \@Array;
         }
         my $Message  = '';
         my $Priority = '';
-        if ( $Object->Run( GetParam => \%GetParam, UserData => \%UserData ) ) {
+        if (
+            $Object->Run(
+                GetParam => \%GetParam,
+                UserData => \%UserData
+            )
+            )
+        {
             $Message = $Object->Message();
         }
         else {
@@ -129,7 +135,10 @@ sub Run {
             );
         }
         elsif ($Message) {
-            $Output .= $Self->{LayoutObject}->Notify( Info => $Message, );
+            $Output .= $Self->{LayoutObject}->Notify(
+                Priority => 'Success',
+                Info     => $Message,
+            );
         }
 
         # get user data
@@ -175,13 +184,14 @@ sub CustomerPreferencesForm {
 
             if ( $Data{ $PreferencesGroup->{Prio} } ) {
 
+                COUNT:
                 for ( 1 .. 151 ) {
 
                     $PreferencesGroup->{Prio}++;
 
                     if ( !$Data{ $PreferencesGroup->{Prio} } ) {
                         $Data{ $PreferencesGroup->{Prio} } = $Group;
-                        last;
+                        last COUNT;
                     }
                 }
             }
@@ -191,7 +201,9 @@ sub CustomerPreferencesForm {
 
         $Self->{LayoutObject}->Block(
             Name => 'Head',
-            Data => { Header => $Column, },
+            Data => {
+                Header => $Column,
+            },
         );
 
         # sort
@@ -201,12 +213,13 @@ sub CustomerPreferencesForm {
         }
 
         # show each preferences setting
+        PRIO:
         for my $Prio ( sort keys %Data ) {
             my $Group = $Data{$Prio};
-            next if !$Self->{ConfigObject}->{CustomerPreferencesGroups}->{$Group};
+            next PRIO if !$Self->{ConfigObject}->{CustomerPreferencesGroups}->{$Group};
 
             my %Preference = %{ $Self->{ConfigObject}->{CustomerPreferencesGroups}->{$Group} };
-            next if !$Preference{Active};
+            next PRIO if !$Preference{Active};
 
             # load module
             my $Module = $Preference{Module} || 'Kernel::Output::HTML::CustomerPreferencesGeneric';
@@ -219,7 +232,7 @@ sub CustomerPreferencesForm {
                 Debug      => $Self->{Debug},
             );
             my @Params = $Object->Param( UserData => $Param{UserData} );
-            next if !@Params;
+            next PRIO if !@Params;
 
             # show item
             $Self->{LayoutObject}->Block(

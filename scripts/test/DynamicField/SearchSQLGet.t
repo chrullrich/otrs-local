@@ -10,18 +10,15 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
-use Kernel::System::DynamicField::Backend;
-use Kernel::System::UnitTest::Helper;
 use Kernel::System::VariableCheck qw(:all);
 
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %$Self,
-    UnitTestObject => $Self,
-);
-
-my $DFBackendObject = Kernel::System::DynamicField::Backend->new( %{$Self} );
+# get needed objects
+my $DBObject        = $Kernel::OM->Get('Kernel::System::DB');
+my $HelperObject    = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $DFBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
 
 my $UserID = 1;
 
@@ -441,7 +438,7 @@ for my $Test (@Tests) {
             else {
 
                 # like Operator is very complex and deppends on the DB
-                my $SQL = $Self->{DBObject}->QueryCondition(
+                my $SQL = $DBObject->QueryCondition(
                     Key   => $Test->{ExpectedResult}->{$Operator}->{ColumnKey},
                     Value => $Config{SearchTerm},
                 );

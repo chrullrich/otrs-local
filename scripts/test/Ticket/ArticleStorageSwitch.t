@@ -9,41 +9,34 @@
 
 use strict;
 use warnings;
-
 use utf8;
+
 use vars (qw($Self));
 
-use Kernel::Config;
-use Kernel::System::Ticket;
-use Kernel::System::Queue;
 use Kernel::System::PostMaster;
 
-# create local objects
-my $ConfigObject = Kernel::Config->new();
-my $UserObject   = Kernel::System::User->new(
-    ConfigObject => $ConfigObject,
-    %{$Self},
-);
-my $TicketObject = Kernel::System::Ticket->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $QueueObject = Kernel::System::Queue->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $MainObject   = $Kernel::OM->Get('Kernel::System::Main');
 
 # create tickets/article/attachments in backend for article storage switch tests
 for my $SourceBackend (qw(ArticleStorageDB ArticleStorageFS)) {
+
+    # Make sure that the TicketObject gets recreated for each loop.
+    $Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::Ticket'] );
 
     $ConfigObject->Set(
         Key   => 'Ticket::StorageModule',
         Value => 'Kernel::System::Ticket::' . $SourceBackend,
     );
-    my $TicketObject = Kernel::System::Ticket->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
+
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
+    $Self->True(
+        $TicketObject->isa( 'Kernel::System::Ticket::' . $SourceBackend ),
+        "TicketObject loaded the correct backend",
     );
+
     my @TicketIDs;
     my %ArticleIDs;
     my $NamePrefix = "ArticleStorageSwitch ($SourceBackend)";
@@ -54,7 +47,7 @@ for my $SourceBackend (qw(ArticleStorageDB ArticleStorageFS)) {
         # new ticket check
         my $Location = $ConfigObject->Get('Home')
             . "/scripts/test/sample/PostMaster/PostMaster-Test$File.box";
-        my $ContentRef = $Self->{MainObject}->FileRead(
+        my $ContentRef = $MainObject->FileRead(
             Location => $Location,
             Mode     => 'binmode',
             Result   => 'ARRAY',
@@ -62,11 +55,7 @@ for my $SourceBackend (qw(ArticleStorageDB ArticleStorageFS)) {
         my @Content = @{$ContentRef};
 
         my $PostMasterObject = Kernel::System::PostMaster->new(
-            %{$Self},
-            TicketObject => $TicketObject,
-            QueueObject  => $QueueObject,
-            ConfigObject => $ConfigObject,
-            Email        => \@Content,
+            Email => \@Content,
         );
 
         my @Return = $PostMasterObject->Run();
@@ -114,10 +103,16 @@ for my $SourceBackend (qw(ArticleStorageDB ArticleStorageFS)) {
 
             # check file attributes
             for my $AttachmentID ( sort keys %{ $ArticleIDs{$ArticleID} } ) {
+
+                ATTACHMENTINDEXID:
                 for my $ID ( sort keys %Index ) {
-                    next
-                        if $ArticleIDs{$ArticleID}->{$AttachmentID}->{Filename} ne
-                        $Index{$ID}->{Filename};
+                    if (
+                        $ArticleIDs{$ArticleID}->{$AttachmentID}->{Filename} ne
+                        $Index{$ID}->{Filename}
+                        )
+                    {
+                        next ATTACHMENTINDEXID;
+                    }
                     for my $Attribute ( sort keys %{ $ArticleIDs{$ArticleID}->{$AttachmentID} } ) {
                         $Self->Is(
                             $Index{$ID}->{$Attribute},
@@ -152,10 +147,16 @@ for my $SourceBackend (qw(ArticleStorageDB ArticleStorageFS)) {
 
             # check file attributes
             for my $AttachmentID ( sort keys %{ $ArticleIDs{$ArticleID} } ) {
+
+                ATTACHMENTINDEXID:
                 for my $ID ( sort keys %Index ) {
-                    next
-                        if $ArticleIDs{$ArticleID}->{$AttachmentID}->{Filename} ne
-                        $Index{$ID}->{Filename};
+                    if (
+                        $ArticleIDs{$ArticleID}->{$AttachmentID}->{Filename} ne
+                        $Index{$ID}->{Filename}
+                        )
+                    {
+                        next ATTACHMENTINDEXID;
+                    }
                     for my $Attribute ( sort keys %{ $ArticleIDs{$ArticleID}->{$AttachmentID} } ) {
                         $Self->Is(
                             $Index{$ID}->{$Attribute},

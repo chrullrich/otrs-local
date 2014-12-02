@@ -26,7 +26,7 @@ Core.Agent.Login = (function (TargetNS) {
      */
     TargetNS.Init = function (LoginFailed) {
         // Browser is too old
-        if (!Core.Debug.BrowserCheckAgent()) {
+        if (!Core.Agent.SupportedBrowser) {
             $('#LoginBox').hide();
             $('#OldBrowser').show();
             return;
@@ -55,6 +55,11 @@ Core.Agent.Login = (function (TargetNS) {
         // shake login box on authentication failure
         if (LoginFailed) {
             Core.UI.Shake($('#LoginBox'));
+        }
+
+        // if in PreLogin mode, automatically submit form
+        if ( $('#LoginBox').hasClass('PreLogin') ) {
+            $('#LoginBox form').submit();
         }
     };
 

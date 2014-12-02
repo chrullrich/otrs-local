@@ -9,28 +9,15 @@
 
 use strict;
 use warnings;
-
 use utf8;
 
 use vars (qw($Self));
 
-use Kernel::Config;
-use Kernel::System::Ticket;
-use Kernel::System::User;
-use Kernel::System::UnitTest::Helper;
-
-# create local objects
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    UnitTestObject => $Self,
-    %{$Self},
-    RestoreSystemConfiguration => 0,
-);
-my $UserObject = Kernel::System::User->new(
-    %{$Self},
-);
-my $TicketObject = Kernel::System::Ticket->new(
-    %{$Self},
-);
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+my $UserObject   = $Kernel::OM->Get('Kernel::System::User');
 
 # create a new ticket
 my $TicketID = $TicketObject->TicketCreate(
@@ -266,7 +253,7 @@ Perl modules provide a range of features to help you avoid reinventing the wheel
         HistoryType    => 'OwnerUpdate',
         HistoryComment => 'Some free text!',
         UserID         => 1,
-        NoAgentNotify => 1,    # if you don't want to send agent notifications
+        NoAgentNotify  => 1,                                   # if you don't want to send agent notifications
     );
     push @ArticleIDs, $ArticleID;
 }
@@ -361,6 +348,114 @@ for my $UserID (@UserIDs) {
             "UpdateTwo FlagCheck (true) ArticleFlagGet() - TicketID($TicketID) - ArticleID($ArticleID) - UserID($UserID)",
         );
     }
+}
+
+# tests for the NotTicketFlag TicketSearch feature
+#
+my $Count = $TicketObject->TicketSearch(
+    TicketID         => $TicketID,
+    TicketFlagUserID => $UserIDs[0],
+    UserID           => 1,
+    NotTicketFlag    => {
+        JustOne => 42,
+    },
+    Result => 'COUNT',
+);
+
+$Self->Is( $Count, 1, 'NotTicketFlag with non-existing flag' );
+
+$TicketObject->TicketFlagSet(
+    TicketID => $TicketID,
+    Key      => 'JustOne',
+    Value    => 42,
+    UserID   => $UserIDs[0],
+);
+
+$TicketObject->TicketFlagSet(
+    TicketID => $TicketID,
+    Key      => 'AnotherOne',
+    Value    => 23,
+    UserID   => $UserIDs[0],
+);
+
+@Tests = (
+    {
+        Name     => 'NotTicketFlag excludes ticket with correct flag value',
+        Expected => 0,
+        Search   => {
+            TicketFlagUserID => $UserIDs[0],
+            NotTicketFlag    => {
+                JustOne => 42,
+            },
+
+        },
+    },
+    {
+        Name     => 'NotTicketFlag excludes ticket with correct flag value, and ignores non-existing flags',
+        Expected => 0,
+        Search   => {
+            TicketFlagUserID => $UserIDs[0],
+            NotTicketFlag    => {
+                JustOne   => 42,
+                OtherFlag => 'does not matter',
+            },
+        },
+    },
+    {
+        Name     => 'NotTicketFlag ignores flags with different value',
+        Expected => 1,
+        Search   => {
+            TicketFlagUserID => $UserIDs[0],
+            NotTicketFlag    => {
+                JustOne => 999,
+            },
+            }
+    },
+    {
+        Name     => 'NotTicketFlag ignores flags with different value',
+        Expected => 1,
+        Search   => {
+            TicketFlagUserID => $UserIDs[0],
+            NotTicketFlag    => {
+                JustOne => 999,
+            },
+        },
+    },
+    {
+        Name     => 'NotTicketFlag combines with TicketFlag',
+        Expected => 1,
+        Search   => {
+            TicketFlagUserID => $UserIDs[0],
+            TicketFlag       => {
+                JustOne    => 42,
+                AnotherOne => 23,
+            },
+            NotTicketFlag => {
+                JustOne      => 999,
+                DoesNotExist => 0,
+            },
+        },
+    },
+    {
+        Name     => 'NotTicketFlag ignores flags from other users',
+        Expected => 1,
+        Search   => {
+            TicketFlagUserID => $UserIDs[1],
+            NotTicketFlag    => {
+                JustOne => 42,
+            },
+        },
+    },
+);
+
+for my $Test (@Tests) {
+    my $Count = $TicketObject->TicketSearch(
+        TicketID => $TicketID,
+        UserID   => 1,
+        Result   => 'COUNT',
+        %{ $Test->{Search} },
+    );
+    $Self->Is( $Count, $Test->{Expected}, $Test->{Name} );
 }
 
 # delete tickets

@@ -35,8 +35,7 @@ sub new {
     $Self->{WebserviceObject} =
         Kernel::System::GenericInterface::Webservice->new( %{$Self} );
 
-    $Self->{DeletedString}
-        = '_GenericInterface_Mapping_Simple_DeletedString_Dont_Use_It_String_Please';
+    $Self->{DeletedString} = '_GenericInterface_Mapping_Simple_DeletedString_Dont_Use_It_String_Please';
 
     return $Self;
 }
@@ -58,14 +57,12 @@ sub Run {
     my $Action = $Operation || $Invoker;
 
     # set mapping direction for display
-    my $MappingDirection
-        = $Direction eq 'MappingOutbound'
+    my $MappingDirection = $Direction eq 'MappingOutbound'
         ? 'Simple Mapping for Outgoing Data'
         : 'Simple Mapping for Incoming Data';
 
     # get configured Actions
-    my $ActionsConfig
-        = $Self->{ConfigObject}->Get( 'GenericInterface::' . $ActionType . '::Module' );
+    my $ActionsConfig = $Self->{ConfigObject}->Get( 'GenericInterface::' . $ActionType . '::Module' );
 
     # check for valid action backend
     if ( !IsHashRefWithData($ActionsConfig) ) {
@@ -93,8 +90,7 @@ sub Run {
     }
 
     # get the action type (back-end)
-    my $ActionBackend
-        = $WebserviceData->{Config}->{$CommunicationType}->{$ActionType}->{$Action}->{'Type'};
+    my $ActionBackend = $WebserviceData->{Config}->{$CommunicationType}->{$ActionType}->{$Action}->{'Type'};
 
     # check for valid action backend
     if ( !$ActionBackend ) {
@@ -143,13 +139,11 @@ sub Run {
                         )
                     {
                         $ValueIndex++;
-                        my $NewVal
-                            = $MappingConfig->{ValueMap}->{$NewKey}->{$ValueMapType}->{$ValueName},
+                        my $NewVal = $MappingConfig->{ValueMap}->{$NewKey}->{$ValueMapType}->{$ValueName},
 
                             $Mapping{ 'ValueName' . $KeyIndex . '_' . $ValueIndex } = $ValueName;
-                        $Mapping{ 'ValueMapNew' . $KeyIndex . '_' . $ValueIndex } = $NewVal;
-                        $Mapping{ 'ValueMapTypeStrg' . $KeyIndex . '_' . $ValueIndex }
-                            = $ValueMapType;
+                        $Mapping{ 'ValueMapNew' . $KeyIndex . '_' . $ValueIndex }      = $NewVal;
+                        $Mapping{ 'ValueMapTypeStrg' . $KeyIndex . '_' . $ValueIndex } = $ValueMapType;
 
                     }
                 }
@@ -221,8 +215,7 @@ sub Run {
 
         for my $KeyCounter ( 1 .. $GetParam->{KeyCounter} ) {
             $NewMapping{ $GetParam->{ 'KeyMapTypeStrg' . $KeyCounter } }
-                ->{ $GetParam->{ 'KeyName' . $KeyCounter } }
-                =
+                ->{ $GetParam->{ 'KeyName' . $KeyCounter } } =
                 $GetParam->{ 'KeyMapNew' . $KeyCounter };
 
             for my $ValueCounter ( 1 .. $GetParam->{ 'ValueCounter' . $KeyCounter } ) {
@@ -235,8 +228,7 @@ sub Run {
 
         # set new mapping
         $WebserviceData->{Config}->{$CommunicationType}->{$ActionType}->{$Action}->{$Direction}
-            ->{Config}
-            = \%NewMapping;
+            ->{Config} = \%NewMapping;
 
         # otherwise save configuration and return to overview screen
         my $Success = $Self->{WebserviceObject}->WebserviceUpdate(
@@ -256,8 +248,7 @@ sub Run {
 
         # save and finish button: go to Webservice.
         if ( $Self->{ParamObject}->GetParam( Param => 'ReturnToAction' ) ) {
-            my $RedirectURL
-                = "Action=$ActionFrontendModule;Subaction=Change;$ActionType=$Action;"
+            my $RedirectURL = "Action=$ActionFrontendModule;Subaction=Change;$ActionType=$Action;"
                 . "WebserviceID=$WebserviceID;";
 
             return $Self->{LayoutObject}->Redirect(
@@ -295,13 +286,11 @@ sub Run {
                         )
                     {
                         $ValueIndex++;
-                        my $NewVal
-                            = $MappingConfig->{ValueMap}->{$NewKey}->{$ValueMapType}->{$ValueName},
+                        my $NewVal = $MappingConfig->{ValueMap}->{$NewKey}->{$ValueMapType}->{$ValueName},
 
                             $Mapping{ 'ValueName' . $KeyIndex . '_' . $ValueIndex } = $ValueName;
-                        $Mapping{ 'ValueMapNew' . $KeyIndex . '_' . $ValueIndex } = $NewVal;
-                        $Mapping{ 'ValueMapTypeStrg' . $KeyIndex . '_' . $ValueIndex }
-                            = $ValueMapType;
+                        $Mapping{ 'ValueMapNew' . $KeyIndex . '_' . $ValueIndex }      = $NewVal;
+                        $Mapping{ 'ValueMapTypeStrg' . $KeyIndex . '_' . $ValueIndex } = $ValueMapType;
 
                     }
                 }
@@ -521,9 +510,9 @@ sub _ShowEdit {
             $Self->{LayoutObject}->Block(
                 Name => 'ValueTemplateRow',
                 Data => {
-                    KeyIndex   => $KeyIndex,
-                    ValueIndex => $ValueIndex,
-                    ValueName  => $MappingConfig->{ 'ValueName' . $KeyIndex . '_' . $ValueIndex },
+                    KeyIndex       => $KeyIndex,
+                    ValueIndex     => $ValueIndex,
+                    ValueName      => $MappingConfig->{ 'ValueName' . $KeyIndex . '_' . $ValueIndex },
                     ValueNameError => $Error{ 'ValueName' . $KeyIndex . '_' . $ValueIndex } || '',
                     ValueMapNew =>
                         $MappingConfig->{ 'ValueMapNew' . $KeyIndex . '_' . $ValueIndex },
@@ -573,6 +562,7 @@ sub _GetParams {
     my $GetParam;
 
     # get parameters from web browser
+    PARAM_NAME:
     for my $ParamName (
         qw(
         DefaultKeyType DefaultKeyMapTo DefaultValueType DefaultValueMapTo
@@ -585,7 +575,7 @@ sub _GetParams {
             if ( $ParamName =~ /(DefaultKeyMapTo|DefaultValueMapTo)/i ) {
                 my $ParamPart = substr( $ParamName, 0, -5 );
                 if ( $Self->{ParamObject}->GetParam( Param => $ParamPart . 'Type' ) ne 'MapTo' ) {
-                    next;
+                    next PARAM_NAME;
                 }
             }
             $GetParam->{Error}->{$ParamName} = 'ServerError';
@@ -598,15 +588,17 @@ sub _GetParams {
 
     # get params for keys
     my $KeyIndex = 0;
+    KEYCOUNTER:
     for my $KeyCounter ( 1 .. $GetParam->{KeyCounter} ) {
-        next if !$Self->{ParamObject}->GetParam( Param => 'KeyIndex' . $KeyCounter );
+        next KEYCOUNTER if !$Self->{ParamObject}->GetParam( Param => 'KeyIndex' . $KeyCounter );
         $KeyIndex++;
+        KEY_ITEM:
         for my $KeyItem (qw(KeyMapTypeStrg KeyName KeyMapNew ValueCounter)) {
             my $KeyAux = $Self->{ParamObject}->GetParam( Param => $KeyItem . $KeyCounter ) // '';
             $GetParam->{ $KeyItem . $KeyIndex } = $KeyAux;
             if ( $KeyItem eq 'ValueCounter' && $KeyAux eq '' ) {
                 $GetParam->{ $KeyItem . $KeyIndex } = 0;
-                next;
+                next KEY_ITEM;
             }
             $GetParam->{Error}->{ $KeyItem . $KeyIndex } = 'ServerError'
                 if $KeyAux eq '';
@@ -614,11 +606,16 @@ sub _GetParams {
 
         # get params for values
         my $ValueIndex = 0;
+        COUNTER:
         for my $ValueCounter ( 1 .. $GetParam->{ 'ValueCounter' . $KeyIndex } ) {
             my $Suffix = $KeyCounter . '_' . $ValueCounter;
-            next
-                if $Self->{ParamObject}->GetParam( Param => 'ValueName' . $Suffix ) eq
-                $Self->{DeletedString};
+            if (
+                $Self->{ParamObject}->GetParam( Param => 'ValueName' . $Suffix ) eq
+                $Self->{DeletedString}
+                )
+            {
+                next COUNTER;
+            }
             $ValueIndex++;
             for my $ValueItem (qw(ValueMapTypeStrg ValueName ValueMapNew)) {
                 my $ValAux = $Self->{ParamObject}->GetParam( Param => $ValueItem . $Suffix ) // '';

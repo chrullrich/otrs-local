@@ -9,18 +9,17 @@
 
 use strict;
 use warnings;
+use utf8;
+
 use vars (qw($Self));
 
-use Kernel::Config;
+use Kernel::System::VariableCheck qw(:all);
 
-# create local objects
-my $ConfigObject = Kernel::Config->new();
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $EncodeObject = $Kernel::OM->Get('Kernel::System::Encode');
 
-my $EncodeObject = Kernel::System::Encode->new(
-    ConfigObject => $ConfigObject,
-);
-
-# Convert tests
+# convert tests
 {
     use utf8;
     my @Tests = (
@@ -42,39 +41,39 @@ my $EncodeObject = Kernel::System::Encode->new(
         },
         {
             Name          => 'Convert()',
-            Input         => 'abc123äöü',
-            Result        => 'abc123äöü',
+            Input         => 'abc123ï¿½ï¿½ï¿½',
+            Result        => 'abc123ï¿½ï¿½ï¿½',
             InputCharset  => 'utf8',
             ResultCharset => 'utf8',
             UTF8          => 1,
         },
         {
             Name          => 'Convert()',
-            Input         => 'abc123äöü',
-            Result        => 'abc123äöü',
+            Input         => 'abc123ï¿½ï¿½ï¿½',
+            Result        => 'abc123ï¿½ï¿½ï¿½',
             InputCharset  => 'iso-8859-15',
             ResultCharset => 'utf8',
             UTF8          => 1,
         },
         {
             Name          => 'Convert()',
-            Input         => 'abc123äöü',
-            Result        => 'abc123äöü',
+            Input         => 'abc123ï¿½ï¿½ï¿½',
+            Result        => 'abc123ï¿½ï¿½ï¿½',
             InputCharset  => 'utf8',
             ResultCharset => 'utf-8',
             UTF8          => 1,
         },
         {
             Name          => 'Convert()',
-            Input         => 'abc123äöü',
-            Result        => 'abc123äöü',
+            Input         => 'abc123ï¿½ï¿½ï¿½',
+            Result        => 'abc123ï¿½ï¿½ï¿½',
             InputCharset  => 'utf8',
             ResultCharset => 'iso-8859-15',
             UTF8          => 1,
         },
         {
             Name          => 'Convert()',
-            Input         => 'abc123äöü',
+            Input         => 'abc123ï¿½ï¿½ï¿½',
             Result        => 'abc123???',
             InputCharset  => 'utf8',
             ResultCharset => 'iso-8859-1',

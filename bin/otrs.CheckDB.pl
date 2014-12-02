@@ -28,35 +28,31 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Main;
-use Kernel::System::DB;
+use Kernel::System::ObjectManager;
 
-# create common objects
-my %CommonObject = ();
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix    => 'OTRS-otrs.CheckDB.pl',
-    ConfigObject => $CommonObject{ConfigObject},
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.CheckDB.pl',
+    },
 );
-$CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject}   = Kernel::System::DB->new(%CommonObject);
+
+# get database object
+my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
 # print database information
-my $DatabaseDSN  = $CommonObject{ConfigObject}->{DatabaseDSN};
-my $DatabaseUser = $CommonObject{ConfigObject}->{DatabaseUser};
+my $DatabaseDSN  = $DBObject->{DSN};
+my $DatabaseUser = $DBObject->{USER};
+
 print "Trying to connect to database\n";
-print "DSN: $DatabaseDSN\n";
+print "DSN         : $DatabaseDSN\n";
 print "DatabaseUser: $DatabaseUser\n\n";
 
 # check database state
-if ( $CommonObject{DBObject} ) {
-    $CommonObject{DBObject}->Prepare( SQL => "SELECT * FROM valid" );
+if ($DBObject) {
+    $DBObject->Prepare( SQL => "SELECT * FROM valid" );
     my $Check = 0;
-    while ( my @Row = $CommonObject{DBObject}->FetchrowArray() ) {
+    while ( my @Row = $DBObject->FetchrowArray() ) {
         $Check++;
     }
     if ( !$Check ) {
@@ -64,25 +60,25 @@ if ( $CommonObject{DBObject} ) {
         exit(1);
     }
     else {
-        print "Connected.\n";
+        print "Connection successful!\n";
 
         # check for common MySQL issue where default storage engine is different
         # from initial OTRS table; this can happen when MySQL is upgraded from
         # 5.1 > 5.5.
-        if ( $CommonObject{DBObject}->{'DB::Type'} eq 'mysql' ) {
-            $CommonObject{DBObject}->Prepare(
+        if ( $DBObject->{'DB::Type'} eq 'mysql' ) {
+            $DBObject->Prepare(
                 SQL => "SHOW VARIABLES WHERE variable_name = 'storage_engine'",
             );
             my $StorageEngine;
-            while ( my @Row = $CommonObject{DBObject}->FetchrowArray() ) {
+            while ( my @Row = $DBObject->FetchrowArray() ) {
                 $StorageEngine = $Row[1];
             }
-            $CommonObject{DBObject}->Prepare(
+            $DBObject->Prepare(
                 SQL  => "SHOW TABLE STATUS WHERE engine != ?",
                 Bind => [ \$StorageEngine ],
             );
             my @Tables;
-            while ( my @Row = $CommonObject{DBObject}->FetchrowArray() ) {
+            while ( my @Row = $DBObject->FetchrowArray() ) {
                 push @Tables, $Row[0];
             }
             if (@Tables) {
