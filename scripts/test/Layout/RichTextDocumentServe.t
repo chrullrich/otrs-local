@@ -10,36 +10,17 @@
 use strict;
 use warnings;
 use utf8;
-use vars (qw($Self %Param));
 
-use Kernel::System::AuthSession;
-use Kernel::System::Web::Request;
-use Kernel::System::Group;
-use Kernel::System::Ticket;
-use Kernel::System::User;
+use vars (qw($Self));
+
 use Kernel::Output::HTML::Layout;
 
-# create local objects
-my $SessionObject = Kernel::System::AuthSession->new( %{$Self} );
-my $GroupObject   = Kernel::System::Group->new( %{$Self} );
-my $TicketObject  = Kernel::System::Ticket->new( %{$Self} );
-my $UserObject    = Kernel::System::User->new( %{$Self} );
-my $ParamObject   = Kernel::System::Web::Request->new(
-    %{$Self},
-    WebRequest => $Param{WebRequest} || 0,
-);
+# get needed objects
+my $ParamObject = $Kernel::OM->Get('Kernel::System::Web::Request');
+
+local $ENV{SCRIPT_NAME} = 'index.pl';
+
 my $LayoutObject = Kernel::Output::HTML::Layout->new(
-    ConfigObject       => $Self->{ConfigObject},
-    LogObject          => $Self->{LogObject},
-    TimeObject         => $Self->{TimeObject},
-    MainObject         => $Self->{MainObject},
-    EncodeObject       => $Self->{EncodeObject},
-    SessionObject      => $SessionObject,
-    DBObject           => $Self->{DBObject},
-    ParamObject        => $ParamObject,
-    TicketObject       => $TicketObject,
-    UserObject         => $UserObject,
-    GroupObject        => $GroupObject,
     UserChallengeToken => 'TestToken',
     UserID             => 1,
     Lang               => 'de',
@@ -62,7 +43,7 @@ my @Tests = (
         },
         Result => {
             Content =>
-                '<img src="No-$ENV{"SCRIPT_NAME"}?Action=SomeAction;FileID=0;SessionID=123">',
+                '<img src="index.pl?Action=SomeAction;FileID=0;SessionID=123">',
             ContentType => 'text/html; charset="utf-8"',
         },
     },
@@ -81,7 +62,7 @@ my @Tests = (
         },
         Result => {
             Content =>
-                '<img border="0" src="No-$ENV{"SCRIPT_NAME"}?Action=SomeAction;FileID=0;SessionID=123">',
+                '<img border="0" src="index.pl?Action=SomeAction;FileID=0;SessionID=123">',
             ContentType => 'text/html; charset="utf-8"',
         },
     },
@@ -100,7 +81,7 @@ my @Tests = (
         },
         Result => {
             Content =>
-                "<img border=\"0\" \nsrc=\"No-\$ENV{\"SCRIPT_NAME\"}?Action=SomeAction;FileID=0;SessionID=123\">",
+                "<img border=\"0\" \nsrc=\"index.pl?Action=SomeAction;FileID=0;SessionID=123\">",
             ContentType => 'text/html; charset="utf-8"',
         },
     },
@@ -119,7 +100,7 @@ my @Tests = (
         },
         Result => {
             Content =>
-                '<img src="No-$ENV{"SCRIPT_NAME"}?Action=SomeAction;FileID=0;SessionID=123">',
+                '<img src="index.pl?Action=SomeAction;FileID=0;SessionID=123">',
             ContentType => 'text/html; charset="utf-8"',
         },
     },
@@ -138,7 +119,7 @@ my @Tests = (
         },
         Result => {
             Content =>
-                '<img src="No-$ENV{"SCRIPT_NAME"}?Action=SomeAction;FileID=0;SessionID=123" />',
+                '<img src="index.pl?Action=SomeAction;FileID=0;SessionID=123" />',
             ContentType => 'text/html; charset="utf-8"',
         },
     },
@@ -157,7 +138,7 @@ my @Tests = (
         },
         Result => {
             Content =>
-                '<img src=\'No-$ENV{"SCRIPT_NAME"}?Action=SomeAction;FileID=0;SessionID=123\' />',
+                '<img src=\'index.pl?Action=SomeAction;FileID=0;SessionID=123\' />',
             ContentType => 'text/html; charset="utf-8"',
         },
     },
@@ -176,7 +157,7 @@ my @Tests = (
         },
         Result => {
             Content =>
-                '<img src=\'No-$ENV{"SCRIPT_NAME"}?Action=SomeAction;FileID=0;SessionID=123\' />',
+                '<img src=\'index.pl?Action=SomeAction;FileID=0;SessionID=123\' />',
             ContentType => 'text/html; charset="utf-8"',
         },
     },
@@ -233,9 +214,10 @@ my @Tests = (
 <div style="margin: 5px 0; padding: 0px; border: 1px solid #999; border-radius: 2px; -moz-border-radius: 2px; -webkit-border-radius: 2px;">
     <div style="padding: 5px; background-color: #DDD; font-family:Geneva,Helvetica,Arial,sans-serif; font-size: 11px; text-align: center;">
         Zum Schutz Ihrer Privatsphäre wurden entfernte Inhalte blockiert.
-        <a href="No-$ENV{"SCRIPT_NAME"}?;LoadExternalImages=1">Blockierte Inhalte laden.</a>
+        <a href="index.pl?;LoadExternalImages=1;SessionID=123">Blockierte Inhalte laden.</a>
     </div>
-</div>1',
+</div>
+1',
             ContentType => 'text/html; charset="utf-8"',
         },
     },
@@ -337,7 +319,7 @@ EOF
         },
         LoadExternalImages => 1,
         Result             => {
-            Content => 'Link <a href="http://test.example" target="_blank">http://test.example</a>',
+            Content     => 'Link <a href="http://test.example" target="_blank">http://test.example</a>',
             ContentType => 'text/html; charset="utf-8"',
         },
     },

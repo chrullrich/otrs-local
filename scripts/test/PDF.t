@@ -9,12 +9,15 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
 
-use Kernel::System::PDF;
+use vars (qw($Self));
 
-my $PDFObject = Kernel::System::PDF->new( %{$Self} );
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $MainObject   = $Kernel::OM->Get('Kernel::System::Main');
+my $PDFObject    = $Kernel::OM->Get('Kernel::System::PDF');
+
 die 'PDF support is disabled in sysconfig or CPAN module PDF::API2 is missing!'
     if !$PDFObject;
 
@@ -187,14 +190,13 @@ $TextCalculateData{5}{PossibleRows}{5} = 'Center.';
 # test6 - test new line and LeftOver calculation
 $TextCalculateData{6}{Text}
     = 'US Space Shuttle Atlantis and her STS-115 crew safely landed today at Kennedy Space Center.';
-$TextCalculateData{6}{Type}           = 'ReturnLeftOver';
-$TextCalculateData{6}{Width}          = 30;
-$TextCalculateData{6}{Height}         = 53;
-$TextCalculateData{6}{State}          = 0;
-$TextCalculateData{6}{RequiredWidth}  = 28.35;
-$TextCalculateData{6}{RequiredHeight} = 50;
-$TextCalculateData{6}{LeftOver}
-    = 's and her STS-115 crew safely landed today at Kennedy Space Center.';
+$TextCalculateData{6}{Type}            = 'ReturnLeftOver';
+$TextCalculateData{6}{Width}           = 30;
+$TextCalculateData{6}{Height}          = 53;
+$TextCalculateData{6}{State}           = 0;
+$TextCalculateData{6}{RequiredWidth}   = 28.35;
+$TextCalculateData{6}{RequiredHeight}  = 50;
+$TextCalculateData{6}{LeftOver}        = 's and her STS-115 crew safely landed today at Kennedy Space Center.';
 $TextCalculateData{6}{PossibleRows}{0} = 'US';
 $TextCalculateData{6}{PossibleRows}{1} = 'Space';
 $TextCalculateData{6}{PossibleRows}{2} = 'Shuttl';
@@ -605,32 +607,30 @@ $TextData2{1}{PositionReturnY} = 65;
 # positiontest2
 $TextData2{2}{Text}
     = 'Veteran NASA space flier Navy Cmdr. Stephen Frick will command the STS-122 Shuttle mission to the ISS.';
-$TextData2{2}{Type}           = 'ReturnLeftOver';
-$TextData2{2}{Width}          = 150;
-$TextData2{2}{Position1X}     = 'left';
-$TextData2{2}{Position1Y}     = 'bottom';
-$TextData2{2}{Position2Y}     = 10;
-$TextData2{2}{State}          = 0;
-$TextData2{2}{RequiredWidth}  = 138.94;
-$TextData2{2}{RequiredHeight} = 10;
-$TextData2{2}{LeftOver}
-    = 'Cmdr. Stephen Frick will command the STS-122 Shuttle mission to the ISS.';
+$TextData2{2}{Type}            = 'ReturnLeftOver';
+$TextData2{2}{Width}           = 150;
+$TextData2{2}{Position1X}      = 'left';
+$TextData2{2}{Position1Y}      = 'bottom';
+$TextData2{2}{Position2Y}      = 10;
+$TextData2{2}{State}           = 0;
+$TextData2{2}{RequiredWidth}   = 138.94;
+$TextData2{2}{RequiredHeight}  = 10;
+$TextData2{2}{LeftOver}        = 'Cmdr. Stephen Frick will command the STS-122 Shuttle mission to the ISS.';
 $TextData2{2}{PositionReturnX} = 40;
 $TextData2{2}{PositionReturnY} = 56;
 
 # positiontest3
 $TextData2{3}{Text}
     = 'Veteran NASA space flier Navy Cmdr. Stephen Frick will command the STS-122 Shuttle mission to the ISS.';
-$TextData2{3}{Type}           = 'ReturnLeftOver';
-$TextData2{3}{Width}          = 150;
-$TextData2{3}{Position1X}     = 'left';
-$TextData2{3}{Position1Y}     = 'bottom';
-$TextData2{3}{Position2Y}     = 11;
-$TextData2{3}{State}          = 0;
-$TextData2{3}{RequiredWidth}  = 138.94;
-$TextData2{3}{RequiredHeight} = 10;
-$TextData2{3}{LeftOver}
-    = 'Cmdr. Stephen Frick will command the STS-122 Shuttle mission to the ISS.';
+$TextData2{3}{Type}            = 'ReturnLeftOver';
+$TextData2{3}{Width}           = 150;
+$TextData2{3}{Position1X}      = 'left';
+$TextData2{3}{Position1Y}      = 'bottom';
+$TextData2{3}{Position2Y}      = 11;
+$TextData2{3}{State}           = 0;
+$TextData2{3}{RequiredWidth}   = 138.94;
+$TextData2{3}{RequiredHeight}  = 10;
+$TextData2{3}{LeftOver}        = 'Cmdr. Stephen Frick will command the STS-122 Shuttle mission to the ISS.';
 $TextData2{3}{PositionReturnX} = 40;
 $TextData2{3}{PositionReturnY} = 57;
 
@@ -645,25 +645,23 @@ $TextData2{4}{Position2Y}     = 39;
 $TextData2{4}{State}          = 0;
 $TextData2{4}{RequiredWidth}  = 29.46;
 $TextData2{4}{RequiredHeight} = 30;
-$TextData2{4}{LeftOver}
-    = 'space flier Navy Cmdr. Stephen Frick will command the STS-122 Shuttle mission to the ISS.';
+$TextData2{4}{LeftOver} = 'space flier Navy Cmdr. Stephen Frick will command the STS-122 Shuttle mission to the ISS.';
 $TextData2{4}{PositionReturnX} = 40;
 $TextData2{4}{PositionReturnY} = 65;
 
 # positiontest5
 $TextData2{5}{Text}
     = 'Veteran NASA space flier Navy Cmdr. Stephen Frick will command the STS-122 Shuttle mission to the ISS.';
-$TextData2{5}{Type}           = 'ReturnLeftOver';
-$TextData2{5}{Width}          = 100;
-$TextData2{5}{Lead}           = 7;
-$TextData2{5}{Position1X}     = 'left';
-$TextData2{5}{Position1Y}     = 'bottom';
-$TextData2{5}{Position2Y}     = 25;
-$TextData2{5}{State}          = 0;
-$TextData2{5}{RequiredWidth}  = 94.49;
-$TextData2{5}{RequiredHeight} = 10;
-$TextData2{5}{LeftOver}
-    = 'flier Navy Cmdr. Stephen Frick will command the STS-122 Shuttle mission to the ISS.';
+$TextData2{5}{Type}            = 'ReturnLeftOver';
+$TextData2{5}{Width}           = 100;
+$TextData2{5}{Lead}            = 7;
+$TextData2{5}{Position1X}      = 'left';
+$TextData2{5}{Position1Y}      = 'bottom';
+$TextData2{5}{Position2Y}      = 25;
+$TextData2{5}{State}           = 0;
+$TextData2{5}{RequiredWidth}   = 94.49;
+$TextData2{5}{RequiredHeight}  = 10;
+$TextData2{5}{LeftOver}        = 'flier Navy Cmdr. Stephen Frick will command the STS-122 Shuttle mission to the ISS.';
 $TextData2{5}{PositionReturnX} = 40;
 $TextData2{5}{PositionReturnY} = 71;
 
@@ -1722,8 +1720,8 @@ $TableCalculate{18}{ReturnColumnData}[0]{Block}         = 0;
 $TableCalculate{18}{ReturnRowData}[0]{MinFontSize} = 10;
 
 # start testing TableCalculate()
-for ( sort keys %TableCalculate ) {
-    my $Test   = $_;
+TEST:
+for my $Test ( sort keys %TableCalculate ) {
     my $TestOk = 0;
 
     my %TableCalculateParams;
@@ -1765,6 +1763,7 @@ for ( sort keys %TableCalculate ) {
     # check returned ColumnData
     my $TestColumnOk  = 0;
     my $CounterColumn = 0;
+    COLUMN:
     for my $Column ( @{ $TableCalculate{$Test}{ReturnColumnData} } ) {
         if (
             $Return{ColumnData}->[$CounterColumn]->{Width} eq $Column->{Width}
@@ -1792,7 +1791,7 @@ for ( sort keys %TableCalculate ) {
             print "\n";
 
             $TestColumnOk = 0;
-            last;
+            last COLUMN;
         }
 
         $CounterColumn++;
@@ -1802,6 +1801,7 @@ for ( sort keys %TableCalculate ) {
     my $TestRowOk  = 0;
     my $CounterRow = 0;
     if ($TestColumnOk) {
+        ROW:
         for my $Row ( @{ $TableCalculate{$Test}{ReturnRowData} } ) {
             if ( $Return{RowData}->[$CounterRow]->{MinFontSize} eq $Row->{MinFontSize} ) {
                 $TestRowOk = 1;
@@ -1813,7 +1813,7 @@ for ( sort keys %TableCalculate ) {
                 print "\n";
 
                 $TestRowOk = 0;
-                last;
+                last ROW;
             }
 
             $CounterRow++;
@@ -1823,8 +1823,10 @@ for ( sort keys %TableCalculate ) {
     # check returned CellData
     if ($TestRowOk) {
         my $CounterCellRow = 0;
+        ROW:
         for my $Row ( @{ $TableCalculate{$Test}{ReturnCellData} } ) {
             my $CounterCellColumn = 0;
+            CELL:
             for my $Cell ( @{ $TableCalculate{$Test}{ReturnCellData}[$CounterCellRow] } ) {
                 if (
                     $Return{CellData}->[$CounterCellRow]->[$CounterCellColumn]->{Content} eq
@@ -1875,13 +1877,13 @@ for ( sort keys %TableCalculate ) {
                     print "\n";
 
                     $TestOk = 0;
-                    last;
+                    last CELL;
                 }
                 $CounterCellColumn++;
             }
             $CounterCellRow++;
             if ( !$TestOk ) {
-                last;
+                last ROW;
             }
         }
     }
@@ -2690,11 +2692,12 @@ for ( sort keys %TableCellOnCount ) {
     );
 }
 
-# Charset font test 1 (iso-8859-1)
-my $PDFObject2 = Kernel::System::PDF->new( %{$Self} );
+# charset font test 1 (iso-8859-1)
+$Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::PDF'] );
+$PDFObject = $Kernel::OM->Get('Kernel::System::PDF');
 
 # create a pdf document
-my $DocumentNew2 = $PDFObject2->DocumentNew(
+my $DocumentNew2 = $PDFObject->DocumentNew(
     Title     => 'The Title',
     Encode    => 'latin1',
     Testfonts => 1,
@@ -2706,7 +2709,7 @@ $Self->True(
 );
 
 # create a blank page
-my $PageBlankNew2 = $PDFObject2->PageBlankNew(
+my $PageBlankNew2 = $PDFObject->PageBlankNew(
     Width        => 842,
     Height       => 595,
     MarginTop    => 50,
@@ -2720,16 +2723,12 @@ $Self->True(
     "PageBlankNew2()",
 );
 
+my $FileContent1 = $MainObject->FileRead(
+    Location => $ConfigObject->Get('Home') . '/scripts/test/sample/PDF/PDF-test1-iso-8859-1.txt',
+);
+
 my %CharsetTestData1;
-## no critic
-open my $IN1, '<',
-    $Self->{ConfigObject}->Get('Home') . '/scripts/test/sample/PDF/PDF-test1-iso-8859-1.txt'
-    || die $!;
-## use critic
-while (<$IN1>) {
-    $CharsetTestData1{Text} .= $_;
-}
-close $IN1;
+$CharsetTestData1{Text} = ${$FileContent1};
 
 $CharsetTestData1{Type}           = 'ReturnLeftOver';
 $CharsetTestData1{Font}           = 'Testfont2';
@@ -2742,7 +2741,7 @@ $CharsetTestData1{RequiredWidth}  = 46.87;
 $CharsetTestData1{RequiredHeight} = 10;
 $CharsetTestData1{LeftOver}       = '';
 
-my %ReturnCharsetTestData1 = $PDFObject2->Text(
+my %ReturnCharsetTestData1 = $PDFObject->Text(
     Text     => $CharsetTestData1{Text},
     Width    => $CharsetTestData1{Width},
     Height   => $CharsetTestData1{Height},
@@ -2777,11 +2776,12 @@ $Self->True(
     "CharsetTest1()",
 );
 
-# Charset font test 2 (utf-8)
-my $PDFObject3 = Kernel::System::PDF->new( %{$Self} );
+# charset font test 2 (utf-8)
+$Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::PDF'] );
+$PDFObject = $Kernel::OM->Get('Kernel::System::PDF');
 
 # create a pdf document
-my $DocumentNew3 = $PDFObject3->DocumentNew(
+my $DocumentNew3 = $PDFObject->DocumentNew(
     Title     => 'The Title',
     Encode    => 'utf-8',
     Testfonts => 1,
@@ -2793,7 +2793,7 @@ $Self->True(
 );
 
 # create a blank page
-my $PageBlankNew3 = $PDFObject3->PageBlankNew(
+my $PageBlankNew3 = $PDFObject->PageBlankNew(
     Width        => 842,
     Height       => 595,
     MarginTop    => 50,
@@ -2807,15 +2807,12 @@ $Self->True(
     "PageBlankNew3()",
 );
 
+my $FileContent2 = $MainObject->FileRead(
+    Location => $ConfigObject->Get('Home') . '/scripts/test/sample/PDF/PDF-test1-utf-8.txt',
+);
+
 my %CharsetTestData2;
-## no critic
-open my $IN2, '<',
-    $Self->{ConfigObject}->Get('Home') . '/scripts/test/sample/PDF/PDF-test1-utf-8.txt' || die $!;
-## use critic
-while (<$IN2>) {
-    $CharsetTestData2{Text} .= $_;
-}
-close $IN2;
+$CharsetTestData2{Text} = ${$FileContent2};
 
 $CharsetTestData2{Type}           = 'ReturnLeftOver';
 $CharsetTestData2{Font}           = 'Testfont2';
@@ -2828,7 +2825,7 @@ $CharsetTestData2{RequiredWidth}  = 46.87;
 $CharsetTestData2{RequiredHeight} = 10;
 $CharsetTestData2{LeftOver}       = '';
 
-my %ReturnCharsetTestData2 = $PDFObject3->Text(
+my %ReturnCharsetTestData2 = $PDFObject->Text(
     Text     => $CharsetTestData2{Text},
     Width    => $CharsetTestData2{Width},
     Height   => $CharsetTestData2{Height},
@@ -2863,11 +2860,12 @@ $Self->True(
     "CharsetTest2()",
 );
 
-# Charset font test 3 (utf-8)
-my $PDFObject4 = Kernel::System::PDF->new( %{$Self} );
+# charset font test 3 (utf-8)
+$Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::PDF'] );
+$PDFObject = $Kernel::OM->Get('Kernel::System::PDF');
 
 # create a pdf document
-my $DocumentNew4 = $PDFObject4->DocumentNew(
+my $DocumentNew4 = $PDFObject->DocumentNew(
     Title     => 'The Title',
     Encode    => 'utf-8',
     Testfonts => 1,
@@ -2879,7 +2877,7 @@ $Self->True(
 );
 
 # create a blank page
-my $PageBlankNew4 = $PDFObject4->PageBlankNew(
+my $PageBlankNew4 = $PDFObject->PageBlankNew(
     Width        => 842,
     Height       => 595,
     MarginTop    => 50,
@@ -2893,15 +2891,12 @@ $Self->True(
     "PageBlankNew4()",
 );
 
+my $FileContent3 = $MainObject->FileRead(
+    Location => $ConfigObject->Get('Home') . '/scripts/test/sample/PDF/PDF-test2-utf-8.txt',
+);
+
 my %CharsetTestData3;
-## no critic
-open my $IN3, '<',
-    $Self->{ConfigObject}->Get('Home') . '/scripts/test/sample/PDF/PDF-test2-utf-8.txt' || die $!;
-## use critic
-while (<$IN3>) {
-    $CharsetTestData3{Text} .= $_;
-}
-close $IN3;
+$CharsetTestData3{Text} = ${$FileContent3};
 
 $CharsetTestData3{Type}           = 'ReturnLeftOver';
 $CharsetTestData3{Font}           = 'Testfont1';
@@ -2914,7 +2909,7 @@ $CharsetTestData3{RequiredWidth}  = 88.96;
 $CharsetTestData3{RequiredHeight} = 10;
 $CharsetTestData3{LeftOver}       = '';
 
-my %ReturnCharsetTestData3 = $PDFObject4->Text(
+my %ReturnCharsetTestData3 = $PDFObject->Text(
     Text     => $CharsetTestData3{Text},
     Width    => $CharsetTestData3{Width},
     Height   => $CharsetTestData3{Height},

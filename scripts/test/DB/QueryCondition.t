@@ -9,12 +9,13 @@
 
 use strict;
 use warnings;
-use vars qw($Self);
+use utf8;
 
-use Kernel::System::XML;
+use vars (qw($Self));
 
-my $XMLObject = Kernel::System::XML->new( %{$Self} );
-my $DBObject  = Kernel::System::DB->new( %{$Self} );
+# get needed objects
+my $DBObject  = $Kernel::OM->Get('Kernel::System::DB');
+my $XMLObject = $Kernel::OM->Get('Kernel::System::XML');
 
 # ------------------------------------------------------------ #
 # QueryCondition tests
@@ -844,7 +845,7 @@ my @Queries = (
         },
     },
     {
-        Query => $Self->{DBObject}->QueryStringEscape(
+        Query => $DBObject->QueryStringEscape(
             QueryString => 'customer & id with ampersand & spaces',
         ),
         Result => {
@@ -1010,7 +1011,7 @@ for my $Query (@Queries) {
 # select's
 for my $Query (@Queries) {
     my $Condition = $DBObject->QueryCondition(
-        Key => [ 'name_a', 'name_b', 'name_a', 'name_a' ],
+        Key          => [ 'name_a', 'name_b', 'name_a', 'name_a' ],
         Value        => $Query->{Query},
         SearchPrefix => '*',
         SearchSuffix => '*',

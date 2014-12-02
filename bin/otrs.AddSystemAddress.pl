@@ -28,29 +28,14 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::DB;
-use Kernel::System::Group;
-use Kernel::System::Main;
-use Kernel::System::Queue;
-use Kernel::System::SystemAddress;
+use Kernel::System::ObjectManager;
 
-my %CommonObject;
-
-# create common objects
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.AddSystemAddress.pl',
-    %CommonObject,
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.AddSystemAddress.pl',
+    },
 );
-$CommonObject{MainObject}          = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject}            = Kernel::System::DB->new(%CommonObject);
-$CommonObject{GroupObject}         = Kernel::System::Group->new(%CommonObject);
-$CommonObject{QueueObject}         = Kernel::System::Queue->new(%CommonObject);
-$CommonObject{SystemAddressObject} = Kernel::System::SystemAddress->new(%CommonObject);
 
 my %Param;
 my %Options;
@@ -88,7 +73,7 @@ $Param{Queue}    = $Options{q};
 $Param{Name}     = $Options{e};
 
 # check if queue exists
-$Param{QueueID} = $CommonObject{QueueObject}->QueueLookup(
+$Param{QueueID} = $Kernel::OM->Get('Kernel::System::Queue')->QueueLookup(
     Queue => $Param{Queue},
 );
 if ( !$Param{QueueID} ) {
@@ -97,7 +82,7 @@ if ( !$Param{QueueID} ) {
 }
 
 # check if system address already exists
-my $SystemExists = $CommonObject{SystemAddressObject}->SystemAddressIsLocalAddress(
+my $SystemExists = $Kernel::OM->Get('Kernel::System::SystemAddress')->SystemAddressIsLocalAddress(
     Address => $Param{Name},
 );
 if ($SystemExists) {
@@ -105,7 +90,7 @@ if ($SystemExists) {
     exit 1;
 }
 
-if ( my $ID = $CommonObject{SystemAddressObject}->SystemAddressAdd(%Param) ) {
+if ( my $ID = $Kernel::OM->Get('Kernel::System::SystemAddress')->SystemAddressAdd(%Param) ) {
     print "System Address '$Options{e}' added. Id is '$ID'\n";
 }
 else {

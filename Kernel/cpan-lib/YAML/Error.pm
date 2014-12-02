@@ -1,7 +1,6 @@
 package YAML::Error;
-use YAML::Mo;
 
-our $VERSION = '0.84';
+use YAML::Mo;
 
 has 'code';
 has 'type' => default => sub {'Error'};
@@ -150,11 +149,11 @@ YAML_LOAD_WARN_GLOB_IO
   Can't load an IO filehandle. Yet!!!
 ...
 
-%line_adjust = map {($_, 1)} 
+%line_adjust = map {($_, 1)}
   qw(YAML_PARSE_ERR_BAD_MAJOR_VERSION
-     YAML_PARSE_WARN_BAD_MINOR_VERSION 
-     YAML_PARSE_ERR_TEXT_AFTER_INDICATOR 
-     YAML_PARSE_ERR_NO_ANCHOR 
+     YAML_PARSE_WARN_BAD_MINOR_VERSION
+     YAML_PARSE_ERR_TEXT_AFTER_INDICATOR
+     YAML_PARSE_ERR_NO_ANCHOR
      YAML_PARSE_ERR_MANY_EXPLICIT
      YAML_PARSE_ERR_MANY_IMPLICIT
      YAML_PARSE_ERR_MANY_ANCHOR
@@ -190,33 +189,3 @@ package YAML::Warning;
 our @ISA = 'YAML::Error';
 
 1;
-
-__END__
-
-=head1 NAME
-
-YAML::Error - Error formatting class for YAML modules
-
-=head1 SYNOPSIS
-
-    $self->die('YAML_PARSE_ERR_NO_ANCHOR', $alias);
-    $self->warn('YAML_LOAD_WARN_DUPLICATE_KEY');
-
-=head1 DESCRIPTION
-
-This module provides a C<die> and a C<warn> facility.
-
-=head1 AUTHOR
-
-Ingy döt Net <ingy@cpan.org>
-
-=head1 COPYRIGHT
-
-Copyright (c) 2006, 2011-2012. Ingy döt Net. All rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-See L<http://www.perl.com/perl/misc/Artistic.html>
-
-=cut

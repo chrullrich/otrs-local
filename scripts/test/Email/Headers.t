@@ -6,15 +6,15 @@
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
+
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
-use Kernel::Config;
-use Kernel::System::Email;
 
-# create local object
-my $ConfigObject = Kernel::Config->new();
+use vars (qw($Self));
+
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
 # do not really send emails
 $ConfigObject->Set(
@@ -22,11 +22,8 @@ $ConfigObject->Set(
     Value => 'Kernel::System::Email::DoNotSendEmail',
 );
 
-# generate email
-my $EmailObject = Kernel::System::Email->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+# get email object
+my $EmailObject = $Kernel::OM->Get('Kernel::System::Email');
 
 # Check that long references and in-reply-to headers are correctly split across lines.
 # See bug#9345 and RFC5322.

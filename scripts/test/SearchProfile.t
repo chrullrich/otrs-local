@@ -10,27 +10,19 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
-use Kernel::System::SearchProfile;
-use Kernel::System::UnitTest::Helper;
 use Kernel::System::VariableCheck qw(:all);
+
+# get needed objects
+my $ConfigObject        = $Kernel::OM->Get('Kernel::Config');
+my $HelperObject        = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $DBObject            = $Kernel::OM->Get('Kernel::System::DB');
+my $SearchProfileObject = $Kernel::OM->Get('Kernel::System::SearchProfile');
 
 # set UserID
 my $UserID = 1;
-
-my $ConfigObject = Kernel::Config->new();
-
-my $SearchProfileObject = Kernel::System::SearchProfile->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-
-# Create Helper instance which will restore system configuration in destructor
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %{$Self},
-    UnitTestObject => $Self,
-);
 
 my $RandomID = $HelperObject->GetRandomID();
 
@@ -41,7 +33,7 @@ my $Base = 'TicketSearch' . $RandomID;
 # workaround for oracle
 # oracle databases can't determine the difference between NULL and ''
 my $IsNotOracle = 1;
-if ( $Self->{DBObject}->GetDatabaseFunction('Type') eq 'oracle' ) {
+if ( $DBObject->GetDatabaseFunction('Type') eq 'oracle' ) {
     $IsNotOracle = 0;
 }
 
@@ -179,10 +171,10 @@ my @Tests = (
         Name       => 'Test ' . $TestNumber++,
         SuccessAdd => 1,
         Add        => {
-            Base => $Base,
-            Name => 'last-search' . $RandomID . '-äüßÄÖÜ€исáéíúúÁÉÍÚñÑ',
-            Key  => 'Unicode-äüßÄÖÜ€исáéíúúÁÉÍÚñÑ',
-            Value     => 'Any value-äüßÄÖÜ€исáéíúúÁÉÍÚñÑ',    # SCALAR|ARRAYREF
+            Base      => $Base,
+            Name      => 'last-search' . $RandomID . '-äüßÄÖÜ€исáéíúúÁÉÍÚñÑ',
+            Key       => 'Unicode-äüßÄÖÜ€исáéíúúÁÉÍÚñÑ',
+            Value     => 'Any value-äüßÄÖÜ€исáéíúúÁÉÍÚñÑ',                      # SCALAR|ARRAYREF
             UserLogin => $UserID,
         },
     },
@@ -194,7 +186,7 @@ my @Tests = (
             Base      => $Base,
             Name      => 'last-search-array' . $RandomID,
             Key       => 'Array',
-            Value     => [ 'ValueOne', 'ValueTwo', 'ValueThree', 'ValueFour' ],    # SCALAR|ARRAYREF
+            Value     => [ 'ValueOne', 'ValueTwo', 'ValueThree', 'ValueFour' ],                      # SCALAR|ARRAYREF
             UserLogin => $UserID,
         },
     },
@@ -202,6 +194,7 @@ my @Tests = (
 );
 
 my @SearchProfileNames;
+TEST:
 for my $Test (@Tests) {
 
     # Add SearchProfile
@@ -214,7 +207,7 @@ for my $Test (@Tests) {
             $SuccessAdd,
             "$Test->{Name} - SearchProfileAdd()",
         );
-        next;
+        next TEST;
     }
     else {
         $Self->True(
@@ -263,8 +256,10 @@ for my $Test (@Tests) {
 }
 
 # list check from DB
-my %SearchProfileList
-    = $SearchProfileObject->SearchProfileList( Base => $Base, UserLogin => $UserID );
+my %SearchProfileList = $SearchProfileObject->SearchProfileList(
+    Base      => $Base,
+    UserLogin => $UserID
+);
 for my $SearchProfileName (@SearchProfileNames) {
 
     $Self->Is(
@@ -299,8 +294,10 @@ for my $SearchProfileName (@SearchProfileNames) {
     );
 
     # check deleting from SearchProfileList
-    my %SearchProfileList
-        = $SearchProfileObject->SearchProfileList( Base => $Base, UserLogin => $UserID );
+    my %SearchProfileList = $SearchProfileObject->SearchProfileList(
+        Base      => $Base,
+        UserLogin => $UserID
+    );
 
     $Self->False(
         $SearchProfileList{$SearchProfileName},

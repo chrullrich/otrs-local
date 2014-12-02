@@ -12,8 +12,7 @@ package Kernel::Output::HTML::DashboardCustomerCompanyInformation;
 use strict;
 use warnings;
 
-use Kernel::System::CustomerCompany;
-use Kernel::System::Valid;
+our $ObjectManagerDisabled = 1;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -22,16 +21,10 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # get needed objects
-    for (
-        qw(Config Name ConfigObject LogObject DBObject LayoutObject ParamObject TicketObject UserID)
-        )
-    {
-        die "Got no $_!" if ( !$Self->{$_} );
+    # get needed parameters
+    for my $Needed (qw(Config Name UserID)) {
+        die "Got no $Needed!" if ( !$Self->{$Needed} );
     }
-
-    $Self->{CustomerCompanyObject} = Kernel::System::CustomerCompany->new( %{$Self} );
-    $Self->{ValidObject}           = Kernel::System::Valid->new( %{$Self} );
 
     $Self->{PrefKey} = 'UserDashboardPref' . $Self->{Name} . '-Shown';
 
@@ -63,24 +56,26 @@ sub Run {
 
     return if !$Param{CustomerID};
 
-    my %CustomerCompany = $Self->{CustomerCompanyObject}->CustomerCompanyGet(
+    my %CustomerCompany = $Kernel::OM->Get('Kernel::System::CustomerCompany')->CustomerCompanyGet(
         CustomerID => $Param{CustomerID},
     );
 
-    my $CustomerCompanyConfig = $Self->{ConfigObject}->Get( $CustomerCompany{Source} );
+    my $CustomerCompanyConfig = $Kernel::OM->Get('Kernel::Config')->Get( $CustomerCompany{Source} || '' );
     return if ref $CustomerCompanyConfig ne 'HASH';
     return if ref $CustomerCompanyConfig->{Map} ne 'ARRAY';
 
     return if !%CustomerCompany;
 
+    # get layout object
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     # make ValidID readable
     if ( $CustomerCompany{ValidID} ) {
-        $CustomerCompany{ValidID} = $Self->{ValidObject}->ValidLookup(
+        $CustomerCompany{ValidID} = $Kernel::OM->Get('Kernel::System::Valid')->ValidLookup(
             ValidID => $CustomerCompany{ValidID},
         );
 
-        $CustomerCompany{ValidID}
-            = $Self->{LayoutObject}->{LanguageObject}->Get( $CustomerCompany{ValidID} );
+        $CustomerCompany{ValidID} = $LayoutObject->{LanguageObject}->Translate( $CustomerCompany{ValidID} );
     }
 
     ENTRY:
@@ -93,17 +88,17 @@ sub Run {
         # do not show empty entries
         next ENTRY if !length( $CustomerCompany{$Key} );
 
-        $Self->{LayoutObject}->Block( Name => "ContentSmallCustomerCompanyInformationRow" );
+        $LayoutObject->Block( Name => "ContentSmallCustomerCompanyInformationRow" );
 
         if ( $Key eq 'CustomerID' ) {
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => "ContentSmallCustomerCompanyInformationRowLink",
                 Data => {
                     %CustomerCompany,
                     Label => $Entry->[1],
                     Value => $CustomerCompany{$Key},
                     URL =>
-                        '$Env{"Baselink"}Action=AdminCustomerCompany;Subaction=Change;CustomerID=$QData{"CustomerID"};Nav=Agent',
+                        '[% Env("Baselink") %]Action=AdminCustomerCompany;Subaction=Change;CustomerID=[% Data.CustomerID | uri %];Nav=Agent',
                     Target => '',
                 },
             );
@@ -113,7 +108,7 @@ sub Run {
 
         # check if a link must be placed
         if ( $Entry->[6] ) {
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => "ContentSmallCustomerCompanyInformationRowLink",
                 Data => {
                     %CustomerCompany,
@@ -128,7 +123,7 @@ sub Run {
 
         }
 
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => "ContentSmallCustomerCompanyInformationRowText",
             Data => {
                 %CustomerCompany,
@@ -138,7 +133,7 @@ sub Run {
         );
     }
 
-    my $Content = $Self->{LayoutObject}->Output(
+    my $Content = $LayoutObject->Output(
         TemplateFile => 'AgentDashboardCustomerCompanyInformation',
         Data         => {
             %{ $Self->{Config} },

@@ -1,10 +1,14 @@
-package Email::Valid;
 require 5.006;
 use strict;
 use warnings;
-use vars qw( $VERSION $RFC822PAT %AUTOLOAD $AUTOLOAD $NSLOOKUP_PAT
-             @NSLOOKUP_PATHS $Details $Resolver $Nslookup_Path
-             $DNS_Method $TLD $Debug );
+package Email::Valid;
+$Email::Valid::VERSION = '1.194';
+# ABSTRACT: Check validity of Internet email addresses
+our (
+  $RFC822PAT,
+  $Details, $Resolver, $Nslookup_Path,
+  $Debug,
+);
 
 use Carp;
 use IO::File;
@@ -12,11 +16,8 @@ use Mail::Address;
 use File::Spec;
 use Scalar::Util 'blessed';
 
-use bytes;
-
-$VERSION = '0.190';
-
-%AUTOLOAD = (
+our %AUTOLOAD = (
+  allow_ip => 1,
   fqdn     => 1,
   fudge    => 1,
   mxcheck  => 1,
@@ -25,11 +26,11 @@ $VERSION = '0.190';
   localpart => 1,
 );
 
-$NSLOOKUP_PAT = 'preference|serial|expire|mail\s+exchanger';
-@NSLOOKUP_PATHS = File::Spec->path();
+our $NSLOOKUP_PAT = 'preference|serial|expire|mail\s+exchanger';
+our @NSLOOKUP_PATHS = File::Spec->path();
 
 # initialize if already loaded, better in prefork mod_perl environment
-$DNS_Method = defined $Net::DNS::VERSION ? 'Net::DNS' : '';
+our $DNS_Method = defined $Net::DNS::VERSION ? 'Net::DNS' : '';
 unless ($DNS_Method) {
     __PACKAGE__->_select_dns_method;
 }
@@ -143,10 +144,20 @@ sub _net_dns_query {
 
   $Resolver = Net::DNS::Resolver->new unless defined $Resolver;
 
-  my $packet = $Resolver->send($host, 'A') or croak $Resolver->errorstring;
-  return 1 if $packet->header->ancount;
+  my $packet = $Resolver->send($host, 'MX') or croak $Resolver->errorstring;
+  if ($packet->header->ancount) {
+    my @mx_entries = grep { $_->{'type'} eq 'MX' } $packet->answer;
+    if(@mx_entries) {
+        my $mx = ($mx_entries[0])->exchange;
+        if ($mx eq '.' or $mx eq '') {
+          return $self->details('mx'); # Null MX
+        } else {
+          return 1;
+        }
+    }
+  }
 
-  $packet = $Resolver->send($host, 'MX') or croak $Resolver->errorstring;
+  $packet = $Resolver->send($host, 'A') or croak $Resolver->errorstring;
   return 1 if $packet->header->ancount;
 
   return $self->details('mx');
@@ -374,7 +385,7 @@ sub address {
 sub AUTOLOAD {
   my $self = shift;
   my $type = ref($self) || die "$self is not an object";
-  my $name = $AUTOLOAD;
+  my $name = our $AUTOLOAD;
 
   $name =~ s/.*://;
   return if $name eq 'DESTROY';
@@ -488,16 +499,233 @@ $RFC822PAT =~ s/\n//g;
 
 1;
 
+
+#pod =head1 SYNOPSIS
+#pod
+#pod   use Email::Valid;
+#pod   my $address = Email::Valid->address('maurice@hevanet.com');
+#pod   print ($address ? 'yes' : 'no');
+#pod
+#pod =head1 DESCRIPTION
+#pod
+#pod This module determines whether an email address is well-formed, and
+#pod optionally, whether a mail host exists for the domain.
+#pod
+#pod Please note that there is no way to determine whether an
+#pod address is deliverable without attempting delivery (for details, see
+#pod perlfaq 9).
+#pod
+#pod =head1 PREREQUISITES
+#pod
+#pod This module requires perl 5.004 or later and the Mail::Address module.
+#pod Either the Net::DNS module or the nslookup utility is required
+#pod for DNS checks.  The Net::Domain::TLD module is required to check the
+#pod validity of top level domains.
+#pod
+#pod =head1 METHODS
+#pod
+#pod   Every method which accepts an <ADDRESS> parameter may
+#pod   be passed either a string or an instance of the Mail::Address
+#pod   class.  All errors raise an exception.
+#pod
+#pod =over 4
+#pod
+#pod =item new ( [PARAMS] )
+#pod
+#pod This method is used to construct an Email::Valid object.
+#pod It accepts an optional list of named parameters to
+#pod control the behavior of the object at instantiation.
+#pod
+#pod The following named parameters are allowed.  See the
+#pod individual methods below of details.
+#pod
+#pod  -mxcheck
+#pod  -tldcheck
+#pod  -fudge
+#pod  -fqdn
+#pod  -allow_ip
+#pod  -local_rules
+#pod
+#pod =item mx ( <ADDRESS>|<DOMAIN> )
+#pod
+#pod This method accepts an email address or domain name and determines
+#pod whether a DNS record (A or MX) exists for it.
+#pod
+#pod The method returns true if a record is found and undef if not.
+#pod
+#pod Either the Net::DNS module or the nslookup utility is required for
+#pod DNS checks.  Using Net::DNS is the preferred method since error
+#pod handling is improved.  If Net::DNS is available, you can modify
+#pod the behavior of the resolver (e.g. change the default tcp_timeout
+#pod value) by manipulating the global Net::DNS::Resolver instance stored in
+#pod $Email::Valid::Resolver.
+#pod
+#pod =item rfc822 ( <ADDRESS> )
+#pod
+#pod This method determines whether an address conforms to the RFC822
+#pod specification (except for nested comments).  It returns true if it
+#pod conforms and undef if not.
+#pod
+#pod =item fudge ( <TRUE>|<FALSE> )
+#pod
+#pod Specifies whether calls to address() should attempt to correct
+#pod common addressing errors.  Currently, this results in the removal of
+#pod spaces in AOL addresses, and the conversion of commas to periods in
+#pod Compuserve addresses.  The default is false.
+#pod
+#pod =item allow_ip ( <TRUE>|<FALSE> )
+#pod
+#pod Specifies whether a "domain literal" is acceptable as the domain part.  That
+#pod means addresses like:  C<rjbs@[1.2.3.4]>
+#pod
+#pod The checking for the domain literal is stricter than the RFC and looser than
+#pod checking for a valid IP address, I<but this is subject to change>.
+#pod
+#pod The default is true.
+#pod
+#pod =item fqdn ( <TRUE>|<FALSE> )
+#pod
+#pod Species whether addresses passed to address() must contain a fully
+#pod qualified domain name (FQDN).  The default is true.
+#pod
+#pod B<Please note!>  FQDN checks only occur for non-domain-literals.  In other
+#pod words, if you have set C<allow_ip> and the address ends in a bracketed IP
+#pod address, the FQDN check will not occur.
+#pod
+#pod =item tld ( <ADDRESS> )
+#pod
+#pod This method determines whether the domain part of an address is in a
+#pod recognized top-level domain.
+#pod
+#pod B<Please note!>  TLD checks only occur for non-domain-literals.  In other
+#pod words, if you have set C<allow_ip> and the address ends in a bracketed IP
+#pod address, the TLD check will not occur.
+#pod
+#pod =item local_rules ( <TRUE>|<FALSE> )
+#pod
+#pod Specifies whether addresses passed to address() should be tested
+#pod for domain specific restrictions.  Currently, this is limited to
+#pod certain AOL restrictions that I'm aware of.  The default is false.
+#pod
+#pod =item mxcheck ( <TRUE>|<FALSE> )
+#pod
+#pod Specifies whether addresses passed to address() should be checked
+#pod for a valid DNS entry.  The default is false.
+#pod
+#pod =item tldcheck ( <TRUE>|<FALSE> )
+#pod
+#pod Specifies whether addresses passed to address() should be checked
+#pod for a valid top level domains.  The default is false.
+#pod
+#pod =item address ( <ADDRESS> )
+#pod
+#pod This is the primary method which determines whether an email
+#pod address is valid.  It's behavior is modified by the values of
+#pod mxcheck(), tldcheck(), local_rules(), fqdn(), and fudge().  If the address
+#pod passes all checks, the (possibly modified) address is returned as
+#pod a string.  Otherwise, the undefined value is returned.
+#pod In a list context, the method also returns an instance of the
+#pod Mail::Address class representing the email address.
+#pod
+#pod =item details ()
+#pod
+#pod If the last call to address() returned undef, you can call this
+#pod method to determine why it failed.  Possible values are:
+#pod
+#pod  rfc822
+#pod  localpart
+#pod  local_rules
+#pod  fqdn
+#pod  mxcheck
+#pod  tldcheck
+#pod
+#pod If the class is not instantiated, you can get the same information
+#pod from the global $Email::Valid::Details.
+#pod
+#pod =back
+#pod
+#pod =head1 EXAMPLES
+#pod
+#pod Let's see if the address 'maurice@hevanet.com' conforms to the
+#pod RFC822 specification:
+#pod
+#pod   print (Email::Valid->address('maurice@hevanet.com') ? 'yes' : 'no');
+#pod
+#pod Additionally, let's make sure there's a mail host for it:
+#pod
+#pod   print (Email::Valid->address( -address => 'maurice@hevanet.com',
+#pod                                 -mxcheck => 1 ) ? 'yes' : 'no');
+#pod
+#pod Let's see an example of how the address may be modified:
+#pod
+#pod   $addr = Email::Valid->address('Alfred Neuman <Neuman @ foo.bar>');
+#pod   print "$addr\n"; # prints Neuman@foo.bar
+#pod
+#pod Now let's add the check for top level domains:
+#pod
+#pod   $addr = Email::Valid->address( -address => 'Neuman@foo.bar',
+#pod                                  -tldcheck => 1 );
+#pod   print "$addr\n"; # doesn't print anything
+#pod
+#pod Need to determine why an address failed?
+#pod
+#pod   unless(Email::Valid->address('maurice@hevanet')) {
+#pod     print "address failed $Email::Valid::Details check.\n";
+#pod   }
+#pod
+#pod If an error is encountered, an exception is raised.  This is really
+#pod only possible when performing DNS queries.  Trap any exceptions by
+#pod wrapping the call in an eval block:
+#pod
+#pod   eval {
+#pod     $addr = Email::Valid->address( -address => 'maurice@hevanet.com',
+#pod                                    -mxcheck => 1 );
+#pod   };
+#pod   warn "an error was encountered: $@" if $@;
+#pod
+#pod =head1 CREDITS
+#pod
+#pod Significant portions of this module are based on the ckaddr program
+#pod written by Tom Christiansen and the RFC822 address pattern developed
+#pod by Jeffrey Friedl.  Neither were involved in the construction of this
+#pod module; all errors are mine.
+#pod
+#pod Thanks very much to the following people for their suggestions and
+#pod bug fixes:
+#pod
+#pod   Otis Gospodnetic <otis@DOMINIS.com>
+#pod   Kim Ryan <kimaryan@ozemail.com.au>
+#pod   Pete Ehlke <pde@listserv.music.sony.com>
+#pod   Lupe Christoph
+#pod   David Birnbaum
+#pod   Achim
+#pod   Elizabeth Mattijsen (liz@dijkmat.nl)
+#pod
+#pod =head1 SEE ALSO
+#pod
+#pod Mail::Address, Net::DNS, Net::Domain::TLD, perlfaq9
+#pod
+#pod =cut
+
 __END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 NAME
 
 Email::Valid - Check validity of Internet email addresses
 
+=head1 VERSION
+
+version 1.194
+
 =head1 SYNOPSIS
 
   use Email::Valid;
-  print (Email::Valid->address('maurice@hevanet.com') ? 'yes' : 'no');
+  my $address = Email::Valid->address('maurice@hevanet.com');
+  print ($address ? 'yes' : 'no');
 
 =head1 DESCRIPTION
 
@@ -676,20 +904,6 @@ wrapping the call in an eval block:
   };
   warn "an error was encountered: $@" if $@;
 
-=head1 BUGS
-
-Email::Valid should work with Perl for Win32.  In my experience,
-however, Net::DNS queries seem to take an extremely long time when
-a record cannot be found.
-
-=head1 AUTHOR
-
-Copyright 1998-2003, Maurice Aubrey E<lt>maurice@hevanet.comE<gt>.
-All rights reserved.
-
-This module is free software; you may redistribute it and/or
-modify it under the same terms as Perl itself.
-
 =head1 CREDITS
 
 Significant portions of this module are based on the ckaddr program
@@ -711,5 +925,16 @@ bug fixes:
 =head1 SEE ALSO
 
 Mail::Address, Net::DNS, Net::Domain::TLD, perlfaq9
+
+=head1 AUTHOR
+
+Maurice Aubrey <maurice@hevanet.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 1998 by Maurice Aubrey.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

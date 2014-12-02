@@ -31,20 +31,19 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
-use Kernel::Config;
-use Kernel::System::Email;
+
+use vars (qw($Self));
+
 use Kernel::System::EmailParser;
+
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
 # Constants for test(s): 1 - enabled, 0 - disabled.
 # SEND - check sending body. PARSE - check parsed body.
 
 my $SEND  = 1;
 my $PARSE = 1;
-
-# create local object
-my $ConfigObject = Kernel::Config->new();
 
 # do not really send emails
 $ConfigObject->Set(
@@ -147,25 +146,34 @@ my @Tests = (
 
 );
 
-my $Count = 0;
+# get email object
+my $EmailObject = $Kernel::OM->Get('Kernel::System::Email');
 
-# Testing loop
+# testing loop
+my $Count = 0;
+TEST:
 for my $Test (@Tests) {
 
     $Count++;
 
     my $Name = "#$Count $Test->{Name}";
 
-    # generate email
-    my $EmailObject = Kernel::System::Email->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
-    );
-
     # call Send and get results
     my ( $Header, $Body ) = $EmailObject->Send(
         %{ $Test->{Data} },
     );
+
+    if ( !$Header || ref $Header ne 'SCALAR' ) {
+
+        my $String = '';
+        $Header = \$String;
+    }
+
+    if ( !$Body || ref $Body ne 'SCALAR' ) {
+
+        my $String = '';
+        $Body = \$String;
+    }
 
     # some MIME::Tools workaround
     my $Email = ${$Header} . "\n" . ${$Body};
@@ -194,13 +202,11 @@ for my $Test (@Tests) {
     }
 
     # No need test below is constant PARSE set to 0
-    next if ( !$PARSE );
+    next TEST if ( !$PARSE );
 
     # parse email
     my $ParserObject = Kernel::System::EmailParser->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
-        Email        => \@Array,
+        Email => \@Array,
     );
 
     my %Result;

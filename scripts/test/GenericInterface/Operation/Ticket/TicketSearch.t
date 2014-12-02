@@ -7,68 +7,53 @@
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
+## no critic (Modules::RequireExplicitPackage)
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
 use MIME::Base64;
-use Kernel::System::User;
-use Kernel::System::Time;
-use Kernel::System::Ticket;
-use Kernel::System::DynamicField;
-use Kernel::System::DynamicField::Backend;
+
 use Kernel::GenericInterface::Debugger;
-use Kernel::GenericInterface::Requester;
-use Kernel::System::GenericInterface::Webservice;
 use Kernel::GenericInterface::Operation::Ticket::TicketSearch;
 use Kernel::GenericInterface::Operation::Session::SessionCreate;
-use Kernel::System::VariableCheck qw(:all);
-use Kernel::System::UnitTest::Helper;
 
-use Kernel::System::Type;
-use Kernel::System::Service;
+use Kernel::System::VariableCheck qw(:all);
+
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $MainObject   = $Kernel::OM->Get('Kernel::System::Main');
 
 # skip SSL certificate verification
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %{$Self},
-    UnitTestObject             => $Self,
-    RestoreSystemConfiguration => 1,
-    SkipSSLVerify              => 1,
+$Kernel::OM->ObjectParamAdd(
+    'Kernel::System::UnitTest::Helper' => {
+        RestoreSystemConfiguration => 1,
+        SkipSSLVerify              => 1,
+    },
 );
+my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
-# extra needed objects
-my $TypeObject    = Kernel::System::Type->new( %{$Self} );
-my $ServiceObject = Kernel::System::Service->new( %{$Self} );
-
-#get a random id
+# get a random id
 my $RandomID = int rand 1_000_000_000;
-
-# create local config object
-my $ConfigObject = Kernel::Config->new();
 
 $ConfigObject->Set(
     Key   => 'CheckEmailAddresses',
     Value => 0,
 );
 
-# create time object
-my $TimeObject = Kernel::System::Time->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+# get time object
+my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
 
 # get the start time for the test
 my $StartTime = $TimeObject->SystemTime();
 
-# new user object
-my $UserObject = Kernel::System::User->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+# get user object
+my $UserObject = $Kernel::OM->Get('Kernel::System::User');
 
 # create a new user for current test
-$Self->{UserID} = $UserObject->UserAdd(
+my $UserID = $UserObject->UserAdd(
     UserFirstname => 'Test',
     UserLastname  => 'User',
     UserLogin     => 'TestUser' . $RandomID,
@@ -79,9 +64,12 @@ $Self->{UserID} = $UserObject->UserAdd(
 );
 
 $Self->True(
-    $Self->{UserID},
+    $UserID,
     'User Add ()',
 );
+
+# create type object
+my $TypeObject = $Kernel::OM->Get('Kernel::System::Type');
 
 # create new type
 my $TypeID = $TypeObject->TypeAdd(
@@ -105,6 +93,9 @@ $Self->True(
     IsHashRefWithData( \%TypeData ),
     "QueueGet() - for testing type",
 );
+
+# get service object
+my $ServiceObject = $Kernel::OM->Get('Kernel::System::Service');
 
 # create new service
 my $ServiceID = $ServiceObject->ServiceAdd(
@@ -131,24 +122,9 @@ $Self->True(
 );
 
 # start DynamicFields
-
-my $DynamicFieldObject = Kernel::System::DynamicField->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-
-# create backend object and delegates
-my $BackendObject = Kernel::System::DynamicField::Backend->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-$Self->Is(
-    ref $BackendObject,
-    'Kernel::System::DynamicField::Backend',
-    'Backend object was created successfuly',
-);
-
 my @TestDynamicFields;
+
+my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
 
 # create a dynamic field
 my $FieldID1 = $DynamicFieldObject->DynamicFieldAdd(
@@ -246,7 +222,7 @@ my $FieldID5 = $DynamicFieldObject->DynamicFieldAdd(
     FieldType  => 'Multiselect',     # mandatory, selects the DF backend to use for this field
     ObjectType => 'Ticket',
     Config     => {
-        DefaultValue => [ 'ticket2_field5', 'ticket4_field5' ],
+        DefaultValue   => [ 'ticket2_field5', 'ticket4_field5' ],
         PossibleValues => {
             ticket1_field5 => 'ticket1_field51',
             ticket2_field5 => 'ticket2_field52',
@@ -269,10 +245,7 @@ push @TestDynamicFields, $FieldID5;
 # finish DynamicFields
 
 # create ticket object
-my $TicketObject = Kernel::System::Ticket->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
 # create 3 tickets
 
@@ -297,6 +270,32 @@ my $TicketID1 = $TicketObject->TicketCreate(
 $Self->True(
     $TicketID1,
     "TicketCreate() successful for Ticket One ID $TicketID1",
+);
+
+# update escalation times directly in the DB
+my $EscalationTime = $TimeObject->SystemTime() + 120;
+return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
+    SQL => '
+        UPDATE ticket
+        SET escalation_time = ?, escalation_response_time = ?, escalation_update_time = ?,
+            escalation_solution_time = ?, change_time = current_timestamp, change_by = ?
+        WHERE id = ?',
+    Bind => [
+        \$EscalationTime,
+        \$EscalationTime,
+        \$EscalationTime,
+        \$EscalationTime,
+        \'1',
+        \$TicketID1,
+    ],
+);
+
+# create backend object and delegates
+my $BackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
+$Self->Is(
+    ref $BackendObject,
+    'Kernel::System::DynamicField::Backend',
+    'Backend object was created successfully',
 );
 
 $BackendObject->ValueSet(
@@ -339,7 +338,7 @@ $BackendObject->ValueSet(
 my %TicketEntryOne = $TicketObject->TicketGet(
     TicketID      => $TicketID1,
     DynamicFields => 0,
-    UserID        => $Self->{UserID},
+    UserID        => $UserID,
 );
 
 $Self->True(
@@ -361,7 +360,7 @@ for my $Key ( sort keys %TicketEntryOne ) {
 my %TicketEntryOneDF = $TicketObject->TicketGet(
     TicketID      => $TicketID1,
     DynamicFields => 1,
-    UserID        => $Self->{UserID},
+    UserID        => $UserID,
 );
 
 $Self->True(
@@ -441,11 +440,11 @@ $BackendObject->ValueSet(
 );
 
 # get the Ticket entry
-# withpout DF
+# without DF
 my %TicketEntryTwo = $TicketObject->TicketGet(
     TicketID      => $TicketID2,
     DynamicFields => 0,
-    UserID        => $Self->{UserID},
+    UserID        => $UserID,
 );
 
 $Self->True(
@@ -467,7 +466,7 @@ for my $Key ( sort keys %TicketEntryTwo ) {
 my %TicketEntryTwoDF = $TicketObject->TicketGet(
     TicketID      => $TicketID2,
     DynamicFields => 1,
-    UserID        => $Self->{UserID},
+    UserID        => $UserID,
 );
 
 $Self->True(
@@ -511,7 +510,7 @@ $Self->True(
 my %TicketEntryThree = $TicketObject->TicketGet(
     TicketID      => $TicketID3,
     DynamicFields => 0,
-    UserID        => $Self->{UserID},
+    UserID        => $UserID,
 );
 
 $Self->True(
@@ -608,10 +607,10 @@ for my $Article (@ArticleWithoutAttachments) {
 
 # file checks
 for my $File (qw(xls txt doc png pdf)) {
-    my $Location = $Self->{ConfigObject}->Get('Home')
+    my $Location = $ConfigObject->Get('Home')
         . "/scripts/test/sample/StdAttachment/StdAttachment-Test1.$File";
 
-    my $ContentRef = $Self->{MainObject}->FileRead(
+    my $ContentRef = $MainObject->FileRead(
         Location => $Location,
         Mode     => 'binmode',
         Type     => 'Local',
@@ -654,7 +653,6 @@ for my $Article (@ArticleBox) {
         UserID                     => 1,
     );
 
-    # next if not attachments
     next ARTICLE if !IsHashRefWithData( \%AtmIndex );
 
     my @Attachments;
@@ -667,7 +665,6 @@ for my $Article (@ArticleBox) {
             UserID    => 1,
         );
 
-        # next if not attachment
         next ATTACHMENT if !IsHashRefWithData( \%Attachment );
 
         # convert content to base64
@@ -686,7 +683,7 @@ for my $Article (@ArticleBox) {
 my %TicketEntryFour = $TicketObject->TicketGet(
     TicketID      => $TicketID4,
     DynamicFields => 0,
-    UserID        => $Self->{UserID},
+    UserID        => $UserID,
 );
 
 $Self->True(
@@ -709,14 +706,8 @@ push @TicketIDs, $TicketID4;
 # set webservice name
 my $WebserviceName = '-Test-' . $RandomID;
 
-# set UserID on 1
-my $UserID = 1;
-
 # create webservice object
-my $WebserviceObject = Kernel::System::GenericInterface::Webservice->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+my $WebserviceObject = $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice');
 $Self->Is(
     'Kernel::System::GenericInterface::Webservice',
     ref $WebserviceObject,
@@ -745,9 +736,9 @@ $Self->True(
 
 # get remote host with some precautions for certain unit test systems
 my $Host;
-my $FQDN = $Self->{ConfigObject}->Get('FQDN');
+my $FQDN = $ConfigObject->Get('FQDN');
 
-# try to resolve fqdn host
+# try to resolve FAQN host
 if ( $FQDN ne 'yourhost.example.com' && gethostbyname($FQDN) ) {
     $Host = $FQDN;
 }
@@ -757,18 +748,18 @@ if ( !$Host && gethostbyname('localhost') ) {
     $Host = 'localhost';
 }
 
-# use hardcoded localhost ip address
+# use hard coded localhost IP address
 if ( !$Host ) {
     $Host = '127.0.0.1';
 }
 
 # prepare webservice config
 my $RemoteSystem =
-    $Self->{ConfigObject}->Get('HttpType')
+    $ConfigObject->Get('HttpType')
     . '://'
     . $Host
     . '/'
-    . $Self->{ConfigObject}->Get('ScriptAlias')
+    . $ConfigObject->Get('ScriptAlias')
     . '/nph-genericinterface.pl/WebserviceID/'
     . $WebserviceID;
 
@@ -834,10 +825,7 @@ $Self->True(
 
 # Get SessionID
 # create requester object
-my $RequesterSessionObject = Kernel::GenericInterface::Requester->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+my $RequesterSessionObject = $Kernel::OM->Get('Kernel::GenericInterface::Requester');
 $Self->Is(
     'Kernel::GenericInterface::Requester',
     ref $RequesterSessionObject,
@@ -1011,8 +999,8 @@ my @Tests = (
         SuccessRequest => 1,
         RequestData    => {
             CustomerID => '123465' . $RandomID,
-            SortBy  => 'Ticket',    # force order, because the Age (default) can be the same
-            OrderBy => 'Down',
+            SortBy     => 'Ticket',               # force order, because the Age (default) can be the same
+            OrderBy    => 'Down',
         },
         ExpectedReturnLocalData => {
             Data => {
@@ -1202,6 +1190,8 @@ my @Tests = (
         Name           => "Test DF " . $TestCounter++,
         SuccessRequest => 1,
         RequestData    => {
+            TicketLastChangeTimeNewerDate =>
+                $TimeObject->SystemTime2TimeStamp( SystemTime => $StartTime ),
             TicketCreateTimeNewerDate =>
                 $TimeObject->SystemTime2TimeStamp( SystemTime => $StartTime ),
             SortBy  => 'Ticket',    # force order, because the Age (default) can be the same
@@ -1244,6 +1234,8 @@ my @Tests = (
         Name           => "Test Limit " . $TestCounter++,
         SuccessRequest => 1,
         RequestData    => {
+            TicketLastChangeTimeNewerDate =>
+                $TimeObject->SystemTime2TimeStamp( SystemTime => $StartTime ),
             TicketCreateTimeNewerDate =>
                 $TimeObject->SystemTime2TimeStamp( SystemTime => $StartTime ),
             SortBy  => 'Ticket',    # force order, because the Age (default) can be the same
@@ -1264,9 +1256,89 @@ my @Tests = (
         },
         Operation => 'TicketSearch',
     },
+    {
+        Name           => "Test EscalationTime " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            TicketEscalationTimeNewerMinutes => 120,
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [$TicketID1],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => $TicketID1,
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test EscalationResponseTime " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            TicketEscalationResponseTimeNewerMinutes => 120,
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [$TicketID1],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => $TicketID1,
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test EscalationUpdateTime " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            TicketEscalationUpdateTimeNewerMinutes => 120,
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [$TicketID1],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => $TicketID1,
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test EscalationSolutionTime " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            TicketEscalationSolutionTimeNewerMinutes => 120,
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [$TicketID1],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => $TicketID1,
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
 );
 
-# Add a wrong value test for each posible parameter on direct search
+# Add a wrong value test for each possible parameter on direct search
 
 for my $Item (
     qw(TicketNumber Title From To Cc Subject Body CustomerID CustomerUserLogin StateType
@@ -1367,8 +1439,6 @@ for my $Item (
 
 # debugger object
 my $DebuggerObject = Kernel::GenericInterface::Debugger->new(
-    %{$Self},
-    ConfigObject   => $ConfigObject,
     DebuggerConfig => {
         DebugThreshold => 'debug',
         TestMode       => 1,
@@ -1379,15 +1449,13 @@ my $DebuggerObject = Kernel::GenericInterface::Debugger->new(
 $Self->Is(
     ref $DebuggerObject,
     'Kernel::GenericInterface::Debugger',
-    'DebuggerObject instanciate correctly',
+    'DebuggerObject instantiate correctly',
 );
 
 for my $Test (@Tests) {
 
     # create local object
     my $LocalObject = "Kernel::GenericInterface::Operation::Ticket::$Test->{Operation}"->new(
-        %{$Self},
-        ConfigObject   => $ConfigObject,
         DebuggerObject => $DebuggerObject,
         WebserviceID   => $WebserviceID,
     );
@@ -1417,10 +1485,7 @@ for my $Test (@Tests) {
     );
 
     # create requester object
-    my $RequesterObject = Kernel::GenericInterface::Requester->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
-    );
+    my $RequesterObject = $Kernel::OM->Get('Kernel::GenericInterface::Requester');
     $Self->Is(
         'Kernel::GenericInterface::Requester',
         ref $RequesterObject,
@@ -1484,7 +1549,7 @@ for my $Test (@Tests) {
 # clean up webservice
 my $WebserviceDelete = $WebserviceObject->WebserviceDelete(
     ID     => $WebserviceID,
-    UserID => $Self->{UserID},
+    UserID => $UserID,
 );
 $Self->True(
     $WebserviceDelete,
@@ -1496,7 +1561,7 @@ for my $TicketID (@TicketIDs) {
     # delete the ticket Three
     my $TicketDelete = $TicketObject->TicketDelete(
         TicketID => $TicketID,
-        UserID   => $Self->{UserID},
+        UserID   => $UserID,
     );
 
     # sanity check
@@ -1523,19 +1588,19 @@ for my $FieldID (@TestDynamicFields) {
 }
 
 my $UpdateUser = $UserObject->UserUpdate(
-    UserID        => $Self->{UserID},
+    UserID        => $UserID,
     UserFirstname => 'TestModified',
     UserLastname  => 'UserModified',
     UserLogin     => 'TestUser' . $RandomID,
     UserEmail     => 'testmodified' . $RandomID . 'email@example.com',
     ValidID       => 2,
-    ChangeUserID  => $Self->{UserID},
+    ChangeUserID  => $UserID,
 );
 
 # sanity check
 $Self->True(
     $UpdateUser,
-    "UserUpdate() successful for User ID $Self->{UserID}",
+    "UserUpdate() successful for User ID $UserID",
 );
 
 my $Success = $TypeObject->TypeUpdate(

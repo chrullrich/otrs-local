@@ -9,49 +9,24 @@
 
 use strict;
 use warnings;
+use utf8;
 
-use Kernel::Config;
-use Kernel::System::CustomerUser;
-use Kernel::System::DB;
-use Kernel::System::DynamicField;
-use Kernel::System::DynamicFieldValue;
-use Kernel::System::Queue;
-use Kernel::System::Priority;
-use Kernel::System::Service;
-use Kernel::System::SLA;
-use Kernel::System::State;
-use Kernel::System::Ticket;
-use Kernel::System::Type;
-use Kernel::System::UnitTest::Helper;
-use Kernel::System::User;
-use Kernel::System::Valid;
+use vars (qw($Self));
 
-use vars qw($Self);
-
-# create objects
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    UnitTestObject => $Self,
-    %{$Self},
-    RestoreSystemConfiguration => 0,
-);
-my $ConfigObject = Kernel::Config->new();
-my $ValidObject  = Kernel::System::Valid->new( %{$Self} );
-my $UserObject   = Kernel::System::User->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $CustomerUserObject = Kernel::System::CustomerUser->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $QueueObject             = Kernel::System::Queue->new( %{$Self} );
-my $ServiceObject           = Kernel::System::Service->new( %{$Self} );
-my $TypeObject              = Kernel::System::Type->new( %{$Self} );
-my $PriorityObject          = Kernel::System::Priority->new( %{$Self} );
-my $SLAObject               = Kernel::System::SLA->new( %{$Self} );
-my $StateObject             = Kernel::System::State->new( %{$Self} );
-my $DynamicFieldObject      = Kernel::System::DynamicField->new( %{$Self} );
-my $DynamicFieldValueObject = Kernel::System::DynamicFieldValue->new( %{$Self} );
+# get needed objects
+my $ConfigObject            = $Kernel::OM->Get('Kernel::Config');
+my $HelperObject            = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $ValidObject             = $Kernel::OM->Get('Kernel::System::Valid');
+my $UserObject              = $Kernel::OM->Get('Kernel::System::User');
+my $CustomerUserObject      = $Kernel::OM->Get('Kernel::System::CustomerUser');
+my $ServiceObject           = $Kernel::OM->Get('Kernel::System::Service');
+my $QueueObject             = $Kernel::OM->Get('Kernel::System::Queue');
+my $TypeObject              = $Kernel::OM->Get('Kernel::System::Type');
+my $PriorityObject          = $Kernel::OM->Get('Kernel::System::Priority');
+my $SLAObject               = $Kernel::OM->Get('Kernel::System::SLA');
+my $StateObject             = $Kernel::OM->Get('Kernel::System::State');
+my $DynamicFieldObject      = $Kernel::OM->Get('Kernel::System::DynamicField');
+my $DynamicFieldValueObject = $Kernel::OM->Get('Kernel::System::DynamicFieldValue');
 
 # set valid options
 my %ValidList = $ValidObject->ValidList();
@@ -96,7 +71,6 @@ my %NewCustomerUserData = $CustomerUserObject->CustomerUserDataGet(
 
 # set helper options
 my $RandomID = $HelperObject->GetRandomID();
-$RandomID =~ s/\-//g;
 
 # set queue options
 my $QueueName = 'Queue_' . $RandomID;
@@ -356,8 +330,8 @@ my $DynamicFieldData = $DynamicFieldObject->DynamicFieldGet(
     UserID => 1,
 );
 
-# TODO integrte this tests with database tests
-# set testig ACLs options
+# TODO integrate this tests with database tests
+# set testing ACLs options
 my %TestACLs = (
     'Queue-1' => {
         Properties => {
@@ -488,11 +462,7 @@ my %TestACLs = (
             },
         },
         Possible => {
-            Action => {
-                AgentTicketPhone   => 1,
-                AgentTicketEmail   => 1,
-                AgentTicketCompose => 0,
-            },
+            Action => [ 'AgentTicketPhone', 'AgentTicketBounce', ],
         },
     },
     'DynamicField-1' => {
@@ -523,12 +493,7 @@ $Self->IsDeeply(
     "ACLs Set and Get from sysconfig",
 );
 
-my $TicketObject = Kernel::System::Ticket->new(
-    %{$Self},
-
-    # use custom config object with current ACLs
-    ConfigObject => $ConfigObject,
-);
+my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
 # set ticket options
 my $TicketID = $TicketObject->TicketCreate(
@@ -616,10 +581,8 @@ my @Tests = (
             Queue         => $QueueName,
             UserID        => $UserID,
         },
-        SuccessMatch => 1,
-        ReturnData   => {
-            1 => 'new',
-        },
+        SuccessMatch => 0,
+        ReturnData   => {},
     },
     {
         Name   => 'ACL Queue-1 - wrong return sub type',
@@ -981,21 +944,40 @@ my @Tests = (
         },
     },
     {
-        Name   => 'ACL Ticket-1 - correct Ticket',
+        Name   => 'ACL Ticket-1 - correct Ticket using Action',
         Config => {
             Data          => '-',
+            ReturnType    => 'Action',
+            Action        => 'AgentTicketPhone',
+            ReturnSubType => '-',
+            TicketID      => $TicketID,
+            UserID        => $UserID,
+        },
+        SuccessMatch     => 1,
+        ReturnActionData => {
+            1 => 'AgentTicketPhone',
+        },
+    },
+    {
+        Name   => 'ACL Ticket-1 - correct Ticket using Data',
+        Config => {
+            Data => {
+                1 => 'AgentTicketPhone',
+                2 => 'AgentTicketBounce',
+                3 => 'AgentTicketCompose',
+            },
             ReturnType    => 'Action',
             ReturnSubType => '-',
             TicketID      => $TicketID,
             UserID        => $UserID,
         },
-        SuccessMatch     => 0,
+        SuccessMatch     => 1,
         ReturnActionData => {
-            AgentTicketCompose => 0,
-            AgentTicketEmail   => 1,
-            AgentTicketPhone   => 1
+            1 => 'AgentTicketPhone',
+            2 => 'AgentTicketBounce',
         },
     },
+
     {
         Name   => 'ACL DynamicField-1 - correct DynamicField',
         Config => {
@@ -1030,6 +1012,13 @@ for my $Test (@Tests) {
             "$Test->{Name} executed with False",
         );
 
+    }
+    else {
+        $Self->True(
+            $ACLSuccess,
+            "$Test->{Name} executed with True",
+        );
+
         if ( $Test->{Config}->{ReturnType} eq 'Action' ) {
 
             # get the action data from ACL
@@ -1039,24 +1028,20 @@ for my $Test (@Tests) {
                 \%ACLActionData,
                 $Test->{ReturnActionData},
                 "$Test->{Name} ACL action data",
-                )
+            );
 
         }
-    }
-    else {
-        $Self->True(
-            $ACLSuccess,
-            "$Test->{Name} executed with True",
-        );
+        else {
 
-        # get the data from ACL
-        my %ACLData = $TicketObject->TicketAclData();
+            # get the data from ACL
+            my %ACLData = $TicketObject->TicketAclData();
 
-        $Self->IsDeeply(
-            \%ACLData,
-            $Test->{ReturnData},
-            "$Test->{Name} ACL data",
-            )
+            $Self->IsDeeply(
+                \%ACLData,
+                $Test->{ReturnData},
+                "$Test->{Name} ACL data",
+            );
+        }
     }
 }
 
@@ -2399,17 +2384,13 @@ $Self->True(
                     },
                 },
                 Possible => {
-                    Action => {
-                        AgentTicketCompose => 1,
-                        AgentTicketEmail   => 0,
-                        AgentTicketPhone   => 0,
-                    },
+                    Action => ['AgentTicketCompose'],
                 },
             },
         },
         Config => {
             Data => {
-                '-' => '',
+                1 => 'AgentTicketClose',
             },
             ReturnType    => 'Action',
             ReturnSubType => '-',
@@ -2436,17 +2417,13 @@ $Self->True(
                     },
                 },
                 Possible => {
-                    Action => {
-                        AgentTicketCompose => 0,
-                        AgentTicketEmail   => 1,
-                        AgentTicketPhone   => 1,
-                    },
+                    Action => [ 'AgentTicketClose', 'AgentTicketBounce', ],
                 },
             },
         },
         Config => {
             Data => {
-                '-' => '',
+                1 => 'AgentTicketClose',
             },
             ReturnType    => 'Action',
             ReturnSubType => '-',
@@ -2458,11 +2435,9 @@ $Self->True(
         },
 
         # Action ACL always return false
-        SuccessMatch     => 0,
+        SuccessMatch     => 1,
         ReturnActionData => {
-            AgentTicketCompose => 0,
-            AgentTicketEmail   => 1,
-            AgentTicketPhone   => 1
+            1 => 'AgentTicketClose',
         },
     },
     {
@@ -2485,17 +2460,13 @@ $Self->True(
                     },
                 },
                 Possible => {
-                    Action => {
-                        AgentTicketCompose => 1,
-                        AgentTicketEmail   => 0,
-                        AgentTicketPhone   => 0,
-                    },
+                    Action => ['AgentTicketCompose'],
                 },
             },
         },
         Config => {
             Data => {
-                '-' => '',
+                1 => 'AgentTicketClose',
             },
             ReturnType    => 'Action',
             ReturnSubType => '-',
@@ -2509,7 +2480,7 @@ $Self->True(
         ReturnActionData => {},
     },
     {
-        Name => 'ACL DB-Ticket-1 - Sent new params, Wrong Properties,'
+        Name => 'ACL DB-Ticket-2 - Sent new params, Wrong Properties,'
             . ' Correct PropertiesDatabase:',
         ACLs => {
             'DB-Ticket-1-D' => {
@@ -2528,17 +2499,13 @@ $Self->True(
                     },
                 },
                 Possible => {
-                    Action => {
-                        AgentTicketCompose => 1,
-                        AgentTicketEmail   => 0,
-                        AgentTicketPhone   => 0,
-                    },
+                    Action => ['AgentTicketCompose'],
                 },
             },
         },
         Config => {
             Data => {
-                '-' => '',
+                1 => 'AgentTicketClose',
             },
             ReturnType    => 'Action',
             ReturnSubType => '-',
@@ -2550,12 +2517,8 @@ $Self->True(
         },
 
         # Action ACL always return false
-        SuccessMatch     => 0,
-        ReturnActionData => {
-            AgentTicketCompose => 1,
-            AgentTicketEmail   => 0,
-            AgentTicketPhone   => 0,
-        },
+        SuccessMatch     => 1,
+        ReturnActionData => {}
     },
 
     # dynamic fields based tests
@@ -2858,62 +2821,831 @@ $Self->True(
     },
 );
 
-for my $Test (@Tests) {
+my $ExecuteTests = sub {
+    my %Param = @_;
+    my @Tests = @{ $Param{Tests} };
 
-    $ConfigObject->Set(
-        Key   => 'TicketAcl',
-        Value => $Test->{ACLs},
-    );
+    for my $Test (@Tests) {
 
-    $GotACLs = $ConfigObject->Get('TicketAcl');
+        # clean previous data
+        $TicketObject->{TicketAclData} = {};
 
-    # sanity check
-    $Self->IsDeeply(
-        $GotACLs,
-        $Test->{ACLs},
-        "$Test->{Name} ACLs Set and Get from sysconfig",
-    );
-
-    my $Config     = $Test->{Config};
-    my $ACLSuccess = $TicketObject->TicketAcl( %{ $Test->{Config} } );
-
-    if ( !$Test->{SuccessMatch} ) {
-        $Self->False(
-            $ACLSuccess,
-            "$Test->{Name} Executed with False",
+        $ConfigObject->Set(
+            Key   => 'TicketAcl',
+            Value => $Test->{ACLs},
         );
 
-        if ( $Test->{Config}->{ReturnType} eq 'Action' ) {
+        $GotACLs = $ConfigObject->Get('TicketAcl');
 
-            # get the action data from ACL
-            # Action ACL always return false
-            my %ACLActionData = $TicketObject->TicketAclActionData();
-
-            $Self->IsDeeply(
-                \%ACLActionData,
-                $Test->{ReturnActionData},
-                "$Test->{Name} ACL action data",
-            );
-        }
-    }
-    else {
-        $Self->True(
-            $ACLSuccess,
-            "$Test->{Name} Executed with True",
+        # sanity check
+        $Self->IsDeeply(
+            $GotACLs,
+            $Test->{ACLs},
+            "$Test->{Name} ACLs Set and Get from sysconfig",
         );
+
+        my $Config     = $Test->{Config};
+        my $ACLSuccess = $TicketObject->TicketAcl( %{ $Test->{Config} } );
 
         # get the data from ACL
         my %ACLData = $TicketObject->TicketAclData();
 
-        $Self->IsDeeply(
-            \%ACLData,
-            $Test->{ReturnData},
-            "$Test->{Name} ACL data",
-        );
-    }
-}
+        if ( !$Test->{SuccessMatch} ) {
+            $Self->False(
+                $ACLSuccess,
+                "$Test->{Name} Executed with False",
+            );
 
+            $Self->IsDeeply(
+                \%ACLData,
+                {},
+                "$Test->{Name} ACL data must be empty",
+            );
+        }
+        else {
+
+            if ( $Test->{Config}->{ReturnType} eq 'Action' ) {
+
+                # get the action data from ACL
+                # Action ACL always return false
+                my %ACLActionData = $TicketObject->TicketAclActionData();
+
+                $Self->IsDeeply(
+                    \%ACLActionData,
+                    $Test->{ReturnActionData},
+                    "$Test->{Name} ACL action data",
+                );
+            }
+            else {
+                $Self->True(
+                    $ACLSuccess,
+                    "$Test->{Name} Executed with True",
+                );
+
+                $Self->IsDeeply(
+                    \%ACLData,
+                    $Test->{ReturnData},
+                    "$Test->{Name} ACL data",
+                );
+            }
+        }
+
+        # clean ACLs
+        $ConfigObject->Set(
+            Key   => 'TicketAcl',
+            Value => {},
+        );
+
+        $GotACLs = $ConfigObject->Get('TicketAcl');
+
+        # sanity check
+        $Self->IsDeeply(
+            $GotACLs,
+            {},
+            "$Test->{Name} ACLs are clean",
+        );
+
+    }
+};
+$ExecuteTests->( Tests => \@Tests );
+
+# special tests
+@Tests = (
+
+    # Properties Not
+    {
+        Name => 'ACL Queue - Using [Not]:',
+        ACLs => {
+            'Not-Queue-Raw' => {
+                Properties => {
+                    Queue => {
+                        Name => ['[Not]Raw'],
+                    },
+                },
+                Possible => {
+                    Ticket => {
+                        Priority => [ '1 very low', '3 medium', ],
+                    },
+                },
+            },
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            Queue         => 'Misc',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 1,
+        ReturnData   => {
+            1 => '1 very low',
+            3 => '3 medium',
+        },
+    },
+    {
+        Name => 'ACL Queue - Using [Not] Negated Queue:',
+        ACLs => {
+            'Not-Queue-Raw' => {
+                Properties => {
+                    Queue => {
+                        Name => ['[Not]Raw'],
+                    },
+                },
+                Possible => {
+                    Ticket => {
+                        Priority => [ '1 very low', '3 medium', ],
+                    },
+                },
+            },
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            Queue         => 'Raw',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 0,
+        ReturnData   => {},
+    },
+    {
+        Name => 'ACL Queue - Using [Not] in an Array:',
+        ACLs => {
+            'Not-Queue-Raw' => {
+                Properties => {
+                    Queue => {
+                        Name => [ '[Not]Raw', '[Not]Postmaster' ],
+                    },
+                },
+                Possible => {
+                    Ticket => {
+                        Priority => [ '1 very low', '3 medium', ],
+                    },
+                },
+            },
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            Queue         => 'Misc',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 1,
+        ReturnData   => {
+            1 => '1 very low',
+            3 => '3 medium',
+        },
+    },
+
+    # Properties NotRegExp
+    {
+        Name => 'ACL Queue - Using [NotRegExp]:',
+        ACLs => {
+            'Not-Queue-Raw' => {
+                Properties => {
+                    Queue => {
+                        Name => ['[NotRegExp]HW'],
+                    },
+                },
+                Possible => {
+                    Ticket => {
+                        Priority => [ '1 very low', '3 medium', ],
+                    },
+                },
+            },
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            Queue         => 'Misc',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 1,
+        ReturnData   => {
+            1 => '1 very low',
+            3 => '3 medium',
+        },
+    },
+    {
+        Name => 'ACL Queue - Using [NotRegExp] Negated Queue:',
+        ACLs => {
+            'Not-Queue-Raw' => {
+                Properties => {
+                    Queue => {
+                        Name => ['[NotRegExp]aw'],
+                    },
+                },
+                Possible => {
+                    Ticket => {
+                        Priority => [ '1 very low', '3 medium', ],
+                    },
+                },
+            },
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            Queue         => 'Raw',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 0,
+        ReturnData   => {},
+    },
+    {
+        Name => 'ACL Queue - Using [NotRegExp] in an Array:',
+        ACLs => {
+            'Not-Queue-Raw' => {
+                Properties => {
+                    Queue => {
+                        Name => [ '[NotRegExp]aw', '[NotRegExp]master' ],
+                    },
+                },
+                Possible => {
+                    Ticket => {
+                        Priority => [ '1 very low', '3 medium', ],
+                    },
+                },
+            },
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            Queue         => 'Misc',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 1,
+        ReturnData   => {
+            1 => '1 very low',
+            3 => '3 medium',
+        },
+    },
+
+    # Properties Notregexp
+    {
+        Name => 'ACL Queue - Using [Notregexp]:',
+        ACLs => {
+            'Not-Queue-Raw' => {
+                Properties => {
+                    Queue => {
+                        Name => ['[Notregexp]HW'],
+                    },
+                },
+                Possible => {
+                    Ticket => {
+                        Priority => [ '1 very low', '3 medium', ],
+                    },
+                },
+            },
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            Queue         => 'Misc',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 1,
+        ReturnData   => {
+            1 => '1 very low',
+            3 => '3 medium',
+        },
+    },
+    {
+        Name => 'ACL Queue - Using [Notregexp] Negated Queue:',
+        ACLs => {
+            'Not-Queue-Raw' => {
+                Properties => {
+                    Queue => {
+                        Name => ['[Notregexp]ra'],
+                    },
+                },
+                Possible => {
+                    Ticket => {
+                        Priority => [ '1 very low', '3 medium', ],
+                    },
+                },
+            },
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            Queue         => 'Raw',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 0,
+        ReturnData   => {},
+    },
+    {
+        Name => 'ACL Queue - Using [Notregexp] in an Array:',
+        ACLs => {
+            'Not-Queue-Raw' => {
+                Properties => {
+                    Queue => {
+                        Name => [ '[Notregexp]ra', '[Notregexp]master' ],
+                    },
+                },
+                Possible => {
+                    Ticket => {
+                        Priority => [ '1 very low', '3 medium', ],
+                    },
+                },
+            },
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            Queue         => 'Misc',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 1,
+        ReturnData   => {
+            1 => '1 very low',
+            3 => '3 medium',
+        },
+    },
+
+    # combination possible, possible not
+    {
+        Name => 'ACL Queue - Possible/PossibleNot:',
+        ACLs => {
+            'Queue-Possible-Priority' => {
+                Properties => {
+                    Queue => {
+                        Name => ['Raw'],
+                    },
+                },
+                Possible => {
+                    Ticket => {
+                        Priority => [ '1 very low', '2 low', '3 medium', ],
+                    },
+                },
+            },
+            'Queue-Possible-Priority2' => {
+                Properties => {
+                    Queue => {
+                        Name => ['Raw'],
+                    },
+                },
+                PossibleNot => {
+                    Ticket => {
+                        Priority => [ '2 low', ],
+                    },
+                },
+            },
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            Queue         => 'Raw',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 1,
+        ReturnData   => {
+            1 => '1 very low',
+            3 => '3 medium',
+        },
+    },
+    {
+        Name => 'ACL Queue - Possible/PossibleNot Join:',
+        ACLs => {
+            'Queue-Possible-Priority' => {
+                Properties => {
+                    Queue => {
+                        Name => ['Raw'],
+                    },
+                },
+                Possible => {
+                    Ticket => {
+                        Priority => [ '1 very low', '2 low', '3 medium', ],
+                    },
+                },
+                PossibleNot => {
+                    Ticket => {
+                        Priority => [ '2 low', ],
+                    },
+                },
+            },
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            Queue         => 'Raw',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 1,
+        ReturnData   => {
+            1 => '1 very low',
+            3 => '3 medium',
+        },
+    },
+    {
+        Name => 'ACL Queue - PossibleNot only:',
+        ACLs => {
+            'Queue-Possible-Priority2' => {
+                Properties => {
+                    Queue => {
+                        Name => ['Raw'],
+                    },
+                },
+                PossibleNot => {
+                    Ticket => {
+                        Priority => [ '2 low', ],
+                    },
+                },
+            },
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            Queue         => 'Raw',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 1,
+        ReturnData   => {
+            1 => '1 very low',
+            3 => '3 medium',
+            4 => '4 high',
+            5 => '5 very high',
+        },
+    },
+    {
+        Name => 'ACL DB-User-1 - Possible/PossibleAdd: ',
+        ACLs => {
+            'DB-User-1-D' => {
+                Properties => {
+                    User => {
+                        UserLogin => [$UserLogin],
+                    },
+                },
+                Properties => {
+                    User => {
+                        UserLogin => [$UserLogin],
+                    },
+                },
+                Possible => {
+                    Ticket => {
+                        Priority => [ '1 very low', '3 medium', ],
+                    },
+                },
+            },
+            'DB-User-1-E' => {
+                Properties => {
+                    User => {
+                        UserLogin => [$UserLogin],
+                    },
+                },
+                Properties => {
+                    User => {
+                        UserLogin => [$UserLogin],
+                    },
+                },
+                PossibleAdd => {
+                    Ticket => {
+                        Priority => [ '4 high', ],
+                    },
+                },
+            },
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 1,
+        ReturnData   => {
+            1 => '1 very low',
+            3 => '3 medium',
+            4 => '4 high'
+        },
+    },
+    {
+        Name => 'ACL DB-User-1 - Possible/PossibleAdd/Possible: ',
+        ACLs => {
+            'DB-User-1-D' => {
+                Properties => {
+                    User => {
+                        UserLogin => [$UserLogin],
+                    },
+                },
+                Properties => {
+                    User => {
+                        UserLogin => [$UserLogin],
+                    },
+                },
+                Possible => {
+                    Ticket => {
+                        Priority => [ '1 very low', '3 medium', ],
+                    },
+                },
+            },
+            'DB-User-1-E' => {
+                Properties => {
+                    User => {
+                        UserLogin => [$UserLogin],
+                    },
+                },
+                Properties => {
+                    User => {
+                        UserLogin => [$UserLogin],
+                    },
+                },
+                PossibleAdd => {
+                    Ticket => {
+                        Priority => [ '4 high', ],
+                    },
+                },
+            },
+            'DB-User-1-F' => {
+                Properties => {
+                    User => {
+                        UserLogin => [$UserLogin],
+                    },
+                },
+                Properties => {
+                    User => {
+                        UserLogin => [$UserLogin],
+                    },
+                },
+                Possible => {
+                    Ticket => {
+                        Priority => [ '4 high', ],
+                    },
+                },
+            },
+
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 1,
+        ReturnData   => {
+            4 => '4 high'
+        },
+    },
+    {
+        Name => 'ACL Queue - PossibleNot/PossibleAdd:',
+        ACLs => {
+            'Queue-Possible-Priority1' => {
+                Properties => {
+                    Queue => {
+                        Name => ['Raw'],
+                    },
+                },
+                PossibleNot => {
+                    Ticket => {
+                        Priority => [ '1 very low', '2 low', ],
+                    },
+                },
+            },
+            'Queue-Possible-Priority2' => {
+                Properties => {
+                    Queue => {
+                        Name => ['Raw'],
+                    },
+                },
+                PossibleAdd => {
+                    Ticket => {
+                        Priority => [ '2 low', ],
+                    },
+                },
+            },
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            Queue         => 'Raw',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 1,
+        ReturnData   => {
+            2 => '2 low',
+            3 => '3 medium',
+            4 => '4 high',
+            5 => '5 very high'
+        },
+    },
+    {
+        Name => 'ACL Queue - PossibleNot/Possible:',
+        ACLs => {
+            'Queue-Possible-Priority1' => {
+                Properties => {
+                    Queue => {
+                        Name => ['Raw'],
+                    },
+                },
+                PossibleNot => {
+                    Ticket => {
+                        Priority => [ '2 low', ],
+                    },
+                },
+            },
+            'Queue-Possible-Priority2' => {
+                Properties => {
+                    Queue => {
+                        Name => ['Raw'],
+                    },
+                },
+                Possible => {
+                    Ticket => {
+                        Priority => [ '1 very low', '2 low', '3 medium', ],
+                    },
+                },
+            },
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            Queue         => 'Raw',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 1,
+        ReturnData   => {
+            1 => '1 very low',
+            2 => '2 low',
+            3 => '3 medium',
+        },
+    },
+    {
+        Name => 'ACL Queue - Possible/PossibleAdd/PossibleNot:',
+        ACLs => {
+            'Queue-Possible-Priority1' => {
+                Properties => {
+                    Queue => {
+                        Name => ['Raw'],
+                    },
+                },
+                Possible => {
+                    Ticket => {
+                        Priority => [ '1 very low', '2 low', ],
+                    },
+                },
+            },
+            'Queue-Possible-Priority2' => {
+                Properties => {
+                    Queue => {
+                        Name => ['Raw'],
+                    },
+                },
+                PossibleAdd => {
+                    Ticket => {
+                        Priority => [ '2 low', '3 medium', '4 high' ],
+                    },
+                },
+            },
+            'Queue-Possible-Priority3' => {
+                Properties => {
+                    Queue => {
+                        Name => ['Raw'],
+                    },
+                },
+                PossibleNot => {
+                    Ticket => {
+                        Priority => [ '3 medium', ],
+                    },
+                },
+            },
+        },
+        Config => {
+            Data => {
+                1 => '1 very low',
+                2 => '2 low',
+                3 => '3 medium',
+                4 => '4 high',
+                5 => '5 very high'
+            },
+            ReturnType    => 'Ticket',
+            ReturnSubType => 'Priority',
+            Queue         => 'Raw',
+            UserID        => $UserID,
+        },
+        SuccessMatch => 1,
+        ReturnData   => {
+            1 => '1 very low',
+            2 => '2 low',
+            4 => '4 high',
+        },
+    },
+);
+$Self->True(
+    1,
+    "--- Start Special ACL Tests ---",
+);
+$ExecuteTests->( Tests => \@Tests );
+
+# ---
 # clean the system
+# ---
 # clean queues
 my $QueueUpdateSuccess = $QueueObject->QueueUpdate(
     %QueueData,

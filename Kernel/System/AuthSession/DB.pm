@@ -15,6 +15,15 @@ use warnings;
 use Storable qw();
 use MIME::Base64 qw();
 
+our @ObjectDependencies = (
+    'Kernel::Config',
+    'Kernel::System::DB',
+    'Kernel::System::Encode',
+    'Kernel::System::Log',
+    'Kernel::System::Main',
+    'Kernel::System::Time',
+);
+
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -22,20 +31,20 @@ sub new {
     my $Self = {};
     bless( $Self, $Type );
 
-    # check needed objects
-    for (qw(LogObject MainObject ConfigObject DBObject TimeObject EncodeObject)) {
-        $Self->{$_} = $Param{$_} || die "No $_!";
-    }
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
     # get more common params
-    $Self->{SessionTable}         = $Self->{ConfigObject}->Get('SessionTable') || 'sessions';
-    $Self->{SystemID}             = $Self->{ConfigObject}->Get('SystemID');
-    $Self->{AgentSessionLimit}    = $Self->{ConfigObject}->Get('AgentSessionLimit');
-    $Self->{CustomerSessionLimit} = $Self->{ConfigObject}->Get('CustomerSessionLimit');
-    $Self->{SessionActiveTime}    = $Self->{ConfigObject}->Get('SessionActiveTime') || 60 * 10;
+    $Self->{SessionTable}                = $ConfigObject->Get('SessionTable') || 'sessions';
+    $Self->{SystemID}                    = $ConfigObject->Get('SystemID');
+    $Self->{AgentSessionLimit}           = $ConfigObject->Get('AgentSessionLimit');
+    $Self->{AgentSessionPerUserLimit}    = $ConfigObject->Get('AgentSessionPerUserLimit');
+    $Self->{CustomerSessionLimit}        = $ConfigObject->Get('CustomerSessionLimit');
+    $Self->{CustomerSessionPerUserLimit} = $ConfigObject->Get('CustomerSessionPerUserLimit');
+    $Self->{SessionActiveTime}           = $ConfigObject->Get('SessionActiveTime') || 60 * 10;
 
     # get database type
-    $Self->{DBType} = $Self->{DBObject}->{'DB::Type'} || '';
+    $Self->{DBType} = $Kernel::OM->Get('Kernel::System::DB')->{'DB::Type'} || '';
     $Self->{DBType} = lc $Self->{DBType};
 
     return $Self;
@@ -46,7 +55,10 @@ sub CheckSessionID {
 
     # check session id
     if ( !$Param{SessionID} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Got no SessionID!!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Got no SessionID!!'
+        );
         return;
     }
     my $RemoteAddr = $ENV{REMOTE_ADDR} || 'none';
@@ -59,20 +71,23 @@ sub CheckSessionID {
 
     if ( !$Data{UserID} || !$Data{UserLogin} ) {
         $Self->{SessionIDErrorMessage} = 'Session invalid. Please log in again.';
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'notice',
             Message  => "SessionID: '$Param{SessionID}' is invalid!!!",
         );
         return;
     }
 
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
     # remote ip check
     if (
         $Data{UserRemoteAddr} ne $RemoteAddr
-        && $Self->{ConfigObject}->Get('SessionCheckRemoteIP')
+        && $ConfigObject->Get('SessionCheckRemoteIP')
         )
     {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'notice',
             Message  => "RemoteIP of '$Param{SessionID}' ($Data{UserRemoteAddr}) is "
                 . "different from registered IP ($RemoteAddr). Invalidating session! "
@@ -80,7 +95,7 @@ sub CheckSessionID {
         );
 
         # delete session id if it isn't the same remote ip?
-        if ( $Self->{ConfigObject}->Get('SessionDeleteIfNotRemoteID') ) {
+        if ( $ConfigObject->Get('SessionDeleteIfNotRemoteID') ) {
             $Self->RemoveSessionID( SessionID => $Param{SessionID} );
         }
 
@@ -88,8 +103,8 @@ sub CheckSessionID {
     }
 
     # check session idle time
-    my $TimeNow            = $Self->{TimeObject}->SystemTime();
-    my $MaxSessionIdleTime = $Self->{ConfigObject}->Get('SessionMaxIdleTime');
+    my $TimeNow            = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
+    my $MaxSessionIdleTime = $ConfigObject->Get('SessionMaxIdleTime');
 
     if ( ( $TimeNow - $MaxSessionIdleTime ) >= $Data{UserLastRequest} ) {
 
@@ -97,14 +112,14 @@ sub CheckSessionID {
 
         my $Timeout = int( ( $TimeNow - $Data{UserLastRequest} ) / ( 60 * 60 ) );
 
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'notice',
             Message =>
                 "SessionID ($Param{SessionID}) idle timeout ($Timeout h)! Don't grant access!!!",
         );
 
         # delete session id if too old?
-        if ( $Self->{ConfigObject}->Get('SessionDeleteIfTimeToOld') ) {
+        if ( $ConfigObject->Get('SessionDeleteIfTimeToOld') ) {
             $Self->RemoveSessionID( SessionID => $Param{SessionID} );
         }
 
@@ -112,7 +127,7 @@ sub CheckSessionID {
     }
 
     # check session time
-    my $MaxSessionTime = $Self->{ConfigObject}->Get('SessionMaxTime');
+    my $MaxSessionTime = $ConfigObject->Get('SessionMaxTime');
 
     if ( ( $TimeNow - $MaxSessionTime ) >= $Data{UserSessionStart} ) {
 
@@ -120,13 +135,13 @@ sub CheckSessionID {
 
         my $Timeout = int( ( $TimeNow - $Data{UserSessionStart} ) / ( 60 * 60 ) );
 
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'notice',
             Message  => "SessionID ($Param{SessionID}) too old ($Timeout h)! Don't grant access!!!",
         );
 
         # delete session id if too old
-        if ( $Self->{ConfigObject}->Get('SessionDeleteIfTimeToOld') ) {
+        if ( $ConfigObject->Get('SessionDeleteIfTimeToOld') ) {
             $Self->RemoveSessionID( SessionID => $Param{SessionID} );
         }
 
@@ -147,7 +162,10 @@ sub GetSessionIDData {
 
     # check session id
     if ( !$Param{SessionID} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Got no SessionID!!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Got no SessionID!!'
+        );
         return;
     }
 
@@ -155,8 +173,11 @@ sub GetSessionIDData {
     return %{ $Self->{Cache}->{ $Param{SessionID} } }
         if $Self->{Cache}->{ $Param{SessionID} };
 
+    # get database object
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
     # read data
-    $Self->{DBObject}->Prepare(
+    $DBObject->Prepare(
         SQL => "
             SELECT id, data_key, data_value, serialized
             FROM $Self->{SessionTable}
@@ -165,10 +186,13 @@ sub GetSessionIDData {
         Bind => [ \$Param{SessionID} ],
     );
 
+    # get encode object
+    my $EncodeObject = $Kernel::OM->Get('Kernel::System::Encode');
+
     my %Session;
     my %SessionID;
     ROW:
-    while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+    while ( my @Row = $DBObject->FetchrowArray() ) {
 
         # deserialize data if needed
         if ( $Row[3] ) {
@@ -180,7 +204,7 @@ sub GetSessionIDData {
                 $Value = ${$Value};
             }
 
-            $Self->{EncodeObject}->EncodeOutput( \$Value );
+            $EncodeObject->EncodeOutput( \$Value );
 
             $Session{ $Row[1] } = $Value;
         }
@@ -209,7 +233,7 @@ sub CreateSessionID {
     my ( $Self, %Param ) = @_;
 
     # get system time
-    my $TimeNow = $Self->{TimeObject}->SystemTime();
+    my $TimeNow = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
 
     # get session limit config
     my $SessionLimit;
@@ -220,21 +244,39 @@ sub CreateSessionID {
         $SessionLimit = $Self->{CustomerSessionLimit};
     }
 
-    if ($SessionLimit) {
+    # get session per user limit config
+    my $SessionPerUserLimit;
+    if ( $Param{UserType} && $Param{UserType} eq 'User' && $Self->{AgentSessionPerUserLimit} ) {
+        $SessionPerUserLimit = $Self->{AgentSessionPerUserLimit};
+    }
+    elsif (
+        $Param{UserType}
+        && $Param{UserType} eq 'Customer'
+        && $Self->{CustomerSessionPerUserLimit}
+        )
+    {
+        $SessionPerUserLimit = $Self->{CustomerSessionPerUserLimit};
+    }
+
+    # get database object
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
+    if ( $SessionLimit || $SessionPerUserLimit ) {
 
         # get all needed timestamps to investigate the expired sessions
-        $Self->{DBObject}->Prepare(
+        $DBObject->Prepare(
             SQL => "
                 SELECT session_id, data_key, data_value
                 FROM $Self->{SessionTable}
                 WHERE data_key = 'UserType'
                     OR data_key = 'UserLastRequest'
+                    OR data_key = 'UserLogin'
                 ORDER BY id ASC",
         );
 
         my %SessionData;
         ROW:
-        while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+        while ( my @Row = $DBObject->FetchrowArray() ) {
 
             next ROW if !$Row[0];
             next ROW if !$Row[1];
@@ -243,6 +285,7 @@ sub CreateSessionID {
         }
 
         my $ActiveSessionCount = 0;
+        my %ActiveSessionPerUserCount;
         SESSIONID:
         for my $SessionID ( sort keys %SessionData ) {
 
@@ -252,6 +295,7 @@ sub CreateSessionID {
             # get needed data
             my $UserType        = $SessionData{$SessionID}->{UserType}        || '';
             my $UserLastRequest = $SessionData{$SessionID}->{UserLastRequest} || $TimeNow;
+            my $UserLogin       = $SessionData{$SessionID}->{UserLogin};
 
             next SESSIONID if $UserType ne $Param{UserType};
 
@@ -259,9 +303,26 @@ sub CreateSessionID {
 
             $ActiveSessionCount++;
 
+            $ActiveSessionPerUserCount{$UserLogin} || 0;
+            $ActiveSessionPerUserCount{$UserLogin}++;
+
             next SESSIONID if $ActiveSessionCount < $SessionLimit;
 
             $Self->{SessionIDErrorMessage} = 'Session limit reached! Please try again later.';
+
+            return;
+        }
+
+        # check session per user limit
+        if (
+            $SessionPerUserLimit
+            && $Param{UserLogin}
+            && defined $ActiveSessionPerUserCount{ $Param{UserLogin} }
+            && $ActiveSessionPerUserCount{ $Param{UserLogin} } >= $SessionPerUserLimit
+            )
+        {
+
+            $Self->{SessionIDErrorMessage} = 'Session per user limit reached!';
 
             return;
         }
@@ -271,13 +332,16 @@ sub CreateSessionID {
     my $RemoteAddr      = $ENV{REMOTE_ADDR}     || 'none';
     my $RemoteUserAgent = $ENV{HTTP_USER_AGENT} || 'none';
 
+    # get main object
+    my $MainObject = $Kernel::OM->Get('Kernel::System::Main');
+
     # create session id
-    my $SessionID = $Self->{MainObject}->GenerateRandomString(
+    my $SessionID = $MainObject->GenerateRandomString(
         Length => 32,
     );
 
     # create challenge token
-    my $ChallengeToken = $Self->{MainObject}->GenerateRandomString(
+    my $ChallengeToken = $MainObject->GenerateRandomString(
         Length => 32,
     );
 
@@ -306,7 +370,7 @@ sub CreateSessionID {
     return if !@SQLs;
 
     # delete old session data with the same session id
-    $Self->{DBObject}->Do(
+    $DBObject->Do(
         SQL => "
             DELETE FROM $Self->{SessionTable}
             WHERE session_id = ?",
@@ -323,7 +387,7 @@ sub CreateSessionID {
         next ROW if !$Row->{Bind};
         next ROW if ref $Row->{Bind} ne 'ARRAY';
 
-        $Self->{DBObject}->Do(
+        $DBObject->Do(
             SQL  => $Row->{SQL},
             Bind => $Row->{Bind},
         );
@@ -340,12 +404,15 @@ sub RemoveSessionID {
 
     # check session id
     if ( !$Param{SessionID} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Got no SessionID!!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Got no SessionID!!'
+        );
         return;
     }
 
     # delete session from the database
-    return if !$Self->{DBObject}->Do(
+    return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
         SQL  => "DELETE FROM $Self->{SessionTable} WHERE session_id = ?",
         Bind => [ \$Param{SessionID} ],
     );
@@ -356,7 +423,7 @@ sub RemoveSessionID {
     delete $Self->{CacheUpdate}->{ $Param{SessionID} };
 
     # log event
-    $Self->{LogObject}->Log(
+    $Kernel::OM->Get('Kernel::System::Log')->Log(
         Priority => 'notice',
         Message  => "Removed SessionID $Param{SessionID}."
     );
@@ -370,7 +437,10 @@ sub UpdateSessionID {
     # check needed stuff
     for (qw(SessionID Key)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -392,14 +462,17 @@ sub UpdateSessionID {
 sub GetAllSessionIDs {
     my ( $Self, %Param ) = @_;
 
+    # get database object
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
     # get all session ids from the database
-    return if !$Self->{DBObject}->Prepare(
+    return if !$DBObject->Prepare(
         SQL => "SELECT DISTINCT(session_id) FROM $Self->{SessionTable}",
     );
 
     # fetch the result
     my @SessionIDs;
-    while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+    while ( my @Row = $DBObject->FetchrowArray() ) {
         push @SessionIDs, $Row[0];
     }
 
@@ -409,15 +482,21 @@ sub GetAllSessionIDs {
 sub GetExpiredSessionIDs {
     my ( $Self, %Param ) = @_;
 
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
     # get config
-    my $MaxSessionTime     = $Self->{ConfigObject}->Get('SessionMaxTime');
-    my $MaxSessionIdleTime = $Self->{ConfigObject}->Get('SessionMaxIdleTime');
+    my $MaxSessionTime     = $ConfigObject->Get('SessionMaxTime');
+    my $MaxSessionIdleTime = $ConfigObject->Get('SessionMaxIdleTime');
 
     # get current time
-    my $TimeNow = $Self->{TimeObject}->SystemTime();
+    my $TimeNow = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
+
+    # get database object
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
     # get all needed timestamps to investigate the expired sessions
-    $Self->{DBObject}->Prepare(
+    $DBObject->Prepare(
         SQL => "
             SELECT session_id, data_key, data_value
             FROM $Self->{SessionTable}
@@ -428,7 +507,7 @@ sub GetExpiredSessionIDs {
 
     my %SessionData;
     ROW:
-    while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+    while ( my @Row = $DBObject->FetchrowArray() ) {
 
         next ROW if !$Row[0];
         next ROW if !$Row[1];
@@ -469,6 +548,9 @@ sub GetExpiredSessionIDs {
 sub CleanUp {
     my ( $Self, %Param ) = @_;
 
+    # get database object
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
     # use 'truncate table' if possible in order to reset the auto increment value
     if (
         $Self->{DBType} eq 'mysql'
@@ -478,10 +560,10 @@ sub CleanUp {
         )
     {
 
-        return if !$Self->{DBObject}->Do( SQL => "TRUNCATE TABLE $Self->{SessionTable}" );
+        return if !$DBObject->Do( SQL => "TRUNCATE TABLE $Self->{SessionTable}" );
     }
     else {
-        return if !$Self->{DBObject}->Do( SQL => "DELETE FROM $Self->{SessionTable}" );
+        return if !$DBObject->Do( SQL => "DELETE FROM $Self->{SessionTable}" );
     }
 
     # remove cached data
@@ -496,6 +578,9 @@ sub DESTROY {
     my ( $Self, %Param ) = @_;
 
     return 1 if !$Self->{CacheUpdate};
+
+    # get database object
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
     SESSIONID:
     for my $SessionID ( sort keys %{ $Self->{CacheUpdate} } ) {
@@ -529,7 +614,7 @@ sub DESTROY {
             next ROW if !$Row->{Bind};
             next ROW if ref $Row->{Bind} ne 'ARRAY';
 
-            $Self->{DBObject}->Do(
+            $DBObject->Do(
                 SQL  => $Row->{SQL},
                 Bind => $Row->{Bind},
             );
@@ -544,7 +629,7 @@ sub DESTROY {
             my $ID = $Self->{CacheID}->{$SessionID}->{$Key} || 1;
 
             # delete old session data from the database
-            $Self->{DBObject}->Do(
+            $DBObject->Do(
                 SQL => "
                     DELETE FROM $Self->{SessionTable}
                     WHERE session_id = ?

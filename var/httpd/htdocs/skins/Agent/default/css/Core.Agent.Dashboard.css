@@ -26,9 +26,6 @@ div.EventDetails {
     border: 1px solid #CCC;
     background-color: #EEE;
     padding: 6px;
-    -moz-box-shadow: 4px 4px 4px #666;
-    -webkit-box-shadow: 4px 4px 4px #666;
-    box-shadow: 4px 4px 4px #666;
 }
 
 .EventDetails > fieldset.TableLike > label,
@@ -88,6 +85,27 @@ div.EventDetails {
 
 .WidgetSimple svg text {
     font: 11px Arial !important;
+}
+
+/* User lists, DashboardUserOnline */
+
+.DashboardUser .UserRow,
+.DashboardUserOnline .UserRow {
+    padding-top: 3px;
+    clear: both;
+}
+
+.DashboardUserOnline .UserRow a:first-child,
+.DashboardUserOnline .UserRow span:first-child,
+.DashboardUser .UserRow span:first-child {
+    float: left;
+    width: 80%;
+    padding-bottom: 3px;
+}
+
+.DashboardUserOnline .UserRow a.DashboardUserOnlineChatStart {
+    float: right;
+    padding-bottom: 0px;
 }
 
 } /* end @media */

@@ -69,8 +69,7 @@ sub Run {
 
     if ( $Self->{Subaction} eq 'CancelAndUnlockTickets' ) {
 
-        my @TicketIDs
-            = grep {$_}
+        my @TicketIDs = grep {$_}
             $Self->{ParamObject}->GetArray( Param => 'LockedTicketID' );
 
         # challenge token check for write action
@@ -112,8 +111,9 @@ sub Run {
         }
 
         if ( $Message ne '' ) {
-            return $Self->{LayoutObject}
-                ->ErrorScreen( Message => "Ticket ($Message) is not unlocked!", );
+            return $Self->{LayoutObject}->ErrorScreen(
+                Message => "Ticket ($Message) is not unlocked!",
+            );
         }
 
         return $Self->{LayoutObject}->Redirect(
@@ -130,17 +130,48 @@ sub Run {
     }
 
     # get involved tickets, filtering empty TicketIDs
-    my @TicketIDs
-        = grep {$_}
+    my @ValidTicketIDs;
+    my @TicketIDs = grep {$_}
         $Self->{ParamObject}->GetArray( Param => 'TicketID' );
 
-    # check needed stuff
-    if ( !@TicketIDs ) {
-        return $Self->{LayoutObject}->ErrorScreen(
-            Message => 'No TicketID is given!',
-            Comment => 'You need at least one selected ticket!',
-        );
+    # check if only locked tickets have been selected
+    if ( $Self->{Config}->{RequiredLock} ) {
+        for my $TicketID (@TicketIDs) {
+            if ( $Self->{TicketObject}->TicketLockGet( TicketID => $TicketID ) ) {
+                my $AccessOk = $Self->{TicketObject}->OwnerCheck(
+                    TicketID => $TicketID,
+                    OwnerID  => $Self->{UserID},
+                );
+                if ($AccessOk) {
+                    push @ValidTicketIDs, $TicketID;
+                }
+            }
+            else {
+                push @ValidTicketIDs, $TicketID;
+            }
+        }
     }
+    else {
+        @ValidTicketIDs = @TicketIDs;
+    }
+
+    # check needed stuff
+    if ( !@ValidTicketIDs ) {
+        if ( $Self->{Config}->{RequiredLock} ) {
+            return $Self->{LayoutObject}->ErrorScreen(
+                Message => 'No selectable TicketID is given!',
+                Comment =>
+                    'You either selected no ticket or only tickets which are locked by other agents',
+            );
+        }
+        else {
+            return $Self->{LayoutObject}->ErrorScreen(
+                Message => 'No TicketID is given!',
+                Comment => 'You need to select at least one ticket',
+            );
+        }
+    }
+
     my $Output .= $Self->{LayoutObject}->Header(
         Type => 'Small',
     );
@@ -230,12 +261,12 @@ sub Run {
         if ( $GetParam{StateID} || $GetParam{State} ) {
             my %StateData;
             if ( $GetParam{StateID} ) {
-                %StateData = $Self->{TicketObject}->{StateObject}->StateGet(
+                %StateData = $Self->{StateObject}->StateGet(
                     ID => $GetParam{StateID},
                 );
             }
             else {
-                %StateData = $Self->{TicketObject}->{StateObject}->StateGet(
+                %StateData = $Self->{StateObject}->StateGet(
                     Name => $GetParam{State},
                 );
             }
@@ -304,8 +335,8 @@ sub Run {
 
             # error screen, don't show ticket
             $Output .= $Self->{LayoutObject}->Notify(
-                Data => $Ticket{TicketNumber}
-                    . ': $Text{"You don\'t have write access to this ticket."}',
+                Data => "$Ticket{TicketNumber}: "
+                    . $Self->{LayoutObject}->{LanguageObject}->Translate("You don't have write access to this ticket."),
             );
             next TICKET_ID;
         }
@@ -313,7 +344,8 @@ sub Run {
         # check if it's already locked by somebody else
         if ( !$Self->{Config}->{RequiredLock} ) {
             $Output .= $Self->{LayoutObject}->Notify(
-                Data => $Ticket{TicketNumber} . ': $Text{"Ticket selected."}',
+                Data => "$Ticket{TicketNumber}: "
+                    . $Self->{LayoutObject}->{LanguageObject}->Translate("Ticket selected."),
             );
         }
         else {
@@ -324,15 +356,18 @@ sub Run {
                 );
                 if ( !$AccessOk ) {
                     $Output .= $Self->{LayoutObject}->Notify(
-                        Data => $Ticket{TicketNumber}
-                            . ': $Text{"Ticket is locked by another agent."}',
+                        Priority => 'Error',
+                        Data     => "$Ticket{TicketNumber}: "
+                            . $Self->{LayoutObject}->{LanguageObject}->Translate(
+                            "Ticket is locked by another agent and will be ignored!"
+                            ),
                     );
                     next TICKET_ID;
                 }
             }
             else {
-                $Param{TicketsWereLocked} = 1;
                 $LockedTickets .= "LockedTicketID=" . $TicketID . ';';
+                $Param{TicketsWereLocked} = 1;
             }
 
             # set lock
@@ -349,7 +384,8 @@ sub Run {
                 NewUserID => $Self->{UserID},
             );
             $Output .= $Self->{LayoutObject}->Notify(
-                Data => $Ticket{TicketNumber} . ': $Text{"Ticket locked."}',
+                Data => "$Ticket{TicketNumber}: "
+                    . $Self->{LayoutObject}->{LanguageObject}->Translate("Ticket locked."),
             );
         }
 
@@ -476,12 +512,11 @@ sub Run {
                 );
 
                 # generate subject
-                my $TicketNumber
-                    = $Self->{TicketObject}->TicketNumberLookup( TicketID => $TicketID );
+                my $TicketNumber = $Self->{TicketObject}->TicketNumberLookup( TicketID => $TicketID );
 
                 my $EmailSubject = $Self->{TicketObject}->TicketSubjectBuild(
                     TicketNumber => $TicketNumber,
-                    Subject => $GetParam{EmailSubject} || '',
+                    Subject      => $GetParam{EmailSubject} || '',
                 );
 
                 $EmailArticleID = $Self->{TicketObject}->ArticleSend(
@@ -518,16 +553,16 @@ sub Run {
                     );
                 }
                 $ArticleID = $Self->{TicketObject}->ArticleCreate(
-                    TicketID      => $TicketID,
-                    ArticleTypeID => $GetParam{'ArticleTypeID'},
-                    ArticleType   => $GetParam{'ArticleType'},
-                    SenderType    => 'agent',
-                    From     => "$Self->{UserFirstname} $Self->{UserLastname} <$Self->{UserEmail}>",
-                    Subject  => $GetParam{'Subject'},
-                    Body     => $GetParam{'Body'},
-                    MimeType => $MimeType,
-                    Charset  => $Self->{LayoutObject}->{UserCharset},
-                    UserID   => $Self->{UserID},
+                    TicketID       => $TicketID,
+                    ArticleTypeID  => $GetParam{'ArticleTypeID'},
+                    ArticleType    => $GetParam{'ArticleType'},
+                    SenderType     => 'agent',
+                    From           => "$Self->{UserFirstname} $Self->{UserLastname} <$Self->{UserEmail}>",
+                    Subject        => $GetParam{'Subject'},
+                    Body           => $GetParam{'Body'},
+                    MimeType       => $MimeType,
+                    Charset        => $Self->{LayoutObject}->{UserCharset},
+                    UserID         => $Self->{UserID},
                     HistoryType    => 'AddNote',
                     HistoryComment => '%%Bulk',
                 );
@@ -545,7 +580,7 @@ sub Run {
                     TicketID      => $TicketID,
                     DynamicFields => 0,
                 );
-                my %StateData = $Self->{TicketObject}->{StateObject}->StateGet(
+                my %StateData = $Self->{StateObject}->StateGet(
                     ID => $Ticket{StateID},
                 );
 
@@ -741,8 +776,7 @@ sub _Mask {
     # prepare errors!
     if ( $Param{Errors} ) {
         for my $KeyError ( sort keys %{ $Param{Errors} } ) {
-            $Param{$KeyError}
-                = $Self->{LayoutObject}->Ascii2Html( Text => $Param{Errors}->{$KeyError} );
+            $Param{$KeyError} = $Self->{LayoutObject}->Ascii2Html( Text => $Param{Errors}->{$KeyError} );
         }
     }
 
@@ -821,21 +855,21 @@ sub _Mask {
         STATE_ID:
         for my $StateID ( sort keys %StateList ) {
             next STATE_ID if !$StateID;
-            my %StateData = $Self->{TicketObject}->{StateObject}->StateGet( ID => $StateID );
+            my %StateData = $Self->{StateObject}->StateGet( ID => $StateID );
             next STATE_ID if $StateData{TypeName} !~ /pending/i;
             $Param{DateString} = $Self->{LayoutObject}->BuildDateSelection(
                 %Param,
-                Format   => 'DateInputFormatLong',
-                DiffTime => $Self->{ConfigObject}->Get('Ticket::Frontend::PendingDiffTime') || 0,
-                Class    => $Param{Errors}->{DateInvalid} || '',
-                Validate => 1,
+                Format               => 'DateInputFormatLong',
+                DiffTime             => $Self->{ConfigObject}->Get('Ticket::Frontend::PendingDiffTime') || 0,
+                Class                => $Param{Errors}->{DateInvalid} || '',
+                Validate             => 1,
                 ValidateDateInFuture => 1,
             );
             $Self->{LayoutObject}->Block(
                 Name => 'StatePending',
                 Data => \%Param,
             );
-            last;
+            last STATE_ID;
         }
     }
 
@@ -862,7 +896,10 @@ sub _Mask {
 
     # owner list
     if ( $Self->{Config}->{Owner} ) {
-        my %AllGroupsMembers = $Self->{UserObject}->UserList( Type => 'Long', Valid => 1 );
+        my %AllGroupsMembers = $Self->{UserObject}->UserList(
+            Type  => 'Long',
+            Valid => 1
+        );
 
         # only put possible rw agents to possible owner list
         if ( !$Self->{ConfigObject}->Get('Ticket::ChangeOwnerToEveryone') ) {
@@ -901,7 +938,10 @@ sub _Mask {
 
     # responsible list
     if ( $Self->{ConfigObject}->Get('Ticket::Responsible') && $Self->{Config}->{Responsible} ) {
-        my %AllGroupsMembers = $Self->{UserObject}->UserList( Type => 'Long', Valid => 1 );
+        my %AllGroupsMembers = $Self->{UserObject}->UserList(
+            Type  => 'Long',
+            Valid => 1
+        );
 
         # only put possible rw agents to possible owner list
         if ( !$Self->{ConfigObject}->Get('Ticket::ChangeOwnerToEveryone') ) {
@@ -926,8 +966,11 @@ sub _Mask {
             }
         }
         $Param{ResponsibleStrg} = $Self->{LayoutObject}->BuildSelection(
-            Data => { '' => '-', %AllGroupsMembers },
-            Name => 'ResponsibleID',
+            Data => {
+                '' => '-',
+                %AllGroupsMembers
+            },
+            Name        => 'ResponsibleID',
             Translation => 0,
             SelectedID  => $Param{ResponsibleID},
         );
@@ -944,7 +987,7 @@ sub _Mask {
         Type   => 'move_into',
     );
     $Param{MoveQueuesStrg} = $Self->{LayoutObject}->AgentQueueListOption(
-        Data => { %MoveQueues, '' => '-' },
+        Data     => { %MoveQueues, '' => '-' },
         Multiple => 0,
         Size     => 0,
         Name     => 'QueueID',
@@ -1056,38 +1099,45 @@ sub _Mask {
             Name => 'RichText',
             Data => \%Param,
         );
-        $Self->{LayoutObject}->Block(
-            Name => 'RichTextEmail',
-            Data => \%Param,
-        );
     }
 
     # reload parent window
     if ( $Param{TicketsWereLocked} ) {
+
+        my $URL = $Self->{LastScreenOverview};
+
+        # add session if no cookies are enabled
+        if ( $Self->{SessionID} && !$Self->{SessionIDCookie} ) {
+            $URL .= ';' . $Self->{SessionName} . '=' . $Self->{SessionID};
+        }
+
         $Self->{LayoutObject}->Block(
             Name => 'ParentReload',
             Data => {
-                URL => $Self->{LastScreenOverview},
-                }
+                URL => $URL,
+            },
         );
 
-        # show undo link
+        # show undo&close link
         $Self->{LayoutObject}->Block(
             Name => 'UndoClosePopup',
-            Data => { %Param, TicketID => $Param{"LockedTickets"} },
+            Data => {%Param},
         );
     }
     else {
-        # show back link
+
+        # show cancel&close link
         $Self->{LayoutObject}->Block(
             Name => 'CancelClosePopup',
-            Data => %Param
+            Data => {%Param},
         );
-
     }
 
     # get output back
-    return $Self->{LayoutObject}->Output( TemplateFile => 'AgentTicketBulk', Data => \%Param );
+    return $Self->{LayoutObject}->Output(
+        TemplateFile => 'AgentTicketBulk',
+        Data         => \%Param
+    );
 }
 
 1;

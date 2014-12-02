@@ -12,11 +12,22 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Frontend::DebugMode" Required="0" Valid="1" ConfigLevel="100">
-        <Description Translatable="1">Enables or disable the debug mode over frontend interface.</Description>
+        <Description Translatable="1">Enables or disables the debug mode over frontend interface.</Description>
         <Group>Framework</Group>
         <SubGroup>Core</SubGroup>
         <Setting>
             <Option SelectedID="0">
+                <Item Key="0">No</Item>
+                <Item Key="1">Yes</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="Frontend::TemplateCache" Required="1" Valid="1" ConfigLevel="200">
+        <Description Translatable="1">Enables or disables the caching for templates. WARNING: Do NOT disable template caching for production environments for it will cause a massive performance drop! This setting should only be disabled for debugging reasons!</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
                 <Item Key="0">No</Item>
                 <Item Key="1">Yes</Item>
             </Option>
@@ -34,12 +45,23 @@
             </Option>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="ConfigImportAllowed" Required="1" Valid="1" ConfigLevel="200">
+        <Description Translatable="1">Controls if the admin is allowed to import a saved system configuration in SysConfig.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0">No</Item>
+                <Item Key="1">Yes</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="ProductName" Required="1" Valid="1" ConfigLevel="200">
         <Description Translatable="1">Defines the name of the application, shown in the web interface, tabs and title bar of the web browser.</Description>
         <Group>Framework</Group>
         <SubGroup>Core</SubGroup>
         <Setting>
-            <String Regex="">OTRS</String>
+            <String Regex="">OTRS 4</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="SystemID" Required="1" Valid="1" ConfigLevel="200">
@@ -145,6 +167,7 @@
                 <Item Key="sr_Cyrl">Serbian Cyrillic (&#1089;&#1088;&#1087;&#1089;&#1082;&#1080;)</Item>
                 <Item Key="sk_SK">Slovak (Sloven&amp;#x010d;ina)</Item>
                 <Item Key="sv">Svenska</Item>
+                <Item Key="sw">Swahili</Item>
                 <Item Key="tr">T&amp;uuml;rk&amp;ccedil;e</Item>
                 <Item Key="uk">Ukrainian (&amp;#x0423;&amp;#x043a;&amp;#x0440;&amp;#x0430;&amp;#x0457;&amp;#x043d;&amp;#x0441;&amp;#x044c;&amp;#x043a;&amp;#x0430;)</Item>
                 <Item Key="vi_VN">Vietnam (Vi&amp;#x0246;t Nam)</Item>
@@ -177,7 +200,7 @@
         <Group>Framework</Group>
         <SubGroup>Frontend::Customer</SubGroup>
         <Setting>
-            <String Regex="">Example Company Support</String>
+            <String Regex="">Example Company</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="CustomerLogo" Required="0" Valid="0">
@@ -201,10 +224,66 @@
         <Setting>
             <Hash>
                 <Item Key="URL">skins/Agent/default/img/logo_bg.png</Item>
-                <Item Key="StyleTop">-4px</Item>
+                <Item Key="StyleTop">4px</Item>
                 <Item Key="StyleRight">38px</Item>
                 <Item Key="StyleHeight">67px</Item>
-                <Item Key="StyleWidth">244px</Item>
+                <Item Key="StyleWidth">270px</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="AgentLogoCustom###default" Required="0" Valid="0">
+        <Description Translatable="1">The logo shown in the header of the agent interface for the skin "default". See "AgentLogo" for further description.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Agent</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="URL">skins/Agent/default/img/logo_bg.png</Item>
+                <Item Key="StyleTop">4px</Item>
+                <Item Key="StyleRight">38px</Item>
+                <Item Key="StyleHeight">67px</Item>
+                <Item Key="StyleWidth">270px</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="AgentLogoCustom###slim" Required="0" Valid="0">
+        <Description Translatable="1">The logo shown in the header of the agent interface for the skin "slim". See "AgentLogo" for further description.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Agent</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="URL">skins/Agent/default/img/logo_bg.png</Item>
+                <Item Key="StyleTop">4px</Item>
+                <Item Key="StyleRight">38px</Item>
+                <Item Key="StyleHeight">67px</Item>
+                <Item Key="StyleWidth">270px</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="AgentLogoCustom###ivory" Required="0" Valid="0">
+        <Description Translatable="1">The logo shown in the header of the agent interface for the skin "ivory". See "AgentLogo" for further description.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Agent</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="URL">skins/Agent/default/img/logo_bg.png</Item>
+                <Item Key="StyleTop">4px</Item>
+                <Item Key="StyleRight">38px</Item>
+                <Item Key="StyleHeight">67px</Item>
+                <Item Key="StyleWidth">270px</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="AgentLogoCustom###ivory-slim" Required="0" Valid="0">
+        <Description Translatable="1">The logo shown in the header of the agent interface for the skin "ivory-slim". See "AgentLogo" for further description.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Agent</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="URL">skins/Agent/default/img/logo_bg.png</Item>
+                <Item Key="StyleTop">4px</Item>
+                <Item Key="StyleRight">38px</Item>
+                <Item Key="StyleHeight">67px</Item>
+                <Item Key="StyleWidth">270px</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -334,6 +413,17 @@
     </ConfigItem>
     <ConfigItem Name="Frontend::AnimationEnabled" Required="1" Valid="1">
         <Description Translatable="1">Turns on the animations used in the GUI. If you have problems with these animations (e.g. performance issues), you can turn them off here.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Web</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0">No</Item>
+                <Item Key="1">Yes</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="Frontend::MenuDragDropEnabled" Required="1" Valid="1">
+        <Description Translatable="1">Turns on drag and drop for the main navigation.</Description>
         <Group>Framework</Group>
         <SubGroup>Core::Web</SubGroup>
         <Setting>
@@ -651,6 +741,27 @@
             </Hash>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="Frontend::NotifyModule###100-OTRSBusiness" Required="1" Valid="1">
+        <Description Translatable="1">Defines the module to display a notification in different interfaces on different occasions for OTRS Business Solution™.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Agent::ModuleNotify</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="Module">Kernel::Output::HTML::NotificationAgentOTRSBusiness</Item>
+                <Item Key="Group">admin</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="CustomerFrontend::NotifyModule###1-OTRSBusiness" Required="1" Valid="1">
+        <Description Translatable="1">Defines the module to display a notification in different interfaces on different occasions for OTRS Business Solution™.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Customer::ModuleNotify</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="Module">Kernel::Output::HTML::NotificationCustomerOTRSBusiness</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="Frontend::NotifyModule###200-UID-Check" Required="1" Valid="1">
         <Description Translatable="1">Defines the module to display a notification in the agent interface, if the system is used by the admin user (normally you shouldn't work as admin).</Description>
         <Group>Framework</Group>
@@ -692,6 +803,16 @@
         <Setting>
             <Hash>
                 <Item Key="Module">Kernel::Output::HTML::NotificationOutofOfficeCheck</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="Frontend::NotifyModule###600-SystemMaintenance-Check" Required="1" Valid="1">
+        <Description Translatable="1">Defines the module to display a notification in the agent interface, if the agent is logged in while having system maintenance active.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Agent::ModuleNotify</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="Module">Kernel::Output::HTML::NotificationSystemMaintenanceCheck</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -831,12 +952,28 @@
             <String Regex="^[0-9]{1,8}$">100</String>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="AgentSessionPerUserLimit" Required="0" Valid="1">
+        <Description Translatable="1">Sets the maximum number of active sessions per agent within the timespan defined in SessionActiveTime.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Session</SubGroup>
+        <Setting>
+            <String Regex="^[0-9]{1,8}$">20</String>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="CustomerSessionLimit" Required="0" Valid="1">
         <Description Translatable="1">Sets the maximum number of active customers within the timespan defined in SessionActiveTime.</Description>
         <Group>Framework</Group>
         <SubGroup>Core::Session</SubGroup>
         <Setting>
             <String Regex="^[0-9]{1,8}$">100</String>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="CustomerSessionPerUserLimit" Required="0" Valid="1">
+        <Description Translatable="1">Sets the maximum number of active sessions per customers within the timespan defined in SessionActiveTime.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Session</SubGroup>
+        <Setting>
+            <String Regex="^[0-9]{1,8}$">20</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="SessionDir" Required="1" Valid="1">
@@ -1082,6 +1219,22 @@
             </Option>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="CalendarWeekDayStart::Calendar1" Required="1" Valid="1">
+        <Description Translatable="1">Define the start day of the week for the date picker for the indicated calendar.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Time::Calendar1</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0">Sunday</Item>
+                <Item Key="1">Monday</Item>
+                <Item Key="2">Tuesday</Item>
+                <Item Key="3">Wednesday</Item>
+                <Item Key="4">Thursday</Item>
+                <Item Key="5">Friday</Item>
+                <Item Key="6">Saturday</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="TimeVacationDays::Calendar1" Required="1" Valid="1">
         <Description Translatable="1">Adds the permanent vacation days for the indicated calendar. Please use single digit pattern for numbers from 1 to 9 (instead of 01 - 09).</Description>
         <Group>Framework</Group>
@@ -1234,6 +1387,22 @@
                 <Item Key="-10">-10</Item>
                 <Item Key="-11">-11</Item>
                 <Item Key="-12">-12</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="CalendarWeekDayStart::Calendar2" Required="1" Valid="1">
+        <Description Translatable="1">Define the start day of the week for the date picker for the indicated calendar.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Time::Calendar2</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0">Sunday</Item>
+                <Item Key="1">Monday</Item>
+                <Item Key="2">Tuesday</Item>
+                <Item Key="3">Wednesday</Item>
+                <Item Key="4">Thursday</Item>
+                <Item Key="5">Friday</Item>
+                <Item Key="6">Saturday</Item>
             </Option>
         </Setting>
     </ConfigItem>
@@ -1392,6 +1561,22 @@
             </Option>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="CalendarWeekDayStart::Calendar3" Required="1" Valid="1">
+        <Description Translatable="1">Define the start day of the week for the date picker for the indicated calendar.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Time::Calendar3</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0">Sunday</Item>
+                <Item Key="1">Monday</Item>
+                <Item Key="2">Tuesday</Item>
+                <Item Key="3">Wednesday</Item>
+                <Item Key="4">Thursday</Item>
+                <Item Key="5">Friday</Item>
+                <Item Key="6">Saturday</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="TimeVacationDays::Calendar3" Required="1" Valid="1">
         <Description Translatable="1">Adds the permanent vacation days for the indicated calendar. Please use single digit pattern for numbers from 1 to 9 (instead of 01 - 09).</Description>
         <Group>Framework</Group>
@@ -1544,6 +1729,22 @@
                 <Item Key="-10">-10</Item>
                 <Item Key="-11">-11</Item>
                 <Item Key="-12">-12</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="CalendarWeekDayStart::Calendar4" Required="1" Valid="1">
+        <Description Translatable="1">Define the start day of the week for the date picker for the indicated calendar.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Time::Calendar4</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0">Sunday</Item>
+                <Item Key="1">Monday</Item>
+                <Item Key="2">Tuesday</Item>
+                <Item Key="3">Wednesday</Item>
+                <Item Key="4">Thursday</Item>
+                <Item Key="5">Friday</Item>
+                <Item Key="6">Saturday</Item>
             </Option>
         </Setting>
     </ConfigItem>
@@ -1702,6 +1903,22 @@
             </Option>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="CalendarWeekDayStart::Calendar5" Required="1" Valid="1">
+        <Description Translatable="1">Define the start day of the week for the date picker for the indicated calendar.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Time::Calendar5</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0">Sunday</Item>
+                <Item Key="1">Monday</Item>
+                <Item Key="2">Tuesday</Item>
+                <Item Key="3">Wednesday</Item>
+                <Item Key="4">Thursday</Item>
+                <Item Key="5">Friday</Item>
+                <Item Key="6">Saturday</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="TimeVacationDays::Calendar5" Required="1" Valid="1">
         <Description Translatable="1">Adds the permanent vacation days for the indicated calendar. Please use single digit pattern for numbers from 1 to 9 (instead of 01 - 09).</Description>
         <Group>Framework</Group>
@@ -1854,6 +2071,22 @@
                 <Item Key="-10">-10</Item>
                 <Item Key="-11">-11</Item>
                 <Item Key="-12">-12</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="CalendarWeekDayStart::Calendar6" Required="1" Valid="1">
+        <Description Translatable="1">Define the start day of the week for the date picker for the indicated calendar.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Time::Calendar6</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0">Sunday</Item>
+                <Item Key="1">Monday</Item>
+                <Item Key="2">Tuesday</Item>
+                <Item Key="3">Wednesday</Item>
+                <Item Key="4">Thursday</Item>
+                <Item Key="5">Friday</Item>
+                <Item Key="6">Saturday</Item>
             </Option>
         </Setting>
     </ConfigItem>
@@ -2012,6 +2245,22 @@
             </Option>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="CalendarWeekDayStart::Calendar7" Required="1" Valid="1">
+        <Description Translatable="1">Define the start day of the week for the date picker for the indicated calendar.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Time::Calendar7</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0">Sunday</Item>
+                <Item Key="1">Monday</Item>
+                <Item Key="2">Tuesday</Item>
+                <Item Key="3">Wednesday</Item>
+                <Item Key="4">Thursday</Item>
+                <Item Key="5">Friday</Item>
+                <Item Key="6">Saturday</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="TimeVacationDays::Calendar7" Required="1" Valid="1">
         <Description Translatable="1">Adds the permanent vacation days for the indicated calendar. Please use single digit pattern for numbers from 1 to 9 (instead of 01 - 09).</Description>
         <Group>Framework</Group>
@@ -2167,6 +2416,22 @@
             </Option>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="CalendarWeekDayStart::Calendar8" Required="1" Valid="1">
+        <Description Translatable="1">Define the start day of the week for the date picker for the indicated calendar.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Time::Calendar8</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0">Sunday</Item>
+                <Item Key="1">Monday</Item>
+                <Item Key="2">Tuesday</Item>
+                <Item Key="3">Wednesday</Item>
+                <Item Key="4">Thursday</Item>
+                <Item Key="5">Friday</Item>
+                <Item Key="6">Saturday</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="TimeVacationDays::Calendar8" Required="1" Valid="1">
         <Description Translatable="1">Adds the permanent vacation days for the indicated calendar. Please use single digit pattern for numbers from 1 to 9 (instead of 01 - 09).</Description>
         <Group>Framework</Group>
@@ -2319,6 +2584,22 @@
                 <Item Key="-10">-10</Item>
                 <Item Key="-11">-11</Item>
                 <Item Key="-12">-12</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="CalendarWeekDayStart::Calendar9" Required="1" Valid="1">
+        <Description Translatable="1">Define the start day of the week for the date picker for the indicated calendar.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Time::Calendar9</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0">Sunday</Item>
+                <Item Key="1">Monday</Item>
+                <Item Key="2">Tuesday</Item>
+                <Item Key="3">Wednesday</Item>
+                <Item Key="4">Thursday</Item>
+                <Item Key="5">Friday</Item>
+                <Item Key="6">Saturday</Item>
             </Option>
         </Setting>
     </ConfigItem>
@@ -2671,7 +2952,7 @@
         <Group>Framework</Group>
         <SubGroup>Core::Package</SubGroup>
         <Setting>
-            <String Regex="">15</String>
+            <String Regex="">120</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Package::Proxy" Required="0" Valid="0" ConfigLevel="200">
@@ -2693,7 +2974,7 @@
             </Option>
         </Setting>
     </ConfigItem>
-    <ConfigItem Name="Package::EventModule###99-SupportDataSend" Required="0" Valid="1">
+    <ConfigItem Name="Package::EventModulePost###99-SupportDataSend" Required="0" Valid="1">
         <Description Translatable="1">Package event module file a scheduler task for update registration.</Description>
         <Group>Framework</Group>
         <SubGroup>Core::Package</SubGroup>
@@ -2715,6 +2996,18 @@
                 <Item>PackageReinstall</Item>
                 <Item>PackageUpgrade</Item>
                 <Item>PackageUninstall</Item>
+            </Array>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="Events###DynamicField" Required="1" Valid="1">
+        <Description Translatable="1">List of all DynamicField events to be displayed in the GUI.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Admin</SubGroup>
+        <Setting>
+            <Array>
+                <Item>DynamicFieldAdd</Item>
+                <Item>DynamicFieldUpdate</Item>
+                <Item>DynamicFieldDelete</Item>
             </Array>
         </Setting>
     </ConfigItem>
@@ -3232,7 +3525,7 @@ You can log in via the following URL:
                 <Item Key="Label" Translatable="1">Comment</Item>
                 <Item Key="Key" Translatable="1">Comment</Item>
                 <Item Key="Block">Input</Item>
-                <Item Key="Data">$Env{"UserComment"}</Item>
+                <Item Key="Data">[% Env("UserComment") %]</Item>
                 <Item Key="PrefKey">UserComment</Item>
                 <Item Key="Prio">6000</Item>
                 <Item Key="Active">0</Item>
@@ -3250,7 +3543,7 @@ You can log in via the following URL:
                 <Item Key="Label" Translatable="1">NameX</Item>
                 <Item Key="Key" Translatable="1">Default value for NameX</Item>
                 <Item Key="Block">Input</Item>
-                <Item Key="Data">$Env{"UserDynamicField_NameX"}</Item>
+                <Item Key="Data">[% Env("UserDynamicField_NameX") %]</Item>
                 <Item Key="PrefKey">UserDynamicField_NameX</Item>
                 <Item Key="Prio">7000</Item>
                 <Item Key="Active">1</Item>
@@ -3427,6 +3720,16 @@ You can log in via the following URL:
             </Hash>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="CustomerFrontend::NotifyModule###6-CustomerSystemMaintenance-Check" Required="1" Valid="1">
+        <Description Translatable="1">Defines the module to display a notification in the agent interface, if the agent is logged in while having system maintenance active.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Customer::ModuleNotify</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="Module">Kernel::Output::HTML::NotificationCustomerSystemMaintenanceCheck</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="CustomerPanelLoginURL" Required="0" Valid="0">
         <Description Translatable="1">Defines an alternate login URL for the customer panel..</Description>
         <Group>Framework</Group>
@@ -3457,6 +3760,7 @@ You can log in via the following URL:
                 <Item Key="Target">_blank</Item>
                 <Item Key="Text">Location</Item>
                 <Item Key="URL">http://maps.google.com/maps?z=7&amp;q=</Item>
+                <Item Key="IconName">fa-globe</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -3474,6 +3778,7 @@ You can log in via the following URL:
                 <Item Key="Target">_blank</Item>
                 <Item Key="Text">Google</Item>
                 <Item Key="URL">http://google.com/search?q=</Item>
+                <Item Key="IconName">fa-google</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -3491,6 +3796,7 @@ You can log in via the following URL:
                 <Item Key="Target">_blank</Item>
                 <Item Key="Text">LinkedIn</Item>
                 <Item Key="URL">http://www.linkedin.com/commonSearch?type=people&amp;keywords=</Item>
+                <Item Key="IconName">fa-linkedin</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -3508,6 +3814,7 @@ You can log in via the following URL:
                 <Item Key="Target">_blank</Item>
                 <Item Key="Text">XING</Item>
                 <Item Key="URL">https://www.xing.com/app/search?op=search;keywords=</Item>
+                <Item Key="IconName">fa-xing</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -3555,6 +3862,26 @@ You can log in via the following URL:
                 <Item Key="0">No</Item>
                 <Item Key="1">Yes</Item>
             </Option>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="CustomerPanelCreateAccount::MailRestrictions::Whitelist" Required="0" Valid="0">
+        <Description Translatable="1">If active, one of the regular expressions has to match the user's email address to allow registration.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Customer</SubGroup>
+        <Setting>
+            <Array>
+              <Item>\@your\.domain\.example$</Item>
+            </Array>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="CustomerPanelCreateAccount::MailRestrictions::Blacklist" Required="0" Valid="0">
+        <Description Translatable="1">If active, none of the regular expressions may match the user's email address to allow registration.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Customer</SubGroup>
+        <Setting>
+            <Array>
+              <Item>\@your\.domain\.example$</Item>
+            </Array>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="CustomerPanelSubjectLostPasswordToken" Required="1" Valid="1">
@@ -3649,6 +3976,7 @@ via the Preferences button after logging in.
         <Setting>
             <Option SelectedID="sha2">
                 <Item Key="crypt">Crypt</Item>
+                <Item Key="apr1">Apache MD5</Item>
                 <Item Key="md5">MD5-Crypt</Item>
                 <Item Key="plain">Plain</Item>
                 <Item Key="sha1">SHA-1</Item>
@@ -4030,8 +4358,8 @@ via the Preferences button after logging in.
                     <CSS>Core.AllocationList.css</CSS>
                     <CSS>thirdparty/fullcalendar-1.6.1/fullcalendar.css</CSS>
                     <CSS>thirdparty/d3js/nv.d3.css</CSS>
-                    <JavaScript>thirdparty/flot-0.8.1/excanvas.js</JavaScript>
-                    <JavaScript>thirdparty/flot-0.8.1/jquery.flot.js</JavaScript>
+                    <JavaScript>thirdparty/flot-0.8.3/excanvas.js</JavaScript>
+                    <JavaScript>thirdparty/flot-0.8.3/jquery.flot.js</JavaScript>
                     <JavaScript>thirdparty/fullcalendar-1.6.1/fullcalendar.min.js</JavaScript>
                     <JavaScript>thirdparty/d3js/d3.v3.min.js</JavaScript>
                     <JavaScript>thirdparty/d3js/nv.d3.min.js</JavaScript>
@@ -4039,7 +4367,6 @@ via the Preferences button after logging in.
                     <JavaScript>thirdparty/d3js/models/OTRSstackedAreaChart.js</JavaScript>
                     <JavaScript>Core.UI.Chart.js</JavaScript>
                     <JavaScript>Core.UI.AdvancedChart.js</JavaScript>
-                    <JavaScript>Core.UI.DnD.js</JavaScript>
                     <JavaScript>Core.UI.AllocationList.js</JavaScript>
                     <JavaScript>Core.Agent.TableFilters.js</JavaScript>
                     <JavaScript>Core.Agent.Dashboard.js</JavaScript>
@@ -4057,33 +4384,32 @@ via the Preferences button after logging in.
                 <Title></Title>
                 <NavBarName>Customer Information Center</NavBarName>
                 <NavBar>
-                    <Description Translatable="1">Customer Information Center.</Description>
+                    <Description Translatable="1"></Description>
                     <Name Translatable="1">Customer Information Center</Name>
                     <Link>Action=AgentCustomerInformationCenter</Link>
                     <LinkOption>onclick="window.setTimeout(function(){Core.Agent.CustomerInformationCenterSearch.OpenSearchDialog();}, 0); return false;"</LinkOption>
                     <NavBar>Customers</NavBar>
                     <Type></Type>
                     <Block>ItemArea</Block>
-                    <AccessKey></AccessKey>
+                    <AccessKey>c</AccessKey>
                     <Prio>50</Prio>
                 </NavBar>
                 <NavBar>
-                    <Description Translatable="1">Customer Information Center.</Description>
+                    <Description Translatable="1"></Description>
                     <Name Translatable="1">Customers</Name>
                     <Link>Action=AgentCustomerInformationCenter</Link>
                     <LinkOption></LinkOption>
                     <NavBar>Customers</NavBar>
                     <Type>Menu</Type>
                     <Block>ItemArea</Block>
-                    <AccessKey>c</AccessKey>
+                    <AccessKey></AccessKey>
                     <Prio>60</Prio>
                 </NavBar>
                 <Loader>
                     <CSS>Core.AllocationList.css</CSS>
-                    <JavaScript>thirdparty/flot-0.8.1/excanvas.js</JavaScript>
-                    <JavaScript>thirdparty/flot-0.8.1/jquery.flot.js</JavaScript>
+                    <JavaScript>thirdparty/flot-0.8.3/excanvas.js</JavaScript>
+                    <JavaScript>thirdparty/flot-0.8.3/jquery.flot.js</JavaScript>
                     <JavaScript>Core.UI.Chart.js</JavaScript>
-                    <JavaScript>Core.UI.DnD.js</JavaScript>
                     <JavaScript>Core.UI.AllocationList.js</JavaScript>
                     <JavaScript>Core.Agent.Dashboard.js</JavaScript>
                     <JavaScript>Core.Agent.TableFilters.js</JavaScript>
@@ -4119,7 +4445,7 @@ via the Preferences button after logging in.
         <Setting>
             <Hash>
                 <Item Key="Name" Translatable="1">Edit customer company</Item>
-                <Item Key="Link">$Env{"Baselink"}Action=AdminCustomerCompany;Subaction=Change;CustomerID=$LQData{"CustomerID"};Nav=0</Item>
+                <Item Key="Link">[% Env("Baselink") %]Action=AdminCustomerCompany;Subaction=Change;CustomerID=[% Data.CustomerID | uri %];Nav=0</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -4130,8 +4456,8 @@ via the Preferences button after logging in.
         <Setting>
             <Hash>
                 <Item Key="Module">Kernel::Output::HTML::DashboardCustomerCompanyInformation</Item>
-                <Item Key="Title" Translatable="1">Customer Company Information</Item>
-                <Item Key="Description" Translatable="1">Customer Company Information</Item>
+                <Item Key="Title" Translatable="1">Customer Information</Item>
+                <Item Key="Description" Translatable="1">Customer Information</Item>
                 <Item Key="Attributes"></Item>
                 <Item Key="Block">ContentSmall</Item>
                 <Item Key="Group"></Item>
@@ -4371,7 +4697,7 @@ via the Preferences button after logging in.
                     <Link>Action=AdminCustomerUser;Nav=Agent</Link>
                     <LinkOption></LinkOption>
                     <NavBar>Customers</NavBar>
-                    <Description Translatable="1">Customer User Administration.</Description>
+                    <Description Translatable="1"></Description>
                     <Type></Type>
                     <Block>ItemArea</Block>
                     <AccessKey></AccessKey>
@@ -4403,11 +4729,11 @@ via the Preferences button after logging in.
                 <Title Translatable="1">Customer Companies</Title>
                 <NavBarName>Admin</NavBarName>
                 <NavBar>
-                    <Name Translatable="1">Customer Company Administration</Name>
+                    <Name Translatable="1">Customer Administration</Name>
                     <Link>Action=AdminCustomerCompany;Nav=Agent</Link>
                     <LinkOption></LinkOption>
                     <NavBar>Customers</NavBar>
-                    <Description Translatable="1">Customer Company Administration.</Description>
+                    <Description Translatable="1"></Description>
                     <Type></Type>
                     <Block>ItemArea</Block>
                     <AccessKey></AccessKey>
@@ -4699,6 +5025,29 @@ via the Preferences button after logging in.
             </FrontendModuleReg>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="Frontend::Module###AdminOTRSBusiness" Required="0" Valid="1">
+        <Description Translatable="1">Frontend module registration for the agent interface.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Admin::ModuleRegistration</SubGroup>
+        <Setting>
+            <FrontendModuleReg>
+                <Group>admin</Group>
+                <Description>Admin</Description>
+                <Title>OTRS Business Solution™</Title>
+                <NavBarName>Admin</NavBarName>
+                <NavBarModule>
+                    <Module>Kernel::Output::HTML::NavBarModuleAdmin</Module>
+                    <Name>OTRS Business Solution™</Name>
+                    <Description Translatable="1">Deploy and manage OTRS Business Solution™.</Description>
+                    <Block>System</Block>
+                    <Prio>360</Prio>
+                </NavBarModule>
+                <Loader>
+                    <CSS>Core.Agent.Admin.OTRSBusiness.css</CSS>
+                </Loader>
+            </FrontendModuleReg>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="Frontend::Module###AdminServiceCenter" Required="0" Valid="1">
         <Description Translatable="1">Frontend module registration for the agent interface.</Description>
         <Group>Framework</Group>
@@ -4714,7 +5063,7 @@ via the Preferences button after logging in.
                     <Name Translatable="1">Service Center</Name>
                     <Description Translatable="1">Manage OTRS Group services.</Description>
                     <Block>System</Block>
-                    <Prio>351</Prio>
+                    <Prio>370</Prio>
                 </NavBarModule>
                 <Loader>
                     <CSS>Core.Agent.Admin.ServiceCenter.css</CSS>
@@ -4778,6 +5127,26 @@ via the Preferences button after logging in.
                     <Description Translatable="1">Update and extend your system with software packages.</Description>
                     <Block>System</Block>
                     <Prio>1000</Prio>
+                </NavBarModule>
+            </FrontendModuleReg>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="Frontend::Module###AdminSystemMaintenance" Required="0" Valid="1">
+        <Description Translatable="1">Frontend module registration for the agent interface.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Admin::ModuleRegistration</SubGroup>
+        <Setting>
+            <FrontendModuleReg>
+                <Group>admin</Group>
+                <Description>Admin</Description>
+                <Title Translatable="1">System Maintenance</Title>
+                <NavBarName>Admin</NavBarName>
+                <NavBarModule>
+                    <Module>Kernel::Output::HTML::NavBarModuleAdmin</Module>
+                    <Name Translatable="1">System Maintenance</Name>
+                    <Description Translatable="1">Schedule a maintenance period.</Description>
+                    <Block>System</Block>
+                    <Prio>501</Prio>
                 </NavBarModule>
             </FrontendModuleReg>
         </Setting>
@@ -4991,7 +5360,7 @@ via the Preferences button after logging in.
         <Group>Framework</Group>
         <SubGroup>Core::Stats</SubGroup>
         <Setting>
-            <String Regex="">Stat#</String>
+            <String Regex="" Translatable="1">Stat#</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Stats::StatsStartNumber" Required="1" Valid="1">
@@ -5055,6 +5424,7 @@ via the Preferences button after logging in.
             <Hash>
                 <Item Key="Print">Print</Item>
                 <Item Key="CSV">CSV</Item>
+                <Item Key="Excel">Excel</Item>
                 <Item Key="GD::Graph::lines">graph-lines</Item>
                 <Item Key="GD::Graph::bars">graph-bars</Item>
                 <Item Key="GD::Graph::hbars">graph-hbars</Item>
@@ -5477,7 +5847,6 @@ via the Preferences button after logging in.
                 <Item Key="Module">Kernel::Output::HTML::DashboardProductNotify</Item>
                 <Item Key="Title">Product News</Item>
                 <Item Key="Description">News about OTRS releases!</Item>
-                <Item Key="URL">http://otrs.org/product.xml</Item>
                 <Item Key="Block">ContentLarge</Item>
                 <Item Key="Group">admin</Item>
                 <Item Key="Default">1</Item>
@@ -5492,7 +5861,7 @@ via the Preferences button after logging in.
         <Setting>
             <Hash>
                 <Item Key="Module">Kernel::Output::HTML::DashboardUserOutOfOffice</Item>
-                <Item Key="Title">Out Of Office</Item>
+                <Item Key="Title" Translatable="1">Out Of Office</Item>
                 <Item Key="Description"></Item>
                 <Item Key="IdleMinutes">60</Item>
                 <Item Key="SortBy">UserFullname</Item>
@@ -5534,17 +5903,28 @@ via the Preferences button after logging in.
                 <Item Key="Module">Kernel::Output::HTML::DashboardRSS</Item>
                 <Item Key="Title">OTRS News</Item>
                 <Item Key="Description"></Item>
-                <Item Key="URL">http://www.otrs.com/en/rss.xml</Item>
-                <Item Key="URL_de">http://www.otrs.com/de/rss.xml</Item>
-                <Item Key="URL_es">http://www.otrs.com/es/rss.xml</Item>
-                <Item Key="URL_nl">http://www.otrs.com/nl/rss.xml</Item>
-                <Item Key="URL_ru">http://www.otrs.com/ru/rss.xml</Item>
-                <Item Key="URL_zh">http://www.otrs.com/cn/rss.xml</Item>
                 <Item Key="Block">ContentSmall</Item>
                 <Item Key="Limit">6</Item>
                 <Item Key="Group"></Item>
                 <Item Key="Default">1</Item>
                 <Item Key="CacheTTL">360</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="DashboardBackend###0420-CmdOutput" Required="0" Valid="0">
+        <Description Translatable="1">Defines the parameters for the dashboard backend. "Cmd" is used to specify command with parameters. "Group" is used to restrict access to the plugin (e. g. Group: admin;group1;group2;). "Default" indicates if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTL" indicates the cache expiration period in minutes for the plugin.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Agent::Dashboard</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="Module">Kernel::Output::HTML::DashboardCmdOutput</Item>
+                <Item Key="Title">Sample command output</Item>
+                <Item Key="Description"></Item>
+                <Item Key="Block">ContentSmall</Item>
+                <Item Key="Group"></Item>
+                <Item Key="Default">0</Item>
+                <Item Key="CacheTTL">60</Item>
+                <Item Key="Cmd">/bin/echo Configure me please.</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -5921,11 +6301,11 @@ via the Preferences button after logging in.
         <SubGroup>Core::Web</SubGroup>
         <Setting>
             <Array>
-                <Item>thirdparty/jquery-1.10.0/jquery.js</Item>
+                <Item>thirdparty/jquery-1.11.1/jquery.js</Item>
                 <Item>thirdparty/jquery-browser-detection/jquery-browser-detection.js</Item>
-                <Item>thirdparty/jquery-ui-1.10.3/jquery-ui.js</Item>
-                <Item>thirdparty/jquery-validate-1.11.1/jquery.validate.js</Item>
-                <Item>thirdparty/stacktrace-0.4/stacktrace.js</Item>
+                <Item>thirdparty/jquery-ui-1.11.1/jquery-ui.js</Item>
+                <Item>thirdparty/jquery-validate-1.13.0/jquery.validate.js</Item>
+                <Item>thirdparty/stacktrace-0.6.2/stacktrace.js</Item>
                 <Item>thirdparty/jquery-pubsub/pubsub.js</Item>
                 <Item>thirdparty/jquery-jstree-v.pre1.0/jquery.jstree.js</Item>
                 <Item>thirdparty/jquery-jstree-v.pre1.0/_lib/jquery.hotkeys.js</Item>
@@ -5940,6 +6320,7 @@ via the Preferences button after logging in.
                 <Item>Core.UI.js</Item>
                 <Item>Core.UI.Accordion.js</Item>
                 <Item>Core.UI.Datepicker.js</Item>
+                <Item>Core.UI.DnD.js</Item>
                 <Item>Core.UI.Resizable.js</Item>
                 <Item>Core.UI.Table.js</Item>
                 <Item>Core.UI.Accessibility.js</Item>
@@ -6003,11 +6384,11 @@ via the Preferences button after logging in.
         <SubGroup>Core::Web</SubGroup>
         <Setting>
             <Array>
-                <Item>thirdparty/jquery-1.10.0/jquery.js</Item>
+                <Item>thirdparty/jquery-1.11.1/jquery.js</Item>
                 <Item>thirdparty/jquery-browser-detection/jquery-browser-detection.js</Item>
-                <Item>thirdparty/jquery-validate-1.11.1/jquery.validate.js</Item>
-                <Item>thirdparty/jquery-ui-1.10.3/jquery-ui.js</Item>
-                <Item>thirdparty/stacktrace-0.4/stacktrace.js</Item>
+                <Item>thirdparty/jquery-validate-1.13.0/jquery.validate.js</Item>
+                <Item>thirdparty/jquery-ui-1.11.1/jquery-ui.js</Item>
+                <Item>thirdparty/stacktrace-0.6.2/stacktrace.js</Item>
                 <Item>thirdparty/jquery-pubsub/pubsub.js</Item>
                 <Item>thirdparty/jquery-jstree-v.pre1.0/jquery.jstree.js</Item>
                 <Item>thirdparty/jquery-jstree-v.pre1.0/_lib/jquery.hotkeys.js</Item>
@@ -6231,7 +6612,7 @@ via the Preferences button after logging in.
         </Setting>
     </ConfigItem>
     <ConfigItem Name="CustomerCompany::EventModulePost###100-UpdateCustomerUsers" Required="0" Valid="1">
-        <Description Translatable="1">Event module that updates customer users after an update of the Customer Company.</Description>
+        <Description Translatable="1">Event module that updates customer users after an update of the Customer.</Description>
         <Group>Framework</Group>
         <SubGroup>Core::CustomerCompany</SubGroup>
         <Setting>
@@ -6260,6 +6641,28 @@ via the Preferences button after logging in.
         <SubGroup>Core::Cache</SubGroup>
         <Setting>
             <Option Location="Kernel/System/Cache/*.pm" SelectedID="Kernel::System::Cache::FileStorable">
+            </Option>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="Cache::InMemory" Required="1" Valid="1" ConfigLevel="200">
+        <Description Translatable="1">Should the cache data be help in memory?</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Cache</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0">No</Item>
+                <Item Key="1">Yes</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="Cache::InBackend" Required="1" Valid="1" ConfigLevel="200">
+        <Description Translatable="1">Should the cache data be stored in the selected cache backend?</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Cache</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0">No</Item>
+                <Item Key="1">Yes</Item>
             </Option>
         </Setting>
     </ConfigItem>
@@ -6338,8 +6741,51 @@ via the Preferences button after logging in.
         <SubGroup>Frontend::Agent</SubGroup>
         <Setting>
             <Hash>
-                <Item Key="Go to dashboard!">$Env{"CGIHandle"}?Action=AgentDashboard</Item>
+                <Item Key="Go to dashboard!">[% Env("CGIHandle") %]?Action=AgentDashboard</Item>
             </Hash>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="SystemMaintenance::TimeNotifyUpcomingMaintenance" Required="0" Valid="1">
+        <Description Translatable="1">Sets the minutes a notification is shown for notice about upcoming system maintenance period.</Description>
+        <Group>Framework</Group>
+        <SubGroup>SystemMaintenance</SubGroup>
+        <Setting>
+            <String Regex="^[0-9]{1,8}$">30</String>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="SystemMaintenance::IsActiveDefaultNotification" Required="0" Valid="1">
+        <Description Translatable="1">Sets the default message for the notification is shown on a running system maintenance period.</Description>
+        <Group>Framework</Group>
+        <SubGroup>SystemMaintenance</SubGroup>
+        <Setting>
+            <String Regex="">A system maintenance period is active</String>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="SystemMaintenance::IsActiveDefaultLoginMessage" Required="0" Valid="1">
+        <Description Translatable="1">Sets the default message for the login screen on Agent and Customer interface, it's shown when a running system maintenance period is active.</Description>
+        <Group>Framework</Group>
+        <SubGroup>SystemMaintenance</SubGroup>
+        <Setting>
+            <String Regex="">System is on a scheduled maintenance period. We spect to be online promptly.</String>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="SystemMaintenance::IsActiveDefaultLoginErrorMessage" Required="0" Valid="1">
+        <Description Translatable="1">Sets the default error message for the login screen on Agent and Customer interface, it's shown when a running system maintenance period is active.</Description>
+        <Group>Framework</Group>
+        <SubGroup>SystemMaintenance</SubGroup>
+        <Setting>
+            <String Regex="">A maintenance period is running, get into the system is not possible for now.</String>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="OTRSBusiness::ReleaseChannel" Required="0" Valid="0" ConfigLevel="100">
+        <Description Translatable="1">Specify the channel to be used to fetch OTRS Business Solution™ updates. Warning: Development releases might not be complete, your system might experience unrecoverable errors and on extreme cases could become unresponsive!</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::OTRSBusiness</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0">Development</Item>
+                <Item Key="1">Stable</Item>
+            </Option>
         </Setting>
     </ConfigItem>
 </otrs_config>

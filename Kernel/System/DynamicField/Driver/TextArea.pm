@@ -13,9 +13,14 @@ use strict;
 use warnings;
 
 use Kernel::System::VariableCheck qw(:all);
-use Kernel::System::DynamicFieldValue;
 
 use base qw(Kernel::System::DynamicField::Driver::BaseText);
+
+our @ObjectDependencies = (
+    'Kernel::Config',
+    'Kernel::System::DynamicFieldValue',
+    'Kernel::System::Main',
+);
 
 =head1 NAME
 
@@ -46,16 +51,6 @@ sub new {
     my $Self = {};
     bless( $Self, $Type );
 
-    # get needed objects
-    for my $Needed (qw(ConfigObject EncodeObject LogObject MainObject DBObject)) {
-        die "Got no $Needed!" if !$Param{$Needed};
-
-        $Self->{$Needed} = $Param{$Needed};
-    }
-
-    # create additional objects
-    $Self->{DynamicFieldValueObject} = Kernel::System::DynamicFieldValue->new( %{$Self} );
-
     # set the maximum lenght for the textarea fields to still be a searchable field in some
     # databases
     $Self->{MaxLength} = 3800;
@@ -72,7 +67,7 @@ sub new {
 
     # get the Dynamic Field Backend custmom extensions
     my $DynamicFieldDriverExtensions
-        = $Self->{ConfigObject}->Get('DynamicFields::Extension::Driver::TextArea');
+        = $Kernel::OM->Get('Kernel::Config')->Get('DynamicFields::Extension::Driver::TextArea');
 
     EXTENSION:
     for my $ExtensionKey ( sort keys %{$DynamicFieldDriverExtensions} ) {
@@ -87,7 +82,10 @@ sub new {
         if ( $Extension->{Module} ) {
 
             # check if module can be loaded
-            if ( !$Self->{MainObject}->RequireBaseClass( $Extension->{Module} ) ) {
+            if (
+                !$Kernel::OM->Get('Kernel::System::Main')->RequireBaseClass( $Extension->{Module} )
+                )
+            {
                 die "Can't load dynamic fields backend module"
                     . " $Extension->{Module}! $@";
             }
@@ -133,12 +131,10 @@ sub EditFieldRender {
     }
 
     # set the rows number
-    my $RowsNumber
-        = defined $FieldConfig->{Rows} && $FieldConfig->{Rows} ? $FieldConfig->{Rows} : '7';
+    my $RowsNumber = defined $FieldConfig->{Rows} && $FieldConfig->{Rows} ? $FieldConfig->{Rows} : '7';
 
     # set the cols number
-    my $ColsNumber
-        = defined $FieldConfig->{Cols} && $FieldConfig->{Cols} ? $FieldConfig->{Cols} : '42';
+    my $ColsNumber = defined $FieldConfig->{Cols} && $FieldConfig->{Cols} ? $FieldConfig->{Cols} : '42';
 
     # check and set class if necessary
     my $FieldClass = 'DynamicFieldTextArea';
@@ -167,29 +163,29 @@ sub EditFieldRender {
         Text => $FieldLabel,
     );
 
- # create field HTML
- # the XHTML definition does not support maxlenght attribute for a textarea field, therefore
- # is needed to be set by JS code (otherwise wc3 validator will complain about it)
- # Notice that some browsers count new lines \n\r as only 1 character. In these cases the
- # validation framework might generate an error while the user is still capable to enter text in the
- # textarea. Otherwise the maxlenght property will prevent to enter more text than the maximum.
+    # create field HTML
+    # the XHTML definition does not support maxlenght attribute for a textarea field,
+    # we use data-maxlength instead
+    # Notice that some browsers count new lines \n\r as only 1 character. In these cases the
+    # validation framework might generate an error while the user is still capable to enter text in the
+    # textarea. Otherwise the maxlenght property will prevent to enter more text than the maximum.
     my $HTMLString = <<"EOF";
-<textarea class="$FieldClass" id="$FieldName" name="$FieldName" title="$FieldLabelEscaped" rows="$RowsNumber" cols="$ColsNumber" >$ValueEscaped</textarea>
-<!--dtl:js_on_document_complete-->
-<script type="text/javascript">//<![CDATA[
-  \$('#$FieldName').attr('maxlength','$Self->{MaxLength}');
-//]]></script>
-<!--dtl:js_on_document_complete-->
+<textarea class="$FieldClass" id="$FieldName" name="$FieldName" title="$FieldLabelEscaped" rows="$RowsNumber" cols="$ColsNumber" data-maxlength="$Self->{MaxLength}">$ValueEscaped</textarea>
 EOF
 
     # for client side validation
     my $DivID = $FieldName . 'Error';
 
+    my $ErrorMessage1 = $Param{LayoutObject}->{LanguageObject}->Translate("This field is required or");
+    my $ErrorMessage2 = $Param{LayoutObject}->{LanguageObject}->Translate("The field content is too long!");
+    my $ErrorMessage3
+        = $Param{LayoutObject}->{LanguageObject}->Translate( "Maximum size is %s characters.", $Self->{MaxLength} );
+
     if ( $Param{Mandatory} ) {
         $HTMLString .= <<"EOF";
 <div id="$DivID" class="TooltipErrorMessage">
     <p>
-        \$Text{"This field is required or"} \$Text{"The field content is too long!"} \$Text{"Maximum size is %s characters.", "$Self->{MaxLength}"}
+        $ErrorMessage1 $ErrorMessage2 $ErrorMessage3
     </p>
 </div>
 EOF
@@ -198,7 +194,7 @@ EOF
         $HTMLString .= <<"EOF";
 <div id="$DivID" class="TooltipErrorMessage">
     <p>
-        \$Text{"The field content is too long!"} \$Text{"Maximum size is %s characters.", "$Self->{MaxLength}"}
+        $ErrorMessage2 $ErrorMessage3
     </p>
 </div>
 EOF
@@ -207,13 +203,14 @@ EOF
     if ( $Param{ServerError} ) {
 
         my $ErrorMessage = $Param{ErrorMessage} || 'This field is required.';
+        $ErrorMessage = $Param{LayoutObject}->{LanguageObject}->Translate($ErrorMessage);
         my $DivID = $FieldName . 'ServerError';
 
         # for server side validation
         $HTMLString .= <<"EOF";
 <div id="$DivID" class="TooltipErrorMessage">
     <p>
-        \$Text{"$ErrorMessage"}
+        $ErrorMessage
     </p>
 </div>
 EOF
@@ -221,9 +218,9 @@ EOF
 
     # call EditLabelRender on the common Driver
     my $LabelString = $Self->EditLabelRender(
-        DynamicFieldConfig => $Param{DynamicFieldConfig},
-        Mandatory          => $Param{Mandatory} || '0',
-        FieldName          => $FieldName,
+        %Param,
+        Mandatory => $Param{Mandatory} || '0',
+        FieldName => $FieldName,
     );
 
     my $Data = {
@@ -253,11 +250,29 @@ sub EditFieldValueValidate {
     if ( $Param{Mandatory} && $Value eq '' ) {
         $ServerError = 1;
     }
-
-    if ( length $Value > $Self->{MaxLength} ) {
+    elsif ( length $Value > $Self->{MaxLength} ) {
         $ServerError = 1;
         $ErrorMessage
             = "The field content is too long! Maximum size is $Self->{MaxLength} characters.";
+    }
+    elsif (
+        IsArrayRefWithData( $Param{DynamicFieldConfig}->{Config}->{RegExList} )
+        && ( $Param{Mandatory} || ( !$Param{Mandatory} && $Value ne '' ) )
+        )
+    {
+
+        # check regular expressions
+        my @RegExList = @{ $Param{DynamicFieldConfig}->{Config}->{RegExList} };
+
+        REGEXENTRY:
+        for my $RegEx (@RegExList) {
+
+            if ( $Value !~ $RegEx->{Value} ) {
+                $ServerError  = 1;
+                $ErrorMessage = $RegEx->{ErrorMessage};
+                last REGEXENTRY;
+            }
+        }
     }
 
     # create resulting structure
@@ -292,7 +307,7 @@ sub DisplayValueRender {
 
         $Title = $Param{LayoutObject}->Ascii2Html(
             Text => $Title,
-            Max => $Param{TitleMaxChars} || '',
+            Max  => $Param{TitleMaxChars} || '',
         );
     }
     else {
@@ -358,8 +373,8 @@ EOF
 
     # call EditLabelRender on the common Driver
     my $LabelString = $Self->EditLabelRender(
-        DynamicFieldConfig => $Param{DynamicFieldConfig},
-        FieldName          => $FieldName,
+        %Param,
+        FieldName => $FieldName,
     );
 
     my $Data = {

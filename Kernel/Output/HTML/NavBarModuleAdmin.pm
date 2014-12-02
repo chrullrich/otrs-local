@@ -32,14 +32,22 @@ sub Run {
     # only show it on admin start screen
     return '' if $Self->{LayoutObject}->{Action} ne 'Admin';
 
+    # generate manual link
+    my $ManualVersion = $Self->{ConfigObject}->Get('Version');
+    $ManualVersion =~ m{^(\d{1,2}).+};
+    $ManualVersion = $1;
+
     $Self->{LayoutObject}->Block(
         Name => 'AdminNavBar',
-        Data => {},
+        Data => {
+            ManualVersion => $ManualVersion,
+        },
     );
 
     # get all Frontend::Module
     my %NavBarModule;
     my $FrontendModuleConfig = $Self->{ConfigObject}->Get('Frontend::Module');
+    MODULE:
     for my $Module ( sort keys %{$FrontendModuleConfig} ) {
         my %Hash = %{ $FrontendModuleConfig->{$Module} };
         if (
@@ -81,16 +89,17 @@ sub Run {
                 }
 
             }
-            next if !$Shown;
+            next MODULE if !$Shown;
 
             my $Key = sprintf( "%07d", $Hash{NavBarModule}->{Prio} || 0 );
+            COUNT:
             for ( 1 .. 51 ) {
                 if ( $NavBarModule{$Key} ) {
                     $Hash{NavBarModule}->{Prio}++;
                     $Key = sprintf( "%07d", $Hash{NavBarModule}->{Prio} );
                 }
                 if ( !$NavBarModule{$Key} ) {
-                    last;
+                    last COUNT;
                 }
             }
             $NavBarModule{$Key} = {

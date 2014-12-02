@@ -15,14 +15,8 @@
 .WidgetSimple fieldset.Separated {
     background-color: #E9E9E9;
     border: 1px solid #CCCCCC;
-    border-radius: 4px;
     margin: 9px 0px;
     padding: 4px;
-}
-
-a.Export {
-    background: url("../img/database_export.png") no-repeat left center;
-    padding-left: 24px;
 }
 
 a.Copy {
@@ -42,6 +36,11 @@ a.Copy {
 
 .ACLFields > h4 {
     font-size: 13px;
+    margin-top: 10px;
+}
+
+fieldset:first-child .ACLFields > h4 {
+    margin-top: 0px;
 }
 
 .ACLFields > p {
@@ -73,14 +72,6 @@ a.Copy {
     -webkit-border-radius: 5px;
     border-radius: 5px;
     font-size: 12px;
-}
-
-.Help {
-    display: inline-block;
-    width: 18px;
-    height: 12px;
-    background: url(../img/contexthelp.png) no-repeat center;
-    cursor: help;
 }
 
 .AddAll {
@@ -129,10 +120,14 @@ a.Copy {
     position: absolute;
     width: 12px;
     height: 13px;
-    background: url(../img/toggle_arrow.png) top center;
     left: -17px;
-    top: 9px;
+    top: -1px;
     cursor: pointer;
+    font-size: 15px;
+}
+
+.ACLFieldGroup li .Trigger .fa-caret-right {
+    display: inline-block;
 }
 
 .ACLFieldGroup .DataItem strong {
@@ -141,11 +136,15 @@ a.Copy {
 
 .ACLFieldGroup ul li .Trigger {
     left: 2px;
-    top: 7px;
+    top: 0px;
 }
 
-.ACLFieldGroup > li .Trigger.Collapse {
-    background-position: bottom center;
+.ACLFieldGroup > li .Trigger.Collapse .fa-caret-down {
+    display: inline-block;
+}
+
+.ACLFieldGroup > li .Trigger.Collapse .fa-caret-right {
+    display: none;
 }
 
 .ACLFieldGroup li ul li {
@@ -171,7 +170,7 @@ a.Copy {
 }
 
 .ItemPrefix {
-    width: 80px;
+    width: 140px;
 }
 
 .ACLFieldGroup > li.DataItem:first-child {
@@ -247,12 +246,11 @@ a.Copy {
     height: 16px;
     width: 16px;
     padding: 1px;
-    margin-bottom: 2px;
-    margin-right: 2px;
+    margin-top: -1px;
+    margin-right: -2px;
     border-style: none;
-    text-indent: -9999px;
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: top;
     cursor: pointer;
 }
 
@@ -295,7 +293,7 @@ a.Copy {
 
 .ACLNote {
     background: #fff;
-    border: 2px solid #CCCCCC;
+    border: 1px solid #CCCCCC;
     margin-bottom: 10px;
     padding: 5px 10px;
 }

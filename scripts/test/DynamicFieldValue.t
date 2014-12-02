@@ -10,23 +10,16 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
-use Kernel::System::DynamicField;
-use Kernel::System::DynamicFieldValue;
-use Kernel::System::UnitTest::Helper;
-use Kernel::System::Ticket;
-
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %$Self,
-    UnitTestObject => $Self,
-);
+# get needed objects
+my $HelperObject            = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $DynamicFieldObject      = $Kernel::OM->Get('Kernel::System::DynamicField');
+my $DynamicFieldValueObject = $Kernel::OM->Get('Kernel::System::DynamicFieldValue');
+my $TicketObject            = $Kernel::OM->Get('Kernel::System::Ticket');
 
 my $RandomID = int rand 1_000_000_000;
-
-my $DynamicFieldObject      = Kernel::System::DynamicField->new( %{$Self} );
-my $DynamicFieldValueObject = Kernel::System::DynamicFieldValue->new( %{$Self} );
-my $TicketObject            = Kernel::System::Ticket->new( %{$Self} );
 
 # create a ticket
 my $TicketID = $TicketObject->TicketCreate(
@@ -52,7 +45,7 @@ my $FieldID = $DynamicFieldObject->DynamicFieldAdd(
     Name       => "dynamicfieldtest$RandomID",
     Label      => 'a description',
     FieldOrder => 9991,
-    FieldType  => 'Text',     # mandatory, selects the DF backend to use for this field
+    FieldType  => 'Text',                        # mandatory, selects the DF backend to use for this field
     ObjectType => 'Ticket',
     Config     => {
         DefaultValue => 'a value',
@@ -72,7 +65,7 @@ my $FieldID2 = $DynamicFieldObject->DynamicFieldAdd(
     Name       => "dynamicfield2test$RandomID",
     Label      => 'a description',
     FieldOrder => 9991,
-    FieldType  => 'Text',     # mandatory, selects the DF backend to use for this field
+    FieldType  => 'Text',                         # mandatory, selects the DF backend to use for this field
     ObjectType => 'Ticket',
     Config     => {
         DefaultValue => 'a value',
@@ -92,7 +85,7 @@ my $FieldID3 = $DynamicFieldObject->DynamicFieldAdd(
     Name       => "dynamicfield3test$RandomID",
     Label      => 'a description',
     FieldOrder => 9991,
-    FieldType  => 'Text',     # mandatory, selects the DF backend to use for this field
+    FieldType  => 'Text',                         # mandatory, selects the DF backend to use for this field
     ObjectType => 'Ticket',
     TreeView   => 1,
     Config     => {
@@ -834,7 +827,7 @@ $FieldID = $DynamicFieldObject->DynamicFieldAdd(
     Name       => "dynamicfieldtest$RandomID",
     Label      => 'a description',
     FieldOrder => 9991,
-    FieldType  => 'Text',     # mandatory, selects the DF backend to use for this field
+    FieldType  => 'Text',                        # mandatory, selects the DF backend to use for this field
     ObjectType => 'Ticket',
     Config     => {
         DefaultValue => 'a value',

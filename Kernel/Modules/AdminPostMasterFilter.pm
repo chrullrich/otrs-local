@@ -42,16 +42,12 @@ sub Run {
     my $OldName        = $Self->{ParamObject}->GetParam( Param => 'OldName' );
     my $StopAfterMatch = $Self->{ParamObject}->GetParam( Param => 'StopAfterMatch' ) || 0;
     my %GetParam = ();
-    for my $Number ( 1 .. 12 ) {
-        $GetParam{"MatchHeader$Number"}
-            = $Self->{ParamObject}->GetParam( Param => "MatchHeader$Number" );
-        $GetParam{"MatchValue$Number"}
-            = $Self->{ParamObject}->GetParam( Param => "MatchValue$Number" );
-        $GetParam{"MatchNot$Number"}
-            = $Self->{ParamObject}->GetParam( Param => "MatchNot$Number" );
-        $GetParam{"SetHeader$Number"}
-            = $Self->{ParamObject}->GetParam( Param => "SetHeader$Number" );
-        $GetParam{"SetValue$Number"} = $Self->{ParamObject}->GetParam( Param => "SetValue$Number" );
+    for my $Number ( 1 .. $Self->{ConfigObject}->Get('PostmasterHeaderFieldCount') ) {
+        $GetParam{"MatchHeader$Number"} = $Self->{ParamObject}->GetParam( Param => "MatchHeader$Number" );
+        $GetParam{"MatchValue$Number"}  = $Self->{ParamObject}->GetParam( Param => "MatchValue$Number" );
+        $GetParam{"MatchNot$Number"}    = $Self->{ParamObject}->GetParam( Param => "MatchNot$Number" );
+        $GetParam{"SetHeader$Number"}   = $Self->{ParamObject}->GetParam( Param => "SetHeader$Number" );
+        $GetParam{"SetValue$Number"}    = $Self->{ParamObject}->GetParam( Param => "SetValue$Number" );
     }
 
     # ------------------------------------------------------------ #
@@ -101,7 +97,7 @@ sub Run {
         my %Set   = ();
         my %Not;
 
-        for my $Number ( 1 .. 12 ) {
+        for my $Number ( 1 .. $Self->{ConfigObject}->Get('PostmasterHeaderFieldCount') ) {
             if ( $GetParam{"MatchHeader$Number"} && $GetParam{"MatchValue$Number"} ) {
                 $Match{ $GetParam{"MatchHeader$Number"} } = $GetParam{"MatchValue$Number"};
                 $Not{ $GetParam{"MatchHeader$Number"} }   = $GetParam{"MatchNot$Number"};
@@ -193,7 +189,9 @@ sub Run {
             for my $Key ( sort keys %List ) {
                 $Self->{LayoutObject}->Block(
                     Name => 'OverviewResultRow',
-                    Data => { Name => $Key, },
+                    Data => {
+                        Name => $Key,
+                    },
                 );
             }
         }
@@ -276,7 +274,7 @@ sub _MaskUpdate {
     $SetHeader{''} = '-';
 
     # build strings
-    for my $Number ( 1 .. 12 ) {
+    for my $Number ( 1 .. $Self->{ConfigObject}->Get('PostmasterHeaderFieldCount') ) {
         $Data{"MatchHeader$Number"} = $Self->{LayoutObject}->BuildSelection(
             Data        => \%Header,
             Name        => "MatchHeader$Number",
@@ -295,17 +293,23 @@ sub _MaskUpdate {
         );
     }
     $Data{"StopAfterMatch"} = $Self->{LayoutObject}->BuildSelection(
-        Data => { 0 => 'No', 1 => 'Yes' },
-        Name => 'StopAfterMatch',
-        SelectedID => $Data{StopAfterMatch} || 0,
-        Class => 'Validate_RequiredDropdown',
+        Data => {
+            0 => 'No',
+            1 => 'Yes'
+        },
+        Name        => 'StopAfterMatch',
+        SelectedID  => $Data{StopAfterMatch} || 0,
+        Class       => 'Validate_RequiredDropdown',
         Translation => 1,
         HTMLQuote   => 1,
     );
 
     $Self->{LayoutObject}->Block(
         Name => 'OverviewUpdate',
-        Data => { %Param, %Data, OldName => $Data{Name}, },
+        Data => {
+            %Param, %Data,
+            OldName => $Data{Name},
+        },
     );
 
     # shows header

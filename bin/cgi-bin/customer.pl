@@ -31,11 +31,11 @@ use lib "$Bin/../../Custom";
 # 0=off;1=on;
 my $Debug = 0;
 
-# load agent web interface
+# load customer web interface
 use Kernel::System::Web::InterfaceCustomer();
+use Kernel::System::ObjectManager;
 
-# create new object
+local $Kernel::OM = Kernel::System::ObjectManager->new();
+
 my $Interface = Kernel::System::Web::InterfaceCustomer->new( Debug => $Debug );
-
-# execute object
 $Interface->Run();

@@ -28,23 +28,14 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::DB;
-use Kernel::System::Type;
-use Kernel::System::Main;
+use Kernel::System::ObjectManager;
 
-my %CommonObject;
-
-# create common objects
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}
-    = Kernel::System::Log->new( %CommonObject, LogPrefix => 'OTRS-otrs.TicketType' );
-$CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject}   = Kernel::System::DB->new(%CommonObject);
-$CommonObject{TypeObject} = Kernel::System::Type->new(%CommonObject);
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.TicketType',
+    },
+);
 
 my %Param;
 my %Options;
@@ -69,7 +60,7 @@ $Param{UserID} = '1';
 $Param{ValidID} = '1';
 $Param{Name} = $Options{n} || '';
 
-if ( my $RID = $CommonObject{TypeObject}->TypeAdd(%Param) ) {
+if ( my $RID = $Kernel::OM->Get('Kernel::System::Type')->TypeAdd(%Param) ) {
     print "Ticket type '$Options{n}' added. Type id is '$RID'\n";
 }
 else {

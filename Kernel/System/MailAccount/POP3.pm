@@ -11,8 +11,16 @@ package Kernel::System::MailAccount::POP3;
 
 use strict;
 use warnings;
+
 use Net::POP3;
+
 use Kernel::System::PostMaster;
+
+our @ObjectDependencies = (
+    'Kernel::Config',
+    'Kernel::System::Log',
+    'Kernel::System::Main',
+);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -20,11 +28,6 @@ sub new {
     # allocate new hash for object
     my $Self = {%Param};
     bless( $Self, $Type );
-
-    # check all needed objects
-    for (qw(DBObject LogObject ConfigObject TimeObject MainObject)) {
-        die "Got no $_" if !$Self->{$_};
-    }
 
     # reset limit
     $Self->{Limit} = 0;
@@ -38,7 +41,10 @@ sub Connect {
     # check needed stuff
     for (qw(Login Password Host Timeout Debug)) {
         if ( !defined $Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -51,7 +57,10 @@ sub Connect {
     );
 
     if ( !$PopObject ) {
-        return ( Successful => 0, Message => "POP3: Can't connect to $Param{Host}" );
+        return (
+            Successful => 0,
+            Message    => "POP3: Can't connect to $Param{Host}"
+        );
     }
 
     # authentication
@@ -90,13 +99,19 @@ sub Fetch {
     # check needed stuff
     for (qw(Login Password Host Trusted QueueID)) {
         if ( !defined $Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "$_ not defined!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "$_ not defined!"
+            );
             return;
         }
     }
     for (qw(Login Password Host)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -105,11 +120,14 @@ sub Fetch {
     my $Limit = $Param{Limit} || 5000;
     my $CMD   = $Param{CMD}   || 0;
 
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
     # MaxEmailSize
-    my $MaxEmailSize = $Self->{ConfigObject}->Get('PostMasterMaxEmailSize') || 1024 * 6;
+    my $MaxEmailSize = $ConfigObject->Get('PostMasterMaxEmailSize') || 1024 * 6;
 
     # MaxPopEmailSession
-    my $MaxPopEmailSession = $Self->{ConfigObject}->Get('PostMasterReconnectMessage') || 20;
+    my $MaxPopEmailSession = $ConfigObject->Get('PostMasterReconnectMessage') || 20;
 
     my $FetchCounter = 0;
 
@@ -124,7 +142,7 @@ sub Fetch {
     );
 
     if ( !$Connect{Successful} ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "$Connect{Message}",
         );
@@ -142,6 +160,7 @@ sub Fetch {
     }
     else {
         my $MessageList = $PopObject->list();
+        MESSAGE_NO:
         for my $Messageno ( sort keys %{$MessageList} ) {
 
             # check if reconnect is needed
@@ -150,7 +169,7 @@ sub Fetch {
                 if ($CMD) {
                     print "$AuthType: Reconnect Session after $MaxPopEmailSession messages...\n";
                 }
-                last;
+                last MESSAGE_NO;
             }
             if ($CMD) {
                 print "$AuthType: Message $Messageno/$NOM ($Param{Login}/$Param{Host})\n";
@@ -161,9 +180,9 @@ sub Fetch {
 
                 # convert size to KB, log error
                 my $MessageSizeKB = int( $MessageList->{$Messageno} / (1024) );
-                $Self->{LogObject}->Log(
+                $Kernel::OM->Get('Kernel::System::Log')->Log(
                     Priority => 'error',
-                    Message => "$AuthType: Can't fetch email $NOM from $Param{Login}/$Param{Host}. "
+                    Message  => "$AuthType: Can't fetch email $NOM from $Param{Login}/$Param{Host}. "
                         . "Email too big ($MessageSizeKB KB - max $MaxEmailSize KB)!",
                 );
             }
@@ -182,7 +201,7 @@ sub Fetch {
                 # get message (header and body)
                 my $Lines = $PopObject->get($Messageno);
                 if ( !$Lines ) {
-                    $Self->{LogObject}->Log(
+                    $Kernel::OM->Get('Kernel::System::Log')->Log(
                         Priority => 'error',
                         Message  => "$AuthType: Can't process mail, email no $Messageno is empty!",
                     );
@@ -197,7 +216,7 @@ sub Fetch {
                     my @Return = $PostMasterObject->Run( QueueID => $Param{QueueID} || 0 );
                     if ( !$Return[0] ) {
                         my $File = $Self->_ProcessFailed( Email => $Lines );
-                        $Self->{LogObject}->Log(
+                        $Kernel::OM->Get('Kernel::System::Log')->Log(
                             Priority => 'error',
                             Message  => "$AuthType: Can't process mail, mail saved ("
                                 . "$File, report it on http://bugs.otrs.org/)!",
@@ -213,7 +232,7 @@ sub Fetch {
                 $Self->{Limit}++;
                 if ( $Self->{Limit} >= $Limit ) {
                     $Self->{Reconnect} = 0;
-                    last;
+                    last MESSAGE_NO;
                 }
 
             }
@@ -225,9 +244,9 @@ sub Fetch {
 
     # log status
     if ( $Debug > 0 || $FetchCounter ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'info',
-            Message => "$AuthType: Fetched $FetchCounter email(s) from $Param{Login}/$Param{Host}.",
+            Message  => "$AuthType: Fetched $FetchCounter email(s) from $Param{Login}/$Param{Host}.",
         );
     }
     $PopObject->quit();
@@ -244,7 +263,10 @@ sub _ProcessFailed {
 
     # check needed stuff
     if ( !defined $Param{Email} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => "'Email' not defined!" );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => "'Email' not defined!"
+        );
         return;
     }
 
@@ -254,13 +276,16 @@ sub _ProcessFailed {
         $Content .= $Line;
     }
 
-    my $Home = $Self->{ConfigObject}->Get('Home') . '/var/spool/';
-    my $MD5  = $Self->{MainObject}->MD5sum(
+    # get main object
+    my $MainObject = $Kernel::OM->Get('Kernel::System::Main');
+
+    my $Home = $Kernel::OM->Get('Kernel::Config')->Get('Home') . '/var/spool/';
+    my $MD5  = $MainObject->MD5sum(
         String => \$Content,
     );
     my $Location = $Home . 'problem-email-' . $MD5;
 
-    return $Self->{MainObject}->FileWrite(
+    return $MainObject->FileWrite(
         Location   => $Location,
         Content    => \$Content,
         Mode       => 'binmode',

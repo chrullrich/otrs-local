@@ -28,60 +28,59 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Main;
+use Kernel::System::ObjectManager;
 
-# common objects
-my %CommonObject = ();
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.GetConfig',
-    %CommonObject,
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.GetConfig',
+    },
 );
-$CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
 
 # print wanted var
 my $Key = shift || '';
 if ($Key) {
     chomp $Key;
-    if ( ref( $CommonObject{ConfigObject}->{$Key} ) eq 'ARRAY' ) {
-        for ( @{ $CommonObject{ConfigObject}->{$Key} } ) {
+
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
+    if ( ref( $ConfigObject->{$Key} ) eq 'ARRAY' ) {
+        for ( @{ $ConfigObject->{$Key} } ) {
             print "$_;";
         }
         print "\n";
     }
-    elsif ( ref( $CommonObject{ConfigObject}->{$Key} ) eq 'HASH' ) {
-        for my $SubKey ( sort keys %{ $CommonObject{ConfigObject}->{$Key} } ) {
-            print "$SubKey=$CommonObject{ConfigObject}->{$Key}->{$SubKey};";
+    elsif ( ref( $ConfigObject->{$Key} ) eq 'HASH' ) {
+        for my $SubKey ( sort keys %{ $ConfigObject->{$Key} } ) {
+            print "$SubKey=$ConfigObject->{$Key}->{$SubKey};";
         }
         print "\n";
     }
     else {
-        print $CommonObject{ConfigObject}->{$Key} . "\n";
+        print $Kernel::OM->Get('Kernel::Config')->{$Key} . "\n";
     }
 }
 else {
 
     # print all vars
-    for ( sort keys %{ $CommonObject{ConfigObject} } ) {
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
+    for ( sort keys %{$ConfigObject} ) {
         print $_. ":";
-        if ( ref( $CommonObject{ConfigObject}->{$_} ) eq 'ARRAY' ) {
-            for ( @{ $CommonObject{ConfigObject}->{$_} } ) {
+        if ( ref( $ConfigObject->{$_} ) eq 'ARRAY' ) {
+            for ( @{ $ConfigObject->{$_} } ) {
                 print "$_;";
             }
             print "\n";
         }
-        elsif ( ref( $CommonObject{ConfigObject}->{$_} ) eq 'HASH' ) {
-            for my $Key ( sort keys %{ $CommonObject{ConfigObject}->{$_} } ) {
-                print "$Key=$CommonObject{ConfigObject}->{$_}->{$Key};";
+        elsif ( ref( $ConfigObject->{$_} ) eq 'HASH' ) {
+            for my $Key ( sort keys %{ $ConfigObject->{$_} } ) {
+                print "$Key=$ConfigObject->{$_}->{$Key};";
             }
             print "\n";
         }
         else {
-            print $CommonObject{ConfigObject}->{$_} . "\n";
+            print $ConfigObject->{$_} . "\n";
         }
     }
 }

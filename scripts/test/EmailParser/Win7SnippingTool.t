@@ -9,8 +9,11 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
+
+use vars (qw($Self));
+
+use Kernel::System::EmailParser;
 
 =cut
 This is a test for an email from the Win7 snipping tool. This email is an invalid
@@ -19,33 +22,22 @@ mime message and therefore cannot be parsed by MIME::Tools correctly.
 See also: http://bugs.otrs.org/show_bug.cgi?id=8092
 =cut
 
-use Kernel::System::EmailParser;
-
-my $Home = $Self->{ConfigObject}->Get('Home');
+my $Home = $Kernel::OM->Get('Kernel::Config')->Get('Home');
 
 # test for bug#1970
-my @Array = ();
-open( my $IN, "<", "$Home/scripts/test/sample/EmailParser/Win7SnippingTool.box" );    ## no critic
+my @Array;
+open my $IN, '<', "$Home/scripts/test/sample/EmailParser/Win7SnippingTool.box";    ## no critic
 while (<$IN>) {
-    push( @Array, $_ );
+    push @Array, $_;
 }
-close($IN);
+close $IN;
 
 # create local object
 my $EmailParserObject = Kernel::System::EmailParser->new(
-    %{$Self},
     Email => \@Array,
 );
 
 my @Attachments = $EmailParserObject->GetAttachments();
-
-#use MIME::Parser;
-#my $parser = new MIME::Parser;
-#$parser->output_under("/tmp");
-#my $entity = $parser->parse_open("$Home/scripts/test/sample/EmailParser/Win7SnippingTool.box");
-#
-#use Data::Dumper;
-#print STDERR "Dump: " . Dumper(\@Attachments) . "\n";
 
 $Self->Is(
     scalar @Attachments,

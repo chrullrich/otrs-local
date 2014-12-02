@@ -10,42 +10,25 @@
 use strict;
 use warnings;
 use utf8;
-use vars (qw($Self %Param));
 
-use Kernel::System::Encode;
-use Kernel::System::JSON;
-use Kernel::System::Log;
-use Kernel::System::Main;
-use Kernel::System::Time;
-use Kernel::System::Web::Request;
+use vars (qw($Self));
+
 use Kernel::Output::HTML::Layout;
 
-# create local objects
-my %CommonObject;
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'BuildSelection.t',
-    %CommonObject,
-);
-$CommonObject{TimeObject}  = Kernel::System::Time->new(%CommonObject);
-$CommonObject{MainObject}  = Kernel::System::Main->new(%CommonObject);
-$CommonObject{JSONObject}  = Kernel::System::JSON->new(%CommonObject);
-$CommonObject{ParamObject} = Kernel::System::Web::Request->new(
-    %CommonObject,
-    WebRequest => $Param{WebRequest} || 0,
-);
-$CommonObject{LayoutObject} = Kernel::Output::HTML::Layout->new(
-    %CommonObject,
+# get needed objects
+my $ParamObject = $Kernel::OM->Get('Kernel::System::Web::Request');
+my $JSONObject  = $Kernel::OM->Get('Kernel::System::JSON');
+
+my $LayoutObject = Kernel::Output::HTML::Layout->new(
     Lang => 'de',
 );
 
 # set JSON values
-my $JSONTrue  = $CommonObject{JSONObject}->True();
-my $JSONFalse = $CommonObject{JSONObject}->False();
+my $JSONTrue  = $JSONObject->True();
+my $JSONFalse = $JSONObject->False();
 
 # zero test for SelectedID attribute
-my $HTMLCode = $CommonObject{LayoutObject}->BuildSelection(
+my $HTMLCode = $LayoutObject->BuildSelection(
     Data => {
         0 => 'zero',
         1 => 'one',
@@ -68,7 +51,7 @@ $Self->True(
 );
 
 # Ajax and OnChange exclude each other
-$HTMLCode = $CommonObject{LayoutObject}->BuildSelection(
+$HTMLCode = $LayoutObject->BuildSelection(
     Data => {
         0 => 'zero',
         1 => 'one',
@@ -189,7 +172,7 @@ my @Tests = (
         Response =>
             q{<select id="Select1ID" name="Select1" onchange="Core.AJAX.FormUpdate($('#Select1ID'), 'test', 'Select1', ['1', '2']);">
   <option value="1">Object1</option>
-</select> <a href="#" title="$Text\{"Show Tree Selection"\}" class="ShowTreeSelection">$Text\{"Show Tree Selection"\}</a>},
+</select> <a href="#" title="Baumauswahl anzeigen" class="ShowTreeSelection"><span>Baumauswahl anzeigen</span><i class="fa fa-sitemap"></i></a>},
         Success      => 1,
         ExecuteJSON  => 1,
         JSONResponse => {
@@ -255,7 +238,7 @@ my @Tests = (
   <option value="12">&nbsp;&nbsp;AttributeB</option>
   <option value="13">&nbsp;&nbsp;&nbsp;&nbsp;Value1</option>
   <option value="14">&nbsp;&nbsp;&nbsp;&nbsp;Value2</option>
-</select> <a href="#" title="$Text{"Show Tree Selection"}" class="ShowTreeSelection">$Text{"Show Tree Selection"}</a>',
+</select> <a href="#" title="Baumauswahl anzeigen" class="ShowTreeSelection"><span>Baumauswahl anzeigen</span><i class="fa fa-sitemap"></i></a>',
         Success      => 1,
         ExecuteJSON  => 1,
         JSONResponse => {
@@ -492,7 +475,7 @@ my @Tests = (
   <option value="-" disabled="disabled">&nbsp;&nbsp;AttributeB</option>
   <option value="13">&nbsp;&nbsp;&nbsp;&nbsp;Value1</option>
   <option value="14">&nbsp;&nbsp;&nbsp;&nbsp;Value2</option>
-</select> <a href="#" title="$Text{"Show Tree Selection"}" class="ShowTreeSelection">$Text{"Show Tree Selection"}</a>',
+</select> <a href="#" title="Baumauswahl anzeigen" class="ShowTreeSelection"><span>Baumauswahl anzeigen</span><i class="fa fa-sitemap"></i></a>',
         Success      => 1,
         ExecuteJSON  => 1,
         JSONResponse => {
@@ -600,7 +583,7 @@ my @Tests = (
   <option value="8">Object2</option>
   <option value="-" disabled="disabled">&nbsp;&nbsp;AttributeB</option>
   <option value="14">&nbsp;&nbsp;&nbsp;&nbsp;Value2</option>
-</select> <a href="#" title="$Text{"Show Tree Selection"}" class="ShowTreeSelection">$Text{"Show Tree Selection"}</a>',
+</select> <a href="#" title="Baumauswahl anzeigen" class="ShowTreeSelection"><span>Baumauswahl anzeigen</span><i class="fa fa-sitemap"></i></a>',
         Success      => 1,
         ExecuteJSON  => 1,
         JSONResponse => {
@@ -704,7 +687,7 @@ my @Tests = (
   <option value="Object2::AttributeB">&nbsp;&nbsp;AttributeB</option>
   <option value="Object2::AttributeB::Value1">&nbsp;&nbsp;&nbsp;&nbsp;Value1</option>
   <option value="Object2::AttributeB::Value2">&nbsp;&nbsp;&nbsp;&nbsp;Value2</option>
-</select> <a href="#" title="$Text{"Show Tree Selection"}" class="ShowTreeSelection">$Text{"Show Tree Selection"}</a>',
+</select> <a href="#" title="Baumauswahl anzeigen" class="ShowTreeSelection"><span>Baumauswahl anzeigen</span><i class="fa fa-sitemap"></i></a>',
         Success      => 1,
         ExecuteJSON  => 1,
         JSONResponse => {
@@ -817,7 +800,7 @@ my @Tests = (
   <option value="-" disabled="disabled">&nbsp;&nbsp;AttributeB</option>
   <option value="Object2::AttributeB::Value1">&nbsp;&nbsp;&nbsp;&nbsp;Value1</option>
   <option value="Object2::AttributeB::Value2">&nbsp;&nbsp;&nbsp;&nbsp;Value2</option>
-</select> <a href="#" title="$Text{"Show Tree Selection"}" class="ShowTreeSelection">$Text{"Show Tree Selection"}</a>',
+</select> <a href="#" title="Baumauswahl anzeigen" class="ShowTreeSelection"><span>Baumauswahl anzeigen</span><i class="fa fa-sitemap"></i></a>',
         Success      => 1,
         ExecuteJSON  => 1,
         JSONResponse => {
@@ -927,7 +910,7 @@ my @Tests = (
   <option value="-" disabled="disabled">&nbsp;&nbsp;AttributeB</option>
   <option value="Object2::AttributeB::Value1">&nbsp;&nbsp;&nbsp;&nbsp;Value1</option>
   <option value="Object2::AttributeB::Value2">&nbsp;&nbsp;&nbsp;&nbsp;Value2</option>
-</select> <a href="#" title="$Text{"Show Tree Selection"}" class="ShowTreeSelection">$Text{"Show Tree Selection"}</a>',
+</select> <a href="#" title="Baumauswahl anzeigen" class="ShowTreeSelection"><span>Baumauswahl anzeigen</span><i class="fa fa-sitemap"></i></a>',
         Success      => 1,
         ExecuteJSON  => 1,
         JSONResponse => {
@@ -994,7 +977,7 @@ for my $Test (@Tests) {
     }
 
     # call BuildSelection
-    my $HTML = $CommonObject{LayoutObject}->BuildSelection( %{ $Test->{Definition} } );
+    my $HTML = $LayoutObject->BuildSelection( %{ $Test->{Definition} } );
 
     if ( $Test->{Success} ) {
         $Self->Is(
@@ -1022,14 +1005,14 @@ for my $Test (@Tests) {
     if ( $Test->{ExecuteJSON} ) {
 
         # call BuildSelectionJSON
-        my $JSON = $CommonObject{LayoutObject}->BuildSelectionJSON(
+        my $JSON = $LayoutObject->BuildSelectionJSON(
             [
                 $Test->{Definition},
             ],
         );
 
         # JSON ecode the expected data for easy compare
-        my $JSONResponse = $CommonObject{JSONObject}->Encode(
+        my $JSONResponse = $JSONObject->Encode(
             Data => $Test->{JSONResponse},
         );
 

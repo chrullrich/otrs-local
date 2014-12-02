@@ -32,7 +32,10 @@ sub Run {
 
     # check needed stuff
     if ( !$Param{Ticket} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need Ticket!' );
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => 'Need Ticket!'
+        );
         return;
     }
 
@@ -46,9 +49,8 @@ sub Run {
     }
 
     # check acl
-    return
-        if defined $Param{ACL}->{ $Param{Config}->{Action} }
-        && !$Param{ACL}->{ $Param{Config}->{Action} };
+    my %ACLLookup = reverse( %{ $Param{ACL} || {} } );
+    return if ( !$ACLLookup{ $Param{Config}->{Action} } );
 
     # check access
     my @Groups;
@@ -59,11 +61,12 @@ sub Run {
     my $Access = 1;
     if (@Groups) {
         $Access = 0;
+        GROUP:
         for my $Group (@Groups) {
-            next if !$Self->{LayoutObject}->{"UserIsGroup[$Group]"};
+            next GROUP if !$Self->{LayoutObject}->{"UserIsGroup[$Group]"};
             if ( $Self->{LayoutObject}->{"UserIsGroup[$Group]"} eq 'Yes' ) {
                 $Access = 1;
-                last;
+                last GROUP;
             }
         }
     }
@@ -83,7 +86,7 @@ sub Run {
             Name        => 'Unwatch',
             Description => 'Remove from list of watched tickets',
             Link =>
-                'Action=AgentTicketWatcher;Subaction=Unsubscribe;TicketID=$QData{"TicketID"};$QEnv{"ChallengeTokenParam"}',
+                'Action=AgentTicketWatcher;Subaction=Unsubscribe;TicketID=[% Data.TicketID | uri %];[% Env("ChallengeTokenParam") | html %]',
         };
     }
 
@@ -95,7 +98,7 @@ sub Run {
         Name        => 'Watch',
         Description => 'Add to list of watched tickets',
         Link =>
-            'Action=AgentTicketWatcher;Subaction=Subscribe;TicketID=$QData{"TicketID"};$QEnv{"ChallengeTokenParam"}',
+            'Action=AgentTicketWatcher;Subaction=Subscribe;TicketID=[% Data.TicketID | uri %];[% Env("ChallengeTokenParam") | html %]',
     };
 }
 

@@ -9,35 +9,36 @@
 
 use strict;
 use warnings;
+use utf8;
 
-use vars qw($Self);
-
-use Kernel::Config;
-use Kernel::System::User;
-
-use Kernel::System::UnitTest::Helper;
-use Kernel::System::UnitTest::Selenium;
+use vars (qw($Self));
 
 use Time::HiRes qw(sleep);
 
+use Kernel::System::UnitTest::Selenium;
+
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
 my $Selenium = Kernel::System::UnitTest::Selenium->new(
-    Verbose        => 1,
-    UnitTestObject => $Self,
+    Verbose => 1,
 );
 
 $Selenium->RunTest(
     sub {
 
-        my $WebPath = $Self->{ConfigObject}->Get('Frontend::WebPath');
+        my $WebPath = $ConfigObject->Get('Frontend::WebPath');
 
         $Selenium->get("${WebPath}js/test/JSUnitTest.html");
 
         # wait for the javascript tests (including AJAX) to complete
         WAIT:
         for ( 1 .. 20 ) {
+
             if ( eval { $Selenium->find_element( "p.result span.failed", 'css' ); } ) {
                 last WAIT;
             }
+
             sleep(0.2);
         }
 
@@ -52,10 +53,9 @@ $Selenium->RunTest(
         $Failed = $Selenium->execute_script(
             "return \$('p.result span.failed').text()"
         );
-        $Total
-            = $Selenium->execute_script(
+        $Total = $Selenium->execute_script(
             "return \$('p.result span.total').text()"
-            );
+        );
 
         $Self->True( $Passed, 'Found passed tests' );
         $Self->Is( $Passed, $Total, 'Total number of tests' );

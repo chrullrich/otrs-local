@@ -28,16 +28,11 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use Getopt::Std qw();
+use Getopt::Std ();
+use Locale::PO  ();
+use File::Copy  ();
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Main;
-use Kernel::System::Time;
-use Kernel::System::DB;
-use Kernel::Language;
-use Kernel::System::SysConfig;
+use Kernel::System::ObjectManager;
 
 sub PrintUsage {
     print <<"EOF";
@@ -48,11 +43,17 @@ Copyright (C) 2001-2010 OTRS AG, http://otrs.org/
 Translating OTRS
 ================
 
-  Make sure that you have a clean system with a current configuration. No modules
-  may be installed or linked into the system!
+Make sure that you have a clean system with a current configuration. No modules
+may be installed or linked into the system!
 
     otrs.CreateTranslationFile.pl -l <Language>
     otrs.CreateTranslationFile.pl -l all
+
+Since OTRS 4 public translations are managed in transifex. Use the -p switch to
+update the .pot files and the -P switch to update both .pot and .po files (usually not needed).
+
+    otrs.CreateTranslationFile.pl -l <Language> -p
+    otrs.CreateTranslationFile.pl -l <Language> -P
 
 Translating Extension Modules
 =============================
@@ -67,27 +68,19 @@ Translating Extension Modules
 Optional Parameters
 =============================
 
-  To purge obsolete translation entries, use -p
-
-    otrs.CreateTranslationFile.pl -l all -p
+  To output debug information, use -v.
 
 EOF
 }
 
-# common objects
-my %CommonObject = ();
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.CreateTranslationFile.pl',
-    %CommonObject,
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.CreateTranslationFile.pl',
+    },
 );
-$CommonObject{MainObject}      = Kernel::System::Main->new(%CommonObject);
-$CommonObject{TimeObject}      = Kernel::System::Time->new(%CommonObject);
-$CommonObject{DBObject}        = Kernel::System::DB->new(%CommonObject);
-$CommonObject{SysConfigObject} = Kernel::System::SysConfig->new(%CommonObject);
 
-my $Home = $CommonObject{ConfigObject}->Get('Home');
+my $Home = $Kernel::OM->Get('Kernel::Config')->Get('Home');
 
 my $BreakLineAfterChars = 60;
 
@@ -96,15 +89,15 @@ my $BreakLineAfterChars = 60;
     my %Opts;
 
     # get opts
-    Getopt::Std::getopt( 'lmp', \%Opts );
+    Getopt::Std::getopt( 'lmpv', \%Opts );
 
     # check params
     if ( $Opts{l} && $Opts{l} eq 'all' ) {
-        my %DefaultUsedLanguages = %{ $CommonObject{ConfigObject}->Get('DefaultUsedLanguages') };
+        my %DefaultUsedLanguages = %{ $Kernel::OM->Get('Kernel::Config')->Get('DefaultUsedLanguages') };
         @Languages = sort keys %DefaultUsedLanguages;
 
         # ignore en*.pm files
-        @Languages = grep { $_ !~ m{ \A en .* }xms } @Languages;
+        @Languages = grep { $_ ne 'en' } @Languages;
     }
     elsif ( $Opts{l} ) {
         push @Languages, $Opts{l};
@@ -125,10 +118,12 @@ my $BreakLineAfterChars = 60;
 
     for my $Language (@Languages) {
         HandleLanguage(
-            Language      => $Language,
-            Module        => $Opts{m},
-            PurgeObsolete => exists $Opts{p} ? 1 : 0,
-            Stats         => \%Stats,
+            Language => $Language,
+            Module   => $Opts{m},
+            WritePOT => ( exists $Opts{p} || exists $Opts{P} ) ? 1 : 0,
+            WritePO => exists $Opts{P} ? 1 : 0,
+            Stats   => \%Stats,
+            Verbose => exists $Opts{v} ? 1 : 0,
         );
     }
 
@@ -155,28 +150,40 @@ my $BreakLineAfterChars = 60;
     print "\n\nFinished.\n";
 }
 
+# Only write POT file once
+my $POTFileWritten;
+
 sub HandleLanguage {
     my (%Param) = @_;
 
-    my $Language      = $Param{Language};
-    my $Module        = $Param{Module};
-    my $PurgeObsolete = $Param{PurgeObsolete};
+    my $Language = $Param{Language};
+    my $Module   = $Param{Module};
 
     my $ModuleDirectory = $Module;
     my $LanguageFile;
     my $TargetFile;
+    my $TargetPOTFile;
+    my $TargetPOFile;
     my $IsSubTranslation;
-    my $Indent = ' ' x 8;    # 8 spaces for core files
 
-    my $DefaultTheme = $CommonObject{ConfigObject}->Get('DefaultTheme');
+    my $DefaultTheme = $Kernel::OM->Get('Kernel::Config')->Get('DefaultTheme');
+
+    # We need to map internal codes to the official ones used by Transifex
+    my %TransifexLanguagesMap = (
+        sr_Cyrl => 'sr',
+        sr_Latn => 'sr@Latin',
+    );
+
+    my $TransifexLanguage = $TransifexLanguagesMap{$Language} // $Language;
 
     if ( !$Module ) {
-        $LanguageFile = "$Home/Kernel/Language/$Language.pm";
-        $TargetFile   = "$Home/Kernel/Language/$Language.pm";
+        $LanguageFile  = "$Home/Kernel/Language/$Language.pm";
+        $TargetFile    = "$Home/Kernel/Language/$Language.pm";
+        $TargetPOTFile = "$Home/i18n/otrs/otrs.pot";
+        $TargetPOFile  = "$Home/i18n/otrs/otrs.$TransifexLanguage.po";
     }
     else {
         $IsSubTranslation = 1;
-        $Indent           = ' ' x 4;    # 4 spaces for module files
 
         # extract module name from module path
         $Module = basename $Module;
@@ -185,16 +192,11 @@ sub HandleLanguage {
         # i.e. FAQ_2_0 or FAQ20
         $Module =~ s{ [_0-9]+ .+ \z }{}xms;
 
-        # special handling of some ITSM modules
-        if ( $Module eq 'ITSMIncidentProblemManagement' ) {
-            $Module = 'ITSMTicket';
-        }
-        elsif ( $Module eq 'ITSMConfigurationManagement' ) {
-            $Module = 'ITSMConfigItem';
-        }
-
         # save module directory in target file
         $TargetFile = "$ModuleDirectory/Kernel/Language/${Language}_$Module.pm";
+
+        $TargetPOTFile = "$ModuleDirectory/i18n/$Module/$Module.pot";
+        $TargetPOFile  = "$ModuleDirectory/i18n/$Module/$Module.$TransifexLanguage.po";
     }
 
     if ( !-w $TargetFile ) {
@@ -212,173 +214,306 @@ sub HandleLanguage {
 
     # Language file, which only contains the OTRS core translations
     my $LanguageCoreObject = Kernel::Language->new(
-        %CommonObject,
         UserLanguage    => $Language,
         TranslationFile => 1,
     );
 
     # Language file, which contains all translations
     my $LanguageObject = Kernel::Language->new(
-        %CommonObject,
         UserLanguage => $Language,
     );
 
-    # open .dtl files and write new translation file
-    my $Data = '';
+    my %POTranslations;
+
+    if ( $Param{WritePOT} || $Param{WritePO} ) {
+        %POTranslations = LoadPOFile(
+            TargetPOFile => $TargetPOFile,
+        );
+    }
+
+    # open .tt files and write new translation file
     my %UsedWords;
-    my %UsedWordsMisc;
-    my $Directory
-        = $IsSubTranslation
+    my $Directory = $IsSubTranslation
         ? "$ModuleDirectory/Kernel/Output/HTML/$DefaultTheme"
         : "$Home/Kernel/Output/HTML/$DefaultTheme";
 
-    my @List = $CommonObject{MainObject}->DirectoryRead(
+    my @List = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
         Directory => $Directory,
-        Filter    => '*.dtl',
+        Filter    => '*.tt',
     );
 
-    print "\nReading template files:\n";
+    if ( $Param{Verbose} ) {
+        print "\nReading template files:\n";
+    }
+
+    my @TranslationStrings;
 
     for my $File (@List) {
-        if ( open my $In, '<', $File ) {    ## no critic
-            my $Content = '';
-            while ( my $Line = <$In> ) {
-                if ( $Line !~ /^#/ ) {
-                    $Content .= $Line;
-                }
-            }
-            close $In;
-            $File =~ s!^.*/(.+?)\.dtl!$1!;
+
+        my $ContentRef = $Kernel::OM->Get('Kernel::System::Main')->FileRead(
+            Location => $File,
+            Mode     => 'utf8',
+        );
+
+        if ( !ref $ContentRef ) {
+            die "Can't open $File: $!";
+        }
+
+        my $Content = ${$ContentRef};
+
+        $File =~ s!^.*/(.+?)\.tt!$1!;
+        if ( $Param{Verbose} ) {
             print "$File ";
-            $Data .= "\n" . $Indent . "# Template: $File\n";
-
-            # replace data tags so that stuff like
-            #   $Text{"$Data{"ernie"}"} will not be translated
-            $Content =~ s{
-            \$(Env|Data|QData)({"(.+?)"}|{""}|{"(.+?)","(.+?)"})
         }
-        {}gx;
 
-            # replace $Config so that stuff like
-            #   $Text{"$Config{"Ticket::Frontend::TimeUnits"}"} will be translated
-            $Content =~ s{
-            \$Config\{"([^\}]+?)?"\}
+        # do translation
+        $Content =~ s{
+            Translate\(
+                \s*
+                (["'])(.*?)(?<!\\)\1
+                \s*
+                (?:,[^\)]+)?
+            \)
+            (?:\s|[|])
         }
         {
-            if ( defined $1 ) {
-                $CommonObject{ConfigObject}->Get($1) || '';
-            }
-            else {
-                '';
-            }
-        }egx;
+            my $Word = $2 // '';
 
-            # do translation
-            $Content =~ s{
-            \$(?:JS)?Text\{"([^\}]+?)?"(?:,[^\}]+)?\}
-        }
-        {
-            my $Word = '';
-            if ( defined $1 ) {
-                $Word = $1;
-            }
+            # unescape any \" or \' signs
+            $Word =~ s{\\"}{"}smxg;
+            $Word =~ s{\\'}{'}smxg;
 
-            # if we translate a module, we must handle also that possibly
-            # there is already a translation in the core files
-            if ($IsSubTranslation) {
-                # ignore word if already used
-                if ( $Word && !exists $UsedWords{$Word} && !exists $LanguageCoreObject->{Translation}->{$Word} ) {
+            if ($Word && !exists $UsedWords{$Word}) {
 
-                    # remove it from misc list
-                    $UsedWordsMisc{$Word} = 1;
+                # if we translate a module, we must handle also that possibly
+                # there is already a translation in the core files
+                if ($IsSubTranslation) {
+                    if (!exists $LanguageCoreObject->{Translation}->{$Word} ) {
 
-                    # lookup for existing translation
-                    $UsedWords{$Word} = $LanguageObject->{Translation}->{$Word};
-                    my $Translation = $UsedWords{$Word} || '';
-                    $Translation =~ s/'/\\'/g;
-                    my $Key = $Word;
-                    $Key =~ s/'/\\'/g;
-
-                    $Param{Stats}->{$Param{Language}}->{$Word} = $Translation;
-
-                    if ($Key !~ /(a href|\$(Text|Quote)\{")/i) {
-                        if (length($Key) < $BreakLineAfterChars) {
-                            $Data .= $Indent . "\$Self->{Translation}->{'$Key'} = '$Translation';\n";
-                        }
-                        else {
-                            $Data .= $Indent . "\$Self->{Translation}->{'$Key'} =\n";
-                            $Data .= $Indent . '    ' . "'$Translation';\n";
-                        }
+                        # lookup for existing translation in module language object
+                        $UsedWords{$Word} = $POTranslations{$Word} || $LanguageObject->{Translation}->{$Word};
+                        my $Translation = $UsedWords{$Word} || '';
+                        push @TranslationStrings, {
+                            Location => "Template: $File",
+                            Source => $Word,
+                            Translation => $Translation,
+                        };
+                        $Param{Stats}->{$Param{Language}}->{$Word} = $Translation;
                     }
                 }
-            }
-            else {
-                # ignore word if already used
-                if ( $Word && !exists $UsedWords{$Word} ) {
-
-                    # remove it from misc list
-                    $UsedWordsMisc{$Word} = 1;
-
-                    # lookup for existing translation
-                    $UsedWords{$Word} = $LanguageCoreObject->{Translation}->{$Word};
+                else {
+                    # lookup for existing translation in core language object
+                    $UsedWords{$Word} = $POTranslations{$Word} || $LanguageCoreObject->{Translation}->{$Word};
                     my $Translation = $UsedWords{$Word} || '';
-                    $Translation =~ s/'/\\'/g;
-
+                    push @TranslationStrings, {
+                        Location => "Template: $File",
+                        Source => $Word,
+                        Translation => $Translation,
+                    };
                     $Param{Stats}->{$Param{Language}}->{$Word} = $Translation;
-
-                    my $Key = $Word;
-                    $Key =~ s/'/\\'/g;
-                    if ($Key !~ /(a href|\$(Text|Quote)\{")/i) {
-                        if (length($Key) < $BreakLineAfterChars) {
-                            $Data .= $Indent . "'$Key' => '$Translation',\n";
-                        }
-                        else {
-                            $Data .= $Indent . "'$Key' =>\n";
-                            $Data .= $Indent . '    ' . "'$Translation',\n";
-                        }
-                    }
                 }
             }
             '';
         }egx;
-        }
-        else {
-            die "Can't open $File: $!";
-        }
     }
 
     # add translatable strings from SysConfig
-    print "SysConfig\n";
-    $Data .= "\n" . $Indent . "# SysConfig\n";
-    my @Strings = $CommonObject{SysConfigObject}->ConfigItemTranslatableStrings();
+    if ( $Param{Verbose} ) {
+        print "SysConfig\n";
+    }
+    my @Strings = $Kernel::OM->Get('Kernel::System::SysConfig')->ConfigItemTranslatableStrings();
 
     STRING:
     for my $String ( sort @Strings ) {
 
-        next STRING if !$String;
+        next STRING if !$String || exists $UsedWords{$String};
 
         # skip if we translate a module and the word already exists in the core translation
         next STRING if $IsSubTranslation && exists $LanguageCoreObject->{Translation}->{$String};
 
-        # ignore word if already used
-        next STRING if exists $UsedWords{$String};
-
-        # remove it from misc list
-        $UsedWordsMisc{$String} = 1;
-
         # lookup for existing translation
-        $UsedWords{$String}
-            = ( $IsSubTranslation ? $LanguageObject : $LanguageCoreObject )->{Translation}
+        $UsedWords{$String} = $POTranslations{$String}
+            || ( $IsSubTranslation ? $LanguageObject : $LanguageCoreObject )->{Translation}
             ->{$String};
 
         my $Translation = $UsedWords{$String} || '';
+        push @TranslationStrings, {
+            Location    => 'SysConfig',
+            Source      => $String,
+            Translation => $Translation,
+        };
+        $Param{Stats}->{ $Param{Language} }->{$String} = $Translation;
+    }
+
+    if ( $Param{WritePOT} && !$POTFileWritten++ ) {
+        WritePOTFile(
+            TranslationStrings => \@TranslationStrings,
+            TargetPOTFile      => $TargetPOTFile,
+            Module             => $Module,
+        );
+    }
+    if ( $Param{WritePO} ) {
+        WritePOFile(
+            TranslationStrings => \@TranslationStrings,
+            TargetPOTFile      => $TargetPOTFile,
+            TargetPOFile       => $TargetPOFile,
+            Module             => $Module,
+        );
+    }
+
+    WritePerlLanguageFile(
+        IsSubTranslation   => $IsSubTranslation,
+        LanguageCoreObject => $LanguageCoreObject,
+        Language           => $Language,
+        Module             => $Module,
+        LanguageFile       => $LanguageFile,
+        TargetFile         => $TargetFile,
+        TranslationStrings => \@TranslationStrings,
+    );
+}
+
+sub LoadPOFile {
+    my (%Param) = @_;
+
+    return if !-e $Param{TargetPOFile};
+
+    my $POEntries = Locale::PO->load_file_asarray( $Param{TargetPOFile} );
+
+    my %POTranslations;
+
+    ENTRY:
+    for my $Entry ( @{$POEntries} ) {
+        if ( $Entry->msgstr() ) {
+            my $Source = $Entry->dequote( $Entry->msgid() );
+            $Source =~ s/\\{2}/\\/g;
+            $Kernel::OM->Get('Kernel::System::Encode')->EncodeInput( \$Source );
+            my $Translation = $Entry->dequote( $Entry->msgstr() );
+            $Translation =~ s/\\{2}/\\/g;
+            $Kernel::OM->Get('Kernel::System::Encode')->EncodeInput( \$Translation );
+            $POTranslations{$Source} = $Translation;
+        }
+    }
+
+    return %POTranslations;
+}
+
+sub WritePOFile {
+    my (%Param) = @_;
+
+    if ( !-e $Param{TargetPOFile} ) {
+        File::Copy::copy( $Param{TargetPOTFile}, $Param{TargetPOFile} )
+            || die "Could not copy $Param{TargetPOTFile} to $Param{TargetPOFile}: $!";
+    }
+
+    my $POEntries = Locale::PO->load_file_asarray( $Param{TargetPOFile} );
+    my %POLookup;
+
+    for my $Entry ( @{$POEntries} ) {
+        my $Source = $Entry->dequote( $Entry->msgid() );
+        $Source =~ s/\\{2}/\\/g;
+        $Kernel::OM->Get('Kernel::System::Encode')->EncodeInput( \$Source );
+        $POLookup{$Source} = $Entry;
+    }
+
+    for my $String ( @{ $Param{TranslationStrings} } ) {
+
+        my $Source = $String->{Source};
+        $Source =~ s/\\/\\\\/g;
+        $Kernel::OM->Get('Kernel::System::Encode')->EncodeOutput( \$Source );
+        my $Translation = $String->{Translation};
+        $Translation =~ s/\\/\\\\/g;
+        $Kernel::OM->Get('Kernel::System::Encode')->EncodeOutput( \$Translation );
+
+        # Is there an entry in the PO already?
+        if ( exists $POLookup{ $String->{Source} } ) {
+
+            # Yes, update it
+            $POLookup{ $String->{Source} }->msgstr($Translation);
+            $POLookup{ $String->{Source} }->automatic( $String->{Location} );
+        }
+        else {
+            # No PO entry yet, create one.
+            push @{$POEntries}, Locale::PO->new(
+                -msgid     => $Source,
+                -msgstr    => $Translation,
+                -automatic => $String->{Location},
+            );
+        }
+    }
+
+    # Theoretically we could now also check for removed strings, but since the translations
+    #   are handled by transifex, this will not be needed as Transifex will handle that for us.
+
+    Locale::PO->save_file_fromarray( $Param{TargetPOFile}, $POEntries )
+        || die "Could not save file $Param{TargetPOFile}: $!";
+}
+
+sub WritePOTFile {
+    my (%Param) = @_;
+
+    my @POTEntries;
+
+    my $Package = $Param{Module} // 'OTRS';
+
+    push @POTEntries, Locale::PO->new(
+        -msgid => '',
+        -msgstr =>
+            "Project-Id-Version: $Package\n" .
+            "POT-Creation-Date: 2014-08-08 19:10+0200\n" .
+            "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n" .
+            "Last-Translator: FULL NAME <EMAIL\@ADDRESS>\n" .
+            "Language-Team: LANGUAGE <LL\@li.org>\n" .
+            "Language: \n" .
+            "MIME-Version: 1.0\n" .
+            "Content-Type: text/plain; charset=UTF-8\n" .
+            "Content-Transfer-Encoding: 8bit\n",
+    );
+
+    for my $String ( @{ $Param{TranslationStrings} } ) {
+        my $Source = $String->{Source};
+        $Source =~ s/\\/\\\\/g;
+        $Kernel::OM->Get('Kernel::System::Encode')->EncodeOutput( \$Source );
+
+        push @POTEntries, Locale::PO->new(
+            -msgid     => $Source,
+            -msgstr    => '',
+            -automatic => $String->{Location},
+        );
+    }
+
+    Locale::PO->save_file_fromarray( $Param{TargetPOTFile}, \@POTEntries )
+        || die "Could not save file $Param{TargetPOTFile}: $!";
+
+    return;
+}
+
+sub WritePerlLanguageFile {
+    my (%Param) = @_;
+
+    my $LanguageCoreObject = $Param{LanguageCoreObject};
+
+    my $Indent = ' ' x 8;    # 8 spaces for core files
+    if ( $Param{IsSubTranslation} ) {
+        $Indent = ' ' x 4;    # 4 spaces for module files
+    }
+
+    my $Data;
+
+    my $PreviousLocation = '';
+    for my $String ( @{ $Param{TranslationStrings} } ) {
+        if ( $PreviousLocation ne $String->{Location} ) {
+            $Data .= "\n";
+            $Data .= $Indent . "# $String->{Location}\n";
+            $PreviousLocation = $String->{Location};
+        }
+
+        # Escape ' signs in strings
+        my $Key = $String->{Source};
+        $Key =~ s/'/\\'/g;
+        my $Translation = $String->{Translation};
         $Translation =~ s/'/\\'/g;
 
-        $Param{Stats}->{ $Param{Language} }->{$String} = $Translation;
-
-        my $Key = $String;
-        $Key =~ s/'/\\'/g;
-        if ($IsSubTranslation) {
+        if ( $Param{IsSubTranslation} ) {
             if ( length($Key) < $BreakLineAfterChars ) {
                 $Data .= $Indent . "\$Self->{Translation}->{'$Key'} = '$Translation';\n";
             }
@@ -398,69 +533,18 @@ sub HandleLanguage {
         }
     }
 
-    # add misc words
-    print "Obsolete Entries\n\n";
-    $Data .= "\n";
-    $Data .= $Indent . "#\n";
-    $Data .= $Indent . "# OBSOLETE ENTRIES FOR REFERENCE, DO NOT TRANSLATE!\n";
-    $Data .= $Indent . "#\n";
-
-    if ( !$PurgeObsolete ) {
-        KEY:
-        for my $Key ( sort keys %{ $LanguageObject->{Translation} } ) {
-
-            # ignore words from the core if we are translating a module
-            next KEY if $IsSubTranslation && exists $LanguageCoreObject->{Translation}->{$Key};
-
-            # ignore word if already used
-            next KEY if $UsedWordsMisc{$Key};
-
-            my $Translation = $LanguageObject->{Translation}->{$Key};
-            $Translation =~ s/'/\\'/g;
-            $Key =~ s/'/\\'/g;
-
-            # if a string was previously in a DTL, but has not yet been translated,
-            # there's no need to preserve it in the translation file.
-            next KEY if !$Translation;
-
-            # TODO: clarify if regular expression check is still needed
-            # in the past it was used to guard against wrong matches
-            next KEY if $Key =~ /(a href|\$(Text|Quote)\{")/i;
-
-            if ($IsSubTranslation) {
-                if ( length($Key) < $BreakLineAfterChars ) {
-                    $Data .= $Indent . "\$Self->{Translation}->{'$Key'} = '$Translation';\n";
-                }
-                else {
-                    $Data .= $Indent . "\$Self->{Translation}->{'$Key'} =\n";
-                    $Data .= $Indent . '    ' . "'$Translation';\n";
-                }
-            }
-            else {
-                if ( length($Key) < $BreakLineAfterChars ) {
-                    $Data .= $Indent . "'$Key' => '$Translation',\n";
-                }
-                else {
-                    $Data .= $Indent . "'$Key' =>\n";
-                    $Data .= $Indent . '    ' . "'$Translation',\n";
-                }
-            }
-        }
-    }
-
-    # open old translation file
     my %MetaData;
     my $NewOut = '';
 
     # translating a module
-    if ($IsSubTranslation) {
+    if ( $Param{IsSubTranslation} ) {
 
         # needed for cvs check-in filter
         my $Separator = "# --";
 
         $NewOut = <<"EOF";
 $Separator
-# Kernel/Language/${Language}_$Module.pm - translation file
+# Kernel/Language/$Param{Language}_$Param{Module}.pm - translation file
 # Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 $Separator
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -468,10 +552,11 @@ $Separator
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 $Separator
 
-package Kernel::Language::${Language}_$Module;
+package Kernel::Language::$Param{Language}_$Param{Module};
 
 use strict;
 use warnings;
+use utf8;
 
 sub Data {
     my \$Self = shift;
@@ -484,10 +569,14 @@ EOF
 
     # translating the core
     else {
-        open( my $In, '<', $LanguageFile ) || die "Can't open: $LanguageFile\n";    ## no critic
+        ## no critic
+        open( my $In, '<', $Param{LanguageFile} ) || die "Can't open: $Param{LanguageFile}\n";
+        ## use critic
         while (<$In>) {
+            my $Line = $_;
+            $Kernel::OM->Get('Kernel::System::Encode')->EncodeInput( \$Line );
             if ( !$MetaData{DataPrinted} ) {
-                $NewOut .= $_;
+                $NewOut .= $Line;
             }
             if ( $_ =~ /\$\$START\$\$/ && !$MetaData{DataPrinted} ) {
                 $MetaData{DataPrinted} = 1;
@@ -525,20 +614,31 @@ EOF
             }
             if ( $_ =~ /\$\$STOP\$\$/ ) {
                 $NewOut .= "    };\n";
-                $NewOut .= "$_";
+                $NewOut .= $Line;
                 $MetaData{DataPrinted} = 0;
             }
         }
         close $In;
     }
 
+    my $TargetFile = $Param{TargetFile};
+
     if ( -e $TargetFile ) {
-        print "Moving $TargetFile to $TargetFile.old\n";
+        if ( $Param{Verbose} ) {
+            print "Moving $TargetFile to $TargetFile.old\n";
+        }
         rename( $TargetFile, "$TargetFile.old" ) || die $!;
     }
 
-    print "Writing $TargetFile\n";
-    open( my $Out, '>', $TargetFile ) || die $!;    ## no critic
-    print $Out $NewOut;
-    close $Out;
+    if ( $Param{Verbose} ) {
+        print "Writing $TargetFile\n";
+    }
+
+    $Kernel::OM->Get('Kernel::System::Main')->FileWrite(
+        Location => $TargetFile,
+        Content  => \$NewOut,
+        Mode     => 'utf8',        # binmode|utf8
+    );
 }
+
+## use critic

@@ -12,9 +12,9 @@ package Kernel::Output::HTML::DashboardEventsTicketCalendar;
 use strict;
 use warnings;
 
-use Kernel::System::DynamicField;
-use Kernel::System::CustomerUser;
 use Kernel::System::VariableCheck qw(:all);
+
+our $ObjectManagerDisabled = 1;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -23,35 +23,24 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # get needed objects
-    for (
-        qw(Config Name ConfigObject LogObject DBObject LayoutObject ParamObject TicketObject UserID QueueObject TimeObject)
-        )
-    {
-        die "Got no $_!" if ( !$Self->{$_} );
+    # get needed parameters
+    for my $Needed (qw(Config Name UserID)) {
+        die "Got no $Needed!" if ( !$Self->{$Needed} );
     }
 
-    # use customer user object if it comes in the params
-    $Self->{CustomerUserObject} = $Param{CustomerUserObject}
-        // Kernel::System::CustomerUser->new( %{$Self} );
-
-    # create extra needed object
-    $Self->{StateObject}        = Kernel::System::State->new(%Param);
-    $Self->{DynamicFieldObject} = Kernel::System::DynamicField->new( %{$Self} );
-
     # get dynamic fields list
-    $Self->{DynamicFieldsList} = $Self->{DynamicFieldObject}->DynamicFieldListGet(
+    my $DynamicFieldsList = $Kernel::OM->Get('Kernel::System::DynamicField')->DynamicFieldListGet(
         Valid      => 0,
         ObjectType => ['Ticket'],
     );
 
-    if ( !IsArrayRefWithData( $Self->{DynamicFieldsList} ) ) {
-        $Self->{DynamicFieldsList} = [];
+    if ( !IsArrayRefWithData($DynamicFieldsList) ) {
+        $DynamicFieldsList = [];
     }
 
     # create a dynamic field lookup table (by name)
     DYNAMICFIELD:
-    for my $DynamicField ( @{ $Self->{DynamicFieldsList} } ) {
+    for my $DynamicField ( @{$DynamicFieldsList} ) {
         next DYNAMICFIELD if !$DynamicField;
         next DYNAMICFIELD if !IsHashRefWithData($DynamicField);
         next DYNAMICFIELD if !$DynamicField->{Name};
@@ -78,26 +67,26 @@ sub Config {
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    my $Queues = $Self->{ConfigObject}->{DashboardEventsTicketCalendar}->{Queues};
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
+    my $Queues = $ConfigObject->{DashboardEventsTicketCalendar}->{Queues};
 
     # get start and end time from config
-    my $StartTimeDynamicField
-        = $Self->{ConfigObject}->Get('DashboardEventsTicketCalendar::DynamicFieldStartTime')
+    my $StartTimeDynamicField = $ConfigObject->Get('DashboardEventsTicketCalendar::DynamicFieldStartTime')
         || 'TicketCalendarStartTime';
     my $EndTimeDynamicField =
-        $Self->{ConfigObject}->Get('DashboardEventsTicketCalendar::DynamicFieldEndTime')
+        $ConfigObject->Get('DashboardEventsTicketCalendar::DynamicFieldEndTime')
         || 'TicketCalendarEndTime';
 
-    $Param{CalendarWidth} = $Self->{ConfigObject}->{DashboardEventsTicketCalendar}->{CalendarWidth};
+    $Param{CalendarWidth} = $ConfigObject->{DashboardEventsTicketCalendar}->{CalendarWidth};
 
-    my %QueuesAll = $Self->{QueueObject}->GetAllQueues(
+    my %QueuesAll = $Kernel::OM->Get('Kernel::System::Queue')->GetAllQueues(
         UserID => $Self->{UserID},
     );
 
-    my $EventTicketFields
-        = $Self->{ConfigObject}->Get('DashboardEventsTicketCalendar::TicketFieldsForEvents');
-    my $EventDynamicFields
-        = $Self->{ConfigObject}->Get('DashboardEventsTicketCalendar::DynamicFieldsForEvents');
+    my $EventTicketFields  = $ConfigObject->Get('DashboardEventsTicketCalendar::TicketFieldsForEvents');
+    my $EventDynamicFields = $ConfigObject->Get('DashboardEventsTicketCalendar::DynamicFieldsForEvents');
 
     my %DynamicFieldTimeSearch = (
         'DynamicField_' . $StartTimeDynamicField => {
@@ -108,7 +97,7 @@ sub Run {
         },
     );
 
-    my @ViewableStateIDs = $Self->{StateObject}->StateGetStatesByType(
+    my @ViewableStateIDs = $Kernel::OM->Get('Kernel::System::State')->StateGetStatesByType(
         Type   => 'Viewable',
         Result => 'ID',
     );
@@ -122,10 +111,13 @@ sub Run {
         }
     }
 
+    # get ticket object
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
     my %Tickets;
     if (%QueuesConfigured) {
-        %Tickets = $Self->{TicketObject}->TicketSearch(
-            SortBy => $Self->{ConfigObject}->{'SortBy::Default'} || 'Age',
+        %Tickets = $TicketObject->TicketSearch(
+            SortBy => $ConfigObject->{'SortBy::Default'} || 'Age',
             QueueIDs => [ sort keys %QueuesConfigured ],
             UserID   => $Self->{UserID},
             StateIDs => \@ViewableStateIDs,
@@ -138,11 +130,16 @@ sub Run {
 
     my $Counter = 1;
     my $Limit   = scalar keys %Tickets;
+
+    # get needed objects
+    my $TimeObject   = $Kernel::OM->Get('Kernel::System::Time');
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     if (%Tickets) {
         TICKET:
         for my $TicketID ( sort keys %Tickets ) {
 
-            my %TicketDetail = $Self->{TicketObject}->TicketGet(
+            my %TicketDetail = $TicketObject->TicketGet(
                 TicketID      => $TicketID,
                 DynamicFields => 1,
                 UserID        => $Self->{UserID},
@@ -156,10 +153,10 @@ sub Run {
             {
 
                 # end time should be greater than start time
-                my $StartTime = $Self->{TimeObject}->TimeStamp2SystemTime(
+                my $StartTime = $TimeObject->TimeStamp2SystemTime(
                     String => $TicketDetail{ 'DynamicField_' . $StartTimeDynamicField },
                 );
-                my $EndTime = $Self->{TimeObject}->TimeStamp2SystemTime(
+                my $EndTime = $TimeObject->TimeStamp2SystemTime(
                     String => $TicketDetail{ 'DynamicField_' . $EndTimeDynamicField },
                 );
                 next TICKET if $StartTime > $EndTime;
@@ -191,23 +188,23 @@ sub Run {
                 $Data{Description} = "";
 
                 # add 1 second to end date as workaround
-                # for a bug on fullcalendar when start and end
+                # for a bug on full calendar when start and end
                 # dates are exactly the same (ESecond is 00 normally)
                 $Data{ESecond}++;
 
-                $Self->{LayoutObject}->Block(
+                $LayoutObject->Block(
                     Name => 'CalendarEvent',
                     Data => \%Data,
                 );
 
                 if ( $Counter < $Limit ) {
-                    $Self->{LayoutObject}->Block(
+                    $LayoutObject->Block(
                         Name => 'CalendarEventComma',
                     );
                 }
 
                 # add ticket info container
-                $Self->{LayoutObject}->Block(
+                $LayoutObject->Block(
                     Name => 'EventInfo',
                     Data => \%Data,
                 );
@@ -216,7 +213,7 @@ sub Run {
                 if ( IsHashRefWithData($EventTicketFields) ) {
 
                     # include dynamic fields container
-                    $Self->{LayoutObject}->Block(
+                    $LayoutObject->Block(
                         Name => 'EventTicketFieldContainer',
                         Data => \%Data,
                     );
@@ -229,18 +226,17 @@ sub Run {
                         next TICKETFIELD if !$EventTicketFields->{$Key};
 
                         if ( $Key eq 'CustomerUserID' && $TicketDetail{$Key} ) {
-                            $TicketDetail{$Key} = $Self->{CustomerUserObject}->CustomerName(
+                            $TicketDetail{$Key} = $Kernel::OM->Get('Kernel::System::CustomerUser')->CustomerName(
                                 UserLogin => $TicketDetail{$Key},
                             );
                         }
 
                         # translate state and priority name
                         if ( ( $Key eq 'State' || $Key eq 'Priority' ) && $TicketDetail{$Key} ) {
-                            $TicketDetail{$Key} = $Self->{LayoutObject}->{LanguageObject}
-                                ->Get( $TicketDetail{$Key} );
+                            $TicketDetail{$Key} = $LayoutObject->{LanguageObject}->Get( $TicketDetail{$Key} );
                         }
 
-                        $Self->{LayoutObject}->Block(
+                        $LayoutObject->Block(
                             Name => 'CalendarEventInfoTicketFieldElement',
                             Data => {
                                 InfoLabel => $EventTicketFields->{$Key},
@@ -254,7 +250,7 @@ sub Run {
                 if ( IsArrayRefWithData($EventDynamicFields) ) {
 
                     # include dynamic fields container
-                    $Self->{LayoutObject}->Block(
+                    $LayoutObject->Block(
                         Name => 'EventDynamicFieldContainer',
                         Data => \%Data,
                     );
@@ -269,15 +265,14 @@ sub Run {
                         # check if we need to format the date
                         my $InfoValue = $TicketDetail{ 'DynamicField_' . $Item };
                         if ( $Self->{DynamicFieldLookup}->{$Item}->{FieldType} eq 'DateTime' ) {
-                            $InfoValue = $Self->{LayoutObject}->{LanguageObject}
-                                ->FormatTimeString($InfoValue);
+                            $InfoValue = $LayoutObject->{LanguageObject}->FormatTimeString($InfoValue);
                         }
                         elsif ( $Self->{DynamicFieldLookup}->{$Item}->{FieldType} eq 'Date' ) {
-                            $InfoValue = $Self->{LayoutObject}->{LanguageObject}
-                                ->FormatTimeString( $InfoValue, 'DateFormatShort' );
+                            $InfoValue
+                                = $LayoutObject->{LanguageObject}->FormatTimeString( $InfoValue, 'DateFormatShort' );
                         }
 
-                        $Self->{LayoutObject}->Block(
+                        $LayoutObject->Block(
                             Name => 'CalendarEventInfoDynamicFieldElement',
                             Data => {
                                 InfoLabel => $Self->{DynamicFieldLookup}->{$Item}->{Label},
@@ -295,20 +290,20 @@ sub Run {
         }
     }
     if ( $Counter < $Limit ) {
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'CalendarEventComma',
         );
     }
 
-    $Self->{LayoutObject}->Block(
+    $LayoutObject->Block(
         Name => 'CalendarDiv',
         Data => {
-            CalendarWidth => $Self->{ConfigObject}->{DashboardEventsTicketCalendar}->{CalendarWidth}
+            CalendarWidth => $ConfigObject->{DashboardEventsTicketCalendar}->{CalendarWidth}
                 || 95,
             }
     );
 
-    my $Content = $Self->{LayoutObject}->Output(
+    my $Content = $LayoutObject->Output(
         TemplateFile => 'DashboardEventsTicketCalendar',
         Data         => {
             %{ $Self->{Config} },

@@ -77,8 +77,11 @@ sub Run {
     }
 
     # get ACL restrictions
-    $Self->{TicketObject}->TicketAcl(
-        Data          => '-',
+    my %PossibleActions = ( 1 => $Self->{Action} );
+
+    my $ACL = $Self->{TicketObject}->TicketAcl(
+        Data          => \%PossibleActions,
+        Action        => $Self->{Action},
         TicketID      => $Self->{TicketID},
         ReturnType    => 'Action',
         ReturnSubType => '-',
@@ -87,10 +90,12 @@ sub Run {
     my %AclAction = $Self->{TicketObject}->TicketAclActionData();
 
     # check if ACL restrictions exist
-    if ( IsHashRefWithData( \%AclAction ) ) {
+    if ( $ACL || IsHashRefWithData( \%AclAction ) ) {
+
+        my %AclActionLookup = reverse %AclAction;
 
         # show error screen if ACL prohibits this action
-        if ( defined $AclAction{ $Self->{Action} } && $AclAction{ $Self->{Action} } eq '0' ) {
+        if ( !$AclActionLookup{ $Self->{Action} } ) {
             return $Self->{LayoutObject}->NoPermission( WithHeader => 'yes' );
         }
     }
@@ -132,8 +137,7 @@ sub Run {
                 $Output .= $Self->{LayoutObject}->Warning(
                     Message => $Self->{LayoutObject}->{LanguageObject}
                         ->Get('Sorry, you need to be the ticket owner to perform this action.'),
-                    Comment => $Self->{LayoutObject}->{LanguageObject}
-                        ->Get('Please change the owner first.'),
+                    Comment => $Self->{LayoutObject}->{LanguageObject}->Get('Please change the owner first.'),
                 );
                 $Output .= $Self->{LayoutObject}->Footer(
                     Type => 'Small',
@@ -143,7 +147,10 @@ sub Run {
             else {
                 $Self->{LayoutObject}->Block(
                     Name => 'TicketBack',
-                    Data => { %Param, TicketID => $Self->{TicketID}, },
+                    Data => {
+                        %Param,
+                        TicketID => $Self->{TicketID},
+                    },
                 );
             }
         }
@@ -151,7 +158,10 @@ sub Run {
     else {
         $Self->{LayoutObject}->Block(
             Name => 'TicketBack',
-            Data => { %Param, TicketID => $Self->{TicketID}, },
+            Data => {
+                %Param,
+                TicketID => $Self->{TicketID},
+            },
         );
     }
 
@@ -235,7 +245,9 @@ $Param{Signature}";
         }
 
         # prepare sender of bounce email
-        my %Address = $Self->{QueueObject}->GetSystemAddress( QueueID => $Article{QueueID}, );
+        my %Address = $Self->{QueueObject}->GetSystemAddress(
+            QueueID => $Article{QueueID},
+        );
         $Article{From} = "$Address{RealName} <$Address{Email}>";
 
         # get next states
@@ -484,7 +496,7 @@ $Param{Signature}";
         if ( $Param{BounceStateID} ) {
 
             # set state
-            my %StateData = $Self->{TicketObject}->{StateObject}->StateGet(
+            my %StateData = $Self->{StateObject}->StateGet(
                 ID => $Param{BounceStateID},
             );
             $Self->{TicketObject}->TicketStateSet(

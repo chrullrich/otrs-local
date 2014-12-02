@@ -10,13 +10,13 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
-use Kernel::System::Spelling;
 use Kernel::System::VariableCheck qw(:all);
 
-# use local Config object because it will be modified
-my $ConfigObject = Kernel::Config->new();
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
 my $SpellCheckerBin = $ConfigObject->Get('SpellCheckerBin');
 
@@ -102,6 +102,7 @@ my @Tests = (
 
 );
 
+TEST:
 for my $Test (@Tests) {
 
     # configure spell checker bin
@@ -116,11 +117,8 @@ for my $Test (@Tests) {
         "Setting new value for SpellCheckerBin config item",
     );
 
-    # create spelling object
-    my $SpellingObject = Kernel::System::Spelling->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
-    );
+    $Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::Spelling'] );
+    my $SpellingObject = $Kernel::OM->Get('Kernel::System::Spelling');
 
     $Self->Is(
         ref $SpellingObject,
@@ -145,7 +143,7 @@ for my $Test (@Tests) {
             "$Test->{Name} - Spelling -Seems like language file was not found," .
                 " you must install the English dictionary for the spell checker!",
         );
-        next;
+        next TEST;
     }
 
     if ( $Test->{Replace} ) {

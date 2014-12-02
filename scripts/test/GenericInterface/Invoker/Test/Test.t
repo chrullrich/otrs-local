@@ -9,14 +9,14 @@
 
 use strict;
 use warnings;
+use utf8;
+
 use vars (qw($Self));
 
-# create needed objects
-use Kernel::System::DB;
 use Kernel::GenericInterface::Debugger;
 use Kernel::GenericInterface::Invoker;
+
 my $DebuggerObject = Kernel::GenericInterface::Debugger->new(
-    %{$Self},
     DebuggerConfig => {
         DebugThreshold => 'debug',
         TestMode       => 1,
@@ -27,7 +27,6 @@ my $DebuggerObject = Kernel::GenericInterface::Debugger->new(
 
 # create a Invoker instance
 my $InvokerObject = Kernel::GenericInterface::Invoker->new(
-    %{$Self},
     DebuggerObject => $DebuggerObject,
     InvokerType    => 'Test::Test',
     WebserviceID   => 1,
@@ -305,7 +304,7 @@ for my $Test (@InvokerHandleResponseTests) {
     }
 }
 
-# complete cicle
+# complete cycle
 
 # PrepareRequest call
 my $InvokerResult = $InvokerObject->PrepareRequest(
@@ -318,7 +317,7 @@ my $InvokerResult = $InvokerObject->PrepareRequest(
 # check invoker call success
 $Self->True(
     $InvokerResult->{Success},
-    '(Complete Cicle) Check PrepareRequest call success.',
+    '(Complete Cycle) Check PrepareRequest call success.',
 );
 
 # returned data should match with expected data
@@ -334,7 +333,7 @@ $Self->IsDeeply(
     'Returned data should match with expected data.',
 );
 
-# handleresponse call
+# HandleResponse call
 $InvokerResult = $InvokerObject->HandleResponse(
     Data => {
         Action       => $InvokerResult->{Data}->{Action},
@@ -344,10 +343,10 @@ $InvokerResult = $InvokerObject->HandleResponse(
     ResponseErrorMessage => $InvokerResult->{ErrorMessage},
 );
 
-# checkhandleresponse call success
+# check HandleResponse call success
 $Self->True(
     $InvokerResult->{Success},
-    '(Complete Cicle) Check HandleResponse call success.',
+    '(Complete Cycle) Check HandleResponse call success.',
 );
 
 # HandleResponse data should match the initial data

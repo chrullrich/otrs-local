@@ -28,11 +28,10 @@ use lib "$Bin/../..";
 use lib "$Bin/../../Kernel/cpan-lib";
 use lib "$Bin/../../Custom";
 
-# load generic interface
 use Kernel::GenericInterface::Provider;
+use Kernel::System::ObjectManager;
 
-# create new object
+local $Kernel::OM = Kernel::System::ObjectManager->new();
+
 my $Provider = Kernel::GenericInterface::Provider->new();
-
-# execute object
 $Provider->Run();

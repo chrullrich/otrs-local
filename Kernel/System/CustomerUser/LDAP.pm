@@ -14,8 +14,13 @@ use warnings;
 
 use Net::LDAP;
 
-use Kernel::System::Cache;
-use Kernel::System::Time;
+our @ObjectDependencies = (
+    'Kernel::Config',
+    'Kernel::System::Cache',
+    'Kernel::System::Encode',
+    'Kernel::System::Log',
+    'Kernel::System::Time',
+);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -24,15 +29,10 @@ sub new {
     my $Self = {};
     bless( $Self, $Type );
 
-    # check needed objects
-    for (
-        qw(DBObject ConfigObject LogObject PreferencesObject CustomerUserMap MainObject EncodeObject)
-        )
-    {
-        $Self->{$_} = $Param{$_} || die "Got no $_!";
+    # check needed data
+    for my $Needed (qw( PreferencesObject CustomerUserMap )) {
+        $Self->{$Needed} = $Param{$Needed} || die "Got no $Needed!";
     }
-
-    $Self->{TimeObject} = Kernel::System::Time->new( %{$Self} );
 
     # max shown user a search list
     $Self->{UserSearchListLimit} = $Self->{CustomerUserMap}->{CustomerUserSearchListLimit} || 200;
@@ -43,14 +43,17 @@ sub new {
         $Self->{Die} = $Self->{CustomerUserMap}->{Params}->{Die};
     }
 
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
     # params
     if ( $Self->{CustomerUserMap}->{Params}->{Params} ) {
         $Self->{Params} = $Self->{CustomerUserMap}->{Params}->{Params};
     }
 
     # Net::LDAP new params
-    elsif ( $Self->{ConfigObject}->Get( 'AuthModule::LDAP::Params' . $Param{Count} ) ) {
-        $Self->{Params} = $Self->{ConfigObject}->Get( 'AuthModule::LDAP::Params' . $Param{Count} );
+    elsif ( $ConfigObject->Get( 'AuthModule::LDAP::Params' . $Param{Count} ) ) {
+        $Self->{Params} = $ConfigObject->Get( 'AuthModule::LDAP::Params' . $Param{Count} );
     }
     else {
         $Self->{Params} = {};
@@ -61,7 +64,7 @@ sub new {
         $Self->{Host} = $Self->{CustomerUserMap}->{Params}->{Host};
     }
     else {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => 'Need CustomerUser->Params->Host in Kernel/Config.pm',
         );
@@ -73,7 +76,7 @@ sub new {
         $Self->{BaseDN} = $Self->{CustomerUserMap}->{Params}->{BaseDN};
     }
     else {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => 'Need CustomerUser->Params->BaseDN in Kernel/Config.pm',
         );
@@ -85,7 +88,7 @@ sub new {
         $Self->{SScope} = $Self->{CustomerUserMap}->{Params}->{SSCOPE};
     }
     else {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => 'Need CustomerUser->Params->SSCOPE in Kernel/Config.pm',
         );
@@ -104,7 +107,7 @@ sub new {
         $Self->{CustomerKey} = $Self->{CustomerUserMap}->{CustomerKey};
     }
     else {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => 'Need CustomerUser->CustomerKey in Kernel/Config.pm',
         );
@@ -116,7 +119,7 @@ sub new {
         $Self->{CustomerID} = $Self->{CustomerUserMap}->{CustomerID};
     }
     else {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => 'Need CustomerUser->CustomerID in Kernel/Config.pm',
         );
@@ -126,8 +129,7 @@ sub new {
     # ldap filter always used
     $Self->{AlwaysFilter} = $Self->{CustomerUserMap}->{Params}->{AlwaysFilter} || '';
 
-    $Self->{ExcludePrimaryCustomerID}
-        = $Self->{CustomerUserMap}->{CustomerUserExcludePrimaryCustomerID} || 0;
+    $Self->{ExcludePrimaryCustomerID} = $Self->{CustomerUserMap}->{CustomerUserExcludePrimaryCustomerID} || 0;
     $Self->{SearchPrefix} = $Self->{CustomerUserMap}->{CustomerUserSearchPrefix};
     if ( !defined $Self->{SearchPrefix} ) {
         $Self->{SearchPrefix} = '';
@@ -139,14 +141,13 @@ sub new {
 
     # charset settings
     $Self->{SourceCharset} = $Self->{CustomerUserMap}->{Params}->{SourceCharset} || '';
-    $Self->{DestCharset}   = $Self->{CustomerUserMap}->{Params}->{DestCharset}   || '';
 
     # set cache type
     $Self->{CacheType} = 'CustomerUser' . $Param{Count};
 
     # create cache object, but only if CacheTTL is set in customer config
     if ( $Self->{CustomerUserMap}->{CacheTTL} ) {
-        $Self->{CacheObject} = Kernel::System::Cache->new( %{$Self} );
+        $Self->{CacheObject} = $Kernel::OM->Get('Kernel::System::Cache');
     }
 
     # get valid filter if used
@@ -174,7 +175,7 @@ sub _Connect {
             die "Can't connect to $Self->{Host}: $@";
         }
         else {
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
                 Message  => "Can't connect to $Self->{Host}: $@",
             );
@@ -194,7 +195,7 @@ sub _Connect {
     }
 
     if ( $Result->code() ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => 'First bind failed! ' . $Result->error(),
         );
@@ -210,7 +211,10 @@ sub CustomerName {
 
     # check needed stuff
     if ( !$Param{UserLogin} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need UserLogin!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Need UserLogin!'
+        );
         return;
     }
 
@@ -245,7 +249,7 @@ sub CustomerName {
     );
 
     if ( $Result->code() ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => 'Search failed! ' . $Result->error(),
         );
@@ -287,7 +291,7 @@ sub CustomerSearch {
     # check needed stuff
     if ( !$Param{Search} && !$Param{UserLogin} && !$Param{PostMasterSearch} && !$Param{CustomerID} )
     {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => 'Need Search, UserLogin, PostMasterSearch or CustomerID!'
         );
@@ -363,8 +367,7 @@ sub CustomerSearch {
     return if !$Self->_Connect();
 
     # combine needed attrs
-    my @Attributes
-        = ( @{ $Self->{CustomerUserMap}->{CustomerUserListFields} }, $Self->{CustomerKey} );
+    my @Attributes = ( @{ $Self->{CustomerUserMap}->{CustomerUserListFields} }, $Self->{CustomerKey} );
 
     # perform user search
     my $Result = $Self->{LDAP}->search(
@@ -377,7 +380,7 @@ sub CustomerSearch {
 
     # log ldap errors
     if ( $Result->code() ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => $Result->error(),
         );
@@ -403,8 +406,7 @@ sub CustomerSearch {
         $CustomerString =~ s/^(.*)\s(.+?\@.+?\..+?)(\s|)$/"$1" <$2>/;
 
         if ( defined $Entry->get_value( $Self->{CustomerKey} ) ) {
-            $Users{ $Self->_ConvertFrom( $Entry->get_value( $Self->{CustomerKey} ) ) }
-                = $CustomerString;
+            $Users{ $Self->_ConvertFrom( $Entry->get_value( $Self->{CustomerKey} ) ) } = $CustomerString;
         }
     }
 
@@ -482,7 +484,7 @@ sub CustomerUserList {
 
     # log ldap errors
     if ( $Result->code() ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => $Result->error(),
         );
@@ -592,7 +594,7 @@ sub CustomerIDList {
 
     # log ldap errors
     if ( $Result->code() ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => $Result->error(),
         );
@@ -648,7 +650,10 @@ sub CustomerIDs {
 
     # check needed stuff
     if ( !$Param{User} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need User!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Need User!'
+        );
         return;
     }
 
@@ -662,17 +667,19 @@ sub CustomerIDs {
     }
 
     # get customer data
-    my %Data = $Self->CustomerUserDataGet( User => $Param{User}, );
+    my %Data = $Self->CustomerUserDataGet(
+        User => $Param{User},
+    );
 
     # there are multi customer ids
     my @CustomerIDs;
     if ( $Data{UserCustomerIDs} ) {
 
         # used separators
-        separator:
+        SEPARATOR:
         for my $Separator ( ';', ',', '|' ) {
 
-            next separator if $Data{UserCustomerIDs} !~ /\Q$Separator\E/;
+            next SEPARATOR if $Data{UserCustomerIDs} !~ /\Q$Separator\E/;
 
             # split it
             my @IDs = split /\Q$Separator\E/, $Data{UserCustomerIDs};
@@ -683,7 +690,7 @@ sub CustomerIDs {
                 push @CustomerIDs, $ID;
             }
 
-            last separator;
+            last SEPARATOR;
         }
 
         # fallback if no separator got found
@@ -717,7 +724,10 @@ sub CustomerUserDataGet {
 
     # check needed stuff
     if ( !$Param{User} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need User!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Need User!'
+        );
         return;
     }
 
@@ -755,7 +765,7 @@ sub CustomerUserDataGet {
 
     # log ldap errors
     if ( $Result->code() ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => $Result->error(),
         );
@@ -791,7 +801,7 @@ sub CustomerUserDataGet {
 
     # add last login timestamp
     if ( $Preferences{UserLastLogin} ) {
-        $Preferences{UserLastLoginTimestamp} = $Self->{TimeObject}->SystemTime2TimeStamp(
+        $Preferences{UserLastLoginTimestamp} = $Kernel::OM->Get('Kernel::System::Time')->SystemTime2TimeStamp(
             SystemTime => $Preferences{UserLastLogin},
         );
     }
@@ -814,11 +824,17 @@ sub CustomerUserAdd {
 
     # check ro/rw
     if ( $Self->{ReadOnly} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Customer backend is read only!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Customer backend is read only!'
+        );
         return;
     }
 
-    $Self->{LogObject}->Log( Priority => 'error', Message => 'Not supported for this module!' );
+    $Kernel::OM->Get('Kernel::System::Log')->Log(
+        Priority => 'error',
+        Message  => 'Not supported for this module!'
+    );
 
     return;
 }
@@ -828,11 +844,17 @@ sub CustomerUserUpdate {
 
     # check ro/rw
     if ( $Self->{ReadOnly} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Customer backend is read only!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Customer backend is read only!'
+        );
         return;
     }
 
-    $Self->{LogObject}->Log( Priority => 'error', Message => 'Not supported for this module!' );
+    $Kernel::OM->Get('Kernel::System::Log')->Log(
+        Priority => 'error',
+        Message  => 'Not supported for this module!'
+    );
 
     return;
 }
@@ -844,11 +866,17 @@ sub SetPassword {
 
     # check ro/rw
     if ( $Self->{ReadOnly} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Customer backend is read only!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Customer backend is read only!'
+        );
         return;
     }
 
-    $Self->{LogObject}->Log( Priority => 'error', Message => 'Not supported for this module!' );
+    $Kernel::OM->Get('Kernel::System::Log')->Log(
+        Priority => 'error',
+        Message  => 'Not supported for this module!'
+    );
 
     return;
 }
@@ -861,8 +889,7 @@ sub GenerateRandomPassword {
 
     # The list of characters that can appear in a randomly generated password.
     # Note that users can put any character into a password they choose themselves.
-    my @PwChars
-        = ( 0 .. 9, 'A' .. 'Z', 'a' .. 'z', '-', '_', '!', '@', '#', '$', '%', '^', '&', '*' );
+    my @PwChars = ( 0 .. 9, 'A' .. 'Z', 'a' .. 'z', '-', '_', '!', '@', '#', '$', '%', '^', '&', '*' );
 
     # number of characters in the list.
     my $PwCharsLen = scalar(@PwChars);
@@ -881,7 +908,10 @@ sub SetPreferences {
 
     # check needed params
     if ( !$Param{UserID} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need UserID!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Need UserID!'
+        );
         return;
     }
 
@@ -900,7 +930,10 @@ sub GetPreferences {
 
     # check needed params
     if ( !$Param{UserID} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need UserID!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Need UserID!'
+        );
         return;
     }
 
@@ -918,14 +951,14 @@ sub _ConvertFrom {
 
     return if !defined $Text;
 
-    if ( !$Self->{SourceCharset} || !$Self->{DestCharset} ) {
+    if ( !$Self->{SourceCharset} ) {
         return $Text;
     }
 
-    return $Self->{EncodeObject}->Convert(
+    return $Kernel::OM->Get('Kernel::System::Encode')->Convert(
         Text => $Text,
         From => $Self->{SourceCharset},
-        To   => $Self->{DestCharset},
+        To   => 'utf-8',
     );
 }
 
@@ -934,15 +967,18 @@ sub _ConvertTo {
 
     return if !defined $Text;
 
-    if ( !$Self->{SourceCharset} || !$Self->{DestCharset} ) {
-        $Self->{EncodeObject}->EncodeInput( \$Text );
+    # get encode object
+    my $EncodeObject = $Kernel::OM->Get('Kernel::System::Encode');
+
+    if ( !$Self->{SourceCharset} ) {
+        $EncodeObject->EncodeInput( \$Text );
         return $Text;
     }
 
-    return $Self->{EncodeObject}->Convert(
+    return $EncodeObject->Convert(
         Text => $Text,
         To   => $Self->{SourceCharset},
-        From => $Self->{DestCharset},
+        From => 'utf-8',
     );
 }
 

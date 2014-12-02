@@ -9,35 +9,19 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
 
-use vars qw($Self);
+use vars (qw($Self));
 
-use Kernel::System::Service;
-use Kernel::System::User;
-use Kernel::Config;
-use Kernel::System::UnitTest::Helper;
+use Kernel::System::VariableCheck qw(:all);
 
-# create local objects
-my $ConfigObject  = Kernel::Config->new();
-my $ServiceObject = Kernel::System::Service->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $UserObject = Kernel::System::User->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %$Self,
-    UnitTestObject => $Self,
-);
+# get needed objects
+my $ConfigObject  = $Kernel::OM->Get('Kernel::Config');
+my $HelperObject  = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $ServiceObject = $Kernel::OM->Get('Kernel::System::Service');
+my $UserObject    = $Kernel::OM->Get('Kernel::System::User');
 
 my $RandomID = $HelperObject->GetRandomID();
-
-$RandomID =~ s/\-//g;
 
 # ------------------------------------------------------------ #
 # make preparations

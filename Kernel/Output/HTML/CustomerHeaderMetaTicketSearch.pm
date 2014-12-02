@@ -36,7 +36,7 @@ sub Run {
             . $Self->{LayoutObject}->{SessionID};
     }
     my $Title = $Self->{ConfigObject}->Get('ProductName');
-    $Title .= ' - ' . $Self->{LayoutObject}->{LanguageObject}->Get('Customer');
+    $Title .= ' - ' . $Self->{LayoutObject}->{LanguageObject}->Translate('Customer');
     $Title .= ' (' . $Self->{ConfigObject}->Get('Ticket::Hook') . ')';
     $Self->{LayoutObject}->Block(
         Name => 'MetaLink',
@@ -44,7 +44,7 @@ sub Run {
             Rel   => 'search',
             Type  => 'application/opensearchdescription+xml',
             Title => $Title,
-            Href  => '$Env{"Baselink"}Action=' . $Param{Config}->{Action}
+            Href  => $Self->{LayoutObject}->{Baselink} . 'Action=' . $Param{Config}->{Action}
                 . ';Subaction=OpenSearchDescription' . $Session,
         },
     );

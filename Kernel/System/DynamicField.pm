@@ -12,11 +12,18 @@ package Kernel::System::DynamicField;
 use strict;
 use warnings;
 
-use Kernel::System::YAML;
+use base qw(Kernel::System::EventHandler);
 
-use Kernel::System::Cache;
-use Kernel::System::Valid;
 use Kernel::System::VariableCheck qw(:all);
+
+our @ObjectDependencies = (
+    'Kernel::Config',
+    'Kernel::System::Cache',
+    'Kernel::System::DB',
+    'Kernel::System::Log',
+    'Kernel::System::Valid',
+    'Kernel::System::YAML',
+);
 
 =head1 NAME
 
@@ -34,41 +41,11 @@ DynamicFields backend
 
 =item new()
 
-create a DynamicField object
+create a DynamicField object. Do not use it directly, instead use:
 
-    use Kernel::Config;
-    use Kernel::System::Encode;
-    use Kernel::System::Log;
-    use Kernel::System::Main;
-    use Kernel::System::DB;
-    use Kernel::System::DynamicField;
-
-    my $ConfigObject = Kernel::Config->new();
-    my $EncodeObject = Kernel::System::Encode->new(
-        ConfigObject => $ConfigObject,
-    );
-    my $LogObject = Kernel::System::Log->new(
-        ConfigObject => $ConfigObject,
-        EncodeObject => $EncodeObject,
-    );
-    my $MainObject = Kernel::System::Main->new(
-        ConfigObject => $ConfigObject,
-        EncodeObject => $EncodeObject,
-        LogObject    => $LogObject,
-    );
-    my $DBObject = Kernel::System::DB->new(
-        ConfigObject => $ConfigObject,
-        EncodeObject => $EncodeObject,
-        LogObject    => $LogObject,
-        MainObject   => $MainObject,
-    );
-    my $DynamicFieldObject = Kernel::System::DynamicField->new(
-        ConfigObject        => $ConfigObject,
-        EncodeObject        => $EncodeObject,
-        LogObject           => $LogObject,
-        MainObject          => $MainObject,
-        DBObject            => $DBObject,
-    );
+    use Kernel::System::ObjectManager;
+    local $Kernel::OM = Kernel::System::ObjectManager->new();
+    my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
 
 =cut
 
@@ -79,27 +56,19 @@ sub new {
     my $Self = {};
     bless( $Self, $Type );
 
-    # get needed objects
-    for my $Needed (qw(ConfigObject EncodeObject LogObject MainObject DBObject)) {
-        die "Got no $Needed!" if !$Param{$Needed};
-
-        $Self->{$Needed} = $Param{$Needed};
-    }
-
-    # create additional objects
-    $Self->{CacheObject} = Kernel::System::Cache->new( %{$Self} );
-    $Self->{ValidObject} = Kernel::System::Valid->new( %{$Self} );
-    $Self->{YAMLObject}  = Kernel::System::YAML->new( %{$Self} );
-
     # get the cache TTL (in seconds)
-    $Self->{CacheTTL}
-        = int( $Self->{ConfigObject}->Get('DynamicField::CacheTTL') || 3600 );
+    $Self->{CacheTTL} = $Kernel::OM->Get('Kernel::Config')->Get('DynamicField::CacheTTL') || 3600;
 
     # set lower if database is case sensitive
     $Self->{Lower} = '';
-    if ( $Self->{DBObject}->GetDatabaseFunction('CaseSensitive') ) {
+    if ( $Kernel::OM->Get('Kernel::System::DB')->GetDatabaseFunction('CaseSensitive') ) {
         $Self->{Lower} = 'LOWER';
     }
+
+    # init of event handler
+    $Self->EventHandlerInit(
+        Config => 'DynamicField::EventModulePost',
+    );
 
     return $Self;
 }
@@ -137,34 +106,40 @@ sub DynamicFieldAdd {
     # check needed stuff
     for my $Key (qw(Name Label FieldOrder FieldType ObjectType Config ValidID UserID)) {
         if ( !$Param{$Key} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Key!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $Key!"
+            );
             return;
         }
     }
 
     # check needed structure for some fields
-    if ( $Param{Name} !~ m{ \A [a-z|A-Z|\d]+ \z }xms ) {
-        $Self->{LogObject}->Log(
+    if ( $Param{Name} !~ m{ \A [a-zA-Z\d]+ \z }xms ) {
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Not valid letters on Name:$Param{Name}!"
         );
         return;
     }
 
+    # get database object
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
     # check if Name already exists
-    return if !$Self->{DBObject}->Prepare(
+    return if !$DBObject->Prepare(
         SQL   => "SELECT id FROM dynamic_field WHERE $Self->{Lower}(name) = $Self->{Lower}(?)",
         Bind  => [ \$Param{Name} ],
         Limit => 1,
     );
 
     my $NameExists;
-    while ( my @Data = $Self->{DBObject}->FetchrowArray() ) {
+    while ( my @Data = $DBObject->FetchrowArray() ) {
         $NameExists = 1;
     }
 
     if ($NameExists) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "The name $Param{Name} already exists for a dynamic field!"
         );
@@ -172,7 +147,7 @@ sub DynamicFieldAdd {
     }
 
     if ( $Param{FieldOrder} !~ m{ \A [\d]+ \z }xms ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Not valid number on FieldOrder:$Param{FieldOrder}!"
         );
@@ -180,7 +155,7 @@ sub DynamicFieldAdd {
     }
 
     # dump config as string
-    my $Config = $Self->{YAMLObject}->Dump( Data => $Param{Config} );
+    my $Config = $Kernel::OM->Get('Kernel::System::YAML')->Dump( Data => $Param{Config} );
 
     # Make sure the resulting string has the UTF-8 flag. YAML only sets it if
     #   part of the data already had it.
@@ -189,7 +164,7 @@ sub DynamicFieldAdd {
     my $InternalField = $Param{InternalField} ? 1 : 0;
 
     # sql
-    return if !$Self->{DBObject}->Do(
+    return if !$DBObject->Do(
         SQL =>
             'INSERT INTO dynamic_field (internal_field, name, label, field_Order, field_type, object_type,'
             .
@@ -197,15 +172,18 @@ sub DynamicFieldAdd {
             ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?, current_timestamp, ?)',
         Bind => [
             \$InternalField, \$Param{Name}, \$Param{Label}, \$Param{FieldOrder}, \$Param{FieldType},
-            \$Param{ObjectType}, \$Config, \$Param{ValidID}, \$Param{UserID}, \$Param{UserID}
+            \$Param{ObjectType}, \$Config, \$Param{ValidID}, \$Param{UserID}, \$Param{UserID},
         ],
     );
 
+    # get cache object
+    my $CacheObject = $Kernel::OM->Get('Kernel::System::Cache');
+
     # delete cache
-    $Self->{CacheObject}->CleanUp(
+    $CacheObject->CleanUp(
         Type => 'DynamicField',
     );
-    $Self->{CacheObject}->CleanUp(
+    $CacheObject->CleanUp(
         Type => 'DynamicFieldValue',
     );
 
@@ -214,6 +192,15 @@ sub DynamicFieldAdd {
     );
 
     return if !$DynamicField->{ID};
+
+    # trigger event
+    $Self->EventHandler(
+        Event => 'DynamicFieldAdd',
+        Data  => {
+            NewData => $DynamicField,
+        },
+        UserID => $Param{UserID},
+    );
 
     if ( !exists $Param{Reorder} || $Param{Reorder} ) {
 
@@ -260,9 +247,15 @@ sub DynamicFieldGet {
 
     # check needed stuff
     if ( !$Param{ID} && !$Param{Name} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need ID or Name!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Need ID or Name!'
+        );
         return;
     }
+
+    # get cache object
+    my $CacheObject = $Kernel::OM->Get('Kernel::System::Cache');
 
     # check cache
     my $CacheKey;
@@ -273,15 +266,18 @@ sub DynamicFieldGet {
         $CacheKey = 'DynamicFieldGet::Name::' . $Param{Name};
 
     }
-    my $Cache = $Self->{CacheObject}->Get(
+    my $Cache = $CacheObject->Get(
         Type => 'DynamicField',
         Key  => $CacheKey,
     );
     return $Cache if $Cache;
 
+    # get database object
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
     # sql
     if ( $Param{ID} ) {
-        return if !$Self->{DBObject}->Prepare(
+        return if !$DBObject->Prepare(
             SQL =>
                 'SELECT id, internal_field, name, label, field_order, field_type, object_type, config,'
                 .
@@ -291,7 +287,7 @@ sub DynamicFieldGet {
         );
     }
     else {
-        return if !$Self->{DBObject}->Prepare(
+        return if !$DBObject->Prepare(
             SQL =>
                 'SELECT id, internal_field, name, label, field_order, field_type, object_type, config,'
                 .
@@ -301,9 +297,13 @@ sub DynamicFieldGet {
         );
     }
 
+    # get yaml object
+    my $YAMLObject = $Kernel::OM->Get('Kernel::System::YAML');
+
     my %Data;
-    while ( my @Data = $Self->{DBObject}->FetchrowArray() ) {
-        my $Config = $Self->{YAMLObject}->Load( Data => $Data[7] ) || {};
+    while ( my @Data = $DBObject->FetchrowArray() ) {
+
+        my $Config = $YAMLObject->Load( Data => $Data[7] ) || {};
 
         %Data = (
             ID            => $Data[0],
@@ -321,7 +321,7 @@ sub DynamicFieldGet {
     }
 
     # set cache
-    $Self->{CacheObject}->Set(
+    $CacheObject->Set(
         Type  => 'DynamicField',
         Key   => $CacheKey,
         Value => \%Data,
@@ -360,7 +360,10 @@ sub DynamicFieldUpdate {
     # check needed stuff
     for my $Key (qw(ID Name Label FieldOrder FieldType ObjectType Config ValidID UserID)) {
         if ( !$Param{$Key} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Key!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $Key!"
+            );
             return;
         }
     }
@@ -371,37 +374,42 @@ sub DynamicFieldUpdate {
     }
 
     # dump config as string
-    my $Config = $Self->{YAMLObject}->Dump( Data => $Param{Config} );
+    my $Config = $Kernel::OM->Get('Kernel::System::YAML')->Dump(
+        Data => $Param{Config},
+    );
 
     # Make sure the resulting string has the UTF-8 flag. YAML only sets it if
     #    part of the data already had it.
     utf8::upgrade($Config);
 
     # check needed structure for some fields
-    if ( $Param{Name} !~ m{ \A [a-z|A-Z|\d]+ \z }xms ) {
-        $Self->{LogObject}->Log(
+    if ( $Param{Name} !~ m{ \A [a-zA-Z\d]+ \z }xms ) {
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Not valid letters on Name:$Param{Name} or ObjectType:$Param{ObjectType}!",
         );
         return;
     }
 
+    # get database object
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
     # check if Name already exists
-    return if !$Self->{DBObject}->Prepare(
+    return if !$DBObject->Prepare(
         SQL => "SELECT id FROM dynamic_field "
             . "WHERE $Self->{Lower}(name) = $Self->{Lower}(?) "
             . "AND id != ?",
-        Bind => [ \$Param{Name}, \$Param{ID} ],
+        Bind  => [ \$Param{Name}, \$Param{ID} ],
         LIMIT => 1,
     );
 
     my $NameExists;
-    while ( my @Data = $Self->{DBObject}->FetchrowArray() ) {
+    while ( my @Data = $DBObject->FetchrowArray() ) {
         $NameExists = 1;
     }
 
     if ($NameExists) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "The name $Param{Name} already exists for a dynamic field!",
         );
@@ -409,7 +417,7 @@ sub DynamicFieldUpdate {
     }
 
     if ( $Param{FieldOrder} !~ m{ \A [\d]+ \z }xms ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Not valid number on FieldOrder:$Param{FieldOrder}!",
         );
@@ -417,18 +425,18 @@ sub DynamicFieldUpdate {
     }
 
     # get the old dynamic field data
-    my $DynamicField = $Self->DynamicFieldGet(
+    my $OldDynamicField = $Self->DynamicFieldGet(
         ID => $Param{ID},
     );
 
     # check if FieldOrder is changed
     my $ChangedOrder;
-    if ( $DynamicField->{FieldOrder} ne $Param{FieldOrder} ) {
+    if ( $OldDynamicField->{FieldOrder} ne $Param{FieldOrder} ) {
         $ChangedOrder = 1;
     }
 
     # sql
-    return if !$Self->{DBObject}->Do(
+    return if !$DBObject->Do(
         SQL => 'UPDATE dynamic_field SET name = ?, label = ?, field_order =?, field_type = ?, '
             . 'object_type = ?, config = ?, valid_id = ?, change_time = current_timestamp, '
             . ' change_by = ? WHERE id = ?',
@@ -438,12 +446,30 @@ sub DynamicFieldUpdate {
         ],
     );
 
+    # get cache object
+    my $CacheObject = $Kernel::OM->Get('Kernel::System::Cache');
+
     # delete cache
-    $Self->{CacheObject}->CleanUp(
+    $CacheObject->CleanUp(
         Type => 'DynamicField',
     );
-    $Self->{CacheObject}->CleanUp(
+    $CacheObject->CleanUp(
         Type => 'DynamicFieldValue',
+    );
+
+    # get the new dynamic field data
+    my $NewDynamicField = $Self->DynamicFieldGet(
+        ID => $Param{ID},
+    );
+
+    # trigger event
+    $Self->EventHandler(
+        Event => 'DynamicFieldUpdate',
+        Data  => {
+            NewData => $NewDynamicField,
+            OldData => $OldDynamicField,
+        },
+        UserID => $Param{UserID},
     );
 
     # re-order field list if a change in the order was made
@@ -452,7 +478,7 @@ sub DynamicFieldUpdate {
             ID            => $Param{ID},
             FieldOrder    => $Param{FieldOrder},
             Mode          => 'Update',
-            OldFieldOrder => $DynamicField->{FieldOrder},
+            OldFieldOrder => $OldDynamicField->{FieldOrder},
         );
     }
 
@@ -481,7 +507,10 @@ sub DynamicFieldDelete {
     # check needed stuff
     for my $Key (qw(ID UserID)) {
         if ( !$Param{$Key} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Key!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $Key!"
+            );
             return;
         }
     }
@@ -502,17 +531,29 @@ sub DynamicFieldDelete {
     }
 
     # delete dynamic field
-    return if !$Self->{DBObject}->Do(
+    return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
         SQL  => 'DELETE FROM dynamic_field WHERE id = ?',
         Bind => [ \$Param{ID} ],
     );
 
+    # get cache object
+    my $CacheObject = $Kernel::OM->Get('Kernel::System::Cache');
+
     # delete cache
-    $Self->{CacheObject}->CleanUp(
+    $CacheObject->CleanUp(
         Type => 'DynamicField',
     );
-    $Self->{CacheObject}->CleanUp(
+    $CacheObject->CleanUp(
         Type => 'DynamicFieldValue',
+    );
+
+    # trigger event
+    $Self->EventHandler(
+        Event => 'DynamicFieldDelete',
+        Data  => {
+            NewData => $DynamicField,
+        },
+        UserID => $Param{UserID},
     );
 
     return 1;
@@ -604,14 +645,16 @@ sub DynamicFieldList {
     my $ResultType = $Param{ResultType} || 'ARRAY';
     $ResultType = $ResultType eq 'HASH' ? 'HASH' : 'ARRAY';
 
-    my $CacheKey
-        = 'DynamicFieldList::Valid::'
+    # get cache object
+    my $CacheObject = $Kernel::OM->Get('Kernel::System::Cache');
+
+    my $CacheKey = 'DynamicFieldList::Valid::'
         . $Valid
         . '::ObjectType::'
         . $ObjectType
         . '::ResultType::'
         . $ResultType;
-    my $Cache = $Self->{CacheObject}->Get(
+    my $Cache = $CacheObject->Get(
         Type => 'DynamicField',
         Key  => $CacheKey,
     );
@@ -625,7 +668,7 @@ sub DynamicFieldList {
             return $Cache;
         }
         elsif ( ref $Param{FieldFilter} ne 'HASH' ) {
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
                 Message  => 'FieldFilter must be a HASH reference!',
             );
@@ -667,19 +710,26 @@ sub DynamicFieldList {
     else {
         my $SQL = 'SELECT id, name, field_order FROM dynamic_field';
 
+        # get database object
+        my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
         if ($Valid) {
-            $SQL .= ' WHERE valid_id IN (' . join ', ', $Self->{ValidObject}->ValidIDsGet() . ')';
+
+            # get valid object
+            my $ValidObject = $Kernel::OM->Get('Kernel::System::Valid');
+
+            $SQL .= ' WHERE valid_id IN (' . join ', ', $ValidObject->ValidIDsGet() . ')';
 
             if ( $Param{ObjectType} ) {
                 if ( IsStringWithData( $Param{ObjectType} ) && $Param{ObjectType} ne 'All' ) {
                     $SQL .=
                         " AND object_type = '"
-                        . $Self->{DBObject}->Quote( $Param{ObjectType} ) . "'";
+                        . $DBObject->Quote( $Param{ObjectType} ) . "'";
                 }
                 elsif ( IsArrayRefWithData( $Param{ObjectType} ) ) {
                     my $ObjectTypeString =
                         join ',',
-                        map "'" . $Self->{DBObject}->Quote($_) . "'",
+                        map "'" . $DBObject->Quote($_) . "'",
                         @{ $Param{ObjectType} };
                     $SQL .= " AND object_type IN ($ObjectTypeString)";
 
@@ -691,12 +741,12 @@ sub DynamicFieldList {
                 if ( IsStringWithData( $Param{ObjectType} ) && $Param{ObjectType} ne 'All' ) {
                     $SQL .=
                         " WHERE object_type = '"
-                        . $Self->{DBObject}->Quote( $Param{ObjectType} ) . "'";
+                        . $DBObject->Quote( $Param{ObjectType} ) . "'";
                 }
                 elsif ( IsArrayRefWithData( $Param{ObjectType} ) ) {
                     my $ObjectTypeString =
                         join ',',
-                        map "'" . $Self->{DBObject}->Quote($_) . "'",
+                        map "'" . $DBObject->Quote($_) . "'",
                         @{ $Param{ObjectType} };
                     $SQL .= " WHERE object_type IN ($ObjectTypeString)";
                 }
@@ -705,17 +755,17 @@ sub DynamicFieldList {
 
         $SQL .= " ORDER BY field_order, id";
 
-        return if !$Self->{DBObject}->Prepare( SQL => $SQL );
+        return if !$DBObject->Prepare( SQL => $SQL );
 
         if ( $ResultType eq 'HASH' ) {
             my %Data;
 
-            while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+            while ( my @Row = $DBObject->FetchrowArray() ) {
                 $Data{ $Row[0] } = $Row[1];
             }
 
             # set cache
-            $Self->{CacheObject}->Set(
+            $CacheObject->Set(
                 Type  => 'DynamicField',
                 Key   => $CacheKey,
                 Value => \%Data,
@@ -729,7 +779,7 @@ sub DynamicFieldList {
                 return \%Data;
             }
             elsif ( ref $Param{FieldFilter} ne 'HASH' ) {
-                $Self->{LogObject}->Log(
+                $Kernel::OM->Get('Kernel::System::Log')->Log(
                     Priority => 'error',
                     Message  => 'FieldFilter must be a HASH reference!',
                 );
@@ -751,12 +801,12 @@ sub DynamicFieldList {
         else {
 
             my @Data;
-            while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+            while ( my @Row = $DBObject->FetchrowArray() ) {
                 push @Data, $Row[0];
             }
 
             # set cache
-            $Self->{CacheObject}->Set(
+            $CacheObject->Set(
                 Type  => 'DynamicField',
                 Key   => $CacheKey,
                 Value => \@Data,
@@ -770,7 +820,7 @@ sub DynamicFieldList {
                 return \@Data;
             }
             elsif ( ref $Param{FieldFilter} ne 'HASH' ) {
-                $Self->{LogObject}->Log(
+                $Kernel::OM->Get('Kernel::System::Log')->Log(
                     Priority => 'error',
                     Message  => 'FieldFilter must be a HASH reference!',
                 );
@@ -867,8 +917,11 @@ sub DynamicFieldListGet {
         $ObjectType = $Param{ObjectType};
     }
 
+    # get cache object
+    my $CacheObject = $Kernel::OM->Get('Kernel::System::Cache');
+
     my $CacheKey = 'DynamicFieldListGet::Valid::' . $Valid . '::ObjectType::' . $ObjectType;
-    my $Cache    = $Self->{CacheObject}->Get(
+    my $Cache    = $CacheObject->Get(
         Type => 'DynamicField',
         Key  => $CacheKey,
     );
@@ -882,7 +935,7 @@ sub DynamicFieldListGet {
             return $Cache;
         }
         elsif ( ref $Param{FieldFilter} ne 'HASH' ) {
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
                 Message  => 'FieldFilter must be a HASH reference!',
             );
@@ -904,21 +957,28 @@ sub DynamicFieldListGet {
         return $FilteredData;
     }
 
+    # get database object
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
     my @Data;
     my $SQL = 'SELECT id, name, field_order FROM dynamic_field';
 
     if ($Valid) {
-        $SQL .= ' WHERE valid_id IN (' . join ', ', $Self->{ValidObject}->ValidIDsGet() . ')';
+
+        # get valid object
+        my $ValidObject = $Kernel::OM->Get('Kernel::System::Valid');
+
+        $SQL .= ' WHERE valid_id IN (' . join ', ', $ValidObject->ValidIDsGet() . ')';
 
         if ( $Param{ObjectType} ) {
             if ( IsStringWithData( $Param{ObjectType} ) && $Param{ObjectType} ne 'All' ) {
                 $SQL .=
-                    " AND object_type = '" . $Self->{DBObject}->Quote( $Param{ObjectType} ) . "'";
+                    " AND object_type = '" . $DBObject->Quote( $Param{ObjectType} ) . "'";
             }
             elsif ( IsArrayRefWithData( $Param{ObjectType} ) ) {
                 my $ObjectTypeString =
                     join ',',
-                    map "'" . $Self->{DBObject}->Quote($_) . "'",
+                    map "'" . $DBObject->Quote($_) . "'",
                     @{ $Param{ObjectType} };
                 $SQL .= " AND object_type IN ($ObjectTypeString)";
 
@@ -929,12 +989,12 @@ sub DynamicFieldListGet {
         if ( $Param{ObjectType} ) {
             if ( IsStringWithData( $Param{ObjectType} ) && $Param{ObjectType} ne 'All' ) {
                 $SQL .=
-                    " WHERE object_type = '" . $Self->{DBObject}->Quote( $Param{ObjectType} ) . "'";
+                    " WHERE object_type = '" . $DBObject->Quote( $Param{ObjectType} ) . "'";
             }
             elsif ( IsArrayRefWithData( $Param{ObjectType} ) ) {
                 my $ObjectTypeString =
                     join ',',
-                    map "'" . $Self->{DBObject}->Quote($_) . "'",
+                    map "'" . $DBObject->Quote($_) . "'",
                     @{ $Param{ObjectType} };
                 $SQL .= " WHERE object_type IN ($ObjectTypeString)";
             }
@@ -943,10 +1003,10 @@ sub DynamicFieldListGet {
 
     $SQL .= " ORDER BY field_order, id";
 
-    return if !$Self->{DBObject}->Prepare( SQL => $SQL );
+    return if !$DBObject->Prepare( SQL => $SQL );
 
     my @DynamicFieldIDs;
-    while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+    while ( my @Row = $DBObject->FetchrowArray() ) {
         push @DynamicFieldIDs, $Row[0];
     }
 
@@ -959,7 +1019,7 @@ sub DynamicFieldListGet {
     }
 
     # set cache
-    $Self->{CacheObject}->Set(
+    $CacheObject->Set(
         Type  => 'DynamicField',
         Key   => $CacheKey,
         Value => \@Data,
@@ -973,7 +1033,7 @@ sub DynamicFieldListGet {
         return \@Data;
     }
     elsif ( ref $Param{FieldFilter} ne 'HASH' ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => 'FieldFilter must be a HASH reference!',
         );
@@ -1043,7 +1103,7 @@ sub DynamicFieldOrderReset {
 
         # check if the update was successful
         if ( !$Success ) {
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
                 Message  => 'An error was detected while re ordering the field list on field '
                     . "DynamicField->{Name}!",
@@ -1103,6 +1163,15 @@ sub DynamicFieldOrderCheck {
     return 1;
 }
 
+sub DESTROY {
+    my $Self = shift;
+
+    # execute all transaction events
+    $Self->EventHandlerTransaction();
+
+    return 1;
+}
+
 =begin Internal:
 
 =cut
@@ -1133,7 +1202,10 @@ sub _DynamicFieldReorder {
     # check needed stuff
     for my $Needed (qw(ID FieldOrder Mode)) {
         if ( !$Param{$Needed} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => 'Need $Needed!' );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => 'Need $Needed!'
+            );
             return;
         }
     }
@@ -1142,7 +1214,10 @@ sub _DynamicFieldReorder {
 
         # check needed stuff
         if ( !$Param{OldFieldOrder} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => 'Need OldFieldOrder!' );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => 'Need OldFieldOrder!'
+            );
             return;
         }
     }
@@ -1281,7 +1356,7 @@ sub _DynamicFieldReorder {
 
         # check if the update was successful
         if ( !$Success ) {
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
                 Message  => 'An error was detected while re ordering the field list on field '
                     . "DynamicField->{Name}!",
@@ -1291,7 +1366,7 @@ sub _DynamicFieldReorder {
     }
 
     # delete cache
-    $Self->{CacheObject}->CleanUp(
+    $Kernel::OM->Get('Kernel::System::Cache')->CleanUp(
         Type => 'DynamicField',
     );
 
