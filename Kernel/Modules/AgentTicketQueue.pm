@@ -156,8 +156,7 @@ sub Run {
 
         # if no filter from web request, try from user preferences
         if ( !defined $FilterValue || $FilterValue eq '' ) {
-            $FilterValue
-                = $StoredFilters->{ 'DynamicField_' . $DynamicFieldConfig->{Name} }->{Equals};
+            $FilterValue = $StoredFilters->{ 'DynamicField_' . $DynamicFieldConfig->{Name} }->{Equals};
         }
 
         next DYNAMICFIELD if !defined $FilterValue;
@@ -196,10 +195,10 @@ sub Run {
 
     my $Output;
     if ( $Self->{Subaction} ne 'AJAXFilterUpdate' ) {
-        $Output = $Self->{LayoutObject}->Header( Refresh => $Refresh, );
+        $Output = $Self->{LayoutObject}->Header(
+            Refresh => $Refresh,
+        );
         $Output .= $Self->{LayoutObject}->NavigationBar();
-        $Self->{LayoutObject}->Print( Output => \$Output );
-        $Output = '';
     }
 
     # viewable locks
@@ -238,7 +237,9 @@ sub Run {
     # get custom queues
     my @ViewableQueueIDs;
     if ( !$Self->{QueueID} ) {
-        @ViewableQueueIDs = $Self->{QueueObject}->GetAllCustomQueues( UserID => $Self->{UserID}, );
+        @ViewableQueueIDs = $Self->{QueueObject}->GetAllCustomQueues(
+            UserID => $Self->{UserID},
+        );
     }
     else {
         @ViewableQueueIDs = ( $Self->{QueueID} );
@@ -435,50 +436,53 @@ sub Run {
         $LastColumnFilter = 1;
     }
 
-    my %NavBar = $Self->BuildQueueView( QueueIDs => \@ViewableQueueIDs, Filter => $Self->{Filter} );
+    my %NavBar = $Self->BuildQueueView(
+        QueueIDs => \@ViewableQueueIDs,
+        Filter   => $Self->{Filter}
+    );
 
     # show tickets
-    $Self->{LayoutObject}->Print(
-        Output => \$Self->{LayoutObject}->TicketListShow(
+    $Output .= $Self->{LayoutObject}->TicketListShow(
+        Filter     => $Self->{Filter},
+        Filters    => \%NavBarFilter,
+        FilterLink => $LinkFilter,
 
-            Filter     => $Self->{Filter},
-            Filters    => \%NavBarFilter,
-            FilterLink => $LinkFilter,
-
-            DataInTheMiddle => $Self->{LayoutObject}->Output(
-                TemplateFile => 'AgentTicketQueue',
-                Data         => \%NavBar,
-            ),
-
-            TicketIDs => \@ViewableTickets,
-
-            OriginalTicketIDs => \@OriginalViewableTickets,
-            GetColumnFilter   => \%GetColumnFilter,
-            LastColumnFilter  => $LastColumnFilter,
-            Action            => 'AgentTicketQueue',
-            Total             => $CountTotal,
-            RequestedURL      => $Self->{RequestedURL},
-
-            NavBar => \%NavBar,
-            View   => $Self->{View},
-
-            Bulk       => 1,
-            TitleName  => 'QueueView',
-            TitleValue => $NavBar{SelectedQueue},
-
-            Env        => $Self,
-            LinkPage   => $LinkPage,
-            LinkSort   => $LinkSort,
-            LinkFilter => $LinkFilter,
-
-            OrderBy             => $OrderBy,
-            SortBy              => $SortBy,
-            EnableColumnFilters => 1,
-            ColumnFilterForm    => {
-                QueueID => $Self->{QueueID} || '',
-                Filter  => $Self->{Filter}  || '',
-            },
+        DataInTheMiddle => $Self->{LayoutObject}->Output(
+            TemplateFile => 'AgentTicketQueue',
+            Data         => \%NavBar,
         ),
+
+        TicketIDs => \@ViewableTickets,
+
+        OriginalTicketIDs => \@OriginalViewableTickets,
+        GetColumnFilter   => \%GetColumnFilter,
+        LastColumnFilter  => $LastColumnFilter,
+        Action            => 'AgentTicketQueue',
+        Total             => $CountTotal,
+        RequestedURL      => $Self->{RequestedURL},
+
+        NavBar => \%NavBar,
+        View   => $Self->{View},
+
+        Bulk       => 1,
+        TitleName  => 'QueueView',
+        TitleValue => $NavBar{SelectedQueue},
+
+        Env        => $Self,
+        LinkPage   => $LinkPage,
+        LinkSort   => $LinkSort,
+        LinkFilter => $LinkFilter,
+
+        OrderBy             => $OrderBy,
+        SortBy              => $SortBy,
+        EnableColumnFilters => 1,
+        ColumnFilterForm    => {
+            QueueID => $Self->{QueueID} || '',
+            Filter  => $Self->{Filter}  || '',
+        },
+
+        # do not print the result earlier, but return complete content
+        Output => 1,
     );
 
     # get page footer
@@ -493,7 +497,6 @@ sub BuildQueueView {
         UserID        => $Self->{UserID},
         QueueID       => $Self->{QueueID},
         ShownQueueIDs => $Param{QueueIDs},
-        Filter        => $Param{Filter},
     );
 
     # build output ...
@@ -514,10 +517,12 @@ sub _MaskQueueView {
     my $QueueIDOfMaxAge = $Param{QueueIDOfMaxAge} || -1;
     my %AllQueues       = %{ $Param{AllQueues} };
     my %Counter;
+    my %Totals;
+    my $HaveTotals = 0;    # flag for "Total" in index backend
     my %UsedQueue;
     my @ListedQueues;
     my $Level       = 0;
-    my $CustomQueue = $Self->{LayoutObject}->{LanguageObject}->Get( $Self->{CustomQueue} );
+    my $CustomQueue = $Self->{LayoutObject}->{LanguageObject}->Translate( $Self->{CustomQueue} );
     $Self->{HighlightAge1} = $Self->{Config}->{HighlightAge1};
     $Self->{HighlightAge2} = $Self->{Config}->{HighlightAge2};
     $Self->{Blink}         = $Self->{Config}->{Blink};
@@ -532,6 +537,7 @@ sub _MaskQueueView {
         push @ListedQueues, $QueueRef;
         my %Queue = %$QueueRef;
         my @Queue = split /::/, $Queue{Queue};
+        $HaveTotals ||= exists $Queue{Total};
 
         # remember counted/used queues
         $UsedQueue{ $Queue{Queue} } = 1;
@@ -545,14 +551,26 @@ sub _MaskQueueView {
             else {
                 $QueueName .= '::' . $Queue[$_];
             }
-            if ( !$Counter{$QueueName} ) {
-                $Counter{$QueueName} = 0;
+            if ( !exists $Counter{$QueueName} ) {
+                $Counter{$QueueName} = 0;    # init
+                $Totals{$QueueName}  = 0;
             }
-            $Counter{$QueueName} = $Counter{$QueueName} + $Queue{Count};
-            if ( $Counter{$QueueName} && !$Queue{$QueueName} && !$UsedQueue{$QueueName} ) {
+            my $Total = $Queue{Total} || 0;
+            $Counter{$QueueName} += $Queue{Count};
+            $Totals{$QueueName}  += $Total;
+            if (
+                ( $Counter{$QueueName} || $Totals{$QueueName} )
+                && !$Queue{$QueueName}
+                && !$UsedQueue{$QueueName}
+                )
+            {
+                # IMHO, this is purely pathological--TicketAcceleratorIndex
+                # sorts queues by name, so we should never stumble across one
+                # that we have not seen before!
                 my %Hash = ();
                 $Hash{Queue} = $QueueName;
                 $Hash{Count} = $Counter{$QueueName};
+                $Hash{Total} = $Total;
                 for ( sort keys %AllQueues ) {
                     if ( $AllQueues{$_} eq $QueueName ) {
                         $Hash{QueueID} = $_;
@@ -573,7 +591,8 @@ sub _MaskQueueView {
         # replace name of CustomQueue
         if ( $Queue{Queue} eq 'CustomQueue' ) {
             $Counter{$CustomQueue} = $Counter{ $Queue{Queue} };
-            $Queue{Queue} = $CustomQueue;
+            $Totals{$CustomQueue}  = $Totals{ $Queue{Queue} };
+            $Queue{Queue}          = $CustomQueue;
         }
         my @QueueName = split /::/, $Queue{Queue};
         my $ShortQueueName = $QueueName[-1];
@@ -630,8 +649,16 @@ sub _MaskQueueView {
         }
 
         # QueueStrg
-        $QueueStrg .= $Self->{LayoutObject}->Ascii2Html( Text => $ShortQueueName )
-            . " ($Counter{$Queue{Queue}})";
+        $QueueStrg .= $Self->{LayoutObject}->Ascii2Html( Text => $ShortQueueName );
+
+        # If the index backend supports totals, we show total tickets
+        # as well as unlocked ones in the form  "QueueName (total / unlocked)"
+        if ( $HaveTotals && ( $Totals{ $Queue{Queue} } != $Counter{ $Queue{Queue} } ) ) {
+            $QueueStrg .= " ($Totals{$Queue{Queue}}/$Counter{$Queue{Queue}})";
+        }
+        else {
+            $QueueStrg .= " ($Counter{$Queue{Queue}})";
+        }
 
         $QueueStrg .= '</a></li>';
 

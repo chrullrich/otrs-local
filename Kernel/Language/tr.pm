@@ -1,7 +1,7 @@
 # --
 # Kernel/Language/tr.pm - provides Turkish language translation
 # Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
-# Copyright (C) 2013 Sefer Şimşek / Network Group <network@kamusm.gov.tr>
+# Copyright (C) 2013 Sefer ÅimÅek / Network Group <network@kamusm.gov.tr>
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -11,6 +11,7 @@ package Kernel::Language::tr;
 
 use strict;
 use warnings;
+use utf8;
 
 sub Data {
     my $Self = shift;
@@ -150,7 +151,6 @@ sub Data {
         'system' => 'sistem',
         'Customer Info' => 'Müşteri Bilgisi',
         'Customer Information' => 'Müşteri Bilgileri',
-        'Customer Company' => 'Müşteri Şirketi',
         'Customer Companies' => 'Müşteri Şirketleri',
         'Company' => 'Şirket',
         'go!' => 'Başla!',
@@ -257,6 +257,8 @@ sub Data {
             '',
         'Database already contains data - it should be empty!' => '',
         'Login is needed!' => 'Oturum açmanız gerekli!',
+        'It is currently not possible to login due to a scheduled system maintenance.' =>
+            '',
         'Password is needed!' => 'Parola gerekli!',
         'Take this Customer' => 'Bu Müşteriyi al',
         'Take this User' => 'Bu Kullanıcıyı al',
@@ -356,6 +358,8 @@ sub Data {
         'Hello %s,' => 'Merhaba %s,',
         'This email address already exists. Please log in or reset your password.' =>
             'Bu e-posta adresi zaten var. Lütfen giriş yapın yada parolanızı sıfırlayın.',
+        'This email address is not allowed to register. Please contact support staff.' =>
+            '',
         'New account created. Sent login information to %s. Please check your email.' =>
             'Yeni Hesap eklendi. Giriş bilgileri %s adresine gönderildi. Lütfen e-postanızı kontrol edin.',
         'Please press Back and try again.' => 'Lüften geri tuşuna basınız ve tekrar deneyiniz',
@@ -411,6 +415,20 @@ sub Data {
         'Problems processing server result. Please try again later.' => '',
         'Username and password do not match. Please try again.' => '',
         'The selected process is invalid!' => '',
+        'Upgrade to %s now!' => '',
+        '%s Go to the upgrade center %s' => '',
+        'The license for your %s is about to expire. Please make contact with %s to renew your contract!' =>
+            '',
+        'An update for your %s is available, but there is a conflict with your framework version! Please update your framework first!' =>
+            '',
+        'Your system was successfully upgraded to %s.' => '',
+        'There was a problem during the upgrade to %s.' => '',
+        '%s was correctly reinstalled.' => '',
+        'There was a problem reinstalling %s.' => '',
+        'Your %s was successfully updated.' => '',
+        'There was a problem during the upgrade of %s.' => '',
+        '%s was correctly uninstalled.' => '',
+        'There was a problem uninstalling %s.' => '',
 
         # Template: AAACalendar
         'New Year\'s Day' => 'Yeni Yıl\'s Gün',
@@ -484,8 +502,8 @@ sub Data {
         # Template: AAAStats
         'Stat' => 'İstatistikler',
         'Sum' => 'Toplam',
-        'Days' => '',
         'No (not supported)' => '',
+        'Days' => '',
         'Please fill out the required fields!' => 'Lütfen zorunlu alanları doldurun!',
         'Please select a file!' => 'Lütfen bir dosya seçin!',
         'Please select an object!' => 'Lütfen bir nesne seçin!',
@@ -577,7 +595,7 @@ sub Data {
         'Server Database Charset' => '',
         'Setting character_set_database needs to be UNICODE or UTF8.' => '',
         'Table Charset' => '',
-        'There were tables found which no not have utf8 as charset.' => '',
+        'There were tables found which do not have utf8 as charset.' => '',
         'Maximum Query Size' => '',
         'The setting \'max_allowed_packet\' must be higher than 20 MB.' =>
             '',
@@ -587,11 +605,10 @@ sub Data {
         'Default Storage Engine' => '',
         'Tables with a different storage engine than the default engine were found.' =>
             '',
-        'Table Status' => '',
-        'Tables found which do not have a regular status.' => '',
         'MySQL 5.x or higher is required.' => '',
         'NLS_LANG Setting' => '',
-        'NLS_LANG must be set to utf8 (e.g. german_germany.utf8).' => '',
+        'NLS_LANG must be set to AL32UTF8 (e.g. GERMAN_GERMANY.AL32UTF8).' =>
+            '',
         'NLS_DATE_FORMAT Setting' => '',
         'NLS_DATE_FORMAT must be set to \'YYYY-MM-DD HH24:MI:SS\'.' => '',
         'NLS_DATE_FORMAT Setting SQL Check' => '',
@@ -601,15 +618,18 @@ sub Data {
         'Setting DateStyle needs to be ISO.' => '',
         'PostgreSQL 8.x or higher is required.' => '',
         'OTRS Disk Partition' => '',
+        'Disk Usage' => '',
+        'The partition where OTRS is located is almost full.' => '',
+        'The partition where OTRS is located has no disk space problems.' =>
+            '',
         'Disk Partitions Usage' => '',
         'Distribution' => '',
         'Could not determine distribution.' => '',
         'Kernel Version' => '',
         'Could not determine kernel version.' => '',
-        'Load' => 'Yükle',
-        'The load should be at maximum, the number of procesors the system have (e.g. a load of 8 or less on a 8 CPUs system is OK.' =>
+        'System Load' => '',
+        'The system load should be at maximum the number of CPUs the system has (e.g. a load of 8 or less on a system with 8 CPUs is OK).' =>
             '',
-        'Could not determine system load.' => '',
         'Perl Modules' => '',
         'Not all required Perl modules are correctly installed.' => '',
         'Perl Version' => '',
@@ -632,6 +652,8 @@ sub Data {
         'Groups' => 'Gruplar',
         'Dynamic Fields' => 'Dinamik Alan',
         'Dynamic Field Values' => '',
+        'Invalid Dynamic Fields' => '',
+        'Invalid Dynamic Field Values' => '',
         'GenericInterface Webservices' => '',
         'Processes' => 'Süreç',
         'Months Between First And Last Ticket' => '',
@@ -673,6 +695,7 @@ sub Data {
         'Environment Variables' => '',
         'Webserver Version' => '',
         'Could not determine webserver version.' => '',
+        'Loaded Apache Modules' => '',
         'CGI Accelerator Usage' => '',
         'You should use FastCGI or mod_perl to increase your performance.' =>
             '',
@@ -833,7 +856,7 @@ sub Data {
         'Phone-Ticket' => 'Telefon-Bilet',
         'Search Tickets' => 'Biletleri Ara',
         'Edit Customer Users' => 'Müşteri Kullanıcıları Belirle',
-        'Edit Customer Company' => '',
+        'Edit Customer' => 'Müşteri Düzenle',
         'Bulk Action' => 'Toplu İşlem',
         'Bulk Actions on Tickets' => 'Biletler Üzerinde Toplu İşlem',
         'Send Email and create a new Ticket' => 'E-Postayı gönder ve yeni Bilet oluştur',
@@ -893,6 +916,9 @@ sub Data {
             '"Kuyruklarım"da yeni bir bilet olduğunda bana bildirim gönder.',
         'Send new ticket notifications' => 'Yeni bilet uyarıları gönder',
         'Ticket follow up notification' => 'Bilet izleme uyarısı',
+        'Send me a notification if a customer sends a follow up and I\'m the owner of the ticket or the ticket is unlocked and is in one of my subscribed queues.' =>
+            '',
+        'Send ticket follow up notifications' => 'Bilet takip bildirimlerini gönder.',
         'Ticket lock timeout notification' => 'Bilet kilidi zaman aşımı bildirimi',
         'Send me a notification if a ticket is unlocked by the system.' =>
             'Bir biletin kilidi sistem tarafından kaldırıldığında bana bildirim gönder.',
@@ -944,46 +970,6 @@ sub Data {
         'Archived tickets' => 'Arşivlenen biletler',
         'Unarchived tickets' => 'Arşivlenmeyen biletler',
         'Ticket Information' => 'Bilet Bilgileri',
-        'History::Move' => 'Bilet "%s" (%s) kuyruğuna taşındı, "%s" (%s) kuyruğundan.',
-        'History::TypeUpdate' => '"%s" (Kimlik=%s) tipi güncellendi.',
-        'History::ServiceUpdate' => '"%s" (Kimlik=%s) servisi güncellendi.',
-        'History::SLAUpdate' => '"%s" (Kimlik=%s) SLA güncellendi.',
-        'History::NewTicket' => 'Yeni [%s] Bileti oluşturuldu (Q=%s;P=%s;S=%s).',
-        'History::FollowUp' => '[%s] için takip. %s',
-        'History::SendAutoReject' => '"%s" için Otomatik Red gönderildi.',
-        'History::SendAutoReply' => '"%s" için Otomatik Cevap gönderildi.',
-        'History::SendAutoFollowUp' => '"%s" için Otomatik Takip gönderildi.',
-        'History::Forward' => '"%s" iletildi.',
-        'History::Bounce' => '"%s" ötelendi.',
-        'History::SendAnswer' => '"%s" için e-posta gönderildi.',
-        'History::SendAgentNotification' => '"%s"- "%s" için aracıya bildirim gönderildi.',
-        'History::SendCustomerNotification' => '"%s" için müşteriye bildirim gönderildi .',
-        'History::EmailAgent' => 'Aracıya e-posta gönderildi.',
-        'History::EmailCustomer' => 'Müşteriye e-posta gönderildi. %s',
-        'History::PhoneCallAgent' => 'Aracı telefonla arandı.',
-        'History::PhoneCallCustomer' => 'Müşteri telefonla arandı.',
-        'History::AddNote' => 'Not eklendi (%s)',
-        'History::Lock' => 'Bilet kilitlendi.',
-        'History::Unlock' => 'Bilet kilidi çözüldü.',
-        'History::TimeAccounting' => '%s zaman birimi hesaplandı. Toplam %s zaman birimi.',
-        'History::Remove' => '%s',
-        'History::CustomerUpdate' => 'Güncellendi: %s',
-        'History::PriorityUpdate' => 'Öncelik değiştirildi. Eski: "%s" (%s), Yeni: "%s" (%s).',
-        'History::OwnerUpdate' => 'Yeni sahip "%s" (Kimlik=%s).',
-        'History::LoopProtection' => 'Döngü Koruması! "%s" için otomatik yanıt gönderilmedi.',
-        'History::Misc' => '%s',
-        'History::SetPendingTime' => 'Güncellendi: %s',
-        'History::StateUpdate' => 'Eski: "%s" Yeni: "%s"',
-        'History::TicketDynamicFieldUpdate' => 'Güncellendi: %s=%s;%s=%s;',
-        'History::WebRequestCustomer' => 'Web üzerinden Müşteri İsteği.',
-        'History::TicketLinkAdd' => '"%s" biletine köprü eklendi.',
-        'History::TicketLinkDelete' => '"%s" biletine köprü silinde.',
-        'History::Subscribe' => 'Added subscription for user "%s".',
-        'History::Unsubscribe' => 'Removed subscription for user "%s".',
-        'History::SystemRequest' => '',
-        'History::ResponsibleUpdate' => '',
-        'History::ArchiveFlagUpdate' => '',
-        'History::TicketTitleUpdate' => '',
 
         # Template: AAAWeekDay
         'Sun' => 'Paz',
@@ -1094,7 +1080,6 @@ sub Data {
         'Select' => 'Seç',
         'Please enter a search term to look for customers.' => '',
         'Add Customer' => 'Müşteri Ekle',
-        'Edit Customer' => 'Müşteri Düzenle',
 
         # Template: AdminCustomerUser
         'Customer User Management' => 'Müşteri Kullanıcı Yönetimi',
@@ -1124,12 +1109,12 @@ sub Data {
         'Just use this feature if you want to define group permissions for customers.' =>
             '',
         'Enable it here!' => 'Burada aç!',
-        'Search for customers.' => '',
         'Edit Customer Default Groups' => '',
         'These groups are automatically assigned to all customers.' => '',
         'You can manage these groups via the configuration setting "CustomerGroupAlwaysGroups".' =>
             '',
         'Filter for Groups' => '',
+        'Just start typing to filter...' => '',
         'Select the customer:group permissions.' => '',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             '',
@@ -1161,7 +1146,7 @@ sub Data {
         # Template: AdminDynamicField
         'Dynamic Fields Management' => 'Dinamik alanların yönetimi',
         'Add new field for object' => 'Nesne için yeni alan ekle',
-        'To add a new field, select the field type form one of the object\'s list, the object defines the boundary of the field and it can\'t be changed after the field creation.' =>
+        'To add a new field, select the field type from one of the object\'s list, the object defines the boundary of the field and it can\'t be changed after the field creation.' =>
             '',
         'Dynamic Fields List' => 'Dinamik alanların listesi',
         'Dynamic fields per page' => '',
@@ -1212,6 +1197,8 @@ sub Data {
         'Show link' => '',
         'Here you can specify an optional HTTP link for the field value in Overviews and Zoom screens.' =>
             '',
+        'Restrict entering of dates' => '',
+        'Here you can restrict the entering of dates of tickets.' => '',
 
         # Template: AdminDynamicFieldDropdown
         'Possible values' => '',
@@ -1231,8 +1218,6 @@ sub Data {
         'You need to add the translations manually into the language translation files.' =>
             '',
 
-        # Template: AdminDynamicFieldMultiselect
-
         # Template: AdminDynamicFieldText
         'Number of rows' => '',
         'Specify the height (in lines) for this field in the edit mode.' =>
@@ -1240,6 +1225,13 @@ sub Data {
         'Number of cols' => '',
         'Specify the width (in characters) for this field in the edit mode.' =>
             '',
+        'Check RegEx' => '',
+        'Here you can specify a regular expression to check the value. The regex will be executed with the modifiers xms.' =>
+            '',
+        'RegEx' => '',
+        'Invalid RegEx' => '',
+        'Error Message' => 'Hata mesajı',
+        'Add RegEx' => '',
 
         # Template: AdminEmail
         'Admin Notification' => 'Yönetim Bilgilendirme',
@@ -1285,13 +1277,14 @@ sub Data {
             '',
         'Do you really want to delete this event trigger?' => '',
         'Add Event Trigger' => '',
+        'Add Event' => '',
         'To add a new event select the event object and event name and click on the "+" button' =>
             '',
         'Duplicate event.' => '',
         'This event is already attached to the job, Please use a different one.' =>
             '',
         'Delete this Event Trigger' => '',
-        'Ticket Filter' => '',
+        'Select Tickets' => '',
         '(e. g. 10*5155 or 105658*)' => '(örneğin 105155 veya 105658*)',
         '(e. g. 234321)' => '(örneğin 234321)',
         'Customer login' => 'Müşteri Girişi',
@@ -1303,6 +1296,10 @@ sub Data {
         'No create time settings.' => 'Oluşturma zamanı ayarı yok.',
         'Ticket created' => 'Bilet oluşturuldu',
         'Ticket created between' => 'Bilet ikisi arasında oluşturuldu:',
+        'Last changed times' => '',
+        'No last changed time settings.' => '',
+        'Ticket last changed' => '',
+        'Ticket last changed between' => '',
         'Change times' => 'Değiştirilme zamanı',
         'No change time settings.' => 'Zaman ayarlarında değişiklik yok.',
         'Ticket changed' => 'Bilet değişti',
@@ -1329,7 +1326,7 @@ sub Data {
         'Ticket solution time reached' => '',
         'Ticket solution time reached between' => '',
         'Archive search option' => '',
-        'Ticket Action' => '',
+        'Update/Add Ticket Attributes' => '',
         'Set new service' => '',
         'Set new Service Level Agreement' => '',
         'Set new priority' => '',
@@ -1348,8 +1345,7 @@ sub Data {
         'Archive selected tickets' => '',
         'Add Note' => 'Not Ekle',
         'Time units' => 'Zaman birimleri',
-        '(work units)' => '',
-        'Ticket Commands' => '',
+        'Execute Ticket Commands' => '',
         'Send agent/customer notifications on changes' => '',
         'CMD' => 'Komut',
         'This command will be executed. ARG[0] will be the ticket number. ARG[1] the ticket id.' =>
@@ -1389,6 +1385,7 @@ sub Data {
         'Refresh' => 'Tazele',
         'Request Details' => 'İstek detayı',
         'An error occurred during communication.' => 'İletişim sırasında bir hata meydana geldi.',
+        'Show or hide the content.' => '',
         'Clear debug log' => 'Hata logunu temizle',
 
         # Template: AdminGenericInterfaceInvokerDefault
@@ -1467,10 +1464,55 @@ sub Data {
             '',
         'Delete this Operation' => '',
 
-        # Template: AdminGenericInterfaceTransportHTTPSOAP
-        'GenericInterface Transport HTTP::SOAP for Web Service %s' => '',
+        # Template: AdminGenericInterfaceTransportHTTPREST
+        'GenericInterface Transport HTTP::REST for Web Service %s' => '',
         'Network transport' => '',
         'Properties' => '',
+        'Route mapping for Operation' => '',
+        'Define the route that should get mapped to this operation. Variables marked by a \':\' will get mapped to the entered name and passed along with the others to the mapping. (e.g. /Ticket/:TicketID).' =>
+            '',
+        'Valid request methods for Operation' => '',
+        'Limit this Operation to specific request methods. If no method is selected all requests will be accepted.' =>
+            '',
+        'Maximum message length' => '',
+        'This field should be an integer number.' => '',
+        'Here you can specify the maximum size (in bytes) of REST messages that OTRS will process.' =>
+            '',
+        'Send Keep-Alive' => '',
+        'This configuration defines if incoming connections should get closed or kept alive.' =>
+            '',
+        'Host' => 'Sunucu',
+        'Remote host URL for the REST requests.' => '',
+        'e.g https://www.otrs.com:10745/api/v1.0 (without trailing backslash)' =>
+            '',
+        'Controller mapping for Invoker' => '',
+        'The controller that the invoker should send requests to. Variables marked by a \':\' will get replaced by the data value and passed along with the request. (e.g. /Ticket/:TicketID?UserLogin=:UserLogin&Password=:Password).' =>
+            '',
+        'Valid request command for Invoker' => '',
+        'A specific HTTP command to use for the requests with this Invoker (optional).' =>
+            '',
+        'Default command' => '',
+        'The default HTTP command to use for the requests.' => '',
+        'Authentication' => '',
+        'The authentication mechanism to access the remote system.' => '',
+        'A "-" value means no authentication.' => '',
+        'The user name to be used to access the remote system.' => '',
+        'The password for the privileged user.' => '',
+        'Use SSL Options' => '',
+        'Show or hide SSL options to connect to the remote system.' => '',
+        'Certificate File' => '',
+        'The full path and name of the SSL certificate file.' => '',
+        'e.g. /opt/otrs/var/certificates/REST/ssl.crt' => '',
+        'Certificate Password File' => '',
+        'The full path and name of the SSL key file.' => '',
+        'e.g. /opt/otrs/var/certificates/REST/ssl.key' => '',
+        'Certification Authority (CA) File' => '',
+        'The full path and name of the certification authority certificate file that validates the SSL certificate.' =>
+            '',
+        'e.g. /opt/otrs/var/certificates/REST/CA/ca.file' => '',
+
+        # Template: AdminGenericInterfaceTransportHTTPSOAP
+        'GenericInterface Transport HTTP::SOAP for Web Service %s' => '',
         'Endpoint' => '',
         'URI to indicate a specific location for accessing a service.' =>
             '',
@@ -1479,8 +1521,6 @@ sub Data {
         'URI to give SOAP methods a context, reducing ambiguities.' => '',
         'e.g urn:otrs-com:soap:functions or http://www.otrs.com/GenericInterface/actions' =>
             '',
-        'Maximum message length' => '',
-        'This field should be an integer number.' => '',
         'Here you can specify the maximum size (in bytes) of SOAP messages that OTRS will process.' =>
             '',
         'Encoding' => '',
@@ -1493,20 +1533,10 @@ sub Data {
         'Character to use as separator between name space and SOAP method.' =>
             '',
         'Usually .Net web services uses a "/" as separator.' => '',
-        'Authentication' => '',
-        'The authentication mechanism to access the remote system.' => '',
-        'A "-" value means no authentication.' => '',
-        'The user name to be used to access the remote system.' => '',
-        'The password for the privileged user.' => '',
-        'Use SSL Options' => '',
-        'Show or hide SSL options to connect to the remote system.' => '',
-        'Certificate File' => '',
         'The full path and name of the SSL certificate file (must be in .p12 format).' =>
             '',
         'e.g. /opt/otrs/var/certificates/SOAP/certificate.p12' => '',
-        'Certificate Password File' => '',
         'The password to open the SSL certificate.' => '',
-        'Certification Authority (CA) File' => '',
         'The full path and name of the certification authority certificate file that validates SSL certificate.' =>
             '',
         'e.g. /opt/otrs/var/certificates/SOAP/CA/ca.pem' => '',
@@ -1545,7 +1575,6 @@ sub Data {
         'Remote system' => 'Uzak sistem',
         'Provider transport' => '',
         'Requester transport' => '',
-        'Details' => 'Detay',
         'Debug threshold' => '',
         'In provider mode, OTRS offers web services which are used by remote systems.' =>
             '',
@@ -1581,7 +1610,6 @@ sub Data {
         'Do you really want to restore this version of the web service configuration?' =>
             '',
         'Your current web service configuration will be overwritten.' => '',
-        'Show or hide the content.' => '',
         'Restore' => '',
 
         # Template: AdminGroup
@@ -1610,7 +1638,6 @@ sub Data {
             'Tek hesaplı tüm gelen elektronik postalar seçili kuyruğa gönderilecek!',
         'If your account is trusted, the already existing X-OTRS header at arrival time (for priority, ...) will be used! PostMaster filter will be used anyway.' =>
             'Eğer hesap güvenilir ise, varış zamanında (öncelik, ... için) varolan X-OTRS başlığı kullanılacak! PostMaster süzgeci her halükârda kullanılır.',
-        'Host' => 'Sunucu',
         'Delete account' => 'Hesap sil',
         'Fetch mail' => 'E-posta al',
         'Add Mail Account' => 'E-posta Hesabı ekle',
@@ -1628,6 +1655,7 @@ sub Data {
         'Queue Settings' => 'Kuyruk Ayarları',
         'Ticket Settings' => 'Bilet Ayarları',
         'System Administration' => 'Sistem Yöneticisi',
+        'Online Admin Manual' => '',
 
         # Template: AdminNotification
         'Notification Management' => 'Bildirim Yönetimi',
@@ -1643,6 +1671,7 @@ sub Data {
         'Add notification' => 'Uyarı Ekle',
         'Delete this notification' => 'Bu uyarıyı sil',
         'Add Notification' => 'Bildirim ekle',
+        'Ticket Filter' => '',
         'Article Filter' => 'Makale Filtresi',
         'Only for ArticleCreate and ArticleSend event' => '',
         'Article type' => 'Metin tipi',
@@ -1667,6 +1696,64 @@ sub Data {
             '',
         'To get the first 5 lines of the body (of the latest customer article).' =>
             '',
+
+        # Template: AdminOTRSBusinessInstalled
+        'Manage %s' => '',
+        'Downgrade to OTRS Free' => '',
+        '%s makes contact regularly with cloud.otrs.com to check on available updates and the validity of the underlying contract.' =>
+            '',
+        'Unauthorized Usage Detected' => '',
+        'This system uses the %s without a proper license! Please make contact with %s to renew or activate your contract!' =>
+            '',
+        '%s not Correctly Installed' => '',
+        'Your %s is not correctly installed. Please reinstall it with the button below.' =>
+            '',
+        'Reinstall %s' => '',
+        'Your %s is not correctly installed, and there is also an update available.' =>
+            '',
+        'You can either reinstall your current version or perform an update with the buttons below (update recommended).' =>
+            '',
+        'Update %s' => '',
+        '%s Not Yet Available' => '',
+        '%s will be available soon.' => '',
+        '%s Update Available' => '',
+        'An update for your %s is available! Please update at your earliest!' =>
+            '',
+        '%s Correctly Deployed' => '',
+        'Congratulations, your %s is correctly installed and up to date!' =>
+            '',
+
+        # Template: AdminOTRSBusinessNotInstalled
+        'Upgrade to %s' => '',
+        '%s will be available soon. Please check again in a few days.' =>
+            '',
+        'Please have a look at %s for more information.' => '',
+        'Your OTRS Free is the base for all future actions. Please register first before you continue with the upgrade process of %s!' =>
+            '',
+        'Register this System' => '',
+        'Before you can benefit from %s, please contact %s to get your %s contract.' =>
+            '',
+        'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.' =>
+            '',
+        'With your existing contract you can only use a small part of the %s.' =>
+            '',
+        'If you would like to take full advantage of the %s get your contract upgraded now! Contact %s.' =>
+            '',
+
+        # Template: AdminOTRSBusinessUninstall
+        'Cancel downgrade and go back' => '',
+        'Go to OTRS Package Manager' => '',
+        'Sorry, but currently you can\'t downgrade due to the following packages which depend on %s:' =>
+            '',
+        'Vendor' => 'Sağlayıcı',
+        'Please uninstall the packages first using the package manager and try again.' =>
+            '',
+        'You are about to downgrade to OTRS Free and will lose the following features and all data related to these:' =>
+            '',
+        'Chat' => '',
+        'Timeline view in ticket zoom' => '',
+        'DynamicField ContactWithData' => '',
+        'The %s skin' => '',
 
         # Template: AdminPGP
         'PGP Management' => 'PGP Yönetimi',
@@ -1697,17 +1784,16 @@ sub Data {
         'Install' => 'Yükle',
         'Install Package' => 'Paketi yükle',
         'Update repository information' => 'Depo bilgilerini güncelle',
-        'Did not find a required feature? OTRS Group provides their service contract customers with exclusive Add-Ons:' =>
-            'Gerekli bir özellik bulamadınız mı? OTRS hizmet sözleşmeli müşterilerine grup özel eklentilerini sunmaktadır:',
         'Online Repository' => 'Çevrimiçi Depo',
-        'Vendor' => 'Sağlayıcı',
         'Module documentation' => 'Modül belgeleri',
         'Upgrade' => 'Yükselt',
         'Local Repository' => 'Yerel Depo',
         'This package is verified by OTRSverify (tm)' => '',
         'Uninstall' => 'Kaldır',
         'Reinstall' => 'Yeniden yükle',
-        'Feature Add-Ons' => 'Eklenti Özellikleri',
+        'Features for %s customers only' => '',
+        'With %s, you can benefit from the following optional features. Please make contact with %s if you need more information.' =>
+            '',
         'Download package' => 'Paketi indir',
         'Rebuild package' => 'Paketi yeniden oluştur',
         'Metadata' => '',
@@ -1760,10 +1846,14 @@ sub Data {
         'The name is required.' => 'İsim gerektirir',
         'Filter Condition' => 'Filtre Koşulu',
         'AND Condition' => '',
+        'Check email header' => '',
         'Negate' => '',
+        'Look for value' => '',
         'The field needs to be a valid regular expression or a literal word.' =>
             '',
         'Set Email Headers' => '',
+        'Set email header' => '',
+        'Set value' => '',
         'The field needs to be a literal word.' => '',
 
         # Template: AdminPriority
@@ -1775,11 +1865,11 @@ sub Data {
         # Template: AdminProcessManagement
         'Process Management' => 'Süreç Yönetimi',
         'Filter for Processes' => 'Süreç filtresi',
-        'Process Name' => 'Süreç Adı',
         'Create New Process' => 'Yeni Süreç Oluştur',
-        'Synchronize All Processes' => 'Tüm Süreçleri eşleştir',
+        'Deploy All Processes' => '',
         'Here you can upload a configuration file to import a process to your system. The file needs to be in .yml format as exported by process management module.' =>
             '',
+        'Overwrite existing entities' => '',
         'Upload process configuration' => '',
         'Import process configuration' => '',
         'To create a new Process you can either import a Process that was exported from another system or create a complete new one.' =>
@@ -1850,8 +1940,6 @@ sub Data {
         'Create New Transition Action' => '',
         'Assigned Transition Actions' => '',
 
-        # Template: AdminProcessManagementPopupResponse
-
         # Template: AdminProcessManagementProcessAccordion
         'Activities' => '',
         'Filter Activities...' => '',
@@ -1879,6 +1967,7 @@ sub Data {
         'Actions can be assigned to a Transition by dropping the Action Element onto the label of a Transition.' =>
             '',
         'Edit Process Information' => '',
+        'Process Name' => 'Süreç Adı',
         'The selected state does not exist.' => '',
         'Add and Edit Activities, Activity Dialogs and Transitions' => '',
         'Show EntityIDs' => '',
@@ -2005,14 +2094,18 @@ sub Data {
         # Template: AdminRegistration
         'System Registration Management' => '',
         'Edit details' => '',
-        'Overview of registered systems' => '',
+        'Show transmitted data' => '',
         'Deregister system' => '',
+        'Overview of registered systems' => '',
         'System Registration' => '',
         'This system is registered with OTRS Group.' => '',
         'System type' => '',
         'Unique ID' => '',
         'Last communication with registration server' => '',
         'Send support data' => '',
+        'System deregistration not possible' => '',
+        'Please note that you can\'t deregister your system if you\'re using the %s or having a valid service contract.' =>
+            '',
         'OTRS-ID Login' => '',
         'System registration is a service of OTRS Group, which provides a lot of advantages!' =>
             '',
@@ -2091,7 +2184,7 @@ sub Data {
             '',
         'If you have any questions that have not been answered by this Data Protection Policy or if you require more detailed information about a specific topic, please contact info@otrs.com.' =>
             '',
-        'If you deregister your system, you will loose these benefits:' =>
+        'If you deregister your system, you will lose these benefits:' =>
             '',
         'You need to log in with your OTRS-ID to deregister your system.' =>
             '',
@@ -2115,6 +2208,14 @@ sub Data {
             '',
         'Deregister' => '',
         'You can modify registration settings here.' => '',
+        'Overview of transmitted data' => '',
+        'There is no data regularly sent from your system to %s.' => '',
+        'The following data is sent at minimum every 3 days from your system to %s.' =>
+            '',
+        'The data will be transferred in JSON format via a secure https connection.' =>
+            '',
+        'System Registration Data' => '',
+        'Support Data' => '',
 
         # Template: AdminRole
         'Role Management' => 'Rol Yönetimi',
@@ -2161,11 +2262,11 @@ sub Data {
         'Add certificate' => '',
         'Add private key' => '',
         'Filter for certificates' => '',
-        'Filter for SMIME certs' => '',
+        'Filter for S/MIME certs' => '',
         'To show certificate details click on a certificate icon.' => '',
         'To manage private certificate relations click on a private key icon.' =>
             '',
-        'Here you can add relations to your private certificate, these will be embedded to the SMIME signature every time you use this certificate to sign an email.' =>
+        'Here you can add relations to your private certificate, these will be embedded to the S/MIME signature every time you use this certificate to sign an email.' =>
             '',
         'See also' => 'Ayrıca bakınız',
         'In this way you can directly edit the certification and private keys in file system.' =>
@@ -2183,8 +2284,8 @@ sub Data {
         'Relate this certificate' => '',
 
         # Template: AdminSMIMECertRead
-        'SMIME Certificate' => '',
         'Close window' => '',
+        'Certificate details' => '',
 
         # Template: AdminSalutation
         'Salutation Management' => 'Selamlama Yönetimi',
@@ -2192,13 +2293,6 @@ sub Data {
         'Add Salutation' => 'Selamlama Ekle',
         'Edit Salutation' => '',
         'Example salutation' => '',
-
-        # Template: AdminScheduler
-        'This option will force Scheduler to start even if the process is still registered in the database' =>
-            '',
-        'Start scheduler' => '',
-        'Scheduler could not be started. Check if scheduler is not running and try it again with Force Start option' =>
-            '',
 
         # Template: AdminSecureMode
         'Secure mode needs to be enabled!' => '',
@@ -2209,14 +2303,18 @@ sub Data {
 
         # Template: AdminSelectBox
         'SQL Box' => '',
+        'Here you can enter SQL to send it directly to the application database. It is not possible to change the content of the tables, only select queries are allowed.' =>
+            '',
         'Here you can enter SQL to send it directly to the application database.' =>
             '',
+        'Only select queries are allowed.' => '',
         'The syntax of your SQL query has a mistake. Please check it.' =>
             '',
         'There is at least one parameter missing for the binding. Please check it.' =>
             '',
         'Result format' => 'Sonuç Biçimi',
         'Run Query' => 'Sorgu Çalıştır',
+        'Query is executed.' => '',
 
         # Template: AdminService
         'Service Management' => 'Servis Yönetimi',
@@ -2253,7 +2351,7 @@ sub Data {
         'Send by Email' => '',
         'The support bundle is too large to send it by email, this option has been disabled.' =>
             '',
-        'The email address for this user is invalid, this option has been disabled.' =>
+        'The email address for this user is invalid, this ption has been disabled.' =>
             '',
         'Sending' => '',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
@@ -2261,8 +2359,8 @@ sub Data {
         'Download File' => '',
         'A file containing the support bundle will be downloaded to the local system. Please save the file and send it to the OTRS Group, using an alternate method.' =>
             '',
-        'Support Data' => '',
         'Error: Support data could not be collected (%s).' => '',
+        'Details' => 'Detay',
 
         # Template: AdminSession
         'Session Management' => 'Oturum Yönetimi',
@@ -2353,6 +2451,32 @@ sub Data {
         'The display name and email address will be shown on mail you send.' =>
             'Gönderdiğin e-postada ad ve e-posta adresi gösterilecek.',
 
+        # Template: AdminSystemMaintenance
+        'System Maintenance Management' => '',
+        'Schedule New System Maintenance' => '',
+        'Schedule a system maintenance period for announcing the Agents and Customers the system is down for a time period.' =>
+            '',
+        'Some time before this system maintenance starts the users will receive a notification on each screen announcing about this fact.' =>
+            '',
+        'Start date' => '',
+        'Stop date' => '',
+        'Delete System Maintenance' => '',
+        'Do you really want to delete this scheduled system maintenance?' =>
+            '',
+
+        # Template: AdminSystemMaintenanceEdit
+        'Edit System Maintenance %s' => '',
+        'Edit System Maintenance information' => '',
+        'Date invalid!' => 'Hatalı tarih!',
+        'Login message' => '',
+        'Show login message' => '',
+        'Notify message' => '',
+        'Manage Sessions' => '',
+        'All Sessions' => '',
+        'Agent Sessions' => '',
+        'Customer Sessions' => '',
+        'Kill all Sessions, exept current' => '',
+
         # Template: AdminTemplate
         'Manage Templates' => '',
         'Add template' => '',
@@ -2361,6 +2485,7 @@ sub Data {
         'Don\'t forget to add new templates to queues.' => '',
         'Add Template' => '',
         'Edit Template' => '',
+        'A standard template with this name already exists!' => '',
         'Template' => '',
         'Create type templates only supports this smart tags' => '',
         'Example template' => '',
@@ -2380,6 +2505,7 @@ sub Data {
         'Add ticket type' => 'Bilet tipi ekle',
         'Add Type' => 'Tip Ekle',
         'Edit Type' => 'Tipi düzenle',
+        'A type with this name already exists!' => '',
 
         # Template: AdminUser
         'Add agent' => 'Aracı ekle',
@@ -2392,6 +2518,7 @@ sub Data {
         'Edit Agent' => 'Aracı düzenle',
         'Firstname' => 'Adı',
         'Lastname' => 'Soyadı',
+        'A user with this username already exists!' => '',
         'Will be auto-generated if left empty.' => '',
         'Start' => 'Başla',
         'End' => 'Son',
@@ -2417,10 +2544,7 @@ sub Data {
         # Template: AgentCustomerInformationCenter
         'Customer Information Center' => 'Müşteri Bilgi Merkezi',
 
-        # Template: AgentCustomerInformationCenterBlank
-
         # Template: AgentCustomerInformationCenterSearch
-        'Customer ID' => 'Müşteri Kimliği',
         'Customer User' => 'Müşteri Kullanıcı',
 
         # Template: AgentCustomerSearch
@@ -2441,8 +2565,6 @@ sub Data {
         'Available Columns' => '',
         'Visible Columns (order by drag & drop)' => '',
 
-        # Template: AgentDashboardCustomerCompanyInformation
-
         # Template: AgentDashboardCustomerIDStatus
         'Escalated tickets' => 'Yükselen biletler',
 
@@ -2450,14 +2572,12 @@ sub Data {
         'Customer information' => 'Müşteri Bilgisi',
         'Phone ticket' => 'Telefon bileti',
         'Email ticket' => 'e-Posta bileti',
+        'Start Chat' => '',
         '%s open ticket(s) of %s' => '',
         '%s closed ticket(s) of %s' => '',
         'New phone ticket from %s' => '%s yeni telefon bileti',
         'New email ticket to %s' => '%s yeni e-posta bileti',
-
-        # Template: AgentDashboardIFrame
-
-        # Template: AgentDashboardImage
+        'Start chat' => '',
 
         # Template: AgentDashboardProductNotify
         '%s %s is available!' => '%s %s erişilebilir',
@@ -2483,23 +2603,18 @@ sub Data {
         'My watched tickets' => 'İzlediğim biletler',
         'My responsibilities' => 'Sorumluluklarım',
         'Tickets in My Queues' => 'Kuyruğumdaki biletler',
+        'Tickets in My Services' => '',
         'Service Time' => 'Servis Zamanı',
         'Remove active filters for this widget.' => '',
 
         # Template: AgentDashboardTicketQueueOverview
         'Totals' => '',
 
-        # Template: AgentDashboardTicketStats
-
         # Template: AgentDashboardUserOnline
         'out of office' => 'Ofis dışında',
 
         # Template: AgentDashboardUserOutOfOffice
         'until' => 'kadar',
-
-        # Template: AgentHTMLReferenceForms
-
-        # Template: AgentHTMLReferenceOverview
 
         # Template: AgentHTMLReferencePageLayout
         'The ticket has been locked' => 'Bilet kilitlendi',
@@ -2518,10 +2633,20 @@ sub Data {
         'Unlink Object: %s' => '',
         'go to link add screen' => '',
 
-        # Template: AgentNavigationBar
-
         # Template: AgentPreferences
         'Edit your preferences' => 'Tercihleri düzenle',
+
+        # Template: AgentSchedulerInfo
+        'General Information' => '',
+        'Scheduler is an OTRS separated process that perform asynchronous tasks' =>
+            '',
+        '(e.g. Generic Interface asynchronous invoker tasks)' => '',
+        'It is necessary to have the Scheduler running to make the system work correctly!' =>
+            '',
+        'Starting Scheduler' => '',
+        'Make sure that %s exists (without .dist extension)' => '',
+        'Check that cron deamon is running in the system' => '',
+        'Confirm that OTRS cron jobs are running, execute %s start' => '',
 
         # Template: AgentSpelling
         'Spell Checker' => 'Sözdizim Denetleyicisi',
@@ -2530,7 +2655,6 @@ sub Data {
 
         # Template: AgentStatsDelete
         'Delete stat' => 'Durumu sil',
-        'Stat#' => 'İstatistik numarası',
         'Do you really want to delete this stat?' => 'Bu durumu gerçekten silmek istiyormusunuz?',
 
         # Template: AgentStatsEditRestrictions
@@ -2643,15 +2767,18 @@ sub Data {
         'New Owner' => 'Yeni Sahip',
         'Please set a new owner!' => 'Yeni sahip ata',
         'Previous Owner' => 'Önceki sahip',
+        'Next state' => 'Sonraki durum',
+        'Add Article' => '',
+        'Create an Article' => '',
+        'Spell check' => 'Yazım denetimi',
+        'Text Template' => '',
+        'Setting a template will overwrite any text or attachment.' => '',
+        'Note type' => 'Not tipi',
         'Inform Agent' => 'Aracıyı bilgilendir',
         'Optional' => 'Seçimlik',
         'Inform involved Agents' => 'İlgili aracıları bilgilendir',
-        'Spell check' => 'Yazım denetimi',
-        'Note type' => 'Not tipi',
-        'Next state' => 'Sonraki durum',
-        'Date invalid!' => 'Hatalı tarih!',
-
-        # Template: AgentTicketActionPopupClose
+        'Here you can select additional agents which should receive a notification regarding the new article.' =>
+            '',
 
         # Template: AgentTicketBounce
         'Bounce Ticket' => 'Bilet ötele',
@@ -2673,8 +2800,6 @@ sub Data {
         'Link to parent' => '',
         'Unlock tickets' => 'Biletleri aç',
 
-        # Template: AgentTicketClose
-
         # Template: AgentTicketCompose
         'Compose answer for ticket' => 'Bilete cevap yaz',
         'Please include at least one recipient' => '',
@@ -2694,20 +2819,19 @@ sub Data {
 
         # Template: AgentTicketEmail
         'Create New Email Ticket' => 'Yeni e-posta bileti oluştur',
+        'Example Template' => '',
         'From queue' => 'Kuyruktan',
         'To customer user' => '',
         'Please include at least one customer user for the ticket.' => '',
         'Select this customer as the main customer.' => '',
         'Remove Ticket Customer User' => '',
         'Get all' => 'Hepsini getir',
-        'Text Template' => '',
 
-        # Template: AgentTicketEscalation
+        # Template: AgentTicketEmailOutbound
+        'E-Mail Outbound' => '',
 
         # Template: AgentTicketForward
         'Forward ticket: %s - %s' => '',
-
-        # Template: AgentTicketFreeText
 
         # Template: AgentTicketHistory
         'History of' => 'Şunun tarihçesi:',
@@ -2724,11 +2848,10 @@ sub Data {
         'Move Ticket' => 'Bileti Taşı',
         'New Queue' => 'Yeni Kuyruk',
 
-        # Template: AgentTicketNote
-
         # Template: AgentTicketOverviewMedium
         'Select all' => '',
         'No ticket data found.' => 'Bilet kaydı bulunamadı.',
+        'Select this ticket' => '',
         'First Response Time' => 'İlk Cevap Zamanı',
         'Update Time' => 'Güncelleme Zamanı',
         'Solution Time' => 'Çözüm Zamanı',
@@ -2740,22 +2863,18 @@ sub Data {
         'Remove active filters for this screen.' => '',
         'Tickets per page' => 'Her sayfadaki biletler',
 
-        # Template: AgentTicketOverviewPreview
-
         # Template: AgentTicketOverviewSmall
         'Reset overview' => '',
         'Column Filters Form' => '',
 
-        # Template: AgentTicketOwner
-
-        # Template: AgentTicketPending
-
         # Template: AgentTicketPhone
+        'Split Into New Phone Ticket' => '',
+        'Save Chat Into New Phone Ticket' => '',
         'Create New Phone Ticket' => 'Yeni telefon bileti oluştur',
         'Please include at least one customer for the ticket.' => 'En az bir müşteri bileti içermeli',
         'To queue' => 'Kuyruğa',
-
-        # Template: AgentTicketPhoneCommon
+        'Chat protocol' => '',
+        'The chat will be appended as a separate article.' => '',
 
         # Template: AgentTicketPlain
         'Email Text Plain View' => 'E-posta düz metin görünümü',
@@ -2768,17 +2887,12 @@ sub Data {
         'Linked-Object' => 'Bağlı Nesne',
         'by' => 'tarafından',
 
-        # Template: AgentTicketPriority
-
         # Template: AgentTicketProcess
         'Create New Process Ticket' => '',
         'Process' => '',
 
-        # Template: AgentTicketProcessNavigationBar
-
-        # Template: AgentTicketQueue
-
-        # Template: AgentTicketResponsible
+        # Template: AgentTicketProcessSmall
+        'Enroll Ticket into a Process' => '',
 
         # Template: AgentTicketSearch
         'Search template' => 'Arama Şablonu',
@@ -2795,6 +2909,8 @@ sub Data {
         'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.' =>
             'Kime, Konu ve makale gövdesindeki niteliklerde aynı adı taşıyan ve diğerlerinden ağır basan öğeleri arar.',
         'Customer User Login' => 'Müşteri Kullanıcı Oturum Açma',
+        'Attachment Name' => '',
+        '(e. g. m*file or myfi*)' => '',
         'Created in Queue' => 'Kuyrukta Oluşturuldu',
         'Lock state' => 'Kilit durumu',
         'Watcher' => 'İzleyici',
@@ -2804,6 +2920,8 @@ sub Data {
         'Ticket Create Time (between)' => 'Bilet Oluşturulma Zamanı (arasında)',
         'Ticket Change Time (before/after)' => 'Bilet Değiştirilme Zamanı (önce/sonra)',
         'Ticket Change Time (between)' => 'Bilet Değiştirilme Zamanı (arasında)',
+        'Ticket Last Change Time (before/after)' => '',
+        'Ticket Last Change Time (between)' => '',
         'Ticket Close Time (before/after)' => 'Bilet Kapatılma Zamanı (önce/sonra)',
         'Ticket Close Time (between)' => 'Bilet Kapatılma Zamanı (arasında)',
         'Ticket Escalation Time (before/after)' => '',
@@ -2811,31 +2929,32 @@ sub Data {
         'Archive Search' => 'Arşiv arama',
         'Run search' => 'Aramayı çalıştır',
 
-        # Template: AgentTicketSearchOpenSearchDescriptionFulltext
-
-        # Template: AgentTicketSearchOpenSearchDescriptionTicketNumber
-
-        # Template: AgentTicketSearchResultPrint
-
         # Template: AgentTicketZoom
         'Article filter' => 'Makale Filtresi',
         'Article Type' => 'Makale tipi',
         'Sender Type' => 'Gönderici tipi',
         'Save filter settings as default' => 'Filtreyi varsayılan olarak kaydet',
+        'Event Type Filter' => '',
+        'Event Type' => '',
+        'Save as default' => '',
         'Archive' => '',
         'This ticket is archived.' => '',
         'Locked' => 'Kilitli',
         'Linked Objects' => 'Bağlantılı Nesneler',
-        'Article(s)' => 'Makale(ler)',
         'Change Queue' => 'Kuyruk Değiştir',
         'There are no dialogs available at this point in the process.' =>
             '',
         'This item has no articles yet.' => '',
+        'Ticket Timeline View' => '',
+        'Article Overview' => '',
+        'Article(s)' => 'Makale(ler)',
+        'Page' => 'Sayfa',
         'Add Filter' => 'Filtre ekle',
         'Set' => 'Ayarla',
         'Reset Filter' => 'Filtreyi Sıfırla',
         'Show one article' => 'Bir makale göster',
         'Show all articles' => 'Tüm makaleleri göster',
+        'Show Ticket Timeline View' => '',
         'Unread articles' => 'Okunmamış makaleler',
         'No.' => '',
         'Important' => 'Önemli',
@@ -2844,42 +2963,46 @@ sub Data {
         'Outgoing message' => 'Giden Mesaj',
         'Internal message' => 'İç mesaj',
         'Resize' => 'Yeniden Boyutlandır',
+        'Mark this article as read' => '',
+        'Show Full Text' => '',
+        'Full Article Text' => '',
+        'No more events found. Please try changing the filter settings.' =>
+            '',
+        'Article could not be opened! Perhaps it is on another article page?' =>
+            '',
 
         # Template: AttachmentBlocker
         'To protect your privacy, remote content was blocked.' => '',
         'Load blocked content.' => 'Bloklu içeriği yükle.',
 
-        # Template: Copyright
-
-        # Template: CustomerAccept
+        # Template: ChatStartForm
+        'First message' => '',
 
         # Template: CustomerError
         'Traceback' => 'Geri iz',
 
         # Template: CustomerFooter
         'Powered by' => '',
+
+        # Template: CustomerFooterJS
         'One or more errors occurred!' => '',
         'Close this dialog' => '',
         'Could not open popup window. Please disable any popup blockers for this application.' =>
             '',
         'There are currently no elements available to select from.' => '',
-
-        # Template: CustomerFooterSmall
-
-        # Template: CustomerHeader
-
-        # Template: CustomerHeaderSmall
+        'Please turn off Compatibility Mode in Internet Explorer!' => '',
+        'The browser you are using is too old.' => '',
+        'OTRS runs with a huge lists of browsers, please upgrade to one of these.' =>
+            '',
+        'Please see the documentation or ask your admin for further information.' =>
+            '',
 
         # Template: CustomerLogin
         'JavaScript Not Available' => 'JavaScript Kullanılamıyor',
         'In order to experience OTRS, you\'ll need to enable JavaScript in your browser.' =>
             '',
         'Browser Warning' => '',
-        'The browser you are using is too old.' => '',
-        'OTRS runs with a huge lists of browsers, please upgrade to one of these.' =>
-            '',
-        'Please see the documentation or ask your admin for further information.' =>
-            '',
+        'One moment please, you are being redirected...' => '',
         'Login' => 'Oturum aç',
         'User name' => 'Adınız',
         'Your user name' => 'Soyadınız',
@@ -2898,10 +3021,9 @@ sub Data {
         'Your email address (this will become your username)' => 'E-posta adresiniz (Bu kullanıcı adınız olacak)',
 
         # Template: CustomerNavigationBar
+        'Incoming Chat Requests' => '',
+        'You have unanswered chat requests' => '',
         'Edit personal preferences' => 'Kişisel tercihleri görüntüle',
-        'Logout %s' => 'Çıkış %s',
-
-        # Template: CustomerPreferences
 
         # Template: CustomerRichTextEditor
         'Split Quote' => '',
@@ -2918,15 +3040,13 @@ sub Data {
         'Ticket Print' => 'Bilet Bas',
         'Ticket Dynamic Fields' => '',
 
-        # Template: CustomerTicketProcess
-
-        # Template: CustomerTicketProcessNavigationBar
-
         # Template: CustomerTicketSearch
         'Profile' => 'Profil',
         'e. g. 10*5155 or 105658*' => 'örn: 10*5155 yada 105658*',
+        'Customer ID' => 'Müşteri Kimliği',
         'Fulltext search in tickets (e. g. "John*n" or "Will*")' => 'Biletler içerisinde ara (örn: "Ahmet*t" yada "Ali*")',
         'Carbon Copy' => 'Karbon kopya',
+        'e. g. m*file or myfi*' => '',
         'Types' => 'Tipler',
         'Time restrictions' => 'Zaman kısıtlaması',
         'No time settings' => 'Zaman ayarları yok',
@@ -2940,21 +3060,15 @@ sub Data {
         'Pick a profile name' => 'Bir profil adı seç',
         'Output to' => 'Çıkar',
 
-        # Template: CustomerTicketSearchOpenSearchDescription
-
-        # Template: CustomerTicketSearchResultPrint
-
         # Template: CustomerTicketSearchResultShort
         'of' => '..nın',
-        'Page' => 'Sayfa',
         'Search Results for' => 'için arama sonuçları ',
+        'Remove this Search Term.' => '',
 
         # Template: CustomerTicketZoom
         'Expand article' => 'Makaleyi genişlet',
         'Next Steps' => 'Sonraki Adımlar',
         'Reply' => 'Cevapla',
-
-        # Template: CustomerWarning
 
         # Template: DashboardEventsTicketCalendar
         'All-day' => '',
@@ -2978,19 +3092,16 @@ sub Data {
 
         # Template: Datepicker
         'Invalid date (need a future date)!' => 'Hatalı tarih (ileri bir tarih olmalı)!',
+        'Invalid date (need a past date)!' => '',
         'Previous' => 'Önceki',
         'Open date selection' => 'Seçili tarihi aç',
 
         # Template: Error
         'Oops! An Error occurred.' => 'Üffff! Bir hata oluştu.',
-        'Error Message' => 'Hata mesajı',
         'You can' => 'Yapabilecekleriniz:',
         'Send a bugreport' => 'Hata raporu gönder',
         'go back to the previous page' => 'Bir önceki sayfaya geri dön',
         'Error Details' => 'Hata detayı',
-
-        # Template: Footer
-        'Top of page' => 'Sayfanın başı',
 
         # Template: FooterJS
         'If you now leave this page, all open popup windows will be closed, too!' =>
@@ -3000,23 +3111,16 @@ sub Data {
         'Please enter at least one search value or * to find anything.' =>
             '',
         'Please check the fields marked as red for valid inputs.' => '',
-
-        # Template: FooterSmall
-
-        # Template: HTMLHead
-
-        # Template: HTMLHeadBlockEvents
+        'Please perform a spell check on the the text first.' => '',
+        'Slide the navigation bar' => '',
 
         # Template: Header
         'You are logged in as' => 'Giriş yapan:',
-
-        # Template: HeaderSmall
 
         # Template: Installer
         'JavaScript not available' => 'JavaScript kullanılamıyor',
         'Database Settings' => 'Veritabanı ayarları',
         'General Specifications and Mail Settings' => 'Genel Özellikler ve Posta Ayarları',
-        'Welcome to %s' => '%s sistemine hoşgeldiniz',
         'Web site' => 'Web sitesi',
         'Mail check successful.' => 'E-posta kontrolü başarılı.',
         'Error in the mail settings. Please correct and try again.' => 'Posta ayarları hatalı. Lütfen düzeltip tekrar deneyin.',
@@ -3075,8 +3179,6 @@ sub Data {
         'SID' => '',
         'Port' => '',
 
-        # Template: InstallerDBpostgresql
-
         # Template: InstallerFinish
         'To be able to use OTRS you have to enter the following line in your command line (Terminal/Shell) as root.' =>
             'OTRS\'yi kullanabilmek için komut satırında (konsol/kabuk/terminal) root kullanıcısı olarak şu satırı girmelisiniz.',
@@ -3086,10 +3188,8 @@ sub Data {
         'Your OTRS Team' => 'OTRS Takımınız',
 
         # Template: InstallerLicense
-        'Accept license' => 'Lisansı kabul et',
         'Don\'t accept license' => 'Lisansı kabul etme',
-
-        # Template: InstallerLicenseText
+        'Accept license and continue' => '',
 
         # Template: InstallerSystem
         'The identifier of the system. Each ticket number and each HTTP session ID contain this number.' =>
@@ -3128,6 +3228,7 @@ sub Data {
         'Back to the previous page' => '',
 
         # Template: Notify
+        'Close this message' => '',
 
         # Template: Pagination
         'Show first page' => 'İlk sayfayı göster',
@@ -3141,30 +3242,24 @@ sub Data {
         'No file found!' => 'Dosya bulunamadı!',
         'The file is not an image that can be shown inline!' => '',
 
-        # Template: PrintFooter
-
         # Template: PrintHeader
         'printed by' => 'yazdıran',
 
-        # Template: PublicDefault
-
-        # Template: Redirect
-
-        # Template: RichTextEditor
-
-        # Template: SpellingInline
-
         # Template: Test
         'OTRS Test Page' => 'OTRS Test Sayfası',
-        'Welcome %s' => 'Hoşgeldin %s',
         'Counter' => 'Sayaç',
 
         # Template: Warning
         'Go back to the previous page' => '',
 
         # SysConfig
+        '"%s"-notification sent to "%s".' => '"%s"- "%s" için aracıya bildirim gönderildi.',
+        '%s' => '%s',
+        '%s time unit(s) accounted. Now total %s time unit(s).' => '%s zaman birimi hesaplandı. Toplam %s zaman birimi.',
         '(UserLogin) Firstname Lastname' => '',
         '(UserLogin) Lastname, Firstname' => '',
+        'A list of dynamic fields that are merged into the main ticket during a merge operation. Only dynamic fields that are empty in the main ticket will be set.' =>
+            '',
         'ACL module that allows closing parent tickets only if all its children are already closed ("State" shows which states are not available for the parent ticket until all child tickets are closed).' =>
             '',
         'Access Control Lists (ACL)' => '',
@@ -3184,6 +3279,11 @@ sub Data {
         'Activates the ticket archive system to have a faster system by moving some tickets out of the daily scope. To search for these tickets, the archive flag has to be enabled in the ticket search.' =>
             '',
         'Activates time accounting.' => '',
+        'ActivityID' => '',
+        'Added email. %s' => 'Müşteriye e-posta gönderildi. %s',
+        'Added link to ticket "%s".' => '"%s" biletine köprü eklendi.',
+        'Added note (%s)' => 'Not eklendi (%s)',
+        'Added subscription for user "%s".' => 'Added subscription for user "%s".',
         'Adds a suffix with the actual year and month to the OTRS log file. A logfile for every month will be created.' =>
             '',
         'Adds customers email addresses to recipients in the ticket compose screen of the agent interface. The customers email address won\'t be added if the article type is email-internal.' =>
@@ -3197,6 +3297,7 @@ sub Data {
         'Adds the permanent vacation days. Please use single digit pattern for numbers from 1 to 9 (instead of 01 - 09).' =>
             '',
         'Agent Notifications' => 'Aracı Bildirimleri',
+        'Agent called customer.' => 'Aracı telefonla arandı.',
         'Agent interface article notification module to check PGP.' => '',
         'Agent interface article notification module to check S/MIME.' =>
             '',
@@ -3211,24 +3312,26 @@ sub Data {
             '',
         'Agent interface notification module to see the number of tickets an agent is responsible for.' =>
             '',
+        'Agent interface notification module to see the number of tickets in My Services.' =>
+            '',
         'Agent interface notification module to see the number of watched tickets.' =>
             '',
         'Agents <-> Groups' => 'Aracılar <-> Gruplar',
         'Agents <-> Roles' => 'Aracılar <-> Roller',
         'All customer users of a CustomerID' => '',
-        'Allows adding notes in the close ticket screen of the agent interface.' =>
+        'Allows adding notes in the close ticket screen of the agent interface. Can be overwritten by Ticket::Frontend::NeedAccountedTime.' =>
             '',
-        'Allows adding notes in the ticket free text screen of the agent interface.' =>
+        'Allows adding notes in the ticket free text screen of the agent interface. Can be overwritten by Ticket::Frontend::NeedAccountedTime.' =>
             '',
-        'Allows adding notes in the ticket note screen of the agent interface.' =>
+        'Allows adding notes in the ticket note screen of the agent interface. Can be overwritten by Ticket::Frontend::NeedAccountedTime.' =>
             '',
-        'Allows adding notes in the ticket owner screen of a zoomed ticket in the agent interface.' =>
+        'Allows adding notes in the ticket owner screen of a zoomed ticket in the agent interface. Can be overwritten by Ticket::Frontend::NeedAccountedTime.' =>
             '',
-        'Allows adding notes in the ticket pending screen of a zoomed ticket in the agent interface.' =>
+        'Allows adding notes in the ticket pending screen of a zoomed ticket in the agent interface. Can be overwritten by Ticket::Frontend::NeedAccountedTime.' =>
             '',
-        'Allows adding notes in the ticket priority screen of a zoomed ticket in the agent interface.' =>
+        'Allows adding notes in the ticket priority screen of a zoomed ticket in the agent interface. Can be overwritten by Ticket::Frontend::NeedAccountedTime.' =>
             '',
-        'Allows adding notes in the ticket responsible screen of the agent interface.' =>
+        'Allows adding notes in the ticket responsible screen of the agent interface. Can be overwritten by Ticket::Frontend::NeedAccountedTime.' =>
             '',
         'Allows agents to exchange the axis of a stat if they generate one.' =>
             '',
@@ -3270,10 +3373,16 @@ sub Data {
             '',
         'Allows to set a new ticket state in the move ticket screen of the agent interface.' =>
             '',
+        'Archive state changed: "%s"' => '',
         'ArticleTree' => '',
         'Attachments <-> Templates' => '',
         'Auto Responses <-> Queues' => 'Otomatik Cevaplar <-> Kuyruklar',
+        'AutoFollowUp sent to "%s".' => '"%s" için Otomatik Takip gönderildi.',
+        'AutoReject sent to "%s".' => '"%s" için Otomatik Red gönderildi.',
+        'AutoReply sent to "%s".' => '"%s" için Otomatik Cevap gönderildi.',
         'Automated line break in text messages after x number of chars.' =>
+            '',
+        'Automatically lock and set owner to current Agent after opening the move ticket screen of the agent interface.' =>
             '',
         'Automatically lock and set owner to current Agent after selecting for an Bulk Action.' =>
             '',
@@ -3287,6 +3396,7 @@ sub Data {
             '',
         'Blocks all the incoming emails that do not have a valid ticket number in subject with From: @example.com address.' =>
             '',
+        'Bounced to "%s".' => '"%s" ötelendi.',
         'Builds an article index right after the article\'s creation.' =>
             '',
         'CMD example setup. Ignores emails where external CMD returns some output on STDOUT (email will be piped into STDIN of some.bin).' =>
@@ -3307,12 +3417,14 @@ sub Data {
         'Change the free fields for this ticket' => 'Bu bilet için boş alanları değiştir',
         'Change the priority for this ticket' => 'Bu bilet için öncelik değiştir',
         'Change the responsible person for this ticket' => 'Bu bilet için sorumlu kişiyi değiştir',
+        'Changed priority from "%s" (%s) to "%s" (%s).' => 'Öncelik değiştirildi. Eski: "%s" (%s), Yeni: "%s" (%s).',
         'Changes the owner of tickets to everyone (useful for ASP). Normally only agent with rw permissions in the queue of the ticket will be shown.' =>
             '',
         'Checkbox' => '',
         'Checks the SystemID in ticket number detection for follow-ups (use "No" if SystemID has been changed after using the system).' =>
             '',
-        'Closed tickets of customer' => 'Müşteriye ait kapalı biletler',
+        'Closed tickets (customer user)' => '',
+        'Closed tickets (customer)' => '',
         'Column ticket filters for Ticket Overviews type "Small".' => '',
         'Columns that can be filtered in the escalation view of the agent interface. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed.' =>
             '',
@@ -3321,6 +3433,8 @@ sub Data {
         'Columns that can be filtered in the queue view of the agent interface. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed.' =>
             '',
         'Columns that can be filtered in the responsible view of the agent interface. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed.' =>
+            '',
+        'Columns that can be filtered in the service view of the agent interface. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed.' =>
             '',
         'Columns that can be filtered in the status view of the agent interface. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed.' =>
             '',
@@ -3338,9 +3452,15 @@ sub Data {
         'Configure your own log text for PGP.' => 'PGP için kendi log metnini yapılandır.',
         'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (http://doc.otrs.org/), chapter "Ticket Event Module".' =>
             '',
+        'Controls how to display the ticket history entries as readable values.' =>
+            '',
         'Controls if customers have the ability to sort their tickets.' =>
             '',
         'Controls if more than one from entry can be set in the new phone ticket in the agent interface.' =>
+            '',
+        'Controls if the admin is allowed to import a saved system configuration in SysConfig.' =>
+            '',
+        'Controls if the admin is allowed to make changes to the database via AdminSelectBox.' =>
             '',
         'Controls if the ticket and article seen flags are removed when a ticket is archived.' =>
             '',
@@ -3368,21 +3488,19 @@ sub Data {
         'Create new email ticket and send this out (outbound)' => '',
         'Create new phone ticket (inbound)' => '',
         'Create new process ticket' => '',
-        'Custom text for the page shown to customers that have no tickets yet.' =>
+        'Custom text for the page shown to customers that have no tickets yet (if you need those text translated add them to a custom translation module).' =>
             '',
-        'Customer Company Administration' => 'Müşteri Şirket Yönetimi',
-        'Customer Company Administration.' => '',
-        'Customer Company Information' => 'Müşteri Şirket Bilgisi',
-        'Customer Information Center.' => '',
+        'Customer Administration' => '',
         'Customer User <-> Groups' => '',
         'Customer User <-> Services' => '',
         'Customer User Administration' => 'Müşteri Kullanıcı Yönetimi',
-        'Customer User Administration.' => '',
         'Customer Users' => 'Müşteri Kullanıcılar',
+        'Customer called us.' => 'Müşteri telefonla arandı.',
         'Customer item (icon) which shows the closed tickets of this customer as info block. Setting CustomerUserLogin to 1 searches for tickets based on login name rather than CustomerID.' =>
             '',
         'Customer item (icon) which shows the open tickets of this customer as info block. Setting CustomerUserLogin to 1 searches for tickets based on login name rather than CustomerID.' =>
             '',
+        'Customer request via web.' => 'Web üzerinden Müşteri İsteği.',
         'CustomerName' => 'MüşteriAdı',
         'Customers <-> Groups' => 'Müşteriler <-> Gruplar',
         'Data used to export the search result in CSV format.' => '',
@@ -3415,6 +3533,8 @@ sub Data {
         'Define dynamic field name for start time. This field has to be manually added to the system as Ticket: "Date / Time" and must be activated in ticket creation screens and/or in any other ticket action screens.' =>
             '',
         'Define the max depth of queues.' => '',
+        'Define the start day of the week for the date picker for the indicated calendar.' =>
+            '',
         'Define the start day of the week for the date picker.' => '',
         'Defines a customer item, which generates a LinkedIn icon at the end of a customer info block.' =>
             '',
@@ -3456,7 +3576,7 @@ sub Data {
         'Defines an alternate URL, where the logout link refers to.' => '',
         'Defines an alternate login URL for the customer panel..' => '',
         'Defines an alternate logout URL for the customer panel.' => '',
-        'Defines an external link to the database of the customer (e.g. \'http://yourhost/customer.php?CID=$Data{"CustomerID"}\' or \'\').' =>
+        'Defines an external link to the database of the customer (e.g. \'http://yourhost/customer.php?CID=[% Data.CustomerID %]\' or \'\').' =>
             '',
         'Defines from which ticket attributes the agent can select the result order.' =>
             '',
@@ -3464,7 +3584,11 @@ sub Data {
             '',
         'Defines if a pre-sorting by priority should be done in the queue view.' =>
             '',
+        'Defines if a pre-sorting by priority should be done in the service view.' =>
+            '',
         'Defines if a ticket lock is required in the close ticket screen of the agent interface (if the ticket isn\'t locked yet, the ticket gets locked and the current agent will be set automatically as its owner).' =>
+            '',
+        'Defines if a ticket lock is required in the email outbound screen of the agent interface (if the ticket isn\'t locked yet, the ticket gets locked and the current agent will be set automatically as its owner).' =>
             '',
         'Defines if a ticket lock is required in the ticket bounce screen of the agent interface (if the ticket isn\'t locked yet, the ticket gets locked and the current agent will be set automatically as its owner).' =>
             '',
@@ -3498,7 +3622,7 @@ sub Data {
             '',
         'Defines if the list for filters should be retrieve just from current tickets in system. Just for clarification, Customers list will always came from system\'s tickets.' =>
             '',
-        'Defines if time accounting is mandatory in the agent interface.' =>
+        'Defines if time accounting is mandatory in the agent interface. If activated, a note must be entered for all ticket actions (no matter if the note itself is configured as active or is originally mandatory for the individual ticket action screen).' =>
             '',
         'Defines if time accounting must be set to all tickets in bulk action.' =>
             '',
@@ -3576,6 +3700,8 @@ sub Data {
             '',
         'Defines the default next state of a ticket after being forwarded, in the ticket forward screen of the agent interface.' =>
             '',
+        'Defines the default next state of a ticket after the message has been sent, in the email outbound screen of the agent interface.' =>
+            '',
         'Defines the default next state of a ticket if it is composed / answered in the ticket compose screen of the agent interface.' =>
             '',
         'Defines the default note body text for phone tickets in the ticket phone inbound screen of the agent interface.' =>
@@ -3607,7 +3733,11 @@ sub Data {
             '',
         'Defines the default sort criteria for all queues displayed in the queue view.' =>
             '',
+        'Defines the default sort criteria for all services displayed in the service view.' =>
+            '',
         'Defines the default sort order for all queues in the queue view, after priority sort.' =>
+            '',
+        'Defines the default sort order for all services in the service view, after priority sort.' =>
             '',
         'Defines the default spell checker dictionary.' => '',
         'Defines the default state of new customer tickets in the customer interface.' =>
@@ -3680,6 +3810,8 @@ sub Data {
         'Defines the default type of forwarded message in the ticket forward screen of the agent interface.' =>
             '',
         'Defines the default type of the article for this operation.' => '',
+        'Defines the default type of the message in the email outbound screen of the agent interface.' =>
+            '',
         'Defines the default type of the note in the close ticket screen of the agent interface.' =>
             '',
         'Defines the default type of the note in the ticket bulk screen of the agent interface.' =>
@@ -3714,7 +3846,7 @@ sub Data {
             '',
         'Defines the filter that processes the text in the articles, in order to highlight URLs.' =>
             '',
-        'Defines the format of responses in the ticket compose screen of the agent interface ($QData{"OrigFrom"} is From 1:1, $QData{"OrigFromName"} is only realname of From).' =>
+        'Defines the format of responses in the ticket compose screen of the agent interface ([% Data.OrigFrom | html %] is From 1:1, [% Data.OrigFromName | html %] is only realname of From).' =>
             '',
         'Defines the fully qualified domain name of the system. This setting is used as a variable, OTRS_CONFIG_FQDN which is found in all forms of messaging used by the application, to build links to the tickets within your system.' =>
             '',
@@ -3808,6 +3940,8 @@ sub Data {
         'Defines the maximum length (in characters) for a scheduler task data. WARNING: Do not modify this setting unless you are sure of the current Database length for \'task_data\' filed from \'scheduler_data_list\' table.' =>
             '',
         'Defines the maximum number of pages per PDF file.' => '',
+        'Defines the maximum number of quoted lines to be added to responses.' =>
+            '',
         'Defines the maximum size (in MB) of the log file.' => '',
         'Defines the module that shows a generic notification in the agent interface. Either "Text" - if configured - or the contents of "File" will be displayed.' =>
             '',
@@ -3820,9 +3954,13 @@ sub Data {
         'Defines the module that shows the currently loged in customers in the customer interface.' =>
             '',
         'Defines the module to authenticate customers.' => '',
+        'Defines the module to display a notification in different interfaces on different occasions for OTRS Business Solution™.' =>
+            '',
         'Defines the module to display a notification in the agent interface if the scheduler is not running.' =>
             '',
         'Defines the module to display a notification in the agent interface, if the agent is logged in while having out-of-office active.' =>
+            '',
+        'Defines the module to display a notification in the agent interface, if the agent is logged in while having system maintenance active.' =>
             '',
         'Defines the module to display a notification in the agent interface, if the system is used by the admin user (normally you shouldn\'t work as admin).' =>
             '',
@@ -3850,6 +3988,8 @@ sub Data {
             '',
         'Defines the next possible states after forwarding a ticket in the ticket forward screen of the agent interface.' =>
             '',
+        'Defines the next possible states after sending a message in the email outbound screen of the agent interface.' =>
+            '',
         'Defines the next possible states for customer tickets in the customer interface.' =>
             '',
         'Defines the next state of a ticket after adding a note, in the close ticket screen of the agent interface.' =>
@@ -3872,7 +4012,11 @@ sub Data {
             '',
         'Defines the next state of a ticket after being moved to another queue, in the move ticket screen of the agent interface.' =>
             '',
+        'Defines the number of header fields in frontend modules for add and update postmaster filters. It can be up to 99 fields.' =>
+            '',
         'Defines the parameters for the customer preferences table.' => '',
+        'Defines the parameters for the dashboard backend. "Cmd" is used to specify command with parameters. "Group" is used to restrict access to the plugin (e. g. Group: admin;group1;group2;). "Default" indicates if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTL" indicates the cache expiration period in minutes for the plugin.' =>
+            '',
         'Defines the parameters for the dashboard backend. "Group" is used to restrict access to the plugin (e. g. Group: admin;group1;group2;). "Default" indicates if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTL" indicates the cache expiration period in minutes for the plugin.' =>
             '',
         'Defines the parameters for the dashboard backend. "Group" is used to restrict access to the plugin (e. g. Group: admin;group1;group2;). "Default" indicates if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" defines the cache expiration period in minutes for the plugin.' =>
@@ -3909,6 +4053,8 @@ sub Data {
         'Defines the placement of the legend. This should be a two letter key of the form: \'B[LCR]|R[TCB]\'. The first letter indicates the placement (Bottom or Right), and the second letter the alignment (Left, Right, Center, Top, or Bottom).' =>
             '',
         'Defines the postmaster default queue.' => '',
+        'Defines the priority in which the information is logged and presented.' =>
+            '',
         'Defines the receipent target of the phone ticket and the sender of the email ticket ("Queue" shows all queues, "SystemAddress" displays all system addresses) in the agent interface.' =>
             '',
         'Defines the receipent target of the tickets ("Queue" shows all queues, "SystemAddress" displays all system addresses) in the customer interface.' =>
@@ -3984,9 +4130,13 @@ sub Data {
             '',
         'Defines wich article type should be expanded when entering the overview. If nothing defined, latest article will be expanded.' =>
             '',
+        'Defines, which tickets of which ticket state types should not be listed in linked ticket lists.' =>
+            '',
+        'Deleted link to ticket "%s".' => '"%s" biletine köprü silinde.',
         'Deletes a session if the session id is used with an invalid remote IP address.' =>
             '',
         'Deletes requested sessions if they have timed out.' => '',
+        'Deploy and manage OTRS Business Solution™.' => '',
         'Determines if the list of possible queues to move to ticket into should be displayed in a dropdown list or in a new window in the agent interface. If "New Window" is set you can add a move note to the ticket.' =>
             '',
         'Determines if the statistics module may generate ticket lists.' =>
@@ -4040,6 +4190,8 @@ sub Data {
         'Dynamic fields options shown in the ticket message screen of the customer interface. Possible settings: 0 = Disabled, 1 = Enabled, 2 = Enabled and required. NOTE. If you want to display these fields also in the ticket zoom of the customer interface, you have to enable them in CustomerTicketZoom###DynamicField.' =>
             '',
         'Dynamic fields options shown in the ticket reply section in the ticket zoom screen of the customer interface. Possible settings: 0 = Disabled, 1 = Enabled, 2 = Enabled and required.' =>
+            '',
+        'Dynamic fields shown in the email outbound screen of the agent interface. Possible settings: 0 = Disabled, 1 = Enabled, 2 = Enabled and required.' =>
             '',
         'Dynamic fields shown in the process widget in ticket zoom screen of the agent interface. Possible settings: 0 = Disabled, 1 = Enabled.' =>
             '',
@@ -4097,6 +4249,8 @@ sub Data {
         'DynamicField object registration.' => '',
         'Edit customer company' => '',
         'Email Addresses' => 'E-Posta Adresleri',
+        'Email sent to "%s".' => '"%s" için e-posta gönderildi.',
+        'Email sent to customer.' => 'Aracıya e-posta gönderildi.',
         'Enable keep-alive connection header for SOAP responses.' => '',
         'Enabled filters.' => '',
         'Enables PDF output. The CPAN module PDF::API2 is required, if not installed, PDF output will be disabled.' =>
@@ -4106,7 +4260,9 @@ sub Data {
         'Enables S/MIME support.' => '',
         'Enables customers to create their own accounts.' => '',
         'Enables file upload in the package manager frontend.' => '',
-        'Enables or disable the debug mode over frontend interface.' => '',
+        'Enables or disables the caching for templates. WARNING: Do NOT disable template caching for production environments for it will cause a massive performance drop! This setting should only be disabled for debugging reasons!' =>
+            '',
+        'Enables or disables the debug mode over frontend interface.' => '',
         'Enables or disables the ticket watcher feature, to keep track of tickets without being the owner nor the responsible.' =>
             '',
         'Enables performance log (to log the page response time). It will affect the system performance. Frontend::Module###AdminPerformanceLog must be enabled.' =>
@@ -4121,19 +4277,32 @@ sub Data {
         'Enables ticket responsible feature, to keep track of a specific ticket.' =>
             '',
         'Enables ticket watcher feature only for the listed groups.' => '',
+        'Enroll this ticket into a process' => '',
+        'Escalation response time finished' => '',
+        'Escalation response time forewarned' => '',
+        'Escalation response time in effect' => '',
+        'Escalation solution time finished' => '',
+        'Escalation solution time forewarned' => '',
+        'Escalation solution time in effect' => '',
+        'Escalation update time finished' => '',
+        'Escalation update time forewarned' => '',
+        'Escalation update time in effect' => '',
         'Escalation view' => 'Yükselme Görünümü',
         'Event module registration. For more performance you can define a trigger event (e. g. Event => TicketCreate).' =>
             '',
         'Event module registration. For more performance you can define a trigger event (e. g. Event => TicketCreate). This is only possible if all Ticket dynamic fields need the same event.' =>
             '',
+        'Event module that performs an update statement on TicketIndex to rename the queue name there if needed and if StaticDB is actually used.' =>
+            '',
         'Event module that updates customer user service membership if login changes.' =>
             '',
-        'Event module that updates customer users after an update of the Customer Company.' =>
-            '',
-        'Event module that updates tickets after an update of the Customer Company.' =>
+        'Event module that updates customer users after an update of the Customer.' =>
             '',
         'Event module that updates tickets after an update of the Customer User.' =>
             '',
+        'Event module that updates tickets after an update of the Customer.' =>
+            '',
+        'Events Ticket Calendar' => '',
         'Execute SQL statements.' => '',
         'Executes follow up checks on In-Reply-To or References headers for mails that don\'t have a ticket number in the subject.' =>
             '',
@@ -4149,6 +4318,10 @@ sub Data {
             '',
         'File that is displayed in the Kernel::Modules::AgentInfo module, if located under Kernel/Output/HTML/Standard/AgentInfo.dtl.' =>
             '',
+        'Filter for debugging ACLs. Note: More ticket attributes can be added in the format <OTRS_TICKET_Attribute> e.g. <OTRS_TICKET_Priority>.' =>
+            '',
+        'Filter for debugging Transitions. Note: More filters can be added in the format <OTRS_TICKET_Attribute> e.g. <OTRS_TICKET_Priority>.' =>
+            '',
         'Filter incoming emails.' => 'Gelen postaları filtrele',
         'FirstLock' => 'İlkKilit',
         'FirstResponse' => 'İlk Cevap',
@@ -4156,13 +4329,17 @@ sub Data {
         'FirstResponseInMin' => '',
         'Firstname Lastname' => '',
         'Firstname Lastname (UserLogin)' => '',
+        'FollowUp for [%s]. %s' => '[%s] için takip. %s',
         'Forces encoding of outgoing emails (7bit|8bit|quoted-printable|base64).' =>
             '',
         'Forces to choose a different ticket state (from current) after lock action. Define the current state as key, and the next state after lock action as content.' =>
             '',
         'Forces to unlock tickets after being moved to another queue.' =>
             '',
+        'Forwarded to "%s".' => '"%s" iletildi.',
         'Frontend language' => '',
+        'Frontend module registration (disable AgentTicketService link if Ticket Serivice feature is not used).' =>
+            '',
         'Frontend module registration (disable company link if no company feature is used).' =>
             '',
         'Frontend module registration (disable ticket processes screen if no process available) for Customer.' =>
@@ -4179,6 +4356,7 @@ sub Data {
         'GenericInterface Debugger GUI' => '',
         'GenericInterface Invoker GUI' => '',
         'GenericInterface Operation GUI' => '',
+        'GenericInterface TransportHTTPREST GUI' => '',
         'GenericInterface TransportHTTPSOAP GUI' => '',
         'GenericInterface Web Service GUI' => '',
         'GenericInterface Webservice History GUI' => '',
@@ -4275,6 +4453,10 @@ sub Data {
             '',
         'If a note is added by an agent, sets the state of the ticket in the ticket priority screen of a zoomed ticket in the agent interface.' =>
             '',
+        'If active, none of the regular expressions may match the user\'s email address to allow registration.' =>
+            '',
+        'If active, one of the regular expressions has to match the user\'s email address to allow registration.' =>
+            '',
         'If any of the "SMTP" mechanisms was selected as SendmailModule, and authentication to the mail server is needed, a password must be specified.' =>
             '',
         'If any of the "SMTP" mechanisms was selected as SendmailModule, and authentication to the mail server is needed, an username must be specified.' =>
@@ -4283,6 +4465,8 @@ sub Data {
             '',
         'If any of the "SMTP" mechanisms was selected as SendmailModule, the port where your mailserver is listening for incoming connections must be specified.' =>
             '',
+        'If enabled debugging information for ACLs is logged.' => '',
+        'If enabled debugging information for transitions is logged.' => '',
         'If enabled, OTRS will deliver all CSS files in minified form. WARNING: If you turn this off, there will likely be problems in IE 7, because it cannot load more than 32 CSS files.' =>
             '',
         'If enabled, OTRS will deliver all JavaScript files in minified form.' =>
@@ -4353,12 +4537,16 @@ sub Data {
         'List of all CustomerCompany events to be displayed in the GUI.' =>
             '',
         'List of all CustomerUser events to be displayed in the GUI.' => '',
+        'List of all DynamicField events to be displayed in the GUI.' => '',
         'List of all Package events to be displayed in the GUI.' => '',
         'List of all article events to be displayed in the GUI.' => '',
+        'List of all queue events to be displayed in the GUI.' => '',
         'List of all ticket events to be displayed in the GUI.' => '',
         'List of default Standard Templates which are assigned automatically to new Queues upon creation.' =>
             '',
+        'Locked ticket.' => 'Bilet kilitlendi.',
         'Log file for the ticket counter.' => '',
+        'Loop-Protection! No auto-response sent to "%s".' => 'Döngü Koruması! "%s" için otomatik yanıt gönderilmedi.',
         'Mail Accounts' => 'Posta Hesapları',
         'Main menu registration.' => 'Ana menü kayıt',
         'Makes the application check the MX record of email addresses before sending an email or submitting a telephone or email ticket.' =>
@@ -4428,17 +4616,27 @@ sub Data {
             '',
         'Module to use database filter storage.' => '',
         'Multiselect' => 'Çoklu Seçim',
+        'My Queues and My Services' => '',
+        'My Queues or My Services' => '',
+        'My Services' => '',
         'My Tickets' => 'Biletlerim',
         'Name of custom queue. The custom queue is a queue selection of your preferred queues and can be selected in the preferences settings.' =>
             '',
+        'Name of custom service. The custom service is a service selection of your preferred services and can be selected in the preferences settings.' =>
+            '',
         'NameX' => '',
+        'New Ticket [%s] created (Q=%s;P=%s;S=%s).' => 'Yeni [%s] Bileti oluşturuldu (Q=%s;P=%s;S=%s).',
         'New email ticket' => 'Yeni e-posta bileti',
+        'New owner is "%s" (ID=%s).' => 'Yeni sahip "%s" (Kimlik=%s).',
         'New phone ticket' => 'Yeni telefon bileti',
         'New process ticket' => '',
+        'New responsible is "%s" (ID=%s).' => '',
         'Next possible ticket states after adding a phone note in the ticket phone inbound screen of the agent interface.' =>
             '',
         'Next possible ticket states after adding a phone note in the ticket phone outbound screen of the agent interface.' =>
             '',
+        'No Notification' => '',
+        'Notification sent to "%s".' => '"%s" için müşteriye bildirim gönderildi .',
         'Notifications (Event)' => 'Bildirim',
         'Number of displayed tickets' => 'Görünen Biletlerin sayısı',
         'Number of lines (per ticket) that are shown by the search utility in the agent interface.' =>
@@ -4447,7 +4645,10 @@ sub Data {
             '',
         'Number of tickets to be displayed in each page of a search result in the customer interface.' =>
             '',
-        'Open tickets of customer' => 'Müşteriye ait açık biletler',
+        'Old: "%s" New: "%s"' => 'Eski: "%s" Yeni: "%s"',
+        'Open tickets (customer user)' => '',
+        'Open tickets (customer)' => '',
+        'Out Of Office' => '',
         'Overloads (redefines) existing functions in Kernel::System::Ticket. Used to easily add customizations.' =>
             '',
         'Overview Escalated Tickets' => 'Yükseltilmiş Biletlere Genel Bakış',
@@ -4462,6 +4663,8 @@ sub Data {
             '',
         'Parameters for the CustomQueue object in the preference view of the agent interface.' =>
             '',
+        'Parameters for the CustomService object in the preference view of the agent interface.' =>
+            '',
         'Parameters for the FollowUpNotify object in the preference view of the agent interface.' =>
             '',
         'Parameters for the LockTimeoutNotify object in the preference view of the agent interface.' =>
@@ -4472,6 +4675,8 @@ sub Data {
             '',
         'Parameters for the RefreshTime object in the preference view of the agent interface.' =>
             '',
+        'Parameters for the ServiceUpdateNotify object in the preference view of the agent interface.' =>
+            '',
         'Parameters for the WatcherNotify object in the preference view of the agent interface.' =>
             '',
         'Parameters for the dashboard backend of the customer company information of the agent interface . "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
@@ -4480,17 +4685,19 @@ sub Data {
             '',
         'Parameters for the dashboard backend of the customer user list overview of the agent interface . "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
             '',
-        'Parameters for the dashboard backend of the new tickets overview of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
+        'Parameters for the dashboard backend of the new tickets overview of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' =>
             '',
         'Parameters for the dashboard backend of the queue overview widget of the agent interface. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "QueuePermissionGroup" is not mandatory, queues are only listed if they belong to this permission group if you enable it. "States" is a list of states, the key is the sort order of the state in the widget. "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
             '',
+        'Parameters for the dashboard backend of the running process tickets overview of the agent interface . "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
+            '',
         'Parameters for the dashboard backend of the ticket calendar of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
             '',
-        'Parameters for the dashboard backend of the ticket escalation overview of the agent interface . "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
+        'Parameters for the dashboard backend of the ticket escalation overview of the agent interface . "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' =>
             '',
-        'Parameters for the dashboard backend of the ticket pending reminder overview of the agent interface . "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
+        'Parameters for the dashboard backend of the ticket pending reminder overview of the agent interface . "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' =>
             '',
-        'Parameters for the dashboard backend of the ticket pending reminder overview of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
+        'Parameters for the dashboard backend of the ticket pending reminder overview of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' =>
             '',
         'Parameters for the dashboard backend of the ticket stats of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
             '',
@@ -4528,6 +4735,7 @@ sub Data {
         'Process Management Path GUI' => '',
         'Process Management Transition Action GUI' => '',
         'Process Management Transition GUI' => '',
+        'ProcessID' => '',
         'Protection against CSRF (Cross Site Request Forgery) exploits (for more info see http://en.wikipedia.org/wiki/Cross-site_request_forgery).' =>
             '',
         'Provides a matrix overview of the tickets per state per queue.' =>
@@ -4537,6 +4745,7 @@ sub Data {
             '',
         'Refresh Overviews after' => 'Genel bakıştan sonra yenile',
         'Refresh interval' => 'Yenileme süresi',
+        'Removed subscription for user "%s".' => 'Removed subscription for user "%s".',
         'Removes the ticket watcher information when a ticket is archived.' =>
             '',
         'Replaces the original sender with current customer\'s email address on compose answer in the ticket compose screen of the agent interface.' =>
@@ -4544,6 +4753,8 @@ sub Data {
         'Required permissions to change the customer of a ticket in the agent interface.' =>
             '',
         'Required permissions to use the close ticket screen in the agent interface.' =>
+            '',
+        'Required permissions to use the email outbound screen in the agent interface.' =>
             '',
         'Required permissions to use the ticket bounce screen in the agent interface.' =>
             '',
@@ -4573,7 +4784,10 @@ sub Data {
             '',
         'Restores a ticket from the archive (only if the event is a state change, from closed to any open available state).' =>
             '',
+        'Retains all services in listings even if they are children of invalid elements.' =>
+            '',
         'Roles <-> Groups' => 'Roller <-> Gruplar',
+        'Running Process Tickets' => '',
         'Runs an initial wildcard search of the existing customer users when accessing the AdminCustomerUser module.' =>
             '',
         'Runs the system in "Demo" mode. If set to "Yes", agents can change preferences, such as selection of language and theme via the agent web interface. These changes are only valid for the current session. It will not be possible for agents to change their passwords.' =>
@@ -4581,6 +4795,7 @@ sub Data {
         'S/MIME Certificate Upload' => '',
         'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data.' =>
             '',
+        'Schedule a maintenance period.' => '',
         'Search Customer' => 'Kullanıcı Ara',
         'Search User' => '',
         'Search backend default router.' => '',
@@ -4591,10 +4806,16 @@ sub Data {
             '',
         'Selects the ticket number generator module. "AutoIncrement" increments the ticket number, the SystemID and the counter are used with SystemID.counter format (e.g. 1010138, 1010139). With "Date" the ticket numbers will be generated by the current date, the SystemID and the counter. The format looks like Year.Month.Day.SystemID.counter (e.g. 200206231010138, 200206231010139). With "DateChecksum"  the counter will be appended as checksum to the string of date and SystemID. The checksum will be rotated on a daily basis. The format looks like Year.Month.Day.SystemID.Counter.CheckSum (e.g. 2002070110101520, 2002070110101535). "Random" generates randomized ticket numbers in the format "SystemID.Random" (e.g. 100057866352, 103745394596).' =>
             '',
-        'Send me a notification if a customer sends a follow up and I\'m the owner of the ticket or the ticket is unlocked and is in one of my subscribed queues.' =>
+        'Send me a notification if a customer sends a follow up and I\'m the owner of the ticket or the ticket is unlocked and is in one of my queues/services.' =>
             '',
+        'Send me a notification if the service of a ticket is changed to a service in "My Services" and the ticket is in a queue where I have read permissions.' =>
+            '',
+        'Send me a notification if there is a new ticket in my queues/services.' =>
+            '',
+        'Send new ticket notifications if subscribed to' => '',
         'Send notifications to users.' => 'Kullanıcılara bildirim gönder.',
-        'Send ticket follow up notifications' => 'Bilet takip bildirimlerini gönder.',
+        'Send service update notifications' => '',
+        'Send ticket follow up notifications if subscribed to' => '',
         'Sender type for new tickets from the customer inteface.' => 'Müşteri arayüzünde yeni biletler için gönderici türü belirleme.',
         'Sends agent follow-up notification only to the owner, if a ticket is unlocked (the default is to send the notification to all agents).' =>
             '',
@@ -4606,6 +4827,8 @@ sub Data {
             '',
         'Sends the notifications which are configured in the admin interface under "Notfication (Event)".' =>
             '',
+        'Service update notification' => '',
+        'Service view' => '',
         'Set sender email addresses for this system.' => 'Bu sistem için gönderici e-posta adreslerini ayarlayın.',
         'Set the default height (in pixels) of inline HTML articles in AgentTicketZoom.' =>
             '',
@@ -4615,7 +4838,8 @@ sub Data {
             '',
         'Sets if SLA must be selected by the agent.' => '',
         'Sets if SLA must be selected by the customer.' => '',
-        'Sets if note must be filled in by the agent.' => '',
+        'Sets if note must be filled in by the agent. Can be overwritten by Ticket::Frontend::NeedAccountedTime.' =>
+            '',
         'Sets if service must be selected by the agent.' => '',
         'Sets if service must be selected by the customer.' => '',
         'Sets if ticket owner must be selected by the agent.' => '',
@@ -4647,7 +4871,13 @@ sub Data {
             '',
         'Sets the default body text for notes added in the ticket responsible screen of the agent interface.' =>
             '',
+        'Sets the default error message for the login screen on Agent and Customer interface, it\'s shown when a running system maintenance period is active.' =>
+            '',
         'Sets the default link type of splitted tickets in the agent interface.' =>
+            '',
+        'Sets the default message for the login screen on Agent and Customer interface, it\'s shown when a running system maintenance period is active.' =>
+            '',
+        'Sets the default message for the notification is shown on a running system maintenance period.' =>
             '',
         'Sets the default next state for new phone tickets in the agent interface.' =>
             '',
@@ -4691,7 +4921,13 @@ sub Data {
             '',
         'Sets the maximum number of active customers within the timespan defined in SessionActiveTime.' =>
             '',
+        'Sets the maximum number of active sessions per agent within the timespan defined in SessionActiveTime.' =>
+            '',
+        'Sets the maximum number of active sessions per customers within the timespan defined in SessionActiveTime.' =>
+            '',
         'Sets the minimal ticket counter size (if "AutoIncrement" was selected as TicketNumberGenerator). Default is 5, this means the counter starts from 10000.' =>
+            '',
+        'Sets the minutes a notification is shown for notice about upcoming system maintenance period.' =>
             '',
         'Sets the number of lines that are displayed in text messages (e.g. ticket lines in the QueueZoom).' =>
             '',
@@ -4792,6 +5028,9 @@ sub Data {
             '',
         'Sets the user time zone per user based on java script / browser time zone offset feature at login time.' =>
             '',
+        'Should the cache data be help in memory?' => '',
+        'Should the cache data be stored in the selected cache backend?' =>
+            '',
         'Show a responsible selection in phone and email tickets in the agent interface.' =>
             '',
         'Show article as rich text even if rich text writing is disabled.' =>
@@ -4822,6 +5061,8 @@ sub Data {
             '',
         'Shows a link in the menu to delete a ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
             '',
+        'Shows a link in the menu to enroll a ticket into a process in the ticket zoom view of the agent interface.' =>
+            '',
         'Shows a link in the menu to go back in the ticket zoom view of the agent interface.' =>
             '',
         'Shows a link in the menu to lock / unlock a ticket in the ticket overviews of the agent interface.' =>
@@ -4841,6 +5082,8 @@ sub Data {
         'Shows a link in the menu to see the priority of a ticket in the ticket zoom view of the agent interface.' =>
             '',
         'Shows a link in the menu to see the responsible agent of a ticket in the ticket zoom view of the agent interface.' =>
+            '',
+        'Shows a link in the menu to send an outbound email in the ticket zoom view of the agent interface.' =>
             '',
         'Shows a link in the menu to set a ticket as pending in the ticket zoom view of the agent interface.' =>
             '',
@@ -4890,6 +5133,7 @@ sub Data {
         'Shows a select of ticket attributes to order the queue view ticket list. The possible selections can be configured via \'TicketOverviewMenuSort###SortAttributes\'.' =>
             '',
         'Shows all both ro and rw queues in the queue view.' => '',
+        'Shows all both ro and rw tickets in the service view.' => '',
         'Shows all open tickets (even if they are locked) in the escalation view of the agent interface.' =>
             '',
         'Shows all open tickets (even if they are locked) in the status view of the agent interface.' =>
@@ -4908,6 +5152,7 @@ sub Data {
             '',
         'Shows existing parent/child queue lists in the system in the form of a tree or a list.' =>
             '',
+        'Shows information on how to start OTRS Scheduler' => '',
         'Shows the activated ticket attributes in the customer interface (0 = Disabled and 1 = Enabled).' =>
             '',
         'Shows the articles sorted normally or in reverse, under ticket zoom in the agent interface.' =>
@@ -4962,6 +5207,8 @@ sub Data {
         'SolutionInMin' => '',
         'Sorts the tickets (ascendingly or descendingly) when a single queue is selected in the queue view and after the tickets are sorted by priority. Values: 0 = ascending (oldest on top, default), 1 = descending (youngest on top). Use the QueueID for the key and 0 or 1 for value.' =>
             '',
+        'Sorts the tickets (ascendingly or descendingly) when a single queue is selected in the service view and after the tickets are sorted by priority. Values: 0 = ascending (oldest on top, default), 1 = descending (youngest on top). Use the ServiceID for the key and 0 or 1 for value.' =>
+            '',
         'Spam Assassin example setup. Ignores emails that are marked with SpamAssassin.' =>
             '',
         'Spam Assassin example setup. Moves marked mails to spam queue.' =>
@@ -4975,6 +5222,8 @@ sub Data {
         'Specifies the border color of the chart.' => '',
         'Specifies the border color of the legend.' => '',
         'Specifies the bottom margin of the chart.' => '',
+        'Specifies the default article type for the ticket compose screen in the agent interface if the article type cannot be automatically detected.' =>
+            '',
         'Specifies the different article types that will be used in the system.' =>
             '',
         'Specifies the different note types that will be used in the system.' =>
@@ -5011,7 +5260,11 @@ sub Data {
             '',
         'Specifies the top margin of the chart.' => '',
         'Specifies user id of the postmaster data base.' => '',
+        'Specifies whether all storage backends should be checked when looking for attachements. This is only required for installations where some attachements are in the file system, and others in the database.' =>
+            '',
         'Specify how many sub directory levels to use when creating cache files. This should prevent too many cache files being in one directory.' =>
+            '',
+        'Specify the channel to be used to fetch OTRS Business Solution™ updates. Warning: Development releases might not be complete, your system might experience unrecoverable errors and on extreme cases could become unresponsive!' =>
             '',
         'Standard available permissions for agents within the application. If more permissions are needed, they can be entered here. Permissions must be defined to be effective. Some other good permissions have also been provided built-in: note, close, pending, customer, freetext, move, compose, responsible, forward, and bounce. Make sure that "rw" is always the last registered permission.' =>
             '',
@@ -5019,11 +5272,16 @@ sub Data {
             '',
         'Starts a wildcard search of the active object after the link object mask is started.' =>
             '',
+        'Stat#' => 'İstatistik numarası',
         'Statistics' => 'İstatistikler',
         'Status view' => 'Durum görünümü',
         'Stop words for fulltext index. These words will be removed.' => '',
         'Stores cookies after the browser has been closed.' => '',
         'Strips empty lines on the ticket preview in the queue view.' => '',
+        'Strips empty lines on the ticket preview in the service view.' =>
+            '',
+        'System Maintenance' => '',
+        'System Request (%s).' => '',
         'Templates <-> Queues' => '',
         'Textarea' => '',
         'The "bin/PostMasterMailAccount.pl" will reconnect to POP3/POP3S/IMAP/IMAPS host after the specified count of messages.' =>
@@ -5041,11 +5299,23 @@ sub Data {
         'The headline shown in the customer interface.' => '',
         'The identifier for a ticket, e.g. Ticket#, Call#, MyTicket#. The default is Ticket#.' =>
             '',
+        'The logo shown in the header of the agent interface for the skin "default". See "AgentLogo" for further description.' =>
+            '',
+        'The logo shown in the header of the agent interface for the skin "ivory". See "AgentLogo" for further description.' =>
+            '',
+        'The logo shown in the header of the agent interface for the skin "ivory-slim". See "AgentLogo" for further description.' =>
+            '',
+        'The logo shown in the header of the agent interface for the skin "slim". See "AgentLogo" for further description.' =>
+            '',
         'The logo shown in the header of the agent interface. The URL to the image can be a relative URL to the skin image directory, or a full URL to a remote web server.' =>
             '',
         'The logo shown in the header of the customer interface. The URL to the image can be a relative URL to the skin image directory, or a full URL to a remote web server.' =>
             '',
         'The logo shown on top of the login box of the agent interface. The URL to the image must be relative URL to the skin image directory.' =>
+            '',
+        'The maximal number of articles expanded on a single page in AgentTicketZoom.' =>
+            '',
+        'The maximal number of articles shown on a single page in AgentTicketZoom.' =>
             '',
         'The text at the beginning of the subject in an email reply, e.g. RE, AW, or AS.' =>
             '',
@@ -5070,20 +5340,33 @@ sub Data {
         'Ticket Queue Overview' => '',
         'Ticket event module that triggers the escalation stop events.' =>
             '',
+        'Ticket moved into Queue "%s" (%s) from Queue "%s" (%s).' => 'Bilet "%s" (%s) kuyruğuna taşındı, "%s" (%s) kuyruğundan.',
         'Ticket overview' => 'Bilet Genel Bakış',
         'TicketNumber' => 'Bilet Numarası',
         'Time in seconds that gets added to the actual time if setting a pending-state (default: 86400 = 1 day).' =>
             '',
+        'Title updated: Old: "%s", New: "%s"' => '',
         'Toggles display of OTRS FeatureAddons list in PackageManager.' =>
             '',
         'Toolbar Item for a shortcut.' => '',
+        'Turns off SSL certificate validation, for example if you use a transparent HTTPS proxy. Use at your own risk!' =>
+            '',
+        'Turns on drag and drop for the main navigation.' => '',
         'Turns on the animations used in the GUI. If you have problems with these animations (e.g. performance issues), you can turn them off here.' =>
             '',
         'Turns on the remote ip address check. It should be set to "No" if the application is used, for example, via a proxy farm or a dialup connection, because the remote ip address is mostly different for the requests.' =>
             '',
+        'Unlock tickets whenever a note is added and the owner is out of office.' =>
+            '',
+        'Unlocked ticket.' => 'Bilet kilidi çözüldü.',
         'Update Ticket "Seen" flag if every article got seen or a new Article got created.' =>
             '',
         'Update and extend your system with software packages.' => 'Sisteminizi yazılım paketleriyle güncelleyin ve genişletin.',
+        'Updated SLA to %s (ID=%s).' => '"%s" (Kimlik=%s) SLA güncellendi.',
+        'Updated Service to %s (ID=%s).' => '"%s" (Kimlik=%s) servisi güncellendi.',
+        'Updated Type to %s (ID=%s).' => '"%s" (Kimlik=%s) tipi güncellendi.',
+        'Updated: %s' => 'Güncellendi: %s',
+        'Updated: %s=%s;%s=%s;%s=%s;' => 'Güncellendi: %s=%s;%s=%s;%s=%s;',
         'Updates the ticket escalation index after a ticket attribute got updated.' =>
             '',
         'Updates the ticket index accelerator.' => '',
@@ -5091,6 +5374,7 @@ sub Data {
         'UserLastname' => '',
         'Uses Cc recipients in reply Cc list on compose an email answer in the ticket compose screen of the agent interface.' =>
             '',
+        'Uses richtext for viewing and editing notification events.' => '',
         'Uses richtext for viewing and editing: articles, salutations, signatures, standard templates, auto responses and notifications.' =>
             '',
         'View performance benchmark results.' => 'Performans kriter sonuçlarını görmek.',
@@ -5103,553 +5387,11 @@ sub Data {
             '',
         'When tickets are merged, the customer can be informed per email by setting the check box "Inform Sender". In this text area, you can define a pre-formatted text which can later be modified by the agents.' =>
             '',
+        'Write a new, outgoing mail' => '',
         'Your queue selection of your favorite queues. You also get notified about those queues via email if enabled.' =>
             'Favori kuyruklarınızın seçim kuyruğu. Bu kuyruklar hakkında da e-posta yoluyla (eğer açıksa) bildirim alırsınız.',
-
-        #
-        # OBSOLETE ENTRIES FOR REFERENCE, DO NOT TRANSLATE!
-        #
-        ' (work units)' => ' (iş birimi)',
-        '%s Tickets affected! Do you really want to use this job?' => '%s Bilet etkilendi! Gerçekten bu işi kullanmak istiyor musunuz?',
-        '(Checks MX recordes of used email addresses by composing an answer. Don\'t use CheckMXRecord if your OTRS machine is behinde a dial-up line $!)' =>
-            '(Kullanılan e-posta adreslerinin MX kayıtlarını bir cevap yazarak kontrol eder. Eğer OTRS sisteminiz çevirmeli bir ağın arkasındaysa kullanmayın!)',
-        '(Email of the system admin)' => '(Sistem yöneticisinin e-posta adresi)',
-        '(Full qualified domain name of your system)' => '(Sisteminizin eksiksiz sunucu adresi (FQDN))',
-        '(Logfile just needed for File-LogModule!)' => '(Günlük dosyası sadece günlük bileşeni Dosya olduğunda gereklidir!)',
-        '(Note: It depends on your installation how many dynamic objects you can use)' =>
-            '(Not: Kaç dinamik nesne kullanabileceğiniz kurulumunuza bağlıdır)',
-        '(Note: Useful for big databases and low performance server)' => '(Not: Büyük veritabanı ve düşük performanslı sunucularda kullanışlıdır)',
-        '(The identify of the system. Each ticket number and each http session id starts with this number)' =>
-            '(Sistemin kimliği. Her bilet numarası ve her http oturum kimliği bu numarayla başlar)',
-        '(Ticket identifier. Some people want toset this to e. g. \'Ticket#\', \'Call#\' or \'MyTicket#\')' =>
-            '(Bilet tanımlayıcısı. \'Bilet#\', \'Arama#\' oder \'Biletim#\' gibi olabilir)',
-        '(Used default language)' => '(Kullanılan öntanımlı dil)',
-        '(Used log backend)' => '(Kullanılan günlük arkaucu)',
-        '(Used ticket number format)' => '(Kullanılan bilet numarası biçimi)',
-        'A article should have a title!' => 'Metnin bir başlığı olmalıdır!',
-        'A message must be spell checked!' => 'Mesajın sözyazım kontrolünden geçmesi gereki!',
-        'A message should have a To: recipient!' => 'Bir mesajın alıcısı olmalıdır!',
-        'A message should have a body!' => 'Mesajın bir gövdesi olmalıdır!',
-        'A message should have a subject!' => 'Bir mesajın bir konusu olmalıdır!',
-        'A response is default text to write faster answer (with default text) to customers.' =>
-            'Bir yanıt, müşterilere daha hızlı cevap yazabilmek için önceden hazırlanan metindir.',
-        'Absolut Period' => 'Belirli Süre',
-        'Add Customer Company' => 'Müşteri Şirketi Ekle',
-        'Add Response' => 'Cevap ekle',
-        'Add System Address' => 'Sistem Adresi Ekle',
-        'Add User' => 'Kullanıcı Ekle',
-        'Add a new Agent.' => 'Yeni bir Aracı ekle.',
-        'Add a new Customer Company.' => 'Yeni bir Müşteri Şirket ekle.',
-        'Add a new Group.' => 'Yeni bir Grup ekle.',
-        'Add a new Notification.' => 'yeni bildirim ekle',
-        'Add a new Priority.' => 'yeni bir öncelik ekle',
-        'Add a new Role.' => 'Yeni bir Rol ekle.',
-        'Add a new SLA.' => 'Yeni bir SLA ekle.',
-        'Add a new Salutation.' => 'Yeni bir Selamlama ekle.',
-        'Add a new Service.' => 'Yeni bir Servis ekle.',
-        'Add a new Signature.' => 'Yeni bir İmza ekle.',
-        'Add a new State.' => 'Yeni bir Durum ekle.',
-        'Add a new System Address.' => 'Yeni bir Sistem Adresi ekle.',
-        'Add a new Type.' => 'Yeni bir Tip ekle.',
-        'Add a note to this ticket!' => 'Bu bilete bir not ekle!',
-        'Add customer company' => 'Müşteri şirketi ekle',
-        'Add note to ticket' => 'Bilete not ekle',
-        'Add response' => 'Cevap ekle',
-        'Added User "%s"' => 'Kullanıcı "%s" eklendi.',
-        'Admin-Area' => 'Yönetim Alanı',
-        'Admin-Password' => 'Yönetici Parolası',
-        'Admin-User' => 'Yönetici Kullanıcı',
-        'Agent Mailbox' => 'Aracı Posta Kutusu',
-        'Agent Preferences' => 'Aracı Tercihleri',
-        'Agent based' => 'aracı bazlı',
-        'Agent-Area' => 'Aracı Alanı',
-        'All Agent variables.' => 'Tüm Aracı değişkenleri',
-        'All Agents' => 'Tüm Aracılar',
-        'All Customer variables like defined in config option CustomerUser.' =>
-            'Müşteri Kullanıcı yapılandırma seçeneğinde tanımlandığı şekliyle tüm Müşteri değişkenleri.',
-        'All customer tickets.' => 'Tüm müşteri biletleri.',
-        'All incoming emails with this "Email" (To:) will be dispatched in the selected queue!' =>
-            'Bu e-posta adresinden gelen tüm e-postalar seçili kuyruğa yönlendirilir.',
-        'All messages' => 'Tüm mesajlar',
-        'All new tickets!' => 'Tüm yeni biletler',
-        'All tickets where the reminder date has reached!' => 'hatırlatma tarihi gelen tüm biletler',
-        'Allocate CustomerUser to service' => 'MüşteriKullanıcıyı servise ata',
-        'Allocate services to CustomerUser' => 'Servisleri MüşteriKullanıcıya ata',
-        'Attach' => 'Ekle',
-        'Attachments <-> Responses' => 'Ekler <-> Cevaplar',
-        'Auto Response From' => 'Otomatik Cevaplayan',
-        'Back to search result' => 'Sonuca geri dön',
-        'Bounce ticket' => 'Bileti ötele',
-        'Can\'t update password, invalid characters!' => 'Parola güncellenemiyor, geçersiz karakterler var!',
-        'Can\'t update password, must be at least %s characters!' => 'Parola güncellenemiyor, en az %s karakter girmelisiniz!',
-        'Can\'t update password, must contain 2 lower and 2 upper characters!' =>
-            'Parola güncellenemiyor, 2 küçük harf ve 2 büyük harf girmelisiniz!',
-        'Can\'t update password, needs at least 1 digit!' => 'Parola güncellenemiyor, en az 1 sayı girmelisiniz!',
-        'Can\'t update password, needs at least 2 characters!' => 'Parola güncellenemiyor, en az 2 karakter girmelisiniz!',
-        'Can\'t update password, your new passwords do not match! Please try again!' =>
-            'Parola güncellenemiyor, parolalar birbirleriyle uyuşmuyor! Lütfen tekrar deneyin!',
-        'Category Tree' => 'Kategori Ağacı',
-        'Cc: (%s) added database email!' => 'Karbon kopya: (%s) veritabanı elektronik postası eklendi!',
-        'Change %s settings' => '%s ayarlarını değiştir',
-        'Change Attachment Relations for Response' => 'Cevaplar için ek ilişkisini değiştir',
-        'Change Queue Relations for Response' => 'Cevaplar için Kuyruk İlişkisini Değiştir',
-        'Change Response Relations for Attachment' => 'Ekler için cevap ilişkisini değiştir',
-        'Change Response Relations for Queue' => 'Kuyruk için Cevap İlişkisini Değiştir',
-        'Change Time' => 'Değişiklik Zamanı',
-        'Change free text of ticket' => 'Biletin serbest metnini değiştir',
-        'Change owner of ticket' => 'Biletin sahibini değiştir',
-        'Change priority of ticket' => 'Biletin önceliğini değiştir',
-        'Change responsible of ticket' => 'Biletin sorumlusunu değiştir',
-        'Change the ticket customer!' => 'Bilet müşterisini değiştir!',
-        'Change the ticket owner!' => 'Bilet sahibini değiştir!',
-        'Change the ticket priority!' => 'Bilet önceliğini değiştir!',
-        'Change user <-> group settings' => 'Kullanıcı <-> grup seçeneklerini değiştir',
-        'ChangeLog' => 'Değişiklik Günlüğü',
-        'Child-Object' => 'Alt Nesne',
-        'Classification' => 'Sıralama',
-        'Clear From' => 'Gönderen kısmını temizle',
-        'Clear To' => 'Kime alanını temizle',
-        'Click here to report a bug!' => 'Hata raporlamak için buraya tıklayın!',
-        'Close this ticket!' => 'Bu bileti kapat!',
-        'Close ticket' => 'Bileti kapat',
-        'Close type' => 'Tipi kapat',
-        'Close!' => 'Kapat!',
-        'Comment (internal)' => 'Yorum (iç)',
-        'Companies' => 'Şirketler',
-        'CompanyTickets' => 'Şirket Biletleri',
-        'Compose Answer' => 'Cevap yaz',
-        'Compose Email' => 'E-Posta Yaz',
-        'Compose Follow up' => 'Takip mesajı yaz',
-        'Config Options' => 'Yapılandırma Seçenekleri',
-        'Config options (e. g. &lt;OTRS_CONFIG_HttpType&gt;)' => 'Yapılandırma seçenekleri (örn. &lt;OTRS_CONFIG_HttpType&gt;)',
-        'Config options (e. g. <OTRS_CONFIG_HttpType>)' => 'Yapılandırma seçenekleri (örn. <OTRS_CONFIG_HttpType>)',
-        'Config options (e. g. <OTRS_CONFIG_HttpType>).' => 'Yapılandırma seçenekleri (örneğin <OTRS_CONFIG_HttpType).',
-        'Contact customer' => 'Müşteriyle bağlantı kur',
-        'Create Times' => 'Oluşturma Zamanları',
-        'Create and manage companies.' => 'Şirketleri oluştur ve yönet.',
-        'Create and manage response templates.' => 'Cevap şablonlarını oluştur ve yönet.',
-        'Create new Phone Ticket' => 'Yeni Telefon Bileti oluştur',
-        'Create new database' => 'Yeni veritabanı oluştur',
-        'Create new groups to handle access permissions for different groups of agent (e. g. purchasing department, support department, sales department, ...).' =>
-            'Farklı aracı gruplarının (örneğin satınalma bölümü, destek bölümü, satış bölümü, ...) erişim izinlerini düzenlemek için yeni grupları oluştur.',
-        'CreateTicket' => 'Bilet Oluştur',
-        'Current Impact Rating' => 'Şu Andaki Etki Oranı',
-        'Customer Company Management' => 'Müşteri Şirket Yönetimi',
-        'Customer Data' => 'Müşteri Verisi',
-        'Customer Move Notify' => 'Müşteri Taşıma Bildirimi',
-        'Customer Owner Notify' => 'Müşteri Sahip Bildirimi',
-        'Customer State Notify' => 'Müşteri Durum Bildirimi',
-        'Customer Users <-> Groups' => 'Müşteri Kullanıcılar <-> Gruplar',
-        'Customer Users <-> Groups Management' => 'Müşteri Kullanıcılar <-> Grup Yönetimi',
-        'Customer Users <-> Services' => 'Müşteri Kullanıcılar <-> Servisler',
-        'Customer Users <-> Services Management' => 'Kullanıcı Müşteriler <-> Servis Yönetimi',
-        'Customer history' => 'Müşteri tarihçesi',
-        'Customer history search' => 'Müşteri tarihçe araması',
-        'Customer history search (e. g. "ID342425").' => 'Müşteri tarihçe araması (örn. "ID342425").',
-        'Customer user will be needed to have a customer history and to login via customer panel.' =>
-            'Müşteri kullanıcı bir müşteri geçmişi ve müşteri panelinden oturum açmak için gereklidir.',
-        'CustomerUser' => 'MüşteriKullanıcı',
-        'Customers <-> Services' => 'Müşteriler <-> Servisler',
-        'D' => 'D',
-        'DB Admin Password' => 'Veritabanı Yöneticisi Parolası',
-        'DB Admin User' => 'Veritabanı Yöneticisi Kullanıcı',
-        'DB connect host' => 'Veritabanına bağlanan sunucu',
-        'Database-User' => 'Veritabanı kullanıcısı',
-        'Default' => 'Öntanımlı',
-        'Default Charset' => 'Öntanımlı karakter kümesi',
-        'Default Language' => 'Öntanımlı dil',
-        'Delete old database' => 'Eski veritabanını sil',
-        'Delete this ticket!' => 'Bu bileti sil!',
-        'Detail' => 'Detay',
-        'Did not find a required feature? OTRS Group provides their subscription customers with exclusive Add-Ons:' =>
-            'Gerekli özelliği bulamadınızmı? OTRS grubu üye müşterilerimize seçkin eklentileri sunar.',
-        'Diff' => 'Fark',
-        'Discard all changes and return to the compose screen' => 'Tüm değişiklikleri geri al ve oluşturma ekranına geri dön',
-        'Do dispatch or filter incoming emails based on email X-Headers! RegExp is also possible.' =>
-            'Gelen elektronik postaları gönderme veya süzme işlemini elektronik postadaki X-Başlıklarına göre yap! Düzenli ifadeler (RegExp) de kullanılabilir.',
-        'Do you really want to delete this Object?' => 'Gerçekten bu nesneyi silmek istiyor musunuz?',
-        'Do you really want to reinstall this package (all manual changes get lost)?' =>
-            'Gerçekten bu paketi yeniden yüklemek istiyor musunuz (elle yaptığınız tüm değişiklikler gider)?',
-        'Don\'t forget to add a new response a queue!' => 'Yeni bir yanıtı bir kuyruğa eklemeyi unutmayın!',
-        'Don\'t forget to add a new user to groups and/or roles!' => 'Yeni kullanıcıları gruplara ve/veya rollere eklemeyi unutmayın!',
-        'Don\'t forget to add a new user to groups!' => 'Yeni kullanıcıyı gruplara atamayı unutmayın!',
-        'Don\'t forget to add new responses to queues.' => 'Kuyruklara yeni cevap eklemeyi unutma',
-        'Don\'t work with UserID 1 (System account)! Create new users!' =>
-            'Kullanıcı kimliği 1 (Sistem hesabı) ile çalışmayın! Yeni kullanıcılar oluşturun!',
-        'Download Settings' => 'İndirme Ayarları',
-        'Download all system config changes.' => 'Tüm sistem yapılandırma değişikliklerini indir.',
-        'Drop Database' => 'Veritabanını Sil',
-        'Dynamic-Object' => 'Dinamik Nesne',
-        'Edit Response' => 'Cevabı düzenle',
-        'Edit default services.' => 'Varsayılan servisleri belirle.',
-        'Email based' => 'eposta bazlı',
-        'Escalation - First Response Time' => 'Yükseltme - ilk Cevap Zamanı',
-        'Escalation - Solution Time' => 'Yükseltme - Çözümleme Zamanı',
-        'Escalation - Update Time' => 'Yükseltme - Güncelleme Zamanı',
-        'Escalation in' => 'Yükselme',
-        'Escalation time' => 'Yükseltme zamanı',
-        'Explanation' => 'Açıklama',
-        'Export Config' => 'Yapılandırmayı Dışarı Aktar',
-        'FAQ Search Result' => 'SSS Arama Sonucu',
-        'FAQ System History' => 'SSS Sistemi Tarihçesi',
-        'File-Name' => 'Dosya adı',
-        'File-Path' => 'Dosya Yolu',
-        'Filelist' => 'Dosya listesi',
-        'Filter for Responses' => 'Cevaplar için Filtre',
-        'Filter name' => 'Filtre adı',
-        'Filtername' => 'Süzgeç adı',
-        'Follow up' => 'Takip',
-        'Follow up notification' => 'Takip bildirimi',
-        'For more info see:' => 'daha geniş bilgi için bakınız',
-        'For very complex stats it is possible to include a hardcoded file.' =>
-            'Çok karmaşık istatistikler söz konusu olduğunda önceden hazırlanmış bir dosyayı da dahil etmek mümkündür.',
-        'From customer' => 'Müşteriden',
-        'Frontend' => 'Önyüz',
-        'Fulltext-Search in Article (e. g. "Mar*in" or "Baue*")' => 'Mesajda tam metin araması (örneğin "Ay*egül" veya "Çak*r")',
-        'Go' => 'Devam',
-        'Group Ro' => 'Grup Ro',
-        'Group based' => 'grup bazlı',
-        'Group selection' => 'Grup seçimi',
-        'Have a lot of fun!' => 'İyi eğlenceler!',
-        'Here you can define the value series. You have the possibility to select one or two elements. Then you can select the attributes of elements. Each attribute will be shown as single value series. If you don\'t select any attribute all attributes of the element will be used if you generate a stat. As well a new attribute is added since the last configuration.' =>
-            'Burada değer serilerini seçebilirsiniz. Bir veya iki öğe seçebilirsiniz. Sonra öğelerin niteliklerini seçebilirsiniz. Her nitelik tek değer serileri olarak gösterilir. Eğer herhangi bir nitelik seçmeden istatistik oluşturursanız öğenin tüm nitelikleri kullanılır.  Son yapılandırmadan sonra yeni bir nitelik eklendiğinde de.',
-        'Here you can define the x-axis. You can select one element via the radio button. Then you you have to select two or more attributes of the element. If you make no selection all attributes of the element will be used if you generate a stat. As well a new attribute is added since the last configuration.' =>
-            'Burada X eksenini belirleyebilirsiniz. Radyo düğmesiyle bir öğe seçebilirsiniz. Sonra öğenin iki veya daha fazla niteliğini seçmelisiniz. Herhangi bir seçim yapmadan bir istatistik oluşturursanız öğenin tüm nitelikleri kullanılır. Son yapılandırmadan sonra bir nitelik eklendiğinde de.',
-        'Here you can insert a description of the stat.' => 'Buraya istatistiğe bir açıklama girebilirsiniz.',
-        'Here you can select the dynamic object you want to use.' => 'Burada kullanmak istediğiniz dinamik nesneyi seçebilirsiniz.',
-        'Home' => 'Ana sayfa',
-        'If a new hardcoded file is available this attribute will be shown and you can select one.' =>
-            'Eğer önceden hazırlanmış bir dosya bulunursa bu nitelik gösterilir ve birini seçebilirsiniz.',
-        'If a ticket is closed and the customer sends a follow up the ticket will be locked for the old owner.' =>
-            'Eğer bir bilet kapatılırsa ve ardından müşteri bir mesaj gönderirse, bilet eski sahibi için kilitlenir.',
-        'If a ticket will not be answered in this time, just only this ticket will be shown.' =>
-            'Eğer bir bilet bu süre zarfında yanıtlanmazsa, sadece bu bilet gösterilir.',
-        'If an agent locks a ticket and he/she will not send an answer within this time, the ticket will be unlock automatically. So the ticket is viewable for all other agents.' =>
-            'Eğer bir aracı bir bileti kilitler ve bu sürede bir yanıt göndermezse, biletin kilidi otomatik olarak kaldırılır. Dolayısıyla bilet diğer tüm aracılara görünür hale gelir.',
-        'If nothing is selected, then there are no permissions in this group (tickets will not be available for the user).' =>
-            'Eğer hiçbirşey seçilmemişse, bu grupta hiç izin yoktu (biletler kullanıcıya açık olmayacaktır).',
-        'If you need the sum of every column select yes.' => 'Her sütunun toplanmasını istiyorsanız \'Evet\'i seçin.',
-        'If you need the sum of every row select yes' => 'Her satırın toplanmasını istiyorsanız \'Evet\'i seçin',
-        'If you use RegExp, you also can use the matched value in () as [***] in \'Set\'.' =>
-            'Düzenli ifadeler (RegExp) kullanırsanız, \'Küme\' kısmında eşleşen değer için () yerine [***]da kullanabilirsiniz. ',
-        'Image' => 'Resim',
-        'Imported' => 'İçeri aktarıldı',
-        'Imported by' => 'İçeri aktaran',
-        'In this form you can select the basic specifications.' => 'Bu formda temel belirtimleri seçebilirsiniz.',
-        'In this way you can directly edit the keyring configured in Kernel/Config.pm.' =>
-            'Bu şekilde Kernel/Config.pm dosyasında yapılandırılmış olan anahtar halkasını (keyring) değiştirebilirsiniz',
-        'Information about the Stat' => 'İstatistik hakkında bilgi',
-        'Insert of the common specifications' => 'Sadece ortak belirtimleri gir',
-        'Instance' => 'Kopya',
-        'Invalid SessionID!' => 'Geçersiz oturum kimliği!',
-        'Is Job Valid' => 'İşin geçerli olup olmadığı',
-        'Is Job Valid?' => 'İş geçerli mi?',
-        'It\'s useful for ASP solutions.' => 'ASP çözümleri için kullanışlıdır.',
-        'It\'s useful for a lot of users and groups.' => 'Çok sayıda kullanıcı ve grup için kullanışlıdır.',
-        'Job-List' => 'İş Listesi',
-        'Keyword' => 'Anahtar kelime',
-        'Keywords' => 'Anahtar Kelimeler',
-        'Last update' => 'Son güncelleme',
-        'Link attachments to responses templates.' => 'Cevap şablonlarına ek bağla.',
-        'Link customers to groups.' => 'Gruba müşteri bağla.',
-        'Link customers to services.' => 'Servise müşteri bağla.',
-        'Link responses to queues.' => 'Kuyruklara cevap bağla.',
-        'Link this ticket to an other objects!' => 'Bu bileti başka nesnelere bağla!',
-        'Load Settings' => 'Ayarları Yükle',
-        'Lock it to work on it!' => 'Üzerinde çalışmak için kilitle!',
-        'Logfile' => 'Günlük dosyası',
-        'Logfile too large, you need to reset it!' => 'Günlük dosyası çok büyük, boşaltmalısınız!',
-        'Login failed! Your username or password was entered incorrectly.' =>
-            'Oturum açılamadı! Kullanıcı adınız veya parolanız hatalı girildi.',
-        'Logout successful. Thank you for using OTRS!' => 'Oturum kapatma başarılı! OTRS\'yi kullandığınız için teşekkür ederiz!',
-        'Lookup' => 'Ara',
-        'Mail Management' => 'Posta Yönetimi',
-        'Mailbox' => 'Posta kutusu',
-        'Manage Response-Queue Relations' => 'Cevap-Kuyruk ilişkisini Yönet',
-        'Manage Responses' => 'Cevapları Yönet',
-        'Manage periodic tasks.' => 'Periyodik görevleri yönet.',
-        'Match' => 'Eşleşen',
-        'Merge this ticket!' => 'Bu bileti birleştir!',
-        'Message for new Owner' => 'Yeni Sahibine mesaj',
-        'Message sent to' => 'Mesaj gönderildi',
-        'Misc' => 'Çeşitli',
-        'Modified' => 'Değiştirildi',
-        'Modules' => 'Bileşenler',
-        'Move notification' => 'Taşıma bildirimi',
-        'Multiple selection of the output format.' => 'Çıktı biçimi için birden fazla seçim.',
-        'My Queue' => 'Kuyruğun',
-        'MyTickets' => 'Biletlerim',
-        'Name is required!' => 'Ad gerekli!',
-        'New Agent' => 'Yeni Aracı',
-        'New Customer' => 'Yeni Müşteri',
-        'New Group' => 'Yeni Grup',
-        'New Group Ro' => 'Yeni Grup Ro',
-        'New Priority' => 'Yeni Öncelik',
-        'New State' => 'Yeni Durum',
-        'New Ticket Lock' => 'Yeni Bilet Kilidi',
-        'New TicketFreeFields' => 'Yeni BiletSerbestAlanları',
-        'New account created. Sent Login-Account to %s.' => 'Yeni hesap acıldı. Giriş bilgileri %s adresine yollandı',
-        'New messages' => 'Yeni mesajlar',
-        'New password again' => 'Yeni parola (tekrar)',
-        'No * possible!' => '"*" kullanılamaz!',
-        'No Packages for requested Framework in this Online Repository, but Packages for other Frameworks!' =>
-            'Bu Çevrimiçi Depoda İstenen versiyon için Paket bulunamadı, ama başka versiyonlar için var!',
-        'No Packages or no new Packages in selected Online Repository!' =>
-            'Seçili Çevrimiçi Depoda hiç Paket yok veya hiç yeni Paket yok!',
-        'No Permission' => 'İzin yok',
-        'No means, send agent and customer notifications on changes.' => 'Hayır, değişikliklerde aracılara ve müşterilere bildirim gönder demektir.',
-        'No time settings.' => 'Zaman ayarı yok.',
-        'Node-Address' => 'Düğüm Adresi',
-        'Node-Name' => 'Düğüm Adı',
-        'Note Text' => 'Not Metni',
-        'Notification (Customer)' => 'Bildirim (müşteri)',
-        'Notifications' => 'Bildirimler',
-        'OTRS DB Password' => 'OTRS Veritabanı Parolası',
-        'OTRS sends an notification email to the customer if the ticket is moved.' =>
-            'Eğer bilet taşınırsa OTRS müşteriye bir bildirim e-postası gönderir.',
-        'OTRS sends an notification email to the customer if the ticket owner has changed.' =>
-            'Eğer bilet sahibi değişirse OTRS müşteriye bir bildirim e-postası gönderir.',
-        'OTRS sends an notification email to the customer if the ticket state has changed.' =>
-            'Eğer bilet durumu değişirse OTRS müşteriye bir bildirim e-postası gönderir.',
-        'Of couse this feature will take some system performance it self!' =>
-            'Elbette bu özellik sistem performansından biraz alır.',
-        'Options of the current customer user data (e. g. &lt;OTRS_CUSTOMER_DATA_USERFIRSTNAME&gt;)' =>
-            'Muşteri kullanıcı verisi seçenekleri (örn. &lt;OTRS_CUSTOMER_DATA_USERFIRSTNAME&gt;).',
-        'Options of the current customer user data (e. g. <OTRS_CUSTOMER_DATA_UserFirstname>)' =>
-            'Mevcut müşteri kullanıcı verileri (örn. <OTRS_CUSTOMER_DATA_UserFirstname>) seçenekleri',
-        'Options of the current customer user data (e. g. <OTRS_CUSTOMER_DATA_UserFirstname>).' =>
-            'Mevcut müşteri kullanıcı verisi seçenekleri (örneğin <OTRS_CUSTOMER_DATA_UserFirstname>).',
-        'Options of the current user who requested this action (e. g. &lt;OTRS_CURRENT_USERFIRSTNAME&gt;)' =>
-            'Bu eylemi isteyen kulanıcının (örn. &lt;OTRS_CURRENT_USERFIRSTNAME&gt;) seçenekleri',
-        'Options of the current user who requested this action (e. g. <OTRS_CURRENT_UserFirstname>)' =>
-            'Bu eylem için istekte bulunan kullanıcının seçenekleri (örn. <OTRS_CURRENT_UserFirstname>)',
-        'Options of the current user who requested this action (e. g. <OTRS_CURRENT_UserFirstname>).' =>
-            'Bu eyleme isteyen etkin kullanıcı seçenekleri (örneğin <OTRS_CURRENT_UserFirstname).',
-        'Options of the ticket data (e. g. &lt;OTRS_TICKET_Number&gt;, &lt;OTRS_TICKET_ID&gt;, &lt;OTRS_TICKET_Queue&gt;, &lt;OTRS_TICKET_State&gt;)' =>
-            'Bilet verisinin seçenekleri (örn. &lt;OTRS_TICKET_Number&gt;, &lt;OTRS_TICKET_ID&gt;, &lt;OTRS_TICKET_Queue&gt;, &lt;OTRS_TICKET_State&gt;)',
-        'Options of the ticket data (e. g. <OTRS_TICKET_Number>, <OTRS_TICKET_ID>, <OTRS_TICKET_Queue>, <OTRS_TICKET_State>)' =>
-            'Bilet verisi seçenekleri (örn. <OTRS_TICKET_Number>, <OTRS_TICKET_ID>, <OTRS_TICKET_Queue>, <OTRS_TICKET_State>)',
-        'Options of the ticket data (e. g. <OTRS_TICKET_TicketNumber>, <OTRS_TICKET_ID>, <OTRS_TICKET_Queue>, <OTRS_TICKET_State>)' =>
-            'Bilet verisi seçenekleri (örn. <OTRS_TICKET_TicketNumber>, <OTRS_TICKET_ID>, <OTRS_TICKET_Queue>, <OTRS_TICKET_State>)',
-        'Options of the ticket data (e. g. <OTRS_TICKET_TicketNumber>, <OTRS_TICKET_TicketID>, <OTRS_TICKET_Queue>, <OTRS_TICKET_State>).' =>
-            'Bilet verisi seçenekleri (örneğin <OTRS_TICKET_TicketNumber>, <OTRS_TICKET_TicketID>, <OTRS_TICKET_Queue>, <OTRS_TICKET_State>).',
-        'Other Options' => 'Diğer Seçenekler',
-        'POP3 Account Management' => 'POP3 Hesap Yönetimi',
-        'Package' => 'Paket',
-        'Package not correctly deployed! You should reinstall the Package again!' =>
-            'Paket doğru şekilde yüklenmedi! Paketi yeniden yükleyin!',
-        'Package verification failed!' => 'paket doğrulaması hatalı',
-        'Param 1' => 'Param 1',
-        'Param 2' => 'Param 2',
-        'Param 3' => 'Param 3',
-        'Param 4' => 'Param 4',
-        'Param 5' => 'Param 5',
-        'Param 6' => 'Param 6',
-        'Parent-Object' => 'Ebeveyn Nesne',
-        'Password is already in use! Please use an other password!' => 'Parola kullanımda! Lütfen başka bir parola seçiniz!',
-        'Password is already used! Please use an other password!' => 'Parola  daha önce kullanıldı! Lütfen başka bir parola seçiniz!',
-        'Password is required.' => 'Parola gerekli',
-        'Passwords doesn\'t match! Please try it again!' => 'Parolalar uyuşmuyor! Lütfen tekrar deneyin!',
-        'Pending Times' => 'Bekleme Zamanları',
-        'Pending messages' => 'Bekleyen mesajlar',
-        'Pending type' => 'Bekleme tipi',
-        'Permission settings. You can select one or more groups to make the configurated stat visible for different agents.' =>
-            'İzin ayarları. Ayarlanan istatistiğin farklı aracılara görünür olması için bir veya daha fazla grup seçebilirsiniz.',
-        'Permissions to change the ticket owner in this group/queue.' => 'Bu grupta/kuyrukta bilet sahibini değiştirme izni.',
-        'PhoneView' => 'Telefon Görünüşü',
-        'Please contact your admin' => 'Lütfen yöneticiyle iletişime geçin',
-        'Please enter a search term to look for customer companies.' => 'Müşteri şirketlerini aramak için bir arama terimi giriniz.',
-        'Please supply a' => 'Lütfen belirleyin bir',
-        'Please supply a first name' => 'Lütfen bir isim belirleyiniz',
-        'Please supply a last name' => 'Lütfen bir soyadı belirleyiniz',
-        'Print this ticket!' => 'Bu bileti yazdır!',
-        'Prio' => 'Öncelik',
-        'Process-Path' => 'İşlem Yolu',
-        'Product' => 'Ürün',
-        'Queue <-> Auto Responses Management' => 'Kuyruk <-> Otomatik Cevap Yönetimi',
-        'Queue Management' => 'Kuyruk Yönetimi',
-        'Queues <-> Auto Responses' => 'Kuyruk <-> Otomatik Cevaplar',
-        'Realname' => 'Gerçek ad',
-        'Rebuild' => 'Yeniden İnşa Et',
-        'Recipients' => 'Alıcılar',
-        'Registration' => 'Kayıt',
-        'Reminder' => 'Hatırlatıcı',
-        'Reminder messages' => 'Hatırlatıcı mesajlar',
-        'Reporter' => 'Bildiren',
-        'Required Field' => 'Gerekli alan',
-        'Response Management' => 'Cevap Yönetimi',
-        'Responses' => 'Cevaplar',
-        'Responses <-> Attachments Management' => 'Cevaplar <-> Ekler Yönetimi',
-        'Responses <-> Queue Management' => 'Cevaplar <-> Kuyruk Yönetimi',
-        'Responses <-> Queues' => 'Cevaplar <-> Kuyruklar',
-        'Return to the compose screen' => 'Oluşturma ekranına geri dön',
-        'Role' => 'Rol',
-        'Roles <-> Groups Management' => 'Roller <-> Gruplar Yönetimi',
-        'Roles <-> Users' => 'Roller <-> Kullanıcılar',
-        'Roles <-> Users Management' => 'Roller <-> Kullanıcılar Yönetimi',
-        'Save Job as?' => 'İşi ne olarak kaydedeyim?',
-        'Save Search-Profile as Template?' => 'Arama Profili Şablon olarak kaydedilsin mi?',
-        'Schedule' => 'TAKVİM',
-        'Search Result' => 'Arama Sonuç',
-        'Search Result:' => 'Sonuç Ara:',
-        'Search for' => 'Ara',
-        'Select Box' => 'Seçim Kutusu',
-        'Select Box Result' => 'Seçin Kutusu Sonucu',
-        'Select Source (for add)' => 'Kaynağı Seçin (eklemek için)',
-        'Select the customeruser:service relations.' => 'Müşterikullanıcı:servis ilişkilerini belirle.',
-        'Select the element, which will be used at the X-axis' => 'X-ekseni olarak kullanılacak öğeyi seçin.',
-        'Select the restrictions to characterise the stat' => 'İstatistiği kişiselleştirmek için kısıtlamaları seçin',
-        'Select the role:user relations.' => 'Rol:kullanıcı ilişkilerini seçin.',
-        'Select the user:group permissions.' => 'Kullanıcı:grup izinlerini değiştir.',
-        'Select your QueueView refresh time.' => 'Kuyruk Görünümü tazeleme sıklığını seçin.',
-        'Select your default spelling dictionary.' => 'Öntanımlı sözdizim sözlüğünüzü seçin.',
-        'Select your frontend Charset.' => 'Önyüz Karakter Kümesini seçin.',
-        'Select your frontend QueueView.' => 'Önyüz Kuyruk Görünümünüzü seçin.',
-        'Select your frontend language.' => 'Önyüz Dilini seçin.',
-        'Select your screen after creating a new ticket.' => 'Yeni bir bilet oluşturduktan sonra görmek istediğiniz ekranı seçin.',
-        'Selection needed' => 'Seçim gerekli',
-        'Send Notification' => 'Bildirim Gönder',
-        'Send me a notification if a customer sends a follow up and I\'m the owner of this ticket.' =>
-            'Eğer bu biletin sahibi bensem ve bir müşteri takip eden mesaj gönderirse bana bildirim gönder.',
-        'Send no notifications' => 'Bildirim gönderme',
-        'Sent new password to: %s' => 'yeni parola %s e gönderildi',
-        'Sent password token to: %s' => 'parola simgesi %s e gönderildi',
-        'Service-Name' => 'Servis Adı',
-        'Sessions' => 'Oturumlar',
-        'Set customer user and customer id of a ticket' => 'Bir biletin müşteri kullanıcısını ve müşteri kimliğini belirle',
-        'Set this ticket to pending!' => 'Bu bileti beklemeye al!',
-        'Show' => 'Göster',
-        'Show  article' => 'Makaleyi göster',
-        'Shows the ticket history!' => 'Bilet geçmişini gösterir!',
-        'Site' => 'Site',
-        'Solution' => 'Çözüm',
-        'Sort by' => 'Şuna göre sırala:',
-        'Source' => 'Kaynak',
-        'Spell Check' => 'Sözdizim Kontrolü',
-        'State Type' => 'Durum Tipi',
-        'Static-File' => 'Sabit Dosya',
-        'Stats-Area' => 'İstatistikler Alanı',
-        'Sub-Queue of' => 'Şunun Alt Kuyruğu:',
-        'Sub-Service of' => 'Şunun Alt Servisi:',
-        'Subscribe' => 'Abone ol',
-        'System State Management' => 'Sistem Durumu Yönetimi',
-        'System Status' => 'Sistem Durumu',
-        'Systemaddress' => 'Sistem adresi',
-        'Take care that you also updated the default states in you Kernel/Config.pm!' =>
-            'Kernel/Config.pm içindeki öntanımlı durumları da değiştirdiğinizi unutmayın',
-        'The message being composed has been closed.  Exiting.' => 'Oluşturulan mesaj kapatıldı. Çıkılıyor.',
-        'These values are read-only.' => 'Bu değerler salt-okunurdur.',
-        'These values are required.' => 'Bu değerler gereklidir.',
-        'This account exists' => 'Bu hesap zaten var',
-        'This account exists.' => 'bu hesap mevcut',
-        'This is useful if you want that no one can get the result of the stat or the stat isn\'t ready configurated.' =>
-            'Eğer istatistik sonuçlarının kimseye açık olmamasını veya istatistiğin yapılandırılmamış olmamasını istiyorsanız bu seçenek kullanışlıdır.',
-        'This window must be called from compose window' => 'Bu pencere \'yeni mesaj\' penceresinden açılmalıdır',
-        'Ticket Lock' => 'Bilet Kilidi',
-        'Ticket Number Generator' => 'Bilet Numarası Üreteci',
-        'Ticket Search' => 'Bilet ara',
-        'Ticket Status View' => 'Bilet Durumu Görünümü',
-        'Ticket escalation!' => 'Bilet Yükseltme!',
-        'Ticket locked!' => 'Bilet kilitlendi!',
-        'Ticket owner options (e. g. &lt;OTRS_OWNER_USERFIRSTNAME&gt;)' =>
-            'Bilet sahibi seçenekleri (örn. &lt;OTRS_OWNER_USERFIRSTNAME&gt;)',
-        'Ticket owner options (e. g. <OTRS_OWNER_UserFirstname>)' => 'Bilet sahibi seçenekleri (örn. <OTRS_OWNER_UserFirstname>)',
-        'Ticket owner options (e. g. <OTRS_OWNER_UserFirstname>).' => 'Bilet sahibi seçenekleri (örneğin <OTRS_OWNER_UserFirstname>).',
-        'Ticket responsible options (e. g. <OTRS_RESPONSIBLE_UserFirstname>).' =>
-            'Bilet sorumlusu seçenekleri (örneğin <OTRS_RESPONSIBLE_UserFirstname>).',
-        'Ticket selected for bulk action!' => 'Bilet toplu işlem için seçildi',
-        'Ticket unlock!' => 'Biletin kilidi açıldı!',
-        'Ticket-Area' => 'Bilet Alanı',
-        'TicketFreeFields' => 'BiletSerbestAlanları',
-        'TicketFreeText' => 'BiletSerbestMetni',
-        'TicketZoom' => 'Bilet Detayları',
-        'Tickets available' => 'Uygun biletler',
-        'Tickets shown' => 'Gösterilen biletler',
-        'Tickets which need to be answered!' => 'cevap bekleyen biletler',
-        'Timeover' => 'Süre bitimi',
-        'Times' => 'Zaman',
-        'Title of the stat.' => 'İstatistiğin başlığı.',
-        'To customer' => 'Müşteriye',
-        'To get the article attribute (e. g. (<OTRS_CUSTOMER_From>, <OTRS_CUSTOMER_To>, <OTRS_CUSTOMER_Cc>, <OTRS_CUSTOMER_Subject> and <OTRS_CUSTOMER_Body>).' =>
-            'Yazı niteliklerini al (örneğin (<OTRS_CUSTOMER_From>, <OTRS_CUSTOMER_To>, <OTRS_CUSTOMER_Cc>, <OTRS_CUSTOMER_Subject> ve <OTRS_CUSTOMER_Body>).',
-        'To: (%s) replaced with database email!' => 'Kime: (%s) veritabanı elektronik postasıyla değiştirildi!',
-        'Top of Page' => 'Yukarı',
-        'Total hits' => 'Toplam isabet',
-        'U' => 'U',
-        'URL' => 'Adres (URL)',
-        'Unable to parse Online Repository index document!' => 'Çevrimiçi Depo endeks belgesi ayrıştırılamadı!',
-        'Uniq' => 'Tekil',
-        'Unlock Tickets' => 'Biletlerin kilidini aç',
-        'Unlock to give it back to the queue!' => 'Kilidini kaldır ve kuyruğa geri ver!',
-        'Unsubscribe' => 'Abonelikten çık',
-        'Use utf-8 it your database supports it!' => 'Eğer veritabanınız destekliyorsa utf-8 kullanın!',
-        'Useable options' => 'Kullanılabilir seçenekler',
-        'User Management' => 'Kullanıcı Yönetimi',
-        'User will be needed to handle tickets.' => 'Biletlerle ilgilenmek için kullanıcı gerekir.',
-        'User-Name' => 'Kullanıcı Adı',
-        'User-Number' => 'Kullanıcı Numarası',
-        'Users' => 'Kullanıcılar',
-        'Users <-> Groups' => 'Kullanıcılar <-> Gruplar',
-        'Users <-> Groups Management' => 'Kullanıcılar <-> Gruplar Yönetimi',
-        'Warning! This tickets will be removed from the database! This tickets are lost!' =>
-            'Uyarı! Bu biletler veritabanından silinecek! Geri dönüşü yoktur!',
-        'Web-Installer' => 'Webden Yükleme',
-        'Welcome to OTRS' => 'OTRS\'ye hoşgeldiniz',
-        'With an invalid stat it isn\'t feasible to generate a stat.' => 'Geçersiz bir istatistikle, istatistik oluşturmak mümkün olmaz.',
-        'With the input and select fields you can configurate the stat at your needs. Which elements of a stat you can edit depends on your stats administrator who configurated the stat.' =>
-            'Giriş ve seçme alanlarıyla istatistiği istediğiniz gibi ayarlayabilirsiniz. İstatistiğin hangi öğelerini değiştrebileceğiniz istatistiği ayarlayan istatistik yöneticisine bağlıdır',
-        'Workflow Groups' => 'Çalışma akışı Grupları',
-        'Yes means, send no agent and customer notifications on changes.' =>
-            'Evet, değişiklik durumunda aracılar ve müşterilere bildirim gönderme demektir.',
-        'Yes, save it with name' => 'Evet, şu adla kaydet',
-        'You got new message!' => 'Yeni mesajınız var!',
-        'You have to select two or more attributes from the select field!' =>
-            'Seçim alanından iki veya daha fazla nitelik seçmelisiniz!',
-        'You need a email address (e. g. customer@example.com) in To:!' =>
-            'Kime kısmında bir e-posta adresi (örn. musteri@ornek.com) olmalıdır!',
-        'You need min. one selected Ticket!' => 'En az bir Bilet seçili olmalıdır!',
-        'You need to account time!' => 'Zamanı hesaba katmalısınız!',
-        'You need to activate %s first to use it!' => 'Kullanabilmek için %s önce etkinleştirin!',
-        'You use the DELETE option! Take care, all deleted Tickets are lost!!!' =>
-            'SİL seçeneğini kullandınız! Silinen Biletlerin kurtarılamayacağını unutmayın!!!',
-        'Your email address is new' => 'E-posta adresiniz yeni',
-        'Your email with ticket number "<OTRS_TICKET>" is bounced to "<OTRS_BOUNCE_TO>". Contact this address for further information.' =>
-            '"<OTRS_TICKET>" bilet numaralı e-postanız "<OTRS_BOUNCE_TO>" adresine gönderildi. Daha fazla bilgi için bu adresle bağlantıya geçin.',
-        'Your language' => 'Diliniz',
-        'Your own Ticket' => 'Kendi Biletiniz',
-        'before' => 'önce',
-        'customer realname' => 'müşterinin gerçek adı',
-        'default \'hot\'' => 'varsayılan \'host\'',
-        'down' => 'aşağı',
-        'false' => 'false',
-        'for agent firstname' => 'aracı adı için',
-        'for agent lastname' => 'aracı soyadı için',
-        'for agent login' => 'aracı oturumu için',
-        'for agent user id' => 'aracı kullanıcı kimliği için',
-        'kill all sessions' => 'tüm oturumları sonlandır',
-        'kill session' => 'oturumu öldür',
-        'modified' => 'değiştirilmiş',
-        'new ticket' => 'yeni bilet',
-        'next step' => 'sonraki adım',
-        'not rated' => 'puan verilmedi',
-        'not verified' => 'onaylanmadı',
-        'read' => 'okunmuş',
-        'send' => 'gönder',
-        'settings' => 'ayarlar',
-        'sort downward' => 'aşağıya doğru sırala',
-        'sort upward' => 'yukarı doğru sırala',
-        'tmp_lock' => 'geçici kilit',
-        'to get the first 20 character of the subject' => 'konunun ilk 20 karakterini almak için',
-        'to get the first 5 lines of the email' => 'e-postanın ilk beş satırını almak için',
-        'to get the from line of the email' => 'e-postanın \'kime\' alanını almak için',
-        'to get the realname of the sender (if given)' => 'göndericinin gerçek adını (eğer verilmişse) almak için',
-        'unknown' => 'bilinmiyor',
-        'unread' => 'okunmadı',
-        'up' => 'yukarı',
-        'verified' => 'onaylandı',
-        'x' => 'x',
-        'your MySQL DB should have a root password! Default is empty!' =>
-            'MySQL veritabanınızın root kullanıcısının bir parolası olmalıdır. Öntanımlı olarak boştur!',
+        'Your service selection of your favorite services. You also get notified about those services via email if enabled.' =>
+            '',
 
     };
     # $$STOP$$

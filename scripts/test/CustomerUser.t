@@ -6,16 +6,23 @@
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
+
 use strict;
 use warnings;
+use utf8;
+
 use vars (qw($Self));
 
-use Kernel::Config;
+use Kernel::System::VariableCheck qw(:all);
+
+# get needed objects
+my $ConfigObject       = $Kernel::OM->Get('Kernel::Config');
+my $CacheObject        = $Kernel::OM->Get('Kernel::System::Cache');
+my $CustomerUserObject = $Kernel::OM->Get('Kernel::System::CustomerUser');
+my $DBObject           = $Kernel::OM->Get('Kernel::System::DB');
+
 use Kernel::System::CustomerUser;
 use Kernel::System::CustomerAuth;
-
-# create local objects
-my $ConfigObject = Kernel::Config->new();
 
 # add three users
 $ConfigObject->Set(
@@ -23,23 +30,13 @@ $ConfigObject->Set(
     Value => 0,
 );
 
-my $DatabaseCaseSensitive                = $Self->{DBObject}->{Backend}->{'DB::CaseSensitive'};
+my $DatabaseCaseSensitive                = $DBObject->{Backend}->{'DB::CaseSensitive'};
 my $CustomerDatabaseCaseSensitiveDefault = $ConfigObject->{CustomerUser}->{Params}->{CaseSensitive};
-
-my $CustomerUserObject = Kernel::System::CustomerUser->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-
-my $CacheObject = Kernel::System::Cache->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
 
 my $UserID = '';
 for my $Key ( 1 .. 3, 'ä', 'カス' ) {
+
     my $UserRand = 'Example-Customer-User' . $Key . int( rand(1000000) );
-    $Self->{EncodeObject}->EncodeInput( \$UserRand );
 
     $UserID = $UserRand;
     my $UserID = $CustomerUserObject->CustomerUserAdd(
@@ -175,10 +172,10 @@ for my $Key ( 1 .. 3, 'ä', 'カス' ) {
 
     # START CaseSensitive
     $ConfigObject->{CustomerUser}->{Params}->{CaseSensitive} = 1;
-    $CustomerUserObject = Kernel::System::CustomerUser->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
-    );
+
+    $Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::CustomerUser'] );
+    $CustomerUserObject = $Kernel::OM->Get('Kernel::System::CustomerUser');
+
     $CacheObject->CleanUp();
 
     # Customer Search
@@ -224,10 +221,10 @@ for my $Key ( 1 .. 3, 'ä', 'カス' ) {
     }
 
     $ConfigObject->{CustomerUser}->{Params}->{CaseSensitive} = 0;
-    $CustomerUserObject = Kernel::System::CustomerUser->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
-    );
+
+    $Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::CustomerUser'] );
+    $CustomerUserObject = $Kernel::OM->Get('Kernel::System::CustomerUser');
+
     $CacheObject->CleanUp();
 
     # Customer Search
@@ -252,8 +249,7 @@ for my $Key ( 1 .. 3, 'ä', 'カス' ) {
         "CustomerIDList() - no SearchTerm - $UserID (CaseSensitive = 0)",
     );
 
-    $ConfigObject->{CustomerUser}->{Params}->{CaseSensitive}
-        = $CustomerDatabaseCaseSensitiveDefault;
+    $ConfigObject->{CustomerUser}->{Params}->{CaseSensitive} = $CustomerDatabaseCaseSensitiveDefault;
 
     # END CaseSensitive
 
@@ -492,28 +488,32 @@ for my $Key ( 1 .. 3, 'ä', 'カス' ) {
     );
 
     # check password support
-    for my $Config (qw( md5 crypt plain sha1 sha2 )) {
+    for my $Config (qw( plain crypt apr1 md5 sha1 sha2 bcrypt )) {
+
         $ConfigObject->Set(
             Key   => 'Customer::AuthModule::DB::CryptType',
             Value => $Config,
         );
-        my $CustomerAuth = Kernel::System::CustomerAuth->new(
-            %{$Self},
-            ConfigObject => $ConfigObject,
-        );
+
+        $Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::CustomerAuth'] );
+        my $CustomerAuth = $Kernel::OM->Get('Kernel::System::CustomerAuth');
 
         for my $Password (qw(some_pass someカス someäöü)) {
-            $Self->{EncodeObject}->EncodeInput( \$Password );
+
             my $Set = $CustomerUserObject->SetPassword(
                 UserLogin => $UserID,
                 PW        => $Password,
             );
+
             $Self->True(
                 $Set,
                 "SetPassword() - $Config - $UserID - $Password",
             );
 
-            my $Ok = $CustomerAuth->Auth( User => $UserID, Pw => $Password );
+            my $Ok = $CustomerAuth->Auth(
+                User => $UserID,
+                Pw   => $Password
+            );
             $Self->True(
                 $Ok,
                 "Auth() - $Config - $UserID - $Password",

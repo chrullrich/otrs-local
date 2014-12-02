@@ -10,20 +10,14 @@
 use strict;
 use warnings;
 use utf8;
-use CGI;
-use vars (qw($Self));
 
-use Kernel::System::DynamicField::Backend;
-use Kernel::System::UnitTest::Helper;
+use vars (qw($Self));
 
 use Kernel::System::VariableCheck qw(:all);
 
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %$Self,
-    UnitTestObject => $Self,
-);
-
-my $DFBackendObject = Kernel::System::DynamicField::Backend->new( %{$Self} );
+# get needed objects
+my $HelperObject    = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $DFBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
 
 my $UserID = 1;
 
@@ -756,7 +750,8 @@ my @Tests = (
         Config => {
             DynamicFieldConfig => $DynamicFieldConfigs{DateTime},
             Value1             => '2013-08-21 16:45:00',
-            Value2             => '2013-08-21 16:45:01',,
+            Value2             => '2013-08-21 16:45:01',
+            ,
         },
         Success => 1,
     },
@@ -812,7 +807,8 @@ my @Tests = (
         Config => {
             DynamicFieldConfig => $DynamicFieldConfigs{Date},
             Value1             => '2013-08-21 00:00:00',
-            Value2             => '2013-08-22 00:00:00',,
+            Value2             => '2013-08-22 00:00:00',
+            ,
         },
         Success => 1,
     },

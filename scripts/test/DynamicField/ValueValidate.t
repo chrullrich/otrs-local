@@ -10,17 +10,13 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
-use Kernel::System::DynamicField::Backend;
-use Kernel::System::UnitTest::Helper;
-
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %$Self,
-    UnitTestObject => $Self,
-);
-
-my $DFBackendObject = Kernel::System::DynamicField::Backend->new( %{$Self} );
+# get needed objects
+my $HelperObject    = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $DFBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
+my $TimeObject      = $Kernel::OM->Get('Kernel::System::Time');
 
 my $UserID = 1;
 
@@ -38,6 +34,32 @@ my %DynamicFieldConfigs = (
         Config        => {
             DefaultValue => '',
             Link         => '',
+        },
+        ValidID    => 1,
+        CreateTime => '2011-02-08 15:08:00',
+        ChangeTime => '2011-06-11 17:22:00',
+    },
+    TextRegexA => {
+        ID            => 123,
+        InternalField => 0,
+        Name          => 'TextField',
+        Label         => 'TextField',
+        FieldOrder    => 123,
+        FieldType     => 'Text',
+        ObjectType    => 'Ticket',
+        Config        => {
+            DefaultValue => '',
+            Link         => '',
+            RegExList    => [
+                {
+                    Value        => '^[0-9]+$',
+                    ErrorMessage => 'number',
+                },
+                {
+                    Value        => '^[0-9]{5}$',
+                    ErrorMessage => 'number5',
+                },
+            ],
         },
         ValidID    => 1,
         CreateTime => '2011-02-08 15:08:00',
@@ -137,6 +159,46 @@ my %DynamicFieldConfigs = (
         CreateTime => '2011-02-08 15:08:00',
         ChangeTime => '2011-06-11 17:22:00',
     },
+    DateTimeOnlyPast => {
+        ID            => 123,
+        InternalField => 0,
+        Name          => 'DateTimeField',
+        Label         => 'DateTimeField',
+        FieldOrder    => 123,
+        FieldType     => 'DateTime',
+        ObjectType    => 'Ticket',
+        Config        => {
+            DefaultValue    => '',
+            Link            => '',
+            YearsPeriod     => '',
+            YearsInFuture   => '',
+            YearsInPast     => '',
+            DateRestriction => 'DisableFutureDates',
+        },
+        ValidID    => 1,
+        CreateTime => '2011-02-08 15:08:00',
+        ChangeTime => '2011-06-11 17:22:00',
+    },
+    DateTimeOnlyFuture => {
+        ID            => 123,
+        InternalField => 0,
+        Name          => 'DateTimeField',
+        Label         => 'DateTimeField',
+        FieldOrder    => 123,
+        FieldType     => 'DateTime',
+        ObjectType    => 'Ticket',
+        Config        => {
+            DefaultValue    => '',
+            Link            => '',
+            YearsPeriod     => '',
+            YearsInFuture   => '',
+            YearsInPast     => '',
+            DateRestriction => 'DisablePastDates',
+        },
+        ValidID    => 1,
+        CreateTime => '2011-02-08 15:08:00',
+        ChangeTime => '2011-06-11 17:22:00',
+    },
     Date => {
         ID            => 123,
         InternalField => 0,
@@ -151,6 +213,46 @@ my %DynamicFieldConfigs = (
             YearsPeriod   => '',
             YearsInFuture => '',
             YearsInPast   => '',
+        },
+        ValidID    => 1,
+        CreateTime => '2011-02-08 15:08:00',
+        ChangeTime => '2011-06-11 17:22:00',
+    },
+    DateOnlyPast => {
+        ID            => 123,
+        InternalField => 0,
+        Name          => 'DateField',
+        Label         => 'DateField',
+        FieldOrder    => 123,
+        FieldType     => 'Date',
+        ObjectType    => 'Ticket',
+        Config        => {
+            DefaultValue    => '',
+            Link            => '',
+            YearsPeriod     => '',
+            YearsInFuture   => '',
+            YearsInPast     => '',
+            DateRestriction => 'DisableFutureDates',
+        },
+        ValidID    => 1,
+        CreateTime => '2011-02-08 15:08:00',
+        ChangeTime => '2011-06-11 17:22:00',
+    },
+    DateOnlyFuture => {
+        ID            => 123,
+        InternalField => 0,
+        Name          => 'DateField',
+        Label         => 'DateField',
+        FieldOrder    => 123,
+        FieldType     => 'Date',
+        ObjectType    => 'Ticket',
+        Config        => {
+            DefaultValue    => '',
+            Link            => '',
+            YearsPeriod     => '',
+            YearsInFuture   => '',
+            YearsInPast     => '',
+            DateRestriction => 'DisablePastDates',
         },
         ValidID    => 1,
         CreateTime => '2011-02-08 15:08:00',
@@ -454,6 +556,148 @@ my @Tests = (
         },
         Success => 0,
     },
+    {
+        Name =>
+            'Incorrect future date for datetime field which only allow old dates (search value)',
+        Config => {
+            DynamicFieldConfig => $DynamicFieldConfigs{DateTimeOnlyPast},
+            Value              => $TimeObject->SystemTime2TimeStamp(
+                SystemTime => $TimeObject->SystemTime() + 8000,
+            ),
+            UserID => $UserID,
+        },
+        Success => 0,
+    },
+    {
+        Name   => 'Correct old date for datetime field which only allow old dates (search value)',
+        Config => {
+            DynamicFieldConfig => $DynamicFieldConfigs{DateTimeOnlyPast},
+            Value              => $TimeObject->SystemTime2TimeStamp(
+                SystemTime => $TimeObject->SystemTime() - 8000,
+            ),
+            UserID => $UserID,
+        },
+        Success => 1,
+    },
+    {
+        Name =>
+            'Correct future date for datetime field which only allow future dates (search value)',
+        Config => {
+            DynamicFieldConfig => $DynamicFieldConfigs{DateTimeOnlyFuture},
+            Value              => $TimeObject->SystemTime2TimeStamp(
+                SystemTime => $TimeObject->SystemTime() + 8000,
+            ),
+            UserID => $UserID,
+        },
+        Success => 1,
+    },
+    {
+        Name =>
+            'Incorrect old date for datetime field which only allow future dates (search value)',
+        Config => {
+            DynamicFieldConfig => $DynamicFieldConfigs{DateTimeOnlyFuture},
+            Value              => $TimeObject->SystemTime2TimeStamp(
+                SystemTime => $TimeObject->SystemTime() - 8000,
+            ),
+            UserID => $UserID,
+        },
+        Success => 0,
+    },
+    {
+        Name   => 'Incorrect future date for date field which only allow old dates (search value)',
+        Config => {
+            DynamicFieldConfig => $DynamicFieldConfigs{DateOnlyPast},
+            Value              => (
+                split(
+                    /\s/,
+                    $TimeObject->SystemTime2TimeStamp(
+                        SystemTime => $TimeObject->SystemTime() + 259200,
+                        )
+                    )
+                )[0]
+                . " 00:00:00",
+            UserID => $UserID,
+        },
+        Success => 0,
+    },
+    {
+        Name   => 'Correct old date for date field which only allow old dates (search value)',
+        Config => {
+            DynamicFieldConfig => $DynamicFieldConfigs{DateOnlyPast},
+            Value              => (
+                split(
+                    /\s/,
+                    $TimeObject->SystemTime2TimeStamp(
+                        SystemTime => $TimeObject->SystemTime() - 259200,
+                        )
+                    )
+                )[0]
+                . " 00:00:00",
+            UserID => $UserID,
+        },
+        Success => 1,
+    },
+    {
+        Name   => 'Correct future date for date field which only allow future dates (search value)',
+        Config => {
+            DynamicFieldConfig => $DynamicFieldConfigs{DateOnlyFuture},
+            Value              => (
+                split(
+                    /\s/,
+                    $TimeObject->SystemTime2TimeStamp(
+                        SystemTime => $TimeObject->SystemTime() + 259200,
+                        )
+                    )
+                )[0]
+                . " 00:00:00",
+            UserID => $UserID,
+        },
+        Success => 1,
+    },
+    {
+        Name   => 'Incorrect old date for date field which only allow future dates (search value)',
+        Config => {
+            DynamicFieldConfig => $DynamicFieldConfigs{DateOnlyFuture},
+            Value              => (
+                split(
+                    /\s/,
+                    $TimeObject->SystemTime2TimeStamp(
+                        SystemTime => $TimeObject->SystemTime() - 259200,
+                        )
+                    )
+                )[0]
+                . " 00:00:00",
+            UserID => $UserID,
+        },
+        Success => 0,
+    },
+    {
+        Name   => 'Text with regular expression (numbers only) filled with numbers and text',
+        Config => {
+            DynamicFieldConfig => $DynamicFieldConfigs{TextRegexA},
+            Value              => 'a1234',
+            UserID             => $UserID,
+        },
+        Success => 0,
+    },
+    {
+        Name   => 'Text with regular expression (numbers only) filled with 4 numbers',
+        Config => {
+            DynamicFieldConfig => $DynamicFieldConfigs{TextRegexA},
+            Value              => '12345',
+            UserID             => $UserID,
+        },
+        Success => 1,
+    },
+    {
+        Name   => 'Text with regular expression (numbers only) filled with 6 numbers',
+        Config => {
+            DynamicFieldConfig => $DynamicFieldConfigs{TextRegexA},
+            Value              => '123456',
+            UserID             => $UserID,
+        },
+        Success => 0,
+    },
 );
 
 # UTC tests
@@ -461,7 +705,6 @@ local $ENV{TZ} = 'UTC';
 
 # execute tests
 for my $Test (@Tests) {
-
     my $Success = $DFBackendObject->ValueValidate( %{ $Test->{Config} } );
 
     if ( $Test->{Success} ) {

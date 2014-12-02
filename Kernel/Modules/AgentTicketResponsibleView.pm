@@ -131,8 +131,7 @@ sub Run {
 
         # if no filter from web request, try from user preferences
         if ( !defined $FilterValue || $FilterValue eq '' ) {
-            $FilterValue
-                = $StoredFilters->{ 'DynamicField_' . $DynamicFieldConfig->{Name} }->{Equals};
+            $FilterValue = $StoredFilters->{ 'DynamicField_' . $DynamicFieldConfig->{Name} }->{Equals};
         }
 
         next DYNAMICFIELD if !defined $FilterValue;
@@ -152,10 +151,10 @@ sub Run {
     }
     my $Output;
     if ( $Self->{Subaction} ne 'AJAXFilterUpdate' ) {
-        $Output = $Self->{LayoutObject}->Header( Refresh => $Refresh, );
+        $Output = $Self->{LayoutObject}->Header(
+            Refresh => $Refresh,
+        );
         $Output .= $Self->{LayoutObject}->NavigationBar();
-        $Self->{LayoutObject}->Print( Output => \$Output );
-        $Output = '';
     }
 
     # get locked  viewable tickets...
@@ -198,7 +197,7 @@ sub Run {
             Name   => 'Pending',
             Prio   => 1002,
             Search => {
-                StateType => [ 'pending reminder', 'pending auto' ],
+                StateType      => [ 'pending reminder', 'pending auto' ],
                 ResponsibleIDs => [ $Self->{UserID} ],
                 OrderBy        => $OrderBy,
                 SortBy         => $SortByS,
@@ -278,8 +277,9 @@ sub Run {
         }
 
         my @OriginalViewableTicketsTmp;
+        TICKETID:
         for my $TicketIDAll (@OriginalViewableTicketsAll) {
-            next if $OriginalViewableTicketsNotNew{$TicketIDAll};
+            next TICKETID if $OriginalViewableTicketsNotNew{$TicketIDAll};
             push @OriginalViewableTicketsTmp, $TicketIDAll;
         }
         @OriginalViewableTickets = @OriginalViewableTicketsTmp;
@@ -297,8 +297,9 @@ sub Run {
         }
 
         my @ViewableTicketsTmp;
+        TICKETID:
         for my $TicketIDAll (@ViewableTicketsAll) {
-            next if $ViewableTicketsNotNew{$TicketIDAll};
+            next TICKETID if $ViewableTicketsNotNew{$TicketIDAll};
             push @ViewableTicketsTmp, $TicketIDAll;
         }
         @ViewableTickets = @ViewableTicketsTmp;
@@ -434,6 +435,9 @@ sub Run {
         ColumnFilterForm    => {
             Filter => $Self->{Filter} || '',
         },
+
+        # do not print the result earlier, but return complete content
+        Output => 1,
     );
 
     $Output .= $Self->{LayoutObject}->Footer();

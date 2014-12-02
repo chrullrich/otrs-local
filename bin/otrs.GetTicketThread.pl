@@ -30,40 +30,27 @@ use lib dirname($RealBin) . '/Custom';
 
 use Getopt::Std;
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Time;
-use Kernel::System::Log;
-use Kernel::System::Main;
-use Kernel::System::DB;
-use Kernel::System::Ticket;
+use Kernel::System::ObjectManager;
 
 # get options
 my %Opts;
-getopt( 'htl', \%Opts );
+getopt( 'tl', \%Opts );
 if ( $Opts{h} || !$Opts{t} ) {
-    print
-        "otrs.GetTicketThread.pl - Prints out a ticket with all its articles.\n";
+    print "otrs.GetTicketThread.pl - Prints out a ticket with all its articles.\n";
     print "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n";
     print "usage: otrs.GetTicketThread.pl -t <TicketID> [-l article limit]\n";
     exit 1;
 }
 
-# common objects
-my %CommonObject;
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.GetTicketThread.pl',
-    %CommonObject,
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.GetTicketThread.pl',
+    },
 );
-$CommonObject{TimeObject}   = Kernel::System::Time->new(%CommonObject);
-$CommonObject{MainObject}   = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject}     = Kernel::System::DB->new(%CommonObject);
-$CommonObject{TicketObject} = Kernel::System::Ticket->new(%CommonObject);
 
 # get ticket data
-my %Ticket = $CommonObject{TicketObject}->TicketGet(
+my %Ticket = $Kernel::OM->Get('Kernel::System::Ticket')->TicketGet(
     TicketID      => $Opts{t},
     DynamicFields => 0,
 );
@@ -85,7 +72,7 @@ for my $Key (qw(TicketNumber TicketID Created Queue State Priority Lock Customer
 print STDOUT "---------------------------------------------------------------------\n";
 
 # get article index
-my @Index = $CommonObject{TicketObject}->ArticleIndex(
+my @Index = $Kernel::OM->Get('Kernel::System::Ticket')->ArticleIndex(
     TicketID => $Opts{t},
 );
 
@@ -97,7 +84,7 @@ for my $ArticleID (@Index) {
     next ARTICLEID if !$ArticleID;
 
     # get article data
-    my %Article = $CommonObject{TicketObject}->ArticleGet(
+    my %Article = $Kernel::OM->Get('Kernel::System::Ticket')->ArticleGet(
         ArticleID     => $ArticleID,
         DynamicFields => 0,
     );

@@ -30,76 +30,71 @@ use lib dirname($RealBin) . '/Custom';
 
 use Getopt::Std;
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Time;
-use Kernel::System::Log;
-use Kernel::System::Main;
-use Kernel::System::DB;
+use Kernel::System::ObjectManager;
 use Kernel::System::SupportBundleGenerator;
 
-print "otrs.SuppportBundle.pl - creates a bundle of support information\n";
-print "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n";
+sub Run {
 
-# ---
-# common objects
-# ---
-my %CommonObject = ();
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.SuppportBundle.pl',
-    %CommonObject,
-);
-$CommonObject{TimeObject} = Kernel::System::Time->new(%CommonObject);
-$CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject}   = Kernel::System::DB->new(%CommonObject);
-$CommonObject{SupportBundleGeneratorObject}
-    = Kernel::System::SupportBundleGenerator->new(%CommonObject);
-
-# get options
-my %Opts = ();
-getopt( 'ho', \%Opts );
-
-# help option
-if ( $Opts{h} ) {
-    print "Usage: otrs.SuppportBundle.pl -o <Path> (Optional)\n\n";
-    print "Examples:\n";
-    print "otrs.SuppportBundle.pl\n";
-    print "otrs.SuppportBundle.pl -o /opt/otrs\n\n";
-    exit 1;
-}
-
-my $Response = $CommonObject{SupportBundleGeneratorObject}->Generate();
-
-if ( $Response->{Success} ) {
-
-    my $FileData = $Response->{Data};
-
-    my $OutputDir = $CommonObject{ConfigObject}->Get('Home');
-    if ( $Opts{o} ) {
-        $OutputDir = $Opts{o};
-        $OutputDir =~ s{\/\z}{};
-    }
-
-    my $FileLocation = $CommonObject{MainObject}->FileWrite(
-        Location   => $OutputDir . '/' . $FileData->{Filename},
-        Content    => $FileData->{Filecontent},
-        Mode       => 'binmode',
-        Permission => '644',
+    local $Kernel::OM = $Kernel::OM = Kernel::System::ObjectManager->new(
+        'Kernel::System::Log' => {
+            LogPrefix => 'OTRS-otrs.SupportBundle.pl',
+        },
     );
 
-    if ($FileLocation) {
-        print "\nSupport Bundle saved to: $FileLocation\n";
-    }
-    else {
-        $CommonObject{LogObject}->Log(
-            Priority => 'error',
-            Message  => "Support Bundle could not be written!",
-        );
+    # Refresh common objects after a certain number of loop iterations.
+    #   This will call event handlers and clean up caches to avoid excessive mem usage.
+    my $CommonObjectRefresh = 50;
+
+    # get options
+    my %Opts;
+    getopt( 'o', \%Opts );
+    if ( $Opts{h} ) {
+        print <<EOF;
+otrs.SuppportBundle.pl - creates a bundle of support information
+Copyright (C) 2001-2014 OTRS AG, http://otrs.org/
+
+usage: otrs.SuppportBundle.pl -o <Path> (Optional)
+
+    Examples:
+    otrs.SuppportBundle.pl
+    otrs.SuppportBundle.pl -o /opt/otrs
+EOF
+        exit 1;
     }
 
-    exit;
+    my $Response = $Kernel::OM->Get('Kernel::System::SupportBundleGenerator')->Generate();
+
+    if ( $Response->{Success} ) {
+
+        my $FileData = $Response->{Data};
+
+        my $OutputDir = $Kernel::OM->Get('Kernel::Config')->Get('Home');
+        if ( $Opts{o} ) {
+            $OutputDir = $Opts{o};
+            $OutputDir =~ s{\/\z}{};
+        }
+
+        my $FileLocation = $Kernel::OM->Get('Kernel::System::Main')->FileWrite(
+            Location   => $OutputDir . '/' . $FileData->{Filename},
+            Content    => $FileData->{Filecontent},
+            Mode       => 'binmode',
+            Permission => '644',
+        );
+
+        if ($FileLocation) {
+            print "\nSupport Bundle saved to: $FileLocation\n";
+        }
+        else {
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Support Bundle could not be written!",
+            );
+        }
+
+        exit 1;
+    }
 }
 
-exit 1;
+Run();
+
+exit 0;

@@ -14,6 +14,12 @@ use warnings;
 
 use Net::LDAP;
 
+our @ObjectDependencies = (
+    'Kernel::Config',
+    'Kernel::System::Encode',
+    'Kernel::System::Log',
+);
+
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -21,22 +27,19 @@ sub new {
     my $Self = {};
     bless( $Self, $Type );
 
-    # check needed objects
-    for (qw(LogObject ConfigObject DBObject EncodeObject)) {
-        $Self->{$_} = $Param{$_} || die "No $_!";
-    }
-
     # Debug 0=off 1=on
     $Self->{Debug} = 0;
 
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
     # get ldap preferences
-    $Self->{Die} = $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::Die' . $Param{Count} );
-    if ( $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::Host' . $Param{Count} ) ) {
-        $Self->{Host}
-            = $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::Host' . $Param{Count} );
+    $Self->{Die} = $ConfigObject->Get( 'Customer::AuthModule::LDAP::Die' . $Param{Count} );
+    if ( $ConfigObject->Get( 'Customer::AuthModule::LDAP::Host' . $Param{Count} ) ) {
+        $Self->{Host} = $ConfigObject->Get( 'Customer::AuthModule::LDAP::Host' . $Param{Count} );
     }
     else {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Need Customer::AuthModule::LDAPHost$Param{Count} in Kernel/Config.pm",
         );
@@ -44,61 +47,50 @@ sub new {
     }
     if (
         defined(
-            $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::BaseDN' . $Param{Count} )
+            $ConfigObject->Get( 'Customer::AuthModule::LDAP::BaseDN' . $Param{Count} )
         )
         )
     {
-        $Self->{BaseDN}
-            = $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::BaseDN' . $Param{Count} );
+        $Self->{BaseDN} = $ConfigObject->Get( 'Customer::AuthModule::LDAP::BaseDN' . $Param{Count} );
     }
     else {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Need Customer::AuthModule::LDAPBaseDN$Param{Count} in Kernel/Config.pm",
         );
         return;
     }
-    if ( $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::UID' . $Param{Count} ) ) {
-        $Self->{UID}
-            = $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::UID' . $Param{Count} );
+    if ( $ConfigObject->Get( 'Customer::AuthModule::LDAP::UID' . $Param{Count} ) ) {
+        $Self->{UID} = $ConfigObject->Get( 'Customer::AuthModule::LDAP::UID' . $Param{Count} );
     }
     else {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Need 'Customer::AuthModule::LDAP::UID$Param{Count} in Kernel/Config.pm",
         );
         return;
     }
-    $Self->{SearchUserDN}
-        = $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::SearchUserDN' . $Param{Count} )
+    $Self->{SearchUserDN} = $ConfigObject->Get( 'Customer::AuthModule::LDAP::SearchUserDN' . $Param{Count} )
         || '';
-    $Self->{SearchUserPw}
-        = $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::SearchUserPw' . $Param{Count} )
+    $Self->{SearchUserPw} = $ConfigObject->Get( 'Customer::AuthModule::LDAP::SearchUserPw' . $Param{Count} )
         || '';
-    $Self->{GroupDN}
-        = $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::GroupDN' . $Param{Count} ) || '';
-    $Self->{AccessAttr}
-        = $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::AccessAttr' . $Param{Count} )
+    $Self->{GroupDN} = $ConfigObject->Get( 'Customer::AuthModule::LDAP::GroupDN' . $Param{Count} ) || '';
+    $Self->{AccessAttr} = $ConfigObject->Get( 'Customer::AuthModule::LDAP::AccessAttr' . $Param{Count} )
         || '';
-    $Self->{UserAttr}
-        = $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::UserAttr' . $Param{Count} )
+    $Self->{UserAttr} = $ConfigObject->Get( 'Customer::AuthModule::LDAP::UserAttr' . $Param{Count} )
         || 'DN';
-    $Self->{UserSuffix}
-        = $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::UserSuffix' . $Param{Count} )
+    $Self->{UserSuffix} = $ConfigObject->Get( 'Customer::AuthModule::LDAP::UserSuffix' . $Param{Count} )
         || '';
-    $Self->{DestCharset}
-        = $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::Charset' . $Param{Count} )
+    $Self->{DestCharset} = $ConfigObject->Get( 'Customer::AuthModule::LDAP::Charset' . $Param{Count} )
         || 'utf-8';
 
     # ldap filter always used
-    $Self->{AlwaysFilter}
-        = $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::AlwaysFilter' . $Param{Count} )
+    $Self->{AlwaysFilter} = $ConfigObject->Get( 'Customer::AuthModule::LDAP::AlwaysFilter' . $Param{Count} )
         || '';
 
     # Net::LDAP new params
-    if ( $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::Params' . $Param{Count} ) ) {
-        $Self->{Params}
-            = $Self->{ConfigObject}->Get( 'Customer::AuthModule::LDAP::Params' . $Param{Count} );
+    if ( $ConfigObject->Get( 'Customer::AuthModule::LDAP::Params' . $Param{Count} ) ) {
+        $Self->{Params} = $ConfigObject->Get( 'Customer::AuthModule::LDAP::Params' . $Param{Count} );
     }
     else {
         $Self->{Params} = {};
@@ -112,12 +104,17 @@ sub GetOption {
 
     # check needed stuff
     if ( !$Param{What} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => "Need What!" );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => "Need What!"
+        );
         return;
     }
 
     # module options
-    my %Option = ( PreAuth => 0, );
+    my %Option = (
+        PreAuth => 0,
+    );
 
     # return option
     return $Option{ $Param{What} };
@@ -129,7 +126,10 @@ sub Auth {
     # check needed stuff
     for (qw(User Pw)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -149,7 +149,7 @@ sub Auth {
 
         # just in case for debug
         if ( $Self->{Debug} > 0 ) {
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'notice',
                 Message  => "CustomerUser: ($Param{User}) added $Self->{UserSuffix} to username!",
             );
@@ -158,7 +158,7 @@ sub Auth {
 
     # just in case for debug!
     if ( $Self->{Debug} > 0 ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'notice',
             Message  => "CustomerUser: '$Param{User}' tried to authenticate with Pw: '$Param{Pw}' "
                 . "(REMOTE_ADDR: $RemoteAddr)",
@@ -171,7 +171,7 @@ sub Auth {
         if ( $Self->{Die} ) {
             die "Can't connect to $Self->{Host}: $@";
         }
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Can't connect to $Self->{Host}: $@",
         );
@@ -179,13 +179,16 @@ sub Auth {
     }
     my $Result = '';
     if ( $Self->{SearchUserDN} && $Self->{SearchUserPw} ) {
-        $Result = $LDAP->bind( dn => $Self->{SearchUserDN}, password => $Self->{SearchUserPw} );
+        $Result = $LDAP->bind(
+            dn       => $Self->{SearchUserDN},
+            password => $Self->{SearchUserPw}
+        );
     }
     else {
         $Result = $LDAP->bind();
     }
     if ( $Result->code() ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => 'First bind failed! ' . $Result->error(),
         );
@@ -213,7 +216,7 @@ sub Auth {
         attrs  => ['1.1'],
     );
     if ( $Result->code() ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => 'Search failed! ' . $Result->error(),
         );
@@ -231,7 +234,7 @@ sub Auth {
     if ( !$UserDN ) {
 
         # failed login note
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'notice',
             Message  => "CustomerUser: $Param{User} authentication failed, no LDAP entry found!"
                 . "BaseDN='$Self->{BaseDN}', Filter='$Filter', (REMOTE_ADDR: $RemoteAddr).",
@@ -254,7 +257,7 @@ sub Auth {
 
         # just in case for debug
         if ( $Self->{Debug} > 0 ) {
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'notice',
                 Message  => 'check for groupdn!',
             );
@@ -274,7 +277,7 @@ sub Auth {
             attrs  => ['1.1'],
         );
         if ( $Result2->code() ) {
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
                 Message  => "Search failed! base='$Self->{GroupDN}', filter='$Filter2', "
                     . $Result2->error(),
@@ -294,7 +297,7 @@ sub Auth {
         if ( !$GroupDN ) {
 
             # failed login note
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'notice',
                 Message =>
                     "CustomerUser: $Param{User} authentication failed, no LDAP group entry found"
@@ -309,11 +312,14 @@ sub Auth {
     }
 
     # bind with user data -> real user auth.
-    $Result = $LDAP->bind( dn => $UserDN, password => $Param{Pw} );
+    $Result = $LDAP->bind(
+        dn       => $UserDN,
+        password => $Param{Pw}
+    );
     if ( $Result->code() ) {
 
         # failed login note
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'notice',
             Message  => "CustomerUser: $Param{User} ($UserDN) authentication failed: '"
                 . $Result->error() . "' (REMOTE_ADDR: $RemoteAddr).",
@@ -326,7 +332,7 @@ sub Auth {
     }
 
     # login note
-    $Self->{LogObject}->Log(
+    $Kernel::OM->Get('Kernel::System::Log')->Log(
         Priority => 'notice',
         Message =>
             "CustomerUser: $Param{User} ($UserDN) authentication ok (REMOTE_ADDR: $RemoteAddr).",
@@ -343,13 +349,16 @@ sub _ConvertTo {
 
     return if !defined $Text;
 
+    # get encode object
+    my $EncodeObject = $Kernel::OM->Get('Kernel::System::Encode');
+
     if ( !$Charset || !$Self->{DestCharset} ) {
-        $Self->{EncodeObject}->EncodeInput( \$Text );
+        $EncodeObject->EncodeInput( \$Text );
         return $Text;
     }
 
     # convert from input charset ($Charset) to directory charset ($Self->{DestCharset})
-    return $Self->{EncodeObject}->Convert(
+    return $EncodeObject->Convert(
         Text => $Text,
         From => $Charset,
         To   => $Self->{DestCharset},

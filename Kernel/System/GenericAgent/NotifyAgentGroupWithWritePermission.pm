@@ -12,10 +12,15 @@ package Kernel::System::GenericAgent::NotifyAgentGroupWithWritePermission;
 use strict;
 use warnings;
 
-use Kernel::System::User;
-use Kernel::System::Group;
-use Kernel::System::Email;
-use Kernel::System::Queue;
+our @ObjectDependencies = (
+    'Kernel::System::Group',
+    'Kernel::System::Log',
+    'Kernel::System::Queue',
+    'Kernel::System::SLA',
+    'Kernel::System::Ticket',
+    'Kernel::System::Time',
+    'Kernel::System::User',
+);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -24,18 +29,8 @@ sub new {
     my $Self = {};
     bless( $Self, $Type );
 
-    # check needed objects
-    for (qw(DBObject ConfigObject LogObject MainObject EncodeObject TicketObject TimeObject)) {
-        $Self->{$_} = $Param{$_} || die "Got no $_!";
-    }
-
     # 0=off; 1=on;
     $Self->{Debug} = $Param{Debug} || 0;
-
-    $Self->{UserObject}  = Kernel::System::User->new( %{$Self} );
-    $Self->{GroupObject} = Kernel::System::Group->new( %{$Self} );
-    $Self->{EmailObject} = Kernel::System::Email->new( %{$Self} );
-    $Self->{QueueObject} = Kernel::System::Queue->new( %{$Self} );
 
     return $Self;
 }
@@ -43,23 +38,35 @@ sub new {
 sub Run {
     my ( $Self, %Param ) = @_;
 
+    # get ticket object
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
     # get ticket data
-    my %Ticket = $Self->{TicketObject}->TicketGet(
+    my %Ticket = $TicketObject->TicketGet(
         %Param,
         DynamicFields => 0,
     );
 
-    # check if bussines hours is, then send escalation info
-    my $CountedTime = $Self->{TimeObject}->WorkingTime(
-        StartTime => $Self->{TimeObject}->SystemTime() - ( 10 * 60 ),
-        StopTime => $Self->{TimeObject}->SystemTime(),
+    # get used calendar
+    my $Calendar = $TicketObject->TicketCalendarGet(
+        %Ticket,
+    );
+
+    # get time object
+    my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
+
+    # check if it is during business hours, then send escalation info
+    my $CountedTime = $TimeObject->WorkingTime(
+        StartTime => $TimeObject->SystemTime() - ( 10 * 60 ),
+        StopTime  => $TimeObject->SystemTime(),
+        Calendar  => $Calendar,
     );
     if ( !$CountedTime ) {
         if ( $Self->{Debug} ) {
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'debug',
                 Message =>
-                    "Send not escalation for Ticket $Ticket{TicketNumber}/$Ticket{TicketID} because currently no working hours!",
+                    "Send no escalation for Ticket $Ticket{TicketNumber}/$Ticket{TicketID} because currently no working hours!",
             );
         }
         return 1;
@@ -68,6 +75,7 @@ sub Run {
     # check if it's a escalation or escalation notification
     # check escalation times
     my $EscalationType = '';
+    TYPE:
     for my $Type (
         qw(FirstResponseTimeEscalation UpdateTimeEscalation SolutionTimeEscalation
         FirstResponseTimeNotification UpdateTimeNotification SolutionTimeNotification)
@@ -76,11 +84,11 @@ sub Run {
         if ( defined $Ticket{$Type} ) {
             if ( $Type =~ /TimeEscalation$/ ) {
                 $EscalationType = 'Escalation';
-                last;
+                last TYPE;
             }
             elsif ( $Type =~ /TimeNotification$/ ) {
                 $EscalationType = 'EscalationNotifyBefore';
-                last;
+                last TYPE;
             }
         }
     }
@@ -88,7 +96,7 @@ sub Run {
     # check
     if ( !$EscalationType ) {
         if ( $Self->{Debug} ) {
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'debug',
                 Message =>
                     "Can't send escalation for Ticket $Ticket{TicketNumber}/$Ticket{TicketID} because ticket is not escalated!",
@@ -98,31 +106,43 @@ sub Run {
     }
 
     # get rw member of group
-    my %Queue = $Self->{QueueObject}->QueueGet(
+    my %Queue = $Kernel::OM->Get('Kernel::System::Queue')->QueueGet(
         ID    => $Ticket{QueueID},
         Cache => 1,
     );
-    my @UserIDs = $Self->{GroupObject}->GroupMemberList(
+    my @UserIDs = $Kernel::OM->Get('Kernel::System::Group')->GroupMemberList(
         GroupID => $Queue{GroupID},
         Type    => 'rw',
         Result  => 'ID',
     );
 
+    # get user object
+    my $UserObject = $Kernel::OM->Get('Kernel::System::User');
+
     # send each agent the escalation notification
+    USER:
     for my $UserID (@UserIDs) {
-        my %User = $Self->{UserObject}->GetUserData( UserID => $UserID, Valid => 1 );
-        next if !%User || $User{OutOfOfficeMessage};
+
+        my %User = $UserObject->GetUserData(
+            UserID => $UserID,
+            Valid  => 1,
+        );
+
+        next USER if !%User || $User{OutOfOfficeMessage};
 
         # check if today a reminder is already sent
-        my ( $Sec, $Min, $Hour, $Day, $Month, $Year ) = $Self->{TimeObject}->SystemTime2Date(
-            SystemTime => $Self->{TimeObject}->SystemTime(),
+        my ( $Sec, $Min, $Hour, $Day, $Month, $Year ) = $TimeObject->SystemTime2Date(
+            SystemTime => $TimeObject->SystemTime(),
         );
-        my @Lines = $Self->{TicketObject}->HistoryGet(
+
+        my @Lines = $TicketObject->HistoryGet(
             TicketID => $Ticket{TicketID},
             UserID   => 1,
         );
+
         my $Sent = 0;
         for my $Line (@Lines) {
+
             if (
                 $Line->{Name} =~ /\%\%$EscalationType\%\%/
                 && $Line->{Name} =~ /\Q%%$User{UserEmail}\E$/i
@@ -132,10 +152,11 @@ sub Run {
                 $Sent = 1;
             }
         }
-        next if $Sent;
+
+        next USER if $Sent;
 
         # send agent notification
-        $Self->{TicketObject}->SendAgentNotification(
+        $TicketObject->SendAgentNotification(
             TicketID              => $Param{TicketID},
             CustomerMessageParams => \%Param,
             Type                  => $EscalationType,
@@ -143,6 +164,7 @@ sub Run {
             UserID                => 1,
         );
     }
+
     return 1;
 }
 

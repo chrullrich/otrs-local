@@ -9,26 +9,16 @@
 
 use strict;
 use warnings;
+use utf8;
+
 use vars (qw($Self));
+
 use Kernel::System::VariableCheck qw(:all);
 
-use utf8;
-use Kernel::Config;
-use Kernel::System::ProcessManagement::TransitionAction;
-use Kernel::System::UnitTest::Helper;
-
-# create local objects
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %{$Self},
-    UnitTestObject             => $Self,
-    RestoreSystemConfiguration => 0,
-);
-my $ConfigObject = Kernel::Config->new();
-
-my $TransitionActionObject = Kernel::System::ProcessManagement::TransitionAction->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+# get needed objects
+my $ConfigObject           = $Kernel::OM->Get('Kernel::Config');
+my $HelperObject           = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $TransitionActionObject = $Kernel::OM->Get('Kernel::System::ProcessManagement::TransitionAction');
 
 # define needed variables
 my $RandomID = $HelperObject->GetRandomID();
@@ -368,8 +358,7 @@ for my $Test (@Tests) {
     );
 
     # list get transtion actions
-    my $TransitionActionList
-        = $TransitionActionObject->TransitionActionList( %{ $Test->{Config} } );
+    my $TransitionActionList = $TransitionActionObject->TransitionActionList( %{ $Test->{Config} } );
 
     if ( $Test->{Success} ) {
         $Self->IsNot(
@@ -384,8 +373,10 @@ for my $Test (@Tests) {
         );
 
         my @ExpectedTransitionActions;
+
+        ENTITYID:
         for my $TransitionActionEntityID ( @{ $Test->{Config}->{TransitionActionEntityID} } ) {
-            next if !$TransitionActionEntityID;
+            next ENTITYID if !$TransitionActionEntityID;
 
             # get the transition action form test config
             my %TransitionAction = %{ $Test->{TransitionActions}->{$TransitionActionEntityID} };

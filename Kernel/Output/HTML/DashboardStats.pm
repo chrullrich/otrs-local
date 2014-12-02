@@ -12,10 +12,9 @@ package Kernel::Output::HTML::DashboardStats;
 use strict;
 use warnings;
 
-use Kernel::System::Stats;
-use Kernel::System::JSON;
-
 use Kernel::System::VariableCheck qw(:all);
+
+our $ObjectManagerDisabled = 1;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -24,18 +23,10 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # get needed objects
-    for (
-        qw(Config Name ConfigObject LogObject DBObject
-        LayoutObject ParamObject TicketObject TimeObject
-        UserID UserObject GroupObject)
-        )
-    {
-        die "Got no $_!" if ( !$Self->{$_} );
+    # get needed parameters
+    for my $Needed (qw(Config Name UserID)) {
+        die "Got no $Needed!" if ( !$Self->{$Needed} );
     }
-
-    $Self->{StatsObject} = Kernel::System::Stats->new( %{$Self} );
-    $Self->{JSONObject}  = Kernel::System::JSON->new( %{$Self} );
 
     # Settings
     $Self->{PrefKeyStatsConfiguration} = 'UserDashboardStatsStatsConfiguration' . $Self->{Name};
@@ -49,7 +40,12 @@ sub Preferences {
     # get StatID
     my $StatID = $Self->{Config}->{StatID};
 
-    my $Stat = $Self->{StatsObject}->StatsGet( StatID => $StatID );
+    # get stats object
+    my $StatsObject = Kernel::System::Stats->new(
+        UserID => $Self->{UserID},
+    );
+
+    my $Stat = $StatsObject->StatsGet( StatID => $StatID );
 
     # get the object name
     if ( $Stat->{StatType} eq 'static' ) {
@@ -59,25 +55,31 @@ sub Preferences {
     # if no object name is defined use an empty string
     $Stat->{ObjectName} ||= '';
 
-    $Stat->{Description} = $Self->{LayoutObject}->Ascii2Html(
+    # get layout object
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
+    $Stat->{Description} = $LayoutObject->Ascii2Html(
         Text           => $Stat->{Description},
         HTMLResultMode => 1,
         NewLine        => 72,
     );
 
+    # get user object
+    my $UserObject = $Kernel::OM->Get('Kernel::System::User');
+
     # check if the user has preferences for this widget
-    my %Preferences = $Self->{UserObject}->GetPreferences(
+    my %Preferences = $UserObject->GetPreferences(
         UserID => $Self->{UserID},
     );
     my $StatsSettings;
     if ( $Preferences{ $Self->{PrefKeyStatsConfiguration} } ) {
-        $StatsSettings = $Self->{JSONObject}->Decode(
+        $StatsSettings = $Kernel::OM->Get('Kernel::System::JSON')->Decode(
             Data => $Preferences{ $Self->{PrefKeyStatsConfiguration} },
         );
     }
 
     my $OutputPresent = 0;
-    $Self->{LayoutObject}->Block(
+    $LayoutObject->Block(
         Name => 'WidgetSettingsStart',
         Data => {
             JSONFieldName => $Self->{PrefKeyStatsConfiguration},
@@ -89,24 +91,27 @@ sub Preferences {
     if ( $Stat->{StatType} eq 'static' ) {
 
         # load static module
-        my $Params = $Self->{StatsObject}->GetParams( StatID => $StatID );
-        $Self->{LayoutObject}->Block( Name => 'Static', );
+        my $Params = $StatsObject->GetParams( StatID => $StatID );
+        $LayoutObject->Block(
+            Name => 'Static',
+        );
+        PARAM_ITEM:
         for my $ParamItem ( @{$Params} ) {
 
-            next if $ParamItem->{Name} eq 'GraphSize';
-            next if $ParamItem->{Name} eq 'Year';
-            next if $ParamItem->{Name} eq 'Month';
+            next PARAM_ITEM if $ParamItem->{Name} eq 'GraphSize';
+            next PARAM_ITEM if $ParamItem->{Name} eq 'Year';
+            next PARAM_ITEM if $ParamItem->{Name} eq 'Month';
 
             if ( $StatsSettings && $StatsSettings->{ $ParamItem->{Name} } ) {
                 $ParamItem->{SelectedID} = $StatsSettings->{ $ParamItem->{Name} };
             }
 
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'ItemParam',
                 Data => {
                     Param => $ParamItem->{Frontend},
                     Name  => $ParamItem->{Name},
-                    Field => $Self->{LayoutObject}->BuildSelection(
+                    Field => $LayoutObject->BuildSelection(
                         Data       => $ParamItem->{Data},
                         Name       => $ParamItem->{Name},
                         SelectedID => $ParamItem->{SelectedID} || '',
@@ -128,15 +133,18 @@ sub Preferences {
             UseAsRestriction => 'Restrictions',
         );
 
+        # get log object
+        my $LogObject = $Kernel::OM->Get('Kernel::System::Log');
+
         for my $Use (qw(UseAsXvalue UseAsValueSeries UseAsRestriction)) {
             my $Flag = 0;
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'Dynamic',
                 Data => { Name => $Name{$Use} },
             );
             OBJECTATTRIBUTE:
             for my $ObjectAttribute ( @{ $Stat->{$Use} } ) {
-                next if !$ObjectAttribute->{Selected};
+                next OBJECTATTRIBUTE if !$ObjectAttribute->{Selected};
 
                 my %ValueHash;
                 $Flag = 1;
@@ -147,7 +155,7 @@ sub Preferences {
                         $ObjectAttribute->{Values} && ref $ObjectAttribute->{Values} ne 'HASH'
                         )
                     {
-                        $Self->{LogObject}->Log(
+                        $LogObject->Log(
                             Priority => 'error',
                             Message  => 'Values needs to be a hash reference!'
                         );
@@ -165,7 +173,7 @@ sub Preferences {
                     }
                 }
 
-                $Self->{LayoutObject}->Block(
+                $LayoutObject->Block(
                     Name => 'Element',
                     Data => { Name => $ObjectAttribute->{Name} },
                 );
@@ -178,7 +186,7 @@ sub Preferences {
                         }
                         my $TimeScale = _TimeScale();
                         if ( $ObjectAttribute->{TimeStart} ) {
-                            $Self->{LayoutObject}->Block(
+                            $LayoutObject->Block(
                                 Name => 'TimePeriodFixed',
                                 Data => {
                                     TimeStart => $ObjectAttribute->{TimeStart},
@@ -187,7 +195,7 @@ sub Preferences {
                             );
                         }
                         elsif ( $ObjectAttribute->{TimeRelativeUnit} ) {
-                            $Self->{LayoutObject}->Block(
+                            $LayoutObject->Block(
                                 Name => 'TimeRelativeFixed',
                                 Data => {
                                     TimeRelativeUnit =>
@@ -198,7 +206,7 @@ sub Preferences {
                             );
                         }
                         if ( $ObjectAttribute->{SelectedValues}[0] ) {
-                            $Self->{LayoutObject}->Block(
+                            $LayoutObject->Block(
                                 Name => 'TimeScaleFixed',
                                 Data => {
                                     Scale =>
@@ -220,16 +228,15 @@ sub Preferences {
                                 @{ $ObjectAttribute->{SortIndividual} };
                         }
                         else {
-                            @Sorted
-                                = sort { $ValueHash{$a} cmp $ValueHash{$b} } keys %ValueHash;
+                            @Sorted = sort { $ValueHash{$a} cmp $ValueHash{$b} } keys %ValueHash;
                         }
 
                         for (@Sorted) {
                             my $Value = $ValueHash{$_};
                             if ( $ObjectAttribute->{Translation} ) {
-                                $Value = "\$Text{\"$ValueHash{$_}\"}";
+                                $Value = $LayoutObject->{LanguageObject}->Translate( $ValueHash{$_} );
                             }
-                            $Self->{LayoutObject}->Block(
+                            $LayoutObject->Block(
                                 Name => 'Fixed',
                                 Data => {
                                     Value   => $Value,
@@ -265,11 +272,10 @@ sub Preferences {
                             && $StatsSettings->{ $Use . $ObjectAttribute->{Element} }
                             )
                         {
-                            $ObjectAttribute->{SelectedValues}
-                                = $StatsSettings->{ $Use . $ObjectAttribute->{Element} };
+                            $ObjectAttribute->{SelectedValues} = $StatsSettings->{ $Use . $ObjectAttribute->{Element} };
                         }
 
-                        $BlockData{SelectField} = $Self->{LayoutObject}->BuildSelection(
+                        $BlockData{SelectField} = $LayoutObject->BuildSelection(
                             Data           => \%ValueHash,
                             Name           => $Use . $ObjectAttribute->{Element},
                             Multiple       => 1,
@@ -280,7 +286,7 @@ sub Preferences {
                             Sort           => $ObjectAttribute->{Sort} || undef,
                             SortIndividual => $ObjectAttribute->{SortIndividual} || undef,
                         );
-                        $Self->{LayoutObject}->Block(
+                        $LayoutObject->Block(
                             Name => 'MultiSelectField',
                             Data => \%BlockData,
                         );
@@ -292,11 +298,10 @@ sub Preferences {
                             && $StatsSettings->{ $Use . $ObjectAttribute->{Element} }
                             )
                         {
-                            $ObjectAttribute->{SelectedValues}
-                                = $StatsSettings->{ $Use . $ObjectAttribute->{Element} };
+                            $ObjectAttribute->{SelectedValues} = $StatsSettings->{ $Use . $ObjectAttribute->{Element} };
                         }
 
-                        $BlockData{SelectField} = $Self->{LayoutObject}->BuildSelection(
+                        $BlockData{SelectField} = $LayoutObject->BuildSelection(
                             Data           => \%ValueHash,
                             Name           => $Use . $ObjectAttribute->{Element},
                             SelectedID     => $ObjectAttribute->{SelectedValues},
@@ -305,7 +310,7 @@ sub Preferences {
                             Sort           => $ObjectAttribute->{Sort} || undef,
                             SortIndividual => $ObjectAttribute->{SortIndividual} || undef,
                         );
-                        $Self->{LayoutObject}->Block(
+                        $LayoutObject->Block(
                             Name => 'SelectField',
                             Data => \%BlockData,
                         );
@@ -322,7 +327,7 @@ sub Preferences {
                                 = [ $StatsSettings->{ $Use . $ObjectAttribute->{Element} } ];
                         }
 
-                        $Self->{LayoutObject}->Block(
+                        $LayoutObject->Block(
                             Name => 'InputField',
                             Data => {
                                 Key   => $Use . $ObjectAttribute->{Element},
@@ -334,7 +339,7 @@ sub Preferences {
 
                         $ObjectAttribute->{Element} = $Use . $ObjectAttribute->{Element};
 
-                        my $TimeType = $Self->{ConfigObject}->Get('Stats::TimeType')
+                        my $TimeType = $Kernel::OM->Get('Kernel::Config')->Get('Stats::TimeType')
                             || 'Normal';
 
                         my $RelativeSelectedID = $ObjectAttribute->{TimeRelativeCount};
@@ -371,7 +376,7 @@ sub Preferences {
                         if ( $ObjectAttribute->{TimeStart} ) {
                             $BlockData{TimeStartMax} = $ObjectAttribute->{TimeStart};
                             $BlockData{TimeStopMax}  = $ObjectAttribute->{TimeStop};
-                            $Self->{LayoutObject}->Block(
+                            $LayoutObject->Block(
                                 Name => 'TimePeriodNotChangable',
                                 Data => \%BlockData,
                             );
@@ -397,6 +402,7 @@ sub Preferences {
                                 }
 
                                 my %TimeScaleOption;
+                                ITEM:
                                 for (
                                     sort {
                                         $TimeScale->{$a}->{Position}
@@ -405,33 +411,30 @@ sub Preferences {
                                     )
                                 {
                                     $TimeScaleOption{$_} = $TimeScale->{$_}{Value};
-                                    last if $SelectedID eq $_;
+                                    last ITEM if $SelectedID eq $_;
                                 }
 
-                                $BlockData{TimeRelativeUnit}
-                                    = $Self->{LayoutObject}->BuildSelection(
-                                    Name       => $ObjectAttribute->{Element} . 'TimeRelativeUnit',
-                                    Data       => \%TimeScaleOption,
-                                    Class      => 'TimeRelativeUnitGeneric',
-                                    Sort       => 'IndividualKey',
-                                    SelectedID => $SelectedID || '',
+                                $BlockData{TimeRelativeUnit} = $LayoutObject->BuildSelection(
+                                    Name           => $ObjectAttribute->{Element} . 'TimeRelativeUnit',
+                                    Data           => \%TimeScaleOption,
+                                    Class          => 'TimeRelativeUnitGeneric',
+                                    Sort           => 'IndividualKey',
+                                    SelectedID     => $SelectedID || '',
                                     SortIndividual => [
                                         'Second', 'Minute', 'Hour', 'Day',
                                         'Week', 'Month', 'Year'
                                     ],
-                                    );
+                                );
                             }
-                            $BlockData{TimeRelativeCountMax}
-                                = $ObjectAttribute->{TimeRelativeCount};
+                            $BlockData{TimeRelativeCountMax} = $ObjectAttribute->{TimeRelativeCount};
                             $BlockData{TimeRelativeUnitMax}
                                 = $TimeScale->{ $ObjectAttribute->{TimeRelativeUnit} }{Value};
-                            $BlockData{TimeRelativeMaxSeconds}
-                                = $ObjectAttribute->{TimeRelativeCount}
+                            $BlockData{TimeRelativeMaxSeconds} = $ObjectAttribute->{TimeRelativeCount}
                                 * $Self->_TimeInSeconds(
                                 TimeUnit => $ObjectAttribute->{TimeRelativeUnit}
                                 );
 
-                            $Self->{LayoutObject}->Block(
+                            $LayoutObject->Block(
                                 Name => 'TimePeriodRelative',
                                 Data => \%BlockData,
                             );
@@ -446,6 +449,7 @@ sub Preferences {
                             elsif ( $TimeType eq 'Extended' ) {
                                 my $TimeScale = _TimeScale();
                                 my %TimeScaleOption;
+                                ITEM:
                                 for (
                                     sort {
                                         $TimeScale->{$b}->{Position}
@@ -454,14 +458,14 @@ sub Preferences {
                                     )
                                 {
                                     $TimeScaleOption{$_} = $TimeScale->{$_}->{Value};
-                                    last if $ObjectAttribute->{SelectedValues}[0] eq $_;
+                                    last ITEM if $ObjectAttribute->{SelectedValues}[0] eq $_;
                                 }
 
                                 $BlockData{TimeScaleUnitMax}
                                     = $TimeScale->{ $ObjectAttribute->{SelectedValues}[0] }{Value};
                                 $BlockData{TimeScaleCountMax} = $ObjectAttribute->{TimeScaleCount};
 
-                                $BlockData{TimeScaleUnit} = $Self->{LayoutObject}->BuildSelection(
+                                $BlockData{TimeScaleUnit} = $LayoutObject->BuildSelection(
                                     Name           => $ObjectAttribute->{Element},
                                     Data           => \%TimeScaleOption,
                                     Class          => 'TimeScaleUnitGeneric',
@@ -478,18 +482,18 @@ sub Preferences {
                                     TimeUnit => $ObjectAttribute->{SelectedValues}[0]
                                     );
 
-                                $Self->{LayoutObject}->Block(
+                                $LayoutObject->Block(
                                     Name => 'TimeScaleInfo',
                                     Data => \%BlockData,
                                 );
                             }
                             if ( $ObjectAttribute->{SelectedValues} ) {
-                                $Self->{LayoutObject}->Block(
+                                $LayoutObject->Block(
                                     Name => 'TimeScale',
                                     Data => \%BlockData,
                                 );
                                 if ( $BlockData{TimeScaleUnitMax} ) {
-                                    $Self->{LayoutObject}->Block(
+                                    $LayoutObject->Block(
                                         Name => 'TimeScaleInfo',
                                         Data => \%BlockData,
                                     );
@@ -504,12 +508,20 @@ sub Preferences {
 
             # Show this Block if no value series or restrictions are selected
             if ( !$Flag ) {
-                $Self->{LayoutObject}->Block( Name => 'NoElement', );
+                $LayoutObject->Block(
+                    Name => 'NoElement',
+                );
             }
         }
     }
-    my %YesNo        = ( 0 => 'No',      1 => 'Yes' );
-    my %ValidInvalid = ( 0 => 'invalid', 1 => 'valid' );
+    my %YesNo = (
+        0 => 'No',
+        1 => 'Yes'
+    );
+    my %ValidInvalid = (
+        0 => 'invalid',
+        1 => 'valid'
+    );
     $Stat->{SumRowValue}                = $YesNo{ $Stat->{SumRow} };
     $Stat->{SumColValue}                = $YesNo{ $Stat->{SumCol} };
     $Stat->{CacheValue}                 = $YesNo{ $Stat->{Cache} };
@@ -517,28 +529,28 @@ sub Preferences {
     $Stat->{ValidValue}                 = $ValidInvalid{ $Stat->{Valid} };
 
     for (qw(CreatedBy ChangedBy)) {
-        $Stat->{$_} = $Self->{UserObject}->UserName( UserID => $Stat->{$_} );
+        $Stat->{$_} = $UserObject->UserName( UserID => $Stat->{$_} );
     }
 
     if ( !$OutputPresent ) {
         return;
     }
 
-    $Self->{LayoutObject}->Block(
+    $LayoutObject->Block(
         Name => 'ChartTypeSelection',
         Data => {
             ChartType => $StatsSettings->{ChartType} // 'Bar',
         },
     );
 
-    $Self->{LayoutObject}->Block(
+    $LayoutObject->Block(
         Name => 'WidgetSettingsEnd',
         Data => {
             NamePref => $Self->{Name},
         },
     );
 
-    my $SettingsHTML = $Self->{LayoutObject}->Output(
+    my $SettingsHTML = $LayoutObject->Output(
         TemplateFile => 'AgentStatsViewSettings',
         Data         => $Stat,
     );
@@ -568,27 +580,39 @@ sub Run {
 
     my $StatID = $Self->{Config}->{StatID};
 
-    my %Preferences = $Self->{UserObject}->GetPreferences(
+    my %Preferences = $Kernel::OM->Get('Kernel::System::User')->GetPreferences(
         UserID => $Self->{UserID},
     );
     my $StatsSettings = {};
+
+    # get JSON object
+    my $JSONObject = $Kernel::OM->Get('Kernel::System::JSON');
+
     if ( $Preferences{ $Self->{PrefKeyStatsConfiguration} } ) {
-        $StatsSettings = $Self->{JSONObject}->Decode(
+        $StatsSettings = $JSONObject->Decode(
             Data => $Preferences{ $Self->{PrefKeyStatsConfiguration} },
         );
     }
 
-    my $CachedData = $Self->{StatsObject}->StatsResultCacheGet(
+    # get stats object
+    my $StatsObject = Kernel::System::Stats->new(
+        UserID => $Self->{UserID},
+    );
+
+    my $CachedData = $StatsObject->StatsResultCacheGet(
         StatID       => $StatID,
         UserGetParam => $StatsSettings,
     );
 
+    # get layout object
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     if ( defined $CachedData ) {
-        my $JSON = $Self->{JSONObject}->Encode(
+        my $JSON = $JSONObject->Encode(
             Data => $CachedData,
         );
 
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'StatsData',
             Data => {
                 Name      => $Self->{Name},
@@ -598,21 +622,21 @@ sub Run {
             },
         );
 
-        my $Stat = $Self->{StatsObject}->StatsGet( StatID => $StatID );
+        my $Stat = $StatsObject->StatsGet( StatID => $StatID );
         my $StatFormat = $Stat->{Format};
         if (
             IsArrayRefWithData($StatFormat)
             && grep { $_ eq 'Print' || $_ eq 'CSV' } @{$StatFormat}
             )
         {
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'StatsDataLink',
                 Data => {
                     Name => $Self->{Name},
                 },
             );
             if ( grep { $_ eq 'CSV' } @{$StatFormat} ) {
-                $Self->{LayoutObject}->Block(
+                $LayoutObject->Block(
                     Name => 'StatsDataLinkCSV',
                     Data => {
                         Name   => $Self->{Name},
@@ -621,7 +645,7 @@ sub Run {
                 );
             }
             if ( grep { $_ eq 'Print' } @{$StatFormat} ) {
-                $Self->{LayoutObject}->Block(
+                $LayoutObject->Block(
                     Name => 'StatsDataLinkPDF',
                     Data => {
                         Name   => $Self->{Name},
@@ -632,12 +656,12 @@ sub Run {
         }
     }
     else {
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'NoData',
         );
     }
 
-    my $Content = $Self->{LayoutObject}->Output(
+    my $Content = $LayoutObject->Output(
         TemplateFile => 'AgentDashboardStats',
         Data         => {
             Name => $Self->{Name},
@@ -653,16 +677,23 @@ sub _Timeoutput {
 
     my %Timeoutput;
 
+    # get layout object
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     # check if need params are available
     if ( !$Param{TimePeriodFormat} ) {
-        return $Self->{LayoutObject}->ErrorScreen(
+        return $LayoutObject->ErrorScreen(
             Message => '_Timeoutput: Need TimePeriodFormat!'
         );
     }
 
+    # get time object
+    my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
+
     # get time
-    my ( $Sec, $Min, $Hour, $Day, $Month, $Year )
-        = $Self->{TimeObject}->SystemTime2Date( SystemTime => $Self->{TimeObject}->SystemTime(), );
+    my ( $Sec, $Min, $Hour, $Day, $Month, $Year ) = $TimeObject->SystemTime2Date(
+        SystemTime => $TimeObject->SystemTime(),
+    );
     my $Element = $Param{Element};
     my %TimeConfig;
 
@@ -696,7 +727,7 @@ sub _Timeoutput {
             $TimeConfig{ $Element . $_ . 'Minute' } = $5;
             $TimeConfig{ $Element . $_ . 'Second' } = $6;
         }
-        $Timeoutput{ 'Time' . $_ } = $Self->{LayoutObject}->BuildDateSelection(%TimeConfig);
+        $Timeoutput{ 'Time' . $_ } = $LayoutObject->BuildDateSelection(%TimeConfig);
     }
 
     # Solution I (TimeExtended)
@@ -706,7 +737,7 @@ sub _Timeoutput {
         $TimeLists{TimeScaleCount}{$_}    = sprintf( "%02d", $_ );
     }
     for (qw(TimeRelativeCount TimeScaleCount)) {
-        $Timeoutput{$_} = $Self->{LayoutObject}->BuildSelection(
+        $Timeoutput{$_} = $LayoutObject->BuildSelection(
             Data       => $TimeLists{$_},
             Name       => $Element . $_,
             SelectedID => $Param{$_},
@@ -722,13 +753,13 @@ sub _Timeoutput {
 
     my %TimeScale = _TimeScaleBuildSelection();
 
-    $Timeoutput{TimeScaleUnit} = $Self->{LayoutObject}->BuildSelection(
+    $Timeoutput{TimeScaleUnit} = $LayoutObject->BuildSelection(
         %TimeScale,
         Name       => $Element,
         SelectedID => $Param{SelectedValues}[0],
     );
 
-    $Timeoutput{TimeRelativeUnit} = $Self->{LayoutObject}->BuildSelection(
+    $Timeoutput{TimeRelativeUnit} = $LayoutObject->BuildSelection(
         %TimeScale,
         Name       => $Element . 'TimeRelativeUnit',
         SelectedID => $Param{TimeRelativeUnit},
@@ -747,7 +778,7 @@ sub _Timeoutput {
         $Size     = 1;
     }
 
-    $Timeoutput{TimeSelectField} = $Self->{LayoutObject}->BuildSelection(
+    $Timeoutput{TimeSelectField} = $LayoutObject->BuildSelection(
         %TimeScale,
         Name       => $Element,
         SelectedID => $Param{SelectedValues},
@@ -770,7 +801,7 @@ sub _TimeScaleBuildSelection {
             Month  => 'month(s)',
             Year   => 'year(s)',
         },
-        Sort => 'IndividualKey',
+        Sort           => 'IndividualKey',
         SortIndividual => [ 'Second', 'Minute', 'Hour', 'Day', 'Week', 'Month', 'Year' ]
     );
 
@@ -817,7 +848,7 @@ sub _TimeInSeconds {
 
     # check if need params are available
     if ( !$Param{TimeUnit} ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => '_TimeInSeconds: Need TimeUnit!'
         );

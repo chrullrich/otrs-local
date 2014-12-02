@@ -30,12 +30,7 @@ use lib dirname($RealBin) . '/Custom';
 
 my $Debug = 1;
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Time;
-use Kernel::System::Log;
-use Kernel::System::Main;
-use Kernel::System::DB;
+use Kernel::System::ObjectManager;
 use Kernel::System::PostMaster;
 
 use IO::Socket;
@@ -46,7 +41,7 @@ my $MaxConnects     = 30;
 $SIG{CHLD} = \&StopChild;
 
 my $Children = 0;
-my %Children = ();
+my %Children;
 
 my $Server = IO::Socket::INET->new(
     LocalPort => 5555,
@@ -82,8 +77,8 @@ sub MakeNewChild {
         while ( my $Client = $Server->accept() ) {
             $MaxConnectsCount++;
             print $Client "* --OK-- ($PID/$$)\n";
-            my @Input = ();
-            my $Data  = 0;
+            my @Input;
+            my $Data = 0;
             while ( my $Line = <$Client> ) {
                 if ( $Line =~ /^\* --END EMAIL--$/ ) {
                     $Data = 0;
@@ -125,40 +120,36 @@ sub StopChild {
 sub PipeEmail {
     my (@Email) = @_;
 
-    # create common objects
-    my %CommonObject = ();
-    $CommonObject{ConfigObject} = Kernel::Config->new();
-    $CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-    $CommonObject{TimeObject}   = Kernel::System::Time->new(%CommonObject);
-    $CommonObject{LogObject}    = Kernel::System::Log->new(
-        LogPrefix => 'OTRS-otrs.PostMasterDaemon.pl',
-        %CommonObject,
+    # create object manager
+    local $Kernel::OM = Kernel::System::ObjectManager->new(
+        'Kernel::System::Log' => {
+            LogPrefix => 'OTRS-otrs.PostMasterDaemon.pl',
+        },
     );
-    $CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
-    $CommonObject{DBObject}   = Kernel::System::DB->new(%CommonObject);
 
     # debug info
     if ($Debug) {
-        $CommonObject{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'debug',
             Message  => 'Email handle (PostMasterDaemon.pl) started...',
         );
     }
 
-    # ... common objects ...
-    $CommonObject{PostMaster} = Kernel::System::PostMaster->new( %CommonObject, Email => \@Email );
-    my @Return = $CommonObject{PostMaster}->Run();
+    my $PostMasterObject = Kernel::System::PostMaster->new(
+        Email => \@Email
+    );
+    my @Return = $PostMasterObject->Run();
     if ( !$Return[0] ) {
-        $CommonObject{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Can't process mail, see log sub system!",
         );
     }
-    undef $CommonObject{PostMaster};
+    undef $PostMasterObject;
 
     # debug info
     if ($Debug) {
-        $CommonObject{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'debug',
             Message  => 'Email handle (PostMasterDaemon.pl) stopped.',
         );

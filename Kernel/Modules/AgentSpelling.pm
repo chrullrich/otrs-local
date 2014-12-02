@@ -45,9 +45,10 @@ sub Run {
 
     # get and replace all wrong words
     my %Words = ();
+    COUNT:
     for ( 0 .. 300 ) {
         my $Replace = $Self->{ParamObject}->GetParam( Param => "SpellCheck::Replace::$_" );
-        next if !$Replace;
+        next COUNT if !$Replace;
         my $Old = $Self->{ParamObject}->GetParam( Param => "SpellCheckOld::$_" );
         my $New = $Self->{ParamObject}->GetParam( Param => "SpellCheckOrReplace::$_" )
             || $Self->{ParamObject}->GetParam( Param => "SpellCheckOption::$_" );
@@ -131,7 +132,10 @@ sub _Mask {
     }
 
     # create & return output
-    return $Self->{LayoutObject}->Output( TemplateFile => 'AgentSpelling', Data => \%Param );
+    return $Self->{LayoutObject}->Output(
+        TemplateFile => 'AgentSpelling',
+        Data         => \%Param
+    );
 }
 
 1;

@@ -9,21 +9,17 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
 
-use Kernel::System::Queue;
-use Kernel::System::StandardTemplate;
-use Kernel::System::UnitTest::Helper;
+use vars (qw($Self));
+
 use Kernel::System::VariableCheck qw(:all);
 
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %{$Self},
-    UnitTestObject             => $Self,
-    RestoreSystemConfiguration => 0,
-);
-my $QueueObject            = Kernel::System::Queue->new( %{$Self} );
-my $StandardTemplateObject = Kernel::System::StandardTemplate->new( %{$Self} );
+# get needed objects
+my $ConfigObject           = $Kernel::OM->Get('Kernel::Config');
+my $HelperObject           = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $StandardTemplateObject = $Kernel::OM->Get('Kernel::System::StandardTemplate');
+my $QueueObject            = $Kernel::OM->Get('Kernel::System::Queue');
 
 my $QueueRand = 'Some::Queue' . int( rand(1000000) );
 my $QueueID   = $QueueObject->QueueAdd(
@@ -257,16 +253,12 @@ $Self->True(
     "QueueStandardTemplateMemberList() for QueueID 1 is a Hash with data",
 );
 
-my %Responses = $QueueObject->GetStandardResponses( QueueID => 1 );
-$Self->IsDeeply(
-    \%Templates,
-    \%Responses,
-    "QueueStandardTemplateMemberList() and GetStandardResponse() for QueueID 1",
-);
-
 # check cache
 my $CacheKey = "StandardTemplates::1::0";
-my $Cache = $QueueObject->{CacheInternalObject}->Get( Key => $CacheKey );
+my $Cache    = $Kernel::OM->Get('Kernel::System::Cache')->Get(
+    Type => 'Queue',
+    Key  => $CacheKey,
+);
 $Self->IsDeeply(
     \%Templates,
     $Cache,
@@ -284,19 +276,12 @@ $Self->True(
     "QueueStandardTemplateMemberList() for QueueID 1 using TemplateTypes is a Hash with data",
 );
 
-my %ResponsesTemplateType = $QueueObject->GetStandardResponses(
-    QueueID       => 1,
-    TemplateTypes => 1,
-);
-$Self->IsDeeply(
-    \%TemplatesByType,
-    \%ResponsesTemplateType,
-    "QueueStandardTemplateMemberList() and GetStandardResponse() for QueueID 1 using TemplateType",
-);
-
 # check cache
 $CacheKey = "StandardTemplates::1::1";
-$Cache = $QueueObject->{CacheInternalObject}->Get( Key => $CacheKey );
+$Cache    = $Kernel::OM->Get('Kernel::System::Cache')->Get(
+    Type => 'Queue',
+    Key  => $CacheKey,
+);
 $Self->IsDeeply(
     \%TemplatesByType,
     $Cache,
@@ -304,7 +289,7 @@ $Self->IsDeeply(
 );
 
 # get template types from config
-my $TemplateTypes = $Self->{ConfigObject}->Get("StandardTemplate::Types");
+my $TemplateTypes = $ConfigObject->Get("StandardTemplate::Types");
 
 for my $TemplateType ( sort keys %TemplatesByType ) {
     $Self->True(

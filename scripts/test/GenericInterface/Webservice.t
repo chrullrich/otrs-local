@@ -10,21 +10,14 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
-use Kernel::System::GenericInterface::Webservice;
-use Kernel::System::GenericInterface::WebserviceHistory;
-use Kernel::System::UnitTest::Helper;
-
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %$Self,
-    UnitTestObject => $Self,
-);
+my $HelperObject            = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $WebserviceObject        = $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice');
+my $WebserviceHistoryObject = $Kernel::OM->Get('Kernel::System::GenericInterface::WebserviceHistory');
 
 my $RandomID = $HelperObject->GetRandomID();
-
-my $WebserviceObject        = Kernel::System::GenericInterface::Webservice->new( %{$Self} );
-my $WebserviceHistoryObject = Kernel::System::GenericInterface::WebserviceHistory->new( %{$Self} );
 
 my @Tests = (
     {
@@ -214,7 +207,7 @@ my @Tests = (
             UserID  => 1,
         },
         Update => {
-            Config => { 1 => 1 },
+            Config  => { 1 => 1 },
             ValidID => 1,
             UserID  => 1,
         },
@@ -523,7 +516,7 @@ my @Tests = (
         },
     },
     {
-        Name          => 'test 18 - Invalid Config Update (mssing Debugger)',
+        Name          => 'test 18 - Invalid Config Update (missing Debugger)',
         SuccessAdd    => 1,
         SuccessUpdate => 0,
         HistoryCount  => 1,
@@ -853,6 +846,7 @@ my @Tests = (
 );
 
 my @WebserviceIDs;
+TEST:
 for my $Test (@Tests) {
 
     # add config
@@ -865,7 +859,7 @@ for my $Test (@Tests) {
             $WebserviceID,
             "$Test->{Name} - WebserviceAdd()",
         );
-        next;
+        next TEST;
     }
     else {
         $Self->True(
@@ -951,7 +945,7 @@ for my $Test (@Tests) {
             $Success,
             "$Test->{Name} - WebserviceUpdate() False",
         );
-        next;
+        next TEST;
     }
     else {
         $Self->True(
@@ -999,8 +993,9 @@ for my $Test (@Tests) {
         "$Test->{Name} - WebserviceHistoryList()",
     );
 
+    COUNT:
     for my $Count ( 0 .. 1 ) {
-        next if !$History[$Count];
+        next COUNT if !$History[$Count];
         my $WebserviceHistoryGet = $WebserviceHistoryObject->WebserviceHistoryGet(
             ID => $History[$Count],
         );

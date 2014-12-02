@@ -80,6 +80,10 @@ Core.UI.Datepicker = (function (TargetNS) {
      */
     TargetNS.Init = function (Element) {
 
+        if (typeof Element.VacationDays === 'object') {
+            Core.Config.Set('Datepicker.VacationDays', Element.VacationDays);
+        }
+
         function LeadingZero(Number) {
             if (Number.toString().length === 1) {
                 return '0' + Number;
@@ -110,7 +114,11 @@ Core.UI.Datepicker = (function (TargetNS) {
             typeof Element.Day !== 'undefined' &&
             typeof Element.Month !== 'undefined' &&
             typeof Element.Year !== 'undefined' &&
-            isJQueryObject(Element.Day, Element.Month, Element.Year)) {
+            isJQueryObject(Element.Day, Element.Month, Element.Year) &&
+            // Sometimes it can happen that BuildDateSelection was called without placing the full date selection.
+            //  Ignore in this case.
+            Element.Day.length
+        ) {
 
             $DatepickerElement = $('<input>').attr('type', 'hidden').attr('id', 'Datepicker' + DatepickerCount);
             Element.Year.after($DatepickerElement);
@@ -172,10 +180,13 @@ Core.UI.Datepicker = (function (TargetNS) {
         if (!$('#' + Core.App.EscapeSelector(Element.Day.attr('id')) + 'DatepickerIcon').length) {
 
             // add datepicker icon and click event
-            $DatepickerElement.after('<a href="#" class="DatepickerIcon" id="' + Element.Day.attr('id') + 'DatepickerIcon" title="' + LocalizationData.IconText + '"></a>');
+            $DatepickerElement.after('<a href="#" class="DatepickerIcon" id="' + Element.Day.attr('id') + 'DatepickerIcon" title="' + LocalizationData.IconText + '"><i class="fa fa-calendar"></i></a>');
 
             if (Element.DateInFuture) {
                 ErrorMessage = Core.Config.Get('Datepicker.ErrorMessageDateInFuture');
+            }
+            else if (Element.DateNotInFuture) {
+                ErrorMessage = Core.Config.Get('Datepicker.ErrorMessageDateNotInFuture');
             }
             else {
                 ErrorMessage = Core.Config.Get('Datepicker.ErrorMessage');

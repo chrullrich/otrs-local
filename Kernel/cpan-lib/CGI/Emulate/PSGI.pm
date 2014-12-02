@@ -6,9 +6,9 @@ use POSIX 'SEEK_SET';
 use IO::File ();
 use SelectSaver;
 use Carp qw(croak);
-use 5.00800;
+use 5.008001;
 
-our $VERSION = '0.15';
+our $VERSION = '0.20';
 
 sub handler {
     my ($class, $code, ) = @_;
@@ -101,7 +101,7 @@ to be converted to PSGI application using this module.
   my $sub = CGI::Compile->compile("/path/to/script.cgi");
   my $app = CGI::Emulate::PSGI->handler($sub);
 
-This will take care of assigning an unique namespace for each script
+This will take care of assigning a unique namespace for each script
 etc. See L<CGI::Compile> for details.
 
 You can also consider using L<CGI::PSGI> but that would require you to
@@ -171,4 +171,3 @@ LICENSE file included with this module.
 L<PSGI> L<CGI::Compile> L<CGI::PSGI> L<Plack> L<CGI::Parse::PSGI>
 
 =cut
-

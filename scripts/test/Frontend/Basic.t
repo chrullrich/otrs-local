@@ -15,28 +15,24 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
 use LWP::UserAgent;
 
-use Kernel::Config;
 use Kernel::System::UnitTest::Helper;
-use Kernel::System::JSON;
 
-my $ConfigObject = Kernel::Config->new();
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $JSONObject   = $Kernel::OM->Get('Kernel::System::JSON');
 
 my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %{$Self},
-    UnitTestObject => $Self,
-    SkipSSLVerify  => 1,
+    SkipSSLVerify => 1,
 );
 
 my $TestUserLogin = $HelperObject->TestUserCreate(
     Groups => ['admin'],
 );
 my $TestCustomerUserLogin = $HelperObject->TestCustomerUserCreate();
-
-my $JSONObject = Kernel::System::JSON->new( %{$Self} );
 
 my $BaseURL = $ConfigObject->Get('HttpType') . '://';
 

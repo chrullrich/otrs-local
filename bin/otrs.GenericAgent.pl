@@ -32,29 +32,24 @@ use vars qw(%Jobs @ISA);
 
 use Getopt::Std;
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::DB;
-use Kernel::System::PID;
-use Kernel::System::Main;
-use Kernel::System::Time;
-use Kernel::System::Ticket;
-use Kernel::System::Queue;
-use Kernel::System::GenericAgent;
+use Kernel::System::ObjectManager;
 
 # get options
-my %Opts = ();
-getopt( 'fcdlb', \%Opts );
+my %Opts;
+getopt( 'clbs', \%Opts );
 if ( $Opts{h} ) {
     print "otrs.GenericAgent.pl - OTRS generic agent\n";
     print "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n";
-    print "usage: otrs.GenericAgent.pl [-c 'Kernel::Config::GenericAgentJobModule'] [-d 1] ";
-    print "[-l <limit>] [-f force]\n";
-    print "usage: otrs.GenericAgent.pl [-c db] [-d 1] [-l <limit>] ";
+    print "usage: otrs.GenericAgent.pl [-c 'Kernel::Config::GenericAgentJobModule'] [-d debug] ";
+    print "[-l <limit>] [-f force] [-s sleeptime per ticket in microseconds]\n";
+    print "usage: otrs.GenericAgent.pl [-c db] [-d debug] [-l <limit>] ";
     print "[-b <BACKGROUND_INTERVAL_IN_MIN> (note: only 10,20,30,40,50,60,... minutes make ";
-    print "sense)] [-f force]\n";
-    print "Use -d for debug mode.\n";
+    print "sense)] [-f force] [-s sleeptime per ticket in microseconds]\n";
+    exit 1;
+}
+
+if ( $Opts{s} && $Opts{s} !~ m{ \A \d+ \z }xms ) {
+    print STDERR "ERROR: sleeptime needs to be a numeric value! e.g. 1000\n";
     exit 1;
 }
 
@@ -71,24 +66,21 @@ if ( !$Opts{l} ) {
 # set generic agent uid
 my $UserIDOfGenericAgent = 1;
 
-# common objects
-my %CommonObject = ();
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.GenericAgent.pl',
-    %CommonObject,
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.GenericAgent.pl',
+    },
+    'Kernel::System::GenericAgent' => {
+        NoticeSTDOUT => 1,
+        Debug        => $Opts{d},
+    },
 );
-$CommonObject{MainObject}   = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject}     = Kernel::System::DB->new(%CommonObject);
-$CommonObject{PIDObject}    = Kernel::System::PID->new(%CommonObject);
-$CommonObject{TimeObject}   = Kernel::System::Time->new(%CommonObject);
-$CommonObject{TicketObject} = Kernel::System::Ticket->new( %CommonObject, Debug => $Opts{d}, );
-$CommonObject{QueueObject}  = Kernel::System::Queue->new(%CommonObject);
-$CommonObject{GenericAgentObject} = Kernel::System::GenericAgent->new(
-    %CommonObject,
-    Debug        => $Opts{d},
-    NoticeSTDOUT => 1,
+
+# disable cache
+$Kernel::OM->Get('Kernel::System::Cache')->Configure(
+    CacheInMemory  => 0,
+    CacheInBackend => 1,
 );
 
 # get generic agent config (job file)
@@ -106,7 +98,7 @@ if ( $Opts{c} eq 'db' ) {
 
 # load/import config jobs
 else {
-    if ( !$CommonObject{MainObject}->Require( $Opts{c} ) ) {
+    if ( !$Kernel::OM->Get('Kernel::System::Main')->Require( $Opts{c} ) ) {
         print STDERR "ERROR: Can't load agent job file '$Opts{c}': $!\n";
         exit 1;
     }
@@ -122,35 +114,36 @@ if ( $Opts{c} eq 'db' && $Opts{b} && $Opts{b} !~ /^\d+$/ ) {
 }
 
 # create pid lock
-if ( !$Opts{f} && !$CommonObject{PIDObject}->PIDCreate( Name => $JobName ) ) {
+if ( !$Opts{f} && !$Kernel::OM->Get('Kernel::System::PID')->PIDCreate( Name => $JobName ) ) {
     print "NOTICE: otrs.GenericAgent.pl is already running!\n";
     exit 1;
 }
-elsif ( $Opts{f} && !$CommonObject{PIDObject}->PIDCreate( Name => $JobName ) ) {
+elsif ( $Opts{f} && !$Kernel::OM->Get('Kernel::System::PID')->PIDCreate( Name => $JobName ) ) {
     print "NOTICE: otrs.GenericAgent.pl is already running but is starting again!\n";
 }
 
 # while to run several times if -b is used
+LOOP:
 while (1) {
 
     # set new PID
-    $CommonObject{PIDObject}->PIDCreate(
+    $Kernel::OM->Get('Kernel::System::PID')->PIDCreate(
         Name  => $JobName,
         Force => 1,
     );
 
     # process all db jobs
     if ( $Opts{c} eq 'db' ) {
-        ExecuteDBJobs(%CommonObject);
+        ExecuteDBJobs();
     }
 
     # process all config file jobs
     else {
-        ExecuteConfigJobs(%CommonObject);
+        ExecuteConfigJobs();
     }
 
     # return if no interval is set
-    last if !$Opts{b};
+    last LOOP if !$Opts{b};
 
     # sleep till next interval
     print "NOTICE: Waiting for next interval ($Opts{b} min)...\n";
@@ -158,16 +151,16 @@ while (1) {
 }
 
 # delete pid lock
-$CommonObject{PIDObject}->PIDDelete( Name => $JobName );
-exit(0);
+$Kernel::OM->Get('Kernel::System::PID')->PIDDelete( Name => $JobName );
+
+exit 0;
 
 sub ExecuteConfigJobs {
-    my (%CommonObject) = @_;
 
     for my $Job ( sort keys %Jobs ) {
 
         # log event
-        $CommonObject{GenericAgentObject}->JobRun(
+        $Kernel::OM->Get('Kernel::System::GenericAgent')->JobRun(
             Job    => $Job,
             Limit  => $Opts{l},
             Config => $Jobs{$Job},
@@ -177,15 +170,15 @@ sub ExecuteConfigJobs {
 }
 
 sub ExecuteDBJobs {
-    my (%CommonObject) = @_;
 
     # process all jobs
+    my %DBJobs = $Kernel::OM->Get('Kernel::System::GenericAgent')->JobList();
 
-    my %DBJobs = $CommonObject{GenericAgentObject}->JobList();
+    DBJOB:
     for my $DBJob ( sort keys %DBJobs ) {
 
         # get job
-        my %DBJobRaw = $CommonObject{GenericAgentObject}->JobGet( Name => $DBJob );
+        my %DBJobRaw = $Kernel::OM->Get('Kernel::System::GenericAgent')->JobGet( Name => $DBJob );
 
         # check requred params (need min. one param)
         my $Schedule;
@@ -194,15 +187,14 @@ sub ExecuteDBJobs {
                 $Schedule = 1;
             }
         }
-        next if !$Schedule;
+        next DBJOB if !$Schedule;
 
-        # next if jobs is invalid
-        next if !$DBJobRaw{Valid};
+        next DBJOB if !$DBJobRaw{Valid};
 
         # get time params to check last and current run
         my ( $Sec, $Min, $Hour, $Day, $Month, $Year, $WDay )
-            = $CommonObject{TimeObject}->SystemTime2Date(
-            SystemTime => $CommonObject{TimeObject}->SystemTime(),
+            = $Kernel::OM->Get('Kernel::System::Time')->SystemTime2Date(
+            SystemTime => $Kernel::OM->Get('Kernel::System::Time')->SystemTime(),
             );
         if ( $Min =~ /(.)./ ) {
             $Min = ($1) . '0';
@@ -216,7 +208,7 @@ sub ExecuteDBJobs {
                     $Match = 1;
                 }
             }
-            next if !$Match;
+            next DBJOB if !$Match;
         }
 
         # check ScheduleMinutes
@@ -227,7 +219,7 @@ sub ExecuteDBJobs {
                     $Match = 1;
                 }
             }
-            next if !$Match;
+            next DBJOB if !$Match;
         }
 
         # check ScheduleHours
@@ -238,11 +230,11 @@ sub ExecuteDBJobs {
                     $Match = 1;
                 }
             }
-            next if !$Match;
+            next DBJOB if !$Match;
         }
 
         # check if job already was running less than 10 minutes (+- 5 secs) ago
-        my $CurrentTime = $CommonObject{TimeObject}->SystemTime();
+        my $CurrentTime = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
         if (
             $DBJobRaw{ScheduleLastRunUnixTime}
             && $CurrentTime < $DBJobRaw{ScheduleLastRunUnixTime} + ( 10 * 59 )
@@ -250,14 +242,15 @@ sub ExecuteDBJobs {
         {
             my $SecsAgo = $CurrentTime - $DBJobRaw{ScheduleLastRunUnixTime};
             print "Job '$DBJob' last finished $SecsAgo seconds ago. Skipping for now.\n";
-            next;
+            next DBJOB;
         }
 
         # log event
-        $CommonObject{GenericAgentObject}->JobRun(
-            Job    => $DBJob,
-            Limit  => $Opts{l},
-            UserID => $UserIDOfGenericAgent,
+        $Kernel::OM->Get('Kernel::System::GenericAgent')->JobRun(
+            Job       => $DBJob,
+            Limit     => $Opts{l},
+            SleepTime => $Opts{s},
+            UserID    => $UserIDOfGenericAgent,
         );
     }
 }

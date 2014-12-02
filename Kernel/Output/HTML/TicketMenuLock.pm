@@ -32,7 +32,10 @@ sub Run {
 
     # check needed stuff
     if ( !$Param{Ticket} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need Ticket!' );
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => 'Need Ticket!'
+        );
         return;
     }
 
@@ -64,6 +67,7 @@ sub Run {
     if ( $Param{Config}->{Group} ) {
         my @Items = split /;/, $Param{Config}->{Group};
         my $AccessOk;
+        GROUP:
         for my $Item (@Items) {
             my ( $Permission, $Name ) = split /:/, $Item;
             if ( !$Permission || !$Name ) {
@@ -78,12 +82,12 @@ sub Run {
                 Type   => $Permission,
                 Result => 'Name',
             );
-            next if !@Groups;
+            next GROUP if !@Groups;
 
             for my $Group (@Groups) {
                 if ( $Group eq $Name ) {
                     $AccessOk = 1;
-                    last;
+                    last GROUP;
                 }
             }
         }
@@ -91,9 +95,8 @@ sub Run {
     }
 
     # check acl
-    return
-        if defined $Param{ACL}->{ $Param{Config}->{Action} }
-        && !$Param{ACL}->{ $Param{Config}->{Action} };
+    my %ACLLookup = reverse( %{ $Param{ACL} || {} } );
+    return if ( !$ACLLookup{ $Param{Config}->{Action} } );
 
     # if ticket is locked
     if ( $Param{Ticket}->{Lock} eq 'lock' ) {
@@ -109,7 +112,7 @@ sub Run {
             Name        => 'Unlock',
             Description => 'Unlock to give it back to the queue',
             Link =>
-                'Action=AgentTicketLock;Subaction=Unlock;TicketID=$QData{"TicketID"};$QEnv{"ChallengeTokenParam"}',
+                'Action=AgentTicketLock;Subaction=Unlock;TicketID=[% Data.TicketID | uri %];[% Env("ChallengeTokenParam") | html %]',
         };
     }
 
@@ -121,7 +124,7 @@ sub Run {
         Name        => 'Lock',
         Description => 'Lock it to work on it',
         Link =>
-            'Action=AgentTicketLock;Subaction=Lock;TicketID=$QData{"TicketID"};$QEnv{"ChallengeTokenParam"}',
+            'Action=AgentTicketLock;Subaction=Lock;TicketID=[% Data.TicketID | uri %];[% Env("ChallengeTokenParam") | html %]',
     };
 }
 

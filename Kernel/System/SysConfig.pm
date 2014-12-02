@@ -14,10 +14,16 @@ use warnings;
 
 use Storable qw();
 
-use Kernel::System::XML;
 use Kernel::Config;
-use Kernel::Language;
-use Kernel::System::Cache;
+
+our @ObjectDependencies = (
+    'Kernel::Config',
+    'Kernel::Language',
+    'Kernel::System::Cache',
+    'Kernel::System::Log',
+    'Kernel::System::Main',
+    'Kernel::System::XML',
+);
 
 =head1 NAME
 
@@ -35,54 +41,11 @@ All functions to manage sys config settings.
 
 =item new()
 
-create an object
+create an object. Do not use it directly, instead use:
 
-    use Kernel::Config;
-    use Kernel::System::Encode;
-    use Kernel::System::Log;
-    use Kernel::System::Main;
-    use Kernel::System::Time;
-    use Kernel::System::DB;
-    use Kernel::System::SysConfig;
-    use Kernel::Language;
-
-    my $ConfigObject = Kernel::Config->new();
-    my $EncodeObject = Kernel::System::Encode->new(
-        ConfigObject => $ConfigObject,
-    );
-    my $LogObject = Kernel::System::Log->new(
-        ConfigObject => $ConfigObject,
-        EncodeObject => $EncodeObject,
-    );
-    my $MainObject = Kernel::System::Main->new(
-        ConfigObject => $ConfigObject,
-        EncodeObject => $EncodeObject,
-        LogObject    => $LogObject,
-    );
-    my $TimeObject = Kernel::System::Time->new(
-        ConfigObject => $ConfigObject,
-        LogObject    => $LogObject,
-    );
-    my $DBObject = Kernel::System::DB->new(
-        ConfigObject => $ConfigObject,
-        EncodeObject => $EncodeObject,
-        LogObject    => $LogObject,
-        MainObject   => $MainObject,
-    );
-    my $LanguageObject = Kernel::Language->new(
-        ConfigObject => $ConfigObject,
-        EncodeObject => $EncodeObject,
-        LogObject    => $LogObject,
-    );
-    my $SysConfigObject = Kernel::System::SysConfig->new(
-        ConfigObject   => $ConfigObject,
-        EncodeObject   => $EncodeObject,
-        LogObject      => $LogObject,
-        DBObject       => $DBObject,
-        MainObject     => $MainObject,
-        TimeObject     => $TimeObject,
-        LanguageObject => $LanugageObject,
-    );
+    use Kernel::System::ObjectManager;
+    local $Kernel::OM = Kernel::System::ObjectManager->new();
+    my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
 
 =cut
 
@@ -95,10 +58,8 @@ sub new {
     my $Self = {};
     bless( $Self, $Type );
 
-    # check needed objects
-    for (qw(DBObject ConfigObject LogObject TimeObject MainObject EncodeObject)) {
-        $Self->{$_} = $Param{$_} || die "Got no $_!";
-    }
+    # get database object
+    $Self->{ConfigObject} = $Kernel::OM->Get('Kernel::Config');
 
     # get home directory
     $Self->{Home} = $Self->{ConfigObject}->Get('Home');
@@ -107,13 +68,10 @@ sub new {
     $Self->{utf8}     = 1;
     $Self->{FileMode} = ':utf8';
 
-    $Self->{XMLObject}           = Kernel::System::XML->new( %{$Self} );
-    $Self->{CacheObject}         = Kernel::System::Cache->new( %{$Self} );
-    $Self->{ConfigDefaultObject} = Kernel::Config->new( %{$Self}, Level => 'Default' );
-    $Self->{ConfigObject}        = Kernel::Config->new( %{$Self}, Level => 'First' );
-    $Self->{ConfigClearObject}   = Kernel::Config->new( %{$Self}, Level => 'Clear' );
+    $Self->{ConfigDefaultObject} = Kernel::Config->new( Level => 'Default' );
+    $Self->{ConfigObject}        = Kernel::Config->new( Level => 'First' );
+    $Self->{ConfigClearObject}   = Kernel::Config->new( Level => 'Clear' );
     $Self->{ConfigCounter}       = $Self->_Init();
-    $Self->{LanguageObject}      = $Param{LanguageObject} || Kernel::Language->new( %{$Self} );
 
     return $Self;
 }
@@ -164,6 +122,7 @@ sub WriteDefault {
     $Out .= "package Kernel::Config::Files::ZZZAAuto;\n";
     $Out .= "use strict;\n";
     $Out .= "use warnings;\n";
+    $Out .= "no warnings 'redefine';\n";
     if ( $Self->{utf8} ) {
         $Out .= "use utf8;\n";
     }
@@ -210,7 +169,7 @@ sub Download {
         ## use critic
         return if $Param{Type};
 
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Can't open $Home/Kernel/Config/Files/ZZZAuto.pm: $!"
         );
@@ -233,7 +192,6 @@ sub Download {
         return;
     }
 
-    # return file
     return $File;
 }
 
@@ -260,12 +218,15 @@ sub Upload {
     # check needed stuff
     for (qw(Content)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
 
-    my $FileLocation = $Self->{MainObject}->FileWrite(
+    my $FileLocation = $Kernel::OM->Get('Kernel::System::Main')->FileWrite(
         Location => "$Home/Kernel/Config/Files/ZZZAuto.pm",
         Content  => \$Param{Content},
         Mode     => 'binmode',
@@ -337,7 +298,10 @@ sub CreateConfig {
                     elsif (
                         ( defined $A1 && !defined $A2 )
                         || ( !defined $A1 && defined $A2 )
-                        || $Self->_DataDiff( Data1 => \$A1, Data2 => \$A2 )
+                        || $Self->_DataDiff(
+                            Data1 => \$A1,
+                            Data2 => \$A2
+                        )
                         || ( $Config{Valid} && !$ConfigDefault{Valid} )
                         )
                     {
@@ -369,6 +333,7 @@ sub CreateConfig {
     $Out .= "package Kernel::Config::Files::ZZZAuto;\n";
     $Out .= "use strict;\n";
     $Out .= "use warnings;\n";
+    $Out .= "no warnings 'redefine';\n";
     if ( $Self->{utf8} ) {
         $Out .= "use utf8;\n";
     }
@@ -408,14 +373,17 @@ sub ConfigItemUpdate {
     # check needed stuff
     for (qw(Valid Key Value)) {
         if ( !defined( $Param{$_} ) ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
 
     # check if we need to create config file
     if ( !-e "$Home/Kernel/Config/Files/ZZZAuto.pm" && !$Self->CreateConfig( EmptyFile => 1 ) ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Can't create empty $Home/Kernel/Config/Files/ZZZAuto.pm!",
         );
@@ -427,7 +395,7 @@ sub ConfigItemUpdate {
     ## no critic
     if ( !open( $Out, ">>$Self->{FileMode}", "$Home/Kernel/Config/Files/ZZZAuto.pm" ) ) {
         ## use critic
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Can't write $Home/Kernel/Config/Files/ZZZAuto.pm: $!",
         );
@@ -470,7 +438,7 @@ sub ConfigItemUpdate {
         $Option = "delete \$Self->{'$Param{Key}'};\n";
     }
     else {
-        $Option = $Self->{MainObject}->Dump( $Param{Value}, 'ascii' );
+        $Option = $Kernel::OM->Get('Kernel::System::Main')->Dump( $Param{Value} );
         $Option =~ s/\$VAR1/\$Self->{'$Param{Key}'}/;
     }
 
@@ -485,7 +453,7 @@ sub ConfigItemUpdate {
     if ( !open( $In, "<$Self->{FileMode}", "$Home/Kernel/Config/Files/ZZZAuto.pm" ) ) {
         ## use critic
 
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Can't read $Home/Kernel/Config/Files/ZZZAuto.pm: $!",
         );
@@ -541,7 +509,10 @@ sub ConfigItemGet {
     # check needed stuff
     for (qw(Name)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -553,8 +524,11 @@ sub ConfigItemGet {
     # return on invalid config item
     return if !$Self->{Config}->{ $Param{Name} };
 
+    # get main object
+    my $MainObject = $Kernel::OM->Get('Kernel::System::Main');
+
     # copy config and store it as default
-    my $Dump = $Self->{MainObject}->Dump( $Self->{Config}->{ $Param{Name} }, 'ascii' );
+    my $Dump = $MainObject->Dump( $Self->{Config}->{ $Param{Name} } );
     $Dump =~ s/\$VAR1 =/\$ConfigItem =/;
 
     # rh as 8 bug fix
@@ -576,9 +550,11 @@ sub ConfigItemGet {
     if ( $ConfigItem->{Setting}->[1]->{String} ) {
 
         # fill default
-        $ConfigItem->{Setting}->[1]->{String}->[1]->{Default}
-            = $ConfigItem->{Setting}->[1]->{String}->[1]->{Content};
-        my $String = $Self->_ModGet( ConfigName => $ConfigItem->{Name}, Level => $Level );
+        $ConfigItem->{Setting}->[1]->{String}->[1]->{Default} = $ConfigItem->{Setting}->[1]->{String}->[1]->{Content};
+        my $String = $Self->_ModGet(
+            ConfigName => $ConfigItem->{Name},
+            Level      => $Level
+        );
         if ( !$Param{Default} && defined($String) ) {
             $ConfigItem->{Setting}->[1]->{String}->[1]->{Content} = $String;
         }
@@ -588,7 +564,10 @@ sub ConfigItemGet {
         # fill default
         $ConfigItem->{Setting}->[1]->{TextArea}->[1]->{Default}
             = $ConfigItem->{Setting}->[1]->{TextArea}->[1]->{Content};
-        my $TextArea = $Self->_ModGet( ConfigName => $ConfigItem->{Name}, Level => $Level );
+        my $TextArea = $Self->_ModGet(
+            ConfigName => $ConfigItem->{Name},
+            Level      => $Level
+        );
         if ( !$Param{Default} && defined($TextArea) ) {
             $ConfigItem->{Setting}->[1]->{TextArea}->[1]->{Content} = $TextArea;
         }
@@ -598,13 +577,19 @@ sub ConfigItemGet {
         # fill default
         $ConfigItem->{Setting}->[1]->{Option}->[1]->{Default}
             = $ConfigItem->{Setting}->[1]->{Option}->[1]->{SelectedID};
-        my $Option = $Self->_ModGet( ConfigName => $ConfigItem->{Name}, Level => $Level );
+        my $Option = $Self->_ModGet(
+            ConfigName => $ConfigItem->{Name},
+            Level      => $Level
+        );
         if ( !$Param{Default} && defined($Option) ) {
             $ConfigItem->{Setting}->[1]->{Option}->[1]->{SelectedID} = $Option;
         }
     }
     if ( $ConfigItem->{Setting}->[1]->{Hash} ) {
-        my $HashRef = $Self->_ModGet( ConfigName => $ConfigItem->{Name}, Level => $Level );
+        my $HashRef = $Self->_ModGet(
+            ConfigName => $ConfigItem->{Name},
+            Level      => $Level
+        );
         if ( !$Param{Default} && defined($HashRef) ) {
             my @Array;
             if ( ref $ConfigItem->{Setting}->[1]->{Hash}->[1]->{Item} eq 'ARRAY' ) {
@@ -617,7 +602,12 @@ sub ConfigItemGet {
             }
             for my $Key ( sort keys %Hash ) {
                 if ( ref $Hash{$Key} eq 'ARRAY' ) {
-                    my @Array = ( undef, { Content => '', } );
+                    my @Array = (
+                        undef,
+                        {
+                            Content => '',
+                        }
+                    );
                     @{ $Array[1]{Item} } = (undef);
                     for my $Content ( @{ $Hash{$Key} } ) {
                         push( @{ $Array[1]{Item} }, { Content => $Content } );
@@ -632,12 +622,20 @@ sub ConfigItemGet {
                     );
                 }
                 elsif ( ref $Hash{$Key} eq 'HASH' ) {
-                    my @Array = ( undef, { Content => '', } );
+                    my @Array = (
+                        undef,
+                        {
+                            Content => '',
+                        }
+                    );
                     @{ $Array[1]{Item} } = (undef);
                     for my $Key2 ( sort keys %{ $Hash{$Key} } ) {
                         push(
                             @{ $Array[1]{Item} },
-                            { Content => $Hash{$Key}{$Key2}, Key => $Key2 }
+                            {
+                                Content => $Hash{$Key}{$Key2},
+                                Key     => $Key2
+                            }
                         );
                     }
                     push(
@@ -684,7 +682,10 @@ sub ConfigItemGet {
         }
     }
     if ( $ConfigItem->{Setting}->[1]->{Array} ) {
-        my $ArrayRef = $Self->_ModGet( ConfigName => $ConfigItem->{Name}, Level => $Level );
+        my $ArrayRef = $Self->_ModGet(
+            ConfigName => $ConfigItem->{Name},
+            Level      => $Level
+        );
         if ( !$Param{Default} && defined($ArrayRef) ) {
             @{ $ConfigItem->{Setting}->[1]->{Array}->[1]->{Item} } = (undef);
             my @Array;
@@ -694,13 +695,18 @@ sub ConfigItemGet {
             for my $Key (@Array) {
                 push(
                     @{ $ConfigItem->{Setting}->[1]->{Array}->[1]->{Item} },
-                    { Content => $Key, },
+                    {
+                        Content => $Key,
+                    },
                 );
             }
         }
     }
     if ( $ConfigItem->{Setting}->[1]->{FrontendModuleReg} ) {
-        my $HashRef = $Self->_ModGet( ConfigName => $ConfigItem->{Name}, Level => $Level );
+        my $HashRef = $Self->_ModGet(
+            ConfigName => $ConfigItem->{Name},
+            Level      => $Level
+        );
         if ( !$Param{Default} && defined($HashRef) ) {
             @{ $ConfigItem->{Setting}->[1]->{FrontendModuleReg} } = (undef);
             my %Hash;
@@ -801,7 +807,10 @@ sub ConfigItemGet {
         }
     }
     if ( $ConfigItem->{Setting}->[1]->{TimeWorkingHours} ) {
-        my $DaysRef = $Self->_ModGet( ConfigName => $ConfigItem->{Name}, Level => $Level );
+        my $DaysRef = $Self->_ModGet(
+            ConfigName => $ConfigItem->{Name},
+            Level      => $Level
+        );
         if ( !$Param{Default} && defined($DaysRef) ) {
             @{ $ConfigItem->{Setting}->[1]->{TimeWorkingHours}->[1]->{Day} } = (undef);
             my %Days;
@@ -811,7 +820,12 @@ sub ConfigItemGet {
             for my $Day ( sort keys %Days ) {
                 my @Array = (undef);
                 for my $Hour ( @{ $Days{$Day} } ) {
-                    push( @Array, { Content => $Hour, } );
+                    push(
+                        @Array,
+                        {
+                            Content => $Hour,
+                        }
+                    );
                 }
                 push(
                     @{ $ConfigItem->{Setting}->[1]->{TimeWorkingHours}->[1]->{Day} },
@@ -824,7 +838,10 @@ sub ConfigItemGet {
         }
     }
     if ( $ConfigItem->{Setting}->[1]->{TimeVacationDays} ) {
-        my $HashRef = $Self->_ModGet( ConfigName => $ConfigItem->{Name}, Level => $Level );
+        my $HashRef = $Self->_ModGet(
+            ConfigName => $ConfigItem->{Name},
+            Level      => $Level
+        );
         if ( !$Param{Default} && defined($HashRef) ) {
             @{ $ConfigItem->{Setting}->[1]->{TimeVacationDays}->[1]->{Item} } = (undef);
             my %Hash;
@@ -850,7 +867,10 @@ sub ConfigItemGet {
         }
     }
     if ( $ConfigItem->{Setting}->[1]->{TimeVacationDaysOneTime} ) {
-        my $HashRef = $Self->_ModGet( ConfigName => $ConfigItem->{Name}, Level => $Level );
+        my $HashRef = $Self->_ModGet(
+            ConfigName => $ConfigItem->{Name},
+            Level      => $Level
+        );
         if ( !$Param{Default} && defined($HashRef) ) {
             @{ $ConfigItem->{Setting}->[1]->{TimeVacationDaysOneTime}->[1]->{Item} } = (undef);
             my %Hash;
@@ -883,7 +903,10 @@ sub ConfigItemGet {
     if ( $ConfigItem->{Setting}->[1]->{DateTime} ) {
 
         # get data into a perl Hash
-        my $HashRef = $Self->_ModGet( ConfigName => $ConfigItem->{Name}, Level => $Level );
+        my $HashRef = $Self->_ModGet(
+            ConfigName => $ConfigItem->{Name},
+            Level      => $Level
+        );
         if ( !$Param{Default} && defined($HashRef) ) {
 
             # set perl hash into the correct XML structure for a DateTime setting
@@ -900,8 +923,7 @@ sub ConfigItemGet {
             #    },
             # ],
             for my $Part (qw(Year Month Day Hour Minute)) {
-                $ConfigItem->{Setting}->[1]->{DateTime}->[1]->{$Part}->[1]->{Content}
-                    = $HashRef->{$Part};
+                $ConfigItem->{Setting}->[1]->{DateTime}->[1]->{$Part}->[1]->{Content} = $HashRef->{$Part};
             }
         }
     }
@@ -925,7 +947,10 @@ sub ConfigItemGet {
         elsif (
             ( defined $A1 && !defined $A2 )
             || ( !defined $A1 && defined $A2 )
-            || $Self->_DataDiff( Data1 => \$A1, Data2 => \$A2 )
+            || $Self->_DataDiff(
+                Data1 => \$A1,
+                Data2 => \$A2
+            )
             )
         {
             $ConfigItem->{Diff} = 1;
@@ -937,7 +962,7 @@ sub ConfigItemGet {
         )
     {
         my $Home = $Self->{Home};
-        my @List = $Self->{MainObject}->DirectoryRead(
+        my @List = $MainObject->DirectoryRead(
             Directory => $Home,
             Filter    => "$ConfigItem->{Setting}->[1]->{Option}->[1]->{Location}",
         );
@@ -986,7 +1011,10 @@ sub ConfigItemReset {
     # check needed stuff
     for (qw(Name)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -998,7 +1026,11 @@ sub ConfigItemReset {
     my ($B);
     eval "\$B = $A";
 
-    $Self->ConfigItemUpdate( Key => $Param{Name}, Value => $B, Valid => $ConfigItemDefault{Valid} );
+    $Self->ConfigItemUpdate(
+        Key   => $Param{Name},
+        Value => $B,
+        Valid => $ConfigItemDefault{Valid}
+    );
     return 1;
 }
 
@@ -1044,7 +1076,10 @@ sub ConfigSubGroupList {
     # check needed stuff
     for (qw(Name)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -1092,7 +1127,10 @@ sub ConfigSubGroupConfigItemList {
     # check needed stuff
     for (qw(Group SubGroup)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -1160,10 +1198,17 @@ sub ConfigItemSearch {
     # check needed stuff
     for (qw(Search)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
+
+    # get language object
+    my $LanguageObject = $Kernel::OM->Get('Kernel::Language');
+
     $Param{Search} =~ s/\*//;
     my %Groups = $Self->ConfigGroupList();
     for my $Group ( sort keys(%Groups) ) {
@@ -1243,11 +1288,11 @@ sub ConfigItemSearch {
                         if ( !$Used{ $Group . '::' . $SubGroup } ) {
                             my $Description = $ItemHash{Description}[$Index]{Content};
 
-                        # compare with the English description and also with the translated sentence
+                            # compare with the English description and also with the translated sentence
                             if (
                                 ( $Description =~ /\Q$Param{Search}\E/i )
                                 || (
-                                    $Self->{LanguageObject}->Get($Description)
+                                    $LanguageObject->Translate($Description)
                                     =~ /\Q$Param{Search}\E/i
                                 )
                                 )
@@ -1268,6 +1313,7 @@ sub ConfigItemSearch {
             }
         }
     }
+
     return @List;
 }
 
@@ -1299,6 +1345,8 @@ sub ConfigItemTranslatableStrings {
                 Group    => $Group,
                 SubGroup => $SubGroup,
             );
+
+            CONFIGITEM:
             for my $ConfigItem (@ConfigItemList) {
 
                 # get attributes of each config item
@@ -1306,7 +1354,7 @@ sub ConfigItemTranslatableStrings {
                     Name    => $ConfigItem,
                     Default => 1,
                 );
-                next if !%Config;
+                next CONFIGITEM if !%Config;
 
                 # get translatable strings
                 $Self->_ConfigItemTranslatableStrings( Data => \%Config );
@@ -1341,7 +1389,7 @@ sub ConfigItemValidate {
 
     # check needed stuff
     if ( !$Param{Key} ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Need Key!",
         );
@@ -1359,9 +1407,7 @@ sub ConfigItemValidate {
     return 1 if !$ConfigItem{ValidateModule}->[1]->{Content};
 
     # load the validate module
-    my $ValidateObject = $Self->_LoadBackend(
-        Module => $ConfigItem{ValidateModule}->[1]->{Content},
-    );
+    my $ValidateObject = $Kernel::OM->Get( $ConfigItem{ValidateModule}->[1]->{Content} );
 
     # module could not be loaded
     return if !$ValidateObject;
@@ -1532,8 +1578,11 @@ sub _Init {
 
     return if !-e $Directory;
 
+    # get main object
+    my $MainObject = $Kernel::OM->Get('Kernel::System::Main');
+
     # load xml config files
-    my @Files = $Self->{MainObject}->DirectoryRead(
+    my @Files = $MainObject->DirectoryRead(
         Directory => $Directory,
         Filter    => "*.xml",
     );
@@ -1541,12 +1590,15 @@ sub _Init {
     # get the md5 representing the current configuration state
     my $ConfigChecksum = $Self->{ConfigObject}->ConfigChecksum();
 
+    # get cache object
+    my $CacheObject = $Kernel::OM->Get('Kernel::System::Cache');
+
     my %Data;
     FILE:
     for my $File (@Files) {
 
         my $CacheKey  = "_Init::${File}::${ConfigChecksum}";
-        my $CacheData = $Self->{CacheObject}->Get(
+        my $CacheData = $CacheObject->Get(
             Type => 'SysConfig',
             Key  => $CacheKey,
         );
@@ -1559,14 +1611,14 @@ sub _Init {
             }
         }
 
-        my $ConfigFile = $Self->{MainObject}->FileRead(
+        my $ConfigFile = $MainObject->FileRead(
             Location => $File,
             Mode     => 'binmode',
             Result   => 'SCALAR',
         );
 
         if ( !ref $ConfigFile || !${$ConfigFile} ) {
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
                 Message  => "Can't open file $File: $!",
             );
@@ -1574,11 +1626,14 @@ sub _Init {
         }
 
         # Ok, cache was not used, parse the config files
-        my @XMLHash = $Self->{XMLObject}->XMLParse2XMLHash( String => $ConfigFile );
+        my @XMLHash = $Kernel::OM->Get('Kernel::System::XML')->XMLParse2XMLHash(
+            String     => $ConfigFile,
+            Sourcename => $File,
+        );
 
         $Data{$File} = \@XMLHash;
 
-        my $Dump = $Self->{MainObject}->Dump( \@XMLHash, 'ascii' );
+        my $Dump = $MainObject->Dump( \@XMLHash );
         $Dump =~ s/\$VAR1/\$XMLHashRef/;
 
         my $Out;
@@ -1588,7 +1643,7 @@ sub _Init {
         $Out .= "use warnings;\n";
         $Out .= $Dump . "\n1;";
 
-        $Self->{CacheObject}->Set(
+        $CacheObject->Set(
             Type  => 'SysConfig',
             Key   => $CacheKey,
             Value => \$Out,
@@ -1642,8 +1697,10 @@ sub _Init {
     # Only the last config XML entry should be used, remove any previous ones.
     my %Seen;
     my @XMLConfigTmp;
+
+    CONFIGITEM:
     for my $ConfigItem ( reverse @{ $Self->{XMLConfig} } ) {
-        next if !$ConfigItem || !$ConfigItem->{Name} || $Seen{ $ConfigItem->{Name} }++;
+        next CONFIGITEM if !$ConfigItem || !$ConfigItem->{Name} || $Seen{ $ConfigItem->{Name} }++;
         push @XMLConfigTmp, $ConfigItem;
     }
     $Self->{XMLConfig} = \@XMLConfigTmp;
@@ -1682,7 +1739,10 @@ sub _DataDiff {
     # check needed stuff
     for (qw(Data1 Data2)) {
         if ( !defined $Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -1728,18 +1788,22 @@ sub _DataDiff {
         return 1 if $#A ne $#B;
 
         # compare array
+        COUNT:
         for my $Count ( 0 .. $#A ) {
 
             # do nothing, it's ok
-            next if !defined $A[$Count] && !defined $B[$Count];
+            next COUNT if !defined $A[$Count] && !defined $B[$Count];
 
             # return diff, because its different
             return 1 if !defined $A[$Count] || !defined $B[$Count];
 
             if ( $A[$Count] ne $B[$Count] ) {
                 if ( ref $A[$Count] eq 'ARRAY' || ref $A[$Count] eq 'HASH' ) {
-                    return 1 if $Self->_DataDiff( Data1 => $A[$Count], Data2 => $B[$Count] );
-                    next;
+                    return 1 if $Self->_DataDiff(
+                        Data1 => $A[$Count],
+                        Data2 => $B[$Count]
+                    );
+                    next COUNT;
                 }
                 return 1;
             }
@@ -1753,13 +1817,14 @@ sub _DataDiff {
         my %B = %{ $Param{Data2} };
 
         # compare %A with %B and remove it if checked
+        KEY:
         for my $Key ( sort keys %A ) {
 
             # Check if both are undefined
             if ( !defined $A{$Key} && !defined $B{$Key} ) {
                 delete $A{$Key};
                 delete $B{$Key};
-                next;
+                next KEY;
             }
 
             # return diff, because its different
@@ -1768,15 +1833,18 @@ sub _DataDiff {
             if ( $A{$Key} eq $B{$Key} ) {
                 delete $A{$Key};
                 delete $B{$Key};
-                next;
+                next KEY;
             }
 
             # return if values are different
             if ( ref $A{$Key} eq 'ARRAY' || ref $A{$Key} eq 'HASH' ) {
-                return 1 if $Self->_DataDiff( Data1 => $A{$Key}, Data2 => $B{$Key} );
+                return 1 if $Self->_DataDiff(
+                    Data1 => $A{$Key},
+                    Data2 => $B{$Key}
+                );
                 delete $A{$Key};
                 delete $B{$Key};
-                next;
+                next KEY;
             }
             return 1;
         }
@@ -1787,7 +1855,10 @@ sub _DataDiff {
     }
 
     if ( ref $Param{Data1} eq 'REF' && ref $Param{Data2} eq 'REF' ) {
-        return 1 if $Self->_DataDiff( Data1 => ${ $Param{Data1} }, Data2 => ${ $Param{Data2} } );
+        return 1 if $Self->_DataDiff(
+            Data1 => ${ $Param{Data1} },
+            Data2 => ${ $Param{Data2} }
+        );
         return;
     }
 
@@ -1830,7 +1901,10 @@ sub _FileWriteAtomic {
 
     for (qw(Filename Content)) {
         if ( !defined $Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -1842,7 +1916,7 @@ sub _FileWriteAtomic {
     if ( !open( $FH, ">$Self->{FileMode}", $TempFilename ) ) {
         ## use critic
 
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Can't open file $TempFilename: $!",
         );
@@ -1853,7 +1927,7 @@ sub _FileWriteAtomic {
     close $FH;
 
     if ( !rename $TempFilename, $Param{Filename} ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Could not rename $TempFilename to $Param{Filename}: $!"
         );
@@ -1869,15 +1943,20 @@ sub _ConfigItemTranslatableStrings {
     # check needed stuff
     for (qw(Data)) {
         if ( !defined $Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
 
     # ARRAY
     if ( ref $Param{Data} eq 'ARRAY' ) {
+
+        KEY:
         for my $Key ( @{ $Param{Data} } ) {
-            next if !$Key;
+            next KEY if !$Key;
             $Self->_ConfigItemTranslatableStrings( Data => $Key );
         }
         return;
@@ -1954,10 +2033,17 @@ sub _XML2Perl {
     # check needed stuff
     for (qw(Data)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
+
+    # get main object
+    my $MainObject = $Kernel::OM->Get('Kernel::System::Main');
+
     my $ConfigItem = $Param{Data}->{Setting}->[1];
     my $Data;
     if ( $ConfigItem->{String} ) {
@@ -1966,7 +2052,7 @@ sub _XML2Perl {
         $Data = $D;
 
         # store in config
-        my $Dump = $Self->{MainObject}->Dump( $Data, 'ascii' );
+        my $Dump = $MainObject->Dump($Data);
         $Dump =~ s/\$VAR1 =//;
         $Data = $Dump;
     }
@@ -1976,7 +2062,7 @@ sub _XML2Perl {
         $Data = $D;
 
         # store in config
-        my $Dump = $Self->{MainObject}->Dump( $Data, 'ascii' );
+        my $Dump = $MainObject->Dump($Data);
         $Dump =~ s/\$VAR1 =//;
         $Data = $Dump;
     }
@@ -1987,7 +2073,7 @@ sub _XML2Perl {
         $Data = $D;
 
         # store in config
-        my $Dump = $Self->{MainObject}->Dump( $Data, 'ascii' );
+        my $Dump = $MainObject->Dump($Data);
         $Dump =~ s/\$VAR1 =//;
         $Data = $Dump;
     }
@@ -2007,8 +2093,7 @@ sub _XML2Perl {
                     $SubHash{
                         $ConfigItem->{Hash}->[1]->{Item}->[$Item]->{Hash}->[1]->{Item}->[$Index]
                             ->{Key}
-                        }
-                        = $ConfigItem->{Hash}->[1]->{Item}->[$Item]->{Hash}->[1]->{Item}->[$Index]
+                        } = $ConfigItem->{Hash}->[1]->{Item}->[$Item]->{Hash}->[1]->{Item}->[$Index]
                         ->{Content};
                 }
                 $Hash{ $Array[$Item]->{Key} } = \%SubHash;
@@ -2033,7 +2118,7 @@ sub _XML2Perl {
         }
 
         # store in config
-        my $Dump = $Self->{MainObject}->Dump( \%Hash, 'ascii' );
+        my $Dump = $MainObject->Dump( \%Hash );
         $Dump =~ s/\$VAR1 =//;
         $Data = $Dump;
     }
@@ -2048,7 +2133,7 @@ sub _XML2Perl {
         }
 
         # store in config
-        my $Dump = $Self->{MainObject}->Dump( \@ArrayNew, 'ascii' );
+        my $Dump = $MainObject->Dump( \@ArrayNew );
         $Dump =~ s/\$VAR1 =//;
         $Data = $Dump;
     }
@@ -2146,7 +2231,7 @@ sub _XML2Perl {
         }
 
         # store in config
-        my $Dump = $Self->{MainObject}->Dump( \%Hash, 'ascii' );
+        my $Dump = $MainObject->Dump( \%Hash );
         $Dump =~ s/\$VAR1 =//;
         $Data = $Dump;
     }
@@ -2165,7 +2250,7 @@ sub _XML2Perl {
         }
 
         # store in config
-        my $Dump = $Self->{MainObject}->Dump( \%Days, 'ascii' );
+        my $Dump = $MainObject->Dump( \%Days );
         $Dump =~ s/\$VAR1 =//;
         $Data = $Dump;
     }
@@ -2177,7 +2262,7 @@ sub _XML2Perl {
         }
 
         # store in config
-        my $Dump = $Self->{MainObject}->Dump( \%Hash, 'ascii' );
+        my $Dump = $MainObject->Dump( \%Hash );
         $Dump =~ s/\$VAR1 =//;
         $Data = $Dump;
     }
@@ -2190,7 +2275,7 @@ sub _XML2Perl {
         }
 
         # store in config
-        my $Dump = $Self->{MainObject}->Dump( \%Hash, 'ascii' );
+        my $Dump = $MainObject->Dump( \%Hash );
         $Dump =~ s/\$VAR1 =//;
         $Data = $Dump;
     }
@@ -2203,74 +2288,12 @@ sub _XML2Perl {
         }
 
         # store in config
-        my $Dump = $Self->{MainObject}->Dump( \%Hash, 'ascii' );
+        my $Dump = $MainObject->Dump( \%Hash );
         $Dump =~ s/\$VAR1 =//;
         $Data = $Dump;
     }
 
     return $Data;
-}
-
-=item _LoadBackend()
-
-Returns a newly loaded backend object
-
-    my $BackendObject = $SysConfigObject->_LoadBackend(
-        Module => 'Kernel::System::SysConfig::StateValidate',
-    );
-
-=cut
-
-sub _LoadBackend {
-    my ( $Self, %Param ) = @_;
-
-    if ( !$Param{Module} ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => 'Need Module!',
-        );
-        return;
-    }
-
-    # check if backend object is already cached
-    return $Self->{Cache}->{LoadSysConfigBackend}->{ $Param{Module} }
-        if $Self->{Cache}->{LoadSysConfigBackend}->{ $Param{Module} };
-
-    # load the backend module
-    if ( !$Self->{MainObject}->Require( $Param{Module} ) ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => "Can't load sysconfig backend module $Param{Module}!",
-        );
-        return;
-    }
-
-    # IMPORTANT
-    # we need to create our own config object here,
-    # otherwise the <OTRS_CONFIG_> variables would not be replaced,
-    # e.g. as for <OTRS_CONFIG_TempDir>
-    my $ConfigObject = Kernel::Config->new( %{$Self} );
-
-    # create new instance
-    my $BackendObject = $Param{Module}->new(
-        %{$Self},
-        %Param,
-        ConfigObject => $ConfigObject,
-    );
-
-    # check for backend object
-    if ( !$BackendObject ) {
-        $Self->{LogObject}->Log(
-            Priority => 'error',
-            Message  => "Can't create a new instance of sysconfig backend module $Param{Module}!",
-        );
-        return;
-    }
-
-    # cache the backend object
-    $Self->{Cache}->{LoadSysConfigBackend}->{ $Param{Module} } = $BackendObject;
-
-    return $BackendObject;
 }
 
 1;

@@ -12,6 +12,15 @@ package Kernel::System::DB::mysql;
 use strict;
 use warnings;
 
+use Encode ();
+
+our @ObjectDependencies = (
+    'Kernel::Config',
+    'Kernel::System::Log',
+    'Kernel::System::Main',
+    'Kernel::System::Time',
+);
+
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -35,6 +44,10 @@ sub LoadPreferences {
     $Self->{'DB::QuoteUnderscoreEnd'}   = '';
     $Self->{'DB::CaseSensitive'}        = 0;
     $Self->{'DB::LikeEscapeString'}     = '';
+
+    # mysql needs to proprocess the data to fix UTF8 issues
+    $Self->{'DB::PreProcessSQL'}      = 1;
+    $Self->{'DB::PreProcessBindData'} = 1;
 
     # how to determine server version
     # version can have package prefix, we need to extract that
@@ -63,11 +76,42 @@ sub LoadPreferences {
     #$Self->{'DB::ShellConnect'} = '';
 
     # init sql setting on db connect
-    if ( !$Self->{ConfigObject}->Get('Database::ShellOutput') ) {
+    if ( !$Kernel::OM->Get('Kernel::Config')->Get('Database::ShellOutput') ) {
         $Self->{'DB::Connect'} = 'SET NAMES utf8';
     }
 
     return 1;
+}
+
+sub PreProcessSQL {
+    my ( $Self, $SQLRef ) = @_;
+    $Self->_FixMysqlUTF8($SQLRef);
+    return;
+}
+
+sub PreProcessBindData {
+    my ( $Self, $BindRef ) = @_;
+
+    my $Size = scalar @{ $BindRef // [] };
+
+    for ( my $I = 0; $I < $Size; $I++ ) {
+        $Self->_FixMysqlUTF8( \$BindRef->[$I] );
+    }
+    return;
+}
+
+# Replace any unicode characters that need more than three bytes in UTF8
+#   with the unicode replacement character. MySQL's utf8 encoding only
+#   supports three bytes. In future we might want to use utf8mb4 (supported
+#   since 5.5.3+), but that will lead to problems with key sizes on mysql.
+# See also http://mathiasbynens.be/notes/mysql-utf8mb4.
+sub _FixMysqlUTF8 {
+    my ( $Self, $StringRef ) = @_;
+
+    return if !$$StringRef;
+    return if !Encode::is_utf8($$StringRef);
+
+    $$StringRef =~ s/([\x{10000}-\x{10FFFF}])/"\x{FFFD}"/eg;
 }
 
 sub Quote {
@@ -98,7 +142,10 @@ sub DatabaseCreate {
 
     # check needed stuff
     if ( !$Param{Name} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need Name!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Need Name!'
+        );
         return;
     }
 
@@ -111,7 +158,10 @@ sub DatabaseDrop {
 
     # check needed stuff
     if ( !$Param{Name} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need Name!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Need Name!'
+        );
         return;
     }
 
@@ -121,6 +171,9 @@ sub DatabaseDrop {
 
 sub TableCreate {
     my ( $Self, @Param ) = @_;
+
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
     my $SQLStart     = '';
     my $SQLEnd       = '';
@@ -142,7 +195,7 @@ sub TableCreate {
             && $Tag->{TagType} eq 'Start'
             )
         {
-            if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
+            if ( $ConfigObject->Get('Database::ShellOutput') ) {
                 $SQLStart .= $Self->{'DB::Comment'}
                     . "----------------------------------------------------------\n";
                 $SQLStart .= $Self->{'DB::Comment'} . " create table $Tag->{Name}\n";
@@ -305,10 +358,13 @@ sub TableCreate {
 sub TableDrop {
     my ( $Self, @Param ) = @_;
 
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
     my $SQL = '';
     for my $Tag (@Param) {
         if ( $Tag->{Tag} eq 'Table' && $Tag->{TagType} eq 'Start' ) {
-            if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
+            if ( $ConfigObject->Get('Database::ShellOutput') ) {
                 $SQL .= $Self->{'DB::Comment'}
                     . "----------------------------------------------------------\n";
                 $SQL .= $Self->{'DB::Comment'} . " drop table $Tag->{Name}\n";
@@ -325,6 +381,9 @@ sub TableDrop {
 sub TableAlter {
     my ( $Self, @Param ) = @_;
 
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
     my $SQLStart      = '';
     my @SQL           = ();
     my @Index         = ();
@@ -337,7 +396,7 @@ sub TableAlter {
 
         if ( $Tag->{Tag} eq 'TableAlter' && $Tag->{TagType} eq 'Start' ) {
             $Table = $Tag->{Name} || $Tag->{NameNew};
-            if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
+            if ( $ConfigObject->Get('Database::ShellOutput') ) {
                 $SQLStart .= $Self->{'DB::Comment'}
                     . "----------------------------------------------------------\n";
                 $SQLStart .= $Self->{'DB::Comment'} . " alter table $Table\n";
@@ -427,8 +486,7 @@ sub TableAlter {
                 push @SQL,
                     "UPDATE $Table SET $Tag->{NameNew} = $Default WHERE $Tag->{NameNew} IS NULL";
 
-                my $SQLAlter
-                    = "ALTER TABLE $Table CHANGE $Tag->{NameNew} $Tag->{NameNew} $Tag->{Type}";
+                my $SQLAlter = "ALTER TABLE $Table CHANGE $Tag->{NameNew} $Tag->{NameNew} $Tag->{Type}";
 
                 # add default
                 if ( defined $Tag->{Default} ) {
@@ -500,7 +558,10 @@ sub IndexCreate {
     # check needed stuff
     for (qw(TableName Name Data)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -529,7 +590,10 @@ sub IndexDrop {
     # check needed stuff
     for (qw(TableName Name)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -543,7 +607,10 @@ sub ForeignKeyCreate {
     # check needed stuff
     for (qw(LocalTableName Local ForeignTableName Foreign)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -551,7 +618,7 @@ sub ForeignKeyCreate {
     # create foreign key name
     my $ForeignKey = "FK_$Param{LocalTableName}_$Param{Local}_$Param{Foreign}";
     if ( length($ForeignKey) > 60 ) {
-        my $MD5 = $Self->{MainObject}->MD5sum(
+        my $MD5 = $Kernel::OM->Get('Kernel::System::Main')->MD5sum(
             String => $ForeignKey,
         );
         $ForeignKey = substr $ForeignKey, 0, 58;
@@ -572,7 +639,10 @@ sub ForeignKeyDrop {
     # check needed stuff
     for (qw(LocalTableName Local ForeignTableName Foreign)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -580,7 +650,7 @@ sub ForeignKeyDrop {
     # create foreign key name
     my $ForeignKey = "FK_$Param{LocalTableName}_$Param{Local}_$Param{Foreign}";
     if ( length($ForeignKey) > 60 ) {
-        my $MD5 = $Self->{MainObject}->MD5sum(
+        my $MD5 = $Kernel::OM->Get('Kernel::System::Main')->MD5sum(
             String => $ForeignKey,
         );
         $ForeignKey = substr $ForeignKey, 0, 58;
@@ -591,7 +661,7 @@ sub ForeignKeyDrop {
     # drop foreign key
     my @SQL;
 
-    if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
+    if ( $Kernel::OM->Get('Kernel::Config')->Get('Database::ShellOutput') ) {
         push @SQL, $Self->{'DB::Comment'}
             . ' MySQL does not create foreign key constraints in MyISAM. Dropping nonexisting constraints in MyISAM works just fine.';
         push @SQL, $Self->{'DB::Comment'}
@@ -614,7 +684,10 @@ sub UniqueCreate {
     # check needed stuff
     for (qw(TableName Name Data)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -639,7 +712,10 @@ sub UniqueDrop {
     # check needed stuff
     for (qw(TableName Name)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -650,12 +726,16 @@ sub UniqueDrop {
 sub Insert {
     my ( $Self, @Param ) = @_;
 
+    # get needed objects
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+    my $TimeObject   = $Kernel::OM->Get('Kernel::System::Time');
+
     my $SQL    = '';
     my @Keys   = ();
     my @Values = ();
     for my $Tag (@Param) {
         if ( $Tag->{Tag} eq 'Insert' && $Tag->{TagType} eq 'Start' ) {
-            if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
+            if ( $ConfigObject->Get('Database::ShellOutput') ) {
                 $SQL .= $Self->{'DB::Comment'}
                     . "----------------------------------------------------------\n";
                 $SQL .= $Self->{'DB::Comment'} . " insert into table $Tag->{Table}\n";
@@ -670,7 +750,7 @@ sub Insert {
             my $Value;
             if ( defined $Tag->{Value} ) {
                 $Value = $Tag->{Value};
-                $Self->{LogObject}->Log(
+                $Kernel::OM->Get('Kernel::System::Log')->Log(
                     Priority => 'error',
                     Message  => 'The content for inserts is not longer appreciated '
                         . 'attribut Value, use Content from now on! Reason: You can\'t '
@@ -705,11 +785,11 @@ sub Insert {
             $Value .= ', ';
         }
         if ( $Tmp eq 'current_timestamp' ) {
-            if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
+            if ( $ConfigObject->Get('Database::ShellOutput') ) {
                 $Value .= $Tmp;
             }
             else {
-                my $Timestamp = $Self->{TimeObject}->CurrentTimestamp();
+                my $Timestamp = $TimeObject->CurrentTimestamp();
                 $Value .= '\'' . $Timestamp . '\'';
             }
         }

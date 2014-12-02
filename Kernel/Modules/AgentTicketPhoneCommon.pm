@@ -106,8 +106,11 @@ sub Run {
     }
 
     # get ACL restrictions
-    $Self->{TicketObject}->TicketAcl(
-        Data          => '-',
+    my %PossibleActions = ( 1 => $Self->{Action} );
+
+    my $ACL = $Self->{TicketObject}->TicketAcl(
+        Data          => \%PossibleActions,
+        Action        => $Self->{Action},
         TicketID      => $Self->{TicketID},
         ReturnType    => 'Action',
         ReturnSubType => '-',
@@ -116,17 +119,20 @@ sub Run {
     my %AclAction = $Self->{TicketObject}->TicketAclActionData();
 
     # check if ACL restrictions exist
-    if ( IsHashRefWithData( \%AclAction ) ) {
+    if ( $ACL || IsHashRefWithData( \%AclAction ) ) {
+
+        my %AclActionLookup = reverse %AclAction;
 
         # show error screen if ACL prohibits this action
-        if ( defined $AclAction{ $Self->{Action} } && $AclAction{ $Self->{Action} } eq '0' ) {
+        if ( !$AclActionLookup{ $Self->{Action} } ) {
             return $Self->{LayoutObject}->NoPermission( WithHeader => 'yes' );
         }
     }
 
     # show lock state
     $OutputNotify .= $Self->{LayoutObject}->Notify(
-        Data => $Ticket{TicketNumber} . ': $Text{"Ticket locked."}',
+        Data => "$Ticket{TicketNumber}: "
+            . $Self->{LayoutObject}->{LanguageObject}->Translate("Ticket locked."),
     );
 
     # get lock state && write (lock) permissions
@@ -148,7 +154,8 @@ sub Run {
 
                 # show lock state
                 $OutputNotify = $Self->{LayoutObject}->Notify(
-                    Data => $Ticket{TicketNumber} . ': $Text{"Ticket locked."}',
+                    Data => "$Ticket{TicketNumber}: "
+                        . $Self->{LayoutObject}->{LanguageObject}->Translate("Ticket locked."),
                 );
             }
         }
@@ -166,8 +173,7 @@ sub Run {
                 $Output .= $Self->{LayoutObject}->Warning(
                     Message => $Self->{LayoutObject}->{LanguageObject}
                         ->Get('Sorry, you need to be the ticket owner to perform this action.'),
-                    Comment => $Self->{LayoutObject}->{LanguageObject}
-                        ->Get('Please change the owner first.'),
+                    Comment => $Self->{LayoutObject}->{LanguageObject}->Get('Please change the owner first.'),
                 );
                 $Output .= $Self->{LayoutObject}->Footer(
                     Type => 'Small',
@@ -177,7 +183,10 @@ sub Run {
             else {
                 $Self->{LayoutObject}->Block(
                     Name => 'TicketBack',
-                    Data => { %Param, TicketID => $Self->{TicketID}, },
+                    Data => {
+                        %Param,
+                        TicketID => $Self->{TicketID},
+                    },
                 );
             }
         }
@@ -222,8 +231,7 @@ sub Run {
         next DYNAMICFIELD if !$DynamicField;
         next DYNAMICFIELD if !$DynamicFieldValues{$DynamicField};
 
-        $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField }
-            = $DynamicFieldValues{$DynamicField};
+        $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField } = $DynamicFieldValues{$DynamicField};
     }
     $GetParam{DynamicField} = \%DynamicFieldACLParameters;
 
@@ -301,8 +309,7 @@ sub Run {
                         my %Filter = $Self->{TicketObject}->TicketAclData();
 
                         # convert Filer key => key back to key => value using map
-                        %{$PossibleValuesFilter}
-                            = map { $_ => $PossibleValues->{$_} }
+                        %{$PossibleValuesFilter} = map { $_ => $PossibleValues->{$_} }
                             keys %Filter;
                     }
                 }
@@ -354,7 +361,8 @@ sub Run {
         );
         $Output .= $Self->_MaskPhone(
             TicketID     => $Self->{TicketID},
-            QueueID      => $Self->{QueueID},
+            QueueID      => $Self->{QueueID} || $Ticket{QueueID},
+            SLAID        => $Ticket{SLAID},
             TicketNumber => $Ticket{TicketNumber},
             Title        => $Ticket{Title},
             NextStates   => $Self->_GetNextStates(
@@ -418,7 +426,8 @@ sub Run {
                 Param => 'FileUpload',
             );
             $Self->{UploadCacheObject}->FormIDAddFile(
-                FormID => $Self->{FormID},
+                FormID      => $Self->{FormID},
+                Disposition => 'attachment',
                 %UploadStuff,
             );
         }
@@ -506,8 +515,7 @@ sub Run {
                         my %Filter = $Self->{TicketObject}->TicketAclData();
 
                         # convert Filer key => key back to key => value using map
-                        %{$PossibleValuesFilter}
-                            = map { $_ => $PossibleValues->{$_} }
+                        %{$PossibleValuesFilter} = map { $_ => $PossibleValues->{$_} }
                             keys %Filter;
                     }
                 }
@@ -600,6 +608,8 @@ sub Run {
             $Output .= $Self->_MaskPhone(
                 TicketID     => $Self->{TicketID},
                 TicketNumber => $Tn,
+                QueueID      => $Ticket{QueueID},
+                SLAID        => $Ticket{SLAID},
                 Title        => $Ticket{Title},
                 NextStates   => $Self->_GetNextStates(
                     %GetParam,
@@ -637,9 +647,15 @@ sub Run {
 
                 # remove unused inline images
                 my @NewAttachmentData;
+                ATTACHMENT:
                 for my $Attachment (@AttachmentData) {
                     my $ContentID = $Attachment->{ContentID};
-                    if ($ContentID) {
+                    if (
+                        $ContentID
+                        && ( $Attachment->{ContentType} =~ /image/i )
+                        && ( $Attachment->{Disposition} eq 'inline' )
+                        )
+                    {
                         my $ContentIDHTMLQuote = $Self->{LayoutObject}->Ascii2Html(
                             Text => $ContentID,
                         );
@@ -649,7 +665,8 @@ sub Run {
                         $GetParam{Body} =~ s/(ContentID=)$ContentIDLinkEncode/$1$ContentID/g;
 
                         # ignore attachment if not linked in body
-                        next if $GetParam{Body} !~ /(\Q$ContentIDHTMLQuote\E|\Q$ContentID\E)/i;
+                        next ATTACHMENT
+                            if $GetParam{Body} !~ /(\Q$ContentIDHTMLQuote\E|\Q$ContentID\E)/i;
                     }
 
                     # remember inline images and normal attachments
@@ -676,7 +693,7 @@ sub Run {
                 $From = $LastCustomerArticle{From};
             }
 
-          # If we don't have a customer article, or if SenderType is "agent", use the agent as From.
+            # If we don't have a customer article, or if SenderType is "agent", use the agent as From.
             if ( !$From ) {
                 my $TemplateGenerator = Kernel::System::TemplateGenerator->new( %{$Self} );
                 $From = $TemplateGenerator->Sender(
@@ -697,6 +714,7 @@ sub Run {
                 UserID         => $Self->{UserID},
                 HistoryType    => $Self->{Config}->{HistoryType},
                 HistoryComment => $Self->{Config}->{HistoryComment} || '%%',
+                UnlockOnAway   => 1,
             );
 
             # show error of creating article
@@ -733,8 +751,7 @@ sub Run {
                 next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
                 # set the object ID (TicketID or ArticleID) depending on the field configuration
-                my $ObjectID
-                    = $DynamicFieldConfig->{ObjectType} eq 'Article'
+                my $ObjectID = $DynamicFieldConfig->{ObjectType} eq 'Article'
                     ? $ArticleID
                     : $Self->{TicketID};
 
@@ -890,14 +907,14 @@ sub Run {
                 my $StdAttachmentObject = Kernel::System::StdAttachment->new( %{$Self} );
 
                 # add std. attachments to ticket
-                my %AllStdAttachments
-                    = $StdAttachmentObject->StdAttachmentStandardTemplateMemberList(
+                my %AllStdAttachments = $StdAttachmentObject->StdAttachmentStandardTemplateMemberList(
                     StandardTemplateID => $GetParam{StandardTemplateID},
-                    );
+                );
                 for ( sort keys %AllStdAttachments ) {
                     my %AttachmentsData = $StdAttachmentObject->StdAttachmentGet( ID => $_ );
                     $Self->{UploadCacheObject}->FormIDAddFile(
-                        FormID => $Self->{FormID},
+                        FormID      => $Self->{FormID},
+                        Disposition => 'attachment',
                         %AttachmentsData,
                     );
                 }
@@ -1108,16 +1125,23 @@ sub _MaskPhone {
         );
     }
 
+    # get used calendar
+    my $Calendar = $Self->{TicketObject}->TicketCalendarGet(
+        QueueID => $Param{QueueID},
+        SLAID   => $Param{SLAID},
+    );
+
     # pending data string
     $Param{PendingDateString} = $Self->{LayoutObject}->BuildDateSelection(
         %Param,
-        Format           => 'DateInputFormatLong',
-        YearPeriodPast   => 0,
-        YearPeriodFuture => 5,
-        DiffTime         => $Self->{ConfigObject}->Get('Ticket::Frontend::PendingDiffTime') || 0,
-        Class            => $Param{Errors}->{DateInvalid},
-        Validate         => 1,
+        Format               => 'DateInputFormatLong',
+        YearPeriodPast       => 0,
+        YearPeriodFuture     => 5,
+        DiffTime             => $Self->{ConfigObject}->Get('Ticket::Frontend::PendingDiffTime') || 0,
+        Class                => $Param{Errors}->{DateInvalid},
+        Validate             => 1,
         ValidateDateInFuture => 1,
+        Calendar             => $Calendar,
     );
 
     # do html quoting
@@ -1128,8 +1152,7 @@ sub _MaskPhone {
     # prepare errors!
     if ( $Param{Errors} ) {
         for my $KeyError ( sort keys %{ $Param{Errors} } ) {
-            $Param{$KeyError}
-                = '* ' . $Self->{LayoutObject}->Ascii2Html( Text => $Param{Errors}->{$KeyError} );
+            $Param{$KeyError} = '* ' . $Self->{LayoutObject}->Ascii2Html( Text => $Param{Errors}->{$KeyError} );
         }
     }
 
@@ -1202,8 +1225,17 @@ sub _MaskPhone {
     }
 
     # show attachments
+    ATTACHMENT:
     for my $Attachment ( @{ $Param{Attachments} } ) {
-        next if $Attachment->{ContentID} && $Self->{LayoutObject}->{BrowserRichText};
+        if (
+            $Attachment->{ContentID}
+            && $Self->{LayoutObject}->{BrowserRichText}
+            && ( $Attachment->{ContentType} =~ /image/i )
+            && ( $Attachment->{Disposition} eq 'inline' )
+            )
+        {
+            next ATTACHMENT;
+        }
         $Self->{LayoutObject}->Block(
             Name => 'Attachment',
             Data => $Attachment,

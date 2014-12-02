@@ -10,48 +10,28 @@
 use strict;
 use warnings;
 use utf8;
-use vars (qw($Self %Param));
 
-use Kernel::System::AuthSession;
-use Kernel::System::Web::Request;
-use Kernel::System::Group;
-use Kernel::System::Ticket;
-use Kernel::System::User;
+use vars (qw($Self));
+
 use Kernel::Output::HTML::Layout;
 
-# create local objects
-my $SessionObject = Kernel::System::AuthSession->new( %{$Self} );
-my $GroupObject   = Kernel::System::Group->new( %{$Self} );
-my $TicketObject  = Kernel::System::Ticket->new( %{$Self} );
-my $UserObject    = Kernel::System::User->new( %{$Self} );
-my $ParamObject   = Kernel::System::Web::Request->new(
-    %{$Self},
-    WebRequest => $Param{WebRequest} || 0,
-);
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
+
 my $LayoutObject = Kernel::Output::HTML::Layout->new(
-    ConfigObject       => $Self->{ConfigObject},
-    LogObject          => $Self->{LogObject},
-    TimeObject         => $Self->{TimeObject},
-    MainObject         => $Self->{MainObject},
-    EncodeObject       => $Self->{EncodeObject},
-    SessionObject      => $SessionObject,
-    DBObject           => $Self->{DBObject},
-    ParamObject        => $ParamObject,
-    TicketObject       => $TicketObject,
-    UserObject         => $UserObject,
-    GroupObject        => $GroupObject,
     UserChallengeToken => 'TestToken',
     UserID             => 1,
     Lang               => 'de',
     SessionID          => 123,
 );
 
-my $MaxCharacters = $Self->{ConfigObject}->Get('Ticket::Frontend::TextAreaEmail');
+my $MaxCharacters = $ConfigObject->Get('Ticket::Frontend::TextAreaEmail');
 
 my @Tests = (
     {
-        Name => 'WrapPlainText() - #1 Check if already cleanly wrapped text is not changed.',
-        Type => 'Is',
+        Name          => 'WrapPlainText() - #1 Check if already cleanly wrapped text is not changed.',
+        Type          => 'Is',
         MaxCharacters => 80,
         String        => "123456789_123456789_123456789_ 123456789_123456789_
 123456789_123456789_123456789_ 123456789_123456789_

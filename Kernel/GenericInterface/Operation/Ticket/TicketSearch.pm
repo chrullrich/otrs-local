@@ -12,12 +12,14 @@ package Kernel::GenericInterface::Operation::Ticket::TicketSearch;
 use strict;
 use warnings;
 
-use Kernel::System::Ticket;
-use Kernel::System::DynamicField;
-use Kernel::System::DynamicField::Backend;
 use Kernel::System::VariableCheck qw( :all );
-use Kernel::GenericInterface::Operation::Common;
-use Kernel::GenericInterface::Operation::Ticket::Common;
+
+use base qw(
+    Kernel::GenericInterface::Operation::Common
+    Kernel::GenericInterface::Operation::Ticket::Common
+);
+
+our $ObjectManagerDisabled = 1;
 
 =head1 NAME
 
@@ -43,30 +45,19 @@ sub new {
     bless( $Self, $Type );
 
     # check needed objects
-    for my $Needed (
-        qw(DebuggerObject ConfigObject MainObject LogObject TimeObject DBObject EncodeObject WebserviceID)
-        )
-    {
+    for my $Needed (qw(DebuggerObject WebserviceID)) {
         if ( !$Param{$Needed} ) {
             return {
                 Success      => 0,
-                ErrorMessage => "Got no $Needed!"
+                ErrorMessage => "Got no $Needed!",
             };
         }
 
         $Self->{$Needed} = $Param{$Needed};
     }
 
-    # create additional objects
-    $Self->{DynamicFieldObject} = Kernel::System::DynamicField->new(%Param);
-    $Self->{DFBackendObject}    = Kernel::System::DynamicField::Backend->new(%Param);
-    $Self->{CommonObject}       = Kernel::GenericInterface::Operation::Common->new( %{$Self} );
-    $Self->{TicketCommonObject}
-        = Kernel::GenericInterface::Operation::Ticket::Common->new( %{$Self} );
-    $Self->{TicketObject} = Kernel::System::Ticket->new( %{$Self} );
-
     # get config for this screen
-    $Self->{Config} = $Self->{ConfigObject}->Get('GenericInterface::Operation::TicketSearch');
+    $Self->{Config} = $Kernel::OM->Get('Kernel::Config')->Get('GenericInterface::Operation::TicketSearch');
 
     return $Self;
 }
@@ -158,10 +149,13 @@ perform TicketSearch Operation. This will return a Ticket ID list.
 
         # article stuff (optional)
         From    => '%spam@example.com%',
-        To      => '%support@example.com%',
+        To      => '%service@example.com%',
         Cc      => '%client@example.com%',
         Subject => '%VIRUS 32%',
         Body    => '%VIRUS 32%',
+
+        # attachment stuff (optional, applies only for ArticleStorageDB)
+        AttachmentName => '%anyfile.txt%',
 
         # use full article text index if configured (optional, default off)
         FullTextIndex => 1,
@@ -193,14 +187,24 @@ perform TicketSearch Operation. This will return a Ticket ID list.
         # tickets with created time before ... (ticket older than this date) (optional)
         TicketCreateTimeOlderDate => '2006-01-19 23:59:59',
 
-        # tickets changed more than 60 minutes ago (optional)
+        # ticket history entries that created more than 60 minutes ago (optional)
         TicketChangeTimeOlderMinutes => 60,
-        # tickets changed less than 120 minutes ago (optional)
+        # ticket history entries that created less than 120 minutes ago (optional)
         TicketChangeTimeNewerMinutes => 120,
 
+        # tickets changed more than 60 minutes ago (optional)
+        TicketLastChangeTimeOlderMinutes => 60,
+        # tickets changed less than 120 minutes ago (optional)
+        TicketLastChangeTimeNewerMinutes => 120,
+
         # tickets with changed time after ... (ticket changed newer than this date) (optional)
-        TicketChangeTimeNewerDate => '2006-01-09 00:00:01',
+        TicketLastChangeTimeNewerDate => '2006-01-09 00:00:01',
         # tickets with changed time before ... (ticket changed older than this date) (optional)
+        TicketLastChangeTimeOlderDate => '2006-01-19 23:59:59',
+
+        # ticket history entry create time after ... (ticket history entries newer than this date) (optional)
+        TicketChangeTimeNewerDate => '2006-01-09 00:00:01',
+        # ticket history entry create time before ... (ticket history entries older than this date) (optional)
         TicketChangeTimeOlderDate => '2006-01-19 23:59:59',
 
         # tickets closed more than 60 minutes ago (optional)
@@ -269,11 +273,22 @@ perform TicketSearch Operation. This will return a Ticket ID list.
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    my ( $UserID, $UserType ) = $Self->{CommonObject}->Auth(
-        %Param
+    my $Result = $Self->Init(
+        WebserviceID => $Self->{WebserviceID},
     );
 
-    return $Self->{TicketCommonObject}->ReturnError(
+    if ( !$Result->{Success} ) {
+        $Self->ReturnError(
+            ErrorCode    => 'Webservice.InvalidConfiguration',
+            ErrorMessage => $Result->{ErrorMessage},
+        );
+    }
+
+    my ( $UserID, $UserType ) = $Self->Auth(
+        %Param,
+    );
+
+    return $Self->ReturnError(
         ErrorCode    => 'TicketSearch.AuthFail',
         ErrorMessage => "TicketSearch: Authorization failing!",
     ) if !$UserID;
@@ -301,7 +316,7 @@ sub Run {
 
     # perform ticket search
     $UserType = ( $UserType eq 'Customer' ) ? 'CustomerUserID' : 'UserID';
-    my @TicketIDs = $Self->{TicketObject}->TicketSearch(
+    my @TicketIDs = $Kernel::OM->Get('Kernel::System::Ticket')->TicketSearch(
         %GetParam,
         %DynamicFieldSearchParameters,
         Result              => 'ARRAY',
@@ -358,9 +373,9 @@ sub _GetParams {
 
     for my $Item (
         qw(TicketNumber Title From To Cc Subject Body
-        Agent ResultForm TimeSearchType ChangeTimeSearchType CloseTimeSearchType UseSubQueues
+        Agent ResultForm TimeSearchType ChangeTimeSearchType LastChangeTimeSearchType CloseTimeSearchType UseSubQueues
         ArticleTimeSearchType SearchInArchive
-        Fulltext ShownAttributes
+        Fulltext ShownAttributes AttachmentName
         )
         )
     {
@@ -410,7 +425,7 @@ sub _GetParams {
 
     for my $Index ( sort keys %EscalationTimes ) {
         for my $PostFix (qw( OlderMinutes NewerMinutes NewerDate OlderDate )) {
-            my $Item = 'TicketEscalation' . $EscalationTimes{$Index} . $PostFix;
+            my $Item = 'TicketEscalation' . $EscalationTimes{$Index} . 'Time' . $PostFix;
 
             # get search string params (get submitted params)
             if ( IsStringWithData( $Param{$Item} ) ) {
@@ -426,6 +441,7 @@ sub _GetParams {
     my @Prefixes = (
         'TicketCreateTime',
         'TicketChangeTime',
+        'TicketLastChangeTime',
         'TicketCloseTime',
         'TicketPendingTime',
         'ArticleCreateTime',
@@ -504,7 +520,7 @@ sub _GetDynamicFields {
     my %AttributeLookup;
 
     # get the dynamic fields for ticket object
-    $Self->{DynamicField} = $Self->{DynamicFieldObject}->DynamicFieldListGet(
+    $Self->{DynamicField} = $Kernel::OM->Get('Kernel::System::DynamicField')->DynamicFieldListGet(
         Valid      => 1,
         ObjectType => ['Ticket'],
     );
@@ -559,19 +575,17 @@ sub _CreateTimeSettings {
     # get single params
     my %GetParam = %Param;
 
-    # get close time settings
+    # get change time settings
     if ( !$GetParam{ChangeTimeSearchType} ) {
 
         # do nothing on time stuff
     }
     elsif ( $GetParam{ChangeTimeSearchType} eq 'TimeSlot' ) {
         for (qw(Month Day)) {
-            $GetParam{"TicketChangeTimeStart$_"}
-                = sprintf( "%02d", $GetParam{"TicketChangeTimeStart$_"} );
+            $GetParam{"TicketChangeTimeStart$_"} = sprintf( "%02d", $GetParam{"TicketChangeTimeStart$_"} );
         }
         for (qw(Month Day)) {
-            $GetParam{"TicketChangeTimeStop$_"}
-                = sprintf( "%02d", $GetParam{"TicketChangeTimeStop$_"} );
+            $GetParam{"TicketChangeTimeStop$_"} = sprintf( "%02d", $GetParam{"TicketChangeTimeStop$_"} );
         }
         if (
             $GetParam{TicketChangeTimeStartDay}
@@ -579,8 +593,7 @@ sub _CreateTimeSettings {
             && $GetParam{TicketChangeTimeStartYear}
             )
         {
-            $GetParam{TicketChangeTimeNewerDate}
-                = $GetParam{TicketChangeTimeStartYear} . '-'
+            $GetParam{TicketChangeTimeNewerDate} = $GetParam{TicketChangeTimeStartYear} . '-'
                 . $GetParam{TicketChangeTimeStartMonth} . '-'
                 . $GetParam{TicketChangeTimeStartDay}
                 . ' 00:00:00';
@@ -591,8 +604,7 @@ sub _CreateTimeSettings {
             && $GetParam{TicketChangeTimeStopYear}
             )
         {
-            $GetParam{TicketChangeTimeOlderDate}
-                = $GetParam{TicketChangeTimeStopYear} . '-'
+            $GetParam{TicketChangeTimeOlderDate} = $GetParam{TicketChangeTimeStopYear} . '-'
                 . $GetParam{TicketChangeTimeStopMonth} . '-'
                 . $GetParam{TicketChangeTimeStopDay}
                 . ' 23:59:59';
@@ -633,6 +645,76 @@ sub _CreateTimeSettings {
         }
     }
 
+    # get last change time settings
+    if ( !$GetParam{LastChangeTimeSearchType} ) {
+
+        # do nothing on time stuff
+    }
+    elsif ( $GetParam{LastChangeTimeSearchType} eq 'TimeSlot' ) {
+        for (qw(Month Day)) {
+            $GetParam{"TicketLastChangeTimeStart$_"} = sprintf( "%02d", $GetParam{"TicketLastChangeTimeStart$_"} );
+        }
+        for (qw(Month Day)) {
+            $GetParam{"TicketLastChangeTimeStop$_"} = sprintf( "%02d", $GetParam{"TicketLastChangeTimeStop$_"} );
+        }
+        if (
+            $GetParam{TicketLastChangeTimeStartDay}
+            && $GetParam{TicketLastChangeTimeStartMonth}
+            && $GetParam{TicketLastChangeTimeStartYear}
+            )
+        {
+            $GetParam{TicketLastChangeTimeNewerDate} = $GetParam{TicketLastChangeTimeStartYear} . '-'
+                . $GetParam{TicketLastChangeTimeStartMonth} . '-'
+                . $GetParam{TicketLastChangeTimeStartDay}
+                . ' 00:00:00';
+        }
+        if (
+            $GetParam{TicketLastChangeTimeStopDay}
+            && $GetParam{TicketLastChangeTimeStopMonth}
+            && $GetParam{TicketLastChangeTimeStopYear}
+            )
+        {
+            $GetParam{TicketLastChangeTimeOlderDate} = $GetParam{TicketLastChangeTimeStopYear} . '-'
+                . $GetParam{TicketLastChangeTimeStopMonth} . '-'
+                . $GetParam{TicketLastChangeTimeStopDay}
+                . ' 23:59:59';
+        }
+    }
+    elsif ( $GetParam{LastChangeTimeSearchType} eq 'TimePoint' ) {
+        if (
+            $GetParam{TicketLastChangeTimePoint}
+            && $GetParam{TicketLastChangeTimePointStart}
+            && $GetParam{TicketLastChangeTimePointFormat}
+            )
+        {
+            my $Time = 0;
+            if ( $GetParam{TicketLastChangeTimePointFormat} eq 'minute' ) {
+                $Time = $GetParam{TicketLastChangeTimePoint};
+            }
+            elsif ( $GetParam{TicketLastChangeTimePointFormat} eq 'hour' ) {
+                $Time = $GetParam{TicketLastChangeTimePoint} * 60;
+            }
+            elsif ( $GetParam{TicketLastChangeTimePointFormat} eq 'day' ) {
+                $Time = $GetParam{TicketLastChangeTimePoint} * 60 * 24;
+            }
+            elsif ( $GetParam{TicketLastChangeTimePointFormat} eq 'week' ) {
+                $Time = $GetParam{TicketLastChangeTimePoint} * 60 * 24 * 7;
+            }
+            elsif ( $GetParam{TicketLastChangeTimePointFormat} eq 'month' ) {
+                $Time = $GetParam{TicketLastChangeTimePoint} * 60 * 24 * 30;
+            }
+            elsif ( $GetParam{TicketLastChangeTimePointFormat} eq 'year' ) {
+                $Time = $GetParam{TicketLastChangeTimePoint} * 60 * 24 * 365;
+            }
+            if ( $GetParam{TicketLastChangeTimePointStart} eq 'Before' ) {
+                $GetParam{TicketLastChangeTimeOlderMinutes} = $Time;
+            }
+            else {
+                $GetParam{TicketLastChangeTimeNewerMinutes} = $Time;
+            }
+        }
+    }
+
     # get close time settings
     if ( !$GetParam{CloseTimeSearchType} ) {
 
@@ -640,12 +722,10 @@ sub _CreateTimeSettings {
     }
     elsif ( $GetParam{CloseTimeSearchType} eq 'TimeSlot' ) {
         for (qw(Month Day)) {
-            $GetParam{"TicketCloseTimeStart$_"}
-                = sprintf( "%02d", $GetParam{"TicketCloseTimeStart$_"} );
+            $GetParam{"TicketCloseTimeStart$_"} = sprintf( "%02d", $GetParam{"TicketCloseTimeStart$_"} );
         }
         for (qw(Month Day)) {
-            $GetParam{"TicketCloseTimeStop$_"}
-                = sprintf( "%02d", $GetParam{"TicketCloseTimeStop$_"} );
+            $GetParam{"TicketCloseTimeStop$_"} = sprintf( "%02d", $GetParam{"TicketCloseTimeStop$_"} );
         }
         if (
             $GetParam{TicketCloseTimeStartDay}
@@ -653,8 +733,7 @@ sub _CreateTimeSettings {
             && $GetParam{TicketCloseTimeStartYear}
             )
         {
-            $GetParam{TicketCloseTimeNewerDate}
-                = $GetParam{TicketCloseTimeStartYear} . '-'
+            $GetParam{TicketCloseTimeNewerDate} = $GetParam{TicketCloseTimeStartYear} . '-'
                 . $GetParam{TicketCloseTimeStartMonth} . '-'
                 . $GetParam{TicketCloseTimeStartDay}
                 . ' 00:00:00';
@@ -665,8 +744,7 @@ sub _CreateTimeSettings {
             && $GetParam{TicketCloseTimeStopYear}
             )
         {
-            $GetParam{TicketCloseTimeOlderDate}
-                = $GetParam{TicketCloseTimeStopYear} . '-'
+            $GetParam{TicketCloseTimeOlderDate} = $GetParam{TicketCloseTimeStopYear} . '-'
                 . $GetParam{TicketCloseTimeStopMonth} . '-'
                 . $GetParam{TicketCloseTimeStopDay}
                 . ' 23:59:59';
@@ -716,7 +794,7 @@ sub _CreateTimeSettings {
     }
 
     # prepare archive flag
-    if ( $Self->{ConfigObject}->Get('Ticket::ArchiveSystem') ) {
+    if ( $Kernel::OM->Get('Kernel::Config')->Get('Ticket::ArchiveSystem') ) {
 
         $GetParam{SearchInArchive} ||= '';
         if ( $GetParam{SearchInArchive} eq 'AllTickets' ) {

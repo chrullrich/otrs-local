@@ -10,9 +10,10 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
-use Kernel::Scheduler::TaskHandler;
+use Kernel::System::Scheduler::TaskHandler;
 
 my @Tests = (
     {
@@ -81,10 +82,10 @@ my @Tests = (
     },
 );
 
+TEST:
 for my $Test (@Tests) {
 
-    my $Object = Kernel::Scheduler::TaskHandler->new(
-        %{$Self},
+    my $Object = Kernel::System::Scheduler::TaskHandler->new(
         TaskHandlerType => $Test->{TaskHandlerType},
     );
 
@@ -94,7 +95,7 @@ for my $Test (@Tests) {
         "$Test->{Name} - new() result",
     );
 
-    next if !$Object;
+    next TEST if !$Object;
 
     my $Result = $Object->Run( Data => $Test->{TaskData} );
     $Self->Is(

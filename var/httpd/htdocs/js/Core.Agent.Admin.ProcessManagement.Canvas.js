@@ -7,7 +7,7 @@
 // did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 // --
 
-/*global jsPlumb */
+/*global jsPlumb, LabelSpacer */
 
 "use strict";
 
@@ -137,7 +137,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             $EntityBox;
 
         $('#Canvas')
-            .append('<div class="Activity" id="' + EscapeHTML(EntityID) + '"><span>' + EscapeHTML(EntityName) + '</span><div class="Icon Loader"></div><div class="Icon Success"></div></div>')
+            .append('<div class="Activity Task" id="' + EscapeHTML(EntityID) + '"><span>' + EscapeHTML(EntityName) + '</span><div class="TaskTypeIcon"><i class="fa fa-user fa-lg"></i></div><div class="Icon Loader"></div><div class="Icon Success"></div></div>')
             .find('#' + EntityID)
             .css({
                 'top' : PosY + 'px',
@@ -559,7 +559,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
                 anchor: 'Continuous',
                 endpoint: 'Blank',
                 detachable: true,
-                reattach: true,
+                reattach: true
             });
         }
     };
@@ -622,7 +622,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
                         originalEvent.stopPropagation();
                         return false;
                     },
-                    mouseexit: function(labelOverlay, originalEvent) {
+                    mouseleave: function(labelOverlay, originalEvent) {
                         TargetNS.UnHighlightTransitionLabel(labelOverlay);
                         originalEvent.stopPropagation();
                         return false;
@@ -643,7 +643,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             }
         });
 
-        Connection.bind('mouseexit', function (ActiveConnection) {
+        Connection.bind('mouseleave', function (ActiveConnection) {
             var Overlay = Connection.getOverlay('label');
 
             // remove hover class from label
@@ -693,7 +693,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         }
 
         if (!$(Connection.canvas).find('.Delete').length) {
-            $(Connection.canvas).append('<a class="Delete" title="' + Core.Agent.Admin.ProcessManagement.Localization.TransitionDeleteLink + '" href="#">x</a>').find('.Delete').bind('click', function(Event) {
+            $(Connection.canvas).append('<a class="Delete" title="' + Core.Agent.Admin.ProcessManagement.Localization.TransitionDeleteLink + '" href="#"><i class="fa fa-trash-o"></i></a>').find('.Delete').bind('click', function(Event) {
                 ShowRemoveEntityCanvasConfirmationDialog('Path', Config.Transition[TransitionEntityID].Name, TransitionEntityID, function () {
                     jsPlumb.detach(Connection.component);
                     delete Path[StartActivityID][TransitionEntityID];
@@ -706,7 +706,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         }
 
         if (!$(Connection.canvas).find('.Edit').length) {
-            $(Connection.canvas).append('<a class="Edit" title="' + Core.Agent.Admin.ProcessManagement.Localization.TransitionEditLink + '" href="#">&gt;</a>').find('.Edit').bind('click', function(Event) {
+            $(Connection.canvas).append('<a class="Edit" title="' + Core.Agent.Admin.ProcessManagement.Localization.TransitionEditLink + '" href="#"><i class="fa fa-edit"></i></a>').find('.Edit').bind('click', function(Event) {
                 if (EndActivity !== 'Dummy') {
                     if ( !Core.Config.Get('SessionIDCookie') && PopupPath.indexOf(SessionData[Core.Config.Get('SessionName')]) === -1 ) {
                         PopupPath += ';' + encodeURIComponent(Core.Config.Get('SessionName')) + '=' + encodeURIComponent(SessionData[Core.Config.Get('SessionName')]);
@@ -864,7 +864,8 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
     TargetNS.Init = function () {
         var CanvasSize = GetCanvasSize($('#Canvas')),
             CanvasWidth = CanvasSize.Width,
-            CanvasHeight = CanvasSize.Height;
+            CanvasHeight = CanvasSize.Height,
+            CanvasLabelSpacer;
 
         // set the width and height of the drawing canvas,
         // based on the saved layout information (if available)
@@ -874,7 +875,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         TargetNS.LatestConnectionTransitionID = undefined;
 
         // init label spacer
-        var CanvasLabelSpacer = new LabelSpacer();
+        CanvasLabelSpacer = new LabelSpacer();
 
         // init binding to connection changes
         jsPlumb.bind('connection', function(Data, OriginalEvent) {
@@ -950,7 +951,10 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         // show EntityIDs of Activities
         $('.Activity').each(function() {
             ActivityEntityID = $(this).attr('id');
-            $(this).append('<em class="EntityID">' + ActivityEntityID + '</em>');
+            $(this).append('<em class="EntityID"><input type="text" value="' + ActivityEntityID + '" /></em>').find('.EntityID input').unbind().bind('focus', function(Event) {
+                this.select();
+                Event.stopPropagation;
+            });
         });
 
         // show EntityIDs of Transitions
@@ -959,7 +963,10 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             TransitionEntityID = this.getParameter('TransitionID');
             Overlay = this.getOverlay('label');
             if (Overlay) {
-                $(Overlay.canvas).append('<em class="EntityID">' + TransitionEntityID + '</em>');
+                $(Overlay.canvas).append('<em class="EntityID"><input type="text" value="' + TransitionEntityID + '" /></em>').find('.EntityID input').unbind().bind('focus', function(Event) {
+                    this.select();
+                    Event.stopPropagation;
+                });
             }
         });
 

@@ -93,7 +93,9 @@ sub Run {
 
         # redirect
         if ($Run) {
-            return $Self->{LayoutObject}->Redirect( OP => "Action=$Self->{Action}", );
+            return $Self->{LayoutObject}->Redirect(
+                OP => "Action=$Self->{Action}",
+            );
         }
 
         # redirect
@@ -145,7 +147,7 @@ sub Run {
         }
 
         for my $Type (
-            qw(Time ChangeTime CloseTime TimePending EscalationTime EscalationResponseTime EscalationUpdateTime EscalationSolutionTime)
+            qw(Time ChangeTime CloseTime LastChangeTime TimePending EscalationTime EscalationResponseTime EscalationUpdateTime EscalationSolutionTime)
             )
         {
             my $Key = $Type . 'SearchType';
@@ -154,7 +156,8 @@ sub Run {
         for my $Type (
             qw(
             TicketCreate           TicketChange
-            TicketClose            TicketPending
+            TicketClose            TicketLastChange
+            TicketPending
             TicketEscalation       TicketEscalationResponse
             TicketEscalationUpdate TicketEscalationSolution
             )
@@ -349,9 +352,15 @@ sub Run {
     # ---------------------------------------------------------- #
     # overview of all generic agent jobs
     # ---------------------------------------------------------- #
-    $Self->{LayoutObject}->Block( Name => 'ActionList', );
-    $Self->{LayoutObject}->Block( Name => 'ActionAdd', );
-    $Self->{LayoutObject}->Block( Name => 'Overview', );
+    $Self->{LayoutObject}->Block(
+        Name => 'ActionList',
+    );
+    $Self->{LayoutObject}->Block(
+        Name => 'ActionAdd',
+    );
+    $Self->{LayoutObject}->Block(
+        Name => 'Overview',
+    );
     my %Jobs = $Self->{GenericAgentObject}->JobList();
 
     # if there are any data, it is shown
@@ -531,7 +540,7 @@ sub _MaskUpdate {
         Multiple    => 0,
         SelectedID  => $JobData{NewPendingTimeType},
         Translation => 1,
-        Title       => $Self->{LayoutObject}->{LanguageObject}->Get('Time unit'),
+        Title       => $Self->{LayoutObject}->{LanguageObject}->Translate('Time unit'),
     );
     $JobData{QueuesStrg} = $Self->{LayoutObject}->AgentQueueListOption(
         Data               => { $Self->{QueueObject}->GetAllQueues(), },
@@ -581,6 +590,7 @@ sub _MaskUpdate {
         TicketCreate             => 'Time',
         TicketChange             => 'ChangeTime',
         TicketClose              => 'CloseTime',
+        TicketLastChange         => 'LastChangeTime',
         TicketPending            => 'TimePending',
         TicketEscalation         => 'EscalationTime',
         TicketEscalationResponse => 'EscalationResponseTime',
@@ -590,7 +600,8 @@ sub _MaskUpdate {
     for my $Type (
         qw(
         TicketCreate           TicketClose
-        TicketChange           TicketPending
+        TicketChange           TicketLastChange
+        TicketPending
         TicketEscalation       TicketEscalationResponse
         TicketEscalationUpdate TicketEscalationSolution
         )
@@ -614,9 +625,10 @@ sub _MaskUpdate {
 
         # time
         $JobData{ $Type . 'TimePoint' } = $Self->{LayoutObject}->BuildSelection(
-            Data       => \%Counter,
-            Name       => $Type . 'TimePoint',
-            SelectedID => $JobData{ $Type . 'TimePoint' },
+            Data        => \%Counter,
+            Name        => $Type . 'TimePoint',
+            SelectedID  => $JobData{ $Type . 'TimePoint' },
+            Translation => 0,
         );
         $JobData{ $Type . 'TimePointStart' } = $Self->{LayoutObject}->BuildSelection(
             Data => {
@@ -624,7 +636,7 @@ sub _MaskUpdate {
                 Next   => 'within the next ...',
                 Before => 'more than ... ago',
             },
-            Name => $Type . 'TimePointStart',
+            Name       => $Type . 'TimePointStart',
             SelectedID => $JobData{ $Type . 'TimePointStart' } || 'Last',
         );
         $JobData{ $Type . 'TimePointFormat' } = $Self->{LayoutObject}->BuildSelection(
@@ -698,11 +710,15 @@ sub _MaskUpdate {
             '1' => 'No',
             '0' => 'Yes'
         },
-        Name => 'NewSendNoNotification',
+        Name       => 'NewSendNoNotification',
         SelectedID => $JobData{NewSendNoNotification} || 0,
     );
-    $Self->{LayoutObject}->Block( Name => 'ActionList', );
-    $Self->{LayoutObject}->Block( Name => 'ActionOverview', );
+    $Self->{LayoutObject}->Block(
+        Name => 'ActionList',
+    );
+    $Self->{LayoutObject}->Block(
+        Name => 'ActionOverview',
+    );
     $Self->{LayoutObject}->Block(
         Name => 'Edit',
         Data => {
@@ -733,7 +749,9 @@ sub _MaskUpdate {
 
     # build type string
     if ( $Self->{ConfigObject}->Get('Ticket::Type') ) {
-        my %Type = $Self->{TypeObject}->TypeList( UserID => $Self->{UserID}, );
+        my %Type = $Self->{TypeObject}->TypeList(
+            UserID => $Self->{UserID},
+        );
         $JobData{TypesStrg} = $Self->{LayoutObject}->BuildSelection(
             Data        => \%Type,
             Name        => 'TypeIDs',
@@ -792,7 +810,9 @@ sub _MaskUpdate {
             Translation => 0,
             Max         => 200,
         );
-        my %SLA = $Self->{SLAObject}->SLAList( UserID => $Self->{UserID}, );
+        my %SLA = $Self->{SLAObject}->SLAList(
+            UserID => $Self->{UserID},
+        );
         $JobData{SLAsStrg} = $Self->{LayoutObject}->BuildSelection(
             Data        => \%SLA,
             Name        => 'SLAIDs',
@@ -860,7 +880,7 @@ sub _MaskUpdate {
                 NotArchivedTickets => 'Unarchived tickets',
                 AllTickets         => 'All tickets',
             },
-            Name => 'SearchInArchive',
+            Name       => 'SearchInArchive',
             SelectedID => $JobData{SearchInArchive} || 'AllTickets',
         );
 
@@ -974,8 +994,7 @@ sub _MaskUpdate {
                     my %Filter = $Self->{TicketObject}->TicketAclData();
 
                     # convert Filer key => key back to key => value using map
-                    %{$PossibleValuesFilter}
-                        = map { $_ => $PossibleValues->{$_} }
+                    %{$PossibleValuesFilter} = map { $_ => $PossibleValues->{$_} }
                         keys %Filter;
                 }
             }
@@ -1032,7 +1051,7 @@ sub _MaskUpdate {
         $Self->{LayoutObject}->Block(
             Name => 'EventRow',
             Data => {
-                Event => $Event,
+                Event     => $Event,
                 EventType => $EventType || '-',
             },
         );
@@ -1060,7 +1079,7 @@ sub _MaskUpdate {
             Sort => 'AlphanumericValue',
             PossibleNone => 0,
             Class        => 'EventList GenericInterfaceSpacing ' . $EventListHidden,
-            Title        => $Self->{LayoutObject}->{LanguageObject}->Get('Event'),
+            Title        => $Self->{LayoutObject}->{LanguageObject}->Translate('Event'),
         );
 
         $Self->{LayoutObject}->Block(
@@ -1081,7 +1100,7 @@ sub _MaskUpdate {
         SelectedValue => $SelectedEventType,
         PossibleNone  => 0,
         Class         => '',
-        Title         => $Self->{LayoutObject}->{LanguageObject}->Get('Type'),
+        Title         => $Self->{LayoutObject}->{LanguageObject}->Translate('Type'),
     );
     $Self->{LayoutObject}->Block(
         Name => 'EventTypeStrg',
@@ -1180,8 +1199,12 @@ sub _MaskRun {
         %DynamicFieldSearchParameters,
     );
 
-    $Self->{LayoutObject}->Block( Name => 'ActionList', );
-    $Self->{LayoutObject}->Block( Name => 'ActionOverview', );
+    $Self->{LayoutObject}->Block(
+        Name => 'ActionList',
+    );
+    $Self->{LayoutObject}->Block(
+        Name => 'ActionOverview',
+    );
     $Self->{LayoutObject}->Block(
         Name => 'Result',
         Data => {
@@ -1214,8 +1237,10 @@ sub _MaskRun {
                 $Data{Subject} = $Data{Title};
             }
 
-            $Data{Age}
-                = $Self->{LayoutObject}->CustomerAge( Age => $Data{Age}, Space => ' ' );
+            $Data{Age} = $Self->{LayoutObject}->CustomerAge(
+                Age   => $Data{Age},
+                Space => ' '
+            );
             $Data{css} = "PriorityID-$Data{PriorityID}";
 
             # user info

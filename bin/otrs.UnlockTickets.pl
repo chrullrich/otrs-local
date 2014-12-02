@@ -28,40 +28,22 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Time;
-use Kernel::System::Log;
-use Kernel::System::Main;
-use Kernel::System::DB;
-use Kernel::System::Ticket;
-use Kernel::System::User;
-use Kernel::System::State;
-use Kernel::System::Lock;
+use Kernel::System::ObjectManager;
 
 my $Debug = 0;
 
-# common objects
-my %CommonObject;
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.UnlockTickets.pl',
-    %CommonObject,
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.UnlockTickets.pl',
+    },
 );
-$CommonObject{MainObject}   = Kernel::System::Main->new(%CommonObject);
-$CommonObject{TimeObject}   = Kernel::System::Time->new(%CommonObject);
-$CommonObject{DBObject}     = Kernel::System::DB->new(%CommonObject);
-$CommonObject{TicketObject} = Kernel::System::Ticket->new(%CommonObject);
-$CommonObject{UserObject}   = Kernel::System::User->new(%CommonObject);
-$CommonObject{StateObject}  = Kernel::System::State->new(%CommonObject);
-$CommonObject{LockObject}   = Kernel::System::Lock->new(%CommonObject);
 
-my @UnlockStateIDs = $CommonObject{StateObject}->StateGetStatesByType(
+my @UnlockStateIDs = $Kernel::OM->Get('Kernel::System::State')->StateGetStatesByType(
     Type   => 'Unlock',
     Result => 'ID',
 );
-my @ViewableLockIDs = $CommonObject{LockObject}->LockViewableLock( Type => 'ID' );
+my @ViewableLockIDs = $Kernel::OM->Get('Kernel::System::Lock')->LockViewableLock( Type => 'ID' );
 
 # check args
 my $Command = shift || '--help';
@@ -72,20 +54,20 @@ print "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n";
 if ( $Command eq '--all' ) {
     print " Unlock all tickets:\n";
     my @Tickets;
-    exit 1 if !$CommonObject{DBObject}->Prepare(
+    exit 1 if !$Kernel::OM->Get('Kernel::System::DB')->Prepare(
         SQL => "
             SELECT st.tn, st.id
             FROM ticket st
             WHERE st.ticket_lock_id NOT IN ( ${\(join ', ', @ViewableLockIDs)} ) ",
     );
 
-    while ( my @Row = $CommonObject{DBObject}->FetchrowArray() ) {
+    while ( my @Row = $Kernel::OM->Get('Kernel::System::DB')->FetchrowArray() ) {
         push @Tickets, \@Row;
     }
     for (@Tickets) {
         my @Row = @{$_};
         print " Unlocking ticket id $Row[0] ...";
-        my $Unlock = $CommonObject{TicketObject}->LockSet(
+        my $Unlock = $Kernel::OM->Get('Kernel::System::Ticket')->LockSet(
             TicketID => $Row[1],
             Lock     => 'unlock',
             UserID   => 1,
@@ -104,9 +86,9 @@ if ( $Command eq '--all' ) {
 elsif ( $Command eq '--timeout' ) {
     print " Unlock old tickets:\n";
     my @Tickets;
-    exit 1 if !$CommonObject{DBObject}->Prepare(
+    exit 1 if !$Kernel::OM->Get('Kernel::System::DB')->Prepare(
         SQL => "
-            SELECT st.tn, st.id, st.timeout, sq.unlock_timeout
+            SELECT st.tn, st.id, st.timeout, sq.unlock_timeout, st.sla_id, st.queue_id
             FROM ticket st, queue sq
             WHERE st.queue_id = sq.id
                 AND sq.unlock_timeout != 0
@@ -114,19 +96,29 @@ elsif ( $Command eq '--timeout' ) {
                 AND st.ticket_lock_id NOT IN ( ${\(join ', ', @ViewableLockIDs)} ) ",
     );
 
-    while ( my @Row = $CommonObject{DBObject}->FetchrowArray() ) {
-        my $CountedTime = $CommonObject{TimeObject}->WorkingTime(
-            StartTime => $Row[2],
-            StopTime  => $CommonObject{TimeObject}->SystemTime(),
-        );
-        if ( $CountedTime >= $Row[3] * 60 ) {
-            push @Tickets, \@Row;
-        }
+    while ( my @Row = $Kernel::OM->Get('Kernel::System::DB')->FetchrowArray() ) {
+        push @Tickets, \@Row;
     }
+
+    TICKET:
     for (@Tickets) {
         my @Row = @{$_};
+
+        # get used calendar
+        my $Calendar = $Kernel::OM->Get('Kernel::System::Ticket')->TicketCalendarGet(
+            QueueID => $Row[5],
+            SLAID   => $Row[4],
+        );
+
+        my $CountedTime = $Kernel::OM->Get('Kernel::System::Time')->WorkingTime(
+            StartTime => $Row[2],
+            StopTime  => $Kernel::OM->Get('Kernel::System::Time')->SystemTime(),
+            Calendar  => $Calendar,
+        );
+        next TICKET if $CountedTime < $Row[3] * 60;
+
         print " Unlocking ticket id $Row[0] ...";
-        my $Unlock = $CommonObject{TicketObject}->LockSet(
+        my $Unlock = $Kernel::OM->Get('Kernel::System::Ticket')->LockSet(
             TicketID => $Row[1],
             Lock     => 'unlock',
             UserID   => 1,
@@ -141,6 +133,28 @@ elsif ( $Command eq '--timeout' ) {
     exit 0;
 }
 
+# unlock ticket by ID
+elsif ( $Command eq '--ticket' ) {
+    my $TicketID = shift || '';
+    if ( $TicketID eq '' ) {
+        print " No TicketID given!\n";
+        exit 0;
+    }
+    print " Unlocking ticket: $TicketID...";
+    my $Unlock = $Kernel::OM->Get('Kernel::System::Ticket')->LockSet(
+        TicketID => $TicketID,
+        Lock     => 'unlock',
+        UserID   => 1,
+    );
+    if ($Unlock) {
+        print " done.\n";
+    }
+    else {
+        print " failed.\n";
+    }
+    exit 0;
+}
+
 # show usage
 else {
     print "usage: $0 [options] \n";
@@ -148,5 +162,6 @@ else {
     print "  --help        display this option help\n";
     print "  --timeout     unlock old tickets\n";
     print "  --all         unlock all tickets (force)\n";
+    print "  --ticket id   unlock ticket with specified id (force)\n";
     exit 1;
 }

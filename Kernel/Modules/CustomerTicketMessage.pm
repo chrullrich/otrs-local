@@ -117,8 +117,7 @@ sub Run {
         next DYNAMICFIELD if !$DynamicField;
         next DYNAMICFIELD if !$DynamicFieldValues{$DynamicField};
 
-        $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField }
-            = $DynamicFieldValues{$DynamicField};
+        $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField } = $DynamicFieldValues{$DynamicField};
     }
     $GetParam{DynamicField} = \%DynamicFieldACLParameters;
 
@@ -195,8 +194,7 @@ sub Run {
                         my %Filter = $Self->{TicketObject}->TicketAclData();
 
                         # convert Filer key => key back to key => value using map
-                        %{$PossibleValuesFilter}
-                            = map { $_ => $PossibleValues->{$_} }
+                        %{$PossibleValuesFilter} = map { $_ => $PossibleValues->{$_} }
                             keys %Filter;
                     }
                 }
@@ -246,8 +244,7 @@ sub Run {
 
         # fallback, if no destination is given
         if ( !$NewQueueID ) {
-            my $Queue
-                = $Self->{ParamObject}->GetParam( Param => 'Queue' )
+            my $Queue = $Self->{ParamObject}->GetParam( Param => 'Queue' )
                 || $Self->{Config}->{'QueueDefault'}
                 || '';
             if ($Queue) {
@@ -305,7 +302,8 @@ sub Run {
                 Param => 'file_upload',
             );
             $Self->{UploadCacheObject}->FormIDAddFile(
-                FormID => $Self->{FormID},
+                FormID      => $Self->{FormID},
+                Disposition => 'attachment',
                 %UploadStuff,
             );
         }
@@ -358,8 +356,7 @@ sub Run {
                         my %Filter = $Self->{TicketObject}->TicketAclData();
 
                         # convert Filer key => key back to key => value using map
-                        %{$PossibleValuesFilter}
-                            = map { $_ => $PossibleValues->{$_} }
+                        %{$PossibleValuesFilter} = map { $_ => $PossibleValues->{$_} }
                             keys %Filter;
                     }
                 }
@@ -632,11 +629,17 @@ sub Run {
         }
 
         # write attachments
+        ATTACHMENT:
         for my $Attachment (@AttachmentData) {
 
             # skip, deleted not used inline images
             my $ContentID = $Attachment->{ContentID};
-            if ($ContentID) {
+            if (
+                $ContentID
+                && ( $Attachment->{ContentType} =~ /image/i )
+                && ( $Attachment->{Disposition} eq 'inline' )
+                )
+            {
                 my $ContentIDHTMLQuote = $Self->{LayoutObject}->Ascii2Html(
                     Text => $ContentID,
                 );
@@ -646,7 +649,7 @@ sub Run {
                 $GetParam{Body} =~ s/(ContentID=)$ContentIDLinkEncode/$1$ContentID/g;
 
                 # ignore attachment if not linked in body
-                next if $GetParam{Body} !~ /(\Q$ContentIDHTMLQuote\E|\Q$ContentID\E)/i;
+                next ATTACHMENT if $GetParam{Body} !~ /(\Q$ContentIDHTMLQuote\E|\Q$ContentID\E)/i;
             }
 
             # write existing file to backend
@@ -690,7 +693,9 @@ sub Run {
         my $NewTos;
 
         if ($Tos) {
+            TOs:
             for my $KeyTo ( sort keys %{$Tos} ) {
+                next TOs if ( $Tos->{$KeyTo} eq '-' );
                 $NewTos->{"$KeyTo||$Tos->{$KeyTo}"} = $Tos->{$KeyTo};
             }
         }
@@ -781,7 +786,7 @@ sub Run {
                     Data         => $NewTos,
                     SelectedID   => $Dest,
                     Translation  => 0,
-                    PossibleNone => 0,
+                    PossibleNone => 1,
                     TreeView     => $TreeView,
                     Max          => 100,
                 },
@@ -868,8 +873,7 @@ sub _GetServices {
     return \%Service if !$Param{QueueID} && !$Param{TicketID};
 
     # get options for default services for unknown customers
-    my $DefaultServiceUnknownCustomer
-        = $Self->{ConfigObject}->Get('Ticket::Service::Default::UnknownCustomer');
+    my $DefaultServiceUnknownCustomer = $Self->{ConfigObject}->Get('Ticket::Service::Default::UnknownCustomer');
 
     # get service list
     if ( $Param{CustomerUserID} || $DefaultServiceUnknownCustomer ) {
@@ -907,7 +911,10 @@ sub _GetTos {
     my $Module = $Self->{ConfigObject}->Get('CustomerPanel::NewTicketQueueSelectionModule')
         || 'Kernel::Output::HTML::CustomerNewTicketQueueSelectionGeneric';
     if ( $Self->{MainObject}->Require($Module) ) {
-        my $Object = $Module->new( %{$Self}, Debug => $Self->{Debug}, );
+        my $Object = $Module->new(
+            %{$Self},
+            Debug => $Self->{Debug},
+        );
 
         # log loaded module
         if ( $Self->{Debug} > 1 ) {
@@ -916,7 +923,13 @@ sub _GetTos {
                 Message  => "Module: $Module loaded!",
             );
         }
-        %NewTos = ( $Object->Run( Env => $Self, ACLParams => \%Param ), ( '', => '-' ) );
+        %NewTos = (
+            $Object->Run(
+                Env       => $Self,
+                ACLParams => \%Param
+            ),
+            ( '', => '-' )
+        );
     }
     else {
         return $Self->{LayoutObject}->FatalDie(
@@ -957,7 +970,10 @@ sub _MaskNew {
         my $Module = $Self->{ConfigObject}->Get('CustomerPanel::NewTicketQueueSelectionModule')
             || 'Kernel::Output::HTML::CustomerNewTicketQueueSelectionGeneric';
         if ( $Self->{MainObject}->Require($Module) ) {
-            my $Object = $Module->new( %{$Self}, Debug => $Self->{Debug}, );
+            my $Object = $Module->new(
+                %{$Self},
+                Debug => $Self->{Debug},
+            );
 
             # log loaded module
             if ( $Self->{Debug} > 1 ) {
@@ -966,7 +982,13 @@ sub _MaskNew {
                     Message  => "Module: $Module loaded!",
                 );
             }
-            %NewTos = ( $Object->Run( Env => $Self, ACLParams => \%Param ), ( '', => '-' ) );
+            %NewTos = (
+                $Object->Run(
+                    Env       => $Self,
+                    ACLParams => \%Param
+                ),
+                ( '', => '-' )
+            );
         }
         else {
             return $Self->{LayoutObject}->FatalError();
@@ -1191,8 +1213,17 @@ sub _MaskNew {
     }
 
     # show attachments
+    ATTACHMENT:
     for my $Attachment ( @{ $Param{Attachments} } ) {
-        next if $Attachment->{ContentID} && $Self->{LayoutObject}->{BrowserRichText};
+        if (
+            $Attachment->{ContentID}
+            && $Self->{LayoutObject}->{BrowserRichText}
+            && ( $Attachment->{ContentType} =~ /image/i )
+            && ( $Attachment->{Disposition} eq 'inline' )
+            )
+        {
+            next ATTACHMENT;
+        }
         $Self->{LayoutObject}->Block(
             Name => 'Attachment',
             Data => $Attachment,
@@ -1226,8 +1257,7 @@ sub _GetFieldsToUpdate {
 
     # set the fields that can be updatable via AJAXUpdate
     if ( !$Param{OnlyDynamicFields} ) {
-        @UpdatableFields
-            = qw( Dest ServiceID SLAID PriorityID );
+        @UpdatableFields = qw( Dest ServiceID SLAID PriorityID );
     }
 
     # cycle trough the activated Dynamic Fields for this screen

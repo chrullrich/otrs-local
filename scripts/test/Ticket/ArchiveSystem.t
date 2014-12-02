@@ -9,15 +9,12 @@
 
 use strict;
 use warnings;
-
 use utf8;
+
 use vars (qw($Self));
 
-use Kernel::Config;
-use Kernel::System::Ticket;
-
-# create local objects
-my $ConfigObject = Kernel::Config->new();
+# get config object
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
 $ConfigObject->Set(
     Key   => 'Ticket::ArchiveSystem',
@@ -29,14 +26,8 @@ $ConfigObject->Set(
     Value => 1,
 );
 
-my $UserObject = Kernel::System::User->new(
-    ConfigObject => $ConfigObject,
-    %{$Self},
-);
-my $TicketObject = Kernel::System::Ticket->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+# get ticket object
+my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
 my @Tests = (
     {
@@ -101,7 +92,7 @@ for my $Test (@Tests) {
         HistoryType    => 'OwnerUpdate',
         HistoryComment => 'Some free text!',
         UserID         => 1,
-        NoAgentNotify => 1,    # if you don't want to send agent notifications
+        NoAgentNotify  => 1,                                          # if you don't want to send agent notifications
     );
 
     $Self->True(
@@ -121,7 +112,7 @@ for my $Test (@Tests) {
         HistoryType    => 'OwnerUpdate',
         HistoryComment => 'Some free text!',
         UserID         => 1,
-        NoAgentNotify => 1,    # if you don't want to send agent notifications
+        NoAgentNotify  => 1,                                          # if you don't want to send agent notifications
     );
 
     $Self->True(

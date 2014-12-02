@@ -9,11 +9,16 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
 
-# import all possible checks
+use vars (qw($Self));
+
+use Kernel::System::ObjectManager;
+
 use Kernel::System::VariableCheck qw(:all);
+
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
 # standard variables
 my $ExpectedTestResults = {};
@@ -56,7 +61,7 @@ my @CommonVariables = (
     ArrayRefEmpty => [],
     HashRef       => { 0 => 0 },
     HashRefEmpty  => {},
-    ObjectRef     => $Self->{ConfigObject},
+    ObjectRef     => $ConfigObject,
     RefRef        => \\0,
     ScalarRef     => \0,
     String        => 0,
@@ -928,7 +933,10 @@ my $Count = 0;
 for my $Value1 ( \%Hash1, \%Hash2, \@List1, \@List2, \$Scalar1, \$Scalar2 ) {
     $Count++;
     $Self->Is(
-        scalar DataIsDifferent( Data1 => $Value1, Data2 => $Value1 ),
+        scalar DataIsDifferent(
+            Data1 => $Value1,
+            Data2 => $Value1
+        ),
         scalar undef,
         'DataIsDifferent() - Test ' . $Count,
     );
@@ -941,7 +949,10 @@ for my $Value1 ( \%Hash1, \%Hash2, \@List1, \@List2, \$Scalar1, \$Scalar2 ) {
         $Count2++;
 
         $Self->Is(
-            scalar DataIsDifferent( Data1 => $Value1, Data2 => $Value2 ),
+            scalar DataIsDifferent(
+                Data1 => $Value1,
+                Data2 => $Value2
+            ),
             1,
             'DataIsDifferent() - Test ' . $Count . ':' . $Count2,
         );

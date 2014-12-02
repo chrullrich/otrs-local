@@ -10,26 +10,23 @@
 use strict;
 use warnings;
 use utf8;
-use CGI qw(:cgi);
+
 use vars (qw($Self));
 
-use Kernel::Config;
-use Kernel::System::DynamicField;
-use Kernel::System::DynamicField::Backend;
+use CGI;
+
 use Kernel::Output::HTML::Layout;
-use Kernel::System::Ticket;
-use Kernel::System::UnitTest::Helper;
 use Kernel::System::Web::Request;
 
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %$Self,
-    UnitTestObject => $Self,
-);
+# get needed objects
+my $ConfigObject       = $Kernel::OM->Get('Kernel::Config');
+my $HelperObject       = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
+my $BackendObject      = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
+my $ParamObject        = $Kernel::OM->Get('Kernel::System::Web::Request');
+my $TicketObject       = $Kernel::OM->Get('Kernel::System::Ticket');
 
 my $RandomID = int rand 1_000_000_000;
-
-# create a new config object
-my $ConfigObject = Kernel::Config->new();
 
 # set timezone variables
 $ConfigObject->Set(
@@ -45,23 +42,10 @@ $ConfigObject->Set(
     Value => 0,
 );
 
-# create other objects
-my $DynamicFieldObject = Kernel::System::DynamicField->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $TicketObject = Kernel::System::Ticket->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $ParamObject = Kernel::System::Web::Request->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-    WebRequest   => 0,
-);
-my $BackendObject = Kernel::System::DynamicField::Backend->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
+# Ensure that default config values are used
+$ConfigObject->Set(
+    Key   => 'TimeInputFormat',
+    Value => 'Option',
 );
 
 # create a ticket
@@ -137,23 +121,14 @@ for my $DynamicField (@DynamicFields) {
 
 # create different layout objects for diffefrent time zones
 my $LayoutObjectM6 = Kernel::Output::HTML::Layout->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-    ParamObject  => $ParamObject,
     Lang         => 'en',
     UserTimeZone => '-6',
 );
 my $LayoutObject = Kernel::Output::HTML::Layout->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-    ParamObject  => $ParamObject,
     Lang         => 'en',
     UserTimeZone => '+0',
 );
 my $LayoutObjectP6 = Kernel::Output::HTML::Layout->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-    ParamObject  => $ParamObject,
     Lang         => 'en',
     UserTimeZone => '+6',
 );
@@ -524,13 +499,12 @@ for my $Test (@Tests) {
         else {
 
             # creatate a new CGI object to simulate a web request
-            my $WebRequest = new CGI( $Test->{Config}->{EditFieldRender}->{$Type}->{CGIParam} );
+            my $WebRequest = CGI->new( $Test->{Config}->{EditFieldRender}->{$Type}->{CGIParam} );
 
             my $LocalParamObject = Kernel::System::Web::Request->new(
-                %{$Self},
-                ConfigObject => $ConfigObject,
-                WebRequest   => $WebRequest,
+                WebRequest => $WebRequest,
             );
+
             %Config = (
                 %{ $Test->{Config}->{Common} },
                 %{ $Test->{Config}->{EditFieldRender}->{$Type} },
@@ -591,12 +565,10 @@ for my $Test (@Tests) {
     }
 
     # creatate a new CGI object to simulate a web request
-    my $WebRequest = new CGI( $Test->{Config}->{EditFieldValueGet}->{CGIParam} );
+    my $WebRequest = CGI->new( $Test->{Config}->{EditFieldValueGet}->{CGIParam} );
 
     my $LocalParamObject = Kernel::System::Web::Request->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
-        WebRequest   => $WebRequest,
+        WebRequest => $WebRequest,
     );
 
     # get the value form the web request

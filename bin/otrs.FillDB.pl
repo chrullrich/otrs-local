@@ -30,82 +30,55 @@ use lib dirname($RealBin) . '/Custom';
 
 use Getopt::Std;
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Time;
-use Kernel::System::Log;
-use Kernel::System::Main;
-use Kernel::System::DB;
-use Kernel::System::User;
-use Kernel::System::CustomerUser;
-use Kernel::System::Group;
-use Kernel::System::Queue;
-use Kernel::System::Ticket;
+use Kernel::System::ObjectManager;
 use Kernel::System::PostMaster;
-use Kernel::System::LinkObject;
-use Kernel::System::DynamicField;
-use Kernel::System::DynamicField::Backend;
 use Kernel::System::VariableCheck qw(:all);
 
-sub _CommonObjects {
-    my %Objects;
-    $Objects{ConfigObject} = Kernel::Config->new();
+sub _OM {
+    local $Kernel::OM = Kernel::System::ObjectManager->new(
+        'Kernel::System::Log' => {
+            LogPrefix => 'OTRS-otrs.FillDB.pl',
+        },
+    );
 
     # set dummy sendmail module
-    $Objects{ConfigObject}->Set(
+    $Kernel::OM->Get('Kernel::Config')->Set(
         Key   => 'SendmailModule',
         Value => 'Kernel::System::Email::DoNotSendEmail',
     );
 
     # set env config
-    $Objects{ConfigObject}->Set(
-        Key   => 'CheckEmailInvalidAddress',
+    $Kernel::OM->Get('Kernel::Config')->Set(
+        Key   => 'CheckEmailAddresses',
         Value => 0,
     );
 
-    $Objects{EncodeObject} = Kernel::System::Encode->new(%Objects);
-    $Objects{LogObject}    = Kernel::System::Log->new(
-        LogPrefix => 'OTRS-otrs.FillDB.pl',
-        %Objects,
-    );
-    $Objects{TimeObject}         = Kernel::System::Time->new(%Objects);
-    $Objects{MainObject}         = Kernel::System::Main->new(%Objects);
-    $Objects{DBObject}           = Kernel::System::DB->new(%Objects);
-    $Objects{UserObject}         = Kernel::System::User->new(%Objects);
-    $Objects{CustomerUserObject} = Kernel::System::CustomerUser->new(%Objects);
-    $Objects{GroupObject}        = Kernel::System::Group->new(%Objects);
-    $Objects{QueueObject}        = Kernel::System::Queue->new(%Objects);
-    $Objects{TicketObject}       = Kernel::System::Ticket->new(%Objects);
-    $Objects{LinkObject}         = Kernel::System::LinkObject->new(%Objects);
-    $Objects{DynamicFieldObject} = Kernel::System::DynamicField->new(%Objects);
-    $Objects{DynamicFieldBackendObject}
-        = Kernel::System::DynamicField::Backend->new(%Objects);
-
-    return \%Objects;
+    return $Kernel::OM;
 }
 
 sub Run {
 
-    my $CommonObjects = _CommonObjects();
+    local $Kernel::OM = _OM();
 
     # Refresh common objects after a certain number of loop iterations.
     #   This will call event handlers and clean up caches to avoid excessive mem usage.
     my $CommonObjectRefresh = 50;
 
     # get dynamic fields
-    my $TicketDynamicField = $CommonObjects->{DynamicFieldObject}->DynamicFieldListGet(
+    my $TicketDynamicField = $Kernel::OM->Get('Kernel::System::DynamicField')->DynamicFieldListGet(
         Valid      => 1,
         ObjectType => ['Ticket'],
     );
 
-    my $ArticleDynamicField = $CommonObjects->{DynamicFieldObject}->DynamicFieldListGet(
+    my $ArticleDynamicField = $Kernel::OM->Get('Kernel::System::DynamicField')->DynamicFieldListGet(
         Valid      => 1,
         ObjectType => ['Article'],
     );
 
     # get options
-    my %Opts = ();
-    getopt( 'hqugtramc', \%Opts );
+    my %Opts;
+    getopt( 'qugtramcf', \%Opts );
+
     if ( $Opts{h} ) {
         print <<EOF;
 otrs.FillDB.pl - OTRS fill db with data
@@ -138,9 +111,9 @@ EOF
     }
 
     # check if DB is empty
-    $CommonObjects->{DBObject}->Prepare( SQL => 'SELECT count(*) FROM ticket' );
+    $Kernel::OM->Get('Kernel::System::DB')->Prepare( SQL => 'SELECT count(*) FROM ticket' );
     my $Check = 0;
-    while ( my @Row = $CommonObjects->{DBObject}->FetchrowArray() ) {
+    while ( my @Row = $Kernel::OM->Get('Kernel::System::DB')->FetchrowArray() ) {
         $Check = $Row[0];
     }
     if ( $Check && $Check > 1 && ( !$Opts{r} || $Opts{r} !~ /^yes$/i ) ) {
@@ -154,32 +127,32 @@ EOF
     # groups
     my @GroupIDs;
     if ( !$Opts{g} ) {
-        @GroupIDs = GroupGet($CommonObjects);
+        @GroupIDs = GroupGet();
     }
     else {
-        @GroupIDs = GroupCreate( $CommonObjects, $Opts{g} );
+        @GroupIDs = GroupCreate( $Opts{g} );
     }
 
     # users
     my @UserIDs;
     if ( !$Opts{u} ) {
-        @UserIDs = UserGet($CommonObjects);
+        @UserIDs = UserGet();
     }
     else {
-        @UserIDs = UserCreate( $CommonObjects, $Opts{u}, \@GroupIDs );
+        @UserIDs = UserCreate( $Opts{u}, \@GroupIDs );
     }
 
     # queues
     my @QueueIDs;
     if ( !$Opts{q} ) {
-        @QueueIDs = QueueGet($CommonObjects);
+        @QueueIDs = QueueGet();
     }
     else {
-        @QueueIDs = QueueCreate( $CommonObjects, $Opts{q}, \@GroupIDs );
+        @QueueIDs = QueueCreate( $Opts{q}, \@GroupIDs );
     }
 
     if ( $Opts{c} ) {
-        CustomerCreate( $CommonObjects, $Opts{c} );
+        CustomerCreate( $Opts{c} );
     }
 
     # articles - use default if not set
@@ -190,11 +163,11 @@ EOF
     my $Counter = 1;
 
     # create tickets
-    my @TicketIDs = ();
+    my @TicketIDs;
     for ( 1 .. $Opts{'t'} ) {
         my $TicketUserID =
 
-            my $TicketID = $CommonObjects->{TicketObject}->TicketCreate(
+            my $TicketID = $Kernel::OM->Get('Kernel::System::Ticket')->TicketCreate(
             Title        => RandomSubject(),
             QueueID      => $QueueIDs[ int( rand($#QueueIDs) ) ],
             Lock         => 'unlock',
@@ -209,14 +182,13 @@ EOF
         if ( $Opts{f} ) {
 
             # bulk-insert the flags directly for improved performance
-            my $SQL
-                = 'INSERT INTO ticket_flag (ticket_id, ticket_key, ticket_value, create_time, create_by) VALUES ';
+            my $SQL = 'INSERT INTO ticket_flag (ticket_id, ticket_key, ticket_value, create_time, create_by) VALUES ';
             my @Values;
             for my $UserID (@UserIDs) {
                 push @Values, "($TicketID, 'Seen', 1, current_timestamp, $UserID)";
             }
             while ( my @ValuesPart = splice( @Values, 0, 50 ) ) {
-                $CommonObjects->{DBObject}->Do( SQL => $SQL . join( ',', @ValuesPart ) );
+                $Kernel::OM->Get('Kernel::System::DB')->Do( SQL => $SQL . join( ',', @ValuesPart ) );
             }
         }
 
@@ -225,7 +197,7 @@ EOF
             print "NOTICE: Ticket with ID '$TicketID' created.\n";
 
             for ( 1 .. $Opts{'a'} ) {
-                my $ArticleID = $CommonObjects->{TicketObject}->ArticleCreate(
+                my $ArticleID = $Kernel::OM->Get('Kernel::System::Ticket')->ArticleCreate(
                     TicketID       => $TicketID,
                     ArticleType    => 'note-external',
                     SenderType     => 'customer',
@@ -238,7 +210,7 @@ EOF
                     HistoryType    => 'AddNote',
                     HistoryComment => 'Some free text!',
                     UserID         => $UserIDs[ int( rand($#UserIDs) ) ],
-                    NoAgentNotify => 1,    # if you don't want to send agent notifications
+                    NoAgentNotify  => 1,                                 # if you don't want to send agent notifications
                 );
 
                 if ( $Opts{f} ) {
@@ -251,7 +223,7 @@ EOF
                         push @Values, "($ArticleID, 'Seen', 1, current_timestamp, $UserID)";
                     }
                     while ( my @ValuesPart = splice( @Values, 0, 50 ) ) {
-                        $CommonObjects->{DBObject}->Do( SQL => $SQL . join( ',', @ValuesPart ) );
+                        $Kernel::OM->Get('Kernel::System::DB')->Do( SQL => $SQL . join( ',', @ValuesPart ) );
                     }
                 }
 
@@ -262,7 +234,7 @@ EOF
                     next DYNAMICFIELD if $DynamicFieldConfig->{InternalField};
 
                     # set a random value
-                    my $Result = $CommonObjects->{DynamicFieldBackendObject}->RandomValueSet(
+                    my $Result = $Kernel::OM->Get('Kernel::System::DynamicField::Backend')->RandomValueSet(
                         DynamicFieldConfig => $DynamicFieldConfig,
                         ObjectID           => $ArticleID,
                         UserID             => $UserIDs[ int( rand($#UserIDs) ) ],
@@ -284,7 +256,7 @@ EOF
                 next DYNAMICFIELD if $DynamicFieldConfig->{InternalField};
 
                 # set a random value
-                my $Result = $CommonObjects->{DynamicFieldBackendObject}->RandomValueSet(
+                my $Result = $Kernel::OM->Get('Kernel::System::DynamicField::Backend')->RandomValueSet(
                     DynamicFieldConfig => $DynamicFieldConfig,
                     ObjectID           => $TicketID,
                     UserID             => $UserIDs[ int( rand($#UserIDs) ) ],
@@ -299,7 +271,7 @@ EOF
             push( @TicketIDs, $TicketID );
 
             if ( $Counter++ % $CommonObjectRefresh == 0 ) {
-                $CommonObjects = _CommonObjects();
+                $Kernel::OM = _OM();
             }
         }
     }
@@ -307,57 +279,57 @@ EOF
     if ( $Opts{m} ) {
 
         # update tickets
-        my %States = $CommonObjects->{TicketObject}->StateList(
+        my %States = $Kernel::OM->Get('Kernel::System::Ticket')->StateList(
             QueueID => 1,
             UserID  => 1,
         );
-        my @StateList = ();
+        my @StateList;
         for ( sort keys %States ) {
             push( @StateList, $_ );
         }
-        my %Priorities = $CommonObjects->{TicketObject}->PriorityList(
+        my %Priorities = $Kernel::OM->Get('Kernel::System::Ticket')->PriorityList(
             QueueID => 1,
             UserID  => 1,
         );
-        my @PriorityList = ();
+        my @PriorityList;
         for ( sort keys %Priorities ) {
             push( @PriorityList, $_ );
         }
 
         for my $TicketID (@TicketIDs) {
-            my %Ticket = $CommonObjects->{TicketObject}->TicketGet(
+            my %Ticket = $Kernel::OM->Get('Kernel::System::Ticket')->TicketGet(
                 TicketID      => $TicketID,
                 DynamicFields => 0,
             );
 
             # add email
-            my @Files = glob $CommonObjects->{ConfigObject}->Get('Home')
+            my @Files = glob $Kernel::OM->Get('Kernel::Config')->Get('Home')
                 . '/scripts/test/sample/PostMaster/PostMaster-Test*.box';
-            my $File    = $Files[ int( rand( $#Files + 1 ) ) ];
-            my @Content = ();
+            my $File = $Files[ int( rand( $#Files + 1 ) ) ];
+            my @Content;
             my $Input;
             open( $Input, '<', $File ) || die $!;    ## no critic
 
             #    binmode(IN);
             while ( my $Line = <$Input> ) {
                 if ( $Line =~ /^Subject:/ ) {
-                    $Line = 'Subject: ' . $CommonObjects->{TicketObject}->TicketSubjectBuild(
+                    $Line = 'Subject: '
+                        . $Kernel::OM->Get('Kernel::System::Ticket')->TicketSubjectBuild(
                         TicketNumber => $Ticket{TicketNumber},
                         Subject      => $Line,
-                    );
+                        );
                 }
                 push( @Content, $Line );
             }
             close($Input);
 
             my $PostMasterObject = Kernel::System::PostMaster->new(
-                %{$CommonObjects},
                 Email => \@Content,
             );
             my @Return = $PostMasterObject->Run();
 
             # add article
-            my $ArticleID = $CommonObjects->{TicketObject}->ArticleCreate(
+            my $ArticleID = $Kernel::OM->Get('Kernel::System::Ticket')->ArticleCreate(
                 TicketID       => $TicketID,
                 ArticleType    => 'note-external',
                 SenderType     => 'agent',
@@ -370,23 +342,24 @@ EOF
                 HistoryType    => 'AddNote',
                 HistoryComment => 'Some free text!',
                 UserID         => $UserIDs[ int( rand($#UserIDs) ) ],
-                NoAgentNotify => 1,    # if you don't want to send agent notifications
+                NoAgentNotify  => 1,                                    # if you don't want to send agent notifications
             );
             print "NOTICE: Article added to Ticket '$TicketID/$ArticleID'.\n";
 
             # set state
             # try more times to get an closed state to be more real
             my $StateID = '';
+            COUNT:
             for ( 1 .. 12 ) {
                 $StateID = $StateList[ int( rand( $#StateList + 1 ) ) ];
                 if ( $States{$StateID} =~ /^close/ ) {
-                    last;
+                    last COUNT;
                 }
             }
-            $CommonObjects->{TicketObject}->StateSet(
-                StateID  => $StateID,
-                TicketID => $TicketID,
-                SendNoNotification => 1,    # optional 1|0 (send no agent and customer notification)
+            $Kernel::OM->Get('Kernel::System::Ticket')->StateSet(
+                StateID            => $StateID,
+                TicketID           => $TicketID,
+                SendNoNotification => 1,           # optional 1|0 (send no agent and customer notification)
                 UserID => $UserIDs[ int( rand($#UserIDs) ) ],
             );
             print "NOTICE: State updated of Ticket '$TicketID/$States{$StateID}'.\n";
@@ -394,7 +367,7 @@ EOF
             # priority update
             if ( $TicketID / 2 ne ( int( $TicketID / 2 ) ) ) {
                 my $PriorityID = $PriorityList[ int( rand( $#PriorityList + 1 ) ) ];
-                $CommonObjects->{TicketObject}->PrioritySet(
+                $Kernel::OM->Get('Kernel::System::Ticket')->PrioritySet(
                     TicketID   => $TicketID,
                     PriorityID => $PriorityID,
                     UserID     => $UserIDs[ int( rand($#UserIDs) ) ],
@@ -421,7 +394,7 @@ EOF
 =cut
 
             if ( $Counter++ % $CommonObjectRefresh == 0 ) {
-                $CommonObjects = _CommonObjects();
+                $Kernel::OM = _OM();
             }
         }
     }
@@ -435,19 +408,19 @@ sub RandomAddress {
     my @Domain = (
         'example.com',
         'example-sales.com',
-        'example-support.com',
+        'example-service.com',
         'example.net',
         'example-sales.net',
-        'example-support.net',
+        'example-service.net',
         'company.com',
         'company-sales.com',
-        'company-support.com',
+        'company-service.com',
         'fast-company-example.com',
         'fast-company-example-sales.com',
-        'fast-company-example-support.com',
+        'fast-company-example-service.com',
         'slow-company-example.com',
         'slow-company-example-sales.com',
-        'slow-company-example-support.com',
+        'slow-company-example-service.com',
     );
 
     return $Name . '@' . $Domain[ int( rand( $#Domain + 1 ) ) ];
@@ -528,10 +501,8 @@ sub RandomBody {
 }
 
 sub QueueGet {
-    my $CommonObjects = shift;
-
-    my @QueueIDs = ();
-    my %Queues   = $CommonObjects->{QueueObject}->GetAllQueues();
+    my @QueueIDs;
+    my %Queues = $Kernel::OM->Get('Kernel::System::Queue')->GetAllQueues();
     for ( sort keys %Queues ) {
         push @QueueIDs, $_;
     }
@@ -539,14 +510,13 @@ sub QueueGet {
 }
 
 sub QueueCreate {
-    my $CommonObjects = shift;
-    my $Count         = shift || return;
-    my @GroupIDs      = @{ shift() };
+    my $Count = shift || return;
+    my @GroupIDs = @{ shift() };
 
-    my @QueueIDs = ();
+    my @QueueIDs;
     for ( 1 .. $Count ) {
         my $Name = 'fill-up-queue' . int( rand(100_000_000) );
-        my $ID   = $CommonObjects->{QueueObject}->QueueAdd(
+        my $ID   = $Kernel::OM->Get('Kernel::System::Queue')->QueueAdd(
             Name              => $Name,
             ValidID           => 1,
             GroupID           => $GroupIDs[ int( rand( scalar @GroupIDs ) ) ],
@@ -572,10 +542,8 @@ sub QueueCreate {
 }
 
 sub GroupGet {
-    my $CommonObjects = shift;
-
-    my @GroupIDs = ();
-    my %Groups = $CommonObjects->{GroupObject}->GroupList( Valid => 1 );
+    my @GroupIDs;
+    my %Groups = $Kernel::OM->Get('Kernel::System::Group')->GroupList( Valid => 1 );
     for ( sort keys %Groups ) {
         push @GroupIDs, $_;
     }
@@ -583,13 +551,12 @@ sub GroupGet {
 }
 
 sub GroupCreate {
-    my $CommonObjects = shift;
     my $Count = shift || return;
 
-    my @GroupIDs = ();
+    my @GroupIDs;
     for ( 1 .. $Count ) {
         my $Name = 'fill-up-group' . int( rand(100_000_000) );
-        my $ID   = $CommonObjects->{GroupObject}->GroupAdd(
+        my $ID   = $Kernel::OM->Get('Kernel::System::Group')->GroupAdd(
             Name    => $Name,
             ValidID => 1,
             UserID  => 1,
@@ -599,7 +566,7 @@ sub GroupCreate {
             push( @GroupIDs, $ID );
 
             # add root to every group
-            $CommonObjects->{GroupObject}->GroupMemberAdd(
+            $Kernel::OM->Get('Kernel::System::Group')->GroupMemberAdd(
                 GID        => $ID,
                 UID        => 1,
                 Permission => {
@@ -618,10 +585,8 @@ sub GroupCreate {
 }
 
 sub UserGet {
-    my $CommonObjects = shift;
-
-    my @UserIDs = ();
-    my %Users   = $CommonObjects->{UserObject}->UserList(
+    my @UserIDs;
+    my %Users = $Kernel::OM->Get('Kernel::System::User')->UserList(
         Type  => 'Short',    # Short|Long
         Valid => 1,          # not required
     );
@@ -632,14 +597,13 @@ sub UserGet {
 }
 
 sub UserCreate {
-    my $CommonObjects = shift;
-    my $Count         = shift || return;
-    my @GroupIDs      = @{ shift() };
+    my $Count = shift || return;
+    my @GroupIDs = @{ shift() };
 
-    my @UserIDs = ();
+    my @UserIDs;
     for ( 1 .. $Count ) {
         my $Name = 'fill-up-user' . int( rand(100_000_000) );
-        my $ID   = $CommonObjects->{UserObject}->UserAdd(
+        my $ID   = $Kernel::OM->Get('Kernel::System::User')->UserAdd(
             UserFirstname => "$Name-Firstname",
             UserLastname  => "$Name-Lastname",
             UserLogin     => $Name,
@@ -653,7 +617,7 @@ sub UserCreate {
             for my $GroupID (@GroupIDs) {
                 my $GroupAdd = int( rand(3) );
                 if ( $GroupAdd == 2 ) {
-                    $CommonObjects->{GroupObject}->GroupMemberAdd(
+                    $Kernel::OM->Get('Kernel::System::Group')->GroupMemberAdd(
                         GID        => $GroupID,
                         UID        => $ID,
                         Permission => {
@@ -668,7 +632,7 @@ sub UserCreate {
                     );
                 }
                 elsif ( $GroupAdd == 1 ) {
-                    $CommonObjects->{GroupObject}->GroupMemberAdd(
+                    $Kernel::OM->Get('Kernel::System::Group')->GroupMemberAdd(
                         GID        => $GroupID,
                         UID        => $ID,
                         Permission => {
@@ -689,12 +653,11 @@ sub UserCreate {
 }
 
 sub CustomerCreate {
-    my $CommonObjects = shift;
     my $Count = shift || return;
 
     for ( 1 .. $Count ) {
         my $Name      = 'fill-up-user' . int( rand(100_000_000) );
-        my $UserLogin = $CommonObjects->{CustomerUserObject}->CustomerUserAdd(
+        my $UserLogin = $Kernel::OM->Get('Kernel::System::CustomerUser')->CustomerUserAdd(
             Source         => 'CustomerUser',            # CustomerUser source config
             UserFirstname  => $Name,
             UserLastname   => $Name,

@@ -33,6 +33,7 @@ use CGI::Fast;
 
 # load agent web interface
 use Kernel::System::Web::InterfacePublic();
+use Kernel::System::ObjectManager;
 
 # 0=off;1=on;
 my $Debug = 0;
@@ -42,11 +43,11 @@ my $Debug = 0;
 # Response loop
 while ( my $WebRequest = new CGI::Fast ) {
 
-    # create new object
-    my $Interface
-        = Kernel::System::Web::InterfacePublic->new( Debug => $Debug, WebRequest => $WebRequest );
-
-    # execute object
+    local $Kernel::OM = Kernel::System::ObjectManager->new();
+    my $Interface = Kernel::System::Web::InterfacePublic->new(
+        Debug      => $Debug,
+        WebRequest => $WebRequest,
+    );
     $Interface->Run();
 
     #    $Cnt++;

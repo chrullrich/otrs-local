@@ -10,47 +10,39 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
 use MIME::Base64;
+
 use Kernel::GenericInterface::Debugger;
 use Kernel::GenericInterface::Operation::Session::SessionCreate;
 use Kernel::GenericInterface::Operation::Ticket::TicketGet;
-use Kernel::GenericInterface::Requester;
-use Kernel::System::DynamicField;
-use Kernel::System::DynamicField::Backend;
-use Kernel::System::GenericInterface::Webservice;
-use Kernel::System::UnitTest::Helper;
-use Kernel::System::User;
-use Kernel::System::Ticket;
+
 use Kernel::System::VariableCheck qw(:all);
 
-#get a random id
-my $RandomID = int rand 1_000_000_000;
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $MainObject   = $Kernel::OM->Get('Kernel::System::Main');
 
-# create local config object
-my $ConfigObject = Kernel::Config->new();
+# get a random id
+my $RandomID = int rand 1_000_000_000;
 
 # helper object
 # skip SSL certificate verification
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %{$Self},
-    UnitTestObject             => $Self,
-    RestoreSystemConfiguration => 1,
-    SkipSSLVerify              => 1,
+$Kernel::OM->ObjectParamAdd(
+    'Kernel::System::UnitTest::Helper' => {
+        RestoreSystemConfiguration => 1,
+        SkipSSLVerify              => 1,
+    },
 );
-
-# new user object
-my $UserObject = Kernel::System::User->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
 # create a new user for current test
 my $UserLogin = $HelperObject->TestUserCreate();
 my $Password  = $UserLogin;
 
-$Self->{UserID} = $UserObject->UserLookup(
+my $UserID = $Kernel::OM->Get('Kernel::System::User')->UserLookup(
     UserLogin => $UserLogin,
 );
 
@@ -68,24 +60,9 @@ my %SkipFields = (
 );
 
 # start DynamicFields
-
-my $DynamicFieldObject = Kernel::System::DynamicField->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-
-# create backend object and delegates
-my $BackendObject = Kernel::System::DynamicField::Backend->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-$Self->Is(
-    ref $BackendObject,
-    'Kernel::System::DynamicField::Backend',
-    'Backend object was created successfuly',
-);
-
 my @TestDynamicFields;
+
+my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
 
 # create a dynamic field
 my $FieldID1 = $DynamicFieldObject->DynamicFieldAdd(
@@ -183,7 +160,7 @@ my $FieldID5 = $DynamicFieldObject->DynamicFieldAdd(
     FieldType  => 'Multiselect',     # mandatory, selects the DF backend to use for this field
     ObjectType => 'Ticket',
     Config     => {
-        DefaultValue => [ 'ticket2_field5', 'ticket4_field5' ],
+        DefaultValue   => [ 'ticket2_field5', 'ticket4_field5' ],
         PossibleValues => {
             ticket1_field5 => 'ticket1_field51',
             ticket2_field5 => 'ticket2_field52',
@@ -206,10 +183,7 @@ push @TestDynamicFields, $FieldID5;
 # finish DynamicFields
 
 # create ticket object
-my $TicketObject = Kernel::System::Ticket->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
 # create 3 tickets
 
@@ -233,6 +207,14 @@ my $TicketID1 = $TicketObject->TicketCreate(
 $Self->True(
     $TicketID1,
     "TicketCreate() successful for Ticket One ID $TicketID1",
+);
+
+# create backend object and delegates
+my $BackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
+$Self->Is(
+    ref $BackendObject,
+    'Kernel::System::DynamicField::Backend',
+    'Backend object was created successfully',
 );
 
 $BackendObject->ValueSet(
@@ -275,7 +257,7 @@ $BackendObject->ValueSet(
 my %TicketEntryOne = $TicketObject->TicketGet(
     TicketID      => $TicketID1,
     DynamicFields => 0,
-    UserID        => $Self->{UserID},
+    UserID        => $UserID,
 );
 
 $Self->True(
@@ -297,7 +279,7 @@ for my $Key ( sort keys %TicketEntryOne ) {
 my %TicketEntryOneDF = $TicketObject->TicketGet(
     TicketID      => $TicketID1,
     DynamicFields => 1,
-    UserID        => $Self->{UserID},
+    UserID        => $UserID,
 );
 
 $Self->True(
@@ -377,11 +359,11 @@ $BackendObject->ValueSet(
 );
 
 # get the Ticket entry
-# withpout DF
+# without DF
 my %TicketEntryTwo = $TicketObject->TicketGet(
     TicketID      => $TicketID2,
     DynamicFields => 0,
-    UserID        => $Self->{UserID},
+    UserID        => $UserID,
 );
 
 $Self->True(
@@ -403,7 +385,7 @@ for my $Key ( sort keys %TicketEntryTwo ) {
 my %TicketEntryTwoDF = $TicketObject->TicketGet(
     TicketID      => $TicketID2,
     DynamicFields => 1,
-    UserID        => $Self->{UserID},
+    UserID        => $UserID,
 );
 
 $Self->True(
@@ -446,7 +428,7 @@ $Self->True(
 my %TicketEntryThree = $TicketObject->TicketGet(
     TicketID      => $TicketID3,
     DynamicFields => 0,
-    UserID        => $Self->{UserID},
+    UserID        => $UserID,
 );
 
 $Self->True(
@@ -543,10 +525,10 @@ for my $Article (@ArticleWithoutAttachments) {
 
 # file checks
 for my $File (qw(xls txt doc png pdf)) {
-    my $Location = $Self->{ConfigObject}->Get('Home')
+    my $Location = $ConfigObject->Get('Home')
         . "/scripts/test/sample/StdAttachment/StdAttachment-Test1.$File";
 
-    my $ContentRef = $Self->{MainObject}->FileRead(
+    my $ContentRef = $MainObject->FileRead(
         Location => $Location,
         Mode     => 'binmode',
         Type     => 'Local',
@@ -589,7 +571,6 @@ for my $Article (@ArticleBox) {
         UserID                     => 1,
     );
 
-    # next if not attachments
     next ARTICLE if !IsHashRefWithData( \%AtmIndex );
 
     my @Attachments;
@@ -602,7 +583,6 @@ for my $Article (@ArticleBox) {
             UserID    => 1,
         );
 
-        # next if not attachment
         next ATTACHMENT if !IsHashRefWithData( \%Attachment );
 
         # convert content to base64
@@ -621,7 +601,7 @@ for my $Article (@ArticleBox) {
 my %TicketEntryFour = $TicketObject->TicketGet(
     TicketID      => $TicketID4,
     DynamicFields => 0,
-    UserID        => $Self->{UserID},
+    UserID        => $UserID,
 );
 
 $Self->True(
@@ -645,10 +625,7 @@ push @TicketIDs, $TicketID4;
 my $WebserviceName = '-Test-' . $RandomID;
 
 # create webservice object
-my $WebserviceObject = Kernel::System::GenericInterface::Webservice->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+my $WebserviceObject = $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice');
 $Self->Is(
     'Kernel::System::GenericInterface::Webservice',
     ref $WebserviceObject,
@@ -677,9 +654,9 @@ $Self->True(
 
 # get remote host with some precautions for certain unit test systems
 my $Host;
-my $FQDN = $Self->{ConfigObject}->Get('FQDN');
+my $FQDN = $ConfigObject->Get('FQDN');
 
-# try to resolve fqdn host
+# try to resolve FQDN host
 if ( $FQDN ne 'yourhost.example.com' && gethostbyname($FQDN) ) {
     $Host = $FQDN;
 }
@@ -689,18 +666,18 @@ if ( !$Host && gethostbyname('localhost') ) {
     $Host = 'localhost';
 }
 
-# use hardcoded localhost ip address
+# use hard coded localhost IP address
 if ( !$Host ) {
     $Host = '127.0.0.1';
 }
 
 # prepare webservice config
 my $RemoteSystem =
-    $Self->{ConfigObject}->Get('HttpType')
+    $ConfigObject->Get('HttpType')
     . '://'
     . $Host
     . '/'
-    . $Self->{ConfigObject}->Get('ScriptAlias')
+    . $ConfigObject->Get('ScriptAlias')
     . '/nph-genericinterface.pl/WebserviceID/'
     . $WebserviceID;
 
@@ -759,7 +736,7 @@ my $WebserviceUpdate = $WebserviceObject->WebserviceUpdate(
     Name    => $WebserviceName,
     Config  => $WebserviceConfig,
     ValidID => 1,
-    UserID  => $Self->{UserID},
+    UserID  => $UserID,
 );
 $Self->True(
     $WebserviceUpdate,
@@ -768,10 +745,7 @@ $Self->True(
 
 # Get SessionID
 # create requester object
-my $RequesterSessionObject = Kernel::GenericInterface::Requester->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+my $RequesterSessionObject = $Kernel::OM->Get('Kernel::GenericInterface::Requester');
 $Self->Is(
     'Kernel::GenericInterface::Requester',
     ref $RequesterSessionObject,
@@ -1098,8 +1072,6 @@ my @Tests        = (
 
 # debugger object
 my $DebuggerObject = Kernel::GenericInterface::Debugger->new(
-    %{$Self},
-    ConfigObject   => $ConfigObject,
     DebuggerConfig => {
         DebugThreshold => 'debug',
         TestMode       => 1,
@@ -1110,15 +1082,13 @@ my $DebuggerObject = Kernel::GenericInterface::Debugger->new(
 $Self->Is(
     ref $DebuggerObject,
     'Kernel::GenericInterface::Debugger',
-    'DebuggerObject instanciate correctly',
+    'DebuggerObject instantiate correctly',
 );
 
 for my $Test (@Tests) {
 
     # create local object
     my $LocalObject = "Kernel::GenericInterface::Operation::Ticket::$Test->{Operation}"->new(
-        %{$Self},
-        ConfigObject   => $ConfigObject,
         DebuggerObject => $DebuggerObject,
         WebserviceID   => $WebserviceID,
     );
@@ -1137,7 +1107,7 @@ for my $Test (@Tests) {
             UserLogin => $UserLogin,
             Password  => $Password,
             %{ $Test->{RequestData} },
-            }
+        },
     );
 
     # check result
@@ -1148,10 +1118,7 @@ for my $Test (@Tests) {
     );
 
     # create requester object
-    my $RequesterObject = Kernel::GenericInterface::Requester->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
-    );
+    my $RequesterObject = $Kernel::OM->Get('Kernel::GenericInterface::Requester');
     $Self->Is(
         'Kernel::GenericInterface::Requester',
         ref $RequesterObject,
@@ -1217,7 +1184,6 @@ for my $Test (@Tests) {
                     }
                 }
             }
-
         }
 
         if (
@@ -1268,7 +1234,6 @@ for my $Test (@Tests) {
                 }
             }
         }
-
     }
 
     # remove ErrorMessage parameter from direct call
@@ -1305,7 +1270,7 @@ for my $Test (@Tests) {
 # clean up webservice
 my $WebserviceDelete = $WebserviceObject->WebserviceDelete(
     ID     => $WebserviceID,
-    UserID => $Self->{UserID},
+    UserID => $UserID,
 );
 $Self->True(
     $WebserviceDelete,
@@ -1317,7 +1282,7 @@ for my $TicketID (@TicketIDs) {
     # delete the ticket Three
     my $TicketDelete = $TicketObject->TicketDelete(
         TicketID => $TicketID,
-        UserID   => $Self->{UserID},
+        UserID   => $UserID,
     );
 
     # sanity check

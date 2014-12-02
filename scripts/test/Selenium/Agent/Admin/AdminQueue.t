@@ -9,23 +9,24 @@
 
 use strict;
 use warnings;
+use utf8;
 
-use vars qw($Self);
+use vars (qw($Self));
 
 use Kernel::System::UnitTest::Helper;
 use Kernel::System::UnitTest::Selenium;
 
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
 my $Selenium = Kernel::System::UnitTest::Selenium->new(
-    Verbose        => 1,
-    UnitTestObject => $Self,
+    Verbose => 1,
 );
 
 $Selenium->RunTest(
     sub {
 
         my $Helper = Kernel::System::UnitTest::Helper->new(
-            UnitTestObject => $Self,
-            %{$Self},
             RestoreSystemConfiguration => 0,
         );
 
@@ -39,7 +40,7 @@ $Selenium->RunTest(
             Password => $TestUserLogin,
         );
 
-        my $ScriptAlias = $Self->{ConfigObject}->Get('ScriptAlias');
+        my $ScriptAlias = $ConfigObject->Get('ScriptAlias');
 
         $Selenium->get("${ScriptAlias}index.pl?Action=AdminQueue");
 
@@ -48,7 +49,7 @@ $Selenium->RunTest(
         $Selenium->find_element( "table tbody tr td", 'css' );
 
         # click 'add new queue' link
-        $Selenium->find_element( "a.Plus", 'css' )->click();
+        $Selenium->find_element( "a.Create", 'css' )->click();
 
         # check add page
         for my $ID (
@@ -70,7 +71,7 @@ $Selenium->RunTest(
             $Selenium->execute_script(
                 "return \$('#Name').hasClass('Error')"
             ),
-            'true',
+            '1',
             'Client side validation correctly detected missing input value',
         );
 
@@ -86,8 +87,8 @@ $Selenium->RunTest(
         $Selenium->find_element( "#SystemAddressID option[value='1']", 'css' )->click();
         $Selenium->find_element( "#SignatureID option[value='1']",     'css' )->click();
         $Selenium->find_element( "#ValidID option[value='1']",         'css' )->click();
-        $Selenium->find_element( "#Comment", 'css' )->send_keys('Selenium test queue');
-        $Selenium->find_element( "#Name",    'css' )->submit();
+        $Selenium->find_element( "#Comment",                           'css' )->send_keys('Selenium test queue');
+        $Selenium->find_element( "#Name",                              'css' )->submit();
 
         # check Queue - Responses page
         $Self->True(

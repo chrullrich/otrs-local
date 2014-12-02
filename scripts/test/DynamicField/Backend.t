@@ -10,22 +10,17 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
-use Kernel::System::DynamicField;
-use Kernel::System::DynamicField::Backend;
-use Kernel::System::UnitTest::Helper;
-use Kernel::System::Ticket;
-
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %$Self,
-    UnitTestObject => $Self,
-);
+# get needed objects
+my $ConfigObject       = $Kernel::OM->Get('Kernel::Config');
+my $HelperObject       = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
+my $BackendObject      = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
+my $TicketObject       = $Kernel::OM->Get('Kernel::System::Ticket');
 
 my $RandomID = int rand 1_000_000_000;
-
-my $DynamicFieldObject = Kernel::System::DynamicField->new( %{$Self} );
-my $TicketObject       = Kernel::System::Ticket->new( %{$Self} );
 
 # create a ticket
 my $TicketID = $TicketObject->TicketCreate(
@@ -51,7 +46,7 @@ my $FieldID = $DynamicFieldObject->DynamicFieldAdd(
     Name       => "dynamicfieldtest$RandomID",
     Label      => 'a description',
     FieldOrder => 9991,
-    FieldType  => 'Text',     # mandatory, selects the DF backend to use for this field
+    FieldType  => 'Text',                        # mandatory, selects the DF backend to use for this field
     ObjectType => 'Ticket',
     Config     => {
         DefaultValue => 'a value',
@@ -67,7 +62,7 @@ $Self->True(
 );
 
 # get the Dynamic Fields configuration
-my $DynamicFieldsConfig = $Self->{ConfigObject}->Get('DynamicFields::Driver');
+my $DynamicFieldsConfig = $ConfigObject->Get('DynamicFields::Driver');
 
 # sanity check
 $Self->Is(
@@ -80,9 +75,6 @@ $Self->IsNotDeeply(
     {},
     'Dynamic Field confguration is not empty',
 );
-
-# create backend object and delegates
-my $BackendObject = Kernel::System::DynamicField::Backend->new( %{$Self} );
 
 $Self->True(
     $BackendObject,

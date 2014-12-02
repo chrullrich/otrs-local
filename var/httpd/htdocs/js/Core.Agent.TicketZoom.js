@@ -55,10 +55,19 @@ Core.Agent.TicketZoom = (function (TargetNS) {
      * @return nothing
      *      Mark an article as seen in frontend and backend.
      */
-    TargetNS.MarkAsSeen = function (TicketID, ArticleID) {
+    TargetNS.MarkAsSeen = function (TicketID, ArticleID, Timeout) {
+
+        // assign default timeout
+        if (typeof Timeout === 'undefined') {
+            Timeout = 3000;
+        }
+
         TargetNS.MarkAsSeenTimeout = window.setTimeout(function () {
             // Mark old row as readed
             $('#ArticleTable .ArticleID[value=' + ArticleID + ']').closest('tr').removeClass('UnreadArticles').find('span.UnreadArticles').remove();
+            $('.ChronicalView li#ArticleID_' + ArticleID).find('.UnreadArticles').fadeOut(function() {
+                $(this).closest('li').addClass('Seen');
+            });
 
             // Mark article as seen in backend
             var Data = {
@@ -72,7 +81,7 @@ Core.Agent.TicketZoom = (function (TargetNS) {
                 Data,
                 function () {}
             );
-        }, 3000);
+        }, parseInt(Timeout, 10));
     };
 
     /**
@@ -159,6 +168,28 @@ Core.Agent.TicketZoom = (function (TargetNS) {
     /**
      * @function
      * @return nothing
+     *      Used in OTRSBusiness
+     */
+    TargetNS.LoadArticleFromExternal = function (ArticleID, WindowObject) {
+        var $Element = $('#ArticleTable td.No input.ArticleID[value=' + ArticleID +']'),
+            ArticleURL;
+
+        if (!$Element.length) {
+            if (typeof WindowObject === 'undefined') {
+                WindowObject = window;
+            }
+            WindowObject.alert(Core.Config.Get('Language.AttachmentViewMessage'));
+
+            return;
+        }
+
+        ArticleURL = $Element.siblings('.ArticleInfo').val();
+        LoadArticle(ArticleURL, ArticleID);
+    };
+
+    /**
+     * @function
+     * @return nothing
      *      This function checks if the url hash (representing the current article)
      *      has changed and initiates an article load. A change can happen by clicking
      *      'back' in the browser, for example.
@@ -227,7 +258,7 @@ Core.Agent.TicketZoom = (function (TargetNS) {
         });
 
 
-        $('.TableSmall tbody td a.Attachment').bind('click', function (Event) {
+        $('.DataTable tbody td a.Attachment').bind('click', function (Event) {
             var Position, HTML, $HTMLObject;
             if ($(this).attr('rel') && $('#' + $(this).attr('rel')).length) {
                 Position = $(this).offset();
@@ -272,6 +303,9 @@ Core.Agent.TicketZoom = (function (TargetNS) {
                 }
             }
         }
+        $('a.Chronical').bind('click', function() {
+            $(this).attr('href', $(this).attr('href') + ';ArticleID=' + URLHash);
+        });
 
         // loading new articles
         $('#ArticleTable tbody tr').bind('click', function (Event) {

@@ -9,13 +9,14 @@
 
 use strict;
 use warnings;
-use vars qw($Self);
+
+use vars (qw($Self));
 
 use Kernel::System::Crypt;
-use Kernel::Config;
 
-# create local object
-my $ConfigObject = Kernel::Config->new();
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $MainObject   = $Kernel::OM->Get('Kernel::System::Main');
 
 # set config
 $ConfigObject->Set(
@@ -27,7 +28,7 @@ $ConfigObject->Set(
     Value => '--batch --no-tty --yes',
 );
 $ConfigObject->Set(
-    Key => 'PGP::Key::Password',
+    Key   => 'PGP::Key::Password',
     Value => { '04A17B7A' => 'somepass' },
 );
 
@@ -36,15 +37,16 @@ if ( !-e $ConfigObject->Get('PGP::Bin') ) {
 
     # maybe it's a mac with macport
     if ( -e '/opt/local/bin/gpg' ) {
-        $ConfigObject->Set( Key => 'PGP::Bin', Value => '/opt/local/bin/gpg' );
+        $ConfigObject->Set(
+            Key   => 'PGP::Bin',
+            Value => '/opt/local/bin/gpg'
+        );
     }
 }
 
 # create local crypt object
 my $CryptObject = Kernel::System::Crypt->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-    CryptType    => 'PGP',
+    CryptType => 'PGP',
 );
 
 if ( !$CryptObject ) {
@@ -94,17 +96,21 @@ for my $Count ( 1 .. 2 ) {
     );
 
     # get keys
-    my $KeyString = $Self->{MainObject}->FileRead(
-        Directory => $ConfigObject->Get('Home') . "/scripts/test/sample/Crypt/",
-        Filename  => "PGPPrivateKey-$Count.asc",
-    );
-    my $Message = $CryptObject->KeyAdd(
-        Key => ${$KeyString},
-    );
-    $Self->True(
-        $Message || '',
-        "#$Count KeyAdd()",
-    );
+    for my $Privacy ( 'Private', 'Public' ) {
+
+        my $KeyString = $MainObject->FileRead(
+            Directory => $ConfigObject->Get('Home') . "/scripts/test/sample/Crypt/",
+            Filename  => "PGP${Privacy}Key-$Count.asc",
+        );
+        my $Message = $CryptObject->KeyAdd(
+            Key => ${$KeyString},
+        );
+
+        $Self->True(
+            $Message || '',
+            "#$Count KeyAdd() ($Privacy)",
+        );
+    }
 
     @Keys = $CryptObject->KeySearch(
         Search => $Search{$Count},
@@ -256,7 +262,7 @@ for my $Count ( 1 .. 2 ) {
 
     # file checks
     for my $File (qw(xls txt doc png pdf)) {
-        my $Content = $Self->{MainObject}->FileRead(
+        my $Content = $MainObject->FileRead(
             Directory => $ConfigObject->Get('Home') . "/scripts/test/sample/Crypt/",
             Filename  => "PGP-Test1.$File",
             Mode      => 'binmode',
@@ -404,7 +410,7 @@ for my $Count ( 1 .. 2 ) {
     my $Search = 'testingexpired@example.com';
 
     # get expired key
-    my $KeyString = $Self->{MainObject}->FileRead(
+    my $KeyString = $MainObject->FileRead(
         Directory => $ConfigObject->Get('Home') . '/scripts/test/sample/Crypt/',
         Filename  => 'PGPPublicKey-Expired.asc',
     );
@@ -428,7 +434,7 @@ for my $Count ( 1 .. 2 ) {
     $Search = 'testingkey@test.com';
 
     # get key
-    $KeyString = $Self->{MainObject}->FileRead(
+    $KeyString = $MainObject->FileRead(
         Directory => $ConfigObject->Get('Home') . '/scripts/test/sample/Crypt/',
         Filename  => 'PGPPublicKey-ToRevoke.asc',
     );
@@ -437,7 +443,7 @@ for my $Count ( 1 .. 2 ) {
     $CryptObject->KeyAdd( Key => ${$KeyString} );
 
     # get key
-    $KeyString = $Self->{MainObject}->FileRead(
+    $KeyString = $MainObject->FileRead(
         Directory => $ConfigObject->Get('Home') . '/scripts/test/sample/Crypt/',
         Filename  => 'PGPPublicKey-RevokeCert.asc',
     );

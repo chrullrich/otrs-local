@@ -30,12 +30,7 @@ use lib dirname($RealBin) . "/Kernel/cpan-lib";
 
 use Getopt::Std;
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Main;
-use Kernel::System::Time;
-use Kernel::System::DB;
+use Kernel::System::ObjectManager;
 
 # get options
 my %Opts;
@@ -87,26 +82,25 @@ else {
 }
 
 # create common objects
-my %CommonObject;
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-Backup',
-    %CommonObject,
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-backup.pl',
+    },
+    'Kernel::System::DB' => {
+        AutoConnectNo => 1,
+        }
 );
-$CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
-$CommonObject{TimeObject} = Kernel::System::Time->new(%CommonObject);
-$CommonObject{DBObject}   = Kernel::System::DB->new( %CommonObject, AutoConnectNo => 1 );
-my $DatabaseHost = $CommonObject{ConfigObject}->Get('DatabaseHost');
-my $Database     = $CommonObject{ConfigObject}->Get('Database');
-my $DatabaseUser = $CommonObject{ConfigObject}->Get('DatabaseUser');
-my $DatabasePw   = $CommonObject{ConfigObject}->Get('DatabasePw');
-my $DatabaseDSN  = $CommonObject{ConfigObject}->Get('DatabaseDSN');
-my $ArticleDir   = $CommonObject{ConfigObject}->Get('ArticleDir');
+
+my $DatabaseHost = $Kernel::OM->Get('Kernel::Config')->Get('DatabaseHost');
+my $Database     = $Kernel::OM->Get('Kernel::Config')->Get('Database');
+my $DatabaseUser = $Kernel::OM->Get('Kernel::Config')->Get('DatabaseUser');
+my $DatabasePw   = $Kernel::OM->Get('Kernel::Config')->Get('DatabasePw');
+my $DatabaseDSN  = $Kernel::OM->Get('Kernel::Config')->Get('DatabaseDSN');
+my $ArticleDir   = $Kernel::OM->Get('Kernel::Config')->Get('ArticleDir');
 
 # decrypt pw (if needed)
 if ( $DatabasePw =~ m/^\{(.*)\}$/ ) {
-    $DatabasePw = $CommonObject{DBObject}->_Decrypt($1);
+    $DatabasePw = $Kernel::OM->Get('Kernel::System::DB')->_Decrypt($1);
 }
 
 # check db backup support
@@ -141,13 +135,12 @@ for my $CMD ( 'cp', 'tar', $DBDump, $CompressCMD ) {
 }
 
 # create new backup directory
-my $Home = $CommonObject{ConfigObject}->Get('Home');
+my $Home = $Kernel::OM->Get('Kernel::Config')->Get('Home');
 chdir($Home);
 
-my ( $Sec, $Min, $Hour, $Day, $Month, $Year, $WeekDay )
-    = $CommonObject{TimeObject}->SystemTime2Date(
-    SystemTime => $CommonObject{TimeObject}->SystemTime(),
-    );
+my ( $Sec, $Min, $Hour, $Day, $Month, $Year, $WeekDay ) = $Kernel::OM->Get('Kernel::System::Time')->SystemTime2Date(
+    SystemTime => $Kernel::OM->Get('Kernel::System::Time')->SystemTime(),
+);
 
 # create directory name - this looks like 2013-09-09_22-19'
 my $Directory = sprintf( "$Opts{d}/%04d-%02d-%02d_%02d-%02d", $Year, $Month, $Day, $Hour, $Min );
@@ -179,7 +172,7 @@ if ($DBOnlyBackup) {
 else {
     if ($FullBackup) {
         print "Backup $Directory/Application.tar.gz ... ";
-        my $Excludes = "--exclude=var/tmp --exclude=js-cache --exclude=css-cache ";
+        my $Excludes = "--exclude=var/tmp --exclude=js-cache --exclude=css-cache --exclude=.git";
         if ( !system("tar $Excludes -czf $Directory/Application.tar.gz .") ) {
             print "done\n";
         }
@@ -278,13 +271,13 @@ else {
 # remove old backups only after everything worked well
 if ( defined $Opts{r} ) {
     my %LeaveBackups;
-    my $SystemTime = $CommonObject{TimeObject}->SystemTime();
+    my $SystemTime = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
 
     # we'll be substracting days to the current time
     # we don't want DST changes to affect our dates
     # if it is < 2:00 AM, add two hours so we're sure DST will not change our timestamp
     # to another day
-    my $TimeStamp = $CommonObject{TimeObject}->SystemTime2TimeStamp(
+    my $TimeStamp = $Kernel::OM->Get('Kernel::System::Time')->SystemTime2TimeStamp(
         SystemTime => $SystemTime,
         Type       => 'Short',
     );
@@ -295,7 +288,7 @@ if ( defined $Opts{r} ) {
 
     for ( 0 .. $Opts{r} ) {
         my ( $Sec, $Min, $Hour, $Day, $Month, $Year, $WeekDay )
-            = $CommonObject{TimeObject}->SystemTime2Date(
+            = $Kernel::OM->Get('Kernel::System::Time')->SystemTime2Date(
             SystemTime => $SystemTime,
             );
 
@@ -309,13 +302,14 @@ if ( defined $Opts{r} ) {
         $SystemTime -= ( 24 * 3600 );
     }
 
-    my @Directories = $CommonObject{MainObject}->DirectoryRead(
+    my @Directories = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
         Directory => $Opts{d},
         Filter    => '*',
     );
 
+    DIRECTORY:
     for my $Directory (@Directories) {
-        next if !-d $Directory;
+        next DIRECTORY if !-d $Directory;
         my $Leave = 0;
         for my $Data ( sort keys %LeaveBackups ) {
             if ( $Directory =~ m/$Data/ ) {
@@ -326,12 +320,14 @@ if ( defined $Opts{r} ) {
 
             # remove files and directory
             print "deleting old backup in $Directory ... ";
-            my @Files = $CommonObject{MainObject}->DirectoryRead(
+            my @Files = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
                 Directory => $Directory,
                 Filter    => '*',
             );
             for my $File (@Files) {
                 if ( -e $File ) {
+
+                    #                    print "Notice: remove $File\n";
                     unlink $File;
                 }
             }
@@ -354,7 +350,7 @@ sub RemoveIncompleteBackup {
 
     # remove files and directory
     print STDERR "Deleting incomplete backup $Directory ... ";
-    my @Files = $CommonObject{MainObject}->DirectoryRead(
+    my @Files = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
         Directory => $Directory,
         Filter    => '*',
     );

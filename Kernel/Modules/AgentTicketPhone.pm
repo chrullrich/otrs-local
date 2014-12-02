@@ -85,7 +85,8 @@ sub Run {
         qw(ArticleID LinkTicketID PriorityID NewUserID
         From Subject Body NextStateID TimeUnits
         Year Month Day Hour Minute
-        NewResponsibleID ResponsibleAll OwnerAll TypeID ServiceID SLAID StandardTemplateID
+        NewResponsibleID ResponsibleAll OwnerAll TypeID ServiceID SLAID
+        StandardTemplateID FromChatID
         )
         )
     {
@@ -101,8 +102,7 @@ sub Run {
 
     # MultipleCustomer From-field
     my @MultipleCustomer;
-    my $CustomersNumber
-        = $Self->{ParamObject}->GetParam( Param => 'CustomerTicketCounterFromCustomer' ) || 0;
+    my $CustomersNumber = $Self->{ParamObject}->GetParam( Param => 'CustomerTicketCounterFromCustomer' ) || 0;
     my $Selected = $Self->{ParamObject}->GetParam( Param => 'CustomerSelected' ) || '';
 
     # hash for check duplicated entries
@@ -111,8 +111,7 @@ sub Run {
     if ($CustomersNumber) {
         my $CustomerCounter = 1;
         for my $Count ( 1 ... $CustomersNumber ) {
-            my $CustomerElement
-                = $Self->{ParamObject}->GetParam( Param => 'CustomerTicketText_' . $Count );
+            my $CustomerElement = $Self->{ParamObject}->GetParam( Param => 'CustomerTicketText_' . $Count );
             my $CustomerSelected = ( $Selected eq $Count ? 'checked="checked"' : '' );
             my $CustomerKey = $Self->{ParamObject}->GetParam( Param => 'CustomerKey_' . $Count )
                 || '';
@@ -172,12 +171,11 @@ sub Run {
         next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
         # extract the dynamic field value form the web request
-        $DynamicFieldValues{ $DynamicFieldConfig->{Name} }
-            = $Self->{BackendObject}->EditFieldValueGet(
+        $DynamicFieldValues{ $DynamicFieldConfig->{Name} } = $Self->{BackendObject}->EditFieldValueGet(
             DynamicFieldConfig => $DynamicFieldConfig,
             ParamObject        => $Self->{ParamObject},
             LayoutObject       => $Self->{LayoutObject},
-            );
+        );
     }
 
     # convert dynamic field values into a structure for ACLs
@@ -187,8 +185,7 @@ sub Run {
         next DYNAMICFIELD if !$DynamicField;
         next DYNAMICFIELD if !$DynamicFieldValues{$DynamicField};
 
-        $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField }
-            = $DynamicFieldValues{$DynamicField};
+        $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField } = $DynamicFieldValues{$DynamicField};
     }
     $GetParam{DynamicField} = \%DynamicFieldACLParameters;
 
@@ -206,6 +203,28 @@ sub Run {
         );
     }
 
+    if ( $GetParam{FromChatID} ) {
+        if ( !$Self->{ConfigObject}->Get('ChatEngine::Active') ) {
+            return $Self->{LayoutObject}->FatalError(
+                Message => "Chat is not active.",
+            );
+        }
+
+        # Ok, take the chat
+        my %ChatParticipant = $Kernel::OM->Get('Kernel::System::Chat')->ChatParticipantCheck(
+            ChatID        => $GetParam{FromChatID},
+            ChatterType   => 'User',
+            ChatterID     => $Self->{UserID},
+            ChatterActive => 1,
+        );
+
+        if ( !%ChatParticipant ) {
+            return $Self->{LayoutObject}->FatalError(
+                Message => "No permission.",
+            );
+        }
+    }
+
     if ( !$Self->{Subaction} || $Self->{Subaction} eq 'Created' ) {
 
         # header
@@ -218,8 +237,13 @@ sub Run {
             # notify info
             my %Ticket = $Self->{TicketObject}->TicketGet( TicketID => $Self->{TicketID} );
             $Output .= $Self->{LayoutObject}->Notify(
-                Info => 'Ticket "%s" created!", "' . $Ticket{TicketNumber},
-                Link => '$Env{"Baselink"}Action=AgentTicketZoom;TicketID=' . $Ticket{TicketID},
+                Info => $Self->{LayoutObject}->{LanguageObject}->Translate(
+                    'Ticket "%s" created!',
+                    $Ticket{TicketNumber},
+                ),
+                Link => $Self->{LayoutObject}->{Baselink}
+                    . 'Action=AgentTicketZoom;TicketID='
+                    . $Ticket{TicketID},
             );
         }
 
@@ -271,7 +295,7 @@ sub Run {
 
             $Article{Subject} = $Self->{TicketObject}->TicketSubjectClean(
                 TicketNumber => $Article{TicketNumber},
-                Subject => $Article{Subject} || '',
+                Subject      => $Article{Subject} || '',
             );
 
             # save article from for addresses list
@@ -404,8 +428,7 @@ sub Run {
 
             # override the value from user preferences if is set
             if ( $UserPreferences{ 'UserDynamicField_' . $DynamicFieldConfig->{Name} } ) {
-                $DefaultValue
-                    = $UserPreferences{ 'UserDynamicField_' . $DynamicFieldConfig->{Name} };
+                $DefaultValue = $UserPreferences{ 'UserDynamicField_' . $DynamicFieldConfig->{Name} };
             }
 
             next DYNAMICFIELD if $DefaultValue eq '';
@@ -457,8 +480,7 @@ sub Run {
             $SplitTicketParam{AllUsers} = 1;
 
             # set the selected queue in format ID||Name
-            $SplitTicketParam{ToSelected}
-                = $SplitTicketData{QueueID} . '||' . $SplitTicketData{Queue};
+            $SplitTicketParam{ToSelected} = $SplitTicketData{QueueID} . '||' . $SplitTicketData{Queue};
 
             for my $Key ( sort keys %SplitTicketData ) {
                 if ( $Key =~ /DynamicField\_(.*)/ ) {
@@ -509,8 +531,7 @@ sub Run {
                         my %Filter = $Self->{TicketObject}->TicketAclData();
 
                         # convert Filer key => key back to key => value using map
-                        %{$PossibleValuesFilter}
-                            = map { $_ => $PossibleValues->{$_} }
+                        %{$PossibleValuesFilter} = map { $_ => $PossibleValues->{$_} }
                             keys %Filter;
                     }
                 }
@@ -523,9 +544,8 @@ sub Run {
             # from DB this cases
             if ( $Self->{TicketID} && $Article{ArticleID} ) {
 
-            # select TicketID or ArticleID to get the value depending on dynamic field configuration
-                my $ObjectID
-                    = $DynamicFieldConfig->{ObjectType} eq 'Ticket'
+                # select TicketID or ArticleID to get the value depending on dynamic field configuration
+                my $ObjectID = $DynamicFieldConfig->{ObjectType} eq 'Ticket'
                     ? $Self->{TicketID}
                     : $Article{ArticleID};
 
@@ -547,8 +567,7 @@ sub Run {
             }
 
             # get field html
-            $DynamicFieldHTML{ $DynamicFieldConfig->{Name} }
-                = $Self->{BackendObject}->EditFieldRender(
+            $DynamicFieldHTML{ $DynamicFieldConfig->{Name} } = $Self->{BackendObject}->EditFieldRender(
                 DynamicFieldConfig   => $DynamicFieldConfig,
                 PossibleValuesFilter => $PossibleValuesFilter,
                 Value                => $Value,
@@ -556,8 +575,8 @@ sub Run {
                 ParamObject          => $Self->{ParamObject},
                 AJAXUpdate           => 1,
                 UpdatableFields      => $Self->_GetFieldsToUpdate(),
-                Mandatory => $Self->{Config}->{DynamicField}->{ $DynamicFieldConfig->{Name} } == 2,
-                );
+                Mandatory            => $Self->{Config}->{DynamicField}->{ $DynamicFieldConfig->{Name} } == 2,
+            );
         }
 
         # get all attachments meta data
@@ -671,6 +690,7 @@ sub Run {
             CustomerData => \%CustomerData,
             Attachments  => \@Attachments,
             LinkTicketID => $GetParam{LinkTicketID} || '',
+            FromChatID   => $GetParam{FromChatID} || '',
 
             #            %GetParam,
             %SplitTicketParam,
@@ -687,7 +707,7 @@ sub Run {
         my %Error;
         my %StateData;
         if ( $GetParam{NextStateID} ) {
-            %StateData = $Self->{TicketObject}->{StateObject}->StateGet(
+            %StateData = $Self->{StateObject}->StateGet(
                 ID => $GetParam{NextStateID},
             );
         }
@@ -721,8 +741,7 @@ sub Run {
         my $ExpandCustomerName = $Self->{ParamObject}->GetParam( Param => 'ExpandCustomerName' )
             || 0;
         my %FromExternalCustomer;
-        $FromExternalCustomer{Customer}
-            = $Self->{ParamObject}->GetParam( Param => 'PreSelectedCustomerUser' )
+        $FromExternalCustomer{Customer} = $Self->{ParamObject}->GetParam( Param => 'PreSelectedCustomerUser' )
             || $Self->{ParamObject}->GetParam( Param => 'CustomerUser' )
             || '';
 
@@ -783,7 +802,8 @@ sub Run {
                 Param => 'FileUpload',
             );
             $Self->{UploadCacheObject}->FormIDAddFile(
-                FormID => $Self->{FormID},
+                FormID      => $Self->{FormID},
+                Disposition => 'attachment',
                 %UploadStuff,
             );
         }
@@ -854,8 +874,7 @@ sub Run {
                         my %Filter = $Self->{TicketObject}->TicketAclData();
 
                         # convert Filer key => key back to key => value using map
-                        %{$PossibleValuesFilter}
-                            = map { $_ => $PossibleValues->{$_} }
+                        %{$PossibleValuesFilter} = map { $_ => $PossibleValues->{$_} }
                             keys %Filter;
                     }
                 }
@@ -889,8 +908,7 @@ sub Run {
             }
 
             # get field html
-            $DynamicFieldHTML{ $DynamicFieldConfig->{Name} }
-                = $Self->{BackendObject}->EditFieldRender(
+            $DynamicFieldHTML{ $DynamicFieldConfig->{Name} } = $Self->{BackendObject}->EditFieldRender(
                 DynamicFieldConfig   => $DynamicFieldConfig,
                 PossibleValuesFilter => $PossibleValuesFilter,
                 ServerError          => $ValidationResult->{ServerError} || '',
@@ -899,8 +917,8 @@ sub Run {
                 ParamObject          => $Self->{ParamObject},
                 AJAXUpdate           => 1,
                 UpdatableFields      => $Self->_GetFieldsToUpdate(),
-                Mandatory => $Self->{Config}->{DynamicField}->{ $DynamicFieldConfig->{Name} } == 2,
-                );
+                Mandatory            => $Self->{Config}->{DynamicField}->{ $DynamicFieldConfig->{Name} } == 2,
+            );
         }
 
         # expand customer name
@@ -947,7 +965,10 @@ sub Run {
             else {
 
                 # don't check email syntax on multi customer select
-                $Self->{ConfigObject}->Set( Key => 'CheckEmailAddresses', Value => 0 );
+                $Self->{ConfigObject}->Set(
+                    Key   => 'CheckEmailAddresses',
+                    Value => 0
+                );
                 $CustomerID = '';
 
                 # clear from if there is no customer found
@@ -1169,7 +1190,7 @@ sub Run {
                     %ACLCompatGetParam,
                     QueueID => $NewQueueID || '',
                 ),
-                CustomerID => $Self->{LayoutObject}->Ascii2Html( Text => $CustomerID ),
+                CustomerID   => $Self->{LayoutObject}->Ascii2Html( Text => $CustomerID ),
                 CustomerUser => $CustomerUser,
                 CustomerData => \%CustomerData,
                 To           => $Self->_GetTos(
@@ -1245,9 +1266,15 @@ sub Run {
 
             # remove unused inline images
             my @NewAttachmentData;
+            ATTACHMENT:
             for my $Attachment (@AttachmentData) {
                 my $ContentID = $Attachment->{ContentID};
-                if ($ContentID) {
+                if (
+                    $ContentID
+                    && ( $Attachment->{ContentType} =~ /image/i )
+                    && ( $Attachment->{Disposition} eq 'inline' )
+                    )
+                {
                     my $ContentIDHTMLQuote = $Self->{LayoutObject}->Ascii2Html(
                         Text => $ContentID,
                     );
@@ -1257,7 +1284,8 @@ sub Run {
                     $GetParam{Body} =~ s/(ContentID=)$ContentIDLinkEncode/$1$ContentID/g;
 
                     # ignore attachment if not linked in body
-                    next if $GetParam{Body} !~ /(\Q$ContentIDHTMLQuote\E|\Q$ContentID\E)/i;
+                    next ATTACHMENT
+                        if $GetParam{Body} !~ /(\Q$ContentIDHTMLQuote\E|\Q$ContentID\E)/i;
                 }
 
                 # remember inline images and normal attachments
@@ -1326,6 +1354,56 @@ sub Run {
                 Value              => $DynamicFieldValues{ $DynamicFieldConfig->{Name} },
                 UserID             => $Self->{UserID},
             );
+        }
+
+        # Permissions check were done earlier
+        if ( $GetParam{FromChatID} ) {
+            my $ChatObject = $Kernel::OM->Get('Kernel::System::Chat');
+            my %Chat       = $ChatObject->ChatGet(
+                ChatID => $GetParam{FromChatID},
+            );
+            my @ChatMessageList = $ChatObject->ChatMessageList(
+                ChatID => $GetParam{FromChatID},
+            );
+            my $ChatArticleID;
+
+            if (@ChatMessageList) {
+                my $JSONBody = $Kernel::OM->Get('Kernel::System::JSON')->Encode(
+                    Data => \@ChatMessageList,
+                );
+
+                my $ChatArticleType = 'chat-internal';
+                if (
+                    $Chat{RequesterType} eq 'Customer'
+                    || $Chat{TargetType} eq 'Customer'
+                    )
+                {
+                    $ChatArticleType = 'chat-external';
+                }
+
+                $ChatArticleID = $Self->{TicketObject}->ArticleCreate(
+                    NoAgentNotify => $NoAgentNotify,
+                    TicketID      => $TicketID,
+                    ArticleType   => $ChatArticleType,
+                    SenderType    => $Self->{Config}->{SenderType},
+
+                    # From             => $GetParam{From},
+                    # To               => $To,
+                    Subject        => $Kernel::OM->Get('Kernel::Language')->Translate('Chat'),
+                    Body           => $JSONBody,
+                    MimeType       => 'application/json',
+                    Charset        => $Self->{LayoutObject}->{UserCharset},
+                    UserID         => $Self->{UserID},
+                    HistoryType    => $Self->{Config}->{HistoryType},
+                    HistoryComment => $Self->{Config}->{HistoryComment} || '%%',
+                    Queue          => $Self->{QueueObject}->QueueLookup( QueueID => $NewQueueID ),
+                );
+            }
+            if ($ChatArticleID) {
+                $ChatObject->ChatDelete(
+                    ChatID => $GetParam{FromChatID},
+                );
+            }
         }
 
         # set owner (if new user id is given)
@@ -1481,7 +1559,9 @@ sub Run {
         my $NewTos;
 
         if ($Tos) {
+            TOs:
             for my $KeyTo ( sort keys %{$Tos} ) {
+                next TOs if ( $Tos->{$KeyTo} eq '-' );
                 $NewTos->{"$KeyTo||$Tos->{$KeyTo}"} = $Tos->{$KeyTo};
             }
         }
@@ -1621,14 +1701,14 @@ sub Run {
                 my $StdAttachmentObject = Kernel::System::StdAttachment->new( %{$Self} );
 
                 # add std. attachments to ticket
-                my %AllStdAttachments
-                    = $StdAttachmentObject->StdAttachmentStandardTemplateMemberList(
+                my %AllStdAttachments = $StdAttachmentObject->StdAttachmentStandardTemplateMemberList(
                     StandardTemplateID => $GetParam{StandardTemplateID},
-                    );
+                );
                 for ( sort keys %AllStdAttachments ) {
                     my %AttachmentsData = $StdAttachmentObject->StdAttachmentGet( ID => $_ );
                     $Self->{UploadCacheObject}->FormIDAddFile(
-                        FormID => $Self->{FormID},
+                        FormID      => $Self->{FormID},
+                        Disposition => 'attachment',
                         %AttachmentsData,
                     );
                 }
@@ -1664,7 +1744,7 @@ sub Run {
                     Data         => $NewTos,
                     SelectedID   => $Dest,
                     Translation  => 0,
-                    PossibleNone => 0,
+                    PossibleNone => 1,
                     TreeView     => $TreeView,
                     Max          => 100,
                 },
@@ -1916,8 +1996,7 @@ sub _GetServices {
     return \%Service if !$Param{QueueID} && !$Param{TicketID};
 
     # get options for default services for unknown customers
-    my $DefaultServiceUnknownCustomer
-        = $Self->{ConfigObject}->Get('Ticket::Service::Default::UnknownCustomer');
+    my $DefaultServiceUnknownCustomer = $Self->{ConfigObject}->Get('Ticket::Service::Default::UnknownCustomer');
 
     # check if no CustomerUserID is selected
     # if $DefaultServiceUnknownCustomer = 0 leave CustomerUserID empty, it will not get any services
@@ -1992,11 +2071,12 @@ sub _GetTos {
         );
 
         # build selection string
+        QUEUEID:
         for my $QueueID ( sort keys %Tos ) {
             my %QueueData = $Self->{QueueObject}->QueueGet( ID => $QueueID );
 
             # permission check, can we create new tickets in queue
-            next if !$UserGroups{ $QueueData{GroupID} };
+            next QUEUEID if !$UserGroups{ $QueueData{GroupID} };
 
             my $String = $Self->{ConfigObject}->Get('Ticket::Frontend::NewQueueSelectionString')
                 || '<Realname> <<Email>> - Queue: <Queue>';
@@ -2131,8 +2211,7 @@ sub _MaskPhoneNew {
     # prepare errors!
     if ( $Param{Errors} ) {
         for my $KeyError ( sort keys %{ $Param{Errors} } ) {
-            $Param{$KeyError}
-                = '* ' . $Self->{LayoutObject}->Ascii2Html( Text => $Param{Errors}->{$KeyError} );
+            $Param{$KeyError} = '* ' . $Self->{LayoutObject}->Ascii2Html( Text => $Param{Errors}->{$KeyError} );
         }
     }
 
@@ -2333,12 +2412,12 @@ sub _MaskPhoneNew {
     # pending data string
     $Param{PendingDateString} = $Self->{LayoutObject}->BuildDateSelection(
         %Param,
-        Format           => 'DateInputFormatLong',
-        YearPeriodPast   => 0,
-        YearPeriodFuture => 5,
-        DiffTime         => $Self->{ConfigObject}->Get('Ticket::Frontend::PendingDiffTime') || 0,
-        Class            => $Param{Errors}->{DateInvalid},
-        Validate         => 1,
+        Format               => 'DateInputFormatLong',
+        YearPeriodPast       => 0,
+        YearPeriodFuture     => 5,
+        DiffTime             => $Self->{ConfigObject}->Get('Ticket::Frontend::PendingDiffTime') || 0,
+        Class                => $Param{Errors}->{DateInvalid},
+        Validate             => 1,
         ValidateDateInFuture => 1,
     );
 
@@ -2479,8 +2558,17 @@ sub _MaskPhoneNew {
     }
 
     # show attachments
+    ATTACHMENT:
     for my $Attachment ( @{ $Param{Attachments} } ) {
-        next if $Attachment->{ContentID} && $Self->{LayoutObject}->{BrowserRichText};
+        if (
+            $Attachment->{ContentID}
+            && $Self->{LayoutObject}->{BrowserRichText}
+            && ( $Attachment->{ContentType} =~ /image/i )
+            && ( $Attachment->{Disposition} eq 'inline' )
+            )
+        {
+            next ATTACHMENT;
+        }
         $Self->{LayoutObject}->Block(
             Name => 'Attachment',
             Data => $Attachment,
@@ -2500,8 +2588,24 @@ sub _MaskPhoneNew {
         );
     }
 
+    # Permissions have been checked before in Run()
+    if ( $Param{FromChatID} ) {
+        my @ChatMessages = $Kernel::OM->Get('Kernel::System::Chat')->ChatMessageList(
+            ChatID => $Param{FromChatID},
+        );
+        $Self->{LayoutObject}->Block(
+            Name => 'ChatArticlePreview',
+            Data => {
+                ChatMessages => \@ChatMessages,
+            },
+        );
+    }
+
     # get output back
-    return $Self->{LayoutObject}->Output( TemplateFile => 'AgentTicketPhone', Data => \%Param );
+    return $Self->{LayoutObject}->Output(
+        TemplateFile => 'AgentTicketPhone',
+        Data         => \%Param,
+    );
 }
 
 sub _GetFieldsToUpdate {
@@ -2511,8 +2615,7 @@ sub _GetFieldsToUpdate {
 
     # set the fields that can be updatable via AJAXUpdate
     if ( !$Param{OnlyDynamicFields} ) {
-        @UpdatableFields
-            = qw( TypeID Dest ServiceID SLAID NewUserID NewResponsibleID NextStateID PriorityID
+        @UpdatableFields = qw( TypeID Dest ServiceID SLAID NewUserID NewResponsibleID NextStateID PriorityID
             StandardTemplateID
         );
     }

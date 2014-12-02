@@ -9,22 +9,22 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
 
-use Kernel::Config;
-use Kernel::Output::HTML::ArticleCheckPGP;
-use Kernel::Output::HTML::Layout;
-use Kernel::System::Crypt;
-use Kernel::System::Main;
-use Kernel::System::Ticket;
-use Kernel::System::PostMaster;
-use Kernel::System::VariableCheck qw(:all);
-use Kernel::System::Web::Request;
-use Kernel::System::HTMLUtils;
+use vars (qw($Self));
 
-# create local config object
-my $ConfigObject = Kernel::Config->new();
+use Kernel::Output::HTML::ArticleCheckPGP;
+use Kernel::System::Crypt;
+use Kernel::System::PostMaster;
+
+use Kernel::System::VariableCheck qw(:all);
+
+# get needed objects
+my $ConfigObject    = $Kernel::OM->Get('Kernel::Config');
+my $HTMLUtilsObject = $Kernel::OM->Get('Kernel::System::HTMLUtils');
+my $MainObject      = $Kernel::OM->Get('Kernel::System::Main');
+my $TicketObject    = $Kernel::OM->Get('Kernel::System::Ticket');
+my $HelperObject    = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
 # set config
 $ConfigObject->Set(
@@ -37,7 +37,7 @@ $ConfigObject->Set(
 );
 
 $ConfigObject->Set(
-    Key => 'PGP::Key::Password',
+    Key   => 'PGP::Key::Password',
     Value => { '04A17B7A' => 'somepass' },
 );
 
@@ -50,52 +50,30 @@ $ConfigObject->Set(
 if ( !-e $ConfigObject->Get('PGP::Bin') ) {
 
     if ( -e '/usr/bin/gpg' ) {
-        $ConfigObject->Set( Key => 'PGP::Bin', Value => '/usr/bin/gpg' );
+        $ConfigObject->Set(
+            Key   => 'PGP::Bin',
+            Value => '/usr/bin/gpg'
+        );
     }
 
     # maybe it's a mac with macport
     elsif ( -e '/opt/local/bin/gpg' ) {
-        $ConfigObject->Set( Key => 'PGP::Bin', Value => '/opt/local/bin/gpg' );
+        $ConfigObject->Set(
+            Key   => 'PGP::Bin',
+            Value => '/opt/local/bin/gpg'
+        );
     }
 }
 
 # create local crypt object
 my $CryptObject = Kernel::System::Crypt->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-    CryptType    => 'PGP',
+    CryptType => 'PGP',
 );
 
 if ( !$CryptObject ) {
     print STDERR "NOTICE: No PGP support!\n";
     return;
 }
-
-# create other objects
-my $MainObject = Kernel::System::Main->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-
-my $TicketObject = Kernel::System::Ticket->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-
-my $ParamObject = Kernel::System::Web::Request->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $LayoutObject = Kernel::Output::HTML::Layout->new(
-    %{$Self},
-    TicketObject => $TicketObject,
-    ParamObject  => $ParamObject,
-    ConfigObject => $ConfigObject,
-);
-my $HTMLUtilsObject = Kernel::System::HTMLUtils->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
 
 # make some preparations
 my %Search = (
@@ -130,6 +108,7 @@ my %Check = (
 
 # add PGP keys and perform sanity check
 for my $Count ( 1 .. 2 ) {
+
     my @Keys = $CryptObject->KeySearch(
         Search => $Search{$Count},
     );
@@ -139,7 +118,7 @@ for my $Count ( 1 .. 2 ) {
     );
 
     # get keys
-    my $KeyString = $Self->{MainObject}->FileRead(
+    my $KeyString = $MainObject->FileRead(
         Directory => $ConfigObject->Get('Home') . "/scripts/test/sample/Crypt/",
         Filename  => "PGPPrivateKey-$Count.asc",
     );
@@ -230,10 +209,8 @@ for my $Test (@Tests) {
 
     # use post master to import mail into OTRS
     my $PostMasterObject = Kernel::System::PostMaster->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
-        Email        => $Email,
-        Trusted      => 1,
+        Email   => $Email,
+        Trusted => 1,
     );
     my @PostMasterResult = $PostMasterObject->Run( Queue => '' );
 
@@ -272,12 +249,8 @@ for my $Test (@Tests) {
 
         # use ArticleCheckPGP to decript the article
         my $CheckObject = Kernel::Output::HTML::ArticleCheckPGP->new(
-            %{$Self},
-            ConfigObject => $ConfigObject,
-            TicketObject => $TicketObject,
-            LayoutObject => $LayoutObject,
-            ArticleID    => $ArticleIDs[0],
-            UserID       => 1,
+            ArticleID => $ArticleIDs[0],
+            UserID    => 1,
         );
         my @CheckResult = $CheckObject->Check( Article => \%RawArticle );
 
@@ -431,6 +404,7 @@ Reply text
                     Content     => 'Any',
                     ContentType => 'image/png; name="ui-toolbar-bookmark.png"',
                     Filename    => 'ui-toolbar-bookmark.png',
+                    Disposition => 'inline',
                 },
             ],
         },
@@ -447,6 +421,7 @@ Reply text
                     Content     => 'Any',
                     ContentType => 'image/png; name="ui-toolbar-bookmark.png"',
                     Filename    => 'ui-toolbar-bookmark.png',
+                    Disposition => 'attachment',
                 },
             ],
         },
@@ -536,9 +511,6 @@ push @AddedTickets, $TicketID;
 
 for my $Test (@TestVariations) {
 
-    # make a deep copy as the references gets mofified over the tests
-    $Test = Storable::dclone($Test);
-
     my $ArticleID = $TicketObject->ArticleSend(
         %{ $Test->{ArticleData} },
         TicketID       => $TicketID,
@@ -562,12 +534,8 @@ for my $Test (@TestVariations) {
     );
 
     my $CheckObject = Kernel::Output::HTML::ArticleCheckPGP->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
-        TicketObject => $TicketObject,
-        LayoutObject => $LayoutObject,
-        ArticleID    => $ArticleID,
-        UserID       => 1,
+        ArticleID => $ArticleID,
+        UserID    => 1,
     );
 
     my @CheckResult = $CheckObject->Check( Article => \%Article );
@@ -642,14 +610,9 @@ for my $Test (@TestVariations) {
                 #   changed to '<>', it is still empty, also if the mail is just signed but not
                 #   encrypted, the attachment is not rewritten so it keeps without the surrounding
                 #   '<>'
-                my $ExpectedContentID = '<' . $Attachment->{ContentID} . '>';
-                if (
-                    defined $Test->{ArticleData}->{Sign}
-                    && !defined $Test->{ArticleData}->{Crypt}
-                    && !$Attachment->{ContentID}
-                    )
-                {
-                    $ExpectedContentID = $Attachment->{ContentID};
+                my $ExpectedContentID = $Attachment->{ContentID};
+                if ( $Attachment->{ContentID} ) {
+                    $ExpectedContentID = '<' . $Attachment->{ContentID} . '>';
                 }
                 $Self->Is(
                     $Index{$AttachmentIndex}->{ContentID},

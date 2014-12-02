@@ -35,7 +35,10 @@ sub Run {
     # check needed stuff
     for (qw(Config)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -88,7 +91,7 @@ sub Run {
             Class       => $ClassNew,
             Icon        => $IconNew,
             Link        => $URL . 'Action=AgentTicketResponsibleView;Filter=New',
-            AccessKey   => '',
+            AccessKey   => $Param{Config}->{AccessKeyNew} || '',
         };
     }
     if ($CountReached) {
@@ -99,7 +102,7 @@ sub Run {
             Class       => $ClassReached,
             Icon        => $IconReached,
             Link        => $URL . 'Action=AgentTicketResponsibleView;Filter=ReminderReached',
-            AccessKey   => '',
+            AccessKey   => $Param{Config}->{AccessKeyReached} || '',
         };
     }
     if ($Count) {
@@ -110,7 +113,7 @@ sub Run {
             Class       => $Class,
             Icon        => $Icon,
             Link        => $URL . 'Action=AgentTicketResponsibleView',
-            AccessKey   => 'r',
+            AccessKey   => $Param{Config}->{AccessKey} || '',
         };
     }
     return %Return;

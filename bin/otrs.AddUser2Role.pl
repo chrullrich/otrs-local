@@ -29,29 +29,13 @@ use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
 use Getopt::Std;
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Time;
-use Kernel::System::DB;
-use Kernel::System::Log;
-use Kernel::System::Queue;
-use Kernel::System::Group;
-use Kernel::System::Main;
-use Kernel::System::User;
+use Kernel::System::ObjectManager;
 
-# create common objects
-my %CommonObject = ();
-$CommonObject{ConfigObject} = Kernel::Config->new(%CommonObject);
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.AddUser2Role.pl',
-    %CommonObject,
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.AddUser2Role.pl',
+    },
 );
-$CommonObject{MainObject}  = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject}    = Kernel::System::DB->new(%CommonObject);
-$CommonObject{TimeObject}  = Kernel::System::Time->new(%CommonObject);
-$CommonObject{GroupObject} = Kernel::System::Group->new(%CommonObject);
-$CommonObject{UserObject}  = Kernel::System::User->new(%CommonObject);
 
 # get options
 my %Opts;
@@ -64,12 +48,12 @@ if ( !$Opts{r} || !$Opts{u} ) {
 }
 
 # check user
-my $UserID = $CommonObject{UserObject}->UserLookup( UserLogin => $Opts{u} );
+my $UserID = $Kernel::OM->Get('Kernel::System::User')->UserLookup( UserLogin => $Opts{u} );
 if ( !$UserID ) {
     print STDERR "ERROR: User $Opts{u} does not exist.\n";
     exit 1;
 }
-my $RoleID = $CommonObject{GroupObject}->RoleLookup( Role => $Opts{r} );
+my $RoleID = $Kernel::OM->Get('Kernel::System::Group')->RoleLookup( Role => $Opts{r} );
 if ( !$RoleID ) {
     print STDERR "ERROR: Role $Opts{r} does not exist.\n";
     exit 1;
@@ -77,7 +61,7 @@ if ( !$RoleID ) {
 
 # add user 2 role
 if (
-    !$CommonObject{GroupObject}->GroupUserRoleMemberAdd(
+    !$Kernel::OM->Get('Kernel::System::Group')->GroupUserRoleMemberAdd(
         UID    => $UserID,
         RID    => $RoleID,
         Active => 1,

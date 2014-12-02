@@ -29,29 +29,14 @@ use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
 use Getopt::Std;
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Time;
-use Kernel::System::DB;
-use Kernel::System::Log;
-use Kernel::System::Queue;
-use Kernel::System::Group;
-use Kernel::System::SystemAddress;
-use Kernel::System::Main;
+use Kernel::System::ObjectManager;
 
-# create common objects
-my %CommonObject;
-$CommonObject{ConfigObject} = Kernel::Config->new(%CommonObject);
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.AddQueue.pl',
-    %CommonObject,
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.AddQueue.pl',
+    },
 );
-$CommonObject{MainObject}          = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject}            = Kernel::System::DB->new(%CommonObject);
-$CommonObject{QueueObject}         = Kernel::System::Queue->new(%CommonObject);
-$CommonObject{GroupObject}         = Kernel::System::Group->new(%CommonObject);
-$CommonObject{SystemAddressObject} = Kernel::System::SystemAddress->new(%CommonObject);
 
 # get options
 my %Opts;
@@ -77,7 +62,7 @@ if ( !$Opts{g} ) {
 }
 
 # check group
-my $GroupID = $CommonObject{GroupObject}->GroupLookup( Group => $Opts{g} );
+my $GroupID = $Kernel::OM->Get('Kernel::System::Group')->GroupLookup( Group => $Opts{g} );
 if ( !$GroupID ) {
     print STDERR "ERROR: Found no GroupID for $Opts{g}\n";
     exit 1;
@@ -87,12 +72,12 @@ my $SystemAddressID;
 
 # check System Address
 if ( $Opts{S} ) {
-    my %SystemAddressList = $CommonObject{SystemAddressObject}->SystemAddressList(
+    my %SystemAddressList = $Kernel::OM->Get('Kernel::System::SystemAddress')->SystemAddressList(
         Valid => 1
     );
     ADDRESS:
     for my $ID ( sort keys %SystemAddressList ) {
-        my %SystemAddressInfo = $CommonObject{SystemAddressObject}->SystemAddressGet(
+        my %SystemAddressInfo = $Kernel::OM->Get('Kernel::System::SystemAddress')->SystemAddressGet(
             ID => $ID
         );
         if ( $SystemAddressInfo{Name} eq $Opts{S} ) {
@@ -107,7 +92,7 @@ if ( $Opts{S} ) {
 }
 
 # add queue
-my $Success = $CommonObject{QueueObject}->QueueAdd(
+my $Success = $Kernel::OM->Get('Kernel::System::Queue')->QueueAdd(
     Name            => $Opts{n},
     GroupID         => $GroupID,
     SystemAddressID => $SystemAddressID || $Opts{s} || undef,

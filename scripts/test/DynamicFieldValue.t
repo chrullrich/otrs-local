@@ -10,23 +10,16 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
-use Kernel::System::DynamicField;
-use Kernel::System::DynamicFieldValue;
-use Kernel::System::UnitTest::Helper;
-use Kernel::System::Ticket;
-
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %$Self,
-    UnitTestObject => $Self,
-);
+# get needed objects
+my $HelperObject            = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $DynamicFieldObject      = $Kernel::OM->Get('Kernel::System::DynamicField');
+my $DynamicFieldValueObject = $Kernel::OM->Get('Kernel::System::DynamicFieldValue');
+my $TicketObject            = $Kernel::OM->Get('Kernel::System::Ticket');
 
 my $RandomID = int rand 1_000_000_000;
-
-my $DynamicFieldObject      = Kernel::System::DynamicField->new( %{$Self} );
-my $DynamicFieldValueObject = Kernel::System::DynamicFieldValue->new( %{$Self} );
-my $TicketObject            = Kernel::System::Ticket->new( %{$Self} );
 
 # create a ticket
 my $TicketID = $TicketObject->TicketCreate(
@@ -52,7 +45,7 @@ my $FieldID = $DynamicFieldObject->DynamicFieldAdd(
     Name       => "dynamicfieldtest$RandomID",
     Label      => 'a description',
     FieldOrder => 9991,
-    FieldType  => 'Text',     # mandatory, selects the DF backend to use for this field
+    FieldType  => 'Text',                        # mandatory, selects the DF backend to use for this field
     ObjectType => 'Ticket',
     Config     => {
         DefaultValue => 'a value',
@@ -72,7 +65,7 @@ my $FieldID2 = $DynamicFieldObject->DynamicFieldAdd(
     Name       => "dynamicfield2test$RandomID",
     Label      => 'a description',
     FieldOrder => 9991,
-    FieldType  => 'Text',     # mandatory, selects the DF backend to use for this field
+    FieldType  => 'Text',                         # mandatory, selects the DF backend to use for this field
     ObjectType => 'Ticket',
     Config     => {
         DefaultValue => 'a value',
@@ -92,7 +85,7 @@ my $FieldID3 = $DynamicFieldObject->DynamicFieldAdd(
     Name       => "dynamicfield3test$RandomID",
     Label      => 'a description',
     FieldOrder => 9991,
-    FieldType  => 'Text',     # mandatory, selects the DF backend to use for this field
+    FieldType  => 'Text',                         # mandatory, selects the DF backend to use for this field
     ObjectType => 'Ticket',
     TreeView   => 1,
     Config     => {
@@ -250,6 +243,7 @@ my @Tests = (
                 ValueText => '',
             },
         ],
+        NoValue => 1,
         UserID  => 1,
         Success => 1,
     },
@@ -364,6 +358,7 @@ my @Tests = (
     },
 );
 
+TEST:
 for my $Test (@Tests) {
     my $Success = $DynamicFieldValueObject->ValueSet(
         FieldID    => $Test->{DynamicFieldConfig}->{ID},
@@ -389,48 +384,57 @@ for my $Test (@Tests) {
             $Value->[0]->{ID},
             "ValueGet() - Test $Test->{Name} - with False",
         );
+        next TEST;
     }
-    else {
-        $Self->True(
-            $Success,
-            "ValueSet() - Test $Test->{Name} - with True",
+
+    $Self->True(
+        $Success,
+        "ValueSet() - Test $Test->{Name} - with True",
+    );
+
+    # get the value with ValueGet()
+    my $Value = $DynamicFieldValueObject->ValueGet(
+        FieldID    => $Test->{DynamicFieldConfig}->{ID},
+        ObjectType => $Test->{DynamicFieldConfig}->{ObjectType},
+        ObjectID   => $Test->{ObjectID},
+    );
+
+    if ( $Test->{NoValue} ) {
+        $Self->Is(
+            scalar @{$Value},
+            0,
+            "ValueGet() after ValueSet() - Test $Test->{Name} - no value",
         );
+        next TEST;
+    }
 
-        # get the value with ValueGet()
-        my $Value = $DynamicFieldValueObject->ValueGet(
-            FieldID    => $Test->{DynamicFieldConfig}->{ID},
-            ObjectType => $Test->{DynamicFieldConfig}->{ObjectType},
-            ObjectID   => $Test->{ObjectID},
-        );
+    # sanity check
+    $Self->True(
+        $Value->[0],
+        "ValueGet() after ValueSet() - Test $Test->{Name} - with True",
+    );
 
-        # sanity check
-        $Self->True(
-            $Value->[0],
-            "ValueGet() after ValueSet() - Test $Test->{Name} - with True",
-        );
+    for my $ValueKey ( sort keys %{ $Test->{Value}->[0] } ) {
 
-        for my $ValueKey ( sort keys %{ $Test->{Value}->[0] } ) {
+        # workaround for oracle
+        # oracle databases can't determine the difference between NULL and ''
+        if ( !defined $Value->[0]->{$ValueKey} || $Value->[0]->{$ValueKey} eq '' ) {
 
-            # workaround for oracle
-            # oracle databases can't determine the difference between NULL and ''
-            if ( !defined $Value->[0]->{$ValueKey} || $Value->[0]->{$ValueKey} eq '' ) {
+            # test falseness
+            $Self->False(
+                $Value->[0]->{$ValueKey},
+                "ValueGet() after ValueSet() - Test $Test->{Name} - "
+                    . " (Special case for '')"
+            );
+        }
+        else {
 
-                # test falseness
-                $Self->False(
-                    $Value->[0]->{$ValueKey},
-                    "ValueGet() after ValueSet() - Test $Test->{Name} - "
-                        . " (Special case for '')"
-                );
-            }
-            else {
-
-                # compare data
-                $Self->Is(
-                    $Value->[0]->{$ValueKey},
-                    $Test->{Value}->[0]->{$ValueKey},
-                    "ValueGet() after ValueSet() - Test $Test->{Name} - Key $ValueKey",
-                );
-            }
+            # compare data
+            $Self->Is(
+                $Value->[0]->{$ValueKey},
+                $Test->{Value}->[0]->{$ValueKey},
+                "ValueGet() after ValueSet() - Test $Test->{Name} - Key $ValueKey",
+            );
         }
     }
 }
@@ -834,7 +838,7 @@ $FieldID = $DynamicFieldObject->DynamicFieldAdd(
     Name       => "dynamicfieldtest$RandomID",
     Label      => 'a description',
     FieldOrder => 9991,
-    FieldType  => 'Text',     # mandatory, selects the DF backend to use for this field
+    FieldType  => 'Text',                        # mandatory, selects the DF backend to use for this field
     ObjectType => 'Ticket',
     Config     => {
         DefaultValue => 'a value',

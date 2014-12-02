@@ -78,9 +78,10 @@ sub Run {
         my %UserData = $Self->{UserObject}->UserList( Valid => 1 );
 
         # get user name
+        USERID:
         for my $UserID ( sort keys %UserData ) {
             my $Name = $Self->{UserObject}->UserName( UserID => $UserID );
-            next if !$Name;
+            next USERID if !$Name;
             $UserData{$UserID} .= " ($Name)";
         }
 
@@ -205,12 +206,17 @@ sub _Change {
     my $Type   = $Param{Type} || 'User';
     my $NeType = $Type eq 'Group' ? 'User' : 'Group';
 
-    my %VisibleType = ( Group => 'Group', User => 'Agent', );
+    my %VisibleType = (
+        Group => 'Group',
+        User  => 'Agent',
+    );
 
     $Self->{LayoutObject}->Block( Name => 'Overview' );
     $Self->{LayoutObject}->Block( Name => 'ActionList' );
     $Self->{LayoutObject}->Block( Name => 'ActionOverview' );
-    $Self->{LayoutObject}->Block( Name => 'ChangeReference', );
+    $Self->{LayoutObject}->Block(
+        Name => 'ChangeReference',
+    );
     $Self->{LayoutObject}->Block(
         Name => 'Change',
         Data => {
@@ -224,8 +230,9 @@ sub _Change {
 
     $Self->{LayoutObject}->Block( Name => "ChangeHeader$VisibleType{$NeType}" );
 
+    TYPE:
     for my $Type ( @{ $Self->{ConfigObject}->Get('System::Permission') } ) {
-        next if !$Type;
+        next TYPE if !$Type;
         my $Mark = $Type eq 'rw' ? "Highlight" : '';
         $Self->{LayoutObject}->Block(
             Name => 'ChangeHeader',
@@ -249,8 +256,9 @@ sub _Change {
                 NeType => $NeType,
             },
         );
+        TYPE:
         for my $Type ( @{ $Self->{ConfigObject}->Get('System::Permission') } ) {
-            next if !$Type;
+            next TYPE if !$Type;
             my $Mark     = $Type eq 'rw'        ? "Highlight"          : '';
             my $Selected = $Param{$Type}->{$ID} ? ' checked="checked"' : '';
 
@@ -290,9 +298,10 @@ sub _Overview {
     my %UserData = $Self->{UserObject}->UserList( Valid => 1 );
 
     # get user name
+    USERID:
     for my $UserID ( sort keys %UserData ) {
         my $Name = $Self->{UserObject}->UserName( UserID => $UserID );
-        next if !$Name;
+        next USERID if !$Name;
         $UserData{$UserID} .= " ($Name)";
     }
     for my $UserID ( sort { uc( $UserData{$a} ) cmp uc( $UserData{$b} ) } keys %UserData ) {

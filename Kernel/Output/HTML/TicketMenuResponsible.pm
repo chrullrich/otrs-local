@@ -32,7 +32,10 @@ sub Run {
 
     # check needed stuff
     if ( !$Param{Ticket} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need Ticket!' );
+        $Self->{LogObject}->Log(
+            Priority => 'error',
+            Message  => 'Need Ticket!'
+        );
         return;
     }
 
@@ -75,6 +78,7 @@ sub Run {
     if ( $Param{Config}->{Group} ) {
         my @Items = split /;/, $Param{Config}->{Group};
         my $AccessOk;
+        GROUP:
         for my $Item (@Items) {
             my ( $Permission, $Name ) = split /:/, $Item;
             if ( !$Permission || !$Name ) {
@@ -89,12 +93,12 @@ sub Run {
                 Type   => $Permission,
                 Result => 'Name',
             );
-            next if !@Groups;
+            next GROUP if !@Groups;
 
             for my $Group (@Groups) {
                 if ( $Group eq $Name ) {
                     $AccessOk = 1;
-                    last;
+                    last GROUP;
                 }
             }
         }
@@ -102,9 +106,8 @@ sub Run {
     }
 
     # check acl
-    return
-        if defined $Param{ACL}->{ $Param{Config}->{Action} }
-        && !$Param{ACL}->{ $Param{Config}->{Action} };
+    my %ACLLookup = reverse( %{ $Param{ACL} || {} } );
+    return if ( !$ACLLookup{ $Param{Config}->{Action} } );
 
     # return item
     return { %{ $Param{Config} }, %{ $Param{Ticket} }, %Param };

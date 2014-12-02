@@ -12,10 +12,17 @@ package Kernel::System::Auth::DB;
 use strict;
 use warnings;
 
-use Crypt::PasswdMD5 qw(unix_md5_crypt);
+use Crypt::PasswdMD5 qw(unix_md5_crypt apache_md5_crypt);
 use Digest::SHA;
 
-use Kernel::System::Valid;
+our @ObjectDependencies = (
+    'Kernel::Config',
+    'Kernel::System::DB',
+    'Kernel::System::Encode',
+    'Kernel::System::Log',
+    'Kernel::System::Main',
+    'Kernel::System::Valid',
+);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -24,25 +31,20 @@ sub new {
     my $Self = {};
     bless( $Self, $Type );
 
-    # check needed objects
-    for (qw(LogObject ConfigObject DBObject EncodeObject MainObject UserObject)) {
-        $Self->{$_} = $Param{$_} || die "No $_!";
-    }
-    $Self->{ValidObject} = Kernel::System::Valid->new( %{$Self} );
-
     # Debug 0=off 1=on
     $Self->{Debug} = 0;
 
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
     # get user table
-    $Self->{UserTable} = $Self->{ConfigObject}->Get( 'DatabaseUserTable' . $Param{Count} )
+    $Self->{UserTable} = $ConfigObject->Get( 'DatabaseUserTable' . $Param{Count} )
         || 'users';
-    $Self->{UserTableUserID}
-        = $Self->{ConfigObject}->Get( 'DatabaseUserTableUserID' . $Param{Count} )
+    $Self->{UserTableUserID} = $ConfigObject->Get( 'DatabaseUserTableUserID' . $Param{Count} )
         || 'id';
-    $Self->{UserTableUserPW}
-        = $Self->{ConfigObject}->Get( 'DatabaseUserTableUserPW' . $Param{Count} )
+    $Self->{UserTableUserPW} = $ConfigObject->Get( 'DatabaseUserTableUserPW' . $Param{Count} )
         || 'pw';
-    $Self->{UserTableUser} = $Self->{ConfigObject}->Get( 'DatabaseUserTableUser' . $Param{Count} )
+    $Self->{UserTableUser} = $ConfigObject->Get( 'DatabaseUserTableUser' . $Param{Count} )
         || 'login';
 
     return $Self;
@@ -53,12 +55,17 @@ sub GetOption {
 
     # check needed stuff
     if ( !$Param{What} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => "Need What!" );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => "Need What!"
+        );
         return;
     }
 
     # module options
-    my %Option = ( PreAuth => 0, );
+    my %Option = (
+        PreAuth => 0,
+    );
 
     # return option
     return $Option{ $Param{What} };
@@ -69,7 +76,10 @@ sub Auth {
 
     # check needed stuff
     if ( !$Param{User} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => "Need User!" );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => "Need User!"
+        );
         return;
     }
 
@@ -81,26 +91,34 @@ sub Auth {
     my $GetPw      = '';
     my $Method;
 
+    # get database object
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
     # sql query
-    my $SQL = "SELECT $Self->{UserTableUserPW}, $Self->{UserTableUserID} "
+    my $SQL = "SELECT $Self->{UserTableUserPW}, $Self->{UserTableUserID}, $Self->{UserTableUser} "
         . " FROM "
         . " $Self->{UserTable} "
         . " WHERE "
-        . " valid_id IN ( ${\(join ', ', $Self->{ValidObject}->ValidIDsGet())} ) AND "
-        . " $Self->{UserTableUser} = '" . $Self->{DBObject}->Quote($User) . "'";
-    $Self->{DBObject}->Prepare( SQL => $SQL );
+        . " valid_id IN ( ${\(join ', ', $Kernel::OM->Get('Kernel::System::Valid')->ValidIDsGet())} ) AND "
+        . " $Self->{UserTableUser} = '" . $DBObject->Quote($User) . "'";
+    $DBObject->Prepare( SQL => $SQL );
 
-    while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+    while ( my @Row = $DBObject->FetchrowArray() ) {
         $GetPw  = $Row[0];
         $UserID = $Row[1];
+        $User   = $Row[2];
     }
+
+    # get needed objects
+    my $EncodeObject = $Kernel::OM->Get('Kernel::System::Encode');
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
     # crypt given pw
     my $CryptedPw = '';
     my $Salt      = $GetPw;
     if (
-        $Self->{ConfigObject}->Get('AuthModule::DB::CryptType')
-        && $Self->{ConfigObject}->Get('AuthModule::DB::CryptType') eq 'plain'
+        $ConfigObject->Get('AuthModule::DB::CryptType')
+        && $ConfigObject->Get('AuthModule::DB::CryptType') eq 'plain'
         )
     {
         $CryptedPw = $Pw;
@@ -114,14 +132,22 @@ sub Auth {
         if ( $GetPw =~ m{\A \$.+? \$.+? \$.* \z}xms ) {
 
             # strip Salt
-            $Salt =~ s/^\$.+?\$(.+?)\$.*$/$1/;
+            $Salt =~ s/^(\$.+?\$)(.+?)\$.*$/$2/;
+            my $Magic = $1;
 
             # encode output, needed by unix_md5_crypt() only non utf8 signs
-            $Self->{EncodeObject}->EncodeOutput( \$Pw );
-            $Self->{EncodeObject}->EncodeOutput( \$Salt );
+            $EncodeObject->EncodeOutput( \$Pw );
+            $EncodeObject->EncodeOutput( \$Salt );
 
-            $CryptedPw = unix_md5_crypt( $Pw, $Salt );
-            $Method = 'unix_md5_crypt';
+            if ( $Magic eq '$apr1$' ) {
+                $CryptedPw = apache_md5_crypt( $Pw, $Salt );
+                $Method = 'unix_md5_crypt';
+            }
+            else {
+                $CryptedPw = unix_md5_crypt( $Pw, $Salt );
+                $Method = 'apache_md5_crypt';
+            }
+
         }
 
         # sha256 pw
@@ -130,7 +156,7 @@ sub Auth {
             my $SHAObject = Digest::SHA->new('sha256');
 
             # encode output, needed by sha256_hex() only non utf8 signs
-            $Self->{EncodeObject}->EncodeOutput( \$Pw );
+            $EncodeObject->EncodeOutput( \$Pw );
 
             $SHAObject->add($Pw);
             $CryptedPw = $SHAObject->hexdigest();
@@ -140,8 +166,9 @@ sub Auth {
         elsif ( $GetPw =~ m{^BCRYPT:} ) {
 
             # require module, log errors if module was not found
-            if ( !$Self->{MainObject}->Require('Crypt::Eksblowfish::Bcrypt') ) {
-                $Self->{LogObject}->Log(
+            if ( !$Kernel::OM->Get('Kernel::System::Main')->Require('Crypt::Eksblowfish::Bcrypt') )
+            {
+                $Kernel::OM->Get('Kernel::System::Log')->Log(
                     Priority => 'error',
                     Message =>
                         "User: '$User' tried to authenticate with bcrypt but 'Crypt::Eksblowfish::Bcrypt' is not installed!",
@@ -153,7 +180,7 @@ sub Auth {
             my ( $Cost, $Salt, $Base64Hash ) = $GetPw =~ m{^BCRYPT:(\d+):(.{16}):(.*)$}xms;
 
             # remove UTF8 flag, required by Crypt::Eksblowfish::Bcrypt
-            $Self->{EncodeObject}->EncodeOutput( \$Pw );
+            $EncodeObject->EncodeOutput( \$Pw );
 
             # calculate password hash with the same cost and hash settings
             my $Octets = Crypt::Eksblowfish::Bcrypt::bcrypt_hash(
@@ -175,7 +202,7 @@ sub Auth {
             my $SHAObject = Digest::SHA->new('sha1');
 
             # encode output, needed by sha1_hex() only non utf8 signs
-            $Self->{EncodeObject}->EncodeOutput( \$Pw );
+            $EncodeObject->EncodeOutput( \$Pw );
 
             $SHAObject->add($Pw);
             $CryptedPw = $SHAObject->hexdigest();
@@ -192,15 +219,15 @@ sub Auth {
         }
 
         # encode output, needed by crypt() only non utf8 signs
-        $Self->{EncodeObject}->EncodeOutput( \$Pw );
-        $Self->{EncodeObject}->EncodeOutput( \$Salt );
+        $EncodeObject->EncodeOutput( \$Pw );
+        $EncodeObject->EncodeOutput( \$Salt );
         $CryptedPw = crypt( $Pw, $Salt );
         $Method = 'crypt';
     }
 
     # just in case for debug!
     if ( $Self->{Debug} > 0 ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'notice',
             Message =>
                 "User: '$User' tried to authenticate with Pw: '$Pw' ($UserID/$Method/$CryptedPw/$GetPw/$Salt/$RemoteAddr)",
@@ -209,7 +236,7 @@ sub Auth {
 
     # just a note
     if ( !$Pw ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'notice',
             Message  => "User: $User without Pw!!! (REMOTE_ADDR: $RemoteAddr)",
         );
@@ -219,16 +246,16 @@ sub Auth {
     # login note
     elsif ( ( ($GetPw) && ($User) && ($UserID) ) && $CryptedPw eq $GetPw ) {
 
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'notice',
-            Message => "User: $User authentication ok (Method: $Method, REMOTE_ADDR: $RemoteAddr).",
+            Message  => "User: $User authentication ok (Method: $Method, REMOTE_ADDR: $RemoteAddr).",
         );
         return $User;
     }
 
     # just a note
     elsif ( ($UserID) && ($GetPw) ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'notice',
             Message =>
                 "User: $User authentication with wrong Pw!!! (Method: $Method, REMOTE_ADDR: $RemoteAddr)"
@@ -238,7 +265,7 @@ sub Auth {
 
     # just a note
     else {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'notice',
             Message  => "User: $User doesn't exist or is invalid!!! (REMOTE_ADDR: $RemoteAddr)"
         );

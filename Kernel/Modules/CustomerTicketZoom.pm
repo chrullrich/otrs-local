@@ -95,13 +95,11 @@ sub new {
     $Self->{FollowUpDynamicField} = \@CustomerDynamicFields;
 
     # create additional objects for process management
-    $Self->{ActivityObject} = Kernel::System::ProcessManagement::Activity->new(%Param);
-    $Self->{ActivityDialogObject}
-        = Kernel::System::ProcessManagement::ActivityDialog->new(%Param);
+    $Self->{ActivityObject}       = Kernel::System::ProcessManagement::Activity->new(%Param);
+    $Self->{ActivityDialogObject} = Kernel::System::ProcessManagement::ActivityDialog->new(%Param);
 
-    $Self->{TransitionObject} = Kernel::System::ProcessManagement::Transition->new(%Param);
-    $Self->{TransitionActionObject}
-        = Kernel::System::ProcessManagement::TransitionAction->new(%Param);
+    $Self->{TransitionObject}       = Kernel::System::ProcessManagement::Transition->new(%Param);
+    $Self->{TransitionActionObject} = Kernel::System::ProcessManagement::TransitionAction->new(%Param);
 
     $Self->{ProcessObject} = Kernel::System::ProcessManagement::Process->new(
         %Param,
@@ -175,10 +173,6 @@ sub Run {
         $GetParam{$Key} = $Self->{ParamObject}->GetParam( Param => $Key );
     }
 
-    # ACL compatibility translation
-    my %ACLCompatGetParam;
-    $ACLCompatGetParam{OwnerID} = $GetParam{NewUserID};
-
     # get Dynamic fields from ParamObject
     my %DynamicFieldValues;
 
@@ -203,8 +197,7 @@ sub Run {
         next DYNAMICFIELD if !$DynamicField;
         next DYNAMICFIELD if !$DynamicFieldValues{$DynamicField};
 
-        $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField }
-            = $DynamicFieldValues{$DynamicField};
+        $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField } = $DynamicFieldValues{$DynamicField};
     }
     $GetParam{DynamicField} = \%DynamicFieldACLParameters;
 
@@ -221,13 +214,11 @@ sub Run {
 
         my $Priorities = $Self->_GetPriorities(
             %GetParam,
-            %ACLCompatGetParam,
             CustomerUserID => $CustomerUser || '',
             TicketID => $Self->{TicketID},
         );
         my $NextStates = $Self->_GetNextStates(
             %GetParam,
-            %ACLCompatGetParam,
             CustomerUserID => $CustomerUser || '',
             TicketID => $Self->{TicketID},
         );
@@ -258,7 +249,6 @@ sub Run {
             # set possible values filter from ACLs
             my $ACL = $Self->{TicketObject}->TicketAcl(
                 %GetParam,
-                %ACLCompatGetParam,
                 Action         => $Self->{Action},
                 ReturnType     => 'Ticket',
                 ReturnSubType  => 'DynamicField_' . $DynamicFieldConfig->{Name},
@@ -343,7 +333,9 @@ sub Run {
         );
 
         # get lock option (should be the ticket locked - if closed - after the follow up)
-        my $Lock = $Self->{QueueObject}->GetFollowUpLockOption( QueueID => $Ticket{QueueID}, );
+        my $Lock = $Self->{QueueObject}->GetFollowUpLockOption(
+            QueueID => $Ticket{QueueID},
+        );
 
         # get ticket state details
         my %State = $Self->{StateObject}->StateGet(
@@ -397,7 +389,8 @@ sub Run {
                 Param => "file_upload",
             );
             $Self->{UploadCacheObject}->FormIDAddFile(
-                FormID => $Self->{FormID},
+                FormID      => $Self->{FormID},
+                Disposition => 'attachment',
                 %UploadStuff,
             );
             $IsUpload = 1;
@@ -453,8 +446,7 @@ sub Run {
                         my %Filter = $Self->{TicketObject}->TicketAclData();
 
                         # convert Filer key => key back to key => value using map
-                        %{$PossibleValuesFilter}
-                            = map { $_ => $PossibleValues->{$_} }
+                        %{$PossibleValuesFilter} = map { $_ => $PossibleValues->{$_} }
                             keys %Filter;
                     }
                 }
@@ -524,7 +516,6 @@ sub Run {
                 TicketState   => $Ticket{State},
                 TicketStateID => $Ticket{StateID},
                 %GetParam,
-                %ACLCompatGetParam,
                 DynamicFieldHTML => \%DynamicFieldHTML,
             );
             $Output .= $Self->{LayoutObject}->CustomerFooter();
@@ -653,10 +644,28 @@ sub Run {
         ATTACHMENT:
         for my $Attachment (@AttachmentData) {
 
-            # skip deleted inline images
-            next ATTACHMENT if $Attachment->{ContentID}
-                && $Attachment->{ContentID} =~ /^inline/
-                && $GetParam{Body} !~ /$Attachment->{ContentID}/;
+            my $ContentID = $Attachment->{ContentID};
+            if (
+                $ContentID
+                && ( $Attachment->{ContentType} =~ /image/i )
+                && ( $Attachment->{Disposition} eq 'inline' )
+                )
+            {
+                my $ContentIDHTMLQuote = $Self->{LayoutObject}->Ascii2Html(
+                    Text => $ContentID,
+                );
+
+                # workaround for link encode of rich text editor, see bug#5053
+                my $ContentIDLinkEncode = $Self->{LayoutObject}->LinkEncode($ContentID);
+                $GetParam{Body} =~ s/(ContentID=)$ContentIDLinkEncode/$1$ContentID/g;
+
+                # ignore attachment if not linked in body
+                if ( $GetParam{Body} !~ /(\Q$ContentIDHTMLQuote\E|\Q$ContentID\E)/i ) {
+                    next ATTACHMENT;
+                }
+            }
+
+            # write existing file to backend
             $Self->{TicketObject}->ArticleWriteAttachment(
                 %{$Attachment},
                 ArticleID => $ArticleID,
@@ -756,8 +765,7 @@ sub Run {
                     my %Filter = $Self->{TicketObject}->TicketAclData();
 
                     # convert Filer key => key back to key => value using map
-                    %{$PossibleValuesFilter}
-                        = map { $_ => $PossibleValues->{$_} }
+                    %{$PossibleValuesFilter} = map { $_ => $PossibleValues->{$_} }
                         keys %Filter;
                 }
             }
@@ -797,7 +805,6 @@ sub Run {
         TicketState   => $Ticket{State},
         TicketStateID => $Ticket{StateID},
         %GetParam,
-        %ACLCompatGetParam,
         DynamicFieldHTML => \%DynamicFieldHTML,
     );
 
@@ -866,8 +873,7 @@ sub _Mask {
     # prepare errors!
     if ( $Param{Errors} ) {
         for my $KeyError ( sort keys %{ $Param{Errors} } ) {
-            $Param{$KeyError}
-                = $Self->{LayoutObject}->Ascii2Html( Text => $Param{Errors}->{$KeyError} );
+            $Param{$KeyError} = $Self->{LayoutObject}->Ascii2Html( Text => $Param{Errors}->{$KeyError} );
         }
     }
 
@@ -1061,41 +1067,28 @@ sub _Mask {
                 $NextActivityDialogs = {};
             }
 
-            # ACL Check is done in the initial "Run" statement
-            # so here we can just pick the possibly reduced Activity Dialogs
-            # map and sort reformat the $NextActivityDialogs hash from it's initial form e.g.:
-            # 1 => 'AD1',
-            # 2 => 'AD3',
-            # 3 => 'AD2',
-            # to a regular array in correct order:
-            # ('AD1', 'AD3', 'AD2')
-
-            my @TmpActivityDialogList
-                = map { $NextActivityDialogs->{$_} }
-                sort  { $a <=> $b } keys %{$NextActivityDialogs};
-
             # we have to check if the current user has the needed permissions to view the
             # different activity dialogs, so we loop over every activity dialog and check if there
             # is a permission configured. If there is a permission configured we check this
             # and display/hide the activity dialog link
             my %PermissionRights;
-            my @PermissionActivityDialogList;
+            my %PermissionActivityDialogList;
             ACTIVITYDIALOGPERMISSION:
-            for my $CurrentActivityDialogEntityID (@TmpActivityDialogList) {
-
-                my $CurrentActivityDialog = $Self->{ActivityDialogObject}->ActivityDialogGet(
+            for my $Index ( sort { $a <=> $b } keys %{$NextActivityDialogs} ) {
+                my $CurrentActivityDialogEntityID = $NextActivityDialogs->{$Index};
+                my $CurrentActivityDialog         = $Self->{ActivityDialogObject}->ActivityDialogGet(
                     ActivityDialogEntityID => $CurrentActivityDialogEntityID,
                     Interface              => 'CustomerInterface',
                 );
 
-                # create an interface lookuplist
+                # create an interface lookup-list
                 my %InterfaceLookup = map { $_ => 1 } @{ $CurrentActivityDialog->{Interface} };
 
                 next ACTIVITYDIALOGPERMISSION if !$InterfaceLookup{CustomerInterface};
 
                 if ( $CurrentActivityDialog->{Permission} ) {
 
-                    # performanceboost/cache
+                    # performance-boost/cache
                     if ( !defined $PermissionRights{ $CurrentActivityDialog->{Permission} } ) {
                         $PermissionRights{ $CurrentActivityDialog->{Permission} }
                             = $Self->{TicketObject}->TicketCustomerPermission(
@@ -1105,30 +1098,29 @@ sub _Mask {
                             );
                     }
 
-                    next ACTIVITYDIALOGPERMISSION
-                        if !$PermissionRights{ $CurrentActivityDialog->{Permission} };
+                    if ( !$PermissionRights{ $CurrentActivityDialog->{Permission} } ) {
+                        next ACTIVITYDIALOGPERMISSION;
+                    }
                 }
 
-                push @PermissionActivityDialogList, $CurrentActivityDialogEntityID;
+                $PermissionActivityDialogList{$Index} = $CurrentActivityDialogEntityID;
             }
 
-            my @PossibleActivityDialogs;
-            if (@PermissionActivityDialogList) {
-                @PossibleActivityDialogs
-                    = $Self->{TicketObject}->TicketAclActivityDialogData(
-                    ActivityDialogs => \@PermissionActivityDialogList
-                    );
-            }
+            # reduce next activity dialogs to the ones that have permissions
+            $NextActivityDialogs = \%PermissionActivityDialogList;
 
-            # reformat the @PossibleActivityDialogs that is of the structure:
-            # @PossibleActivityDialogs = ('AD1', 'AD3', 'AD4', 'AD2');
-            # to get the same structure as in the %NextActivityDialogs
-            # e.g.:
-            # 1 => 'AD1',
-            # 2 => 'AD3',
-            %{$NextActivityDialogs}
-                = map { $_ => $PossibleActivityDialogs[ $_ - 1 ] }
-                1 .. scalar @PossibleActivityDialogs;
+            # get ACL restrictions
+            my $ACL = $Self->{TicketObject}->TicketAcl(
+                Data           => \%PermissionActivityDialogList,
+                TicketID       => $Param{TicketID},
+                ReturnType     => 'ActivityDialog',
+                ReturnSubType  => '-',
+                CustomerUserID => $Self->{UserID},
+            );
+
+            if ($ACL) {
+                %{$NextActivityDialogs} = $Self->{TicketObject}->TicketAclData()
+            }
 
             $Self->{LayoutObject}->Block(
                 Name => 'NextActivities',
@@ -1352,76 +1344,85 @@ sub _Mask {
             );
         }
 
-        # check if just a only html email
-        if ( my $MimeTypeText = $Self->{LayoutObject}->CheckMimeType( %Param, %Article ) ) {
-            $Param{BodyNote} = $MimeTypeText;
-            $Param{Body}     = '';
-        }
-        else {
-
-            # html quoting
-            $Article{Body} = $Self->{LayoutObject}->Ascii2Html(
-                NewLine        => $Self->{ConfigObject}->Get('DefaultViewNewLine'),
-                Text           => $Article{Body},
-                VMax           => $Self->{ConfigObject}->Get('DefaultViewLines') || 5000,
-                HTMLResultMode => 1,
-                LinkFeature    => 1,
+        if ( $Article{ArticleType} eq 'chat-external' || $Article{ArticleType} eq 'chat-internal' )
+        {
+            $Self->{LayoutObject}->Block(
+                Name => 'BodyChat',
+                Data => {
+                    ChatMessages => $Kernel::OM->Get('Kernel::System::JSON')->Decode(
+                        Data => $Article{Body},
+                    ),
+                    }
             );
-
-            # do charset check
-            if ( my $CharsetText = $Self->{LayoutObject}->CheckCharset( %Param, %Article ) ) {
-                $Param{BodyNote} = $CharsetText;
-            }
-        }
-
-        # security="restricted" may break SSO - disable this feature if requested
-        if ( $Self->{ConfigObject}->Get('DisableMSIFrameSecurityRestricted') ) {
-            $Param{MSSecurityRestricted} = '';
         }
         else {
-            $Param{MSSecurityRestricted} = 'security="restricted"';
-        }
 
-        # in case show plain article body (if no html body as attachment exists of if rich
-        # text is not enabled)
-        my $RichText = $Self->{LayoutObject}->{BrowserRichText};
-        if ( $RichText && $Article{AttachmentIDOfHTMLBody} ) {
-            if ( $SelectedArticleID eq $Article{ArticleID} || $Self->{ZoomExpand} ) {
-                $Self->{LayoutObject}->Block(
-                    Name => 'BodyHTMLLoad',
-                    Data => {
-                        %Param,
-                        %Article,
-                    },
-                );
+            # check if just a only html email
+            if ( my $MimeTypeText = $Self->{LayoutObject}->CheckMimeType( %Param, %Article ) ) {
+                $Param{BodyNote} = $MimeTypeText;
+                $Param{Body}     = '';
             }
             else {
-                my $SessionInformation;
 
-                # Append session information to URL if needed
-                if ( !$Self->{LayoutObject}->{SessionIDCookie} ) {
-                    $SessionInformation = $Self->{LayoutObject}->{SessionName} . '='
-                        . $Self->{LayoutObject}->{SessionID};
+                # html quoting
+                $Article{Body} = $Self->{LayoutObject}->Ascii2Html(
+                    NewLine        => $Self->{ConfigObject}->Get('DefaultViewNewLine'),
+                    Text           => $Article{Body},
+                    VMax           => $Self->{ConfigObject}->Get('DefaultViewLines') || 5000,
+                    HTMLResultMode => 1,
+                    LinkFeature    => 1,
+                );
+            }
+
+            # security="restricted" may break SSO - disable this feature if requested
+            if ( $Self->{ConfigObject}->Get('DisableMSIFrameSecurityRestricted') ) {
+                $Param{MSSecurityRestricted} = '';
+            }
+            else {
+                $Param{MSSecurityRestricted} = 'security="restricted"';
+            }
+
+            # in case show plain article body (if no html body as attachment exists of if rich
+            # text is not enabled)
+            my $RichText = $Self->{LayoutObject}->{BrowserRichText};
+            if ( $RichText && $Article{AttachmentIDOfHTMLBody} ) {
+                if ( $SelectedArticleID eq $Article{ArticleID} || $Self->{ZoomExpand} ) {
+                    $Self->{LayoutObject}->Block(
+                        Name => 'BodyHTMLLoad',
+                        Data => {
+                            %Param,
+                            %Article,
+                        },
+                    );
                 }
+                else {
+                    my $SessionInformation;
 
+                    # Append session information to URL if needed
+                    if ( !$Self->{LayoutObject}->{SessionIDCookie} ) {
+                        $SessionInformation = $Self->{LayoutObject}->{SessionName} . '='
+                            . $Self->{LayoutObject}->{SessionID};
+                    }
+
+                    $Self->{LayoutObject}->Block(
+                        Name => 'BodyHTMLPlaceholder',
+                        Data => {
+                            %Param,
+                            %Article,
+                            SessionInformation => $SessionInformation,
+                        },
+                    );
+                }
+            }
+            else {
                 $Self->{LayoutObject}->Block(
-                    Name => 'BodyHTMLPlaceholder',
+                    Name => 'BodyPlain',
                     Data => {
                         %Param,
                         %Article,
-                        SessionInformation => $SessionInformation,
                     },
                 );
             }
-        }
-        else {
-            $Self->{LayoutObject}->Block(
-                Name => 'BodyPlain',
-                Data => {
-                    %Param,
-                    %Article,
-                },
-            );
         }
 
         # add attachment icon
@@ -1438,7 +1439,9 @@ sub _Mask {
             my %AtmIndex = %{ $Article{Atms} };
             $Self->{LayoutObject}->Block(
                 Name => 'ArticleAttachment',
-                Data => { Key => 'Attachment', },
+                Data => {
+                    Key => 'Attachment',
+                },
             );
             for my $FileID ( sort keys %AtmIndex ) {
                 my %File = %{ $AtmIndex{$FileID} };
@@ -1452,8 +1455,8 @@ sub _Mask {
                     Data => {
                         %File,
                         Action => 'Download',
-                        Link =>
-                            "\$Env{\"Baselink\"}Action=CustomerTicketAttachment;ArticleID=$Article{ArticleID};FileID=$FileID",
+                        Link   => $Self->{LayoutObject}->{Baselink} .
+                            "Action=CustomerTicketAttachment;ArticleID=$Article{ArticleID};FileID=$FileID",
                         Image  => 'disk-s.png',
                         Target => $Target,
                     },
@@ -1518,8 +1521,9 @@ sub _Mask {
     }
 
     # check follow up permissions
-    my $FollowUpPossible
-        = $Self->{QueueObject}->GetFollowUpOption( QueueID => $Article{QueueID}, );
+    my $FollowUpPossible = $Self->{QueueObject}->GetFollowUpOption(
+        QueueID => $Article{QueueID},
+    );
     my %State = $Self->{StateObject}->StateGet(
         ID => $Article{StateID},
     );
@@ -1660,7 +1664,15 @@ sub _Mask {
 
         ATTACHMENT:
         for my $Attachment (@Attachments) {
-            next ATTACHMENT if $Attachment->{ContentID} && $Self->{LayoutObject}->{BrowserRichText};
+            if (
+                $Attachment->{ContentID}
+                && $Self->{LayoutObject}->{BrowserRichText}
+                && ( $Attachment->{ContentType} =~ /image/i )
+                && ( $Attachment->{Disposition} eq 'inline' )
+                )
+            {
+                next ATTACHMENT;
+            }
             $Self->{LayoutObject}->Block(
                 Name => 'FollowUpAttachment',
                 Data => $Attachment,
@@ -1685,8 +1697,7 @@ sub _GetFieldsToUpdate {
 
     # set the fields that can be updatable via AJAXUpdate
     if ( !$Param{OnlyDynamicFields} ) {
-        @UpdatableFields
-            = qw( ServiceID SLAID PriorityID StateID );
+        @UpdatableFields = qw( ServiceID SLAID PriorityID StateID );
     }
 
     # cycle trough the activated Dynamic Fields for this screen

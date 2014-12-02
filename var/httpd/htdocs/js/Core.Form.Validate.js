@@ -121,6 +121,11 @@ Core.Form.Validate = (function (TargetNS) {
                 $Element.focus();
             }, 0);
         }
+
+        // if the element is within a collapsed widget, expand that widget to show the error message to the user
+        if ($Element.closest('.WidgetSimple.Collapsed').find('.WidgetAction.Toggle > a').length) {
+            $Element.closest('.WidgetSimple.Collapsed').find('.WidgetAction.Toggle > a').trigger('click');
+        }
     };
 
     /**
@@ -254,7 +259,7 @@ Core.Form.Validate = (function (TargetNS) {
         // JS takes new lines '\n\r' in textarea elements as 1 character '\n' for length
         // calculation purposes therefore is needed to re-add the '\r' to get the correct length
         // for validation and match to perl and database criteria
-        return ( Value.replace(/\n\r?/g, "\n\r").length <= $(Element).attr('maxlength') );
+        return ( Value.replace(/\n\r?/g, "\n\r").length <= $(Element).data('maxlength') );
     }, "");
 
     $.validator.addMethod("Validate_DateYear", function (Value, Element) {
@@ -270,14 +275,22 @@ Core.Form.Validate = (function (TargetNS) {
         DateObject,
         RegExYear,
         RegExMonth,
+        RegExHour,
+        RegExMinute,
         YearElement = '',
         MonthElement = '',
+        HourElement = '',
+        MinuteElement = '',
         DateYearClassPrefix = 'Validate_DateYear_',
         DateMonthClassPrefix = 'Validate_DateMonth_',
+        DateHourClassPrefix = 'Validate_DateHour_',
+        DateMinuteClassPrefix = 'Validate_DateMinute_',
         DateCheck;
 
         RegExYear = new RegExp(DateYearClassPrefix);
         RegExMonth = new RegExp(DateMonthClassPrefix);
+        RegExHour = new RegExp(DateHourClassPrefix);
+        RegExMinute = new RegExp(DateMinuteClassPrefix);
         $.each(Classes.split(' '), function (Index, Value) {
             if (RegExYear.test(Value)) {
                 YearElement = Value.replace(DateYearClassPrefix, '');
@@ -285,16 +298,34 @@ Core.Form.Validate = (function (TargetNS) {
             if (RegExMonth.test(Value)) {
                 MonthElement = Value.replace(DateMonthClassPrefix, '');
             }
+            if (RegExHour.test(Value)) {
+                HourElement = Value.replace(DateHourClassPrefix, '');
+            }
+            if (RegExMinute.test(Value)) {
+                MinuteElement = Value.replace(DateMinuteClassPrefix, '');
+            }
         });
         if (YearElement.length && MonthElement.length && $('#' + YearElement).length && $('#' + MonthElement).length) {
             DateObject = new Date($('#' + YearElement).val(), $('#' + MonthElement).val() - 1, Value);
             if (DateObject.getFullYear() === parseInt($('#' + YearElement).val(), 10) &&
                 DateObject.getMonth() + 1 === parseInt($('#' + MonthElement).val(), 10) &&
                 DateObject.getDate() === parseInt(Value, 10)) {
-                if (Options.DateInFuture) {
-                    DateCheck = new Date();
+
+                DateCheck = new Date();
+                if ( MinuteElement.length && HourElement.length ) {
+                    DateObject.setHours($('#' + HourElement).val(), $('#' + MinuteElement).val(), 0, 0);
+                }
+                else {
                     DateCheck.setHours(0, 0, 0, 0);
+                }
+
+                if (Options.DateInFuture) {
                     if (DateObject >= DateCheck) {
+                        return true;
+                    }
+                }
+                else if (Options.DateNotInFuture) {
+                    if (DateObject <= DateCheck) {
                         return true;
                     }
                 }
@@ -311,7 +342,23 @@ Core.Form.Validate = (function (TargetNS) {
     }, "");
 
     $.validator.addMethod("Validate_DateInFuture", function (Value, Element) {
+        var $DateSelection = $(Element).parent().find('input[type=checkbox].DateSelection');
+        // do not do this check for unchecked date/datetime fields
+        // check first if the field exists to regard the check for the pending reminder field
+        if ($DateSelection.length && !$DateSelection.prop("checked")) {
+            return true;
+        }
         return DateValidator(Value, Element, { DateInFuture: true });
+    }, "");
+
+    $.validator.addMethod("Validate_DateNotInFuture", function (Value, Element) {
+        var $DateSelection = $(Element).parent().find('input[type=checkbox].DateSelection');
+        // do not do this check for unchecked date/datetime fields
+        // check first if the field exists to regard the check for the pending reminder field
+        if ($DateSelection.length && !$DateSelection.prop("checked")) {
+            return true;
+        }
+        return DateValidator(Value, Element, { DateNotInFuture: true });
     }, "");
 
     $.validator.addMethod("Validate_DateHour", function (Value, Element) {
@@ -433,7 +480,7 @@ Core.Form.Validate = (function (TargetNS) {
 
         for (I = 0; I < DependentElementIDs.length; I++) {
             $DependentElement = $('#' + $.trim(DependentElementIDs[I]));
-            if (ValidatorMethodRequired($DependentElement.val(), $DependentElement[0])) {
+            if ($DependentElement.length && ValidatorMethodRequired($DependentElement.val(), $DependentElement[0])) {
                 return ValidatorMethodRequired(Value, Element);
             }
         }
@@ -458,7 +505,7 @@ Core.Form.Validate = (function (TargetNS) {
 
         for (I = 0; I < DependentElementIDs.length; I++) {
             $DependentElement = $('#' + $.trim(DependentElementIDs[I]));
-            if (ValidatorMethodRequired($DependentElement.val(), $DependentElement[0])) {
+            if ($DependentElement.length && ValidatorMethodRequired($DependentElement.val(), $DependentElement[0])) {
                 return true;
             }
         }
