@@ -1,4 +1,14 @@
+#4.0.2 2014-12-02
+ - 2014-11-27 Updated translations, thanks to all translators.
+ - 2014-11-27 Fixed bug#[10906](http://bugs.otrs.org/show_bug.cgi?id=10906) - SysConfig settings are mistakenly reset.
+ - 2014-11-25 Added overview of data that is transferred to cloud.otrs.com. Only call BusinessPermissionCheck for registered systems.
+ - 2014-11-24 Fixed bug#[10892](http://bugs.otrs.org/show_bug.cgi?id=10892) - TicketActionsPerTicket open multiple popups at TicketOverview.
+ - 2014-11-24 Fixed bug#[10857](http://bugs.otrs.org/show_bug.cgi?id=10857) - JS added too often in AgentTicketOverviewSmall.
+ - 2014-11-24 Fixed bug#[10639](http://bugs.otrs.org/show_bug.cgi?id=10639) - Set of pending time/state not working properly (process management).
+ - 2014-11-23 Fixed bug#[10893](http://bugs.otrs.org/show_bug.cgi?id=10893) - Missing log name partitions in Service Center.
+
 #4.0.1 2014-11-25
+ - 2014-11-21 Added possibility to turn of SSL certificate validation.
  - 2014-11-20 Updated translations, thanks to all translators.
  - 2014-11-18 Fixed bug#[10879](http://bugs.otrs.org/show_bug.cgi?id=10879) - GenericInterfae: TicketSearch operation does not take escalation parameters.
  - 2014-11-18 Fixed bug#[10812](http://bugs.otrs.org/show_bug.cgi?id=10812) - SOAP Response is always in version SOAP 1.2.
