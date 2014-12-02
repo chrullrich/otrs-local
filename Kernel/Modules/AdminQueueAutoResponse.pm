@@ -15,6 +15,7 @@ use warnings;
 
 use Kernel::System::AutoResponse;
 use Kernel::System::Queue;
+use Kernel::System::Valid;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -176,8 +177,7 @@ sub Run {
 
         # Get Auto Response data.
         my @ResponseData;
-        my $SQL
-            = "SELECT ar.name, art.name, ar.id FROM "
+        my $SQL = "SELECT ar.name, art.name, ar.id FROM "
             . " auto_response ar, auto_response_type art, valid "
             . " WHERE ar.type_id = art.id "
             . " AND ar.valid_id = valid.id AND valid.name = 'valid'"

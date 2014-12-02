@@ -10,36 +10,15 @@
 use strict;
 use warnings;
 use utf8;
-use vars (qw($Self %Param));
 
-use Kernel::System::AuthSession;
-use Kernel::System::Web::Request;
-use Kernel::System::Group;
-use Kernel::System::Ticket;
-use Kernel::System::User;
+use vars (qw($Self));
+
 use Kernel::Output::HTML::Layout;
 
-# create local objects
-my $SessionObject = Kernel::System::AuthSession->new( %{$Self} );
-my $GroupObject   = Kernel::System::Group->new( %{$Self} );
-my $TicketObject  = Kernel::System::Ticket->new( %{$Self} );
-my $UserObject    = Kernel::System::User->new( %{$Self} );
-my $ParamObject   = Kernel::System::Web::Request->new(
-    %{$Self},
-    WebRequest => $Param{WebRequest} || 0,
-);
+# get needed objects
+my $ParamObject = $Kernel::OM->Get('Kernel::System::Web::Request');
+
 my $LayoutObject = Kernel::Output::HTML::Layout->new(
-    ConfigObject       => $Self->{ConfigObject},
-    LogObject          => $Self->{LogObject},
-    TimeObject         => $Self->{TimeObject},
-    MainObject         => $Self->{MainObject},
-    EncodeObject       => $Self->{EncodeObject},
-    SessionObject      => $SessionObject,
-    DBObject           => $Self->{DBObject},
-    ParamObject        => $ParamObject,
-    TicketObject       => $TicketObject,
-    UserObject         => $UserObject,
-    GroupObject        => $GroupObject,
     UserChallengeToken => 'TestToken',
     UserID             => 1,
     Lang               => 'de',
@@ -50,11 +29,13 @@ my @Tests = (
 
     # test 1
     {
-        Input => '<!-- dtl:block:ConfigElementBlock -->
+        Input => '
+[% RenderBlockStart("ConfigElementBlock") -%]
 <b>test</b>
-<!-- dtl:block:ConfigElementBlock -->',
+[% RenderBlockEnd("ConfigElementBlock") -%]',
         Result => '
-<b>test</b>',
+<b>test</b>
+',
         Block => [
             {
                 Name => 'ConfigElementBlock',
@@ -66,12 +47,14 @@ my @Tests = (
 
     # test 2
     {
-        Input => '<!-- dtl:block:ConfigElementBlock -->
-<b>$QData{"Name"}</b>
-<!-- dtl:block:ConfigElementBlock -->',
+        Input => '
+[% RenderBlockStart("ConfigElementBlock") -%]
+<b>[% Data.Name | html %]</b>
+[% RenderBlockEnd("ConfigElementBlock") -%]',
         Result => '
 <b>test123</b>
-<b>test1234</b>',
+<b>test1234</b>
+',
         Block => [
             {
                 Name => 'ConfigElementBlock',
@@ -85,63 +68,65 @@ my @Tests = (
         Name => 'Output() - test 2',
     },
 
-    # --------------------------------------------------------- #
-    # Commented out this UnitTest as this test will fail        #
-    # This functionality never worked in otrs, but it would be  #
-    # desirable that it will be fixed in the Output() function  #
-    # in Layout.pm                                              #
-    # --------------------------------------------------------- #
-    #
-    #    # test 3
-    #    {
-    #        Input => '<!-- dtl:block:ConfigElementBlock1 -->
-    #<b>$QData{"Name"}</b>
-    #<!-- dtl:block:ConfigElementBlock1 -->
-    #<!-- dtl:block:ConfigElementBlock2 -->
-    #<b>$QData{"Name"}</b>
-    #<!-- dtl:block:ConfigElementBlock2 -->',
-    #        Result => '
-    #<!--ConfigElementBlock1-->
-    #<b>test123</b>
-    #<!--/ConfigElementBlock1-->
-    #
-    #<!--ConfigElementBlock1-->
-    #<b>test1235</b>
-    #<!--/ConfigElementBlock1-->
-    #
-    #<!--ConfigElementBlock2-->
-    #<b>test1234</b>
-    #<!--/ConfigElementBlock2-->',
-    #        Block => [
-    #            {
-    #                Name => 'ConfigElementBlock1',
-    #                Data => { Name => 'test123' },
-    #            },
-    #            {
-    #                Name => 'ConfigElementBlock2',
-    #                Data => { Name => 'test1234' },
-    #            },
-    #            {
-    #                Name => 'ConfigElementBlock1',
-    #                Data => { Name => 'test1235' },
-    #            },
-    #        ],
-    #        Name => 'Output() - test 3',
-    #    },
+    # test 3
+    {
+        Input => '
+[% RenderBlockStart("Block1") -%]
+<b>[% Data.Name | html %]</b>
+[% RenderBlockStart("Block11") -%]
+    <b>[% Data.Name | html %]</b>
+[% RenderBlockEnd("Block11") -%]
+[% RenderBlockEnd("Block1") -%]
+[% RenderBlockStart("Block2") -%]
+<b>[% Data.Name | html %]</b>
+[% RenderBlockEnd("Block2") -%]
+',
+        Result => '
+<b>Block1_1</b>
+    <b>Block11_1</b>
+    <b>Block11_2</b>
+<b>Block1_2</b>
+<b>Block2_1</b>
+',
+        Block => [
+            {
+                Name => 'Block1',
+                Data => { Name => 'Block1_1' },
+            },
+            {
+                Name => 'Block11',
+                Data => { Name => 'Block11_1' },
+            },
+            {
+                Name => 'Block11',
+                Data => { Name => 'Block11_2' },
+            },
+            {
+                Name => 'Block1',
+                Data => { Name => 'Block1_2' },
+            },
+            {
+                Name => 'Block2',
+                Data => { Name => 'Block2_1' },
+            },
+        ],
+        Name => 'Output() - test 3',
+    },
 
     # test 4
     {
-        Input => '<!-- dtl:block:ConfigElementBlock1 -->
-<b>$QData{"Name1"}</b>
-<!-- dtl:block:ConfigElementBlock2 -->
-<b>$QData{"Name2"}</b>
-<!-- dtl:block:ConfigElementBlock2 -->
-<!-- dtl:block:ConfigElementBlock1 -->',
+        Input => '
+[% RenderBlockStart("ConfigElementBlock1") -%]
+<b>[% Data.Name1 | html %]</b>
+[% RenderBlockStart("ConfigElementBlock2") -%]
+<b>[% Data.Name2 | html %]</b>
+[% RenderBlockEnd("ConfigElementBlock2") -%]
+[% RenderBlockEnd("ConfigElementBlock1") -%]',
 
         Result => '
 <b>test123</b>
-
-<b>test1234</b>',
+<b>test1234</b>
+',
         Block => [
             {
                 Name => 'ConfigElementBlock1',
@@ -157,26 +142,25 @@ my @Tests = (
 
     # test 5
     {
-        Input => '<!-- dtl:block:ConfigElementBlock1 -->
-<b>$QData{"Name1"}</b>
-<!-- dtl:block:ConfigElementBlock1A -->
-<b>$QData{"Name1A"}</b>
-<!-- dtl:block:ConfigElementBlock1A -->
-<!-- dtl:block:ConfigElementBlock1 -->
-<!-- dtl:block:ConfigElementBlock2 -->
-<b>$QData{"Name2"}</b>
-<!-- dtl:block:ConfigElementBlock2 -->',
+        Input => '
+[% RenderBlockStart("ConfigElementBlock1") -%]
+<b>[% Data.Name1 | html %]</b>
+[% RenderBlockStart("ConfigElementBlock1A") -%]
+<b>[% Data.Name1A | html %]</b>
+[% RenderBlockEnd("ConfigElementBlock1A") -%]
+[% RenderBlockEnd("ConfigElementBlock1") -%]
+[% RenderBlockStart("ConfigElementBlock2") -%]
+<b>[% Data.Name2 | html %]</b>
+[% RenderBlockEnd("ConfigElementBlock2") -%]',
 
         Result => '
 <b>AAA</b>
-
 <b>BBB1</b>
 <b>BBB2</b>
 <b>XXX</b>
-
 <b>YYY</b>
-
-<b>CCC</b>',
+<b>CCC</b>
+',
         Block => [
             {
                 Name => 'ConfigElementBlock1',
@@ -208,26 +192,25 @@ my @Tests = (
 
     # test 6
     {
-        Input => '<!-- dtl:block:ConfigElementBlock2 -->
-<b>$QData{"Name2"}</b>
-<!-- dtl:block:ConfigElementBlock2 -->
-<!-- dtl:block:ConfigElementBlock1 -->
-<b>$QData{"Name1"}</b>
-<!-- dtl:block:ConfigElementBlock1A -->
-<b>$QData{"Name1A"}</b>
-<!-- dtl:block:ConfigElementBlock1A -->
-<!-- dtl:block:ConfigElementBlock1 -->',
+        Input => '
+[% RenderBlockStart("ConfigElementBlock2") -%]
+<b>[% Data.Name2 | html %]</b>
+[% RenderBlockEnd("ConfigElementBlock2") -%]
+[% RenderBlockStart("ConfigElementBlock1") -%]
+<b>[% Data.Name1 | html %]</b>
+[% RenderBlockStart("ConfigElementBlock1A") -%]
+<b>[% Data.Name1A | html %]</b>
+[% RenderBlockEnd("ConfigElementBlock1A") -%]
+[% RenderBlockEnd("ConfigElementBlock1") -%]',
 
         Result => '
 <b>CCC</b>
-
 <b>AAA</b>
-
 <b>BBB1</b>
 <b>BBB2</b>
 <b>XXX</b>
-
-<b>YYY</b>',
+<b>YYY</b>
+',
         Block => [
             {
                 Name => 'ConfigElementBlock1',

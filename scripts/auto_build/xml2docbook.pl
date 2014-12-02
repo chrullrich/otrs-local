@@ -30,25 +30,16 @@ use lib dirname($RealBin) . "/../Kernel/cpan-lib";
 
 use Getopt::Std;
 
-use Kernel::Config;
-use Kernel::System::Log;
-use Kernel::System::Main;
-use Kernel::System::Time;
-use Kernel::System::DB;
-use Kernel::System::SysConfig;
+use Kernel::System::ObjectManager;
 
 # create common objects
-my %CommonObject = ();
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-xml2docbook',
-    %CommonObject,
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-xml2docbook.pl',
+    },
 );
-$CommonObject{MainObject}      = Kernel::System::Main->new(%CommonObject);
-$CommonObject{TimeObject}      = Kernel::System::Time->new(%CommonObject);
-$CommonObject{EncodeObject}    = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{DBObject}        = Kernel::System::DB->new(%CommonObject);
-$CommonObject{SysConfigObject} = Kernel::System::SysConfig->new(%CommonObject);
+
+my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
 
 # get options
 my %Opts = ();
@@ -76,18 +67,18 @@ else {
     print "<appendix id=\"ConfigReference\"><title>Configuration Options Reference</title>\n";
 }
 
-my %List = $CommonObject{SysConfigObject}->ConfigGroupList();
+my %List = $SysConfigObject->ConfigGroupList();
 for my $Group ( sort { $a cmp $b } keys %List ) {
-    my %SubList = $CommonObject{SysConfigObject}->ConfigSubGroupList( Name => $Group );
+    my %SubList = $SysConfigObject->ConfigSubGroupList( Name => $Group );
     print "<sect1 id=\"ConfigReference_$Group\"><title>$Group</title>\n";
     for my $SubGroup ( sort keys %SubList ) {
         print "<sect2 id=\"ConfigReference_$Group:$SubGroup\"><title>$SubGroup</title>\n";
-        my @List = $CommonObject{SysConfigObject}->ConfigSubGroupConfigItemList(
+        my @List = $SysConfigObject->ConfigSubGroupConfigItemList(
             Group    => $Group,
             SubGroup => $SubGroup
         );
         for my $Name (@List) {
-            my %Item = $CommonObject{SysConfigObject}->ConfigItemGet( Name => $Name );
+            my %Item = $SysConfigObject->ConfigItemGet( Name => $Name );
             my $Link = $Name;
             $Link =~ s/###/_/g;
             $Link =~ s/\///g;
@@ -143,7 +134,7 @@ EOF
                     }
                 }
             }
-            my %ConfigItemDefault = $CommonObject{SysConfigObject}->ConfigItemGet(
+            my %ConfigItemDefault = $SysConfigObject->ConfigItemGet(
                 Name    => $Name,
                 Default => 1,
             );
@@ -154,7 +145,7 @@ EOF
             $Key =~ s/'/\'/g;
             $Key =~ s/###/'}->{'/g;
             my $Config = " \$Self->{'$Key'} = "
-                . $CommonObject{SysConfigObject}->_XML2Perl( Data => \%ConfigItemDefault );
+                . $SysConfigObject->_XML2Perl( Data => \%ConfigItemDefault );
 
             print <<EOF;
             <row>

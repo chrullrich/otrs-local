@@ -12,8 +12,12 @@ package Kernel::System::CustomerCompany::DB;
 use strict;
 use warnings;
 
-use Kernel::System::Cache;
-use Kernel::System::Valid;
+our @ObjectDependencies = (
+    'Kernel::System::Cache',
+    'Kernel::System::DB',
+    'Kernel::System::Log',
+    'Kernel::System::Valid',
+);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -22,16 +26,8 @@ sub new {
     my $Self = {};
     bless( $Self, $Type );
 
-    # check needed objects
-    for my $Needed (
-        qw(DBObject ConfigObject LogObject CustomerCompanyMap MainObject EncodeObject)
-        )
-    {
-        $Self->{$Needed} = $Param{$Needed} || die "Got no $Needed!";
-    }
-
-    # create additional objects
-    $Self->{ValidObject} = Kernel::System::Valid->new( %{$Self} );
+    # get customer company map
+    $Self->{CustomerCompanyMap} = $Param{CustomerCompanyMap} || die "Got no CustomerCompanyMap!";
 
     # config options
     $Self->{CustomerCompanyTable} = $Self->{CustomerCompanyMap}->{Params}->{Table}
@@ -49,37 +45,23 @@ sub new {
         $Self->{SearchSuffix} = '*';
     }
 
-    # charset settings
-    $Self->{SourceCharset} = $Self->{CustomerCompanyMap}->{Params}->{SourceCharset} || '';
-    $Self->{DestCharset}   = $Self->{CustomerCompanyMap}->{Params}->{DestCharset}   || '';
-    $Self->{CharsetConvertForce}
-        = $Self->{CustomerCompanyMap}->{Params}->{CharsetConvertForce} || '';
-
-    # db connection settings, disable Encode utf8 if source db is no utf8
-    my %DatabasePreferences;
-    if ( $Self->{SourceCharset} !~ /utf(-8|8)/i ) {
-        $DatabasePreferences{Encode} = 0;
-    }
-
     # create cache object, but only if CacheTTL is set in customer config
     if ( $Self->{CustomerCompanyMap}->{CacheTTL} ) {
-        $Self->{CacheObject} = Kernel::System::Cache->new( %{$Self} );
+        $Self->{CacheObject} = $Kernel::OM->Get('Kernel::System::Cache');
         $Self->{CacheType}   = 'CustomerCompany' . $Param{Count};
         $Self->{CacheTTL}    = $Self->{CustomerCompanyMap}->{CacheTTL} || 0;
     }
 
+    # get database object
+    $Self->{DBObject} = $Kernel::OM->Get('Kernel::System::DB');
+
     # create new db connect if DSN is given
     if ( $Self->{CustomerCompanyMap}->{Params}->{DSN} ) {
         $Self->{DBObject} = Kernel::System::DB->new(
-            LogObject    => $Param{LogObject},
-            ConfigObject => $Param{ConfigObject},
-            MainObject   => $Param{MainObject},
-            EncodeObject => $Param{EncodeObject},
             DatabaseDSN  => $Self->{CustomerCompanyMap}->{Params}->{DSN},
             DatabaseUser => $Self->{CustomerCompanyMap}->{Params}->{User},
             DatabasePw   => $Self->{CustomerCompanyMap}->{Params}->{Password},
             Type         => $Self->{CustomerCompanyMap}->{Params}->{Type} || '',
-            %DatabasePreferences,
         ) || die('Can\'t connect to database!');
 
         # remember that we have the DBObject not from parent call
@@ -129,9 +111,15 @@ sub CustomerCompanyList {
 
     # add valid option if required
     my $SQL;
+    my @Bind;
+
     if ($Valid) {
+
+        # get valid object
+        my $ValidObject = $Kernel::OM->Get('Kernel::System::Valid');
+
         $SQL
-            .= "$Self->{CustomerCompanyValid} IN ( ${\(join ', ', $Self->{ValidObject}->ValidIDsGet())} )";
+            .= "$Self->{CustomerCompanyValid} IN ( ${\(join ', ', $ValidObject->ValidIDsGet())} )";
     }
 
     # where
@@ -147,19 +135,19 @@ sub CustomerCompanyList {
                 $SQL .= " AND ";
             }
 
-            my $CustomerCompanySearchFields
-                = $Self->{CustomerCompanyMap}->{CustomerCompanySearchFields};
+            my $CustomerCompanySearchFields = $Self->{CustomerCompanyMap}->{CustomerCompanySearchFields};
 
             if ( $CustomerCompanySearchFields && ref $CustomerCompanySearchFields eq 'ARRAY' ) {
 
                 my @SQLParts;
-                my $QuotedPart = $Self->{DBObject}->Quote($Part);
                 for my $Field ( @{$CustomerCompanySearchFields} ) {
                     if ( $Self->{CaseSensitive} ) {
-                        push @SQLParts, "$Field LIKE '$QuotedPart'";
+                        push @SQLParts, "$Field LIKE ?";
+                        push @Bind,     \$Part;
                     }
                     else {
-                        push @SQLParts, "LOWER($Field) LIKE LOWER('$QuotedPart')";
+                        push @SQLParts, "LOWER($Field) LIKE LOWER(?)";
+                        push @Bind,     \$Part;
                     }
                 }
                 if (@SQLParts) {
@@ -168,16 +156,15 @@ sub CustomerCompanyList {
             }
         }
     }
-    $SQL = $Self->_ConvertTo($SQL);
 
     # sql
-    my $CompleteSQL
-        = "SELECT $Self->{CustomerCompanyKey}, $What FROM $Self->{CustomerCompanyTable}";
+    my $CompleteSQL = "SELECT $Self->{CustomerCompanyKey}, $What FROM $Self->{CustomerCompanyTable}";
     $CompleteSQL .= $SQL ? " WHERE $SQL" : '';
 
     # ask database
     $Self->{DBObject}->Prepare(
         SQL   => $CompleteSQL,
+        Bind  => \@Bind,
         Limit => 50000,
     );
 
@@ -186,7 +173,7 @@ sub CustomerCompanyList {
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
 
         my $CustomerCompanyID = shift @Row;
-        $List{$CustomerCompanyID} = join( ' ', map { $Self->_ConvertFrom($_) } @Row );
+        $List{$CustomerCompanyID} = join( ' ', @Row );
     }
 
     # cache request
@@ -207,7 +194,10 @@ sub CustomerCompanyGet {
 
     # check needed stuff
     if ( !$Param{CustomerID} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need CustomerID!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Need CustomerID!'
+        );
         return;
     }
 
@@ -230,21 +220,20 @@ sub CustomerCompanyGet {
     my $SQL = 'SELECT ' . join( ', ', @Fields );
 
     if ( !$Self->{ForeignDB} ) {
-        $SQL .= ", change_time, create_time";
+        $SQL .= ", create_time, create_by, change_time, change_by";
     }
 
     # this seems to be legacy, if Name is passed it should take precedence over CustomerID
     my $CustomerID = $Param{Name} || $Param{CustomerID};
 
     $SQL .= " FROM $Self->{CustomerCompanyTable} WHERE ";
-    my $CustomerIDQuoted = $Self->{DBObject}->Quote($CustomerID);
+
     if ( $Self->{CaseSensitive} ) {
         $SQL .= "$Self->{CustomerCompanyKey} = ?";
     }
     else {
         $SQL .= "LOWER($Self->{CustomerCompanyKey}) = LOWER( ? )";
     }
-    $SQL = $Self->_ConvertTo($SQL);
 
     # get initial data
     return if !$Self->{DBObject}->Prepare(
@@ -254,18 +243,22 @@ sub CustomerCompanyGet {
 
     # fetch the result
     my %Data;
+    ROW:
     while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
 
         my $MapCounter = 0;
 
         for my $Field (@Fields) {
-            $Data{ $FieldsMap{$Field} } = $Self->_ConvertFrom( $Row[$MapCounter] );
+            $Data{ $FieldsMap{$Field} } = $Row[$MapCounter];
             $MapCounter++;
         }
 
-        $Data{ChangeTime} = $Row[$MapCounter];
-        $MapCounter++;
-        $Data{CreateTime} = $Row[$MapCounter];
+        next ROW if $Self->{ForeignDB};
+
+        for my $Key (qw(CreateTime CreateBy ChangeTime ChangeBy)) {
+            $Data{$Key} = $Row[$MapCounter];
+            $MapCounter++;
+        }
     }
 
     # cache request
@@ -287,8 +280,10 @@ sub CustomerCompanyAdd {
 
     # check ro/rw
     if ( $Self->{ReadOnly} ) {
-        $Self->{LogObject}
-            ->Log( Priority => 'error', Message => 'CustomerCompany backend is read only!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'CustomerCompany backend is read only!'
+        );
         return;
     }
 
@@ -311,14 +306,13 @@ sub CustomerCompanyAdd {
     my $SQL = "INSERT INTO $Self->{CustomerCompanyTable} (";
     $SQL .= join( ', ', @Fields ) . " ) VALUES ( " . join( ', ', @Placeholders ) . " )";
 
-    $SQL = $Self->_ConvertTo($SQL);
     return if !$Self->{DBObject}->Do(
         SQL  => $SQL,
         Bind => \@Values,
     );
 
     # log notice
-    $Self->{LogObject}->Log(
+    $Kernel::OM->Get('Kernel::System::Log')->Log(
         Priority => 'info',
         Message =>
             "CustomerCompany: '$Param{CustomerCompanyName}/$Param{CustomerID}' created successfully ($Param{UserID})!",
@@ -334,14 +328,20 @@ sub CustomerCompanyUpdate {
 
     # check ro/rw
     if ( $Self->{ReadOnly} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Customer backend is read only!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Customer backend is read only!'
+        );
         return;
     }
 
     # check needed stuff
     for my $Entry ( @{ $Self->{CustomerCompanyMap}->{Map} } ) {
         if ( !$Param{ $Entry->[0] } && $Entry->[4] && $Entry->[0] ne 'UserPassword' ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $Entry->[0]!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $Entry->[0]!"
+            );
             return;
         }
     }
@@ -371,7 +371,6 @@ sub CustomerCompanyUpdate {
         $SQL .= " WHERE LOWER($Self->{CustomerCompanyKey}) = LOWER( ? )";
     }
     push @Values, \$Param{CustomerCompanyID};
-    $SQL = $Self->_ConvertTo($SQL);
 
     return if !$Self->{DBObject}->Do(
         SQL  => $SQL,
@@ -379,7 +378,7 @@ sub CustomerCompanyUpdate {
     );
 
     # log notice
-    $Self->{LogObject}->Log(
+    $Kernel::OM->Get('Kernel::System::Log')->Log(
         Priority => 'info',
         Message =>
             "CustomerCompany: '$Param{CustomerCompanyName}/$Param{CustomerID}' updated successfully ($Param{UserID})!",
@@ -393,48 +392,16 @@ sub CustomerCompanyUpdate {
     return 1;
 }
 
-sub _ConvertFrom {
-    my ( $Self, $Text ) = @_;
-
-    return if !defined $Text;
-
-    if ( !$Self->{SourceCharset} || !$Self->{DestCharset} ) {
-        return $Text;
-    }
-
-    return $Self->{EncodeObject}->Convert(
-        Text  => $Text,
-        From  => $Self->{SourceCharset},
-        To    => $Self->{DestCharset},
-        Force => $Self->{CharsetConvertForce},
-    );
-}
-
-sub _ConvertTo {
-    my ( $Self, $Text ) = @_;
-
-    return if !defined $Text;
-
-    if ( !$Self->{SourceCharset} || !$Self->{DestCharset} ) {
-        $Self->{EncodeObject}->EncodeInput( \$Text );
-        return $Text;
-    }
-
-    return $Self->{EncodeObject}->Convert(
-        Text  => $Text,
-        To    => $Self->{SourceCharset},
-        From  => $Self->{DestCharset},
-        Force => $Self->{CharsetConvertForce},
-    );
-}
-
 sub _CustomerCompanyCacheClear {
     my ( $Self, %Param ) = @_;
 
     return if !$Self->{CacheObject};
 
     if ( !$Param{CustomerID} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need CustomerID!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Need CustomerID!'
+        );
         return;
     }
 

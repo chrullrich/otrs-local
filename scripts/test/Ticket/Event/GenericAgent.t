@@ -9,31 +9,20 @@
 
 use strict;
 use warnings;
+use utf8;
 
-use vars qw($Self);
+use vars (qw($Self));
 
 use Kernel::System::Ticket;
-use Kernel::System::Queue;
 use Kernel::System::GenericAgent;
-use Kernel::System::UnitTest::Helper;
-use Kernel::System::DynamicField;
-use Kernel::System::DynamicField::Backend;
-use Kernel::Config;
 
-# create local config object
-my $ConfigObject = Kernel::Config->new();
+# get needed objects
+my $ConfigObject       = $Kernel::OM->Get('Kernel::Config');
+my $HelperObject       = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
+my $BackendObject      = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
 
-# generate random string
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %$Self,
-    UnitTestObject => $Self,
-);
 my $RandomID = $HelperObject->GetRandomID();
-
-# create local objects
-my $DynamicFieldObject = Kernel::System::DynamicField->new( %{$Self} );
-
-my $BackendObject = Kernel::System::DynamicField::Backend->new( %{$Self} );
 
 # define structure for create and update values
 my %TicketValues = (
@@ -61,29 +50,17 @@ my %TicketValues = (
 # add the new Job
 my $JobName = 'UnitTest_' . $RandomID;
 my %NewJob  = (
+
     Name => $JobName,
+
     Data => {
-
-        #ScheduleLastRun => '',
-        #ScheduleMinutes => [1,2],
-        #ScheduleDays => [],
-        #ScheduleHours => [],
-        TicketNumber => '',
-        From         => '',
-        Body         => '',
-        To           => '',
-        Cc           => '',
-        Subject      => '',
-        CustomerID   => '',
-
-        #        CustomerUserLogin => 'customerUnitTest@example.com',
-
-        #QueueIDs => [],
-        #PriorityIDs => [],
-        #LockIDs => [],
-        #TicketFreeText2 => [],
-        #OwnerIDs => [],
-        #StateIDs => [],
+        TicketNumber                => '',
+        From                        => '',
+        Body                        => '',
+        To                          => '',
+        Cc                          => '',
+        Subject                     => '',
+        CustomerID                  => '',
         TimeSearchType              => 'TimePoint',
         TicketCreateTimePoint       => 1,
         TicketCreateTimePointStart  => 'Last',
@@ -104,25 +81,23 @@ my %NewJob  = (
         NewModule             => '',
         NewSendNoNotification => 0,
         NewDelete             => 0,
-
-        #        NewCustomerID                => '',
-        NewNoteSubject => '',
-        NewQueueID     => 3,
-        NewNoteFrom    => '',
-        NewCMD         => '',
-        NewParamKey1   => '',
-        NewParamValue1 => '',
-        NewParamKey2   => '',
-        NewParamValue2 => '',
-        NewParamKey3   => '',
-        NewParamValue3 => '',
-        NewParamKey4   => '',
-        NewParamValue4 => '',
-        NewParamKey5   => '',
-        NewParamValue5 => '',
-        NewParamKey6   => '',
-        NewParamValue6 => '',
-        Valid          => 1,
+        NewNoteSubject        => '',
+        NewQueueID            => 3,
+        NewNoteFrom           => '',
+        NewCMD                => '',
+        NewParamKey1          => '',
+        NewParamValue1        => '',
+        NewParamKey2          => '',
+        NewParamValue2        => '',
+        NewParamKey3          => '',
+        NewParamValue3        => '',
+        NewParamKey4          => '',
+        NewParamValue4        => '',
+        NewParamKey5          => '',
+        NewParamValue5        => '',
+        NewParamKey6          => '',
+        NewParamValue6        => '',
+        Valid                 => 1,
     },
 );
 
@@ -166,21 +141,8 @@ for my $FieldName ( sort keys %AddDynamicfields ) {
     $NewJob{Data}->{ 'DynamicField_' . $FieldName . $RandomID } = $AddDynamicfields{$FieldName};
 }
 
-my $TicketObject = Kernel::System::Ticket->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $QueueObject = Kernel::System::Queue->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-    TicketObject => $TicketObject,
-);
-my $GenericAgentObject = Kernel::System::GenericAgent->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-    TicketObject => $TicketObject,
-    QueueObject  => $QueueObject,
-);
+my $TicketObject       = Kernel::System::Ticket->new();
+my $GenericAgentObject = Kernel::System::GenericAgent->new();
 
 # create the new job
 my $JobAdd = $GenericAgentObject->JobAdd(
@@ -245,26 +207,13 @@ my $ArticleID = $TicketObject->ArticleCreate(
     HistoryType    => 'OwnerUpdate',
     HistoryComment => 'Some free text!',
     UserID         => 1,
-    NoAgentNotify => 1,    # if you don't want to send agent notifications
+    NoAgentNotify  => 1,                                   # if you don't want to send agent notifications
 );
 
 # Destroy the ticket object for triggering the transactional events.
 # Recreate all objects which have references to the old TicketObject too!
-$TicketObject = Kernel::System::Ticket->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-$QueueObject = Kernel::System::Queue->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-    TicketObject => $TicketObject,
-);
-$GenericAgentObject = Kernel::System::GenericAgent->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-    TicketObject => $TicketObject,
-    QueueObject  => $QueueObject,
-);
+$TicketObject       = Kernel::System::Ticket->new();
+$GenericAgentObject = Kernel::System::GenericAgent->new();
 
 my %TicketMod = $TicketObject->TicketGet(
     TicketID      => $TicketID,

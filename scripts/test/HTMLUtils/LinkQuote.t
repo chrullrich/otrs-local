@@ -9,12 +9,15 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
 
-use Kernel::System::HTMLUtils;
+use vars (qw($Self));
 
-my $HTMLUtilsObject = Kernel::System::HTMLUtils->new( %{$Self} );
+# get needed objects
+my $ConfigObject    = $Kernel::OM->Get('Kernel::Config');
+my $HTMLUtilsObject = $Kernel::OM->Get('Kernel::System::HTMLUtils');
+my $MainObject      = $Kernel::OM->Get('Kernel::System::Main');
+my $TimeObject      = $Kernel::OM->Get('Kernel::System::Time');
 
 # LinkQuote tests
 my @Tests = (
@@ -82,6 +85,14 @@ my @Tests = (
             'Some text with a complicated url http://example.com/otrs/index.pl?Action=AgentTicketZoom&TicketID=256868&ArticleID=696631&ZoomExpand=0#696631',
         Result =>
             'Some text with a complicated url <a href="http://example.com/otrs/index.pl?Action=AgentTicketZoom&TicketID=256868&ArticleID=696631&ZoomExpand=0#696631" title="http://example.com/otrs/index.pl?Action=AgentTicketZoom&TicketID=256868&ArticleID=696631&ZoomExpand=0#696631">http://example.com/otrs/index.pl?Action=AgentTicketZoom&TicketID=256868&ArticleID=696631&ZoomExpand=0#696631</a>',
+        Name   => 'LinkQuote - complicated',
+        Target => '',
+    },
+    {
+        Input =>
+            'Some text with a complicated url http://example.com/index.pl?key=v_al-ue#hash-te_st',
+        Result =>
+            'Some text with a complicated url <a href="http://example.com/index.pl?key=v_al-ue#hash-te_st" title="http://example.com/index.pl?key=v_al-ue#hash-te_st">http://example.com/index.pl?key=v_al-ue#hash-te_st</a>',
         Name   => 'LinkQuote - complicated',
         Target => '',
     },
@@ -318,19 +329,19 @@ for my $Test (@Tests) {
 #
 # Special performance test for a large amount of data
 #
-my $XML = $Self->{MainObject}->FileRead(
-    Location => $Self->{ConfigObject}->Get('Home')
+my $XML = $MainObject->FileRead(
+    Location => $ConfigObject->Get('Home')
         . '/scripts/test/sample/HTMLUtils/obstacles_upd2.xml',
 );
 $XML = ${$XML};
 
-my $StartSeconds = $Self->{TimeObject}->SystemTime();
+my $StartSeconds = $TimeObject->SystemTime();
 
 my $HTML = $HTMLUtilsObject->LinkQuote(
     String => \$XML,
 );
 
-my $EndSeconds = $Self->{TimeObject}->SystemTime();
+my $EndSeconds = $TimeObject->SystemTime();
 $Self->True(
     ( $EndSeconds - $StartSeconds ) < 10,
     'LinkQuote - Performance on large data set',

@@ -10,25 +10,27 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
 use SOAP::Lite;
-use Kernel::System::VariableCheck qw(:all);
+
 use Kernel::GenericInterface::Debugger;
 use Kernel::GenericInterface::Transport::HTTP::SOAP;
-use Kernel::System::UnitTest::Helper;
+
+use Kernel::System::VariableCheck qw(:all);
 
 # helper object
-# skip SSL certiciate verification
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %{$Self},
-    UnitTestObject => $Self,
-    SkipSSLVerify  => 1,
+# skip SSL certificate verification
+$Kernel::OM->ObjectParamAdd(
+    'Kernel::System::UnitTest::Helper' => {
+        SkipSSLVerify => 1,
+    },
 );
+my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
 # create soap object to use the soap output recursion
 my $DebuggerObject = Kernel::GenericInterface::Debugger->new(
-    %{$Self},
     DebuggerConfig => {
         DebugThreshold => 'error',
         TestMode       => 1,
@@ -37,7 +39,6 @@ my $DebuggerObject = Kernel::GenericInterface::Debugger->new(
     WebserviceID      => 1,             # not used
 );
 my $SOAPObject = Kernel::GenericInterface::Transport::HTTP::SOAP->new(
-    %{$Self},
     DebuggerObject  => $DebuggerObject,
     TransportConfig => {
         Config => undef,
@@ -189,7 +190,7 @@ my @Tests = (
                                         'Green'
                                         ]
                                 }
-                                ]
+                            ],
                         },
                         {
                             'item_number' => 'QWERTY2',
@@ -222,16 +223,16 @@ my @Tests = (
                                         'Black'
                                         ]
                                 }
-                                ]
-                        }
-                        ]
-                    }
-                }
-
+                            ],
+                        },
+                    ],
+                },
+            },
         },
     },
 );
 
+TEST:
 for my $Test (@Tests) {
     my $SuccessCounter = 0;
 
@@ -247,7 +248,7 @@ for my $Test (@Tests) {
             $DeserializerError,
             "$Test->{Name} - SOAP::Deserializer with error $DeserializerError",
         );
-        next;
+        next TEST;
     }
     else {
         $Self->False(
@@ -288,16 +289,13 @@ for my $Test (@Tests) {
             '<Response xsi:nil="true" />' .
             $SOAPTagEnd;
     }
-    my $Content = SOAP::Serializer
-        ->autotype(0)
-        ->envelope(@CallData);
+    my $Content = SOAP::Serializer->autotype(0)->envelope(@CallData);
 
     $Self->Is(
         $Content,
         $ExpectedResult,
         "$Test->{Name} - Deserialize",
     );
-
 }
 
 # end tests

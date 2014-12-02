@@ -10,25 +10,25 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
 use Socket;
-use Kernel::GenericInterface::Debugger;
-use Kernel::GenericInterface::Requester;
-use Kernel::GenericInterface::Transport;
-use Kernel::System::GenericInterface::Webservice;
-use Kernel::System::UnitTest::Helper;
+
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
 # helper object
-# skip SSL certiciate verification
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %{$Self},
-    UnitTestObject => $Self,
-    SkipSSLVerify  => 1,
+# skip SSL certificate verification
+$Kernel::OM->ObjectParamAdd(
+    'Kernel::System::UnitTest::Helper' => {
+        SkipSSLVerify => 1,
+    },
 );
+my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
 # add webservice to be used (empty config)
-my $WebserviceObject = Kernel::System::GenericInterface::Webservice->new( %{$Self} );
+my $WebserviceObject = $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice');
 $Self->Is(
     'Kernel::System::GenericInterface::Webservice',
     ref $WebserviceObject,
@@ -57,7 +57,7 @@ $Self->True(
 
 # get remote host with some precautions for certain unit test systems
 my $Host;
-my $FQDN = $Self->{ConfigObject}->Get('FQDN');
+my $FQDN = $ConfigObject->Get('FQDN');
 
 # try to resolve fqdn host
 if ( $FQDN ne 'yourhost.example.com' && gethostbyname($FQDN) ) {
@@ -76,11 +76,11 @@ if ( !$Host ) {
 
 # prepare webservice config
 my $RemoteSystem =
-    $Self->{ConfigObject}->Get('HttpType')
+    $ConfigObject->Get('HttpType')
     . '://'
     . $Host
     . '/'
-    . $Self->{ConfigObject}->Get('ScriptAlias')
+    . $ConfigObject->Get('ScriptAlias')
     . '/nph-genericinterface.pl/WebserviceID/'
     . $WebserviceID;
 
@@ -709,6 +709,15 @@ my @Tests = (
     },
 );
 
+# create requester object
+my $RequesterObject = $Kernel::OM->Get('Kernel::GenericInterface::Requester');
+$Self->Is(
+    'Kernel::GenericInterface::Requester',
+    ref $RequesterObject,
+    "Create requester object",
+);
+
+TEST:
 for my $Test (@Tests) {
 
     # update webservice with real config
@@ -723,14 +732,6 @@ for my $Test (@Tests) {
     $Self->True(
         $WebserviceUpdate,
         "$Test->{Name} - Updated Webservice $WebserviceID",
-    );
-
-    # create requester object
-    my $RequesterObject = Kernel::GenericInterface::Requester->new( %{$Self} );
-    $Self->Is(
-        'Kernel::GenericInterface::Requester',
-        ref $RequesterObject,
-        "$Test->{Name} - Create requester object",
     );
 
     # start requester with our webservice
@@ -763,7 +764,7 @@ for my $Test (@Tests) {
             );
         }
 
-        next;
+        next TEST;
     }
 
     $Self->True(

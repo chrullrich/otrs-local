@@ -28,26 +28,14 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Main;
-use Kernel::System::Time;
-use Kernel::System::DB;
-use Kernel::System::AuthSession;
+use Kernel::System::ObjectManager;
 
-# common objects
-my %CommonObject = ();
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.DeleteSessionIDs.pl',
-    %CommonObject,
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.DeleteSessionIDs.pl',
+    },
 );
-$CommonObject{MainObject}    = Kernel::System::Main->new(%CommonObject);
-$CommonObject{TimeObject}    = Kernel::System::Time->new(%CommonObject);
-$CommonObject{DBObject}      = Kernel::System::DB->new(%CommonObject);
-$CommonObject{SessionObject} = Kernel::System::AuthSession->new(%CommonObject);
 
 # check args
 my $Command = shift || '--help';
@@ -60,14 +48,17 @@ if ( ( $Command eq '--all' ) || ( $Command eq '--showall' ) ) {
     print " Working on all session ids:\n";
 
     # get all sessions
-    my @List = $CommonObject{SessionObject}->GetAllSessionIDs();
+    my @List = $Kernel::OM->Get('Kernel::System::AuthSession')->GetAllSessionIDs();
 
     for my $SessionID (@List) {
 
         if ( $Command eq '--showall' ) {
             print " SessionID $SessionID!\n";
         }
-        elsif ( $CommonObject{SessionObject}->RemoveSessionID( SessionID => $SessionID ) ) {
+        elsif (
+            $Kernel::OM->Get('Kernel::System::AuthSession')->RemoveSessionID( SessionID => $SessionID )
+            )
+        {
             print " SessionID $SessionID deleted.\n";
         }
         else {
@@ -83,7 +74,7 @@ elsif ( ( $Command eq '--expired' ) || ( $Command eq '--showexpired' ) ) {
     print " Working on expired session ids:\n";
 
     # get expired session ids
-    my @Expired = $CommonObject{SessionObject}->GetExpiredSessionIDs();
+    my @Expired = $Kernel::OM->Get('Kernel::System::AuthSession')->GetExpiredSessionIDs();
 
     # expired session
     for my $SessionID ( @{ $Expired[0] } ) {
@@ -91,7 +82,10 @@ elsif ( ( $Command eq '--expired' ) || ( $Command eq '--showexpired' ) ) {
         if ( $Command eq '--showexpired' ) {
             print " SessionID $SessionID expired!\n";
         }
-        elsif ( $CommonObject{SessionObject}->RemoveSessionID( SessionID => $SessionID ) ) {
+        elsif (
+            $Kernel::OM->Get('Kernel::System::AuthSession')->RemoveSessionID( SessionID => $SessionID )
+            )
+        {
             print " SessionID $SessionID deleted (too old).\n";
         }
         else {
@@ -105,7 +99,10 @@ elsif ( ( $Command eq '--expired' ) || ( $Command eq '--showexpired' ) ) {
         if ( $Command eq '--showexpired' ) {
             print " SessionID $SessionID idle timeout!\n";
         }
-        elsif ( $CommonObject{SessionObject}->RemoveSessionID( SessionID => $SessionID ) ) {
+        elsif (
+            $Kernel::OM->Get('Kernel::System::AuthSession')->RemoveSessionID( SessionID => $SessionID )
+            )
+        {
             print " SessionID $SessionID deleted (idle timeout).\n";
         }
         else {

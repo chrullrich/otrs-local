@@ -31,14 +31,11 @@ use lib dirname($RealBin) . '/Custom';
 use File::Spec;
 use Getopt::Std;
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Main;
+use Kernel::System::ObjectManager;
 
 # get options
 my %Opts;
-getopt( 'h', \%Opts );
+getopt( '', \%Opts );
 if ( $Opts{'h'} ) {
     print "otrs.ReprocessMails.pl - reprocess mails from spool directory\n";
     print "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n";
@@ -46,17 +43,14 @@ if ( $Opts{'h'} ) {
     exit 1;
 }
 
-# create common objects
-my %CommonObject = ();
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.ReprocessMails.pl',
-    %CommonObject,
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.ReprocessMails.pl',
+    },
 );
-$CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
 
-my $HomeDir    = $CommonObject{ConfigObject}->Get('Home');
+my $HomeDir    = $Kernel::OM->Get('Kernel::Config')->Get('Home');
 my $SpoolDir   = File::Spec->catfile( $HomeDir, 'var/spool' );
 my $PostMaster = File::Spec->catfile( $HomeDir, 'bin/otrs.PostMaster.pl' );
 
@@ -66,7 +60,7 @@ if ( !-d $SpoolDir ) {
 
 print "Processing mails in $SpoolDir\n";
 
-my @Files = $CommonObject{MainObject}->DirectoryRead(
+my @Files = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
     Directory => $SpoolDir,
     Filter    => '*',
 );
@@ -76,7 +70,7 @@ for my $File (@Files) {
     my $Result = system("\"$^X\" \"$PostMaster\" <  $File ");
 
     if ( !$Result ) {
-        $CommonObject{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'info',
             Message  => "Successfully reprocessed email $File.",
         );
@@ -84,7 +78,7 @@ for my $File (@Files) {
         print "Ok.\n\n"
     }
     else {
-        $CommonObject{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Could not re-process email $File.",
         );

@@ -10,6 +10,7 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
 use CGI;
@@ -17,18 +18,20 @@ use HTTP::Request::Common;
 
 use Kernel::GenericInterface::Debugger;
 use Kernel::GenericInterface::Transport;
-use Kernel::System::UnitTest::Helper;
+
+# get needed objects
+my $EncodeObject = $Kernel::OM->Get('Kernel::System::Encode');
 
 # helper object
-# skip SSL certiciate verification
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %{$Self},
-    UnitTestObject => $Self,
-    SkipSSLVerify  => 1,
+# skip SSL certificate verification
+$Kernel::OM->ObjectParamAdd(
+    'Kernel::System::UnitTest::Helper' => {
+        SkipSSLVerify => 1,
+    },
 );
+my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
 my $DebuggerObject = Kernel::GenericInterface::Debugger->new(
-    %$Self,
     DebuggerConfig => {
         DebugThreshold => 'debug',
         TestMode       => 1,
@@ -43,7 +46,6 @@ my $DebuggerObject = Kernel::GenericInterface::Debugger->new(
 
 {
     my $TransportObject = Kernel::GenericInterface::Transport->new(
-        %$Self,
         DebuggerObject  => $DebuggerObject,
         TransportConfig => {
             Type => 'HTTP::Nonexisting',
@@ -73,7 +75,6 @@ my $DebuggerObject = Kernel::GenericInterface::Debugger->new(
 
 for my $Fail ( 0 .. 1 ) {
     my $TransportObject = Kernel::GenericInterface::Transport->new(
-        %$Self,
         DebuggerObject  => $DebuggerObject,
         TransportConfig => {
             Type   => 'HTTP::Test',
@@ -130,13 +131,13 @@ for my $Fail ( 0 .. 1 ) {
             ResultSuccess => 1,
         },
         {
-            Name      => "TransportObject (Fail $Fail) RequesterPerformRequest() wrong data scalar",
-            Operation => 'test_operation',
-            Data      => 'testdata',
+            Name          => "TransportObject (Fail $Fail) RequesterPerformRequest() wrong data scalar",
+            Operation     => 'test_operation',
+            Data          => 'testdata',
             ResultSuccess => 0,
         },
         {
-            Name => "TransportObject (Fail $Fail) RequesterPerformRequest() wrong data listref",
+            Name          => "TransportObject (Fail $Fail) RequesterPerformRequest() wrong data listref",
             Operation     => 'test_operation',
             Data          => ['testdata'],
             ResultSuccess => 0,
@@ -144,6 +145,10 @@ for my $Fail ( 0 .. 1 ) {
     );
 
     for my $TestEntry (@RPRTestData) {
+
+        # discard Web::Request from OM to prevent errors
+        $Kernel::OM->ObjectsDiscard('Kernel::System::Web::Request');
+
         my $Result = $TransportObject->RequesterPerformRequest(
             Operation => $TestEntry->{Operation},
             Data      => $TestEntry->{Data},
@@ -225,10 +230,9 @@ for my $Fail ( 0 .. 1 ) {
             # prepare CGI environment variables
             local $ENV{REQUEST_METHOD} = 'POST';
             local $ENV{CONTENT_LENGTH} = length( $TestEntry->{RequestContent} );
-            local $ENV{CONTENT_TYPE}
-                = 'application/x-www-form-urlencoded; charset=utf-8;';
+            local $ENV{CONTENT_TYPE}   = 'application/x-www-form-urlencoded; charset=utf-8;';
 
-            $Self->{EncodeObject}->EncodeOutput( \$TestEntry->{RequestContent} );
+            $EncodeObject->EncodeOutput( \$TestEntry->{RequestContent} );
 
             # redirect STDIN from String so that the transport layer will use this data
             local *STDIN;
@@ -236,6 +240,9 @@ for my $Fail ( 0 .. 1 ) {
 
             # reset CGI object from previous runs
             CGI::initialize_globals();
+
+            # discard Web::Request from OM to prevent errors
+            $Kernel::OM->ObjectsDiscard('Kernel::System::Web::Request');
 
             $Result = $TransportObject->ProviderProcessRequest();
         }
@@ -301,13 +308,13 @@ for my $Fail ( 0 .. 1 ) {
             ResultSuccess => 1,
         },
         {
-            Name => "TransportObject (Fail $Fail) ProviderGenerateResponse() wrong data scalar",
-            Data => 'testdata',
+            Name          => "TransportObject (Fail $Fail) ProviderGenerateResponse() wrong data scalar",
+            Data          => 'testdata',
             ResultSuccess => 0,
         },
         {
-            Name => "TransportObject (Fail $Fail) ProviderGenerateResponse() wrong data listref",
-            Data => ['testdata'],
+            Name          => "TransportObject (Fail $Fail) ProviderGenerateResponse() wrong data listref",
+            Data          => ['testdata'],
             ResultSuccess => 0,
         },
     );
@@ -322,6 +329,9 @@ for my $Fail ( 0 .. 1 ) {
                 # redirect STDOUT from String so that the transport layer will write there
                 local *STDOUT;
                 open STDOUT, '>:utf8', \$ResultData;    ## no critic
+
+                # discard Web::Request from OM to prevent errors
+                $Kernel::OM->ObjectsDiscard('Kernel::System::Web::Request');
 
                 $Result = $TransportObject->ProviderGenerateResponse(
                     Success      => $OptionSuccess,
@@ -366,9 +376,7 @@ for my $Fail ( 0 .. 1 ) {
                     $Result->{ErrorMessage},
                     "$TestEntry->{Name} error message found",
                 );
-
             }
-
         }
     }
 }

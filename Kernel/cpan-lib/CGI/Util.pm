@@ -2,10 +2,11 @@ package CGI::Util;
 use base 'Exporter';
 require 5.008001;
 use strict;
+use if $] >= 5.019, 'deprecate';
 our @EXPORT_OK = qw(rearrange rearrange_header make_attributes unescape escape
         expires ebcdic2ascii ascii2ebcdic);
 
-our $VERSION = '3.62';
+our $VERSION = '3.64';
 
 use constant EBCDIC => "\t" ne "\011";
 
@@ -210,7 +211,7 @@ sub unescape {
 # Byte strings were traditionally used directly as a sequence of octets.
 # This worked if they actually represented binary data (i.e. in CGI::Compress).
 # This also worked if these byte strings were actually utf-8 encoded; e.g.,
-# when the source file used utf-8 without the apropriate "use utf8;".
+# when the source file used utf-8 without the appropriate "use utf8;".
 # This fails if the byte string is actually a Latin 1 encoded string, but it
 # was always so and cannot be fixed without breaking the binary data case.
 # -- Stepan Kasal <skasal@redhat.com>
@@ -320,17 +321,18 @@ no public subroutines
 
 =head1 AUTHOR INFORMATION
 
-Copyright 1995-1998, Lincoln D. Stein.  All rights reserved.
+The CGI.pm distribution is copyright 1995-2007, Lincoln D. Stein. It is
+distributed under GPL and the Artistic License 2.0. It is currently
+maintained by Lee Johnson with help from many contributors.
 
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
+Address bug reports and comments to: https://github.com/leejo/CGI.pm/issues
 
-Address bug reports and comments to: lstein@cshl.org.  When sending
-bug reports, please provide the version of CGI.pm, the version of
-Perl, the name and version of your Web server, and the name and
-version of the operating system you are using.  If the problem is even
-remotely browser dependent, please provide information about the
-affected browsers as well.
+The original bug tracker can be found at: https://rt.cpan.org/Public/Dist/Display.html?Queue=CGI.pm
+
+When sending bug reports, please provide the version of CGI.pm, the version of
+Perl, the name and version of your Web server, and the name and version of the
+operating system you are using.  If the problem is even remotely browser
+dependent, please provide information about the affected browsers as well.
 
 =head1 SEE ALSO
 

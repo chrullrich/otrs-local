@@ -9,20 +9,15 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
 
-use Kernel::System::SysConfig;
-use Kernel::System::UnitTest::Helper;
+use vars (qw($Self));
 
-# Create Helper instance which will restore system configuration in destructor
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %{$Self},
-    UnitTestObject             => $Self,
-    RestoreSystemConfiguration => 1,
-);
+use Kernel::Config;
 
-my $SysConfigObject = Kernel::System::SysConfig->new( %{$Self} );
+# get needed objects
+my $HelperObject    = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
 
 #
 # ConfigItemUpdate
@@ -80,6 +75,7 @@ for my $Test (@Tests) {
         }
     }
 
+    # create a new config object to check the new settings
     my $ConfigObject = Kernel::Config->new();
 
     $Self->IsDeeply(
@@ -162,7 +158,10 @@ $Self->False(
 );
 
 %Ah = ( 'Test' => 123 );
-%Bh = ( 'Test' => 123, '' => '' );
+%Bh = (
+    'Test' => 123,
+    ''     => ''
+);
 $Diff = $SysConfigObject->_DataDiff(
     Data1 => \%Ah,
     Data2 => \%Bh,
@@ -172,8 +171,14 @@ $Self->True(
     'DataDiff() HASH',
 );
 
-%Ah = ( 'Test' => 123, A => [ 1, 3, 4 ] );
-%Bh = ( 'Test' => 123, A => [ 1, 3, 4 ] );
+%Ah = (
+    'Test' => 123,
+    A      => [ 1, 3, 4 ]
+);
+%Bh = (
+    'Test' => 123,
+    A      => [ 1, 3, 4 ]
+);
 $Diff = $SysConfigObject->_DataDiff(
     Data1 => \%Ah,
     Data2 => \%Bh,
@@ -183,8 +188,14 @@ $Self->False(
     'DataDiff() HASH',
 );
 
-%Ah = ( 'Test' => 123, A => [ 1, 3, 4 ] );
-%Bh = ( 'Test' => 123, A => [ 1, 4, 4 ] );
+%Ah = (
+    'Test' => 123,
+    A      => [ 1, 3, 4 ]
+);
+%Bh = (
+    'Test' => 123,
+    A      => [ 1, 4, 4 ]
+);
 $Diff = $SysConfigObject->_DataDiff(
     Data1 => \%Ah,
     Data2 => \%Bh,
@@ -194,8 +205,18 @@ $Self->True(
     'DataDiff() HASH',
 );
 
-%Ah = ( 'Test' => 123, A => [ 1, 3, 4 ], B => { a => 1 }, special => undef );
-%Bh = ( 'Test' => 123, A => [ 1, 3, 4 ], B => { a => 1 }, special => undef );
+%Ah = (
+    'Test' => 123,
+    A      => [ 1, 3, 4 ],
+    B       => { a => 1 },
+    special => undef
+);
+%Bh = (
+    'Test' => 123,
+    A      => [ 1, 3, 4 ],
+    B       => { a => 1 },
+    special => undef
+);
 $Diff = $SysConfigObject->_DataDiff(
     Data1 => \%Ah,
     Data2 => \%Bh,
@@ -205,8 +226,19 @@ $Self->False(
     'DataDiff() HASH',
 );
 
-%Ah = ( 'Test' => 123, A => [ 1, 3, 4 ], B => { a => 1 }, );
-%Bh = ( 'Test' => 123, A => [ 1, 3, 4 ], B => { a => 1, '' => undef, }, );
+%Ah = (
+    'Test' => 123,
+    A      => [ 1, 3, 4 ],
+    B => { a => 1 },
+);
+%Bh = (
+    'Test' => 123,
+    A      => [ 1, 3, 4 ],
+    B      => {
+        a  => 1,
+        '' => undef,
+    },
+);
 $Diff = $SysConfigObject->_DataDiff(
     Data1 => \%Ah,
     Data2 => \%Bh,

@@ -30,20 +30,14 @@ select[multiple=multiple] {
     box-shadow: inset 1px 1px 3px #eee, inset -1px -1px 3px #eee;
 }
 
-input[type=text],
-input[type=password] {
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-}
-
 select[multiple=multiple] {
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
     min-width: 300px;
     padding: 3px;
     box-shadow: inset 1px 1px 3px #eee, inset -1px -1px 3px #eee;
+}
+
+.DataTable select[multiple=multiple] {
+    min-width: 0px;
 }
 
 select[multiple=multiple] option {
@@ -111,7 +105,6 @@ button.Remove,
 a.Remove,
 button.TrashCan,
 a.TrashCan,
-a.ViewAttachment,
 button.Reset,
 a.Reset {
     height: 16px;
@@ -124,6 +117,7 @@ a.Reset {
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
+    position: relative;
 }
 
 button.Add,
@@ -159,9 +153,11 @@ a.Remove:focus {
     background: url(../img/filter_remove_hover.png) no-repeat center;
 }
 
-button.TrashCan,
-a.TrashCan {
-    background: url(../img/icons/trash-can.png) no-repeat center;
+a.TrashCan i.fa-trash-o {
+    text-indent: 0px;
+    position: absolute;
+    left: 0px;
+    top: 4px;
 }
 
 button.Reset,
@@ -169,11 +165,13 @@ a.Reset{
     height: 22px;
     width: 22px;
     padding: 3px;
-    background: transparent url(../img/icons/undo.png) no-repeat center;
 }
 
-a.ViewAttachment {
-    background: url(../img/icons/monitor.png) no-repeat center;
+.AddButton, 
+.RemoveButton {
+    color: #000;
+    font-size: 14px;
+    vertical-align: middle;
 }
 
 /**
@@ -195,10 +193,14 @@ button.Reset:active {
     width: 16px;
     height: 16px;
     margin-left: 3px;
-    text-indent: -9999px;
-    background: url(../img/icons/reload.png);
     display: inline-block;
-    font-size: 2px;
+    color: #333;
+}
+
+.GetAllAJAX span {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
 }
 
 .RTL .GetAllAJAX {
@@ -213,14 +215,18 @@ button.Reset:active {
     width: 16px;
     height: 16px;
     margin-left: 3px;
-    text-indent: -9999px;
-    background: url(../img/icons/tree.png);
     display: none;
-    font-size: 2px;
+    color: #333;
+}
+
+.ShowTreeSelection span {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
 }
 
 .ShowTreeSelection:focus {
-    background-color: #ddd;
+    color: #f92;
 }
 
 .Field .ShowTreeSelection, .WidgetSettingsForm .ShowTreeSelection {
@@ -414,7 +420,6 @@ form label.LabelError {
 .CcCustomerContainer .BoxLabel,
 .BccCustomerContainer .BoxLabel {
     background-color: #CCCCCC;
-    border-radius: 5px 0 0 5px;
     font-size: 11px;
     right: 100%;
     top: 10px;
@@ -673,6 +678,19 @@ input[type=text].ArticleFreeText {
 input[type=text].TicketFreeKey,
 input[type=text].ArticleFreeKey {
     width: 50%;
+}
+
+/**
+ * @subsection Chat
+ */
+
+.ArticleChat {
+    padding: 2px 5px;
+    font-size: 11px;
+    max-height: 100px;
+    overflow: auto;
+    background: #fff;
+    border: 1px solid #eee;
 }
 
 } /* end @media */

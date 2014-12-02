@@ -47,6 +47,10 @@ Core.UI.RichTextEditor = (function (TargetNS) {
             Instance,
             UserLanguage;
 
+        if (isJQueryObject($EditorArea) && $EditorArea.hasClass('HasCKEInstance')) {
+            return false;
+        }
+
         if (isJQueryObject($EditorArea) && $EditorArea.length === 1) {
             EditorID = $EditorArea.attr('id');
         }
@@ -55,18 +59,27 @@ Core.UI.RichTextEditor = (function (TargetNS) {
             Core.Exception.Throw('RichTextEditor: Need exactly one EditorArea!', 'TypeError');
         }
 
-        // remove the CKEditor instance if already exists
-        Instance = CKEDITOR.instances[EditorID];
-        if (Instance) {
-            Instance.destroy(true);
-        }
+        // mark the editor textarea as linked with an RTE instance to avoid multiple instances
+        $EditorArea.addClass('HasCKEInstance');
 
         CKEDITOR.on('instanceCreated', function (Editor) {
+
             CKEDITOR.addCss(Core.Config.Get('RichText.EditingAreaCSS'));
+
             // Remove the validation error tooltip if content is added to the editor
             Editor.editor.on('change', function(evt) {
                 Core.Form.Validate.ValidateElement($(Editor.editor.element.$));
             });
+
+            // if spell checker is used on paste new content should spell check again
+            Editor.editor.on('paste', function(evt) {
+                Core.Config.Set('TextIsSpellChecked', '0');
+            });
+            // if spell checker is used on any key new content should spell check again
+            Editor.editor.on('key', function(evt) {
+                Core.Config.Set('TextIsSpellChecked', '0');
+            });
+
         });
 
         // The format for the language is different between OTRS and CKEditor (see bug#8024)
@@ -93,7 +106,8 @@ Core.UI.RichTextEditor = (function (TargetNS) {
             toolbar: CheckFormID().length ? Core.Config.Get('RichText.Toolbar') : Core.Config.Get('RichText.ToolbarWithoutImage'),
             filebrowserUploadUrl: Core.Config.Get('Baselink'),
             extraPlugins: Core.Config.Get('RichText.SpellChecker') ? 'aspell,splitquote' : 'splitquote',
-            entities: false
+            entities: false,
+            skin: 'bootstrapck'
         });
         if (CheckFormID().length) {
             CKEDITOR.config.action = Core.Config.Get('RichText.PictureUploadAction', 'PictureUpload');

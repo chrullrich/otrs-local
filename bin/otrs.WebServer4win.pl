@@ -33,12 +33,14 @@ use lib dirname($RealBin) . '/Custom';
 use Getopt::Std;
 use Plack::Runner;
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Main;
-use Kernel::System::Time;
-use Kernel::System::DB;
+use Kernel::System::ObjectManager;
+
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.WebServer',
+    },
+);
 
 # to store service name
 my $Service = 'OTRSWebServer';
@@ -47,8 +49,8 @@ my $Service = 'OTRSWebServer';
 my $ServiceStatus = {};
 
 # get options
-my %Opts = ();
-getopt( 'haf', \%Opts );
+my %Opts;
+getopt( 'a', \%Opts );
 
 BEGIN {
 
@@ -85,9 +87,6 @@ if ( $Opts{h} ) {
 # check if a stop request is sent
 if ( $Opts{a} && $Opts{a} eq "stop" ) {
 
-    # create common objects
-    my %CommonObject = _CommonObjects();
-
     # stop the Web Server Service (same as "stop"" in service control manger)
     # cant use Win32::Daemon because is called from outside
     my $Result = Win32::Service::StopService( '', $Service );
@@ -118,11 +117,8 @@ elsif ( $Opts{a} && $Opts{a} eq "status" ) {
 # check if a reload request is sent
 elsif ( $Opts{a} && $Opts{a} eq "reload" ) {
 
-    # create common objects
-    my %CommonObject = _CommonObjects();
-
     # log daemon reload request
-    $CommonObject{LogObject}->Log(
+    $Kernel::OM->Get('Kernel::System::Log')->Log(
         Priority => 'notice',
         Message  => "Web Server reload request",
     );
@@ -144,9 +140,6 @@ elsif ( $Opts{a} && $Opts{a} eq "reload" ) {
 
 # check if a start request is sent
 elsif ( $Opts{a} && $Opts{a} eq "start" ) {
-
-    # create common objects
-    my %CommonObject = _CommonObjects();
 
     # get current service status
     # can't use Win32::Daemon because it is called from outside
@@ -186,12 +179,8 @@ sub _Help {
 
 sub _Start {
 
-    # create common objects
-
-    my %CommonObject = _CommonObjects();
-
     # get default log path from configuration
-    my $LogPath = $CommonObject{ConfigObject}->Get('Home') . '/var/log';
+    my $LogPath = $Kernel::OM->Get('Kernel::Config')->Get('Home') . '/var/log';
 
     # set proper directory separators on windows
     $LogPath =~ s{/}{\\}g;
@@ -200,7 +189,7 @@ sub _Start {
     my $FileStdOut = $LogPath . '\WebServerOUT.log';
     my $FileStdErr = $LogPath . '\WebServerERR.log';
     use File::Copy;
-    my $SystemTime = $CommonObject{TimeObject}->SystemTime();
+    my $SystemTime = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
     if ( -e $FileStdOut ) {
         move( "$FileStdOut", "$LogPath/WebServerOUT-$SystemTime.log" );
     }
@@ -209,9 +198,8 @@ sub _Start {
     }
 
     # delete old log files
-    my $DaysToKeep = 10;
-    my $DaysToKeepSystemTime
-        = $CommonObject{TimeObject}->SystemTime() - $DaysToKeep * 24 * 60 * 60;
+    my $DaysToKeep           = 10;
+    my $DaysToKeepSystemTime = $Kernel::OM->Get('Kernel::System::Time')->SystemTime() - $DaysToKeep * 24 * 60 * 60;
 
     my @LogFiles = glob("$LogPath/*.log");
 
@@ -228,7 +216,7 @@ sub _Start {
         if ( unlink($LogFile) == 0 ) {
 
             # log old backup file cannot be deleted
-            $CommonObject{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
                 Message  => "Web Server could not delete old backup file $LogFile! $!",
             );
@@ -237,7 +225,7 @@ sub _Start {
         else {
 
             # log old backup file deleted
-            $CommonObject{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'notice',
                 Message  => "Web Server deleted old backup file $LogFile!",
             );
@@ -252,10 +240,10 @@ sub _Start {
 
     my $RestartAfterSeconds = ( 60 * 60 * 24 );    # default 1 day
 
-    my $StartTime = $CommonObject{TimeObject}->SystemTime();
+    my $StartTime = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
 
     # get config checksum
-    my $InitConfigMD5 = $CommonObject{ConfigObject}->ConfigChecksum();
+    my $InitConfigMD5 = $Kernel::OM->Get('Kernel::Config')->ConfigChecksum();
 
     # start the service
     Win32::Daemon::StartService();
@@ -275,7 +263,7 @@ sub _Start {
         if ( SERVICE_START_PENDING == $State ) {
 
             # Log service start-up
-            $CommonObject{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'notice',
                 Message  => "Web Server Service is starting...!",
             );
@@ -288,7 +276,7 @@ sub _Start {
         elsif ( SERVICE_PAUSE_PENDING == $State ) {
 
             # Log service pause
-            $CommonObject{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'notice',
                 Message  => "Web Server Service is pausing...!",
             );
@@ -301,7 +289,7 @@ sub _Start {
         elsif ( SERVICE_CONTINUE_PENDING == $State ) {
 
             # Log service resume
-            $CommonObject{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'notice',
                 Message  => "Web Server Service resuming...!",
             );
@@ -314,7 +302,7 @@ sub _Start {
         elsif ( SERVICE_STOP_PENDING == $State ) {
 
             # Log service stop
-            $CommonObject{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'notice',
                 Message  => "Web Server Service is stopping...!",
             );
@@ -327,7 +315,7 @@ sub _Start {
         elsif ( SERVICE_RUNNING == $State ) {
 
             if ( !$AlreadyStarted ) {
-                $CommonObject{LogObject}->Log(
+                $Kernel::OM->Get('Kernel::System::Log')->Log(
                     Priority => 'notice',
                     Message  => "Web Server Service start!",
                 );
@@ -336,7 +324,7 @@ sub _Start {
 
             # check if Framework.xml file exists, otherwise quits because the otrs installation
             # might not be OK. for example UnitTest machines during change scenario process
-            my $Home                = $CommonObject{ConfigObject}->Get('Home');
+            my $Home                = $Kernel::OM->Get('Kernel::Config')->Get('Home');
             my $FrameworkConfigFile = $Home . '/Kernel/Config/Files/Framework.xml';
 
             # convert FrameworkConfigFile path to windows format
@@ -355,7 +343,7 @@ sub _Start {
             my $Runner = Plack::Runner->new();
             $Runner->parse_options(
                 '--port' => 80,
-                $CommonObject{ConfigObject}->Get('Home') . '/bin/cgi-bin/app.psgi'
+                $Kernel::OM->Get('Kernel::Config')->Get('Home') . '/bin/cgi-bin/app.psgi'
             );
             $Runner->run();
         }
@@ -370,15 +358,12 @@ sub _Start {
 }
 
 sub _Stop {
-
-    # create common objects
-
-    my %CommonObject = _CommonObjects();
+    local $Kernel::OM = _OM();
 
     # stop the service (this can be called because is part of the main loop)
     Win32::Daemon::StopService();
 
-    $CommonObject{LogObject}->Log(
+    $Kernel::OM->Get('Kernel::System::Log')->Log(
         Priority => 'notice',
         Message  => "Web Server Service stop!",
     );
@@ -397,11 +382,8 @@ sub _Status {
     # 3 => 'The service is stopping.',
     # 1 => 'The service is not running.',
 
-    # create common objects
-    my %CommonObject = _CommonObjects();
-
     # log daemon stop
-    $CommonObject{LogObject}->Log(
+    $Kernel::OM->Get('Kernel::System::Log')->Log(
         Priority => 'notice',
         Message  => "Web Server Service status request!",
     );
@@ -428,30 +410,13 @@ sub _Status {
     exit 0;
 }
 
-sub _CommonObjects {
-    my %CommonObject;
-    $CommonObject{ConfigObject} = Kernel::Config->new();
-    $CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-    $CommonObject{LogObject}    = Kernel::System::Log->new(
-        LogPrefix => 'OTRS-otrs.WebServer',
-        %CommonObject,
-    );
-    $CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
-    $CommonObject{TimeObject} = Kernel::System::Time->new(%CommonObject);
-    $CommonObject{DBObject}   = Kernel::System::DB->new(%CommonObject);
-    return %CommonObject;
-}
-
 sub _AutoRestart {
     my (%Param) = @_;
 
-    # create common objects
-    my %CommonObject = _CommonObjects();
-
     # Log daemon start-up
-    $CommonObject{LogObject}->Log(
+    $Kernel::OM->Get('Kernel::System::Log')->Log(
         Priority => 'notice',
-        Message => $Param{Message} || 'Unknown reason to restart',
+        Message  => $Param{Message} || 'Unknown reason to restart',
     );
 
     # Send service control a stop message otherwise the execution of a new server will not be
@@ -459,13 +424,13 @@ sub _AutoRestart {
     Win32::Daemon::StopService();
 
     # log service stopping
-    $CommonObject{LogObject}->Log(
+    $Kernel::OM->Get('Kernel::System::Log')->Log(
         Priority => 'notice',
         Message  => "Web Server Service is stopping due a restart.",
     );
 
     # get the web server information to restart
-    my $Home      = $CommonObject{ConfigObject}->Get('Home');
+    my $Home      = $Kernel::OM->Get('Kernel::Config')->Get('Home');
     my $WebServer = $Home . '/bin/otrs.WebServer4win.pl';
 
     # convert WebServer path to windows format
@@ -477,7 +442,7 @@ sub _AutoRestart {
     my $Result = system("\"$^X\" \"$WebServer\" -a start");
 
     if ( !$Result ) {
-        $CommonObject{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "Could not start-up new Web Server instance.",
         );
@@ -491,13 +456,10 @@ sub _AutoRestart {
 sub _AutoStop {
     my (%Param) = @_;
 
-    # create common objects
-    my %CommonObject = _CommonObjects();
-
     if ( $Param{Message} ) {
 
         # log error
-        $CommonObject{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => $Param{Message},
         );

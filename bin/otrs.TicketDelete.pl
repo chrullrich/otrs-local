@@ -30,31 +30,19 @@ use lib dirname($RealBin) . '/Custom';
 
 use Getopt::Long;
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Time;
-use Kernel::System::DB;
-use Kernel::System::Main;
-use Kernel::System::Ticket;
+use Kernel::System::ObjectManager;
 
-# create common objects
-my %CommonObject = ();
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.TicketDelete.pl',
-    %CommonObject,
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.TicketDelete.pl',
+    },
 );
-$CommonObject{MainObject}   = Kernel::System::Main->new(%CommonObject);
-$CommonObject{TimeObject}   = Kernel::System::Time->new(%CommonObject);
-$CommonObject{DBObject}     = Kernel::System::DB->new(%CommonObject);
-$CommonObject{TicketObject} = Kernel::System::Ticket->new(%CommonObject);
 
-my $Help            = '';
-my @TicketNumbers   = ();
-my @TicketIDs       = ();
-my @DeleteTicketIDs = ();
+my $Help = '';
+my @TicketNumbers;
+my @TicketIDs;
+my @DeleteTicketIDs;
 
 GetOptions(
     'help'              => \$Help,
@@ -69,7 +57,7 @@ if (@TicketNumbers) {
     for my $TicketNumber (@TicketNumbers) {
 
         # lookup ticket id
-        my $TicketID = $CommonObject{TicketObject}->TicketIDLookup(
+        my $TicketID = $Kernel::OM->Get('Kernel::System::Ticket')->TicketIDLookup(
             TicketNumber => $TicketNumber,
             UserID       => 1,
         );
@@ -88,7 +76,7 @@ if (@TicketNumbers) {
 
         print "Deleting specified tickets...\n";
 
-        DeleteTickets( %CommonObject, TicketIDs => \@DeleteTicketIDs );
+        DeleteTickets( TicketIDs => \@DeleteTicketIDs );
     }
 }
 
@@ -99,7 +87,7 @@ elsif (@TicketIDs) {
     for my $TicketID (@TicketIDs) {
 
         # lookup ticket number
-        my $TicketNumber = $CommonObject{TicketObject}->TicketNumberLookup(
+        my $TicketNumber = $Kernel::OM->Get('Kernel::System::Ticket')->TicketNumberLookup(
             TicketID => $TicketID,
             UserID   => 1,
         );
@@ -117,7 +105,7 @@ elsif (@TicketIDs) {
     if (@DeleteTicketIDs) {
 
         print "Deleting specified tickets...\n";
-        DeleteTickets( %CommonObject, TicketIDs => \@DeleteTicketIDs );
+        DeleteTickets( TicketIDs => \@DeleteTicketIDs );
     }
 }
 
@@ -138,16 +126,13 @@ else {
     exit 1;
 }
 
-exit(0);
+exit 0;
 
 sub DeleteTickets {
-
-    # get parameters
-
-    my (%CommonObject) = @_;
+    my (%Params) = @_;
 
     # unpack the ticket ids
-    my @TicketIDs = @{ $CommonObject{TicketIDs} };
+    my @TicketIDs = @{ $Params{TicketIDs} };
 
     my $DeletedTicketCount = 0;
 
@@ -156,7 +141,7 @@ sub DeleteTickets {
     for my $TicketID (@TicketIDs) {
 
         # delete the ticket
-        my $True = $CommonObject{TicketObject}->TicketDelete(
+        my $True = $Kernel::OM->Get('Kernel::System::Ticket')->TicketDelete(
             TicketID => $TicketID,
             UserID   => 1,
         );

@@ -10,15 +10,20 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
 use Kernel::System::WebUserAgent;
+
 use Kernel::System::VariableCheck qw(:all);
 
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
 my $TestNumber     = 1;
-my $TimeOut        = $Self->{ConfigObject}->Get('Package::Timeout');
-my $Proxy          = $Self->{ConfigObject}->Get('Package::Proxy');
-my $RepositoryRoot = $Self->{ConfigObject}->Get('Package::RepositoryRoot') || [];
+my $TimeOut        = $ConfigObject->Get('Package::Timeout');
+my $Proxy          = $ConfigObject->Get('Package::Proxy');
+my $RepositoryRoot = $ConfigObject->Get('Package::RepositoryRoot') || [];
 
 my @Tests = (
     {
@@ -127,6 +132,51 @@ my @Tests = (
         Success     => 0,
         ErrorNumber => 0,
     },
+    {
+        Name    => 'GET - http - Header ' . $TestNumber++,
+        URL     => "http://ftp.otrs.org/pub/otrs/packages/otrs.xml",
+        Timeout => '100',
+        Proxy   => $Proxy,
+        Success => '1',
+        Header  => {
+            Content_Type => 'text/json',
+        },
+        Return  => 'REQUEST',
+        Matches => qr!Content-Type:\s+text/json!,
+    },
+    {
+        Name        => 'GET - http - Credentials ' . $TestNumber++,
+        URL         => "http://jigsaw.w3.org/HTTP/Basic",
+        Timeout     => '100',
+        Proxy       => $Proxy,
+        Success     => '1',
+        Credentials => {
+            User     => 'guest',
+            Password => 'guest',
+            Realm    => 'test',
+            Location => 'jigsaw.w3.org:80',
+        },
+    },
+    {
+        Name        => 'GET - http - MissingCredentials ' . $TestNumber++,
+        URL         => "http://jigsaw.w3.org/HTTP/Basic",
+        Timeout     => '100',
+        Proxy       => $Proxy,
+        Success     => '0',
+        ErrorNumber => 401,
+    },
+    {
+        Name        => 'GET - http - IncompleteCredentials ' . $TestNumber++,
+        URL         => "http://jigsaw.w3.org/HTTP/Basic",
+        Timeout     => '100',
+        Proxy       => $Proxy,
+        Credentials => {
+            User     => 'guest',
+            Password => 'guest',
+        },
+        Success     => '0',
+        ErrorNumber => 401,
+    },
 );
 
 # get repository list
@@ -143,10 +193,10 @@ for my $URL ( @{$RepositoryRoot} ) {
     push @Tests, \%NewEntry;
 }
 
+TEST:
 for my $Test (@Tests) {
 
     my $WebUserAgentObject = Kernel::System::WebUserAgent->new(
-        %{$Self},
         Timeout => $Test->{Timeout},
         Proxy   => $Test->{Proxy},
     );
@@ -163,9 +213,7 @@ for my $Test (@Tests) {
     );
 
     my %Response = $WebUserAgentObject->Request(
-        URL  => $Test->{URL},
-        Type => $Test->{Type},
-        Data => $Test->{Data},
+        %{$Test},
     );
 
     $Self->True(
@@ -183,7 +231,7 @@ for my $Test (@Tests) {
             $Test->{ErrorNumber},
             "$Test->{Name} - WebUserAgent - Check error number",
         );
-        next;
+        next TEST;
     }
     else {
         $Self->True(
@@ -195,6 +243,13 @@ for my $Test (@Tests) {
             '200',
             "$Test->{Name} - WebUserAgent - Check request status",
         );
+
+        if ( $Test->{Matches} ) {
+            $Self->True(
+                ( ${ $Response{Content} } =~ $Test->{Matches} ) || undef,
+                "$Test->{Name} - Matches",
+            );
+        }
     }
     if ( $Test->{Content} ) {
         $Self->Is(

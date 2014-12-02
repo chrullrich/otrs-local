@@ -29,27 +29,14 @@ use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
 use Getopt::Std;
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Time;
-use Kernel::System::DB;
-use Kernel::System::Log;
-use Kernel::System::Queue;
-use Kernel::System::StandardTemplate;
-use Kernel::System::Main;
+use Kernel::System::ObjectManager;
 
-# create common objects
-my %CommonObject;
-$CommonObject{ConfigObject} = Kernel::Config->new(%CommonObject);
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.AddQueue2StdTemplate.pl',
-    %CommonObject,
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.AddQueue2StdTemplate.pl',
+    },
 );
-$CommonObject{MainObject}             = Kernel::System::Main->new(%CommonObject);
-$CommonObject{DBObject}               = Kernel::System::DB->new(%CommonObject);
-$CommonObject{QueueObject}            = Kernel::System::Queue->new(%CommonObject);
-$CommonObject{StandardTemplateObject} = Kernel::System::StandardTemplate->new(%CommonObject);
 
 # get options
 my %Opts;
@@ -72,15 +59,17 @@ if ( !$Opts{q} ) {
 }
 
 # check queue
-my $QueueID = $CommonObject{QueueObject}->QueueLookup( Queue => $Opts{q} );
+my $QueueID = $Kernel::OM->Get('Kernel::System::Queue')->QueueLookup( Queue => $Opts{q} );
 if ( !$QueueID ) {
     print STDERR "ERROR: Queue not found for $Opts{q}\n";
     exit 1;
 }
 
 # check template
-my $StandardTemplateID
-    = $CommonObject{StandardTemplateObject}->StandardTemplateLookup( StandardTemplate => $Opts{t} );
+my $StandardTemplateID = $Kernel::OM->Get('Kernel::System::StandardTemplate')->StandardTemplateLookup(
+    StandardTemplate => $Opts{t}
+);
+
 if ( !$StandardTemplateID ) {
     print STDERR "ERROR: Found no Standard Template for $Opts{t}\n";
     exit 1;
@@ -88,7 +77,7 @@ if ( !$StandardTemplateID ) {
 
 # set queue standard template
 if (
-    !$CommonObject{QueueObject}->QueueStandardTemplateMemberAdd(
+    !$Kernel::OM->Get('Kernel::System::Queue')->QueueStandardTemplateMemberAdd(
         StandardTemplateID => $StandardTemplateID,
         QueueID            => $QueueID,
         Active             => 1,

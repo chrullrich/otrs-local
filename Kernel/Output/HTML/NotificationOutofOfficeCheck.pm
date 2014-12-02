@@ -40,17 +40,17 @@ sub Run {
     my $TimeStart = $Self->{TimeObject}->TimeStamp2SystemTime(
         String => $Start,
     );
-    my $End
-        = "$UserData{OutOfOfficeEndYear}-$UserData{OutOfOfficeEndMonth}-$UserData{OutOfOfficeEndDay} 23:59:59";
+    my $End     = "$UserData{OutOfOfficeEndYear}-$UserData{OutOfOfficeEndMonth}-$UserData{OutOfOfficeEndDay} 23:59:59";
     my $TimeEnd = $Self->{TimeObject}->TimeStamp2SystemTime(
         String => $End,
     );
     if ( $TimeStart < $Time && $TimeEnd > $Time ) {
         return $Self->{LayoutObject}->Notify(
             Priority => 'Notice',
-            Link     => '$Env{"Baselink"}Action=AgentPreferences',
+            Link     => $Self->{LayoutObject}->{Baselink} . 'Action=AgentPreferences',
             Data =>
-                '$Text{"You have Out of Office enabled, would you like to disable it?"}',
+                $Self->{LayoutObject}->{LanguageObject}
+                ->Translate("You have Out of Office enabled, would you like to disable it?"),
         );
     }
     else {

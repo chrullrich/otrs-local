@@ -9,21 +9,21 @@
 
 use strict;
 use warnings;
+use utf8;
+
 use vars (qw($Self));
 
 use Kernel::GenericInterface::Mapping;
 use Kernel::GenericInterface::Debugger;
-use Kernel::System::GenericInterface::Webservice;
-use Kernel::System::UnitTest::Helper;
 
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %$Self,
-    UnitTestObject => $Self,
-);
+# get needed objects
+my $ConfigObject     = $Kernel::OM->Get('Kernel::Config');
+my $HelperObject     = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $MainObject       = $Kernel::OM->Get('Kernel::System::Main');
+my $TimeObject       = $Kernel::OM->Get('Kernel::System::Time');
+my $WebserviceObject = $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice');
 
 my $RandomID = $HelperObject->GetRandomID();
-
-my $WebserviceObject = Kernel::System::GenericInterface::Webservice->new( %{$Self} );
 
 my $WebserviceID = $WebserviceObject->WebserviceAdd(
     Config => {
@@ -47,10 +47,9 @@ $Self->True(
     "WebserviceAdd()",
 );
 
-# create a debbuger object
+# create a debugger object
 
 my $DebuggerObject = Kernel::GenericInterface::Debugger->new(
-    %$Self,
     DebuggerConfig => {
         DebugThreshold => 'debug',
         TestMode       => 1,
@@ -74,10 +73,10 @@ my %Attachments;
 
 # file checks
 for my $File (qw(xls txt doc png pdf)) {
-    my $Location = $Self->{ConfigObject}->Get('Home')
+    my $Location = $ConfigObject->Get('Home')
         . "/scripts/test/sample/StdAttachment/StdAttachment-Test1.$File";
 
-    my $ContentRef = $Self->{MainObject}->FileRead(
+    my $ContentRef = $MainObject->FileRead(
         Location => $Location,
         Mode     => 'binmode',
     );
@@ -419,7 +418,7 @@ my @MappingTests = (
         CheckTime     => 1,
     },
     {
-        Name   => 'Test KeyMapDefault & ValueMapDefault large atachments hash',
+        Name   => 'Test KeyMapDefault & ValueMapDefault large attachments hash',
         Config => {
             KeyMapDefault => {
                 MapType => 'Keep',
@@ -683,11 +682,10 @@ TEST:
 for my $Test (@MappingTests) {
 
     my $StartSeconds;
-    $StartSeconds = $Self->{TimeObject}->SystemTime() if ( $Test->{CheckTime} );
+    $StartSeconds = $TimeObject->SystemTime() if ( $Test->{CheckTime} );
 
-    # instanciate mapping object to catch config errors
+    # instantiate mapping object to catch config errors
     my $MappingObject = Kernel::GenericInterface::Mapping->new(
-        %{$Self},
         DebuggerObject => $DebuggerObject,
         MappingConfig  => {
             Type   => 'Simple',
@@ -714,7 +712,7 @@ for my $Test (@MappingTests) {
         Data => $Test->{Data},
     );
     if ( $Test->{CheckTime} ) {
-        my $EndSeconds = $Self->{TimeObject}->SystemTime();
+        my $EndSeconds = $TimeObject->SystemTime();
         $Self->True(
             ( $EndSeconds - $StartSeconds ) < 5,
             'Mapping - Performance on large data set: ' .

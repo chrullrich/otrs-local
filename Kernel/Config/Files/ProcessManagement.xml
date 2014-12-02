@@ -13,8 +13,8 @@
                 <Loader>
                     <CSS>Core.Agent.Admin.ProcessManagement.css</CSS>
                     <CSS>Core.AllocationList.css</CSS>
-                    <JavaScript>thirdparty/jsplumb-1.5.5/jsplumb.js</JavaScript>
-                    <JavaScript>thirdparty/farahey-0.1/farahey.js</JavaScript>
+                    <JavaScript>thirdparty/jsplumb-1.6.4/jsplumb.js</JavaScript>
+                    <JavaScript>thirdparty/farahey-0.5/farahey.js</JavaScript>
                     <JavaScript>thirdparty/jsplumb-labelspacer/label-spacer.js</JavaScript>
                     <JavaScript>Core.Agent.Admin.ProcessManagement.js</JavaScript>
                     <JavaScript>Core.Agent.Admin.ProcessManagement.Canvas.js</JavaScript>
@@ -117,13 +117,13 @@
         </Setting>
     </ConfigItem>
 
-    <ConfigItem Name="Frontend::NavBarOutputModule###1-TicketProcesses" Required="0" Valid="1">
+    <ConfigItem Name="Frontend::NavBarModule###1-TicketProcesses" Required="0" Valid="1">
         <Description Translatable="1">Frontend module registration (disable ticket processes screen if no process available).</Description>
         <Group>ProcessManagement</Group>
         <SubGroup>Frontend::Agent::NavBarModule</SubGroup>
         <Setting>
             <Hash>
-                <Item Key="Module">Kernel::Output::HTML::NavBarOutputModuleAgentTicketProcess</Item>
+                <Item Key="Module">Kernel::Output::HTML::NavBarAgentTicketProcess</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -153,6 +153,7 @@
                     <CSS>Core.Agent.TicketProcess.css</CSS>
                     <JavaScript>Core.Agent.CustomerSearch.js</JavaScript>
                     <JavaScript>Core.Agent.TicketAction.js</JavaScript>
+                    <JavaScript>Core.Agent.TicketProcess.js</JavaScript>
                 </Loader>
             </FrontendModuleReg>
         </Setting>
@@ -249,6 +250,22 @@
             </Hash>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="Ticket::Frontend::MenuModule###480-Process" Required="0" Valid="1">
+        <Description Translatable="1">Shows a link in the menu to enroll a ticket into a process in the ticket zoom view of the agent interface.</Description>
+        <Group>ProcessManagement</Group>
+        <SubGroup>Frontend::Agent::Ticket::MenuModule</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="Module">Kernel::Output::HTML::TicketMenuProcess</Item>
+                <Item Key="Name">Process Enroll</Item>
+                <Item Key="Description" Translatable="1">Enroll this ticket into a process</Item>
+                <Item Key="Action">AgentTicketProcess</Item>
+                <Item Key="Link">Action=AgentTicketProcess;IsProcessEnroll=1;TicketID=[% Data.TicketID | html %]</Item>
+                <Item Key="Target"></Item>
+                <Item Key="PopupType">TicketAction</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="CustomerFrontend::Module###CustomerTicketProcess" Required="0" Valid="1">
         <Description Translatable="1">Frontend module registration for the customer interface.</Description>
         <Group>ProcessManagement</Group>
@@ -281,7 +298,7 @@
         <SubGroup>Frontend::Customer::NavBarModule</SubGroup>
         <Setting>
             <Hash>
-                <Item Key="Module">Kernel::Output::HTML::NavBarOutputModuleCustomerTicketProcess</Item>
+                <Item Key="Module">Kernel::Output::HTML::NavBarCustomerTicketProcess</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -342,4 +359,114 @@
             </Array>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="ProcessManagement::Transition::Debug::Enabled" Required="1" Valid="1">
+        <Description Translatable="1">If enabled debugging information for transitions is logged.</Description>
+        <Group>ProcessManagement</Group>
+        <SubGroup>Core::Transition</SubGroup>
+        <Setting>
+            <Option SelectedID="0">
+                    <Item Key="0">No</Item>
+                    <Item Key="1">Yes</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="ProcessManagement::Transition::Debug::LogPriority" Required="0" Valid="0">
+        <Description Translatable="1">Defines the priority in which the information is logged and presented.</Description>
+        <Group>ProcessManagement</Group>
+        <SubGroup>Core::Transition</SubGroup>
+        <Setting>
+            <Option SelectedID="debug">
+                    <Item Key="debug">Debug</Item>
+                    <Item Key="info">Info</Item>
+                    <Item Key="notice">Notice</Item>
+                    <Item Key="error">Error</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="ProcessManagement::Transition::Debug::Filter###00-Default" Required="0" Valid="0">
+        <Description Translatable="1">Filter for debugging Transitions. Note: More filters can be added in the format &lt;OTRS_TICKET_Attribute&gt; e.g. &lt;OTRS_TICKET_Priority&gt;.</Description>
+        <Group>ProcessManagement</Group>
+        <SubGroup>Core::Transition</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="TransitionEntityID"></Item>
+                <Item Key="&lt;OTRS_TICKET_TicketNumber&gt;"></Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="DashboardBackend###0140-RunningTicketProcess" Required="0" Valid="1">
+        <Description Translatable="1">Parameters for the dashboard backend of the running process tickets overview of the agent interface . "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.</Description>
+        <Group>ProcessManagement</Group>
+        <SubGroup>Frontend::Agent::Dashboard</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="Module">Kernel::Output::HTML::DashboardTicketGeneric</Item>
+                <Item Key="Title" Translatable="1">Running Process Tickets</Item>
+                <Item Key="Description">All tickets with a reminder set where the reminder date has been reached</Item>
+                <Item Key="Attributes">StateType=new;StateType=open;StateType=pending reminder;StateType=pending auto</Item>
+                <Item Key="Time">UntilTime</Item>
+                <Item Key="IsProcessWidget">1</Item>
+                <Item Key="Limit">10</Item>
+                <Item Key="Permission">rw</Item>
+                <Item Key="Block">ContentLarge</Item>
+                <Item Key="Group"></Item>
+                <Item Key="Default">0</Item>
+                <Item Key="CacheTTLLocal">0.5</Item>
+                <Item Key="DefaultColumns">
+                    <Hash>
+                        <Item Key="Age">2</Item>
+                        <Item Key="DynamicField_ProcessManagementProcessID">2</Item>
+                        <Item Key="DynamicField_ProcessManagementActivityID">2</Item>
+                        <Item Key="Changed">1</Item>
+                        <Item Key="CustomerID">1</Item>
+                        <Item Key="CustomerName">1</Item>
+                        <Item Key="CustomerUserID">1</Item>
+                        <Item Key="EscalationResponseTime">1</Item>
+                        <Item Key="EscalationSolutionTime">1</Item>
+                        <Item Key="EscalationTime">1</Item>
+                        <Item Key="EscalationUpdateTime">1</Item>
+                        <Item Key="TicketNumber">2</Item>
+                        <Item Key="Lock">1</Item>
+                        <Item Key="Owner">1</Item>
+                        <Item Key="PendingTime">1</Item>
+                        <Item Key="Queue">1</Item>
+                        <Item Key="Responsible">1</Item>
+                        <Item Key="Priority">1</Item>
+                        <Item Key="Service">1</Item>
+                        <Item Key="State">1</Item>
+                        <Item Key="SLA">1</Item>
+                        <Item Key="Title">2</Item>
+                        <Item Key="Type">1</Item>
+                    </Hash>
+                </Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="DynamicFields::Driver###ProcessID" Required="0" Valid="1">
+        <Description Translatable="1">DynamicField backend registration.</Description>
+        <Group>ProcessManagement</Group>
+        <SubGroup>DynamicFields::Driver::Registration</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="DisplayName" Translatable="1">ProcessID</Item>
+                <Item Key="Module">Kernel::System::DynamicField::Driver::ProcessManagement::ProcessID</Item>
+                <Item Key="ConfigDialog">AdminDynamicFieldText</Item>
+                <Item Key="DisabledAdd">1</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="DynamicFields::Driver###ActivityID" Required="0" Valid="1">
+        <Description Translatable="1">DynamicField backend registration.</Description>
+        <Group>ProcessManagement</Group>
+        <SubGroup>DynamicFields::Driver::Registration</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="DisplayName" Translatable="1">ActivityID</Item>
+                <Item Key="Module">Kernel::System::DynamicField::Driver::ProcessManagement::ActivityID</Item>
+                <Item Key="ConfigDialog">AdminDynamicFieldText</Item>
+                <Item Key="DisabledAdd">1</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+
 </otrs_config>

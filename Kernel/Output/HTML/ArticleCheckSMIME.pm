@@ -15,6 +15,16 @@ use warnings;
 use Kernel::System::Crypt;
 use Kernel::System::EmailParser;
 
+our @ObjectDependencies = (
+    'Kernel::Config',
+    'Kernel::Output::HTML::Layout',
+    'Kernel::System::DB',
+    'Kernel::System::Encode',
+    'Kernel::System::Log',
+    'Kernel::System::Main',
+    'Kernel::System::Ticket',
+);
+
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -23,17 +33,26 @@ sub new {
     bless( $Self, $Type );
 
     # get needed objects
-    for (
-        qw(ConfigObject LogObject EncodeObject MainObject DBObject LayoutObject UserID TicketObject ArticleID)
-        )
-    {
+    $Self->{ConfigObject} = $Param{ConfigObject} || $Kernel::OM->Get('Kernel::Config');
+    $Self->{LogObject}    = $Param{LogObject}    || $Kernel::OM->Get('Kernel::System::Log');
+    $Self->{EncodeObject} = $Param{EncodeObject} || $Kernel::OM->Get('Kernel::System::Encode');
+    $Self->{MainObject}   = $Param{MainObject}   || $Kernel::OM->Get('Kernel::System::Main');
+    $Self->{DBObject}     = $Param{DBObject}     || $Kernel::OM->Get('Kernel::System::DB');
+    $Self->{TicketObject} = $Param{TicketObject} || $Kernel::OM->Get('Kernel::System::Ticket');
+    $Self->{LayoutObject} = $Param{LayoutObject} || $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
+    for (qw(UserID ArticleID)) {
         if ( $Param{$_} ) {
             $Self->{$_} = $Param{$_};
         }
         else {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
         }
     }
+
     return $Self;
 }
 
@@ -88,7 +107,10 @@ sub Check {
             push( @Email, $Line . "\n" );
         }
 
-        my $ParserObject = Kernel::System::EmailParser->new( %{$Self}, Email => \@Email, );
+        my $ParserObject = Kernel::System::EmailParser->new(
+            %{$Self},
+            Email => \@Email,
+        );
 
         use MIME::Parser;
         my $Parser = MIME::Parser->new();
@@ -143,8 +165,9 @@ sub Check {
 
                 # filter email addresses avoiding repeated and save on hash to search
                 for my $EmailAddress (@EmailAddressOnField) {
-                    my $CleanEmailAddress
-                        = $ParserObject->GetEmailAddress( Email => $EmailAddress, );
+                    my $CleanEmailAddress = $ParserObject->GetEmailAddress(
+                        Email => $EmailAddress,
+                    );
                     $EmailsToSearch{$CleanEmailAddress} = '1';
                 }
             }
@@ -153,8 +176,9 @@ sub Check {
             # extract every resulting cert and put it into an hash of hashes avoiding repeated
             my %PrivateKeys;
             for my $EmailAddress ( sort keys %EmailsToSearch ) {
-                my @PrivateKeysResult
-                    = $Self->{CryptObject}->PrivateSearch( Search => $EmailAddress, );
+                my @PrivateKeysResult = $Self->{CryptObject}->PrivateSearch(
+                    Search => $EmailAddress,
+                );
                 for my $Cert (@PrivateKeysResult) {
                     $PrivateKeys{ $Cert->{Filename} } = $Cert;
                 }
@@ -191,7 +215,7 @@ sub Check {
                 push(
                     @Return,
                     {
-                        Key => 'Crypted',
+                        Key   => 'Crypted',
                         Value => $Decrypt{Message} || 'Successful decryption',
                         %Decrypt,
                     }
@@ -201,12 +225,14 @@ sub Check {
                 my $EmailContent = $Decrypt{Data};
 
                 # now check if the data contains a signature too
-                %SignCheck = $Self->{CryptObject}->Verify( Message => $Decrypt{Data}, );
+                %SignCheck = $Self->{CryptObject}->Verify(
+                    Message => $Decrypt{Data},
+                );
 
                 if ( $SignCheck{SignatureFound} ) {
 
-                  # If the signature was verified well, use the stripped content to store the email.
-                  #   Now it contains only the email without other SMIME generated data.
+                    # If the signature was verified well, use the stripped content to store the email.
+                    #   Now it contains only the email without other SMIME generated data.
                     $EmailContent = $SignCheck{Content} if $SignCheck{Successful};
 
                     push(
@@ -220,8 +246,7 @@ sub Check {
                 }
 
                 # parse the decrypted email body
-                my $ParserObject
-                    = Kernel::System::EmailParser->new( %{$Self}, Email => $EmailContent );
+                my $ParserObject = Kernel::System::EmailParser->new( %{$Self}, Email => $EmailContent );
                 my $Body = $ParserObject->GetMessageBody();
 
                 # from RFC 3850
@@ -256,10 +281,11 @@ sub Check {
 
                 # compare sender email to signer email
                 my $SignerSenderMatch = 0;
+                SIGNER:
                 for my $Signer ( @{ $SignCheck{Signers} } ) {
                     if ( $OrigSender =~ m{\A \Q$Signer\E \z}xmsi ) {
                         $SignerSenderMatch = 1;
-                        last;
+                        last SIGNER;
                     }
                 }
 
@@ -335,7 +361,9 @@ sub Check {
             }
 
             # check sign and get clear content
-            %SignCheck = $Self->{CryptObject}->Verify( Message => $Message, );
+            %SignCheck = $Self->{CryptObject}->Verify(
+                Message => $Message,
+            );
 
             # parse and update clear content
             if ( %SignCheck && $SignCheck{Successful} && $SignCheck{Content} ) {
@@ -345,7 +373,10 @@ sub Check {
                 for (@Lines) {
                     push( @Email, $_ . "\n" );
                 }
-                my $ParserObject = Kernel::System::EmailParser->new( %{$Self}, Email => \@Email, );
+                my $ParserObject = Kernel::System::EmailParser->new(
+                    %{$Self},
+                    Email => \@Email,
+                );
                 my $Body = $ParserObject->GetMessageBody();
 
                 # from RFC 3850
@@ -380,10 +411,11 @@ sub Check {
 
                 # compare sender email to signer email
                 my $SignerSenderMatch = 0;
+                SIGNER:
                 for my $Signer ( @{ $SignCheck{Signers} } ) {
                     if ( $OrigSender =~ m{\A \Q$Signer\E \z}xmsi ) {
                         $SignerSenderMatch = 1;
-                        last;
+                        last SIGNER;
                     }
                 }
 

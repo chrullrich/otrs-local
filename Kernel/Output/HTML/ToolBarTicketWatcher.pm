@@ -36,7 +36,10 @@ sub Run {
     # check needed stuff
     for (qw(Config)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -48,11 +51,12 @@ sub Run {
     }
     if (@Groups) {
         my $Access = 0;
+        GROUP:
         for my $Group (@Groups) {
-            next if !$Self->{LayoutObject}->{"UserIsGroup[$Group]"};
+            next GROUP if !$Self->{LayoutObject}->{"UserIsGroup[$Group]"};
             if ( $Self->{LayoutObject}->{"UserIsGroup[$Group]"} eq 'Yes' ) {
                 $Access = 1;
-                last;
+                last GROUP;
             }
         }
 
@@ -107,7 +111,7 @@ sub Run {
             Class       => $ClassNew,
             Icon        => $IconNew,
             Link        => $URL . 'Action=AgentTicketWatchView;Filter=New',
-            AccessKey   => '',
+            AccessKey   => $Param{Config}->{AccessKeyNew} || '',
         };
     }
     if ($CountReached) {
@@ -118,7 +122,7 @@ sub Run {
             Class       => $ClassReached,
             Icon        => $IconReached,
             Link        => $URL . 'Action=AgentTicketWatchView;Filter=ReminderReached',
-            AccessKey   => '',
+            AccessKey   => $Param{Config}->{AccessKeyReached} || '',
         };
     }
     if ($Count) {
@@ -129,7 +133,7 @@ sub Run {
             Class       => $Class,
             Icon        => $Icon,
             Link        => $URL . 'Action=AgentTicketWatchView',
-            AccessKey   => '',
+            AccessKey   => $Param{Config}->{AccessKey} || '',
         };
     }
     return %Return;

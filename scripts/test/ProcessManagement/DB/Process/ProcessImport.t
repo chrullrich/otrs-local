@@ -9,63 +9,28 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
-
 use utf8;
 
-use Kernel::Config;
-use Kernel::System::DynamicField;
-use Kernel::System::ProcessManagement::DB::Process;
-use Kernel::System::ProcessManagement::DB::Activity;
-use Kernel::System::ProcessManagement::DB::ActivityDialog;
-use Kernel::System::ProcessManagement::DB::Transition;
-use Kernel::System::ProcessManagement::DB::TransitionAction;
-use Kernel::System::UnitTest::Helper;
-use Kernel::System::VariableCheck qw(:all);
-use Kernel::System::YAML;
+use vars (qw($Self));
 
-# Create Helper instance which will restore system configuration in destructor
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %{$Self},
-    UnitTestObject             => $Self,
-    RestoreSystemConfiguration => 0,
-);
+use Kernel::System::VariableCheck qw(:all);
+
+# get needed objects
+my $ConfigObject           = $Kernel::OM->Get('Kernel::Config');
+my $MainObject             = $Kernel::OM->Get('Kernel::System::Main');
+my $DynamicFieldObject     = $Kernel::OM->Get('Kernel::System::DynamicField');
+my $HelperObject           = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $ActivityObject         = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::Activity');
+my $ActivityDialogObject   = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::ActivityDialog');
+my $ProcessObject          = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::Process');
+my $TransitionObject       = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::Transition');
+my $TransitionActionObject = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::TransitionAction');
+my $YAMLObject             = $Kernel::OM->Get('Kernel::System::YAML');
 
 # define needed variables
 my $RandomID = $HelperObject->GetRandomID();
-my $Home     = $Self->{ConfigObject}->Get('Home');
+my $Home     = $ConfigObject->Get('Home');
 my $UserID   = 1;
-
-my $ConfigObject = Kernel::Config->new();
-
-my $ProcessObject = Kernel::System::ProcessManagement::DB::Process->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $ActivityObject = Kernel::System::ProcessManagement::DB::Activity->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $ActivityDialogObject = Kernel::System::ProcessManagement::DB::ActivityDialog->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $TransitionObject = Kernel::System::ProcessManagement::DB::Transition->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $TransitionActionObject = Kernel::System::ProcessManagement::DB::TransitionAction->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $YAMLObject = Kernel::System::YAML->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $DynamicFieldObject = Kernel::System::DynamicField->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
 
 # get a list of current processes and it parts
 my $OriginalProcessList = $ProcessObject->ProcessList(
@@ -132,8 +97,7 @@ my $CheckProcess = sub {
     my $ActivityListGet = $ActivityObject->ActivityListGet( UserID => $UserID );
     my $ActivityDialogListGet = $ActivityDialogObject->ActivityDialogListGet( UserID => $UserID );
     my $TransitionListGet = $TransitionObject->TransitionListGet( UserID => $UserID );
-    my $TransitionActionListGet
-        = $TransitionActionObject->TransitionActionListGet( UserID => $UserID );
+    my $TransitionActionListGet = $TransitionActionObject->TransitionActionListGet( UserID => $UserID );
 
     # check process start activity and start activity dialog
     for my $PartName (qw(Activity ActivityDialog)) {
@@ -174,7 +138,7 @@ my $CheckProcess = sub {
     }
 
     # check path
-    # a tipical path looks like:
+    # a typical path looks like:
     #   Path {
     #       A1 => {
     #           T1 => {
@@ -194,11 +158,9 @@ my $CheckProcess = sub {
             next ACTIVITY if $Activity->{Name} ne $ActivityName;
 
             # locate the transition and its name
-            my $OriginalTransitions
-                = $ProcessData->{Process}->{Config}->{Path}->{$OriginalActivityEntityID};
+            my $OriginalTransitions = $ProcessData->{Process}->{Config}->{Path}->{$OriginalActivityEntityID};
             for my $OriginalTransitionEntityID ( sort keys %{$OriginalTransitions} ) {
-                my $TransitionName
-                    = $ProcessData->{Transitions}->{$OriginalTransitionEntityID}->{Name};
+                my $TransitionName = $ProcessData->{Transitions}->{$OriginalTransitionEntityID}->{Name};
 
                 # search added translation for the transition name
                 TRANSITION:
@@ -208,8 +170,7 @@ my $CheckProcess = sub {
                     # locate the destination activity and its name
                     my $OriginalDestinationActivityEntityID
                         = $OriginalTransitions->{$OriginalTransitionEntityID}->{ActivityEntityID};
-                    my $DestinationActivityName
-                        = $ProcessData->{Activities}->{$OriginalDestinationActivityEntityID}
+                    my $DestinationActivityName = $ProcessData->{Activities}->{$OriginalDestinationActivityEntityID}
                         ->{Name};
 
                     # search added activities for the destination activity name
@@ -250,8 +211,7 @@ my $CheckProcess = sub {
                     }
 
                     # test if transition actions entities match
-                    my $CurrentTransitionActions
-                        = $Process->{Config}->{Path}->{ $Activity->{EntityID} }
+                    my $CurrentTransitionActions = $Process->{Config}->{Path}->{ $Activity->{EntityID} }
                         ->{ $Transition->{EntityID} }->{TransitionAction} || [];
                     $Self->IsDeeply(
                         $CurrentTransitionActions,
@@ -279,13 +239,11 @@ my $CheckProcess = sub {
             next ACTIVITY if $Activity->{Name} ne $OriginalActivityName;
 
             # locate each activity dialog and its names
-            my $OriginalActivityDialogs
-                = $ProcessData->{Activities}->{$OriginalActivityEntityID}->{Config}
+            my $OriginalActivityDialogs = $ProcessData->{Activities}->{$OriginalActivityEntityID}->{Config}
                 ->{ActivityDialog};
             my %ExpectedActivityDialogEntityIDs;
             for my $OrderKey ( sort keys %{$OriginalActivityDialogs} ) {
-                my $ActivityDialogName
-                    = $ProcessData->{ActivityDialogs}->{ $OriginalActivityDialogs->{$OrderKey} }
+                my $ActivityDialogName = $ProcessData->{ActivityDialogs}->{ $OriginalActivityDialogs->{$OrderKey} }
                     ->{Name};
 
                 # search added activity dialogs for the activity dialog name and remember it
@@ -311,7 +269,7 @@ my $CheckProcess = sub {
         }
     }
 
-    # check the rest of the proces parts
+    # check the rest of the process parts
     my %PartListGetMap = (
         ActivityDialog   => $ActivityDialogListGet,
         Transition       => $TransitionListGet,
@@ -321,8 +279,7 @@ my $CheckProcess = sub {
 
         # locate process part and its name
         for my $OriginalPartEntityID ( sort keys %{ $ProcessData->{ $PartNameMap{$PartName} } } ) {
-            my $OriginalPartName
-                = $ProcessData->{ $PartNameMap{$PartName} }->{$OriginalPartEntityID}->{Name};
+            my $OriginalPartName = $ProcessData->{ $PartNameMap{$PartName} }->{$OriginalPartEntityID}->{Name};
 
             # search added parts for the part name
             PART:
@@ -496,16 +453,36 @@ my @Tests = (
         CreateDynamicFields => 1,
         Success             => 1,
     },
+    {
+        Name   => 'GUID 1 OverwriteExistingEntities',
+        Config => {
+            UserID                    => $UserID,
+            OverwriteExistingEntities => 1
+        },
+        ProcessFile         => 'GUID1.yml',
+        CreateDynamicFields => 1,
+        Success             => 1,
+    },
+    {
+        Name   => 'GUID 1 UPDATED OverwriteExistingEntities',
+        Config => {
+            UserID                    => $UserID,
+            OverwriteExistingEntities => 1
+        },
+        ProcessFile         => 'GUID1Updated.yml',
+        CreateDynamicFields => 1,
+        Success             => 1,
+    },
 );
 
 for my $Test (@Tests) {
 
     my $ProcessData;
 
-    # read process for yml file if needed
+    # read process for YAML file if needed
     my $FileRef;
     if ( $Test->{ProcessFile} ) {
-        $FileRef = $Self->{MainObject}->FileRead(
+        $FileRef = $MainObject->FileRead(
             Location => $Home . '/scripts/test/sample/ProcessManagement/' . $Test->{ProcessFile},
         );
         my $RandomID = $HelperObject->GetRandomID();
@@ -544,19 +521,23 @@ for my $Test (@Tests) {
         );
 
         my $CurrentProcessID;
-        if ( !$Test->{Config}->{OverwriteExistingEntities} ) {
 
-            # get CurrentProcessID
-            my $CurrentProcessList = $ProcessObject->ProcessListGet(
-                UserID => 1,
-            );
-            PROCESS:
-            for my $Process ( @{$CurrentProcessList} ) {
-                next PROCESS if $Process->{Name} ne $ProcessData->{Process}->{Name};
-                $CurrentProcessID = $Process->{ID};
-                last PROCESS;
-            }
+        # get CurrentProcessID
+        my $CurrentProcessList = $ProcessObject->ProcessListGet(
+            UserID => 1,
+        );
+        PROCESS:
+        for my $Process ( @{$CurrentProcessList} ) {
+            next PROCESS if $Process->{Name} ne $ProcessData->{Process}->{Name};
+            $CurrentProcessID = $Process->{ID};
+            last PROCESS;
         }
+
+        $Self->IsNot(
+            $CurrentProcessID,
+            undef,
+            "ProcessImport() $Test->{Name} - Process found by name, ProcessID must not be undef",
+        );
 
         # run matching tests
         $CheckProcess->(

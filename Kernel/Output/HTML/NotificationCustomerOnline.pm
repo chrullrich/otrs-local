@@ -37,7 +37,9 @@ sub Run {
     my @Sessions    = $Self->{SessionObject}->GetAllSessionIDs();
     my $IdleMinutes = $Param{Config}->{IdleMinutes} || 60 * 2;
     for (@Sessions) {
-        my %Data = $Self->{SessionObject}->GetSessionIDData( SessionID => $_, );
+        my %Data = $Self->{SessionObject}->GetSessionIDData(
+            SessionID => $_,
+        );
         if (
             $Data{UserType} eq 'Customer'
             && $Data{UserLastRequest}
@@ -59,7 +61,12 @@ sub Run {
         $Param{Message} .= "$Online{$_}";
     }
     if ( $Param{Message} ) {
-        return $Self->{LayoutObject}->Notify( Info => 'Online Customer: %s", "' . $Param{Message} );
+        return $Self->{LayoutObject}->Notify(
+            Info => $Self->{LayoutObject}->{LanguageObject}->Translate(
+                'Online Customer: %s',
+                $Param{Message},
+            ),
+        );
     }
     else {
         return '';

@@ -9,31 +9,15 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
 
-use vars qw($Self);
+use vars (qw($Self));
 
-use Data::Dumper;
-use Kernel::System::Ticket;
-use Kernel::System::LinkObject;
-use Kernel::System::User;
-use Kernel::Config;
-
-# create local objects
-my $ConfigObject = Kernel::Config->new();
-my $TicketObject = Kernel::System::Ticket->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $LinkObject = Kernel::System::LinkObject->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $UserObject = Kernel::System::User->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $LinkObject   = $Kernel::OM->Get('Kernel::System::LinkObject');
+my $MainObject   = $Kernel::OM->Get('Kernel::System::Main');
+my $UserObject   = $Kernel::OM->Get('Kernel::System::User');
 
 # ------------------------------------------------------------ #
 # make preparations
@@ -71,7 +55,7 @@ for my $Counter ( 1 .. 100 ) {
 }
 
 # read ticket backend file
-my $TicketBackendContent = $Self->{MainObject}->FileRead(
+my $TicketBackendContent = $MainObject->FileRead(
     Location => $ConfigObject->Get('Home')
         . '/scripts/test/sample/LinkObject/LinkBackendDummy.pm',
     Result => 'SCALAR',
@@ -94,7 +78,7 @@ for my $Counter ( 1 .. 100 ) {
     $Content =~ s{ Dummy }{$Name}xmsg;
 
     # create the backend file
-    $Self->{MainObject}->FileWrite(
+    $MainObject->FileWrite(
         Directory => $BackendLocation,
         Filename  => $Name . '.pm',
         Content   => \$Content,
@@ -2834,16 +2818,6 @@ for my $Test ( @{$LinkData} ) {
         UserID => $ReferenceData->{LinkList}->{UserID},
     );
 
-    # turn off all pretty print
-    $Data::Dumper::Indent = 0;
-
-    # dump the results from LinkList()
-    my $LinksString = Data::Dumper::Dumper($Links);    ## no critic
-
-    # dump the reference data
-    my $LinksReferenceString
-        = Data::Dumper::Dumper( $ReferenceData->{LinkListReference} );    ## no critic
-
     # get objects lists
     my @ReferenceObjects = sort keys %{ $ReferenceData->{LinkListReference} };
     my @LinkObjects      = sort keys %{$Links};
@@ -2867,9 +2841,8 @@ for my $Test ( @{$LinkData} ) {
             TYPE:
             for my $Type (@ReferenceTypes) {
 
-                my @LinksSourceTargetKeys = sort keys %{ $Links->{$Object}->{$Type} };
-                my @ReferenceSourceTargetKeys
-                    = sort keys %{ $ReferenceData->{LinkListReference}->{$Object}->{$Type} };
+                my @LinksSourceTargetKeys     = sort keys %{ $Links->{$Object}->{$Type} };
+                my @ReferenceSourceTargetKeys = sort keys %{ $ReferenceData->{LinkListReference}->{$Object}->{$Type} };
 
                 # check number of source target keys
                 $Self->Is(
@@ -2881,9 +2854,8 @@ for my $Test ( @{$LinkData} ) {
                 KEY:
                 for my $Key (@ReferenceSourceTargetKeys) {
 
-                    my @LinksIDs = sort keys %{ $Links->{$Object}->{$Type}->{$Key} };
-                    my @ReferenceIDs
-                        = sort
+                    my @LinksIDs     = sort keys %{ $Links->{$Object}->{$Type}->{$Key} };
+                    my @ReferenceIDs = sort
                         keys %{ $ReferenceData->{LinkListReference}->{$Object}->{$Type}->{$Key} };
 
                     # check number of ids
@@ -2898,10 +2870,10 @@ for my $Test ( @{$LinkData} ) {
     }
     else {
 
-        # attributes are different
-        $Self->Is(
-            $LinksString,
-            $LinksReferenceString,
+        # check attributes
+        $Self->IsDeeply(
+            $Links,
+            $ReferenceData->{LinkListReference},
             "Test $TestCount: LinkList()- check number of objects",
         );
     }
@@ -2971,7 +2943,7 @@ for my $Test (@Tests) {
 for my $Name (@ObjectNames) {
 
     # delete the backend file
-    $Self->{MainObject}->FileDelete(
+    $MainObject->FileDelete(
         Directory       => $BackendLocation,
         Filename        => $Name . '.pm',
         DisableWarnings => 1,

@@ -34,7 +34,7 @@ sub new {
         }
     }
 
-    $Self->{CacheObject}           = Kernel::System::Cache->new(%Param);
+    $Self->{CacheObject}           = $Kernel::OM->Get('Kernel::System::Cache');
     $Self->{CustomerCompanyObject} = Kernel::System::CustomerCompany->new(%Param);
 
     $Self->{SlaveDBObject}     = $Self->{DBObject};
@@ -123,15 +123,14 @@ sub Run {
                 }
                 my $StatsPermissionGroups = join( ';', @StatsPermissionGroupNames );
 
-                # replace all line breaks with spaces (otherwise $Text{""} will not work correctly)
+                # replace all line breaks with spaces (otherwise Translate() will not work correctly)
                 $StatsHash->{$StatID}->{Description} =~ s{\r?\n|\r}{ }msxg;
 
-                my $Description = $Self->{LayoutObject}->{LanguageObject}
-                    ->Get( $StatsHash->{$StatID}->{Description} );
+                my $Description = $Self->{LayoutObject}->{LanguageObject}->Get( $StatsHash->{$StatID}->{Description} );
 
-                my $Title = $Self->{LayoutObject}->{LanguageObject}
-                    ->Get( $StatsHash->{$StatID}->{Title} );
-                $Title = $Self->{LayoutObject}->{LanguageObject}->Get('Statistic') . ': ' . $Title;
+                my $Title = $Self->{LayoutObject}->{LanguageObject}->Get( $StatsHash->{$StatID}->{Title} );
+                $Title = $Self->{LayoutObject}->{LanguageObject}->Translate('Statistic') . ': '
+                    . $Title;
 
                 $Config->{ ( $StatID + 1000 ) . '-Stats' } = {
                     'Block'       => 'ContentLarge',
@@ -153,8 +152,7 @@ sub Run {
                 ->{JavaScript} || []
         };
         @ModuleJS = grep { $_ !~ m/d3js/ } @ModuleJS;
-        $Self->{ConfigObject}->Get('Frontend::Module')->{AgentDashboard}->{Loader}->{JavaScript}
-            = \@ModuleJS;
+        $Self->{ConfigObject}->Get('Frontend::Module')->{AgentDashboard}->{Loader}->{JavaScript} = \@ModuleJS;
     }
 
     if ( $Self->{Action} eq 'AgentCustomerInformationCenter' ) {
@@ -258,7 +256,11 @@ sub Run {
         }
 
         # deliver new content page
-        my %ElementReload = $Self->_Element( Name => $Name, Configs => $Config, AJAX => 1 );
+        my %ElementReload = $Self->_Element(
+            Name    => $Name,
+            Configs => $Config,
+            AJAX    => 1
+        );
         if ( !%ElementReload ) {
             $Self->{LayoutObject}->FatalError(
                 Message => "Can't get element data of $Name!",
@@ -281,10 +283,11 @@ sub Run {
         my @Backends = $Self->{ParamObject}->GetArray( Param => 'Backend' );
         for my $Name ( sort keys %{$Config} ) {
             my $Active = 0;
+            BACKEND:
             for my $Backend (@Backends) {
-                next if $Backend ne $Name;
+                next BACKEND if $Backend ne $Name;
                 $Active = 1;
-                last;
+                last BACKEND;
             }
             my $Key = $UserSettingsKey . $Name;
 
@@ -370,8 +373,7 @@ sub Run {
             qw(Owner Responsible State Queue Priority Type Lock Service SLA CustomerID CustomerUserID)
             )
         {
-            my $FilterValue
-                = $Self->{ParamObject}->GetParam( Param => 'ColumnFilter' . $ColumnName . $Name )
+            my $FilterValue = $Self->{ParamObject}->GetParam( Param => 'ColumnFilter' . $ColumnName . $Name )
                 || '';
             next COLUMNNAME if $FilterValue eq '';
 
@@ -400,10 +402,9 @@ sub Run {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
             next DYNAMICFIELD if !$DynamicFieldConfig->{Name};
 
-            my $FilterValue
-                = $Self->{ParamObject}->GetParam(
+            my $FilterValue = $Self->{ParamObject}->GetParam(
                 Param => 'ColumnFilterDynamicField_' . $DynamicFieldConfig->{Name} . $Name
-                );
+            );
 
             next DYNAMICFIELD if !defined $FilterValue;
             next DYNAMICFIELD if $FilterValue eq '';
@@ -411,10 +412,8 @@ sub Run {
             $ColumnFilter{ 'DynamicField_' . $DynamicFieldConfig->{Name} } = {
                 Equals => $FilterValue,
             };
-            $GetColumnFilter{ 'DynamicField_' . $DynamicFieldConfig->{Name} . $Name }
-                = $FilterValue;
-            $GetColumnFilterSelect{ 'DynamicField_' . $DynamicFieldConfig->{Name} }
-                = $FilterValue;
+            $GetColumnFilter{ 'DynamicField_' . $DynamicFieldConfig->{Name} . $Name } = $FilterValue;
+            $GetColumnFilterSelect{ 'DynamicField_' . $DynamicFieldConfig->{Name} } = $FilterValue;
         }
 
         my $SortBy  = $Self->{ParamObject}->GetParam( Param => 'SortBy' );
@@ -498,8 +497,7 @@ sub Run {
         );
 
         if ( $CustomerCompanyData{CustomerCompanyName} ) {
-            $ContentBlockData{CustomerIDTitle}
-                = "$CustomerCompanyData{CustomerCompanyName} ($Self->{CustomerID})";
+            $ContentBlockData{CustomerIDTitle} = "$CustomerCompanyData{CustomerCompanyName} ($Self->{CustomerID})";
         }
     }
 
@@ -556,17 +554,20 @@ sub Run {
     }
 
     # add not ordered plugins (e. g. new active)
+    NAME:
     for my $Name ( sort keys %Backends ) {
         my $Included = 0;
+        ITEM:
         for my $Item (@Order) {
-            next if $Item ne $Name;
+            next ITEM if $Item ne $Name;
             $Included = 1;
         }
-        next if $Included;
+        next NAME if $Included;
         push @Order, $Name;
     }
 
     # try every backend to load and execute it
+    NAME:
     for my $Name (@Order) {
 
         # get element data
@@ -575,7 +576,7 @@ sub Run {
             Configs  => $Config,
             Backends => \%Backends,
         );
-        next if !%Element;
+        next NAME if !%Element;
 
         # NameForm (to support IE, is not working with "-" in form names)
         my $NameForm = $Name;
@@ -603,12 +604,13 @@ sub Run {
                     NameForm => $NameForm,
                 },
             );
+            PARAM:
             for my $Param ( @{ $Element{Preferences} } ) {
 
                 # special parameters are added, which do not have a dtl block,
                 # because the displayed fields are added with the output filter,
                 # so there is no need to call any block here
-                next if !$Param->{Block};
+                next PARAM if !$Param->{Block};
 
                 $Self->{LayoutObject}->Block(
                     Name => $Element{Config}->{Block} . 'PreferencesItem',
@@ -669,7 +671,7 @@ sub Run {
     }
 
     # add translations for the allocation lists for regular columns
-    my $Columns = $Self->{ConfigObject}->Get('DefaultOverviewColumns') || {};
+    my $Columns = $Self->{Config}->{DefaultColumns} || $Self->{ConfigObject}->Get('DefaultOverviewColumns') || {};
     if ( $Columns && IsHashRefWithData($Columns) ) {
 
         COLUMN:
@@ -761,14 +763,6 @@ sub _Element {
         return if !$PermissionOK;
     }
 
-    # create CustomerUserObject is it was not created before
-    if ( !$Self->{CustomerUserObject} ) {
-        $Self->{CustomerUserObject} = Kernel::System::CustomerUser->new(
-            %{$Self},
-            DBObject => $Self->{SlaveDBObject},
-        );
-    }
-
     # load backends
     my $Module = $Configs->{$Name}->{Module};
     return if !$Self->{MainObject}->Require($Module);
@@ -825,8 +819,7 @@ sub _Element {
     my $Content;
     my $CacheKey = $Config{CacheKey};
     if ( !$CacheKey ) {
-        $CacheKey
-            = $Name . '-'
+        $CacheKey = $Name . '-'
             . ( $Self->{CustomerID} || '' ) . '-'
             . $Self->{LayoutObject}->{UserLanguage};
     }
@@ -842,7 +835,7 @@ sub _Element {
     if ( !defined $Content || $SortBy ) {
         $CacheUsed = 0;
         $Content   = $Object->Run(
-            AJAX => $Param{AJAX},
+            AJAX       => $Param{AJAX},
             CustomerID => $Self->{CustomerID} || '',
         );
     }

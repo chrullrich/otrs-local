@@ -29,44 +29,42 @@ use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
 use Getopt::Std;
+use Time::HiRes qw(usleep);
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Time;
-use Kernel::System::DB;
-use Kernel::System::Main;
-use Kernel::System::User;
-use Kernel::System::Ticket;
+use Kernel::System::ObjectManager;
 
 # get options
-my %Opts = ();
-getopts( 'ha', \%Opts );
+my %Opts;
+getopt( 'ab', \%Opts );
 if ( $Opts{h} ) {
     print "otrs.MarkTicketAsSeen.pl - mark tickets as seen by the agent\n";
     print "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n\n";
-    print "usage: otrs.MarkTicketAsSeen.pl [-a]\n\n";
+    print "usage: otrs.MarkTicketAsSeen.pl [-a] [-b sleeptime per ticket in microseconds]\n\n";
     print "If you pass '-a' it will update ALL tickets, otherwise only non-closed\n";
     print "tickets will be updated.\n";
     exit 1;
 }
 
-# create common objects
-my %CommonObject;
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.MarkTicketAsSeen.pl',
-    %CommonObject,
+if ( $Opts{b} && $Opts{b} !~ m{ \A \d+ \z }xms ) {
+    print STDERR "ERROR: sleeptime needs to be a numeric value! e.g. 1000\n";
+    exit 1;
+}
+
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'otrs.MarkTicketAsSeen.pl',
+    },
 );
-$CommonObject{MainObject}   = Kernel::System::Main->new(%CommonObject);
-$CommonObject{TimeObject}   = Kernel::System::Time->new(%CommonObject);
-$CommonObject{DBObject}     = Kernel::System::DB->new(%CommonObject);
-$CommonObject{UserObject}   = Kernel::System::User->new(%CommonObject);
-$CommonObject{TicketObject} = Kernel::System::Ticket->new(%CommonObject);
+
+# disable cache
+$Kernel::OM->Get('Kernel::System::Cache')->Configure(
+    CacheInMemory  => 0,
+    CacheInBackend => 1,
+);
 
 # disable ticket events
-$CommonObject{ConfigObject}->{'Ticket::EventModulePost'} = undef;
+$Kernel::OM->Get('Kernel::Config')->{'Ticket::EventModulePost'} = undef;
 
 my %Search;
 if ( !$Opts{a} ) {
@@ -78,13 +76,16 @@ else {
 }
 
 # get all users
-my %Users = $CommonObject{UserObject}->UserList(
+my %Users = $Kernel::OM->Get('Kernel::System::User')->UserList(
     Type  => 'Short',
     Valid => 1,
 );
 
+# get ticket object
+my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
 # get all tickets
-my @TicketIDs = $CommonObject{TicketObject}->TicketSearch(
+my @TicketIDs = $TicketObject->TicketSearch(
 
     # result (required)
     Result  => 'ARRAY',
@@ -101,19 +102,23 @@ my @TicketIDs = $CommonObject{TicketObject}->TicketSearch(
 
 my $TicketCount = scalar @TicketIDs;
 my $Count       = 0;
+
+TICKETID:
 for my $TicketID (@TicketIDs) {
+
     $Count++;
-    my $TicketObject = Kernel::System::Ticket->new(%CommonObject);
 
     # check permission
     my %UserAccess;
     for my $UserID ( sort keys %Users ) {
+
         my $Access = $TicketObject->TicketPermission(
             Type     => 'ro',
             TicketID => $TicketID,
             LogNo    => 1,
             UserID   => $UserID,
         );
+
         $UserAccess{$UserID} = $Access;
     }
 
@@ -122,12 +127,15 @@ for my $TicketID (@TicketIDs) {
         TicketID => $TicketID,
         UserID   => 1,
     );
+
     my @Data;
     for my $ArticleID (@ArticleIndex) {
+
+        USERID:
         for my $UserID ( sort keys %Users ) {
 
             # check permission
-            next if !$UserAccess{$UserID};
+            next USERID if !$UserAccess{$UserID};
 
             push @Data, {
                 ArticleID => $ArticleID,
@@ -147,10 +155,11 @@ for my $TicketID (@TicketIDs) {
     }
 
     # update ticket flag
+    USERID:
     for my $UserID ( sort keys %Users ) {
 
         # check permission
-        next if !$UserAccess{$UserID};
+        next USERID if !$UserAccess{$UserID};
 
         # set ticket flag
         $TicketObject->TicketFlagSet(
@@ -162,7 +171,12 @@ for my $TicketID (@TicketIDs) {
     }
 
     print "NOTICE: $Count of $TicketCount tickets.\n";
+
+    next TICKETID if !$Opts{b};
+
+    Time::HiRes::usleep( $Opts{b} );
 }
+
 print "NOTICE: done.\n";
 
 exit 0;

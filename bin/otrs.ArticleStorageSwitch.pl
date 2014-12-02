@@ -31,18 +31,11 @@ use lib dirname($RealBin) . '/Custom';
 use Getopt::Std;
 use Time::HiRes qw(usleep);
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Time;
-use Kernel::System::DB;
-use Kernel::System::PID;
-use Kernel::System::Main;
-use Kernel::System::Ticket;
+use Kernel::System::ObjectManager;
 
 # get options
 my %Opts;
-getopt( 'hsdcCb', \%Opts );
+getopt( 'sdcCb', \%Opts );
 if ( $Opts{h} ) {
     print "otrs.ArticleStorageSwitch.pl - to move storage content\n";
     print "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n";
@@ -69,33 +62,41 @@ if ( $Opts{b} && $Opts{b} !~ m{ \A \d+ \z }xms ) {
     exit 1;
 }
 
-# create common objects
-my %CommonObject;
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.ArticleStorageSwitch.pl',
-    %CommonObject,
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.ArticleStorageSwitch.pl',
+    },
 );
-$CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
-$CommonObject{TimeObject} = Kernel::System::Time->new(%CommonObject);
 
-# create needed objects
-$CommonObject{DBObject}     = Kernel::System::DB->new(%CommonObject);
-$CommonObject{PIDObject}    = Kernel::System::PID->new(%CommonObject);
-$CommonObject{TicketObject} = Kernel::System::Ticket->new(%CommonObject);
+# disable cache
+$Kernel::OM->Get('Kernel::System::Cache')->Configure(
+    CacheInMemory  => 0,
+    CacheInBackend => 1,
+);
 
 # disable ticket events
-$CommonObject{ConfigObject}->{'Ticket::EventModulePost'} = {};
+$Kernel::OM->Get('Kernel::Config')->{'Ticket::EventModulePost'} = {};
+
+# get pid object
+my $PIDObject = $Kernel::OM->Get('Kernel::System::PID');
 
 # create pid lock
-if ( !$Opts{f} && !$CommonObject{PIDObject}->PIDCreate( Name => 'ArticleStorageSwitch' ) ) {
+if (
+    !$Opts{f}
+    && !$PIDObject->PIDCreate( Name => 'ArticleStorageSwitch' )
+    )
+{
     print
         "NOTICE: otrs.ArticleStorageSwitch.pl is already running (use '-f' if you want to start it ";
     print "forced)!\n";
     exit 1;
 }
-elsif ( $Opts{f} && !$CommonObject{PIDObject}->PIDCreate( Name => 'ArticleStorageSwitch' ) ) {
+elsif (
+    $Opts{f}
+    && !$PIDObject->PIDCreate( Name => 'ArticleStorageSwitch' )
+    )
+{
     print "NOTICE: otrs.ArticleStorageSwitch.pl is already running but is starting again!\n";
 }
 
@@ -109,7 +110,7 @@ my %SearchParams;
 if ( $Opts{c} ) {
 
     # check time stamp format
-    if ( !$CommonObject{TimeObject}->TimeStamp2SystemTime( String => $Opts{c} ) ) {
+    if ( !$Kernel::OM->Get('Kernel::System::Time')->TimeStamp2SystemTime( String => $Opts{c} ) ) {
         print STDERR
             "ERROR: -c '$Opts{c}' is not a valid time stamp, please use 'yyyy-mm-dd hh:mm:ss'\n";
         exit 1;
@@ -128,8 +129,8 @@ elsif ( $Opts{C} ) {
         exit 1;
     }
     $Opts{C} = $Opts{C} * 60 * 60 * 24;
-    my $TimeStamp = $CommonObject{TimeObject}->SystemTime() - $Opts{C};
-    $TimeStamp = $CommonObject{TimeObject}->SystemTime2TimeStamp(
+    my $TimeStamp = $Kernel::OM->Get('Kernel::System::Time')->SystemTime() - $Opts{C};
+    $TimeStamp = $Kernel::OM->Get('Kernel::System::Time')->SystemTime2TimeStamp(
         SystemTime => $TimeStamp,
     );
     print "NOTICE: Searching for ticket which are closed before '$TimeStamp'\n";
@@ -140,14 +141,17 @@ elsif ( $Opts{C} ) {
 }
 
 # set new PID
-$CommonObject{PIDObject}->PIDCreate(
+$PIDObject->PIDCreate(
     Name  => 'ArticleStorageSwitch',
     Force => 1,
     TTL   => 60 * 60 * 24 * 3,
 );
 
+# get ticket object
+my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
 # get all tickets
-my @TicketIDs = $CommonObject{TicketObject}->TicketSearch(
+my @TicketIDs = $TicketObject->TicketSearch(
 
     # additional search params
     %SearchParams,
@@ -172,7 +176,7 @@ for my $TicketID (@TicketIDs) {
 
     print "NOTICE: $Count/$CountTotal (TicketID:$TicketID)\n";
 
-    my $Success = $CommonObject{TicketObject}->TicketArticleStorageSwitch(
+    my $Success = $TicketObject->TicketArticleStorageSwitch(
         TicketID    => $TicketID,
         Source      => $Opts{s},
         Destination => $Opts{d},
@@ -187,7 +191,7 @@ for my $TicketID (@TicketIDs) {
 }
 
 # delete pid lock
-$CommonObject{PIDObject}->PIDDelete( Name => 'ArticleStorageSwitch' );
+$PIDObject->PIDDelete( Name => 'ArticleStorageSwitch' );
 
 print "NOTICE: done.\n";
 

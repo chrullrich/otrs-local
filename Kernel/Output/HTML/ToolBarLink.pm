@@ -32,7 +32,10 @@ sub Run {
     # check needed stuff
     for (qw(Config)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Self->{LogObject}->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -44,7 +47,7 @@ sub Run {
     }
 
     # get item definition
-    my $Text      = $Self->{LayoutObject}->{LanguageObject}->Get( $Param{Config}->{Name} );
+    my $Text      = $Self->{LayoutObject}->{LanguageObject}->Translate( $Param{Config}->{Name} );
     my $URL       = $Self->{LayoutObject}->{Baselink} . $Param{Config}->{Link};
     my $Priority  = $Param{Config}->{Priority};
     my $AccessKey = $Param{Config}->{AccessKey};

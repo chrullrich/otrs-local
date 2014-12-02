@@ -10,50 +10,34 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
 use Socket;
 use MIME::Base64;
-use Kernel::System::Ticket;
+
 use Kernel::GenericInterface::Debugger;
-use Kernel::GenericInterface::Requester;
-use Kernel::System::GenericInterface::Webservice;
-use Kernel::System::UnitTest::Helper;
 use Kernel::GenericInterface::Operation::Ticket::TicketCreate;
 use Kernel::GenericInterface::Operation::Session::SessionCreate;
+
 use Kernel::System::VariableCheck qw(IsArrayRefWithData IsHashRefWithData IsStringWithData);
 
-use Kernel::System::SysConfig;
-use Kernel::System::Queue;
-use Kernel::System::Type;
-use Kernel::System::Service;
-use Kernel::System::SLA;
-use Kernel::System::State;
-use Kernel::System::DynamicField;
-use Kernel::System::User;
-use Kernel::System::Valid;
-
-# set UserID to root because in public interface there is no user
-$Self->{UserID} = 1;
+# get needed objects
+my $ConfigObject    = $Kernel::OM->Get('Kernel::Config');
+my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
 
 # helper object
-# skip SSL certiciate verification
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %{$Self},
-    UnitTestObject             => $Self,
-    RestoreSystemConfiguration => 1,
-    SkipSSLVerify              => 1,
+# skip SSL certificate verification
+$Kernel::OM->ObjectParamAdd(
+    'Kernel::System::UnitTest::Helper' => {
+        RestoreSystemConfiguration => 1,
+        SkipSSLVerify              => 1,
+    },
 );
+my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
 my $RandomID = $HelperObject->GetRandomID();
 
-my $ConfigObject = Kernel::Config->new();
-
-my $SysConfigObject = Kernel::System::SysConfig->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-
 $SysConfigObject->ConfigItemUpdate(
     Valid => 1,
     Key   => 'Ticket::Type',
@@ -82,7 +66,7 @@ $ConfigObject->Set(
     Value => 1,
 );
 
-# disable dns lookups
+# disable DNS lookups
 $SysConfigObject->ConfigItemUpdate(
     Valid => 1,
     Key   => 'CheckMXRecord',
@@ -106,65 +90,24 @@ $ConfigObject->Set(
 $Self->Is(
     $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME},
     0,
-    'Disabled SSL certiticates verification in environment',
-);
-
-# create ticket object
-my $TicketObject = Kernel::System::Ticket->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-
-# all other objects
-my $QueueObject = Kernel::System::Queue->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $TypeObject = Kernel::System::Type->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $ServiceObject = Kernel::System::Service->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $SLAObject = Kernel::System::SLA->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $StateObject = Kernel::System::State->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $PriorityObject = Kernel::System::Priority->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $DynamicFieldObject = Kernel::System::DynamicField->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-my $UserObject = Kernel::System::User->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-
-my $ValidObject = Kernel::System::Valid->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
+    'Disabled SSL certificates verification in environment',
 );
 
 my $TestOwnerLogin        = $HelperObject->TestUserCreate();
 my $TestResponsibleLogin  = $HelperObject->TestUserCreate();
 my $TestCustomerUserLogin = $HelperObject->TestCustomerUserCreate();
-my $OwnerID               = $UserObject->UserLookup(
+
+# create user object
+my $UserObject = $Kernel::OM->Get('Kernel::System::User');
+
+my $OwnerID = $UserObject->UserLookup(
     UserLogin => $TestOwnerLogin,
 );
 my $ResponsibleID = $UserObject->UserLookup(
     UserLogin => $TestResponsibleLogin,
 );
 
-my $InvalidID = $ValidObject->ValidLookup( Valid => 'invalid' );
+my $InvalidID = $Kernel::OM->Get('Kernel::System::Valid')->ValidLookup( Valid => 'invalid' );
 
 # sanity test
 $Self->IsNot(
@@ -172,6 +115,9 @@ $Self->IsNot(
     undef,
     "ValidLookup() for 'invalid' should not be undef"
 );
+
+# create queue object
+my $QueueObject = $Kernel::OM->Get('Kernel::System::Queue');
 
 # create new queue
 my $QueueID = $QueueObject->QueueAdd(
@@ -199,6 +145,9 @@ $Self->True(
     "QueueGet() - for testing queue",
 );
 
+# create type object
+my $TypeObject = $Kernel::OM->Get('Kernel::System::Type');
+
 # create new type
 my $TypeID = $TypeObject->TypeAdd(
     Name    => 'TestType' . $RandomID,
@@ -221,6 +170,9 @@ $Self->True(
     IsHashRefWithData( \%TypeData ),
     "TypeGet() - for testing type",
 );
+
+# create service object
+my $ServiceObject = $Kernel::OM->Get('Kernel::System::Service');
 
 # create new service
 my $ServiceID = $ServiceObject->ServiceAdd(
@@ -254,6 +206,9 @@ $ServiceObject->CustomerUserServiceMemberAdd(
     UserID            => 1,
 );
 
+# create SLA object
+my $SLAObject = $Kernel::OM->Get('Kernel::System::SLA');
+
 # create new SLA
 my $SLAID = $SLAObject->SLAAdd(
     Name       => 'TestSLA' . $RandomID,
@@ -279,6 +234,9 @@ $Self->True(
     "SLAGet() - for testing SLA",
 );
 
+# create state object
+my $StateObject = $Kernel::OM->Get('Kernel::System::State');
+
 # create new state
 my $StateID = $StateObject->StateAdd(
     Name    => 'TestState' . $RandomID,
@@ -303,6 +261,9 @@ $Self->True(
     "StateGet() - for testing state",
 );
 
+# create priority object
+my $PriorityObject = $Kernel::OM->Get('Kernel::System::Priority');
+
 # create new priority
 my $PriorityID = $PriorityObject->PriorityAdd(
     Name    => 'TestPriority' . $RandomID,
@@ -326,6 +287,9 @@ $Self->True(
     IsHashRefWithData( \%PriorityData ),
     "PriorityGet() - for testing priority",
 );
+
+# create dynamic field object
+my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
 
 # create new dynamic field
 my $DynamicFieldID = $DynamicFieldObject->DynamicFieldAdd(
@@ -361,10 +325,7 @@ $Self->True(
 );
 
 # create webservice object
-my $WebserviceObject = Kernel::System::GenericInterface::Webservice->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+my $WebserviceObject = $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice');
 $Self->Is(
     'Kernel::System::GenericInterface::Webservice',
     ref $WebserviceObject,
@@ -396,9 +357,9 @@ $Self->True(
 
 # get remote host with some precautions for certain unit test systems
 my $Host;
-my $FQDN = $Self->{ConfigObject}->Get('FQDN');
+my $FQDN = $ConfigObject->Get('FQDN');
 
-# try to resolve fqdn host
+# try to resolve FQDN host
 if ( $FQDN ne 'yourhost.example.com' && gethostbyname($FQDN) ) {
     $Host = $FQDN;
 }
@@ -408,18 +369,18 @@ if ( !$Host && gethostbyname('localhost') ) {
     $Host = 'localhost';
 }
 
-# use hardcoded localhost ip address
+# use hard coded localhost IP address
 if ( !$Host ) {
     $Host = '127.0.0.1';
 }
 
 # prepare webservice config
 my $RemoteSystem =
-    $Self->{ConfigObject}->Get('HttpType')
+    $ConfigObject->Get('HttpType')
     . '://'
     . $Host
     . '/'
-    . $Self->{ConfigObject}->Get('ScriptAlias')
+    . $ConfigObject->Get('ScriptAlias')
     . '/nph-genericinterface.pl/WebserviceID/'
     . $WebserviceID;
 
@@ -485,7 +446,7 @@ $Self->True(
 
 # Get SessionID
 # create requester object
-my $RequesterSessionObject = Kernel::GenericInterface::Requester->new( %{$Self} );
+my $RequesterSessionObject = $Kernel::OM->Get('Kernel::GenericInterface::Requester');
 $Self->Is(
     'Kernel::GenericInterface::Requester',
     ref $RequesterSessionObject,
@@ -1369,7 +1330,7 @@ my @Tests        = (
         Operation => 'TicketCreate',
     },
     {
-        Name           => 'Invalid Responsibe',
+        Name           => 'Invalid Responsible',
         SuccessRequest => 1,
         SuccessCreate  => 0,
         RequestData    => {
@@ -3048,6 +3009,7 @@ my @Tests        = (
                 Content     => 'VGhpcyBpcyBhIHRlc3QgdGV4dC4=',
                 ContentType => 'text/plain; charset=UTF8',
                 Filename    => 'Test.txt',
+                Disposition => 'attachment',
             },
         },
         Operation => 'TicketCreate',
@@ -3077,18 +3039,18 @@ my @Tests        = (
                 },
             },
             Article => {
-                Subject                     => 'Article subject äöüßÄÖÜ€ис',
-                Body                        => 'Article body !"Â§$%&/()=?Ã*ÃÃL:L@,.-',
-                AutoResponseType            => 'auto reply',
-                ArticleType                 => 'email-external',
-                SenderType                  => 'agent',
-                From                        => 'enjoy@otrs.com',
-                ContentType                 => 'text/plain; charset=UTF8',
-                HistoryType                 => 'NewTicket',
-                HistoryComment              => '% % ',
-                TimeUnit                    => 25,
-                ForceNotificationToUserID   => [1],
-                ExcludeNotificationToUserID => [1],
+                Subject                         => 'Article subject äöüßÄÖÜ€ис',
+                Body                            => 'Article body !"Â§$%&/()=?Ã*ÃÃL:L@,.-',
+                AutoResponseType                => 'auto reply',
+                ArticleType                     => 'email-external',
+                SenderType                      => 'agent',
+                From                            => 'enjoy@otrs.com',
+                ContentType                     => 'text/plain; charset=UTF8',
+                HistoryType                     => 'NewTicket',
+                HistoryComment                  => '% % ',
+                TimeUnit                        => 25,
+                ForceNotificationToUserID       => [1],
+                ExcludeNotificationToUserID     => [1],
                 ExcludeMuteNotificationToUserID => [1],
             },
             DynamicField => {
@@ -3099,6 +3061,7 @@ my @Tests        = (
                 Content     => 'VGhpcyBpcyBhIHRlc3QgdGV4dC4=',
                 ContentType => 'text/plain; charset=UTF8',
                 Filename    => 'Test.txt',
+                Disposition => 'attachment',
             },
         },
         Operation => 'TicketCreate',
@@ -3127,18 +3090,18 @@ my @Tests        = (
                 },
             },
             Article => {
-                Subject                     => 'Article subject äöüßÄÖÜ€ис',
-                Body                        => 'Article body !"Â§$%&/()=?Ã*ÃÃL:L@,.-',
-                AutoResponseType            => 'auto reply',
-                ArticleType                 => 'email-external',
-                SenderType                  => 'agent',
-                From                        => 'enjoy@otrs.com',
-                ContentType                 => 'text/plain; charset=UTF8',
-                HistoryType                 => 'NewTicket',
-                HistoryComment              => '% % ',
-                TimeUnit                    => 25,
-                ForceNotificationToUserID   => [1],
-                ExcludeNotificationToUserID => [1],
+                Subject                         => 'Article subject äöüßÄÖÜ€ис',
+                Body                            => 'Article body !"Â§$%&/()=?Ã*ÃÃL:L@,.-',
+                AutoResponseType                => 'auto reply',
+                ArticleType                     => 'email-external',
+                SenderType                      => 'agent',
+                From                            => 'enjoy@otrs.com',
+                ContentType                     => 'text/plain; charset=UTF8',
+                HistoryType                     => 'NewTicket',
+                HistoryComment                  => '% % ',
+                TimeUnit                        => 25,
+                ForceNotificationToUserID       => [1],
+                ExcludeNotificationToUserID     => [1],
                 ExcludeMuteNotificationToUserID => [1],
             },
             DynamicField => {
@@ -3149,17 +3112,67 @@ my @Tests        = (
                 Content     => 'VGhpcyBpcyBhIHRlc3QgdGV4dC4=',
                 ContentType => 'text/plain; charset=UTF8',
                 Filename    => 'Test.txt',
+                Disposition => 'attachment',
             },
         },
         Operation => 'TicketCreate',
     },
-
+    {
+        Name           => 'Ticket with TimeUnits 0',
+        SuccessRequest => 1,
+        SuccessCreate  => 1,
+        RequestData    => {
+            Ticket => {
+                Title        => 'Ticket Title',
+                CustomerUser => $TestCustomerUserLogin,
+                Queue        => $QueueData{Name},
+                Type         => $TypeData{Name},
+                Service      => $ServiceData{Name},
+                SLA          => $SLAData{Name},
+                State        => $StateData{Name},
+                Priority     => $PriorityData{Name},
+                Owner        => $TestOwnerLogin,
+                Responsible  => $TestResponsibleLogin,
+                PendingTime  => {
+                    Year   => 2012,
+                    Month  => 12,
+                    Day    => 16,
+                    Hour   => 20,
+                    Minute => 48,
+                },
+            },
+            Article => {
+                Subject                         => 'Article subject äöüßÄÖÜ€ис',
+                Body                            => 'Article body',
+                AutoResponseType                => 'auto reply',
+                ArticleType                     => 'email-external',
+                SenderType                      => 'agent',
+                From                            => 'enjoy@otrs.com',
+                ContentType                     => 'text/plain; charset=UTF8',
+                HistoryType                     => 'NewTicket',
+                HistoryComment                  => '% % ',
+                TimeUnit                        => 25,
+                ForceNotificationToUserID       => [1],
+                ExcludeNotificationToUserID     => [1],
+                ExcludeMuteNotificationToUserID => [1],
+            },
+            DynamicField => {
+                Name  => $DynamicFieldData->{Name},
+                Value => '2012-01-17 12:40:00',
+            },
+            Attachment => {
+                Content     => 'VGhpcyBpcyBhIHRlc3QgdGV4dC4=',
+                ContentType => 'text/plain; charset=UTF8',
+                Filename    => 'Test.txt',
+                Disposition => 'attachment',
+            },
+        },
+        Operation => 'TicketCreate',
+    },
 );
 
 # debugger object
 my $DebuggerObject = Kernel::GenericInterface::Debugger->new(
-    %{$Self},
-    ConfigObject   => $ConfigObject,
     DebuggerConfig => {
         DebugThreshold => 'debug',
         TestMode       => 1,
@@ -3170,15 +3183,13 @@ my $DebuggerObject = Kernel::GenericInterface::Debugger->new(
 $Self->Is(
     ref $DebuggerObject,
     'Kernel::GenericInterface::Debugger',
-    'DebuggerObject instanciate correctly',
+    'DebuggerObject instantiate correctly',
 );
 
 for my $Test (@Tests) {
 
     # create local object
     my $LocalObject = "Kernel::GenericInterface::Operation::Ticket::$Test->{Operation}"->new(
-        %{$Self},
-        ConfigObject   => $ConfigObject,
         DebuggerObject => $DebuggerObject,
         WebserviceID   => $WebserviceID,
     );
@@ -3208,10 +3219,7 @@ for my $Test (@Tests) {
     );
 
     # create requester object
-    my $RequesterObject = Kernel::GenericInterface::Requester->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
-    );
+    my $RequesterObject = $Kernel::OM->Get('Kernel::GenericInterface::Requester');
     $Self->Is(
         'Kernel::GenericInterface::Requester',
         ref $RequesterObject,
@@ -3282,6 +3290,9 @@ for my $Test (@Tests) {
             "$Test->{Name} - Requester result Error is undefined.",
         );
 
+        # create ticket object
+        my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
         # get the Ticket entry (from local result)
         my %LocalTicketData = $TicketObject->TicketGet(
             TicketID      => $LocalResult->{Data}->{TicketID},
@@ -3291,7 +3302,7 @@ for my $Test (@Tests) {
 
         $Self->True(
             IsHashRefWithData( \%LocalTicketData ),
-            "$Test->{Name} - created local ticket strcture with True.",
+            "$Test->{Name} - created local ticket structure with True.",
         );
 
         # get the Ticket entry (from requester result)
@@ -3303,7 +3314,7 @@ for my $Test (@Tests) {
 
         $Self->True(
             IsHashRefWithData( \%RequesterTicketData ),
-            "$Test->{Name} - created requester ticket strcture with True.",
+            "$Test->{Name} - created requester ticket structure with True.",
         );
 
         # check ticket attributes as defined in the test
@@ -3425,13 +3436,12 @@ for my $Test (@Tests) {
                 UserID    => 1,
             );
 
-            # next if not attachment
             next ATTACHMENT if !IsHashRefWithData( \%Attachment );
 
             # convert content to base64
             $Attachment{Content} = encode_base64( $Attachment{Content}, '' );
 
-            # delete not needed attibutes
+            # delete not needed attributes
             for my $Attribute (qw(ContentAlternative ContentID Filesize FilesizeRaw)) {
                 delete $Attachment{$Attribute};
             }
@@ -3550,7 +3560,7 @@ for my $Test (@Tests) {
         # sanity check
         $Self->False(
             $LocalResult->{ErrorMessage},
-            "$Test->{Name} - Local result ErroMessage (outsise Data hash) got removed to compare"
+            "$Test->{Name} - Local result ErrorMessage (outside Data hash) got removed to compare"
                 . " local and remote tests.",
         );
 

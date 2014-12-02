@@ -9,33 +9,18 @@
 
 use strict;
 use warnings;
-
 use utf8;
+
 use vars (qw($Self));
 
-use Kernel::Config;
-use Kernel::System::Ticket;
-use Kernel::System::DynamicField;
-use Kernel::System::DynamicField::Backend;
+# get needed objects
+my $ConfigObject       = $Kernel::OM->Get('Kernel::Config');
+my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
+my $BackendObject      = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
 
 # create local objects
 my $RandomID = int rand 1_000_000_000;
 
-my $ConfigObject = Kernel::Config->new();
-my $UserObject   = Kernel::System::User->new(
-    ConfigObject => $ConfigObject,
-    %{$Self},
-);
-my $DynamicFieldObject = Kernel::System::DynamicField->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
-
-# create backend object and delegates
-my $BackendObject = Kernel::System::DynamicField::Backend->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
 $Self->Is(
     ref $BackendObject,
     'Kernel::System::DynamicField::Backend',
@@ -70,7 +55,7 @@ my $FieldIDArticle1 = $DynamicFieldObject->DynamicFieldAdd(
     Name       => "DFTArticle1$RandomID",
     Label      => 'Description',
     FieldOrder => 9991,
-    FieldType  => 'Text',                  # mandatory, selects the DF backend to use for this field
+    FieldType  => 'Text',                   # mandatory, selects the DF backend to use for this field
     ObjectType => 'Article',
     Config     => {
         DefaultValue => 'Default',
@@ -91,7 +76,7 @@ my $FieldIDArticle2 = $DynamicFieldObject->DynamicFieldAdd(
     Name       => "DFTArticle2$RandomID",
     Label      => 'Description',
     FieldOrder => 9991,
-    FieldType  => 'Text',                  # mandatory, selects the DF backend to use for this field
+    FieldType  => 'Text',                   # mandatory, selects the DF backend to use for this field
     ObjectType => 'Article',
     Config     => {
         DefaultValue => 'Default',
@@ -109,14 +94,20 @@ push @TestDynamicFields, $FieldIDArticle2;
 
 # tests for article search index modules
 for my $Module (qw(StaticDB RuntimeDB)) {
+
+    # Make sure that the TicketObject gets recreated for each loop.
+    $Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::Ticket'] );
+
     $ConfigObject->Set(
         Key   => 'Ticket::SearchIndexModule',
         Value => 'Kernel::System::Ticket::ArticleSearchIndex::' . $Module,
     );
 
-    my $TicketObject = Kernel::System::Ticket->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
+    $Self->True(
+        $TicketObject->isa( 'Kernel::System::Ticket::ArticleSearchIndex::' . $Module ),
+        "TicketObject loaded the correct backend",
     );
 
     my @TestTicketIDs;
@@ -183,7 +174,7 @@ for my $Module (qw(StaticDB RuntimeDB)) {
         HistoryType    => 'OwnerUpdate',
         HistoryComment => 'Some free text!',
         UserID         => 1,
-        NoAgentNotify => 1,    # if you don't want to send agent notifications
+        NoAgentNotify  => 1,                                          # if you don't want to send agent notifications
     );
 
     $BackendObject->ValueSet(
@@ -212,7 +203,7 @@ for my $Module (qw(StaticDB RuntimeDB)) {
         HistoryType    => 'OwnerUpdate',
         HistoryComment => 'Some free text!',
         UserID         => 1,
-        NoAgentNotify => 1,    # if you don't want to send agent notifications
+        NoAgentNotify  => 1,                                          # if you don't want to send agent notifications
     );
 
     $BackendObject->ValueSet(
@@ -241,7 +232,7 @@ for my $Module (qw(StaticDB RuntimeDB)) {
         HistoryType    => 'OwnerUpdate',
         HistoryComment => 'Some free text!',
         UserID         => 1,
-        NoAgentNotify => 1,    # if you don't want to send agent notifications
+        NoAgentNotify  => 1,                                          # if you don't want to send agent notifications
     );
 
     $BackendObject->ValueSet(
@@ -270,7 +261,7 @@ for my $Module (qw(StaticDB RuntimeDB)) {
         HistoryType    => 'OwnerUpdate',
         HistoryComment => 'Some free text!',
         UserID         => 1,
-        NoAgentNotify => 1,    # if you don't want to send agent notifications
+        NoAgentNotify  => 1,                                          # if you don't want to send agent notifications
     );
 
     $BackendObject->ValueSet(

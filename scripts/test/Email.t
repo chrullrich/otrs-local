@@ -9,15 +9,14 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
 
-use Kernel::System::Email;
-use Kernel::System::EmailParser;
-use Kernel::Config;
+use vars (qw($Self));
 
-# create local object
-my $ConfigObject = Kernel::Config->new();
+use Kernel::System::EmailParser;
+
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
 # do not really send emails
 $ConfigObject->Set(
@@ -77,9 +76,11 @@ my @Tests = (
 
 my $Count = 0;
 for my $Encoding ( '', qw(base64 quoted-printable 8bit) ) {
+
     $Count++;
     my $CountSub = 0;
     for my $Test (@Tests) {
+
         $CountSub++;
         my $Name = "#$Count.$CountSub $Encoding $Test->{Name}";
 
@@ -89,11 +90,9 @@ for my $Encoding ( '', qw(base64 quoted-printable 8bit) ) {
             Value => $Encoding,
         );
 
-        # gererate email
-        my $EmailObject = Kernel::System::Email->new(
-            %{$Self},
-            ConfigObject => $ConfigObject,
-        );
+        $Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::Email'] );
+        my $EmailObject = $Kernel::OM->Get('Kernel::System::Email');
+
         my ( $Header, $Body ) = $EmailObject->Send(
             %{ $Test->{Data} },
         );
@@ -107,14 +106,13 @@ for my $Encoding ( '', qw(base64 quoted-printable 8bit) ) {
 
         # parse email
         my $ParserObject = Kernel::System::EmailParser->new(
-            %{$Self},
-            ConfigObject => $ConfigObject,
-            Email        => \@Array,
+            Email => \@Array,
         );
 
         # check header
+        KEY:
         for my $Key (qw(From To Cc Subject)) {
-            next if !$Test->{Data}->{$Key};
+            next KEY if !$Test->{Data}->{$Key};
             $Self->Is(
                 $ParserObject->GetParam( WHAT => $Key ),
                 $Test->{Data}->{$Key},

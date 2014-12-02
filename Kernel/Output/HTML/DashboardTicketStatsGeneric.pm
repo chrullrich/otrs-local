@@ -12,6 +12,8 @@ package Kernel::Output::HTML::DashboardTicketStatsGeneric;
 use strict;
 use warnings;
 
+our $ObjectManagerDisabled = 1;
+
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -19,12 +21,9 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # get needed objects
-    for (
-        qw(Config Name ConfigObject LogObject DBObject LayoutObject ParamObject TicketObject UserID)
-        )
-    {
-        die "Got no $_!" if !$Self->{$_};
+    # get needed parameters
+    for my $Needed (qw(Config Name UserID)) {
+        die "Got no $Needed!" if !$Self->{$Needed};
     }
 
     return $Self;
@@ -39,16 +38,36 @@ sub Preferences {
 sub Config {
     my ( $Self, %Param ) = @_;
 
-    my $Key = $Self->{LayoutObject}->{UserLanguage} . '-' . $Self->{Name};
     return (
         %{ $Self->{Config} },
-        CacheKey => 'TicketStats' . '-' . $Self->{UserID} . '-' . $Key,
-    );
 
+        # Don't cache this globally as it contains JS that is not inside of the HTML.
+        CacheTTL => undef,
+        CacheKey => undef,
+    );
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
+
+    # get layout object
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
+    my $Key      = $LayoutObject->{UserLanguage} . '-' . $Self->{Name};
+    my $CacheKey = 'TicketStats' . '-' . $Self->{UserID} . '-' . $Key;
+
+    my $Cache = $Self->{CacheObject}->Get(
+        Type => 'Dashboard',
+        Key  => $CacheKey,
+    );
+
+    if ( ref $Cache ) {
+        return $LayoutObject->Output(
+            TemplateFile   => 'AgentDashboardTicketStats',
+            Data           => $Cache,
+            KeepScriptTags => $Param{AJAX},
+        );
+    }
 
     my %Axis = (
         '7Day' => {
@@ -67,23 +86,29 @@ sub Run {
     my @TicketWeekdays = ();
     my @TicketYAxis    = ();
     my $Max            = 0;
+
+    # get ticket object
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
     for my $Key ( 0 .. 6 ) {
 
         my $TimeNow = $Self->{TimeObject}->SystemTime();
         if ($Key) {
             $TimeNow = $TimeNow - ( 60 * 60 * 24 * $Key );
         }
-        my ( $Sec, $Min, $Hour, $Day, $Month, $Year, $WeekDay )
-            = $Self->{TimeObject}->SystemTime2Date(
+        my ( $Sec, $Min, $Hour, $Day, $Month, $Year, $WeekDay ) = $Self->{TimeObject}->SystemTime2Date(
             SystemTime => $TimeNow,
-            );
+        );
 
         unshift(
             @TicketWeekdays,
-            [ 6 - $Key, $Self->{LayoutObject}->{LanguageObject}->Get( $Axis{'7Day'}->{$WeekDay} ) ]
+            [
+                6 - $Key,
+                $LayoutObject->{LanguageObject}->Translate( $Axis{'7Day'}->{$WeekDay} )
+            ]
         );
 
-        my $CountCreated = $Self->{TicketObject}->TicketSearch(
+        my $CountCreated = $TicketObject->TicketSearch(
 
             # cache search result 30 min
             CacheTTL => 60 * 30,
@@ -106,7 +131,7 @@ sub Run {
         }
         push @TicketsCreated, [ 6 - $Key, $CountCreated ];
 
-        my $CountClosed = $Self->{TicketObject}->TicketSearch(
+        my $CountClosed = $TicketObject->TicketSearch(
 
             # cache search result 30 min
             CacheTTL => 60 * 30,
@@ -156,8 +181,8 @@ sub Run {
             push @TicketYAxis, $i
         }
     }
-    my $ClosedText  = $Self->{LayoutObject}->{LanguageObject}->Get('Closed');
-    my $CreatedText = $Self->{LayoutObject}->{LanguageObject}->Get('Created');
+    my $ClosedText  = $LayoutObject->{LanguageObject}->Translate('Closed');
+    my $CreatedText = $LayoutObject->{LanguageObject}->Translate('Created');
 
     my @ChartData = (
         {
@@ -172,28 +197,39 @@ sub Run {
         }
     );
 
-    my $ChartDataJSON = $Self->{LayoutObject}->JSONEncode(
+    my $ChartDataJSON = $LayoutObject->JSONEncode(
         Data => \@ChartData,
     );
 
-    my $TicketWeekdaysJSON = $Self->{LayoutObject}->JSONEncode(
+    my $TicketWeekdaysJSON = $LayoutObject->JSONEncode(
         Data => \@TicketWeekdays,
     );
 
-    my $TicketYAxisJSON = $Self->{LayoutObject}->JSONEncode(
+    my $TicketYAxisJSON = $LayoutObject->JSONEncode(
         Data => \@TicketYAxis,
     );
 
-    my $Content = $Self->{LayoutObject}->Output(
-        TemplateFile => 'AgentDashboardTicketStats',
-        Data         => {
-            %{ $Self->{Config} },
-            Key            => int rand 99999,
-            ChartData      => $ChartDataJSON,
-            TicketWeekdays => $TicketWeekdaysJSON,
-            TicketYAxis    => $TicketYAxisJSON
-        },
-        KeepScriptTags => 1,
+    my %Data = (
+        %{ $Self->{Config} },
+        Key            => int rand 99999,
+        ChartData      => $ChartDataJSON,
+        TicketWeekdays => $TicketWeekdaysJSON,
+        TicketYAxis    => $TicketYAxisJSON
+    );
+
+    if ( $Self->{Config}->{CacheTTLLocal} ) {
+        $Self->{CacheObject}->Set(
+            Type  => 'Dashboard',
+            Key   => $CacheKey,
+            Value => \%Data,
+            TTL   => $Self->{Config}->{CacheTTLLocal} * 60,
+        );
+    }
+
+    my $Content = $LayoutObject->Output(
+        TemplateFile   => 'AgentDashboardTicketStats',
+        Data           => \%Data,
+        KeepScriptTags => $Param{AJAX},
     );
 
     return $Content;

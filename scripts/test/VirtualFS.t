@@ -9,14 +9,13 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
 
-use Kernel::System::VirtualFS;
-use Kernel::Config;
+use vars (qw($Self));
 
-# create local object
-my $ConfigObject = Kernel::Config->new();
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $MainObject   = $Kernel::OM->Get('Kernel::System::Main');
 
 my @Tests = (
     {
@@ -50,7 +49,7 @@ my @Tests = (
         Name        => '.pdf',
         Location    => 'scripts/test/sample/VirtualFS/VirtualFS-Test2.pdf',
         Filename    => 'me_t o_alal.pdf',
-        Mode        => 'binary',
+        Mode        => 'binmode',
         MD5         => '5ee767f3b68f24a9213e0bef82dc53e5',
         Find        => '*.pdf',
         FindNot     => '*.pdf_*',
@@ -78,7 +77,7 @@ my @Tests = (
         Name        => '.xls',
         Location    => 'scripts/test/sample/VirtualFS/VirtualFS-Test3.xls',
         Filename    => 'me_t o_alal.xls',
-        Mode        => 'binary',
+        Mode        => 'binmode',
         MD5         => '39fae660239f62bb0e4a29fe14ff5663',
         Find        => '*xls',
         FindNot     => '*.xls_*',
@@ -105,22 +104,25 @@ my @Tests = (
 
 for my $Backend (qw( FS DB )) {
 
+    $Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::VirtualFS'] );
+
     $ConfigObject->Set(
         Key   => 'VirtualFS::Backend',
         Value => 'Kernel::System::VirtualFS::' . $Backend,
     );
 
-    my $VirtualFSObject = Kernel::System::VirtualFS->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
-    );
+    # get a new virtual fs object
+    my $VirtualFSObject = $Kernel::OM->Get('Kernel::System::VirtualFS');
 
     for my $Test (@Tests) {
-        my $Content = $Self->{MainObject}->FileRead(
+
+        my $Content = $MainObject->FileRead(
             Location => $ConfigObject->Get('Home') . '/' . $Test->{Location},
             Mode     => $Test->{Mode},
         );
-        my $MD5Sum = $Self->{MainObject}->MD5sum( String => ${$Content} );
+
+        my $MD5Sum = $MainObject->MD5sum( String => ${$Content} );
+
         $Self->Is(
             $MD5Sum || '',
             $Test->{MD5},
@@ -149,7 +151,7 @@ for my $Backend (qw( FS DB )) {
             $File{Content},
             "$Backend Read() - $Test->{Name}",
         );
-        $MD5Sum = $Self->{MainObject}->MD5sum( String => $File{Content} );
+        $MD5Sum = $MainObject->MD5sum( String => $File{Content} );
         $Self->Is(
             $MD5Sum || '',
             $Test->{MD5},

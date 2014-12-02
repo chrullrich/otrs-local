@@ -34,17 +34,11 @@ use lib dirname($RealBin) . '/Custom';
 umask 007;
 
 use Getopt::Std;
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Main;
-use Kernel::System::Time;
-use Kernel::System::DB;
-use Kernel::System::Log;
-use Kernel::System::PostMaster;
+use Kernel::System::ObjectManager;
 
 # get options
 my %Opts;
-getopt( 'hqtd', \%Opts );
+getopt( 'qtd', \%Opts );
 if ( $Opts{h} ) {
     print "otrs.PostMaster.pl - OTRS cmd postmaster\n";
     print "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n";
@@ -62,16 +56,12 @@ if ( !$Opts{q} ) {
     $Opts{q} = '';
 }
 
-# create common objects
-my %CommonObject;
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.PostMaster.pl',
-    %CommonObject,
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.PostMaster.pl',
+    },
 );
-$CommonObject{MainObject} = Kernel::System::Main->new(%CommonObject);
-$CommonObject{TimeObject} = Kernel::System::Time->new( %CommonObject, );
 
 # Wrap the majority of the script in an "eval" block so that any
 # unexpected (but probably transient) fatal errors (such as the
@@ -80,11 +70,10 @@ $CommonObject{TimeObject} = Kernel::System::Time->new( %CommonObject, );
 eval {
 
     # create needed objects
-    $CommonObject{DBObject} = Kernel::System::DB->new(%CommonObject);
 
     # debug info
     if ( $Opts{d} ) {
-        $CommonObject{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'debug',
             Message  => 'Global OTRS email handle (otrs.PostMaster.pl) started...',
         );
@@ -93,28 +82,28 @@ eval {
     # get email from SDTIN
     my @Email = <STDIN>;
     if ( !@Email ) {
-        $CommonObject{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => 'Got no email on STDIN!',
         );
         exit 1;
     }
 
-    # common objects
-    $CommonObject{PostMaster} = Kernel::System::PostMaster->new(
-        %CommonObject,
-        Email   => \@Email,
-        Trusted => $Opts{'t'},
-        Debug   => $Opts{'d'},
+    $Kernel::OM->ObjectParamAdd(
+        'Kernel::System::PostMaster' => {
+            Email   => \@Email,
+            Trusted => $Opts{'t'},
+            Debug   => $Opts{'d'},
+        },
     );
-    my @Return = $CommonObject{PostMaster}->Run( Queue => $Opts{'q'} );
+    my @Return = $Kernel::OM->Get('Kernel::System::PostMaster')->Run( Queue => $Opts{'q'} );
     if ( !$Return[0] ) {
         die "Can't process mail, see log sub system!";
     }
 
     # debug info
     if ( $Opts{d} ) {
-        $CommonObject{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'debug',
             Message  => 'Global OTRS email handle (otrs.PostMaster.pl) stopped.',
         );
@@ -129,7 +118,7 @@ if ($@) {
     # it; see sysexits.h. Most mail programs will retry an
     # EX_TEMPFAIL delivery for about four days, then bounce the
     # message.)
-    $CommonObject{LogObject}->Log(
+    $Kernel::OM->Get('Kernel::System::Log')->Log(
         Priority => 'error',
         Message  => $@,
     );

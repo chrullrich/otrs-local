@@ -41,8 +41,9 @@ sub Run {
 
     # build url
     my $URL = '';
+    KEY:
     for my $Key (@Params) {
-        next if !$Param{Data}->{$Key};
+        next KEY if !$Param{Data}->{$Key};
         if ($URL) {
             $URL .= ', ';
         }
@@ -50,12 +51,15 @@ sub Run {
     }
     $URL = $Param{Config}->{URL} . $URL;
 
+    my $IconName = $Param{Config}->{IconName};
+
     # generate block
     $Self->{LayoutObject}->Block(
         Name => 'CustomerItemRow',
         Data => {
             %{ $Param{Config} },
-            URL => $URL,
+            URL      => $URL,
+            IconName => $IconName,
         },
     );
 

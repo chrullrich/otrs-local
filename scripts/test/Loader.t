@@ -9,22 +9,26 @@
 
 use strict;
 use warnings;
+use utf8;
+
 use vars (qw($Self));
 
-use Kernel::System::Loader;
-
-my $LoaderObject = Kernel::System::Loader->new( %{$Self} );
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $LoaderObject = $Kernel::OM->Get('Kernel::System::Loader');
+my $MainObject   = $Kernel::OM->Get('Kernel::System::Main');
 
 {
-    my $CSS = $Self->{MainObject}->FileRead(
-        Location => $Self->{ConfigObject}->Get('Home')
+    my $CSS = $MainObject->FileRead(
+        Location => $ConfigObject->Get('Home')
             . '/scripts/test/sample/Loader/OTRS.Reset.css',
     );
 
     $CSS = ${$CSS};
 
-    my $ExpectedCSS = $Self->{MainObject}->FileRead(
-        Location => $Self->{ConfigObject}->Get('Home')
+    my $ExpectedCSS = $MainObject->FileRead(
+        Location => $ConfigObject->Get('Home')
             . '/scripts/test/sample/Loader/OTRS.Reset.min.css',
     );
 
@@ -39,16 +43,18 @@ my $LoaderObject = Kernel::System::Loader->new( %{$Self} );
     );
 
     # empty cache
-    $LoaderObject->{CacheInternalObject}->CleanUp();
+    $Kernel::OM->Get('Kernel::System::Cache')->CleanUp(
+        Type => 'Loader',
+    );
 
     my $MinifiedCSSFile = $LoaderObject->GetMinifiedFile(
-        Location => $Self->{ConfigObject}->Get('Home')
+        Location => $ConfigObject->Get('Home')
             . '/scripts/test/sample/Loader/OTRS.Reset.css',
         Type => 'CSS',
     );
 
     my $MinifiedCSSFileCached = $LoaderObject->GetMinifiedFile(
-        Location => $Self->{ConfigObject}->Get('Home')
+        Location => $ConfigObject->Get('Home')
             . '/scripts/test/sample/Loader/OTRS.Reset.css',
         Type => 'CSS',
     );
@@ -67,19 +73,19 @@ my $LoaderObject = Kernel::System::Loader->new( %{$Self} );
 }
 
 {
-    my $JavaScript = $Self->{MainObject}->FileRead(
-        Location => $Self->{ConfigObject}->Get('Home')
+    my $JavaScript = $MainObject->FileRead(
+        Location => $ConfigObject->Get('Home')
             . '/scripts/test/sample/Loader/OTRS.Agent.App.Login.js',
     );
     $JavaScript = ${$JavaScript};
 
-    # Make sure line endings are standardized
+    # make sure line endings are standardized
     $JavaScript =~ s{\r\n}{\n}xmsg;
 
     my $MinifiedJS = $LoaderObject->MinifyJavaScript( Code => $JavaScript );
 
-    my $ExpectedJS = $Self->{MainObject}->FileRead(
-        Location => $Self->{ConfigObject}->Get('Home')
+    my $ExpectedJS = $MainObject->FileRead(
+        Location => $ConfigObject->Get('Home')
             . '/scripts/test/sample/Loader/OTRS.Agent.App.Login.min.js',
     );
     $ExpectedJS = ${$ExpectedJS};
@@ -95,13 +101,13 @@ my $LoaderObject = Kernel::System::Loader->new( %{$Self} );
 {
     my $MinifiedJSFilename = $LoaderObject->MinifyFiles(
         List => [
-            $Self->{ConfigObject}->Get('Home')
+            $ConfigObject->Get('Home')
                 . '/scripts/test/sample/Loader/OTRS.Agent.App.Login.js',
-            $Self->{ConfigObject}->Get('Home')
+            $ConfigObject->Get('Home')
                 . '/scripts/test/sample/Loader/OTRS.Agent.App.Dashboard.js',
         ],
         Type            => 'JavaScript',
-        TargetDirectory => $Self->{ConfigObject}->Get('TempDir'),
+        TargetDirectory => $ConfigObject->Get('TempDir'),
     );
 
     $Self->True(
@@ -111,13 +117,13 @@ my $LoaderObject = Kernel::System::Loader->new( %{$Self} );
 
     my $MinifiedJSFilename2 = $LoaderObject->MinifyFiles(
         List => [
-            $Self->{ConfigObject}->Get('Home')
+            $ConfigObject->Get('Home')
                 . '/scripts/test/sample/Loader/OTRS.Agent.App.Login.js',
-            $Self->{ConfigObject}->Get('Home')
+            $ConfigObject->Get('Home')
                 . '/scripts/test/sample/Loader/OTRS.Agent.App.Dashboard.js',
         ],
         Type            => 'JavaScript',
-        TargetDirectory => $Self->{ConfigObject}->Get('TempDir'),
+        TargetDirectory => $ConfigObject->Get('TempDir'),
     );
 
     $Self->True(
@@ -131,14 +137,14 @@ my $LoaderObject = Kernel::System::Loader->new( %{$Self} );
         'MinifyFiles() - compare cache and no cache',
     );
 
-    my $MinifiedJS = $Self->{MainObject}->FileRead(
-        Location => $Self->{ConfigObject}->Get('TempDir') . "/$MinifiedJSFilename",
+    my $MinifiedJS = $MainObject->FileRead(
+        Location => $ConfigObject->Get('TempDir') . "/$MinifiedJSFilename",
     );
     $MinifiedJS = ${$MinifiedJS};
     $MinifiedJS =~ s{\r\n}{\n}xmsg;
 
-    my $Expected = $Self->{MainObject}->FileRead(
-        Location => $Self->{ConfigObject}->Get('Home')
+    my $Expected = $MainObject->FileRead(
+        Location => $ConfigObject->Get('Home')
             . '/scripts/test/sample/Loader/CombinedJavaScript.min.js',
     );
     $Expected = ${$Expected};
@@ -150,8 +156,8 @@ my $LoaderObject = Kernel::System::Loader->new( %{$Self} );
         'MinifyFiles() result content',
     );
 
-    $Self->{MainObject}->FileDelete(
-        Location => $Self->{ConfigObject}->Get('TempDir') . "/$MinifiedJSFilename",
+    $MainObject->FileDelete(
+        Location => $ConfigObject->Get('TempDir') . "/$MinifiedJSFilename",
     );
 }
 

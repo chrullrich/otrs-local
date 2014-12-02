@@ -829,9 +829,9 @@ INSERT INTO article_sender_type (name, valid_id, create_by, create_time, change_
 -- ----------------------------------------------------------
 --  insert into table ticket
 -- ----------------------------------------------------------
-INSERT INTO ticket (tn, queue_id, ticket_lock_id, user_id, responsible_user_id, ticket_priority_id, ticket_state_id, title, create_time_unix, timeout, until_time, escalation_time, escalation_response_time, escalation_update_time, escalation_solution_time, valid_id, create_by, create_time, change_by, change_time)
+INSERT INTO ticket (tn, queue_id, ticket_lock_id, user_id, responsible_user_id, ticket_priority_id, ticket_state_id, title, create_time_unix, timeout, until_time, escalation_time, escalation_response_time, escalation_update_time, escalation_solution_time, create_by, create_time, change_by, change_time)
     VALUES
-    ('2010080210123456', 2, 1, 1, 1, 3, 1, 'Welcome to OTRS!', 1280750400, 0, 0, 0, 0, 0, 0, 1, 1, current_timestamp, 1, current_timestamp);
+    ('2010080210123456', 2, 1, 1, 1, 3, 1, 'Welcome to OTRS!', 1280750400, 0, 0, 0, 0, 0, 0, 1, current_timestamp, 1, current_timestamp);
 -- ----------------------------------------------------------
 --  insert into table article
 -- ----------------------------------------------------------
@@ -875,9 +875,9 @@ The OTRS Project
 -- ----------------------------------------------------------
 --  insert into table ticket_history
 -- ----------------------------------------------------------
-INSERT INTO ticket_history (name, history_type_id, ticket_id, type_id, article_id, priority_id, owner_id, state_id, queue_id, valid_id, create_by, create_time, change_by, change_time)
+INSERT INTO ticket_history (name, history_type_id, ticket_id, type_id, article_id, priority_id, owner_id, state_id, queue_id, create_by, create_time, change_by, change_time)
     VALUES
-    ('New Ticket [2010080210123456] created.', 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, current_timestamp, 1, current_timestamp);
+    ('New Ticket [2010080210123456] created.', 1, 1, 1, 1, 3, 1, 1, 1, 1, current_timestamp, 1, current_timestamp);
 -- ----------------------------------------------------------
 --  insert into table notifications
 -- ----------------------------------------------------------
@@ -1408,6 +1408,40 @@ Escalatie over: <OTRS_TICKET_EscalationDestinationIn>
 (eerste 30 regels zijn weergegeven)
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
+', 'text/plain', 1, current_timestamp, 1, current_timestamp);
+-- ----------------------------------------------------------
+--  insert into table notifications
+-- ----------------------------------------------------------
+INSERT INTO notifications (notification_type, notification_charset, notification_language, subject, text, content_type, create_by, create_time, change_by, change_time)
+    VALUES
+    ('Agent::ServiceUpdate', 'utf-8', 'en', 'Updated service to <OTRS_TICKET_Service>! (<OTRS_CUSTOMER_SUBJECT[24]>)', 'Hi <OTRS_UserFirstname>,
+
+<OTRS_CURRENT_UserFirstname> <OTRS_CURRENT_UserLastname> updated a ticket [<OTRS_TICKET_TicketNumber>] and changed the service to <OTRS_TICKET_Service>
+
+<snip>
+<OTRS_CUSTOMER_EMAIL[30]>
+<snip>
+
+<OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
+
+Your OTRS Notification Master
+', 'text/plain', 1, current_timestamp, 1, current_timestamp);
+-- ----------------------------------------------------------
+--  insert into table notifications
+-- ----------------------------------------------------------
+INSERT INTO notifications (notification_type, notification_charset, notification_language, subject, text, content_type, create_by, create_time, change_by, change_time)
+    VALUES
+    ('Agent::ServiceUpdate', 'utf-8', 'de', 'Service aktualisiert zu <OTRS_TICKET_Service>! (<OTRS_CUSTOMER_SUBJECT[24]>)', 'Hallo <OTRS_UserFirstname>,
+
+<OTRS_CURRENT_UserFirstname> <OTRS_CURRENT_UserLastname> aktualisierte Ticket [<OTRS_TICKET_TicketNumber>] and änderte den Service zu <OTRS_TICKET_Service>
+
+<snip>
+<OTRS_CUSTOMER_EMAIL[30]>
+<snip>
+
+<OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
+
+Ihr OTRS Benachrichtigungs-Master
 ', 'text/plain', 1, current_timestamp, 1, current_timestamp);
 -- ----------------------------------------------------------
 --  insert into table dynamic_field

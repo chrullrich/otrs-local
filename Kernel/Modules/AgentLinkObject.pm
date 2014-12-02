@@ -69,7 +69,7 @@ sub Run {
         $TemporarySourceTicketLink = 1;
     }
 
-   # do the permission check only if it is no temporary ticket link used while creating a new ticket
+    # do the permission check only if it is no temporary ticket link used while creating a new ticket
     if ( !$TemporarySourceTicketLink ) {
 
         # permission check
@@ -195,9 +195,10 @@ sub Run {
                 # output an error notification
                 $Output .= $Self->{LayoutObject}->Notify(
                     Priority => 'Error',
-                    Data     => '$Text{"Can not delete link with %s!", "'
-                        . $TargetObjectDescription{Normal}
-                        . '"}',
+                    Data     => $Self->{LayoutObject}->{LanguageObject}->Translate(
+                        "Can not delete link with %s!",
+                        $TargetObjectDescription{Normal},
+                    ),
                 );
             }
         }
@@ -351,16 +352,19 @@ sub Run {
                         }
 
                         # translate the type name
-                        $TypeName = $Self->{LayoutObject}->{LanguageObject}->Get($TypeName);
+                        $TypeName = $Self->{LayoutObject}->{LanguageObject}->Translate($TypeName);
 
                         # output an error notification
                         $Output .= $Self->{LayoutObject}->Notify(
                             Priority => 'Error',
-                            Data     => '$Text{"Can not create link with %s!", "'
-                                . $TargetObjectDescription{Normal}
-                                . '"} $Text{"Object already linked as %s.", "'
-                                . $TypeName
-                                . '"}',
+                            Data     => $Self->{LayoutObject}->{LanguageObject}->Translate(
+                                "Can not create link with %s!",
+                                $TargetObjectDescription{Normal},
+                                )
+                                . $Self->{LayoutObject}->{LanguageObject}->Translate(
+                                "Object already linked as %s.",
+                                $TypeName,
+                                ),
                         );
 
                         next TARGETKEYORG;
@@ -425,9 +429,10 @@ sub Run {
                     # output an error notification
                     $Output .= $Self->{LayoutObject}->Notify(
                         Priority => 'Error',
-                        Data     => '$Text{"Can not create link with %s!", "'
-                            . $TargetObjectDescription{Normal}
-                            . '"}',
+                        Data     => $Self->{LayoutObject}->{LanguageObject}->Translate(
+                            "Can not create link with %s!",
+                            $TargetObjectDescription{Normal}
+                        ),
                     );
                 }
             }
@@ -580,8 +585,7 @@ sub Run {
 
         # add search result to link list
         if ( $SearchList && $SearchList->{ $Form{TargetObject} } ) {
-            $LinkListWithData->{ $Form{TargetObject} }->{NOTLINKED}
-                = $SearchList->{ $Form{TargetObject} }->{NOTLINKED};
+            $LinkListWithData->{ $Form{TargetObject} }->{NOTLINKED} = $SearchList->{ $Form{TargetObject} }->{NOTLINKED};
         }
 
         # get possible types list

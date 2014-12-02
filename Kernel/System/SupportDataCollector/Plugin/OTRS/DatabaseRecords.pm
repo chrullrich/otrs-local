@@ -14,6 +14,10 @@ use warnings;
 
 use base qw(Kernel::System::SupportDataCollector::PluginBase);
 
+our @ObjectDependencies = (
+    'Kernel::System::DB',
+);
+
 sub GetDisplayPath {
     return 'OTRS/Database Records';
 }
@@ -79,6 +83,20 @@ sub Run {
             Label      => "Dynamic Field Values",
         },
         {
+            SQL        => "SELECT count(*) FROM dynamic_field WHERE valid_id > 1",
+            Identifier => 'InvalidDynamicFieldCount',
+            Label      => "Invalid Dynamic Fields",
+        },
+        {
+            SQL => "
+                SELECT count(*)
+                FROM dynamic_field_value
+                    JOIN dynamic_field ON dynamic_field.id = dynamic_field_value.field_id
+                WHERE dynamic_field.valid_id > 1",
+            Identifier => 'InvalidDynamicFieldValueCount',
+            Label      => "Invalid Dynamic Field Values",
+        },
+        {
             SQL        => "SELECT count(*) FROM gi_webservice_config",
             Identifier => 'WebserviceCount',
             Label      => "GenericInterface Webservices",
@@ -90,12 +108,14 @@ sub Run {
         },
     );
 
-    my %Counts;
+    # get database object
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
+    my %Counts;
     CHECK:
     for my $Check (@Checks) {
-        $Self->{DBObject}->Prepare( SQL => $Check->{SQL} );
-        while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+        $DBObject->Prepare( SQL => $Check->{SQL} );
+        while ( my @Row = $DBObject->FetchrowArray() ) {
             $Counts{ $Check->{Identifier} } = $Row[0];
         }
 
@@ -116,11 +136,11 @@ sub Run {
         }
     }
 
-    $Self->{DBObject}->Prepare(
+    $DBObject->Prepare(
         SQL => "SELECT max(create_time_unix), min(create_time_unix) FROM ticket WHERE id > 1 ",
     );
     my $TicketWindowTime = 1;
-    while ( my @Row = $Self->{DBObject}->FetchrowArray() ) {
+    while ( my @Row = $DBObject->FetchrowArray() ) {
         if ( $Row[0] && $Row[1] ) {
             $TicketWindowTime = ( $Row[0] - $Row[1] ) || 1;
         }

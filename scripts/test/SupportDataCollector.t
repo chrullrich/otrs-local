@@ -9,34 +9,41 @@
 
 use strict;
 use warnings;
-use vars (qw($Self));
 use utf8;
+
+use vars (qw($Self));
+
 use Time::HiRes ();
 
-use Kernel::System::SupportDataCollector;
 use Kernel::System::SupportDataCollector::PluginBase;
-use Kernel::System::UnitTest::Helper;
 
-my $HelperObject = Kernel::System::UnitTest::Helper->new(
-    %{$Self},
-    UnitTestObject             => $Self,
-    RestoreSystemConfiguration => 0,
-);
+# get needed objects
+my $HelperObject               = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $CacheObject                = $Kernel::OM->Get('Kernel::System::Cache');
+my $SupportDataCollectorObject = $Kernel::OM->Get('Kernel::System::SupportDataCollector');
 
-my $SupportDataCollectorObject = Kernel::System::SupportDataCollector->new( %{$Self} );
-
-$SupportDataCollectorObject->{CacheObject}->CleanUp(
+$CacheObject->CleanUp(
     Type => 'SupportDataCollector',
 );
 
-my $TimeStart   = [ Time::HiRes::gettimeofday() ];
-my %Result      = $SupportDataCollectorObject->Collect();
+my $TimeStart = [ Time::HiRes::gettimeofday() ];
+
+my %Result = $SupportDataCollectorObject->Collect(
+    WebTimeout => 40,
+);
+
 my $TimeElapsed = Time::HiRes::tv_interval($TimeStart);
 
 $Self->Is(
     $Result{Success},
     1,
     "Data collection status",
+);
+
+$Self->Is(
+    $Result{ErrorMessage},
+    undef,
+    "There is no error message",
 );
 
 $Self->True(
@@ -72,7 +79,7 @@ for my $ResultEntry ( @{ $Result{Result} || [] } ) {
 }
 
 # cache tests
-my $CacheResult = $SupportDataCollectorObject->{CacheObject}->Get(
+my $CacheResult = $CacheObject->Get(
     Type => 'SupportDataCollector',
     Key  => 'DataCollect',
 );
@@ -83,8 +90,8 @@ $Self->IsDeeply(
 );
 
 $Self->True(
-    $TimeElapsed < 10,
-    "Collect() - Should take less than 10 seconds, it took $TimeElapsed"
+    $TimeElapsed < 30,
+    "Collect() - Should take less than 30 seconds, it took $TimeElapsed"
 );
 
 my $TimeStartCache = [ Time::HiRes::gettimeofday() ];
@@ -93,7 +100,7 @@ my $TimeStartCache = [ Time::HiRes::gettimeofday() ];
 );
 my $TimeElapsedCache = Time::HiRes::tv_interval($TimeStartCache);
 
-$CacheResult = $SupportDataCollectorObject->{CacheObject}->Get(
+$CacheResult = $CacheObject->Get(
     Type => 'SupportDataCollector',
     Key  => 'DataCollect',
 );

@@ -12,6 +12,13 @@ package Kernel::System::DB::mssql;
 use strict;
 use warnings;
 
+our @ObjectDependencies = (
+    'Kernel::Config',
+    'Kernel::System::Log',
+    'Kernel::System::Main',
+    'Kernel::System::Time',
+);
+
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -36,9 +43,9 @@ sub LoadPreferences {
     $Self->{'DB::CaseSensitive'}        = 0;
     $Self->{'DB::LikeEscapeString'}     = '';
 
-# how to determine server version
-# @@VERSION returns "Microsoft SQL Server 2012 - 11.0.2218.0 (X64) Jun 12 2012 13:05:25 Copyright..."
-# we only take what is left of the minus; our version string: "Microsoft SQL Server 2012"
+    # how to determine server version
+    # @@VERSION returns "Microsoft SQL Server 2012 - 11.0.2218.0 (X64) Jun 12 2012 13:05:25 Copyright..."
+    # we only take what is left of the minus; our version string: "Microsoft SQL Server 2012"
     $Self->{'DB::Version'} = 'SELECT LEFT( @@VERSION, (CHARINDEX ( \'-\' ,@@VERSION) -2) )';
 
     # dbi attributes
@@ -60,7 +67,7 @@ sub LoadPreferences {
     #$Self->{'DB::ShellConnect'} = '';
 
     # init sql setting on db connect
-    if ( !$Self->{ConfigObject}->Get('Database::ShellOutput') ) {
+    if ( !$Kernel::OM->Get('Kernel::Config')->Get('Database::ShellOutput') ) {
         $Self->{'DB::Connect'} = 'SET DATEFORMAT ymd';
     }
 
@@ -96,7 +103,10 @@ sub DatabaseCreate {
 
     # check needed stuff
     if ( !$Param{Name} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need Name!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Need Name!'
+        );
         return;
     }
 
@@ -109,7 +119,10 @@ sub DatabaseDrop {
 
     # check needed stuff
     if ( !$Param{Name} ) {
-        $Self->{LogObject}->Log( Priority => 'error', Message => 'Need Name!' );
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Need Name!'
+        );
         return;
     }
 
@@ -119,6 +132,9 @@ sub DatabaseDrop {
 
 sub TableCreate {
     my ( $Self, @Param ) = @_;
+
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
     my $SQLStart     = '';
     my $SQLEnd       = '';
@@ -141,7 +157,7 @@ sub TableCreate {
             && $Tag->{TagType} eq 'Start'
             )
         {
-            if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
+            if ( $ConfigObject->Get('Database::ShellOutput') ) {
                 $SQLStart .= $Self->{'DB::Comment'}
                     . "----------------------------------------------------------\n";
                 $SQLStart .= $Self->{'DB::Comment'} . " create table $Tag->{Name}\n";
@@ -298,10 +314,13 @@ sub TableCreate {
 sub TableDrop {
     my ( $Self, @Param ) = @_;
 
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
     my $SQL = '';
     for my $Tag (@Param) {
         if ( $Tag->{Tag} eq 'Table' && $Tag->{TagType} eq 'Start' ) {
-            if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
+            if ( $ConfigObject->Get('Database::ShellOutput') ) {
                 $SQL .= $Self->{'DB::Comment'}
                     . "----------------------------------------------------------\n";
                 $SQL .= $Self->{'DB::Comment'} . " drop table $Tag->{Name}\n";
@@ -318,6 +337,9 @@ sub TableDrop {
 sub TableAlter {
     my ( $Self, @Param ) = @_;
 
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
     my $SQLStart      = '';
     my @SQL           = ();
     my @Index         = ();
@@ -328,7 +350,7 @@ sub TableAlter {
     my $Table         = '';
 
     my $Start = '';
-    if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
+    if ( $ConfigObject->Get('Database::ShellOutput') ) {
         $Start = "GO\n";
     }
 
@@ -336,7 +358,7 @@ sub TableAlter {
 
         if ( $Tag->{Tag} eq 'TableAlter' && $Tag->{TagType} eq 'Start' ) {
             $Table = $Tag->{Name} || $Tag->{NameNew};
-            if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
+            if ( $ConfigObject->Get('Database::ShellOutput') ) {
                 $SQLStart .= $Self->{'DB::Comment'}
                     . "----------------------------------------------------------\n";
                 $SQLStart .= $Self->{'DB::Comment'} . " alter table $Table\n";
@@ -557,7 +579,10 @@ sub IndexCreate {
     # check needed stuff
     for (qw(TableName Name Data)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -586,7 +611,10 @@ sub IndexDrop {
     # check needed stuff
     for (qw(TableName Name)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -600,7 +628,10 @@ sub ForeignKeyCreate {
     # check needed stuff
     for (qw(LocalTableName Local ForeignTableName Foreign)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -608,7 +639,7 @@ sub ForeignKeyCreate {
     # create foreign key name
     my $ForeignKey = "FK_$Param{LocalTableName}_$Param{Local}_$Param{Foreign}";
     if ( length($ForeignKey) > 60 ) {
-        my $MD5 = $Self->{MainObject}->MD5sum(
+        my $MD5 = $Kernel::OM->Get('Kernel::System::Main')->MD5sum(
             String => $ForeignKey,
         );
         $ForeignKey = substr $ForeignKey, 0, 58;
@@ -629,7 +660,10 @@ sub ForeignKeyDrop {
     # check needed stuff
     for (qw(LocalTableName Local ForeignTableName Foreign)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -637,7 +671,7 @@ sub ForeignKeyDrop {
     # create foreign key name
     my $ForeignKey = "FK_$Param{LocalTableName}_$Param{Local}_$Param{Foreign}";
     if ( length($ForeignKey) > 60 ) {
-        my $MD5 = $Self->{MainObject}->MD5sum(
+        my $MD5 = $Kernel::OM->Get('Kernel::System::Main')->MD5sum(
             String => $ForeignKey,
         );
         $ForeignKey = substr $ForeignKey, 0, 58;
@@ -657,7 +691,10 @@ sub UniqueCreate {
     # check needed stuff
     for (qw(TableName Name Data)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -682,7 +719,10 @@ sub UniqueDrop {
     # check needed stuff
     for (qw(TableName Name)) {
         if ( !$Param{$_} ) {
-            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $_!"
+            );
             return;
         }
     }
@@ -693,12 +733,17 @@ sub UniqueDrop {
 sub Insert {
     my ( $Self, @Param ) = @_;
 
+    # get needed objects
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+    my $TimeObject   = $Kernel::OM->Get('Kernel::System::Time');
+
     my $SQL    = '';
     my @Keys   = ();
     my @Values = ();
+    TAG:
     for my $Tag (@Param) {
         if ( $Tag->{Tag} eq 'Insert' && $Tag->{TagType} eq 'Start' ) {
-            if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
+            if ( $ConfigObject->Get('Database::ShellOutput') ) {
                 $SQL .= $Self->{'DB::Comment'}
                     . "----------------------------------------------------------\n";
                 $SQL .= $Self->{'DB::Comment'} . " insert into table $Tag->{Table}\n";
@@ -711,14 +756,14 @@ sub Insert {
 
             # do not use auto increment values
             if ( $Tag->{Type} && $Tag->{Type} =~ /^AutoIncrement$/i ) {
-                next;
+                next TAG;
             }
             $Tag->{Key} = ${ $Self->Quote( \$Tag->{Key} ) };
             push @Keys, $Tag->{Key};
             my $Value;
             if ( defined $Tag->{Value} ) {
                 $Value = $Tag->{Value};
-                $Self->{LogObject}->Log(
+                $Kernel::OM->Get('Kernel::System::Log')->Log(
                     Priority => 'error',
                     Message  => 'The content for inserts is not longer appreciated '
                         . 'attribut Value, use Content from now on! Reason: You can\'t '
@@ -753,11 +798,11 @@ sub Insert {
             $Value .= ', ';
         }
         if ( $Tmp eq 'current_timestamp' ) {
-            if ( $Self->{ConfigObject}->Get('Database::ShellOutput') ) {
+            if ( $ConfigObject->Get('Database::ShellOutput') ) {
                 $Value .= $Tmp;
             }
             else {
-                my $Timestamp = $Self->{TimeObject}->CurrentTimestamp();
+                my $Timestamp = $TimeObject->CurrentTimestamp();
                 $Value .= '\'' . $Timestamp . '\'';
             }
         }

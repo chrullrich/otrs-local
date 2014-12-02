@@ -46,19 +46,16 @@ sub new {
     $Self->{SmallViewColumnHeader}
         = $Self->{ConfigObject}->Get('Ticket::Frontend::CustomerTicketOverview')->{ColumnHeader};
 
-    $Self->{Owner}
-        = $Self->{ConfigObject}->Get('Ticket::Frontend::CustomerTicketOverview')->{Owner};
+    $Self->{Owner} = $Self->{ConfigObject}->Get('Ticket::Frontend::CustomerTicketOverview')->{Owner};
 
-    $Self->{Queue}
-        = $Self->{ConfigObject}->Get('Ticket::Frontend::CustomerTicketOverview')->{Queue};
+    $Self->{Queue} = $Self->{ConfigObject}->Get('Ticket::Frontend::CustomerTicketOverview')->{Queue};
 
     # get dynamic field config for frontend module
     $Self->{DynamicFieldFilter}
         = $Self->{ConfigObject}->Get("Ticket::Frontend::CustomerTicketOverview")->{DynamicField};
 
     # disable output of customer company tickets
-    $Self->{DisableCompanyTickets}
-        = $Self->{ConfigObject}->Get('Ticket::Frontend::CustomerDisableCompanyTicketAccess');
+    $Self->{DisableCompanyTickets} = $Self->{ConfigObject}->Get('Ticket::Frontend::CustomerDisableCompanyTicketAccess');
 
     # get the dynamic fields for this screen
     $Self->{DynamicField} = $Self->{DynamicFieldObject}->DynamicFieldListGet(
@@ -127,35 +124,35 @@ sub Run {
                 Name   => 'All',
                 Prio   => 1000,
                 Search => {
-                    CustomerUserLogin => $Self->{UserID},
-                    OrderBy           => $Self->{OrderBy},
-                    SortBy            => $Self->{SortBy},
-                    CustomerUserID    => $Self->{UserID},
-                    Permission        => 'ro',
+                    CustomerUserLoginRaw => $Self->{UserID},
+                    OrderBy              => $Self->{OrderBy},
+                    SortBy               => $Self->{SortBy},
+                    CustomerUserID       => $Self->{UserID},
+                    Permission           => 'ro',
                 },
             },
             Open => {
                 Name   => 'Open',
                 Prio   => 1100,
                 Search => {
-                    CustomerUserLogin => $Self->{UserID},
-                    StateType         => 'Open',
-                    OrderBy           => $Self->{OrderBy},
-                    SortBy            => $Self->{SortBy},
-                    CustomerUserID    => $Self->{UserID},
-                    Permission        => 'ro',
+                    CustomerUserLoginRaw => $Self->{UserID},
+                    StateType            => 'Open',
+                    OrderBy              => $Self->{OrderBy},
+                    SortBy               => $Self->{SortBy},
+                    CustomerUserID       => $Self->{UserID},
+                    Permission           => 'ro',
                 },
             },
             Closed => {
                 Name   => 'Closed',
                 Prio   => 1200,
                 Search => {
-                    CustomerUserLogin => $Self->{UserID},
-                    StateType         => 'Closed',
-                    OrderBy           => $Self->{OrderBy},
-                    SortBy            => $Self->{SortBy},
-                    CustomerUserID    => $Self->{UserID},
-                    Permission        => 'ro',
+                    CustomerUserLoginRaw => $Self->{UserID},
+                    StateType            => 'Closed',
+                    OrderBy              => $Self->{OrderBy},
+                    SortBy               => $Self->{SortBy},
+                    CustomerUserID       => $Self->{UserID},
+                    Permission           => 'ro',
                 },
             },
         },
@@ -168,7 +165,7 @@ sub Run {
                 Name   => 'All',
                 Prio   => 1000,
                 Search => {
-                    CustomerID =>
+                    CustomerIDRaw =>
                         [ $Self->{UserObject}->CustomerIDs( User => $Self->{UserLogin} ) ],
                     OrderBy        => $Self->{OrderBy},
                     SortBy         => $Self->{SortBy},
@@ -180,7 +177,7 @@ sub Run {
                 Name   => 'Open',
                 Prio   => 1100,
                 Search => {
-                    CustomerID =>
+                    CustomerIDRaw =>
                         [ $Self->{UserObject}->CustomerIDs( User => $Self->{UserLogin} ) ],
                     StateType      => 'Open',
                     OrderBy        => $Self->{OrderBy},
@@ -193,7 +190,7 @@ sub Run {
                 Name   => 'Closed',
                 Prio   => 1200,
                 Search => {
-                    CustomerID =>
+                    CustomerIDRaw =>
                         [ $Self->{UserObject}->CustomerIDs( User => $Self->{UserLogin} ) ],
                     StateType      => 'Closed',
                     OrderBy        => $Self->{OrderBy},
@@ -232,16 +229,6 @@ sub Run {
     for my $Filter ( sort keys %{ $Filters{ $Self->{Subaction} } } ) {
         $Counter++;
 
-        # quote all CustomerIDs
-        my $CustomerIDs = $Filters{ $Self->{Subaction} }->{$Filter}->{Search}->{CustomerID};
-        if ( IsArrayRefWithData($CustomerIDs) ) {
-            for my $CustomerID ( @{$CustomerIDs} ) {
-                $CustomerID = $Self->{DBObject}->QueryStringEscape(
-                    QueryString => $CustomerID,
-                );
-            }
-        }
-
         my $Count = $Self->{TicketObject}->TicketSearch(
             %{ $Filters{ $Self->{Subaction} }->{$Filter}->{Search} },
             %SearchInArchive,
@@ -275,8 +262,7 @@ sub Run {
             Name => 'Empty',
         );
 
-        my $CustomTexts
-            = $Self->{ConfigObject}->Get('Ticket::Frontend::CustomerTicketOverviewCustomEmptyText');
+        my $CustomTexts = $Self->{ConfigObject}->Get('Ticket::Frontend::CustomerTicketOverviewCustomEmptyText');
 
         if ( ref $CustomTexts eq 'HASH' ) {
             $Self->{LayoutObject}->Block(
@@ -289,8 +275,8 @@ sub Run {
             if (
                 ref $Self->{ConfigObject}->Get('CustomerFrontend::Module')->{CustomerTicketMessage}
                 eq 'HASH'
-                && defined $Self->{ConfigObject}
-                ->Get('Ticket::Frontend::CustomerTicketOverviewCustomEmptyText')->{Button}
+                && defined $Self->{ConfigObject}->Get('Ticket::Frontend::CustomerTicketOverviewCustomEmptyText')
+                ->{Button}
                 )
             {
                 $Self->{LayoutObject}->Block(
@@ -603,8 +589,8 @@ sub ShowTicketStatus {
         for my $ArticleID ( reverse @ArticleIDs ) {
             my %CurrentArticle = $Self->{TicketObject}->ArticleGet( ArticleID => $ArticleID );
 
-            # check for non-internal article
-            next ARTICLEID if $CurrentArticle{ArticleType} =~ m{internal}smx;
+            # check for non-internal and non-chat article
+            next ARTICLEID if $CurrentArticle{ArticleType} =~ m{internal|chat}smx;
 
             # check for customer article
             if ( $CurrentArticle{SenderType} eq 'customer' ) {
@@ -648,22 +634,26 @@ sub ShowTicketStatus {
     if ($NoArticle) {
         $Article{State}        = $Ticket{State};
         $Article{TicketNumber} = $Ticket{TicketNumber};
-        $Article{CustomerAge}
-            = $Self->{LayoutObject}->CustomerAge( Age => $Ticket{Age}, Space => ' ' ) || 0;
-        $Article{Body}
-            = $Self->{LayoutObject}->{LanguageObject}->Get('This item has no articles yet.');
+        $Article{CustomerAge}  = $Self->{LayoutObject}->CustomerAge(
+            Age   => $Ticket{Age},
+            Space => ' '
+        ) || 0;
+        $Article{Body} = $Self->{LayoutObject}->{LanguageObject}->Translate('This item has no articles yet.');
     }
 
     # otherwise return article information
     else {
-        $Article{CustomerAge}
-            = $Self->{LayoutObject}->CustomerAge( Age => $Article{Age}, Space => ' ' ) || 0;
+        $Article{CustomerAge} = $Self->{LayoutObject}->CustomerAge(
+            Age   => $Article{Age},
+            Space => ' '
+        ) || 0;
     }
 
     # customer info (customer name)
     if ( $Article{CustomerUserID} ) {
-        $Param{CustomerName}
-            = $Self->{UserObject}->CustomerName( UserLogin => $Article{CustomerUserID}, );
+        $Param{CustomerName} = $Self->{UserObject}->CustomerName(
+            UserLogin => $Article{CustomerUserID},
+        );
         $Param{CustomerName} = '(' . $Param{CustomerName} . ')' if ( $Param{CustomerName} );
     }
 

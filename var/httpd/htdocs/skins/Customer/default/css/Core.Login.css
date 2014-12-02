@@ -36,7 +36,8 @@
 
 #Login,
 #Reset,
-#Signup {
+#Signup,
+#PreLogin {
     width: 500px;
     height: 260px;
     padding-left: 142px;
@@ -52,7 +53,8 @@
 
 .RTL #Login,
 .RTL #Reset,
-.RTL #Signup {
+.RTL #Signup,
+.RTL #PreLogin {
     padding: 0 142px 0 0;
     float: right;
 }
@@ -148,6 +150,10 @@
     line-height: 14px;
     position: absolute;
     z-index: 1;
+    max-width: 177px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .JavaScriptAvailable .Login input[type='text'],
@@ -190,26 +196,40 @@
  * @note        Error fields for forms
  */
 
-.ErrorBox {
+.ErrorBox,
+.SuccessBox,
+.WarningBox {
+    display: block;
     margin: -13px 136px 20px;
-}
-
-.ErrorBox span {
     padding: 5px 8px 4px;
-    color: #FFF;
-    background: #D41111;
-    background: -moz-linear-gradient(top,  #ff0000 0%, #d41111 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ff0000), color-stop(100%,#d41111));
-    background: -webkit-linear-gradient(top,  #ff0000 0%,#d41111 100%);
-    background: -o-linear-gradient(top,  #ff0000 0%,#d41111 100%);
-    background: -ms-linear-gradient(top,  #ff0000 0%,#d41111 100%);
-    background: linear-gradient(to bottom,  #ff0000 0%,#d41111 100%);
-    border-radius: 5px;
-    box-shadow: 1px 1px 0 #DDD;
-    -webkit-box-shadow: 1px 1px 0 #DDD;
     cursor: default;
 }
 
+.ErrorBox {
+    color: #FFF;
+    background: #D41111;
+}
+
+.WarningBox {
+    color: #555;
+    background: #FFDD50;
+}
+
+.WarningBox.WithIcon {
+    position: relative;
+    padding-left: 25px;
+}
+
+.WarningBox.WithIcon > i {
+    position: absolute;
+    left: 10px;
+    top: 6px;
+}
+
+.SuccessBox {
+    color: #FFF;
+    background: #08A503;
+}
 
 /**
  * @subsection  Login Content

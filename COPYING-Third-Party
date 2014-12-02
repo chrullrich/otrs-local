@@ -226,6 +226,30 @@ o Name:    CPAN Selenium::Remote::Driver
   License: Apache License v2 - http://www.apache.org/licenses/LICENSE-2.0
   Note:    # Copyright (c) 2010-2011 Aditya Ivaturi, Gordon Child
 
+o Name:    CPAN REST::Client
+  Web:     n/a
+  License: # This program is free software; you can redistribute it
+           # and/or modify it under the same terms as Perl itself.
+  Note:    # Copyright 2008 - 2010 by Miles Crawford
+
+o Name:    CPAN SOAP::Lite
+  Web:     n/a
+  License: # This library is free software; you can redistribute it
+           # and/or modify it under the same terms as Perl itself.
+           #
+           # This text and all associated documentation for this library
+           # is made available under the Creative Commons Attribution-NoDerivs
+           # 2.0 license. http://creativecommons.org/licenses/by-nd/2.0/
+  Note:    # Copyright (C) 2000-2007 Paul Kulchenko. All rights reserved.
+           # Copyright (C) 2007-2008 Martin Kutter
+           # Copyright (C) 2013 Fred Moyer
+
+o Name:    CPAN  Excel::Writer::XLSX
+  Web:     http://github.com/jmcnamara/excel-writer-xlsx
+  License: # All Rights Reserved. This module is free software.
+           # It may be used, redistributed and/or modified under the same terms as Perl itself.
+  Note:    # Copyright MM-MMXIIII, John McNamara.
+
 # --
 # JavaScript
 # --
@@ -233,6 +257,12 @@ o Name:    CPAN Selenium::Remote::Driver
 o Name:    CKEditor
   Web:     http://www.ckeditor.com/
   License: GNU v2 - http://www.gnu.org/licenses/gpl.html
+
+o Name:    Skin BootstrapCK4 for CKEditor
+  Web:     http://ckeditor.com/addon/bootstrapck
+  License: GNU v2 - http://www.gnu.org/licenses/gpl.html
+           GNU Lesser v3 - http://www.gnu.org/licenses/lgpl.html
+           MPL v1.1 - http://opensource.org/licenses/MPL-1.1
 
 o Name:    D3 Data-Driven Documents
   Web:     http://d3js.org/
@@ -274,10 +304,6 @@ o Name:    jQuery Validate
   Web:     http://bassistance.de/jquery-plugins/jquery-plugin-validation/
   License: GNU v2 - http://www.gnu.org/licenses/gpl.html
 
-o Name:    json2
-  Web:     http://www.JSON.org/js.html
-  License: Public Domain
-
 o Name:    jsPlumb
   Web:     http://jsplumbtoolkit.com/
   License: MIT License - http://www.opensource.org/licenses/mit-license.php
@@ -293,7 +319,3 @@ o Name:    QUnit
 o Name:    DejaVu Fonts
   Web:     http://dejavu-fonts.org
   License: Free License - http://dejavu-fonts.org/wiki/License
-
-o Name:    Some Icons (tree.png)
-  Web:     Yusuke Kamiyamane, http://p.yusukekamiyamane.com
-  License: CC Attribution 3.0

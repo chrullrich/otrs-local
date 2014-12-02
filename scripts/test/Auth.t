@@ -10,14 +10,11 @@
 use strict;
 use warnings;
 use utf8;
+
 use vars (qw($Self));
 
-use Kernel::System::Auth;
-use Kernel::System::User;
-use Kernel::System::Group;
-
-# use local Config object because it will be modified
-my $ConfigObject = Kernel::Config->new();
+# get needed objects
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
 # configure auth backend to db
 $ConfigObject->Set(
@@ -44,13 +41,10 @@ my $TestUserID;
 
 my $UserRand1 = 'example-user' . int rand 1000000;
 
-# add test user
-my $GlobalUserObject = Kernel::System::User->new(
-    %{$Self},
-    ConfigObject => $ConfigObject,
-);
+my $UserObject = $Kernel::OM->Get('Kernel::System::User');
 
-$TestUserID = $GlobalUserObject->UserAdd(
+# add test user
+$TestUserID = $UserObject->UserAdd(
     UserFirstname => 'Firstname Test1',
     UserLastname  => 'Lastname Test1',
     UserLogin     => $UserRand1,
@@ -104,29 +98,23 @@ my @Tests = (
     },
 );
 
-for my $CryptType (qw(plain crypt md5 sha1 sha2 bcrypt)) {
+for my $CryptType (qw(plain crypt apr1 md5 sha1 sha2 bcrypt)) {
+
+    # make sure that the customer user objects gets recreated for each loop.
+    $Kernel::OM->ObjectsDiscard(
+        Objects => [
+            'Kernel::System::User',
+            'Kernel::System::Auth',
+        ],
+    );
 
     $ConfigObject->Set(
         Key   => "AuthModule::DB::CryptType",
         Value => $CryptType
     );
 
-    my $UserObject = Kernel::System::User->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
-    );
-
-    my $GroupObject = Kernel::System::Group->new(
-        %{$Self},
-        ConfigObject => $ConfigObject
-    );
-
-    my $AuthObject = Kernel::System::Auth->new(
-        %{$Self},
-        ConfigObject => $ConfigObject,
-        UserObject   => $UserObject,
-        GroupObject  => $GroupObject,
-    );
+    my $UserObject = $Kernel::OM->Get('Kernel::System::User');
+    my $AuthObject = $Kernel::OM->Get('Kernel::System::Auth');
 
     TEST:
     for my $Test (@Tests) {
@@ -193,7 +181,7 @@ for my $CryptType (qw(plain crypt md5 sha1 sha2 bcrypt)) {
     }
 }
 
-$TestUserID = $GlobalUserObject->UserUpdate(
+$TestUserID = $UserObject->UserUpdate(
     UserID        => $TestUserID,
     UserFirstname => 'Firstname Test1',
     UserLastname  => 'Lastname Test1',

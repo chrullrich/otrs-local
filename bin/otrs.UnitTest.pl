@@ -30,45 +30,40 @@ use lib dirname($RealBin) . '/Custom';
 
 use Getopt::Std;
 
-use Kernel::Config;
-use Kernel::System::Encode;
-use Kernel::System::Log;
-use Kernel::System::Time;
-use Kernel::System::DB;
-use Kernel::System::UnitTest;
-use Kernel::System::Main;
+use Kernel::System::ObjectManager;
 
 # get options
 my %Opts;
-getopt( 'hdnop', \%Opts );
+getopt( 'dnops', \%Opts );
 if ( $Opts{h} ) {
-    print "otrs.UnitTest.pl - OTRS test handle\n";
+    print "otrs.UnitTest.pl - Run OTRS unit tests\n";
     print "Copyright (C) 2001-2014 OTRS AG, http://otrs.com/\n";
-    print
-        "usage: otrs.UnitTest.pl [-n Name e.g. Ticket or Queue, or both Ticket:Queue] [-d Directory] [-o ASCII|HTML|XML] [-p PRODUCT]\n";
+    print <<EOF;
+Usage: otrs.UnitTest.pl
+    [-n Name]           # Single Tests to run, e.g. 'Ticket', 'Queue', or 'Ticket:Queue'
+    [-d Directory]      # Test directory to process
+    [-o ASCII|HTML|XML]
+    [-p PRODUCT]
+    [-s URL]            # Submit test results to unit test server
+EOF
     exit 1;
 }
 
-# create common objects
-my %CommonObject;
-$CommonObject{ConfigObject} = Kernel::Config->new();
-$CommonObject{EncodeObject} = Kernel::System::Encode->new(%CommonObject);
-$CommonObject{LogObject}    = Kernel::System::Log->new(
-    LogPrefix => 'OTRS-otrs.UnitTest',
-    %CommonObject,
-);
-$CommonObject{MainObject}     = Kernel::System::Main->new(%CommonObject);
-$CommonObject{TimeObject}     = Kernel::System::Time->new(%CommonObject);
-$CommonObject{DBObject}       = Kernel::System::DB->new(%CommonObject);
-$CommonObject{UnitTestObject} = Kernel::System::UnitTest->new(
-    %CommonObject,
-    Output => $Opts{o} || '',
+# create object manager
+local $Kernel::OM = Kernel::System::ObjectManager->new(
+    'Kernel::System::Log' => {
+        LogPrefix => 'OTRS-otrs.UnitTest',
+    },
+    'Kernel::System::UnitTest' => {
+        Output => $Opts{o} || '',
+    },
 );
 
-$CommonObject{UnitTestObject}->Run(
+$Kernel::OM->Get('Kernel::System::UnitTest')->Run(
     Name      => $Opts{n} || '',
     Directory => $Opts{d} || '',
     Product   => $Opts{p} || '',
+    SubmitURL => $Opts{s} || '',
 );
 
 exit 0;
