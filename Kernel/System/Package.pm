@@ -120,12 +120,6 @@ sub new {
 
     $Self->{Home} = $Self->{ConfigObject}->Get('Home');
 
-    # permission check
-    if ( !$Self->_FileSystemCheck() ) {
-        die "ERROR: Need write permission in OTRS home\n"
-            . "Try: \$OTRS_HOME/bin/otrs.SetPermissions.pl !!!\n";
-    }
-
     # init of event handler
     $Self->EventHandlerInit(
         Config => 'Package::EventModulePost',
