@@ -80,6 +80,9 @@ sub new {
 
     $Self->{APIVersion} = 2;
 
+    # timeout for the registration cloud service requests
+    $Self->{TimeoutRequest} = 60;
+
     return $Self;
 }
 
@@ -149,6 +152,7 @@ sub TokenGet {
                 },
             ],
         },
+        Timeout => $Self->{TimeoutRequest},
     );
 
     # get cloud service object
@@ -313,6 +317,7 @@ sub Register {
                 },
             ],
         },
+        Timeout => $Self->{TimeoutRequest},
     );
 
     # if we have SupportData, call SupportDataAdd on the same request
@@ -663,6 +668,7 @@ sub RegistrationUpdateSend {
                 },
             ],
         },
+        Timeout => $Self->{TimeoutRequest},
     );
 
     # If we have an installed OTRSBusiness, call BusinessPermissionCheck cloud service
@@ -917,39 +923,6 @@ sub RegistrationUpdateSend {
         }
     }
 
-    # if called from the scheduler process, to cleanup the redundant scheduler
-    # registration update tasks
-    if ( $Param{RegistrationUpdateTaskID} ) {
-
-        # get task object
-        my $TaskObject = $Kernel::OM->Get('Kernel::System::Scheduler::TaskManager');
-
-        # get all existing scheduler task
-        my @TaskList = $TaskObject->TaskList();
-
-        # count the redundant task in the scheduler task table
-        my @RegistrationUpdateTasks;
-
-        TASK:
-        for my $Task (@TaskList) {
-
-            next TASK if $Task->{Type} ne 'RegistrationUpdate';
-
-            next TASK if $Task->{ID} eq $Param{RegistrationUpdateTaskID};
-
-            # add the redundant task to the registration update task list
-            push @RegistrationUpdateTasks, $Task;
-        }
-
-        # delete all redundant registration update task, if some exists
-        if (@RegistrationUpdateTasks) {
-
-            for my $RegistrationUpdateTask (@RegistrationUpdateTasks) {
-                $TaskObject->TaskDelete( ID => $RegistrationUpdateTask->{ID} );
-            }
-        }
-    }
-
     return (
         Success      => $Success,
         Reason       => $Reason,
@@ -1005,6 +978,7 @@ sub Deregister {
                 },
             ],
         },
+        Timeout => $Self->{TimeoutRequest},
     );
 
     # get cloud service object
