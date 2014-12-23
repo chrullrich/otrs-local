@@ -20,6 +20,8 @@ use Kernel::System::DynamicField::Backend;
 use Kernel::System::JSON;
 use Kernel::System::VariableCheck qw(:all);
 
+our $ObjectManagerDisabled = 1;
+
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -318,7 +320,7 @@ sub Run {
             Filename    => $Filename . "_" . "$Y-$M-$D" . "_" . "$h-$m.pdf",
             ContentType => "application/pdf",
             Content     => $PDFString,
-            Type        => 'attachment',
+            Type        => 'inline',
         );
     }
 

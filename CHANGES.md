@@ -1,3 +1,37 @@
+#4.0.3 2014-12-16
+ - 2014-12-11 Updated translations, thanks to all translators.
+ - 2014-12-11 Fixed bug#[10935](http://bugs.otrs.org/show_bug.cgi?id=10935) - "bin/otrs.ArticleStorageSwitch.pl" not working any more.
+ - 2014-12-10 Fixed bug#[10868](http://bugs.otrs.org/show_bug.cgi?id=10868) - Impossible to remove filter in dashboard-block when no tickets are found.
+ - 2014-12-10 Fixed bug#[10904](http://bugs.otrs.org/show_bug.cgi?id=10904) - Upon entering CIC, search only returns hits during the first search.
+ - 2014-12-10 Fixed bug#[10873](http://bugs.otrs.org/show_bug.cgi?id=10873) - Agent names sorted incorrectly in AgentTicketSearch.
+ - 2014-12-10 Fixed bug#[10944](http://bugs.otrs.org/show_bug.cgi?id=10944) - Multiple selection in Tree Selection also affects filtered elements.
+ - 2014-12-09 Follow-up fix for bug#[6284](http://bugs.otrs.org/show_bug.cgi?id=6284) - Problem with unicode characters when using FastCGI.
+ - 2014-12-09 Fixed bug#[10899](http://bugs.otrs.org/show_bug.cgi?id=10899) - SplitQuote in WYSIWYG editor creates unnecessary empty quote line when splitting quote at end of line.
+ - 2014-12-08 Fixed bug#[10830](http://bugs.otrs.org/show_bug.cgi?id=10830) - Textarea Limitation in Generic Agent.
+ - 2014-12-08 Fixed bug#[10914](http://bugs.otrs.org/show_bug.cgi?id=10914) - Migration issue to 4.0.1 (mssql).
+ - 2014-12-08 Fixed bug#[10920](http://bugs.otrs.org/show_bug.cgi?id=10920) - ProcessManagement: Deleting Activities from canvas does not update process layout.
+ - 2014-12-08 Fixed bug#[10801](http://bugs.otrs.org/show_bug.cgi?id=10801) - Editor is extremely slow with large articles.
+ - 2014-12-05 Re-added possibility to have a custom RSS feed in Agent Dashboard.
+ - 2014-12-05 Enhanced Permission Checks in GenericInterface Ticket Connector.
+ - 2014-12-05 Fixed bug#[10926](http://bugs.otrs.org/show_bug.cgi?id=10926) - Missing Apache2::Reload.pm.
+ - 2014-12-05 Follow-up for bug#[10613](http://bugs.otrs.org/show_bug.cgi?id=10613) - Fixed the problem with calling TicketGet() twice.
+ - 2014-12-05 Fixed bug#[10922](http://bugs.otrs.org/show_bug.cgi?id=10922) - There is no automatic wildcard search in AdminCustomerCompany by default.
+ - 2014-12-05 Fixed bug#[10929](http://bugs.otrs.org/show_bug.cgi?id=10929) - Twice rewrap body in CustomerTicketZoom.
+ - 2014-12-05 Show only services assigned to the customer user in customer ticket search (configurable).
+ - 2014-12-05 Fixed bug#[10932](http://bugs.otrs.org/show_bug.cgi?id=10932) - JS error if no entry in queue list.
+ - 2014-12-04 Fixed bug#[10634](http://bugs.otrs.org/show_bug.cgi?id=10634) - ProcessManagement: Can not use an arbitrary email address as a CustomerUser.
+ - 2014-12-04 Fixed bug#[10901](http://bugs.otrs.org/show_bug.cgi?id=10901) - Database Update to 4.pl.
+ - 2014-12-04 Removed incorrect notice about SQL query length. (#d0bd52b)
+ - 2014-12-03 Improved the AdminRegistration frontend for systems without a running scheduler.
+ - 2014-12-03 Improved stability of RegistrationUpdate handling.
+ - 2014-12-02 Fixed bug#[10917](http://bugs.otrs.org/show_bug.cgi?id=10917) - Wrong messages for password reset.
+ - 2014-12-02 Fixed bug#[10916](http://bugs.otrs.org/show_bug.cgi?id=10916) - Missing values AgentTicketEscalation / Localize function call does not work.
+ - 2014-11-28 Fixed bug#[10897](http://bugs.otrs.org/show_bug.cgi?id=10897) - PDFs don't open in browser.
+ - 2014-11-28 Fixed bug#[10839](http://bugs.otrs.org/show_bug.cgi?id=10839) - ACL cannot set possible TicketType in AgentTicketPhone and AgentTicketEmail.
+ - 2014-11-28 Fixed bug#[10776](http://bugs.otrs.org/show_bug.cgi?id=10776) - Medium and Large view don't indicate active filters.
+ - 2014-11-28 Fixed bug#[10808](http://bugs.otrs.org/show_bug.cgi?id=10808) - Set of pending time is not working at all in Frontend::Agent::Ticket::ViewNote.
+ - 2014-11-28 Fixed bug#[10843](http://bugs.otrs.org/show_bug.cgi?id=10843) - Adding Queue's with same name in AdminQueue leads to SQL error message.
+
 #4.0.2 2014-12-02
  - 2014-11-27 Updated translations, thanks to all translators.
  - 2014-11-27 Fixed bug#[10906](http://bugs.otrs.org/show_bug.cgi?id=10906) - SysConfig settings are mistakenly reset.
