@@ -531,10 +531,14 @@ sub _MigrateProcessManagementEntityIDs {
 
             my $NewActivityEntityID = $EntityLookup{Activity}->{$ActivityEntityID};
 
-            if ( !$NewActivityEntityID ) {
-                die "Error: No new EntityID was created for Activity: $ActivityEntityID}";
+            if ($NewActivityEntityID) {
+                $NewLayout{$NewActivityEntityID} = $Process->{Layout}->{$ActivityEntityID};
             }
-            $NewLayout{$NewActivityEntityID} = $Process->{Layout}->{$ActivityEntityID};
+            else {
+                print "\n Warning: Process '$Process->{EntityID} - $Process->{Name}' layout contains a reference"
+                    . " to a non existing Activity '$ActivityEntityID', this activity will be skipped."
+                    . " Please check the process after the migration process ends\n";
+            }
         }
         $Process->{Layout} = \%NewLayout;
 
@@ -1274,8 +1278,15 @@ sub _MigrateSettings {
     # get database object;
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
-    # use 'LIKE' operator instead of '=' in oracle as the field is defined as CLOB
-    if ( $DBObject->{'DB::Type'} eq 'oracle' ) {
+    # use 'LIKE' operator instead of '=' as:
+    #    in oracle as the field is defined as CLOB
+    #    in mssql as the field is defined as ntext
+    #    under this scenarios a direct comparison is not possible using '=' operator
+    if (
+        $DBObject->{'DB::Type'} eq 'oracle'
+        || $DBObject->{'DB::Type'} eq 'mssql'
+        )
+    {
         $Operator = 'LIKE';
     }
 

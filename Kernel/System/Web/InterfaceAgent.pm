@@ -699,12 +699,15 @@ sub Run {
             );
             return;
         }
+        my $Message = $LayoutObject->{LanguageObject}->Translate(
+            'Sent new password to %s. Please check your email.',
+            $UserData{UserEmail},
+        );
         $LayoutObject->Print(
             Output => \$LayoutObject->Login(
-                Title => 'Login',
-                Message =>
-                    "Sent new password to \%s. Please check your email.\", \"$UserData{UserEmail}",
-                User => $User,
+                Title   => 'Login',
+                Message => $Message,
+                User    => $User,
                 %Param,
             ),
         );
