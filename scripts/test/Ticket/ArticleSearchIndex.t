@@ -1,6 +1,6 @@
 # --
 # ArticleSearchIndex.t - ticket module testscript
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -176,7 +176,6 @@ my @Tests = (
         String => '"String with quotes"',
         Result => [
             "string",
-            "with",
             "quotes",
         ],
     },
@@ -184,7 +183,6 @@ my @Tests = (
         Name   => "Sentence",
         String => 'This is a full sentence',
         Result => [
-            "this",
             "full",
             "sentence",
         ],

@@ -3,9 +3,10 @@
 # Ettore Atalan <atalanttore@googlemail.com>, 2014
 # jb_otrs <jens.bothe@otrs.com>, 2014
 # jb_otrs <jens.bothe@otrs.com>, 2014
-# mab_otrs <marc.bonsels@otrs.com>, 2014
+# Marc A. Bonsels, 2014
 # Mainboarder, 2014
-# mab_otrs <marc.bonsels@otrs.com>, 2014
+# Marc A. Bonsels, 2015
+# Marc A. Bonsels, 2014
 # Martin Gruner <martin.gruner@otrs.com>, 2014
 # mathiasbraeunling <mathias.braeunling@otrs.com>, 2014
 # mathiasbraeunling <mathias.braeunling@otrs.com>, 2014
@@ -16,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
 "POT-Creation-Date: 2014-08-08 19:10+0200\n"
-"PO-Revision-Date: 2014-12-08 18:43+0000\n"
-"Last-Translator: Mainboarder\n"
+"PO-Revision-Date: 2015-01-14 11:18+0000\n"
+"Last-Translator: Marc A. Bonsels\n"
 "Language-Team: German (http://www.transifex.com/projects/p/OTRS/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -763,7 +764,7 @@ msgstr "Neue Nachricht!"
 
 #. Template: AAABase
 msgid "Please answer this ticket(s) to get back to the normal queue view!"
-msgstr "Bitte beantworten Sie dieses Ticket, um in die normale Queue-Ansicht zurück zu kommen!"
+msgstr "Bitte beantworten Sie diese Ticket(s), um in die normale Queue-Ansicht zurück zu kommen!"
 
 #. Template: AAABase
 msgid "You have %s new message(s)!"
@@ -2553,6 +2554,10 @@ msgid "Status View"
 msgstr "Ansicht nach Status"
 
 #. Template: AAATicket
+msgid "Service View"
+msgstr "Service-Ansicht"
+
+#. Template: AAATicket
 msgid "Bulk"
 msgstr "Sammelaktion"
 
@@ -2873,6 +2878,10 @@ msgid "Bounce Article to a different mail address"
 msgstr "Artikel per E-Mail umleiten"
 
 #. Template: AAATicket
+msgid "Reply to note"
+msgstr "Auf Notiz antworten"
+
+#. Template: AAATicket
 msgid "new"
 msgstr "neu"
 
@@ -3111,6 +3120,10 @@ msgstr "Telefon-Ticket"
 #. Template: AAATicket
 msgid "Search Tickets"
 msgstr "Ticket-Suche"
+
+#. Template: AAATicket
+msgid "Customer History"
+msgstr "Kundenhistorie"
 
 #. Template: AAATicket
 msgid "Edit Customer Users"
@@ -4754,7 +4767,7 @@ msgstr "Neue Priorität setzen"
 
 #. Template: AdminGenericAgent
 msgid "Set new queue"
-msgstr "Neue Queue setzen"
+msgstr "Neue Queue festlegen"
 
 #. Template: AdminGenericAgent
 msgid "Set new state"
@@ -6653,7 +6666,7 @@ msgstr "Bitte beachten Sie, dass Kunden-Benutzer die folgenden Felder nicht sehe
 #. Template: AdminProcessManagementActivityDialog
 msgid ""
 "The Queue field can only be used by customers when creating a new ticket."
-msgstr "Das Feld Queue kann nur von Kunden ausgewählt werden, wenn diese ein neues Ticket erstellen."
+msgstr "Das Queue-Feld kann nur von Kunden ausgewählt werden, wenn diese ein neues Ticket erstellen."
 
 #. Template: AdminProcessManagementActivityDialog
 msgid "Activity Dialog"
@@ -7128,8 +7141,12 @@ msgid "Edit Queue"
 msgstr "Queue bearbeiten"
 
 #. Template: AdminQueue
+msgid "A queue with this name already exists!"
+msgstr "Eine Queue mit diesem Namen ist bereits vorhanden!"
+
+#. Template: AdminQueue
 msgid "Sub-queue of"
-msgstr "Unterqueue von"
+msgstr "Unter-Queue von"
 
 #. Template: AdminQueue
 msgid "Unlock timeout"
@@ -7240,7 +7257,7 @@ msgstr "Auto-Antwort-Zuordnungen verändern für Queue"
 
 #. Template: AdminQueueTemplates
 msgid "Manage Template-Queue Relations"
-msgstr "Vorlagen-Queue-Zuordnungen verwalten"
+msgstr "Zuordnung von Vorlagen zu Queues verwalten"
 
 #. Template: AdminQueueTemplates
 msgid "Filter for Templates"
@@ -7252,7 +7269,7 @@ msgstr "Vorlagen"
 
 #. Template: AdminQueueTemplates
 msgid "Change Queue Relations for Template"
-msgstr "Queue-Zuordnungen für Vorlage verändern"
+msgstr "Zuordnung von Vorlage zu Queue verändern"
 
 #. Template: AdminQueueTemplates
 msgid "Change Template Relations for Queue"
@@ -7301,6 +7318,20 @@ msgstr "Letzte Kommunikation mit dem Registrierungsserver"
 #. Template: AdminRegistration
 msgid "Send support data"
 msgstr "Supportdaten senden"
+
+#. Template: AdminRegistration
+msgid "System registration not possible"
+msgstr "Systemregistrierung nicht möglich"
+
+#. Template: AdminRegistration
+msgid ""
+"Please note that you can't register your system if your scheduler is not "
+"running correctly!"
+msgstr "Bitte beachten Sie, dass Sie Ihr System nicht registrieren können, wenn der Scheduler nicht läuft!"
+
+#. Template: AdminRegistration
+msgid "Instructions"
+msgstr "Anweisungen"
 
 #. Template: AdminRegistration
 msgid "System deregistration not possible"
@@ -9302,6 +9333,10 @@ msgid "Next state"
 msgstr "Nächster Status"
 
 #. Template: AgentTicketActionCommon
+msgid "For all pending* states."
+msgstr "Für alle warten* Status."
+
+#. Template: AgentTicketActionCommon
 msgid "Add Article"
 msgstr "Artikel hinzufügen"
 
@@ -9342,6 +9377,10 @@ msgid ""
 "Here you can select additional agents which should receive a notification "
 "regarding the new article."
 msgstr "Hier können Sie zusätzliche Agenten auswählen, die eine Benachrichtigung über den neuen Artikel enthalten sollen."
+
+#. Template: AgentTicketActionCommon
+msgid "Note will be (also) received by:"
+msgstr ""
 
 #. Template: AgentTicketBounce
 msgid "Bounce Ticket"
@@ -9430,14 +9469,6 @@ msgstr "Bcc entfernen"
 #. Template: AgentTicketCompose
 msgid "Address book"
 msgstr "Adressbuch"
-
-#. Template: AgentTicketCompose
-msgid "Pending Date"
-msgstr "Warten bis"
-
-#. Template: AgentTicketCompose
-msgid "for pending* states"
-msgstr "für warten* Status"
 
 #. Template: AgentTicketCompose
 msgid "Date Invalid!"
@@ -9920,6 +9951,12 @@ msgstr "Vollständiger Artikeltext"
 #. Template: AgentTicketZoom
 msgid "No more events found. Please try changing the filter settings."
 msgstr "Keine weiteren Ereignisse gefunden. Versuchen Sie die Filtereinstellungen zu verändern."
+
+#. Template: AgentTicketZoom
+msgid ""
+"To open links in the following article, you might need to press Ctrl or Cmd "
+"or Shift key while clicking the link (depending on your browser and OS)."
+msgstr ""
 
 #. Template: AgentTicketZoom
 msgid "Article could not be opened! Perhaps it is on another article page?"
@@ -10712,6 +10749,10 @@ msgid "Go back to the previous page"
 msgstr "Zurück zur vorhergehenden Seite"
 
 #. SysConfig
+msgid " (work units)"
+msgstr " (Arbeitseinheiten)"
+
+#. SysConfig
 msgid "\"%s\"-notification sent to \"%s\"."
 msgstr "\"%s\"-Benachrichtigung versandt an \"%s\"."
 
@@ -10732,11 +10773,19 @@ msgid "(UserLogin) Lastname, Firstname"
 msgstr "(BenutzerLogin) Nachname, Vorname"
 
 #. SysConfig
+msgid "A Website"
+msgstr "Eine Webseite"
+
+#. SysConfig
 msgid ""
 "A list of dynamic fields that are merged into the main ticket during a merge"
 " operation. Only dynamic fields that are empty in the main ticket will be "
 "set."
 msgstr "Eine Liste der dynamischen Felder, die während einer Zusammenführung in das Haupt-Ticket ebenfalls zusammengeführt werden. Es werden nur leere dynamische Felder im Haupt-Ticket geändert."
+
+#. SysConfig
+msgid "A picture"
+msgstr "Ein Bild"
 
 #. SysConfig
 msgid ""
@@ -10756,7 +10805,7 @@ msgstr "Erfasste Zeit"
 #. SysConfig
 msgid ""
 "Activates a blinking mechanism of the queue that contains the oldest ticket."
-msgstr "Aktiviert einen Blinkmechanismus der Warteschlange, die das älteste Ticket enthält."
+msgstr "Aktiviert einen Blinkmechanismus der Queue, die das älteste Ticket enthält."
 
 #. SysConfig
 msgid "Activates lost password feature for agents, in the agent interface."
@@ -10889,8 +10938,9 @@ msgid ""
 msgstr "Modul im Agenten-Interface um eingehende E-Mails in der TicketZoomView auf vorhandene und gültige S/MIME-Schlüssel zu überprüfen. "
 
 #. SysConfig
-msgid "Agent interface notification module to check the used charset."
-msgstr "Benachrichtigungsmodul im Agenten-Interface um den verwendeten Zeichensatz zu überprüfen."
+msgid ""
+"Agent interface notification module to see the number of locked tickets."
+msgstr ""
 
 #. SysConfig
 msgid ""
@@ -11000,7 +11050,7 @@ msgstr "Erlaubt Kunden das Setzen der Ticketpriorität im Kunden-Interface zu ä
 msgid ""
 "Allows customers to set the ticket queue in the customer interface. If this "
 "is set to 'No', QueueDefault should be configured."
-msgstr "Ermöglicht es Kunden, die Ticket-Queue im Kunden-Interface zu setzen . Wenn dieser Wert auf 'Nein' steht, sollte der Wert 'QueueDefault' konfiguriert werden."
+msgstr "Ermöglicht es Kunden, die Ticket-Queue in der Kunden-Oberfläche zu setzen . Wenn dieser Wert auf 'Nein' steht, sollte der Wert 'QueueDefault' konfiguriert werden."
 
 #. SysConfig
 msgid "Allows customers to set the ticket service in the customer interface."
@@ -11323,6 +11373,10 @@ msgid "Comment for new history entries in the customer interface."
 msgstr "Kommentar für neue Historieneinträge im Kunden-Interface."
 
 #. SysConfig
+msgid "Comment2"
+msgstr "Kommentar2"
+
+#. SysConfig
 msgid "Company Status"
 msgstr "Firmenstatus"
 
@@ -11483,6 +11537,10 @@ msgid "Create new process ticket"
 msgstr "Neues Prozessticket"
 
 #. SysConfig
+msgid "Custom RSS Feed"
+msgstr ""
+
+#. SysConfig
 msgid ""
 "Custom text for the page shown to customers that have no tickets yet (if you"
 " need those text translated add them to a custom translation module)."
@@ -11529,6 +11587,14 @@ msgstr "Kunden-Tickets (Symbol), die die offenen Tickets eines Kunden als Infobl
 #. SysConfig
 msgid "Customer request via web."
 msgstr "Kunde stellte Anfrage über Web."
+
+#. SysConfig
+msgid "Customer user search"
+msgstr ""
+
+#. SysConfig
+msgid "CustomerID search"
+msgstr ""
 
 #. SysConfig
 msgid "CustomerName"
@@ -11645,6 +11711,18 @@ msgstr "Definiert dynamische Feldnamen für die Startzeit. Dieses Feld muss manu
 #. SysConfig
 msgid "Define the max depth of queues."
 msgstr "Definiert die maximale Tiefe von Queues"
+
+#. SysConfig
+msgid "Define the queue comment 2."
+msgstr ""
+
+#. SysConfig
+msgid "Define the service comment 2."
+msgstr ""
+
+#. SysConfig
+msgid "Define the sla comment 2."
+msgstr ""
 
 #. SysConfig
 msgid ""
@@ -11814,7 +11892,7 @@ msgstr "Definiert, wie das \"Von:\"-Feld in den E-Mails (gesendet von Antworten 
 
 #. SysConfig
 msgid "Defines if a pre-sorting by priority should be done in the queue view."
-msgstr "Definiert ob in der Queue-View eine Vorsortierung anhand der Priorität vorgenommen werden soll."
+msgstr "Definiert ob in der Queue-Ansicht eine Vorsortierung anhand der Priorität vorgenommen werden soll."
 
 #. SysConfig
 msgid ""
@@ -12238,7 +12316,7 @@ msgstr "Definiert die Standard-Priorität von neuen Tickets."
 msgid ""
 "Defines the default queue for new customer tickets in the customer "
 "interface."
-msgstr "Definiert den Standard-Queue von neuen Kundentickets in der Kundenoberfläche."
+msgstr "Definiert die Standard-Queue von neuen Kundentickets in der Kundenoberfläche."
 
 #. SysConfig
 msgid ""
@@ -12314,7 +12392,7 @@ msgstr "Definiert die standardmäßig eingestellten Sortierkriterien für alle i
 msgid ""
 "Defines the default sort criteria for all services displayed in the service "
 "view."
-msgstr "Definiert die standardmäßig eingestellten Sortierkriterien für alle in der Service-Ansicht angezeigten Dienste."
+msgstr "Definiert die standardmäßig eingestellten Sortierkriterien für alle in der Service-Ansicht angezeigten Services."
 
 #. SysConfig
 msgid ""
@@ -12326,7 +12404,7 @@ msgstr "Definiert die standardmäßig eingestellten Sortierkriterien für alle i
 msgid ""
 "Defines the default sort order for all services in the service view, after "
 "priority sort."
-msgstr "Definiert die standardmäßig eingestellten Sortierkriterien für alle in der Service-Ansicht angezeigten Dienste, nachdem nach Priorität sortiert wurde."
+msgstr "Definiert die standardmäßig eingestellten Sortierkriterien für alle in der Service-Ansicht angezeigten Services, nachdem nach Priorität sortiert wurde."
 
 #. SysConfig
 msgid "Defines the default spell checker dictionary."
@@ -13293,7 +13371,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Defines the postmaster default queue."
-msgstr "Definiert die Postmaster-Standard-Queue"
+msgstr "Definiert die Postmaster-Queue."
 
 #. SysConfig
 msgid "Defines the priority in which the information is logged and presented."
@@ -13302,7 +13380,7 @@ msgstr "Definiert die Priorität in welcher die Information aufgezeichnet und pr
 #. SysConfig
 msgid ""
 "Defines the receipent target of the phone ticket and the sender of the email"
-" ticket (\"Queue\" shows all queues, \"SystemAddress\" displays all system "
+" ticket (\"Queue\" shows all queues, \"System address\" displays all system "
 "addresses) in the agent interface."
 msgstr ""
 
@@ -14067,6 +14145,10 @@ msgid "Escalation view"
 msgstr "Ansicht nach Eskalationen"
 
 #. SysConfig
+msgid "EscalationTime"
+msgstr ""
+
+#. SysConfig
 msgid ""
 "Event module registration. For more performance you can define a trigger "
 "event (e. g. Event => TicketCreate)."
@@ -14083,7 +14165,7 @@ msgstr "Eventmodul-Registierung. Für höhere Performancen können Sie ein Trigg
 msgid ""
 "Event module that performs an update statement on TicketIndex to rename the "
 "queue name there if needed and if StaticDB is actually used."
-msgstr "Eventmodul, das ein Update-Statement auf TicketIndex ausführt, um die Queue umzubenennen (wenn nötig und wenn StaticDB genutzt wird)."
+msgstr "Ereignismodul, das ein Update-Statement auf TicketIndex ausführt, um die Queue umzubenennen (wenn nötig und wenn StaticDB genutzt wird)."
 
 #. SysConfig
 msgid ""
@@ -14167,6 +14249,10 @@ msgstr ""
 #. SysConfig
 msgid "Filter incoming emails."
 msgstr "Eingehende E-Mails filtern."
+
+#. SysConfig
+msgid "First Queue"
+msgstr ""
 
 #. SysConfig
 msgid "FirstLock"
@@ -14258,6 +14344,10 @@ msgstr "Oberflächen-Schema"
 
 #. SysConfig
 msgid "Fulltext index regex filters to remove parts of the text."
+msgstr ""
+
+#. SysConfig
+msgid "Fulltext search"
 msgstr ""
 
 #. SysConfig
@@ -14662,9 +14752,15 @@ msgstr ""
 
 #. SysConfig
 msgid ""
+"If enabled, the customer can search for tickets in all services (regardless "
+"what services are assigned to the customer)."
+msgstr ""
+
+#. SysConfig
+msgid ""
 "If enabled, the different overviews (Dashboard, LockedView, QueueView) will "
 "automatically refresh after the specified time."
-msgstr "Wenn diese Option aktiviert ist, werden die verschiedenen Übersichts-Seiten (Dashboard, LockedView, QueueView) automatisch nach der angegebenen Zeit aktualisiert."
+msgstr "Wenn diese Option aktiviert ist, werden die verschiedenen Übersichtsseiten (Dashboard, LockedView, Queue-Ansicht) automatisch nach der angegebenen Zeit aktualisiert."
 
 #. SysConfig
 msgid ""
@@ -14794,6 +14890,10 @@ msgid "Lastname, Firstname (UserLogin)"
 msgstr "Nachname, Vorname (BenutzerLogin)"
 
 #. SysConfig
+msgid "Left"
+msgstr ""
+
+#. SysConfig
 msgid "Link agents to groups."
 msgstr "Agenten zu Gruppen zuordnen."
 
@@ -14892,7 +14992,11 @@ msgstr "Liste aller Ticket-Ereignisse, welche in der grafischen Benutzeroberflä
 msgid ""
 "List of default Standard Templates which are assigned automatically to new "
 "Queues upon creation."
-msgstr "Liste der Standard-Vorlagen, welche neuen Queues nach Erstellung automatisch zugeordnet werden.."
+msgstr "Liste der Standardvorlagen, welche neuen Queues nach Erstellung automatisch zugeordnet werden."
+
+#. SysConfig
+msgid "List view"
+msgstr ""
 
 #. SysConfig
 msgid "Locked ticket."
@@ -15167,6 +15271,10 @@ msgid "New Ticket [%s] created (Q=%s;P=%s;S=%s)."
 msgstr "Neues Ticket [%s] erstellt (Q=%s;P=%s;S=%s)."
 
 #. SysConfig
+msgid "New Window"
+msgstr ""
+
+#. SysConfig
 msgid "New email ticket"
 msgstr "Neues E-Mail-Ticket"
 
@@ -15203,6 +15311,10 @@ msgid "No Notification"
 msgstr "Keine Benachrichtigung"
 
 #. SysConfig
+msgid "None"
+msgstr ""
+
+#. SysConfig
 msgid "Notification sent to \"%s\"."
 msgstr "Benachrichtigung versandt an \"%s\"."
 
@@ -15235,6 +15347,10 @@ msgstr "Anzahl der anzuzeigenen Tickets pro Seite in einem Suchergebnis in der K
 #. SysConfig
 msgid "Old: \"%s\" New: \"%s\""
 msgstr "Alt: \"%s\" Neu: \"%s\""
+
+#. SysConfig
+msgid "Online"
+msgstr ""
 
 #. SysConfig
 msgid "Open tickets (customer user)"
@@ -15714,7 +15830,7 @@ msgstr "Benötigte Rechte um den \"Verantwortlicher\"-Dialog eines Tickets im Ag
 #. SysConfig
 msgid ""
 "Resets and unlocks the owner of a ticket if it was moved to another queue."
-msgstr "Setzt den Owner eines TIckets zurück und entsperrt es, wenn das Ticket in eine andere Queue verschoben wird."
+msgstr "Setzt den Besitzer eines TIckets zurück und entsperrt es, wenn das Ticket in eine andere Queue verschoben wird."
 
 #. SysConfig
 msgid ""
@@ -15729,12 +15845,22 @@ msgid ""
 msgstr ""
 
 #. SysConfig
+msgid "Right"
+msgstr ""
+
+#. SysConfig
 msgid "Roles <-> Groups"
 msgstr "Rollen <-> Gruppen"
 
 #. SysConfig
 msgid "Running Process Tickets"
 msgstr "Aktive Prozesstickets"
+
+#. SysConfig
+msgid ""
+"Runs an initial wildcard search of the existing customer company when "
+"accessing the AdminCustomerCompany module."
+msgstr ""
 
 #. SysConfig
 msgid ""
@@ -15753,6 +15879,10 @@ msgstr ""
 #. SysConfig
 msgid "S/MIME Certificate Upload"
 msgstr "S/MIME Zertifikat hochladen"
+
+#. SysConfig
+msgid "Sample command output"
+msgstr ""
 
 #. SysConfig
 msgid ""
@@ -15782,6 +15912,10 @@ msgstr ""
 #. SysConfig
 msgid "Search backend router."
 msgstr ""
+
+#. SysConfig
+msgid "Second Queue"
+msgstr "Zweite Queue"
 
 #. SysConfig
 msgid "Select your frontend Theme."
@@ -17023,6 +17157,14 @@ msgid "SolutionInMin"
 msgstr "Lösungszeit in Minuten"
 
 #. SysConfig
+msgid "Some description!"
+msgstr ""
+
+#. SysConfig
+msgid "Some picture description!"
+msgstr ""
+
+#. SysConfig
 msgid ""
 "Sorts the tickets (ascendingly or descendingly) when a single queue is "
 "selected in the queue view and after the tickets are sorted by priority. "
@@ -17437,7 +17579,7 @@ msgstr "Diese Option setzt die Prozess-Ticket Standardpriorität"
 
 #. SysConfig
 msgid "This option defines the process tickets default queue."
-msgstr "Diese Option setzt die Prozess-Ticket Standardqueue"
+msgstr "Diese Option setzt die Prozess-Ticket Standard-Queue."
 
 #. SysConfig
 msgid "This option defines the process tickets default state."
@@ -17493,6 +17635,10 @@ msgstr "Schaltet die Anzeige der OTRS FeatureAddon-Liste in der Paket-Verwaltung
 #. SysConfig
 msgid "Toolbar Item for a shortcut."
 msgstr "Werkzeugleisteneintrag für den Schnellzugriff."
+
+#. SysConfig
+msgid "Tree view"
+msgstr ""
 
 #. SysConfig
 msgid ""
@@ -17629,6 +17775,10 @@ msgstr ""
 #. SysConfig
 msgid "Write a new, outgoing mail"
 msgstr "Schreiben Sie eine neue, ausgehende E-Mail"
+
+#. SysConfig
+msgid "Yes, but hide archived tickets"
+msgstr ""
 
 #. SysConfig
 msgid ""

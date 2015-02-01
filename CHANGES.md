@@ -1,3 +1,33 @@
+#4.0.6 2015-??-??
+
+#4.0.5 2015-01-20
+ - 2015-01-14 Updated translations, thanks to all translators.
+ - 2015-01-12 Fixed bug#[10992](http://bugs.otrs.org/show_bug.cgi?id=10992) - "Delete Filter" unsets general navigation selection in overviews.
+ - 2015-01-09 Fixed bug#[9856](http://bugs.otrs.org/show_bug.cgi?id=9856) - gpg option 0xlong breaks decryption of emails.
+ - 2015-01-09 Fixed bug#[10492](http://bugs.otrs.org/show_bug.cgi?id=10492) - ORA-03113 Error after scheduler start.
+ - 2015-01-09 Updated StopWord list in Sysconfig to improve performance of the StaticDB fulltext index.
+ - 2015-01-08 Fixed bug#[10884](http://bugs.otrs.org/show_bug.cgi?id=10884) - /etc/init.d/otrs running httpd is not detected on CentOS 7.
+
+#4.0.4 2015-01-13
+ - 2015-01-08 Updated translations, thanks to all translators.
+ - 2015-01-07 Fixed ticket# 2015010142053495 - Unable to change password in customer interface.
+ - 2015-01-06 Fixed bug#[10967](http://bugs.otrs.org/show_bug.cgi?id=10967) - Error 500 instead of showing a finished process.
+ - 2015-01-06 Fixed bug#[10972](http://bugs.otrs.org/show_bug.cgi?id=10972) - AgentTicketProcess - Form not loading when RichText Editor is turned off.
+ - 2015-01-05 Fixed bug#[10895](http://bugs.otrs.org/show_bug.cgi?id=10895) - Dynamic Field shown information in customer interface is not consistent with agent interface.
+ - 2015-01-05 Fixed bug#[10898](http://bugs.otrs.org/show_bug.cgi?id=10898) - Reply to note does not select the origin note sender.
+ - 2014-12-22 Fixed bug#[10551](http://bugs.otrs.org/show_bug.cgi?id=10551) - Error: No Process configured! - Agent interface.
+ - 2014-12-18 Added Invoker name requirement in Generic Interface Invoker constructor.
+ - 2014-12-18 Fixed bug#[10954](http://bugs.otrs.org/show_bug.cgi?id=10954) - Column title disappear  in list for CustumerCompany.
+ - 2014-12-18 Fixed bug#[10934](http://bugs.otrs.org/show_bug.cgi?id=10934) - Error while splitting ticket.
+ - 2014-12-18 Fixed bug#[10945](http://bugs.otrs.org/show_bug.cgi?id=10945) - Invalid CustomerCompanys are not marked invalid in CIC.
+ - 2014-12-18 Fixed bug#[10802](http://bugs.otrs.org/show_bug.cgi?id=10802) - Ticket Count in Dashboard Widget  with set Filter.
+ - 2014-12-17 Fixed bug#[10572](http://bugs.otrs.org/show_bug.cgi?id=10572) - ActivityDialogEntityID not working in ACLs from Process screens reducing States.
+ - 2014-12-16 Fixed bug#[10574](http://bugs.otrs.org/show_bug.cgi?id=10574) - DropDown "Crypt" is to large.
+ - 2014-12-16 Fixed bug#[10957](http://bugs.otrs.org/show_bug.cgi?id=10957) - Low "Max" attribute from Layout BuildSelection breaks execution.
+ - 2014-12-15 Fixed bug#[10941](http://bugs.otrs.org/show_bug.cgi?id=10941) - Process activity names not correctly displayed in process information widget.
+ - 2014-12-12 Followup for bug#[10724](http://bugs.otrs.org/show_bug.cgi?id=10724) - Sorting of DynamicField object types based on its Prio does not work.
+ - 2014-12-12 Fixed bug#[10948](http://bugs.otrs.org/show_bug.cgi?id=10948) - CloseParentAfterClosedChilds ACL does not work anymore.
+
 #4.0.3 2014-12-16
  - 2014-12-11 Updated translations, thanks to all translators.
  - 2014-12-11 Fixed bug#[10935](http://bugs.otrs.org/show_bug.cgi?id=10935) - "bin/otrs.ArticleStorageSwitch.pl" not working any more.

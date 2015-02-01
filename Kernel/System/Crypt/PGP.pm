@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Crypt/PGP.pm - the main crypt module
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -1124,7 +1124,7 @@ sub _CryptedWithKey {
 
     my @Keys;
     for my $Line (@GPGOutputLines) {
-        if ( $Line =~ m{\sID\s([0-9A-F]{8})}i ) {
+        if ( $Line =~ m{\sID\s((0x)?([0-9A-F]{8}){1,2})}i ) {
             my $KeyID = $1;
             my @Result = $Self->PrivateKeySearch( Search => $KeyID );
             if (@Result) {

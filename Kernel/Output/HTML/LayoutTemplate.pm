@@ -1,6 +1,6 @@
 # --
 # Kernel/Output/HTML/LayoutTemplate.pm - provides generic HTML output
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -273,8 +273,7 @@ sub Output {
                 $Self->{LogObject}->Log(
                     Priority => 'error',
                     Message  => <<EOF,
-$FilterConfig->{Module} wants to operate on ALL templates.
-This will prohibit the templates from being cached and can lead to serious performance issues.
+$FilterConfig->{Module} wants to operate on ALL templates. This will potentially slow down the system and is not recommended.
 EOF
                 );
             }

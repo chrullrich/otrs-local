@@ -1,6 +1,6 @@
 # --
 # Kernel/Modules/AdminPackageManager.pm - manage software packages
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -1312,6 +1312,7 @@ sub Run {
     $Frontend{SourceList} = $Self->{LayoutObject}->BuildSelection(
         Data        => { %List, %RepositoryRoot, %{$RepositoryCloudList}, },
         Name        => 'Source',
+        Title       => 'Repository List',
         Max         => 40,
         Translation => 0,
         SelectedID  => $Source,
@@ -1401,7 +1402,7 @@ sub Run {
 
     # remove not visible packages
     @RepositoryList = map {
-        ( !defined $_->{PackageIsVisible} || $_->{PackageIsVisible}->{Content} eq '1' ) ? $_ : ()
+        ( !defined $_->{PackageIsVisible} || ( $_->{PackageIsVisible}->{Content} && $_->{PackageIsVisible}->{Content} eq '1' ) ) ? $_ : ()
     } @RepositoryList;
 
     # if there are no local packages to show, a msg is displayed

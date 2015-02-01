@@ -1,6 +1,6 @@
 # --
 # AAABase.tt - $Text variable file
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -350,7 +350,6 @@
 [% Translate("Dear Mrs. %s,") | html %]
 [% Translate("Dear %s,") | html %]
 [% Translate("Hello %s,") | html %]
-[% Translate("This email address already exists. Please log in or reset your password.") | html %]
 [% Translate("This email address is not allowed to register. Please contact support staff.") | html %]
 [% Translate("New account created. Sent login information to %s. Please check your email.") | html %]
 [% Translate("Please press Back and try again.") | html %]

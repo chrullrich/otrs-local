@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Web/InterfaceCustomer.pm - the customer interface file (incl. auth)
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -748,7 +748,7 @@ sub Run {
                 Output => \$LayoutObject->CustomerLogin(
                     Title => 'Login',
                     Message =>
-                        'This email address already exists. Please log in or reset your password.',
+                        'This e-mail address already exists. Please log in or reset your password.',
                     UserTitle     => $GetParams{UserTitle},
                     UserFirstname => $GetParams{UserFirstname},
                     UserLastname  => $GetParams{UserLastname},

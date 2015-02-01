@@ -268,6 +268,25 @@ div.Headline .Flag {
 }
 
 /**
+ * @subsection  ArticleBody
+ * @note        styles for article body
+ */
+.MessageBrowser {
+    margin: 5px 0;
+    padding: 0px;
+    border: 1px solid #999;
+    border-radius: 2px;
+}
+
+.MessageBrowser p {
+     padding: 5px;
+     background-color: #DDD;
+     font-size: 11px;
+     text-align: center;
+}
+
+
+/**
  * @subsection  ArticleColors
  * @note        article colors
  */
@@ -455,7 +474,8 @@ div.Headline .Flag {
 }
 
 .ChronicalView > ul > li p {
-    max-height: 45px;
+    max-height: 106px;
+    white-space: pre;
     overflow: hidden;
     position: relative;
 }
@@ -737,6 +757,17 @@ div.Headline .Flag {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    font-size: 11px;
+}
+
+.ChronicalView .PlainText > div.ChatMessage.SystemGenerated {
+    font-style: italic;
+    color: #aaa;
+}
+
+.ChronicalView .PlainText > div.ChatMessage span {
+    font-weight: bold;
+    font-style: normal;
 }
 
 .ChronicalPlainText .ArticleChat {
