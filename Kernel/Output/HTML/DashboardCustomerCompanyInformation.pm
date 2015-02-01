@@ -1,6 +1,6 @@
 # --
 # Kernel/Output/HTML/DashboardCustomerCompanyInformation.pm
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -68,10 +68,15 @@ sub Run {
 
     # get layout object
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $ValidObject  = $Kernel::OM->Get('Kernel::System::Valid');
+    my $CompanyIsValid;
 
     # make ValidID readable
     if ( $CustomerCompany{ValidID} ) {
-        $CustomerCompany{ValidID} = $Kernel::OM->Get('Kernel::System::Valid')->ValidLookup(
+        my @ValidIDs = $ValidObject->ValidIDsGet();
+        $CompanyIsValid = grep { $CustomerCompany{ValidID} == $_ } @ValidIDs;
+
+        $CustomerCompany{ValidID} = $ValidObject->ValidLookup(
             ValidID => $CustomerCompany{ValidID},
         );
 
@@ -131,6 +136,12 @@ sub Run {
                 Value => $CustomerCompany{$Key},
             },
         );
+
+        if ( $Key eq 'CustomerCompanyName' && defined $CompanyIsValid && !$CompanyIsValid ) {
+            $LayoutObject->Block(
+                Name => 'ContentSmallCustomerCompanyInvalid',
+            );
+        }
     }
 
     my $Content = $LayoutObject->Output(
