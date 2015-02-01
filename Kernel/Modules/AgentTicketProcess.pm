@@ -1,6 +1,6 @@
 # --
 # Kernel/Modules/AgentTicketProcess.pm - to create process tickets
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -282,9 +282,17 @@ sub Run {
         ProcessState => \@ProcessStates,
         Interface    => ['AgentInterface'],
     );
+
+    # also get the list of processes initiated by customers, as an activity dialog might be
+    # configured for the agent interface
+    my $FollowupProcessList = $Self->{ProcessObject}->ProcessList(
+        ProcessState => \@ProcessStates,
+        Interface    => [ 'AgentInterface', 'CustomerInterface' ],
+    );
+
     my $ProcessEntityID = $Self->{ParamObject}->GetParam( Param => 'ProcessEntityID' );
 
-    if ( !IsHashRefWithData($ProcessList) ) {
+    if ( !IsHashRefWithData($ProcessList) && !IsHashRefWithData($FollowupProcessList) ) {
         return $Self->{LayoutObject}->ErrorScreen(
             Message => 'No Process configured!',
             Comment => 'Please contact the admin.',
@@ -303,6 +311,17 @@ sub Run {
         %{$ProcessList} = $Self->{TicketObject}->TicketAclData();
     }
 
+    $ACL = $Self->{TicketObject}->TicketAcl(
+        ReturnType    => 'Process',
+        ReturnSubType => '-',
+        Data          => $FollowupProcessList,
+        UserID        => $Self->{UserID},
+    );
+
+    if ( IsHashRefWithData($FollowupProcessList) && $ACL ) {
+        %{$FollowupProcessList} = $Self->{TicketObject}->TicketAclData();
+    }
+
     # get form id
     $Self->{FormID} = $Self->{ParamObject}->GetParam( Param => 'FormID' );
 
@@ -311,17 +330,16 @@ sub Run {
         $Self->{FormID} = $Self->{UploadCacheObject}->FormIDCreate();
     }
 
-    # If we have no Subaction or Subaction is 'Create' and submitted ProcessEntityID is invalid
-    # Display the ProcessList
-    if (
-        !$Self->{Subaction}
-        || (
-            $Self->{Subaction} eq 'DisplayActivityDialog'
-            && !$ProcessList->{$ProcessEntityID}
-            && $Self->{IsMainWindow}
-        )
-        )
-    {
+    # if we have no subaction display the process list to start a new one
+    if ( !$Self->{Subaction} ) {
+
+        # to display the process list is mandatory to have processes that agent can start
+        if ( !IsHashRefWithData($ProcessList) ) {
+            return $Self->{LayoutObject}->ErrorScreen(
+                Message => 'No Process configured!',
+                Comment => 'Please contact the admin.',
+            );
+        }
 
         # get process id (if any, a process should be pre-selected)
         $Param{ProcessID} = $Self->{ParamObject}->GetParam( Param => 'ID' );
@@ -362,7 +380,7 @@ sub Run {
     # if invalid process is detected on a ActivityDilog pop-up screen show an error message
     elsif (
         $Self->{Subaction} eq 'DisplayActivityDialog'
-        && !$ProcessList->{$ProcessEntityID}
+        && !$FollowupProcessList->{$ProcessEntityID}
         && !$Self->{IsMainWindow}
         )
     {
@@ -3731,7 +3749,7 @@ sub _RenderState {
         };
     }
 
-    my $States = $Self->_GetStates( %{ $Param{Ticket} } );
+    my $States = $Self->_GetStates( %{ $Param{GetParam} } );
 
     my %Data = (
         Label            => $Self->{LayoutObject}->{LanguageObject}->Translate("Next ticket state"),

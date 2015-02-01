@@ -8910,6 +8910,10 @@ msgstr ""
 msgid "Here you can select additional agents which should receive a notification regarding the new article."
 msgstr ""
 
+#. Template: AgentTicketActionCommon
+msgid "Note will be (also) received by:"
+msgstr ""
+
 #. Template: AgentTicketBounce
 msgid "Bounce Ticket"
 msgstr ""
@@ -9476,6 +9480,10 @@ msgstr ""
 
 #. Template: AgentTicketZoom
 msgid "No more events found. Please try changing the filter settings."
+msgstr ""
+
+#. Template: AgentTicketZoom
+msgid "To open links in the following article, you might need to press Ctrl or Cmd or Shift key while clicking the link (depending on your browser and OS)."
 msgstr ""
 
 #. Template: AgentTicketZoom
@@ -10251,6 +10259,10 @@ msgid "Go back to the previous page"
 msgstr ""
 
 #. SysConfig
+msgid " (work units)"
+msgstr ""
+
+#. SysConfig
 msgid "\"%s\"-notification sent to \"%s\"."
 msgstr ""
 
@@ -10271,7 +10283,15 @@ msgid "(UserLogin) Lastname, Firstname"
 msgstr ""
 
 #. SysConfig
+msgid "A Website"
+msgstr ""
+
+#. SysConfig
 msgid "A list of dynamic fields that are merged into the main ticket during a merge operation. Only dynamic fields that are empty in the main ticket will be set."
+msgstr ""
+
+#. SysConfig
+msgid "A picture"
 msgstr ""
 
 #. SysConfig
@@ -10399,7 +10419,7 @@ msgid "Agent interface module to check incoming emails in the Ticket-Zoom-View i
 msgstr ""
 
 #. SysConfig
-msgid "Agent interface notification module to check the used charset."
+msgid "Agent interface notification module to see the number of locked tickets."
 msgstr ""
 
 #. SysConfig
@@ -10731,6 +10751,10 @@ msgid "Comment for new history entries in the customer interface."
 msgstr ""
 
 #. SysConfig
+msgid "Comment2"
+msgstr ""
+
+#. SysConfig
 msgid "Company Status"
 msgstr ""
 
@@ -10879,6 +10903,10 @@ msgid "Create new process ticket"
 msgstr ""
 
 #. SysConfig
+msgid "Custom RSS Feed"
+msgstr ""
+
+#. SysConfig
 msgid "Custom text for the page shown to customers that have no tickets yet (if you need those text translated add them to a custom translation module)."
 msgstr ""
 
@@ -10916,6 +10944,14 @@ msgstr ""
 
 #. SysConfig
 msgid "Customer request via web."
+msgstr ""
+
+#. SysConfig
+msgid "Customer user search"
+msgstr ""
+
+#. SysConfig
+msgid "CustomerID search"
 msgstr ""
 
 #. SysConfig
@@ -11004,6 +11040,18 @@ msgstr ""
 
 #. SysConfig
 msgid "Define the max depth of queues."
+msgstr ""
+
+#. SysConfig
+msgid "Define the queue comment 2."
+msgstr ""
+
+#. SysConfig
+msgid "Define the service comment 2."
+msgstr ""
+
+#. SysConfig
+msgid "Define the sla comment 2."
 msgstr ""
 
 #. SysConfig
@@ -12123,7 +12171,7 @@ msgid "Defines the priority in which the information is logged and presented."
 msgstr ""
 
 #. SysConfig
-msgid "Defines the receipent target of the phone ticket and the sender of the email ticket (\"Queue\" shows all queues, \"SystemAddress\" displays all system addresses) in the agent interface."
+msgid "Defines the receipent target of the phone ticket and the sender of the email ticket (\"Queue\" shows all queues, \"System address\" displays all system addresses) in the agent interface."
 msgstr ""
 
 #. SysConfig
@@ -12687,6 +12735,10 @@ msgid "Escalation view"
 msgstr ""
 
 #. SysConfig
+msgid "EscalationTime"
+msgstr ""
+
+#. SysConfig
 msgid "Event module registration. For more performance you can define a trigger event (e. g. Event => TicketCreate)."
 msgstr ""
 
@@ -12760,6 +12812,10 @@ msgstr ""
 
 #. SysConfig
 msgid "Filter incoming emails."
+msgstr ""
+
+#. SysConfig
+msgid "First Queue"
 msgstr ""
 
 #. SysConfig
@@ -12840,6 +12896,10 @@ msgstr ""
 
 #. SysConfig
 msgid "Fulltext index regex filters to remove parts of the text."
+msgstr ""
+
+#. SysConfig
+msgid "Fulltext search"
 msgstr ""
 
 #. SysConfig
@@ -13203,6 +13263,10 @@ msgid "Lastname, Firstname (UserLogin)"
 msgstr ""
 
 #. SysConfig
+msgid "Left"
+msgstr ""
+
+#. SysConfig
 msgid "Link agents to groups."
 msgstr ""
 
@@ -13296,6 +13360,10 @@ msgstr ""
 
 #. SysConfig
 msgid "List of default Standard Templates which are assigned automatically to new Queues upon creation."
+msgstr ""
+
+#. SysConfig
+msgid "List view"
 msgstr ""
 
 #. SysConfig
@@ -13527,6 +13595,10 @@ msgid "New Ticket [%s] created (Q=%s;P=%s;S=%s)."
 msgstr ""
 
 #. SysConfig
+msgid "New Window"
+msgstr ""
+
+#. SysConfig
 msgid "New email ticket"
 msgstr ""
 
@@ -13559,6 +13631,10 @@ msgid "No Notification"
 msgstr ""
 
 #. SysConfig
+msgid "None"
+msgstr ""
+
+#. SysConfig
 msgid "Notification sent to \"%s\"."
 msgstr ""
 
@@ -13584,6 +13660,10 @@ msgstr ""
 
 #. SysConfig
 msgid "Old: \"%s\" New: \"%s\""
+msgstr ""
+
+#. SysConfig
+msgid "Online"
 msgstr ""
 
 #. SysConfig
@@ -13923,6 +14003,10 @@ msgid "Retains all services in listings even if they are children of invalid ele
 msgstr ""
 
 #. SysConfig
+msgid "Right"
+msgstr ""
+
+#. SysConfig
 msgid "Roles <-> Groups"
 msgstr ""
 
@@ -13947,6 +14031,10 @@ msgid "S/MIME Certificate Upload"
 msgstr ""
 
 #. SysConfig
+msgid "Sample command output"
+msgstr ""
+
+#. SysConfig
 msgid "Saves the attachments of articles. \"DB\" stores all data in the database (not recommended for storing big attachments). \"FS\" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data."
 msgstr ""
 
@@ -13968,6 +14056,10 @@ msgstr ""
 
 #. SysConfig
 msgid "Search backend router."
+msgstr ""
+
+#. SysConfig
+msgid "Second Queue"
 msgstr ""
 
 #. SysConfig
@@ -14847,6 +14939,14 @@ msgid "SolutionInMin"
 msgstr ""
 
 #. SysConfig
+msgid "Some description!"
+msgstr ""
+
+#. SysConfig
+msgid "Some picture description!"
+msgstr ""
+
+#. SysConfig
 msgid "Sorts the tickets (ascendingly or descendingly) when a single queue is selected in the queue view and after the tickets are sorted by priority. Values: 0 = ascending (oldest on top, default), 1 = descending (youngest on top). Use the QueueID for the key and 0 or 1 for value."
 msgstr ""
 
@@ -15203,6 +15303,10 @@ msgid "Toolbar Item for a shortcut."
 msgstr ""
 
 #. SysConfig
+msgid "Tree view"
+msgstr ""
+
+#. SysConfig
 msgid "Turns off SSL certificate validation, for example if you use a transparent HTTPS proxy. Use at your own risk!"
 msgstr ""
 
@@ -15312,6 +15416,10 @@ msgstr ""
 
 #. SysConfig
 msgid "Write a new, outgoing mail"
+msgstr ""
+
+#. SysConfig
+msgid "Yes, but hide archived tickets"
 msgstr ""
 
 #. SysConfig

@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Ticket.pm - all ticket functions
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -6853,8 +6853,10 @@ sub TicketArticleStorageSwitch {
         );
 
         my $TicketObjectDestination = Kernel::System::Ticket->new();
-        if (   !$TicketObjectDestination
-            || !$TicketObjectDestination->isa( 'Kernel::System::Ticket::' . $Param{Destination} ) )
+        if (
+            !$TicketObjectDestination
+            || !$TicketObjectDestination->isa( 'Kernel::System::Ticket::' . $Param{Destination} )
+            )
         {
             $Self->{LogObject}->Log(
                 Priority => "error",
