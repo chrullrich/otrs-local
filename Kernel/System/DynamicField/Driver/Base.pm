@@ -1,6 +1,6 @@
 # --
 # Kernel/System/DynamicField/Driver/Base.pm - Dynamic field backend functions
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -36,7 +36,7 @@ sub ValueIsDifferent {
 
     # special cases where the values are different but they should be reported as equals
     return if !defined $Param{Value1} && ( defined $Param{Value2} && $Param{Value2} eq '' );
-    return if !defined $Param{Value2} && $Param{Value1} eq '';
+    return if !defined $Param{Value2} && ( defined $Param{Value1} && $Param{Value1} eq '' );
 
     # compare the results
     return DataIsDifferent(

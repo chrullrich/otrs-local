@@ -1,6 +1,6 @@
 # --
 # Kernel/Modules/CustomerTicketZoom.pm - to get a closer view
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -1157,7 +1157,7 @@ sub _Mask {
     for my $DynamicFieldConfig ( @{$DynamicField} ) {
         next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
-        # skip the dynamic field if is not desinged for customer interface
+        # skip the dynamic field if is not designed for customer interface
         my $IsCustomerInterfaceCapable = $Self->{BackendObject}->HasBehavior(
             DynamicFieldConfig => $DynamicFieldConfig,
             Behavior           => 'IsCustomerInterfaceCapable',
@@ -1169,7 +1169,7 @@ sub _Mask {
             ObjectID           => $Param{TicketID},
         );
 
-        next DYNAMICFIELD if !$Value;
+        next DYNAMICFIELD if !defined $Value;
         next DYNAMICFIELD if $Value eq "";
 
         # get print string for this dynamic field

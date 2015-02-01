@@ -1,6 +1,6 @@
 # --
 # scripts/test/Layout/Template/OutputFilters.t - layout testscript
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -124,17 +124,16 @@ Test: B&B 4
             },
             "Frontend::Output::FilterElementPost" => {},
         },
-        IsCacheable => 0,
+        IsCacheable => 1,
         UseCache    => 0,
         Data        => {
             Title => 'B&B 5'
         },
-        Result => 'OutputFilterPrePrefix5:
-Test: B&B 5
+        Result => 'Test: B&B 5
 ',
     },
     {
-        Name   => 'Output filter pre, all templates, cache test (uncacheable)',
+        Name   => 'Output filter pre, all templates, filter ignored',
         Config => {
             "Frontend::Output::FilterElementPre" => {
                 "100-TestFilter" => {
@@ -147,13 +146,12 @@ Test: B&B 5
             },
             "Frontend::Output::FilterElementPost" => {},
         },
-        IsCacheable => 0,
+        IsCacheable => 1,
         UseCache    => 1,
         Data        => {
             Title => 'B&B 6'
         },
-        Result => 'OutputFilterPrePrefix6:
-Test: B&B 6
+        Result => 'Test: B&B 6
 ',
     },
     {

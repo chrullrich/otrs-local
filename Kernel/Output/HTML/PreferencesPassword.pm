@@ -1,6 +1,6 @@
 # --
 # Kernel/Output/HTML/PreferencesPassword.pm
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -11,6 +11,9 @@ package Kernel::Output::HTML::PreferencesPassword;
 
 use strict;
 use warnings;
+
+use Kernel::System::Auth;
+use Kernel::System::CustomerAuth;
 
 sub new {
     my ( $Type, %Param ) = @_;
