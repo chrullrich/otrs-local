@@ -407,6 +407,7 @@ sub Data {
         'Redo' => 'Wiederholen',
         'Scheduler process is registered but might not be running.' => 'Scheduler-Prozess ist registriert, scheint aber nicht zu laufen.',
         'Scheduler is not running.' => 'Scheduler läuft nicht.',
+        'All sessions have been killed, except for your own.' => 'Alle Sitzungen wurden gelöscht, außer Ihrer eigenen.',
         'Can\'t contact registration server. Please try again later.' => 'Registration-Server konnte nicht erreicht werden. Bitte versuchen Sie es später noch einmal.',
         'No content received from registration server. Please try again later.' =>
             'Registration-Server lieferte keinen Inhalt. Bitte versuchen Sie es später noch einmal.',
@@ -1115,7 +1116,7 @@ sub Data {
         'You can manage these groups via the configuration setting "CustomerGroupAlwaysGroups".' =>
             'Sie können diese Gruppen mit der Konfigurationseinstellung "CustomerGroupAlwaysGroups" bearbeiten.',
         'Filter for Groups' => 'Filter für Gruppen',
-        'Just start typing to filter...' => 'Beginnen Sie mit der Eingabe zum zu filtern...',
+        'Just start typing to filter...' => 'Beginnen Sie mit der Eingabe, um zu filtern...',
         'Select the customer:group permissions.' => 'Wählen sie die Kunde:Gruppe-Rechte aus',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             'Wenn nichts ausgewählt ist, hat der Kunde in dieser Gruppe keine Rechte (und kann nicht auf Tickets zugreifen).',
@@ -1732,6 +1733,8 @@ sub Data {
         'Your OTRS Free is the base for all future actions. Please register first before you continue with the upgrade process of %s!' =>
             'Bitte registrieren Sie Ihr OTRS Free zunächst, wenn Sie mit dem Upgrade auf die %s fortfahren möchten!',
         'Register this System' => 'Registrieren Sie dieses System',
+        'System Registration is disabled for your system. Please check your configuration.' =>
+            'Die Systemregistrierung ist für Ihr System deaktiviert. Bitte überprüfen Sie die Konfiguration.',
         'Before you can benefit from %s, please contact %s to get your %s contract.' =>
             'Damit Sie schon bald die %s nutzen können, fehlt nur noch ein Schritt: Bitte kontaktieren Sie unser Sales Team unter %s, um einen Vertrag abzuschließen.',
         'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.' =>
@@ -1754,9 +1757,9 @@ sub Data {
         'Chat' => 'Chat',
         'Timeline view in ticket zoom' => 'Timeline-View im Ticket-Zoom',
         'DynamicField ContactWithData' => 'Dynamisches Feld Kontaktdaten',
-        'DynamicField Database' => '',
-        'SLA Selection Dialog' => '',
-        'Ticket Attachment View' => '',
+        'DynamicField Database' => 'Dynamisches Datenbank Feld',
+        'SLA Selection Dialog' => 'SLA Auswahldialog',
+        'Ticket Attachment View' => 'Ticket-Anlagenansicht',
         'The %s skin' => 'Den %s-Skin',
 
         # Template: AdminPGP
@@ -1908,7 +1911,7 @@ sub Data {
         'Please note that changing this activity dialog will affect the following activities' =>
             'Veränderungen an diesem ActivityDialog werden sich auf folgende Activities auswirken',
         'Please note that customer users will not be able to see or use the following fields: Owner, Responsible, Lock, PendingTime and CustomerID.' =>
-            'Bitte beachten Sie, dass Kunden-Benutzer die folgenden Felder nicht sehen oder benutzen können: Besitzer (Owner), Verantwortlicher (Responsible), Sperre (Lock), Warten bis (PendingTime) und Kundennummer (CustomerID).',
+            'Bitte beachten Sie, dass Kundenbenutzer die folgenden Felder nicht sehen oder benutzen können: Besitzer (Owner), Verantwortlicher (Responsible), Sperre (Lock), Warten bis (PendingTime) und Kundennummer (CustomerID).',
         'The Queue field can only be used by customers when creating a new ticket.' =>
             'Das Queue-Feld kann nur von Kunden ausgewählt werden, wenn diese ein neues Ticket erstellen.',
         'Activity Dialog' => 'Aktivitäts-Dialog',
@@ -2249,6 +2252,11 @@ sub Data {
         'Permissions to move tickets into this group/queue.' => 'Rechte, um Tickets in eine Gruppe/Queue zu verschieben.',
         'create' => 'Erstellen',
         'Permissions to create tickets in this group/queue.' => 'Rechte, um in einer Gruppe/Queue Tickets zu erstellen.',
+        'note' => 'Notiz',
+        'Permissions to add notes to tickets in this group/queue.' => 'Berechtigung zum Hinzufügen von Notizen zu Tickets dieser Gruppe/Queue.',
+        'owner' => 'Besitzer',
+        'Permissions to change the owner of tickets in this group/queue.' =>
+            'Berechtigung zum Ändern des Besitzers von Tickets dieser Gruppe/Queue.',
         'priority' => 'Priorität',
         'Permissions to change the ticket priority in this group/queue.' =>
             'Rechte, um die Priorität eines Tickets in einer Gruppe/Queue zu ändern.',
@@ -2360,7 +2368,7 @@ sub Data {
         'Send by Email' => 'Per E-Mail senden',
         'The support bundle is too large to send it by email, this option has been disabled.' =>
             'Das Supportpaket ist zu groß, um es manuell zu versenden. Diese Option wurde deaktiviert.',
-        'The email address for this user is invalid, this ption has been disabled.' =>
+        'The email address for this user is invalid, this option has been disabled.' =>
             'Die E-Mailadresse für diesen Benutzer ist ungültig, Die Auswahl wurde deaktivert.',
         'Sending' => 'Wird gesendet',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
@@ -2484,7 +2492,7 @@ sub Data {
         'All Sessions' => 'Alle Sitzungen',
         'Agent Sessions' => 'Agenten-Sitzungen',
         'Customer Sessions' => 'Kunden-Sitzungen',
-        'Kill all Sessions, exept current' => 'Alle Sitzungen außer der aktuellen löschen',
+        'Kill all Sessions, except for your own' => 'Alle Sitzungen außer Ihrer eigenen löschen',
 
         # Template: AdminTemplate
         'Manage Templates' => 'Vorlagen verwalten',
@@ -2536,11 +2544,6 @@ sub Data {
         'Manage Agent-Group Relations' => 'Zuordnungen von Agent und Gruppe verwalten',
         'Change Group Relations for Agent' => 'Gruppenzuordnungen verwalten für Agenten',
         'Change Agent Relations for Group' => 'Agentenzuordnungen verwalten für Gruppe',
-        'note' => 'Hinweis',
-        'Permissions to add notes to tickets in this group/queue.' => 'Berechtigung zum Hinzufügen von Hinweisen zu Tickets dieser Gruppe/Queue.',
-        'owner' => 'Besitzer',
-        'Permissions to change the owner of tickets in this group/queue.' =>
-            'Berechtigung zum Ändern des Besitzers von Tickets dieser Gruppe/Queue.',
 
         # Template: AgentBook
         'Address Book' => 'Adressbuch',
@@ -2789,7 +2792,7 @@ sub Data {
         'Inform involved Agents' => 'Involvierte Agenten informieren',
         'Here you can select additional agents which should receive a notification regarding the new article.' =>
             'Hier können Sie zusätzliche Agenten auswählen, die eine Benachrichtigung über den neuen Artikel enthalten sollen.',
-        'Note will be (also) received by:' => '',
+        'Note will be (also) received by:' => 'Die Notiz wird (auch) gesendet an:',
 
         # Template: AgentTicketBounce
         'Bounce Ticket' => 'Ticket umleiten',
@@ -2979,6 +2982,7 @@ sub Data {
             'Keine weiteren Ereignisse gefunden. Versuchen Sie die Filtereinstellungen zu verändern.',
         'To open links in the following article, you might need to press Ctrl or Cmd or Shift key while clicking the link (depending on your browser and OS).' =>
             '',
+        'Close this message' => 'Diese Nachricht schließen',
         'Article could not be opened! Perhaps it is on another article page?' =>
             'Artikel konnte nicht geöffnet werden. Befindet er sich vielleicht auf einer anderen Artikelseite?',
 
@@ -3054,7 +3058,7 @@ sub Data {
         # Template: CustomerTicketSearch
         'Profile' => 'Profil',
         'e. g. 10*5155 or 105658*' => 'z. B. 10*5155 oder 105658*',
-        'Customer ID' => 'Kunden-ID',
+        'Customer ID' => 'Kundennummer',
         'Fulltext search in tickets (e. g. "John*n" or "Will*")' => 'Volltextsuche in Tickets (z. B. "Max*" oder "Muster*")',
         'Carbon Copy' => 'Kopie an',
         'e. g. m*file or myfi*' => 'z.B.. m*file oder myfi*',
@@ -3128,7 +3132,7 @@ sub Data {
         # Template: Header
         'You are logged in as' => 'Angemeldet als',
         'There are new chat requests available. Please visit the chat manager.' =>
-            '',
+            'Es sind neue Chat-Anfragen verfügbar. Bitte öffnen Sie die Chat-Verwaltung.',
 
         # Template: Installer
         'JavaScript not available' => 'JavaScript nicht aktiviert oder nicht unterstützt.',
@@ -3240,9 +3244,6 @@ sub Data {
         'Insufficient Rights' => 'Nicht ausreichende Rechte',
         'Back to the previous page' => 'Zurück zur vorhergehenden Seite',
 
-        # Template: Notify
-        'Close this message' => 'Diese Nachricht schließen',
-
         # Template: Pagination
         'Show first page' => 'Erste Seite anzeigen',
         'Show previous pages' => 'Vorige Seiten anzeigen',
@@ -3325,7 +3326,7 @@ sub Data {
         'Agent interface module to check incoming emails in the Ticket-Zoom-View if the S/MIME-key is available and true.' =>
             'Modul im Agenten-Interface um eingehende E-Mails in der TicketZoomView auf vorhandene und gültige S/MIME-Schlüssel zu überprüfen. ',
         'Agent interface notification module to see the number of locked tickets.' =>
-            '',
+            'Benachrichtigunsmodul im Agenten-Interface um die Anzahl an gesperrten Tickets einsehen zu können.',
         'Agent interface notification module to see the number of tickets an agent is responsible for.' =>
             'Benachrichtigungsmodul im Agenten-Interface um die Zahl der Tickets anzuzeigen, für die ein Agent verantwortlich ist.',
         'Agent interface notification module to see the number of tickets in My Services.' =>
@@ -3505,7 +3506,7 @@ sub Data {
         'Create new email ticket and send this out (outbound)' => 'Neues E-Mail-Ticket erzeugen und versenden (ausgehend)',
         'Create new phone ticket (inbound)' => 'Neues Telefonticket erstellen (eingehend)',
         'Create new process ticket' => 'Neues Prozessticket',
-        'Custom RSS Feed' => '',
+        'Custom RSS Feed' => 'Benutzerspezifischer RSS Feed',
         'Custom text for the page shown to customers that have no tickets yet (if you need those text translated add them to a custom translation module).' =>
             'Benutzerdefinierter Text für Kunden, die noch keine Tickets haben (wenn Sie für diesen Text eine Übersetzung wünschen, fügen Sie die Übersetzung in einem eigenen Übersetzungsmodul hinzu).',
         'Customer Administration' => 'Kundenverwaltung',
@@ -3519,8 +3520,8 @@ sub Data {
         'Customer item (icon) which shows the open tickets of this customer as info block. Setting CustomerUserLogin to 1 searches for tickets based on login name rather than CustomerID.' =>
             'Kunden-Tickets (Symbol), die die offenen Tickets eines Kunden als Infoblock anzeigt. Setzen Sie die Einstellung CustomerUserLogin auf 1 um Tickets auf Basis des Login-Namens zu suchen anstatt auf Basis der CustomerID.',
         'Customer request via web.' => 'Kunde stellte Anfrage über Web.',
-        'Customer user search' => '',
-        'CustomerID search' => '',
+        'Customer user search' => 'Kundenbenutzersuche',
+        'CustomerID search' => 'Kundennummernsuche',
         'CustomerName' => 'Kundenname',
         'Customers <-> Groups' => 'Kunden <-> Gruppen',
         'Data used to export the search result in CSV format.' => 'Daten die verwendet werden um das Suchergebnis im CSV-Format zu exportieren.',
@@ -3553,9 +3554,9 @@ sub Data {
         'Define dynamic field name for start time. This field has to be manually added to the system as Ticket: "Date / Time" and must be activated in ticket creation screens and/or in any other ticket action screens.' =>
             'Definiert dynamische Feldnamen für die Startzeit. Dieses Feld muss manuell im System als Ticket: "Datum / Uhrzeit" hinzugefügt werden und muss in Ticketerstellungsoberflächen und / oder in anderen Ticket-Aktionsoberflächen aktiviert werden.',
         'Define the max depth of queues.' => 'Definiert die maximale Tiefe von Queues',
-        'Define the queue comment 2.' => '',
-        'Define the service comment 2.' => '',
-        'Define the sla comment 2.' => '',
+        'Define the queue comment 2.' => 'Definiert den 2. Queue-Kommentar',
+        'Define the service comment 2.' => 'Lege den Servicekommentar 2 fest.',
+        'Define the sla comment 2.' => 'Lege den SLA-Kommentar 2 fest.',
         'Define the start day of the week for the date picker for the indicated calendar.' =>
             'Definiert den Wochentag, mit dem die Woche im angegebenen Kalender beginnt.',
         'Define the start day of the week for the date picker.' => 'Definiert den Beginn einer Woche für den Datumswähler.',
@@ -4830,8 +4831,8 @@ sub Data {
             '',
         'S/MIME Certificate Upload' => 'S/MIME Zertifikat hochladen',
         'Sample command output' => '',
-        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data.' =>
-            '',
+        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data. Note: Searching for attachment names is not supported when "FS" is used.' =>
+            'Speicherung von Artikel-Anlagen. "DB" legt alle Daten in der Datenbank ab (nicht empfohlen für große Anlagen). "FS" legt alle Daten im Dateisystem ab; dies ist schneller, jedoch sollte der Webserver mit dem OTRS-Benutzer betrieben werden. Sie können im laufenden Betrieb ohne Datenverlust zwischen den Modulen wechseln. Bitte beachten Sie, dass das Suchen nach Anlagen für "FS" nicht unterstützt wird.',
         'Schedule a maintenance period.' => 'Systemwartung planen',
         'Search Customer' => 'Kunden suchen',
         'Search User' => 'Benutzer suchen',

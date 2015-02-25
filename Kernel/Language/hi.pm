@@ -409,6 +409,7 @@ sub Data {
         'Redo' => 'फिर से करना',
         'Scheduler process is registered but might not be running.' => '',
         'Scheduler is not running.' => '',
+        'All sessions have been killed, except for your own.' => '',
         'Can\'t contact registration server. Please try again later.' => '',
         'No content received from registration server. Please try again later.' =>
             '',
@@ -1734,6 +1735,8 @@ sub Data {
         'Your OTRS Free is the base for all future actions. Please register first before you continue with the upgrade process of %s!' =>
             '',
         'Register this System' => '',
+        'System Registration is disabled for your system. Please check your configuration.' =>
+            '',
         'Before you can benefit from %s, please contact %s to get your %s contract.' =>
             '',
         'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.' =>
@@ -2251,6 +2254,11 @@ sub Data {
         'Permissions to move tickets into this group/queue.' => 'इस समूह/श्रेणी में टिकट स्थानांतरित करने के लिए अनुमतियाँ।',
         'create' => 'बनाने के लिए',
         'Permissions to create tickets in this group/queue.' => 'इस समूह/श्रेणी में टिकट बनाने के लिए करने के लिए अनुमतियाँ।',
+        'note' => 'टिप्पणी',
+        'Permissions to add notes to tickets in this group/queue.' => 'इस समूह/श्रेणी मॆ टिकटों को टिप्पणी जोड़ने के लिए अनुमतियाँ।',
+        'owner' => 'स्वामी',
+        'Permissions to change the owner of tickets in this group/queue.' =>
+            'इस समूह/श्रेणी मॆ टिकटों के स्वामी बदलने के लिए अनुमतियाँ।',
         'priority' => 'प्राथमिकता',
         'Permissions to change the ticket priority in this group/queue.' =>
             'इस समूह/श्रेणी में टिकट की प्राथमिकता बदलने के लिए अनुमतियाँ।',
@@ -2362,7 +2370,7 @@ sub Data {
         'Send by Email' => '',
         'The support bundle is too large to send it by email, this option has been disabled.' =>
             '',
-        'The email address for this user is invalid, this ption has been disabled.' =>
+        'The email address for this user is invalid, this option has been disabled.' =>
             '',
         'Sending' => '',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
@@ -2486,7 +2494,7 @@ sub Data {
         'All Sessions' => '',
         'Agent Sessions' => '',
         'Customer Sessions' => '',
-        'Kill all Sessions, exept current' => '',
+        'Kill all Sessions, except for your own' => '',
 
         # Template: AdminTemplate
         'Manage Templates' => '',
@@ -2538,11 +2546,6 @@ sub Data {
         'Manage Agent-Group Relations' => 'प्रतिनिधि-समूह संबंधों का प्रबंधन करें',
         'Change Group Relations for Agent' => 'प्रतिनिधि के लिए समूह संबंधों को बदलॆ',
         'Change Agent Relations for Group' => 'समूह के लिए प्रतिनिधि संबंधों को बदलॆ',
-        'note' => 'टिप्पणी',
-        'Permissions to add notes to tickets in this group/queue.' => 'इस समूह/श्रेणी मॆ टिकटों को टिप्पणी जोड़ने के लिए अनुमतियाँ।',
-        'owner' => 'स्वामी',
-        'Permissions to change the owner of tickets in this group/queue.' =>
-            'इस समूह/श्रेणी मॆ टिकटों के स्वामी बदलने के लिए अनुमतियाँ।',
 
         # Template: AgentBook
         'Address Book' => 'पता पुस्तिका',
@@ -2981,6 +2984,7 @@ sub Data {
             '',
         'To open links in the following article, you might need to press Ctrl or Cmd or Shift key while clicking the link (depending on your browser and OS).' =>
             '',
+        'Close this message' => '',
         'Article could not be opened! Perhaps it is on another article page?' =>
             '',
 
@@ -3241,9 +3245,6 @@ sub Data {
         # Template: NoPermission
         'Insufficient Rights' => 'अपर्याप्त अधिकार',
         'Back to the previous page' => 'पिछले पृष्ठ पर वापस जाएँ',
-
-        # Template: Notify
-        'Close this message' => '',
 
         # Template: Pagination
         'Show first page' => 'पहला पृष्ठ दिखाएँ ',
@@ -4832,8 +4833,8 @@ sub Data {
             '"प्रदर्शन" मोड में प्रणाली चलाता है। यदि "हाँ" पर निर्धारित है,प्रतिनिधि वरीयताओं को बदल सकते हैं,इस तरह की भाषा के चयन के रूप में और थीम प्रतिनिधि वेब अंतरफलक के द्वारा। ये परिवर्तन केवल वर्तमान सत्र के लिए मान्य हैं। प्रतिनिधियो को अपना कूटशब्द बदलना संभव नहीं होगा।',
         'S/MIME Certificate Upload' => 'S/MIME प्रमाण पत्र अपलोड करें।',
         'Sample command output' => '',
-        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data.' =>
-            'अनुच्छेदो के संलग्नक सुरक्षित करता है। "DB" आंकड़ाकोष में सभी आंकड़ों को संग्रहीत करता है(बड़े संलग्नक संग्रहीत करने के लिए अनुशंसित नहीं)। "FS" फाइल प्रणाली पर संग्रहीत करता है;यह तेज है, लेकिन वेबसर्वर OTRS उपयोगकर्ता के अधीन चलाना चाहिए। आप मॉड्यूल बदल सकते यहां तक कि कोई प्रणाली पहले से ही उत्पादन में है बिना आंकड़ो को हानि पहुँचायें।',
+        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data. Note: Searching for attachment names is not supported when "FS" is used.' =>
+            '',
         'Schedule a maintenance period.' => '',
         'Search Customer' => 'ग्राहक खोजें',
         'Search User' => '',
