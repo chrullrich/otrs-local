@@ -1,4 +1,33 @@
-#4.0.6 2015-??-??
+#4.0.7 2015-??-??
+
+#4.0.6 2015-02-24
+ - 2015-02-18 Updated translations, thanks to all translators.
+ - 2015-02-13 Fixed bug#[11038](http://bugs.otrs.org/show_bug.cgi?id=11038) - Notification is not sent.
+ - 2015-02-13 Added otrs.CheckCloudServices.pl script to help to diagnose cloud services connection problems.
+ - 2015-02-09 Fixed bug#[10905](http://bugs.otrs.org/show_bug.cgi?id=10905) - ArticleContent with Inline-Images are not shown completely.
+ - 2015-02-09 Fixed bug for IE8 - Handle jQuery selectors correctly (Ticket#2014120242045831).
+ - 2015-02-06 Fixed bug#[10942](http://bugs.otrs.org/show_bug.cgi?id=10942) - Adressbook search does not permit to add contacts via click.
+ - 2015-02-06 Fixed bug#[11011](http://bugs.otrs.org/show_bug.cgi?id=11011) - OTRS does not honor customer change.
+ - 2015-02-03 Fixed bug#[10902](http://bugs.otrs.org/show_bug.cgi?id=10902) - Missing translations on login screen.
+ - 2015-02-03 Fixed bug#[11047](http://bugs.otrs.org/show_bug.cgi?id=11047) - Missing translation when updating password.
+ - 2015-02-03 Fixed bug#[11050](http://bugs.otrs.org/show_bug.cgi?id=11050) - Wrong sortation of Ticket Overview settings.
+ - 2015-02-03 Fixed bug#[10955](http://bugs.otrs.org/show_bug.cgi?id=10955) - Missing translations in Dashboard and TicketOverview settings.
+ - 2015-01-29 Fixed bug#[10968](http://bugs.otrs.org/show_bug.cgi?id=10968) - Dashlet: Filter Attributes with more then one CustomerID doesn't work.
+ - 2015-01-28 Fixed bug#[11033](http://bugs.otrs.org/show_bug.cgi?id=11033) - Wrong webservice update confirmation text.
+ - 2015-01-28 Fixed bug#[11023](http://bugs.otrs.org/show_bug.cgi?id=11023) - SQL error with "0 oracle" for article body in Ticket Search.
+ - 2015-01-27 Fixed bug#[11037](http://bugs.otrs.org/show_bug.cgi?id=11037) - TranstionAction smart thats should support <OTRS_TICKET_*> instead of <OTRS_Ticket_*>.
+ - 2015-01-27 Added OTRS Business Solution™ dynamic fields removal on downgrade to OTRS Free.
+ - 2015-01-27 Added DB consistency checks to the deployment check for the OTRS Business Solution™.
+ - 2015-01-27 Fixed bug#[10198](http://bugs.otrs.org/show_bug.cgi?id=10198) - ORA-1795 occurrs, if a lot of tickets are selected at Column Filter in TicketOverviwSmall.
+ - 2015-01-26 Fixed bug#[11034](http://bugs.otrs.org/show_bug.cgi?id=11034) - generic interface invoker event delete and add bug.
+ - 2015-01-24 Fixed bug#[11018](http://bugs.otrs.org/show_bug.cgi?id=11018) - Internal Server Error, instead of warning.
+ - 2015-01-24 Improved migration script to be tolerant on missing ProcessManagement Transition Actions.
+ - 2015-01-22 Fixed bug#[11021](http://bugs.otrs.org/show_bug.cgi?id=11021) - ProcessManagement: TransitionAction delete does not check if is used.
+ - 2015-01-22 Fixed bug#[11019](http://bugs.otrs.org/show_bug.cgi?id=11019) - ACLs for hiding Processes are not working anymore in 4.0.
+ - 2015-01-20 Updated translations, thanks to all translators.
+ - 2015-01-20 Message about opening external links from articles is now removable.
+ - 2015-01-20 Removed buttons for System Registration if System Registration is disabled.
+ - 2015-01-19 Fixed bug#[10980](http://bugs.otrs.org/show_bug.cgi?id=10980) - InterfaceCustomer.pm has no translation.
 
 #4.0.5 2015-01-20
  - 2015-01-14 Updated translations, thanks to all translators.

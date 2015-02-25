@@ -406,6 +406,7 @@ sub Data {
         'Redo' => 'Làm lại',
         'Scheduler process is registered but might not be running.' => 'Quá trình lên lịch được đăng ký, nhưng có thể không được chạy.',
         'Scheduler is not running.' => 'Lịch trình không hoạt động.',
+        'All sessions have been killed, except for your own.' => '',
         'Can\'t contact registration server. Please try again later.' => 'Không thể liên lạc với máy chủ đăng ký. Vui lòng thử lại sau.',
         'No content received from registration server. Please try again later.' =>
             'Không có nội dung nhận được từ máy chủ đăng ký. Vui lòng thử lại sau.',
@@ -1731,6 +1732,8 @@ sub Data {
         'Your OTRS Free is the base for all future actions. Please register first before you continue with the upgrade process of %s!' =>
             '',
         'Register this System' => '',
+        'System Registration is disabled for your system. Please check your configuration.' =>
+            '',
         'Before you can benefit from %s, please contact %s to get your %s contract.' =>
             '',
         'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.' =>
@@ -2248,6 +2251,11 @@ sub Data {
         'Permissions to move tickets into this group/queue.' => 'Các quyền để chuyển thẻ vào trong nhóm/hàng đợi này.',
         'create' => 'tạo',
         'Permissions to create tickets in this group/queue.' => 'Các quyền để tạo thẻ trong nhóm/hàng đợi này.',
+        'note' => '',
+        'Permissions to add notes to tickets in this group/queue.' => '',
+        'owner' => 'phụ trách',
+        'Permissions to change the owner of tickets in this group/queue.' =>
+            '',
         'priority' => 'Ưu tiên',
         'Permissions to change the ticket priority in this group/queue.' =>
             'Các quyền để thay đổi ưu tiên thẻ trong nhóm/hàng đợi này.',
@@ -2359,7 +2367,7 @@ sub Data {
         'Send by Email' => '',
         'The support bundle is too large to send it by email, this option has been disabled.' =>
             '',
-        'The email address for this user is invalid, this ption has been disabled.' =>
+        'The email address for this user is invalid, this option has been disabled.' =>
             '',
         'Sending' => '',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
@@ -2483,7 +2491,7 @@ sub Data {
         'All Sessions' => '',
         'Agent Sessions' => '',
         'Customer Sessions' => '',
-        'Kill all Sessions, exept current' => '',
+        'Kill all Sessions, except for your own' => '',
 
         # Template: AdminTemplate
         'Manage Templates' => '',
@@ -2535,11 +2543,6 @@ sub Data {
         'Manage Agent-Group Relations' => '',
         'Change Group Relations for Agent' => '',
         'Change Agent Relations for Group' => '',
-        'note' => '',
-        'Permissions to add notes to tickets in this group/queue.' => '',
-        'owner' => 'phụ trách',
-        'Permissions to change the owner of tickets in this group/queue.' =>
-            '',
 
         # Template: AgentBook
         'Address Book' => 'Sổ địa chỉ',
@@ -2978,6 +2981,7 @@ sub Data {
             '',
         'To open links in the following article, you might need to press Ctrl or Cmd or Shift key while clicking the link (depending on your browser and OS).' =>
             '',
+        'Close this message' => '',
         'Article could not be opened! Perhaps it is on another article page?' =>
             '',
 
@@ -3238,9 +3242,6 @@ sub Data {
         # Template: NoPermission
         'Insufficient Rights' => '',
         'Back to the previous page' => '',
-
-        # Template: Notify
-        'Close this message' => '',
 
         # Template: Pagination
         'Show first page' => '',
@@ -4829,7 +4830,7 @@ sub Data {
             '',
         'S/MIME Certificate Upload' => '',
         'Sample command output' => '',
-        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data.' =>
+        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data. Note: Searching for attachment names is not supported when "FS" is used.' =>
             '',
         'Schedule a maintenance period.' => '',
         'Search Customer' => 'Tìm kiếm khách hàng',

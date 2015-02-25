@@ -415,6 +415,7 @@ sub Data {
         'Redo' => 'Ripeti',
         'Scheduler process is registered but might not be running.' => 'Il processo Scheduler è registrato ma potrebbe non essere in esecuzione',
         'Scheduler is not running.' => 'Lo Schedulatore non è in esecuzione',
+        'All sessions have been killed, except for your own.' => '',
         'Can\'t contact registration server. Please try again later.' => 'Impossibile contattare il server per la registrazione. Riprovare più tardi, grazie.',
         'No content received from registration server. Please try again later.' =>
             'Nessun dato ricevuto dal server per la registrazione. Riprovare più tardi, grazie.',
@@ -1740,6 +1741,8 @@ sub Data {
         'Your OTRS Free is the base for all future actions. Please register first before you continue with the upgrade process of %s!' =>
             '',
         'Register this System' => '',
+        'System Registration is disabled for your system. Please check your configuration.' =>
+            '',
         'Before you can benefit from %s, please contact %s to get your %s contract.' =>
             '',
         'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.' =>
@@ -2257,6 +2260,11 @@ sub Data {
         'Permissions to move tickets into this group/queue.' => 'Autorizzazione a muovere richieste in questo gruppo/coda',
         'create' => 'crea',
         'Permissions to create tickets in this group/queue.' => 'Autorizzazione a creare richieste in questo gruppo/coda',
+        'note' => 'Annotazioni',
+        'Permissions to add notes to tickets in this group/queue.' => 'Permesso di aggiungere note ai ticket in questo gruppo/coda.',
+        'owner' => 'gestore',
+        'Permissions to change the owner of tickets in this group/queue.' =>
+            'Permesso di cambiare il gestore dei ticket in questo gruppo/coda.',
         'priority' => 'priorità',
         'Permissions to change the ticket priority in this group/queue.' =>
             'Autorizzazione a cambiare la priorità di una richiesta in questo gruppo/coda',
@@ -2368,7 +2376,7 @@ sub Data {
         'Send by Email' => '',
         'The support bundle is too large to send it by email, this option has been disabled.' =>
             '',
-        'The email address for this user is invalid, this ption has been disabled.' =>
+        'The email address for this user is invalid, this option has been disabled.' =>
             '',
         'Sending' => '',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
@@ -2492,7 +2500,7 @@ sub Data {
         'All Sessions' => '',
         'Agent Sessions' => '',
         'Customer Sessions' => '',
-        'Kill all Sessions, exept current' => '',
+        'Kill all Sessions, except for your own' => '',
 
         # Template: AdminTemplate
         'Manage Templates' => '',
@@ -2544,11 +2552,6 @@ sub Data {
         'Manage Agent-Group Relations' => 'Gestisci relazioni Agente-Gruppo',
         'Change Group Relations for Agent' => 'Cambia relazioni di gruppo per l\'agente',
         'Change Agent Relations for Group' => 'Cambia relazioni di agente per il gruppo',
-        'note' => 'Annotazioni',
-        'Permissions to add notes to tickets in this group/queue.' => 'Permesso di aggiungere note ai ticket in questo gruppo/coda.',
-        'owner' => 'gestore',
-        'Permissions to change the owner of tickets in this group/queue.' =>
-            'Permesso di cambiare il gestore dei ticket in questo gruppo/coda.',
 
         # Template: AgentBook
         'Address Book' => 'Rubrica',
@@ -2987,6 +2990,7 @@ sub Data {
             '',
         'To open links in the following article, you might need to press Ctrl or Cmd or Shift key while clicking the link (depending on your browser and OS).' =>
             '',
+        'Close this message' => '',
         'Article could not be opened! Perhaps it is on another article page?' =>
             '',
 
@@ -3247,9 +3251,6 @@ sub Data {
         # Template: NoPermission
         'Insufficient Rights' => 'Permessi insufficienti',
         'Back to the previous page' => 'Pagina precedente',
-
-        # Template: Notify
-        'Close this message' => '',
 
         # Template: Pagination
         'Show first page' => 'Mostra prima pagina',
@@ -4838,7 +4839,7 @@ sub Data {
             '',
         'S/MIME Certificate Upload' => '',
         'Sample command output' => '',
-        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data.' =>
+        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data. Note: Searching for attachment names is not supported when "FS" is used.' =>
             '',
         'Schedule a maintenance period.' => '',
         'Search Customer' => 'Ricerca cliente',

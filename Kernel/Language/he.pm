@@ -412,6 +412,7 @@ sub Data {
         'Redo' => 'בצע שנית',
         'Scheduler process is registered but might not be running.' => 'תהליך מתוזמן רשום אך ייתכן שאינו רץ.',
         'Scheduler is not running.' => 'תהליך מתוזמן אינו רץ.',
+        'All sessions have been killed, except for your own.' => '',
         'Can\'t contact registration server. Please try again later.' => '',
         'No content received from registration server. Please try again later.' =>
             '',
@@ -1737,6 +1738,8 @@ sub Data {
         'Your OTRS Free is the base for all future actions. Please register first before you continue with the upgrade process of %s!' =>
             '',
         'Register this System' => '',
+        'System Registration is disabled for your system. Please check your configuration.' =>
+            '',
         'Before you can benefit from %s, please contact %s to get your %s contract.' =>
             '',
         'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.' =>
@@ -2254,6 +2257,11 @@ sub Data {
         'Permissions to move tickets into this group/queue.' => '',
         'create' => 'צור',
         'Permissions to create tickets in this group/queue.' => '',
+        'note' => 'הערה',
+        'Permissions to add notes to tickets in this group/queue.' => 'הרשאות להוספת הערות לפניות בקבוצה/תור זה.',
+        'owner' => 'בעלים',
+        'Permissions to change the owner of tickets in this group/queue.' =>
+            'הרשאות לשינוי בעלי הפניות בקבוצה/תור זה',
         'priority' => 'עדיפות',
         'Permissions to change the ticket priority in this group/queue.' =>
             '',
@@ -2365,7 +2373,7 @@ sub Data {
         'Send by Email' => '',
         'The support bundle is too large to send it by email, this option has been disabled.' =>
             '',
-        'The email address for this user is invalid, this ption has been disabled.' =>
+        'The email address for this user is invalid, this option has been disabled.' =>
             '',
         'Sending' => '',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
@@ -2489,7 +2497,7 @@ sub Data {
         'All Sessions' => '',
         'Agent Sessions' => '',
         'Customer Sessions' => '',
-        'Kill all Sessions, exept current' => '',
+        'Kill all Sessions, except for your own' => '',
 
         # Template: AdminTemplate
         'Manage Templates' => 'נהל תבניות',
@@ -2541,11 +2549,6 @@ sub Data {
         'Manage Agent-Group Relations' => 'נהל יחסי סוכן-קבוצה',
         'Change Group Relations for Agent' => 'שנה יחסי קבוצה לסוכן',
         'Change Agent Relations for Group' => 'שנה יחסי סוכן לקבוצה',
-        'note' => 'הערה',
-        'Permissions to add notes to tickets in this group/queue.' => 'הרשאות להוספת הערות לפניות בקבוצה/תור זה.',
-        'owner' => 'בעלים',
-        'Permissions to change the owner of tickets in this group/queue.' =>
-            'הרשאות לשינוי בעלי הפניות בקבוצה/תור זה',
 
         # Template: AgentBook
         'Address Book' => '',
@@ -2984,6 +2987,7 @@ sub Data {
             '',
         'To open links in the following article, you might need to press Ctrl or Cmd or Shift key while clicking the link (depending on your browser and OS).' =>
             '',
+        'Close this message' => '',
         'Article could not be opened! Perhaps it is on another article page?' =>
             '',
 
@@ -3244,9 +3248,6 @@ sub Data {
         # Template: NoPermission
         'Insufficient Rights' => 'הרשאות לא מספיקות',
         'Back to the previous page' => 'חזרה לעמוד הקודם',
-
-        # Template: Notify
-        'Close this message' => '',
 
         # Template: Pagination
         'Show first page' => 'הצג עמוד ראשון',
@@ -4835,7 +4836,7 @@ sub Data {
             '',
         'S/MIME Certificate Upload' => 'S/MIME Zertifikat hochladen',
         'Sample command output' => '',
-        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data.' =>
+        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data. Note: Searching for attachment names is not supported when "FS" is used.' =>
             '',
         'Schedule a maintenance period.' => '',
         'Search Customer' => 'חפש לקוח',
