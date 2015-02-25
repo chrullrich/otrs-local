@@ -416,6 +416,7 @@ sub Data {
         'Redo' => 'Omgjør',
         'Scheduler process is registered but might not be running.' => 'Oppgaveplanlegger prosessen er registrert men kjører kanskje ikke.',
         'Scheduler is not running.' => 'Oppgaveplanleggeren kjører ikke.',
+        'All sessions have been killed, except for your own.' => '',
         'Can\'t contact registration server. Please try again later.' => 'Kan ikke kontakte registreringsserver. Prøv igjen senere.',
         'No content received from registration server. Please try again later.' =>
             'Fikk ikke noe innhold fra registreringsserver. Prøv igjen senere.',
@@ -1741,6 +1742,8 @@ sub Data {
         'Your OTRS Free is the base for all future actions. Please register first before you continue with the upgrade process of %s!' =>
             '',
         'Register this System' => '',
+        'System Registration is disabled for your system. Please check your configuration.' =>
+            '',
         'Before you can benefit from %s, please contact %s to get your %s contract.' =>
             '',
         'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.' =>
@@ -2258,6 +2261,11 @@ sub Data {
         'Permissions to move tickets into this group/queue.' => 'Rettighet til å flytte saker i denne gruppen/køen.',
         'create' => 'opprett',
         'Permissions to create tickets in this group/queue.' => 'Rettighet til å opprette saker i denne gruppen/køen.',
+        'note' => 'notis',
+        'Permissions to add notes to tickets in this group/queue.' => 'Rettigheter for å svare på saker i denne gruppen/køen',
+        'owner' => 'Eier',
+        'Permissions to change the owner of tickets in this group/queue.' =>
+            'Rettigheter til å endre eier av saker i denne gruppen/køen',
         'priority' => 'prioritet',
         'Permissions to change the ticket priority in this group/queue.' =>
             'Rettighet til å endre prioritet i denne gruppen/køen.',
@@ -2369,7 +2377,7 @@ sub Data {
         'Send by Email' => 'Send på e-post',
         'The support bundle is too large to send it by email, this option has been disabled.' =>
             '',
-        'The email address for this user is invalid, this ption has been disabled.' =>
+        'The email address for this user is invalid, this option has been disabled.' =>
             '',
         'Sending' => 'Sender',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
@@ -2493,7 +2501,7 @@ sub Data {
         'All Sessions' => 'Alle sesjoner',
         'Agent Sessions' => 'Saksbehandler-sesjoner',
         'Customer Sessions' => 'Kunde-sesjoner',
-        'Kill all Sessions, exept current' => 'Terminer alle sesjoner, untatt gjeldende',
+        'Kill all Sessions, except for your own' => '',
 
         # Template: AdminTemplate
         'Manage Templates' => 'Mal-administrasjon',
@@ -2545,11 +2553,6 @@ sub Data {
         'Manage Agent-Group Relations' => 'Koplinger mellom Saksbehandler og Gruppe',
         'Change Group Relations for Agent' => 'Endre gruppekoplinger for saksbehandler',
         'Change Agent Relations for Group' => 'Endre saksbehandlerkoplinger for gruppe',
-        'note' => 'notis',
-        'Permissions to add notes to tickets in this group/queue.' => 'Rettigheter for å svare på saker i denne gruppen/køen',
-        'owner' => 'Eier',
-        'Permissions to change the owner of tickets in this group/queue.' =>
-            'Rettigheter til å endre eier av saker i denne gruppen/køen',
 
         # Template: AgentBook
         'Address Book' => 'Adressebok',
@@ -2988,6 +2991,7 @@ sub Data {
             '',
         'To open links in the following article, you might need to press Ctrl or Cmd or Shift key while clicking the link (depending on your browser and OS).' =>
             '',
+        'Close this message' => 'Lukk denne meldingen',
         'Article could not be opened! Perhaps it is on another article page?' =>
             '',
 
@@ -3248,9 +3252,6 @@ sub Data {
         # Template: NoPermission
         'Insufficient Rights' => 'Utilstrekkelige rettigheter',
         'Back to the previous page' => 'Tilbake til forrige side',
-
-        # Template: Notify
-        'Close this message' => 'Lukk denne meldingen',
 
         # Template: Pagination
         'Show first page' => 'Vis første side',
@@ -4839,7 +4840,7 @@ sub Data {
             '',
         'S/MIME Certificate Upload' => 'Opplasting av S/MIME-sertifikat',
         'Sample command output' => '',
-        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data.' =>
+        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data. Note: Searching for attachment names is not supported when "FS" is used.' =>
             '',
         'Schedule a maintenance period.' => '',
         'Search Customer' => 'Kunde-søk',

@@ -408,6 +408,7 @@ sub Data {
         'Redo' => 'Gendan',
         'Scheduler process is registered but might not be running.' => 'Scheduler-processen er registreret, men kører måske ikke.',
         'Scheduler is not running.' => 'Scheduleren kører ikke.',
+        'All sessions have been killed, except for your own.' => '',
         'Can\'t contact registration server. Please try again later.' => 'Kan ikke kontakte registrations-serveren. Prøv venligst igen senere.',
         'No content received from registration server. Please try again later.' =>
             'Modtog ikke noget fra registrations-serveren. Prøv venligst igen senere.',
@@ -1733,6 +1734,8 @@ sub Data {
         'Your OTRS Free is the base for all future actions. Please register first before you continue with the upgrade process of %s!' =>
             '',
         'Register this System' => 'Registrer dette system',
+        'System Registration is disabled for your system. Please check your configuration.' =>
+            '',
         'Before you can benefit from %s, please contact %s to get your %s contract.' =>
             '',
         'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.' =>
@@ -2063,7 +2066,7 @@ sub Data {
         'Only business hours are counted.' => 'Kun normal kontor tid er beregnet.',
         'If an agent locks a ticket and does not close it before the unlock timeout has passed, the ticket will unlock and will become available for other agents.' =>
             'Hvis en agent trækker sagen og ikke lukker den før frigivelses-timeout, vil sagen blive frigivet og gjort tilgængelig for andre agenter.',
-        'Notify by' => 'Adviser via',
+        'Notify by' => 'Adviser ved',
         '0 = no escalation' => '0 = ingen eskalering',
         'If there is not added a customer contact, either email-external or phone, to a new ticket before the time defined here expires, the ticket is escalated.' =>
             'Hvis der ikke har været kontakt fra kunden, enten via mail eller telefon, vedr. en ny sag inden den specificerede tid udløber, bliver sagen eskaleret.',
@@ -2250,6 +2253,11 @@ sub Data {
         'Permissions to move tickets into this group/queue.' => 'Tilladelser til at flytte sager ind i denne gruppe/kø.',
         'create' => 'opret',
         'Permissions to create tickets in this group/queue.' => 'Tilladelser til at oprette sager i denne gruppe/kø.',
+        'note' => 'note',
+        'Permissions to add notes to tickets in this group/queue.' => 'Rettigheder til at tilføje noter til sager i denne gruppe/kø.',
+        'owner' => 'ejer',
+        'Permissions to change the owner of tickets in this group/queue.' =>
+            'Rettigheder til at ændre ejer på sager i denne gruppe/kø',
         'priority' => 'prioritering',
         'Permissions to change the ticket priority in this group/queue.' =>
             'Tilladelser til at ændre sagprioriteringen i denne gruppe/kø.',
@@ -2361,7 +2369,7 @@ sub Data {
         'Send by Email' => 'Send via mail',
         'The support bundle is too large to send it by email, this option has been disabled.' =>
             '',
-        'The email address for this user is invalid, this ption has been disabled.' =>
+        'The email address for this user is invalid, this option has been disabled.' =>
             '',
         'Sending' => 'Sender',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
@@ -2485,7 +2493,7 @@ sub Data {
         'All Sessions' => '',
         'Agent Sessions' => '',
         'Customer Sessions' => '',
-        'Kill all Sessions, exept current' => '',
+        'Kill all Sessions, except for your own' => '',
 
         # Template: AdminTemplate
         'Manage Templates' => 'Administrer skabeloner',
@@ -2537,11 +2545,6 @@ sub Data {
         'Manage Agent-Group Relations' => 'Administrer Agent/Gruppe-relationer',
         'Change Group Relations for Agent' => 'Skift gruppe-relationer for agent',
         'Change Agent Relations for Group' => 'Skift agent-relationer for gruppe',
-        'note' => 'note',
-        'Permissions to add notes to tickets in this group/queue.' => 'Rettigheder til at tilføje noter til sager i denne gruppe/kø.',
-        'owner' => 'ejer',
-        'Permissions to change the owner of tickets in this group/queue.' =>
-            'Rettigheder til at ændre ejer på sager i denne gruppe/kø',
 
         # Template: AgentBook
         'Address Book' => 'Adressebog',
@@ -2980,6 +2983,7 @@ sub Data {
             '',
         'To open links in the following article, you might need to press Ctrl or Cmd or Shift key while clicking the link (depending on your browser and OS).' =>
             '',
+        'Close this message' => 'Luk denne besked',
         'Article could not be opened! Perhaps it is on another article page?' =>
             '',
 
@@ -3240,9 +3244,6 @@ sub Data {
         # Template: NoPermission
         'Insufficient Rights' => 'Utilstrækkelige rettigheder',
         'Back to the previous page' => 'Tilbage til forrige side',
-
-        # Template: Notify
-        'Close this message' => 'Luk denne besked',
 
         # Template: Pagination
         'Show first page' => 'Vis frøste side',
@@ -4831,7 +4832,7 @@ sub Data {
             '',
         'S/MIME Certificate Upload' => '',
         'Sample command output' => '',
-        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data.' =>
+        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data. Note: Searching for attachment names is not supported when "FS" is used.' =>
             '',
         'Schedule a maintenance period.' => '',
         'Search Customer' => 'Søg kunde',
