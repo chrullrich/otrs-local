@@ -1439,6 +1439,10 @@ msgid "Scheduler is not running."
 msgstr ""
 
 #. Template: AAABase
+msgid "All sessions have been killed, except for your own."
+msgstr ""
+
+#. Template: AAABase
 msgid "Can't contact registration server. Please try again later."
 msgstr ""
 
@@ -5847,6 +5851,10 @@ msgid "Register this System"
 msgstr ""
 
 #. Template: AdminOTRSBusinessNotInstalled
+msgid "System Registration is disabled for your system. Please check your configuration."
+msgstr ""
+
+#. Template: AdminOTRSBusinessNotInstalled
 msgid "Before you can benefit from %s, please contact %s to get your %s contract."
 msgstr ""
 
@@ -7387,6 +7395,22 @@ msgid "Permissions to create tickets in this group/queue."
 msgstr ""
 
 #. Template: AdminRoleGroup
+msgid "note"
+msgstr ""
+
+#. Template: AdminRoleGroup
+msgid "Permissions to add notes to tickets in this group/queue."
+msgstr ""
+
+#. Template: AdminRoleGroup
+msgid "owner"
+msgstr ""
+
+#. Template: AdminRoleGroup
+msgid "Permissions to change the owner of tickets in this group/queue."
+msgstr ""
+
+#. Template: AdminRoleGroup
 msgid "priority"
 msgstr ""
 
@@ -7695,7 +7719,7 @@ msgid "The support bundle is too large to send it by email, this option has been
 msgstr ""
 
 #. Template: AdminServiceCenterSupportDataCollector
-msgid "The email address for this user is invalid, this ption has been disabled."
+msgid "The email address for this user is invalid, this option has been disabled."
 msgstr ""
 
 #. Template: AdminServiceCenterSupportDataCollector
@@ -8091,7 +8115,7 @@ msgid "Customer Sessions"
 msgstr ""
 
 #. Template: AdminSystemMaintenanceEdit
-msgid "Kill all Sessions, exept current"
+msgid "Kill all Sessions, except for your own"
 msgstr ""
 
 #. Template: AdminTemplate
@@ -8252,22 +8276,6 @@ msgstr ""
 
 #. Template: AdminUserGroup
 msgid "Change Agent Relations for Group"
-msgstr ""
-
-#. Template: AdminUserGroup
-msgid "note"
-msgstr ""
-
-#. Template: AdminUserGroup
-msgid "Permissions to add notes to tickets in this group/queue."
-msgstr ""
-
-#. Template: AdminUserGroup
-msgid "owner"
-msgstr ""
-
-#. Template: AdminUserGroup
-msgid "Permissions to change the owner of tickets in this group/queue."
 msgstr ""
 
 #. Template: AgentBook
@@ -9495,6 +9503,10 @@ msgid "To open links in the following article, you might need to press Ctrl or C
 msgstr ""
 
 #. Template: AgentTicketZoom
+msgid "Close this message"
+msgstr ""
+
+#. Template: AgentTicketZoom
 msgid "Article could not be opened! Perhaps it is on another article page?"
 msgstr ""
 
@@ -10216,10 +10228,6 @@ msgstr ""
 
 #. Template: NoPermission
 msgid "Back to the previous page"
-msgstr ""
-
-#. Template: Notify
-msgid "Close this message"
 msgstr ""
 
 #. Template: Pagination
@@ -14047,7 +14055,7 @@ msgid "Sample command output"
 msgstr ""
 
 #. SysConfig
-msgid "Saves the attachments of articles. \"DB\" stores all data in the database (not recommended for storing big attachments). \"FS\" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data."
+msgid "Saves the attachments of articles. \"DB\" stores all data in the database (not recommended for storing big attachments). \"FS\" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data. Note: Searching for attachment names is not supported when \"FS\" is used."
 msgstr ""
 
 #. SysConfig

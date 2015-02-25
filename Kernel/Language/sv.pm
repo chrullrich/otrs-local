@@ -235,9 +235,9 @@ sub Data {
         'There is no acount with that user name.' => 'Det finns inget konto med det användarnamnet',
         'Please contact your administrator' => 'Vänligen kontakta din administratör',
         'Authentication succeeded, but no customer record is found in the customer backend. Please contact your administrator.' =>
-            '',
+            'Autentisering lyckad, men inga kunder-poster fanns i kunddatabase. Vänligen kontakta din administratör.',
         'This e-mail address already exists. Please log in or reset your password.' =>
-            '',
+            'Den här e-postadressen finns redan. Vänligen logga in eller återställ ditt lösenord.',
         'Logout' => 'Logga ut',
         'Logout successful. Thank you for using %s!' => 'Utloggningen lyckades.  Tack för att du använde %s!',
         'Feature not active!' => 'Funktion inte aktiverad!',
@@ -299,7 +299,7 @@ sub Data {
         'Group updated!' => 'Grupp uppdaterad!',
         'Queue added!' => 'Kö tillagd!',
         'Queue updated!' => 'Kö uppdaterad!',
-        'State added!' => '',
+        'State added!' => 'Status tillagd!',
         'State updated!' => 'Status uppdaterad!',
         'Type added!' => 'Typ tillagd!',
         'Type updated!' => 'Typ uppdaterad!',
@@ -409,6 +409,7 @@ sub Data {
         'Redo' => 'Gör om',
         'Scheduler process is registered but might not be running.' => 'Processen för schemaläggaren har registrerats men verkar inte köras.',
         'Scheduler is not running.' => 'Schemaläggaren körs inte.',
+        'All sessions have been killed, except for your own.' => '',
         'Can\'t contact registration server. Please try again later.' => 'Kan inte ansluta till registreringsservern. Försök senare.',
         'No content received from registration server. Please try again later.' =>
             'Inget innehåll togs emot från registreringsservern. Försök senare.',
@@ -418,7 +419,7 @@ sub Data {
         'Upgrade to %s now!' => 'Uppgradera till %s nu!',
         '%s Go to the upgrade center %s' => '',
         'The license for your %s is about to expire. Please make contact with %s to renew your contract!' =>
-            '',
+            'Din licens för %s håller på att gå ut. Vänligen ta kontakt med %s för att förnya ditt kontrakt!',
         'An update for your %s is available, but there is a conflict with your framework version! Please update your framework first!' =>
             '',
         'Your system was successfully upgraded to %s.' => '',
@@ -427,7 +428,7 @@ sub Data {
         'There was a problem reinstalling %s.' => 'Det blev ett problem med att ominstallera %s.',
         'Your %s was successfully updated.' => '',
         'There was a problem during the upgrade of %s.' => '',
-        '%s was correctly uninstalled.' => '',
+        '%s was correctly uninstalled.' => '%s blev avinstallerat korrekt.',
         'There was a problem uninstalling %s.' => '',
 
         # Template: AAACalendar
@@ -713,7 +714,7 @@ sub Data {
 
         # Template: AAATicket
         'Status View' => 'Statusvy',
-        'Service View' => '',
+        'Service View' => 'Service-vy',
         'Bulk' => 'Bulk',
         'Lock' => 'Lås',
         'Unlock' => 'Lås upp',
@@ -834,7 +835,7 @@ sub Data {
         'auto reply' => 'auto svara',
         'auto reply/new ticket' => 'auto svara/nytt ärende',
         'Create' => 'Skapa',
-        'Answer' => '',
+        'Answer' => 'Svar',
         'Phone call' => 'Telefonsamtal',
         'Ticket "%s" created!' => 'Ärende "%s" skapat!',
         'Ticket Number' => 'Ärendenummer',
@@ -952,7 +953,7 @@ sub Data {
         'Send me the same notifications for my watched tickets that the ticket owners will get.' =>
             '',
         'Send ticket watch notifications' => '',
-        'Out Of Office Time' => '',
+        'Out Of Office Time' => 'Frånvarande',
         'New Ticket' => 'Nytt ärende',
         'Create new Ticket' => 'Skapa nytt ärende',
         'Customer called' => 'Kund ringde',
@@ -1053,13 +1054,13 @@ sub Data {
 
         # Template: AdminAutoResponse
         'Auto Response Management' => 'Autosvar-hantering',
-        'Add auto response' => '',
-        'Add Auto Response' => '',
+        'Add auto response' => 'Lägg till autosvar',
+        'Add Auto Response' => 'Lägg till Autosvar',
         'Edit Auto Response' => 'Redigera autosvar',
         'Response' => 'Svar',
         'Auto response from' => 'Autosvar från',
         'Reference' => 'Referens',
-        'You can use the following tags' => '',
+        'You can use the following tags' => 'Du kan använda följande taggar',
         'To get the first 20 character of the subject.' => 'För att få dom första 20 tecknen i ärenderaden',
         'To get the first 5 lines of the email.' => 'För att få dom första fem raderna i mejlet',
         'To get the realname of the sender (if given).' => 'För att få avsändarens riktiga namn (om angivet).',
@@ -1208,7 +1209,7 @@ sub Data {
         'Key' => 'Nyckel',
         'Value' => 'Innehåll',
         'Remove value' => 'Ta bort värde',
-        'Add value' => '',
+        'Add value' => 'Lägg till värde',
         'Add Value' => '',
         'Add empty value' => '',
         'Activate this option to create an empty selectable value.' => '',
@@ -1252,13 +1253,13 @@ sub Data {
 
         # Template: AdminGenericAgent
         'Generic Agent' => '',
-        'Add job' => '',
+        'Add job' => 'Lägg till jobb',
         'Last run' => 'Senaste körning',
         'Run Now!' => 'Kör Nu!',
         'Delete this task' => '',
         'Run this task' => '',
         'Job Settings' => '',
-        'Job name' => '',
+        'Job name' => 'Namn på jobb',
         'The name you entered already exists.' => '',
         'Toggle this widget' => '',
         'Automatic execution (multiple tickets)' => '',
@@ -1280,7 +1281,7 @@ sub Data {
             '',
         'Do you really want to delete this event trigger?' => '',
         'Add Event Trigger' => '',
-        'Add Event' => '',
+        'Add Event' => 'Lägg till Händelse',
         'To add a new event select the event object and event name and click on the "+" button' =>
             '',
         'Duplicate event.' => '',
@@ -1294,7 +1295,7 @@ sub Data {
         '(e. g. U5150)' => 't.ex. INGJAN',
         'Fulltext-search in article (e. g. "Mar*in" or "Baue*").' => '',
         'Agent' => 'Agent',
-        'Ticket lock' => '',
+        'Ticket lock' => 'Ärendelås',
         'Create times' => '',
         'No create time settings.' => 'Inga Skapat-Tider.',
         'Ticket created' => 'Ärende skapat',
@@ -1364,8 +1365,8 @@ sub Data {
         '%s Tickets affected! What do you want to do?' => '',
         'Warning: You used the DELETE option. All deleted tickets will be lost!' =>
             '',
-        'Edit job' => '',
-        'Run job' => '',
+        'Edit job' => 'Ändra jobb',
+        'Run job' => 'Kör jobb',
         'Affected Tickets' => '',
 
         # Template: AdminGenericInterfaceDebugger
@@ -1734,6 +1735,8 @@ sub Data {
         'Your OTRS Free is the base for all future actions. Please register first before you continue with the upgrade process of %s!' =>
             '',
         'Register this System' => 'Registrera detta system',
+        'System Registration is disabled for your system. Please check your configuration.' =>
+            '',
         'Before you can benefit from %s, please contact %s to get your %s contract.' =>
             '',
         'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.' =>
@@ -1846,9 +1849,9 @@ sub Data {
             'Om du bara vill hantera e-postadressen, använd EMAILADDRESS:info@example.com i Från, Till eller CC.',
         'If you use Regular Expressions, you also can use the matched value in () as [***] in the \'Set\' action.' =>
             '',
-        'Delete this filter' => '',
-        'Add PostMaster Filter' => '',
-        'Edit PostMaster Filter' => '',
+        'Delete this filter' => 'Radera detta filter',
+        'Add PostMaster Filter' => 'Lägg till PostMaster-filter',
+        'Edit PostMaster Filter' => 'Ändra PostMaster-Filter',
         'The name is required.' => '',
         'Filter Condition' => '',
         'AND Condition' => '',
@@ -2251,6 +2254,11 @@ sub Data {
         'Permissions to move tickets into this group/queue.' => 'Rätt att flytta ärenden i denna grupp/Kö.',
         'create' => 'Skapa',
         'Permissions to create tickets in this group/queue.' => 'Rätt att skapa ärenden i denna grupp/Kö.',
+        'note' => '',
+        'Permissions to add notes to tickets in this group/queue.' => '',
+        'owner' => 'Ägare',
+        'Permissions to change the owner of tickets in this group/queue.' =>
+            '',
         'priority' => 'prioritet',
         'Permissions to change the ticket priority in this group/queue.' =>
             'Rätt att ändra ärendeprioritet i denna grupp/Kö.',
@@ -2362,7 +2370,7 @@ sub Data {
         'Send by Email' => 'Skicka som e-post',
         'The support bundle is too large to send it by email, this option has been disabled.' =>
             '',
-        'The email address for this user is invalid, this ption has been disabled.' =>
+        'The email address for this user is invalid, this option has been disabled.' =>
             '',
         'Sending' => 'Skickar',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
@@ -2486,7 +2494,7 @@ sub Data {
         'All Sessions' => '',
         'Agent Sessions' => '',
         'Customer Sessions' => '',
-        'Kill all Sessions, exept current' => '',
+        'Kill all Sessions, except for your own' => '',
 
         # Template: AdminTemplate
         'Manage Templates' => 'Hantera mallar',
@@ -2538,11 +2546,6 @@ sub Data {
         'Manage Agent-Group Relations' => '',
         'Change Group Relations for Agent' => '',
         'Change Agent Relations for Group' => '',
-        'note' => '',
-        'Permissions to add notes to tickets in this group/queue.' => '',
-        'owner' => 'Ägare',
-        'Permissions to change the owner of tickets in this group/queue.' =>
-            '',
 
         # Template: AgentBook
         'Address Book' => 'Adressbok',
@@ -2622,7 +2625,7 @@ sub Data {
         'Totals' => 'Totaler',
 
         # Template: AgentDashboardUserOnline
-        'out of office' => '',
+        'out of office' => 'frånvarande',
 
         # Template: AgentDashboardUserOutOfOffice
         'until' => '',
@@ -2846,7 +2849,7 @@ sub Data {
 
         # Template: AgentTicketHistory
         'History of' => 'Historik för',
-        'History Content' => '',
+        'History Content' => 'Historikinnehåll',
         'Zoom view' => '',
 
         # Template: AgentTicketMerge
@@ -2981,6 +2984,7 @@ sub Data {
             '',
         'To open links in the following article, you might need to press Ctrl or Cmd or Shift key while clicking the link (depending on your browser and OS).' =>
             '',
+        'Close this message' => '',
         'Article could not be opened! Perhaps it is on another article page?' =>
             '',
 
@@ -2989,7 +2993,7 @@ sub Data {
         'Load blocked content.' => '',
 
         # Template: ChatStartForm
-        'First message' => '',
+        'First message' => 'Första meddelandet',
 
         # Template: CustomerError
         'Traceback' => 'Återspårning',
@@ -3241,9 +3245,6 @@ sub Data {
         # Template: NoPermission
         'Insufficient Rights' => '',
         'Back to the previous page' => '',
-
-        # Template: Notify
-        'Close this message' => '',
 
         # Template: Pagination
         'Show first page' => 'Visa första sidan',
@@ -3510,7 +3511,7 @@ sub Data {
         'Custom RSS Feed' => '',
         'Custom text for the page shown to customers that have no tickets yet (if you need those text translated add them to a custom translation module).' =>
             '',
-        'Customer Administration' => '',
+        'Customer Administration' => 'Kundadministration',
         'Customer User <-> Groups' => '',
         'Customer User <-> Services' => '',
         'Customer User Administration' => 'Hantera kundanvändare',
@@ -4541,7 +4542,7 @@ sub Data {
         'It is possible to configure different themes, for example to distinguish between agents and customers, to be used on a per-domain basis within the application. Using a regular expression (regex), you can configure a Key/Content pair to match a domain. The value in "Key" should match the domain, and the value in "Content" should be a valid theme on your system. Please see the example entries for the proper form of the regex.' =>
             '',
         'Lastname, Firstname' => 'Efternamn, förnamn',
-        'Lastname, Firstname (UserLogin)' => '',
+        'Lastname, Firstname (UserLogin)' => 'Förnamn Efternamn (Användarnamn)',
         'Left' => '',
         'Link agents to groups.' => 'Koppla handläggare till grupper.',
         'Link agents to roles.' => 'Koppla handläggare till roller.',
@@ -4683,7 +4684,7 @@ sub Data {
         'Online' => '',
         'Open tickets (customer user)' => 'Öppna ärenden (kundanvändare)',
         'Open tickets (customer)' => 'Öppna ärenden (kund)',
-        'Out Of Office' => '',
+        'Out Of Office' => 'Frånvarande',
         'Overloads (redefines) existing functions in Kernel::System::Ticket. Used to easily add customizations.' =>
             '',
         'Overview Escalated Tickets' => 'Översikt av eskalerade ärenden',
@@ -4832,7 +4833,7 @@ sub Data {
             '',
         'S/MIME Certificate Upload' => '',
         'Sample command output' => '',
-        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data.' =>
+        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data. Note: Searching for attachment names is not supported when "FS" is used.' =>
             '',
         'Schedule a maintenance period.' => '',
         'Search Customer' => 'Sök kund',

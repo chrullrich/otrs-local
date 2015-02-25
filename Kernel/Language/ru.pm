@@ -136,7 +136,7 @@ sub Data {
         'Link (Normal)' => 'Связь (обычная)',
         'Link (Parent)' => 'Связь (родитель)',
         'Link (Child)' => 'Связь (потомок)',
-        'Normal' => 'Обычный',
+        'Normal' => 'Обычная',
         'Parent' => 'Родитель',
         'Child' => 'Потомок',
         'Hit' => 'Соответствует',
@@ -189,10 +189,10 @@ sub Data {
         'Description' => 'Описание',
         'description' => 'описание',
         'Theme' => 'Тема',
-        'Created' => 'Создан',
-        'Created by' => 'Создавший',
+        'Created' => 'Создан/а',
+        'Created by' => 'Создал',
         'Changed' => 'Изменен',
-        'Changed by' => 'Изменивший',
+        'Changed by' => 'Изменил',
         'Search' => 'Поиск',
         'and' => 'и',
         'between' => 'между',
@@ -215,7 +215,7 @@ sub Data {
         'Add' => 'Добавить',
         'Added!' => 'Добавлено!',
         'Category' => 'Категория',
-        'Viewer' => 'Просмотр',
+        'Viewer' => 'Средство просмотра',
         'Expand' => 'Развернуть',
         'Small' => 'Маленький',
         'Medium' => 'Средний',
@@ -231,7 +231,7 @@ sub Data {
             'Ответьте на эти заявки для перехода к обычному просмотру очереди !',
         'You have %s new message(s)!' => 'Количество новых сообщений: %s',
         'You have %s reminder ticket(s)!' => 'Количество напоминаний: %s!',
-        'The recommended charset for your language is %s!' => 'Рекомендуемая кодировка для вашего языка: %s',
+        'The recommended charset for your language is %s!' => 'Рекомендуемая кодировка для вашего языка: %s !',
         'Change your password.' => 'Измените пароль.',
         'Please activate %s first!' => 'Пожалуйста, сначала активируйте %s!',
         'No suggestions' => 'Нет предложений',
@@ -248,15 +248,15 @@ sub Data {
         'This e-mail address already exists. Please log in or reset your password.' =>
             'Такой адрес электронной почты уже существует. Пожалуйста, войдите, или сбросьте свой пароль.',
         'Logout' => 'Выход',
-        'Logout successful. Thank you for using %s!' => 'Вы успешно вышли из системы. Благодарим за пользование системой %s !',
+        'Logout successful. Thank you for using %s!' => 'Вы успешно вышли из системы. Благодарим за использование %s !',
         'Feature not active!' => 'Функция не активирована!',
         'Agent updated!' => 'Агент обновлен!',
         'Database Selection' => 'Выбор базы данных',
-        'Create Database' => 'Создать базу',
+        'Create Database' => 'Создать базу данных',
         'System Settings' => 'Системные параметры',
         'Mail Configuration' => 'Конфигурация почты',
         'Finished' => 'Закончено',
-        'Install OTRS' => 'Инсталлировать OTRS',
+        'Install OTRS' => 'Установите OTRS',
         'Intro' => 'Интро',
         'License' => 'Лицензия',
         'Database' => 'База данных',
@@ -276,7 +276,7 @@ sub Data {
         'possible' => 'возможно',
         'reject' => 'отвергнуть',
         'reverse' => 'вернуть',
-        'Facility' => 'Приспособление',
+        'Facility' => 'Объект',
         'Time Zone' => 'Часовой пояс',
         'Pending till' => 'В ожидании еще',
         'Don\'t use the Superuser account to work with OTRS! Create new Agents and work with these accounts instead.' =>
@@ -287,14 +287,14 @@ sub Data {
         'Session invalid. Please log in again.' => 'Ошибка сессии. Пожалуйста авторизуйтесь вновь.',
         'Session has timed out. Please log in again.' => 'Сеанс завершен. Попробуйте войти заново.',
         'Session limit reached! Please try again later.' => 'Срок жизни сессии прошел. Пожалуйста попробуйте еще раз.',
-        'No Permission!' => 'Нет доступа!',
+        'No Permission!' => 'Нет прав доступа!',
         '(Click here to add)' => '(нажмите сюда чтобы добавить)',
         'Preview' => 'Предварительный просмотр',
         'Package not correctly deployed! Please reinstall the package.' =>
             'Пакет установлен некорректно! Вы должны переустановить пакет!',
         '%s is not writable!' => '%s не доступен для записи!',
-        'Cannot create %s!' => 'Не могу создать %s!',
-        'Check to activate this date' => 'Активировать эту дату',
+        'Cannot create %s!' => 'Невозможно создать %s!',
+        'Check to activate this date' => 'Отметьте, чтобы активировать эту дату',
         'You have Out of Office enabled, would you like to disable it?' =>
             'Вы включали Отсутствие в офисе, хотите отключить?',
         'News about OTRS releases!' => 'Новости о новых релизах OTRS!',
@@ -322,7 +322,7 @@ sub Data {
         'System e-mail address updated!' => 'Системный адрес электронной почты обновлен!',
         'Contract' => 'Контракт',
         'Online Customer: %s' => 'Клиент онлайн: %s',
-        'Online Agent: %s' => 'Пользователь онлайн: %s',
+        'Online Agent: %s' => 'Агент онлайн: %s',
         'Calendar' => 'Календарь',
         'File' => 'Файл',
         'Filename' => 'Имя файла',
@@ -349,8 +349,8 @@ sub Data {
         'Street' => 'Улица',
         'Country' => 'Страна',
         'Location' => 'Местоположение',
-        'installed' => 'Установлено',
-        'uninstalled' => 'Деинсталлировано',
+        'installed' => 'установлено',
+        'uninstalled' => 'деинсталлировано',
         'Security Note: You should activate %s because application is already running!' =>
             'Предупреждение о безопасности: вы должны активировать «%s», так как приложение уже запущено!',
         'Unable to parse repository index document.' => 'Не получилось разобрать формат индексного файла репозитория.',
@@ -365,7 +365,7 @@ sub Data {
         'Loading...' => 'Загрузка...',
         'Dear Mr. %s,' => 'Уважаемый %s,',
         'Dear Mrs. %s,' => 'Уважаемая %s,',
-        'Dear %s,' => 'Уважаемый(ая)',
+        'Dear %s,' => 'Уважаемый/-ая %s,',
         'Hello %s,' => 'Здравствуйте, %s.',
         'This email address is not allowed to register. Please contact support staff.' =>
             'Этот адрес почты не разрешен для регистрации. Обратитесь к персоналу поддержки',
@@ -400,7 +400,7 @@ sub Data {
         'Font Color' => 'Цвет текста',
         'Background Color' => 'Цвет фона',
         'Remove Formatting' => 'Удалить форматирование',
-        'Show/Hide Hidden Elements' => 'Показ скрытых элементов',
+        'Show/Hide Hidden Elements' => 'Показать/Скрыть скрытые элементы',
         'Align Left' => 'По левому краю',
         'Align Center' => 'По центру',
         'Align Right' => 'По правому краю',
@@ -418,6 +418,7 @@ sub Data {
         'Redo' => 'Повторить',
         'Scheduler process is registered but might not be running.' => 'Процесс планировщика зарегистрирован, но может не быть запущен.',
         'Scheduler is not running.' => 'Планировщик не запущен.',
+        'All sessions have been killed, except for your own.' => 'Завершить все сеансы, кроме вашего собственного.',
         'Can\'t contact registration server. Please try again later.' => 'Не удалось соединиться с сервером, попробуйте повторить позже.',
         'No content received from registration server. Please try again later.' =>
             'Данные не получены с сервера регистрации. Повторите запрос позже.',
@@ -480,7 +481,7 @@ sub Data {
         'December' => 'Декабрь',
 
         # Template: AAAPreferences
-        'Preferences updated successfully!' => 'Настройки успешно обновлены',
+        'Preferences updated successfully!' => 'Настройки успешно обновлены!',
         'User Profile' => 'Профиль пользователя',
         'Email Settings' => 'Настройки почты',
         'Other Settings' => 'Прочие настройки',
@@ -488,7 +489,7 @@ sub Data {
         'Current password' => 'Текущий пароль',
         'New password' => 'Новый пароль',
         'Verify password' => 'Подтвердите пароль',
-        'Spelling Dictionary' => 'Словарь',
+        'Spelling Dictionary' => 'Словарь правописания',
         'Default spelling dictionary' => 'Словарь по умолчанию',
         'Max. shown Tickets a page in Overview.' => 'Максимальное количество заявок при показе очереди',
         'The current password is not correct. Please try again!' => 'Пароль не верен. Пожалуйста, попробуйте снова!',
@@ -509,7 +510,7 @@ sub Data {
         'CSV Separator' => 'Разделитель CSV',
 
         # Template: AAAStats
-        'Stat' => 'Статистика',
+        'Stat' => 'Отчет',
         'Sum' => 'Сумма',
         'No (not supported)' => 'Нет (не поддерживается)',
         'Days' => 'Дни',
@@ -552,21 +553,21 @@ sub Data {
         'extended' => 'Другая',
         'Agent/Owner' => 'Агент (владелец)',
         'Created by Agent/Owner' => 'Создано агентом (владельцем)',
-        'Created Priority' => 'Приоритет',
-        'Created State' => 'Состояние',
+        'Created Priority' => 'Созданный Приоритет',
+        'Created State' => 'Созданное Состояние',
         'Create Time' => 'Время создания',
         'CustomerUserLogin' => 'Логин клиента',
         'Close Time' => 'Время закрытия',
         'TicketAccumulation' => 'Группировка заявок',
         'Attributes to be printed' => 'Атрибуты для печати',
         'Sort sequence' => 'Порядок сортировки',
-        'Order by' => 'Сортировка',
+        'Order by' => 'Сортировка по',
         'Limit' => 'Лимит',
         'Ticketlist' => 'Список заявок',
         'ascending' => 'По возрастанию',
         'descending' => 'По убыванию',
         'First Lock' => 'Первая блокировка',
-        'Evaluation by' => 'Заблокировано',
+        'Evaluation by' => 'Оценка по',
         'Total Time' => 'Всего времени',
         'Ticket Average' => 'Среднее время рассмотрения заявки',
         'Ticket Min Time' => 'Мин. время рассмотрения заявки',
@@ -592,14 +593,14 @@ sub Data {
         'OTRS' => 'OTRS',
         'Table Presence' => 'Наличие таблиц',
         'Internal Error: Could not open file.' => 'Внутренняя ошибка: невозможно открыть файл.',
-        'Table Check' => '',
+        'Table Check' => 'Таблица проверки',
         'Internal Error: Could not read file.' => 'Внутренняя ошибка: невозможно прочитать файл.',
         'Tables found which are not present in the database.' => 'Найдены таблицы, которые не существуют в базе данных.',
         'Database Size' => 'Размер базы данных',
         'Could not determine database size.' => 'Не удалось определить размер базы данных.',
         'Database Version' => 'Версия СУБД',
         'Could not determine database version.' => 'Не удалось определить версию базы данных.',
-        'Client Connection Charset' => '',
+        'Client Connection Charset' => 'Кодировка клиентского соединения',
         'Setting character_set_client needs to be utf8.' => 'Значение кодировки для клиента должно быть UNICODE or UTF8.',
         'Server Database Charset' => 'Кодировка для сервера базы данных',
         'Setting character_set_database needs to be UNICODE or UTF8.' => 'Значение кодировки для сервера базы данных должно быть UNICODE или UTF8. ',
@@ -620,7 +621,7 @@ sub Data {
             'NLS_LANG должен быть установлен в AL32UTF8 (например,  GERMAN_GERMANY.AL32UTF8).',
         'NLS_DATE_FORMAT Setting' => 'Параметр NLS_DATE_FORMAT',
         'NLS_DATE_FORMAT must be set to \'YYYY-MM-DD HH24:MI:SS\'.' => 'NLS_DATE_FORMAT должен быть задан в виде \'YYYY-MM-DD HH24:MI:SS\'.',
-        'NLS_DATE_FORMAT Setting SQL Check' => '',
+        'NLS_DATE_FORMAT Setting SQL Check' => 'Параметр NLS_DATE_FORMAT для SQL Check',
         'Setting client_encoding needs to be UNICODE or UTF8.' => 'Значение кодировки для клиента должно быть UNICODE or UTF8.',
         'Setting server_encoding needs to be UNICODE or UTF8.' => 'Значение кодировки для сервера должно быть UNICODE или UTF8. ',
         'Date Format' => 'Формат даты',
@@ -632,7 +633,7 @@ sub Data {
         'The partition where OTRS is located has no disk space problems.' =>
             'Раздел с OTRS не имеет проблем с дисковым пространством.',
         'Disk Partitions Usage' => 'Использование разделов диска',
-        'Distribution' => 'Дистрибутив',
+        'Distribution' => 'Распостранение',
         'Could not determine distribution.' => 'Не удалось определить дистрибутив ОС',
         'Kernel Version' => 'Версия ядра',
         'Could not determine kernel version.' => 'Не удалось определить версию ядра.',
@@ -682,9 +683,9 @@ sub Data {
         'Package installation status' => 'Состояние установки пакетов',
         'Some packages are not correctly installed.' => 'Некоторые пакеты установлены некорректно.',
         'Package List' => 'Список пакетов',
-        'SystemID' => 'Системный ID',
+        'SystemID' => 'SystemID',
         'Your SystemID setting is invalid, it should only contain digits.' =>
-            'Ваш SystemID неверен. Он должен содержать только цифры.',
+            'Ваш SystemID неверен. Он должен состоять только из цифр.',
         'OTRS Version' => 'Версия OTRS',
         'Ticket Index Module' => 'Модуль индексирования заявок',
         'You have more than 60,000 tickets and should use the StaticDB backend. See admin manual (Performance Tuning) for more information.' =>
@@ -724,7 +725,7 @@ sub Data {
         'Status View' => 'Просмотр статуса',
         'Service View' => 'Обзор сервисов',
         'Bulk' => 'Массовое действие',
-        'Lock' => 'Блокировка',
+        'Lock' => 'Блокировать',
         'Unlock' => 'Разблокировать',
         'History' => 'История',
         'Zoom' => 'Подробно',
@@ -755,7 +756,7 @@ sub Data {
         'Status' => 'Статус',
         'Statuses' => 'Статусы',
         'Ticket Type' => 'Тип заявки',
-        'Ticket Types' => 'Типы заявки',
+        'Ticket Types' => 'Типы заявок',
         'Compose' => 'Создать',
         'Pending' => 'Напоминание',
         'Owner' => 'Владелец',
@@ -768,7 +769,7 @@ sub Data {
         'Createtime' => 'Время создания',
         'plain' => 'Обычный',
         'Email' => 'Email',
-        'email' => 'Email',
+        'email' => 'email',
         'Close' => 'Закрыть',
         'Action' => 'Действие',
         'Attachment' => 'Прикрепленный файл',
@@ -777,11 +778,11 @@ sub Data {
             'Это сообщение написано в кодировке. отличной от вашей.',
         'If it is not displayed correctly,' => 'Если текст отображается некорректно,',
         'This is a' => 'Это',
-        'to open it in a new window.' => 'открыть в новом окне',
+        'to open it in a new window.' => 'открыть в новом окне.',
         'This is a HTML email. Click here to show it.' => 'Этот электронное письмо в формате HTML. Нажмите здесь для просмотра',
         'Free Fields' => 'Свободные поля',
         'Merge' => 'Объединить',
-        'merged' => 'объединенный',
+        'merged' => 'объединенные',
         'closed successful' => 'закрыта успешно',
         'closed unsuccessful' => 'закрыта неуспешно',
         'Locked Tickets Total' => 'Заблокированные заявки: Всего',
@@ -798,21 +799,21 @@ sub Data {
         'Escalation' => 'Эскалация',
         'last-search' => 'последний поиск',
         'QueueView' => 'Просмотр очереди',
-        'Ticket Escalation View' => 'Просмотр заявок с эскалацией',
+        'Ticket Escalation View' => 'Просмотр эскалированных заявок',
         'Message from' => 'Сообщение от',
         'End message' => 'Конец сообщения',
         'Forwarded message from' => 'Пересылаемое сообщение от',
         'End forwarded message' => 'Конец пересылаемого сообщения',
-        'Bounce Article to a different mail address' => '',
+        'Bounce Article to a different mail address' => 'Перенаправить сообщение на другой почтовый адрес',
         'Reply to note' => 'Ответить на сообщение',
-        'new' => 'новый',
-        'open' => 'открытый',
+        'new' => 'новая',
+        'open' => 'открыта',
         'Open' => 'Открытые',
         'Open tickets' => 'Открытые заявки',
-        'closed' => 'закрытая',
+        'closed' => 'закрыта',
         'Closed' => 'Закрытые',
         'Closed tickets' => 'Закрытые заявки',
-        'removed' => 'удаленный',
+        'removed' => 'удаленная',
         'pending reminder' => 'ожидает напоминания',
         'pending auto' => 'ожидает автозакрытия',
         'pending auto close+' => 'ожидает автозакрытия(+)',
@@ -825,8 +826,8 @@ sub Data {
         'phone' => 'звонок',
         'sms' => 'SMS',
         'webrequest' => 'веб-заявка',
-        'lock' => 'блокирован',
-        'unlock' => 'разблокирован',
+        'lock' => 'блокировать',
+        'unlock' => 'разблокировать',
         'very low' => 'самый низкий',
         'low' => 'низкий',
         'normal' => 'обычный',
@@ -845,7 +846,7 @@ sub Data {
         'Create' => 'Создать',
         'Answer' => 'Ответ',
         'Phone call' => 'Телефонный звонок',
-        'Ticket "%s" created!' => 'Создана заявка «%s».',
+        'Ticket "%s" created!' => 'Создана заявка «%s»!',
         'Ticket Number' => 'Номер заявки',
         'Ticket Object' => 'Объект заявки',
         'No such Ticket Number "%s"! Can\'t link it!' => 'Заявки с номером «%s» не существует, невозможно связать с нею!',
@@ -862,9 +863,9 @@ sub Data {
         'Unread article(s) available' => 'Доступны непрочтенные сообщения',
         'Remove from list of watched tickets' => 'Удалить из списка наблюдаемых заявок',
         'Add to list of watched tickets' => 'Добавить в список наблюдаемых заявок',
-        'Email-Ticket' => 'Письмо',
-        'Create new Email Ticket' => 'Создать новую заявку',
-        'Phone-Ticket' => 'Телефонный звонок',
+        'Email-Ticket' => 'Заявка по почте',
+        'Create new Email Ticket' => 'Создать заявку по email',
+        'Phone-Ticket' => 'Заявка по телефону',
         'Search Tickets' => 'Поиск заявок',
         'Customer History' => 'История клиента',
         'Edit Customer Users' => 'Редактировать клиентов',
@@ -885,11 +886,11 @@ sub Data {
         'Watched' => 'Наблюдаемые',
         'Watch' => 'Наблюдать',
         'Unwatch' => 'Не наблюдать',
-        'Lock it to work on it' => 'Заблокировать, чтобы работать',
+        'Lock it to work on it' => 'Заблокировать, чтобы работать с нею',
         'Unlock to give it back to the queue' => 'Разблокировать, чтобы вернуть в очередь',
         'Show the ticket history' => 'Показать историю заявки',
-        'Print this ticket' => 'Печать этой заявки',
-        'Print this article' => 'Печать этого сообщения',
+        'Print this ticket' => 'Напечатать эту заявку',
+        'Print this article' => 'Напечтаать это сообщение',
         'Split' => 'Разделить',
         'Split this article' => 'Разделить это сообщение',
         'Forward article via mail' => 'Переслать сообщение почтой',
@@ -941,17 +942,17 @@ sub Data {
         'Send ticket move notifications' => 'Отправлять уведомления о перемещении заявок',
         'Your queue selection of your favourite queues. You also get notified about those queues via email if enabled.' =>
             'Ваш выбор предпочитаемых очередей. Также, если включено, вы будете получать уведомления почтой об этих очередях.',
-        'Custom Queue' => 'Резервная очередь',
-        'QueueView refresh time' => 'Время обновления монитора очередей',
+        'Custom Queue' => 'Пользовательская очередь',
+        'QueueView refresh time' => 'Время обновления обзора очередей',
         'If enabled, the QueueView will automatically refresh after the specified time.' =>
-            'Монитор очередей будет автоматически обновляться через указанный промежуток времени.',
-        'Refresh QueueView after' => 'Обновлять монитор очередей каждые',
-        'Screen after new ticket' => 'Раздел после создания новой заявки',
-        'Show this screen after I created a new ticket' => 'Показывать этот раздел после создания заявки',
+            'Обзор очередей будет автоматически обновляться через указанный промежуток времени.',
+        'Refresh QueueView after' => 'Обновлять обзор очередей каждые',
+        'Screen after new ticket' => 'Экран после создания новой заявки',
+        'Show this screen after I created a new ticket' => 'Показывать этот экран после создания заявки',
         'Closed Tickets' => 'Закрытые заявки',
-        'Show closed tickets.' => 'Показывать закрытые заявки',
-        'Max. shown Tickets a page in QueueView.' => 'Максимальное количество заявок при просмотре очереди',
-        'Ticket Overview "Small" Limit' => 'Обзор заявок - лимит режима «Маленький»',
+        'Show closed tickets.' => 'Показывать закрытые заявки.',
+        'Max. shown Tickets a page in QueueView.' => 'Максимальное количество заявок на странице при просмотре очереди.',
+        'Ticket Overview "Small" Limit' => 'Обзор заявок - лимит режима «Краткий»',
         'Ticket limit per page for Ticket Overview "Small"' => 'Лимит числа заявок на одной странице в обзоре заявок в режиме «Маленький»',
         'Ticket Overview "Medium" Limit' => 'Обзор заявок - лимит режима «Средний»',
         'Ticket limit per page for Ticket Overview "Medium"' => 'Лимит числа заявок на одной странице в обзоре заявок в режиме «Средний»',
@@ -968,7 +969,7 @@ sub Data {
         'phone call' => 'телефонный звонок',
         'Phone Call Outbound' => 'Сделать звонок',
         'Phone Call Inbound' => 'Входящий звонок',
-        'Reminder Reached' => 'Напоминание истекает',
+        'Reminder Reached' => 'Наступило время Напоминания',
         'Reminder Tickets' => 'Заявки с напоминанием',
         'Escalated Tickets' => 'Эскалированные заявки',
         'New Tickets' => 'Новые заявки',
@@ -1000,10 +1001,10 @@ sub Data {
         'Actions' => 'Действия',
         'Create New ACL' => 'Создать новый ACL',
         'Deploy ACLs' => 'Синхронизировать ACL',
-        'Export ACLs' => 'Экспорт  ACLs',
+        'Export ACLs' => 'Экспорт  ACL',
         'Configuration import' => 'Импорт конфигурации',
         'Here you can upload a configuration file to import ACLs to your system. The file needs to be in .yml format as exported by the ACL editor module.' =>
-            'Здесь вы можете загрузить конфигурационный файл для импорта ACL в вашу систему. Файл должен быть в формате .yml, экспортированыый из редактора  ACL.',
+            'Здесь вы можете загрузить конфигурационный файл для импорта ACL в вашу систему. Файл должен быть в формате .yml, экспортированный из редактора  ACL.',
         'This field is required.' => 'Это поле обязательно.',
         'Overwrite existing ACLs?' => 'Перезаписать существующие ACL?',
         'Upload ACL configuration' => 'Загрузить настройки ACL',
@@ -1012,9 +1013,9 @@ sub Data {
             'Для создания нового ACL или импортируйте его из файла экспорта другой системы или создайте заново.',
         'Changes to the ACLs here only affect the behavior of the system, if you deploy the ACL data afterwards. By deploying the ACL data, the newly made changes will be written to the configuration.' =>
             'Изменения в ACL, сделанные здесь будут актуальны после синхронизации данных ACL. При синхронизации, все вновь внесенные изменения будут записаны в конигурационные файлы системы.',
-        'ACLs' => 'ACLs',
+        'ACLs' => 'ACL',
         'Please note: This table represents the execution order of the ACLs. If you need to change the order in which ACLs are executed, please change the names of the affected ACLs.' =>
-            'Помните: Эта таблица отображает порядок выполнения ACLs. Если вы хотите изменить порядок в котором они исполняются, измените их имена',
+            'Помните: Эта таблица отображает порядок выполнения ACL. Если вы хотите изменить порядок в котором они исполняются, измените их имена.',
         'ACL name' => 'Имя ACL',
         'Validity' => 'Действительность',
         'Copy' => 'Скопировать',
@@ -1040,7 +1041,7 @@ sub Data {
         'Save' => 'Сохранить',
         'or' => 'или',
         'Save and finish' => 'Сохранить и закончить',
-        'Do you really want to delete this ACL?' => 'Вы действительно хотите удалить этот ACL',
+        'Do you really want to delete this ACL?' => 'Вы действительно хотите удалить этот ACL?',
         'This item still contains sub items. Are you sure you want to remove this item including its sub items?' =>
             'Этот элемент содержит подэлементы. Вы уверены что желаете удалить его, включая его подэлементы?',
         'An item with this name is already present.' => 'Элемент с таким именем уже существует',
@@ -1108,7 +1109,7 @@ sub Data {
         'This field is required and needs to be a valid email address.' =>
             'Это поле обязательно, и должно быть корректным адресом электронной почты.',
         'This email address is not allowed due to the system configuration.' =>
-            'Этот адрес электронной почты не разрешен в конфигурации системы.',
+            'Такой адрес электронной почты не разрешен в конфигурации системы.',
         'This email address failed MX check.' => 'Этот адрес электронной почты не прошел проверку наличия MX-записей.',
         'DNS problem, please check your configuration and the error log.' =>
             'Проблема с DNS, проверьте вашу конфигурацию и лог ошибок.',
@@ -1121,19 +1122,19 @@ sub Data {
         'Just use this feature if you want to define group permissions for customers.' =>
             'Просто используйте эту возможность, если хотите определить групповые права для клиентов.',
         'Enable it here!' => 'Включить функцию!',
-        'Edit Customer Default Groups' => 'Редактировать группы по-умолчанию клиента',
+        'Edit Customer Default Groups' => 'Редактировать группы клиента по-умолчанию ',
         'These groups are automatically assigned to all customers.' => 'Эти группы автоматически назначаются всем клиентам.',
         'You can manage these groups via the configuration setting "CustomerGroupAlwaysGroups".' =>
             'Этими группами можно управлять в настройке конфигурации "CustomerGroupAlwaysGroups".',
         'Filter for Groups' => 'Фильтры для Групп',
-        'Just start typing to filter...' => 'Начните вводить символы фильтра...',
+        'Just start typing to filter...' => 'Начните вводить символы для фильтрации...',
         'Select the customer:group permissions.' => 'Выберите разрешения клиент:группа.',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
-            'Если ничего не выбрано, тогда у этой группы не будет прав (заявки будут недоступны клиенту).',
+            'Если ничего не выбрано, тогда у клиентов в этой группе не будет прав (заявки будут недоступны клиенту).',
         'Search Results' => 'Результаты поиска:',
         'Customers' => 'Клиенты',
         'No matches found.' => 'Совпадений не найдено.',
-        'Change Group Relations for Customer' => 'Изменить связи с группами для клиента',
+        'Change Group Relations for Customer' => 'Изменить связи групп с клиентами',
         'Change Customer Relations for Group' => 'Изменить связь клиентов с группой',
         'Toggle %s Permission for all' => 'Переключить разрешение «%s» для всех',
         'Toggle %s permission for %s' => 'Переключить разрешение «%s» для %s',
@@ -1143,7 +1144,7 @@ sub Data {
         'Read only access to the ticket in this group/queue.' => 'Права только на чтение заявки в данной группе/очереди',
         'rw' => 'Чтение/запись',
         'Full read and write access to the tickets in this group/queue.' =>
-            'Полные права на заявки в данной группе/очереди',
+            'Полные права на чтение и запись для заявок в данной группе/очереди.',
 
         # Template: AdminCustomerUserService
         'Manage Customer-Services Relations' => 'Связь Клиентов с Сервисами',
@@ -1159,25 +1160,25 @@ sub Data {
         'Dynamic Fields Management' => 'Управление динамическими полями',
         'Add new field for object' => 'Добавить новое поле для объекта',
         'To add a new field, select the field type from one of the object\'s list, the object defines the boundary of the field and it can\'t be changed after the field creation.' =>
-            'Чтобы добавить новое поле, выберите один из типов из появившегося списка, тип определяет ограничения для поля и он не может быть изменен после создания поля.',
+            'Чтобы добавить новое поле, выберите один из типов из появившегося списка, тип определяет границы использования для поля и он не может быть изменен после создания поля.',
         'Dynamic Fields List' => 'Список динамических полей',
         'Dynamic fields per page' => 'Динамических полей на страницу',
-        'Label' => 'Надпись',
+        'Label' => 'Название',
         'Order' => 'Порядок',
         'Object' => 'Объект',
         'Delete this field' => 'Удалить это поле',
         'Do you really want to delete this dynamic field? ALL associated data will be LOST!' =>
-            'Вы действительно хотите удалить это динамическое поле? ВСЕ связанные данные будут ПОТЕРЯНЫ!',
+            'Вы действительно хотите удалить это динамическое поле? ВСЕ связанные с ним данные будут ПОТЕРЯНЫ!',
         'Delete field' => 'Удалить поле',
 
         # Template: AdminDynamicFieldCheckbox
         'Field' => 'Поле',
-        'Go back to overview' => 'Обратно в обзор',
+        'Go back to overview' => 'Вернуться к обзору',
         'General' => 'Общие',
         'This field is required, and the value should be alphabetic and numeric characters only.' =>
-            'Данное поле ввода обязательно, и может состоять только из латинских букв и цифр.',
+            'Данное поле обязательно, и может состоять только из букв и цифр.',
         'Must be unique and only accept alphabetic and numeric characters.' =>
-            'Должно быть уникальным, и может состоять только из латинских букв и цифр.',
+            'Должно быть уникальным, и может состоять только из букв и цифр.',
         'Changing this value will require manual changes in the system.' =>
             'Изменение этого значения потребует ручных изменений в системе.',
         'This is the name to be shown on the screens where the field is active.' =>
@@ -1195,15 +1196,15 @@ sub Data {
         'This is the default value for this field.' => 'Это значение по умолчанию для данного поля.',
 
         # Template: AdminDynamicFieldDateTime
-        'Default date difference' => 'Разница дат по умолчанию',
+        'Default date difference' => 'Диапазон дат по умолчанию',
         'This field must be numeric.' => 'Это поле должно быть числовым',
         'The difference from NOW (in seconds) to calculate the field default value (e.g. 3600 or -60).' =>
             'Разница в секундах с NOW (текущим моментом) для подсчета значения по умолчанию для этого поля (например, 3600 или -60).',
         'Define years period' => 'Задать период лет',
         'Activate this feature to define a fixed range of years (in the future and in the past) to be displayed on the year part of the field.' =>
-            'Активируйте эту возможность для задания фиксированного диапазона лет (в прошлое и в будущее) для отображения в части поля, показывающей год.',
-        'Years in the past' => 'Лет в прошлое',
-        'Years in the past to display (default: 5 years).' => 'Число лет в прошлое для отображения (по умолчанию: 5 лет)',
+            'Активируйте эту возможность для задания фиксированного диапазона лет (в прошлом и в будущем) для отображения в части поля, показывающей год.',
+        'Years in the past' => 'Лет в прошлом',
+        'Years in the past to display (default: 5 years).' => 'Число лет в прошлом для отображения (по умолчанию: 5 лет)',
         'Years in the future' => 'Лет в будущее',
         'Years in the future to display (default: 5 years).' => 'Число лет в будущее для отображения (по умолчанию: 5 лет)',
         'Show link' => 'Показывать ссылку',
@@ -1220,15 +1221,15 @@ sub Data {
         'Add value' => 'Добавить значение',
         'Add Value' => 'Добавить Значение',
         'Add empty value' => 'Добавить пустое значение',
-        'Activate this option to create an empty selectable value.' => 'Отметьте эту опцию для создания пустого выбирабельного значения.',
+        'Activate this option to create an empty selectable value.' => 'Отметьте эту опцию для создания пустого выбираемого значения.',
         'Tree View' => 'Иерархический вид',
-        'Activate this option to display values as a tree.' => 'Включите для отображения в иерархическом виде',
+        'Activate this option to display values as a tree.' => 'Включите для отображения в иерархическом виде.',
         'Translatable values' => 'Переводимые значения',
         'If you activate this option the values will be translated to the user defined language.' =>
-            'Если включить эту опцию, значения будут переведены на заданный язык.',
+            'Если включить эту опцию, значения, при отображении, будут переведены на заданный язык.',
         'Note' => 'Заметка',
         'You need to add the translations manually into the language translation files.' =>
-            'Вам необходимо вручную добавить переводы в файлы переводов для языков.',
+            'Вам необходимо вручную добавить переводы значений в файлы переводов для используемых языков.',
 
         # Template: AdminDynamicFieldText
         'Number of rows' => 'Число строк',
@@ -1237,7 +1238,7 @@ sub Data {
         'Number of cols' => 'Число столбцов',
         'Specify the width (in characters) for this field in the edit mode.' =>
             'Задает ширину (в символах) для этого поля в режиме редактирования.',
-        'Check RegEx' => 'Проверить регулярное выражение',
+        'Check RegEx' => 'Регулярное выражение для проверки',
         'Here you can specify a regular expression to check the value. The regex will be executed with the modifiers xms.' =>
             'Здесь можно задать регулярное выражение для проверки значения. Оно будет выполняться с расширением xms.',
         'RegEx' => 'Регулярное выражение',
@@ -1248,9 +1249,9 @@ sub Data {
         # Template: AdminEmail
         'Admin Notification' => 'Уведомление администратором',
         'With this module, administrators can send messages to agents, group or role members.' =>
-            'С помощью этого модуля администраторы могут отправлять сообщения агентам, членам группы или роли.',
-        'Create Administrative Message' => 'Создать административное сообщение',
-        'Your message was sent to' => 'Ваше сообщение было отправлено к',
+            'С помощью этого модуля администраторы могут отправлять сообщения агентам, являющимся членом группы или роли.',
+        'Create Administrative Message' => 'Создать сообщение администратора',
+        'Your message was sent to' => 'Ваше сообщение было отправлено',
         'Send message to users' => 'Отправить сообщение пользователям',
         'Send message to group members' => 'Отправить сообщение членам группы',
         'Group members need to have permission' => 'Члены группы должны иметь разрешение',
@@ -1262,7 +1263,7 @@ sub Data {
         # Template: AdminGenericAgent
         'Generic Agent' => 'Планировщик задач',
         'Add job' => 'Добавить задание',
-        'Last run' => 'Последний запуск',
+        'Last run' => 'Дата последнего запуска',
         'Run Now!' => 'Выполнить сейчас!',
         'Delete this task' => 'Удалить задачу',
         'Run this task' => 'Запустить задачу',
@@ -1284,18 +1285,18 @@ sub Data {
         'List of all configured events' => 'Список всех настроенных событий',
         'Delete this event' => 'Удалить это событие',
         'Additionally or alternatively to a periodic execution, you can define ticket events that will trigger this job.' =>
-            'Дополнительно или или вместо запуска по расписанию, вы можете задать события для заявки, которое включит эту задачу',
+            'Дополнительно или или вместо запуска по расписанию, вы можете задать события для заявки, которые запустят эту задачу.',
         'If a ticket event is fired, the ticket filter will be applied to check if the ticket matches. Only then the job is run on that ticket.' =>
             'Если событие по заявке наступило, фильтр заявок находит соответствующие заявки. Только после этого стартует задача для этой заявки.',
         'Do you really want to delete this event trigger?' => 'Вы действительно хотите удалить этот триггер события?',
         'Add Event Trigger' => 'Добавить триггер события',
         'Add Event' => 'Добавить событие',
         'To add a new event select the event object and event name and click on the "+" button' =>
-            'Чтобы добавить новое событие выберите тип, событие и щелкните "+" кнопку.',
-        'Duplicate event.' => 'Дублировать событие',
+            'Чтобы добавить новое событие выберите объект и имя события и щелкните кнопку "+" ',
+        'Duplicate event.' => 'Дублировать событие.',
         'This event is already attached to the job, Please use a different one.' =>
             'Это событие уже назначено задаче. Выберите другое.',
-        'Delete this Event Trigger' => 'Удаление Триггера События',
+        'Delete this Event Trigger' => 'Удалить этот Триггер События',
         'Select Tickets' => 'Выбрать заявки',
         '(e. g. 10*5155 or 105658*)' => '(например, 10*5155 или 105658*)',
         '(e. g. 234321)' => '(например, 234321)',
@@ -1305,7 +1306,7 @@ sub Data {
         'Agent' => 'Агент',
         'Ticket lock' => 'Блокировка заявки',
         'Create times' => 'Когда создана',
-        'No create time settings.' => 'Без учета времени создания',
+        'No create time settings.' => 'Без учета времени создания.',
         'Ticket created' => 'Заявка создана',
         'Ticket created between' => 'Заявка создана между ',
         'Last changed times' => 'Время последнего изменения.',
@@ -1313,31 +1314,31 @@ sub Data {
         'Ticket last changed' => 'Последнее изменение заявки',
         'Ticket last changed between' => 'Время последнего изменения заявки между',
         'Change times' => 'Когда изменена',
-        'No change time settings.' => 'Не изменять параметры времени',
+        'No change time settings.' => 'Нет настройки времени изменения.',
         'Ticket changed' => 'Заявка изменена',
         'Ticket changed between' => 'Заявка изменена в период',
         'Close times' => 'Когда закрыта',
-        'No close time settings.' => 'Без учета времени закрытия',
+        'No close time settings.' => 'Без учета времени закрытия.',
         'Ticket closed' => 'Заявка закрыта',
         'Ticket closed between' => 'Заявка закрыта между',
         'Pending times' => 'Когда отложена',
-        'No pending time settings.' => 'Без учета времени, когда запрос был отложен',
-        'Ticket pending time reached' => 'Заявка была отложена',
-        'Ticket pending time reached between' => 'Заявка была отложена между',
+        'No pending time settings.' => 'Без учета времени напоминания.',
+        'Ticket pending time reached' => 'Достигнуто время напоминания по заявке',
+        'Ticket pending time reached between' => 'Время напоминания по заявке достигнуто между',
         'Escalation times' => 'Когда эскалирована',
         'No escalation time settings.' => 'Без учета времени эскалации',
         'Ticket escalation time reached' => 'Заявка была эскалирована',
         'Ticket escalation time reached between' => 'Заявка была эскалирована между',
         'Escalation - first response time' => 'Эскалация - время первого ответа',
-        'Ticket first response time reached' => 'Первый ответ',
-        'Ticket first response time reached between' => 'Первый ответ между',
+        'Ticket first response time reached' => 'Время первого ответа по заявке достигнуто',
+        'Ticket first response time reached between' => 'Время первого ответа по заявке достигнуто между',
         'Escalation - update time' => 'Эскалация - время обновления',
-        'Ticket update time reached' => 'Заявка была обновлена',
-        'Ticket update time reached between' => 'Заявка была обновлена между',
+        'Ticket update time reached' => 'Время обновления для заявки достигнуто',
+        'Ticket update time reached between' => 'Время обновления для заявки достигнуто между',
         'Escalation - solution time' => 'Эскалация - время решения',
-        'Ticket solution time reached' => 'Заявка была решена',
-        'Ticket solution time reached between' => 'Заявка была решена между',
-        'Archive search option' => 'Поиск в архиве',
+        'Ticket solution time reached' => 'Время решения заявки достигнуто',
+        'Ticket solution time reached between' => 'Время решения заявки достигнуто между',
+        'Archive search option' => 'Опция Поиск в архиве',
         'Update/Add Ticket Attributes' => 'Обновить/добавить атрибуты заявки',
         'Set new service' => 'Установить новый сервис',
         'Set new Service Level Agreement' => 'Установить новое Соглашение об Уровне Сервиса (SLA)',
@@ -1355,27 +1356,27 @@ sub Data {
         'New type' => 'Новый тип',
         'New Dynamic Field Values' => 'Новые значения динамических полей',
         'Archive selected tickets' => 'Архивировать выбранные заявки',
-        'Add Note' => 'Добавить заметку',
+        'Add Note' => 'Добавить заметку/сообщение',
         'Time units' => 'Затраченное время',
         'Execute Ticket Commands' => 'Выполнить действия над заявкой',
-        'Send agent/customer notifications on changes' => 'Отправлять уведомление агенту при изменениях',
-        'CMD' => 'Команда',
+        'Send agent/customer notifications on changes' => 'Отправить уведомление агенту/клиенту при изменениях',
+        'CMD' => 'Команда/CMD',
         'This command will be executed. ARG[0] will be the ticket number. ARG[1] the ticket id.' =>
             'Эта команда будет выполнена. ARG[0] — номер заявки. ARG[1] — id заявки.',
         'Delete tickets' => 'Удалить заявки',
         'Warning: All affected tickets will be removed from the database and cannot be restored!' =>
             'Предупреждение: Все выбранные заявки будут удалены из базы данных без возможности восстановления!',
         'Execute Custom Module' => 'Запустить пользовательский модуль',
-        'Param %s key' => 'Параметр %s: ключ',
-        'Param %s value' => 'Параметр %s: значение',
+        'Param %s key' => 'Параметр %s ключ',
+        'Param %s value' => 'Параметр %s значение',
         'Save Changes' => 'Сохранить изменения',
-        'Results' => 'Результат',
+        'Results' => 'Результаты',
         '%s Tickets affected! What do you want to do?' => 'Затронуто %s заявок! Что желаете сделать?',
         'Warning: You used the DELETE option. All deleted tickets will be lost!' =>
             'Внимание! Вы использовали опцию УДАЛЕНИЯ. Все удаленные заявки будут потеряны!',
         'Edit job' => 'Редактировать задание',
         'Run job' => 'Запустить задание',
-        'Affected Tickets' => 'Выбранные задания',
+        'Affected Tickets' => 'Выбранные заявки',
 
         # Template: AdminGenericInterfaceDebugger
         'GenericInterface Debugger for Web Service %s' => 'Интерфейс отладки для Веб-сервисов',
@@ -1396,8 +1397,8 @@ sub Data {
         'Filter by remote IP' => 'Фильтр по удаленному IP-адресу',
         'Refresh' => 'Обновить',
         'Request Details' => 'Детали запроса (Request)',
-        'An error occurred during communication.' => 'Ошибка при попытке связи',
-        'Show or hide the content.' => 'Показать или убрать содержимое',
+        'An error occurred during communication.' => 'Ошибка при попытке связи.',
+        'Show or hide the content.' => 'Показать или убрать содержимое.',
         'Clear debug log' => 'Очистить журнал отладки',
 
         # Template: AdminGenericInterfaceInvokerDefault
@@ -1421,10 +1422,10 @@ sub Data {
         'Mapping for incoming response data' => '',
         'The response data will be processed by this mapping, to transform it to the kind of data the invoker of OTRS expects.' =>
             '',
-        'Asynchronous' => 'Асинхронно',
+        'Asynchronous' => 'Асинхронный',
         'This invoker will be triggered by the configured events.' => 'Этот invoker будет вызван при наступлении заданных событий.',
         'Asynchronous event triggers are handled by the OTRS Scheduler in background (recommended).' =>
-            'Асинхронные триггеры событий будут обрабатываться Планировщиком OTRS в фоновом режиме (рекомендуется)',
+            'Асинхронные триггеры событий будут обрабатываться Планировщиком OTRS в фоновом режиме (рекомендуется).',
         'Synchronous event triggers would be processed directly during the web request.' =>
             'Синхронные триггеры событий будут обрабатываться непосредственно при веб-запросе.',
         'Save and continue' => 'Сохранить и продолжить',
@@ -1444,7 +1445,7 @@ sub Data {
         'Remove key mapping' => '',
         'Key mapping' => '',
         'Map key' => '',
-        'matching the' => '',
+        'matching the' => 'соответствует',
         'to new key' => 'для нового ключа',
         'Value mapping' => '',
         'Map value' => '',
@@ -1527,7 +1528,7 @@ sub Data {
         'GenericInterface Transport HTTP::SOAP for Web Service %s' => 'GenericInterface Transport HTTP::SOAP для веб-сервиса %s',
         'Endpoint' => '',
         'URI to indicate a specific location for accessing a service.' =>
-            '',
+            'URI для указания специального расположения для доступа к сервису.',
         'e.g. http://local.otrs.com:8000/Webservice/Example' => 'например, http://local.otrs.com:8000/Webservice/Example',
         'Namespace' => 'Пространство имен',
         'URI to give SOAP methods a context, reducing ambiguities.' => '',
@@ -1565,7 +1566,7 @@ sub Data {
         'The password for the proxy user.' => 'Пароль пользователя прокси',
 
         # Template: AdminGenericInterfaceWebservice
-        'GenericInterface Web Service Management' => 'Интерфейс управления Веб-сервисами',
+        'GenericInterface Web Service Management' => 'Управление  GenericInterface Web Service',
         'Add web service' => 'Добавить Веб-сервис',
         'Clone web service' => 'Дублировать Веб-сервис',
         'The name must be unique.' => 'Имя должно быть уникальным',
@@ -1589,9 +1590,9 @@ sub Data {
         'Requester transport' => 'Транспорт запрашиваюшего',
         'Debug threshold' => 'Порог отладки',
         'In provider mode, OTRS offers web services which are used by remote systems.' =>
-            '',
+            'В режиме provider, OTRS предлагает веб-сервисы используемые удаленной системой.',
         'In requester mode, OTRS uses web services of remote systems.' =>
-            '',
+            'В режиме requester, OTRS использует веб-сервисы удаленной системы.',
         'Operations are individual system functions which remote systems can request.' =>
             'Операции - это отдельные системные функции которые удаленные системы могут запрашивать.',
         'Invokers prepare data for a request to a remote web service, and process its response data.' =>
@@ -1601,9 +1602,9 @@ sub Data {
         'Outbound mapping' => '',
         'Delete this action' => 'Удалить это действие',
         'At least one %s has a controller that is either not active or not present, please check the controller registration or delete the %s' =>
-            '',
+            'По крайней мере один %s имеет controller, который или неактивен, или отсутствует, проверьте, пожалуйста, controller registration или удалите %s',
         'Delete webservice' => 'Удалить веб-сервис',
-        'Delete operation' => 'Операция удаления',
+        'Delete operation' => 'Удалить операцию',
         'Delete invoker' => 'Удалить invoker',
         'Clone webservice' => 'Скопировать веб-сервис',
         'Import webservice' => 'Импортировать веб-сервис',
@@ -1651,7 +1652,7 @@ sub Data {
         'If your account is trusted, the already existing X-OTRS header at arrival time (for priority, ...) will be used! PostMaster filter will be used anyway.' =>
             'Если к вашей учётной записи есть доверие, будут использованы уже существующие в письмах на момент прибытия заголовки X-OTRS (для выставления приоритета и прочих данных)! Фильтр PostMaster будет использован в любом случае.',
         'Delete account' => 'Удалить учетную запись',
-        'Fetch mail' => 'Забрать письмо',
+        'Fetch mail' => 'Забрать почту',
         'Add Mail Account' => 'Добавить почтовую учетную запись',
         'Example: mail.example.com' => 'Пример: mail.example.com',
         'IMAP Folder' => 'Папка IMAP',
@@ -1692,7 +1693,7 @@ sub Data {
         'Article sender type' => 'Тип отправителя сообщения',
         'Subject match' => 'Соответствие теме',
         'Body match' => 'Соответствие телу письма',
-        'Include attachments to notification' => 'Добавить вложения в уведомление',
+        'Include attachments to notification' => 'Включить вложения в уведомление',
         'Recipient' => 'Получатель',
         'Recipient groups' => 'Получат группы',
         'Recipient agents' => 'Получат агенты',
@@ -1711,7 +1712,7 @@ sub Data {
 
         # Template: AdminOTRSBusinessInstalled
         'Manage %s' => 'Упровление %s',
-        'Downgrade to OTRS Free' => 'Бесплатный возврат к ранней версии OTRS ',
+        'Downgrade to OTRS Free' => 'Возврат к бесплатной версии OTRS ',
         '%s makes contact regularly with cloud.otrs.com to check on available updates and the validity of the underlying contract.' =>
             '%s выполняет регулярную связь с cloud.otrs.com для проверки доступных обновлений и срока действия основного договора.',
         'Unauthorized Usage Detected' => 'Обнаружено несанкционированное использование ',
@@ -1725,7 +1726,7 @@ sub Data {
             'Ваш %s некорректно установлен, а также доступно обновление для него.',
         'You can either reinstall your current version or perform an update with the buttons below (update recommended).' =>
             'Вы можете либо переустановить текущую версию продукта, либо обновить его с помощью кнопок расположенных ниже (рекомендуется выполнить обновление).',
-        'Update %s' => 'Обновление %s ',
+        'Update %s' => 'Обновить %s ',
         '%s Not Yet Available' => '%s в данный момент еще недоступен',
         '%s will be available soon.' => '%s скоро будет доступен.',
         '%s Update Available' => 'Доступно обновление для %s',
@@ -1743,6 +1744,8 @@ sub Data {
         'Your OTRS Free is the base for all future actions. Please register first before you continue with the upgrade process of %s!' =>
             'Ваш OTRS Free является основой для всех будущих действий. Зарегистрируйтесь сначала, до продолжения работ по обновлению %s! ',
         'Register this System' => 'Зарегистрируйте эту систему',
+        'System Registration is disabled for your system. Please check your configuration.' =>
+            'System Registration отключена для вашей системы. Проверьте настройки.',
         'Before you can benefit from %s, please contact %s to get your %s contract.' =>
             'Для получения пользы от использования %s, свяжитесь с %s для получения вашего контракта на %s.',
         'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.' =>
@@ -1765,10 +1768,10 @@ sub Data {
         'Chat' => 'Чат',
         'Timeline view in ticket zoom' => 'Хронологический вид при подробном просмотре заявки',
         'DynamicField ContactWithData' => '',
-        'DynamicField Database' => '',
-        'SLA Selection Dialog' => '',
-        'Ticket Attachment View' => '',
-        'The %s skin' => '',
+        'DynamicField Database' => 'База данных Динамических полей',
+        'SLA Selection Dialog' => 'Диалог выбора SLA ',
+        'Ticket Attachment View' => 'Обзор вложений заявки',
+        'The %s skin' => 'Обложка %s',
 
         # Template: AdminPGP
         'PGP Management' => 'Управление подписями PGP',
@@ -1782,7 +1785,7 @@ sub Data {
         'Bit' => 'Бит',
         'Fingerprint' => 'Цифровой отпечаток',
         'Expires' => 'Истекает',
-        'Delete this key' => 'Удалить ключ',
+        'Delete this key' => 'Удалите этот ключ',
         'Add PGP Key' => 'Добавить PGP ключ',
         'PGP key' => 'PGP-ключ',
 
@@ -1804,7 +1807,7 @@ sub Data {
         'Upgrade' => 'Обновить',
         'Local Repository' => 'Локальный репозиторий',
         'This package is verified by OTRSverify (tm)' => 'Этот пакет проверен с помощью OTRSverify (tm)',
-        'Uninstall' => 'Удалить',
+        'Uninstall' => 'Деинсталлировать',
         'Reinstall' => 'Переустановить',
         'Features for %s customers only' => 'Эти возможности доступны тоько для клиентов - %s ',
         'With %s, you can benefit from the following optional features. Please make contact with %s if you need more information.' =>
@@ -1830,7 +1833,7 @@ sub Data {
         'Just use this feature if you want to log each request.' => 'Используйте эту функцию, если хотите заносить каждый запрос в журнал',
         'Activating this feature might affect your system performance!' =>
             'Включение этой функции может сказаться на производительности вашей системы',
-        'Disable it here!' => 'Отключить функцию!',
+        'Disable it here!' => 'Отключите ее здесь!',
         'Logfile too large!' => 'Файл журнала слишком большой!',
         'The logfile is too large, you need to reset it' => 'Логфайл слишком большой, необходимо его очистить',
         'Overview' => 'Обзор',
@@ -1847,10 +1850,10 @@ sub Data {
         'Average' => 'Среднее',
 
         # Template: AdminPostMasterFilter
-        'PostMaster Filter Management' => 'Управление фильтром PostMaster',
+        'PostMaster Filter Management' => 'Управление фильтрами PostMaster',
         'Add filter' => 'Добавить фильтр',
         'To dispatch or filter incoming emails based on email headers. Matching using Regular Expressions is also possible.' =>
-            'Для распределения или фильтрации входящей электронной почты по заголовкам. Возможна также проверка и по регулярным выражениям.',
+            'Для распределения или фильтрации входящей электронной почты по заголовкам. Возможна также проверка и с использованием регулярных выражений.',
         'If you want to match only the email address, use EMAILADDRESS:info@example.com in From, To or Cc.' =>
             'Если вы хотите отфильтровать только по адресам электронной почты, используйте EMAILADDRESS:info@example.com в полях From, To или Cc.',
         'If you use Regular Expressions, you also can use the matched value in () as [***] in the \'Set\' action.' =>
@@ -1867,9 +1870,9 @@ sub Data {
         'The field needs to be a valid regular expression or a literal word.' =>
             'Это поле должно быть корректным регулярным выражением либо буквально совпадающей строкой.',
         'Set Email Headers' => 'Выставить заголовки письма',
-        'Set email header' => 'Выставить заголовки письма',
+        'Set email header' => 'Выставить заголовок письма',
         'Set value' => 'Установить значение',
-        'The field needs to be a literal word.' => 'Это поле должно быть буквальной строкой.',
+        'The field needs to be a literal word.' => 'Значение поля должно быть литералом.',
 
         # Template: AdminPriority
         'Priority Management' => 'Управление приоритетами',
@@ -2067,9 +2070,9 @@ sub Data {
         'Add Queue' => 'Добавить Очередь',
         'Edit Queue' => 'Изменить очередь',
         'A queue with this name already exists!' => 'Очередь с таким именем уже существует!',
-        'Sub-queue of' => 'Подочередь очереди',
+        'Sub-queue of' => 'Подочередь для',
         'Unlock timeout' => 'Срок блокировки',
-        '0 = no unlock' => '0 — без блокировки',
+        '0 = no unlock' => '0 = не разблокировать',
         'Only business hours are counted.' => 'С учетом только рабочего времени.',
         'If an agent locks a ticket and does not close it before the unlock timeout has passed, the ticket will unlock and will become available for other agents.' =>
             'Если агент блокирует заявку и не закрывает её, когда подошел таймаут разблокировки, заявка будет разблокирована и станет доступна другим агентам.',
@@ -2119,9 +2122,9 @@ sub Data {
         'Unique ID' => 'Уникальный индентификатор',
         'Last communication with registration server' => 'Последняя связь с регистрационным сервером',
         'Send support data' => 'Выслать данные для технической поддержки',
-        'System registration not possible' => '',
+        'System registration not possible' => 'Регистрация системы/System registration невозможна',
         'Please note that you can\'t register your system if your scheduler is not running correctly!' =>
-            '',
+            'Вы не можете зарегистрировать вашу систему если планировщик работает некорректно!',
         'Instructions' => 'Инструкции',
         'System deregistration not possible' => 'Разрегистрация системы невозможна',
         'Please note that you can\'t deregister your system if you\'re using the %s or having a valid service contract.' =>
@@ -2129,7 +2132,7 @@ sub Data {
         'OTRS-ID Login' => 'Уч. запись OTRS-ID',
         'System registration is a service of OTRS Group, which provides a lot of advantages!' =>
             'Регистрация системы - это сервис от OTRS Group, который предоставляет много преимуществ!',
-        'Read more' => 'Подробно',
+        'Read more' => 'Читайте дополнительно',
         'You need to log in with your OTRS-ID to register your system.' =>
             'Вы должны войти в систему со своей уч. записью OTRS-ID, чтобы зарегистрировать Вашу систему.',
         'Your OTRS-ID is the email address you used to sign up on the OTRS.com webpage.' =>
@@ -2172,7 +2175,7 @@ sub Data {
             'Ни при каких обстоятельствах, никакие данные, которые мы получаем, не могут быть проданы или переданы третьим лицам.',
         'The following explanation provides you with an overview of how we guarantee this protection and which type of data is collected for which purpose.' =>
             'Последующее объяснение показывает вам как мы гарантируем эту защиту и, какие данные, и для каких целей собираются',
-        'Data Handling with \'System Registration\'' => '',
+        'Data Handling with \'System Registration\'' => 'Управление данными с помощью \'System Registration\'',
         'Information received through the \'Service Center\' is saved by OTRS Group.' =>
             'Информация, полученная через \'Service Center\'  сохраняется в OTRS Group.',
         'This only applies to data that OTRS Group requires to analyze the performance and function of the OTRS server or to establish contact.' =>
@@ -2189,28 +2192,28 @@ sub Data {
             'OTRS Group будет передавать ваши персональные данные только уполномоченным публичным организациям и властям, если этого требует закон или в судебном порядке.',
         'Amendment of Data Protection Policy' => 'Поправка к Политике защиты данных',
         'OTRS Group reserves the right to amend this security and data protection policy if required by technical developments.' =>
-            '',
+            'OTRS Group оставляет за собой право вносить изменения в данную политику безопасности и защиты данных, если это требуется в технических целях разработки.',
         'In this case we will also adapt our information regarding data protection accordingly.' =>
             'В этом случае мы также изменим нашу информацию, касающуюся защиты данных соответственно.',
         'Please regularly refer to the latest version of our Data Protection Policy.' =>
             'Пожалуйста, регулярно обращайтесь к последней версии нашей Политики по защите данных.',
         'Right to Information' => 'Право на информацию',
         'You have the right to demand information concerning the data saved about you, its origin and recipients, as well as the purpose of the data processing at any time.' =>
-            '',
+            'Вы имеете право требовать информацию о данных, сохраненных о вас, их происхождение и получателей, а также цели обработки данных в любое время.',
         'You can request information about the saved data by sending an e-mail to info@otrs.com.' =>
             'Вы можете запросить информацию о сохраненных данных посылкой письма на адрес info@otrs.com.',
         'Further Information' => 'Дополнительная информация',
         'Your trust is very important to us. We are willing to inform you about the processing of your personal details at any time.' =>
-            '',
+            'Ваше доверие очень важно для нас. Мы готовы сообщить Вам об обработке личных данных в любое время. ',
         'If you have any questions that have not been answered by this Data Protection Policy or if you require more detailed information about a specific topic, please contact info@otrs.com.' =>
-            '',
+            'Если у вас есть какие-либо вопросы, которые не нашли ответа в этой Политике защиты данных или если вам нужна более подробная информация о конкретной теме, пожалуйста, свяжитесь с нами через info@otrs.com.',
         'If you deregister your system, you will lose these benefits:' =>
             'Если вы откажетесь от регистрации вашей системы, вы потеряете следующие выгоды:',
         'You need to log in with your OTRS-ID to deregister your system.' =>
             'Вы должны войти в систему под своей уч. записью OTRS-ID, чтобы удалить зарегистрированую Вашу систему.',
         'OTRS-ID' => 'OTRS-ID',
         'You don\'t have an OTRS-ID yet?' => 'У Вас еще нет уч. записи OTRS-ID?',
-        'Sign up now' => 'Войти',
+        'Sign up now' => 'Зарегистрируйтесь сейчас',
         'Forgot your password?' => 'Забыли свой пароль?',
         'Retrieve a new one' => 'Получите новый',
         'This data will be frequently transferred to OTRS Group when you register this system.' =>
@@ -2234,7 +2237,7 @@ sub Data {
             'Следующие данные отсылаются, как минимум, каждые 3 дня из вашей системы в %s.',
         'The data will be transferred in JSON format via a secure https connection.' =>
             'Данные будут переданы в JSON формате через защищенное https соединение.',
-        'System Registration Data' => '',
+        'System Registration Data' => 'Данные System Registration',
         'Support Data' => 'Данные для поддержки',
 
         # Template: AdminRole
@@ -2257,9 +2260,14 @@ sub Data {
         'Change Group Relations for Role' => 'Изменить связи с группами для роли',
         'Toggle %s permission for all' => 'Переключить разрешение «%s» для всех',
         'move_into' => 'переместить',
-        'Permissions to move tickets into this group/queue.' => 'Права на перемещение заявок в эту группу/очередь',
+        'Permissions to move tickets into this group/queue.' => 'Права на перемещение заявок в эту группу/очередь.',
         'create' => 'создание',
         'Permissions to create tickets in this group/queue.' => 'Права на создание заявок в этой группе/очереди',
+        'note' => 'заметка',
+        'Permissions to add notes to tickets in this group/queue.' => 'Права на добавление заметок в заявки в этой группе/очереди.',
+        'owner' => 'владелец',
+        'Permissions to change the owner of tickets in this group/queue.' =>
+            'Права на смену владельца заявок в этой группе/очереди.',
         'priority' => 'приоритет',
         'Permissions to change the ticket priority in this group/queue.' =>
             'Права на смену приоритета заявок в этой группе/очереди',
@@ -2285,9 +2293,9 @@ sub Data {
         'Filter for S/MIME certs' => 'Фильтр для  S/MIME сертификатов',
         'To show certificate details click on a certificate icon.' => 'Для показа подробностей сертификата нажмите на иконку сертификата.',
         'To manage private certificate relations click on a private key icon.' =>
-            '',
+            'Для управления личным сертификатом кликните по значку личного ключа.',
         'Here you can add relations to your private certificate, these will be embedded to the S/MIME signature every time you use this certificate to sign an email.' =>
-            '',
+            'Здесь вы можете добавить связи с вашим личным сертификатом, они будут включаться в подпись S/MIME каждый раз, когда вы используете этот сертификат для подписи письма.',
         'See also' => 'См. также',
         'In this way you can directly edit the certification and private keys in file system.' =>
             'Вы можете редактировать сертификаты и закрытые ключи прямо на файловой системе',
@@ -2362,8 +2370,8 @@ sub Data {
             'Пакет поддержки (включая сведения о регистрации системы, данные поддержки, список установленных пакетов и локально изменённые файлы с исходным кодом) можно сгенерировать нажатием этой кнопки:',
         'Generate Support Bundle' => 'Сгенерировать пакет поддержки',
         'Generating...' => 'Выполняется...',
-        'It was not possible to generate the Support Bundle.' => '',
-        'Generate Result' => '',
+        'It was not possible to generate the Support Bundle.' => 'Не удалось сгенерировать Пакет поддержки/ Support Bundle.',
+        'Generate Result' => 'Результат генерации',
         'Support Bundle' => 'Пакет поддержки',
         'The mail could not be sent' => 'Почта не может быть отправлена',
         'The support bundle has been generated.' => 'Пакет поддержки будет сгенерирован.',
@@ -2371,7 +2379,7 @@ sub Data {
         'Send by Email' => 'Отправить электронной почтой',
         'The support bundle is too large to send it by email, this option has been disabled.' =>
             'Пакет поддержки слишком велик для отправки электронной почтой, эта функция будет отключена.',
-        'The email address for this user is invalid, this ption has been disabled.' =>
+        'The email address for this user is invalid, this option has been disabled.' =>
             'Электронный адрес получателя неверный, эта функция будет отключена.',
         'Sending' => 'Отправка',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
@@ -2392,7 +2400,7 @@ sub Data {
         'Kill all sessions' => 'Завершить все сеансы',
         'Kill this session' => 'Завершить сеанс',
         'Session' => 'Сеанс',
-        'Kill' => 'Закрыть',
+        'Kill' => 'Завершить',
         'Detail View for SessionID' => 'Подробный показ для ID сеанса',
 
         # Template: AdminSignature
@@ -2488,14 +2496,14 @@ sub Data {
         'Edit System Maintenance %s' => 'Редактировать график техобслуживания %s',
         'Edit System Maintenance information' => 'Редактировать информацию о технической поддержке',
         'Date invalid!' => 'Некорректная дата!',
-        'Login message' => '',
-        'Show login message' => '',
+        'Login message' => 'Сообщение при входе',
+        'Show login message' => 'Показать сообщение при входе',
         'Notify message' => 'Сообщение оповещения',
         'Manage Sessions' => 'Управление сеансами',
         'All Sessions' => 'Все сеансы',
         'Agent Sessions' => 'Сеансы агента',
         'Customer Sessions' => 'Сеансы клиента',
-        'Kill all Sessions, exept current' => 'Завершить все сеансы, кроме текущего',
+        'Kill all Sessions, except for your own' => 'Завершить все сеансы, кроме вашего собственного',
 
         # Template: AdminTemplate
         'Manage Templates' => 'Управление шаблонами',
@@ -2547,11 +2555,6 @@ sub Data {
         'Manage Agent-Group Relations' => 'Связь агентов с группами',
         'Change Group Relations for Agent' => 'Изменить связи с группами для агента',
         'Change Agent Relations for Group' => 'Изменить связи с агентами для группы',
-        'note' => 'заметка',
-        'Permissions to add notes to tickets in this group/queue.' => 'Права на добавление заметок в заявки в этой группе/очереди.',
-        'owner' => 'владелец',
-        'Permissions to change the owner of tickets in this group/queue.' =>
-            'Права на смену владельца заявок в этой группе/очереди.',
 
         # Template: AgentBook
         'Address Book' => 'Адресная книга',
@@ -2582,7 +2585,7 @@ sub Data {
         'in' => 'в',
 
         # Template: AgentDashboardCommon
-        'Available Columns' => 'Доступные для отображения',
+        'Available Columns' => 'Колонки, доступные для отображения',
         'Visible Columns (order by drag & drop)' => 'Отображаемые (порядок устанавливается перетаскиванием)',
 
         # Template: AgentDashboardCustomerIDStatus
@@ -2596,24 +2599,24 @@ sub Data {
         '%s open ticket(s) of %s' => '%s открытых заявок из %s',
         '%s closed ticket(s) of %s' => '%s закрытых заявок из %s',
         'New phone ticket from %s' => 'Новая телефонная заявка от %s',
-        'New email ticket to %s' => 'Новая заявка по почте от %s',
+        'New email ticket to %s' => 'Новая заявка по почте в %s',
         'Start chat' => 'Начать чат',
 
         # Template: AgentDashboardProductNotify
-        '%s %s is available!' => '%s %s доступен',
-        'Please update now.' => 'Обновите сейчас',
+        '%s %s is available!' => '%s %s доступен!',
+        'Please update now.' => 'Обновите сейчас.',
         'Release Note' => 'Примечание к релизу',
         'Level' => 'Уровень',
 
         # Template: AgentDashboardRSSOverview
-        'Posted %s ago.' => 'Опубликовано %s',
+        'Posted %s ago.' => 'Опубликовано %s назад.',
 
         # Template: AgentDashboardStats
         'The content of this statistic is being prepared for you, please be patient.' =>
             'Содержимое статистики готовится для вас, подождите.',
-        'Grouped' => '',
-        'Stacked' => '',
-        'Expanded' => '',
+        'Grouped' => 'Сгруппированная',
+        'Stacked' => 'С накоплением',
+        'Expanded' => 'Развернутая',
         'Stream' => '',
         'CSV' => 'CSV',
         'PDF' => 'PDF',
@@ -2654,13 +2657,13 @@ sub Data {
         'go to link add screen' => 'перейти к добавлению связи',
 
         # Template: AgentPreferences
-        'Edit your preferences' => 'Измените ваши настройки',
+        'Edit your preferences' => 'Измените ваши личные настройки',
 
         # Template: AgentSchedulerInfo
         'General Information' => 'Общая информация',
         'Scheduler is an OTRS separated process that perform asynchronous tasks' =>
             'Планировщик это отдельный процесс OTRS выполняющий асинхронные задания',
-        '(e.g. Generic Interface asynchronous invoker tasks)' => '',
+        '(e.g. Generic Interface asynchronous invoker tasks)' => '(например, задачи Generic Interface асинхронного invoker)',
         'It is necessary to have the Scheduler running to make the system work correctly!' =>
             'Чтобы система работала корректно, необходимо, чтобы Планировщик был запущен.',
         'Starting Scheduler' => 'Запуск Планировщика',
@@ -2712,7 +2715,7 @@ sub Data {
             'Большинство отчетов могут кэшироваться. Это увеличит скорость показа отчетов.',
         'Show as dashboard widget' => 'Показать как виджет Дайджеста',
         'Provide the statistic as a widget that agents can activate in their dashboard.' =>
-            'Предоставляет статистику как виджет, который агент может активировать в своем Дайджесте.',
+            'Представляет отчет как виджет, который агент может активировать в своем Дайджесте.',
         'Please note' => 'Помните',
         'Enabling the dashboard widget will activate caching for this statistic in the dashboard.' =>
             'Включение виджета статистики в Дайджесте активирует кэширование для этого виджета.',
@@ -2767,12 +2770,12 @@ sub Data {
         'No element selected.' => 'Элементы не выбраны',
         'maximal period from' => 'Максимальный период с',
         'to' => 'по',
-        'not changable for dashboard statistics' => 'Неизменяемо для виджетов статистики в Дайджесте',
+        'not changable for dashboard statistics' => 'неизменяемо для виджетов статистики в Дайджесте',
         'Select Chart Type' => 'Выберите Тип диаграммы',
         'Chart Type' => 'Тип диаграммы',
-        'Multi Bar Chart' => '',
-        'Multi Line Chart' => '',
-        'Stacked Area Chart' => '',
+        'Multi Bar Chart' => 'Многоколоночная гистограмма',
+        'Multi Line Chart' => 'Многолинейный график',
+        'Stacked Area Chart' => 'Диаграмма с областями с накоплением',
 
         # Template: AgentTicketActionCommon
         'Change Free Text of Ticket' => 'Изменить свободный текст заявки',
@@ -2788,19 +2791,19 @@ sub Data {
         'Please set a new owner!' => 'Пожалуйста, задайте нового владельца',
         'Previous Owner' => 'Предыдущий владелец',
         'Next state' => 'Следующее состояние',
-        'For all pending* states.' => '',
+        'For all pending* states.' => 'Для всех состояний "ожидает ..."',
         'Add Article' => 'Добавить заметку',
         'Create an Article' => 'Создать заметку/сообщение',
         'Spell check' => 'Проверка орфографии',
         'Text Template' => 'Текстовый шаблон',
         'Setting a template will overwrite any text or attachment.' => 'Создание шаблона перезаписывает любой существующий текст или вложение',
-        'Note type' => 'Тип заметки',
+        'Note type' => 'Тип заметки/сообщения',
         'Inform Agent' => 'Уведомить агента',
         'Optional' => 'Необязательно',
         'Inform involved Agents' => 'Уведомить участвующих агентов',
         'Here you can select additional agents which should receive a notification regarding the new article.' =>
             'Здесь вы можете выбрать дополнительных агентов, которые получат уведомление в зависимости от нового сообщения/заметки',
-        'Note will be (also) received by:' => '',
+        'Note will be (also) received by:' => 'Сообщение будет (также) получено:',
 
         # Template: AgentTicketBounce
         'Bounce Ticket' => 'Перенаправить заявку',
@@ -2848,18 +2851,18 @@ sub Data {
         'Get all' => 'Получить всех',
 
         # Template: AgentTicketEmailOutbound
-        'E-Mail Outbound' => '',
+        'E-Mail Outbound' => 'Перенаправить почтовое сообщение',
 
         # Template: AgentTicketForward
         'Forward ticket: %s - %s' => 'Переслать заявку: %s - %s',
 
         # Template: AgentTicketHistory
-        'History of' => 'История по',
+        'History of' => 'История для',
         'History Content' => 'Содержимое истории',
         'Zoom view' => 'Подробный показ',
 
         # Template: AgentTicketMerge
-        'Ticket Merge' => 'Объединить заявку',
+        'Ticket Merge' => 'Объединение заявки',
         'You need to use a ticket number!' => 'Вам необходимо использовать номер заявки!',
         'A valid ticket number is required.' => 'Требуется корректный номер заявки.',
         'Need a valid email address.' => 'Требуется верный почтовый адрес.',
@@ -2876,7 +2879,7 @@ sub Data {
         'Update Time' => 'Время до изменения заявки',
         'Solution Time' => 'Время до решения заявки',
         'Move ticket to a different queue' => 'Переместить заявку в другую очередь',
-        'Change queue' => 'Переместить в другую очередь',
+        'Change queue' => 'Сменить очередь',
 
         # Template: AgentTicketOverviewNavBar
         'Change search options' => 'Изменить параметры поиска',
@@ -2885,13 +2888,13 @@ sub Data {
 
         # Template: AgentTicketOverviewSmall
         'Reset overview' => 'Сбросить настройки просмотра',
-        'Column Filters Form' => '',
+        'Column Filters Form' => 'Форма фильтра колонок',
 
         # Template: AgentTicketPhone
         'Split Into New Phone Ticket' => 'Разделить с созданием новой телефонной заявки',
         'Save Chat Into New Phone Ticket' => 'Сохранить переписку чата в новой телефонной заявке',
         'Create New Phone Ticket' => 'Создать телефонную заявку',
-        'Please include at least one customer for the ticket.' => 'Пожалуйста, включите хотя бы одного клиента в заявку.',
+        'Please include at least one customer for the ticket.' => 'Пожалуйста, введите хотя бы одного клиента для заявки.',
         'To queue' => 'В очередь',
         'Chat protocol' => 'Протокол чата',
         'The chat will be appended as a separate article.' => 'Содержание чата будет добавлено в виде отдельной заметки.',
@@ -2989,7 +2992,8 @@ sub Data {
         'No more events found. Please try changing the filter settings.' =>
             'Больше событий не найдено. Попробуйте изменить параметры фильтра.',
         'To open links in the following article, you might need to press Ctrl or Cmd or Shift key while clicking the link (depending on your browser and OS).' =>
-            '',
+            'Для открытия ссылки в следующем сообщении/заметке необходимо нажать и удерживать клавишу Ctrl или Cmd или Shift и кликнуть по ссылке (зависит от вашего браузера и ОС).',
+        'Close this message' => 'Закрыть это сообщение',
         'Article could not be opened! Perhaps it is on another article page?' =>
             'Заметка не может быть открыта! Возможно, она на другой странице заметок?',
 
@@ -3139,7 +3143,7 @@ sub Data {
         # Template: Header
         'You are logged in as' => 'Вы вошли как',
         'There are new chat requests available. Please visit the chat manager.' =>
-            '',
+            'Доступны новые чат - запросы. Перейдите к управлению чатами.',
 
         # Template: Installer
         'JavaScript not available' => 'JavaScript недоступен',
@@ -3251,9 +3255,6 @@ sub Data {
         'Insufficient Rights' => 'Недостаточно прав',
         'Back to the previous page' => 'Обратно на предыдущую страницу',
 
-        # Template: Notify
-        'Close this message' => 'Закрыть это сообщение',
-
         # Template: Pagination
         'Show first page' => 'Показать первую страницу',
         'Show previous pages' => 'Показать предыдущие страницы',
@@ -3277,16 +3278,16 @@ sub Data {
         'Go back to the previous page' => 'Перейти на предыдущую страницу',
 
         # SysConfig
-        ' (work units)' => '',
+        ' (work units)' => '(единиц времени)',
         '"%s"-notification sent to "%s".' => '%s: уведомление отправлено на %s.',
         '%s' => 'Прочее %s',
         '%s time unit(s) accounted. Now total %s time unit(s).' => 'Добавлено единиц времени: %s. Всего единиц времени: %s.',
         '(UserLogin) Firstname Lastname' => '(UserLogin) Имя Фамилия',
         '(UserLogin) Lastname, Firstname' => '(UserLogin) Фамилия, Имя',
-        'A Website' => '',
+        'A Website' => 'Веб сайт',
         'A list of dynamic fields that are merged into the main ticket during a merge operation. Only dynamic fields that are empty in the main ticket will be set.' =>
             'Список динамических полей, которые объединяются в главной заявке при слиянии. Только динамические поля, имеющие пустые значения в главной заявке будут установлены/заполнены.',
-        'A picture' => '',
+        'A picture' => 'Рисунок',
         'ACL module that allows closing parent tickets only if all its children are already closed ("State" shows which states are not available for the parent ticket until all child tickets are closed).' =>
             'ACL модуль, который позволяет закрывать родительские заявки только после того как все младшие закрыты ("State" задает доступные состояния для родительских заявок до закрытия всех младших',
         'Access Control Lists (ACL)' => 'Списки управления доступом (ACL)',
@@ -3336,7 +3337,7 @@ sub Data {
         'Agent interface module to check incoming emails in the Ticket-Zoom-View if the S/MIME-key is available and true.' =>
             'Модуль проверки входящих emails в окне Ticket-Zoom-View если S/MIME-key доступен и верен.',
         'Agent interface notification module to see the number of locked tickets.' =>
-            '',
+            'Модуль уведомлений в интерфейсе агента для просмотра количества заблокированных заявок.',
         'Agent interface notification module to see the number of tickets an agent is responsible for.' =>
             'Включение отображения иконки с количеством заявок, по которым агент является ответственным.',
         'Agent interface notification module to see the number of tickets in My Services.' =>
@@ -3470,7 +3471,7 @@ sub Data {
         'Columns that can be filtered in the watch view of the agent interface. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed.' =>
             'Колонки, по которым доступна фильтрация при просмотре наблюдаемых заявок в интерфейсе агента. Возможные значения: 0 - не показывать, 1 - доступно, 2 - включено по умолчанию. Только атрибуты заявки и динамические поля (DynamicField_Имя поляX) разрешены.',
         'Comment for new history entries in the customer interface.' => 'Комметарий для новых записей истории в интерфейсе клиента.',
-        'Comment2' => '',
+        'Comment2' => 'Комментарий2',
         'Company Status' => 'Информация по компании клиента',
         'Company Tickets' => 'Заявки компании',
         'Company name which will be included in outgoing emails as an X-Header.' =>
@@ -3516,7 +3517,7 @@ sub Data {
         'Create new email ticket and send this out (outbound)' => 'Создать заявку по email (исходящую) и отправить ее',
         'Create new phone ticket (inbound)' => 'Создать телефонную заявку (входящую)',
         'Create new process ticket' => 'Создать новую процессную заявку',
-        'Custom RSS Feed' => '',
+        'Custom RSS Feed' => 'Пользовательская лента RSS ',
         'Custom text for the page shown to customers that have no tickets yet (if you need those text translated add them to a custom translation module).' =>
             'Текст отображаемый клиенту еще не имеющему заявок (если желаете, чтобы этот текст отображался на нужном языке, добавьте его в кастомный русский файл локализации - ru_custom.pm).',
         'Customer Administration' => 'Управление клиентами',
@@ -3530,8 +3531,8 @@ sub Data {
         'Customer item (icon) which shows the open tickets of this customer as info block. Setting CustomerUserLogin to 1 searches for tickets based on login name rather than CustomerID.' =>
             'Показать количество открытых заявок клиента в Информации о клиенте. Установка CustomerUserLogin в 1 считает все заявки для логина клиента, а не по CustomerID.',
         'Customer request via web.' => 'Веб-запрос пользователя.',
-        'Customer user search' => '',
-        'CustomerID search' => '',
+        'Customer user search' => 'Поиск клиента',
+        'CustomerID search' => 'Поиск по CustomerID',
         'CustomerName' => 'Имя Клиента',
         'Customers <-> Groups' => 'Клиенты <-> Группы',
         'Data used to export the search result in CSV format.' => 'Данные используемые для экспорта результатов поиска в CSV формате',
@@ -3564,9 +3565,9 @@ sub Data {
         'Define dynamic field name for start time. This field has to be manually added to the system as Ticket: "Date / Time" and must be activated in ticket creation screens and/or in any other ticket action screens.' =>
             'Задайте имя динамического поля для начала периода. Это поле надо создать как Тип "Заявка": "Date / Time" и активировать для экранов создания заявки и/или любого другого действия с заявкой.',
         'Define the max depth of queues.' => 'Задайте максимальный уровень вложенности для очередей',
-        'Define the queue comment 2.' => '',
-        'Define the service comment 2.' => '',
-        'Define the sla comment 2.' => '',
+        'Define the queue comment 2.' => 'Внести Комментарий 2 для очереди.',
+        'Define the service comment 2.' => 'Внести Комментарий 2 для сервиса.',
+        'Define the sla comment 2.' => 'Внести Комментарий 2 для SLA.',
         'Define the start day of the week for the date picker for the indicated calendar.' =>
             'Укажите первый день недели для использования при выборе даты для выбранного календаря.',
         'Define the start day of the week for the date picker.' => 'Укажите первый день недели для использовании при выборе даты',
@@ -4226,7 +4227,7 @@ sub Data {
         'Dynamic fields options shown in the ticket reply section in the ticket zoom screen of the customer interface. Possible settings: 0 = Disabled, 1 = Enabled, 2 = Enabled and required.' =>
             'Параметры отображения динамических полей при создании ответа на сообщение на экране просмотра заявки в интерфейсе клиента. Возможные значения: 0 = не показывать, 1 - показывать, 2 - показывать и должно быть заполнено.',
         'Dynamic fields shown in the email outbound screen of the agent interface. Possible settings: 0 = Disabled, 1 = Enabled, 2 = Enabled and required.' =>
-            '',
+            'Список Динамических полей, показываемых на экране перенаправления почтового сообщения в интерфейсе агента. Возможные значения: 0 - не показывать, 1 - показывать, 2 - показывать, значение обязательно.',
         'Dynamic fields shown in the process widget in ticket zoom screen of the agent interface. Possible settings: 0 = Disabled, 1 = Enabled.' =>
             'Параметры показа динамических полей в процессном виджете на экране просмотра заявки в интерфейсе агента. Возможные значения: 0 = не показывать, 1 - показывать.',
         'Dynamic fields shown in the sidebar of the ticket zoom screen of the agent interface. Possible settings: 0 = Disabled, 1 = Enabled.' =>
@@ -4358,7 +4359,7 @@ sub Data {
         'Filter for debugging Transitions. Note: More filters can be added in the format <OTRS_TICKET_Attribute> e.g. <OTRS_TICKET_Priority>.' =>
             'Фильтр для отладки Переходов. Примечание: можно добавить фильты в формате <OTRS_TICKET_Attribute> например, <OTRS_TICKET_Priority>. ',
         'Filter incoming emails.' => 'Фильтрация входящей почты.',
-        'First Queue' => '',
+        'First Queue' => 'Имя первой Очереди',
         'FirstLock' => 'Дата первой блокировки',
         'FirstResponse' => 'Дата первого ответа',
         'FirstResponseDiffInMin' => '',
@@ -4386,7 +4387,7 @@ sub Data {
         'Frontend module registration for the customer interface.' => 'Frontend module registration для интерфейса клиента.',
         'Frontend theme' => 'Тема интерфеса',
         'Fulltext index regex filters to remove parts of the text.' => 'Регулярное выражение для удаления части текста в запросе полнотекстового поиска.',
-        'Fulltext search' => '',
+        'Fulltext search' => 'Полнотекстовый поиск',
         'General ticket data shown in the ticket overviews (fall-back). Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default. Note that TicketNumber can not be disabled, because it is necessary.' =>
             'Общие данные заявки отображаемые при обзорах заявок (fall-back). Возможные значения: 0 = отключено, 1 - доступно, 2 - включено по умолчанию. Номер заявки не может быть отключен, т.к. он обязателен.',
         'GenericAgent' => 'Планировщик задач',
@@ -4834,15 +4835,15 @@ sub Data {
         'Roles <-> Groups' => 'Роли <-> Группы',
         'Running Process Tickets' => 'Запущенные Процессные заявки',
         'Runs an initial wildcard search of the existing customer company when accessing the AdminCustomerCompany module.' =>
-            '',
+            'Выполняет начальный поиск по символу подстановки в списке компаний клиентов в модуле AdminCustomerCompany.',
         'Runs an initial wildcard search of the existing customer users when accessing the AdminCustomerUser module.' =>
             'Выполняет начальный поиск по символу подстановки в списке клиентов при доступе к модулю AdminCustomerUser.',
         'Runs the system in "Demo" mode. If set to "Yes", agents can change preferences, such as selection of language and theme via the agent web interface. These changes are only valid for the current session. It will not be possible for agents to change their passwords.' =>
             'Запускает систему в режиме "Demo". Если установлено в "Да", агенты могут менять личные настройки, например, выбор языка интерфейса или темы в интерфейсе агента. Эти изменения действуют только в течение текущего сеанса. В этом режиме пароль агентом не может быть изменен.',
         'S/MIME Certificate Upload' => 'Загрузка сертификата S/MIME',
         'Sample command output' => '',
-        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data.' =>
-            'Сохраняет вложения из сообщений/заметок. "DB" - сохраняет их в БД (не рекомендуется для больших вложений). "FS" - сохраняет данные в файловой системе; это быстрее, но веб-сервер должен запускаться от имени пользователя OTRS. Вы можете переключать это значение в процессе работы без потери данных.',
+        'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data. Note: Searching for attachment names is not supported when "FS" is used.' =>
+            '',
         'Schedule a maintenance period.' => 'Управлять периодом обслуживания.',
         'Search Customer' => 'Искать клиента',
         'Search User' => 'Искать агента',
@@ -4980,7 +4981,7 @@ sub Data {
             'Задает время отображения сообщения о наступлении периода техобслуживания, в минутах.',
         'Sets the number of lines that are displayed in text messages (e.g. ticket lines in the QueueZoom).' =>
             'Задает количество строк отображаемых в текстовых сообщениях (например, строк заявки в QueueZoom).',
-        'Sets the options for PGP binary.' => '',
+        'Sets the options for PGP binary.' => 'Задает настройки для модуля PGP.',
         'Sets the order of the different items in the customer preferences view.' =>
             'Задает порядок отображения разделов личных настроек клиента.',
         'Sets the password for private PGP key.' => 'Устанавливает праоль для частного ключа PGP.',
@@ -5133,7 +5134,7 @@ sub Data {
         'Shows a link in the menu to see the responsible agent of a ticket in the ticket zoom view of the agent interface.' =>
             'Показывает пункт меню Ответственный при просмотре заявки в интерфейсе агента.',
         'Shows a link in the menu to send an outbound email in the ticket zoom view of the agent interface.' =>
-            '',
+            'Показывает пункт меню для перенаправления почтового сообщения на экране подробного просмотра заявки в интерфейсе агента.',
         'Shows a link in the menu to set a ticket as pending in the ticket zoom view of the agent interface.' =>
             'Показывает пункт меню Отложить при просмотре заявки в интерфейсе агента.',
         'Shows a link in the menu to set a ticket as spam in every ticket overview of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
@@ -5190,7 +5191,7 @@ sub Data {
         'Shows all the articles of the ticket (expanded) in the zoom view.' =>
             'Показывает все сообщения заявки в развернутом виде при подробном просмотре заявки.',
         'Shows all the customer identifiers in a multi-select field (not useful if you have a lot of customer identifiers).' =>
-            '',
+            'Показывает все идентификаторы клиентов в поле типа "multi-select" (не следует использовать при наличии большого количества таких идентификаторов).',
         'Shows an owner selection in phone and email tickets in the agent interface.' =>
             'Показывает поле выбора Владельца при создании почтовых и телефонных заявок в интерфейсе агента.',
         'Shows colors for different article types in the article table.' =>
@@ -5316,7 +5317,7 @@ sub Data {
         'Specify how many sub directory levels to use when creating cache files. This should prevent too many cache files being in one directory.' =>
             'Задает количество уровней подкаталога для кэш файлов. параметр предотвращает от создания большого количества файлов в одном каталоге.',
         'Specify the channel to be used to fetch OTRS Business Solution™ updates. Warning: Development releases might not be complete, your system might experience unrecoverable errors and on extreme cases could become unresponsive!' =>
-            '',
+            'Задает канал для получения обновлений OTRS Business Solution™. Предупреждение: Development-релизы могут быть незавершенными, в вашей системе могут проявляться неисправимые ошибки и в экстремальных случаях она может перестать отвечать на запросы!',
         'Standard available permissions for agents within the application. If more permissions are needed, they can be entered here. Permissions must be defined to be effective. Some other good permissions have also been provided built-in: note, close, pending, customer, freetext, move, compose, responsible, forward, and bounce. Make sure that "rw" is always the last registered permission.' =>
             'Задает набор доступных прав агентов в системе. Если требуются дополнительные права, они могут быть заданы здесь. Права должны быть определены, чтобы использоваться в системе. Некоторые другие полезные права, также встроены в систему: note, close, pending, customer, freetext, move, compose, responsible, forward, и bounce. Последней строкой в таблице всегда дорлжна быть строка с "rw".',
         'Start number for statistics counting. Every new stat increments this number.' =>

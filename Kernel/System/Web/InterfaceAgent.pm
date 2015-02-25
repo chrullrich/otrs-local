@@ -14,6 +14,7 @@ use warnings;
 
 our @ObjectDependencies = (
     'Kernel::Config',
+    'Kernel::Language',
     'Kernel::Output::HTML::Layout',
     'Kernel::System::Auth',
     'Kernel::System::AuthSession',
@@ -286,8 +287,8 @@ sub Run {
                         Type => 'Info',
                         What => 'Message',
                         )
-                        || $AuthObject->GetLastErrorMessage()
-                        || 'Login failed! Your user name or password was entered incorrectly.',
+                        || $LayoutObject->{LanguageObject}->Translate( $AuthObject->GetLastErrorMessage() )
+                        || $LayoutObject->{LanguageObject}->Translate('Login failed! Your user name or password was entered incorrectly.'),
                     LoginFailed => 1,
                     User        => $User,
                     %Param,
@@ -480,7 +481,7 @@ sub Run {
             $LayoutObject->Print(
                 Output => \$LayoutObject->Login(
                     Title   => 'Logout',
-                    Message => 'Session invalid. Please log in again.',
+                    Message => $LayoutObject->{LanguageObject}->Translate('Session invalid. Please log in again.'),
                     %Param,
                 ),
             );
@@ -560,7 +561,7 @@ sub Run {
             $LayoutObject->Print(
                 Output => \$LayoutObject->Login(
                     Title   => 'Login',
-                    Message => 'Feature not active!',
+                    Message => $LayoutObject->{LanguageObject}->Translate('Feature not active!'),
                 ),
             );
             return;
@@ -802,7 +803,7 @@ sub Run {
             $LayoutObject->Print(
                 Output => \$LayoutObject->Login(
                     Title   => 'Login',
-                    Message => $Self->{SessionObject}->SessionIDErrorMessage(),
+                    Message => $LayoutObject->{LanguageObject}->Translate( $Self->{SessionObject}->SessionIDErrorMessage() ),
                     %Param,
                 ),
             );

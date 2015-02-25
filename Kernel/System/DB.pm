@@ -513,7 +513,7 @@ sub Prepare {
             $SQL .= " LIMIT $Limit";
         }
         elsif ( $Self->{Backend}->{'DB::Limit'} eq 'top' ) {
-            $SQL =~ s{ \A (SELECT ([ ]DISTINCT|)) }{$1 TOP $Limit}xmsi;
+            $SQL =~ s{ \A \s* (SELECT ([ ]DISTINCT|)) }{$1 TOP $Limit}xmsi;
         }
         else {
             $Self->{Limit} = $Limit;
@@ -1224,7 +1224,7 @@ sub QueryCondition {
         }
 
         # if word exists, do something with it
-        if ($Word) {
+        if ( $Word ne '' ) {
 
             # remove escape characters from $Word
             $Word =~ s{\\}{}smxg;
