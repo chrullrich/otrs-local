@@ -45,6 +45,10 @@
 [% Translate("Table Charset") | html %]
 [% Translate("There were tables found which do not have utf8 as charset.") | html %]
 
+# Database/mysql/InnoDBLogFileSize.pm
+[% Translate("InnoDB Log File Size") | html %]
+[% Translate("The setting innodb_log_file_size must be at least 256 MB.") | html %]
+
 # Database/mysql/MaxAllowedPacket.pm
 [% Translate("Maximum Query Size") | html %]
 [% Translate("The setting 'max_allowed_packet' must be higher than 20 MB.") | html %]
@@ -213,6 +217,8 @@
 [% Translate("You should use FastCGI or mod_perl to increase your performance.") | html %]
 [% Translate("mod_deflate Usage") | html %]
 [% Translate("Please install mod_deflate to improve GUI speed.") | html %]
+[% Translate("mod_filter Usage") | html %]
+[% Translate("Please install mod_filter if mod_deflate is used.") | html %]
 [% Translate("mod_headers Usage") | html %]
 [% Translate("Please install mod_headers to improve GUI speed.") | html %]
 [% Translate("Apache::Reload Usage") | html %]
