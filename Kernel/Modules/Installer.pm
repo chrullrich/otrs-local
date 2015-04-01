@@ -598,8 +598,8 @@ sub Run {
         elsif ( $DB{DBType} eq 'oracle' ) {
 
             # set DSN for Config.pm
-            $DB{ConfigDSN} = 'DBI:Oracle://$Self->{DatabaseHost}:' . $DB{DBPort} . '/' . $DB{DBSID};
-            $DB{DSN}       = "DBI:Oracle://$Self->{DBHost}:$DB{DBPort}/$Self->{DBSID}";
+            $DB{ConfigDSN} = 'DBI:Oracle://$Self->{DatabaseHost}:' . $DB{DBPort} . '/$Self->{Database}';
+            $DB{DSN}       = "DBI:Oracle://$DB{DBHost}:$DB{DBPort}/$DB{DBSID}";
             $Self->{ConfigObject}->Set(
                 Key   => 'Database::Connect',
                 Value => "ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD HH24:MI:SS'",
@@ -650,13 +650,25 @@ sub Run {
         }
 
         # ReConfigure Config.pm
-        my $ReConfigure = $Self->ReConfigure(
-            DatabaseDSN  => $DB{ConfigDSN},
-            DatabaseHost => $DB{DBHost},
-            Database     => $DB{DBName},
-            DatabaseUser => $DB{OTRSDBUser},
-            DatabasePw   => $DB{OTRSDBPassword},
-        );
+        my $ReConfigure;
+        if ( $DB{DBType} eq 'oracle' ) {
+            $ReConfigure = $Self->ReConfigure(
+                DatabaseDSN  => $DB{ConfigDSN},
+                DatabaseHost => $DB{DBHost},
+                Database     => $DB{DBSID},
+                DatabaseUser => $DB{OTRSDBUser},
+                DatabasePw   => $DB{OTRSDBPassword},
+            );
+        }
+        else {
+            $ReConfigure = $Self->ReConfigure(
+                DatabaseDSN  => $DB{ConfigDSN},
+                DatabaseHost => $DB{DBHost},
+                Database     => $DB{DBName},
+                DatabaseUser => $DB{OTRSDBUser},
+                DatabasePw   => $DB{OTRSDBPassword},
+            );
+        }
 
         if ($ReConfigure) {
             my $Output =
@@ -1170,7 +1182,7 @@ sub ConnectToDB {
         $Param{DSN} = "DBI:Pg:host=$Param{DBHost};dbname=$Param{DBName}";
     }
     elsif ( $Param{DBType} eq 'oracle' ) {
-        $Param{DSN} = "DBI:Oracle:host=$Param{DBHost};sid=$Param{DBSID};port=$Param{DBPort};"
+        $Param{DSN} = "DBI:Oracle://$Param{DBHost}:$Param{DBPort}/$Param{DBSID}";
     }
 
     # extract driver to load for install test
@@ -1230,6 +1242,47 @@ sub CheckDBRequirements {
     my %Result = $Self->ConnectToDB(
         %Param,
     );
+
+    # if mysql, check some more values
+    if ( $Param{DBType} eq 'mysql' && $Result{Successful} == 1 ) {
+
+        # max_allowed_packed
+        my $MySQLMaxAllowedPacket            = 0;
+        my $MySQLMaxAllowedPacketRecommended = 20;
+
+        my $Data = $Result{DBH}->selectall_arrayref("SHOW variables WHERE Variable_name = 'max_allowed_packet'");
+        $MySQLMaxAllowedPacket = $Data->[0]->[1] / 1024 / 1024;
+
+        if ( $MySQLMaxAllowedPacket < $MySQLMaxAllowedPacketRecommended ) {
+            $Result{Successful} = 0;
+            $Result{Message}    = $Self->{LayoutObject}->{LanguageObject}->Translate(
+                "Error: Please make sure your database accepts packages over %s MB in size (it currently only accepts packages up to %s MB). Please adapt the max_allowed_packet setting of your database in order to avoid errors.",
+                $MySQLMaxAllowedPacketRecommended, $MySQLMaxAllowedPacket
+            );
+        }
+    }
+
+    if ( $Param{DBType} eq 'mysql' && $Result{Successful} == 1 ) {
+
+        # innodb_log_file_size
+        my $MySQLInnoDBLogFileSize            = 0;
+        my $MySQLInnoDBLogFileSizeMinimum     = 256;
+        my $MySQLInnoDBLogFileSizeRecommended = 512;
+
+        my $Data = $Result{DBH}->selectall_arrayref("SHOW variables WHERE Variable_name = 'innodb_log_file_size'");
+        $MySQLInnoDBLogFileSize = $Data->[0]->[1] / 1024 / 1024;
+
+        if ( $MySQLInnoDBLogFileSize < $MySQLInnoDBLogFileSizeMinimum ) {
+            $Result{Successful} = 0;
+            $Result{Message}    = $Self->{LayoutObject}->{LanguageObject}->Translate(
+                "Error: Please set the value for innodb_log_file_size on your database to at least %s MB (current: %s MB, recommended: %s MB). For more information, please have a look at %s.",
+                $MySQLInnoDBLogFileSizeMinimum,
+                $MySQLInnoDBLogFileSize,
+                $MySQLInnoDBLogFileSizeRecommended,
+                'http://dev.mysql.com/doc/refman/5.6/en/innodb-data-log-reconfiguration.html',
+            );
+        }
+    }
 
     # delete not necessary key/value pairs
     delete $Result{DB};

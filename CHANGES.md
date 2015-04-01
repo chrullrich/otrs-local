@@ -1,4 +1,40 @@
-#4.0.7 2015-??-??
+#4.0.8 2015-??-??
+
+#4.0.7 2015-03-31
+ - 2015-03-25 Updated translations, thanks to all translators.
+ - 2015-03-24 Fixed bug#[11189](http://bugs.otrs.org/show_bug.cgi?id=11189) - Go to Dashboard link in No Permissions screen is broken.
+ - 2015-03-23 Fixed bug#[11194](http://bugs.otrs.org/show_bug.cgi?id=11194) - Download button for dashboard stats visible even if no permissions for AgentStats exist..
+ - 2015-03-23 Fixed bug#[11104](http://bugs.otrs.org/show_bug.cgi?id=11104) - Invalid utf-8 parameters not filtered sufficciently.
+ - 2015-03-20 Fixed bug#[11072](http://bugs.otrs.org/show_bug.cgi?id=11072) - DynamicField Filter in AgentDashboard accepts only one value.
+ - 2015-03-20 Fixed bug#[10702](http://bugs.otrs.org/show_bug.cgi?id=10702) - Can't select customer and/or public interface in AdminACL.
+ - 2015-03-20 Fixed bug#[11178](http://bugs.otrs.org/show_bug.cgi?id=11178) - Undefined variable warning with "Reply to note" in AgentTicketZoom.
+ - 2015-03-20 Fixed bug#[11188](http://bugs.otrs.org/show_bug.cgi?id=11188) - SOAP WSDL TicketGet response is incomplete.
+ - 2015-03-20 Fixed bug#[10816](http://bugs.otrs.org/show_bug.cgi?id=10816) - apache2 with mod_deflate enabled will not start.
+ - 2015-03-19 Fixed bug#[11181](http://bugs.otrs.org/show_bug.cgi?id=11181) - outputfilters pre not matching on includes.
+ - 2015-03-13 Fixed bug#[11119](http://bugs.otrs.org/show_bug.cgi?id=11119) - Activity Dialog can't be hidden if ACL features Action condition in CustomerTicketZoom.
+ - 2015-03-13 Fixed bug#[11136](http://bugs.otrs.org/show_bug.cgi?id=11136) - uninitialized value $RealName NotificationEvent.pm line 717.
+ - 2015-03-13 Fixed bug#[11106](http://bugs.otrs.org/show_bug.cgi?id=11106) - Owner type is ignored if set previous owner to blanc in AgentTicketOwner.
+ - 2015-03-06 Fixed bug#[11084](http://bugs.otrs.org/show_bug.cgi?id=11142) - Transition do not store more than one criteria in a condition.
+ - 2015-03-06 Fixed bug#[11142](http://bugs.otrs.org/show_bug.cgi?id=11142) - At times, undefined variable warning in agent interface.
+ - 2015-03-06 Fixed bug#[11147](http://bugs.otrs.org/show_bug.cgi?id=11147) - SLA can not be set over Free Fields Dialog.
+ - 2015-03-06 Fixed bug#[11113](http://bugs.otrs.org/show_bug.cgi?id=11113) - Internal server error at importing with IMAP.
+ - 2015-03-06 Fixed bug#[11135](http://bugs.otrs.org/show_bug.cgi?id=11135) - Use of uninitialized value warning in CustomerCompanyList.
+ - 2015-03-05 MySQL: Added check for innodb_log_file_size setting to both the installer and the support data collector in order to make sure it matches the minimum requirements.
+ - 2015-03-04 Fixed bug#[11097](http://bugs.otrs.org/show_bug.cgi?id=11097) - Generic Agent - Event Delete Icon disappear.
+ - 2015-03-04 Fixed bug#[11137](http://bugs.otrs.org/show_bug.cgi?id=11137) - Installer fails on Oracle.
+ - 2015-03-03 Fixed bug#[11133](http://bugs.otrs.org/show_bug.cgi?id=11133) - Not possible to change customer.
+ - 2015-03-03 Fixed bug#[11115](http://bugs.otrs.org/show_bug.cgi?id=11115) - Error from GenericInterface using SOAP and TicketGet operation.
+ - 2015-03-03 Fixed bug#[11134](http://bugs.otrs.org/show_bug.cgi?id=11134) - TicketAccountedTime dynamic field restriction does not work anymore.
+ - 2015-03-03 Fixed bug#[11088](http://bugs.otrs.org/show_bug.cgi?id=11088) - <OTRS_...> placeholders in mailto-links don't get replaced, thanks to Thorsten Eckel.
+ - 2015-03-02 Fixed wrong header in customer login.
+ - 2015-03-02 Fixed bug#[11120](http://bugs.otrs.org/show_bug.cgi?id=11120) - Logged invalid message at login failure, thanks to Norihiro Tanaka.
+ - 2015-03-02 Fixed bug#[11128](http://bugs.otrs.org/show_bug.cgi?id=11128) - Uninitialized variable warning in dashboard after addition of new dynamic field, thanks to Norihiro Tanaka.
+ - 2015-02-27 Fixed bug#[11065](http://bugs.otrs.org/show_bug.cgi?id=11065) - Transitions based in DynamicFields Multi-Select does not work.
+ - 2015-02-27 Make sure article data is escaped properly in timeline view.
+ - 2015-02-25 Fixed bug#[10820](http://bugs.otrs.org/show_bug.cgi?id=10820) - memory cache does not get updated.
+ - 2015-02-23 Improved performance on Article Attachment read from Database.
+ - 2015-02-20 Allow multiline chat feeds; reduced chat request polling frequency.
+ - 2015-02-23 Improved automated scrolling of article table in TicketZoom, if a new active article is not completely visible in the article table.
 
 #4.0.6 2015-02-24
  - 2015-02-18 Updated translations, thanks to all translators.
