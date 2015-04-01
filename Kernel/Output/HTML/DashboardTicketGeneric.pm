@@ -1879,9 +1879,12 @@ sub _SearchParamsGet {
             sort { $Self->_DefaultColumnSort() } keys %{ $Self->{Config}->{DefaultColumns} };
     }
     if ($PreferencesColumn) {
-        @Columns = grep { $PreferencesColumn->{Columns}->{$_} eq '1' }
-            sort { $Self->_DefaultColumnSort() } keys %{ $Self->{Config}->{DefaultColumns} };
-
+        if ( $PreferencesColumn->{Columns} && %{ $PreferencesColumn->{Columns} } ) {
+            @Columns = grep {
+                defined $PreferencesColumn->{Columns}->{$_}
+                    && $PreferencesColumn->{Columns}->{$_} eq '1'
+            } sort { $Self->_DefaultColumnSort() } keys %{ $Self->{Config}->{DefaultColumns} };
+        }
         if ( $PreferencesColumn->{Order} && @{ $PreferencesColumn->{Order} } ) {
             @Columns = @{ $PreferencesColumn->{Order} };
         }
@@ -2008,7 +2011,7 @@ sub _SearchParamsGet {
                 next STRING if $2 eq $Self->{ProcessManagementActivityID};
             }
 
-            $DynamicFieldsParameters{$1}->{$2} = $Value;
+            push @{ $DynamicFieldsParameters{$1}->{$2} }, $Value;
         }
 
         elsif ( !defined $TicketSearch{$Key} ) {
