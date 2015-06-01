@@ -179,11 +179,17 @@ sub CustomerSearch {
     my $Valid = defined $Param{Valid} ? $Param{Valid} : 1;
 
     # check needed stuff
-    if ( !$Param{Search} && !$Param{UserLogin} && !$Param{PostMasterSearch} && !$Param{CustomerID} )
+    if (
+        !$Param{Search}
+        && !$Param{UserLogin}
+        && !$Param{PostMasterSearch}
+        && !$Param{CustomerID}
+        && !$Param{CustomerIDRaw}
+        )
     {
         $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
-            Message  => 'Need Search, UserLogin, PostMasterSearch or CustomerID!',
+            Message  => 'Need Search, UserLogin, PostMasterSearch, CustomerIDRaw or CustomerID!',
         );
         return;
     }
@@ -300,6 +306,18 @@ sub CustomerSearch {
             $SQL .= "LOWER($Self->{CustomerID}) LIKE LOWER(?) $LikeEscapeString";
         }
     }
+    elsif ( $Param{CustomerIDRaw} ) {
+
+        my $CustomerIDRaw = $Self->{DBObject}->Quote( $Param{CustomerIDRaw}, 'Like' );
+        push @Bind, \$CustomerIDRaw;
+
+        if ( $Self->{CaseSensitive} ) {
+            $SQL .= "$Self->{CustomerID} = ? ";
+        }
+        else {
+            $SQL .= "LOWER($Self->{CustomerID}) = LOWER(?) ";
+        }
+    }
 
     # add valid option
     if ( $Self->{CustomerUserMap}->{CustomerValid} && $Valid ) {
@@ -398,7 +416,7 @@ sub CustomerIDList {
         return @{$Result} if ref $Result eq 'ARRAY';
     }
 
-    my $SQL .= "
+    my $SQL = "
         SELECT DISTINCT($Self->{CustomerID})
         FROM $Self->{CustomerTable}
         WHERE 1 = 1 ";
