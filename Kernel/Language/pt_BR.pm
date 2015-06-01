@@ -594,34 +594,34 @@ sub Data {
         'Could not determine database size.' => 'Não foi possível determinar o tamanho da base de dados.',
         'Database Version' => 'Versão da base de dados',
         'Could not determine database version.' => 'Não foi possível determinar a versão da base de dados.',
-        'Client Connection Charset' => '',
-        'Setting character_set_client needs to be utf8.' => '',
+        'Client Connection Charset' => 'Charset do Cliente de Conexão',
+        'Setting character_set_client needs to be utf8.' => 'Parâmetro character_set_client deve ser utf8.',
         'Server Database Charset' => 'Charset do Banco de dados',
-        'Setting character_set_database needs to be UNICODE or UTF8.' => '',
+        'Setting character_set_database needs to be UNICODE or UTF8.' => 'Parâmetro character_set_database precisa ser UNICODE ou UTF8.',
         'Table Charset' => 'Chartset da Tabela',
-        'There were tables found which do not have utf8 as charset.' => '',
-        'InnoDB Log File Size' => '',
-        'The setting innodb_log_file_size must be at least 256 MB.' => '',
+        'There were tables found which do not have utf8 as charset.' => 'Tabelas encontradas que não possuem charset utf8.',
+        'InnoDB Log File Size' => 'Tamanho de arquivo de log InooDB',
+        'The setting innodb_log_file_size must be at least 256 MB.' => 'O parâmetro innodb_log_file_size deve ser ao menos 256 MB.',
         'Maximum Query Size' => 'Tamanho Máximo da Query',
         'The setting \'max_allowed_packet\' must be higher than 20 MB.' =>
             'O parâmetro  \'max_allowed_packet\' deve ser maior que 20MB',
-        'Query Cache Size' => '',
+        'Query Cache Size' => 'Tamanho do Cache de Consulta',
         'The setting \'query_cache_size\' should be used (higher than 10 MB but not more than 512 MB).' =>
-            '',
+            'A configuração \'query_cache_size\' deve ser usada (maior que 10 MB mas não mais que 512 MB).',
         'Default Storage Engine' => 'Mecanismo de Armazenamento Padrão',
         'Tables with a different storage engine than the default engine were found.' =>
             'Tabelas com um mecanismo de armazenamento diferente do mecanismo padrão foram encontrados.',
         'MySQL 5.x or higher is required.' => 'MySQL 5.x ou superior é requerido.',
         'NLS_LANG Setting' => 'Parâmetro NLS_LANG',
         'NLS_LANG must be set to AL32UTF8 (e.g. GERMAN_GERMANY.AL32UTF8).' =>
-            '',
+            'NLS_LANG deve ser definido para AL32UTF8 (e.x. GERMAN_GERMANY.AL32UTF8).',
         'NLS_DATE_FORMAT Setting' => 'Parâmetro NLS_DATE_FORMAT ',
-        'NLS_DATE_FORMAT must be set to \'YYYY-MM-DD HH24:MI:SS\'.' => '',
-        'NLS_DATE_FORMAT Setting SQL Check' => '',
-        'Setting client_encoding needs to be UNICODE or UTF8.' => '',
-        'Setting server_encoding needs to be UNICODE or UTF8.' => '',
+        'NLS_DATE_FORMAT must be set to \'YYYY-MM-DD HH24:MI:SS\'.' => 'NLS_DATE_FORMAT deve ser definido para \'YYYY-MM-DD HH24:MI:SS\'.',
+        'NLS_DATE_FORMAT Setting SQL Check' => 'NLS_DATE_FORMAT Configurando SQL Check',
+        'Setting client_encoding needs to be UNICODE or UTF8.' => 'A configuração client_encoding precisa ser UNICODE ou UTF8.',
+        'Setting server_encoding needs to be UNICODE or UTF8.' => 'A configuração server_encoding precisa ser UNICODE ou UTF8.',
         'Date Format' => 'Formato da data',
-        'Setting DateStyle needs to be ISO.' => '',
+        'Setting DateStyle needs to be ISO.' => 'A configuração DateStyle precisa ser ISO.',
         'PostgreSQL 8.x or higher is required.' => 'PostgreSQL 8.x ou superior é requerido',
         'OTRS Disk Partition' => 'Partição OTRS',
         'Disk Usage' => 'Utilização em disco',
@@ -633,7 +633,7 @@ sub Data {
         'Could not determine distribution.' => 'Não foi possível determinar a distribuição.',
         'Kernel Version' => 'Versão do Kernel',
         'Could not determine kernel version.' => 'Não foi possível determinar a versão do kernel.',
-        'System Load' => '',
+        'System Load' => 'Carga do sistema',
         'The system load should be at maximum the number of CPUs the system has (e.g. a load of 8 or less on a system with 8 CPUs is OK).' =>
             '',
         'Perl Modules' => 'Módulos Perl',
@@ -701,7 +701,10 @@ sub Data {
         'Environment Variables' => 'Variáveis de ambiente',
         'Webserver Version' => 'Versão do Servidor WEB',
         'Could not determine webserver version.' => 'Não foi possível determinar a versão do servidor WEB.',
-        'Loaded Apache Modules' => '',
+        'Loaded Apache Modules' => 'Módulos Apache Carregados',
+        'MPM model' => '',
+        'OTRS requires apache to be run with the \'prefork\' MPM model.' =>
+            '',
         'CGI Accelerator Usage' => 'Uso do CGI Accelerator',
         'You should use FastCGI or mod_perl to increase your performance.' =>
             'Você deve utilizar o FastCGI ou mod_perl para aumentar o desempenho. ',
@@ -865,6 +868,7 @@ sub Data {
         'Create new Email Ticket' => 'Criar Novo Chamado via E-mail',
         'Phone-Ticket' => 'Chamado Fone',
         'Search Tickets' => 'Pesquisar Chamados',
+        'Customer Realname' => '',
         'Customer History' => 'Histórico do Cliente',
         'Edit Customer Users' => 'Editar Usuários Clientes',
         'Edit Customer' => 'Alterar Cliente',
@@ -1278,7 +1282,7 @@ sub Data {
             'Atualmente, essa tarefa do atendente genérico não será executado automaticamente.',
         'To enable automatic execution select at least one value from minutes, hours and days!' =>
             'Para habilitar a execução automática, selecione pelo menos um valor de minutos, horas e dias!',
-        'Event based execution (single ticket)' => 'Execução baseada em tempo (chamado simples)',
+        'Event based execution (single ticket)' => 'Execução baseada em Evento (chamado simples)',
         'Event Triggers' => 'Disparadores de evento',
         'List of all configured events' => 'Lista de todos os eventos configurados',
         'Delete this event' => 'Excluir este evento',
@@ -1295,6 +1299,7 @@ sub Data {
         'This event is already attached to the job, Please use a different one.' =>
             'Este evento já está associado a uma tarefa, por favor use um diferente.',
         'Delete this Event Trigger' => 'Excluir este disparador de evento',
+        'Remove selection' => '',
         'Select Tickets' => 'Selecionar Chamados',
         '(e. g. 10*5155 or 105658*)' => '(ex.: 10*5155 ou 105658*)',
         '(e. g. 234321)' => '(ex.: email@empresa.com.br)',
@@ -1410,7 +1415,7 @@ sub Data {
         'The name is typically used to call up an operation of a remote web service.' =>
             '',
         'Please provide a unique name for this web service invoker.' => '',
-        'Invoker backend' => '',
+        'Invoker backend' => 'Backend do Invocador',
         'This OTRS invoker backend module will be called to prepare the data to be sent to the remote system, and to process its response data.' =>
             '',
         'Mapping for outgoing request data' => '',
@@ -1437,12 +1442,12 @@ sub Data {
         'This rule will apply for all keys with no mapping rule.' => '',
         'Default rule for unmapped values' => '',
         'This rule will apply for all values with no mapping rule.' => '',
-        'New key map' => '',
-        'Add key mapping' => '',
-        'Mapping for Key ' => '',
-        'Remove key mapping' => '',
-        'Key mapping' => '',
-        'Map key' => '',
+        'New key map' => 'Novo mapa de chave',
+        'Add key mapping' => 'Adicionar mapeamento de chave',
+        'Mapping for Key ' => 'Mapeamento por Chave',
+        'Remove key mapping' => 'Remover mapeamento de chave',
+        'Key mapping' => 'Chave mapeada',
+        'Map key' => 'Chave de mapa',
         'matching the' => '',
         'to new key' => '',
         'Value mapping' => '',
@@ -1457,13 +1462,13 @@ sub Data {
         # Template: AdminGenericInterfaceOperationDefault
         'Add new Operation to Web Service %s' => '',
         'Change Operation %s of Web Service %s' => '',
-        'Add new operation' => '',
-        'Change operation %s' => '',
-        'Do you really want to delete this operation?' => '',
-        'Operation Details' => '',
+        'Add new operation' => 'Criar nova operação',
+        'Change operation %s' => 'Alterar operação %s',
+        'Do you really want to delete this operation?' => 'Você realmente deseja excluir esta operação?',
+        'Operation Details' => 'Detalhes da Operação',
         'The name is typically used to call up this web service operation from a remote system.' =>
-            '',
-        'Please provide a unique name for this web service.' => '',
+            'O nome é normalmente usado para chamar esta operação de web service a partir de um sistema remoto.',
+        'Please provide a unique name for this web service.' => 'Por favor, forneça um único nome para este web service.',
         'Mapping for incoming request data' => '',
         'The request data will be processed by this mapping, to transform it to the kind of data OTRS expects.' =>
             '',
@@ -1473,7 +1478,7 @@ sub Data {
         'Mapping for outgoing response data' => '',
         'The response data will be processed by this mapping, to transform it to the kind of data the remote system expects.' =>
             '',
-        'Delete this Operation' => '',
+        'Delete this Operation' => 'Excluir esta Operação',
 
         # Template: AdminGenericInterfaceTransportHTTPREST
         'GenericInterface Transport HTTP::REST for Web Service %s' => '',
@@ -1491,11 +1496,11 @@ sub Data {
             '',
         'Send Keep-Alive' => '',
         'This configuration defines if incoming connections should get closed or kept alive.' =>
-            '',
+            'Esta configuração define se conexões de entrada devem ficar fechadas ou permanecerem abertas.',
         'Host' => 'Servidor',
-        'Remote host URL for the REST requests.' => '',
+        'Remote host URL for the REST requests.' => 'URL do host remoto para requisições REST.',
         'e.g https://www.otrs.com:10745/api/v1.0 (without trailing backslash)' =>
-            '',
+            'ex: https://www.otrs.com:10745/api/v1.0 (sem fuga da barra invertida)',
         'Controller mapping for Invoker' => '',
         'The controller that the invoker should send requests to. Variables marked by a \':\' will get replaced by the data value and passed along with the request. (e.g. /Ticket/:TicketID?UserLogin=:UserLogin&Password=:Password).' =>
             '',
@@ -1763,7 +1768,7 @@ sub Data {
             '',
         'You are about to downgrade to OTRS Free and will lose the following features and all data related to these:' =>
             '',
-        'Chat' => '',
+        'Chat' => 'Bate-papo',
         'Timeline view in ticket zoom' => '',
         'DynamicField ContactWithData' => '',
         'DynamicField Database' => '',
@@ -2124,7 +2129,7 @@ sub Data {
         'System registration not possible' => '',
         'Please note that you can\'t register your system if your scheduler is not running correctly!' =>
             '',
-        'Instructions' => '',
+        'Instructions' => 'Instruções',
         'System deregistration not possible' => '',
         'Please note that you can\'t deregister your system if you\'re using the %s or having a valid service contract.' =>
             '',
@@ -2141,7 +2146,7 @@ sub Data {
         'You will receive updates about relevant security releases.' => '',
         'With your system registration we can improve our services for you, because we have all relevant information available.' =>
             '',
-        'This is only the beginning!' => '',
+        'This is only the beginning!' => 'Este é apenas o começo!',
         'We will inform you about our new services and offerings soon.' =>
             '',
         'Can I use OTRS without being registered?' => 'Eu posso utilizar o OTRS sem registrar ?',
@@ -2333,7 +2338,7 @@ sub Data {
         'Here you can enter SQL to send it directly to the application database. It is not possible to change the content of the tables, only select queries are allowed.' =>
             '',
         'Here you can enter SQL to send it directly to the application database.' =>
-            '',
+            'Aqui você pode entrar consultas SQL para enviá-las diretamente ao banco de dados do aplicativo.',
         'Only select queries are allowed.' => '',
         'The syntax of your SQL query has a mistake. Please check it.' =>
             'A sintaxe da sua consulta SQL está incorreta. Por favor, verifique.',
@@ -2852,6 +2857,13 @@ sub Data {
         # Template: AgentTicketEmailOutbound
         'E-Mail Outbound' => 'E-mail de Saída',
 
+        # Template: AgentTicketEscalation
+        'Ticket %s: first response time is over (%s/%s)!' => '',
+        'Ticket %s: first response time will be over in %s/%s!' => '',
+        'Ticket %s: update time will be over in %s/%s!' => '',
+        'Ticket %s: solution time is over (%s/%s)!' => '',
+        'Ticket %s: solution time will be over in %s/%s!' => '',
+
         # Template: AgentTicketForward
         'Forward ticket: %s - %s' => 'Encaminhar chamado: %s - %s',
 
@@ -3049,6 +3061,7 @@ sub Data {
         'Incoming Chat Requests' => '',
         'You have unanswered chat requests' => '',
         'Edit personal preferences' => 'Editar preferências pessoais',
+        'Logout %s %s' => '',
 
         # Template: CustomerRichTextEditor
         'Split Quote' => 'Marca de citação',
@@ -3135,6 +3148,8 @@ sub Data {
             'Um popup desta janela já está aberto. Você quer fechá-lo e carregar este no lugar?',
         'Please enter at least one search value or * to find anything.' =>
             'Por favor, insira algum valor para a pesquisa ou * para pesquisar tudo.',
+        'Please remove the following words from your search as they cannot be searched for:' =>
+            '',
         'Please check the fields marked as red for valid inputs.' => 'Por favor, verifique os campos marcados em vermelho para entradas válidas.',
         'Please perform a spell check on the the text first.' => '',
         'Slide the navigation bar' => '',
@@ -3148,6 +3163,7 @@ sub Data {
         'JavaScript not available' => 'JavaScript não habilitado ou não é suportado.',
         'Database Settings' => 'Configurações de Banco de Dados',
         'General Specifications and Mail Settings' => 'Especificações Gerais e Configurações de E-mail',
+        'Welcome to %s' => '',
         'Web site' => 'Website',
         'Mail check successful.' => 'Êxito na verificação de e-mail.',
         'Error in the mail settings. Please correct and try again.' => 'Erro nas configurações de e-mail. Por favor, corrija e tente novamente.',
@@ -3271,6 +3287,7 @@ sub Data {
 
         # Template: Test
         'OTRS Test Page' => 'Página de Teste do Gerenciador de Chamados',
+        'Welcome %s %s' => '',
         'Counter' => 'Contador',
 
         # Template: Warning
@@ -4204,6 +4221,8 @@ sub Data {
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be activated).' =>
             '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If set to "No", the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If not active, it also disables the GenericAgent, PackageManager and SQL Box.' =>
+            '',
+        'Display a warning and prevent search when using stop words within fulltext search.' =>
             '',
         'Display settings to override defaults for Process Tickets.' => '',
         'Displays the accounted time for an article in the ticket zoom view.' =>

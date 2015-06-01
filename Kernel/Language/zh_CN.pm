@@ -583,7 +583,7 @@ sub Data {
         'Information' => '信息',
         'OK' => '好',
         'Problem' => '问题',
-        'Webserver' => '',
+        'Webserver' => '网站服务器',
         'Operating System' => '操作系统',
         'OTRS' => 'OTRS',
         'Table Presence' => '',
@@ -703,6 +703,9 @@ sub Data {
         'Webserver Version' => '',
         'Could not determine webserver version.' => '',
         'Loaded Apache Modules' => '',
+        'MPM model' => '',
+        'OTRS requires apache to be run with the \'prefork\' MPM model.' =>
+            '',
         'CGI Accelerator Usage' => '',
         'You should use FastCGI or mod_perl to increase your performance.' =>
             '',
@@ -866,6 +869,7 @@ sub Data {
         'Create new Email Ticket' => '创建邮件工单',
         'Phone-Ticket' => '电话工单',
         'Search Tickets' => '搜索工单',
+        'Customer Realname' => '',
         'Customer History' => '',
         'Edit Customer Users' => '编辑用户帐户',
         'Edit Customer' => '编辑用户单位',
@@ -1296,6 +1300,7 @@ sub Data {
         'This event is already attached to the job, Please use a different one.' =>
             '',
         'Delete this Event Trigger' => '删除这个事件触发器',
+        'Remove selection' => '',
         'Select Tickets' => '',
         '(e. g. 10*5155 or 105658*)' => '  例如: 10*5144 或者 105658*',
         '(e. g. 234321)' => '例如: 234321',
@@ -2334,7 +2339,7 @@ sub Data {
         'Here you can enter SQL to send it directly to the application database. It is not possible to change the content of the tables, only select queries are allowed.' =>
             '',
         'Here you can enter SQL to send it directly to the application database.' =>
-            '',
+            '这里你可以输入并运行数据库SQL的命令。',
         'Only select queries are allowed.' => '',
         'The syntax of your SQL query has a mistake. Please check it.' =>
             'SQL查询的语法有一个错误，请核对。',
@@ -2853,6 +2858,13 @@ sub Data {
         # Template: AgentTicketEmailOutbound
         'E-Mail Outbound' => '发邮件',
 
+        # Template: AgentTicketEscalation
+        'Ticket %s: first response time is over (%s/%s)!' => '',
+        'Ticket %s: first response time will be over in %s/%s!' => '',
+        'Ticket %s: update time will be over in %s/%s!' => '',
+        'Ticket %s: solution time is over (%s/%s)!' => '',
+        'Ticket %s: solution time will be over in %s/%s!' => '',
+
         # Template: AgentTicketForward
         'Forward ticket: %s - %s' => '',
 
@@ -3050,6 +3062,7 @@ sub Data {
         'Incoming Chat Requests' => '进入的会话请求',
         'You have unanswered chat requests' => '你有未响应的对话请求',
         'Edit personal preferences' => '编辑个人设置',
+        'Logout %s %s' => '',
 
         # Template: CustomerRichTextEditor
         'Split Quote' => '',
@@ -3136,6 +3149,8 @@ sub Data {
             '一个弹出窗口已经打开，是否继续关闭？',
         'Please enter at least one search value or * to find anything.' =>
             '请至少输入一个搜索条件或 *。',
+        'Please remove the following words from your search as they cannot be searched for:' =>
+            '',
         'Please check the fields marked as red for valid inputs.' => '',
         'Please perform a spell check on the the text first.' => '',
         'Slide the navigation bar' => '',
@@ -3149,6 +3164,7 @@ sub Data {
         'JavaScript not available' => 'JavaScript没有启用',
         'Database Settings' => '数据库设置',
         'General Specifications and Mail Settings' => '一般设定和邮件配置',
+        'Welcome to %s' => '',
         'Web site' => '网址',
         'Mail check successful.' => '邮件配置检查完成',
         'Error in the mail settings. Please correct and try again.' => '邮件设置错误, 请重新修正.',
@@ -3272,6 +3288,7 @@ sub Data {
 
         # Template: Test
         'OTRS Test Page' => 'OTRS测试页',
+        'Welcome %s %s' => '',
         'Counter' => '计数器',
 
         # Template: Warning
@@ -4205,6 +4222,8 @@ sub Data {
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be activated).' =>
             '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If set to "No", the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If not active, it also disables the GenericAgent, PackageManager and SQL Box.' =>
+            '',
+        'Display a warning and prevent search when using stop words within fulltext search.' =>
             '',
         'Display settings to override defaults for Process Tickets.' => '',
         'Displays the accounted time for an article in the ticket zoom view.' =>
