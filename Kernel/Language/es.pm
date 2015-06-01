@@ -702,6 +702,9 @@ sub Data {
         'Webserver Version' => 'Versión del Servidor Web',
         'Could not determine webserver version.' => 'No se pudo determinar la versión del servidor web.',
         'Loaded Apache Modules' => 'Módulos Apache Cargados',
+        'MPM model' => '',
+        'OTRS requires apache to be run with the \'prefork\' MPM model.' =>
+            '',
         'CGI Accelerator Usage' => 'Uso Del Acelerador de CGI',
         'You should use FastCGI or mod_perl to increase your performance.' =>
             'Usted debe usar FastCGI o mod_perl para aumentar el rendimiento.',
@@ -865,6 +868,7 @@ sub Data {
         'Create new Email Ticket' => 'Crea nuevo ticket por correo',
         'Phone-Ticket' => 'Ticket telefónico',
         'Search Tickets' => 'Buscar tickets',
+        'Customer Realname' => 'Nombre Real del Cliente',
         'Customer History' => 'Historial del Cliente',
         'Edit Customer Users' => 'Editar Usuario Cliente',
         'Edit Customer' => 'Editar Cliente',
@@ -1295,6 +1299,7 @@ sub Data {
         'This event is already attached to the job, Please use a different one.' =>
             'Este evento ya está ligado al trabajo, seleccione uno diferente.',
         'Delete this Event Trigger' => 'Borrar este disparador de eventos',
+        'Remove selection' => '',
         'Select Tickets' => 'Seleccionar Ticket',
         '(e. g. 10*5155 or 105658*)' => '(ej: 10*5155 o 105658*)',
         '(e. g. 234321)' => '(ej: 234321)',
@@ -1822,7 +1827,7 @@ sub Data {
         'Required' => 'Obligatorio',
         'PrimaryKey' => 'ClavePrimaria',
         'AutoIncrement' => 'AutoIncrementar',
-        'SQL' => '',
+        'SQL' => 'Límite',
         'File differences for file %s' => '',
 
         # Template: AdminPerformanceLog
@@ -2298,7 +2303,7 @@ sub Data {
         'See also' => 'Vea también',
         'In this way you can directly edit the certification and private keys in file system.' =>
             'De esta forma Ud. puede editar directamente la certificación y claves privadas en el sistema de ficheros.',
-        'Hash' => '',
+        'Hash' => 'De esta forma Ud. puede editar directamente la certificación y claves privadas en el sistema de ficheros.',
         'Handle related certificates' => '',
         'Read certificate' => '',
         'Delete this certificate' => '',
@@ -2380,7 +2385,7 @@ sub Data {
             '',
         'The email address for this user is invalid, this option has been disabled.' =>
             '',
-        'Sending' => '',
+        'Sending' => 'Remitente',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
             '',
         'Download File' => '',
@@ -2454,7 +2459,7 @@ sub Data {
         'New Loader File' => '',
         'NavBarName' => 'NombreBarraNavegación',
         'NavBar' => 'BarraNavegación',
-        'LinkOption' => '',
+        'LinkOption' => 'Enlazar',
         'Block' => 'Bloqueo',
         'AccessKey' => 'TeclaAcceso',
         'Add NavBar entry' => '',
@@ -2852,6 +2857,13 @@ sub Data {
         # Template: AgentTicketEmailOutbound
         'E-Mail Outbound' => '',
 
+        # Template: AgentTicketEscalation
+        'Ticket %s: first response time is over (%s/%s)!' => '',
+        'Ticket %s: first response time will be over in %s/%s!' => '',
+        'Ticket %s: update time will be over in %s/%s!' => '',
+        'Ticket %s: solution time is over (%s/%s)!' => '',
+        'Ticket %s: solution time will be over in %s/%s!' => '',
+
         # Template: AgentTicketForward
         'Forward ticket: %s - %s' => 'Reenviar el ticket: %s - %s',
 
@@ -3049,6 +3061,7 @@ sub Data {
         'Incoming Chat Requests' => '',
         'You have unanswered chat requests' => '',
         'Edit personal preferences' => 'Editar las preferencias personales',
+        'Logout %s %s' => '',
 
         # Template: CustomerRichTextEditor
         'Split Quote' => '',
@@ -3135,6 +3148,8 @@ sub Data {
             'Ya está abierta una ventana emergente de esta pantalla. ¿Desea cerrarla y cargar ésta en su lugar?',
         'Please enter at least one search value or * to find anything.' =>
             'Introduzca al menos un valor de búsqueda, o * para buscar todo.',
+        'Please remove the following words from your search as they cannot be searched for:' =>
+            '',
         'Please check the fields marked as red for valid inputs.' => 'Compruebe que los campos marcados en rojo tienen datos válidos.',
         'Please perform a spell check on the the text first.' => '',
         'Slide the navigation bar' => '',
@@ -3148,6 +3163,7 @@ sub Data {
         'JavaScript not available' => 'JavaScript no disponible',
         'Database Settings' => 'Ajustes de la base de datos',
         'General Specifications and Mail Settings' => 'Indicaciones generales y ajustes del correo',
+        'Welcome to %s' => '',
         'Web site' => 'Sitio web',
         'Mail check successful.' => 'Se ha verificado el correo con éxito.',
         'Error in the mail settings. Please correct and try again.' => 'Error en los ajustes del correo. Corríjalos e inténtelo de nuevo.',
@@ -3271,6 +3287,7 @@ sub Data {
 
         # Template: Test
         'OTRS Test Page' => 'Página de prueba de OTRS',
+        'Welcome %s %s' => '',
         'Counter' => 'Contador',
 
         # Template: Warning
@@ -3401,7 +3418,7 @@ sub Data {
         'Allows to set a new ticket state in the move ticket screen of the agent interface.' =>
             '',
         'Archive state changed: "%s"' => 'Cambiado el estado del archivo: «%s»',
-        'ArticleTree' => '',
+        'ArticleTree' => 'Árbol de Artículos',
         'Attachments <-> Templates' => '',
         'Auto Responses <-> Queues' => '',
         'AutoFollowUp sent to "%s".' => 'Seguimiento automático enviado a «%s».',
@@ -4204,6 +4221,8 @@ sub Data {
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be activated).' =>
             '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If set to "No", the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If not active, it also disables the GenericAgent, PackageManager and SQL Box.' =>
+            '',
+        'Display a warning and prevent search when using stop words within fulltext search.' =>
             '',
         'Display settings to override defaults for Process Tickets.' => '',
         'Displays the accounted time for an article in the ticket zoom view.' =>

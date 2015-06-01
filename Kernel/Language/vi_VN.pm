@@ -88,7 +88,7 @@ sub Data {
         'Warning' => 'Cảnh báo',
         'Module' => 'Mô đun',
         'Modulefile' => 'File mô đun',
-        'Subfunction' => 'Chức năng dưới',
+        'Subfunction' => 'Chức năng con',
         'Line' => 'Dòng',
         'Setting' => 'Thiết lập',
         'Settings' => 'Các thiết lập',
@@ -97,7 +97,7 @@ sub Data {
         'valid' => 'hợp lệ',
         'Valid' => 'Hợp lệ',
         'invalid' => 'không hợp lệ',
-        'Invalid' => '',
+        'Invalid' => 'Không hợp lệ',
         '* invalid' => '* không hợp lệ',
         'invalid-temporarily' => 'tạm thời không hợp lệ',
         ' 2 minutes' => '2 phút',
@@ -137,7 +137,7 @@ sub Data {
         'Language' => 'Ngôn ngữ',
         'Languages' => 'Các ngôn ngữ',
         'Password' => 'Mật khẩu',
-        'Preferences' => 'Những sở thích',
+        'Preferences' => 'Tuỳ chọn',
         'Salutation' => 'Lời chào',
         'Salutations' => 'Những lời chào',
         'Signature' => 'Chữ ký',
@@ -146,7 +146,7 @@ sub Data {
         'CustomerID' => 'Mã khách hàng',
         'CustomerIDs' => 'Mã khách hàng',
         'customer' => 'khách hàng',
-        'agent' => 'nhân viên',
+        'agent' => 'điều hành viên',
         'system' => 'hệ thống',
         'Customer Info' => 'Thông tin khách hàng',
         'Customer Information' => 'Thông tin khách hàng',
@@ -238,7 +238,7 @@ sub Data {
         'Logout' => 'Đăng xuất',
         'Logout successful. Thank you for using %s!' => 'Đăng xuất thành công! Cảm ơn bạn đã sử dụng %s!',
         'Feature not active!' => 'Tính năng không hoạt động!',
-        'Agent updated!' => 'Đại lý được cập nhật!',
+        'Agent updated!' => 'Điều hành viên được cập nhật!',
         'Database Selection' => 'Lựa chọn cơ sở dữ liệu',
         'Create Database' => 'Tạo cơ sở dữ liệu',
         'System Settings' => 'Thiết đặt hệ thống',
@@ -268,7 +268,7 @@ sub Data {
         'Time Zone' => '',
         'Pending till' => 'Treo tới khi',
         'Don\'t use the Superuser account to work with OTRS! Create new Agents and work with these accounts instead.' =>
-            'Không sử dụng superuser tài khoản để làm việc với OTRS.Tạo Đại lý mới và làm việc với các tài khoản này để thay thế. ',
+            'Không sử dụng tài khoản cấp cao để làm việc với OTRS.Tạo Điều hành viên mới và làm việc với các tài khoản này để thay thế. ',
         'Dispatching by email To: field.' => 'Gửi bằng email tới: trường.',
         'Dispatching by selected Queue.' => 'Gửi bởi hàng đợi đã chọn.',
         'No entry found!' => 'Không tìm thấy mục nào!',
@@ -310,7 +310,7 @@ sub Data {
         'System e-mail address updated!' => 'Quản trị địa chỉ email hệ thống cập nhật!',
         'Contract' => 'Hợp đồng',
         'Online Customer: %s' => 'Khách hàng trực tuyến: %s',
-        'Online Agent: %s' => 'Nhân viên đang online: %s',
+        'Online Agent: %s' => 'điều hành viên đang online: %s',
         'Calendar' => 'Lịch',
         'File' => 'Hồ sơ',
         'Filename' => 'Tên hồ sơ',
@@ -539,8 +539,8 @@ sub Data {
         'graph-area' => 'Biểu đồ vùng',
         'graph-pie' => 'Biểu đồ tròn',
         'extended' => 'mở rộng',
-        'Agent/Owner' => 'Nhân viên/Phụ trách',
-        'Created by Agent/Owner' => 'Được tạo bởi nhân viên/người phụ trách',
+        'Agent/Owner' => 'điều hành viên/Phụ trách',
+        'Created by Agent/Owner' => 'Được tạo bởi điều hành viên/người phụ trách',
         'Created Priority' => 'Ưu tiên khởi tạo',
         'Created State' => 'Trạng thái khởi tạo',
         'Create Time' => 'Thời gian khởi tạo',
@@ -565,7 +565,7 @@ sub Data {
         'Article Min Time' => 'Bài viết tối thiểu thời gian',
         'Article Max Time' => 'Bài viết tối đa thời gian',
         'Number of Articles' => 'Số của bài viết',
-        'Accounted time by Agent' => 'Hạch toán thời gian của người đại lý',
+        'Accounted time by Agent' => 'Hạch toán thời gian của điều hành viên',
         'Ticket/Article Accounted Time' => '',
         'TicketAccountedTime' => '',
         'Ticket Create Time' => '',
@@ -696,6 +696,9 @@ sub Data {
         'Webserver Version' => '',
         'Could not determine webserver version.' => '',
         'Loaded Apache Modules' => '',
+        'MPM model' => '',
+        'OTRS requires apache to be run with the \'prefork\' MPM model.' =>
+            '',
         'CGI Accelerator Usage' => '',
         'You should use FastCGI or mod_perl to increase your performance.' =>
             '',
@@ -744,9 +747,9 @@ sub Data {
         'Service' => 'Dịch vụ',
         'Services' => 'Những dịch vụ',
         'State' => 'Trạng thái',
-        'States' => '',
+        'States' => 'Trạng thái',
         'Status' => 'Trạng thái',
-        'Statuses' => '',
+        'Statuses' => 'Trạng thái',
         'Ticket Type' => 'Loại vé',
         'Ticket Types' => 'Các loại vé',
         'Compose' => 'Tạo',
@@ -859,6 +862,7 @@ sub Data {
         'Create new Email Ticket' => 'Tạo thẻ e-mail mới',
         'Phone-Ticket' => 'Thẻ Cuộc gọi',
         'Search Tickets' => 'Tìm kiếm thẻ',
+        'Customer Realname' => '',
         'Customer History' => '',
         'Edit Customer Users' => 'Sửa người dùng khách hàng',
         'Edit Customer' => 'Chỉnh sửa các khách hàng',
@@ -913,9 +917,9 @@ sub Data {
         'Plain Format' => 'Định dạng Plain',
         'Reply All' => 'Trả lời Tất cả',
         'Direction' => 'Phương hướng',
-        'Agent (All with write permissions)' => 'Đại lý (Tất cả ghi với quyền truy)',
-        'Agent (Owner)' => 'Đại lý (chủ sở hữu)',
-        'Agent (Responsible)' => 'Đại lý (có trách nhiệm)',
+        'Agent (All with write permissions)' => 'Điều hành viên (Tất cả với quyền ghi)',
+        'Agent (Owner)' => 'Điều hành viên (phụ trách)',
+        'Agent (Responsible)' => 'Điều hành viên (có trách nhiệm)',
         'New ticket notification' => 'Thông báo thẻ mới',
         'Send me a notification if there is a new ticket in "My Queues".' =>
             'Gửi thông báo cho tôi nếu có thẻ mới trong "Hàng đợi của tôi".',
@@ -1241,7 +1245,7 @@ sub Data {
         # Template: AdminEmail
         'Admin Notification' => 'Thông báo quản trị',
         'With this module, administrators can send messages to agents, group or role members.' =>
-            'Với mô-đun này, các quản trị viên có thể gửi tin nhắn cho các thành viên đại lý, nhóm hoặc vai trò.',
+            'Với mô-đun này, các quản trị viên có thể gửi tin nhắn cho các điều hành viên, nhóm hoặc vai trò.',
         'Create Administrative Message' => 'Tạo tin nhắn hành chính',
         'Your message was sent to' => 'Thông điệp của bạn đã được gửi đến',
         'Send message to users' => 'Gửi tin nhắn cho người sử dụng',
@@ -1253,7 +1257,7 @@ sub Data {
         'Send' => 'Gửi',
 
         # Template: AdminGenericAgent
-        'Generic Agent' => '',
+        'Generic Agent' => 'Nhân viên phụ trách chung',
         'Add job' => 'Thêm công việc',
         'Last run' => 'Lần vận hành trước',
         'Run Now!' => 'Vận hành ngay!',
@@ -1269,7 +1273,7 @@ sub Data {
         'Schedule hours' => 'Tiếng đồng hồ lịch trình',
         'Schedule days' => 'Lịch trình ngày chuẩn',
         'Currently this generic agent job will not run automatically.' =>
-            'Hiện nay đại diện chung công việc này sẽ không chạy tự động.',
+            'Hiện nay tác vụ hệ thống này sẽ không chạy tự động.',
         'To enable automatic execution select at least one value from minutes, hours and days!' =>
             'Để cho phép thực hiện tự động chọn ít nhất một giá trị từ phút, giờ và ngày!',
         'Event based execution (single ticket)' => 'Tổ chức sự kiện có trụ sở chấp hành thực hiện (vé duy nhất)',
@@ -1289,13 +1293,14 @@ sub Data {
         'This event is already attached to the job, Please use a different one.' =>
             'Sự kiện này đã được gắn liền với công việc, hãy sử dụng một cái khác.',
         'Delete this Event Trigger' => 'Xóa Kích hoạt sự kiện này',
+        'Remove selection' => '',
         'Select Tickets' => 'Chọn Vé',
         '(e. g. 10*5155 or 105658*)' => 'ví dụ: 10*5144 hoặc 105658*',
         '(e. g. 234321)' => 'ví dụ: 234321',
         'Customer login' => 'Khách hàng đăng nhập',
         '(e. g. U5150)' => 'ví dụ: U5150',
         'Fulltext-search in article (e. g. "Mar*in" or "Baue*").' => 'Toàn văn tìm kiếm trong bài viết (ví dụ: "Mar *" hoặc "Baue *").',
-        'Agent' => 'Nhân viên',
+        'Agent' => 'điều hành viên',
         'Ticket lock' => 'Khóa vé',
         'Create times' => 'Tạo lần cập nhật',
         'No create time settings.' => 'Không có thiết đặt lần khởi tạo',
@@ -1666,7 +1671,7 @@ sub Data {
         'Notification Management' => 'Quản trị thông báo',
         'Select a different language' => '',
         'Filter for Notification' => '',
-        'Notifications are sent to an agent or a customer.' => 'Các thông báo đã được gửi tới 1 nhân viên hoặc khách hàng.',
+        'Notifications are sent to an agent or a customer.' => 'Các thông báo đã được gửi tới điều hành viên hoặc khách hàng.',
         'Notification' => 'Thông báo',
         'Edit Notification' => '',
         'e. g.' => '',
@@ -2256,7 +2261,7 @@ sub Data {
         'Permissions to move tickets into this group/queue.' => 'Các quyền để chuyển thẻ vào trong nhóm/hàng đợi này.',
         'create' => 'tạo',
         'Permissions to create tickets in this group/queue.' => 'Các quyền để tạo thẻ trong nhóm/hàng đợi này.',
-        'note' => '',
+        'note' => 'Lưu ý',
         'Permissions to add notes to tickets in this group/queue.' => '',
         'owner' => 'phụ trách',
         'Permissions to change the owner of tickets in this group/queue.' =>
@@ -2323,7 +2328,7 @@ sub Data {
             '',
 
         # Template: AdminSelectBox
-        'SQL Box' => '',
+        'SQL Box' => 'SQL',
         'Here you can enter SQL to send it directly to the application database. It is not possible to change the content of the tables, only select queries are allowed.' =>
             '',
         'Here you can enter SQL to send it directly to the application database.' =>
@@ -2374,7 +2379,7 @@ sub Data {
             '',
         'The email address for this user is invalid, this option has been disabled.' =>
             '',
-        'Sending' => '',
+        'Sending' => 'Người gửi',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
             '',
         'Download File' => '',
@@ -2448,7 +2453,7 @@ sub Data {
         'New Loader File' => '',
         'NavBarName' => 'Tên thanh điều hướng',
         'NavBar' => 'Thanh điều hướng',
-        'LinkOption' => '',
+        'LinkOption' => 'Liên kết',
         'Block' => 'Khối',
         'AccessKey' => 'Phím truy cập',
         'Add NavBar entry' => '',
@@ -2681,7 +2686,7 @@ sub Data {
         'Select the restrictions to characterize the stat' => '',
         'Here you can make restrictions to your stat.' => 'Bạn có thể tạo các giới hạn cho thống kê tại đây.',
         'If you remove the hook in the "Fixed" checkbox, the agent generating the stat can change the attributes of the corresponding element.' =>
-            'Nếu bạn bỏ đánh dấu trong ô "Đã sửa", nhân viên phụ trách sinh thống kê có thể thay đổi các thuộc tính của thành tố liên quan.',
+            'Nếu bạn bỏ đánh dấu trong ô "Đã sửa", điều hành viên phụ trách thống kê có thể thay đổi các thuộc tính của thành tố liên quan.',
         'Fixed' => 'Đã sửa',
         'Please select only one element or turn off the button \'Fixed\'.' =>
             'Hãy chọn chỉ 1 thành tố hoặc tắt nút \'Đã sửa\'!',
@@ -2791,9 +2796,9 @@ sub Data {
         'Text Template' => '',
         'Setting a template will overwrite any text or attachment.' => '',
         'Note type' => 'Loại lưu ý',
-        'Inform Agent' => 'Nhân viên thông báo',
+        'Inform Agent' => 'Thông báo điều hành',
         'Optional' => 'Tùy chọn',
-        'Inform involved Agents' => 'Thông báo các nhân viên liên quan',
+        'Inform involved Agents' => 'Thông báo tới các điều hành viên liên quan',
         'Here you can select additional agents which should receive a notification regarding the new article.' =>
             '',
         'Note will be (also) received by:' => '',
@@ -2810,7 +2815,7 @@ sub Data {
 
         # Template: AgentTicketBulk
         'Ticket Bulk Action' => 'Lệnh lô trên thẻ',
-        'Send Email' => '',
+        'Send Email' => 'Gửi mail!',
         'Merge to' => 'Trộn với',
         'Invalid ticket identifier!' => '',
         'Merge to oldest' => '',
@@ -2845,6 +2850,13 @@ sub Data {
 
         # Template: AgentTicketEmailOutbound
         'E-Mail Outbound' => '',
+
+        # Template: AgentTicketEscalation
+        'Ticket %s: first response time is over (%s/%s)!' => '',
+        'Ticket %s: first response time will be over in %s/%s!' => '',
+        'Ticket %s: update time will be over in %s/%s!' => '',
+        'Ticket %s: solution time is over (%s/%s)!' => '',
+        'Ticket %s: solution time will be over in %s/%s!' => '',
 
         # Template: AgentTicketForward
         'Forward ticket: %s - %s' => '',
@@ -2972,7 +2984,7 @@ sub Data {
         'Show all articles' => '',
         'Show Ticket Timeline View' => '',
         'Unread articles' => '',
-        'No.' => '',
+        'No.' => 'Không',
         'Important' => '',
         'Unread Article!' => '',
         'Incoming message' => '',
@@ -3027,7 +3039,7 @@ sub Data {
         'Your user name' => '',
         'Your password' => '',
         'Forgot password?' => '',
-        'Log In' => '',
+        'Log In' => 'Đăng nhập',
         'Not yet registered?' => '',
         'Request new password' => 'Yêu cầu mật khẩu mới',
         'Your User Name' => '',
@@ -3043,12 +3055,13 @@ sub Data {
         'Incoming Chat Requests' => '',
         'You have unanswered chat requests' => '',
         'Edit personal preferences' => '',
+        'Logout %s %s' => '',
 
         # Template: CustomerRichTextEditor
         'Split Quote' => '',
 
         # Template: CustomerTicketMessage
-        'Service level agreement' => '',
+        'Service level agreement' => 'SLA',
 
         # Template: CustomerTicketOverview
         'Welcome!' => '',
@@ -3064,7 +3077,7 @@ sub Data {
         'e. g. 10*5155 or 105658*' => '',
         'Customer ID' => '',
         'Fulltext search in tickets (e. g. "John*n" or "Will*")' => '',
-        'Carbon Copy' => '',
+        'Carbon Copy' => 'Cc',
         'e. g. m*file or myfi*' => '',
         'Types' => '',
         'Time restrictions' => '',
@@ -3077,7 +3090,7 @@ sub Data {
         'Save as Template' => '',
         'Template Name' => '',
         'Pick a profile name' => '',
-        'Output to' => '',
+        'Output to' => 'Kết quả từ',
 
         # Template: CustomerTicketSearchResultShort
         'of' => 'của',
@@ -3099,10 +3112,10 @@ sub Data {
         'Friday' => '',
         'Saturday' => '',
         'Su' => '',
-        'Mo' => '',
-        'Tu' => '',
-        'We' => '',
-        'Th' => '',
+        'Mo' => 'giờ',
+        'Tu' => 'Tháng 3',
+        'We' => 'mở',
+        'Th' => 'đến',
         'Fr' => '',
         'Sa' => '',
         'Event Information' => '',
@@ -3129,6 +3142,8 @@ sub Data {
             '',
         'Please enter at least one search value or * to find anything.' =>
             '',
+        'Please remove the following words from your search as they cannot be searched for:' =>
+            '',
         'Please check the fields marked as red for valid inputs.' => '',
         'Please perform a spell check on the the text first.' => '',
         'Slide the navigation bar' => '',
@@ -3142,13 +3157,14 @@ sub Data {
         'JavaScript not available' => '',
         'Database Settings' => '',
         'General Specifications and Mail Settings' => '',
+        'Welcome to %s' => '',
         'Web site' => '',
         'Mail check successful.' => '',
         'Error in the mail settings. Please correct and try again.' => '',
 
         # Template: InstallerConfigureMail
         'Configure Outbound Mail' => '',
-        'Outbound mail type' => '',
+        'Outbound mail type' => 'Loại',
         'Select outbound mail type.' => '',
         'Outbound mail port' => '',
         'Select outbound mail port.' => '',
@@ -3161,13 +3177,13 @@ sub Data {
         'SMTP auth password' => '',
         'Password for SMTP auth.' => '',
         'Configure Inbound Mail' => '',
-        'Inbound mail type' => '',
+        'Inbound mail type' => 'Loại',
         'Select inbound mail type.' => '',
         'Inbound mail host' => '',
         'Inbound mail host.' => '',
-        'Inbound mail user' => '',
+        'Inbound mail user' => 'Người dùng',
         'User for inbound mail.' => '',
-        'Inbound mail password' => '',
+        'Inbound mail password' => 'Mật khẩu',
         'Password for inbound mail.' => '',
         'Result of mail configuration check' => '',
         'Check mail configuration' => '',
@@ -3265,6 +3281,7 @@ sub Data {
 
         # Template: Test
         'OTRS Test Page' => 'Trang test OTRS',
+        'Welcome %s %s' => '',
         'Counter' => 'Bộ đếm',
 
         # Template: Warning
@@ -4198,6 +4215,8 @@ sub Data {
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be activated).' =>
             '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If set to "No", the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If not active, it also disables the GenericAgent, PackageManager and SQL Box.' =>
+            '',
+        'Display a warning and prevent search when using stop words within fulltext search.' =>
             '',
         'Display settings to override defaults for Process Tickets.' => '',
         'Displays the accounted time for an article in the ticket zoom view.' =>

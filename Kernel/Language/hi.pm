@@ -699,6 +699,9 @@ sub Data {
         'Webserver Version' => '',
         'Could not determine webserver version.' => '',
         'Loaded Apache Modules' => '',
+        'MPM model' => '',
+        'OTRS requires apache to be run with the \'prefork\' MPM model.' =>
+            '',
         'CGI Accelerator Usage' => '',
         'You should use FastCGI or mod_perl to increase your performance.' =>
             '',
@@ -862,6 +865,7 @@ sub Data {
         'Create new Email Ticket' => 'नया ईमेल टिकट बनाएँ।',
         'Phone-Ticket' => 'फोन टिकट',
         'Search Tickets' => 'टिकटें खोजें',
+        'Customer Realname' => '',
         'Customer History' => '',
         'Edit Customer Users' => 'ग्राहक प्रयोक्ता संपादित करें',
         'Edit Customer' => 'ग्राहक संपादित करें',
@@ -1292,6 +1296,7 @@ sub Data {
         'This event is already attached to the job, Please use a different one.' =>
             '',
         'Delete this Event Trigger' => '',
+        'Remove selection' => '',
         'Select Tickets' => '',
         '(e. g. 10*5155 or 105658*)' => '(उदा: 10*5155 o 105658*)',
         '(e. g. 234321)' => '(उदा: 234321)',
@@ -2295,7 +2300,7 @@ sub Data {
         'See also' => 'यह भी देखें',
         'In this way you can directly edit the certification and private keys in file system.' =>
             'इस तरह आप सीधे प्रमाणीकरण और फाइल प्रणाली में निजी कुंजी संपादित कर सकते हैं।',
-        'Hash' => '',
+        'Hash' => 'इस तरह आप सीधे प्रमाणीकरण और फाइल प्रणाली में निजी कुंजी संपादित कर सकते हैं।',
         'Handle related certificates' => '',
         'Read certificate' => '',
         'Delete this certificate' => 'इस प्रमाणपत्र को हटाएँ',
@@ -2330,7 +2335,7 @@ sub Data {
         'Here you can enter SQL to send it directly to the application database. It is not possible to change the content of the tables, only select queries are allowed.' =>
             '',
         'Here you can enter SQL to send it directly to the application database.' =>
-            '',
+            'SQL को सीधे अनुप्रयोग डेटाबेस को भेजने के लिए यहाँ दर्ज कर सकते हैं।',
         'Only select queries are allowed.' => '',
         'The syntax of your SQL query has a mistake. Please check it.' =>
             'आपकी SQL क्वेरी के वाक्यविन्यास मॆ गलती हैं। उसकी जाँच करें।',
@@ -2377,7 +2382,7 @@ sub Data {
             '',
         'The email address for this user is invalid, this option has been disabled.' =>
             '',
-        'Sending' => '',
+        'Sending' => 'प्रेषक',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
             '',
         'Download File' => '',
@@ -2813,7 +2818,7 @@ sub Data {
 
         # Template: AgentTicketBulk
         'Ticket Bulk Action' => 'टिकट थोक कार्रवाई',
-        'Send Email' => '',
+        'Send Email' => 'मेल भेजें',
         'Merge to' => 'मे मिलाएं',
         'Invalid ticket identifier!' => 'अवैध टिकट पहचानकर्ता',
         'Merge to oldest' => 'पुराने मे मिलाएं',
@@ -2848,6 +2853,13 @@ sub Data {
 
         # Template: AgentTicketEmailOutbound
         'E-Mail Outbound' => '',
+
+        # Template: AgentTicketEscalation
+        'Ticket %s: first response time is over (%s/%s)!' => '',
+        'Ticket %s: first response time will be over in %s/%s!' => '',
+        'Ticket %s: update time will be over in %s/%s!' => '',
+        'Ticket %s: solution time is over (%s/%s)!' => '',
+        'Ticket %s: solution time will be over in %s/%s!' => '',
 
         # Template: AgentTicketForward
         'Forward ticket: %s - %s' => '',
@@ -3046,6 +3058,7 @@ sub Data {
         'Incoming Chat Requests' => '',
         'You have unanswered chat requests' => '',
         'Edit personal preferences' => 'व्यक्तिगत वरीयताएँ संपादित करें',
+        'Logout %s %s' => '',
 
         # Template: CustomerRichTextEditor
         'Split Quote' => '',
@@ -3132,6 +3145,8 @@ sub Data {
             'इस स्क्रीन का एक पॉपअप पहले से ही खुला है। क्या आप उसे बंद करके उसकी बजाय इसे लोड करना चाहते हैं?',
         'Please enter at least one search value or * to find anything.' =>
             '',
+        'Please remove the following words from your search as they cannot be searched for:' =>
+            '',
         'Please check the fields marked as red for valid inputs.' => '',
         'Please perform a spell check on the the text first.' => '',
         'Slide the navigation bar' => '',
@@ -3145,6 +3160,7 @@ sub Data {
         'JavaScript not available' => 'जावास्क्रिप्ट उपलब्ध नहीं है।',
         'Database Settings' => 'आंकड़ाकोष व्यवस्थाऐं',
         'General Specifications and Mail Settings' => 'सामान्य निर्दिष्टीकरण और मेल व्यवस्थाऐं',
+        'Welcome to %s' => '',
         'Web site' => 'वेबसाइट',
         'Mail check successful.' => 'मेल की जाँच सफल रही।',
         'Error in the mail settings. Please correct and try again.' => 'मेल व्यवस्थाऐं करने में त्रुटि हैं। सही करें तथा पुनः प्रयास करें।',
@@ -3268,6 +3284,7 @@ sub Data {
 
         # Template: Test
         'OTRS Test Page' => 'OTRS परीक्षण पृष्ठ',
+        'Welcome %s %s' => '',
         'Counter' => 'पटल',
 
         # Template: Warning
@@ -4201,6 +4218,8 @@ sub Data {
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be activated).' =>
             'एक टिकट के जिम्मेदार प्रतिनिधि को अनुस्मारक सूचनाएं भेजना निष्क्रिय करता है (टिकट:जिम्मेदार सक्रिय करने की जरूरत है)।',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If set to "No", the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If not active, it also disables the GenericAgent, PackageManager and SQL Box.' =>
+            '',
+        'Display a warning and prevent search when using stop words within fulltext search.' =>
             '',
         'Display settings to override defaults for Process Tickets.' => '',
         'Displays the accounted time for an article in the ticket zoom view.' =>

@@ -174,7 +174,7 @@ sub LoadDefaults {
         'hr' => 'Hrvatski',
         'hu' => 'Magyar',
         'it' => 'Italiano',
-        'ja' => 'Japanese (&#x65e5;&#x672c;&#x8a9e)',
+        'ja' => 'Japanese (&#x65e5;&#x672c;&#x8a9e;)',
         'lt' => 'Lietuvių kalba',
         'lv' => 'Latvijas',
         'ms' => 'Malay',
@@ -1362,8 +1362,8 @@ via the Preferences button after logging in.
 #        AutoLoginCreationPrefix => 'auto',
 #        # admin can change customer preferences
 #        AdminSetPreferences => 1,
-#        # use customer company support (reference to company, See CustomerCompany settings)
-#        CustomerCompanySupport => 1,
+        # use customer company support (reference to company, See CustomerCompany settings)
+        CustomerCompanySupport => 1,
         # cache time to live in sec. - cache any database queries
         CacheTTL => 60 * 60 * 24,
 #        # just a read only source
