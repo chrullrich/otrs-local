@@ -697,6 +697,9 @@ sub Data {
         'Webserver Version' => '',
         'Could not determine webserver version.' => '',
         'Loaded Apache Modules' => '',
+        'MPM model' => '',
+        'OTRS requires apache to be run with the \'prefork\' MPM model.' =>
+            '',
         'CGI Accelerator Usage' => '',
         'You should use FastCGI or mod_perl to increase your performance.' =>
             '',
@@ -860,6 +863,7 @@ sub Data {
         'Create new Email Ticket' => 'Crea nou tiquet de correu',
         'Phone-Ticket' => 'Tiquet-Telefònic',
         'Search Tickets' => 'Cercar tiquets',
+        'Customer Realname' => '',
         'Customer History' => '',
         'Edit Customer Users' => 'Editar els usuaris del client',
         'Edit Customer' => 'Editar client',
@@ -1290,6 +1294,7 @@ sub Data {
         'This event is already attached to the job, Please use a different one.' =>
             '',
         'Delete this Event Trigger' => 'Esborrar aquest gallet d\'esdeveniment',
+        'Remove selection' => '',
         'Select Tickets' => '',
         '(e. g. 10*5155 or 105658*)' => '(ex: 10*5155 o 105658*)',
         '(e. g. 234321)' => '(ex: 234321)',
@@ -2328,7 +2333,7 @@ sub Data {
         'Here you can enter SQL to send it directly to the application database. It is not possible to change the content of the tables, only select queries are allowed.' =>
             '',
         'Here you can enter SQL to send it directly to the application database.' =>
-            '',
+            'Aquí pot introduir SQL per enviar-ho directament a la base de dades d\'aplicació.',
         'Only select queries are allowed.' => '',
         'The syntax of your SQL query has a mistake. Please check it.' =>
             'La sintaxi de la consulta *SQL conté un error. Per favor revisi-la.',
@@ -2375,7 +2380,7 @@ sub Data {
             '',
         'The email address for this user is invalid, this option has been disabled.' =>
             '',
-        'Sending' => '',
+        'Sending' => 'Remitent',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
             '',
         'Download File' => '',
@@ -2811,7 +2816,7 @@ sub Data {
 
         # Template: AgentTicketBulk
         'Ticket Bulk Action' => 'Acció múltiple amb Tiquets',
-        'Send Email' => '',
+        'Send Email' => 'Enviar correu!',
         'Merge to' => 'Fusionar amb',
         'Invalid ticket identifier!' => 'Identificador de tiquet no vàlid!',
         'Merge to oldest' => 'Combinar amb el més antic',
@@ -2846,6 +2851,13 @@ sub Data {
 
         # Template: AgentTicketEmailOutbound
         'E-Mail Outbound' => '',
+
+        # Template: AgentTicketEscalation
+        'Ticket %s: first response time is over (%s/%s)!' => '',
+        'Ticket %s: first response time will be over in %s/%s!' => '',
+        'Ticket %s: update time will be over in %s/%s!' => '',
+        'Ticket %s: solution time is over (%s/%s)!' => '',
+        'Ticket %s: solution time will be over in %s/%s!' => '',
 
         # Template: AgentTicketForward
         'Forward ticket: %s - %s' => 'Reexpedir tiquet: %s - %s',
@@ -3044,6 +3056,7 @@ sub Data {
         'Incoming Chat Requests' => '',
         'You have unanswered chat requests' => '',
         'Edit personal preferences' => 'Editar les preferències personals',
+        'Logout %s %s' => '',
 
         # Template: CustomerRichTextEditor
         'Split Quote' => '',
@@ -3130,6 +3143,8 @@ sub Data {
             'Una finestra d\'aquesta pantalla ja està oberta. Vol tancar-la i carregar aquesta?',
         'Please enter at least one search value or * to find anything.' =>
             '',
+        'Please remove the following words from your search as they cannot be searched for:' =>
+            '',
         'Please check the fields marked as red for valid inputs.' => '',
         'Please perform a spell check on the the text first.' => '',
         'Slide the navigation bar' => '',
@@ -3143,6 +3158,7 @@ sub Data {
         'JavaScript not available' => 'Javascript no està disponible',
         'Database Settings' => 'Configuració de la base de dades',
         'General Specifications and Mail Settings' => 'Especificacions generals i de correu',
+        'Welcome to %s' => '',
         'Web site' => 'Web',
         'Mail check successful.' => 'Comprovació de correu finalitzada amb èxit.',
         'Error in the mail settings. Please correct and try again.' => 'Error en la configuració de correu. Per favor, corregeixi i torni a intentar-ho.',
@@ -3266,6 +3282,7 @@ sub Data {
 
         # Template: Test
         'OTRS Test Page' => 'Pàgina de prova de OTRS ',
+        'Welcome %s %s' => '',
         'Counter' => 'Comptador',
 
         # Template: Warning
@@ -4199,6 +4216,8 @@ sub Data {
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be activated).' =>
             '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If set to "No", the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If not active, it also disables the GenericAgent, PackageManager and SQL Box.' =>
+            '',
+        'Display a warning and prevent search when using stop words within fulltext search.' =>
             '',
         'Display settings to override defaults for Process Tickets.' => '',
         'Displays the accounted time for an article in the ticket zoom view.' =>

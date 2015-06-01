@@ -699,6 +699,9 @@ sub Data {
         'Webserver Version' => '',
         'Could not determine webserver version.' => '',
         'Loaded Apache Modules' => '',
+        'MPM model' => '',
+        'OTRS requires apache to be run with the \'prefork\' MPM model.' =>
+            '',
         'CGI Accelerator Usage' => '',
         'You should use FastCGI or mod_perl to increase your performance.' =>
             '',
@@ -862,6 +865,7 @@ sub Data {
         'Create new Email Ticket' => 'Luo uusi sähköpostitiketti',
         'Phone-Ticket' => 'Puhelin',
         'Search Tickets' => 'Etsi tikettejä',
+        'Customer Realname' => '',
         'Customer History' => '',
         'Edit Customer Users' => 'Muokkaa asiakaskäyttäjää',
         'Edit Customer' => 'Muokkaa asiakasta',
@@ -1112,7 +1116,7 @@ sub Data {
 
         # Template: AdminCustomerUserGroup
         'Manage Customer-Group Relations' => '',
-        'Notice' => '',
+        'Notice' => 'Huomautus',
         'This feature is disabled!' => 'Tämä ominaisuus on poissa käytöstä!',
         'Just use this feature if you want to define group permissions for customers.' =>
             '',
@@ -1292,6 +1296,7 @@ sub Data {
         'This event is already attached to the job, Please use a different one.' =>
             '',
         'Delete this Event Trigger' => '',
+        'Remove selection' => '',
         'Select Tickets' => '',
         '(e. g. 10*5155 or 105658*)' => '(esim. 10*5155 tai 105658*)',
         '(e. g. 234321)' => '(esim. 234321)',
@@ -2259,7 +2264,7 @@ sub Data {
         'Permissions to move tickets into this group/queue.' => 'Oikeudet siirtää tikettejä tähän ryhmään/jonoon.',
         'create' => 'lisäys',
         'Permissions to create tickets in this group/queue.' => 'Oikeus lisätä tikettejä tähän ryhmään/jonoon.',
-        'note' => '',
+        'note' => 'Huomautus',
         'Permissions to add notes to tickets in this group/queue.' => '',
         'owner' => 'omistaja',
         'Permissions to change the owner of tickets in this group/queue.' =>
@@ -2330,7 +2335,7 @@ sub Data {
         'Here you can enter SQL to send it directly to the application database. It is not possible to change the content of the tables, only select queries are allowed.' =>
             '',
         'Here you can enter SQL to send it directly to the application database.' =>
-            '',
+            'Suorita SQL-kyselyitä ohjelmiston tietokannassa.',
         'Only select queries are allowed.' => '',
         'The syntax of your SQL query has a mistake. Please check it.' =>
             'SQL-kyselyn syntaksi on virheellinen. Tarkista kysely.',
@@ -2377,7 +2382,7 @@ sub Data {
             '',
         'The email address for this user is invalid, this option has been disabled.' =>
             '',
-        'Sending' => '',
+        'Sending' => 'Lähettäjä',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
             '',
         'Download File' => '',
@@ -2451,7 +2456,7 @@ sub Data {
         'New Loader File' => '',
         'NavBarName' => 'ValikonNimi',
         'NavBar' => 'Valikko',
-        'LinkOption' => '',
+        'LinkOption' => 'Linkki',
         'Block' => 'Estä',
         'AccessKey' => 'PääsyAvain',
         'Add NavBar entry' => '',
@@ -2849,6 +2854,13 @@ sub Data {
         # Template: AgentTicketEmailOutbound
         'E-Mail Outbound' => '',
 
+        # Template: AgentTicketEscalation
+        'Ticket %s: first response time is over (%s/%s)!' => '',
+        'Ticket %s: first response time will be over in %s/%s!' => '',
+        'Ticket %s: update time will be over in %s/%s!' => '',
+        'Ticket %s: solution time is over (%s/%s)!' => '',
+        'Ticket %s: solution time will be over in %s/%s!' => '',
+
         # Template: AgentTicketForward
         'Forward ticket: %s - %s' => 'Lähetä tiketti eteenpäin: %s - %s',
 
@@ -3046,6 +3058,7 @@ sub Data {
         'Incoming Chat Requests' => '',
         'You have unanswered chat requests' => '',
         'Edit personal preferences' => 'Muokkaa henkilökohtaisia asetuksia',
+        'Logout %s %s' => '',
 
         # Template: CustomerRichTextEditor
         'Split Quote' => '',
@@ -3132,6 +3145,8 @@ sub Data {
             'Popupikkuna on jo avattu. Haluatko varmasti sulkea sen ja avata tämän tilalle?',
         'Please enter at least one search value or * to find anything.' =>
             'Lisää ainakin yksi hakuehto tai *, jotta löydät jotain.',
+        'Please remove the following words from your search as they cannot be searched for:' =>
+            '',
         'Please check the fields marked as red for valid inputs.' => '',
         'Please perform a spell check on the the text first.' => '',
         'Slide the navigation bar' => '',
@@ -3145,6 +3160,7 @@ sub Data {
         'JavaScript not available' => 'JavaScript ei toiminnassa',
         'Database Settings' => 'Tietokanta-asetukset',
         'General Specifications and Mail Settings' => 'Yleiset määritykset ja sähköpostiasetukset',
+        'Welcome to %s' => '',
         'Web site' => 'Kotisivu',
         'Mail check successful.' => 'Sähköpostin tarkastus onnistunut.',
         'Error in the mail settings. Please correct and try again.' => 'Virhe sähköpostiasetuksissa. Tarkista asetukset ja kokeile uudestaan.',
@@ -3268,6 +3284,7 @@ sub Data {
 
         # Template: Test
         'OTRS Test Page' => 'OTRS - Testisivu',
+        'Welcome %s %s' => '',
         'Counter' => 'Laskuri',
 
         # Template: Warning
@@ -4201,6 +4218,8 @@ sub Data {
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be activated).' =>
             '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If set to "No", the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If not active, it also disables the GenericAgent, PackageManager and SQL Box.' =>
+            '',
+        'Display a warning and prevent search when using stop words within fulltext search.' =>
             '',
         'Display settings to override defaults for Process Tickets.' => '',
         'Displays the accounted time for an article in the ticket zoom view.' =>
@@ -5439,7 +5458,7 @@ sub Data {
         'Write a new, outgoing mail' => '',
         'Yes, but hide archived tickets' => '',
         'Your queue selection of your favorite queues. You also get notified about those queues via email if enabled.' =>
-            '',
+            'Suosikkijonojen valinta. Saat sähköpostiilmoituksen näihin jonoihin saapuneista tiketeistä, jos niin asetettu.',
         'Your service selection of your favorite services. You also get notified about those services via email if enabled.' =>
             '',
 
