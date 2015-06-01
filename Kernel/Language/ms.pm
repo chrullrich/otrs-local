@@ -696,6 +696,9 @@ sub Data {
         'Webserver Version' => '',
         'Could not determine webserver version.' => '',
         'Loaded Apache Modules' => '',
+        'MPM model' => '',
+        'OTRS requires apache to be run with the \'prefork\' MPM model.' =>
+            '',
         'CGI Accelerator Usage' => '',
         'You should use FastCGI or mod_perl to increase your performance.' =>
             '',
@@ -859,6 +862,7 @@ sub Data {
         'Create new Email Ticket' => 'Mencipta Emel Tiket baru',
         'Phone-Ticket' => 'Tiket-Telefon',
         'Search Tickets' => 'Cari Tiket',
+        'Customer Realname' => '',
         'Customer History' => '',
         'Edit Customer Users' => 'Audit Pengguna Pelanggan',
         'Edit Customer' => 'Audit pelanggan',
@@ -1289,6 +1293,7 @@ sub Data {
         'This event is already attached to the job, Please use a different one.' =>
             '',
         'Delete this Event Trigger' => 'Padam pencetus acara ini',
+        'Remove selection' => '',
         'Select Tickets' => '',
         '(e. g. 10*5155 or 105658*)' => 'contoh. 10*5144 atau 105658*',
         '(e. g. 234321)' => 'contoh. 234321',
@@ -2327,7 +2332,7 @@ sub Data {
         'Here you can enter SQL to send it directly to the application database. It is not possible to change the content of the tables, only select queries are allowed.' =>
             '',
         'Here you can enter SQL to send it directly to the application database.' =>
-            '',
+            'Sini anda boleh masukkan SQL untuk menghantar terus kepada pangkalan data permohonan.',
         'Only select queries are allowed.' => '',
         'The syntax of your SQL query has a mistake. Please check it.' =>
             'Syntax query SQL anda mempunyai kesilapan. Sila semak.',
@@ -2374,7 +2379,7 @@ sub Data {
             '',
         'The email address for this user is invalid, this option has been disabled.' =>
             '',
-        'Sending' => '',
+        'Sending' => 'Penghantar',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
             '',
         'Download File' => '',
@@ -2846,6 +2851,13 @@ sub Data {
         # Template: AgentTicketEmailOutbound
         'E-Mail Outbound' => '',
 
+        # Template: AgentTicketEscalation
+        'Ticket %s: first response time is over (%s/%s)!' => '',
+        'Ticket %s: first response time will be over in %s/%s!' => '',
+        'Ticket %s: update time will be over in %s/%s!' => '',
+        'Ticket %s: solution time is over (%s/%s)!' => '',
+        'Ticket %s: solution time will be over in %s/%s!' => '',
+
         # Template: AgentTicketForward
         'Forward ticket: %s - %s' => 'Mengemukakan tiket.:  %s - %s',
 
@@ -3043,6 +3055,7 @@ sub Data {
         'Incoming Chat Requests' => '',
         'You have unanswered chat requests' => '',
         'Edit personal preferences' => 'Edit pilihan peribadi',
+        'Logout %s %s' => '',
 
         # Template: CustomerRichTextEditor
         'Split Quote' => '',
@@ -3129,6 +3142,8 @@ sub Data {
             'Tetingkap timbul untuk skrin ini sudah dibuka. Adakah anda mahu menutupnya dan membuka yang ini?',
         'Please enter at least one search value or * to find anything.' =>
             'Sila masukkan sekurang-kurangnya satu nilai carian atau * untuk mencari apa saja.',
+        'Please remove the following words from your search as they cannot be searched for:' =>
+            '',
         'Please check the fields marked as red for valid inputs.' => '',
         'Please perform a spell check on the the text first.' => '',
         'Slide the navigation bar' => '',
@@ -3142,6 +3157,7 @@ sub Data {
         'JavaScript not available' => 'JavaScript tidak disediakan',
         'Database Settings' => 'Datenbankeinstellungen',
         'General Specifications and Mail Settings' => 'Spesifikasi Am dan Tetapan Mail',
+        'Welcome to %s' => '',
         'Web site' => 'Laman web',
         'Mail check successful.' => 'Semakan mel berjaya',
         'Error in the mail settings. Please correct and try again.' => 'Kesilapan dalam konfigurasi e-mel. Sila betulkan dan cuba lagi.',
@@ -3265,6 +3281,7 @@ sub Data {
 
         # Template: Test
         'OTRS Test Page' => 'Halaman percubaan OTRS',
+        'Welcome %s %s' => '',
         'Counter' => 'Kaunter',
 
         # Template: Warning
@@ -4198,6 +4215,8 @@ sub Data {
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be activated).' =>
             'Lumpuhkan notifikasi peringatan penghantaran kepada ejen yang bertanggungjawab kepada tiket. (Tiket::Responsible perlu diaktifkan).',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If set to "No", the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If not active, it also disables the GenericAgent, PackageManager and SQL Box.' =>
+            '',
+        'Display a warning and prevent search when using stop words within fulltext search.' =>
             '',
         'Display settings to override defaults for Process Tickets.' => '',
         'Displays the accounted time for an article in the ticket zoom view.' =>
