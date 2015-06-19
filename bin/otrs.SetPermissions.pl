@@ -56,7 +56,7 @@ Usage: otrs.SetPermissions.pl
     [--dry-run]                     # only report, don't change
     [--help]
 
-Example: otrs.setPermissions.pl --web-group=www-data
+Example: otrs.SetPermissions.pl --web-group=www-data
 EOF
     return;
 }
@@ -218,7 +218,8 @@ sub SetFilePermissions {
         $TargetPermission = 0755;
     }
 
-    my $Stat = File::stat::stat($File);
+    # There seem to be cases when stat does not work on a dangling link, skip in this case.
+    my $Stat = File::stat::stat($File) || return;
     if ( ( $Stat->mode() & 07777 ) != $TargetPermission ) {
         if ( defined $DryRun ) {
             print sprintf(
