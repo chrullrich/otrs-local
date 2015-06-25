@@ -1,4 +1,4 @@
 PRODUCT = OTRS
 VERSION = 4.0.9
-BUILDDATE = Fri Jun 19 09:04:30 UTC 2015
-BUILDHOST = web.h1.chrullrich.net
+BUILDDATE = Mon Jun 22 22:56:25 CEST 2015
+BUILDHOST = otrsbuild.otrs.com

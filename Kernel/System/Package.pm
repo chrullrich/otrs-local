@@ -889,8 +889,8 @@ sub PackageUpgrade {
             if ( !$UseInstalled ) {
 
                 if (
-                    $Part->{TagType} eq 'End'
-                    && $Part->{Tag} eq $NotUseTag
+                    $Part->{TagType}     eq 'End'
+                    && $Part->{Tag}      eq $NotUseTag
                     && $Part->{TagLevel} eq $NotUseTagLevel
                     )
                 {
@@ -987,7 +987,7 @@ sub PackageUpgrade {
 
                 if (
                     $Part->{TagType} eq 'End'
-                    && ( defined $NotUseTag      && $Part->{Tag} eq $NotUseTag )
+                    && ( defined $NotUseTag      && $Part->{Tag}      eq $NotUseTag )
                     && ( defined $NotUseTagLevel && $Part->{TagLevel} eq $NotUseTagLevel )
                     )
                 {
@@ -1583,6 +1583,7 @@ check if package (files) is deployed, returns true if it's ok
     $PackageObject->DeployCheck(
         Name    => 'Application A',
         Version => '1.0',
+        Log     => 1, # Default: 1
     );
 
 =cut
@@ -1601,6 +1602,10 @@ sub DeployCheck {
         }
     }
 
+    if ( !defined $Param{Log} ) {
+        $Param{Log} = 1;
+    }
+
     my $Package = $Self->RepositoryGet( %Param, Result => 'SCALAR' );
     my %Structure = $Self->PackageParse( String => $Package );
 
@@ -1616,10 +1621,12 @@ sub DeployCheck {
 
         if ( !-e $LocalFile ) {
 
-            $Kernel::OM->Get('Kernel::System::Log')->Log(
-                Priority => 'error',
-                Message  => "$Param{Name}-$Param{Version}: No such file: $LocalFile!",
-            );
+            if ( $Param{Log} ) {
+                $Kernel::OM->Get('Kernel::System::Log')->Log(
+                    Priority => 'error',
+                    Message  => "$Param{Name}-$Param{Version}: No such file: $LocalFile!",
+                );
+            }
 
             $Self->{DeployCheckInfo}->{File}->{ $File->{Location} } = 'No file installed!';
             $Hit = 1;
@@ -1635,10 +1642,12 @@ sub DeployCheck {
 
                 if ( ${$Content} ne $File->{Content} ) {
 
-                    $Kernel::OM->Get('Kernel::System::Log')->Log(
-                        Priority => 'error',
-                        Message  => "$Param{Name}-$Param{Version}: $LocalFile is different!",
-                    );
+                    if ( $Param{Log} ) {
+                        $Kernel::OM->Get('Kernel::System::Log')->Log(
+                            Priority => 'error',
+                            Message  => "$Param{Name}-$Param{Version}: $LocalFile is different!",
+                        );
+                    }
 
                     $Hit = 1;
                     $Self->{DeployCheckInfo}->{File}->{ $File->{Location} } = 'File is different!';
@@ -1646,10 +1655,12 @@ sub DeployCheck {
             }
             else {
 
-                $Kernel::OM->Get('Kernel::System::Log')->Log(
-                    Priority => 'error',
-                    Message  => "Can't read $LocalFile!",
-                );
+                if ( $Param{Log} ) {
+                    $Kernel::OM->Get('Kernel::System::Log')->Log(
+                        Priority => 'error',
+                        Message  => "Can't read $LocalFile!",
+                    );
+                }
 
                 $Self->{DeployCheckInfo}->{File}->{ $File->{Location} } = 'Can\' read File!';
             }
@@ -2216,7 +2227,7 @@ sub PackageBuild {
                         for my $Key ( sort keys %{$Tag} ) {
 
                             if (
-                                $Key ne 'Tag'
+                                $Key    ne 'Tag'
                                 && $Key ne 'Content'
                                 && $Key ne 'TagType'
                                 && $Key ne 'TagLevel'
@@ -3879,8 +3890,8 @@ sub _CheckDBMerged {
         if ( $Use eq 0 ) {
 
             if (
-                $Part->{TagType} eq 'End'
-                && $Part->{Tag} eq $NotUseTag
+                $Part->{TagType}     eq 'End'
+                && $Part->{Tag}      eq $NotUseTag
                 && $Part->{TagLevel} eq $NotUseTagLevel
                 )
             {
