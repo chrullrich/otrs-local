@@ -40,7 +40,7 @@ sub Load {
 
     # The password of database user. You also can use bin/otrs.CryptPassword.pl
     # for crypted passwords
-    $Self->{DatabasePw} = 'otrs';
+    $Self->{DatabasePw} = 'yhggK3bfuyN4Dgi';
 
     # The database DSN for MySQL ==> more: "perldoc DBD::mysql"
     #$Self->{DatabaseDSN} = "DBI:mysql:database=$Self->{Database};host=$Self->{DatabaseHost};";
