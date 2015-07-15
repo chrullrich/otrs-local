@@ -1,4 +1,11 @@
-#4.0.10 2015-??-??
+#4.0.11 2015-??-??
+
+#4.0.10 2015-07-14
+ - 2015-07-08 Updated translations, thanks to all translators.
+ - 2015-07-07 Fixed bug#[11367](http://bugs.otrs.org/show_bug.cgi?id=11367) - timezone in time stamps of outgoing mails is always UTC.
+ - 2015-07-03 Fixed bug#[11337](http://bugs.otrs.org/show_bug.cgi?id=11337) - Customer Information Center does not show CustomerUsers.
+ - 2015-07-02 Fixed bug#[11334](http://bugs.otrs.org/show_bug.cgi?id=11334) - If you don't have permission in a queue, you get an eMail Notification.
+ - 2015-06-30 Fixed bug#[11325](http://bugs.otrs.org/show_bug.cgi?id=11325) - Dashboard TicketList: Queuefilter in an empty list shows inactive queues, too.
 
 #4.0.9 2015-06-23
  - 2015-06-22 Fixed bug#[11347](http://bugs.otrs.org/show_bug.cgi?id=11347) - BuildSelection() + TreeView loose selected ID if ARRAY-HASH data is used.
