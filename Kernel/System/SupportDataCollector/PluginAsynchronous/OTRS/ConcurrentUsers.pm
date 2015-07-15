@@ -25,7 +25,8 @@ our @ObjectDependencies = (
 );
 
 sub GetDisplayPath {
-    return 'OTRS@Table:TimeStamp,UserSessionUnique|Unique agents,UserSession|Agent sessions,CustomerSessionUnique|Unique customers,CustomerSession|Customer sessions';
+    return
+        'OTRS@Table:TimeStamp,UserSessionUnique|Unique agents,UserSession|Agent sessions,CustomerSessionUnique|Unique customers,CustomerSession|Customer sessions';
 }
 
 sub Run {
@@ -35,8 +36,8 @@ sub Run {
 
     # the table details data
     $Self->AddResultInformation(
-        Label      => 'Concurrent Users Details',
-        Value      => $ConcurrentUsers || [],
+        Label => 'Concurrent Users Details',
+        Value => $ConcurrentUsers || [],
     );
 
     # get the full display path
@@ -64,9 +65,9 @@ sub Run {
         my $MaxValue = 0;
 
         ENTRY:
-        for my $Entry (@{$ConcurrentUsers}) {
+        for my $Entry ( @{$ConcurrentUsers} ) {
 
-            next ENTRY if $Entry->{$Identifier} le $MaxValue;
+            next ENTRY if $Entry->{$Identifier} <= $MaxValue;
 
             $MaxValue = $Entry->{$Identifier};
         }
@@ -164,8 +165,8 @@ sub RunAsynchronous {
         }
     }
 
-    # get the session active time
-    my $SessionActiveTime = $Kernel::OM->Get('Kernel::Config')->Get('SessionActiveTime') || 60 * 10;
+    # set the session active time for the counter
+    my $SessionActiveTime = 3600;
 
     # get all sessions
     my @Sessions = $AuthSessionObject->GetAllSessionIDs();
