@@ -255,14 +255,14 @@ sub CustomerSearch {
                 if ($SQLExt) {
                     $SQLExt .= ' OR ';
                 }
-                my $PostMasterSearch = '%' . $Self->{DBObject}->Quote( $Param{PostMasterSearch}, 'Like' ) . '%';
+                my $PostMasterSearch = $Self->{DBObject}->Quote( $Param{PostMasterSearch} );
                 push @Bind, \$PostMasterSearch;
 
                 if ( $Self->{CaseSensitive} ) {
-                    $SQLExt .= " $Field LIKE ? $LikeEscapeString ";
+                    $SQLExt .= " $Field = ? ";
                 }
                 else {
-                    $SQLExt .= " LOWER($Field) LIKE LOWER(?) $LikeEscapeString ";
+                    $SQLExt .= " LOWER($Field) = LOWER(?) ";
                 }
             }
             $SQL .= $SQLExt;
@@ -308,8 +308,7 @@ sub CustomerSearch {
     }
     elsif ( $Param{CustomerIDRaw} ) {
 
-        my $CustomerIDRaw = $Self->{DBObject}->Quote( $Param{CustomerIDRaw}, 'Like' );
-        push @Bind, \$CustomerIDRaw;
+        push @Bind, \$Param{CustomerIDRaw};
 
         if ( $Self->{CaseSensitive} ) {
             $SQL .= "$Self->{CustomerID} = ? ";

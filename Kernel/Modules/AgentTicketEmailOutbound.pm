@@ -57,7 +57,7 @@ sub new {
 
     # get params
     for my $Param (
-        qw(From To Cc Bcc Subject Body InReplyTo References ComposeStateID ArticleTypeID
+        qw(From To Cc Bcc Subject Body ComposeStateID ArticleTypeID
         ArticleID TimeUnits Year Month Day Hour Minute FormID)
         )
     {
@@ -173,7 +173,6 @@ sub Run {
         DYNAMICFIELD:
         for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
-            next DYNAMICFIELD if $DynamicFieldConfig->{ObjectType} ne 'Ticket';
 
             my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
                 DynamicFieldConfig => $DynamicFieldConfig,
@@ -720,11 +719,6 @@ sub Form {
         Attachments         => \@Attachments,
         %Data,
         %GetParam,
-
-        # We start a new communication here, so don't send any references.
-        #   This might lead to information disclosure (domain names; see bug#11246).
-        InReplyTo        => '',
-        References       => '',
         DynamicFieldHTML => \%DynamicFieldHTML,
     );
     $Output .= $Self->{LayoutObject}->Footer(
@@ -1129,8 +1123,10 @@ sub SendEmail {
         Subject        => $GetParam{Subject},
         UserID         => $Self->{UserID},
         Body           => $GetParam{Body},
-        InReplyTo      => $GetParam{InReplyTo},
-        References     => $GetParam{References},
+        # We start a new communication here, so don't send any references.
+        #   This might lead to information disclosure (domain names; see bug#11246).
+        InReplyTo        => '',
+        References       => '',
         Charset        => $Self->{LayoutObject}->{UserCharset},
         MimeType       => $MimeType,
         Attachment     => \@AttachmentData,
@@ -1310,7 +1306,6 @@ sub AjaxUpdate {
     DYNAMICFIELD:
     for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
         next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
-        next DYNAMICFIELD if $DynamicFieldConfig->{ObjectType} ne 'Ticket';
 
         my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
             DynamicFieldConfig => $DynamicFieldConfig,
