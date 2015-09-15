@@ -2854,6 +2854,7 @@ sub Data {
         'Select this customer as the main customer.' => '选择这个用户作为主用户',
         'Remove Ticket Customer User' => '删除工单用户',
         'Get all' => '获取全部',
+        'Do you really want to continue?' => '',
 
         # Template: AgentTicketEmailOutbound
         'E-Mail Outbound' => '发邮件',
@@ -3565,9 +3566,9 @@ sub Data {
             '',
         'Default loop protection module.' => '',
         'Default queue ID used by the system in the agent interface.' => '',
-        'Default skin for OTRS 3.0 interface.' => '',
         'Default skin for the agent interface (slim version).' => '',
         'Default skin for the agent interface.' => '',
+        'Default skin for the customer interface.' => '',
         'Default ticket ID used by the system in the agent interface.' =>
             '',
         'Default ticket ID used by the system in the customer interface.' =>
@@ -4897,7 +4898,7 @@ sub Data {
         'Sends the notifications which are configured in the admin interface under "Notfication (Event)".' =>
             '',
         'Service update notification' => '服务更新通知',
-        'Service view' => '',
+        'Service view' => '服务视图',
         'Set sender email addresses for this system.' => '为系统设置发件人的邮件地址.',
         'Set the default height (in pixels) of inline HTML articles in AgentTicketZoom.' =>
             '',

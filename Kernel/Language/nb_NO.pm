@@ -423,7 +423,7 @@ sub Data {
         'Problems processing server result. Please try again later.' => 'Problemer med å prosessere serverresultat. Prøv igjen senere.',
         'Username and password do not match. Please try again.' => 'Brukernavn og passord stemmer ikke overens. Prøv igjen.',
         'The selected process is invalid!' => 'Valgt prosess er ikke gyldig!',
-        'Upgrade to %s now!' => '',
+        'Upgrade to %s now!' => 'Oppgrader til %s nå!',
         '%s Go to the upgrade center %s' => '',
         'The license for your %s is about to expire. Please make contact with %s to renew your contract!' =>
             '',
@@ -2857,6 +2857,7 @@ sub Data {
         'Select this customer as the main customer.' => '',
         'Remove Ticket Customer User' => '',
         'Get all' => 'Hent alle',
+        'Do you really want to continue?' => '',
 
         # Template: AgentTicketEmailOutbound
         'E-Mail Outbound' => '',
@@ -3568,9 +3569,9 @@ sub Data {
             '',
         'Default loop protection module.' => 'Standard loop-beskyttelsesmodul',
         'Default queue ID used by the system in the agent interface.' => 'Standard køID brukt av systemet for saksbehandlere.',
-        'Default skin for OTRS 3.0 interface.' => 'Standard-utseende for OTRS 3.0',
         'Default skin for the agent interface (slim version).' => '',
         'Default skin for the agent interface.' => '',
+        'Default skin for the customer interface.' => '',
         'Default ticket ID used by the system in the agent interface.' =>
             'Standard Saksnr brukt av systemet i saksbehandler-delen',
         'Default ticket ID used by the system in the customer interface.' =>

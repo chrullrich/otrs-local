@@ -144,9 +144,10 @@
                 <Item Key="et">Eesti</Item>
                 <Item Key="el">Greek (&amp;#x0395;&amp;#x03bb;&amp;#x03bb;&amp;#x03b7;&amp;#x03bd;&amp;#x03b9;&amp;#x03ba;&amp;#x03ac;)</Item>
                 <Item Key="fa">Persian (&amp;#x0641;&amp;#x0627;&amp;#x0631;&amp;#x0633;&amp;#x0649;)</Item>
+                <Item Key="fi">Suomi</Item>
                 <Item Key="fr">Fran&amp;ccedil;ais</Item>
                 <Item Key="fr_CA">Fran&amp;ccedil;ais (Canada)</Item>
-                <Item Key="fi">Suomi</Item>
+                <Item Key="gl">Galego</Item>
                 <Item Key="he">Hebrew (עִבְרִית)</Item>
                 <Item Key="hi">Hindi</Item>
                 <Item Key="hr">Hrvatski</Item>
@@ -6559,14 +6560,14 @@ via the Preferences button after logging in.
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Loader::Customer::Skin###000-default" Required="0" Valid="1">
-        <Description Translatable="1">Default skin for OTRS 3.0 interface.</Description>
+        <Description Translatable="1">Default skin for the customer interface.</Description>
         <Group>Framework</Group>
         <SubGroup>Frontend::Customer</SubGroup>
         <Setting>
             <Hash>
                 <Item Key="InternalName">default</Item>
                 <Item Key="VisibleName">Default</Item>
-                <Item Key="Description">This is the default orange - black skin for OTRS 3.0.</Item>
+                <Item Key="Description">This is the default orange - black skin for the customer interface.</Item>
                 <Item Key="HomePage">www.otrs.org</Item>
             </Hash>
         </Setting>
