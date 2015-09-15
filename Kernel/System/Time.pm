@@ -372,26 +372,57 @@ returns the current time stamp in RFC 2822 format to be used in email headers:
 sub MailTimeStamp {
     my ( $Self, %Param ) = @_;
 
+    # According to RFC 2822, section 3.3
+
+    # ---
+    # The date and time-of-day SHOULD express local time.
+
+    # The zone specifies the offset from Coordinated Universal Time (UTC,
+    # formerly referred to as "Greenwich Mean Time") that the date and
+    # time-of-day represent.  The "+" or "-" indicates whether the
+    # time-of-day is ahead of (i.e., east of) or behind (i.e., west of)
+    # Universal Time.  The first two digits indicate the number of hours
+    # difference from Universal Time, and the last two digits indicate the
+    # number of minutes difference from Universal Time.  (Hence, +hhmm
+    # means +(hh * 60 + mm) minutes, and -hhmm means -(hh * 60 + mm)
+    # minutes).  The form "+0000" SHOULD be used to indicate a time zone at
+    # Universal Time.  Though "-0000" also indicates Universal Time, it is
+    # used to indicate that the time was generated on a system that may be
+    # in a local time zone other than Universal Time and therefore
+    # indicates that the date-time contains no information about the local
+    # time zone.
+    # ---
+
     my @DayMap   = qw/Sun Mon Tue Wed Thu Fri Sat/;
     my @MonthMap = qw/Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec/;
 
-    # calculate offset - should be '+0200', '-0600', or '+0000'
-    my $Diff = $Self->{TimeZone};
-    my $Direction = $Diff < 0 ? '-' : '+';
-    $Diff = abs $Diff;
-    my $OffsetHours = $Diff;
+    # Here we cannot use the OTRS "TimeZone" because OTRS uses localtime()
+    #   and does not know if that is UTC or another time zone.
+    #   Therefore OTRS cannot generate the correct offset for the mail timestamp.
+    #   So we need to use the real time configuration of the server to determine this properly.
+
+    my $ServerTime      = time();
+    my $ServerLocalTime = Time::Local::timegm_nocheck( localtime($ServerTime) );
+
+    # Check if local time and UTC time are different
+    my $ServerTimeDiff = $ServerLocalTime - $ServerTime;
+
+    # calculate offset - should be '+0200', '-0600', '+0545' or '+0000'
+    my $Direction   = $ServerTimeDiff < 0 ? '-' : '+';
+    my $DiffHours   = abs int( $ServerTimeDiff / 3600 );
+    my $DiffMinutes = abs int( ( $ServerTimeDiff % 3600 ) / 60 );
 
     my ( $Sec, $Min, $Hour, $Day, $Month, $Year, $WeekDay ) = $Self->SystemTime2Date(
-        SystemTime => time(),
+        SystemTime => $ServerTime,
     );
+
     my $TimeString = sprintf "%s, %d %s %d %02d:%02d:%02d %s%02d%02d",
         $DayMap[$WeekDay],    # 'Sat'
         $Day, $MonthMap[ $Month - 1 ], $Year,    # '2', 'Aug', '2014'
-        $Hour,      $Min,         $Sec,          # '12', '34', '36'
-        $Direction, $OffsetHours, 0;             # '+', '02', '00'
+        $Hour,      $Min,       $Sec,            # '12', '34', '36'
+        $Direction, $DiffHours, $DiffMinutes;    # '+', '02', '00'
 
     return $TimeString;
-
 }
 
 =item WorkingTime()

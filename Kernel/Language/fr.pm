@@ -727,7 +727,7 @@ sub Data {
 
         # Template: AAATicket
         'Status View' => 'Vue des statuts',
-        'Service View' => '',
+        'Service View' => 'Vue par Service',
         'Bulk' => 'Actions groupées',
         'Lock' => 'Verrouiller',
         'Unlock' => 'Déverrouiller',
@@ -967,7 +967,7 @@ sub Data {
         'Send me the same notifications for my watched tickets that the ticket owners will get.' =>
             'Pour les tickets sous surveillance, envoyez-moi les mêmes notifications que celles envoyées au propriétaire de ces tickets.',
         'Send ticket watch notifications' => 'Envoi de notifications à la vue du ticket',
-        'Out Of Office Time' => 'Heure de sortie du travail',
+        'Out Of Office Time' => 'Absent du Bureau',
         'New Ticket' => 'Nouveau ticket',
         'Create new Ticket' => 'Création d\'un nouveau ticket',
         'Customer called' => 'Client appellé',
@@ -2641,7 +2641,7 @@ sub Data {
         'Totals' => 'Totaux',
 
         # Template: AgentDashboardUserOnline
-        'out of office' => 'heure de sortie du travail',
+        'out of office' => 'Absent du Bureau',
 
         # Template: AgentDashboardUserOutOfOffice
         'until' => 'jusqu\'à',
@@ -2856,6 +2856,7 @@ sub Data {
         'Select this customer as the main customer.' => '',
         'Remove Ticket Customer User' => '',
         'Get all' => 'Tout prendre',
+        'Do you really want to continue?' => '',
 
         # Template: AgentTicketEmailOutbound
         'E-Mail Outbound' => 'Mail sortant',
@@ -3567,9 +3568,9 @@ sub Data {
             '',
         'Default loop protection module.' => '',
         'Default queue ID used by the system in the agent interface.' => 'ID de file par défaut utilisée par le système dans l\'interface opérateur.',
-        'Default skin for OTRS 3.0 interface.' => '',
         'Default skin for the agent interface (slim version).' => '',
         'Default skin for the agent interface.' => '',
+        'Default skin for the customer interface.' => '',
         'Default ticket ID used by the system in the agent interface.' =>
             'ID de ticket par défaut utilisé par le système dans l\'interface opérateur.',
         'Default ticket ID used by the system in the customer interface.' =>
@@ -4333,7 +4334,7 @@ sub Data {
         'Enables ticket responsible feature, to keep track of a specific ticket.' =>
             '',
         'Enables ticket watcher feature only for the listed groups.' => '',
-        'Enroll this ticket into a process' => '',
+        'Enroll this ticket into a process' => 'Lier ce ticket à un processus',
         'Escalation response time finished' => '',
         'Escalation response time forewarned' => '',
         'Escalation response time in effect' => '',
@@ -4899,7 +4900,7 @@ sub Data {
         'Sends the notifications which are configured in the admin interface under "Notfication (Event)".' =>
             '',
         'Service update notification' => '',
-        'Service view' => '',
+        'Service view' => 'Vue par Service',
         'Set sender email addresses for this system.' => 'Mettre en place les adresses d\'envoi de messages électroniques pour ce système.',
         'Set the default height (in pixels) of inline HTML articles in AgentTicketZoom.' =>
             '',
@@ -5273,7 +5274,7 @@ sub Data {
             '',
         'Shows time use complete description (days, hours, minutes), if set to "Yes"; or just first letter (d, h, m), if set to "No".' =>
             '',
-        'Skin' => 'Thème',
+        'Skin' => 'Skin',
         'SolutionDiffInMin' => '',
         'SolutionInMin' => '',
         'Some description!' => '',
@@ -5453,7 +5454,7 @@ sub Data {
             '',
         'View performance benchmark results.' => 'Voir les résultats du benchmark de performance.',
         'View system log messages.' => 'Voir les messages du journal système.',
-        'Wear this frontend skin' => 'Utiliser cette apparence',
+        'Wear this frontend skin' => 'Utiliser cette skin',
         'Webservice path separator.' => '',
         'When tickets are merged, a note will be added automatically to the ticket which is no longer active. Here you can define the body of this note (this text cannot be changed by the agent).' =>
             'Dès que les tickets sont fusionnés, une note est ajoutée automatiquement au ticket qui devient inactif. Vous pouvez définir ici le texte de cette note (ce texte ne peut pas être modifié par les agents). ',
