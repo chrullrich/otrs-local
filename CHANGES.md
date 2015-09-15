@@ -1,4 +1,22 @@
-#4.0.12 2015-??-??
+#4.0.13 2015-??-??
+
+#4.0.12 2015-09-15
+ - 2015-09-03 Updated translations, thanks to all translators.
+ - 2015-08-19 Followup for bug#[11367](http://bugs.otrs.org/show_bug.cgi?id=11367) - timezone in time stamps of outgoing mails is always UTC.
+ - 2015-09-02 Fixed bug#[11321](http://bugs.otrs.org/show_bug.cgi?id=11321) - Translate is called twice on Months of Year.
+ - 2015-08-31 Fixed bug#[11264](http://bugs.otrs.org/show_bug.cgi?id=11264) - Reducing article dropdown dynamic fields via ACL does not work.
+ - 2015-08-31 Fixed bug#[11398](http://bugs.otrs.org/show_bug.cgi?id=11398) - Selecting a template in AgentTicketPhone (and likely other components) silently overrides existing content, losing data.
+ - 2015-08-31 Fixed bug#[11216](http://bugs.otrs.org/show_bug.cgi?id=11216) - Links in Admin Overview not always clickable in IE8.
+ - 2015-08-31 Fixed bug#[11460](http://bugs.otrs.org/show_bug.cgi?id=11460) - CustomerSearch fails for searches containing '_'.
+ - 2015-08-28 Fixed bug#[8146](http://bugs.otrs.org/show_bug.cgi?id=8146) - Generate report in Chinese from command line.
+ - 2015-08-25 Followup for bug#[9460](http://bugs.otrs.org/show_bug.cgi?id=9460) - Under some circumstances OTRS does not join Tickets to the Customernumber.
+ - 2015-08-25 Added new Galician translation, thanks to ARTURO MONDELO RUIZ-FALCO.
+ - 2015-08-21 Fixed bug#[11302](http://bugs.otrs.org/show_bug.cgi?id=11302) - Out of office data incorrect.
+ - 2015-08-20 Fixed bug#[11405](http://bugs.otrs.org/show_bug.cgi?id=11405) - AgentTicketForward not possible to hide by ACL.
+ - 2015-08-19 Fixed bug#[11440](http://bugs.otrs.org/show_bug.cgi?id=11440) - TransitionAction TicketLockSet typo, thanks to Torsten Thau (c.a.p.e. IT).
+ - 2015-08-19 Followup for bug#[11367](http://bugs.otrs.org/show_bug.cgi?id=11367) - timezone in time stamps of outgoing mails is always UTC.
+ - 2015-08-18 Fixed bug#[11279](http://bugs.otrs.org/show_bug.cgi?id=11279) - auto reply with DynamicFields from webservice.
+ - 2015-08-18 Fixed bug#[11416](http://bugs.otrs.org/show_bug.cgi?id=11416) - incoming tickets might be assigned to wrong customer due to fuzzy e-mail address matching.
 
 #4.0.11 2015-08-04
  - 2015-07-29 Updated translations, thanks to all translators.
