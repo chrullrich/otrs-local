@@ -55,6 +55,8 @@ $Selenium->RunTest(
         # click 'add new state' link
         $Selenium->find_element( "a.Create", 'css' )->click();
 
+        sleep 5;
+
         # check add page
         my $Element = $Selenium->find_element( "#Name", 'css' );
         $Element->is_displayed();
@@ -65,6 +67,9 @@ $Selenium->RunTest(
         # check client side validation
         $Selenium->find_element( "#Name", 'css' )->clear();
         $Selenium->find_element( "#Name", 'css' )->submit();
+
+        sleep 5;
+
         $Self->Is(
             $Selenium->execute_script(
                 "return \$('#Name').hasClass('Error')"
@@ -82,6 +87,8 @@ $Selenium->RunTest(
         $Selenium->find_element( "#Comment",                   'css' )->send_keys('Selenium test state');
         $Selenium->find_element( "#Name",                      'css' )->submit();
 
+        sleep 5;
+
         # check overview page
         $Self->True(
             index( $Selenium->get_page_source(), 'closed successful' ) > -1,
@@ -95,8 +102,12 @@ $Selenium->RunTest(
         $Selenium->find_element( "table thead tr th", 'css' );
         $Selenium->find_element( "table tbody tr td", 'css' );
 
+        sleep 5;
+
         # go to new state again
         $Selenium->find_element( $RandomID, 'link_text' )->click();
+
+        sleep 5;
 
         # check new state values
         $Self->Is(
@@ -126,6 +137,8 @@ $Selenium->RunTest(
         $Selenium->find_element( "#Comment",                   'css' )->clear();
         $Selenium->find_element( "#Name",                      'css' )->submit();
 
+        sleep 5;
+
         # check overview page
         $Self->True(
             index( $Selenium->get_page_source(), 'closed successful' ) > -1,
@@ -141,6 +154,8 @@ $Selenium->RunTest(
 
         # go to new state again
         $Selenium->find_element( $RandomID, 'link_text' )->click();
+
+        sleep 5;
 
         # check new state values
         $Self->Is(
