@@ -213,6 +213,7 @@ sub MinifyFiles {
             Directory => $TargetDirectory,
             Filename  => $Filename,
             Content   => \$Content,
+            Permission=> '644',
         );
     }
 
