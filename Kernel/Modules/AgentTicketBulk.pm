@@ -404,6 +404,13 @@ sub Run {
                     NewUser   => $GetParam{'Owner'},
                     NewUserID => $GetParam{'OwnerID'},
                 );
+                if ( !$Self->{Config}->{RequiredLock} && $Ticket{StateType} !~ /^close/i ) {
+                    $Self->{TicketObject}->TicketLockSet(
+                        TicketID => $TicketID,
+                        Lock     => 'lock',
+                        UserID   => $Self->{UserID},
+                    );
+                }
             }
 
             # set responsible
@@ -1069,13 +1076,13 @@ sub _Mask {
     $Param{LinkTogetherYesNoOption} = $Self->{LayoutObject}->BuildSelection(
         Data       => $Self->{ConfigObject}->Get('YesNoOptions'),
         Name       => 'LinkTogether',
-        SelectedID => $Param{LinkTogether} || 0,
+        SelectedID => $Param{LinkTogether} // 0,
     );
 
     $Param{UnlockYesNoOption} = $Self->{LayoutObject}->BuildSelection(
         Data       => $Self->{ConfigObject}->Get('YesNoOptions'),
         Name       => 'Unlock',
-        SelectedID => $Param{Unlock} || 1,
+        SelectedID => $Param{Unlock} // 1,
     );
 
     # show spell check
