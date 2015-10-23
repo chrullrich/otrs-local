@@ -21,7 +21,7 @@
                     <JavaScript>Core.UI.AllocationList.js</JavaScript>
                 </Loader>
                 <NavBarModule>
-                    <Module>Kernel::Output::HTML::NavBarModuleAdmin</Module>
+                    <Module>Kernel::Output::HTML::NavBar::ModuleAdmin</Module>
                     <Name Translatable="1">Process Management</Name>
                     <Description Translatable="1">Configure Processes.</Description>
                     <Block>System</Block>
@@ -123,7 +123,7 @@
         <SubGroup>Frontend::Agent::NavBarModule</SubGroup>
         <Setting>
             <Hash>
-                <Item Key="Module">Kernel::Output::HTML::NavBarAgentTicketProcess</Item>
+                <Item Key="Module">Kernel::Output::HTML::NavBar::AgentTicketProcess</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -256,13 +256,14 @@
         <SubGroup>Frontend::Agent::Ticket::MenuModule</SubGroup>
         <Setting>
             <Hash>
-                <Item Key="Module">Kernel::Output::HTML::TicketMenuProcess</Item>
-                <Item Key="Name">Process Enroll</Item>
-                <Item Key="Description" Translatable="1">Enroll this ticket into a process</Item>
+                <Item Key="Module">Kernel::Output::HTML::TicketMenu::Process</Item>
+                <Item Key="Name">Process</Item>
+                <Item Key="Description" Translatable="1">Enroll process for this ticket</Item>
                 <Item Key="Action">AgentTicketProcess</Item>
                 <Item Key="Link">Action=AgentTicketProcess;IsProcessEnroll=1;TicketID=[% Data.TicketID | html %]</Item>
                 <Item Key="Target"></Item>
                 <Item Key="PopupType">TicketAction</Item>
+                <Item Key="Cluster"></Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -298,7 +299,7 @@
         <SubGroup>Frontend::Customer::NavBarModule</SubGroup>
         <Setting>
             <Hash>
-                <Item Key="Module">Kernel::Output::HTML::NavBarCustomerTicketProcess</Item>
+                <Item Key="Module">Kernel::Output::HTML::NavBar::CustomerTicketProcess</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -365,8 +366,8 @@
         <SubGroup>Core::Transition</SubGroup>
         <Setting>
             <Option SelectedID="0">
-                    <Item Key="0">No</Item>
-                    <Item Key="1">Yes</Item>
+                <Item Key="0" Translatable="1">No</Item>
+                <Item Key="1" Translatable="1">Yes</Item>
             </Option>
         </Setting>
     </ConfigItem>
@@ -376,10 +377,10 @@
         <SubGroup>Core::Transition</SubGroup>
         <Setting>
             <Option SelectedID="debug">
-                    <Item Key="debug">Debug</Item>
-                    <Item Key="info">Info</Item>
-                    <Item Key="notice">Notice</Item>
-                    <Item Key="error">Error</Item>
+                <Item Key="debug">Debug</Item>
+                <Item Key="info">Info</Item>
+                <Item Key="notice">Notice</Item>
+                <Item Key="error">Error</Item>
             </Option>
         </Setting>
     </ConfigItem>
@@ -400,7 +401,7 @@
         <SubGroup>Frontend::Agent::Dashboard</SubGroup>
         <Setting>
             <Hash>
-                <Item Key="Module">Kernel::Output::HTML::DashboardTicketGeneric</Item>
+                <Item Key="Module">Kernel::Output::HTML::Dashboard::TicketGeneric</Item>
                 <Item Key="Title" Translatable="1">Running Process Tickets</Item>
                 <Item Key="Description">All tickets with a reminder set where the reminder date has been reached</Item>
                 <Item Key="Attributes">StateType=new;StateType=open;StateType=pending reminder;StateType=pending auto</Item>

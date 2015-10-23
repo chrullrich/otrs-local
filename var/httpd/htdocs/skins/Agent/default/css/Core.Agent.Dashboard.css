@@ -1,6 +1,6 @@
 /**
  * This file contains the CSS Styles for Dashboard.
- * Other parts of that are dynamically created within the dtl.
+ * Other parts of that are dynamically created within the tt.
  *
  * @project     OTRS (http://www.otrs.org) - Agent Frontend
  * @copyright   OTRS AG
@@ -106,6 +106,22 @@ div.EventDetails {
 .DashboardUserOnline .UserRow a.DashboardUserOnlineChatStart {
     float: right;
     padding-bottom: 0px;
+}
+.DashboardUserOnline  .Participant.Active i {
+    color: #0a0;
+}
+.DashboardUserOnline  .Participant.Offline i {
+    color: #000000;
+}
+.DashboardUserOnline  .Participant.Unavailable i {
+    color: #d00;
+}
+.DashboardUserOnline  .Participant.Away i {
+    color: #fb0;
+}
+
+#RefreshUsers {
+    margin-top: 5px;
 }
 
 } /* end @media */

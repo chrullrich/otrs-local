@@ -1,5 +1,4 @@
 # --
-# Kernel/Modules/AdminRoleGroup.pm - to add/update/delete groups <-> users
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,6 +11,8 @@ package Kernel::Modules::AdminRoleGroup;
 use strict;
 use warnings;
 
+our $ObjectManagerDisabled = 1;
+
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -19,17 +20,16 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # check all needed objects
-    for (qw(ParamObject DBObject QueueObject LayoutObject ConfigObject LogObject)) {
-        if ( !$Self->{$_} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $_!" );
-        }
-    }
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
+
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $GroupObject  = $Kernel::OM->Get('Kernel::System::Group');
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
     # ------------------------------------------------------------ #
     # user <-> group 1:n
@@ -37,23 +37,22 @@ sub Run {
     if ( $Self->{Subaction} eq 'Role' ) {
 
         # get user data
-        my $ID = $Self->{ParamObject}->GetParam( Param => 'ID' );
-        my %RoleData = $Self->{GroupObject}->RoleGet( ID => $ID );
+        my $ID = $ParamObject->GetParam( Param => 'ID' );
+        my %RoleData = $GroupObject->RoleGet( ID => $ID );
 
         # get group data
-        my %GroupData = $Self->{GroupObject}->GroupList( Valid => 1 );
+        my %GroupData = $GroupObject->GroupList( Valid => 1 );
         my %Types;
-        for my $Type ( @{ $Self->{ConfigObject}->Get('System::Permission') } ) {
-            my %Data = $Self->{GroupObject}->GroupRoleMemberList(
+        for my $Type ( @{ $ConfigObject->Get('System::Permission') } ) {
+            my %Data = $GroupObject->PermissionRoleGroupGet(
                 RoleID => $ID,
                 Type   => $Type,
-                Result => 'HASH',
             );
             $Types{$Type} = \%Data;
         }
 
-        my $Output = $Self->{LayoutObject}->Header();
-        $Output .= $Self->{LayoutObject}->NavigationBar();
+        my $Output = $LayoutObject->Header();
+        $Output .= $LayoutObject->NavigationBar();
         $Output .= $Self->_Change(
             %Types,
             Data => \%GroupData,
@@ -61,7 +60,7 @@ sub Run {
             Name => $RoleData{Name},
             Type => 'Role',
         );
-        $Output .= $Self->{LayoutObject}->Footer();
+        $Output .= $LayoutObject->Footer();
         return $Output;
     }
 
@@ -71,25 +70,24 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'Group' ) {
 
         # get group data
-        my $ID = $Self->{ParamObject}->GetParam( Param => 'ID' );
-        my %GroupData = $Self->{GroupObject}->GroupGet( ID => $ID );
+        my $ID = $ParamObject->GetParam( Param => 'ID' );
+        my %GroupData = $GroupObject->GroupGet( ID => $ID );
 
         # get user list
-        my %RoleData = $Self->{GroupObject}->RoleList( Valid => 1 );
+        my %RoleData = $GroupObject->RoleList( Valid => 1 );
 
         # get permission list users
         my %Types;
-        for my $Type ( @{ $Self->{ConfigObject}->Get('System::Permission') } ) {
-            my %Data = $Self->{GroupObject}->GroupRoleMemberList(
+        for my $Type ( @{ $ConfigObject->Get('System::Permission') } ) {
+            my %Data = $GroupObject->PermissionGroupRoleGet(
                 GroupID => $ID,
                 Type    => $Type,
-                Result  => 'HASH',
             );
             $Types{$Type} = \%Data;
         }
 
-        my $Output = $Self->{LayoutObject}->Header();
-        $Output .= $Self->{LayoutObject}->NavigationBar();
+        my $Output = $LayoutObject->Header();
+        $Output .= $LayoutObject->NavigationBar();
         $Output .= $Self->_Change(
             %Types,
             Data => \%RoleData,
@@ -97,7 +95,7 @@ sub Run {
             Name => $GroupData{Name},
             Type => 'Group',
         );
-        $Output .= $Self->{LayoutObject}->Footer();
+        $Output .= $LayoutObject->Footer();
         return $Output;
     }
 
@@ -107,19 +105,19 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'ChangeGroup' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
-        my $ID = $Self->{ParamObject}->GetParam( Param => 'ID' ) || '';
+        my $ID = $ParamObject->GetParam( Param => 'ID' ) || '';
 
         # get new groups
         my %Permissions;
-        for my $Type ( @{ $Self->{ConfigObject}->Get('System::Permission') } ) {
-            my @IDs = $Self->{ParamObject}->GetArray( Param => $Type );
+        for my $Type ( @{ $ConfigObject->Get('System::Permission') } ) {
+            my @IDs = $ParamObject->GetArray( Param => $Type );
             $Permissions{$Type} = \@IDs;
         }
 
         # get group data
-        my %RoleData = $Self->{GroupObject}->RoleList( Valid => 1 );
+        my %RoleData = $GroupObject->RoleList( Valid => 1 );
         my %NewPermission;
         for my $RoleID ( sort keys %RoleData ) {
             for my $Permission ( sort keys %Permissions ) {
@@ -133,14 +131,14 @@ sub Run {
                     }
                 }
             }
-            $Self->{GroupObject}->GroupRoleMemberAdd(
+            $GroupObject->PermissionGroupRoleAdd(
                 RID        => $RoleID,
                 GID        => $ID,
                 Permission => \%NewPermission,
                 UserID     => $Self->{UserID},
             );
         }
-        return $Self->{LayoutObject}->Redirect( OP => "Action=$Self->{Action}" );
+        return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" );
     }
 
     # ------------------------------------------------------------ #
@@ -149,19 +147,19 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'ChangeRole' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
-        my $ID = $Self->{ParamObject}->GetParam( Param => 'ID' );
+        my $ID = $ParamObject->GetParam( Param => 'ID' );
 
         # get new groups
         my %Permissions;
-        for my $Type ( @{ $Self->{ConfigObject}->Get('System::Permission') } ) {
-            my @IDs = $Self->{ParamObject}->GetArray( Param => $Type );
+        for my $Type ( @{ $ConfigObject->Get('System::Permission') } ) {
+            my @IDs = $ParamObject->GetArray( Param => $Type );
             $Permissions{$Type} = \@IDs;
         }
 
         # get group data
-        my %GroupData = $Self->{GroupObject}->GroupList( Valid => 1 );
+        my %GroupData = $GroupObject->GroupList( Valid => 1 );
         my %NewPermission;
         for my $GroupID ( sort keys %GroupData ) {
             for my $Permission ( sort keys %Permissions ) {
@@ -173,34 +171,37 @@ sub Run {
                     }
                 }
             }
-            $Self->{GroupObject}->GroupRoleMemberAdd(
+            $GroupObject->PermissionGroupRoleAdd(
                 RID        => $ID,
                 GID        => $GroupID,
                 Permission => \%NewPermission,
                 UserID     => $Self->{UserID},
             );
         }
-        return $Self->{LayoutObject}->Redirect( OP => "Action=$Self->{Action}" );
+        return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" );
     }
 
     # ------------------------------------------------------------ #
     # overview
     # ------------------------------------------------------------ #
-    my $Output = $Self->{LayoutObject}->Header();
-    $Output .= $Self->{LayoutObject}->NavigationBar();
+    my $Output = $LayoutObject->Header();
+    $Output .= $LayoutObject->NavigationBar();
     $Output .= $Self->_Overview();
-    $Output .= $Self->{LayoutObject}->Footer();
+    $Output .= $LayoutObject->Footer();
     return $Output;
 }
 
 sub _Change {
     my ( $Self, %Param ) = @_;
 
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
     my %Data   = %{ $Param{Data} };
     my $Type   = $Param{Type} || 'Role';
     my $NeType = $Type eq 'Group' ? 'Role' : 'Group';
 
-    $Self->{LayoutObject}->Block(
+    $LayoutObject->Block(
         Name => 'Change',
         Data => {
             %Param,
@@ -208,16 +209,26 @@ sub _Change {
             NeType     => $NeType,
         },
     );
-    $Self->{LayoutObject}->Block( Name => 'ActionList' );
-    $Self->{LayoutObject}->Block( Name => 'ActionOverview' );
+    $LayoutObject->Block( Name => 'ActionList' );
+    $LayoutObject->Block( Name => 'ActionOverview' );
 
-    $Self->{LayoutObject}->Block( Name => "ChangeHeader$NeType" );
+    $LayoutObject->Block( Name => "ChangeHeader$NeType" );
+
+    # check if there are groups/roles
+    if ( !%Data ) {
+        $LayoutObject->Block(
+            Name => 'NoDataFoundMsgList',
+            Data => {
+                ColSpan => 8,
+            },
+        );
+    }
 
     TYPE:
-    for my $Type ( @{ $Self->{ConfigObject}->Get('System::Permission') } ) {
+    for my $Type ( @{ $ConfigObject->Get('System::Permission') } ) {
         next TYPE if !$Type;
         my $Mark = $Type eq 'rw' ? "Highlight" : '';
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'ChangeHeader',
             Data => {
                 %Param,
@@ -230,7 +241,7 @@ sub _Change {
     for my $ID ( sort { uc( $Data{$a} ) cmp uc( $Data{$b} ) } keys %Data ) {
 
         # set output class
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'ChangeRow',
             Data => {
                 %Param,
@@ -240,12 +251,12 @@ sub _Change {
             },
         );
         TYPE:
-        for my $Type ( @{ $Self->{ConfigObject}->Get('System::Permission') } ) {
+        for my $Type ( @{ $ConfigObject->Get('System::Permission') } ) {
             next TYPE if !$Type;
             my $Mark     = $Type eq 'rw'        ? "Highlight"          : '';
             my $Selected = $Param{$Type}->{$ID} ? ' checked="checked"' : '';
 
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'ChangeRowItem',
                 Data => {
                     %Param,
@@ -259,7 +270,7 @@ sub _Change {
         }
     }
 
-    return $Self->{LayoutObject}->Output(
+    return $LayoutObject->Output(
         TemplateFile => 'AdminRoleGroup',
         Data         => \%Param,
     );
@@ -268,19 +279,22 @@ sub _Change {
 sub _Overview {
     my ( $Self, %Param ) = @_;
 
-    $Self->{LayoutObject}->Block(
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $GroupObject  = $Kernel::OM->Get('Kernel::System::Group');
+
+    $LayoutObject->Block(
         Name => 'Overview',
         Data => {},
     );
 
     # get user list
-    my %RoleData = $Self->{GroupObject}->RoleList( Valid => 1 );
+    my %RoleData = $GroupObject->RoleList( Valid => 1 );
 
     if (%RoleData) {
         for my $RoleID ( sort { uc( $RoleData{$a} ) cmp uc( $RoleData{$b} ) } keys %RoleData ) {
 
             # set output class
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'List1n',
                 Data => {
                     Name      => $RoleData{$RoleID},
@@ -291,29 +305,38 @@ sub _Overview {
         }
     }
     else {
-        $Self->{LayoutObject}->Block(
-            Name => 'NoDataFoundMsg',
+        $LayoutObject->Block(
+            Name => 'NoDataFoundMsgRole',
             Data => {},
         );
     }
 
     # get group data
-    my %GroupData = $Self->{GroupObject}->GroupList( Valid => 1 );
-    for my $GroupID ( sort { uc( $GroupData{$a} ) cmp uc( $GroupData{$b} ) } keys %GroupData ) {
+    my %GroupData = $GroupObject->GroupList( Valid => 1 );
 
-        # set output class
-        $Self->{LayoutObject}->Block(
-            Name => 'Listn1',
-            Data => {
-                Name      => $GroupData{$GroupID},
-                Subaction => 'Group',
-                ID        => $GroupID,
-            },
+    if (%GroupData) {
+        for my $GroupID ( sort { uc( $GroupData{$a} ) cmp uc( $GroupData{$b} ) } keys %GroupData ) {
+
+            # set output class
+            $LayoutObject->Block(
+                Name => 'Listn1',
+                Data => {
+                    Name      => $GroupData{$GroupID},
+                    Subaction => 'Group',
+                    ID        => $GroupID,
+                },
+            );
+        }
+    }
+    else {
+        $LayoutObject->Block(
+            Name => 'NoDataFoundMsgGroup',
+            Data => {},
         );
     }
 
     # return output
-    return $Self->{LayoutObject}->Output(
+    return $LayoutObject->Output(
         TemplateFile => 'AdminRoleGroup',
         Data         => \%Param,
     );

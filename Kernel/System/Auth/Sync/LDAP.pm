@@ -1,5 +1,4 @@
 # --
-# Kernel/System/Auth/Sync/LDAP.pm - provides the ldap sync
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -314,7 +313,7 @@ sub Sync {
                             next GROUP;
                         }
 
-                        $GroupObject->GroupMemberAdd(
+                        $GroupObject->PermissionGroupUserAdd(
                             GID        => $SystemGroupsByName{$Group},
                             UID        => $UserID,
                             Permission => {
@@ -530,10 +529,9 @@ sub Sync {
         for my $PermissionType ( @{ $ConfigObject->Get('System::Permission') } ) {
 
             # get current permission for type
-            my %GroupPermissions = $GroupObject->GroupGroupMemberList(
+            my %GroupPermissions = $GroupObject->PermissionUserGroupGet(
                 UserID => $UserID,
                 Type   => $PermissionType,
-                Result => 'HASH',
             );
 
             GROUPID:
@@ -566,7 +564,7 @@ sub Sync {
                 Priority => 'notice',
                 Message  => "User: '$Param{User}' sync ldap group $SystemGroups{$GroupID}!",
             );
-            $GroupObject->GroupMemberAdd(
+            $GroupObject->PermissionGroupUserAdd(
                 GID        => $GroupID,
                 UID        => $UserID,
                 Permission => $GroupPermissionsChanged{$GroupID} || \%PermissionsEmpty,
@@ -723,9 +721,8 @@ sub Sync {
     if (%RolePermissionsFromLDAP) {
 
         # get current user roles
-        my %UserRoles = $GroupObject->GroupUserRoleMemberList(
+        my %UserRoles = $GroupObject->PermissionUserRoleGet(
             UserID => $UserID,
-            Result => 'HASH',
         );
 
         ROLEID:
@@ -745,7 +742,7 @@ sub Sync {
                 Priority => 'notice',
                 Message  => "User: '$Param{User}' sync ldap role $SystemRoles{$RoleID}!",
             );
-            $GroupObject->GroupUserRoleMemberAdd(
+            $GroupObject->PermissionRoleUserAdd(
                 UID    => $UserID,
                 RID    => $RoleID,
                 Active => $RolePermissionsFromLDAP{$RoleID} || 0,

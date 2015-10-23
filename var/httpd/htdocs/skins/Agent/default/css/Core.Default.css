@@ -19,12 +19,17 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 12px;
     text-align: left;
+    position: relative;
 }
 
 .RTL {
     text-align: right;
     /* this will inherit to all elemtents because of reset.css */
     direction: rtl;
+}
+
+#ViewModeSwitch {
+    margin: 5px 0px;
 }
 
 /**
@@ -232,7 +237,7 @@ dd {
     display: inline-block;
     text-indent: -9999px;
     white-space: nowrap;
-    position: absolute;
+    position: absolute !important;
 }
 
 /**
@@ -374,6 +379,101 @@ dd {
     margin: 10px 0px;
     padding: 8px 11px 7px;
     position: relative;
+}
+
+/**
+ * @subsection  Bread crumb
+ */
+
+.BreadCrumb {
+    list-style-type: none;
+    margin: 0px 0px 15px 0px;
+    padding: 10px;
+    background: #eee;
+    position: relative;
+    padding-left: 0px;
+    padding-right: 15px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.RTL .BreadCrumb {
+    padding-right: 10px;
+    padding-left: 15px;
+}
+
+.BreadCrumb li {
+    display: inline-block;
+    margin: 0px 2px 0px 2px;
+    padding-left: 35px;
+    color: #777;
+    position: relative;
+    max-width: 200px;
+    white-space: normal;
+    vertical-align: middle;
+}
+
+.BreadCrumb li:first-child {
+    padding-left: 20px;
+}
+
+.RTL .BreadCrumb li {
+    padding-left: 0px;
+    padding-right: 35px;
+}
+
+.BreadCrumb li:first-child:after,
+.BreadCrumb li:first-child:before {
+    display: none;
+}
+
+.BreadCrumb a {
+    color: #000;
+    padding: 0px 2px;
+}
+
+.BreadCrumb a:hover {
+    border-bottom: 2px solid #FF9922;
+}
+
+.BreadCrumb li:before,
+.BreadCrumb li:after {
+    top: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-width: 20px;
+    margin-top: -20px;
+}
+
+.BreadCrumb li:after {
+    left: 0px;
+    border-color: rgba(255, 255, 255, 0);
+    border-left-color: #fff;
+}
+
+.RTL .BreadCrumb li:after {
+    border-left-color: transparent;
+    border-right-color: #fff;
+    left: auto;
+    right: 0px;
+}
+
+.BreadCrumb li:before {
+    left: -5px;
+    border-color: rgba(238, 238, 238, 0);
+    border-left-color: #eee;
+    z-index: 2;
+}
+
+.RTL .BreadCrumb li:before {
+    left: auto;
+    right: -5px;
+    border-right-color: #eee;
+    border-left-color: transparent;
 }
 
 /**
@@ -804,15 +904,6 @@ iframe.TextOption.Customer {
     max-height: 100px;
 }
 
-#SearchForm legend {
-    color: #333333;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 5px;
-    margin-bottom: 5px;
-    display: block;
-    width: 100%;
-}
-
 /**
  * @subsection global message format
  */
@@ -929,20 +1020,20 @@ iframe.TextOption.Customer {
     font-weight: normal !important;
 }
 
-.ui-state-default, 
-.ui-widget-content .ui-state-default, 
+.ui-state-default,
+.ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
     background: #f2f2f2 !important;
 }
 
-.ui-state-hover, 
-.ui-widget-content .ui-state-hover, 
-.ui-widget-header .ui-state-hover, 
-.ui-state-focus, 
-.ui-widget-content .ui-state-focus, 
+.ui-state-hover,
+.ui-widget-content .ui-state-hover,
+.ui-widget-header .ui-state-hover,
+.ui-state-focus,
+.ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus {
     background: #ddd !important;
-} 
+}
 
 /**
  * @subsection global CKEditor fixes/improvements
@@ -952,13 +1043,13 @@ iframe.TextOption.Customer {
     width: 40px !important;
 }
 
-#cke_RichText, 
-.cke_toolbar > .cke_toolgroup, 
-.cke_toolbar .cke_combo_button, 
+#cke_RichText,
+.cke_toolbar > .cke_toolgroup,
+.cke_toolbar .cke_combo_button,
 .cke_inner .cke_contents,
 .cke_dialog_body,
-input.cke_dialog_ui_input_password, 
-input.cke_dialog_ui_input_text, 
+input.cke_dialog_ui_input_password,
+input.cke_dialog_ui_input_text,
 textarea.cke_dialog_ui_input_textarea {
     border-radius: 0px !important;
 }
@@ -967,8 +1058,8 @@ textarea.cke_dialog_ui_input_textarea {
     background-color: #ccc;
 }
 
-input.cke_dialog_ui_input_password:focus, 
-input.cke_dialog_ui_input_text:focus, 
+input.cke_dialog_ui_input_password:focus,
+input.cke_dialog_ui_input_text:focus,
 textarea.cke_dialog_ui_input_textarea:focus {
     box-shadow: none !important;
     border-color: #f92 !important;
@@ -983,5 +1074,66 @@ textarea.cke_dialog_ui_input_textarea:focus {
     border: 0px !important;
 }
 
-} /* end @media */
+/*
+ * @subsection Popup-Iframe (for responsive)
+ */
+iframe.PopupIframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+}
+
+/* OTRS Business Solution Dialog */
+
+.OTRSBusinessRequiredDialog {
+    padding: 70px 20px 10px 20px;
+    background: url(../img/logo-business.png) no-repeat top center;
+}
+
+}
+
+/*
+ * @subsection Media Query Reset-CSS (for desktop screen resolutions)
+ */
+@media only screen and (min-width: 1025px) {
+
+    /*
+     * @subsection Responsive classes
+     */
+    .ScreenXL {
+        display: block !important;
+    }
+
+    .SmallerOrEqualScreenXL {
+        display: block !important;
+    }
+
+    .ScreenL, .ScreenM, .ScreenS, .ScreenXS,
+    .SmallerOrEqualScreenL, .SmallerOrEqualScreenM,
+    .SmallerOrEqualScreenS, .SmallerOrEqualScreenXS {
+        display: none !important;
+    }
+
+    /*
+     * @subsection Responsive footer classes
+     * @description Used to determinethe active screen size in JavaScript
+     */
+    #ResponsiveFooter .Visible-ScreenXL {
+        display: block !important;
+    }
+
+    #ResponsiveFooter .Visible-ScreenL,
+    #ResponsiveFooter .Visible-ScreenM,
+    #ResponsiveFooter .Visible-ScreenS,
+    #ResponsiveFooter .Visible-ScreenXS {
+        display: none !important;
+    }
+
+    .ResponsiveHandle {
+        display: none !important;
+    }
+}
 

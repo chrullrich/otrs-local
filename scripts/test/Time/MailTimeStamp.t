@@ -1,5 +1,4 @@
 # --
-# MailTimeStamp.t - Time tests
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -15,16 +14,6 @@ use utf8;
 use Time::Local;
 
 use vars (qw($Self));
-
-# this test only works in *nix
-if ( $^O eq 'MSWin32' ) {
-
-    $Self->True(
-        1,
-        'Can not specify local time zone via env on Win32, skipping tests.',
-    );
-    return 1;
-}
 
 my @Tests = (
 
@@ -132,8 +121,10 @@ for my $Test (@Tests) {
     $Self->Is(
         $MailTimeStamp,
         $Test->{Result},
-        "$Test->{Name} ($Test->{ServerTZ}) Timestamp $Test->{TimeStamp}:",
+        "$Test->{Name} ($Test->{ServerTZ}) Timestamp $Test->{TimeStampUTC}:",
     );
+
+    $HelperObject->FixedTimeUnset();
 }
 
 1;

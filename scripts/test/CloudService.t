@@ -1,5 +1,4 @@
 # --
-# CloudService.t - Authentication tests
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -110,7 +109,7 @@ my @Tests = (
 
 );
 
-my $CloudServiceObject = $Kernel::OM->Get('Kernel::System::CloudService');
+my $CloudServiceObject = $Kernel::OM->Get('Kernel::System::CloudService::Backend::Run');
 
 for my $Test (@Tests) {
 

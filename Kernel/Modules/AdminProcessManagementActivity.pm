@@ -1,5 +1,4 @@
 # --
-# Kernel/Modules/AdminProcessManagementActivity.pm - process management activity
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -14,13 +13,9 @@ use warnings;
 
 use List::Util qw(first);
 
-use Kernel::System::JSON;
-use Kernel::System::ProcessManagement::DB::Process;
-use Kernel::System::ProcessManagement::DB::Entity;
-use Kernel::System::ProcessManagement::DB::Activity;
-use Kernel::System::ProcessManagement::DB::ActivityDialog;
-
 use Kernel::System::VariableCheck qw(:all);
+
+our $ObjectManagerDisabled = 1;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -29,45 +24,34 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # check all needed objects
-    for my $Needed (
-        qw(ParamObject DBObject LayoutObject ConfigObject LogObject MainObject EncodeObject)
-        )
-    {
-        if ( !$Self->{$Needed} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $Needed!" );
-        }
-    }
-
-    # create additional objects
-    $Self->{JSONObject}           = Kernel::System::JSON->new( %{$Self} );
-    $Self->{ProcessObject}        = Kernel::System::ProcessManagement::DB::Process->new( %{$Self} );
-    $Self->{EntityObject}         = Kernel::System::ProcessManagement::DB::Entity->new( %{$Self} );
-    $Self->{ActivityObject}       = Kernel::System::ProcessManagement::DB::Activity->new( %{$Self} );
-    $Self->{ActivityDialogObject} = Kernel::System::ProcessManagement::DB::ActivityDialog->new( %{$Self} );
-
-    # get available activity dialogs
-    $Self->{ActivityDialogsList} = $Self->{ActivityDialogObject}->ActivityDialogListGet( UserID => $Self->{UserID} );
-
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    $Self->{Subaction} = $Self->{ParamObject}->GetParam( Param => 'Subaction' ) || '';
+    my $ParamObject = $Kernel::OM->Get('Kernel::System::Web::Request');
 
-    my $ActivityID = $Self->{ParamObject}->GetParam( Param => 'ID' )       || '';
-    my $EntityID   = $Self->{ParamObject}->GetParam( Param => 'EntityID' ) || '';
+    $Self->{Subaction} = $ParamObject->GetParam( Param => 'Subaction' ) || '';
 
-    my %SessionData = $Self->{SessionObject}->GetSessionIDData(
+    my $ActivityID = $ParamObject->GetParam( Param => 'ID' )       || '';
+    my $EntityID   = $ParamObject->GetParam( Param => 'EntityID' ) || '';
+
+    my %SessionData = $Kernel::OM->Get('Kernel::System::AuthSession')->GetSessionIDData(
         SessionID => $Self->{SessionID},
     );
 
     # convert JSON string to array
-    $Self->{ScreensPath} = $Self->{JSONObject}->Decode(
+    $Self->{ScreensPath} = $Kernel::OM->Get('Kernel::System::JSON')->Decode(
         Data => $SessionData{ProcessManagementScreensPath}
     );
+
+    # get needed objects
+    my $LayoutObject        = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $EntityObject        = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::Entity');
+    my $ActivityObject      = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::Activity');
+    my $ActivityDialogsList = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::ActivityDialog')
+        ->ActivityDialogListGet( UserID => $Self->{UserID} );
 
     # ------------------------------------------------------------ #
     # ActivityNew
@@ -86,7 +70,7 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'ActivityNewAction' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         # get activity data
         my $ActivityData;
@@ -105,7 +89,7 @@ sub Run {
             my %ActivityDialogsLookup;
 
             ACTIVITYDDIALOG:
-            for my $ActivityDialogConfig ( @{ $Self->{ActivityDialogsList} } ) {
+            for my $ActivityDialogConfig ( @{$ActivityDialogsList} ) {
                 next ACTIVITYDDIALOG if !$ActivityDialogConfig;
                 next ACTIVITYDDIALOG if !$ActivityDialogConfig->{ID};
 
@@ -155,20 +139,20 @@ sub Run {
         }
 
         # generate entity ID
-        my $EntityID = $Self->{EntityObject}->EntityIDGenerate(
+        my $EntityID = $EntityObject->EntityIDGenerate(
             EntityType => 'Activity',
             UserID     => $Self->{UserID},
         );
 
         # show error if can't generate a new EntityID
         if ( !$EntityID ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "There was an error generating a new EntityID for this Activity",
             );
         }
 
         # otherwise save configuration and return process screen
-        my $ActivityID = $Self->{ActivityObject}->ActivityAdd(
+        my $ActivityID = $ActivityObject->ActivityAdd(
             Name     => $ActivityData->{Name},
             EntityID => $EntityID,
             Config   => $ActivityData->{Config},
@@ -177,13 +161,13 @@ sub Run {
 
         # show error if can't create
         if ( !$ActivityID ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "There was an error creating the Activity",
             );
         }
 
         # set entity sync state
-        my $Success = $Self->{EntityObject}->EntitySyncStateSet(
+        my $Success = $EntityObject->EntitySyncStateSet(
             EntityType => 'Activity',
             EntityID   => $EntityID,
             SyncState  => 'not_sync',
@@ -192,7 +176,7 @@ sub Run {
 
         # show error if can't set
         if ( !$Success ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "There was an error setting the entity sync status for Activity "
                     . "entity:$EntityID",
             );
@@ -201,14 +185,14 @@ sub Run {
         # remove this screen from session screen path
         $Self->_PopSessionScreen( OnlyCurrent => 1 );
 
-        my $Redirect = $Self->{ParamObject}->GetParam( Param => 'PopupRedirect' ) || '';
+        my $Redirect = $ParamObject->GetParam( Param => 'PopupRedirect' ) || '';
 
         # get latest config data to send it back to main window
         my $ActivityConfig = $Self->_GetActivityConfig(
             EntityID => $EntityID,
         );
 
-        my $ConfigJSON = $Self->{LayoutObject}->JSONEncode( Data => $ActivityConfig );
+        my $ConfigJSON = $LayoutObject->JSONEncode( Data => $ActivityConfig );
 
         # check if needed to open another window or if popup should go back
         if ( $Redirect && $Redirect eq '1' ) {
@@ -219,10 +203,10 @@ sub Run {
                 Subaction => 'ActivityEdit'               # always use edit screen
             );
 
-            my $RedirectAction    = $Self->{ParamObject}->GetParam( Param => 'PopupRedirectAction' )    || '';
-            my $RedirectSubaction = $Self->{ParamObject}->GetParam( Param => 'PopupRedirectSubaction' ) || '';
-            my $RedirectID        = $Self->{ParamObject}->GetParam( Param => 'PopupRedirectID' )        || '';
-            my $RedirectEntityID  = $Self->{ParamObject}->GetParam( Param => 'PopupRedirectEntityID' )  || '';
+            my $RedirectAction    = $ParamObject->GetParam( Param => 'PopupRedirectAction' )    || '';
+            my $RedirectSubaction = $ParamObject->GetParam( Param => 'PopupRedirectSubaction' ) || '';
+            my $RedirectID        = $ParamObject->GetParam( Param => 'PopupRedirectID' )        || '';
+            my $RedirectEntityID  = $ParamObject->GetParam( Param => 'PopupRedirectEntityID' )  || '';
 
             # redirect to another popup window
             return $Self->_PopupResponse(
@@ -269,7 +253,7 @@ sub Run {
 
         # check for ActivityID
         if ( !$ActivityID ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "Need ActivityID!",
             );
         }
@@ -278,14 +262,14 @@ sub Run {
         $Self->_PopSessionScreen( OnlyCurrent => 1 );
 
         # get Activity data
-        my $ActivityData = $Self->{ActivityObject}->ActivityGet(
+        my $ActivityData = $ActivityObject->ActivityGet(
             ID     => $ActivityID,
             UserID => $Self->{UserID},
         );
 
         # check for valid Activity data
         if ( !IsHashRefWithData($ActivityData) ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "Could not get data for ActivityID $ActivityID",
             );
         }
@@ -304,7 +288,7 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'ActivityEditAction' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         # get Activity Data
         my $ActivityData;
@@ -324,7 +308,7 @@ sub Run {
             my %ActivityDialogsLookup;
 
             ACTIVITYDDIALOG:
-            for my $ActivityDialogConfig ( @{ $Self->{ActivityDialogsList} } ) {
+            for my $ActivityDialogConfig ( @{$ActivityDialogsList} ) {
                 next ACTIVITYDDIALOG if !$ActivityDialogConfig;
                 next ACTIVITYDDIALOG if !$ActivityDialogConfig->{ID};
 
@@ -375,7 +359,7 @@ sub Run {
         }
 
         # otherwise save configuration and return to overview screen
-        my $Success = $Self->{ActivityObject}->ActivityUpdate(
+        my $Success = $ActivityObject->ActivityUpdate(
             ID       => $ActivityID,
             Name     => $ActivityData->{Name},
             EntityID => $ActivityData->{EntityID},
@@ -385,13 +369,13 @@ sub Run {
 
         # show error if can't update
         if ( !$Success ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "There was an error updating the Activity",
             );
         }
 
         # set entity sync state
-        $Success = $Self->{EntityObject}->EntitySyncStateSet(
+        $Success = $EntityObject->EntitySyncStateSet(
             EntityType => 'Activity',
             EntityID   => $ActivityData->{EntityID},
             SyncState  => 'not_sync',
@@ -400,7 +384,7 @@ sub Run {
 
         # show error if can't set
         if ( !$Success ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "There was an error setting the entity sync status for Activity "
                     . "entity:$ActivityData->{EntityID}",
             );
@@ -409,14 +393,14 @@ sub Run {
         # remove this screen from session screen path
         $Self->_PopSessionScreen( OnlyCurrent => 1 );
 
-        my $Redirect = $Self->{ParamObject}->GetParam( Param => 'PopupRedirect' ) || '';
+        my $Redirect = $ParamObject->GetParam( Param => 'PopupRedirect' ) || '';
 
         # get latest config data to send it back to main window
         my $ActivityConfig = $Self->_GetActivityConfig(
             EntityID => $ActivityData->{EntityID},
         );
 
-        my $ConfigJSON = $Self->{LayoutObject}->JSONEncode( Data => $ActivityConfig );
+        my $ConfigJSON = $LayoutObject->JSONEncode( Data => $ActivityConfig );
 
         # check if needed to open another window or if popup should go back
         if ( $Redirect && $Redirect eq '1' ) {
@@ -427,10 +411,10 @@ sub Run {
                 Subaction => 'ActivityEdit'               # always use edit screen
             );
 
-            my $RedirectAction    = $Self->{ParamObject}->GetParam( Param => 'PopupRedirectAction' )    || '';
-            my $RedirectSubaction = $Self->{ParamObject}->GetParam( Param => 'PopupRedirectSubaction' ) || '';
-            my $RedirectID        = $Self->{ParamObject}->GetParam( Param => 'PopupRedirectID' )        || '';
-            my $RedirectEntityID  = $Self->{ParamObject}->GetParam( Param => 'PopupRedirectEntityID' )  || '';
+            my $RedirectAction    = $ParamObject->GetParam( Param => 'PopupRedirectAction' )    || '';
+            my $RedirectSubaction = $ParamObject->GetParam( Param => 'PopupRedirectSubaction' ) || '';
+            my $RedirectID        = $ParamObject->GetParam( Param => 'PopupRedirectID' )        || '';
+            my $RedirectEntityID  = $ParamObject->GetParam( Param => 'PopupRedirectEntityID' )  || '';
 
             # redirect to another popup window
             return $Self->_PopupResponse(
@@ -479,8 +463,8 @@ sub Run {
         my %Result;
         my $JSON;
 
-        $Param{EntityID}       = $Self->{ParamObject}->GetParam( Param => 'EntityID' )       || '';
-        $Param{ActivityDialog} = $Self->{ParamObject}->GetParam( Param => 'ActivityDialog' ) || '';
+        $Param{EntityID}       = $ParamObject->GetParam( Param => 'EntityID' )       || '';
+        $Param{ActivityDialog} = $ParamObject->GetParam( Param => 'ActivityDialog' ) || '';
 
         # check for Parameters
         if ( !$Param{EntityID} || !$Param{ActivityDialog} ) {
@@ -489,10 +473,10 @@ sub Run {
                 Message => "Missing Parameter: Need Activity and ActivityDialog!",
             );
 
-            $JSON = $Self->{LayoutObject}->JSONEncode( Data => \%Result );
+            $JSON = $LayoutObject->JSONEncode( Data => \%Result );
 
-            return $Self->{LayoutObject}->Attachment(
-                ContentType => 'application/json; charset=' . $Self->{LayoutObject}->{Charset},
+            return $LayoutObject->Attachment(
+                ContentType => 'application/json; charset=' . $LayoutObject->{Charset},
                 Content     => $JSON,
                 Type        => 'inline',
                 NoCache     => 1,
@@ -500,7 +484,7 @@ sub Run {
         }
 
         # get Activity data
-        my $ActivityData = $Self->{ActivityObject}->ActivityGet(
+        my $ActivityData = $ActivityObject->ActivityGet(
             EntityID => $Param{EntityID},
             UserID   => $Self->{UserID},
         );
@@ -512,10 +496,10 @@ sub Run {
                 Message => "Activity not found!",
             );
 
-            $JSON = $Self->{LayoutObject}->JSONEncode( Data => \%Result );
+            $JSON = $LayoutObject->JSONEncode( Data => \%Result );
 
-            return $Self->{LayoutObject}->Attachment(
-                ContentType => 'application/json; charset=' . $Self->{LayoutObject}->{Charset},
+            return $LayoutObject->Attachment(
+                ContentType => 'application/json; charset=' . $LayoutObject->{Charset},
                 Content     => $JSON,
                 Type        => 'inline',
                 NoCache     => 1,
@@ -526,7 +510,7 @@ sub Run {
         my %ActivityDialogsLookup;
 
         ACTIVITYDDIALOG:
-        for my $ActivityDialogConfig ( @{ $Self->{ActivityDialogsList} } ) {
+        for my $ActivityDialogConfig ( @{$ActivityDialogsList} ) {
             next ACTIVITYDDIALOG if !$ActivityDialogConfig;
             next ACTIVITYDDIALOG if !$ActivityDialogConfig->{EntityID};
 
@@ -539,10 +523,10 @@ sub Run {
                 Message => "ActivityDialog not found!",
             );
 
-            $JSON = $Self->{LayoutObject}->JSONEncode( Data => \%Result );
+            $JSON = $LayoutObject->JSONEncode( Data => \%Result );
 
-            return $Self->{LayoutObject}->Attachment(
-                ContentType => 'application/json; charset=' . $Self->{LayoutObject}->{Charset},
+            return $LayoutObject->Attachment(
+                ContentType => 'application/json; charset=' . $LayoutObject->{Charset},
                 Content     => $JSON,
                 Type        => 'inline',
                 NoCache     => 1,
@@ -562,10 +546,10 @@ sub Run {
                         "ActivityDialog already assigned to Activity. You cannot add an ActivityDialog twice!",
                 );
 
-                $JSON = $Self->{LayoutObject}->JSONEncode( Data => \%Result );
+                $JSON = $LayoutObject->JSONEncode( Data => \%Result );
 
-                return $Self->{LayoutObject}->Attachment(
-                    ContentType => 'application/json; charset=' . $Self->{LayoutObject}->{Charset},
+                return $LayoutObject->Attachment(
+                    ContentType => 'application/json; charset=' . $LayoutObject->{Charset},
                     Content     => $JSON,
                     Type        => 'inline',
                     NoCache     => 1,
@@ -585,7 +569,7 @@ sub Run {
         $ActivityData->{Config}->{ActivityDialog}->{$NewKey} = $Param{ActivityDialog};
 
         # Save Activity to DB
-        my $Success = $Self->{ActivityObject}->ActivityUpdate(
+        my $Success = $ActivityObject->ActivityUpdate(
             ID       => $ActivityData->{ID},
             Name     => $ActivityData->{Name},
             EntityID => $ActivityData->{EntityID},
@@ -599,10 +583,10 @@ sub Run {
                 Message => "Error while saving the Activity to the database!",
             );
 
-            $JSON = $Self->{LayoutObject}->JSONEncode( Data => \%Result );
+            $JSON = $LayoutObject->JSONEncode( Data => \%Result );
 
-            return $Self->{LayoutObject}->Attachment(
-                ContentType => 'application/json; charset=' . $Self->{LayoutObject}->{Charset},
+            return $LayoutObject->Attachment(
+                ContentType => 'application/json; charset=' . $LayoutObject->{Charset},
                 Content     => $JSON,
                 Type        => 'inline',
                 NoCache     => 1,
@@ -619,10 +603,10 @@ sub Run {
             ActivityConfig => $ActivityConfig,
         );
 
-        $JSON = $Self->{LayoutObject}->JSONEncode( Data => \%Result );
+        $JSON = $LayoutObject->JSONEncode( Data => \%Result );
 
-        return $Self->{LayoutObject}->Attachment(
-            ContentType => 'application/json; charset=' . $Self->{LayoutObject}->{Charset},
+        return $LayoutObject->Attachment(
+            ContentType => 'application/json; charset=' . $LayoutObject->{Charset},
             Content     => $JSON,
             Type        => 'inline',
             NoCache     => 1,
@@ -644,7 +628,7 @@ sub Run {
     # Error
     # ------------------------------------------------------------ #
     else {
-        return $Self->{LayoutObject}->ErrorScreen(
+        return $LayoutObject->ErrorScreen(
             Message => "This subaction is not valid",
         );
     }
@@ -654,7 +638,7 @@ sub _GetActivityConfig {
     my ( $Self, %Param ) = @_;
 
     # Get new Activity Config as JSON
-    my $ProcessDump = $Self->{ProcessObject}->ProcessDump(
+    my $ProcessDump = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::Process')->ProcessDump(
         ResultType => 'HASH',
         UserID     => $Self->{UserID},
     );
@@ -672,11 +656,13 @@ sub _ShowEdit {
     # get Activity information
     my $ActivityData = $Param{ActivityData} || {};
 
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     # check if last screen action is main screen
     if ( $Self->{ScreensPath}->[-1]->{Action} eq 'AdminProcessManagement' ) {
 
         # show close popup link
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'ClosePopup',
             Data => {},
         );
@@ -684,7 +670,7 @@ sub _ShowEdit {
     else {
 
         # show go back link
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'GoBack',
             Data => {
                 Action    => $Self->{ScreensPath}->[-1]->{Action}    || '',
@@ -696,7 +682,8 @@ sub _ShowEdit {
     }
 
     # localize available activity dialogs
-    my @AvailableActivityDialogs = @{ $Self->{ActivityDialogsList} };
+    my @AvailableActivityDialogs = @{ $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::ActivityDialog')
+            ->ActivityDialogListGet( UserID => $Self->{UserID} ) };
 
     # create available activity dialogs lookup tables based on entity id
     my %AvailableActivityDialogsLookup;
@@ -754,7 +741,7 @@ sub _ShowEdit {
                 $AvailableIn = 'A';
             }
 
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'AvailableActivityDialogRow',
                 Data => {
                     ID          => $ActivityDialogData->{ID},
@@ -789,7 +776,7 @@ sub _ShowEdit {
                 $AvailableIn = 'A';
             }
 
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'AssignedActivityDialogRow',
                 Data => {
                     ID          => $ActivityDialogData->{ID},
@@ -807,7 +794,7 @@ sub _ShowEdit {
 
         if ( @{$AffectedProcesses} ) {
 
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'EditWarning',
                 Data => {
                     ProcessList => join( ', ', @{$AffectedProcesses} ),
@@ -843,7 +830,7 @@ sub _ShowEdit {
                 $AvailableIn = 'A';
             }
 
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'AvailableActivityDialogRow',
                 Data => {
                     ID          => $ActivityDialogData->{ID},
@@ -857,11 +844,11 @@ sub _ShowEdit {
         $Param{Title} = 'Create New Activity';
     }
 
-    my $Output = $Self->{LayoutObject}->Header(
+    my $Output = $LayoutObject->Header(
         Value => $Param{Title},
         Type  => 'Small',
     );
-    $Output .= $Self->{LayoutObject}->Output(
+    $Output .= $LayoutObject->Output(
         TemplateFile => "AdminProcessManagementActivity",
         Data         => {
             %Param,
@@ -869,7 +856,7 @@ sub _ShowEdit {
         },
     );
 
-    $Output .= $Self->{LayoutObject}->Footer();
+    $Output .= $LayoutObject->Footer();
 
     return $Output;
 }
@@ -878,19 +865,20 @@ sub _GetParams {
     my ( $Self, %Param ) = @_;
 
     my $GetParam;
+    my $ParamObject = $Kernel::OM->Get('Kernel::System::Web::Request');
 
     # get parameters from web browser
     for my $ParamName (
         qw( Name EntityID )
         )
     {
-        $GetParam->{$ParamName} = $Self->{ParamObject}->GetParam( Param => $ParamName ) || '';
+        $GetParam->{$ParamName} = $ParamObject->GetParam( Param => $ParamName ) || '';
     }
 
-    my $ActivityDialogs = $Self->{ParamObject}->GetParam( Param => 'ActivityDialogs' ) || '';
+    my $ActivityDialogs = $ParamObject->GetParam( Param => 'ActivityDialogs' ) || '';
 
     if ($ActivityDialogs) {
-        $GetParam->{ActivityDialogs} = $Self->{JSONObject}->Decode(
+        $GetParam->{ActivityDialogs} = $Kernel::OM->Get('Kernel::System::JSON')->Decode(
             Data => $ActivityDialogs,
         );
     }
@@ -922,12 +910,12 @@ sub _PopSessionScreen {
     }
 
     # convert screens path to string (JSON)
-    my $JSONScreensPath = $Self->{LayoutObject}->JSONEncode(
+    my $JSONScreensPath = $Kernel::OM->Get('Kernel::Output::HTML::Layout')->JSONEncode(
         Data => $Self->{ScreensPath},
     );
 
     # update session
-    $Self->{SessionObject}->UpdateSessionID(
+    $Kernel::OM->Get('Kernel::System::AuthSession')->UpdateSessionID(
         SessionID => $Self->{SessionID},
         Key       => 'ProcessManagementScreensPath',
         Value     => $JSONScreensPath,
@@ -948,12 +936,12 @@ sub _PushSessionScreen {
     };
 
     # convert screens path to string (JSON)
-    my $JSONScreensPath = $Self->{LayoutObject}->JSONEncode(
+    my $JSONScreensPath = $Kernel::OM->Get('Kernel::Output::HTML::Layout')->JSONEncode(
         Data => $Self->{ScreensPath},
     );
 
     # update session
-    $Self->{SessionObject}->UpdateSessionID(
+    $Kernel::OM->Get('Kernel::System::AuthSession')->UpdateSessionID(
         SessionID => $Self->{SessionID},
         Key       => 'ProcessManagementScreensPath',
         Value     => $JSONScreensPath,
@@ -965,8 +953,10 @@ sub _PushSessionScreen {
 sub _PopupResponse {
     my ( $Self, %Param ) = @_;
 
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     if ( $Param{Redirect} && $Param{Redirect} eq 1 ) {
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'Redirect',
             Data => {
                 ConfigJSON => $Param{ConfigJSON},
@@ -975,7 +965,7 @@ sub _PopupResponse {
         );
     }
     elsif ( $Param{ClosePopup} && $Param{ClosePopup} eq 1 ) {
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'ClosePopup',
             Data => {
                 ConfigJSON => $Param{ConfigJSON},
@@ -983,12 +973,12 @@ sub _PopupResponse {
         );
     }
 
-    my $Output = $Self->{LayoutObject}->Header( Type => 'Small' );
-    $Output .= $Self->{LayoutObject}->Output(
+    my $Output = $LayoutObject->Header( Type => 'Small' );
+    $Output .= $LayoutObject->Output(
         TemplateFile => "AdminProcessManagementPopupResponse",
         Data         => {},
     );
-    $Output .= $Self->{LayoutObject}->Footer( Type => 'Small' );
+    $Output .= $LayoutObject->Footer( Type => 'Small' );
 
     return $Output;
 }
@@ -997,7 +987,7 @@ sub _CheckActivityUsage {
     my ( $Self, %Param ) = @_;
 
     # get a list of parents with all the details
-    my $List = $Self->{ProcessObject}->ProcessListGet(
+    my $List = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::Process')->ProcessListGet(
         UserID => 1,
     );
 

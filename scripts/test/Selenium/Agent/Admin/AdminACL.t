@@ -1,5 +1,4 @@
 # --
-# AdminACL.t - frontend tests for the ACL admin screen
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -14,41 +13,23 @@ use utf8;
 use vars (qw($Self));
 
 use Selenium::Remote::WDKeys;
-
-use Kernel::System::UnitTest::Helper;
-use Kernel::System::UnitTest::Selenium;
+use Kernel::Language;
 
 # get needed objects
 my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
-
-my $Selenium = Kernel::System::UnitTest::Selenium->new(
-    Verbose => 1,
-);
+my $Selenium     = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
 $Selenium->RunTest(
     sub {
 
-        my $Helper = Kernel::System::UnitTest::Helper->new(
-            RestoreSystemConfiguration => 0,
-        );
+        my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
-        my $CheckAlertJS = <<"JAVASCRIPT";
-(function () {
-    var lastAlert = undefined;
-    window.alert = function (message) {
-        lastAlert = message;
-    };
-    window.getLastAlert = function () {
-        var result = lastAlert;
-        lastAlert = undefined;
-        return result;
-    };
-}());
-JAVASCRIPT
+        # defined user language for testing if message is being translated correctly
+        my $Language = "de";
 
         my $TestUserLogin = $Helper->TestUserCreate(
             Groups   => ['admin'],
-            Language => 'de',
+            Language => $Language,
         ) || die "Did not get test user";
 
         $Selenium->Login(
@@ -58,13 +39,16 @@ JAVASCRIPT
         );
 
         my $ScriptAlias = $ConfigObject->Get('ScriptAlias');
-
         $Selenium->get("${ScriptAlias}index.pl?Action=AdminACL");
+
+        # wait until page has loaded, if neccessary
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("body").length' );
 
         # click 'Create new ACL' link
         $Selenium->find_element( "a.Create", 'css' )->click();
 
-        sleep 5;
+        # wait until page has loaded, if neccessary
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#Name").length' );
 
         # check add page
         for my $ID (
@@ -90,19 +74,18 @@ JAVASCRIPT
         );
 
         # create a real test queue
-        my $RandomID = $Helper->GetRandomID();
+        my $RandomID = 'ACL' . $Helper->GetRandomID();
 
         # fill in test data
-        $Selenium->find_element( "#Name",                      'css' )->send_keys($RandomID);
-        $Selenium->find_element( "#Comment",                   'css' )->send_keys('Selenium Test ACL');
-        $Selenium->find_element( "#Description",               'css' )->send_keys('Selenium Test ACL');
-        $Selenium->find_element( "#StopAfterMatch",            'css' )->click();
-        $Selenium->find_element( "#ValidID option[value='1']", 'css' )->click();
-
-        # send form
+        $Selenium->find_element( "#Name",           'css' )->send_keys($RandomID);
+        $Selenium->find_element( "#Comment",        'css' )->send_keys('Selenium Test ACL');
+        $Selenium->find_element( "#Description",    'css' )->send_keys('Selenium Test ACL');
+        $Selenium->find_element( "#StopAfterMatch", 'css' )->click();
+        $Selenium->execute_script("\$('#ValidID').val('1').trigger('redraw.InputField').trigger('change');");
         $Selenium->find_element( "#Name", 'css' )->submit();
 
-        sleep 5;
+        # wait until page has loaded, if neccessary
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".ItemAddLevel1").length' );
 
         # the next screen should be the edit screen for this ACL
         # which means that there should be dropdowns present for Match/Change settings
@@ -140,7 +123,9 @@ JAVASCRIPT
         );
 
         # now lets play around with the match & change settings
-        $Selenium->find_element( ".ItemAddLevel1 option[value='Properties']", 'css' )->click();
+        $Selenium->execute_script(
+            "\$('.ItemAddLevel1').val('Properties').trigger('redraw.InputField').trigger('change');"
+        );
 
         # after clicking an ItemAddLevel1 element, there should be now a new .ItemAdd element
         $Self->Is(
@@ -149,17 +134,34 @@ JAVASCRIPT
             'Check for .ItemAdd element',
         );
 
-        # now we should not be able to add the same element again, an alert box should appear
+        my $CheckAlertJS = <<"JAVASCRIPT";
+(function () {
+    var lastAlert = undefined;
+    window.alert = function (message) {
+        lastAlert = message;
+    };
+    window.getLastAlert = function () {
+        var result = lastAlert;
+        lastAlert = undefined;
+        return result;
+    };
+}());
+JAVASCRIPT
+
         $Selenium->execute_script($CheckAlertJS);
-        $Selenium->find_element( ".ItemAddLevel1 option[value='Properties']", 'css' )->click();
-        my $LanguageObject = Kernel::Language->new(
-            UserLanguage => 'de',
+
+        # now we should not be able to add the same element again, an alert box should appear
+        $Selenium->execute_script(
+            "\$('.ItemAddLevel1').val('Properties').trigger('redraw.InputField').trigger('change');"
         );
+
+        my $LanguageObject = Kernel::Language->new(
+            UserLanguage => $Language,
+        );
+
         $Self->Is(
-            $Selenium->execute_script(
-                "return window.getLastAlert()"
-            ),
-            $LanguageObject->Get('An item with this name is already present.'),
+            $Selenium->execute_script("return window.getLastAlert()"),
+            $LanguageObject->Translate('An item with this name is already present.'),
             'Check for opened alert text',
         );
 
@@ -203,6 +205,57 @@ JAVASCRIPT
             '1',
             'Check for .AddAll element',
         );
+
+        # set ACL to invalid
+        $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
+        $Selenium->find_element( "#Submit", 'css' )->click();
+
+        # wait to open overview page
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#Filter").length' );
+
+        # test search filter
+        $Selenium->find_element( "#Filter", 'css' )->clear();
+        $Selenium->find_element( "#Filter", 'css' )->send_keys($RandomID);
+
+        # check class of invalid ACL in the overview table
+        $Self->True(
+            $Selenium->execute_script(
+                "return \$('tr.Invalid td a:contains($RandomID)').length"
+            ),
+            "There is a class 'Invalid' for test ACL",
+        );
+
+        # delete test ACL from the database
+        my $ACLObject = $Kernel::OM->Get('Kernel::System::ACL::DB::ACL');
+        my $UserID    = $Kernel::OM->Get('Kernel::System::User')->UserLookup(
+            UserLogin => $TestUserLogin,
+        );
+        my $ACLID = $ACLObject->ACLGet(
+            Name   => $RandomID,
+            UserID => $UserID,
+        )->{ID};
+
+        my $Success = $ACLObject->ACLDelete(
+            ID     => $ACLID,
+            UserID => $UserID,
+        );
+
+        $Self->True(
+            $Success,
+            "Deleted $RandomID ACL",
+        );
+
+        # sync ACL information from database with the system configuration
+        $Selenium->find_element("//a[contains(\@href, 'Action=AdminACL;Subaction=ACLDeploy' )]")->click();
+
+        # wait until page has loaded, if neccessary
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("body").length' );
+
+        # make sure the cache is correct.
+        $Kernel::OM->Get('Kernel::System::Cache')->CleanUp(
+            Type => 'ACLEditor_ACL',
+        );
+
     }
 );
 

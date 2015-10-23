@@ -1,5 +1,4 @@
 # --
-# Ticket.t - ticket module testscript
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -299,6 +298,32 @@ $Self->True(
 $Self->True(
     $TicketIDs{$TicketID},
     'TicketSearch() (HASH:TicketNumber)',
+);
+
+%TicketIDs = $TicketObject->TicketSearch(
+    Result     => 'HASH',
+    Limit      => 100,
+    TicketID   => $TicketID,
+    UserID     => 1,
+    Permission => 'rw',
+);
+
+$Self->True(
+    $TicketIDs{$TicketID},
+    'TicketSearch() (HASH:TicketID)',
+);
+
+%TicketIDs = $TicketObject->TicketSearch(
+    Result     => 'HASH',
+    Limit      => 100,
+    TicketID   => [ $TicketID, 42 ],
+    UserID     => 1,
+    Permission => 'rw',
+);
+
+$Self->True(
+    $TicketIDs{$TicketID},
+    'TicketSearch() (HASH:TicketID as ARRAYREF)',
 );
 
 my $Count = $TicketObject->TicketSearch(

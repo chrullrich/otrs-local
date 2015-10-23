@@ -30,11 +30,6 @@ o Name:    CPAN Algorithm::Diff
   Note:    # Parts Copyright (c) 2000-2004 Ned Konz. All rights reserved. Parts
            # by Tye McQueen.
 
-o Name:    CPAN Authen::SASL
-  Web:     n/a
-  License: GNU v2 - http://www.gnu.org/licenses/gpl.html
-  Note:    # Copyright (c) 1998-2005 Graham Barr. All rights reserved.
-
 o Name:    CPAN CGI::Emulate::PSGI
   Web:     n/a
   License: GNU v2 - http://www.gnu.org/licenses/gpl.html
@@ -127,6 +122,18 @@ o Name:    CPAN Net::SSLGlue
   License: GNU v2 - http://www.gnu.org/licenses/gpl.html
   Note:    # (c) 2008-2013, Steffen Ullrich. All Rights Reserved.
 
+o Name:    CPAN Schedule::Cron::Event
+  Web:     n/a
+  License: # This library is free software; you can redistribute it
+           # and/or modify it under the same terms as Perl itself.
+  Note:    # Copyright 2002 P Kent
+
+o Name:    CPAN Set::Crontab
+  Web:     n/a
+  License: # This library is free software; you can redistribute it
+           # and/or modify it under the same terms as Perl itself.
+  Note:    # Copyright 2001 Abhijit Menon-Sen <ams@toroid.org>
+
 o Name:    CPAN Text::CSV
   Web:     n/a
   License: GNU v2 - http://www.gnu.org/licenses/gpl.html
@@ -167,11 +174,6 @@ o Name:    CPAN JavaScript::Minifier
   Web:     n/a
   License: GNU v2 - http://www.gnu.org/licenses/gpl.html
   Note:    Copyright (C) 2007 by Peter Michaux
-
-o Name:    CPAN Proc::Daemon
-  Web:     n/a
-  License: GNU v2 - http://www.gnu.org/licenses/gpl.html
-  Note:    Copyright (C) 1997-2011 by Earl Hood and Detlef Pilzecker
 
 o Name:    CPAN YAML
   Web:     n/a
@@ -249,6 +251,65 @@ o Name:    CPAN  Excel::Writer::XLSX
            # It may be used, redistributed and/or modified under the same terms as Perl itself.
   Note:    # Copyright MM-MMXIIII, John McNamara.
 
+o Name:    CPAN XML::Simple
+  Web:     n/a
+  License: # This program is free software; you can redistribute it and/or modify it
+           # under the same terms as Perl itself.
+  Note:    # Copyright 1999-2004 Grant McLean <grantm@cpan.org>
+
+o Name:    CPAN HTML::Truncate
+  Web:     n/a
+  License: # This program is free software; you can redistribute it or modify it or both
+           # under the same terms as Perl itself.
+  Note:    # Copyright (©) 2005-2009 Ashley Pond V.
+
+o Name:    CPAN HTML::TokeParser
+  Web:     n/a
+  License: # This library is free software; you can redistribute it and/or modify it
+           # under the same terms as Perl itself.
+  Note:    # Copyright 1998-2005 Gisle Aas.
+
+o Name:    CPAN HTML::Tagset
+  Web:     n/a
+  License: # This program is free software; you can redistribute it and/or modify it
+           # under the same terms as Perl itself.
+  Note:    # Copyright 1995-2000 Gisle Aas.
+           # Copyright 2000-2005 Sean M. Burke.
+           # Copyright 2005-2008 Andy Lester.
+
+o Name:    CPAN Pod::Strip
+  Web:     n/a
+  License: # This program is free software; you can redistribute it and/or modify it
+           # under the same terms as Perl itself.
+  Note:    # Copyright 2004, 2005, 2006 Thomas Klausner, All Rights Reserved.
+
+o Name:    CPAN PDF::API2
+  Web:     n/a
+  License: # This program is free software; you can redistribute it and/or modify it
+           # under the same terms as Perl itself.
+  Note:    # PDF::API2 was originally written by Alfred Reibenschuh.
+           # It is currently being maintained by Steve Simms.
+
+o Name:    CPAN IO::String
+  Web:     n/a
+  License: # This program is free software; you can redistribute it and/or modify it
+           # under the same terms as Perl itself.
+  Note:    # Copyright 1998-2005 Gisle Aas.
+
+o Name:    CPAN Font::TTF
+  Web:     n/a
+  License: # GNU Lesser v2.1 - http://www.gnu.org/licenses/lgpl.html
+  Note:    # Copyright (c) 1998-2015, SIL International (http://www.sil.org).
+
+o Name:    CPAN Lingua::Translit
+  Web:     http://lingua-systems.com/translit/
+  License: # This module is free software. It may be used, redistributed and/or
+           # modified under the terms of either the GPL v2 or the Artistic license.
+           # GNU v2 - http://www.opensource.org/licenses/gpl-2.0.php
+           # Artistic v2 - http://www.opensource.org/licenses/artistic-license-2.0.php
+  Note:    # Copyright (C) 2007-2008 Alex Linke and Rona Linke.
+           # Copyright (C) 2009-2015 Lingua-Systems Software GmbH
+
 # --
 # JavaScript
 # --
@@ -267,16 +328,12 @@ o Name:    D3 Data-Driven Documents
   Web:     http://d3js.org/
   License: BSD license - http://opensource.org/licenses/BSD-3-Clause
 
-o Name:    Flot
-  Web:     http://www.flotcharts.org/
-  License: MIT License - http://www.opensource.org/licenses/mit-license.php
-
-o Name:    ExplorerCanvas
-  Web:     http://excanvas.sourceforge.net/
-  License: Apache License v2 - http://www.apache.org/licenses/LICENSE-2.0
-
 o Name:    FullCalendar
   Web:     http://arshaw.com/fullcalendar/
+  License: MIT License - http://www.opensource.org/licenses/mit-license.php
+
+o Name:    MomentJS
+  Web:     http://momentjs.com/
   License: MIT License - http://www.opensource.org/licenses/mit-license.php
 
 o Name:    jQuery
@@ -307,9 +364,21 @@ o Name:    jsPlumb
   Web:     http://jsplumbtoolkit.com/
   License: MIT License - http://www.opensource.org/licenses/mit-license.php
 
+o Name:    jQuery UI Touch Punch
+  Web:     http://touchpunch.furf.com/
+  License: MIT License - http://www.opensource.org/licenses/mit-license.php
+
 o Name:    QUnit
   Web:     http://qunitjs.com/
   License: MIT License - http://www.opensource.org/licenses/mit-license.php
+
+o Name:    canvg
+  Web:     https://github.com/gabelerner/canvg
+  License: MIT License - http://www.opensource.org/licenses/mit-license.php
+
+o Name:    StringView
+  Web:     https://developer.mozilla.org/en-US/Add-ons/Code_snippets/StringView
+  License: GNU Lesser v3 - http://www.gnu.org/licenses/lgpl.html
 
 # --
 # Other

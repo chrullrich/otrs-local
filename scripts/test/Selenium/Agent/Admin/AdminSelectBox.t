@@ -1,5 +1,4 @@
 # --
-# AdminSelectBox.t - frontend tests for AdminSQL
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -13,23 +12,23 @@ use utf8;
 
 use vars (qw($Self));
 
-use Kernel::System::UnitTest::Helper;
-use Kernel::System::UnitTest::Selenium;
-
 # get needed objects
 my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
-
-my $Selenium = Kernel::System::UnitTest::Selenium->new(
-    Verbose => 1,
-);
+my $Selenium     = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
 $Selenium->RunTest(
     sub {
 
+        my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+
+        my $TestUserLogin = $Helper->TestUserCreate(
+            Groups => ['admin'],
+        ) || die "Did not get test user";
+
         $Selenium->Login(
             Type     => 'Agent',
-            User     => 'root@localhost',
-            Password => 'root',
+            User     => $TestUserLogin,
+            Password => $TestUserLogin,
         );
 
         my $ScriptAlias = $ConfigObject->Get('ScriptAlias');
@@ -63,8 +62,6 @@ $Selenium->RunTest(
         $Selenium->find_element( "#SQL", 'css' )->clear();
         $Selenium->find_element( "#SQL", 'css' )->send_keys("SELECT * FROM valid");
         $Selenium->find_element( "#SQL", 'css' )->submit();
-
-        sleep 5;
 
         # verify results
         my @Elements = $Selenium->find_elements( 'table thead tr', 'css' );

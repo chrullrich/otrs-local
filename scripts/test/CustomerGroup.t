@@ -1,5 +1,4 @@
 # --
-# CustomerGroup.t - Customer Group tests
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -162,19 +161,6 @@ for my $Test (@Tests) {
 
             next PERMISSION if !$Test->{Config}->{Permission}->{$Permission};
 
-            # check cache internal is empty
-            my $CacheKey = "GroupMemberList::" . $Permission . "::ID::UserID::$Test->{Config}->{UID}";
-            my $Cache    = $Kernel::OM->Get('Kernel::System::Cache')->Get(
-                Type => 'CustomerGroup',
-                Key  => $CacheKey,
-            );
-
-            $Self->Is(
-                $Cache,
-                undef,
-                "Cache after GroupMemberAdd() $Test->{Name} - Key: $CacheKey",
-            );
-
             # check results
             my @MemberList = $CustomerGroupObject->GroupMemberList(
                 UserID => $Test->{Config}->{UID},
@@ -187,19 +173,7 @@ for my $Test (@Tests) {
                 [$GID1],
                 "GroupMemberList() for GroupMemberAdd() $Test->{Name} - User: $Test->{Config}->{UID}",
             );
-
-            # check cache internal is not empty
-            $Cache = $Kernel::OM->Get('Kernel::System::Cache')->Get(
-                Type => 'CustomerGroup',
-                Key  => $CacheKey
-            );
-            $Self->IsDeeply(
-                $Cache,
-                \@MemberList,
-                "Cache after GroupMemberList() $Test->{Name} - Key: $CacheKey",
-            );
         }
-
     }
     else {
         $Self->False(
@@ -271,19 +245,6 @@ my $ResetMembership = sub {
 
     for my $Permission (qw(ro move_into create owner priority rw)) {
 
-        # check cache internal is empty
-        my $CacheKey = "GroupMemberList::" . $Permission . "::ID::UserID::$Param{UID}";
-        my $Cache    = $Kernel::OM->Get('Kernel::System::Cache')->Get(
-            Type => 'CustomerGroup',
-            Key  => $CacheKey,
-        );
-
-        $Self->Is(
-            $Cache,
-            undef,
-            "Cache after GroupMemberAdd() reset - Key: $CacheKey",
-        );
-
         # check results
         my @MemberList = $CustomerGroupObject->GroupMemberList(
             UserID => $Param{UID},
@@ -300,18 +261,6 @@ my $ResetMembership = sub {
             \@MemberList,
             \@ExpectedResult,
             "GroupMemberList() for GroupMemberAdd() reset for User: $Param{UID}",
-        );
-
-        # check cache internal is empty
-        $Cache = $Kernel::OM->Get('Kernel::System::Cache')->Get(
-            Type => 'CustomerGroup',
-            Key  => $CacheKey,
-        );
-
-        $Self->IsDeeply(
-            $Cache,
-            \@MemberList,
-            "Cache after GroupMemberList() reset - Key: $CacheKey",
         );
     }
 };
@@ -801,29 +750,6 @@ for my $Test (@Tests) {
 
         }
 
-        # set cache key
-        my $CacheKey = 'GroupMemberList::'
-            . $Test->{Config}->{Type} . '::'
-            . $Test->{Config}->{Result} . '::';
-        if ( $Test->{Config}->{UserID} ) {
-            $CacheKey .= "UserID::$Test->{Config}->{UserID}";
-        }
-        else {
-            $CacheKey .= "GroupID::$Test->{Config}->{GroupID}";
-        }
-
-        # check cache
-        my $Cache = $Kernel::OM->Get('Kernel::System::Cache')->Get(
-            Type => 'CustomerGroup',
-            Key  => $CacheKey,
-        );
-
-        $Self->IsDeeply(
-            $Cache,
-            $MemberList,
-            "Cache after GroupMemberList() $Test->{Name} - Key: $CacheKey",
-        );
-
         # reset membership if needed
         if ( $Test->{ResetMembership} && $Test->{ResetAllUsers} ) {
             $ResetMembership->();
@@ -916,6 +842,7 @@ for my $Test (@Tests) {
 );
 
 for my $Test (@Tests) {
+
     my $Result = $CustomerGroupObject->GroupLookup( %{ $Test->{Config} } );
 
     if ( $Test->{Success} ) {
@@ -925,27 +852,6 @@ for my $Test (@Tests) {
             $Test->{ExpectedResult},
             "GroupLookup() Test:$Test->{Name}",
         );
-
-        # set cache key
-        my $CacheKey;
-        if ( $Test->{Config}->{GroupID} ) {
-            $CacheKey = "GroupLookup::ID::$Test->{Config}->{GroupID}";
-        }
-        else {
-            $CacheKey = "GroupLookup::Name::$Test->{Config}->{Group}";
-        }
-
-        # check cache (cahce is an scalar reference)
-        my $Cache = $Kernel::OM->Get('Kernel::System::Cache')->Get(
-            Type => 'CustomerGroup',
-            Key  => $CacheKey,
-        );
-
-        $Self->Is(
-            ${$Cache},
-            $Result,
-            "Cache after GroupGroupLookup() $Test->{Name} - Key: $CacheKey",
-        );
     }
     else {
         $Self->Is(
@@ -954,6 +860,6 @@ for my $Test (@Tests) {
             "GroupLookup() Test:$Test->{Name}",
         );
     }
-
 }
+
 1;

@@ -1,5 +1,4 @@
 # --
-# OperationResultGet.t - Cloud Service OperationResultGet tests
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -15,7 +14,7 @@ use vars (qw($Self));
 
 # get needed objects
 my $ConfigObject       = $Kernel::OM->Get('Kernel::Config');
-my $CloudServiceObject = $Kernel::OM->Get('Kernel::System::CloudService');
+my $CloudServiceObject = $Kernel::OM->Get('Kernel::System::CloudService::Backend::Run');
 
 my %RequestResult = (
     CloudServiceTest => [

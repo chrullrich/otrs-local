@@ -1,5 +1,4 @@
 # --
-# Kernel/Modules/AdminRoleUser.pm - to add/update/delete roles <-> users
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,6 +11,8 @@ package Kernel::Modules::AdminRoleUser;
 use strict;
 use warnings;
 
+our $ObjectManagerDisabled = 1;
+
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -19,18 +20,16 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # check all needed objects
-    for (qw(ParamObject DBObject QueueObject LayoutObject ConfigObject LogObject)) {
-        if ( !$Self->{$_} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $_!" );
-        }
-    }
-
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
+
+    my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $UserObject   = $Kernel::OM->Get('Kernel::System::User');
+    my $GroupObject  = $Kernel::OM->Get('Kernel::System::Group');
 
     # ------------------------------------------------------------ #
     # user <-> role 1:n  interface to assign roles to an user
@@ -38,20 +37,19 @@ sub Run {
     if ( $Self->{Subaction} eq 'User' ) {
 
         # get user data
-        my $ID = $Self->{ParamObject}->GetParam( Param => 'ID' );
-        my %UserData = $Self->{UserObject}->GetUserData( UserID => $ID );
+        my $ID = $ParamObject->GetParam( Param => 'ID' );
+        my %UserData = $UserObject->GetUserData( UserID => $ID );
 
         # get role list
-        my %RoleData = $Self->{GroupObject}->RoleList( Valid => 1 );
+        my %RoleData = $GroupObject->RoleList( Valid => 1 );
 
         # get roles in which the user is a member
-        my %Member = $Self->{GroupObject}->GroupUserRoleMemberList(
+        my %Member = $GroupObject->PermissionUserRoleGet(
             UserID => $ID,
-            Result => 'HASH',
         );
 
-        my $Output = $Self->{LayoutObject}->Header();
-        $Output .= $Self->{LayoutObject}->NavigationBar();
+        my $Output = $LayoutObject->Header();
+        $Output .= $LayoutObject->NavigationBar();
         $Output .= $Self->_Change(
             Selected => \%Member,
             Data     => \%RoleData,
@@ -59,7 +57,7 @@ sub Run {
             Name     => "$UserData{UserFirstname} $UserData{UserLastname} ($UserData{UserLogin})",
             Type     => 'User',
         );
-        $Output .= $Self->{LayoutObject}->Footer();
+        $Output .= $LayoutObject->Footer();
 
         return $Output;
     }
@@ -70,26 +68,25 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'Role' ) {
 
         # get role data
-        my $ID = $Self->{ParamObject}->GetParam( Param => 'ID' );
-        my %RoleData = $Self->{GroupObject}->RoleGet( ID => $ID );
+        my $ID = $ParamObject->GetParam( Param => 'ID' );
+        my %RoleData = $GroupObject->RoleGet( ID => $ID );
 
         # get user list, with the full name in the value
-        my %UserData = $Self->{UserObject}->UserList( Valid => 1 );
+        my %UserData = $UserObject->UserList( Valid => 1 );
         USERID:
         for my $UserID ( sort keys %UserData ) {
-            my $Name = $Self->{UserObject}->UserName( UserID => $UserID );
+            my $Name = $UserObject->UserName( UserID => $UserID );
             next USERID if !$Name;
             $UserData{$UserID} .= " ($Name)";
         }
 
         # get members of the the role
-        my %Member = $Self->{GroupObject}->GroupUserRoleMemberList(
+        my %Member = $GroupObject->PermissionRoleUserGet(
             RoleID => $ID,
-            Result => 'HASH',
         );
 
-        my $Output = $Self->{LayoutObject}->Header();
-        $Output .= $Self->{LayoutObject}->NavigationBar();
+        my $Output = $LayoutObject->Header();
+        $Output .= $LayoutObject->NavigationBar();
         $Output .= $Self->_Change(
             Selected => \%Member,
             Data     => \%UserData,
@@ -97,7 +94,7 @@ sub Run {
             Name     => $RoleData{Name},
             Type     => 'Role',
         );
-        $Output .= $Self->{LayoutObject}->Footer();
+        $Output .= $LayoutObject->Footer();
 
         return $Output;
     }
@@ -108,16 +105,16 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'ChangeRole' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         # to be set members of the role
-        my @IDs = $Self->{ParamObject}->GetArray( Param => 'Role' );
+        my @IDs = $ParamObject->GetArray( Param => 'Role' );
 
         # get the role id
-        my $ID = $Self->{ParamObject}->GetParam( Param => 'ID' );
+        my $ID = $ParamObject->GetParam( Param => 'ID' );
 
         # get user list
-        my %UserData = $Self->{UserObject}->UserList( Valid => 1 );
+        my %UserData = $UserObject->UserList( Valid => 1 );
 
         # add or remove user from roles
         for my $UserID ( sort keys %UserData ) {
@@ -128,7 +125,7 @@ sub Run {
                 $Active = 1;
                 last MEMBER_OF_ROLE;
             }
-            $Self->{GroupObject}->GroupUserRoleMemberAdd(
+            $GroupObject->PermissionRoleUserAdd(
                 UID    => $UserID,
                 RID    => $ID,
                 Active => $Active,
@@ -136,7 +133,7 @@ sub Run {
             );
         }
 
-        return $Self->{LayoutObject}->Redirect( OP => "Action=$Self->{Action}" );
+        return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" );
     }
 
     # ------------------------------------------------------------ #
@@ -145,16 +142,16 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'ChangeUser' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         # to be set roles of the user
-        my @IDs = $Self->{ParamObject}->GetArray( Param => 'User' );
+        my @IDs = $ParamObject->GetArray( Param => 'User' );
 
         # get user id
-        my $ID = $Self->{ParamObject}->GetParam( Param => 'ID' );
+        my $ID = $ParamObject->GetParam( Param => 'ID' );
 
         # get role list
-        my %RoleData = $Self->{GroupObject}->RoleList( Valid => 1 );
+        my %RoleData = $GroupObject->RoleList( Valid => 1 );
 
         # add or remove user from roles
         for my $RoleID ( sort keys %RoleData ) {
@@ -165,7 +162,7 @@ sub Run {
                 $Active = 1;
                 last ROLE_OF_MEMBER;
             }
-            $Self->{GroupObject}->GroupUserRoleMemberAdd(
+            $GroupObject->PermissionRoleUserAdd(
                 UID    => $ID,
                 RID    => $RoleID,
                 Active => $Active,
@@ -173,16 +170,16 @@ sub Run {
             );
         }
 
-        return $Self->{LayoutObject}->Redirect( OP => "Action=$Self->{Action}" );
+        return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" );
     }
 
     # ------------------------------------------------------------ #
     # overview
     # ------------------------------------------------------------ #
-    my $Output = $Self->{LayoutObject}->Header();
-    $Output .= $Self->{LayoutObject}->NavigationBar();
+    my $Output = $LayoutObject->Header();
+    $Output .= $LayoutObject->NavigationBar();
     $Output .= $Self->_Overview();
-    $Output .= $Self->{LayoutObject}->Footer();
+    $Output .= $LayoutObject->Footer();
 
     return $Output;
 }
@@ -199,7 +196,9 @@ sub _Change {
         User => 'Agent'
     );
 
-    $Self->{LayoutObject}->Block(
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
+    $LayoutObject->Block(
         Name => 'Change',
         Data => {
             %Param,
@@ -210,9 +209,9 @@ sub _Change {
         },
     );
 
-    $Self->{LayoutObject}->Block( Name => "ChangeHeader$VisibleType{$NeType}" );
+    $LayoutObject->Block( Name => "ChangeHeader$VisibleType{$NeType}" );
 
-    $Self->{LayoutObject}->Block(
+    $LayoutObject->Block(
         Name => 'ChangeHeader',
         Data => {
             %Param,
@@ -221,12 +220,24 @@ sub _Change {
         },
     );
 
+    # check if there are roles
+    if ( $NeType eq 'Role' ) {
+        if ( !%Data ) {
+            $LayoutObject->Block(
+                Name => 'NoDataFoundMsgList',
+                Data => {
+                    ColSpan => 2,
+                },
+            );
+        }
+    }
+
     for my $ID ( sort { uc( $Data{$a} ) cmp uc( $Data{$b} ) } keys %Data ) {
 
         # set output class
         my $Selected = $Param{Selected}->{$ID} ? ' checked="checked"' : '';
 
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'ChangeRow',
             Data => {
                 %Param,
@@ -239,7 +250,7 @@ sub _Change {
         );
     }
 
-    return $Self->{LayoutObject}->Output(
+    return $LayoutObject->Output(
         TemplateFile => 'AdminRoleUser',
         Data         => \%Param,
     );
@@ -248,25 +259,28 @@ sub _Change {
 sub _Overview {
     my ( $Self, %Param ) = @_;
 
-    $Self->{LayoutObject}->Block(
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
+    $LayoutObject->Block(
         Name => 'Overview',
         Data => {},
     );
 
     # get user list
-    my %UserData = $Self->{UserObject}->UserList( Valid => 1 );
+    my $UserObject = $Kernel::OM->Get('Kernel::System::User');
+    my %UserData = $UserObject->UserList( Valid => 1 );
 
     # get user name
     USERID:
     for my $UserID ( sort keys %UserData ) {
-        my $Name = $Self->{UserObject}->UserName( UserID => $UserID );
+        my $Name = $UserObject->UserName( UserID => $UserID );
         next USERID if !$Name;
         $UserData{$UserID} .= " ($Name)";
     }
     for my $UserID ( sort { uc( $UserData{$a} ) cmp uc( $UserData{$b} ) } keys %UserData ) {
 
         # set output class
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'List1n',
             Data => {
                 Name      => $UserData{$UserID},
@@ -277,12 +291,12 @@ sub _Overview {
     }
 
     # get group data
-    my %RoleData = $Self->{GroupObject}->RoleList( Valid => 1 );
+    my %RoleData = $Kernel::OM->Get('Kernel::System::Group')->RoleList( Valid => 1 );
     if (%RoleData) {
         for my $RoleID ( sort { uc( $RoleData{$a} ) cmp uc( $RoleData{$b} ) } keys %RoleData ) {
 
             # set output class
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'Listn1',
                 Data => {
                     Name      => $RoleData{$RoleID},
@@ -293,14 +307,14 @@ sub _Overview {
         }
     }
     else {
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'NoDataFoundMsg',
             Data => {},
         );
     }
 
     # return output
-    return $Self->{LayoutObject}->Output(
+    return $LayoutObject->Output(
         TemplateFile => 'AdminRoleUser',
         Data         => \%Param,
     );

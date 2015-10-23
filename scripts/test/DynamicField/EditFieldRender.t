@@ -1,5 +1,4 @@
 # --
-# EditFieldRender.t - EditFieldRender() backend tests
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -908,7 +907,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
   <option value="">-</option>
   <option value="1">A</option>
   <option value="2">B</option>
@@ -931,7 +930,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
   <option value="">-</option>
   <option value="1">A</option>
   <option value="2" selected="selected">B</option>
@@ -956,7 +955,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
   <option value="">-</option>
   <option value="1" selected="selected">A</option>
   <option value="2">B</option>
@@ -983,7 +982,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
   <option value="">-</option>
   <option value="1" selected="selected">A</option>
   <option value="2">B</option>
@@ -1010,7 +1009,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
   <option value="">-</option>
   <option value="1" selected="selected">A</option>
   <option value="2">B</option>
@@ -1036,7 +1035,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF",
-<select class="DynamicFieldText MyClass Validate_Required" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
+<select class="DynamicFieldText Modernize MyClass Validate_Required" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
   <option value="">-</option>
   <option value="1">A</option>
   <option value="2" selected="selected">B</option>
@@ -1070,7 +1069,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF",
-<select class="DynamicFieldText MyClass ServerError" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
+<select class="DynamicFieldText Modernize MyClass ServerError" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
   <option value="">-</option>
   <option value="1">A</option>
   <option value="2" selected="selected">B</option>
@@ -1104,7 +1103,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
   <option value="2" selected="selected">Value2</option>
 EOF
             Label => <<"EOF",
@@ -1128,7 +1127,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
   <option value="1" selected="selected">A</option>
   <option value="2">B</option>
 EOF
@@ -1153,7 +1152,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="5">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="5">
   <option value="">-</option>
   <option value="1" selected="selected">A</option>
   <option value="2">B</option>
@@ -1180,7 +1179,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF",
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" name="DynamicField_$DynamicFieldConfigs{Dropdown}->{Name}" size="1">
   <option value="">-</option>
   <option value="1" selected="selected">A</option>
   <option value="2">B</option>
@@ -1207,7 +1206,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
   <option value="">-</option>
   <option value="1">A</option>
   <option value="2">B</option>
@@ -1230,7 +1229,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
   <option value="">-</option>
   <option value="1">A</option>
   <option value="2" selected="selected">B</option>
@@ -1255,7 +1254,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
   <option value="">-</option>
   <option value="1" selected="selected">A</option>
   <option value="2">B</option>
@@ -1280,7 +1279,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
   <option value="">-</option>
   <option value="1" selected="selected">A</option>
   <option value="2" selected="selected">B</option>
@@ -1307,7 +1306,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
   <option value="">-</option>
   <option value="1" selected="selected">A</option>
   <option value="2">B</option>
@@ -1334,7 +1333,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
   <option value="">-</option>
   <option value="1" selected="selected">A</option>
   <option value="2" selected="selected">B</option>
@@ -1361,7 +1360,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
   <option value="">-</option>
   <option value="1" selected="selected">A</option>
   <option value="2">B</option>
@@ -1388,7 +1387,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
   <option value="">-</option>
   <option value="1" selected="selected">A</option>
   <option value="2" selected="selected">B</option>
@@ -1414,7 +1413,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF",
-<select class="DynamicFieldText MyClass Validate_Required" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
+<select class="DynamicFieldText Modernize MyClass Validate_Required" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
   <option value="">-</option>
   <option value="1">A</option>
   <option value="2" selected="selected">B</option>
@@ -1448,7 +1447,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF",
-<select class="DynamicFieldText MyClass ServerError" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
+<select class="DynamicFieldText Modernize MyClass ServerError" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
   <option value="">-</option>
   <option value="1">A</option>
   <option value="2" selected="selected">B</option>
@@ -1482,7 +1481,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
   <option value="2" selected="selected">Value2</option>
 EOF
             Label => <<"EOF",
@@ -1506,7 +1505,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF" . '</select>',
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
   <option value="1" selected="selected">A</option>
   <option value="2">B</option>
 EOF
@@ -1532,7 +1531,7 @@ EOF
         },
         ExpectedResults => {
             Field => <<"EOF",
-<select class="DynamicFieldText MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}" multiple="multiple" name="DynamicField_$DynamicFieldConfigs{Multiselect}->{Name}">
   <option value="">-</option>
   <option value="1" selected="selected">A</option>
   <option value="2">B</option>

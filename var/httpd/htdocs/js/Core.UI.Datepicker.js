@@ -1,5 +1,4 @@
 // --
-// Core.UI.Datepicker.js - Datepicker
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -13,27 +12,66 @@ var Core = Core || {};
 Core.UI = Core.UI || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Datepicker
+ * @namespace Core.UI.Datepicker
+ * @memberof Core.UI
+ * @author OTRS AG
  * @description
- *      This namespace contains the datepicker functions
+ *      This namespace contains the datepicker functions.
  */
 Core.UI.Datepicker = (function (TargetNS) {
+    /**
+     * @private
+     * @name VacationDays
+     * @memberof Core.UI.Datepicker
+     * @member {Object}
+     * @description
+     *      Vacation days, defined in SysConfig.
+     */
     var VacationDays,
+
+    /**
+     * @private
+     * @name VacationDaysOneTime
+     * @memberof Core.UI.Datepicker
+     * @member {Object}
+     * @description
+     *      One time vacations, defined in SysConfig.
+     */
         VacationDaysOneTime,
+
+    /**
+     * @private
+     * @name LocalizationData
+     * @memberof Core.UI.Datepicker
+     * @member {Object}
+     * @description
+     *      Translations.
+     */
         LocalizationData,
+
+    /**
+     * @private
+     * @name DatepickerCount
+     * @memberof Core.UI.Datepicker
+     * @member {Number}
+     * @description
+     *      Number of initialized datepicker.
+     */
         DatepickerCount = 0;
 
     if (!Core.Debug.CheckDependency('Core.UI.Datepicker', '$([]).datepicker', 'jQuery UI datepicker')) {
-        return;
+        return false;
     }
 
     /**
-     * @function
      * @private
-     * @param A boolean value
-     * @param {jQueryObject} Element that will be checked
-     * @description Review if a date object have correct values
+     * @name CheckDate
+     * @memberof Core.UI.Datepicker
+     * @function
+     * @returns {Array} First element is always true, second element contains the name of a CSS class, third element a description for the date.
+     * @param {DateObject} DateObject - A JS date object to check.
+     * @description
+     *      Check if date is on of the defined vacation days.
      */
     function CheckDate(DateObject) {
         var DayDescription = '',
@@ -71,19 +109,36 @@ Core.UI.Datepicker = (function (TargetNS) {
     }
 
     /**
+     * @name Init
+     * @memberof Core.UI.Datepicker
      * @function
+     * @returns {Boolean} false, if Parameter Element is not of the correct type.
+     * @param {jQueryObject|Object} Element - The jQuery object of a text input field which should get a datepicker.
+     *                                        Or a hash with the Keys 'Year', 'Month' and 'Day' and as values the jQueryObjects of the select drop downs.
      * @description
      *      This function initializes the datepicker on the defined elements.
-     * @param {Object} Element The jQuery object of a text input field which should get a datepicker.
-     *                 Or a hash with the Keys 'Year', 'Month' and 'Day' and as values the jQueryObjects of the select drop downs.
-     * @return nothing
      */
     TargetNS.Init = function (Element) {
+
+        var $DatepickerElement,
+            HasDateSelectBoxes = false,
+            Options,
+            ErrorMessage;
 
         if (typeof Element.VacationDays === 'object') {
             Core.Config.Set('Datepicker.VacationDays', Element.VacationDays);
         }
 
+        /**
+         * @private
+         * @name LeadingZero
+         * @memberof Core.UI.Datepicker.Init
+         * @function
+         * @returns {String} A number with leading zero, if needed.
+         * @param {Number} Number - A number to convert.
+         * @description
+         *      Converts a one digit number to a string with leading zero.
+         */
         function LeadingZero(Number) {
             if (Number.toString().length === 1) {
                 return '0' + Number;
@@ -92,12 +147,6 @@ Core.UI.Datepicker = (function (TargetNS) {
                 return Number;
             }
         }
-
-        var $DatepickerElement,
-            HasDateSelectBoxes = false,
-            Options,
-            I,
-            ErrorMessage;
 
         if (typeof LocalizationData === 'undefined') {
             LocalizationData = Core.Config.Get('Datepicker.Localization');
@@ -166,7 +215,7 @@ Core.UI.Datepicker = (function (TargetNS) {
                 Element.Day.val(LeadingZero(Day));
             }
         };
-        Options.beforeShow = function (Input, Instance) {
+        Options.beforeShow = function (Input) {
             $(Input).val('');
             return {
                 defaultDate: new Date(Element.Year.val(), Element.Month.val() - 1, Element.Day.val())

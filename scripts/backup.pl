@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 # --
-# scripts/backup.pl - the backup script
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
@@ -84,9 +83,6 @@ else {
 local $Kernel::OM = Kernel::System::ObjectManager->new(
     'Kernel::System::Log' => {
         LogPrefix => 'OTRS-backup.pl',
-    },
-    'Kernel::System::DB' => {
-        AutoConnectNo => 1,
     },
 );
 

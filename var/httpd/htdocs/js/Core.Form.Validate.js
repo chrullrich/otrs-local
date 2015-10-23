@@ -1,5 +1,4 @@
 // --
-// Core.Form.Validate.js - provides functions for validating form inputs
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -13,57 +12,67 @@ var Core = Core || {};
 Core.Form = Core.Form || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Form.Validate
+ * @namespace Core.Form.Validate
+ * @memberof Core.Form
+ * @author OTRS AG
  * @description
  *      This namespace contains all validation functions.
- * @requires
- *      Core.UI.Accessibility
  */
 Core.Form.Validate = (function (TargetNS) {
+    /**
+     * @private
+     * @name Options
+     * @memberof Core.Form.Validate
+     * @member {Object}
+     * @description
+     *      Default options.
+     */
     var Options = {
-        FormClass:          'Validate',
-        ErrorClass:         'Error',
-        ErrorLabelClass:    'LabelError',
-        ServerErrorClass:   'ServerError',
-        ServerLabelClass:   'ServerLabelError',
-        IgnoreClass:        'ValidationIgnore',
-        SubmitFunction:     {}
+        FormClass: 'Validate',
+        ErrorClass: 'Error',
+        ErrorLabelClass: 'LabelError',
+        ServerErrorClass: 'ServerError',
+        ServerLabelClass: 'ServerLabelError',
+        IgnoreClass: 'ValidationIgnore',
+        SubmitFunction: {}
     };
 
     /*
      * check dependencies first
      */
     if (!Core.Debug.CheckDependency('Core.Form.Validate', 'Core.UI.Accessibility', 'Core.UI.Accessibility')) {
-        return;
+        return false;
     }
 
     if (!Core.Debug.CheckDependency('Core.Form.Validate', 'Core.UI.Dialog', 'Core.UI.Dialog')) {
-        return;
+        return false;
     }
 
     if (!Core.Debug.CheckDependency('Core.Form.Validate', 'Core.Form', 'Core.Form')) {
-        return;
+        return false;
     }
 
     if (!Core.Debug.CheckDependency('Core.Form.Validate', 'Core.UI.RichTextEditor', 'Core.UI.RichTextEditor')) {
-        return;
+        return false;
     }
 
     if (!Core.Debug.CheckDependency('Core.Form.Validate', 'Core.Form.ErrorTooltips', 'Core.Form.ErrorTooltips')) {
-        return;
+        return false;
     }
 
     if (!Core.Debug.CheckDependency('Core.Form.Validate', 'Core.App', 'Core.App')) {
-        return;
+        return false;
     }
 
     /**
+     * @name HighlightError
+     * @memberof Core.Form.Validate
      * @function
-     * @param {jQueryObject} $Element The jQuery object of the form  or any element
-     * @param {String} ErrorType The error type (a class that identify the error type)
-     * @return nothing
-     * @description Show initialize the tooltips
+     * @returns {Boolean} False if error is already highlighted
+     * @param {DOMObject} Element - The DOM object of the form  or any element.
+     * @param {String} ErrorType - The error type (a class that identifies the error type).
+     * @description
+     *      Shows an error on the element.
      */
     TargetNS.HighlightError = function (Element, ErrorType) {
         var $Element = $(Element),
@@ -75,14 +84,28 @@ Core.Form.Validate = (function (TargetNS) {
             ErrorType = 'Error';
         }
 
+        // If the element, which has an validation error, is a richtext element, than manually trigger the focus event
+        if (Core.UI.RichTextEditor.IsEnabled($Element)) {
+            window.setTimeout(function () {
+                $Element.focus();
+            }, 0);
+        }
+
+        // If the element is an Input Field, than manually trigger the focus event
+        if (Core.UI.InputFields.IsEnabled($Element)) {
+            window.setTimeout(function () {
+                $('#' + $Element.data('modernized')).focus();
+            }, 0);
+        }
+
         // Check if the element has already an error class
         // (that means, this function call is an additional call)
         if ($Element.hasClass(Options.ErrorClass)) {
-            return;
+            return false;
         }
 
         // Add error class to field and its label
-        $Element.addClass(Options.ErrorClass);
+        $Element.addClass(Options.ErrorClass).triggerHandler('error.InputField');
         $(Element.form).find("label[for=" + Core.App.EscapeSelector(Element.id) + "]").addClass(Options.ErrorLabelClass);
 
         // mark field as invalid for screenreader users
@@ -115,13 +138,6 @@ Core.Form.Validate = (function (TargetNS) {
         // speak the error message for screen reader users
         Core.UI.Accessibility.AudibleAlert(InputErrorMessageText);
 
-        // if the element, which has an validation error, is a richtext element, than manually trigger the focus event
-        if (Core.UI.RichTextEditor.IsEnabled($Element)) {
-            window.setTimeout(function () {
-                $Element.focus();
-            }, 0);
-        }
-
         // if the element is within a collapsed widget, expand that widget to show the error message to the user
         if ($Element.closest('.WidgetSimple.Collapsed').find('.WidgetAction.Toggle > a').length) {
             $Element.closest('.WidgetSimple.Collapsed').find('.WidgetAction.Toggle > a').trigger('click');
@@ -129,10 +145,12 @@ Core.Form.Validate = (function (TargetNS) {
     };
 
     /**
+     * @name UnHighlightError
+     * @memberof Core.Form.Validate
      * @function
-     * @param {Object} Element The object of the form  or any element within this form that should be serialized
-     * @return nothing
-     * @description Remove error classes from element and its label
+     * @param {Object} Element - The object of the form or any element within this form.
+     * @description
+     *      Remove error classes from element and its label.
      */
     TargetNS.UnHighlightError = function (Element) {
         var $Element = $(Element),
@@ -159,8 +177,10 @@ Core.Form.Validate = (function (TargetNS) {
 
         if (RemoveError) {
             // remove error classes from element and its label
-            $Element.removeClass(Options.ErrorClass).removeClass(Options.ServerErrorClass);
-            $(Element.form).find("label[for=" + Core.App.EscapeSelector(Element.id) + "]").removeClass(Options.ErrorLabelClass);
+            $Element.removeClass(Options.ErrorClass).removeClass(Options.ServerErrorClass).triggerHandler('error.InputField');
+            if (Element.id && Element.id.length) {
+                $(Element.form).find("label[for=" + Core.App.EscapeSelector(Element.id) + "]").removeClass(Options.ErrorLabelClass);
+            }
 
             // mark field as valid for screenreader users
             $Element.attr('aria-invalid', false);
@@ -175,21 +195,26 @@ Core.Form.Validate = (function (TargetNS) {
     };
 
     /**
-     * @function
      * @private
-     * @return nothing
-     * @description This function prevents the default placing of the error messages
+     * @name OnErrorElement
+     * @memberof Core.Form.Validate
+     * @function
+     * @returns {Boolean} Returns true.
+     * @description
+     *      This function prevents the default placing of the error messages.
      */
-    function OnErrorElement(Error, Element) {
+    function OnErrorElement() {
         return true;
     }
 
     /**
-     * @function
      * @private
-     * @param {Object} Form The form object that should be submitted
-     * @return nothing
-     * @description This function performs the submit action for a form, allowing only be sent once
+     * @name OnSubmit
+     * @memberof Core.Form.Validate
+     * @function
+     * @param {DOMObject} Form - The form object that should be submitted.
+     * @description
+     *      This function performs the submit action for a form, allowing only be sent once.
      */
     function OnSubmit(Form) {
         $(Form).removeClass('ClientError').removeClass('LabelError');
@@ -209,9 +234,13 @@ Core.Form.Validate = (function (TargetNS) {
     }
 
     /**
-     * @function
      * @private
-     * @return nothing
+     * @name ValidatorMethodRequired
+     * @memberof Core.Form.Validate
+     * @function
+     * @returns {Boolean} True, if Value has a length, false otherwise.
+     * @param {String} Value
+     * @param {DOMObject} Element
      * @description
      *      Validator method for checking if a value is present for
      *      different types of elements.
@@ -257,23 +286,37 @@ Core.Form.Validate = (function (TargetNS) {
     // Use the maxlength attribute to have a dynamic validation
     // Textarea fields will need JS code to set the maxlength attribute since is not supported by
     // XHTML
-    $.validator.addMethod("Validate_MaxLength",function (Value, Element) {
+    $.validator.addMethod("Validate_MaxLength", function (Value, Element) {
 
         // JS takes new lines '\n\r' in textarea elements as 1 character '\n' for length
         // calculation purposes therefore is needed to re-add the '\r' to get the correct length
         // for validation and match to perl and database criteria
-        return ( Value.replace(/\n\r?/g, "\n\r").length <= $(Element).data('maxlength') );
+        return (Value.replace(/\n\r?/g, "\n\r").length <= $(Element).data('maxlength'));
     }, "");
 
-    $.validator.addMethod("Validate_DateYear", function (Value, Element) {
+    $.validator.addMethod("Validate_DateYear", function (Value) {
         return (parseInt(Value, 10) > 999 && parseInt(Value, 10) < 10000);
     }, "");
 
-    $.validator.addMethod("Validate_DateMonth", function (Value, Element) {
+    $.validator.addMethod("Validate_DateMonth", function (Value) {
         return (parseInt(Value, 10) > 0 && parseInt(Value, 10) < 13);
     }, "");
 
-    function DateValidator (Value, Element, Options) {
+    /**
+     * @private
+     * @name DateValidator
+     * @memberof Core.Form.Validate
+     * @function
+     * @returns {Boolean} True for a valid date, false otherwise.
+     * @param {String} Value
+     * @param {DOMObject} Element
+     * @param {Object} [DateOptions]
+     * @param {Boolean} [DateOptions.DateInFuture]
+     * @param {Boolean} [DateOptions.DateNotInFuture]
+     * @description
+     *      Validator method for dates.
+     */
+    function DateValidator (Value, Element, DateOptions) {
         var Classes = $(Element).attr('class'),
         DateObject,
         RegExYear,
@@ -294,18 +337,18 @@ Core.Form.Validate = (function (TargetNS) {
         RegExMonth = new RegExp(DateMonthClassPrefix);
         RegExHour = new RegExp(DateHourClassPrefix);
         RegExMinute = new RegExp(DateMinuteClassPrefix);
-        $.each(Classes.split(' '), function (Index, Value) {
-            if (RegExYear.test(Value)) {
-                YearElement = Value.replace(DateYearClassPrefix, '');
+        $.each(Classes.split(' '), function (Index, ClassValue) {
+            if (RegExYear.test(ClassValue)) {
+                YearElement = ClassValue.replace(DateYearClassPrefix, '');
             }
-            if (RegExMonth.test(Value)) {
-                MonthElement = Value.replace(DateMonthClassPrefix, '');
+            if (RegExMonth.test(ClassValue)) {
+                MonthElement = ClassValue.replace(DateMonthClassPrefix, '');
             }
-            if (RegExHour.test(Value)) {
-                HourElement = Value.replace(DateHourClassPrefix, '');
+            if (RegExHour.test(ClassValue)) {
+                HourElement = ClassValue.replace(DateHourClassPrefix, '');
             }
-            if (RegExMinute.test(Value)) {
-                MinuteElement = Value.replace(DateMinuteClassPrefix, '');
+            if (RegExMinute.test(ClassValue)) {
+                MinuteElement = ClassValue.replace(DateMinuteClassPrefix, '');
             }
         });
         if (YearElement.length && MonthElement.length && $('#' + YearElement).length && $('#' + MonthElement).length) {
@@ -315,19 +358,19 @@ Core.Form.Validate = (function (TargetNS) {
                 DateObject.getDate() === parseInt(Value, 10)) {
 
                 DateCheck = new Date();
-                if ( MinuteElement.length && HourElement.length ) {
+                if (MinuteElement.length && HourElement.length) {
                     DateObject.setHours($('#' + HourElement).val(), $('#' + MinuteElement).val(), 0, 0);
                 }
                 else {
                     DateCheck.setHours(0, 0, 0, 0);
                 }
 
-                if (Options.DateInFuture) {
+                if (DateOptions.DateInFuture) {
                     if (DateObject >= DateCheck) {
                         return true;
                     }
                 }
-                else if (Options.DateNotInFuture) {
+                else if (DateOptions.DateNotInFuture) {
                     if (DateObject <= DateCheck) {
                         return true;
                     }
@@ -364,15 +407,15 @@ Core.Form.Validate = (function (TargetNS) {
         return DateValidator(Value, Element, { DateNotInFuture: true });
     }, "");
 
-    $.validator.addMethod("Validate_DateHour", function (Value, Element) {
+    $.validator.addMethod("Validate_DateHour", function (Value) {
         return (parseInt(Value, 10) >= 0 && parseInt(Value, 10) < 24);
     }, "");
 
-    $.validator.addMethod("Validate_DateMinute", function (Value, Element) {
+    $.validator.addMethod("Validate_DateMinute", function (Value) {
         return (parseInt(Value, 10) >= 0 && parseInt(Value, 10) < 60);
     }, "");
 
-    $.validator.addMethod("Validate_TimeUnits", function (Value, Element) {
+    $.validator.addMethod("Validate_TimeUnits", function (Value) {
         return (Value === "" || /^-{0,1}\d+?((\.|,){0,1}\d+?){0,1}$/.test(Value));
     }, "");
 
@@ -387,9 +430,9 @@ Core.Form.Validate = (function (TargetNS) {
             RegExEqual,
             I;
         RegExEqual = new RegExp(EqualClassPrefix);
-        $.each(Classes.split(' '), function (Index, Value) {
-            if (RegExEqual.test(Value)) {
-                EqualElements.push(Value.replace(EqualClassPrefix, ''));
+        $.each(Classes.split(' '), function (Index, ClassValue) {
+            if (RegExEqual.test(ClassValue)) {
+                EqualElements.push(ClassValue.replace(EqualClassPrefix, ''));
             }
         });
         if (EqualElements.length) {
@@ -419,9 +462,9 @@ Core.Form.Validate = (function (TargetNS) {
             }
         });
 
-        if ( GroupClass !== '' ) {
-            $(Element).closest('fieldset fieldset.TableLike').find('.' + GroupClass).each( function () {
-                if ( $(Element).attr('id') !== $(this).attr('id') && $(this).val() === Value ) {
+        if (GroupClass !== '') {
+            $(Element).closest('fieldset fieldset.TableLike').find('.' + GroupClass).each(function () {
+                if ($(Element).attr('id') !== $(this).attr('id') && $(this).val() === Value) {
                     ApplyRule = 0;
                 }
             });
@@ -431,6 +474,7 @@ Core.Form.Validate = (function (TargetNS) {
         return ApplyRule;
     });
 
+    /*eslint-disable camelcase */
     $.validator.addClassRules("Validate_Required", {
         Validate_Required: true
     });
@@ -487,7 +531,18 @@ Core.Form.Validate = (function (TargetNS) {
     $.validator.addClassRules("Validate_NotEqual", {
         Validate_NotEqual: true
     });
+    /*eslint-enable camelcase */
 
+    /**
+     * @private
+     * @name GetDependentElements
+     * @memberof Core.Form.Validate
+     * @function
+     * @returns {Array} List of DOM IDs of dependent elements.
+     * @param {DOMObject} Element
+     * @description
+     *      Get depending elements, based on the 'Validate_Depending' class.
+     */
     function GetDependentElements(Element) {
         var Classes = $(Element).attr('class'),
         DependentElementIDs = [],
@@ -525,7 +580,9 @@ Core.Form.Validate = (function (TargetNS) {
 
 
     $.validator.addClassRules("Validate_DependingRequiredAND", {
+        /*eslint-disable camelcase */
         Validate_DependingRequiredAND: true
+        /*eslint-enable camelcase */
     });
 
     /*
@@ -550,18 +607,20 @@ Core.Form.Validate = (function (TargetNS) {
 
 
     $.validator.addClassRules("Validate_DependingRequiredOR", {
+        /*eslint-disable camelcase */
         Validate_DependingRequiredOR: true
+        /*eslint-enable camelcase */
     });
 
     /**
+     * @name Init
+     * @memberof Core.Form.Validate
      * @function
      * @description
-     *      This function initializes the validation on all forms on the page which have a class named "Validate"
-     * @return nothing
+     *      This function initializes the validation on all forms on the page which have a class named "Validate".
      */
     TargetNS.Init = function () {
-        var i = 0,
-            FormSelector,
+        var FormSelector,
             $ServerErrors,
             ServerErrorDialogCloseFunction;
 
@@ -619,6 +678,15 @@ Core.Form.Validate = (function (TargetNS) {
         }
     };
 
+    /**
+     * @name ValidateElement
+     * @memberof Core.Form.Validate
+     * @function
+     * @returns {Boolean} Truem, if element validates, false otherwise.
+     * @param {jQueryObject} $Element
+     * @description
+     *      Validate a single element.
+     */
     TargetNS.ValidateElement = function ($Element) {
         if (isJQueryObject($Element)) {
             return $Element.closest('form').validate().element($Element);
@@ -627,12 +695,14 @@ Core.Form.Validate = (function (TargetNS) {
     };
 
     /**
+     * @name SetSubmitFunction
+     * @memberof Core.Form.Validate
      * @function
+     * @returns {Boolean} Returns false, if $Form is not a jQueryObject.
+     * @param {jQueryObject} $Form - The form, for which this submit function is used.
+     * @param {Function} Func - The function, which is executed on successful submitting the form. Gets the submitted form as a parameter.
      * @description
-     *      This function defines the function which is executed when validation was successful on submitting the form
-     * @param {jQueryObject} $Form the form, for which this submit function is used
-     * @param {Function} Func the function, which is executed on successful submitting the form. Gets the submitted form as a parameter.
-     * @return nothing
+     *      This function defines the function which is executed when validation was successful on submitting the form.
      */
     TargetNS.SetSubmitFunction = function ($Form, Func) {
         if (!isJQueryObject($Form)) {
@@ -644,14 +714,15 @@ Core.Form.Validate = (function (TargetNS) {
     };
 
     /**
+     * @name AddDependingValidation
+     * @memberof Core.Form.Validate
      * @function
-     * @description
-     *      This function adds special validation methods, which check a special rule only, if another depending method returns true
-     * @param {String} Name The name of the rule aka the name of the class attribute used.
-     * @param {String} Basis The rule which should be applied
-     * @param {Function} Depends This function defined, if the given basis rule should be checked or not
+     * @param {String} Name - The name of the rule aka the name of the class attribute used.
+     * @param {String} Basis - The rule which should be applied.
+     * @param {Function} Depends - This function defines, if the given basis rule should be checked or not
      *                   (parameter: the element which should be checked; returns true, if rule should be checked)
-     * @return nothing
+     * @description
+     *      This function adds special validation methods, which check a special rule only, if another depending method returns true.
      */
     TargetNS.AddDependingValidation = function (Name, Basis, Depends) {
         var RuleHash = {};
@@ -662,12 +733,13 @@ Core.Form.Validate = (function (TargetNS) {
     };
 
     /**
+     * @name AddMethod
+     * @memberof Core.Form.Validate
      * @function
+     * @param {String} Name - The name of the method.
+     * @param {Function} Function - This function defines the specific validation method (parameter: value, element, params). Returns true if the element is valid.
      * @description
      *      This function is used to add special validation methods. The name can be used to define new rules.
-     * @param {String} Name The name of the method
-     * @param {Function} Function This function defines the specific validation method (parameter: value, element, params). Returns true if the element is valid.
-     * @return nothing
      */
     TargetNS.AddMethod = function (Name, Function) {
         if (Name && $.isFunction(Function)) {
@@ -676,12 +748,13 @@ Core.Form.Validate = (function (TargetNS) {
     };
 
     /**
+     * @name AddRule
+     * @memberof Core.Form.Validate
      * @function
+     * @param {String} Name - The name of the rule.
+     * @param {Object} MethodHash - This JS object defines, which methods should be included in this rule, e.g. { OTRS_Validate_Required: true, OTRS-Validate_MinLength: 2 }.
      * @description
      *      This function is used to add special validation rules. The name is also the class name you can use in the HTML.
-     * @param {String} Name The name of the rule
-     * @param {Object} MethodHash This JS object defines, which methods should be included in this rule, e.g. { OTRS_Validate_Required: true, OTRS-Validate_MinLength: 2 }
-     * @return nothing
      */
     TargetNS.AddRule = function (Name, MethodHash) {
         if (Name && typeof MethodHash === "object") {
@@ -690,11 +763,12 @@ Core.Form.Validate = (function (TargetNS) {
     };
 
     /**
+     * @name DisableValidation
+     * @memberof Core.Form.Validate
      * @function
+     * @param {jQueryObject} $Form - The form object that should be disabled.
      * @description
      *      This function is used to disable all the elements of a Form object.
-     * @param {Object} Form The form object that should be submitted
-     * @return nothing
      */
     TargetNS.DisableValidation = function ($Form) {
         // If no form is given, disable validation in all form elements on the complete site
@@ -708,11 +782,12 @@ Core.Form.Validate = (function (TargetNS) {
     };
 
     /**
+     * @name EnableValidation
+     * @memberof Core.Form.Validate
      * @function
+     * @param {jQueryObject} $Form - The form object that should be enabled.
      * @description
      *      This function is used to enable all the elements of a Form object.
-     * @param {Object} Form The form object that should be submitted
-     * @return nothing
      */
     TargetNS.EnableValidation = function ($Form) {
         // If no form is given, disable validation in all form elements on the complete site

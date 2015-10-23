@@ -1,5 +1,4 @@
 // --
-// Core.Agent.Admin.ACL.js - provides the special module functions for the ACL administration interface
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -14,15 +13,39 @@ Core.Agent = Core.Agent || {};
 Core.Agent.Admin = Core.Agent.Admin || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Agent.Admin.ACL
+ * @namespace Core.Agent.Admin
+ * @memberof Core.Agent
+ * @author OTRS AG
+ */
+
+/**
+ * @namespace Core.Agent.Admin.ACL
+ * @memberof Core.Agent.Admin
+ * @author OTRS AG
  * @description
  *      This namespace contains the special module functions for the ACL module.
  */
 Core.Agent.Admin.ACL = (function (TargetNS) {
 
+    /**
+     * @private
+     * @name KeysWithoutSubkeys
+     * @memberof Core.Agent.Admin.ACL
+     * @member {Array}
+     * @description
+     *      KeysWithoutSubkeys
+     */
     var KeysWithoutSubkeys = [ 'ActivityDialog', 'Action', 'Process' ];
 
+    /**
+     * @private
+     * @name ShowDeleteACLConfirmationDialog
+     * @memberof Core.Agent.Admin.ACL
+     * @function
+     * @param {jQueryObject} $Element - The confirmation dialog template in the HTML.
+     * @description
+     *      Shows a confirmation dialog to delete the ACL entry.
+     */
     function ShowDeleteACLConfirmationDialog($Element) {
         var DialogElement = $Element.data('dialog-element'),
             DialogTitle = $Element.data('dialog-title'),
@@ -74,13 +97,23 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
         );
     }
 
+    /**
+     * @name RestoreACLData
+     * @memberof Core.Agent.Admin.ACL
+     * @function
+     * @returns {Boolean} Returns false, if $DataObj.val() is not defined
+     * @param {jQueryObject} $DataObj
+     * @param {jQueryObject} $TargetObj
+     * @description
+     *      Build up the DOM from the stored ACL data.
+     */
     TargetNS.RestoreACLData = function($DataObj, $TargetObj) {
 
         var JSONString = $DataObj.val(),
             Data,
             Level1Key, Level2Key, Level3Key, Level4Key,
             $ItemObjLevel1, $ItemObjLevel2, $ItemObjLevel3, $ItemObjLevel4,
-            $TempObjLevel1, $TempObjLevel2, $TempObjLevel3, $TempObjLevel4,
+            $TempObjLevel2, $TempObjLevel3, $TempObjLevel4,
             SelectHTML,
             Value,
             Class,
@@ -130,7 +163,7 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
                                 .next('input')
                                 .attr('data-parent', Level2Key);
 
-                            if ( Level2Key === 'DynamicField' ) {
+                            if (Level2Key === 'DynamicField') {
                                 SelectHTML = $('#' + Level2Key).parent().html();
                                 SelectHTML += '<span class="AddAll">' + Core.Agent.Admin.ACL.Localization.AddAll + '</span>';
 
@@ -192,7 +225,7 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
                                             if (typeof Data[Level1Key][Level2Key][Level3Key] !== 'object') {
 
                                                 Class = 'True';
-                                                Bool  = parseInt(Data[Level1Key][Level2Key][Level3Key], 10);
+                                                Bool = parseInt(Data[Level1Key][Level2Key][Level3Key], 10);
 
                                                 if (Bool === 0) {
                                                     Class = 'False';
@@ -249,6 +282,15 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
         }
     };
 
+    /**
+     * @name AddItem
+     * @memberof Core.Agent.Admin.ACL
+     * @function
+     * @param {jQueryObject} $Object
+     * @param {String} Type
+     * @description
+     *      Adds an item to the list.
+     */
     TargetNS.AddItem = function($Object, Type) {
 
         var AlreadyAdded = false,
@@ -314,7 +356,7 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
                     .next('input')
                     .attr('data-parent', Value);
 
-                if ( Value === 'DynamicField' ) {
+                if (Value === 'DynamicField') {
                     SelectHTML = $('#' + Value).parent().html();
                     SelectHTML += '<span class="AddAll">' + Core.Agent.Admin.ACL.Localization.AddAll + '</span>';
 
@@ -366,13 +408,13 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
             }
             $Object.val('');
 
-            if ( Value && Type !== 'Boolean' ) {
+            if (Value && Type !== 'Boolean') {
                 $TriggerObj.click();
             }
         }
         else if (Level === 4) {
 
-            $LevelObj   = $('#TemplateLevel4 > li').clone();
+            $LevelObj = $('#TemplateLevel4 > li').clone();
             $TriggerObj = $Object.next('.AddButton');
 
             if (Value) {
@@ -400,14 +442,22 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
         }
     };
 
-    TargetNS.CollectACLData = function($ItemObj, Type) {
+    /**
+     * @name CollectACLData
+     * @memberof Core.Agent.Admin.ACL
+     * @function
+     * @returns {Object} ACL data structure.
+     * @param {jQueryObject} $ItemObj
+     * @description
+     *      Collects the ACL data.
+     */
+    TargetNS.CollectACLData = function($ItemObj) {
 
         var Structure = {},
             $SubItemsObj,
             ItemNameLevel1,
             ItemNameLevel2,
-            ItemNameLevel3,
-            ItemNameLevel4;
+            ItemNameLevel3;
 
         $ItemObj.children('li.DataItem').each(function() {
 
@@ -460,6 +510,13 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
         return Structure;
     };
 
+    /**
+     * @name InitACLEdit
+     * @memberof Core.Agent.Admin.ACL
+     * @function
+     * @description
+     *      Initializes the ACL editor.
+     */
     TargetNS.InitACLEdit = function () {
 
         $('#ACLDelete').bind('click.ACLDelete', function (Event) {
@@ -499,15 +556,15 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
 
         $('.ACLStructure').on('click', '.AddAll', function() {
             var $SelectObj = $(this).prev('select'),
-                Boolean = '';
+                BooleanStr = '';
 
             if ($SelectObj.hasClass('Boolean')) {
-                Boolean = 'Boolean';
+                BooleanStr = 'Boolean';
             }
 
             $SelectObj.find('option').each(function() {
                 $SelectObj.val($(this).attr('value'));
-                TargetNS.AddItem($SelectObj, Boolean);
+                TargetNS.AddItem($SelectObj, BooleanStr);
             });
         });
 
@@ -564,6 +621,14 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
 
         $('.ACLStructure').on('click', '.Editable span', function() {
 
+            var $Obj = $(this),
+                Value = $Obj.text(),
+                Width = $Obj.width() + 3,
+                $SelectObj = $('#TemplateLevel3').find('select'),
+                $SelectObjClone = $SelectObj.clone(),
+                RegexResult,
+                LastLevel = true;
+
             // only apply on right spans
             if ($(this).hasClass('Icon')) {
                 return false;
@@ -573,15 +638,6 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
             if ($(this).nextAll('ul').hasClass('Boolean')) {
                 return false;
             }
-
-            var $Obj = $(this),
-                Value = $Obj.text(),
-                Width = $Obj.width() + 3,
-                $SelectObj = $('#TemplateLevel3').find('select'),
-                $SelectObjClone = $SelectObj.clone(),
-                Regex,
-                RegexResult,
-                LastLevel = true;
 
             // decide if we are already on the last level
             if (!$(this).next('em').length) {
@@ -658,9 +714,11 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
 
         $('.ACLStructure').on('blur keydown', '.LiveEdit', function(Event) {
 
+            var Value;
+
             if ((Event.type === 'keydown' && Event.which === 13) || Event.type !== 'keydown') {
 
-                var Value = $(this).val();
+                Value = $(this).val();
 
                 if (Value) {
 
@@ -715,11 +773,11 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
         });
 
         $('.ACLStructure').on('change', '.NewDataKeyDropdown', function() {
-            var Boolean = '';
+            var BooleanStr = '';
             if ($(this).hasClass('Boolean')) {
-                Boolean = 'Boolean';
+                BooleanStr = 'Boolean';
             }
-            TargetNS.AddItem($(this), Boolean);
+            TargetNS.AddItem($(this), BooleanStr);
         });
 
         $('.ACLStructure').on('click', '.DataItem em', function() {
@@ -755,10 +813,10 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
             $('#Submit').click();
         });
 
-        $('#Submit, #SubmitAndContinue').bind('click', function(Event) {
+        $('#Submit, #SubmitAndContinue').bind('click', function() {
 
             // collect data from the input areas
-            TargetNS.ConfigMatch  = TargetNS.CollectACLData($('#ACLMatch'));
+            TargetNS.ConfigMatch = TargetNS.CollectACLData($('#ACLMatch'));
             TargetNS.ConfigChange = TargetNS.CollectACLData($('#ACLChange'));
 
             $('input[name=ConfigMatch]').val(Core.JSON.Stringify(TargetNS.ConfigMatch));
@@ -780,7 +838,7 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
             $('.LiveEdit, .NewDataItem').each(function() {
 
                 // only do it for the 'Action' item (can be extended in the future)
-                if ( $(this).closest('ul').closest('li').data('content') === 'Action' ) {
+                if ($(this).closest('ul').closest('li').data('content') === 'Action') {
 
                     Core.UI.Autocomplete.Init(
                         $(this),

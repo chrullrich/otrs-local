@@ -1,5 +1,4 @@
 # --
-# Kernel/Modules/AgentZoom.pm - to get a closer view
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -19,7 +18,7 @@ package Kernel::Modules::AgentZoom;
 use strict;
 use warnings;
 
-use Kernel::System::CustomerUser;
+our $ObjectManagerDisabled = 1;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -28,18 +27,13 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # check needed objects
-    for (qw(ParamObject DBObject LayoutObject LogObject ConfigObject )) {
-        if ( !$Self->{$_} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $_!" );
-        }
-    }
-
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
+
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
     # compat link
     my $Redirect = $ENV{REQUEST_URI};
@@ -47,11 +41,11 @@ sub Run {
         $Redirect =~ s/AgentZoom/AgentTicketZoom/;
     }
     else {
-        $Redirect = $Self->{LayoutObject}->{Baselink}
+        $Redirect = $LayoutObject->{Baselink}
             . 'Action=AgentTicketZoom;TicketID='
             . $Self->{TicketID};
     }
-    return $Self->{LayoutObject}->Redirect( OP => $Redirect );
+    return $LayoutObject->Redirect( OP => $Redirect );
 }
 
 1;

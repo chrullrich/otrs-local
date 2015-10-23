@@ -96,14 +96,6 @@
             <String Regex="">300</String><!-- default 5 min -->
         </Setting>
     </ConfigItem>
-    <ConfigItem Name="GenericInterface::Webservice::Path::Separator" Required="1" Valid="1">
-        <Description Translatable="1">Webservice path separator.</Description>
-        <Group>GenericInterface</Group>
-        <SubGroup>GenericInterface::Webservice</SubGroup>
-        <Setting>
-            <String>»</String>
-        </Setting>
-    </ConfigItem>
     <ConfigItem Name="Frontend::Module###AdminGenericInterfaceDebugger" Required="0" Valid="1">
         <Description Translatable="1">Frontend module registration for the agent interface.</Description>
         <Group>GenericInterface</Group>
@@ -115,7 +107,6 @@
                 <Title Translatable="1">GenericInterface Debugger GUI</Title>
                 <Loader>
                     <CSS>Core.Agent.Admin.GenericInterface.css</CSS>
-                    <CSS_IE7>Core.Agent.Admin.GenericInterface.IE7.css</CSS_IE7>
                     <JavaScript>Core.Agent.Admin.GenericInterfaceDebugger.js</JavaScript>
                 </Loader>
             </FrontendModuleReg>
@@ -132,7 +123,7 @@
                 <Title Translatable="1">GenericInterface Web Service GUI</Title>
                 <NavBarName>Admin</NavBarName>
                 <NavBarModule>
-                    <Module>Kernel::Output::HTML::NavBarModuleAdmin</Module>
+                    <Module>Kernel::Output::HTML::NavBar::ModuleAdmin</Module>
                     <Name Translatable="1">Web Services</Name>
                     <Description Translatable="1">Create and manage web services.</Description>
                     <Block>System</Block>
@@ -156,6 +147,8 @@
                 <Title Translatable="1">GenericInterface TransportHTTPSOAP GUI</Title>
                 <Loader>
                     <CSS>Core.Agent.Admin.GenericInterface.css</CSS>
+                    <CSS>Core.Agent.SortedTree.css</CSS>
+                    <JavaScript>Core.Agent.SortedTree.js</JavaScript>
                 </Loader>
             </FrontendModuleReg>
         </Setting>
@@ -320,7 +313,6 @@
                 <Title Translatable="1">GenericInterface Webservice Mapping GUI</Title>
                 <Loader>
                     <CSS>Core.Agent.Admin.GenericInterface.css</CSS>
-                    <CSS_IE7>Core.Agent.Admin.GenericInterface.IE7.css</CSS_IE7>
                     <JavaScript>Core.Agent.Admin.GenericInterfaceMappingSimple.js</JavaScript>
                 </Loader>
             </FrontendModuleReg>
@@ -334,6 +326,33 @@
         <Setting>
             <Hash>
                 <Item Key="ConfigDialog">AdminGenericInterfaceMappingSimple</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+
+    <ConfigItem Name="Frontend::Module###AdminGenericInterfaceMappingXSLT" Required="0" Valid="1">
+        <Description Translatable="1">Frontend module registration for the agent interface.</Description>
+        <Group>GenericInterface</Group>
+        <SubGroup>Frontend::Admin::ModuleRegistration</SubGroup>
+        <Setting>
+            <FrontendModuleReg>
+                <Group>admin</Group>
+                <Description>Admin</Description>
+                <Title Translatable="1">GenericInterface Webservice Mapping GUI</Title>
+                <Loader>
+                    <CSS>Core.Agent.Admin.GenericInterface.css</CSS>
+                </Loader>
+            </FrontendModuleReg>
+        </Setting>
+    </ConfigItem>
+
+    <ConfigItem Name="GenericInterface::Mapping::Module###XSLT" Required="0" Valid="1">
+        <Description Translatable="1">GenericInterface module registration for the mapping layer.</Description>
+        <Group>GenericInterface</Group>
+        <SubGroup>GenericInterface::Mapping::ModuleRegistration</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="ConfigDialog">AdminGenericInterfaceMappingXSLT</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -441,6 +460,14 @@
             <String Regex="">webrequest</String>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="GenericInterface::Operation::ResponseLoggingMaxSize" Required="1" Valid="1">
+        <Description Translatable="1">Defines the maximum size in KiloByte of GenericInterface responses that get logged to the gi_debugger_entry_content table.</Description>
+        <Group>GenericInterface</Group>
+        <SubGroup>GenericInterface::Operation::ResponseLoggingMaxSize</SubGroup>
+        <Setting>
+            <String Regex="">200</String>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="GenericInterface::Operation::TicketUpdate###HistoryType" Required="1" Valid="1">
         <Description Translatable="1">Defines the history type for this operation, which gets used for ticket history in the agent interface.</Description>
         <Group>GenericInterface</Group>
@@ -479,12 +506,12 @@
         <SubGroup>GenericInterface::Operation::TicketSearch</SubGroup>
         <Setting>
             <Option SelectedID="Age">
-                <Item Key="Age">Age</Item>
-                <Item Key="Ticket">Ticket</Item>
-                <Item Key="Subject">Subject</Item>
-                <Item Key="Queue">Queue</Item>
-                <Item Key="Priority">Priority</Item>
-                <Item Key="EscalationTime">EscalationTime</Item>
+                <Item Key="Age" Translatable="1">Age</Item>
+                <Item Key="Ticket" Translatable="1">Ticket</Item>
+                <Item Key="Subject" Translatable="1">Subject</Item>
+                <Item Key="Queue" Translatable="1">Queue</Item>
+                <Item Key="Priority" Translatable="1">Priority</Item>
+                <Item Key="EscalationTime" Translatable="1">EscalationTime</Item>
             </Option>
         </Setting>
     </ConfigItem>
@@ -494,8 +521,8 @@
         <SubGroup>GenericInterface::Operation::TicketSearch</SubGroup>
         <Setting>
             <Option SelectedID="Down">
-                <Item Key="Down">Down</Item>
-                <Item Key="Up">Up</Item>
+                <Item Key="Down" Translatable="1">Down</Item>
+                <Item Key="Up" Translatable="1">Up</Item>
             </Option>
         </Setting>
     </ConfigItem>

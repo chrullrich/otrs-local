@@ -1,5 +1,4 @@
 // --
-// Core.Customer.js - provides functions for the customer login
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,36 +11,55 @@
 var Core = Core || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Customer
+ * @namespace Core.Customer
+ * @memberof Core
+ * @author OTRS AG
  * @description
- *      This namespace contains all form functions.
+ *      This namespace contains all global functions for the customer interface.
  */
 Core.Customer = (function (TargetNS) {
     if (!Core.Debug.CheckDependency('Core.Customer', 'Core.UI', 'Core.UI')) {
-        return;
+        return false;
     }
     if (!Core.Debug.CheckDependency('Core.Customer', 'Core.Form', 'Core.Form')) {
-        return;
+        return false;
     }
     if (!Core.Debug.CheckDependency('Core.Customer', 'Core.Form.Validate', 'Core.Form.Validate')) {
-        return;
+        return false;
     }
     if (!Core.Debug.CheckDependency('Core.Customer', 'Core.UI.Accessibility', 'Core.UI.Accessibility')) {
-        return;
+        return false;
+    }
+    if (!Core.Debug.CheckDependency('Core.Agent', 'Core.UI.InputFields', 'Core.UI.InputFields')) {
+        return false;
     }
 
+    /**
+     * @name SupportedBrowser
+     * @memberof Core.Customer
+     * @member {Boolean}
+     * @description
+     *     Indicates a supported browser.
+     */
     TargetNS.SupportedBrowser = true;
+
+    /**
+     * @name IECompatibilityMode
+     * @memberof Core.Customer
+     * @member {Boolean}
+     * @description
+     *     IE Compatibility Mode is active.
+     */
     TargetNS.IECompatibilityMode = false;
 
     /**
+     * @name Init
+     * @memberof Core.Customer
      * @function
-     * @return nothing
-     *      This function initializes the application and executes the needed functions
+     * @description
+     *      This function initializes the application and executes the needed functions.
      */
     TargetNS.Init = function () {
-        var $TableElements = $('table.Overview tbody tr');
-
         TargetNS.SupportedBrowser = Core.App.BrowserCheck('Customer');
         TargetNS.IECompatibilityMode = Core.App.BrowserCheckIECompatibilityMode();
 
@@ -64,12 +82,12 @@ Core.Customer = (function (TargetNS) {
 
         Core.Form.Validate.Init();
         Core.UI.Popup.Init();
-        // Add table functions here (because of performance reasons only do this if table has not more than 200 rows)
-        if ($TableElements.length < 200) {
-            $TableElements.filter(':nth-child(even)').addClass('Even');
-        }
+
         // late execution of accessibility code
         Core.UI.Accessibility.Init();
+
+        // Modernize input fields
+        Core.UI.InputFields.Init();
 
         // Init tree selection/tree view for dynamic fields
         Core.UI.TreeSelection.InitTreeSelection();
@@ -77,11 +95,12 @@ Core.Customer = (function (TargetNS) {
     };
 
     /**
+     * @name ClickableRow
+     * @memberof Core.Customer
      * @function
      * @description
      *      This function makes the whole row in the MyTickets and CompanyTickets view clickable.
      */
-
     TargetNS.ClickableRow = function(){
         $("table tr").click(function(){
             window.location.href = $("a", this).attr("href");
@@ -90,16 +109,14 @@ Core.Customer = (function (TargetNS) {
     };
 
     /**
+     * @name Enhance
+     * @memberof Core.Customer
      * @function
      * @description
      *      This function adds the class 'JavaScriptAvailable' to the 'Body' div to enhance the interface (clickable rows).
      */
     TargetNS.Enhance = function(){
         $('body').removeClass('NoJavaScript').addClass('JavaScriptAvailable');
-    };
-
-    TargetNS.InitFocus = function(){
-        $('input[type="text"]').first().focus();
     };
 
     return TargetNS;

@@ -1,5 +1,4 @@
 # --
-# ServiceDropdown.t - frontend test AgentTicketPhone
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -13,9 +12,6 @@ use utf8;
 
 use vars (qw($Self));
 
-use Kernel::System::UnitTest::Helper;
-use Kernel::System::UnitTest::Selenium;
-
 # get config object
 my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
@@ -25,9 +21,8 @@ $ConfigObject->Set(
     Value => 0,
 );
 
-my $Selenium = Kernel::System::UnitTest::Selenium->new(
-    Verbose => 1,
-);
+# get selenium object
+my $Selenium = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
 # this test is to check that when AgentTicketPhone is loaded already with
 # customer data on it (like when doing Split), the dropdown of Service is
@@ -37,9 +32,13 @@ my $Selenium = Kernel::System::UnitTest::Selenium->new(
 $Selenium->RunTest(
     sub {
 
-        my $Helper = Kernel::System::UnitTest::Helper->new(
-            RestoreSystemConfiguration => 1,
+        # get helper object
+        $Kernel::OM->ObjectParamAdd(
+            'Kernel::System::UnitTest::Helper' => {
+                RestoreSystemConfiguration => 1,
+            },
         );
+        my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
         my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
 

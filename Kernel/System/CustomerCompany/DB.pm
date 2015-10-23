@@ -1,5 +1,4 @@
 # --
-# Kernel/System/CustomerCompany/DB.pm - some customer user functions
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -35,7 +34,7 @@ sub new {
     $Self->{CustomerCompanyKey} = $Self->{CustomerCompanyMap}->{CustomerCompanyKey}
         || die "Need CustomerCompany->CustomerCompanyKey in Kernel/Config.pm!";
     $Self->{CustomerCompanyValid} = $Self->{CustomerCompanyMap}->{'CustomerCompanyValid'};
-    $Self->{SearchListLimit}      = $Self->{CustomerCompanyMap}->{'CustomerCompanySearchListLimit'};
+    $Self->{SearchListLimit}      = $Self->{CustomerCompanyMap}->{'CustomerCompanySearchListLimit'} || 50000;
     $Self->{SearchPrefix}         = $Self->{CustomerCompanyMap}->{'CustomerCompanySearchPrefix'};
     if ( !defined( $Self->{SearchPrefix} ) ) {
         $Self->{SearchPrefix} = '';
@@ -87,6 +86,8 @@ sub CustomerCompanyList {
         $Valid = 0;
     }
 
+    my $Limit = $Param{Limit} // $Self->{SearchListLimit};
+
     my $CacheType;
     my $CacheKey;
 
@@ -94,7 +95,7 @@ sub CustomerCompanyList {
     if ( $Self->{CacheObject} ) {
 
         $CacheType = $Self->{CacheType} . '_CustomerCompanyList';
-        $CacheKey = "CustomerCompanyList::${Valid}::" . ( $Param{Search} || '' );
+        $CacheKey = "CustomerCompanyList::${Valid}::${Limit}::" . ( $Param{Search} || '' );
 
         my $Data = $Self->{CacheObject}->Get(
             Type => $CacheType,
@@ -165,7 +166,7 @@ sub CustomerCompanyList {
     $Self->{DBObject}->Prepare(
         SQL   => $CompleteSQL,
         Bind  => \@Bind,
-        Limit => 50000,
+        Limit => $Limit,
     );
 
     # fetch the result

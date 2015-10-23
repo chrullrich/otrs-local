@@ -1,5 +1,4 @@
 # --
-# ArticleFlags.t - ticket module testscript
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -261,6 +260,63 @@ for my $Test (@Tests) {
         $Flag{ $Test->{Key} },
         scalar undef,
         'ArticleFlagGet() article 1 after delete for AllUsers',
+    );
+}
+
+# test searching for article flags
+
+my @SearchTestFlagsSet    = qw( f1 f2 f3 );
+my @SearchTestFlagsNotSet = qw( f4 f5 );
+
+for my $Flag (@SearchTestFlagsSet) {
+    my $Set = $TicketObject->ArticleFlagSet(
+        ArticleID => $ArticleID,
+        Key       => $Flag,
+        Value     => 42,
+        UserID    => 1,
+    );
+
+    $Self->True(
+        $Set,
+        "Can set article flag $Flag",
+    );
+}
+
+my @FlagSearchTests = (
+    {
+        Search => {
+            ArticleFlag => {
+                f1 => 42,
+                f2 => 42,
+            },
+        },
+        Expected => 1,
+        Name     => "Can find ticket when searching for two article flags",
+    },
+    {
+        Search => {
+            ArticleFlag => {
+                f1 => 42,
+                f2 => 1,
+            },
+        },
+        Expected => 0,
+        Name     => "Wrong flag value leads to no match",
+    },
+);
+
+for my $Test (@FlagSearchTests) {
+    my $Found = $TicketObject->TicketSearch(
+        TicketID => $TicketID,
+        Result   => 'COUNT',
+        UserID   => 1,
+        %{ $Test->{Search} },
+    );
+
+    $Self->Is(
+        $Found,
+        $Test->{Expected},
+        $Test->{Name},
     );
 }
 

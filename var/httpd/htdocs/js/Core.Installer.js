@@ -1,5 +1,4 @@
 // --
-// Core.Installer.js - provides the special module functions for Installer
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,38 +11,26 @@
 var Core = Core || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Installer
+ * @namespace Core.Installer
+ * @memberof Core
+ * @author OTRS AG
  * @description
  *      This namespace contains the special module functions for Installer.
  */
 Core.Installer = (function (TargetNS) {
-/*
-InstallerDBStart
-*/
     /**
+     * @private
+     * @name CheckDBDataCallback
+     * @memberof Core.Installer
      * @function
-     * @return nothing
-     *      This function check the values for the database configuration
-     */
-    TargetNS.CheckDBData = function () {
-        $('input[name=Subaction]').val('CheckRequirements');
-        var Data = Core.AJAX.SerializeForm( $('#FormDB') );
-        Data += 'CheckMode=DB;';
-        Core.AJAX.FunctionCall(Core.Config.Get('Baselink'), Data, CheckDBDataCallback );
-        $('input[name=Subaction]').val('DBCreate');
-    };
-
-
-    /**
-     * @function
-     * @return nothing
-     *      This function displays the results for the database credentials
+     * @param {Object} json - The server response JSON object.
+     * @description
+     *      This function displays the results for the database credentials.
      */
     function CheckDBDataCallback(json) {
-        if (parseInt(json['Successful']) < 1) {
-            $('#FormDBResultMessage').html(json['Message']);
-            $('#FormDBResultComment').html(json['Comment']);
+        if (parseInt(json.Successful, 10) < 1) {
+            $('#FormDBResultMessage').html(json.Message);
+            $('#FormDBResultComment').html(json.Comment);
             $('fieldset.ErrorMsg').show();
             $('fieldset.Success').hide();
         }
@@ -53,18 +40,35 @@ InstallerDBStart
             $('fieldset.ErrorMsg, fieldset.CheckDB').hide();
             $('fieldset.HideMe, div.HideMe, fieldset.Success').show();
         }
+    }
+
+    /**
+     * @name CheckDBData
+     * @memberof Core.Installer
+     * @function
+     * @description
+     *      This function check the values for the database configuration.
+     */
+    TargetNS.CheckDBData = function () {
+        var Data;
+        $('input[name=Subaction]').val('CheckRequirements');
+        Data = Core.AJAX.SerializeForm($('#FormDB'));
+        Data += 'CheckMode=DB;';
+        Core.AJAX.FunctionCall(Core.Config.Get('Baselink'), Data, CheckDBDataCallback);
+        $('input[name=Subaction]').val('DBCreate');
     };
 
     /**
+     * @name SelectOutboundMailType
+     * @memberof Core.Installer
      * @function
+     * @param {Object} obj - The form object that holds the value that makes fields visible or hidden.
      * @description
      *      This function is used to enable or disable some mail configuration fields.
-     * @param {Object} obj The form object that holds the value that makes fields visible or hidden
-     * @return nothing
      */
     TargetNS.SelectOutboundMailType = function (obj) {
         var value = $(obj).val();
-        if (value != "sendmail") {
+        if (value !== "sendmail") {
             $('#InfoSMTP').show();
         }
         else {
@@ -72,14 +76,17 @@ InstallerDBStart
         }
 
         // Change default port
-        $('#OutboundMailDefaultPorts').val( $('#OutboundMailType').val() );
-        $('#SMTPPort').val( $('#OutboundMailDefaultPorts :selected').text() );
+        $('#OutboundMailDefaultPorts').val($('#OutboundMailType').val());
+        $('#SMTPPort').val($('#OutboundMailDefaultPorts :selected').text());
     };
 
     /**
+     * @name CheckSMTPAuth
+     * @memberof Core.Installer
      * @function
-     * @return nothing
-     *      This function checks the SMTP configuration
+     * @param {Object} obj
+     * @description
+     *      This function checks the SMTP configuration.
      */
     TargetNS.CheckSMTPAuth = function (obj) {
         if ($(obj).is(':checked')) {
@@ -92,9 +99,11 @@ InstallerDBStart
     };
 
     /**
+     * @name SkipMailConfig
+     * @memberof Core.Installer
      * @function
-     * @return nothing
-     *      This function skips the mail configuration
+     * @description
+     *      This function skips the mail configuration.
      */
     TargetNS.SkipMailConfig = function () {
         $('input[name=Skip]').val('1');
@@ -103,37 +112,43 @@ InstallerDBStart
     };
 
     /**
-     * @function
-     * @return nothing
-     *      This function check the mail configuration
-     */
-    TargetNS.CheckMailConfig = function () {
-        $('input[name=Skip]').val('0');
-        // Check mail data via AJAX
-        $('input[name=Subaction]').val('CheckRequirements');
-        var Data = Core.AJAX.SerializeForm( $('#FormMail') );
-        Data += 'CheckMode=Mail;';
-        Core.AJAX.FunctionCall(Core.Config.Get('Baselink'), Data, CheckMailConfigCallback );
-    };
-
-    /**
-     * @function
      * @private
-     * @return nothing
-     * @description This function shows the mail configuration check result
+     * @name CheckMailConfigCallback
+     * @memberof Core.Installer
+     * @function
+     * @param {Object} json - The server response JSON object.
+     * @description
+     *      This function shows the mail configuration check result.
      */
     function CheckMailConfigCallback(json) {
-        if (parseInt(json['Successful']) == 1) {
+        if (parseInt(json.Successful, 10) === 1) {
             alert(Core.Config.Get('Installer.CheckMailLabelOne'));
             $('fieldset.errormsg').hide();
             $('input[name=Subaction]').val('Finish');
             $('form').submit();
         }
         else {
-            $('#FormMailResultMessage').html(json['Message']);
+            $('#FormMailResultMessage').html(json.Message);
             $('fieldset.ErrorMsg').show();
             alert(Core.Config.Get('Installer.CheckMailLabelTwo'));
         }
+    }
+
+    /**
+     * @name CheckMailConfig
+     * @memberof Core.Installer
+     * @function
+     * @description
+     *      This function checks the mail configuration.
+     */
+    TargetNS.CheckMailConfig = function () {
+        var Data;
+        $('input[name=Skip]').val('0');
+        // Check mail data via AJAX
+        $('input[name=Subaction]').val('CheckRequirements');
+        Data = Core.AJAX.SerializeForm($('#FormMail'));
+        Data += 'CheckMode=Mail;';
+        Core.AJAX.FunctionCall(Core.Config.Get('Baselink'), Data, CheckMailConfigCallback);
     };
 
     return TargetNS;

@@ -1,5 +1,4 @@
 // --
-// Core.Form.js - provides functions for form handling
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,8 +11,9 @@
 var Core = Core || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Form
+ * @namespace Core.Form
+ * @memberof Core
+ * @author OTRS AG
  * @description
  *      This namespace contains all form functions.
  */
@@ -23,15 +23,16 @@ Core.Form = (function (TargetNS) {
      * check dependencies first
      */
     if (!Core.Debug.CheckDependency('Core.Form', 'Core.Data', 'Core.Data')) {
-        return;
+        return false;
     }
 
     /**
+     * @name DisableForm
+     * @memberof Core.Form
      * @function
-     * @param {jQueryObject} $Form All elements of this form will be disabled
+     * @param {jQueryObject} $Form - All elements of this form will be disabled.
      * @description
      *      This function disables all elements of the given form. If no form given, it disables all form elements on the site.
-     * @return nothing
      */
     TargetNS.DisableForm = function ($Form) {
         // If no form is given, disable all form elements on the complete site
@@ -41,9 +42,9 @@ Core.Form = (function (TargetNS) {
 
         // save action data to the given element
         if (!$Form.hasClass('AlreadyDisabled')) {
-            $.each($Form.find("input:not([type='hidden']), textarea, select, button"), function (key, value) {
+            $.each($Form.find("input:not([type='hidden']), textarea, select, button"), function () {
                 var ReadonlyValue = $(this).attr('readonly'),
-                    TagnameValue  = $(this).prop('tagName'),
+                    TagnameValue = $(this).prop('tagName'),
                     DisabledValue = $(this).attr('disabled');
 
                 if (TagnameValue === 'BUTTON') {
@@ -63,16 +64,19 @@ Core.Form = (function (TargetNS) {
 
             // Add a speaking class to the form on DisableForm
             $Form.addClass('AlreadyDisabled');
+
+            Core.App.Publish('Event.Form.DisableForm', [$Form]);
         }
 
     };
 
     /**
+     * @name EnableForm
+     * @memberof Core.Form
      * @function
-     * @param {jQueryObject} $Form All elements of this form will be enabled
+     * @param {jQueryObject} $Form - All elements of this form will be enabled.
      * @description
      *      This function enables all elements of the given form. If no form given, it enables all form elements on the site.
-     * @return nothing
      */
     TargetNS.EnableForm = function ($Form) {
         // If no form is given, enable all form elements on the complete site
@@ -87,8 +91,8 @@ Core.Form = (function (TargetNS) {
             .find('button')
             .removeAttr('disabled');
 
-        $.each($Form.find("input:not([type='hidden']), textarea, select, button"), function (key, value) {
-            var TagnameValue  = $(this).prop('tagName'),
+        $.each($Form.find("input:not([type='hidden']), textarea, select, button"), function () {
+            var TagnameValue = $(this).prop('tagName'),
                 ReadonlyValue = Core.Data.Get($(this), 'OldReadonlyStatus'),
                 DisabledValue = Core.Data.Get($(this), 'OldDisabledStatus');
 
@@ -106,24 +110,29 @@ Core.Form = (function (TargetNS) {
 
         // Remove the speaking class to the form on DisableForm
         $Form.removeClass('AlreadyDisabled');
+
+        Core.App.Publish('Event.Form.EnableForm', [$Form]);
     };
 
     /**
+     * @name SelectAllCheckboxes
+     * @memberof Core.Form
      * @function
+     * @param {jQueryObject} $ClickedBox - The clicked checkbox in the DOM.
+     * @param {jQueryObject} $SelectAllCheckbox - The object with the SelectAll checkbox.
      * @description
      *      This function selects or deselects all checkboxes given by the ElementName.
-     * @param {jQueryObject} $ClickedBox The clicked checkbox in the DOM
-     * @param {jQueryObject} $SelectAllCheckbox The object with the SelectAll checkbox
-     * @return nothing
      */
     TargetNS.SelectAllCheckboxes = function ($ClickedBox, $SelectAllCheckbox) {
+        var ElementName, SelectAllID, $Elements,
+            Status, CountCheckboxes, CountSelectedCheckboxes;
+
         if (isJQueryObject($ClickedBox, $SelectAllCheckbox)) {
-            var ElementName = $ClickedBox.attr('name'),
-                SelectAllID = $SelectAllCheckbox.attr('id'),
-                $Elements = $('input[type="checkbox"][name=' + ElementName + ']').filter('[id!=' + SelectAllID + ']:visible'),
-                Status = $ClickedBox.prop('checked'),
-                CountCheckboxes,
-                CountSelectedCheckboxes;
+            ElementName = $ClickedBox.attr('name');
+            SelectAllID = $SelectAllCheckbox.attr('id');
+            $Elements = $('input[type="checkbox"][name=' + ElementName + ']').filter('[id!=' + SelectAllID + ']:visible');
+            Status = $ClickedBox.prop('checked');
+
             if ($ClickedBox.attr('id') && $ClickedBox.attr('id') === SelectAllID) {
                 $Elements.prop('checked', Status).triggerHandler('click');
             }
@@ -141,13 +150,14 @@ Core.Form = (function (TargetNS) {
     };
 
     /**
+     * @name InitSelectAllCheckboxes
+     * @memberof Core.Form
      * @function
+     * @param {jQueryObject} $Checkboxes - The jquery object with all dependent checkboxes.
+     * @param {jQueryObject} $SelectAllCheckbox - The object with the SelectAll checkbox.
      * @description
      *      This function marks the "SelectAll checkbox" as checked if all depending checkboxes are already marked checked.
-     *      Adds PubSub event to control handling of checkboxes, if a filter is used
-     * @param {jQueryObject} $Checkboxes The jquery object with all dependent checkboxes
-     * @param {jQueryObject} $SelectAllCheckbox The object with the SelectAll checkbox
-     * @return nothing
+     *      Adds PubSub event to control handling of checkboxes, if a filter is used.
      */
     TargetNS.InitSelectAllCheckboxes = function ($Checkboxes, $SelectAllCheckbox) {
         if (isJQueryObject($Checkboxes, $SelectAllCheckbox)) {
@@ -157,10 +167,10 @@ Core.Form = (function (TargetNS) {
             }
 
             // Remove checkbox selection, if filter is used/changed
-            Core.App.Subscribe('Event.UI.Table.InitTableFilter.Change', function ($FilterInput, $Container, ColumnNumber) {
+            Core.App.Subscribe('Event.UI.Table.InitTableFilter.Change', function ($FilterInput, $Container) {
                 // Only continue, if the filter event is associated with the container we are working in
                 if (!$.contains($Container[0], $SelectAllCheckbox[0])) {
-                    return false;
+                    return;
                 }
 
                 $Checkboxes.prop('checked', false);
