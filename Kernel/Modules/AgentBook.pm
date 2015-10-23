@@ -1,5 +1,4 @@
 # --
-# Kernel/Modules/AgentBook.pm - addressbook module
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,7 +11,6 @@ package Kernel::Modules::AgentBook;
 use strict;
 use warnings;
 
-use Kernel::System::CustomerUser;
 our $ObjectManagerDisabled = 1;
 
 sub new {
@@ -22,61 +20,61 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # check all needed objects
-    for (qw(TicketObject ParamObject DBObject QueueObject LayoutObject ConfigObject LogObject)) {
-        if ( !$Self->{$_} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $_!" );
-        }
-    }
-
-    # create additional objects
-    $Self->{CustomerUserObject} = Kernel::System::CustomerUser->new(%Param);
-
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
 
+    # get param object
+    my $ParamObject = $Kernel::OM->Get('Kernel::System::Web::Request');
+
     # get params
-    for (qw(ToCustomer CcCustomer BccCustomer CustomerData)) {
-        $Param{$_} = $Self->{ParamObject}->GetParam( Param => $_ );
+    for my $Recipient (qw(ToCustomer CcCustomer BccCustomer CustomerData)) {
+        $Param{$Recipient} = $ParamObject->GetParam( Param => $Recipient );
     }
 
     # get list of users
-    my $Search = $Self->{ParamObject}->GetParam( Param => 'Search' );
+    my $Search = $ParamObject->GetParam( Param => 'Search' );
     my %CustomerUserList;
+
+    # get customer user object
+    my $CustomerUserObject = $Kernel::OM->Get('Kernel::System::CustomerUser');
+
     if ($Search) {
-        %CustomerUserList = $Self->{CustomerUserObject}->CustomerSearch(
+        %CustomerUserList = $CustomerUserObject->CustomerSearch(
             Search => $Search,
         );
     }
     my %List;
-    for ( sort keys %CustomerUserList ) {
-        my %CustomerUserData = $Self->{CustomerUserObject}->CustomerUserDataGet(
-            User => $_,
+    for my $CustomerUser ( sort keys %CustomerUserList ) {
+        my %CustomerUserData = $CustomerUserObject->CustomerUserDataGet(
+            User => $CustomerUser,
         );
         if ( $CustomerUserData{UserEmail} ) {
             $List{ $CustomerUserData{UserEmail} } = {
-                Email       => $CustomerUserList{$_},
-                CustomerKey => $_
+                Email       => $CustomerUserList{$CustomerUser},
+                CustomerKey => $CustomerUser,
             };
         }
     }
 
-    # build customer search autocomplete field
-    $Self->{LayoutObject}->Block(
+    # get layout object
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
+    # build customer search auto-complete field
+    $LayoutObject->Block(
         Name => 'CustomerSearchAutoComplete',
     );
 
     if (%List) {
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'SearchResult',
         );
 
         my $Count = 1;
         for ( reverse sort { $List{$b}->{Email} cmp $List{$a}->{Email} } keys %List ) {
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'Row',
                 Data => {
                     Email => $List{$_}->{Email},
@@ -91,12 +89,12 @@ sub Run {
     }
 
     # start with page ...
-    my $Output = $Self->{LayoutObject}->Header( Type => 'Small' );
-    $Output .= $Self->{LayoutObject}->Output(
+    my $Output = $LayoutObject->Header( Type => 'Small' );
+    $Output .= $LayoutObject->Output(
         TemplateFile => 'AgentBook',
         Data         => \%Param
     );
-    $Output .= $Self->{LayoutObject}->Footer( Type => 'Small' );
+    $Output .= $LayoutObject->Footer( Type => 'Small' );
 
     return $Output;
 }

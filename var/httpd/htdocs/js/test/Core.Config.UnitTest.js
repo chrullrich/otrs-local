@@ -1,6 +1,5 @@
 // --
-// Core.Config.UnitTest.js - UnitTests
-// Copyright (C) 2001-2015 OTRS AG, http://otrs.com/\n";
+// Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
 // the enclosed file COPYING for license information (AGPL). If you
@@ -9,16 +8,17 @@
 
 "use strict";
 
-var OTRS = OTRS || {};
+var Core = Core || {};
 Core.Config = Core.Config || {};
 
 Core.Config = (function (Namespace) {
     Namespace.RunUnitTests = function(){
         module('Core.Config');
         test('Core.Config.Get()', function(){
+            var ConfigTest = 'Test value';
+
             expect(6);
 
-            var ConfigTest = 'Test value';
             Core.Config.Set('Test', ConfigTest);
             deepEqual(Core.Config.Get('Test'), ConfigTest);
 
@@ -36,22 +36,24 @@ Core.Config = (function (Namespace) {
         });
 
         test('Core.Config.AddConfig()', function(){
-            expect(3);
 
             var ConfigTest = {
-                Width:  600,
+                Width: 600,
                 Height: 400,
                 Name: 'Test'
             };
+
+            expect(3);
+
             Core.Config.AddConfig(ConfigTest, 'RichText');
             deepEqual(Core.Config.Get('RichText'), ConfigTest);
 
             Core.Config.AddConfig(ConfigTest, 'RichText.Details');
             deepEqual(Core.Config.Get('RichText.Details'), ConfigTest);
 
-            var ConfigTest = '{"Width":"600","Height":"400","Name":"Test"}';
+            ConfigTest = '{"Width":"600","Height":"400","Name":"Test"}';
 
-            Core.Config.AddConfig(ConfigTest,'RichText.JSONStuff');
+            Core.Config.AddConfig(ConfigTest, 'RichText.JSONStuff');
             deepEqual(Core.Config.Get('RichText.JSONStuff'), ConfigTest);
         });
     };

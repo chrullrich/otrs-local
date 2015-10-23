@@ -1,5 +1,4 @@
 # --
-# Kernel/Modules/AdminLog.pm - provides a log view for admins
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,6 +11,8 @@ package Kernel::Modules::AdminLog;
 use strict;
 use warnings;
 
+our $ObjectManagerDisabled = 1;
+
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -19,25 +20,20 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # check needed objects
-    for (qw(ParamObject LayoutObject LogObject ConfigObject)) {
-        if ( !$Self->{$_} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $_!" );
-        }
-    }
-
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
 
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     # print form
-    my $Output = $Self->{LayoutObject}->Header();
-    $Output .= $Self->{LayoutObject}->NavigationBar();
+    my $Output = $LayoutObject->Header();
+    $Output .= $LayoutObject->NavigationBar();
 
     # get log data
-    my $Log = $Self->{LogObject}->GetLog( Limit => 400 ) || '';
+    my $Log = $Kernel::OM->Get('Kernel::System::Log')->GetLog( Limit => 400 ) || '';
 
     # split data to lines
     my @Message = split /\n/, $Log;
@@ -52,7 +48,7 @@ sub Run {
 
         my $ErrorClass = ( $Parts[1] =~ /error/ ) ? 'Error' : '';
 
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'Row',
             Data => {
                 ErrorClass => $ErrorClass,
@@ -65,11 +61,11 @@ sub Run {
     }
 
     # create & return output
-    $Output .= $Self->{LayoutObject}->Output(
+    $Output .= $LayoutObject->Output(
         TemplateFile => 'AdminLog',
         Data         => \%Param,
     );
-    $Output .= $Self->{LayoutObject}->Footer();
+    $Output .= $LayoutObject->Footer();
 
     return $Output;
 }

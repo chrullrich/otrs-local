@@ -1,5 +1,4 @@
 # --
-# Kernel/Modules/AdminEmail.pm - to send a email to all agents
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,9 +11,7 @@ package Kernel::Modules::AdminEmail;
 use strict;
 use warnings;
 
-use Kernel::System::CustomerGroup;
-use Kernel::System::CustomerUser;
-use Kernel::System::Email;
+our $ObjectManagerDisabled = 1;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -22,20 +19,6 @@ sub new {
     # allocate new hash for object
     my $Self = {%Param};
     bless( $Self, $Type );
-
-    # check needed objects
-    for my $Needed (qw(ParamObject DBObject LayoutObject LogObject ConfigObject)) {
-        if ( !$Self->{$Needed} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $Needed!" );
-        }
-    }
-
-    $Self->{SendmailObject} = Kernel::System::Email->new(%Param);
-
-    if ( $Self->{ConfigObject}->Get('CustomerGroupSupport') ) {
-        $Self->{CustomerUserObject}  = Kernel::System::CustomerUser->new(%Param);
-        $Self->{CustomerGroupObject} = Kernel::System::CustomerGroup->new(%Param);
-    }
 
     return $Self;
 }
@@ -45,8 +28,13 @@ sub Run {
     my $Note = '';
     my ( %GetParam, %Errors );
 
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $UserObject   = $Kernel::OM->Get('Kernel::System::User');
+    my $GroupObject  = $Kernel::OM->Get('Kernel::System::Group');
+
     for my $Parameter (qw(From Subject Body Bcc GroupPermission NotifyCustomerUsers)) {
-        $Param{$Parameter} = $Self->{ParamObject}->GetParam( Param => $Parameter )
+        $Param{$Parameter} = $ParamObject->GetParam( Param => $Parameter )
             || $Param{$Parameter}
             || '';
     }
@@ -57,7 +45,7 @@ sub Run {
     if ( $Self->{Subaction} eq 'Send' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         # check needed stuff
         for my $Needed (qw(From Subject Body GroupPermission)) {
@@ -68,8 +56,8 @@ sub Run {
 
         # get array params
         for my $Parameter (qw(UserIDs GroupIDs RoleIDs)) {
-            if ( $Self->{ParamObject}->GetArray( Param => $Parameter ) ) {
-                @{ $GetParam{$Parameter} } = $Self->{ParamObject}->GetArray( Param => $Parameter );
+            if ( $ParamObject->GetArray( Param => $Parameter ) ) {
+                @{ $GetParam{$Parameter} } = $ParamObject->GetArray( Param => $Parameter );
             }
         }
 
@@ -77,8 +65,8 @@ sub Run {
 
             # get user recipients address
             my %Bcc;
-            for my $UserID ( $Self->{ParamObject}->GetArray( Param => 'UserIDs' ) ) {
-                my %UserData = $Self->{UserObject}->GetUserData(
+            for my $UserID ( $ParamObject->GetArray( Param => 'UserIDs' ) ) {
+                my %UserData = $UserObject->GetUserData(
                     UserID => $UserID,
                     Valid  => 1,
                 );
@@ -88,14 +76,17 @@ sub Run {
             }
 
             # get group recipients address
-            for my $GroupID ( $Self->{ParamObject}->GetArray( Param => 'GroupIDs' ) ) {
-                my @GroupMemberList = $Self->{GroupObject}->GroupMemberList(
-                    Result  => 'ID',
-                    Type    => $Param{GroupPermission},
+            for my $GroupID ( $ParamObject->GetArray( Param => 'GroupIDs' ) ) {
+
+                my %UserList = $GroupObject->PermissionGroupGet(
                     GroupID => $GroupID,
+                    Type    => $Param{GroupPermission},
                 );
+
+                my @GroupMemberList = sort keys %UserList;
+
                 for my $GroupMember (@GroupMemberList) {
-                    my %UserData = $Self->{UserObject}->GetUserData(
+                    my %UserData = $UserObject->GetUserData(
                         UserID => $GroupMember,
                         Valid  => 1,
                     );
@@ -107,14 +98,15 @@ sub Run {
 
             # get customerusers that are a member of the groups
             if ( $Param{NotifyCustomerUsers} ) {
-                for my $GroupID ( $Self->{ParamObject}->GetArray( Param => 'GroupIDs' ) ) {
-                    my @GroupCustomerUserMemberList = $Self->{CustomerGroupObject}->GroupMemberList(
+                for my $GroupID ( $ParamObject->GetArray( Param => 'GroupIDs' ) ) {
+                    my @GroupCustomerUserMemberList
+                        = $Kernel::OM->Get('Kernel::System::CustomerGroup')->GroupMemberList(
                         Result  => 'ID',
                         Type    => $Param{GroupPermission},
                         GroupID => $GroupID,
-                    );
+                        );
                     for my $GoupCustomerUserMember (@GroupCustomerUserMemberList) {
-                        my %CustomerUserData = $Self->{CustomerUserObject}->CustomerUserDataGet(
+                        my %CustomerUserData = $Kernel::OM->Get('Kernel::System::CustomerUser')->CustomerUserDataGet(
                             User  => $GoupCustomerUserMember,
                             Valid => 1,
                         );
@@ -126,16 +118,19 @@ sub Run {
             }
 
             # get role recipients addresses
-            for my $RoleID ( $Self->{ParamObject}->GetArray( Param => 'RoleIDs' ) ) {
-                my @RoleMemberList = $Self->{GroupObject}->GroupUserRoleMemberList(
-                    Result => 'ID',
+            for my $RoleID ( $ParamObject->GetArray( Param => 'RoleIDs' ) ) {
+
+                my %RoleMemberList = $GroupObject->PermissionRoleUserGet(
                     RoleID => $RoleID,
                 );
-                for my $RoleMember (@RoleMemberList) {
-                    my %UserData = $Self->{UserObject}->GetUserData(
+
+                for my $RoleMember ( sort keys %RoleMemberList ) {
+
+                    my %UserData = $UserObject->GetUserData(
                         UserID => $RoleMember,
                         Valid  => 1,
                     );
+
                     if ( $UserData{UserEmail} ) {
                         $Bcc{ $UserData{UserLogin} } = $UserData{UserEmail};
                     }
@@ -147,7 +142,7 @@ sub Run {
 
             # check needed stuff
             if ( !$Param{Bcc} ) {
-                $Note = $Self->{LayoutObject}->Notify(
+                $Note = $LayoutObject->Notify(
                     Priority => 'Error',
                     Info     => 'Select at least one recipient.'
                 );
@@ -163,39 +158,39 @@ sub Run {
 
                 # get content type
                 my $ContentType = 'text/plain';
-                if ( $Self->{LayoutObject}->{BrowserRichText} ) {
+                if ( $LayoutObject->{BrowserRichText} ) {
                     $ContentType = 'text/html';
 
                     # verify html document
-                    $Param{Body} = $Self->{LayoutObject}->RichTextDocumentComplete(
+                    $Param{Body} = $LayoutObject->RichTextDocumentComplete(
                         String => $Param{Body},
                     );
                 }
 
                 # send mail
-                my $Sent = $Self->{SendmailObject}->Send(
+                my $Sent = $Kernel::OM->Get('Kernel::System::Email')->Send(
                     From     => $Param{From},
                     Bcc      => $Param{Bcc},
                     Subject  => $Param{Subject},
-                    Charset  => $Self->{LayoutObject}->{UserCharset},
+                    Charset  => $LayoutObject->{UserCharset},
                     MimeType => $ContentType,
                     Body     => $Param{Body},
                 );
                 if ( !$Sent ) {
-                    return $Self->{LayoutObject}->ErrorScreen();
+                    return $LayoutObject->ErrorScreen();
                 }
 
-                $Self->{LayoutObject}->Block(
+                $LayoutObject->Block(
                     Name => 'Sent',
                     Data => \%Param,
                 );
-                my $Output = $Self->{LayoutObject}->Header();
-                $Output .= $Self->{LayoutObject}->NavigationBar();
-                $Output .= $Self->{LayoutObject}->Output(
+                my $Output = $LayoutObject->Header();
+                $Output .= $LayoutObject->NavigationBar();
+                $Output .= $LayoutObject->Output(
                     TemplateFile => 'AdminEmail',
                     Data         => \%Param,
                 );
-                $Output .= $Self->{LayoutObject}->Footer();
+                $Output .= $LayoutObject->Footer();
                 return $Output;
             }
         }
@@ -206,40 +201,40 @@ sub Run {
     # ------------------------------------------------------------ #
 
     # add rich text editor
-    if ( $Self->{LayoutObject}->{BrowserRichText} ) {
-        $Self->{LayoutObject}->Block(
+    if ( $LayoutObject->{BrowserRichText} ) {
+        $LayoutObject->Block(
             Name => 'RichText',
             Data => \%Param,
         );
     }
-    $Param{UserOption} = $Self->{LayoutObject}->BuildSelection(
-        Data        => { $Self->{UserObject}->UserList( Valid => 1 ) },
+    $Param{UserOption} = $LayoutObject->BuildSelection(
+        Data        => { $UserObject->UserList( Valid => 1 ) },
         Name        => 'UserIDs',
         Size        => 6,
         Multiple    => 1,
         Translation => 0,
-        Class => $Errors{BccInvalid} || '',
+        Class => 'Modernize ' . ( $Errors{BccInvalid} || '' ),
     );
 
-    $Param{GroupOption} = $Self->{LayoutObject}->BuildSelection(
-        Data        => { $Self->{GroupObject}->GroupList( Valid => 1 ) },
+    $Param{GroupOption} = $LayoutObject->BuildSelection(
+        Data        => { $GroupObject->GroupList( Valid => 1 ) },
         Size        => 6,
         Name        => 'GroupIDs',
         Multiple    => 1,
         Translation => 0,
-        Class => $Errors{BccInvalid} || '',
+        Class => 'Modernize ' . ( $Errors{BccInvalid} || '' ),
     );
-    my %RoleList = $Self->{GroupObject}->RoleList( Valid => 1 );
-    $Param{RoleOption} = $Self->{LayoutObject}->BuildSelection(
+    my %RoleList = $GroupObject->RoleList( Valid => 1 );
+    $Param{RoleOption} = $LayoutObject->BuildSelection(
         Data        => \%RoleList,
         Size        => 6,
         Name        => 'RoleIDs',
         Multiple    => 1,
         Translation => 0,
-        Class       => $Errors{BccInvalid} || '',
+        Class       => 'Modernize ' . ( $Errors{BccInvalid} || '' ),
     );
 
-    $Self->{LayoutObject}->Block(
+    $LayoutObject->Block(
         Name => 'Form',
         Data => {
             %Param,
@@ -248,29 +243,29 @@ sub Run {
     );
 
     if (%RoleList) {
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'RoleRecipients',
             Data => \%Param,
         );
     }
 
-    if ( $Self->{ConfigObject}->Get('CustomerGroupSupport') ) {
-        $Self->{LayoutObject}->Block(
+    if ( $Kernel::OM->Get('Kernel::Config')->Get('CustomerGroupSupport') ) {
+        $LayoutObject->Block(
             Name => 'CustomerUserGroups',
             Data => \%Param,
         );
     }
-    my $Output = $Self->{LayoutObject}->Header();
-    $Output .= $Self->{LayoutObject}->NavigationBar();
+    my $Output = $LayoutObject->Header();
+    $Output .= $LayoutObject->NavigationBar();
     $Output .= $Note;
-    $Output .= $Self->{LayoutObject}->Output(
+    $Output .= $LayoutObject->Output(
         TemplateFile => 'AdminEmail',
         Data         => {
             %Param,
             %Errors,
         },
     );
-    $Output .= $Self->{LayoutObject}->Footer();
+    $Output .= $LayoutObject->Footer();
     return $Output;
 }
 

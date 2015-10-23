@@ -1,5 +1,4 @@
 # --
-# Kernel/Modules/PublicDefault.pm - provides a default public module
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,6 +11,8 @@ package Kernel::Modules::PublicDefault;
 use strict;
 use warnings;
 
+our $ObjectManagerDisabled = 1;
+
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -19,31 +20,26 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # check needed objects
-    for (qw(ParamObject LayoutObject LogObject ConfigObject MainObject)) {
-        if ( !$Self->{$_} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $_!" );
-        }
-    }
-
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
 
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     # build header
-    my $Output = $Self->{LayoutObject}->CustomerHeader(
+    my $Output = $LayoutObject->CustomerHeader(
         Type  => '',
         Title => '',
     );
 
-    $Output .= $Self->{LayoutObject}->Output(
+    $Output .= $LayoutObject->Output(
         TemplateFile => 'PublicDefault',
     );
 
     # build footer
-    $Output .= $Self->{LayoutObject}->CustomerFooter(
+    $Output .= $LayoutObject->CustomerFooter(
         Type => '',
     );
 

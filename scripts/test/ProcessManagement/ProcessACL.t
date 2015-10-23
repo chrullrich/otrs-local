@@ -1,5 +1,4 @@
 # --
-# ProcessACL.t - Process module test script
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -177,7 +176,7 @@ $Self->IsNot(
 );
 
 # add the groups and roles to the users
-my $Success = $GroupObject->GroupMemberAdd(
+my $Success = $GroupObject->PermissionGroupUserAdd(
     GID        => $GroupID,
     UID        => $AffectedUserID,
     Permission => {
@@ -194,7 +193,7 @@ $Self->True(
     $Success,
     "GroupMememberAdd() - for Affected User with true"
 );
-$Success = $GroupObject->GroupUserRoleMemberAdd(
+$Success = $GroupObject->PermissionRoleUserAdd(
     UID    => $AffectedUserID,
     RID    => $RoleID,
     Active => 1,

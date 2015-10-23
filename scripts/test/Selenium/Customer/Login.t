@@ -1,5 +1,4 @@
 # --
-# Login.t - frontend tests for login
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -13,22 +12,14 @@ use utf8;
 
 use vars (qw($Self));
 
-use Kernel::System::UnitTest::Helper;
-use Kernel::System::UnitTest::Selenium;
-
 # get needed objects
 my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
-
-my $Selenium = Kernel::System::UnitTest::Selenium->new(
-    Verbose => 1,
-);
+my $Selenium     = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
 $Selenium->RunTest(
     sub {
 
-        my $Helper = Kernel::System::UnitTest::Helper->new(
-            RestoreSystemConfiguration => 0,
-        );
+        my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
         my $TestUserLogin = $Helper->TestCustomerUserCreate() || die "Did not get test user";
 
@@ -59,15 +50,6 @@ $Selenium->RunTest(
 
         # login
         $Element->submit();
-
-        # Wait until form has loaded, if neccessary
-        ACTIVESLEEP:
-        for my $Second ( 1 .. 20 ) {
-            if ( $Selenium->execute_script('return typeof($) === "function" && $("a#LogoutButton").length') ) {
-                last ACTIVESLEEP;
-            }
-            sleep 1;
-        }
 
         # login succressful?
         $Element = $Selenium->find_element( 'a#LogoutButton', 'css' );

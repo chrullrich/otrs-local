@@ -1,5 +1,4 @@
 // --
-// Core.Agent.TicketProcess.js - provides the special module functions for TicketProcess
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -13,17 +12,20 @@ var Core = Core || {};
 Core.Agent = Core.Agent || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Agent.TicketProcess
+ * @namespace Core.Agent.TicketProcess
+ * @memberof Core.Agent
+ * @author OTRS AG
  * @description
  *      This namespace contains the special module functions for TicketProcess.
  */
 Core.Agent.TicketProcess = (function (TargetNS) {
 
     /**
+     * @name Init
+     * @memberof Core.Agent.TicketProcess
      * @function
-     * @return nothing
-     *      This function initializes the special module functions
+     * @description
+     *      This function initializes the special module functions.
      */
     TargetNS.Init = function () {
 
@@ -88,15 +90,20 @@ Core.Agent.TicketProcess = (function (TargetNS) {
                             $(this).remove();
                         });
                         $ElementToUpdate.fadeIn();
+                        Core.UI.InputFields.Activate($ElementToUpdate);
                         try {
-                            /*jslint evil: true */
+                            /*eslint-disable no-eval */
                             eval(JavaScriptString);
+                            /*eslint-enable no-eval */
                         }
-                        catch (ignore) {}
+                        catch (Event) {
+                            // do nothing here (code needed  to not have an empty block here)
+                            $.noop(Event);
+                        }
 
                         // Handle special server errors (Response = <div class="ServerError" data-message="Message"></div>)
                         // Check if first element has class 'ServerError'
-                        if ( $ElementToUpdate.children().first().hasClass('ServerError') ) {
+                        if ($ElementToUpdate.children().first().hasClass('ServerError')) {
                             ErrorMessage = $ElementToUpdate.children().first().data('message');
 
                             // Add class ServerError to the process select element
@@ -122,6 +129,11 @@ Core.Agent.TicketProcess = (function (TargetNS) {
 
                         // Initially display dynamic fields with TreeMode = 1 correctly
                         Core.UI.TreeSelection.InitDynamicFieldTreeViewRestore();
+
+                        // trigger again a responsive event
+                        if (Core.App.Responsive.IsSmallerOrEqual(Core.App.Responsive.GetScreenSize(), 'ScreenL')) {
+                            Core.App.Publish('Event.App.Responsive.SmallerOrEqualScreenL');
+                        }
 
                         $('#AJAXLoader').addClass('Hidden');
                         $('#AJAXDialog').val('1');

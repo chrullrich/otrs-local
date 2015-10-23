@@ -1,5 +1,4 @@
 # --
-# Kernel/System/SysConfig.pm - all system config tool functions
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -283,7 +282,11 @@ sub CreateConfig {
                 $Name =~ s/'/\'/g;
                 $Name =~ s/###/'}->{'/g;
 
-                if ( $Config{Valid} ) {
+                if (
+                    $Config{Valid}
+                    || ( $Config{ReadOnly} && $ConfigDefault{Valid} && $ConfigDefault{Required} )
+                    )
+                {
 
                     my $C = $Self->_XML2Perl( Data => \%Config );
                     my $D = $Self->_XML2Perl( Data => \%ConfigDefault );
@@ -294,6 +297,10 @@ sub CreateConfig {
                     if ( !defined $A1 && !defined $A2 ) {
 
                         # do nothing
+                    }
+                    elsif ( $Config{ReadOnly} ) {
+
+                        # do nothing (= reset to readonly value)
                     }
                     elsif (
                         ( defined $A1 && !defined $A2 )
@@ -729,7 +736,6 @@ sub ConfigItemGet {
                     for my $Key2 ( %{ $Hash{$Key} } ) {
                         if (
                             $Key2 eq 'CSS'
-                            || $Key2 eq 'CSS_IE8'
                             || $Key2 eq 'JavaScript'
                             )
                         {
@@ -1030,6 +1036,49 @@ sub ConfigItemReset {
         Key   => $Param{Name},
         Value => $B,
         Valid => $ConfigItemDefault{Valid}
+    );
+    return 1;
+}
+
+=item ConfigItemValidityUpdate()
+
+updates the validity of a configuration setting.
+
+    $SysConfigObject->ConfigItemValidityUpdate(
+        Name  => 'Ticket::NumberGenerator',
+        Valid => 1,                             # or 0
+    );
+
+=cut
+
+sub ConfigItemValidityUpdate {
+    my ( $Self, %Param ) = @_;
+
+    # check needed stuff
+    for my $Needed (qw(Name Valid)) {
+        if ( !defined $Param{$Needed} ) {
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $Needed!"
+            );
+            return;
+        }
+    }
+    my %ConfigItemDefault = $Self->ConfigItemGet(
+        Name    => $Param{Name},
+        Default => 1,
+    );
+
+    return 1 if $Param{Valid} == $ConfigItemDefault{Valid};
+
+    my $A = $Self->_XML2Perl( Data => \%ConfigItemDefault );
+    my ($B);
+    eval "\$B = $A";
+
+    $Self->ConfigItemUpdate(
+        Key   => $Param{Name},
+        Value => $B,
+        Valid => $Param{Valid}
     );
     return 1;
 }
@@ -1685,7 +1734,7 @@ sub _Init {
     }
 
     # Now process the entries in init order and assign them to the xml entry list.
-    for my $Init (qw(Framework Application Config Changes Unkown)) {
+    for my $Init (qw(Framework Application Config Changes Unknown)) {
         for my $ConfigItem ( @{ $XMLConfigTMP{$Init} } ) {
             push(
                 @{ $Self->{XMLConfig} },
@@ -2203,7 +2252,6 @@ sub _XML2Perl {
                 for my $Key ( sort keys %{$Content} ) {
                     if (
                         $Key eq 'CSS'
-                        || $Key eq 'CSS_IE8'
                         || $Key eq 'JavaScript'
                         )
                     {

@@ -3,7 +3,7 @@ package URI;
 use strict;
 use warnings;
 
-our $VERSION = "1.64";
+our $VERSION = "1.69";
 
 our ($ABS_REMOTE_LEADING_DOTS, $ABS_ALLOW_RELATIVE_SCHEME, $DEFAULT_QUERY_FORM_DELIMITER);
 
@@ -155,6 +155,7 @@ sub clone
     bless \$other, ref $self;
 }
 
+sub TO_JSON { ${$_[0]} }
 
 sub _no_scheme_ok { 0 }
 
@@ -986,6 +987,12 @@ common, generic and server methods.
 
 Information about ssh is available at L<http://www.openssh.com/>.
 C<URI> objects belonging to the ssh scheme support the common,
+generic and server methods. In addition, they provide methods to
+access the userinfo sub-components: $uri->user and $uri->password.
+
+=item B<sftp>:
+
+C<URI> objects belonging to the sftp scheme support the common,
 generic and server methods. In addition, they provide methods to
 access the userinfo sub-components: $uri->user and $uri->password.
 

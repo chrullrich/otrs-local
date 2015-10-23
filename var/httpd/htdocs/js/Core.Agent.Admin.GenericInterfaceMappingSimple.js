@@ -1,5 +1,4 @@
 // --
-// Core.Agent.Admin.GenericInterfaceMappingSimple.js - provides the special module functions for the GenericInterface mapping.
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -14,18 +13,21 @@ Core.Agent = Core.Agent || {};
 Core.Agent.Admin = Core.Agent.Admin || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Agent.Admin.GenericInterfaceMappingSimple
+ * @namespace Core.Agent.Admin.GenericInterfaceMappingSimple
+ * @memberof Core.Agent.Admin
+ * @author OTRS AG
  * @description
  *      This namespace contains the special module functions for the GenericInterface Mapping module.
  */
-Core.Agent.Admin.GenericInterfaceMapping= (function (TargetNS) {
+Core.Agent.Admin.GenericInterfaceMapping = (function (TargetNS) {
 
     /**
+     * @name Init
+     * @memberof Core.Agent.Admin.GenericInterfaceMappingSimple
      * @function
-     * @param {Object} Params, initialization and internationalization parameters.
-     * @return nothing
-     *      This function initialize correctly all other function according to the local language
+     * @param {Object} Params - Initialization and internationalization parameters.
+     * @description
+     *      This function initialize correctly all other function according to the local language.
      */
     TargetNS.Init = function (Params) {
         TargetNS.WebserviceID = parseInt(Params.WebserviceID, 10);
@@ -53,12 +55,12 @@ Core.Agent.Admin.GenericInterfaceMapping= (function (TargetNS) {
         $('.NewValue').bind('change', function(){
 
             // modified title
-            $(this).closest('.WidgetKey').find('.Title').html( 'Mapping for Key ' + $(this).val() );
+            $(this).closest('.WidgetKey').find('.Title').html('Mapping for Key ' + $(this).val());
         });
 
         // register remove key action
         $('.AdditionalInformation .KeyMapRemove').bind('click', function () {
-            TargetNS.ShowDeleteDialog( $(this).attr('id') );
+            TargetNS.ShowDeleteDialog($(this).attr('id'));
             return false;
         });
 
@@ -73,17 +75,19 @@ Core.Agent.Admin.GenericInterfaceMapping= (function (TargetNS) {
 
         //bind click function to add button
         $('.ValueRemove').bind('click', function () {
-            TargetNS.RemoveValueMapping( $(this) );
+            TargetNS.RemoveValueMapping($(this));
         //            $(this).parent().remove();
             return false;
         });
     };
 
     /**
+     * @name AddKeyMapping
+     * @memberof Core.Agent.Admin.GenericInterfaceMappingSimple
      * @function
-     * @param nothing
-     * @return nothing
-     *      This function add a new dialog for a key mapping
+     * @returns {Bool} Returns false to prevent event bubbling.
+     * @description
+     *      This function add a new dialog for a key mapping.
      */
     TargetNS.AddKeyMapping = function(){
 
@@ -92,7 +96,7 @@ Core.Agent.Admin.GenericInterfaceMapping= (function (TargetNS) {
             KeyCounter = $('#KeyCounter').val();
 
         // increment key counter
-        KeyCounter ++;
+        KeyCounter++;
 
         // remove unnecessary classes
         $Clone.removeClass('Hidden KeyTemplate');
@@ -108,20 +112,20 @@ Core.Agent.Admin.GenericInterfaceMapping= (function (TargetNS) {
             $(this).addClass('Validate_Required');
 
             // add event handler to Add button
-            if( $(this).hasClass('ValueAdd') ) {
+            if($(this).hasClass('ValueAdd')) {
 
                 // bind click function to add button
                 $(this).bind('click', function () {
-                    TargetNS.AddValueMapping( $(this).closest('fieldset').parent().find('.ValueInsert'), KeyCounter );
+                    TargetNS.AddValueMapping($(this).closest('fieldset').parent().find('.ValueInsert'), KeyCounter);
                     return false;
                 });
             }
 
-            if( $(this).hasClass('KeyMapRemove') ) {
+            if($(this).hasClass('KeyMapRemove')) {
 
                 // bind click function to add button
                 $(this).bind('click', function () {
-                    TargetNS.ShowDeleteDialog( $(this).attr('id') );
+                    TargetNS.ShowDeleteDialog($(this).attr('id'));
                     return false;
                 });
             }
@@ -139,7 +143,7 @@ Core.Agent.Admin.GenericInterfaceMapping= (function (TargetNS) {
                 $(this).bind('change', function(){
 
                     // modified title
-                    $(this).closest('.WidgetKey').find('.Title').html( 'Mapping for Key ' + $(this).val() );
+                    $(this).closest('.WidgetKey').find('.Title').html('Mapping for Key ' + $(this).val());
                 });
             }
 
@@ -160,7 +164,7 @@ Core.Agent.Admin.GenericInterfaceMapping= (function (TargetNS) {
         $('#KeyInsert').append($Clone);
 
         // reset template row values
-        $('.NewRule').find(':input:not(:button)').attr('value','');
+        $('.NewRule').find(':input:not(:button)').attr('value', '');
         $('#KeyName' + KeyCounter).focus();
 
         // set new value for KeyCounter
@@ -168,15 +172,21 @@ Core.Agent.Admin.GenericInterfaceMapping= (function (TargetNS) {
 
         // init toggle action
         Core.UI.InitWidgetActionToggle();
+
+        Core.UI.InputFields.Activate();
+
         return false;
     };
 
     /**
+     * @name AddValueMapping
+     * @memberof Core.Agent.Admin.GenericInterfaceMappingSimple
      * @function
-     * @param {jQueryObject} ValueInsert JQuery object where the new value mapping should be included.
-     * @param {integer} KeyCounter the index for the new value mapping.
-     * @return nothing
-     *      This function add a new value mapping dialog
+     * @returns {Bool} Returns false to prevent event bubbling.
+     * @param {jQueryObject} ValueInsert - JQuery object where the new value mapping should be included.
+     * @param {Number} KeyCounter - the index for the new value mapping.
+     * @description
+     *      This function adds a new value mapping dialog.
      */
     TargetNS.AddValueMapping = function (ValueInsert, KeyCounter) {
 
@@ -186,7 +196,7 @@ Core.Agent.Admin.GenericInterfaceMapping= (function (TargetNS) {
             Suffix;
 
         // increment value counter
-        ValueCounter ++;
+        ValueCounter++;
 
         Suffix = KeyCounter + '_' + ValueCounter;
 
@@ -201,12 +211,12 @@ Core.Agent.Admin.GenericInterfaceMapping= (function (TargetNS) {
             $(this).addClass('Validate_Required');
 
             // add event handler to remove button
-            if( $(this).hasClass('ValueRemove') ) {
+            if($(this).hasClass('ValueRemove')) {
 
                 // bind click function to add button
                 $(this).bind('click', function () {
                     // remove row
-                    TargetNS.RemoveValueMapping( $(this) );
+                    TargetNS.RemoveValueMapping($(this));
                     return false;
                 });
             }
@@ -224,14 +234,18 @@ Core.Agent.Admin.GenericInterfaceMapping= (function (TargetNS) {
         // set new value for KeyCounter
         $('#ValueCounter' + KeyCounter).val(ValueCounter);
 
+        Core.UI.InputFields.Activate();
+
         return false;
     };
 
     /**
+     * @name RemoveValueMapping
+     * @memberof Core.Agent.Admin.GenericInterfaceMappingSimple
      * @function
-     * @param {jQueryObject} JQuery object used to decide if is, or not necessary to hide the input text control for MapTo value.
-     * @return nothing
-     *      This function show or hide the input text control for MapTo value
+     * @param {jQueryObject} Object - JQuery object used to decide if is, or not necessary to hide the input text control for MapTo value.
+     * @description
+     *      This function shows or hide the input text control for MapTo value.
      */
     TargetNS.RemoveValueMapping = function (Object) {
         var ID = Object.attr('id'),
@@ -250,12 +264,13 @@ Core.Agent.Admin.GenericInterfaceMapping= (function (TargetNS) {
         Object.parent().remove();
     };
 
-
     /**
+     * @name ToggleMapTo
+     * @memberof Core.Agent.Admin.GenericInterfaceMappingSimple
      * @function
-     * @param {jQueryObject} JQuery object used to decide if is, or not necessary to hide the input text control for MapTo value.
-     * @return nothing
-     *      This function show or hide the input text control for MapTo value
+     * @param {jQueryObject} Object - JQuery object used to decide if is, or not necessary to hide the input text control for MapTo value.
+     * @description
+     *      This function shows or hide the input text control for MapTo value.
      */
     TargetNS.ToggleMapTo = function (Object) {
     var ID = Object.attr('id');
@@ -270,13 +285,14 @@ Core.Agent.Admin.GenericInterfaceMapping= (function (TargetNS) {
     };
 
     /**
+     * @name ShowDeleteDialog
+     * @memberof Core.Agent.Admin.GenericInterfaceMappingSimple
      * @function
-     * @param {string} IDSelector ID object of the clicked element.
-     * @return nothing
-     *      This function shows a confirmation dialog with 2 buttons
+     * @param {String} IDSelector - ID object of the clicked element.
+     * @description
+     *      This function shows a confirmation dialog with 2 buttons.
      */
     TargetNS.ShowDeleteDialog = function(IDSelector){
-
         Core.UI.Dialog.ShowContentDialog(
             $('#DeleteDialogContainer'),
             TargetNS.Localization.DeleteKeyMappingtMsg,

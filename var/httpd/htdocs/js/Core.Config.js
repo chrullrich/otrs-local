@@ -1,5 +1,4 @@
 // --
-// Core.Config.js - provides the JS config
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,24 +11,44 @@
 var Core = Core || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Config
+ * @namespace Core.Config
+ * @memberof Core
+ * @author OTRS AG
  * @description
  *      This namespace contains the config options and functions.
  */
 Core.Config = (function (TargetNS) {
+    /**
+     * @private
+     * @name Config
+     * @memberof Core.Config
+     * @member {Object}
+     * @description
+     *      The global config object
+     */
     var Config = {},
+    /**
+     * @private
+     * @name ConfigPrefix
+     * @memberof Core.Config
+     * @member {String}
+     * @description
+     *      The prefix for all config keys to avoid name conflicts
+     */
         ConfigPrefix = 'Config';
 
     if (!Core.Debug.CheckDependency('Core.Config', 'Core.Data', 'Core.Data')) {
-        return;
+        return false;
     }
+
     /**
+     * @name Set
+     * @memberof Core.Config
      * @function
-     *      Sets a single option value
-     * @param {String} Key The name of the config option (also combined ones like Richtext.Width)
-     * @param {Object} Value The value of the option. Can be every kind of javascript variable type.
-     * @return nothing
+     * @param {String} Key - The name of the config option (also combined ones like Richtext.Width)
+     * @param {Object} Value - The value of the option. Can be every kind of javascript variable type.
+     * @description
+     *      Sets a single config value.
      */
     TargetNS.Set = function (Key, Value) {
         var Keys = Key.split('.'),
@@ -55,11 +74,14 @@ Core.Config = (function (TargetNS) {
     };
 
     /**
+     * @name Get
+     * @memberof Core.Config
      * @function
-     *      Gets a single option value
-     * @param {String} Key The name of the config option (also combined ones like Richtext.Width)
-     * @param {Object} DefaultValue (Optional) If nothing is saved in the config, return this default value
-     * @return {Object} The value of the option. Can be every kind of javascript variable type. Returns undefined if setting could not be found.
+     * @returns {Object} The value of the option. Can be every kind of javascript variable type. Returns undefined if setting could not be found.
+     * @param {String} Key - The name of the config option (also combined ones like Richtext.Width).
+     * @param {Object} [DefaultValue] - If nothing is saved in the config, return this default value.
+     * @description
+     *      Gets a single config value.
      */
     TargetNS.Get = function (Key, DefaultValue) {
         var Keys = Key.split('.'),
@@ -88,13 +110,15 @@ Core.Config = (function (TargetNS) {
     };
 
     /**
+     * @name AddConfig
+     * @memberof Core.Config
      * @function
-     * @return nothing
-     *      This function includes the given data into the config hash
-     * @param {Object} Data The config data to include as a javascript object
-     * @param {String} Key The key in the config where the data structure is saved to. If undefined, the Data is added to the root of the hash.
+     * @param {Object} Data - The config data to include as a javascript object
+     * @param {String} ConfigKey - The key in the config where the data structure is saved to. If undefined, the Data is added to the root of the hash.
+     * @description
+     *      This function includes the given data into the config hash.
      */
-    TargetNS.AddConfig = function (Data, Key) {
+    TargetNS.AddConfig = function (Data, ConfigKey) {
         var ConfigOptions,
             Keys,
             KeyToken,
@@ -109,13 +133,13 @@ Core.Config = (function (TargetNS) {
          */
         ConfigOptions = Core.Data.CopyObject(Data);
 
-        if (typeof Key === 'undefined') {
+        if (typeof ConfigKey === 'undefined') {
             $.each(Data, function (Key, Value) {
                 ConfigLevel[ConfigPrefix + Key] = Value;
             });
         }
         else {
-            Keys = Key.split('.');
+            Keys = ConfigKey.split('.');
             for (KeyToken in Keys) {
                 if (Keys.length === Count + 1) {
                     ConfigLevel[ConfigPrefix + Keys[KeyToken]] = ConfigOptions;
@@ -138,10 +162,10 @@ Core.Config = (function (TargetNS) {
      */
 
     /**
-     * @field
-     * @description This variable contains a hash of blacklisted browsers
-     *      of the agent interface and their recognition functions.
-     *      Each function returns true, if the browser is detected.
+     * @description
+     *     This variable contains a hash of blacklisted browsers
+     *     of the agent interface and their recognition functions.
+     *     Each function returns true, if the browser is detected.
      */
     TargetNS.AddConfig({
         'Microsoft Internet Explorer 5.5': function () {
@@ -152,6 +176,12 @@ Core.Config = (function (TargetNS) {
         },
         'Microsoft Internet Explorer 7': function () {
             return ($.browser.msie && $.browser.version === '7.0');
+        },
+        'Microsoft Internet Explorer 8': function () {
+            return ($.browser.msie && $.browser.version === '8.0');
+        },
+        'Microsoft Internet Explorer 9': function () {
+            return ($.browser.msie && $.browser.version === '9.0');
         },
         'Konqueror (without WebKit engine)': function () {
             return ($.browser.webkit && navigator.vendor === 'KDE');
@@ -171,10 +201,10 @@ Core.Config = (function (TargetNS) {
     }, 'BrowserBlackList::Agent');
 
     /**
-     * @field
-     * @description This variable contains a hash of blacklisted browsers
-     *      of the customer interface and their recognition functions.
-     *      Each function returns true, if the browser is detected.
+     * @description
+     *     This variable contains a hash of blacklisted browsers
+     *     of the customer interface and their recognition functions.
+     *     Each function returns true, if the browser is detected.
      */
     TargetNS.AddConfig({
         'Microsoft Internet Explorer 5.5': function () {
@@ -185,6 +215,12 @@ Core.Config = (function (TargetNS) {
         },
         'Microsoft Internet Explorer 7': function () {
             return ($.browser.msie && $.browser.version === '7.0');
+        },
+        'Microsoft Internet Explorer 8': function () {
+            return ($.browser.msie && $.browser.version === '8.0');
+        },
+        'Microsoft Internet Explorer 9': function () {
+            return ($.browser.msie && $.browser.version === '9.0');
         },
         'Konqueror (without WebKit engine)': function () {
             return ($.browser.webkit && navigator.vendor === 'KDE');

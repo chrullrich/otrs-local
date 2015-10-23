@@ -267,6 +267,10 @@ fieldset .RichTextHolder {
     margin-top: 3px;
 }
 
+fieldset div.Field {
+    padding: 0 !important;
+}
+
 .Preferences .Content {
     padding: 5px 13px;
 }
@@ -483,4 +487,23 @@ fieldset .ShowTreeSelection {
     width: 400px;
     height: 300px;
     margin: -10px -15px;
+}
+
+/**
+ * @subsection Chat
+ */
+
+.ArticleChat {
+    padding: 2px 5px;
+    font-size: 11px;
+    max-height: 100px;
+    overflow: auto;
+    background: #fff;
+    border: 1px solid #eee;
+}
+
+.ArticleMailContent .ArticleChat {
+    max-height: none;
+    font-size: 12px;
+    padding: 10px;
 }

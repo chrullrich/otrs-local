@@ -1,5 +1,4 @@
 # --
-# Kernel/Modules/AdminSystemMaintenance.pm - to control all system maintenance actions
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,10 +11,9 @@ package Kernel::Modules::AdminSystemMaintenance;
 use strict;
 use warnings;
 
-use Kernel::System::Valid;
-use Kernel::System::SystemMaintenance;
-
 use Kernel::System::VariableCheck qw(:all);
+
+our $ObjectManagerDisabled = 1;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -24,25 +22,20 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # check needed objects
-    for my $Needed (qw(ParamObject DBObject LayoutObject LogObject ConfigObject TimeObject)) {
-        if ( !$Self->{$Needed} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $Needed!" );
-        }
-    }
-
-    # create additional objects
-    $Self->{ValidObject}             = Kernel::System::Valid->new(%Param);
-    $Self->{SystemMaintenanceObject} = Kernel::System::SystemMaintenance->new( %{$Self} );
-
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    my $SystemMaintenanceID = $Self->{ParamObject}->GetParam( Param => 'SystemMaintenanceID' ) || '';
-    my $WantSessionID       = $Self->{ParamObject}->GetParam( Param => 'WantSessionID' )       || '';
+    my $LayoutObject            = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $ParamObject             = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $SessionObject           = $Kernel::OM->Get('Kernel::System::AuthSession');
+    my $SystemMaintenanceObject = $Kernel::OM->Get('Kernel::System::SystemMaintenance');
+    my $TimeObject              = $Kernel::OM->Get('Kernel::System::Time');
+
+    my $SystemMaintenanceID = $ParamObject->GetParam( Param => 'SystemMaintenanceID' ) || '';
+    my $WantSessionID       = $ParamObject->GetParam( Param => 'WantSessionID' )       || '';
 
     my $SessionVisibility = 'Collapsed';
 
@@ -52,10 +45,10 @@ sub Run {
     if ( $Self->{Subaction} eq 'Kill' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
-        $Self->{SessionObject}->RemoveSessionID( SessionID => $WantSessionID );
-        return $Self->{LayoutObject}->Redirect(
+        $SessionObject->RemoveSessionID( SessionID => $WantSessionID );
+        return $LayoutObject->Redirect(
             OP =>
                 "Action=AdminSystemMaintenance;Subaction=SystemMaintenanceEdit;SystemMaintenanceID=$SystemMaintenanceID;Kill=1"
         );
@@ -67,16 +60,16 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'KillAll' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
-        my @Sessions = $Self->{SessionObject}->GetAllSessionIDs();
+        my @Sessions = $SessionObject->GetAllSessionIDs();
         SESSIONS:
         for my $Session (@Sessions) {
             next SESSIONS if $Session eq $WantSessionID;
-            $Self->{SessionObject}->RemoveSessionID( SessionID => $Session );
+            $SessionObject->RemoveSessionID( SessionID => $Session );
         }
 
-        return $Self->{LayoutObject}->Redirect(
+        return $LayoutObject->Redirect(
             OP =>
                 "Action=AdminSystemMaintenance;Subaction=SystemMaintenanceEdit;SystemMaintenanceID=$SystemMaintenanceID;KillAll=1"
         );
@@ -99,7 +92,7 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'SystemMaintenanceNewAction' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         # check required parameters
         my %Error;
@@ -155,7 +148,7 @@ sub Run {
             );
         }
 
-        my $SystemMaintenanceID = $Self->{SystemMaintenanceObject}->SystemMaintenanceAdd(
+        my $SystemMaintenanceID = $SystemMaintenanceObject->SystemMaintenanceAdd(
             StartDate        => $SystemMaintenanceData->{StartDate},
             StopDate         => $SystemMaintenanceData->{StopDate},
             Comment          => $SystemMaintenanceData->{Comment},
@@ -168,13 +161,13 @@ sub Run {
 
         # show error if can't create
         if ( !$SystemMaintenanceID ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "There was an error creating the SystemMaintenance",
             );
         }
 
         # redirect to edit screen
-        return $Self->{LayoutObject}->Redirect(
+        return $LayoutObject->Redirect(
             OP =>
                 "Action=$Self->{Action};Subaction=SystemMaintenanceEdit;SystemMaintenanceID=$SystemMaintenanceID;Saved=1"
         );
@@ -190,13 +183,13 @@ sub Run {
 
         # check for SystemMaintenanceID
         if ( !$SystemMaintenanceID ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "Need SystemMaintenanceID!",
             );
         }
 
         # get system maintenance data
-        my $SystemMaintenanceData = $Self->{SystemMaintenanceObject}->SystemMaintenanceGet(
+        my $SystemMaintenanceData = $SystemMaintenanceObject->SystemMaintenanceGet(
             ID     => $SystemMaintenanceID,
             UserID => $Self->{UserID},
         );
@@ -205,19 +198,19 @@ sub Run {
         for my $Key (qw(StartDate StopDate)) {
 
             # try to convert SystemTime to TimeStamp
-            $SystemMaintenanceData->{ $Key . 'TimeStamp' } = $Self->{TimeObject}->SystemTime2TimeStamp(
+            $SystemMaintenanceData->{ $Key . 'TimeStamp' } = $TimeObject->SystemTime2TimeStamp(
                 SystemTime => $SystemMaintenanceData->{$Key},
             );
         }
 
         # check for valid system maintenance data
         if ( !IsHashRefWithData($SystemMaintenanceData) ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "Could not get data for SystemMaintenanceID $SystemMaintenanceID",
             );
         }
 
-        if ( $Self->{ParamObject}->GetParam( Param => 'Saved' ) ) {
+        if ( $ParamObject->GetParam( Param => 'Saved' ) ) {
 
             # add notification
             push @NotifyData, {
@@ -226,7 +219,7 @@ sub Run {
             };
         }
 
-        if ( $Self->{ParamObject}->GetParam( Param => 'Kill' ) ) {
+        if ( $ParamObject->GetParam( Param => 'Kill' ) ) {
 
             # add notification
             push @NotifyData, {
@@ -238,7 +231,7 @@ sub Run {
             $SessionVisibility = 'Expanded';
         }
 
-        if ( $Self->{ParamObject}->GetParam( Param => 'KillAll' ) ) {
+        if ( $ParamObject->GetParam( Param => 'KillAll' ) ) {
 
             # add notification
             push @NotifyData, {
@@ -267,7 +260,7 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'SystemMaintenanceEditAction' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         # check required parameters
         my %Error;
@@ -323,7 +316,7 @@ sub Run {
         }
 
         # otherwise update configuration and return to edit screen
-        my $UpdateResult = $Self->{SystemMaintenanceObject}->SystemMaintenanceUpdate(
+        my $UpdateResult = $SystemMaintenanceObject->SystemMaintenanceUpdate(
             ID               => $SystemMaintenanceID,
             StartDate        => $SystemMaintenanceData->{StartDate},
             StopDate         => $SystemMaintenanceData->{StopDate},
@@ -337,13 +330,13 @@ sub Run {
 
         # show error if can't create
         if ( !$UpdateResult ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "There was an error updating the SystemMaintenance",
             );
         }
 
         # redirect to edit screen
-        return $Self->{LayoutObject}->Redirect(
+        return $LayoutObject->Redirect(
             OP =>
                 "Action=$Self->{Action};Subaction=SystemMaintenanceEdit;SystemMaintenanceID=$SystemMaintenanceID;Saved=1"
         );
@@ -355,26 +348,26 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'Delete' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         if ( !$SystemMaintenanceID ) {
-            $Self->{LogObject}->Log(
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Message  => "No System Maintenance ID $SystemMaintenanceID",
                 Priority => 'error',
             );
         }
 
-        my $Delete = $Self->{SystemMaintenanceObject}->SystemMaintenanceDelete(
+        my $Delete = $SystemMaintenanceObject->SystemMaintenanceDelete(
             ID     => $SystemMaintenanceID,
             UserID => $Self->{UserID},
         );
         if ( !$Delete ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message =>
                     "Was not possible to delete the SystemMaintenance entry : $SystemMaintenanceID!",
             );
         }
-        return $Self->{LayoutObject}->Redirect( OP => 'Action=AdminSystemMaintenance' );
+        return $LayoutObject->Redirect( OP => 'Action=AdminSystemMaintenance' );
 
     }
 
@@ -383,14 +376,14 @@ sub Run {
     # ------------------------------------------------------------ #
     else {
 
-        my $SystemMaintenanceList = $Self->{SystemMaintenanceObject}->SystemMaintenanceListGet(
+        my $SystemMaintenanceList = $SystemMaintenanceObject->SystemMaintenanceListGet(
             UserID => $Self->{UserID},
         );
 
         if ( !scalar @{$SystemMaintenanceList} ) {
 
             # no data found block
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'NoDataRow',
             );
         }
@@ -399,20 +392,20 @@ sub Run {
             for my $SystemMaintenance ( @{$SystemMaintenanceList} ) {
 
                 # set the valid state
-                $SystemMaintenance->{ValidID}
-                    = $Self->{ValidObject}->ValidLookup( ValidID => $SystemMaintenance->{ValidID} );
+                $SystemMaintenance->{ValidID} = $Kernel::OM->Get('Kernel::System::Valid')
+                    ->ValidLookup( ValidID => $SystemMaintenance->{ValidID} );
 
                 # include time stamps on the correct key
                 for my $Key (qw(StartDate StopDate)) {
 
                     # try to convert SystemTime to TimeStamp
-                    $SystemMaintenance->{ $Key . 'TimeStamp' } = $Self->{TimeObject}->SystemTime2TimeStamp(
+                    $SystemMaintenance->{ $Key . 'TimeStamp' } = $TimeObject->SystemTime2TimeStamp(
                         SystemTime => $SystemMaintenance->{$Key},
                     );
                 }
 
                 # create blocks
-                $Self->{LayoutObject}->Block(
+                $LayoutObject->Block(
                     Name => 'ViewRow',
                     Data => {
                         %{$SystemMaintenance},
@@ -422,12 +415,12 @@ sub Run {
         }
 
         # generate output
-        my $Output = $Self->{LayoutObject}->Header();
-        $Output .= $Self->{LayoutObject}->NavigationBar();
-        $Output .= $Self->{LayoutObject}->Output(
+        my $Output = $LayoutObject->Header();
+        $Output .= $LayoutObject->NavigationBar();
+        $Output .= $LayoutObject->Output(
             TemplateFile => 'AdminSystemMaintenance',
         );
-        $Output .= $Self->{LayoutObject}->Footer();
+        $Output .= $LayoutObject->Footer();
         return $Output;
     }
 
@@ -435,6 +428,9 @@ sub Run {
 
 sub _ShowEdit {
     my ( $Self, %Param ) = @_;
+
+    my $LayoutObject  = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $SessionObject = $Kernel::OM->Get('Kernel::System::AuthSession');
 
     # get SystemMaintenance information
     my $SystemMaintenanceData = $Param{SystemMaintenanceData} || {};
@@ -459,37 +455,37 @@ sub _ShowEdit {
     }
 
     # start date info
-    $Param{StartDateString} = $Self->{LayoutObject}->BuildDateSelection(
+    $Param{StartDateString} = $LayoutObject->BuildDateSelection(
         %{$SystemMaintenanceData},
         %{ $TimeConfig{StartDate} },
         Prefix           => 'StartDate',
         Format           => 'DateInputFormatLong',
         YearPeriodPast   => 0,
-        YearPeriodFuture => 0,
+        YearPeriodFuture => 1,
         StartDateClass   => $Param{StartDateInvalid} || ' ',
         Validate         => 1,
     );
 
     # stop date info
-    $Param{StopDateString} = $Self->{LayoutObject}->BuildDateSelection(
+    $Param{StopDateString} = $LayoutObject->BuildDateSelection(
         %{$SystemMaintenanceData},
         %{ $TimeConfig{StopDate} },
         Prefix           => 'StopDate',
         Format           => 'DateInputFormatLong',
         YearPeriodPast   => 0,
-        YearPeriodFuture => 0,
+        YearPeriodFuture => 1,
         StopDateClass    => $Param{StopDateInvalid} || ' ',
         Validate         => 1,
     );
 
     # get valid list
-    my %ValidList = $Self->{ValidObject}->ValidList();
+    my %ValidList = $Kernel::OM->Get('Kernel::System::Valid')->ValidList();
 
-    $Param{ValidOption} = $Self->{LayoutObject}->BuildSelection(
+    $Param{ValidOption} = $LayoutObject->BuildSelection(
         Data       => \%ValidList,
         Name       => 'ValidID',
         SelectedID => $SystemMaintenanceData->{ValidID} || 1,
-        Class      => 'Validate_Required ' . ( $Param{ValidIDServerError} || '' ),
+        Class      => 'Modernize Validate_Required ' . ( $Param{ValidIDServerError} || '' ),
     );
 
     if (
@@ -500,20 +496,20 @@ sub _ShowEdit {
         $Param{Checked} = 'checked="checked"';
     }
 
-    my $Output = $Self->{LayoutObject}->Header();
-    $Output .= $Self->{LayoutObject}->NavigationBar();
+    my $Output = $LayoutObject->Header();
+    $Output .= $LayoutObject->NavigationBar();
 
     # show notifications if any
     if ( $Param{NotifyData} ) {
         for my $Notification ( @{ $Param{NotifyData} } ) {
-            $Output .= $Self->{LayoutObject}->Notify(
+            $Output .= $LayoutObject->Notify(
                 %{$Notification},
             );
         }
     }
 
     # get all sessions
-    my @List     = $Self->{SessionObject}->GetAllSessionIDs();
+    my @List     = $SessionObject->GetAllSessionIDs();
     my $Table    = '';
     my $Counter  = @List;
     my %MetaData = ();
@@ -527,7 +523,7 @@ sub _ShowEdit {
 
         for my $SessionID (@List) {
             my $List = '';
-            my %Data = $Self->{SessionObject}->GetSessionIDData( SessionID => $SessionID );
+            my %Data = $SessionObject->GetSessionIDData( SessionID => $SessionID );
             $MetaData{"$Data{UserType}Session"}++;
             if ( !$MetaData{"$Data{UserLogin}"} ) {
                 $MetaData{"$Data{UserType}SessionUniq"}++;
@@ -549,7 +545,7 @@ sub _ShowEdit {
         for my $UserSession (@UserSessions) {
 
             # create blocks
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => $UserSession->{UserType} . 'Session',
                 Data => {
                     %{$UserSession},
@@ -561,7 +557,7 @@ sub _ShowEdit {
         # no customer sessions found
         if ( !$MetaData{CustomerSession} ) {
 
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'CustomerNoDataRow',
             );
         }
@@ -569,13 +565,13 @@ sub _ShowEdit {
         # no agent sessions found
         if ( !$MetaData{UserSession} ) {
 
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'AgentNoDataRow',
             );
         }
     }
 
-    $Output .= $Self->{LayoutObject}->Output(
+    $Output .= $LayoutObject->Output(
         TemplateFile => "AdminSystemMaintenance$Param{Action}",
         Data         => {
             Counter => $Counter,
@@ -585,13 +581,15 @@ sub _ShowEdit {
         },
     );
 
-    $Output .= $Self->{LayoutObject}->Footer();
+    $Output .= $LayoutObject->Footer();
 
     return $Output;
 }
 
 sub _GetParams {
     my ( $Self, %Param ) = @_;
+
+    my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
 
     my $GetParam;
 
@@ -603,7 +601,7 @@ sub _GetParams {
         Comment LoginMessage ShowLoginMessage NotifyMessage ValidID )
         )
     {
-        $GetParam->{$ParamName} = $Self->{ParamObject}->GetParam( Param => $ParamName );
+        $GetParam->{$ParamName} = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => $ParamName );
     }
     $Param{ShowLoginMessage} ||= 0;
 
@@ -625,19 +623,19 @@ sub _GetParams {
         }
 
         # check date
-        if ( !$Self->{TimeObject}->Date2SystemTime( %DateStructure, Second => 0 ) ) {
+        if ( !$TimeObject->Date2SystemTime( %DateStructure, Second => 0 ) ) {
             $Param{Error}->{ $Item . 'Invalid' } = 'ServerError';
             next ITEM;
         }
 
         # try to convert date to a SystemTime
-        $GetParam->{$Item} = $Self->{TimeObject}->Date2SystemTime(
+        $GetParam->{$Item} = $TimeObject->Date2SystemTime(
             %DateStructure,
             Second => 0,
         );
 
         # try to convert SystemTime to TimeStamp
-        $GetParam->{ $Item . 'TimeStamp' } = $Self->{TimeObject}->SystemTime2TimeStamp(
+        $GetParam->{ $Item . 'TimeStamp' } = $TimeObject->SystemTime2TimeStamp(
             SystemTime => $GetParam->{$Item},
         );
     }

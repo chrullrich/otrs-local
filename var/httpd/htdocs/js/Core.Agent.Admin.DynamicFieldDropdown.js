@@ -1,5 +1,4 @@
 // --
-// Core.Agent.Admin.DynamicFieldDropdown.js - provides the special module functions for the Dropdown Dynamic Fields.
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -14,17 +13,21 @@ Core.Agent = Core.Agent || {};
 Core.Agent.Admin = Core.Agent.Admin || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Agent.Admin.DynamicFielddropdown
+ * @namespace Core.Agent.Admin.DynamicFieldDropdown
+ * @memberof Core.Agent.Admin
+ * @author OTRS AG
  * @description
  *      This namespace contains the special module functions for the DynamicFieldDropdown module.
  */
 Core.Agent.Admin.DynamicFieldDropdown = (function (TargetNS) {
 
     /**
+     * @name RemoveValue
+     * @memberof Core.Agent.Admin.DynamicFieldDropdown
      * @function
-     * @param {string} IDSelector, id of the pressed remove value button.
-     * @return nothing
+     * @returns {Boolean} Returns false
+     * @param {String} IDSelector - ID of the pressed remove value button.
+     * @description
      *      This function removes a value from possible values list and creates a stub input so
      *      the server can identify if a value is empty or deleted (useful for server validation)
      *      It also deletes the Value from the DefaultValues list
@@ -48,23 +51,27 @@ Core.Agent.Admin.DynamicFieldDropdown = (function (TargetNS) {
 
         // add the input replacement to the mapping type so it can be parsed and distinguish from
         // empty values by the server
-        $('#'+ IDSelector).closest('fieldset').append($Clone);
+        $('#' + IDSelector).closest('fieldset').append($Clone);
 
         // remove the value from default list
         if ($Key !== ''){
-            $('#DefaultValue').find("option[value='"+ $Key +"']").remove();
+            $('#DefaultValue').find("option[value='" + $Key + "']").remove();
+            $('#DefaultValue').trigger('redraw.InputField');
         }
 
         // remove possible value
-        $('#'+ IDSelector).parent().remove();
+        $('#' + IDSelector).parent().remove();
 
         return false;
     };
 
     /**
+     * @name AddValue
+     * @memberof Core.Agent.Admin.DynamicFieldDropdown
      * @function
-     * @param {Object} ValueInsert, HTML container of the value mapping row
-     * @return nothing
+     * @returns {Boolean} Returns false
+     * @param {Object} ValueInsert - HTML container of the value mapping row.
+     * @description
      *      This function add a new value to the possible values list
      */
     TargetNS.AddValue = function (ValueInsert) {
@@ -74,7 +81,7 @@ Core.Agent.Admin.DynamicFieldDropdown = (function (TargetNS) {
             ValueCounter = $('#ValueCounter').val();
 
         // increment key counter
-        ValueCounter ++;
+        ValueCounter++;
 
         // remove unnecessary classes
         $Clone.removeClass('Hidden ValueTemplate');
@@ -98,7 +105,7 @@ Core.Agent.Admin.DynamicFieldDropdown = (function (TargetNS) {
             $(this).parent().find('#' + ID + 'ServerError').attr('name', ID + '_' + ValueCounter + 'ServerError');
 
             // add event handler to remove button
-            if( $(this).hasClass('RemoveButton') ) {
+            if($(this).hasClass('RemoveButton')) {
 
                 // bind click function to remove button
                 $(this).bind('click', function () {
@@ -127,8 +134,11 @@ Core.Agent.Admin.DynamicFieldDropdown = (function (TargetNS) {
     };
 
     /**
+     * @name RecreateDefaultValueList
+     * @memberof Core.Agent.Admin.DynamicFieldDropdown
      * @function
-     * @return nothing
+     * @returns {Boolean} Returns false
+     * @description
      *      This function re-creates and sort the Default Values list taking the Possible Values
      *      as source, all deleted values will not be part of the re-created value list
      */
@@ -144,7 +154,7 @@ Core.Agent.Admin.DynamicFieldDropdown = (function (TargetNS) {
         $('#DefaultValue').empty();
 
         // add the default "possible none" element
-        $('#DefaultValue').append($('<option>', { value : '' }).text('-'));
+        $('#DefaultValue').append($('<option>', { value: '' }).text('-'));
 
         // find all active possible values keys (this will omit all previously deleted keys)
         $('.ValueRow > .DefaultValueKeyItem').each(function(){
@@ -162,7 +172,7 @@ Core.Agent.Admin.DynamicFieldDropdown = (function (TargetNS) {
 
             // check if both are none empty and add them to the default values list
             if (Key !== '' && Value !== '') {
-                $('#DefaultValue').append($('<option>', { value : Key }).text(Value));
+                $('#DefaultValue').append($('<option>', { value: Key }).text(Value));
 
             }
         });
@@ -171,7 +181,7 @@ Core.Agent.Admin.DynamicFieldDropdown = (function (TargetNS) {
         SelectOptions = $("#DefaultValue option");
 
         // sort the array by the text (this means the Value)
-        SelectOptions.sort(function(a,b) {
+        SelectOptions.sort(function(a, b) {
             if (a.text > b.text) {
                 return 1;
             }
@@ -184,11 +194,13 @@ Core.Agent.Admin.DynamicFieldDropdown = (function (TargetNS) {
         });
 
         // clear the list again and re-populate it with the sorted list
-        $("#DefaultValue").empty().append( SelectOptions );
+        $("#DefaultValue").empty().append(SelectOptions);
 
         // set the selected value as it was before, this will not apply if the key name was
         // changed
         $('#DefaultValue').val(SelectedValue);
+
+        $('#DefaultValue').trigger('redraw.InputField');
 
         return false;
     };

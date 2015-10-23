@@ -1,5 +1,4 @@
 # --
-# Kernel/Modules/AdminGenericInterfaceOperationDefault.pm - provides a log view for admins
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,9 +11,9 @@ package Kernel::Modules::AdminGenericInterfaceOperationDefault;
 use strict;
 use warnings;
 
-use Kernel::System::GenericInterface::Webservice;
-
 use Kernel::System::VariableCheck qw(:all);
+
+our $ObjectManagerDisabled = 1;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -22,31 +21,30 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    for (qw(ParamObject LayoutObject LogObject ConfigObject)) {
-        if ( !$Self->{$_} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $_!" );
-        }
-    }
-
-    $Self->{WebserviceObject} = Kernel::System::GenericInterface::Webservice->new( %{$Self} );
-
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    my $WebserviceID = int( $Self->{ParamObject}->GetParam( Param => 'WebserviceID' ) || 0 );
+    my $WebserviceID
+        = int( $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => 'WebserviceID' ) || 0 );
+
+    # get layout object
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     if ( !$WebserviceID ) {
-        return $Self->{LayoutObject}->ErrorScreen(
+        return $LayoutObject->ErrorScreen(
             Message => "Need WebserviceID!",
         );
     }
 
-    my $WebserviceData = $Self->{WebserviceObject}->WebserviceGet( ID => $WebserviceID );
+    my $WebserviceData = $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice')->WebserviceGet(
+        ID => $WebserviceID,
+    );
 
     if ( !IsHashRefWithData($WebserviceData) ) {
-        return $Self->{LayoutObject}->ErrorScreen(
+        return $LayoutObject->ErrorScreen(
             Message => "Could not get data for WebserviceID $WebserviceID",
         );
     }
@@ -61,7 +59,7 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'AddAction' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         return $Self->_AddAction(
             %Param,
@@ -79,7 +77,7 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'ChangeAction' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         return $Self->_ChangeAction(
             %Param,
@@ -90,7 +88,7 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'DeleteAction' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         return $Self->_DeleteAction(
             %Param,
@@ -107,15 +105,18 @@ sub _Add {
     my $WebserviceID   = $Param{WebserviceID};
     my $WebserviceData = $Param{WebserviceData};
 
-    my $OperationType = $Self->{ParamObject}->GetParam( Param => 'OperationType' );
+    my $OperationType = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => 'OperationType' );
+
+    # get layout object
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
     if ( !$OperationType ) {
-        return $Self->{LayoutObject}->ErrorScreen(
+        return $LayoutObject->ErrorScreen(
             Message => "Need OperationType",
         );
     }
     if ( !$Self->_OperationTypeCheck( OperationType => $OperationType ) ) {
-        return $Self->{LayoutObject}->ErrorScreen(
+        return $LayoutObject->ErrorScreen(
             Message => "Operation $OperationType is not registered",
         );
     }
@@ -139,8 +140,11 @@ sub _AddAction {
     my %Errors;
     my %GetParam;
 
+    # get param object
+    my $ParamObject = $Kernel::OM->Get('Kernel::System::Web::Request');
+
     for my $Needed (qw(Operation OperationType)) {
-        $GetParam{$Needed} = $Self->{ParamObject}->GetParam( Param => $Needed );
+        $GetParam{$Needed} = $ParamObject->GetParam( Param => $Needed );
         if ( !$GetParam{$Needed} ) {
             $Errors{ $Needed . 'ServerError' } = 'ServerError';
         }
@@ -151,14 +155,17 @@ sub _AddAction {
         $Errors{OperationServerError} = 'ServerError';
     }
 
+    # get layout object
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     # uncorrectable errors
     if ( !$GetParam{OperationType} ) {
-        return $Self->{LayoutObject}->ErrorScreen(
+        return $LayoutObject->ErrorScreen(
             Message => "Need OperationType",
         );
     }
     if ( !$Self->_OperationTypeCheck( OperationType => $GetParam{OperationType} ) ) {
-        return $Self->{LayoutObject}->ErrorScreen(
+        return $LayoutObject->ErrorScreen(
             Message => "OperationType $GetParam{OperationType} is not registered",
         );
     }
@@ -168,8 +175,7 @@ sub _AddAction {
 
         # get the description from the web request to send it back again to the screen
         my $OperationConfig;
-        $OperationConfig->{Description} = $Self->{ParamObject}->GetParam( Param => 'Description' )
-            || '';
+        $OperationConfig->{Description} = $ParamObject->GetParam( Param => 'Description' ) || '';
 
         return $Self->_ShowScreen(
             %Param,
@@ -186,10 +192,10 @@ sub _AddAction {
 
     my $Config = {
         Type        => $GetParam{OperationType},
-        Description => $Self->{ParamObject}->GetParam( Param => 'Description' ) || '',
+        Description => $ParamObject->GetParam( Param => 'Description' ) || '',
     };
 
-    my $MappingInbound = $Self->{ParamObject}->GetParam( Param => 'MappingInbound' );
+    my $MappingInbound = $ParamObject->GetParam( Param => 'MappingInbound' );
     $MappingInbound = $Self->_MappingTypeCheck( MappingType => $MappingInbound ) ? $MappingInbound : '';
 
     if ($MappingInbound) {
@@ -198,7 +204,7 @@ sub _AddAction {
         };
     }
 
-    my $MappingOutbound = $Self->{ParamObject}->GetParam( Param => 'MappingOutbound' );
+    my $MappingOutbound = $ParamObject->GetParam( Param => 'MappingOutbound' );
     $MappingOutbound = $Self->_MappingTypeCheck( MappingType => $MappingOutbound ) ? $MappingOutbound : '';
 
     if ($MappingOutbound) {
@@ -211,17 +217,16 @@ sub _AddAction {
     if ( !$WebserviceData->{Config}->{Provider}->{Operation}->{ $GetParam{Operation} } ) {
         $WebserviceData->{Config}->{Provider}->{Operation}->{ $GetParam{Operation} } = $Config;
 
-        $Self->{WebserviceObject}->WebserviceUpdate(
+        $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice')->WebserviceUpdate(
             %{$WebserviceData},
             UserID => $Self->{UserID},
         );
     }
 
     my $RedirectURL = "Action=AdminGenericInterfaceOperationDefault;Subaction=Change;WebserviceID=$WebserviceID;";
-    $RedirectURL
-        .= 'Operation=' . $Self->{LayoutObject}->LinkEncode( $GetParam{Operation} ) . ';';
+    $RedirectURL .= 'Operation=' . $LayoutObject->LinkEncode( $GetParam{Operation} ) . ';';
 
-    return $Self->{LayoutObject}->Redirect(
+    return $LayoutObject->Redirect(
         OP => $RedirectURL,
     );
 }
@@ -232,10 +237,13 @@ sub _Change {
     my $WebserviceID   = $Param{WebserviceID};
     my $WebserviceData = $Param{WebserviceData};
 
-    my $Operation = $Self->{ParamObject}->GetParam( Param => 'Operation' );
+    my $Operation = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => 'Operation' );
+
+    # get layout object
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
     if ( !$Operation ) {
-        return $Self->{LayoutObject}->ErrorScreen(
+        return $LayoutObject->ErrorScreen(
             Message => "Need Operation",
         );
     }
@@ -247,7 +255,7 @@ sub _Change {
         || ref $WebserviceData->{Config}->{Provider}->{Operation}->{$Operation} ne 'HASH'
         )
     {
-        return $Self->{LayoutObject}->ErrorScreen(
+        return $LayoutObject->ErrorScreen(
             Message => "Could not determine config for operation $Operation",
         );
     }
@@ -276,12 +284,16 @@ sub _ChangeAction {
     my $WebserviceID   = $Param{WebserviceID};
     my $WebserviceData = $Param{WebserviceData};
 
+    # get needed objects
+    my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     for my $Needed (qw(Operation OldOperation)) {
 
-        $GetParam{$Needed} = $Self->{ParamObject}->GetParam( Param => $Needed );
+        $GetParam{$Needed} = $ParamObject->GetParam( Param => $Needed );
 
         if ( !$GetParam{$Needed} ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "Need $Needed",
             );
         }
@@ -296,7 +308,7 @@ sub _ChangeAction {
         'HASH'
         )
     {
-        return $Self->{LayoutObject}->ErrorScreen(
+        return $LayoutObject->ErrorScreen(
             Message => "Could not determine config for operation $GetParam{OldOperation}",
         );
     }
@@ -311,7 +323,7 @@ sub _ChangeAction {
             $Errors{OperationServerError} = 'ServerError';
         }
 
-        # Ok, remove old Operation. New one will be added below.
+        # OK, remove old Operation. New one will be added below.
         if ( !%Errors ) {
             delete $WebserviceData->{Config}->{Provider}->{Operation}->{ $GetParam{OldOperation} };
         }
@@ -335,7 +347,7 @@ sub _ChangeAction {
     }
 
     # Now handle mappings. If mapping types were not changed, keep the mapping configuration.
-    my $MappingInbound = $Self->{ParamObject}->GetParam( Param => 'MappingInbound' );
+    my $MappingInbound = $ParamObject->GetParam( Param => 'MappingInbound' );
     $MappingInbound = $Self->_MappingTypeCheck( MappingType => $MappingInbound ) ? $MappingInbound : '';
 
     # No inbound mapping set, make sure it is not present in the configuration.
@@ -351,7 +363,7 @@ sub _ChangeAction {
         };
     }
 
-    my $MappingOutbound = $Self->{ParamObject}->GetParam( Param => 'MappingOutbound' );
+    my $MappingOutbound = $ParamObject->GetParam( Param => 'MappingOutbound' );
     $MappingOutbound = $Self->_MappingTypeCheck( MappingType => $MappingOutbound ) ? $MappingOutbound : '';
 
     # No outbound mapping set, make sure it is not present in the configuration.
@@ -367,14 +379,13 @@ sub _ChangeAction {
         };
     }
 
-    $OperationConfig->{Description} = $Self->{ParamObject}->GetParam( Param => 'Description' )
-        || '';
+    $OperationConfig->{Description} = $ParamObject->GetParam( Param => 'Description' ) || '';
 
     # Update operation config.
     $WebserviceData->{Config}->{Provider}->{Operation}->{ $GetParam{Operation} } = $OperationConfig;
 
     # Write new config to database.
-    $Self->{WebserviceObject}->WebserviceUpdate(
+    $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice')->WebserviceUpdate(
         %{$WebserviceData},
         UserID => $Self->{UserID},
     );
@@ -383,13 +394,13 @@ sub _ChangeAction {
     my $RedirectURL
         = "Action=AdminGenericInterfaceOperationDefault;Subaction=Change;WebserviceID=$WebserviceID;Operation=$GetParam{Operation}";
 
-    # Save and finish button: go to Webservice.
-    if ( $Self->{ParamObject}->GetParam( Param => 'ReturnToWebservice' ) ) {
+    # Save and finish button: go to web service.
+    if ( $ParamObject->GetParam( Param => 'ReturnToWebservice' ) ) {
         $RedirectURL = "Action=AdminGenericInterfaceWebservice;Subaction=Change;WebserviceID=$WebserviceID;";
 
     }
 
-    return $Self->{LayoutObject}->Redirect(
+    return $LayoutObject->Redirect(
         OP => $RedirectURL,
     );
 }
@@ -399,10 +410,10 @@ sub _DeleteAction {
 
     my $WebserviceData = $Param{WebserviceData};
 
-    my $Operation = $Self->{ParamObject}->GetParam( Param => 'Operation' );
+    my $Operation = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => 'Operation' );
 
     if ( !$Operation ) {
-        $Self->{LogObject}->Log(
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => 'Got no Operation',
         );
@@ -414,22 +425,24 @@ sub _DeleteAction {
     if ( $WebserviceData->{Config}->{Provider}->{Operation}->{$Operation} ) {
         delete $WebserviceData->{Config}->{Provider}->{Operation}->{$Operation};
 
-        $Success = $Self->{WebserviceObject}->WebserviceUpdate(
+        $Success = $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice')->WebserviceUpdate(
             %{$WebserviceData},
             UserID => $Self->{UserID},
         );
     }
 
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     # build JSON output
-    my $JSON = $Self->{LayoutObject}->JSONEncode(
+    my $JSON = $LayoutObject->JSONEncode(
         Data => {
             Success => $Success,
         },
     );
 
     # send JSON response
-    return $Self->{LayoutObject}->Attachment(
-        ContentType => 'application/json; charset=' . $Self->{LayoutObject}->{Charset},
+    return $LayoutObject->Attachment(
+        ContentType => 'application/json; charset=' . $LayoutObject->{Charset},
         Content     => $JSON,
         Type        => 'inline',
         NoCache     => 1,
@@ -439,14 +452,17 @@ sub _DeleteAction {
 sub _ShowScreen {
     my ( $Self, %Param ) = @_;
 
-    my $Output = $Self->{LayoutObject}->Header();
-    $Output .= $Self->{LayoutObject}->NavigationBar();
+    # get layout object
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
-    $Self->{LayoutObject}->Block(
+    my $Output = $LayoutObject->Header();
+    $Output .= $LayoutObject->NavigationBar();
+
+    $LayoutObject->Block(
         Name => 'Title' . $Param{Mode},
         Data => \%Param
     );
-    $Self->{LayoutObject}->Block(
+    $LayoutObject->Block(
         Name => 'Navigation' . $Param{Mode},
         Data => \%Param
     );
@@ -458,12 +474,12 @@ sub _ShowScreen {
 
     }
     elsif ( $Param{Mode} eq 'Change' ) {
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'ActionListDelete',
             Data => \%Param
         );
 
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'SaveAndFinishButton',
             Data => \%Param
         );
@@ -473,7 +489,7 @@ sub _ShowScreen {
 
     $TemplateData{Description} = $Param{OperationConfig}->{Description};
 
-    my $Mappings = $Self->{ConfigObject}->Get('GenericInterface::Mapping::Module') || {};
+    my $Mappings = $Kernel::OM->Get('Kernel::Config')->Get('GenericInterface::Mapping::Module') || {};
 
     # Inbound mapping
     my @MappingList = sort keys %{$Mappings};
@@ -482,13 +498,13 @@ sub _ShowScreen {
         ? $Param{MappingInbound}
         : '';
 
-    $TemplateData{MappingInboundStrg} = $Self->{LayoutObject}->BuildSelection(
+    $TemplateData{MappingInboundStrg} = $LayoutObject->BuildSelection(
         Data          => \@MappingList,
         Name          => 'MappingInbound',
         SelectedValue => $MappingInbound,
         Sort          => 'AlphanumericValue',
         PossibleNone  => 1,
-        Class         => 'RegisterChange',
+        Class         => 'Modernize RegisterChange',
     );
 
     if ($MappingInbound) {
@@ -496,12 +512,12 @@ sub _ShowScreen {
     }
 
     if ( $TemplateData{MappingInboundConfigDialog} && $Param{Mode} eq 'Change' ) {
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'MappingInboundConfigureButton',
             Data => {
                 %Param,
                 %TemplateData,
-                }
+            },
         );
     }
 
@@ -510,13 +526,13 @@ sub _ShowScreen {
         ? $Param{MappingOutbound}
         : '';
 
-    $TemplateData{MappingOutboundStrg} = $Self->{LayoutObject}->BuildSelection(
+    $TemplateData{MappingOutboundStrg} = $LayoutObject->BuildSelection(
         Data          => \@MappingList,
         Name          => 'MappingOutbound',
         SelectedValue => $MappingOutbound,
         Sort          => 'AlphanumericValue',
         PossibleNone  => 1,
-        Class         => 'RegisterChange',
+        Class         => 'Modernize RegisterChange',
     );
 
     if ($MappingOutbound) {
@@ -524,16 +540,16 @@ sub _ShowScreen {
     }
 
     if ( $TemplateData{MappingOutboundConfigDialog} && $Param{Mode} eq 'Change' ) {
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'MappingOutboundConfigureButton',
             Data => {
                 %Param,
                 %TemplateData,
-                }
+            },
         );
     }
 
-    $Output .= $Self->{LayoutObject}->Output(
+    $Output .= $LayoutObject->Output(
         TemplateFile => 'AdminGenericInterfaceOperationDefault',
         Data         => {
             %Param,
@@ -542,7 +558,7 @@ sub _ShowScreen {
         },
     );
 
-    $Output .= $Self->{LayoutObject}->Footer();
+    $Output .= $LayoutObject->Footer();
     return $Output;
 }
 
@@ -557,7 +573,7 @@ sub _OperationTypeCheck {
 
     return 0 if !$Param{OperationType};
 
-    my $Operations = $Self->{ConfigObject}->Get('GenericInterface::Operation::Module');
+    my $Operations = $Kernel::OM->Get('Kernel::Config')->Get('GenericInterface::Operation::Module');
     return 0 if ref $Operations ne 'HASH';
 
     return ref $Operations->{ $Param{OperationType} } eq 'HASH' ? 1 : 0;
@@ -574,7 +590,7 @@ sub _MappingTypeCheck {
 
     return 0 if !$Param{MappingType};
 
-    my $Mappings = $Self->{ConfigObject}->Get('GenericInterface::Mapping::Module');
+    my $Mappings = $Kernel::OM->Get('Kernel::Config')->Get('GenericInterface::Mapping::Module');
     return 0 if ref $Mappings ne 'HASH';
 
     return ref $Mappings->{ $Param{MappingType} } eq 'HASH' ? 1 : 0;

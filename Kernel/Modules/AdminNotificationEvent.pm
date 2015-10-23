@@ -1,5 +1,4 @@
 # --
-# Kernel/Modules/AdminNotificationEvent.pm - to manage event-based notifications
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,18 +11,10 @@ package Kernel::Modules::AdminNotificationEvent;
 use strict;
 use warnings;
 
-use Kernel::System::NotificationEvent;
-use Kernel::System::Priority;
-use Kernel::System::Event;
-use Kernel::System::Lock;
-use Kernel::System::Service;
-use Kernel::System::SLA;
-use Kernel::System::State;
-use Kernel::System::Type;
-use Kernel::System::Valid;
-use Kernel::System::DynamicField;
-use Kernel::System::DynamicField::Backend;
+our $ObjectManagerDisabled = 1;
+
 use Kernel::System::VariableCheck qw(:all);
+use Kernel::Language qw(Translatable);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -32,73 +23,64 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # check all needed objects
-    for my $Needed (qw(ParamObject DBObject LayoutObject ConfigObject LogObject)) {
-        if ( !$Self->{$Needed} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $Needed!" );
-        }
-    }
-
-    $Self->{NotificationEventObject} = Kernel::System::NotificationEvent->new(%Param);
-
-    $Self->{PriorityObject}     = Kernel::System::Priority->new(%Param);
-    $Self->{StateObject}        = Kernel::System::State->new(%Param);
-    $Self->{LockObject}         = Kernel::System::Lock->new(%Param);
-    $Self->{ServiceObject}      = Kernel::System::Service->new(%Param);
-    $Self->{SLAObject}          = Kernel::System::SLA->new(%Param);
-    $Self->{TypeObject}         = Kernel::System::Type->new(%Param);
-    $Self->{ValidObject}        = Kernel::System::Valid->new(%Param);
-    $Self->{DynamicFieldObject} = Kernel::System::DynamicField->new(%Param);
-    $Self->{BackendObject}      = Kernel::System::DynamicField::Backend->new(%Param);
-
-    $Self->{Config} = $Self->{ConfigObject}->Get("Frontend::Admin::$Self->{Action}");
-
-    $Self->{RichText} = $Self->{ConfigObject}->Get('Frontend::RichText');
-    if ( $Self->{RichText} && !$Self->{Config}->{RichText} ) {
-        $Self->{RichText} = 0;
-    }
-
-    # get the dynamic fields for this screen
-    $Self->{DynamicField} = $Self->{DynamicFieldObject}->DynamicFieldListGet(
-        Valid      => 1,
-        ObjectType => ['Ticket'],
-    );
-
-    $Self->{EventObject} = Kernel::System::Event->new(
-        %Param,
-        DynamicFieldObject => $Self->{DynamicFieldObject},
-    );
-
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    # set type for notifications
-    my $NotificationType = 'text/plain';
-    if ( $Self->{RichText} ) {
-        $NotificationType = 'text/html';
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+    my $RichText     = $ConfigObject->Get('Frontend::RichText');
+    my $DynamicField = $Kernel::OM->Get('Kernel::System::DynamicField')->DynamicFieldListGet(
+        Valid      => 1,
+        ObjectType => ['Ticket'],
+    );
+
+    if ( $RichText && !$ConfigObject->Get("Frontend::Admin::$Self->{Action}")->{RichText} ) {
+        $RichText = 0;
     }
+
+    # set type for notifications
+    my $ContentType = 'text/plain';
+    if ($RichText) {
+        $ContentType = 'text/html';
+    }
+
+    my $ParamObject             = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $LayoutObject            = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $NotificationEventObject = $Kernel::OM->Get('Kernel::System::NotificationEvent');
+    my $BackendObject           = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
+    my $MainObject              = $Kernel::OM->Get('Kernel::System::Main');
+
+    # get registered transport layers
+    my %RegisteredTransports = %{ $Kernel::OM->Get('Kernel::Config')->Get('Notification::Transport') || {} };
 
     # ------------------------------------------------------------ #
     # change
     # ------------------------------------------------------------ #
     if ( $Self->{Subaction} eq 'Change' ) {
-        my $ID = $Self->{ParamObject}->GetParam( Param => 'ID' ) || '';
-        my %Data = $Self->{NotificationEventObject}->NotificationGet( ID => $ID );
-        my $Output = $Self->{LayoutObject}->Header();
-        $Output .= $Self->{LayoutObject}->NavigationBar();
+
+        # get notification id
+        my $ID = $ParamObject->GetParam( Param => 'ID' ) || '';
+
+        # get notification data
+        my %Data = $NotificationEventObject->NotificationGet(
+            ID => $ID,
+        );
+
+        my $Output = $LayoutObject->Header();
+        $Output .= $LayoutObject->NavigationBar();
         $Self->_Edit(
-            Action => 'Change',
             %Data,
+            Action             => 'Change',
+            RichText           => $RichText,
             DynamicFieldValues => $Data{Data},
         );
-        $Output .= $Self->{LayoutObject}->Output(
+        $Output .= $LayoutObject->Output(
             TemplateFile => 'AdminNotificationEvent',
             Data         => \%Param,
         );
-        $Output .= $Self->{LayoutObject}->Footer();
+        $Output .= $LayoutObject->Footer();
 
         return $Output;
     }
@@ -109,27 +91,49 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'ChangeAction' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         my %GetParam;
         for my $Parameter (
-            qw(ID Name Subject Body Type Charset Comment ValidID Events ArticleSubjectMatch ArticleBodyMatch ArticleTypeID ArticleSenderTypeID)
+            qw(ID Name Comment ValidID Events ArticleSubjectMatch ArticleBodyMatch ArticleTypeID ArticleSenderTypeID Transports)
             )
         {
-            $GetParam{$Parameter} = $Self->{ParamObject}->GetParam( Param => $Parameter ) || '';
+            $GetParam{$Parameter} = $ParamObject->GetParam( Param => $Parameter ) || '';
         }
         PARAMETER:
         for my $Parameter (
-            qw(Recipients RecipientAgents RecipientGroups RecipientRoles RecipientEmail
+            qw(Recipients RecipientAgents RecipientGroups RecipientRoles
             Events StateID QueueID PriorityID LockID TypeID ServiceID SLAID
             CustomerID CustomerUserID
             ArticleTypeID ArticleSubjectMatch ArticleBodyMatch ArticleAttachmentInclude
-            ArticleSenderTypeID NotificationArticleTypeID)
+            ArticleSenderTypeID Transports OncePerDay SendOnOutOfOffice
+            VisibleForAgent VisibleForAgentTooltip LanguageID AgentEnabledByDefault)
             )
         {
-            my @Data = $Self->{ParamObject}->GetArray( Param => $Parameter );
+            my @Data = $ParamObject->GetArray( Param => $Parameter );
             next PARAMETER if !@Data;
             $GetParam{Data}->{$Parameter} = \@Data;
+        }
+
+        # get the subject and body for all languages
+        for my $LanguageID ( @{ $GetParam{Data}->{LanguageID} } ) {
+
+            my $Subject = $ParamObject->GetParam( Param => $LanguageID . '_Subject' ) || '';
+            my $Body    = $ParamObject->GetParam( Param => $LanguageID . '_Body' )    || '';
+
+            $GetParam{Message}->{$LanguageID} = {
+                Subject     => $Subject,
+                Body        => $Body,
+                ContentType => $ContentType,
+            };
+
+            # set server error flag if field is empty
+            if ( !$Subject ) {
+                $GetParam{ $LanguageID . '_SubjectServerError' } = "ServerError";
+            }
+            if ( !$Body ) {
+                $GetParam{ $LanguageID . '_BodyServerError' } = "ServerError";
+            }
         }
 
         # to store dynamic fields profile data
@@ -138,18 +142,18 @@ sub Run {
         # get Dynamic fields for search from web request
         # cycle trough the activated Dynamic Fields for this screen
         DYNAMICFIELD:
-        for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
+        for my $DynamicFieldConfig ( @{$DynamicField} ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
             # extract the dynamic field value form the web request
-            my $DynamicFieldValue = $Self->{BackendObject}->SearchFieldValueGet(
+            my $DynamicFieldValue = $BackendObject->SearchFieldValueGet(
                 DynamicFieldConfig     => $DynamicFieldConfig,
-                ParamObject            => $Self->{ParamObject},
+                ParamObject            => $ParamObject,
                 ReturnProfileStructure => 1,
-                LayoutObject           => $Self->{LayoutObject},
+                LayoutObject           => $LayoutObject,
             );
 
-            # set the comple value structure in GetParam to store it later in the Notification Item
+            # set the complete value structure in GetParam to store it later in the Notification Item
             if ( IsHashRefWithData($DynamicFieldValue) ) {
 
                 # set search structure for display
@@ -164,6 +168,26 @@ sub Run {
 
                 # store special structure for match
                 $GetParam{Data} = { %{ $GetParam{Data} }, %{$DynamicFieldValue} };
+            }
+        }
+
+        # get transport settings values
+        if ( IsHashRefWithData( \%RegisteredTransports ) ) {
+
+            TRANSPORT:
+            for my $Transport ( sort keys %RegisteredTransports ) {
+
+                next TRANSPORT if !IsHashRefWithData( $RegisteredTransports{$Transport} );
+                next TRANSPORT if !$RegisteredTransports{$Transport}->{Module};
+
+                if ( !$MainObject->Require( $RegisteredTransports{$Transport}->{Module}, Silent => 1 ) ) {
+                    next TRANSPORT;
+                }
+
+                # get transport settings string from transport object
+                $Kernel::OM->Get( $RegisteredTransports{$Transport}->{Module} )->TransportParamSettingsGet(
+                    GetParam => \%GetParam,
+                );
             }
         }
 
@@ -191,61 +215,61 @@ sub Run {
         # required Article filter only on ArticleCreate and ArticleSend event
         # if isn't selected at least one of the article filter fields, notification isn't updated
         if ( !$ArticleFilterMissing ) {
-            $Ok = $Self->{NotificationEventObject}->NotificationUpdate(
+
+            $Ok = $NotificationEventObject->NotificationUpdate(
                 %GetParam,
-                Charset => $Self->{LayoutObject}->{UserCharset},
-                Type    => $NotificationType,
-                UserID  => $Self->{UserID},
+                UserID => $Self->{UserID},
             );
         }
 
         if ($Ok) {
             $Self->_Overview();
-            my $Output = $Self->{LayoutObject}->Header();
-            $Output .= $Self->{LayoutObject}->NavigationBar();
-            $Output .= $Self->{LayoutObject}->Notify( Info => 'Updated!' );
-            $Output .= $Self->{LayoutObject}->Output(
+            my $Output = $LayoutObject->Header();
+            $Output .= $LayoutObject->NavigationBar();
+            $Output .= $LayoutObject->Notify( Info => 'Updated!' );
+            $Output .= $LayoutObject->Output(
                 TemplateFile => 'AdminNotificationEvent',
                 Data         => \%Param,
             );
-            $Output .= $Self->{LayoutObject}->Footer();
+            $Output .= $LayoutObject->Footer();
 
             return $Output;
         }
         else {
-            for my $Needed (qw(Name Events Subject Body)) {
+            for my $Needed (qw(Name Events Transports)) {
                 $GetParam{ $Needed . "ServerError" } = "";
                 if ( $GetParam{$Needed} eq '' ) {
                     $GetParam{ $Needed . "ServerError" } = "ServerError";
                 }
             }
 
-            # define ServerError Class atribute if necessary
+            # define ServerError Class attribute if necessary
             $GetParam{ArticleTypeIDServerError}       = "";
             $GetParam{ArticleSenderTypeIDServerError} = "";
             $GetParam{ArticleSubjectMatchServerError} = "";
             $GetParam{ArticleBodyMatchServerError}    = "";
 
-            if ( $ArticleFilterMissing == 1 ) {
+            if ($ArticleFilterMissing) {
                 $GetParam{ArticleTypeIDServerError}       = "ServerError";
                 $GetParam{ArticleSenderTypeIDServerError} = "ServerError";
                 $GetParam{ArticleSubjectMatchServerError} = "ServerError";
                 $GetParam{ArticleBodyMatchServerError}    = "ServerError";
             }
 
-            my $Output = $Self->{LayoutObject}->Header();
-            $Output .= $Self->{LayoutObject}->NavigationBar();
-            $Output .= $Self->{LayoutObject}->Notify( Priority => 'Error' );
+            my $Output = $LayoutObject->Header();
+            $Output .= $LayoutObject->NavigationBar();
+            $Output .= $LayoutObject->Notify( Priority => 'Error' );
             $Self->_Edit(
-                Action => 'Change',
                 %GetParam,
+                Action             => 'Change',
+                RichText           => $RichText,
                 DynamicFieldValues => \%DynamicFieldValues,
             );
-            $Output .= $Self->{LayoutObject}->Output(
+            $Output .= $LayoutObject->Output(
                 TemplateFile => 'AdminNotificationEvent',
                 Data         => \%Param,
             );
-            $Output .= $Self->{LayoutObject}->Footer();
+            $Output .= $LayoutObject->Footer();
 
             return $Output;
         }
@@ -256,16 +280,17 @@ sub Run {
     # ------------------------------------------------------------ #
     elsif ( $Self->{Subaction} eq 'Add' ) {
 
-        my $Output = $Self->{LayoutObject}->Header();
-        $Output .= $Self->{LayoutObject}->NavigationBar();
+        my $Output = $LayoutObject->Header();
+        $Output .= $LayoutObject->NavigationBar();
         $Self->_Edit(
-            Action => 'Add',
+            Action   => 'Add',
+            RichText => $RichText,
         );
-        $Output .= $Self->{LayoutObject}->Output(
+        $Output .= $LayoutObject->Output(
             TemplateFile => 'AdminNotificationEvent',
             Data         => \%Param,
         );
-        $Output .= $Self->{LayoutObject}->Footer();
+        $Output .= $LayoutObject->Footer();
 
         return $Output;
     }
@@ -276,26 +301,48 @@ sub Run {
     elsif ( $Self->{Subaction} eq 'AddAction' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         my %GetParam;
         for my $Parameter (
-            qw(Name Subject Body Comment ValidID Events ArticleSubjectMatch ArticleBodyMatch ArticleTypeID ArticleSenderTypeID)
+            qw(Name Comment ValidID Events ArticleSubjectMatch ArticleBodyMatch ArticleTypeID ArticleSenderTypeID Transports)
             )
         {
-            $GetParam{$Parameter} = $Self->{ParamObject}->GetParam( Param => $Parameter ) || '';
+            $GetParam{$Parameter} = $ParamObject->GetParam( Param => $Parameter ) || '';
         }
         PARAMETER:
         for my $Parameter (
-            qw(Recipients RecipientAgents RecipientRoles RecipientGroups RecipientEmail Events StateID QueueID
+            qw(Recipients RecipientAgents RecipientRoles RecipientGroups Events StateID QueueID
             PriorityID LockID TypeID ServiceID SLAID CustomerID CustomerUserID
             ArticleTypeID ArticleSubjectMatch ArticleBodyMatch ArticleAttachmentInclude
-            ArticleSenderTypeID NotificationArticleTypeID)
+            ArticleSenderTypeID Transports OncePerDay SendOnOutOfOffice
+            VisibleForAgent VisibleForAgentTooltip LanguageID AgentEnabledByDefault)
             )
         {
-            my @Data = $Self->{ParamObject}->GetArray( Param => $Parameter );
+            my @Data = $ParamObject->GetArray( Param => $Parameter );
             next PARAMETER if !@Data;
             $GetParam{Data}->{$Parameter} = \@Data;
+        }
+
+        # get the subject and body for all languages
+        for my $LanguageID ( @{ $GetParam{Data}->{LanguageID} } ) {
+
+            my $Subject = $ParamObject->GetParam( Param => $LanguageID . '_Subject' ) || '';
+            my $Body    = $ParamObject->GetParam( Param => $LanguageID . '_Body' )    || '';
+
+            $GetParam{Message}->{$LanguageID} = {
+                Subject     => $Subject,
+                Body        => $Body,
+                ContentType => $ContentType,
+            };
+
+            # set server error flag if field is empty
+            if ( !$Subject ) {
+                $GetParam{ $LanguageID . '_SubjectServerError' } = "ServerError";
+            }
+            if ( !$Body ) {
+                $GetParam{ $LanguageID . '_BodyServerError' } = "ServerError";
+            }
         }
 
         # to store dynamic fields profile data
@@ -304,18 +351,18 @@ sub Run {
         # get Dynamic fields for search from web request
         # cycle trough the activated Dynamic Fields for this screen
         DYNAMICFIELD:
-        for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
+        for my $DynamicFieldConfig ( @{$DynamicField} ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
             # extract the dynamic field value form the web request
-            my $DynamicFieldValue = $Self->{BackendObject}->SearchFieldValueGet(
+            my $DynamicFieldValue = $BackendObject->SearchFieldValueGet(
                 DynamicFieldConfig     => $DynamicFieldConfig,
-                ParamObject            => $Self->{ParamObject},
+                ParamObject            => $ParamObject,
                 ReturnProfileStructure => 1,
-                LayoutObject           => $Self->{LayoutObject},
+                LayoutObject           => $LayoutObject,
             );
 
-            # set the comple value structure in GetParam to store it later in the Generic Agent Job
+            # set the complete value structure in GetParam to store it later in the Generic Agent Job
             if ( IsHashRefWithData($DynamicFieldValue) ) {
 
                 # set search structure for display
@@ -330,6 +377,26 @@ sub Run {
 
                 # store special structure for match
                 $GetParam{Data} = { %{ $GetParam{Data} }, %{$DynamicFieldValue} };
+            }
+        }
+
+        # get transport settings values
+        if ( IsHashRefWithData( \%RegisteredTransports ) ) {
+
+            TRANSPORT:
+            for my $Transport ( sort keys %RegisteredTransports ) {
+
+                next TRANSPORT if !IsHashRefWithData( $RegisteredTransports{$Transport} );
+                next TRANSPORT if !$RegisteredTransports{$Transport}->{Module};
+
+                if ( !$MainObject->Require( $RegisteredTransports{$Transport}->{Module}, Silent => 1 ) ) {
+                    next TRANSPORT;
+                }
+
+                # get transport settings string from transport object
+                $Kernel::OM->Get( $RegisteredTransports{$Transport}->{Module} )->TransportParamSettingsGet(
+                    GetParam => \%GetParam,
+                );
             }
         }
 
@@ -357,29 +424,31 @@ sub Run {
         # required Article filter only on ArticleCreate and Article Send event
         # if isn't selected at least one of the article filter fields, notification isn't added
         if ( !$ArticleFilterMissing ) {
-            $ID = $Self->{NotificationEventObject}->NotificationAdd(
+            $ID = $NotificationEventObject->NotificationAdd(
                 %GetParam,
-                Charset => $Self->{LayoutObject}->{UserCharset},
-                Type    => $NotificationType,
-                UserID  => $Self->{UserID},
+                UserID => $Self->{UserID},
             );
+        }
+
+        if ( !$GetParam{Data}->{Transports} ) {
+            $GetParam{TransportServerError} = "ServerError";
         }
 
         if ($ID) {
             $Self->_Overview();
-            my $Output = $Self->{LayoutObject}->Header();
-            $Output .= $Self->{LayoutObject}->NavigationBar();
-            $Output .= $Self->{LayoutObject}->Notify( Info => 'Added!' );
-            $Output .= $Self->{LayoutObject}->Output(
+            my $Output = $LayoutObject->Header();
+            $Output .= $LayoutObject->NavigationBar();
+            $Output .= $LayoutObject->Notify( Info => 'Added!' );
+            $Output .= $LayoutObject->Output(
                 TemplateFile => 'AdminNotificationEvent',
                 Data         => \%Param,
             );
-            $Output .= $Self->{LayoutObject}->Footer();
+            $Output .= $LayoutObject->Footer();
 
             return $Output;
         }
         else {
-            for my $Needed (qw(Name Events Subject Body)) {
+            for my $Needed (qw(Name Events Transports)) {
                 $GetParam{ $Needed . "ServerError" } = "";
                 if ( $GetParam{$Needed} eq '' ) {
                     $GetParam{ $Needed . "ServerError" } = "ServerError";
@@ -392,27 +461,27 @@ sub Run {
             $GetParam{ArticleSubjectMatchServerError} = "";
             $GetParam{ArticleBodyMatchServerError}    = "";
 
-            if ( $ArticleFilterMissing == 1 )
-            {
+            if ($ArticleFilterMissing) {
                 $GetParam{ArticleTypeIDServerError}       = "ServerError";
                 $GetParam{ArticleSenderTypeIDServerError} = "ServerError";
                 $GetParam{ArticleSubjectMatchServerError} = "ServerError";
                 $GetParam{ArticleBodyMatchServerError}    = "ServerError";
             }
 
-            my $Output = $Self->{LayoutObject}->Header();
-            $Output .= $Self->{LayoutObject}->NavigationBar();
-            $Output .= $Self->{LayoutObject}->Notify( Priority => 'Error' );
+            my $Output = $LayoutObject->Header();
+            $Output .= $LayoutObject->NavigationBar();
+            $Output .= $LayoutObject->Notify( Priority => 'Error' );
             $Self->_Edit(
-                Action => 'Add',
                 %GetParam,
+                Action             => 'Add',
+                RichText           => $RichText,
                 DynamicFieldValues => \%DynamicFieldValues,
             );
-            $Output .= $Self->{LayoutObject}->Output(
+            $Output .= $LayoutObject->Output(
                 TemplateFile => 'AdminNotificationEvent',
                 Data         => \%Param,
             );
-            $Output .= $Self->{LayoutObject}->Footer();
+            $Output .= $LayoutObject->Footer();
 
             return $Output;
         }
@@ -424,22 +493,196 @@ sub Run {
     if ( $Self->{Subaction} eq 'Delete' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         my %GetParam;
         for my $Parameter (qw(ID)) {
-            $GetParam{$Parameter} = $Self->{ParamObject}->GetParam( Param => $Parameter ) || '';
+            $GetParam{$Parameter} = $ParamObject->GetParam( Param => $Parameter ) || '';
         }
 
-        my $Delete = $Self->{NotificationEventObject}->NotificationDelete(
+        my $Delete = $NotificationEventObject->NotificationDelete(
             ID     => $GetParam{ID},
             UserID => $Self->{UserID},
         );
         if ( !$Delete ) {
-            return $Self->{LayoutObject}->ErrorScreen();
+            return $LayoutObject->ErrorScreen();
         }
 
-        return $Self->{LayoutObject}->Redirect( OP => "Action=$Self->{Action}" );
+        return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" );
+    }
+
+    # ------------------------------------------------------------ #
+    # NotificationExport
+    # ------------------------------------------------------------ #
+    elsif ( $Self->{Subaction} eq 'NotificationExport' ) {
+
+        my $NotificationID = $ParamObject->GetParam( Param => 'ID' ) || '';
+        my $NotificationData;
+        my %NotificationSingleData;
+        my $Filename = 'Export_Notification.yml';
+
+        if ($NotificationID) {
+
+            %NotificationSingleData = $NotificationEventObject->NotificationGet(
+                ID     => $NotificationID,
+                UserID => $Self->{UserID},
+            );
+
+            if ( !IsHashRefWithData( \%NotificationSingleData ) ) {
+                return $LayoutObject->ErrorScreen(
+                    Message => "There was an error getting data for Notification with ID " . $NotificationID,
+                );
+            }
+
+            my $NotificationName = $NotificationSingleData{Name};
+            $NotificationName =~ s{[^a-zA-Z0-9-_]}{_}xmsg;    # cleanup name for saving
+
+            $Filename         = 'Export_Notification_' . $NotificationName . '.yml';
+            $NotificationData = [ \%NotificationSingleData ];
+        }
+        else {
+
+            my %Notificationdetails = $NotificationEventObject->NotificationList(
+                UserID  => $Self->{UserID},
+                Details => 1,
+            );
+
+            my @Data;
+            for my $ItemID ( sort keys %Notificationdetails ) {
+                push @Data, $Notificationdetails{$ItemID};
+            }
+            $NotificationData = \@Data;
+        }
+
+        # convert the Notification data hash to string
+        my $NotificationDataYAML = $Kernel::OM->Get('Kernel::System::YAML')->Dump( Data => $NotificationData );
+
+        # send the result to the browser
+        return $LayoutObject->Attachment(
+            ContentType => 'text/html; charset=' . $LayoutObject->{Charset},
+            Content     => $NotificationDataYAML,
+            Type        => 'attachment',
+            Filename    => $Filename,
+            NoCache     => 1,
+        );
+    }
+
+    # ------------------------------------------------------------ #
+    # NotificationCopy
+    # ------------------------------------------------------------ #
+    elsif ( $Self->{Subaction} eq 'NotificationCopy' ) {
+
+        my $NotificationID = $ParamObject->GetParam( Param => 'ID' ) || '';
+
+        # challenge token check for write action
+        $LayoutObject->ChallengeTokenCheck();
+
+        # get Notification data
+        my %NotificationData = $NotificationEventObject->NotificationGet(
+            ID     => $NotificationID,
+            UserID => $Self->{UserID},
+        );
+        if ( !IsHashRefWithData( \%NotificationData ) ) {
+            return $LayoutObject->ErrorScreen(
+                Message => "Unknown Notification $NotificationID!",
+            );
+        }
+
+        # create new Notification name
+        my $NotificationName =
+            $NotificationData{Name}
+            . ' ('
+            . $LayoutObject->{LanguageObject}->Translate('Copy')
+            . ')';
+
+        # otherwise save configuration and return to overview screen
+        my $NewNotificationID = $NotificationEventObject->NotificationAdd(
+            %NotificationData,
+            Name   => $NotificationName,
+            UserID => $Self->{UserID},
+        );
+
+        # show error if can't create
+        if ( !$NewNotificationID ) {
+            return $LayoutObject->ErrorScreen(
+                Message => "There was an error creating the Notification",
+            );
+        }
+
+        # return to overview
+        return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" );
+    }
+
+    # ------------------------------------------------------------ #
+    # NotificationImport
+    # ------------------------------------------------------------ #
+    if ( $Self->{Subaction} eq 'NotificationImport' ) {
+
+        # challenge token check for write action
+        $LayoutObject->ChallengeTokenCheck();
+
+        my $FormID = $ParamObject->GetParam( Param => 'FormID' ) || '';
+        my %UploadStuff = $ParamObject->GetUploadAll(
+            Param  => 'FileUpload',
+            Source => 'string',
+        );
+
+        my $OverwriteExistingNotifications = $ParamObject->GetParam( Param => 'OverwriteExistingNotifications' ) || '';
+
+        my $NotificationImport = $NotificationEventObject->NotificationImport(
+            Content                        => $UploadStuff{Content},
+            OverwriteExistingNotifications => $OverwriteExistingNotifications,
+            UserID                         => $Self->{UserID},
+        );
+
+        if ( !$NotificationImport->{Success} ) {
+            my $Message = $NotificationImport->{Message}
+                || 'Notifications could not be Imported due to a unknown error,'
+                . ' please check OTRS logs for more information';
+            return $LayoutObject->ErrorScreen(
+                Message => $Message,
+            );
+        }
+
+        if ( $NotificationImport->{AddedNotifications} ) {
+            push @{ $Param{NotifyData} }, {
+                Info => 'The following Notifications have been added successfully: '
+                    . $NotificationImport->{AddedNotifications},
+            };
+        }
+        if ( $NotificationImport->{UpdatedNotifications} ) {
+            push @{ $Param{NotifyData} }, {
+                Info => 'The following Notifications have been updated successfully: '
+                    . $NotificationImport->{UpdatedNotifications},
+            };
+        }
+        if ( $NotificationImport->{NotificationErrors} ) {
+            push @{ $Param{NotifyData} }, {
+                Priority => 'Error',
+                Info     => 'There where errors adding/updating the following Notifications: '
+                    . $NotificationImport->{NotificationErrors}
+                    . '. Please check the log file for more information.',
+            };
+        }
+
+        $Self->_Overview();
+        my $Output = $LayoutObject->Header();
+        $Output .= $LayoutObject->NavigationBar();
+
+        # show notifications if any
+        if ( $Param{NotifyData} ) {
+            for my $Notification ( @{ $Param{NotifyData} } ) {
+                $Output .= $LayoutObject->Notify(
+                    %{$Notification},
+                );
+            }
+        }
+
+        $Output .= $LayoutObject->Output(
+            TemplateFile => 'AdminNotificationEvent',
+            Data         => \%Param,
+        );
+        $Output .= $LayoutObject->Footer();
     }
 
     # ------------------------------------------------------------
@@ -447,13 +690,13 @@ sub Run {
     # ------------------------------------------------------------
     else {
         $Self->_Overview();
-        my $Output = $Self->{LayoutObject}->Header();
-        $Output .= $Self->{LayoutObject}->NavigationBar();
-        $Output .= $Self->{LayoutObject}->Output(
+        my $Output = $LayoutObject->Header();
+        $Output .= $LayoutObject->NavigationBar();
+        $Output .= $LayoutObject->Output(
             TemplateFile => 'AdminNotificationEvent',
             Data         => \%Param,
         );
-        $Output .= $Self->{LayoutObject}->Footer();
+        $Output .= $LayoutObject->Footer();
 
         return $Output;
     }
@@ -463,57 +706,72 @@ sub Run {
 sub _Edit {
     my ( $Self, %Param ) = @_;
 
-    $Self->{LayoutObject}->Block(
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
+    $LayoutObject->Block(
         Name => 'Overview',
         Data => \%Param,
     );
 
-    $Self->{LayoutObject}->Block( Name => 'ActionList' );
-    $Self->{LayoutObject}->Block( Name => 'ActionOverview' );
+    $LayoutObject->Block( Name => 'ActionList' );
+    $LayoutObject->Block( Name => 'ActionOverview' );
+
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
     # get list type
     my $TreeView = 0;
-    if ( $Self->{ConfigObject}->Get('Ticket::Frontend::ListType') eq 'tree' ) {
+    if ( $ConfigObject->Get('Ticket::Frontend::ListType') eq 'tree' ) {
         $TreeView = 1;
     }
 
-    $Param{RecipientsStrg} = $Self->{LayoutObject}->BuildSelection(
+    $Param{RecipientsStrg} = $LayoutObject->BuildSelection(
         Data => {
-            AgentOwner            => 'Agent (Owner)',
-            AgentResponsible      => 'Agent (Responsible)',
-            AgentWritePermissions => 'Agent (All with write permissions)',
-            Customer              => 'Customer',
+            AgentOwner              => Translatable('Agent who owns the ticket'),
+            AgentResponsible        => Translatable('Agent who is responsible for the ticket'),
+            AgentWatcher            => Translatable('All agents watching the ticket'),
+            AgentWritePermissions   => Translatable('All agents with write permission for the ticket'),
+            AgentMyQueues           => Translatable('All agents subscribed to the ticket\'s queue'),
+            AgentMyServices         => Translatable('All agents subscribed to the ticket\'s service'),
+            AgentMyQueuesMyServices => Translatable('All agents subscribed to both the ticket\'s queue and service'),
+            Customer                => Translatable('Customer of the ticket'),
         },
         Name       => 'Recipients',
         Multiple   => 1,
-        Size       => 4,
+        Size       => 8,
         SelectedID => $Param{Data}->{Recipients},
+        Class      => 'Modernize W75pc',
     );
 
-    my %AllAgents = $Self->{UserObject}->UserList(
+    my %AllAgents = $Kernel::OM->Get('Kernel::System::User')->UserList(
         Type  => 'Long',
         Valid => 1,
     );
-    $Param{RecipientAgentsStrg} = $Self->{LayoutObject}->BuildSelection(
+    $Param{RecipientAgentsStrg} = $LayoutObject->BuildSelection(
         Data       => \%AllAgents,
         Name       => 'RecipientAgents',
         Multiple   => 1,
         Size       => 4,
         SelectedID => $Param{Data}->{RecipientAgents},
+        Class      => 'Modernize W75pc',
     );
-    $Param{RecipientGroupsStrg} = $Self->{LayoutObject}->BuildSelection(
-        Data       => { $Self->{GroupObject}->GroupList( Valid => 1 ) },
+
+    my $GroupObject = $Kernel::OM->Get('Kernel::System::Group');
+
+    $Param{RecipientGroupsStrg} = $LayoutObject->BuildSelection(
+        Data       => { $GroupObject->GroupList( Valid => 1 ) },
         Size       => 6,
         Name       => 'RecipientGroups',
         Multiple   => 1,
         SelectedID => $Param{Data}->{RecipientGroups},
+        Class      => 'Modernize W75pc',
     );
-    $Param{RecipientRolesStrg} = $Self->{LayoutObject}->BuildSelection(
-        Data       => { $Self->{GroupObject}->RoleList( Valid => 1 ) },
+    $Param{RecipientRolesStrg} = $LayoutObject->BuildSelection(
+        Data       => { $GroupObject->RoleList( Valid => 1 ) },
         Size       => 6,
         Name       => 'RecipientRoles',
         Multiple   => 1,
         SelectedID => $Param{Data}->{RecipientRoles},
+        Class      => 'Modernize W75pc',
     );
 
     # Set class name for event string...
@@ -534,7 +792,7 @@ sub _Edit {
         $ArticleSenderTypeIDClass .= ' ' . $Param{ArticleSenderTypeIDServerError};
     }
 
-    my %RegisteredEvents = $Self->{EventObject}->EventList(
+    my %RegisteredEvents = $Kernel::OM->Get('Kernel::System::Event')->EventList(
         ObjectTypes => [ 'Ticket', 'Article', ],
     );
 
@@ -544,18 +802,18 @@ sub _Edit {
     }
 
     # Build the list...
-    $Param{EventsStrg} = $Self->{LayoutObject}->BuildSelection(
+    $Param{EventsStrg} = $LayoutObject->BuildSelection(
         Data       => \@Events,
         Name       => 'Events',
         Multiple   => 1,
-        Size       => 5,
-        Class      => $EventClass,
+        Size       => 10,
+        Class      => $EventClass . ' Modernize W75pc',
         SelectedID => $Param{Data}->{Events},
     );
 
-    $Param{StatesStrg} = $Self->{LayoutObject}->BuildSelection(
+    $Param{StatesStrg} = $LayoutObject->BuildSelection(
         Data => {
-            $Self->{StateObject}->StateList(
+            $Kernel::OM->Get('Kernel::System::State')->StateList(
                 UserID => 1,
                 Action => $Self->{Action},
             ),
@@ -564,21 +822,23 @@ sub _Edit {
         Multiple   => 1,
         Size       => 5,
         SelectedID => $Param{Data}->{StateID},
+        Class      => 'Modernize W75pc',
     );
 
-    $Param{QueuesStrg} = $Self->{LayoutObject}->AgentQueueListOption(
-        Data               => { $Self->{QueueObject}->GetAllQueues(), },
+    $Param{QueuesStrg} = $LayoutObject->AgentQueueListOption(
+        Data               => { $Kernel::OM->Get('Kernel::System::Queue')->GetAllQueues(), },
         Size               => 5,
         Multiple           => 1,
         Name               => 'QueueID',
         TreeView           => $TreeView,
         SelectedIDRefArray => $Param{Data}->{QueueID},
         OnChangeSubmit     => 0,
+        Class              => 'Modernize W75pc',
     );
 
-    $Param{PrioritiesStrg} = $Self->{LayoutObject}->BuildSelection(
+    $Param{PrioritiesStrg} = $LayoutObject->BuildSelection(
         Data => {
-            $Self->{PriorityObject}->PriorityList(
+            $Kernel::OM->Get('Kernel::System::Priority')->PriorityList(
                 UserID => 1,
                 Action => $Self->{Action},
             ),
@@ -587,11 +847,12 @@ sub _Edit {
         Multiple   => 1,
         Size       => 5,
         SelectedID => $Param{Data}->{PriorityID},
+        Class      => 'Modernize W75pc',
     );
 
-    $Param{LocksStrg} = $Self->{LayoutObject}->BuildSelection(
+    $Param{LocksStrg} = $LayoutObject->BuildSelection(
         Data => {
-            $Self->{LockObject}->LockList(
+            $Kernel::OM->Get('Kernel::System::Lock')->LockList(
                 UserID => 1,
                 Action => $Self->{Action},
             ),
@@ -600,36 +861,38 @@ sub _Edit {
         Multiple   => 1,
         Size       => 3,
         SelectedID => $Param{Data}->{LockID},
+        Class      => 'Modernize W75pc',
     );
 
     # get valid list
-    my %ValidList        = $Self->{ValidObject}->ValidList();
+    my %ValidList        = $Kernel::OM->Get('Kernel::System::Valid')->ValidList();
     my %ValidListReverse = reverse %ValidList;
 
-    $Param{ValidOption} = $Self->{LayoutObject}->BuildSelection(
+    $Param{ValidOption} = $LayoutObject->BuildSelection(
         Data       => \%ValidList,
         Name       => 'ValidID',
         SelectedID => $Param{ValidID} || $ValidListReverse{valid},
+        Class      => 'Modernize W50pc',
     );
-    $Self->{LayoutObject}->Block(
+    $LayoutObject->Block(
         Name => 'OverviewUpdate',
         Data => \%Param,
     );
 
     # shows header
     if ( $Param{Action} eq 'Change' ) {
-        $Self->{LayoutObject}->Block( Name => 'HeaderEdit' );
+        $LayoutObject->Block( Name => 'HeaderEdit' );
     }
     else {
-        $Self->{LayoutObject}->Block( Name => 'HeaderAdd' );
+        $LayoutObject->Block( Name => 'HeaderAdd' );
     }
 
     # build type string
-    if ( $Self->{ConfigObject}->Get('Ticket::Type') ) {
-        my %Type = $Self->{TypeObject}->TypeList(
+    if ( $ConfigObject->Get('Ticket::Type') ) {
+        my %Type = $Kernel::OM->Get('Kernel::System::Type')->TypeList(
             UserID => $Self->{UserID},
         );
-        $Param{TypesStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TypesStrg} = $LayoutObject->BuildSelection(
             Data        => \%Type,
             Name        => 'TypeID',
             SelectedID  => $Param{Data}->{TypeID},
@@ -637,23 +900,24 @@ sub _Edit {
             Size        => 3,
             Multiple    => 1,
             Translation => 0,
+            Class       => 'Modernize W75pc',
         );
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'OverviewUpdateType',
             Data => \%Param,
         );
     }
 
     # build service string
-    if ( $Self->{ConfigObject}->Get('Ticket::Service') ) {
+    if ( $ConfigObject->Get('Ticket::Service') ) {
 
         # get list type
-        my %Service = $Self->{ServiceObject}->ServiceList(
+        my %Service = $Kernel::OM->Get('Kernel::System::Service')->ServiceList(
             Valid        => 1,
             KeepChildren => 1,
             UserID       => $Self->{UserID},
         );
-        $Param{ServicesStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{ServicesStrg} = $LayoutObject->BuildSelection(
             Data        => \%Service,
             Name        => 'ServiceID',
             SelectedID  => $Param{Data}->{ServiceID},
@@ -662,11 +926,12 @@ sub _Edit {
             Translation => 0,
             Max         => 200,
             TreeView    => $TreeView,
+            Class       => 'Modernize W75pc',
         );
-        my %SLA = $Self->{SLAObject}->SLAList(
+        my %SLA = $Kernel::OM->Get('Kernel::System::SLA')->SLAList(
             UserID => $Self->{UserID},
         );
-        $Param{SLAsStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{SLAsStrg} = $LayoutObject->BuildSelection(
             Data        => \%SLA,
             Name        => 'SLAID',
             SelectedID  => $Param{Data}->{SLAID},
@@ -675,8 +940,9 @@ sub _Edit {
             Multiple    => 1,
             Translation => 0,
             Max         => 200,
+            Class       => 'Modernize W75pc',
         );
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'OverviewUpdateService',
             Data => \%Param,
         );
@@ -686,23 +952,30 @@ sub _Edit {
     my $PrintDynamicFieldsSearchHeader = 1;
 
     # cycle trough the activated Dynamic Fields for this screen
+    my $DynamicField = $Kernel::OM->Get('Kernel::System::DynamicField')->DynamicFieldListGet(
+        Valid      => 1,
+        ObjectType => ['Ticket'],
+    );
+
+    my $BackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
+
     DYNAMICFIELD:
-    for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
+    for my $DynamicFieldConfig ( @{$DynamicField} ) {
         next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
         # skip all dynamic fields that are not designed to be notification triggers
-        my $IsNotificationEventCondition = $Self->{BackendObject}->HasBehavior(
+        my $IsNotificationEventCondition = $BackendObject->HasBehavior(
             DynamicFieldConfig => $DynamicFieldConfig,
             Behavior           => 'IsNotificationEventCondition',
         );
 
         next DYNAMICFIELD if !$IsNotificationEventCondition;
 
-        # get field html
-        my $DynamicFieldHTML = $Self->{BackendObject}->SearchFieldRender(
+        # get field HTML
+        my $DynamicFieldHTML = $BackendObject->SearchFieldRender(
             DynamicFieldConfig     => $DynamicFieldConfig,
             Profile                => $Param{DynamicFieldValues} || {},
-            LayoutObject           => $Self->{LayoutObject},
+            LayoutObject           => $LayoutObject,
             ConfirmationCheckboxes => 1,
             UseLabelHints          => 0,
         );
@@ -710,12 +983,12 @@ sub _Edit {
         next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldHTML);
 
         if ($PrintDynamicFieldsSearchHeader) {
-            $Self->{LayoutObject}->Block( Name => 'DynamicField' );
+            $LayoutObject->Block( Name => 'DynamicField' );
             $PrintDynamicFieldsSearchHeader = 0;
         }
 
         # output dynamic field
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'DynamicFieldElement',
             Data => {
                 Label => $DynamicFieldHTML->{Label},
@@ -725,58 +998,181 @@ sub _Edit {
     }
 
     # add rich text editor
-    if ( $Self->{RichText} ) {
-
-        # make sure body is rich text (if body is based on config)
-        if ( $Param{Type} && $Param{Type} =~ m{text\/plain}xmsi ) {
-            $Param{Body} = $Self->{LayoutObject}->Ascii2RichText(
-                String => $Param{Body},
-            );
-        }
+    if ( $Param{RichText} ) {
 
         # use height/width defined for this screen
-        $Param{RichTextHeight} = $Self->{Config}->{RichTextHeight} || 0;
-        $Param{RichTextWidth}  = $Self->{Config}->{RichTextWidth}  || 0;
+        my $Config = $ConfigObject->Get("Frontend::Admin::$Self->{Action}");
+        $Param{RichTextHeight} = $Config->{RichTextHeight} || 0;
+        $Param{RichTextWidth}  = $Config->{RichTextWidth}  || 0;
 
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'RichText',
             Data => \%Param,
         );
     }
-    else {
 
-        # reformat from html to plain
-        if ( $Param{Type} && $Param{Type} =~ m{text\/html}xmsi && $Param{Body} ) {
-
-            $Param{Body} = $Self->{LayoutObject}->RichText2Ascii(
-                String => $Param{Body},
-            );
+    # get language ids from message parameter, use English if no message is given
+    # make sure English is the first language
+    my @LanguageIDs;
+    if ( IsHashRefWithData( $Param{Message} ) ) {
+        if ( $Param{Message}->{en} ) {
+            push @LanguageIDs, 'en';
+        }
+        LANGUAGEID:
+        for my $LanguageID ( sort keys %{ $Param{Message} } ) {
+            next LANGUAGEID if $LanguageID eq 'en';
+            push @LanguageIDs, $LanguageID;
         }
     }
+    else {
+        @LanguageIDs = ('en');
+    }
 
-    $Param{ArticleTypesStrg} = $Self->{LayoutObject}->BuildSelection(
-        Data        => { $Self->{TicketObject}->ArticleTypeList( Result => 'HASH' ), },
+    # get names of languages in English
+    my %DefaultUsedLanguages = %{ $ConfigObject->Get('DefaultUsedLanguages') || {} };
+
+    # get native names of languages
+    my %DefaultUsedLanguagesNative = %{ $ConfigObject->Get('DefaultUsedLanguagesNative') || {} };
+
+    my %Languages;
+    LANGUAGEID:
+    for my $LanguageID ( sort keys %DefaultUsedLanguages ) {
+
+        next LANGUAGEID if !$DefaultUsedLanguages{$LanguageID};
+
+        # next language if there is not set native name of language
+        next LANGUAGEID if !$DefaultUsedLanguagesNative{$LanguageID};
+
+        # get language object for specific language id
+        my $LanguageObject = Kernel::Language->new(
+            UserLanguage => $LanguageID,
+        );
+        next LANGUAGEID if !$LanguageObject;
+
+        # get texts on native and default language
+        my $Text        = $DefaultUsedLanguagesNative{$LanguageID};
+        my $TextEnglish = $DefaultUsedLanguages{$LanguageID};
+
+        # Translate to current user's language
+        my $TextTranslated =
+            $Kernel::OM->Get('Kernel::Output::HTML::Layout')->{LanguageObject}->Translate($TextEnglish);
+
+        # next language if there is not translated text
+        next LANGUAGEID if !$TextTranslated;
+
+        if ( $TextTranslated && $TextTranslated ne $Text ) {
+            $Text .= ' - ' . $TextTranslated;
+        }
+
+        $Languages{$LanguageID} = $Text;
+    }
+
+    # copy original list of languages which will be used for rebuilding language selection
+    my %OriginalDefaultUsedLanguages = %Languages;
+
+    my $HTMLUtilsObject = $Kernel::OM->Get('Kernel::System::HTMLUtils');
+
+    for my $LanguageID (@LanguageIDs) {
+
+        # format the content according to the content type
+        if ( $Param{RichText} ) {
+
+            # make sure body is rich text (if body is based on config)
+            if (
+                $Param{Message}->{$LanguageID}->{ContentType}
+                && $Param{Message}->{$LanguageID}->{ContentType} =~ m{text\/plain}xmsi
+                )
+            {
+                $Param{Message}->{$LanguageID}->{Body} = $HTMLUtilsObject->ToHTML(
+                    String => $Param{Message}->{$LanguageID}->{Body},
+                );
+            }
+        }
+        else {
+
+            # reformat from HTML to plain
+            if (
+                $Param{Message}->{$LanguageID}->{ContentType}
+                && $Param{Message}->{$LanguageID}->{ContentType} =~ m{text\/html}xmsi
+                && $Param{Message}->{$LanguageID}->{Body}
+                )
+            {
+                $Param{Message}->{$LanguageID}->{Body} = $HTMLUtilsObject->ToAscii(
+                    String => $Param{Message}->{$LanguageID}->{Body},
+                );
+            }
+        }
+
+        # show the notification for this language
+        $LayoutObject->Block(
+            Name => 'NotificationLanguage',
+            Data => {
+                %Param,
+                Subject => $Param{Message}->{$LanguageID}->{Subject} || '',
+                Body    => $Param{Message}->{$LanguageID}->{Body}    || '',
+                LanguageID         => $LanguageID,
+                Language           => $Languages{$LanguageID},
+                SubjectServerError => $Param{ $LanguageID . '_SubjectServerError' } || '',
+                BodyServerError    => $Param{ $LanguageID . '_BodyServerError' } || '',
+            },
+        );
+
+        # show the button to remove a notification only if it is not the English notification
+        if ( $LanguageID ne 'en' ) {
+            $LayoutObject->Block(
+                Name => 'NotificationLanguageRemoveButton',
+                Data => {
+                    %Param,
+                    LanguageID => $LanguageID,
+                },
+            );
+        }
+
+        # delete language from drop-down list because it is already shown
+        delete $Languages{$LanguageID};
+    }
+
+    $Param{LanguageStrg} = $LayoutObject->BuildSelection(
+        Data         => \%Languages,
+        Name         => 'Language',
+        Class        => 'Modernize W50pc LanguageAdd',
+        Translation  => 1,
+        PossibleNone => 1,
+        HTMLQuote    => 0,
+    );
+    $Param{LanguageOrigStrg} = $LayoutObject->BuildSelection(
+        Data         => \%OriginalDefaultUsedLanguages,
+        Name         => 'LanguageOrig',
+        Translation  => 1,
+        PossibleNone => 1,
+        HTMLQuote    => 0,
+    );
+
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
+    $Param{ArticleTypesStrg} = $LayoutObject->BuildSelection(
+        Data        => { $TicketObject->ArticleTypeList( Result => 'HASH' ), },
         Name        => 'ArticleTypeID',
         SelectedID  => $Param{Data}->{ArticleTypeID},
-        Class       => $ArticleTypeIDClass,
+        Class       => $ArticleTypeIDClass . ' Modernize W75pc',
         Size        => 5,
         Multiple    => 1,
         Translation => 1,
         Max         => 200,
     );
 
-    $Param{ArticleSenderTypesStrg} = $Self->{LayoutObject}->BuildSelection(
-        Data        => { $Self->{TicketObject}->ArticleSenderTypeList( Result => 'HASH' ), },
+    $Param{ArticleSenderTypesStrg} = $LayoutObject->BuildSelection(
+        Data        => { $TicketObject->ArticleSenderTypeList( Result => 'HASH' ), },
         Name        => 'ArticleSenderTypeID',
         SelectedID  => $Param{Data}->{ArticleSenderTypeID},
-        Class       => $ArticleSenderTypeIDClass,
+        Class       => $ArticleSenderTypeIDClass . ' Modernize W75pc',
         Size        => 5,
         Multiple    => 1,
         Translation => 1,
         Max         => 200,
     );
 
-    $Param{ArticleAttachmentIncludeStrg} = $Self->{LayoutObject}->BuildSelection(
+    $Param{ArticleAttachmentIncludeStrg} = $LayoutObject->BuildSelection(
         Data => {
             0 => 'No',
             1 => 'Yes',
@@ -785,30 +1181,145 @@ sub _Edit {
         SelectedID  => $Param{Data}->{ArticleAttachmentInclude} || 0,
         Translation => 1,
         Max         => 200,
-    );
-
-    # Display article types for article creation if notification is sent
-    # only use 'email-notification-*'-type articles
-    my %NotificationArticleTypes = $Self->{TicketObject}->ArticleTypeList( Result => 'HASH' );
-    for my $NotifArticleTypeID ( sort keys %NotificationArticleTypes ) {
-        if ( $NotificationArticleTypes{$NotifArticleTypeID} !~ /^email-notification-/ ) {
-            delete $NotificationArticleTypes{$NotifArticleTypeID};
-        }
-    }
-    $Param{NotificationArticleTypesStrg} = $Self->{LayoutObject}->BuildSelection(
-        Data        => \%NotificationArticleTypes,
-        Name        => 'NotificationArticleTypeID',
-        Translation => 1,
-        SelectedID  => $Param{Data}->{NotificationArticleTypeID},
+        Class       => 'Modernize W75pc',
     );
 
     # take over data fields
     KEY:
-    for my $Key (qw(RecipientEmail CustomerID CustomerUserID ArticleSubjectMatch ArticleBodyMatch))
+    for my $Key (
+        qw(VisibleForAgent VisibleForAgentTooltip CustomerID CustomerUserID ArticleSubjectMatch ArticleBodyMatch)
+        )
     {
         next KEY if !$Param{Data}->{$Key};
         next KEY if !defined $Param{Data}->{$Key}->[0];
         $Param{$Key} = $Param{Data}->{$Key}->[0];
+    }
+
+    # set send on out of office checked value
+    $Param{SendOnOutOfOfficeChecked} = ( $Param{Data}->{SendOnOutOfOffice} ? 'checked="checked"' : '' );
+
+    # set once per day checked value
+    $Param{OncePerDayChecked} = ( $Param{Data}->{OncePerDay} ? 'checked="checked"' : '' );
+
+    if ( $Param{VisibleForAgent} ) {
+
+        # include checked attribute
+        $Param{VisibleForAgentChecked} = 'checked="checked"';
+    }
+    else {
+        # include read-only attribute
+        $Param{VisibleForAgentTooltipReadonly} = 'readonly="readonly"';
+    }
+
+    # get registered transport layers
+    my %RegisteredTransports = %{ $Kernel::OM->Get('Kernel::Config')->Get('Notification::Transport') || {} };
+
+    if ( IsHashRefWithData( \%RegisteredTransports ) ) {
+
+        my $MainObject         = $Kernel::OM->Get('Kernel::System::Main');
+        my $OTRSBusinessObject = $Kernel::OM->Get('Kernel::System::OTRSBusiness');
+
+        TRANSPORT:
+        for my $Transport (
+            sort { $RegisteredTransports{$a}->{Prio} <=> $RegisteredTransports{$b}->{Prio} }
+            keys %RegisteredTransports
+            )
+        {
+
+            next TRANSPORT if !IsHashRefWithData( $RegisteredTransports{$Transport} );
+            next TRANSPORT if !$RegisteredTransports{$Transport}->{Module};
+
+            # transport
+            $LayoutObject->Block(
+                Name => 'TransportRow',
+                Data => {
+                    Transport     => $Transport,
+                    TransportName => $RegisteredTransports{$Transport}->{Name},
+                },
+            );
+
+            if ( !$MainObject->Require( $RegisteredTransports{$Transport}->{Module}, Silent => 1 ) ) {
+
+                # backend for this transport is not available
+                $LayoutObject->Block(
+                    Name => 'TransportRowDisabled',
+                    Data => {
+                        Transport     => $Transport,
+                        TransportName => $RegisteredTransports{$Transport}->{Name},
+                    },
+                );
+
+                # if not standard transport
+                if (
+                    defined $RegisteredTransports{$Transport}->{IsOTRSBusinessTransport}
+                    && $RegisteredTransports{$Transport}->{IsOTRSBusinessTransport} eq '1'
+                    && !$OTRSBusinessObject->OTRSBusinessIsInstalled()
+                    )
+                {
+
+                    # transport
+                    $LayoutObject->Block(
+                        Name => 'TransportRowRecommendation',
+                        Data => {
+                            Transport     => $Transport,
+                            TransportName => $RegisteredTransports{$Transport}->{Name},
+                        },
+                    );
+                }
+
+                next TRANSPORT;
+            }
+            else {
+                my $TransportChecked = '';
+                if ( grep { $_ eq $Transport } @{ $Param{Data}->{Transports} } ) {
+                    $TransportChecked = 'checked="checked"';
+                }
+
+                # set Email transport selected on add screen
+                if ( $Transport eq 'Email' && !$Param{ID} ) {
+                    $TransportChecked = 'checked="checked"'
+                }
+
+                # get transport settings string from transport object
+                my $TransportSettings =
+                    $Kernel::OM->Get( $RegisteredTransports{$Transport}->{Module} )->TransportSettingsDisplayGet(
+                    %Param,
+                    );
+
+                # it should decide if the default value for the
+                # notification on AgentPreferences is enabled or not
+                my $AgentEnabledByDefault = 0;
+                if ( grep { $_ eq $Transport } @{ $Param{Data}->{AgentEnabledByDefault} } ) {
+                    $AgentEnabledByDefault = 1;
+                }
+                elsif ( !$Param{ID} && defined $RegisteredTransports{$Transport}->{AgentEnabledByDefault} ) {
+                    $AgentEnabledByDefault = $RegisteredTransports{$Transport}->{AgentEnabledByDefault};
+                }
+                my $AgentEnabledByDefaultChecked = ( $AgentEnabledByDefault ? 'checked="checked"' : '' );
+
+                # transport
+                $LayoutObject->Block(
+                    Name => 'TransportRowEnabled',
+                    Data => {
+                        Transport                    => $Transport,
+                        TransportName                => $RegisteredTransports{$Transport}->{Name},
+                        TransportChecked             => $TransportChecked,
+                        SettingsString               => $TransportSettings,
+                        AgentEnabledByDefaultChecked => $AgentEnabledByDefaultChecked,
+                        TransportsServerError        => $Param{TransportsServerError},
+                    },
+                );
+
+            }
+
+        }
+    }
+    else {
+
+        # no transports
+        $LayoutObject->Block(
+            Name => 'NoDataFoundMsgTransport',
+        );
     }
 
     return 1;
@@ -817,31 +1328,37 @@ sub _Edit {
 sub _Overview {
     my ( $Self, %Param ) = @_;
 
-    $Self->{LayoutObject}->Block(
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
+    $LayoutObject->Block(
         Name => 'Overview',
         Data => \%Param,
     );
 
-    $Self->{LayoutObject}->Block( Name => 'ActionList' );
-    $Self->{LayoutObject}->Block( Name => 'ActionAdd' );
+    $LayoutObject->Block( Name => 'ActionList' );
+    $LayoutObject->Block( Name => 'ActionAdd' );
+    $LayoutObject->Block( Name => 'ActionImport' );
 
-    $Self->{LayoutObject}->Block(
+    $LayoutObject->Block(
         Name => 'OverviewResult',
         Data => \%Param,
     );
-    my %List = $Self->{NotificationEventObject}->NotificationList();
+
+    my $NotificationEventObject = $Kernel::OM->Get('Kernel::System::NotificationEvent');
+
+    my %List = $NotificationEventObject->NotificationList();
 
     # if there are any notifications, they are shown
     if (%List) {
 
         # get valid list
-        my %ValidList = $Self->{ValidObject}->ValidList();
+        my %ValidList = $Kernel::OM->Get('Kernel::System::Valid')->ValidList();
         for ( sort { $List{$a} cmp $List{$b} } keys %List ) {
 
-            my %Data = $Self->{NotificationEventObject}->NotificationGet(
+            my %Data = $NotificationEventObject->NotificationGet(
                 ID => $_,
             );
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'OverviewResultRow',
                 Data => {
                     Valid => $ValidList{ $Data{ValidID} },
@@ -851,9 +1368,9 @@ sub _Overview {
         }
     }
 
-    # otherwise a no data found msg is displayed
+    # otherwise a no data found message is displayed
     else {
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'NoDataFoundMsg',
             Data => {},
         );

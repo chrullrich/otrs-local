@@ -36,6 +36,12 @@
     background: #FFF;
 }
 
+.Dialog.Fullsize {
+    width: 100%;
+    height: 100%;
+    left: 0px !important;
+}
+
 .Dialog > .Header {
     cursor: move;
     display: block;
@@ -67,8 +73,8 @@
 }
 
 .Dialog > .Content {
-    overflow: hidden;
     position: relative;
+    overflow: hidden;
 }
 
 .Dialog > .Content > .InnerContent {
@@ -77,6 +83,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     max-height: 200px;
+    position: relative;
 }
 
 .Dialog > .Content > .ContentFooter {
@@ -102,17 +109,17 @@
  * subsection       Alert
  */
 
-.Dialog.Alert span.Icon {
+.Dialog.Alert .InnerContent .fa {
     display: block;
-    width: 22px;
-    height: 35px;
-    float: left;
-    background: url(../img/dialog_alert.png) no-repeat;
+    font-size: 25px;
+    text-align: center;
+    color: #ff505e;
+    margin-bottom: 10px;
 }
 
 .Dialog.Alert h2,
 .Dialog.Alert p {
-    margin-left: 35px;
+    text-align: center;
 }
 
 .Dialog.Alert {
@@ -120,8 +127,6 @@
     top: 100px;
     left: 300px;
 }
-
-
 
 /**
  * subsection   Settings
@@ -182,5 +187,42 @@
     max-height: 600px;
 }
 
+/* Pure continuous text dialogs */
+
+.TextDialog {
+    padding: 15px;
+    line-height: 150%;
+    width: 550px;
+    font-size: 13px;
+    max-height: 450px;
+    overflow: scroll;
+}
+
+.TextDialog p,
+.TextDialog li,
+.TextDialog a {
+    font-size: 12px;
+}
+
+.TextDialog ul {
+    list-style-type: square;
+    margin: 0px 0px 7px 20px;
+}
+
+.TextDialog ul li {
+    margin-bottom: 5px;
+    line-height: 130%;
+}
+
+.TextDialog h1 {
+    margin-bottom: 4px;
+    margin-top: 7px;
+    font-size: 14px;
+}
+
+.TextDialog > p {
+    margin-bottom: 12px;
+    margin-left: 8px;
+}
 
 } /* end @media */

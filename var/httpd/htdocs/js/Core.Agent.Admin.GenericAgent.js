@@ -1,5 +1,4 @@
 // --
-// Core.Agent.Admin.GenericAgent.js - provides the special module functions for the GenericInterface job.
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -14,19 +13,13 @@ Core.Agent = Core.Agent || {};
 Core.Agent.Admin = Core.Agent.Admin || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Agent.Admin.GenericAgentEvent
+ * @namespace Core.Agent.Admin.GenericAgentEvent
+ * @memberof Core.Agent.Admin
+ * @author OTRS AG
  * @description
  *      This namespace contains the special module functions for the GenericInterface job module.
  */
 Core.Agent.Admin.GenericAgent = (function (TargetNS) {
-
-    /**
-     * @variable
-     * @private
-     *     This variable stores the parameters that are passed from the DTL and contain all the data that the dialog needs.
-     */
-    var DialogData = [];
 
     /**
      * @private
@@ -50,7 +43,7 @@ Core.Agent.Admin.GenericAgent = (function (TargetNS) {
 
             // Only handle select fields with a size > 1, leave all single-dropdown fields untouched
             if (isNaN(Size) || Size <= 1) {
-                return;
+                return false;
             }
 
             // If select field has a tree selection icon already,
@@ -70,7 +63,7 @@ Core.Agent.Admin.GenericAgent = (function (TargetNS) {
                 $SelectField = $('#' + SelectID);
 
             if (!$SelectField.length) {
-                return;
+                return false;
             }
 
             // Clear field value
@@ -94,23 +87,23 @@ Core.Agent.Admin.GenericAgent = (function (TargetNS) {
      * @name Init
      * @memberof Core.Agent.Admin.GenericAgentEvent
      * @function
-     * @param {Object} Params, initialization and internationalization parameters.
-     * @return nothing
-     *      This function initialize correctly all other function according to the local language
+     * @param {Object} Params - Initialization and internationalization parameters.
+     * @description
+     *      This function initialize correctly all other function according to the local language.
      */
     TargetNS.Init = function (Params) {
 
         TargetNS.Localization = Params.Localization;
 
         $('.DeleteEvent').bind('click', function (Event) {
-            TargetNS.ShowDeleteEventDialog( Event, $(this) );
+            TargetNS.ShowDeleteEventDialog(Event, $(this));
             return false;
         });
 
-        $('#AddEvent').bind('click', function (Event){
-            if ( $('#EventType').val() !== null ) {
-                TargetNS.AddEvent( $('#EventType').val() );
-                return false;
+        $('#AddEvent').bind('click', function (){
+            if ($('#EventType').val() !== null) {
+                TargetNS.AddEvent($('#EventType').val());
+                return;
             }
         });
 
@@ -121,6 +114,14 @@ Core.Agent.Admin.GenericAgent = (function (TargetNS) {
         AddSelectClearButton();
     };
 
+    /**
+     * @name ToogleEventSelect
+     * @memberof Core.Agent.Admin.GenericAgentEvent
+     * @function
+     * @param {String} SelectedEventType - Event Type.
+     * @description
+     *      Toggles the event selection.
+     */
     TargetNS.ToogleEventSelect = function (SelectedEventType) {
         $('.EventList').addClass('Hidden');
         $('#' + SelectedEventType + 'Event').removeClass('Hidden');
@@ -128,42 +129,43 @@ Core.Agent.Admin.GenericAgent = (function (TargetNS) {
 
 
     /**
+     * @name AddEvent
+     * @memberof Core.Agent.Admin.GenericAgentEvent
      * @function
-     * @param {String} EventType, the type of event trigger to assign to an jobr
-     * i.e ticket or article
-     * @return nothing
-     *      This function calls the AddEvent action on the server
+     * @param {String} EventType - The type of event trigger to assign to a job i.e. ticket or article.
+     * @description
+     *      This function calls the AddEvent action on the server.
      */
     TargetNS.AddEvent = function (EventType) {
 
         var $Clone = $('.EventRowTemplate').clone(),
-            EventName = $('#'+ EventType + 'Event').val(),
+            EventName = $('#' + EventType + 'Event').val(),
             IsDuplicated = false;
 
-        if ( !EventName ) {
-            return false;
+        if (!EventName) {
+            return;
         }
 
         // check for duplicated entries
-        $('[class*=EventValue]').each(function(index) {
-            if ( $(this).val() === EventName ) {
+        $('[class*=EventValue]').each(function() {
+            if ($(this).val() === EventName) {
                 IsDuplicated = true;
             }
         });
         if (IsDuplicated) {
             TargetNS.ShowDuplicatedDialog('EventName');
-            return false;
+            return;
         }
 
         // add needed values
         $Clone.find('.EventType').html(EventType);
         $Clone.find('.EventName').html(EventName);
-        $Clone.find('.EventValue').attr('name','EventValues').val(EventName);
+        $Clone.find('.EventValue').attr('name', 'EventValues').val(EventName);
 
         // bind delete function
         $Clone.find('#DeleteEvent').bind('click', function (Event) {
             // remove row
-            TargetNS.ShowDeleteEventDialog(Event, $(this) );
+            TargetNS.ShowDeleteEventDialog(Event, $(this));
             return false;
         });
 
@@ -176,14 +178,15 @@ Core.Agent.Admin.GenericAgent = (function (TargetNS) {
     };
 
     /**
+     * @name ShowDeleteEventDialog
+     * @memberof Core.Agent.Admin.GenericAgentEvent
      * @function
-     * @param {EventObject} event object of the clicked element.
-     * @return nothing
-     *      This function shows a confirmation dialog with 2 buttons
+     * @param {EventObject} Event - Object of the clicked element.
+     * @param {jQueryObject} Object
+     * @description
+     *      This function shows a confirmation dialog with 2 buttons.
      */
-    TargetNS.ShowDeleteEventDialog = function(Event, Object, EventName){
-        var LocalDialogData;
-
+    TargetNS.ShowDeleteEventDialog = function(Event, Object){
         Core.UI.Dialog.ShowContentDialog(
             $('#DeleteEventDialogContainer'),
             TargetNS.Localization.DeleteEventMsg,
@@ -213,12 +216,13 @@ Core.Agent.Admin.GenericAgent = (function (TargetNS) {
     };
 
     /**
+     * @name ShowDuplicatedDialog
+     * @memberof Core.Agent.Admin.GenericAgentEvent
      * @function
-     * @param {string} Field ID object of the element should receive the focus on close event.
-     * @return nothing
+     * @description
      *      This function shows an alert dialog for duplicated entries.
      */
-    TargetNS.ShowDuplicatedDialog = function(Field){
+    TargetNS.ShowDuplicatedDialog = function() {
         Core.UI.Dialog.ShowAlert(
             TargetNS.Localization.DuplicateEventTitle,
             TargetNS.Localization.DuplicateEventMsg,

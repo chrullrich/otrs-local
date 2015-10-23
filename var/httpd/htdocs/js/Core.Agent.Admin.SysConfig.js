@@ -1,5 +1,4 @@
 // --
-// Core.Agent.Admin.SysConfig.js - provides the special module functions for the AdminSysConfig
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -14,16 +13,19 @@ Core.Agent = Core.Agent || {};
 Core.Agent.Admin = Core.Agent.Admin || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Agent.Admin.SysConfig
+ * @namespace Core.Agent.Admin.SysConfig
+ * @memberof Core.Agent.Admin
+ * @author OTRS AG
  * @description
  *      This namespace contains the special module functions for the SysConfig module.
  */
 Core.Agent.Admin.SysConfig = (function (TargetNS) {
     /**
+     * @name Init
+     * @memberof Core.Agent.Admin.SysConfig
      * @function
-     * @return nothing
-     *      This function initializes the special module functions
+     * @description
+     *      Initializes SysConfig screen.
      */
     TargetNS.Init = function () {
         $('#AdminSysConfig h3 input[type="checkbox"]').click(function () {

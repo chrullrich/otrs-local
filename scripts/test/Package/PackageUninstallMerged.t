@@ -1,5 +1,4 @@
 # --
-# PackageUninstallMerged.t - Package Uninstall Mergerd tests
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -102,7 +101,7 @@ if ( !$DeveloperSystem ) {
       <Filelist>
         <File Location="Test" Permission="644" Encode="Base64">aGVsbG8K</File>
         <File Location="var/Test" Permission="644" Encode="Base64">aGVsbG8K</File>
-        <File Location="bin/otrs.CheckDB.pl" Permission="755" Encode="Base64">aGVsbG8K</File>
+        <File Location="bin/otrs.CheckSum.pl" Permission="755" Encode="Base64">aGVsbG8K</File>
       </Filelist>
     </otrs_package>
     ';
@@ -122,14 +121,14 @@ if ( !$DeveloperSystem ) {
 
     # now create an .save file for the framework file, content doesn't matter as it will be deleted
     my $Write = $MainObject->FileWrite(
-        Location   => $Home . '/bin/otrs.CheckDB.pl.save',
+        Location   => $Home . '/bin/otrs.CheckSum.pl.save',
         Content    => \$Content,
         Mode       => 'binmode',
         Permission => '644',
     );
     $Self->True(
         $Write,
-        '#FileWrite() - bin/otrs.CheckDB.pl.save',
+        '#FileWrite() - bin/otrs.CheckSum.pl.save',
     );
 
     # create PackageObject again to make sure cache is cleared
@@ -144,7 +143,7 @@ if ( !$DeveloperSystem ) {
 
     # check that the original files from the package does not exists anymore
     # this files are supose to be old files that are not required any more by the merged package
-    for my $File (qw( Test var/Test bin/otrs.CheckDB.pl.save )) {
+    for my $File (qw( Test var/Test bin/otrs.CheckSum.pl.save )) {
         my $RealFile = $Home . '/' . $File;
         $RealFile =~ s/\/\//\//g;
         $Self->False(
@@ -154,7 +153,7 @@ if ( !$DeveloperSystem ) {
     }
 
     # check that the framework file still exists
-    for my $File (qw( bin/otrs.CheckDB.pl )) {
+    for my $File (qw( bin/otrs.CheckSum.pl )) {
         my $RealFile = $Home . '/' . $File;
         $RealFile =~ s/\/\//\//g;
         $Self->True(

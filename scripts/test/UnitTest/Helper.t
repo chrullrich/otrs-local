@@ -1,5 +1,4 @@
 # --
-# Helper.t - unit tests
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -42,4 +41,28 @@ $Self->False(
     $DuplicateFound,
     "GetRandomID() returned no duplicates",
 );
+
+# Test transactions
+
+$HelperObject->BeginWork();
+
+my $TestUserLogin = $HelperObject->TestUserCreate();
+
+$Self->True(
+    $TestUserLogin,
+    'Can create test user',
+);
+
+$HelperObject->Rollback();
+$Kernel::OM->Get('Kernel::System::Cache')->CleanUp();
+
+my %User = $Kernel::OM->Get('Kernel::System::User')->GetUserData(
+    User => $TestUserLogin,
+);
+
+$Self->False(
+    $User{UserID},
+    'Rollback worked',
+);
+
 1;
