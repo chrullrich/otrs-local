@@ -1,5 +1,4 @@
 // --
-// Core.Agent.Admin.GenericInterfaceDebugger.js - provides the special module functions for the GenericInterface debugger.
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -14,13 +13,26 @@ Core.Agent = Core.Agent || {};
 Core.Agent.Admin = Core.Agent.Admin || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Agent.Admin.GenericInterfaceDebugger
+ * @namespace Core.Agent.Admin.GenericInterfaceDebugger
+ * @memberof Core.Agent.Admin
+ * @author OTRS AG
  * @description
  *      This namespace contains the special module functions for the GenericInterface debugger module.
  */
 Core.Agent.Admin.GenericInterfaceDebugger = (function (TargetNS) {
 
+    /**
+     * @private
+     * @name FormatISODate
+     * @memberof Core.Agent.Admin.GenericInterfaceDebugger
+     * @function
+     * @returns {String} ISO-formatted date
+     * @param {String} Year
+     * @param {String} Month
+     * @param {String} Day
+     * @description
+     *      Formats a date as ISO.
+     */
     function FormatISODate (Year, Month, Day) {
         var Result = '',
             Temp;
@@ -43,23 +55,39 @@ Core.Agent.Admin.GenericInterfaceDebugger = (function (TargetNS) {
         return Result;
     }
 
+    /**
+     * @name Init
+     * @memberof Core.Agent.Admin.GenericInterfaceDebugger
+     * @function
+     * @param {Object} Params
+     * @description
+     *      Initializes the module functions.
+     */
     TargetNS.Init = function (Params) {
         TargetNS.WebserviceID = parseInt(Params.WebserviceID, 10);
         TargetNS.Localization = Params.Localization;
     };
 
+    /**
+     * @name GetRequestList
+     * @memberof Core.Agent.Admin.GenericInterfaceDebugger
+     * @function
+     * @description
+     *      Loads the request list via AJAX.
+     */
     TargetNS.GetRequestList = function() {
         var Data = {
             Action: 'AdminGenericInterfaceDebugger',
             Subaction: 'GetRequestList',
             WebserviceID: TargetNS.WebserviceID,
+            FilterLimit: $('#FilterLimit').val() || '',
             FilterRemoteIP: $('#FilterRemoteIP').val() || '',
             FilterType: $('#FilterType').val() || ''
         };
 
 
         Data.FilterFrom = FormatISODate($('#FilterFromYear').val(), $('#FilterFromMonth').val(), $('#FilterFromDay').val()) + ' 00:00:00';
-        Data.FilterTo   = FormatISODate($('#FilterToYear').val(), $('#FilterToMonth').val(), $('#FilterToDay').val()) + ' 23:59:59';
+        Data.FilterTo = FormatISODate($('#FilterToYear').val(), $('#FilterToMonth').val(), $('#FilterToDay').val()) + ' 23:59:59';
 
         $('#CommunicationDetails').css('visibility', 'hidden');
         $('.RequestListWidget').addClass('Loading');
@@ -91,7 +119,7 @@ Core.Agent.Admin.GenericInterfaceDebugger = (function (TargetNS) {
 
             $('#RequestList tbody').html(HTML);
 
-            $('#RequestList a').bind('click', function(Event) {
+            $('#RequestList a').bind('click', function() {
                 var CommunicationID = $(this).blur().parents('tr').find('input.CommunicationID').val();
 
                 TargetNS.LoadCommunicationDetails(CommunicationID);
@@ -102,6 +130,14 @@ Core.Agent.Admin.GenericInterfaceDebugger = (function (TargetNS) {
         }, 'json');
     };
 
+    /**
+     * @name LoadCommunicationDetails
+     * @memberof Core.Agent.Admin.GenericInterfaceDebugger
+     * @function
+     * @param {String} CommunicationID
+     * @description
+     *      Load communication details via AJAX.
+     */
     TargetNS.LoadCommunicationDetails = function(CommunicationID) {
 
         var Data = {
@@ -140,9 +176,9 @@ Core.Agent.Admin.GenericInterfaceDebugger = (function (TargetNS) {
                     if (this.Data && this.Data.length) {
 
                         // quote XML tags
-                        this.Data = this.Data.replace( new RegExp("&","gm"),"&amp;");
-                        this.Data = this.Data.replace( new RegExp("<","gm"),"&lt;");
-                        this.Data = this.Data.replace( new RegExp(">","gm"),"&gt;");
+                        this.Data = this.Data.replace(new RegExp("&", "gm"), "&amp;");
+                        this.Data = this.Data.replace(new RegExp("<", "gm"), "&lt;");
+                        this.Data = this.Data.replace(new RegExp(">", "gm"), "&gt;");
 
                         $Content.append('<pre><code>' + this.Data + '</code></pre>');
                     }
@@ -156,6 +192,14 @@ Core.Agent.Admin.GenericInterfaceDebugger = (function (TargetNS) {
         }, 'json');
     };
 
+    /**
+     * @name ShowDeleteDialog
+     * @memberof Core.Agent.Admin.GenericInterfaceDebugger
+     * @function
+     * @param {String} Event
+     * @description
+     *      Shows a confirmation dialog to clear the log.
+     */
     TargetNS.ShowDeleteDialog = function(Event){
         Core.UI.Dialog.ShowContentDialog(
             $('#DeleteDialogContainer'),

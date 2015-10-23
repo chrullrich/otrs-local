@@ -1,5 +1,4 @@
 # --
-# Replace.t - template generator
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -91,16 +90,53 @@ for my $DynamicField (@DynamicFieldsToAdd) {
 # constructor
 my $TemplateGeneratorObject = $Kernel::OM->Get('Kernel::System::TemplateGenerator');
 
+my $TestCustomerLogin = $HelperObject->TestCustomerUserCreate(
+    Language => 'en',
+);
+
+my $TestUserLogin = $HelperObject->TestUserCreate(
+    Language => 'en',
+);
+
+my %TestUser = $Kernel::OM->Get('Kernel::System::User')->GetUserData(
+    User => $TestUserLogin,
+);
+
+my $TestUser2Login = $HelperObject->TestUserCreate(
+    Language => 'en',
+);
+
+my %TestUser2 = $Kernel::OM->Get('Kernel::System::User')->GetUserData(
+    User => $TestUserLogin,
+);
+
+my $TestUser3Login = $HelperObject->TestUserCreate(
+    Language => 'en',
+);
+
+my %TestUser3 = $Kernel::OM->Get('Kernel::System::User')->GetUserData(
+    User => $TestUserLogin,
+);
+
+my $TestUser4Login = $HelperObject->TestUserCreate(
+    Language => 'en',
+);
+
+my %TestUser4 = $Kernel::OM->Get('Kernel::System::User')->GetUserData(
+    User => $TestUserLogin,
+);
+
 my $TicketID = $TicketObject->TicketCreate(
-    Title        => 'Some Ticket_Title',
-    Queue        => 'Raw',
-    Lock         => 'unlock',
-    Priority     => '3 normal',
-    State        => 'closed successful',
-    CustomerNo   => '123465',
-    CustomerUser => 'customer@example.com',
-    OwnerID      => 1,
-    UserID       => 1,
+    Title         => 'Some Ticket_Title',
+    Queue         => 'Raw',
+    Lock          => 'unlock',
+    Priority      => '3 normal',
+    State         => 'closed successful',
+    CustomerNo    => '123465',
+    CustomerUser  => $TestCustomerLogin,
+    OwnerID       => $TestUser{UserID},
+    ResponsibleID => $TestUser2{UserID},
+    UserID        => $TestUser3{UserID},
 );
 $Self->IsNot(
     $TicketID,
@@ -214,8 +250,17 @@ my @Tests = (
             From => 'test@home.com',
         },
         RichText => 0,
-        Template => 'Test <OTRS_RESPONSIBLE_UserFirstname>',
-        Result   => 'Test Admin',
+        Template => 'Test <OTRS_RESPONSIBLE_UserFirstname> <OTRS_RESPONSIBLE_nonexisting>',
+        Result   => "Test $TestUser2{UserFirstname} -",
+    },
+    {
+        Name => 'OTRS_TICKET_RESPONSIBLE firstname',              # <OTRS_RESPONSIBLE_UserFirstname>
+        Data => {
+            From => 'test@home.com',
+        },
+        RichText => 0,
+        Template => 'Test <OTRS_TICKET_RESPONSIBLE_UserFirstname> <OTRS_TICKET_RESPONSIBLE_nonexisting>',
+        Result   => "Test $TestUser2{UserFirstname} -",
     },
     {
         Name => 'OTRS owner firstname',                           # <OTRS_OWNER_*>
@@ -223,8 +268,17 @@ my @Tests = (
             From => 'test@home.com',
         },
         RichText => 0,
-        Template => 'Test <OTRS_OWNER_UserFirstname>',
-        Result   => 'Test Admin',
+        Template => 'Test <OTRS_OWNER_UserFirstname> <OTRS_OWNER_nonexisting>',
+        Result   => "Test $TestUser{UserFirstname} -",
+    },
+    {
+        Name => 'OTRS_TICKET_OWNER firstname',                    # <OTRS_OWNER_*>
+        Data => {
+            From => 'test@home.com',
+        },
+        RichText => 0,
+        Template => 'Test <OTRS_TICKET_OWNER_UserFirstname> <OTRS_TICKET_OWNER_nonexisting>',
+        Result   => "Test $TestUser{UserFirstname} -",
     },
     {
         Name => 'OTRS current firstname',                         # <OTRS_CURRENT_*>
@@ -232,8 +286,8 @@ my @Tests = (
             From => 'test@home.com',
         },
         RichText => 0,
-        Template => 'Test <OTRS_CURRENT_UserFirstname>',
-        Result   => 'Test Admin',
+        Template => 'Test <OTRS_CURRENT_UserFirstname> <OTRS_CURRENT_nonexisting>',
+        Result   => "Test $TestUser3{UserFirstname} -",
     },
     {
         Name => 'OTRS ticket ticketid',                           # <OTRS_TICKET_*>
@@ -304,15 +358,121 @@ mailto-Link <a href="mailto:skywalker@otrs.org?body=From%3A%20%3COTRS_CUSTOMER_F
         Result =>
             'mailto-Link <a href="mailto:skywalker@otrs.org?subject=From%3A%20test%40home.com&amp;body=From%3A%20test%40home.com">E-Mail mit Subject und Body</a><br /><br />mailto-Link <a href="mailto:skywalker@otrs.org?subject=From%3A%20test%40home.com">E-Mail mit Subject</a><br /><br />mailto-Link <a href="mailto:skywalker@otrs.org?body=From%3A%20test%40home.com">E-Mail mit Body</a><br />',
     },
+    {
+        Name => 'OTRS AGENT + CUSTOMER FROM',    # <OTRS_TICKET_DynamicField_*_Value>
+        Data => {
+            From => 'testcustomer@home.com',
+        },
+        DataAgent => {
+            From => 'testagent@home.com',
+        },
+        RichText => 0,
+        Template => 'Test <OTRS_AGENT_From> - <OTRS_CUSTOMER_From>',
+        Result   => 'Test testagent@home.com - testcustomer@home.com',
+    },
+    {
+        Name =>
+            'OTRS AGENT + CUSTOMER BODY',   # this is an special case, it sets the Body as it is since is the Data param
+        Data => {
+            Body => "Line1\nLine2\nLine3",
+        },
+        DataAgent => {
+            Body => "Line1\nLine2\nLine3",
+        },
+        RichText => 0,
+        Template => 'Test <OTRS_AGENT_BODY> - <OTRS_CUSTOMER_BODY>',
+        Result   => "Test Line1\nLine2\nLine3 - Line1\nLine2\nLine3",
+    },
+    {
+        Name => 'OTRS AGENT + CUSTOMER BODY[2]',
+        Data => {
+            Body => "Line1\nLine2\nLine3",
+        },
+        DataAgent => {
+            Body => "Line1\nLine2\nLine3",
+        },
+        RichText => 0,
+        Template => 'Test <OTRS_AGENT_BODY[2]> - <OTRS_CUSTOMER_BODY[2]>',
+        Result   => "Test > Line1\n> Line2 - > Line1\n> Line2",
+    },
+    {
+        Name => 'OTRS AGENT + CUSTOMER EMAIL',    # EMAIL without [ ] does not exists
+        Data => {
+            Body => "Line1\nLine2\nLine3",
+        },
+        DataAgent => {
+            Body => "Line1\nLine2\nLine3",
+        },
+        RichText => 0,
+        Template => 'Test <OTRS_AGENT_EMAIL> - <OTRS_CUSTOMER_EMAIL>',
+        Result   => "Test - - -",
+    },
+    {
+        Name => 'OTRS AGENT + CUSTOMER EMAIL[2]',
+        Data => {
+            Body => "Line1\nLine2\nLine3",
+        },
+        DataAgent => {
+            Body => "Line1\nLine2\nLine3",
+        },
+        RichText => 0,
+        Template => 'Test <OTRS_AGENT_EMAIL[2]> - <OTRS_CUSTOMER_EMAIL[2]>',
+        Result   => "Test > Line1\n> Line2 - > Line1\n> Line2",
+    },
+    {
+        Name => 'OTRS COMMENT',    # EMAIL without [ ] does not exists
+        Data => {
+            Body => "Line1\nLine2\nLine3",
+        },
+        RichText => 0,
+        Template => 'Test <OTRS_COMMENT>',
+        Result   => "Test > Line1\n> Line2\n> Line3",
+    },
+
+    {
+        Name => 'OTRS AGENT + CUSTOMER SUBJECT[2]',
+        Data => {
+            Subject => '0123456789'
+        },
+        DataAgent => {
+            Subject => '987654321'
+        },
+        RichText => 0,
+        Template => 'Test <OTRS_AGENT_SUBJECT[2]> - <OTRS_CUSTOMER_SUBJECT[2]>',
+        Result   => "Test 98 [...] - 01 [...]",
+    },
+    {
+        Name     => 'OTRS CUSTOMER REALNAME',
+        Data     => {},
+        RichText => 0,
+        Template => 'Test <OTRS_CUSTOMER_REALNAME>',
+        Result   => "Test $TestCustomerLogin $TestCustomerLogin",
+    },
+    {
+        Name     => 'OTRS CUSTOMER DATA UserFirstname',
+        Data     => {},
+        RichText => 0,
+        Template => 'Test <OTRS_CUSTOMER_DATA_UserFirstname>',
+        Result   => "Test $TestCustomerLogin",
+    },
+    {
+        Name     => 'OTRS <OTRS_NOTIFICATION_RECIPIENT_UserFullname>',
+        Data     => {},
+        RichText => 0,
+        Template => 'Test <OTRS_NOTIFICATION_RECIPIENT_UserFullname> <OTRS_NOTIFICATION_RECIPIENT_nonexisting>',
+        Result   => "Test $TestUser4{UserFullname} -",
+    },
 );
 
 for my $Test (@Tests) {
     my $Result = $TemplateGeneratorObject->_Replace(
-        Text     => $Test->{Template},
-        Data     => $Test->{Data},
-        RichText => $Test->{RichText},
-        TicketID => $TicketID,
-        UserID   => 1,
+        Text        => $Test->{Template},
+        Data        => $Test->{Data},
+        DataAgent   => $Test->{DataAgent},
+        RichText    => $Test->{RichText},
+        TicketID    => $TicketID,
+        UserID      => $TestUser3{UserID},
+        RecipientID => $TestUser4{UserID},
     );
     $Self->Is(
         $Result,

@@ -1,5 +1,4 @@
 # --
-# Defaults.t - config tests
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -38,14 +37,15 @@ my @ConfigFiles = $MainObject->DirectoryRead(
 );
 
 my %AllowedConfigFiles = (
+    'CloudServices.xml'     => 1,
+    'Daemon.xml'            => 1,
     'Framework.xml'         => 1,
     'Fred.xml'              => 1,
     'GenericInterface.xml'  => 1,
-    'ProcessManagement.xml' => 1,
-    'Scheduler.xml'         => 1,
-    'Ticket.xml'            => 1,
-    'Support.xml'           => 1,
     'OTRSCodePolicy.xml'    => 1,
+    'ProcessManagement.xml' => 1,
+    'Support.xml'           => 1,
+    'Ticket.xml'            => 1,
 );
 
 for my $ConfigFile (@ConfigFiles) {
@@ -80,11 +80,9 @@ my %CheckSubEntries = (
 );
 
 my %IgnoreEntries = (
-    'Frontend::CommonObject'         => 1,
-    'Frontend::CommonParam'          => 1,
-    'CustomerFrontend::CommonObject' => 1,
-    'CustomerFrontend::CommonParam'  => 1,
-    'PublicFrontend::CommonParam'    => 1,
+    'Frontend::CommonParam'         => 1,
+    'CustomerFrontend::CommonParam' => 1,
+    'PublicFrontend::CommonParam'   => 1,
 );
 
 DEFAULTCONFIGENTRY:

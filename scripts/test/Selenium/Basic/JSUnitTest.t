@@ -1,5 +1,4 @@
 # --
-# JSUnitTest.t - frontend tests that collect the JavaScript unit test results
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,72 +11,64 @@ use warnings;
 use utf8;
 
 use vars (qw($Self));
-
 use Time::HiRes qw(sleep);
-
-use Kernel::System::UnitTest::Selenium;
 
 # get needed objects
 my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
-
-my $Selenium = Kernel::System::UnitTest::Selenium->new(
-    Verbose => 1,
-);
+my $Selenium     = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
 $Selenium->RunTest(
     sub {
 
         my $WebPath = $ConfigObject->Get('Frontend::WebPath');
 
-        $Selenium->get("${WebPath}js/test/JSUnitTest.html");
-
-        # wait for the javascript tests (including AJAX) to complete
-        ACTIVESLEEP:
-        for ( 1 .. 20 ) {
-
-            if ( eval { $Selenium->find_element( "p.result span.failed", 'css' ); } ) {
-                last ACTIVESLEEP;
-            }
-
-            sleep 1;
-        }
-
-        sleep 1;
-
-        $Selenium->find_element( "p.result span.failed", 'css' );
-        $Selenium->find_element( "p.result span.passed", 'css' );
-        $Selenium->find_element( "p.result span.total",  'css' );
-
-        my ( $Passed, $Failed, $Total );
-        $Passed = $Selenium->execute_script(
-            "return \$('p.result span.passed').text()"
-        );
-        $Failed = $Selenium->execute_script(
-            "return \$('p.result span.failed').text()"
-        );
-        $Total = $Selenium->execute_script(
-            "return \$('p.result span.total').text()"
+        my @Files = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
+            Directory => $Kernel::OM->Get('Kernel::Config')->Get('Home') . '/var/httpd/htdocs/js/test',
+            Filter    => "*.html",
         );
 
-        $Self->True( $Passed, 'Found passed tests' );
-        $Self->Is( $Passed, $Total, 'Total number of tests' );
-        $Self->False( $Failed, 'Failed tests' );
+        for my $File (@Files) {
 
-        for my $Test ( 1 .. $Passed ) {
-            $Self->True( 1, 'Successful JavaScript unit test found' );
-        }
+            # Remove path
+            $File =~ s{.*/}{}smx;
 
-        for my $Test ( 1 .. $Failed ) {
-            $Self->True(
-                0,
-                'Failed JavaScript unit test found (open js/test/JSUnitTest.html in your browser for details)'
+            $Selenium->get("${WebPath}js/test/$File");
+
+            my $JSModuleName = $File;
+            $JSModuleName =~ s{\.UnitTest\.html}{}xms;
+
+            # Wait for the tests to complete.
+            $Selenium->WaitFor(
+                JavaScript =>
+                    "return typeof(\$) === 'function' && \$('span.module-name:contains($JSModuleName)').length;"
             );
+            $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("p.result span.total").length;' );
+
+            $Selenium->find_element( "p.result span.failed", 'css' );
+            $Selenium->find_element( "p.result span.passed", 'css' );
+            $Selenium->find_element( "p.result span.total",  'css' );
+
+            my ( $Passed, $Failed, $Total );
+            $Passed = $Selenium->execute_script(
+                "return \$('p.result span.passed').text()"
+            );
+            $Failed = $Selenium->execute_script(
+                "return \$('p.result span.failed').text()"
+            );
+            $Total = $Selenium->execute_script(
+                "return \$('p.result span.total').text()"
+            );
+
+            $Self->True( $Passed, "$File - found passed tests" );
+            $Self->Is( $Passed, $Total, "$File - total number of tests" );
+            $Self->False( $Failed, "$File - failed tests" );
+
+            # Generate screenshot on failure
+            if ( $Failed || !$Passed || $Passed != $Total ) {
+                $Selenium->HandleError("Failed JS unit tests found.");
+            }
         }
 
-        # Generate screenshot on failure
-        if ( $Failed || !$Passed || $Passed != $Total ) {
-            die;
-        }
     }
 );
 

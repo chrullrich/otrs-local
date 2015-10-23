@@ -1,5 +1,4 @@
 # --
-# AdminQueue.t - frontend tests for AdminState
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -13,22 +12,14 @@ use utf8;
 
 use vars (qw($Self));
 
-use Kernel::System::UnitTest::Helper;
-use Kernel::System::UnitTest::Selenium;
-
 # get needed objects
 my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
-
-my $Selenium = Kernel::System::UnitTest::Selenium->new(
-    Verbose => 1,
-);
+my $Selenium     = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
 $Selenium->RunTest(
     sub {
 
-        my $Helper = Kernel::System::UnitTest::Helper->new(
-            RestoreSystemConfiguration => 0,
-        );
+        my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
         my $TestUserLogin = $Helper->TestUserCreate(
             Groups => ['admin'],
@@ -44,12 +35,16 @@ $Selenium->RunTest(
 
         $Selenium->get("${ScriptAlias}index.pl?Action=AdminQueue");
 
+        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('body').length" );
+
         $Selenium->find_element( "table",             'css' );
         $Selenium->find_element( "table thead tr th", 'css' );
         $Selenium->find_element( "table tbody tr td", 'css' );
 
         # click 'add new queue' link
         $Selenium->find_element( "a.Create", 'css' )->click();
+
+        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#Name').length" );
 
         # check add page
         for my $ID (
@@ -75,22 +70,29 @@ $Selenium->RunTest(
             'Client side validation correctly detected missing input value',
         );
 
+        $Selenium->get("${ScriptAlias}index.pl?Action=AdminQueue");
+        $Selenium->find_element( "a.Create", 'css' )->click();
+
+        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('body').length" );
+
         # create a real test queue
-        my $RandomID = $Helper->GetRandomID();
+        my $RandomID = "Queue" . $Helper->GetRandomID();
 
-        $Selenium->find_element( "#Name",                         'css' )->send_keys($RandomID);
-        $Selenium->find_element( "#GroupID option[value='1']",    'css' )->click();
-        $Selenium->find_element( "#FollowUpID option[value='1']", 'css' )->click();
+        $Selenium->find_element( "#Name", 'css' )->send_keys($RandomID);
+        $Selenium->execute_script("\$('#GroupID').val('1').trigger('redraw.InputField').trigger('change');");
+        $Selenium->execute_script("\$('#FollowUpID').val('1').trigger('redraw.InputField').trigger('change');");
+        $Selenium->execute_script("\$('#SalutationID').val('1').trigger('redraw.InputField').trigger('change');");
+        $Selenium->execute_script("\$('#SystemAddressID').val('1').trigger('redraw.InputField').trigger('change');");
+        $Selenium->execute_script("\$('#SignatureID').val('1').trigger('redraw.InputField').trigger('change');");
+        $Selenium->execute_script("\$('#ValidID').val('1').trigger('redraw.InputField').trigger('change');");
+        $Selenium->find_element( "#Comment", 'css' )->send_keys('Selenium test queue');
+        $Selenium->find_element( "#Name",    'css' )->submit();
 
-        #$Selenium->find_element("#FollowUpLock[value='']", 'css')->click();
-        $Selenium->find_element( "#SalutationID option[value='1']",    'css' )->click();
-        $Selenium->find_element( "#SystemAddressID option[value='1']", 'css' )->click();
-        $Selenium->find_element( "#SignatureID option[value='1']",     'css' )->click();
-        $Selenium->find_element( "#ValidID option[value='1']",         'css' )->click();
-        $Selenium->find_element( "#Comment",                           'css' )->send_keys('Selenium test queue');
-        $Selenium->find_element( "#Name",                              'css' )->submit();
+        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('body').length" );
 
-        sleep 5;
+        $Selenium->get("${ScriptAlias}index.pl?Action=AdminQueue");
+
+        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('table').length" );
 
         # check Queue - Responses page
         $Self->True(
@@ -104,7 +106,7 @@ $Selenium->RunTest(
         # go to new queue again
         $Selenium->find_element( $RandomID, 'link_text' )->click();
 
-        sleep 5;
+        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#Name').length" );
 
         # check new queue values
         $Self->Is(
@@ -154,26 +156,40 @@ $Selenium->RunTest(
         );
 
         # set test queue to invalid
-        $Selenium->find_element( "#GroupID option[value='2']", 'css' )->click();
-        $Selenium->find_element( "#ValidID option[value='2']", 'css' )->click();
-        $Selenium->find_element( "#Comment",                   'css' )->clear();
-        $Selenium->find_element( "#Comment",                   'css' )->submit();
+        $Selenium->execute_script("\$('#GroupID').val('2').trigger('redraw.InputField').trigger('change');");
+        $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
+        $Selenium->find_element( "#Comment", 'css' )->clear();
+        $Selenium->find_element( "#Comment", 'css' )->submit();
 
-        sleep 5;
+        # wait until form has loaded, if neccessary
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("body").length' );
+
+        $Selenium->get("${ScriptAlias}index.pl?Action=AdminQueue");
+
+        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('table').length" );
 
         # check overview page
         $Self->True(
             index( $Selenium->get_page_source(), $RandomID ) > -1,
             'New queue found on table'
         );
+
         $Selenium->find_element( "table",             'css' );
         $Selenium->find_element( "table thead tr th", 'css' );
         $Selenium->find_element( "table tbody tr td", 'css' );
 
+        # check class of invalid Queue in the overview table
+        $Self->True(
+            $Selenium->execute_script(
+                "return \$('tr.Invalid td a:contains($RandomID)').length"
+            ),
+            "There is a class 'Invalid' for test Queue",
+        );
+
         # go to new state again
         $Selenium->find_element( $RandomID, 'link_text' )->click();
 
-        sleep 5;
+        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#Name').length" );
 
         # check new queue values
         $Self->Is(
@@ -196,6 +212,32 @@ $Selenium->RunTest(
             '',
             "#Comment updated value",
         );
+
+        # since there are no tickets that rely on our test queue, we can remove them again
+        # from the DB.
+        my $QueueID = $Kernel::OM->Get('Kernel::System::Queue')->QueueLookup(
+            Queue => $RandomID,
+        );
+        my $Success = $Kernel::OM->Get('Kernel::System::DB')->Do(
+            SQL => "DELETE FROM queue_preferences WHERE queue_id = $QueueID",
+        );
+        $Self->True(
+            $Success,
+            "QueueDelete preferences - $RandomID",
+        );
+        $Success = $Kernel::OM->Get('Kernel::System::DB')->Do(
+            SQL => "DELETE FROM queue WHERE id = $QueueID",
+        );
+        $Self->True(
+            $Success,
+            "QueueDelete - $RandomID",
+        );
+
+        # make sure the cache is correct.
+        $Kernel::OM->Get('Kernel::System::Cache')->CleanUp(
+            Type => 'Queue',
+        );
+
     }
 );
 

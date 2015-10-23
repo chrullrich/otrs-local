@@ -1,11 +1,12 @@
 // --
-// Core.Agent.Admin.ProcessManagement.js - provides the special module functions for the Process Management.
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
 // the enclosed file COPYING for license information (AGPL). If you
 // did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 // --
+
+/*eslint-disable no-window*/
 
 "use strict";
 
@@ -14,15 +15,24 @@ Core.Agent = Core.Agent || {};
 Core.Agent.Admin = Core.Agent.Admin || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Agent.Admin.ProcessManagement
+ * @namespace Core.Agent.Admin.ProcessManagement
+ * @memberof Core.Agent.Admin
+ * @author OTRS AG
  * @description
  *      This namespace contains the special module functions for the ProcessManagement module.
  */
 Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
 
+    /**
+     * @private
+     * @name InitProcessPopups
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @description
+     *      Initializes needed popup handler.
+     */
     function InitProcessPopups() {
-        $('a.AsPopup').bind('click', function (Event) {
+        $('a.AsPopup').bind('click', function () {
             var Matches,
                 PopupType = 'Process';
 
@@ -39,7 +49,7 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
             return false;
         });
 
-        $('a.AsPopup_Redirect').bind('click', function (Event) {
+        $('a.AsPopup_Redirect').bind('click', function () {
             var $Form = $(this).closest('form');
 
             $('#PopupRedirect').val(1);
@@ -69,12 +79,21 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
             return false;
         });
 
-        $('a.GoBack').bind('click', function (Event) {
+        $('a.GoBack').bind('click', function () {
             // Remove onbeforeunload event (which is only needed if you close the popup via the window "X")
             $(window).unbind("beforeunload.PMPopup");
         });
     }
 
+    /**
+     * @private
+     * @name ShowDeleteProcessConfirmationDialog
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @param {jQueryObject} $Element
+     * @description
+     *      Shows a confirmation dialog to delete processes.
+     */
     function ShowDeleteProcessConfirmationDialog($Element) {
         var DialogElement = $Element.data('dialog-element'),
             DialogTitle = $Element.data('dialog-title'),
@@ -113,7 +132,7 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
                            if (!Response || !Response.Success) {
                                alert(Response.Message);
                                Core.UI.Dialog.CloseDialog($('.Dialog'));
-                               return;
+                               return false;
                            }
 
                            Core.App.InternalRedirect({
@@ -126,6 +145,19 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         );
     }
 
+    /**
+     * @private
+     * @name ShowDeleteEntityConfirmationDialog
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @param {jQueryObject} $Element
+     * @param {String} EntityType
+     * @param {String} EntityName
+     * @param {String} EntityID
+     * @param {String} ItemID
+     * @description
+     *      Shows a confirmation dialog to delete entities.
+     */
     function ShowDeleteEntityConfirmationDialog($Element, EntityType, EntityName, EntityID, ItemID) {
         var DialogID = 'Delete' + EntityType + 'ConfirmationDialog',
             $DialogElement = $('#Dialogs #' + DialogID);
@@ -168,7 +200,7 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
                            if (!Response || !Response.Success) {
                                alert(Response.Message);
                                Core.UI.Dialog.CloseDialog($('.Dialog'));
-                               return;
+                               return false;
                            }
 
                            // Remove element from accordion
@@ -181,13 +213,20 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         );
     }
 
+    /**
+     * @private
+     * @name InitDeleteEntity
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @description
+     *      Initializes the event handler to delete entities.
+     */
     function InitDeleteEntity() {
-        $('a.DeleteEntity').bind('click.DeleteEntity', function (Event) {
+        $('a.DeleteEntity').bind('click.DeleteEntity', function () {
             var EntityID = $(this).closest('li').data('entity'),
                 EntityName = $(this).closest('li').clone().children().remove().end().text(),
                 ItemID = $(this).closest('li').data('id'),
-                EntityType,
-                CheckResult = {};
+                EntityType;
 
             if (!EntityID.length) {
                 return false;
@@ -212,10 +251,42 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         });
     }
 
+    /**
+     * @name ProcessData
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @member {Object}
+     * @description
+     *     Structure to save all process data.
+     */
     TargetNS.ProcessData = {};
+
+    /**
+     * @name ProcessLayout
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @member {Object}
+     * @description
+     *     Structure to save all layout data for the process.
+     */
     TargetNS.ProcessLayout = {};
 
+    /**
+     * @name InitAccordionDnD
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @description
+     *      Initializes all event handler to drag and drop elements from the accordion to the canvas.
+     */
     TargetNS.InitAccordionDnD = function () {
+      /**
+       * @private
+       * @name GetMousePosition
+       * @memberof Core.Agent.Admin.ProcessManagement.InitAccordionDND
+       * @function
+       * @returns {Object} Mouse position.
+       * @param {Object} Event - The event object.
+       * @description
+       *      Calculates mouse position.
+       */
         function GetMousePosition(Event) {
             var PosX = 0,
                 PosY = 0;
@@ -234,6 +305,16 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
             return {left: PosX, top: PosY};
         }
 
+      /**
+       * @private
+       * @name GetPositionOnCanvas
+       * @memberof Core.Agent.Admin.ProcessManagement.InitAccordionDND
+       * @function
+       * @returns {Object} Position of mouse on canvas.
+       * @param {Object} Event - The event object.
+       * @description
+       *      Calculates mouse position relative to canvas object.
+       */
         function GetPositionOnCanvas(Event) {
             var $Canvas = $('#Canvas'),
                 CanvasPosition,
@@ -249,6 +330,16 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
             return {left: PosX, top: PosY};
         }
 
+      /**
+       * @private
+       * @name AddActivityToCanvas
+       * @memberof Core.Agent.Admin.ProcessManagement.InitAccordionDND
+       * @function
+       * @param {Object} Event - The event object.
+       * @param {Object} UI - jQuery UI object.
+       * @description
+       *      Adds activity to the canvas after drop event.
+       */
         function AddActivityToCanvas(Event, UI) {
             var Position = GetPositionOnCanvas(Event),
                 EntityID = $(UI.draggable).data('entity'),
@@ -298,15 +389,24 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
             }
         }
 
+      /**
+       * @private
+       * @name CheckIfMousePositionIsOverActivity
+       * @memberof Core.Agent.Admin.ProcessManagement.InitAccordionDND
+       * @function
+       * @returns {String|Boolean} Returns ID of activity or false, if mouse is not over an activity.
+       * @param {Object} Position - A mouse position object.
+       * @description
+       *      Checks if mouse position is over an activity (e.g. to drop activity dialogs to an activity).
+       */
         function CheckIfMousePositionIsOverActivity(Position) {
             var ProcessEntityID = $('#ProcessEntityID').val(),
                 Path = TargetNS.ProcessData.Process[ProcessEntityID].Path,
                 ActivityMatch = false;
 
             // Loop over all assigned activities and check the position
-            $.each(Path, function (Key, Value) {
-                var Activity = Key,
-                    ActivityPosition = TargetNS.ProcessLayout[Key];
+            $.each(Path, function (Key) {
+                var ActivityPosition = TargetNS.ProcessLayout[Key];
                 if (
                         Position.left > parseInt(ActivityPosition.left, 10) &&
                         Position.left < parseInt(ActivityPosition.left, 10) + 110 &&
@@ -320,6 +420,16 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
             return ActivityMatch;
         }
 
+      /**
+       * @private
+       * @name AddActivityDialogToCanvas
+       * @memberof Core.Agent.Admin.ProcessManagement.InitAccordionDND
+       * @function
+       * @param {Object} Event - The event object.
+       * @param {Object} UI - jQuery UI object.
+       * @description
+       *      Adds activity dialog to the canvas after drop event.
+       */
         function AddActivityDialogToCanvas(Event, UI) {
             var Position = GetPositionOnCanvas(Event),
                 EntityID = $(UI.draggable).data('entity'),
@@ -349,11 +459,11 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
                                 alert(Response.Message);
                             }
                             else {
-                                alert ('Error during AJAX communication');
+                                alert('Error during AJAX communication');
                             }
 
                             TargetNS.Canvas.ShowActivityAddActivityDialogError(Activity);
-                            return;
+                            return false;
                         }
 
                         TargetNS.Canvas.ShowActivityAddActivityDialogSuccess(Activity);
@@ -369,7 +479,16 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
             }
         }
 
-        // Check if any transition has a dummy endpoint
+      /**
+       * @private
+       * @name DummyActivityConnected
+       * @memberof Core.Agent.Admin.ProcessManagement.InitAccordionDND
+       * @function
+       * @returns {Boolean} True if a dummy endpoint was found, false otherwise.
+       * @param {String} ProcessEntityID - The process ID.
+       * @description
+       *      Check if any transition has a dummy endpoint.
+       */
         function DummyActivityConnected(ProcessEntityID) {
             var DummyFound = false;
             $.each(TargetNS.ProcessData.Process[ProcessEntityID].Path, function (Activity, ActivityData) {
@@ -382,6 +501,17 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
             return DummyFound;
         }
 
+      /**
+       * @private
+       * @name AddTransitionToCanvas
+       * @memberof Core.Agent.Admin.ProcessManagement.InitAccordionDND
+       * @function
+       * @returns {Boolean} False if a another unconnected transition is on the canvas
+       * @param {Object} Event - The event object.
+       * @param {Object} UI - jQuery UI object.
+       * @description
+       *      Adds transition to the canvas after drop event.
+       */
         function AddTransitionToCanvas(Event, UI) {
             var Position = GetPositionOnCanvas(Event),
                 EntityID = $(UI.draggable).data('entity'),
@@ -391,10 +521,10 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
                 Path = TargetNS.ProcessData.Process[ProcessEntityID].Path;
 
             // if a dummy activity exists, another transition was placed to the canvas but not yet
-            // connected to an end point. One cannot place to unconnected transitions on the canvas.
+            // connected to an end point. One cannot place two unconnected transitions on the canvas.
             if ($('#Dummy').length && DummyActivityConnected(ProcessEntityID)) {
               alert(Core.Agent.Admin.ProcessManagement.Localization.UnconnectedTransition);
-              return;
+              return false;
             }
 
             if (typeof Entity !== 'undefined') {
@@ -407,7 +537,7 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
                 // you cannot bind it a second time
                 if (Path[Activity] && typeof Path[Activity][EntityID] !== 'undefined') {
                     alert(Core.Agent.Admin.ProcessManagement.Localization.TransitionAlreadyPlaced);
-                    return;
+                    return false;
                 }
 
                 if (Activity) {
@@ -431,6 +561,17 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
             }
         }
 
+      /**
+       * @private
+       * @name AddTransitionActionToCanvas
+       * @memberof Core.Agent.Admin.ProcessManagement.InitAccordionDND
+       * @function
+       * @returns {Boolean} Returns false, if transition is not defined.
+       * @param {Object} Event - The event object.
+       * @param {Object} UI - jQuery UI object.
+       * @description
+       *      Adds transition action to the canvas after drop event.
+       */
         function AddTransitionActionToCanvas(Event, UI) {
             var EntityID = $(UI.draggable).data('entity'),
                 Entity = TargetNS.ProcessData.TransitionAction[EntityID],
@@ -453,7 +594,7 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
                     ($.inArray(EntityID, Path[Transition.StartActivity][Transition.TransitionID].TransitionAction) >= 0)
                 ) {
                     alert(Core.Agent.Admin.ProcessManagement.Localization.TransitionActionAlreadyPlaced);
-                    return;
+                    return false;
                 }
 
                 if (Transition) {
@@ -501,7 +642,7 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
                     UI.helper.css('z-index', 1000);
                 }
             },
-            stop: function (Event, UI) {
+            stop: function () {
                 var $Source = $(this),
                     SourceID = $Source.closest('ul').attr('id');
 
@@ -547,6 +688,13 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         });
     };
 
+    /**
+     * @name UpdateAccordion
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @description
+     *      Update accordion data from server.
+     */
     TargetNS.UpdateAccordion = function () {
         // get new Accordion HTML via AJAX and replace the accordion with this HTML
         // re-initialize accordion functions (accordion, filters, DnD)
@@ -567,7 +715,7 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
             Core.UI.Accordion.Init($('ul#ProcessElements'), 'li.AccordionElement h2 a', 'div.Content');
 
             // open accordion element again, which was active before the update
-            Core.UI.Accordion.OpenElement($('ul#ProcessElements > li:nth-child(' + (parseInt(ActiveElement,10) + 1) + ')'));
+            Core.UI.Accordion.OpenElement($('ul#ProcessElements > li:nth-child(' + (parseInt(ActiveElement, 10) + 1) + ')'));
 
             // Initialize filters
             Core.UI.Table.InitTableFilter($('#ActivityFilter'), $('#Activities'));
@@ -586,6 +734,13 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         }, 'html');
     };
 
+    /**
+     * @name UpdateSyncMessage
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @description
+     *      Check if there is a 'dirty' sync state and show a message below the header.
+     */
     TargetNS.UpdateSyncMessage = function () {
         // check if there is a 'dirty' sync state and show a message below the header
         var Data = {
@@ -609,6 +764,15 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         }, 'html');
     };
 
+    /**
+     * @name UpdateScreensPath
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @param {Object} WindowObject
+     * @param {Function} Callback
+     * @description
+     *      Updates screen path.
+     */
     TargetNS.UpdateScreensPath = function (WindowObject, Callback) {
 
         // Collect data for update of the screenspath
@@ -626,9 +790,9 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
                     alert(Response.Message);
                 }
                 else {
-                    alert ('Error during AJAX communication');
+                    alert('Error during AJAX communication');
                 }
-                return;
+                return false;
             }
             else {
                 if (typeof Callback !== 'undefined') {
@@ -638,6 +802,13 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         }, 'json');
     };
 
+    /**
+     * @name HandlePopupClose
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @description
+     *      Close overlay and re-initialize canvas and accordion.
+     */
     TargetNS.HandlePopupClose = function () {
         // update accordion
         Core.Agent.Admin.ProcessManagement.UpdateAccordion();
@@ -647,13 +818,25 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         Core.Agent.Admin.ProcessManagement.HideOverlay();
     };
 
+    /**
+     * @name InitProcessOverview
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @description
+     *      Initialize process overview screen.
+     */
     TargetNS.InitProcessOverview = function() {
-
         InitProcessPopups();
-
         Core.UI.Table.InitTableFilter($('#Filter'), $('#Processes'), 0);
     };
 
+    /**
+     * @name InitProcessEdit
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @description
+     *      Initialize process edit screen.
+     */
     TargetNS.InitProcessEdit = function () {
         // Get Process Data
         TargetNS.ProcessData = {
@@ -697,7 +880,7 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         });
 
         // Init submit function
-        $('#Submit').bind('click', function (Event) {
+        $('#Submit').bind('click', function () {
             var ProcessEntityID = $('#ProcessEntityID').val(),
                 StartActivity;
 
@@ -743,7 +926,7 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
             return false;
         });
 
-        $('#ShowEntityIDs').bind('click', function(Event) {
+        $('#ShowEntityIDs').bind('click', function() {
             if ($(this).hasClass('Visible')) {
                 $(this).removeClass('Visible').text(Core.Agent.Admin.ProcessManagement.Localization.ShowEntityIDs);
                 $('em.EntityID').remove();
@@ -759,6 +942,13 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         TargetNS.Canvas.Init();
     };
 
+    /**
+     * @name InitActivityEdit
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @description
+     *      Initialize activity edit screen.
+     */
     TargetNS.InitActivityEdit = function () {
         function InitListFilter(Event, UI) {
          // only do something, if the element was removed from the right list
@@ -801,6 +991,13 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         });
     };
 
+    /**
+     * @name InitActivityDialogEdit
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @description
+     *      Initialize activity dialog edit screen.
+     */
     TargetNS.InitActivityDialogEdit = function () {
         var MandatoryFields = ['Queue', 'State', 'Lock', 'Priority', 'Type', 'CustomerID'],
             FieldsWithoutDefaultValue = ['CustomerID', 'Article'];
@@ -877,8 +1074,7 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
 
         // Init Fields modal overlay
         $('.FieldDetailsOverlay').unbind('click').bind('click', function () {
-            var FieldID = $(this).data('entity'),
-                FieldConfig = $(this).closest('li').data('config'),
+            var FieldConfig = $(this).closest('li').data('config'),
                 $Element = $(this),
                 Fieldname = $.trim($(this).closest('li').data('id'));
 
@@ -901,27 +1097,27 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
                          Label: TargetNS.Localization.SaveMsg,
                          Class: 'Primary',
                          Function: function () {
-                             var FieldConfig = {};
+                             var FieldConfigElement = {};
 
-                             FieldConfig.DescriptionShort = $('#DescShort').val();
-                             FieldConfig.DescriptionLong = $('#DescLong').val();
-                             FieldConfig.DefaultValue = $('#DefaultValue').val();
-                             FieldConfig.Display = $('#Display').val();
+                             FieldConfigElement.DescriptionShort = $('#DescShort').val();
+                             FieldConfigElement.DescriptionLong = $('#DescLong').val();
+                             FieldConfigElement.DefaultValue = $('#DefaultValue').val();
+                             FieldConfigElement.Display = $('#Display').val();
 
                              if (Fieldname === 'Article') {
-                                 if (typeof FieldConfig.Config === 'undefined'){
-                                     FieldConfig.Config = {};
+                                 if (typeof FieldConfigElement.Config === 'undefined'){
+                                     FieldConfigElement.Config = {};
                                  }
-                                 FieldConfig.Config.ArticleType = $('#ArticleType').val();
+                                 FieldConfigElement.Config.ArticleType = $('#ArticleType').val();
 
                                  // show error if internal article type is set for an interface different than AgentInterface
                                  if ($('#Interface').val() !== 'AgentInterface' && $('#ArticleType').val().match(/int/i)){
                                      window.alert(Core.Agent.Admin.ProcessManagement.Localization.WrongArticleTypeMsg);
-                                     return;
+                                     return false;
                                  }
                              }
 
-                             $Element.closest('li').data('config', Core.JSON.Stringify(FieldConfig));
+                             $Element.closest('li').data('config', Core.JSON.Stringify(FieldConfigElement));
 
                              Core.UI.Dialog.CloseDialog($('.Dialog'));
                          }
@@ -950,7 +1146,7 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
             }
 
             // fields without default value can not be hidden
-            if ($.inArray(Fieldname, FieldsWithoutDefaultValue) > -1 ) {
+            if ($.inArray(Fieldname, FieldsWithoutDefaultValue) > -1) {
                 $('#Display').find('option[value=0]').remove();
             }
 
@@ -989,6 +1185,8 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
                 $('#ArticleTypeContainer').addClass('Hidden');
             }
 
+            Core.UI.InputFields.Activate($('.Dialog'));
+
             return false;
         });
 
@@ -1004,6 +1202,13 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         });
     };
 
+    /**
+     * @name InitTransitionEdit
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @description
+     *      Initialize transition edit screen.
+     */
     TargetNS.InitTransitionEdit = function () {
 
         // Init addition of new conditions
@@ -1087,6 +1292,13 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
 
     };
 
+    /**
+     * @name InitTransitionActionEdit
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @description
+     *      Initialize transition action edit screen.
+     */
     TargetNS.InitTransitionActionEdit = function () {
         // Init addition of new config parameters
         $('#ConfigAdd').bind('click', function() {
@@ -1141,6 +1353,13 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         });
     };
 
+    /**
+     * @name InitPathEdit
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @description
+     *      Initialize path edit screen.
+     */
     TargetNS.InitPathEdit = function () {
         var CurrentProcessEntityID = Core.Config.Get('Config.ProcessEntityID'),
             CurrentTransitionEntityID = Core.Config.Get('Config.TransitionEntityID'),
@@ -1165,8 +1384,8 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
                 $('#StartActivity').attr('title', ActivityInfo[Activity].Name).text(ActivityInfo[Activity].Name);
                 $('#EndActivity').attr('title', ActivityInfo[Transition[CurrentTransitionEntityID].ActivityEntityID].Name).text(ActivityInfo[Transition[CurrentTransitionEntityID].ActivityEntityID].Name);
 
-                StartActivityEntityID     = Activity;
-                EndActivityEntityID       = Transition[CurrentTransitionEntityID].ActivityEntityID;
+                StartActivityEntityID = Activity;
+                EndActivityEntityID = Transition[CurrentTransitionEntityID].ActivityEntityID;
                 AssignedTransitionActions = Transition[CurrentTransitionEntityID].TransitionAction;
 
                 return false;
@@ -1198,7 +1417,7 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         Core.Form.Validate.SetSubmitFunction($('#PathForm'), function (Form) {
 
             var NewTransitionEntityID = $('#Transition').val(),
-                NewTransitionActions  = [],
+                NewTransitionActions = [],
                 TransitionInfo;
 
             $('#AssignedTransitionActions li').each(function() {
@@ -1207,9 +1426,9 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
 
             // collection transition info for later merging
             TransitionInfo = {
-                StartActivityEntityID  : StartActivityEntityID,
-                NewTransitionEntityID  : NewTransitionEntityID,
-                NewTransitionActions   : NewTransitionActions,
+                StartActivityEntityID: StartActivityEntityID,
+                NewTransitionEntityID: NewTransitionEntityID,
+                NewTransitionActions: NewTransitionActions,
                 NewTransitionActivityID: EndActivityEntityID
             };
 
@@ -1234,6 +1453,13 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         });
     };
 
+    /**
+     * @name ShowOverlay
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @description
+     *      Opens overlay.
+     */
     TargetNS.ShowOverlay = function () {
         $('<div id="Overlay" tabindex="-1">').appendTo('body');
         $('body').css({
@@ -1245,6 +1471,13 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         $('body').css('min-height', $(window).height());
     };
 
+    /**
+     * @name HideOverlay
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @description
+     *      Closes overlay and restores normal view.
+     */
     TargetNS.HideOverlay = function () {
         $('#Overlay').remove();
         $('body').css({
@@ -1253,14 +1486,23 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         $('body').css('min-height', 'auto');
     };
 
+    /**
+     * @name GetConditionConfig
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @returns {Object} Conditions and fields.
+     * @param {jQueryObject} $Conditions - Conditions element in DOM.
+     * @description
+     *      Get all conditions and corresponding fields.
+     */
     TargetNS.GetConditionConfig = function ($Conditions) {
+
+        var Conditions = {},
+            ConditionKey;
 
         if (!$Conditions.length) {
             return {};
         }
-
-        var Conditions = {},
-            ConditionKey;
 
         $Conditions.each(function() {
 
@@ -1275,11 +1517,9 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
 
             // get all fields of the current condition
             $(this).find('fieldset.Fields').each(function() {
-
-                var FieldKey = $(this).find('label').attr('for').replace(/(ConditionFieldName\[\d+\]\[|\])/g, '');
                 Conditions[ConditionKey].Fields[$(this).find('input').first().val()] = {
-                    Type  : $(this).find('select').val(),
-                    Match : $(this).find('input').last().val()
+                    Type: $(this).find('select').val(),
+                    Match: $(this).find('input').last().val()
                 };
             });
 
@@ -1288,6 +1528,15 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         return Conditions;
     };
 
+    /**
+     * @name UpdateConfig
+     * @memberof Core.Agent.Admin.ProcessManagement
+     * @function
+     * @returns {Boolean} Returns false, if Config is not defined.
+     * @param {Object} Config
+     * @description
+     *      Update gloabl process config object after config change e.g. in popup windows.
+     */
     TargetNS.UpdateConfig = function (Config) {
         if (typeof Config === 'undefined') {
             return false;
@@ -1331,3 +1580,5 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
 
     return TargetNS;
 }(Core.Agent.Admin.ProcessManagement || {}));
+
+/*eslint-enable no-window*/

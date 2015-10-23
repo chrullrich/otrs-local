@@ -1,5 +1,4 @@
 // --
-// Core.Agent.Admin.GenericInterfaceWebserviceHistory.js - provides the special module functions for the GenericInterface WebserviceHistory.
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -14,19 +13,34 @@ Core.Agent = Core.Agent || {};
 Core.Agent.Admin = Core.Agent.Admin || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Agent.Admin.GenericInterfaceWebserviceHistory
+ * @namespace Core.Agent.Admin.GenericInterfaceWebserviceHistory
+ * @memberof Core.Agent.Admin
+ * @author OTRS AG
  * @description
  *      This namespace contains the special module functions for the GenericInterface WebserviceHistory module.
  */
 Core.Agent.Admin.GenericInterfaceWebserviceHistory = (function (TargetNS) {
 
-
+    /**
+     * @name Init
+     * @memberof Core.Agent.Admin.GenericInterfaceWebserviceHistory
+     * @function
+     * @param {Object} Params - Initialization and internationalization parameters.
+     * @description
+     *      This function initialize the module.
+     */
     TargetNS.Init = function (Params) {
         TargetNS.WebserviceID = parseInt(Params.WebserviceID, 10);
         TargetNS.Localization = Params.Localization;
     };
 
+    /**
+     * @name GetWebserviceList
+     * @memberof Core.Agent.Admin.GenericInterfaceWebserviceHistory
+     * @function
+     * @description
+     *      Get list of webservices via AJAX..
+     */
     TargetNS.GetWebserviceList = function() {
         var Data = {
             Action: 'AdminGenericInterfaceWebserviceHistory',
@@ -40,6 +54,9 @@ Core.Agent.Admin.GenericInterfaceWebserviceHistory = (function (TargetNS) {
         $('.WebserviceListWidget').addClass('Loading');
 
         Core.AJAX.FunctionCall(Core.Config.Get('CGIHandle'), Data, function (Response) {
+            var HTML = '',
+                Counter;
+
             if (!Response || !Response.LogData) {
                 alert(TargetNS.Localization.WebserviceHistoryErrorMsg);
                 return;
@@ -52,7 +69,7 @@ Core.Agent.Admin.GenericInterfaceWebserviceHistory = (function (TargetNS) {
             }
             else {
                 $('#WebserviceList tbody').empty();
-                var HTML = '',
+
                 Counter = Response.LogData.length;
 
                 $.each(Response.LogData, function(){
@@ -64,12 +81,12 @@ Core.Agent.Admin.GenericInterfaceWebserviceHistory = (function (TargetNS) {
                     '</a></td>';
                     HTML += '<td><a href="#" class="AsBlock">' + this.CreateTime + '</a></td>';
                     HTML += '</tr>';
-                    Counter --;
+                    Counter--;
 
                 });
                 $('#WebserviceList tbody').html(HTML);
 
-                $('#WebserviceList a').bind('click', function(Event) {
+                $('#WebserviceList a').bind('click', function() {
                     var WebserviceHistoryID = $(this).blur().parents('tr').find('input.WebserviceHistoryID').val(),
                     WebserviceHistoryVersion = $(this).blur().parents('tr').find('input.WebserviceHistoryVersion').val();
 
@@ -82,6 +99,15 @@ Core.Agent.Admin.GenericInterfaceWebserviceHistory = (function (TargetNS) {
         }, 'json');
     };
 
+    /**
+     * @name LoadWebserviceHistoryDetails
+     * @memberof Core.Agent.Admin.GenericInterfaceWebserviceHistory
+     * @function
+     * @param {String} WebserviceHistoryID
+     * @param {String} WebserviceHistoryVersion
+     * @description
+     *      This function initialize the module.
+     */
     TargetNS.LoadWebserviceHistoryDetails = function(WebserviceHistoryID, WebserviceHistoryVersion) {
 
         var Data = {
@@ -95,7 +121,7 @@ Core.Agent.Admin.GenericInterfaceWebserviceHistory = (function (TargetNS) {
         $('.WebserviceListWidget').addClass('Loading');
 
         Core.AJAX.FunctionCall(Core.Config.Get('CGIHandle'), Data, function (Response) {
-            if (!Response || !Response.LogData ) {
+            if (!Response || !Response.LogData) {
                 alert(TargetNS.Localization.WebserviceHistoryErrorMsg);
                 return;
             }
@@ -115,10 +141,10 @@ Core.Agent.Admin.GenericInterfaceWebserviceHistory = (function (TargetNS) {
             }
             else {
 
-                $('#WebserviceHistoryID').attr('value',WebserviceHistoryID);
+                $('#WebserviceHistoryID').attr('value', WebserviceHistoryID);
                 $('#WebserviceHistoryDetails .ControlRow').empty();
                 $('#WebserviceHistoryDetails .ControlRow').append(
-                    '<h2>History Details: Version ' + WebserviceHistoryVersion + ', ' + Response.LogData.CreateTime +  '</h2>'
+                    '<h2>History Details: Version ' + WebserviceHistoryVersion + ', ' + Response.LogData.CreateTime + '</h2>'
                 );
 
                 $('#WebserviceHistoryDetails .ConfigCode pre').empty();
@@ -133,7 +159,15 @@ Core.Agent.Admin.GenericInterfaceWebserviceHistory = (function (TargetNS) {
         }, 'json');
     };
 
-
+    /**
+     * @name ShowRollbackDialog
+     * @memberof Core.Agent.Admin.GenericInterfaceWebserviceHistory
+     * @function
+     * @returns {Boolean} Returns false.
+     * @param {Object} Event - The browser event object, e.g. of the clicked DOM element.
+     * @description
+     *      Shows a dialog to rollback log.
+     */
     TargetNS.ShowRollbackDialog = function(Event){
 
         Core.UI.Dialog.ShowContentDialog(
@@ -153,7 +187,7 @@ Core.Agent.Admin.GenericInterfaceWebserviceHistory = (function (TargetNS) {
                 {
                     Label: TargetNS.Localization.RollbackLogMsg,
                     Function: function () {
-                        $('#Subaction').attr('value','Rollback');
+                        $('#Subaction').attr('value', 'Rollback');
                         $('#ActionForm').submit();
                     }
                 }

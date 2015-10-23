@@ -1,5 +1,4 @@
 # --
-# AutoResponse.t - AutoResponse tests
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -15,7 +14,6 @@ use vars (qw($Self));
 
 # get needed objects
 my $AutoResponseObject  = $Kernel::OM->Get('Kernel::System::AutoResponse');
-my $EncodeObject        = $Kernel::OM->Get('Kernel::System::Encode');
 my $SystemAddressObject = $Kernel::OM->Get('Kernel::System::SystemAddress');
 
 # add system address
@@ -43,7 +41,6 @@ my $AutoResponseID = $AutoResponseObject->AutoResponseAdd(
     Comment     => 'Some Comment',
     AddressID   => $SystemAddressID,
     TypeID      => 1,
-    Charset     => 'iso-8859-1',
     ContentType => 'text/plain',
     ValidID     => 1,
     UserID      => 1,
@@ -76,26 +73,10 @@ $Self->Is(
     'Some Comment',
     'AutoResponseGet() - Comment',
 );
-
-# check return charset based on system wide utf8 or not
-if ( $EncodeObject->EncodeInternalUsed() ) {
-    $Self->Is(
-        $AutoResponse{Charset} || '',
-        'utf-8',
-        'AutoResponseGet() - Charset',
-    );
-}
-else {
-    $Self->Is(
-        $AutoResponse{Charset} || '',
-        'iso-8859-1',
-        'AutoResponseGet() - Charset',
-    );
-}
 $Self->Is(
     $AutoResponse{ContentType} || '',
     'text/plain',
-    'AutoResponseGet() - Charset',
+    'AutoResponseGet() - ContentType',
 );
 $Self->Is(
     $AutoResponse{AddressID} || '',
@@ -120,6 +101,37 @@ $Self->True(
     'AutoResponseList()',
 );
 
+my $AutoResponseQueue = $AutoResponseObject->AutoResponseQueue(
+    QueueID         => 1,
+    AutoResponseIDs => [$AutoResponseID],
+    UserID          => 1,
+);
+$Self->True(
+    $AutoResponseQueue,
+    'AutoResponseQueue()',
+);
+
+my %Address = $AutoResponseObject->AutoResponseGetByTypeQueueID(
+    QueueID => 1,
+    Type    => 'auto reply',
+);
+$Self->Is(
+    $Address{Address} || '',
+    $SystemAddressNameRand0 . '@example.com',
+    'AutoResponseGetByTypeQueueID() - Address',
+);
+$Self->Is(
+    $Address{Realname} || '',
+    $SystemAddressNameRand0,
+    'AutoResponseGetByTypeQueueID() - Realname',
+);
+
+$AutoResponseQueue = $AutoResponseObject->AutoResponseQueue(
+    QueueID         => 1,
+    AutoResponseIDs => [],
+    UserID          => 1,
+);
+
 my $AutoResponseUpdate = $AutoResponseObject->AutoResponseUpdate(
     ID          => $AutoResponseID,
     Name        => $AutoResponseNameRand0 . '1',
@@ -128,7 +140,6 @@ my $AutoResponseUpdate = $AutoResponseObject->AutoResponseUpdate(
     Comment     => 'Some Comment1',
     AddressID   => $SystemAddressID,
     TypeID      => 1,
-    Charset     => 'utf8',
     ContentType => 'text/html',
     ValidID     => 2,
     UserID      => 1,
@@ -161,26 +172,10 @@ $Self->Is(
     'Some Comment1',
     'AutoResponseGet() - Comment',
 );
-
-# check return charset based on system wide utf8 or not
-if ( $EncodeObject->EncodeInternalUsed() ) {
-    $Self->Is(
-        $AutoResponse{Charset} || '',
-        'utf-8',
-        'AutoResponseGet() - Charset',
-    );
-}
-else {
-    $Self->Is(
-        $AutoResponse{Charset} || '',
-        'utf8',
-        'AutoResponseGet() - Charset',
-    );
-}
 $Self->Is(
     $AutoResponse{ContentType} || '',
     'text/html',
-    'AutoResponseGet() - Charset',
+    'AutoResponseGet() - ContentType',
 );
 $Self->Is(
     $AutoResponse{AddressID} || '',
@@ -191,37 +186,6 @@ $Self->Is(
     $AutoResponse{ValidID} || '',
     2,
     'AutoResponseGet() - ValidID',
-);
-
-my $AutoResponseQueue = $AutoResponseObject->AutoResponseQueue(
-    QueueID         => 1,
-    AutoResponseIDs => [$AutoResponseID],
-    UserID          => 1,
-);
-$Self->True(
-    $AutoResponseQueue,
-    'AutoResponseQueue()',
-);
-
-my %Address = $AutoResponseObject->AutoResponseGetByTypeQueueID(
-    QueueID => 1,
-    Type    => 'auto reply',
-);
-$Self->Is(
-    $Address{Address} || '',
-    $SystemAddressNameRand0 . '@example.com',
-    'AutoResponseGetByTypeQueueID() - Address',
-);
-$Self->Is(
-    $Address{Realname} || '',
-    $SystemAddressNameRand0,
-    'AutoResponseGetByTypeQueueID() - Realname',
-);
-
-$AutoResponseQueue = $AutoResponseObject->AutoResponseQueue(
-    QueueID         => 1,
-    AutoResponseIDs => [],
-    UserID          => 1,
 );
 
 1;

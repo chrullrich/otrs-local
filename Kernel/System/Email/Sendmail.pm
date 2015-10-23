@@ -1,5 +1,4 @@
 # --
-# Kernel/System/Email/Sendmail.pm - the global email send module
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -72,6 +71,10 @@ sub Send {
 
     # set sendmail binary
     my $Sendmail = $Result{Sendmail};
+
+    # restore the child signal to the original value, in a daemon environment, child signal is set
+    # to ignore causing problems with file handler pipe close
+    local $SIG{'CHLD'} = 'DEFAULT';
 
     # invoke sendmail in order to send off mail, catching errors in a temporary file
     my $FH;

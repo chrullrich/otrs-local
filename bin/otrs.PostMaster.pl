@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 # --
-# bin/otrs.PostMaster.pl - the global eMail handle for email2db
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
@@ -19,6 +18,7 @@
 # or see http://www.gnu.org/licenses/agpl.txt.
 # --
 
+## nofilter(TidyAll::Plugin::OTRS::Perl::BinScripts)
 use strict;
 use warnings;
 
@@ -28,7 +28,7 @@ use lib dirname($RealBin);
 use lib dirname($RealBin) . '/Kernel/cpan-lib';
 use lib dirname($RealBin) . '/Custom';
 
-# to get it readable for the webserver user and writable for otrs
+# to get it readable for the web server user and writable for otrs
 # group (just in case)
 
 umask 007;
@@ -44,6 +44,7 @@ if ( $Opts{h} ) {
     print "Copyright (C) 2001-2015 OTRS AG, http://otrs.com/\n";
     print
         "usage: otrs.PostMaster.pl -q <QUEUE> -t <TRUSTED> (default is trusted, use '-t 0' to disable trusted mode)\n";
+    print "\notrs.PostMaster.pl is deprecated, please use console command 'Maint::PostMaster::Read' instead.\n\n";
     exit 1;
 }
 if ( !$Opts{d} ) {
@@ -63,66 +64,27 @@ local $Kernel::OM = Kernel::System::ObjectManager->new(
     },
 );
 
-# Wrap the majority of the script in an "eval" block so that any
-# unexpected (but probably transient) fatal errors (such as the
-# database being unavailable) can be trapped without causing a
-# bounce
-eval {
+# log the use of a deprecated script
+$Kernel::OM->Get('Kernel::System::Log')->Log(
+    Priority => 'error',
+    Message  => "otrs.PostMaster.pl is deprecated, please use console command 'Maint::PostMaster::Read' instead.",
+);
 
-    # create needed objects
+# convert arguments to console command format
+my @Params;
 
-    # debug info
-    if ( $Opts{d} ) {
-        $Kernel::OM->Get('Kernel::System::Log')->Log(
-            Priority => 'debug',
-            Message  => 'Global OTRS email handle (otrs.PostMaster.pl) started...',
-        );
-    }
-
-    # get email from SDTIN
-    my @Email = <STDIN>;
-    if ( !@Email ) {
-        $Kernel::OM->Get('Kernel::System::Log')->Log(
-            Priority => 'error',
-            Message  => 'Got no email on STDIN!',
-        );
-        exit 1;
-    }
-
-    $Kernel::OM->ObjectParamAdd(
-        'Kernel::System::PostMaster' => {
-            Email   => \@Email,
-            Trusted => $Opts{'t'},
-            Debug   => $Opts{'d'},
-        },
-    );
-    my @Return = $Kernel::OM->Get('Kernel::System::PostMaster')->Run( Queue => $Opts{'q'} );
-    if ( !$Return[0] ) {
-        die "Can't process mail, see log sub system!";
-    }
-
-    # debug info
-    if ( $Opts{d} ) {
-        $Kernel::OM->Get('Kernel::System::Log')->Log(
-            Priority => 'debug',
-            Message  => 'Global OTRS email handle (otrs.PostMaster.pl) stopped.',
-        );
-    }
-};
-
-if ($@) {
-
-    # An unexpected problem occurred (for example, the database was
-    # unavailable). Return an EX_TEMPFAIL error to cause the mail
-    # program to requeue the message instead of immediately bouncing
-    # it; see sysexits.h. Most mail programs will retry an
-    # EX_TEMPFAIL delivery for about four days, then bounce the
-    # message.)
-    $Kernel::OM->Get('Kernel::System::Log')->Log(
-        Priority => 'error',
-        Message  => $@,
-    );
-    exit 75;
+if ( $Opts{q} ) {
+    push @Params, '--target-queue';
+    push @Params, $Opts{q};
+}
+if ( !$Opts{t} ) {
+    push @Params, '--untrusted';
+}
+if ( $Opts{d} ) {
+    push @Params, '--debug';
 }
 
-exit 0;
+# execute console command
+my $ExitCode = $Kernel::OM->Get('Kernel::System::Console::Command::Maint::PostMaster::Read')->Execute(@Params);
+
+exit $ExitCode;

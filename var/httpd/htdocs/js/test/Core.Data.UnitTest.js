@@ -1,6 +1,5 @@
 // --
-// Core.Data.UnitTest.js - UnitTests
-// Copyright (C) 2001-2015 OTRS AG, http://otrs.com/\n";
+// Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
 // the enclosed file COPYING for license information (AGPL). If you
@@ -9,19 +8,19 @@
 
 "use strict";
 
-var OTRS = OTRS || {};
+var Core = Core || {};
 
 Core.Data = (function (Namespace) {
     Namespace.RunUnitTests = function(){
         module('Core.Data');
         test('Core.Data.Set()', function(){
 
-            expect(5);
-
             /*
              * Create a div containter for the tests
              */
-            var $TestDiv = $('<div id="Container"></div>');
+            var Sign, ObjectOne, ObjectTwo, ResultOneEmpty, NonexistingResult,
+                ResultOne, ResultTwo,
+                $TestDiv = $('<div id="Container"></div>');
             $TestDiv.append('<span id="ElementOne"></span>');
             $TestDiv.append('<span id="ElementTwo"></span>');
             $('body').append($TestDiv);
@@ -30,21 +29,23 @@ Core.Data = (function (Namespace) {
              * Run the tests
              */
 
-            var Sign = 'Save This Information';
-            var ObjectOne = $('#ElementOne');
-            var ObjectTwo = $('#ElementTwo');
+            expect(5);
 
-            var ResultOneEmpty = Core.Data.Get(ObjectOne,'One');
+            Sign = 'Save This Information';
+            ObjectOne = $('#ElementOne');
+            ObjectTwo = $('#ElementTwo');
+
+            ResultOneEmpty = Core.Data.Get(ObjectOne, 'One');
             deepEqual(ResultOneEmpty, {}, 'information not yet stored');
 
-            var NonexistingResult = Core.Data.Get($('#nonexisting_selector'),'One');
+            NonexistingResult = Core.Data.Get($('#nonexisting_selector'), 'One');
             deepEqual(NonexistingResult, {}, 'nonexisting element');
 
-            Core.Data.Set(ObjectOne,'One',Sign);
-            Core.Data.Set(ObjectTwo,'Two',Sign);
+            Core.Data.Set(ObjectOne, 'One', Sign);
+            Core.Data.Set(ObjectTwo, 'Two', Sign);
 
-            var ResultOne = Core.Data.Get(ObjectOne,'One');
-            var ResultTwo = Core.Data.Get(ObjectTwo,'Two');
+            ResultOne = Core.Data.Get(ObjectOne, 'One');
+            ResultTwo = Core.Data.Get(ObjectTwo, 'Two');
 
             equal(ResultOne, Sign, 'okay');
             equal(ResultTwo, Sign, 'okay');

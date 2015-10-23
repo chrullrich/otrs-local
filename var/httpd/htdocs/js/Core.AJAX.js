@@ -1,5 +1,4 @@
 // --
-// Core.AJAX.js - provides the functionality for AJAX calls
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,13 +11,30 @@
 var Core = Core || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.AJAX
+ * @namespace Core.AJAX
+ * @memberof Core
+ * @author OTRS AG
  * @description
  *      This namespace contains the functionality for AJAX calls.
  */
 Core.AJAX = (function (TargetNS) {
+    /**
+     * @private
+     * @name AJAXLoaderPrefix
+     * @memberof Core.AJAX
+     * @member {String}
+     * @description
+     *      AJAXLoaderPrefix
+     */
     var AJAXLoaderPrefix = 'AJAXLoader',
+    /**
+     * @private
+     * @name ActiveAJAXCalls
+     * @memberof Core.AJAX
+     * @member {Object}
+     * @description
+     *      ActiveAJAXCalls
+     */
         ActiveAJAXCalls = {};
 
     if (!Core.Debug.CheckDependency('Core.AJAX', 'Core.Exception', 'Core.Exception')) {
@@ -30,11 +46,14 @@ Core.AJAX = (function (TargetNS) {
     }
 
     /**
-     * @function
      * @private
-     * @param {string} FieldID Id of the field which is updated via ajax
-     * @param {string} Show Show or hide the AJAX loader image
-     * @description Shows and hides an ajax loader for every element which is updates via ajax
+     * @name ToggleAJAXLoader
+     * @memberof Core.AJAX
+     * @function
+     * @param {String} FieldID - Id of the field which is updated via ajax
+     * @param {Boolean} Show - Show or hide the AJAX loader image
+     * @description
+     *      Shows and hides an ajax loader for every element which is updates via ajax.
      */
     function ToggleAJAXLoader(FieldID, Show) {
         var $Element = $('#' + FieldID),
@@ -84,11 +103,14 @@ Core.AJAX = (function (TargetNS) {
     }
 
     /**
-     * @function
      * @private
-     * @param {Object} Data The data that should be converted
-     * @return {string} query string of the data
-     * @description Converts a given hash into a query string
+     * @name SerializeData
+     * @memberof Core.AJAX
+     * @function
+     * @returns {String} Query string of the data.
+     * @param {Object} Data - The data that should be converted
+     * @description
+     *      Converts a given hash into a query string.
      */
     function SerializeData(Data) {
         var QueryString = '';
@@ -99,10 +121,13 @@ Core.AJAX = (function (TargetNS) {
     }
 
     /**
-     * @function
      * @private
-     * @return {Object} Hash with session data, if needed
-     * @description Collects session data in a hash if available
+     * @name GetSessionInformation
+     * @memberof Core.AJAX
+     * @function
+     * @returns {Object} Hash with session data, if needed.
+     * @description
+     *      Collects session data in a hash if available.
      */
     function GetSessionInformation() {
         var Data = {};
@@ -115,10 +140,13 @@ Core.AJAX = (function (TargetNS) {
     }
 
     /**
-     * @function
      * @private
-     * @return {Object} Hash with additional session and action data
-     * @description Collects additional data that are needed for the ajax requests
+     * @name GetAdditionalDefaultData
+     * @memberof Core.AJAX
+     * @function
+     * @returns {Object} Hash with additional session and action data.
+     * @description
+     *      Collects additional data that are needed for the ajax requests.
      */
     function GetAdditionalDefaultData() {
         var Data = {};
@@ -128,12 +156,14 @@ Core.AJAX = (function (TargetNS) {
     }
 
     /**
-     * @function
      * @private
-     * @param {Object} Value array of hashes each hash have the needed attachment information.
-     * @return nothing
-     * @description removes all shown attachments on the screen and adds the ones that are sent in
-     *              the Value parmeter
+     * @name UpdateTicketAttachments
+     * @memberof Core.AJAX
+     * @function
+     * @param {Object} Value - Array of hashes, each hash have the needed attachment information.
+     * @description
+     *      Removes all shown attachments on the screen and adds the ones that are sent in
+     *      the Value parmeter.
      */
     function UpdateTicketAttachments(Value) {
         var DeleteText = Core.Config.Get('Localization.Delete'),
@@ -146,12 +176,12 @@ Core.AJAX = (function (TargetNS) {
         $('#FileUpload').parent().siblings('li').remove();
 
         // 2nd: add all files based on the metadata from Value
-        $(Value).each(function(index) {
+        $(Value).each(function() {
             FileID = this.FileID;
             ButtonStrg = '<button type="button" id="AttachmentDeleteButton' + FileID + '" name="AttachmentDeleteButton' + FileID + '" value="Delete" class="SpacingLeft">' + DeleteText + '</button>';
-            InputStrg =  '<input type="hidden" id="AttachmentDelete' + this.FileID + '" name="AttachmentDelete' + this.FileID + '" />';
+            InputStrg = '<input type="hidden" id="AttachmentDelete' + this.FileID + '" name="AttachmentDelete' + this.FileID + '" />';
             $('#FileUpload').parent().before(
-                '<li>' + this.Filename + ' (' + this.Filesize + ')' + ButtonStrg + InputStrg  +'</li>'
+                '<li>' + this.Filename + ' (' + this.Filesize + ')' + ButtonStrg + InputStrg + '</li>'
             );
 
             //3rd: set form submit and disable validation on attachment delete
@@ -165,29 +195,30 @@ Core.AJAX = (function (TargetNS) {
     }
 
     /**
-     * @function
      * @private
-     * @param {Object} $Element the field selector.
-     * @param {Object} Value the field value.
-     *                  The keys are the IDs of the fields to be updated.
-     * @return nothing
-     * @description inserts value in textarea components or RichText editors for the ajax requests
+     * @name UpdateTextarea
+     * @memberof Core.AJAX
+     * @function
+     * @param {Object} $Element - the field selector.
+     * @param {Object} Value - the field value. The keys are the IDs of the fields to be updated.
+     * @description
+     *      Inserts value in textarea components or RichText editors for the ajax requests.
      */
     function UpdateTextarea($Element, Value) {
-        if ( $Element.length) {
-            var $ParentBody = $Element,
-                ParentBody = $ParentBody[0],
-                ParentBodyValue = $ParentBody.val(),
-                Range,
-                StartRange = 0,
-                EndRange = 0,
-                NewPosition = 0,
-                NewHTML;
+        var $ParentBody,
+            ParentBody,
+            Range,
+            StartRange = 0,
+            NewPosition = 0;
+
+        if ($Element.length) {
+            $ParentBody = $Element;
+            ParentBody = $ParentBody[0];
 
             // add the text to the RichText editor
             if (parent.CKEDITOR && parent.CKEDITOR.instances.RichText) {
                 parent.CKEDITOR.instances.RichText.focus();
-                window.setTimeout( function () {
+                window.setTimeout(function () {
 
                     // In some circumstances, this command throws an error (although inserting the HTML works)
                     // Because the intended functionality also works, we just wrap it in a try-catch-statement
@@ -209,7 +240,6 @@ Core.AJAX = (function (TargetNS) {
                 // Get previously saved cursor position of textarea
                 if ($Element.parent().data('Cursor')) {
                     StartRange = parent.$Element.data('Cursor').StartRange;
-                    EndRange = parent.$Element.data('Cursor').EndRange;
                 }
 
                 // Add new text to textarea
@@ -237,34 +267,35 @@ Core.AJAX = (function (TargetNS) {
     }
 
     /**
-     * @function
      * @private
-     * @param {Object} Data The new field data.
-     *                  The keys are the IDs of the fields to be updated.
-     * @return nothing
-     * @description Updates the given fields with the given data
+     * @name UpdateFormElements
+     * @memberof Core.AJAX
+     * @function
+     * @param {Object} Data - The new field data. The keys are the IDs of the fields to be updated.
+     * @description
+     *      Updates the given fields with the given data.
      */
     function UpdateFormElements(Data) {
         if (typeof Data !== 'object') {
             return;
         }
-        $.each(Data, function (Key, Value) {
-            var $Element = $('#' + Key);
+        $.each(Data, function (DataKey, DataValue) {
+            var $Element = $('#' + DataKey);
 
             // special case to update ticket attachments
-            if (Key === 'TicketAttachments') {
-                UpdateTicketAttachments(Value);
+            if (DataKey === 'TicketAttachments') {
+                UpdateTicketAttachments(DataValue);
                 return;
             }
 
-            if ((!$Element.length || !Value) && !$Element.is('textarea')) {
+            if ((!$Element.length || !DataValue) && !$Element.is('textarea')) {
                 return;
             }
 
             // Select elements
             if ($Element.is('select')) {
                 $Element.empty();
-                $.each(Value, function (Index, Value) {
+                $.each(DataValue, function (Index, Value) {
                     var NewOption = new Option(Value[1], Value[0], Value[2], Value[3]);
 
                     // Check if option must be disabled.
@@ -278,20 +309,42 @@ Core.AJAX = (function (TargetNS) {
                     $Element.append(NewOption);
 
                 });
+
+                // Trigger custom redraw event for InputFields
+                if ($Element.hasClass('Modernize')) {
+                    $Element.trigger('redraw.InputField');
+                }
+
                 return;
             }
 
             // text area elements like the ticket body
             if ($Element.is('textarea')) {
-                UpdateTextarea($Element, Value);
+                UpdateTextarea($Element, DataValue);
                 return;
             }
 
             // Other form elements
-            $Element.val(Value);
+            $Element.val(DataValue);
+
+            // Trigger custom redraw event for InputFields
+            if ($Element.hasClass('Modernize')) {
+                $Element.trigger('redraw.InputField');
+            }
         });
     }
 
+    /**
+     * @private
+     * @name RedirectAfterSessionTimeOut
+     * @memberof Core.AJAX
+     * @function
+     * @returns {Boolean} Returns false, if Redirect is not necessary.
+     * @param {Object} XHRObject - The original AJAX object.
+     * @description
+     *      Checks if session is timed out and redirects to the login to avoid
+     *      ajax errors.
+     */
     function RedirectAfterSessionTimeOut(XHRObject) {
         var Headers = XHRObject.getAllResponseHeaders(),
             OldUrl = location.href,
@@ -306,11 +359,14 @@ Core.AJAX = (function (TargetNS) {
     }
 
     /**
+     * @name SerializeForm
+     * @memberof Core.AJAX
      * @function
-     *      Serializes the form data into a query string
-     * @param {jQueryObject} $Element The jQuery object of the form  or any element within this form that should be serialized
-     * @param {Object} Ignore Elements (Keys) which should not be included in the serialized form string (optional)
-     * @return {string} The query string
+     * @returns {String} The query string.
+     * @param {jQueryObject} $Element - The jQuery object of the form  or any element within this form that should be serialized
+     * @param {Object} [Ignore] - Elements (Keys) which should not be included in the serialized form string (optional)
+     * @description
+     *      Serializes the form data into a query string.
      */
     TargetNS.SerializeForm = function ($Element, Ignore) {
         var QueryString = "";
@@ -346,16 +402,19 @@ Core.AJAX = (function (TargetNS) {
     };
 
     /**
+     * @name FormUpdate
+     * @memberof Core.AJAX
      * @function
-     *      Submits a special form via ajax and updates the form with the data returned from the server
-     * @param {jQueryObject} $EventElement The jQuery object of the element(s) which are included in the form that should be submitted
-     * @param {String} Subaction The subaction parameter for the perl module
-     * @param {String} ChangedElement The name of the element which was changed by the user
-     * @param {Object} FieldsToUpdate DEPRECATED.
+     * @returns {Object} The jqXHR object.
+     * @param {jQueryObject} $EventElement - The jQuery object of the element(s) which are included in the form that should be submitted.
+     * @param {String} Subaction - The subaction parameter for the perl module.
+     * @param {String} ChangedElement - The name of the element which was changed by the user.
+     * @param {Object} FieldsToUpdate - DEPRECATED.
      *                      This used to be the names of the fields that should be updated with the server answer,
      *                      but is not needed any more and will be removed in a future version of OTRS.
-     * @param {Function} [SuccessCallback] Callback function to be executed on AJAX success (optional).
-     * @return {Object} jqXHR object
+     * @param {Function} [SuccessCallback] - Callback function to be executed on AJAX success (optional).
+     * @description
+     *      Submits a special form via ajax and updates the form with the data returned from the server
      */
     TargetNS.FormUpdate = function ($EventElement, Subaction, ChangedElement, FieldsToUpdate, SuccessCallback) {
         var URL = Core.Config.Get('Baselink'),
@@ -415,12 +474,15 @@ Core.AJAX = (function (TargetNS) {
     };
 
     /**
+     * @name ContentUpdate
+     * @memberof Core.AJAX
      * @function
-     *      Calls an URL via Ajax and updates a html element with the answer html of the server
-     * @param {jQueryObject} $ElementToUpdate The jQuery object of the element(s) which should be updated
-     * @param {String} URL The URL which is called via Ajax
-     * @param {Function} Callback The additional callback function which is called after the request returned from the server
-     * @return {Object} jqXHR object
+     * @returns {Object} The jqXHR object.
+     * @param {jQueryObject} $ElementToUpdate - The jQuery object of the element(s) which should be updated
+     * @param {String} URL - The URL which is called via Ajax
+     * @param {Function} Callback - The additional callback function which is called after the request returned from the server
+     * @description
+     *      Calls an URL via Ajax and updates a html element with the answer html of the server.
      */
     TargetNS.ContentUpdate = function ($ElementToUpdate, URL, Callback) {
         var QueryString, QueryIndex = URL.indexOf("?"), GlobalResponse;
@@ -474,13 +536,16 @@ Core.AJAX = (function (TargetNS) {
     };
 
     /**
+     * @name FunctionCall
+     * @memberof Core.AJAX
      * @function
-     *      Calls an URL via Ajax and executes a given function after the request returned from the server
-     * @param {String} URL The URL which is called via Ajax
-     * @param {Object} Data The data hash or data query string
-     * @param {Function} Callback The callback function which is called after the request returned from the server
-     * @param {String} DataType Optional, defines the datatype, default 'json', could also be 'html'
-     * @return {Object} jqXHR object
+     * @returns {Object} The jqXHR object.
+     * @param {String} URL - The URL which is called via Ajax.
+     * @param {Object} Data - The data hash or data query string.
+     * @param {Function} Callback - The callback function which is called after the request returned from the server.
+     * @param {String} [DataType=json] Defines the datatype, default 'json', could also be 'html'
+     * @description
+     *      Calls an URL via Ajax and executes a given function after the request returned from the server.
      */
     TargetNS.FunctionCall = function (URL, Data, Callback, DataType) {
         if (typeof Data === 'string') {

@@ -1,5 +1,4 @@
 # --
-# Queue.t - Queue tests
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -662,6 +661,14 @@ $Self->True(
 # from the DB.
 for my $ID (@IDs) {
     my $Success = $Kernel::OM->Get('Kernel::System::DB')->Do(
+        SQL => "DELETE FROM queue_preferences WHERE queue_id = $ID",
+    );
+    $Self->True(
+        $Success,
+        "QueueDelete preferences - $ID",
+    );
+
+    $Success = $Kernel::OM->Get('Kernel::System::DB')->Do(
         SQL => "DELETE FROM queue WHERE id = $ID",
     );
     $Self->True(

@@ -141,10 +141,6 @@ ul.ContextFunctions li.ContextSettings .fa {
     padding: 5px 0px 5px 3px;
 }
 
-ul.ContextFunctions li.Last:hover > a {
-    background-position: 50px 50px;
-}
-
 ul.ContextFunctions li:last-child:hover > a {
     background-position: 50px 50px;
 }
@@ -224,8 +220,7 @@ ul.ContextFunctions li:last-child:hover > a {
 .Actions li {
     line-height: 18px;
     font-size: 11px;
-    display: block;
-    float: left;
+    display: inline-block;
 }
 
 .Actions li:after {
@@ -262,23 +257,19 @@ ul.ContextFunctions li:last-child:hover > a {
 .Actions li:last-child {
     background: none;
 }
-.Actions li.Last {
-    background: none;
-}
 
 .Actions li a,
 .Actions li span {
-    padding: 5px 2px;
+    padding: 5px 2px 0;
     color: #000;
-    display: block;
-    float: left;
+    display: inline-block;
+    border-bottom: 2px solid transparent;
 }
 
 .Actions li a:hover,
 .Actions li span:hover,
 .OverviewZoom a:hover {
-    border-bottom: 2px solid #FF9922;
-    padding-bottom: 0px;
+    border-color: #FF9922;
 }
 
 .Actions li.NoHover:hover a {
@@ -357,10 +348,6 @@ ul.ContextFunctions li:last-child:hover > a {
     background: none;
     text-decoration: underline;
     border-bottom: 0px;
-}
-
-.Tab.Actions li.Last {
-    background: none;
 }
 
 .Tab.Actions li:last-child {

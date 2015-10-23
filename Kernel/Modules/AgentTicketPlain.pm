@@ -1,5 +1,4 @@
 # --
-# Kernel/Modules/AgentTicketPlain.pm - to get a plain view
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,6 +11,8 @@ package Kernel::Modules::AgentTicketPlain;
 use strict;
 use warnings;
 
+our $ObjectManagerDisabled = 1;
+
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -19,31 +20,30 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # check needed objects
-    for (qw(ParamObject DBObject TicketObject LayoutObject LogObject ConfigObject UserObject)) {
-        if ( !$Self->{$_} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $_!" );
-        }
-    }
-
-    $Self->{ArticleID} = $Self->{ParamObject}->GetParam( Param => 'ArticleID' );
-
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
 
+    my $ArticleID = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => 'ArticleID' );
+
+    # get layout object
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     # check needed stuff
-    if ( !$Self->{ArticleID} ) {
-        return $Self->{LayoutObject}->ErrorScreen(
+    if ( !$ArticleID ) {
+        return $LayoutObject->ErrorScreen(
             Message => 'No ArticleID!',
             Comment => 'Please contact your administrator'
         );
     }
 
+    # get ticket object
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
     # check permissions
-    my $Access = $Self->{TicketObject}->TicketPermission(
+    my $Access = $TicketObject->TicketPermission(
         Type     => 'ro',
         TicketID => $Self->{TicketID},
         UserID   => $Self->{UserID}
@@ -51,16 +51,16 @@ sub Run {
 
     # error screen, don't show ticket
     if ( !$Access ) {
-        return $Self->{LayoutObject}->NoPermission();
+        return $LayoutObject->NoPermission();
     }
 
-    my %Article = $Self->{TicketObject}->ArticleGet(
-        ArticleID     => $Self->{ArticleID},
+    my %Article = $TicketObject->ArticleGet(
+        ArticleID     => $ArticleID,
         DynamicFields => 0,
     );
-    my $Plain = $Self->{TicketObject}->ArticlePlain( ArticleID => $Self->{ArticleID} );
+    my $Plain = $TicketObject->ArticlePlain( ArticleID => $ArticleID );
     if ( !$Plain ) {
-        return $Self->{LayoutObject}->ErrorScreen(
+        return $LayoutObject->ErrorScreen(
             Message => 'Can\'t read plain article! Maybe there is no plain email in backend! '
             , 'Read BackendMessage.',
             Comment => 'Please contact your administrator',
@@ -73,7 +73,7 @@ sub Run {
         # return file
         my $Filename = "Ticket-$Article{TicketNumber}-TicketID-$Article{TicketID}-"
             . "ArticleID-$Article{ArticleID}.eml";
-        return $Self->{LayoutObject}->Attachment(
+        return $LayoutObject->Attachment(
             Filename    => $Filename,
             ContentType => 'message/rfc822',
             Content     => $Plain,
@@ -82,14 +82,14 @@ sub Run {
     }
 
     # show plain emails
-    $Plain = $Self->{LayoutObject}->Ascii2Html(
+    $Plain = $LayoutObject->Ascii2Html(
         Text           => $Plain,
         HTMLResultMode => 1,
     );
 
     # do some highlightings
     $Plain
-        =~ s/^((From|To|Cc|Bcc|Subject|Reply-To|Organization|X-Company):.*)/<span class="Error">$1<\/span>/gmi;
+        =~ s/^((From|To|Cc|Bcc|Subject|Reply-To|Organization|X-Company|Content-Type|Content-Transfer-Encoding):.*)/<span class="Error">$1<\/span>/gmi;
     $Plain =~ s/^(Date:.*)/<span class="Error">$1<\/span>/m;
     $Plain
         =~ s/^((X-Mailer|User-Agent|X-OS):.*(Mozilla|Win?|Outlook|Microsoft|Internet Mail Service).*)/<span class="Error">$1<\/span>/gmi;
@@ -97,17 +97,17 @@ sub Run {
     $Plain =~ s/^(From .*)/<span class="Error">$1<\/span>/gm;
     $Plain =~ s/^(X-OTRS.*)/<span class="Error">$1<\/span>/gmi;
 
-    my $Output = $Self->{LayoutObject}->Header(
+    my $Output = $LayoutObject->Header(
         Type => 'Small',
     );
-    $Output .= $Self->{LayoutObject}->Output(
+    $Output .= $LayoutObject->Output(
         TemplateFile => 'AgentTicketPlain',
         Data         => {
             Text => $Plain,
             %Article,
         },
     );
-    $Output .= $Self->{LayoutObject}->Footer(
+    $Output .= $LayoutObject->Footer(
         Type => 'Small',
     );
     return $Output;

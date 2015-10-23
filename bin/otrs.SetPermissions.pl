@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 # --
-# bin/otrs.SetPermissions.pl - to set the otrs permissions
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
@@ -56,7 +55,7 @@ Usage: otrs.SetPermissions.pl
     [--dry-run]                     # only report, don't change
     [--help]
 
-Example: otrs.SetPermissions.pl --web-group=www-data
+Example: otrs.setPermissions.pl --web-group=www-data
 EOF
     return;
 }
@@ -107,7 +106,7 @@ sub Run {
         exit 0;
     }
 
-    if ( $^O ne 'MSWin32' && $> != 0 ) {    # $EFFECTIVE_USER_ID
+    if ( $> != 0 ) {    # $EFFECTIVE_USER_ID
         print STDERR "ERROR: Please run this script as superuser (root).\n";
         exit 1;
     }

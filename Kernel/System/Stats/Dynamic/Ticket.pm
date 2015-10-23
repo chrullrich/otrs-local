@@ -1,5 +1,4 @@
 # --
-# Kernel/System/Stats/Dynamic/Ticket.pm - all advice functions
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -13,6 +12,7 @@ use strict;
 use warnings;
 
 use Kernel::System::VariableCheck qw(:all);
+use Kernel::Language qw(Translatable);
 
 our @ObjectDependencies = (
     'Kernel::Config',
@@ -122,7 +122,7 @@ sub GetObjectAttributes {
 
     my @ObjectAttributes = (
         {
-            Name             => 'Queue',
+            Name             => Translatable('Queue'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
@@ -133,7 +133,7 @@ sub GetObjectAttributes {
             Values           => \%QueueList,
         },
         {
-            Name             => 'State',
+            Name             => Translatable('State'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
@@ -142,7 +142,7 @@ sub GetObjectAttributes {
             Values           => \%StateList,
         },
         {
-            Name             => 'State Type',
+            Name             => Translatable('State Type'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
@@ -151,7 +151,7 @@ sub GetObjectAttributes {
             Values           => \%StateTypeList,
         },
         {
-            Name             => 'Priority',
+            Name             => Translatable('Priority'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
@@ -160,7 +160,7 @@ sub GetObjectAttributes {
             Values           => \%PriorityList,
         },
         {
-            Name             => 'Created in Queue',
+            Name             => Translatable('Created in Queue'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
@@ -171,7 +171,7 @@ sub GetObjectAttributes {
             Values           => \%QueueList,
         },
         {
-            Name             => 'Created Priority',
+            Name             => Translatable('Created Priority'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
@@ -180,7 +180,7 @@ sub GetObjectAttributes {
             Values           => \%PriorityList,
         },
         {
-            Name             => 'Created State',
+            Name             => Translatable('Created State'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
@@ -189,7 +189,7 @@ sub GetObjectAttributes {
             Values           => \%StateList,
         },
         {
-            Name             => 'Lock',
+            Name             => Translatable('Lock'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
@@ -198,7 +198,7 @@ sub GetObjectAttributes {
             Values           => \%LockList,
         },
         {
-            Name             => 'Title',
+            Name             => Translatable('Title'),
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
@@ -206,7 +206,7 @@ sub GetObjectAttributes {
             Block            => 'InputField',
         },
         {
-            Name             => 'CustomerUserLogin',
+            Name             => Translatable('CustomerUserLogin'),
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
@@ -214,7 +214,7 @@ sub GetObjectAttributes {
             Block            => 'InputField',
         },
         {
-            Name             => 'From',
+            Name             => Translatable('From'),
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
@@ -222,7 +222,7 @@ sub GetObjectAttributes {
             Block            => 'InputField',
         },
         {
-            Name             => 'To',
+            Name             => Translatable('To'),
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
@@ -230,7 +230,7 @@ sub GetObjectAttributes {
             Block            => 'InputField',
         },
         {
-            Name             => 'Cc',
+            Name             => Translatable('Cc'),
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
@@ -238,7 +238,7 @@ sub GetObjectAttributes {
             Block            => 'InputField',
         },
         {
-            Name             => 'Subject',
+            Name             => Translatable('Subject'),
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
@@ -246,7 +246,7 @@ sub GetObjectAttributes {
             Block            => 'InputField',
         },
         {
-            Name             => 'Text',
+            Name             => Translatable('Text'),
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
@@ -254,12 +254,12 @@ sub GetObjectAttributes {
             Block            => 'InputField',
         },
         {
-            Name             => 'Create Time',
+            Name             => Translatable('Create Time'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
             Element          => 'CreateTime',
-            TimePeriodFormat => 'DateInputFormat',    # 'DateInputFormatLong',
+            TimePeriodFormat => 'DateInputFormat',             # 'DateInputFormatLong',
             Block            => 'Time',
             TimeStop         => $Today,
             Values           => {
@@ -268,12 +268,12 @@ sub GetObjectAttributes {
             },
         },
         {
-            Name             => 'Last changed times',
+            Name             => Translatable('Last changed times'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
             Element          => 'LastChangeTime',
-            TimePeriodFormat => 'DateInputFormat',      # 'DateInputFormatLong',
+            TimePeriodFormat => 'DateInputFormat',                    # 'DateInputFormatLong',
             Block            => 'Time',
             TimeStop         => $Today,
             Values           => {
@@ -282,12 +282,12 @@ sub GetObjectAttributes {
             },
         },
         {
-            Name             => 'Change times',
+            Name             => Translatable('Change times'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
             Element          => 'ChangeTime',
-            TimePeriodFormat => 'DateInputFormat',    # 'DateInputFormatLong',
+            TimePeriodFormat => 'DateInputFormat',              # 'DateInputFormatLong',
             Block            => 'Time',
             TimeStop         => $Today,
             Values           => {
@@ -296,12 +296,12 @@ sub GetObjectAttributes {
             },
         },
         {
-            Name             => 'Close Time',
+            Name             => Translatable('Close Time'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
             Element          => 'CloseTime2',
-            TimePeriodFormat => 'DateInputFormat',    # 'DateInputFormatLong',
+            TimePeriodFormat => 'DateInputFormat',            # 'DateInputFormatLong',
             Block            => 'Time',
             TimeStop         => $Today,
             Values           => {
@@ -310,12 +310,12 @@ sub GetObjectAttributes {
             },
         },
         {
-            Name             => 'Escalation',
+            Name             => Translatable('Escalation'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
             Element          => 'EscalationTime',
-            TimePeriodFormat => 'DateInputFormatLong',    # 'DateInputFormat',
+            TimePeriodFormat => 'DateInputFormatLong',        # 'DateInputFormat',
             Block            => 'Time',
             TimeStop         => $Today,
             Values           => {
@@ -324,12 +324,12 @@ sub GetObjectAttributes {
             },
         },
         {
-            Name             => 'Escalation - First Response Time',
+            Name             => Translatable('Escalation - First Response Time'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
             Element          => 'EscalationResponseTime',
-            TimePeriodFormat => 'DateInputFormatLong',                # 'DateInputFormat',
+            TimePeriodFormat => 'DateInputFormatLong',                              # 'DateInputFormat',
             Block            => 'Time',
             TimeStop         => $Today,
             Values           => {
@@ -338,12 +338,12 @@ sub GetObjectAttributes {
             },
         },
         {
-            Name             => 'Escalation - Update Time',
+            Name             => Translatable('Escalation - Update Time'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
             Element          => 'EscalationUpdateTime',
-            TimePeriodFormat => 'DateInputFormatLong',        # 'DateInputFormat',
+            TimePeriodFormat => 'DateInputFormatLong',                      # 'DateInputFormat',
             Block            => 'Time',
             TimeStop         => $Today,
             Values           => {
@@ -352,12 +352,12 @@ sub GetObjectAttributes {
             },
         },
         {
-            Name             => 'Escalation - Solution Time',
+            Name             => Translatable('Escalation - Solution Time'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
             Element          => 'EscalationSolutionTime',
-            TimePeriodFormat => 'DateInputFormatLong',          # 'DateInputFormat',
+            TimePeriodFormat => 'DateInputFormatLong',                        # 'DateInputFormat',
             Block            => 'Time',
             TimeStop         => $Today,
             Values           => {
@@ -381,7 +381,7 @@ sub GetObjectAttributes {
 
         my @ObjectAttributeAdd = (
             {
-                Name             => 'Service',
+                Name             => Translatable('Service'),
                 UseAsXvalue      => 1,
                 UseAsValueSeries => 1,
                 UseAsRestriction => 1,
@@ -392,7 +392,7 @@ sub GetObjectAttributes {
                 Values           => \%Service,
             },
             {
-                Name             => 'SLA',
+                Name             => Translatable('SLA'),
                 UseAsXvalue      => 1,
                 UseAsValueSeries => 1,
                 UseAsRestriction => 1,
@@ -414,7 +414,7 @@ sub GetObjectAttributes {
         );
 
         my %ObjectAttribute1 = (
-            Name             => 'Type',
+            Name             => Translatable('Type'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
@@ -431,7 +431,7 @@ sub GetObjectAttributes {
 
         my @ObjectAttributeAdd = (
             {
-                Name             => 'Agent/Owner',
+                Name             => Translatable('Agent/Owner'),
                 UseAsXvalue      => 1,
                 UseAsValueSeries => 1,
                 UseAsRestriction => 1,
@@ -441,7 +441,7 @@ sub GetObjectAttributes {
                 Values           => \%UserList,
             },
             {
-                Name             => 'Created by Agent/Owner',
+                Name             => Translatable('Created by Agent/Owner'),
                 UseAsXvalue      => 1,
                 UseAsValueSeries => 1,
                 UseAsRestriction => 1,
@@ -451,7 +451,7 @@ sub GetObjectAttributes {
                 Values           => \%UserList,
             },
             {
-                Name             => 'Responsible',
+                Name             => Translatable('Responsible'),
                 UseAsXvalue      => 1,
                 UseAsValueSeries => 1,
                 UseAsRestriction => 1,
@@ -482,7 +482,7 @@ sub GetObjectAttributes {
         }
 
         my %ObjectAttribute = (
-            Name             => 'CustomerID',
+            Name             => Translatable('CustomerID'),
             UseAsXvalue      => 1,
             UseAsValueSeries => 1,
             UseAsRestriction => 1,
@@ -496,7 +496,7 @@ sub GetObjectAttributes {
     else {
 
         my %ObjectAttribute = (
-            Name             => 'CustomerID',
+            Name             => Translatable('CustomerID'),
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
@@ -510,7 +510,7 @@ sub GetObjectAttributes {
     if ( $ConfigObject->Get('Ticket::ArchiveSystem') ) {
 
         my %ObjectAttribute = (
-            Name             => 'Archive Search',
+            Name             => Translatable('Archive Search'),
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
@@ -653,6 +653,12 @@ sub GetObjectAttributes {
     }
 
     return @ObjectAttributes;
+}
+
+sub GetStatElementPreview {
+    my ( $Self, %Param ) = @_;
+
+    return int rand 50;
 }
 
 sub GetStatElement {

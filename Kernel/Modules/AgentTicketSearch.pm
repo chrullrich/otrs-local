@@ -1,5 +1,4 @@
 # --
-# Kernel/Modules/AgentTicketSearch.pm - Utilities for tickets
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,19 +11,9 @@ package Kernel::Modules::AgentTicketSearch;
 use strict;
 use warnings;
 
-use Kernel::System::CSV;
-use Kernel::System::CustomerUser;
-use Kernel::System::DynamicField;
-use Kernel::System::DynamicField::Backend;
-use Kernel::System::Lock;
-use Kernel::System::Priority;
-use Kernel::System::Lock;
-use Kernel::System::SearchProfile;
-use Kernel::System::Service;
-use Kernel::System::SLA;
-use Kernel::System::State;
-use Kernel::System::Type;
 use Kernel::System::VariableCheck qw(:all);
+
+our $ObjectManagerDisabled = 1;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -32,46 +21,6 @@ sub new {
     # allocate new hash for object
     my $Self = {%Param};
     bless( $Self, $Type );
-
-    # check needed objects
-    for my $Needed (
-        qw(ParamObject DBObject TicketObject LayoutObject LogObject ConfigObject MainObject EncodeObject)
-        )
-    {
-        if ( !$Self->{$Needed} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $Needed!" );
-        }
-    }
-    $Self->{CustomerUserObject}  = Kernel::System::CustomerUser->new(%Param);
-    $Self->{PriorityObject}      = Kernel::System::Priority->new(%Param);
-    $Self->{StateObject}         = Kernel::System::State->new(%Param);
-    $Self->{SearchProfileObject} = Kernel::System::SearchProfile->new(%Param);
-    $Self->{ServiceObject}       = Kernel::System::Service->new(%Param);
-    $Self->{SLAObject}           = Kernel::System::SLA->new(%Param);
-    $Self->{TypeObject}          = Kernel::System::Type->new(%Param);
-    $Self->{CSVObject}           = Kernel::System::CSV->new(%Param);
-    $Self->{LockObject}          = Kernel::System::Lock->new(%Param);
-    $Self->{DynamicFieldObject}  = Kernel::System::DynamicField->new(%Param);
-    $Self->{BackendObject}       = Kernel::System::DynamicField::Backend->new(%Param);
-
-    $Self->{Config} = $Self->{ConfigObject}->Get("Ticket::Frontend::$Self->{Action}");
-
-    # get dynamic field config for frontend module
-    $Self->{DynamicFieldFilter} = $Self->{Config}->{DynamicField};
-
-    # get the dynamic fields for ticket object
-    $Self->{DynamicField} = $Self->{DynamicFieldObject}->DynamicFieldListGet(
-        Valid       => 1,
-        ObjectType  => [ 'Ticket', 'Article' ],
-        FieldFilter => $Self->{DynamicFieldFilter} || {},
-    );
-
-    # get the ticket dynamic fields for CSV display
-    $Self->{CSVDynamicField} = $Self->{DynamicFieldObject}->DynamicFieldListGet(
-        Valid       => 1,
-        ObjectType  => ['Ticket'],
-        FieldFilter => $Self->{Config}->{SearchCSVDynamicField} || {},
-    );
 
     return $Self;
 }
@@ -81,34 +30,43 @@ sub Run {
 
     my $Output;
 
+    # get needed objects
+    my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
+    my $Config = $ConfigObject->Get("Ticket::Frontend::$Self->{Action}");
+
     # get config data
-    $Self->{StartHit} = int( $Self->{ParamObject}->GetParam( Param => 'StartHit' ) || 1 );
-    $Self->{SearchLimit} = $Self->{Config}->{SearchLimit} || 500;
-    $Self->{SortBy} = $Self->{ParamObject}->GetParam( Param => 'SortBy' )
-        || $Self->{Config}->{'SortBy::Default'}
+    $Self->{StartHit} = int( $ParamObject->GetParam( Param => 'StartHit' ) || 1 );
+    $Self->{SearchLimit} = $Config->{SearchLimit} || 500;
+    $Self->{SortBy} = $ParamObject->GetParam( Param => 'SortBy' )
+        || $Config->{'SortBy::Default'}
         || 'Age';
-    $Self->{OrderBy} = $Self->{ParamObject}->GetParam( Param => 'OrderBy' )
-        || $Self->{Config}->{'Order::Default'}
+    $Self->{OrderBy} = $ParamObject->GetParam( Param => 'OrderBy' )
+        || $Config->{'Order::Default'}
         || 'Down';
-    $Self->{Profile}        = $Self->{ParamObject}->GetParam( Param => 'Profile' )        || '';
-    $Self->{SaveProfile}    = $Self->{ParamObject}->GetParam( Param => 'SaveProfile' )    || '';
-    $Self->{TakeLastSearch} = $Self->{ParamObject}->GetParam( Param => 'TakeLastSearch' ) || '';
-    $Self->{SelectTemplate} = $Self->{ParamObject}->GetParam( Param => 'SelectTemplate' ) || '';
-    $Self->{EraseTemplate}  = $Self->{ParamObject}->GetParam( Param => 'EraseTemplate' )  || '';
+    $Self->{Profile}        = $ParamObject->GetParam( Param => 'Profile' )        || '';
+    $Self->{SaveProfile}    = $ParamObject->GetParam( Param => 'SaveProfile' )    || '';
+    $Self->{TakeLastSearch} = $ParamObject->GetParam( Param => 'TakeLastSearch' ) || '';
+    $Self->{SelectTemplate} = $ParamObject->GetParam( Param => 'SelectTemplate' ) || '';
+    $Self->{EraseTemplate}  = $ParamObject->GetParam( Param => 'EraseTemplate' )  || '';
 
     # get list type
     my $TreeView = 0;
-    if ( $Self->{ConfigObject}->Get('Ticket::Frontend::ListType') eq 'tree' ) {
+    if ( $ConfigObject->Get('Ticket::Frontend::ListType') eq 'tree' ) {
         $TreeView = 1;
     }
 
+    # get layout object
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     # check request
     if ( $Self->{Subaction} eq 'OpenSearchDescriptionTicketNumber' ) {
-        my $Output = $Self->{LayoutObject}->Output(
+        my $Output = $LayoutObject->Output(
             TemplateFile => 'AgentTicketSearchOpenSearchDescriptionTicketNumber',
             Data         => \%Param,
         );
-        return $Self->{LayoutObject}->Attachment(
+        return $LayoutObject->Attachment(
             Filename    => 'OpenSearchDescriptionTicketNumber.xml',
             ContentType => 'application/opensearchdescription+xml',
             Content     => $Output,
@@ -116,11 +74,11 @@ sub Run {
         );
     }
     if ( $Self->{Subaction} eq 'OpenSearchDescriptionFulltext' ) {
-        my $Output = $Self->{LayoutObject}->Output(
+        my $Output = $LayoutObject->Output(
             TemplateFile => 'AgentTicketSearchOpenSearchDescriptionFulltext',
             Data         => \%Param,
         );
-        return $Self->{LayoutObject}->Attachment(
+        return $LayoutObject->Attachment(
             Filename    => 'OpenSearchDescriptionFulltext.xml',
             ContentType => 'application/opensearchdescription+xml',
             Content     => $Output,
@@ -129,9 +87,9 @@ sub Run {
     }
 
     # check request
-    if ( $Self->{ParamObject}->GetParam( Param => 'SearchTemplate' ) && $Self->{Profile} ) {
-        my $Profile = $Self->{LayoutObject}->LinkEncode( $Self->{Profile} );
-        return $Self->{LayoutObject}->Redirect(
+    if ( $ParamObject->GetParam( Param => 'SearchTemplate' ) && $Self->{Profile} ) {
+        my $Profile = $LayoutObject->LinkEncode( $Self->{Profile} );
+        return $LayoutObject->Redirect(
             OP =>
                 "Action=AgentTicketSearch;Subaction=Search;TakeLastSearch=1;SaveProfile=1;Profile=$Profile"
         );
@@ -140,9 +98,24 @@ sub Run {
     # get single params
     my %GetParam;
 
+    # get needed objects
+    my $SearchProfileObject = $Kernel::OM->Get('Kernel::System::SearchProfile');
+    my $DynamicFieldObject  = $Kernel::OM->Get('Kernel::System::DynamicField');
+    my $BackendObject       = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
+
+    # get dynamic field config for frontend module
+    my $DynamicFieldFilter = $Config->{DynamicField};
+
+    # get the dynamic fields for ticket object
+    my $DynamicField = $DynamicFieldObject->DynamicFieldListGet(
+        Valid       => 1,
+        ObjectType  => [ 'Ticket', 'Article' ],
+        FieldFilter => $DynamicFieldFilter || {},
+    );
+
     # load profiles string params (press load profile)
     if ( ( $Self->{Subaction} eq 'LoadProfile' && $Self->{Profile} ) || $Self->{TakeLastSearch} ) {
-        %GetParam = $Self->{SearchProfileObject}->SearchProfileGet(
+        %GetParam = $SearchProfileObject->SearchProfileGet(
             Base      => 'TicketSearch',
             Name      => $Self->{Profile},
             UserLogin => $Self->{UserLogin},
@@ -204,7 +177,7 @@ sub Run {
         {
 
             # get search string params (get submitted params)
-            $GetParam{$Key} = $Self->{ParamObject}->GetParam( Param => $Key );
+            $GetParam{$Key} = $ParamObject->GetParam( Param => $Key );
 
             # remove white space on the start and end
             if ( $GetParam{$Key} ) {
@@ -222,7 +195,7 @@ sub Run {
         {
 
             # get search array params (get submitted params)
-            my @Array = $Self->{ParamObject}->GetArray( Param => $Key );
+            my @Array = $ParamObject->GetArray( Param => $Key );
             if (@Array) {
                 $GetParam{$Key} = \@Array;
             }
@@ -231,11 +204,11 @@ sub Run {
         # get Dynamic fields from param object
         # cycle trough the activated Dynamic Fields for this screen
         DYNAMICFIELD:
-        for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
+        for my $DynamicFieldConfig ( @{$DynamicField} ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
             # get search field preferences
-            my $SearchFieldPreferences = $Self->{BackendObject}->SearchFieldPreferences(
+            my $SearchFieldPreferences = $BackendObject->SearchFieldPreferences(
                 DynamicFieldConfig => $DynamicFieldConfig,
             );
 
@@ -245,11 +218,11 @@ sub Run {
             for my $Preference ( @{$SearchFieldPreferences} ) {
 
                 # extract the dynamic field value from the web request
-                my $DynamicFieldValue = $Self->{BackendObject}->SearchFieldValueGet(
+                my $DynamicFieldValue = $BackendObject->SearchFieldValueGet(
                     DynamicFieldConfig     => $DynamicFieldConfig,
-                    ParamObject            => $Self->{ParamObject},
+                    ParamObject            => $ParamObject,
                     ReturnProfileStructure => 1,
-                    LayoutObject           => $Self->{LayoutObject},
+                    LayoutObject           => $LayoutObject,
                     Type                   => $Preference->{Type},
                 );
 
@@ -332,6 +305,9 @@ sub Run {
         $GetParam{ResultForm} = '';
     }
 
+    # get user object
+    my $UserObject = $Kernel::OM->Get('Kernel::System::User');
+
     # show result site
     if ( $Self->{Subaction} eq 'Search' && !$Self->{EraseTemplate} ) {
 
@@ -347,7 +323,7 @@ sub Run {
         if ( $Self->{SaveProfile} && $Self->{Profile} ) {
 
             # remove old profile stuff
-            $Self->{SearchProfileObject}->SearchProfileDelete(
+            $SearchProfileObject->SearchProfileDelete(
                 Base      => 'TicketSearch',
                 Name      => $Self->{Profile},
                 UserLogin => $Self->{UserLogin},
@@ -362,7 +338,7 @@ sub Run {
             KEY:
             for my $Key ( sort keys %GetParam ) {
                 next KEY if !defined $GetParam{$Key};
-                $Self->{SearchProfileObject}->SearchProfileAdd(
+                $SearchProfileObject->SearchProfileAdd(
                     Base      => 'TicketSearch',
                     Name      => $Self->{Profile},
                     Key       => $Key,
@@ -465,6 +441,8 @@ sub Run {
             }
         }
 
+        my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
         # Special behaviour for the fulltext search toolbar module:
         # - Check full text string to see if contents is a ticket number.
         # - If exists and not in print or CSV mode, redirect to the ticket.
@@ -474,17 +452,17 @@ sub Run {
         #   'new' tickets will not be found.
         if (
             $GetParam{Fulltext}
-            && $Self->{ParamObject}->GetParam( Param => 'CheckTicketNumberAndRedirect' )
+            && $ParamObject->GetParam( Param => 'CheckTicketNumberAndRedirect' )
             && $GetParam{ResultForm} ne 'Normal'
             && $GetParam{ResultForm} ne 'Print'
             )
         {
-            my $TicketID = $Self->{TicketObject}->TicketIDLookup(
+            my $TicketID = $TicketObject->TicketIDLookup(
                 TicketNumber => $GetParam{Fulltext},
                 UserID       => $Self->{UserID},
             );
             if ($TicketID) {
-                return $Self->{LayoutObject}->Redirect(
+                return $LayoutObject->Redirect(
                     OP => "Action=AgentTicketZoom;TicketID=$TicketID",
                 );
             }
@@ -499,7 +477,7 @@ sub Run {
         }
 
         # prepare archive flag
-        if ( $Self->{ConfigObject}->Get('Ticket::ArchiveSystem') ) {
+        if ( $ConfigObject->Get('Ticket::ArchiveSystem') ) {
 
             $GetParam{SearchInArchive} ||= '';
             if ( $GetParam{SearchInArchive} eq 'AllTickets' ) {
@@ -525,11 +503,11 @@ sub Run {
 
         # cycle trough the activated Dynamic Fields for this screen
         DYNAMICFIELD:
-        for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
+        for my $DynamicFieldConfig ( @{$DynamicField} ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
             # get search field preferences
-            my $SearchFieldPreferences = $Self->{BackendObject}->SearchFieldPreferences(
+            my $SearchFieldPreferences = $BackendObject->SearchFieldPreferences(
                 DynamicFieldConfig => $DynamicFieldConfig,
             );
 
@@ -550,10 +528,10 @@ sub Run {
                 }
 
                 # extract the dynamic field value from the profile
-                my $SearchParameter = $Self->{BackendObject}->SearchFieldParameterBuild(
+                my $SearchParameter = $BackendObject->SearchFieldParameterBuild(
                     DynamicFieldConfig => $DynamicFieldConfig,
                     Profile            => \%GetParam,
-                    LayoutObject       => $Self->{LayoutObject},
+                    LayoutObject       => $LayoutObject,
                     Type               => $Preference->{Type},
                 );
 
@@ -571,13 +549,13 @@ sub Run {
             local $Kernel::System::DB::UseSlaveDB = 1;
 
             # perform ticket search
-            @ViewableTicketIDs = $Self->{TicketObject}->TicketSearch(
+            @ViewableTicketIDs = $TicketObject->TicketSearch(
                 Result              => 'ARRAY',
                 SortBy              => $Self->{SortBy},
                 OrderBy             => $Self->{OrderBy},
                 Limit               => $Self->{SearchLimit},
                 UserID              => $Self->{UserID},
-                ConditionInline     => $Self->{Config}->{ExtendedSearchCondition},
+                ConditionInline     => $Config->{ExtendedSearchCondition},
                 ContentSearchPrefix => '*',
                 ContentSearchSuffix => '*',
                 FullTextIndex       => 1,
@@ -585,6 +563,17 @@ sub Run {
                 %DynamicFieldSearchParameters,
             );
         }
+
+        # get needed objects
+        my $CustomerUserObject = $Kernel::OM->Get('Kernel::System::CustomerUser');
+        my $TimeObject         = $Kernel::OM->Get('Kernel::System::Time');
+
+        # get the ticket dynamic fields for CSV display
+        my $CSVDynamicField = $DynamicFieldObject->DynamicFieldListGet(
+            Valid       => 1,
+            ObjectType  => ['Ticket'],
+            FieldFilter => $Config->{SearchCSVDynamicField} || {},
+        );
 
         # CSV and Excel output
         if (
@@ -595,12 +584,12 @@ sub Run {
         {
 
             # create head (actual head and head for data fill)
-            my @TmpCSVHead = @{ $Self->{Config}->{SearchCSVData} };
-            my @CSVHead    = @{ $Self->{Config}->{SearchCSVData} };
+            my @TmpCSVHead = @{ $Config->{SearchCSVData} };
+            my @CSVHead    = @{ $Config->{SearchCSVData} };
 
             # include the selected dynamic fields in CVS results
             DYNAMICFIELD:
-            for my $DynamicFieldConfig ( @{ $Self->{CSVDynamicField} } ) {
+            for my $DynamicFieldConfig ( @{$CSVDynamicField} ) {
                 next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
                 next DYNAMICFIELD if !$DynamicFieldConfig->{Name};
                 next DYNAMICFIELD if $DynamicFieldConfig->{Name} eq '';
@@ -613,7 +602,7 @@ sub Run {
             for my $TicketID (@ViewableTicketIDs) {
 
                 # get first article data
-                my %Data = $Self->{TicketObject}->ArticleFirstArticle(
+                my %Data = $TicketObject->ArticleFirstArticle(
                     TicketID      => $TicketID,
                     Extended      => 1,
                     DynamicFields => 1,
@@ -622,31 +611,31 @@ sub Run {
                 if ( !%Data ) {
 
                     # get ticket data instead
-                    %Data = $Self->{TicketObject}->TicketGet(
+                    %Data = $TicketObject->TicketGet(
                         TicketID      => $TicketID,
                         DynamicFields => 1,
                     );
 
                     # set missing information
                     $Data{Subject} = $Data{Title} || 'Untitled';
-                    $Data{Body} = $Self->{LayoutObject}->{LanguageObject}->Get(
+                    $Data{Body} = $LayoutObject->{LanguageObject}->Get(
                         'This item has no articles yet.'
                     );
                     $Data{From} = '--';
                 }
 
                 for my $Key (qw(State Lock)) {
-                    $Data{$Key} = $Self->{LayoutObject}->{LanguageObject}->Translate( $Data{$Key} );
+                    $Data{$Key} = $LayoutObject->{LanguageObject}->Translate( $Data{$Key} );
                 }
 
-                $Data{Age} = $Self->{LayoutObject}->CustomerAge(
+                $Data{Age} = $LayoutObject->CustomerAge(
                     Age   => $Data{Age},
                     Space => ' '
                 );
 
                 # get whole article (if configured!)
-                if ( $Self->{Config}->{SearchArticleCSVTree} ) {
-                    my @Article = $Self->{TicketObject}->ArticleGet(
+                if ( $Config->{SearchArticleCSVTree} ) {
+                    my @Article = $TicketObject->ArticleGet(
                         TicketID      => $TicketID,
                         DynamicFields => 0,
                     );
@@ -671,13 +660,13 @@ sub Run {
 
                 # customer info (customer name)
                 if ( $Data{CustomerUserID} ) {
-                    $Data{CustomerName} = $Self->{CustomerUserObject}->CustomerName(
+                    $Data{CustomerName} = $CustomerUserObject->CustomerName(
                         UserLogin => $Data{CustomerUserID},
                     );
                 }
 
                 # user info
-                my %UserInfo = $Self->{UserObject}->GetUserData(
+                my %UserInfo = $UserObject->GetUserData(
                     User => $Data{Owner},
                 );
 
@@ -686,7 +675,7 @@ sub Run {
                     %Data,
                     %UserInfo,
                     AccountedTime =>
-                        $Self->{TicketObject}->TicketAccountedTimeGet( TicketID => $TicketID ),
+                        $TicketObject->TicketAccountedTimeGet( TicketID => $TicketID ),
                 );
 
                 my @Data;
@@ -698,7 +687,7 @@ sub Run {
 
                         # loop over the dynamic fields configured for CSV output
                         DYNAMICFIELD:
-                        for my $DynamicFieldConfig ( @{ $Self->{CSVDynamicField} } ) {
+                        for my $DynamicFieldConfig ( @{$CSVDynamicField} ) {
                             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
                             next DYNAMICFIELD if !$DynamicFieldConfig->{Name};
 
@@ -707,11 +696,11 @@ sub Run {
                             next DYNAMICFIELD if $DynamicFieldConfig->{Name} ne $1;
 
                             # get the value as for print (to correctly display)
-                            my $ValueStrg = $Self->{BackendObject}->DisplayValueRender(
+                            my $ValueStrg = $BackendObject->DisplayValueRender(
                                 DynamicFieldConfig => $DynamicFieldConfig,
                                 Value              => $Info{$Header},
                                 HTMLOutput         => 0,
-                                LayoutObject       => $Self->{LayoutObject},
+                                LayoutObject       => $LayoutObject,
                             );
                             push @Data, $ValueStrg->{Value};
 
@@ -729,10 +718,10 @@ sub Run {
             }
 
             # get Separator from language file
-            my $UserCSVSeparator = $Self->{LayoutObject}->{LanguageObject}->{Separator};
+            my $UserCSVSeparator = $LayoutObject->{LanguageObject}->{Separator};
 
-            if ( $Self->{ConfigObject}->Get('PreferencesGroups')->{CSVSeparator}->{Active} ) {
-                my %UserData = $Self->{UserObject}->GetUserData( UserID => $Self->{UserID} );
+            if ( $ConfigObject->Get('PreferencesGroups')->{CSVSeparator}->{Active} ) {
+                my %UserData = $UserObject->GetUserData( UserID => $Self->{UserID} );
                 $UserCSVSeparator = $UserData{UserCSVSeparator} if $UserData{UserCSVSeparator};
             }
 
@@ -741,44 +730,47 @@ sub Run {
                 CustomerName => 'Customer Realname',
             );
 
-            my @CSVHeadTranslated = map { $Self->{LayoutObject}->{LanguageObject}->Translate( $HeaderMap{$_} || $_ ); }
+            my @CSVHeadTranslated = map { $LayoutObject->{LanguageObject}->Translate( $HeaderMap{$_} || $_ ); }
                 @CSVHead;
 
             my $FileName = 'ticket_search';
-            my ( $s, $m, $h, $D, $M, $Y ) = $Self->{TimeObject}->SystemTime2Date(
-                SystemTime => $Self->{TimeObject}->SystemTime(),
+            my ( $s, $m, $h, $D, $M, $Y ) = $TimeObject->SystemTime2Date(
+                SystemTime => $TimeObject->SystemTime(),
             );
             $M = sprintf( "%02d", $M );
             $D = sprintf( "%02d", $D );
             $h = sprintf( "%02d", $h );
             $m = sprintf( "%02d", $m );
 
+            # get CSV object
+            my $CSVObject = $Kernel::OM->Get('Kernel::System::CSV');
+
             # generate CSV output
             if ( $GetParam{ResultForm} eq 'CSV' ) {
-                my $CSV = $Self->{CSVObject}->Array2CSV(
+                my $CSV = $CSVObject->Array2CSV(
                     Head      => \@CSVHeadTranslated,
                     Data      => \@CSVData,
                     Separator => $UserCSVSeparator,
                 );
 
                 # return csv to download
-                return $Self->{LayoutObject}->Attachment(
+                return $LayoutObject->Attachment(
                     Filename    => $FileName . "_" . "$Y-$M-$D" . "_" . "$h-$m.csv",
-                    ContentType => "text/csv; charset=" . $Self->{LayoutObject}->{UserCharset},
+                    ContentType => "text/csv; charset=" . $LayoutObject->{UserCharset},
                     Content     => $CSV,
                 );
             }
 
             # generate Excel output
             elsif ( $GetParam{ResultForm} eq 'Excel' ) {
-                my $Excel = $Self->{CSVObject}->Array2CSV(
+                my $Excel = $CSVObject->Array2CSV(
                     Head   => \@CSVHeadTranslated,
                     Data   => \@CSVData,
                     Format => 'Excel',
                 );
 
                 # return Excel to download
-                return $Self->{LayoutObject}->Attachment(
+                return $LayoutObject->Attachment(
                     Filename => $FileName . "_" . "$Y-$M-$D" . "_" . "$h-$m.xlsx",
                     ContentType =>
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -790,14 +782,14 @@ sub Run {
         # PDF output
         elsif ( $GetParam{ResultForm} eq 'Print' ) {
 
-            use Kernel::System::PDF;
-            $Self->{PDFObject} = Kernel::System::PDF->new( %{$Self} );
+            # get PDF object
+            my $PDFObject = $Kernel::OM->Get('Kernel::System::PDF');
 
             my @PDFData;
             for my $TicketID (@ViewableTicketIDs) {
 
                 # get first article data
-                my %Data = $Self->{TicketObject}->ArticleFirstArticle(
+                my %Data = $TicketObject->ArticleFirstArticle(
                     TicketID      => $TicketID,
                     DynamicFields => 1,
                 );
@@ -805,7 +797,7 @@ sub Run {
                 if ( !%Data ) {
 
                     # get ticket data instead
-                    %Data = $Self->{TicketObject}->TicketGet(
+                    %Data = $TicketObject->TicketGet(
                         TicketID      => $TicketID,
                         DynamicFields => 1,
                     );
@@ -818,286 +810,266 @@ sub Run {
                 # customer info
                 my %CustomerData;
                 if ( $Data{CustomerUserID} ) {
-                    %CustomerData = $Self->{CustomerUserObject}->CustomerUserDataGet(
+                    %CustomerData = $CustomerUserObject->CustomerUserDataGet(
                         User => $Data{CustomerUserID},
                     );
                 }
                 elsif ( $Data{CustomerID} ) {
-                    %CustomerData = $Self->{CustomerUserObject}->CustomerUserDataGet(
+                    %CustomerData = $CustomerUserObject->CustomerUserDataGet(
                         CustomerID => $Data{CustomerID},
                     );
                 }
 
                 # customer info (customer name)
                 if ( $CustomerData{UserLogin} ) {
-                    $Data{CustomerName} = $Self->{CustomerUserObject}->CustomerName(
+                    $Data{CustomerName} = $CustomerUserObject->CustomerName(
                         UserLogin => $CustomerData{UserLogin},
                     );
                 }
 
                 # user info
-                my %UserInfo = $Self->{UserObject}->GetUserData(
+                my %UserInfo = $UserObject->GetUserData(
                     User => $Data{Owner},
-                );
-
-                # get age
-                $Data{Age} = $Self->{LayoutObject}->CustomerAge(
-                    Age   => $Data{Age},
-                    Space => ' '
                 );
 
                 # customer info string
                 $UserInfo{CustomerName} = '(' . $UserInfo{CustomerName} . ')'
                     if ( $UserInfo{CustomerName} );
 
-                if ( $Self->{PDFObject} ) {
-                    my %Info = ( %Data, %UserInfo );
-                    my $Created = $Self->{LayoutObject}->{LanguageObject}->FormatTimeString(
-                        $Data{Created},
-                        'DateFormat',
-                    );
-                    my $Owner    = "$Info{Owner} ($Info{UserFullname})";
-                    my $Customer = "$Data{CustomerID} $Data{CustomerName}";
+                my %Info = ( %Data, %UserInfo );
+                my $Created = $LayoutObject->{LanguageObject}->FormatTimeString(
+                    $Data{Created},
+                    'DateFormat',
+                );
+                my $Owner    = "$Info{Owner} ($Info{UserFullname})";
+                my $Customer = "$Data{CustomerID} $Data{CustomerName}";
 
-                    my @PDFRow;
-                    push @PDFRow,  $Data{TicketNumber};
-                    push @PDFRow,  $Created;
-                    push @PDFRow,  $Data{From};
-                    push @PDFRow,  $Data{Subject};
-                    push @PDFRow,  $Data{State};
-                    push @PDFRow,  $Data{Queue};
-                    push @PDFRow,  $Owner;
-                    push @PDFRow,  $Customer;
-                    push @PDFData, \@PDFRow;
-                }
-                else {
+                my @PDFRow;
+                push @PDFRow,  $Data{TicketNumber};
+                push @PDFRow,  $Created;
+                push @PDFRow,  $Data{From};
+                push @PDFRow,  $Data{Subject};
+                push @PDFRow,  $Data{State};
+                push @PDFRow,  $Data{Queue};
+                push @PDFRow,  $Owner;
+                push @PDFRow,  $Customer;
+                push @PDFData, \@PDFRow;
 
-                    # add table block
-                    $Self->{LayoutObject}->Block(
-                        Name => 'Record',
-                        Data => { %Data, %UserInfo, },
-                    );
+            }
+
+            my $Title = $LayoutObject->{LanguageObject}->Translate('Ticket') . ' '
+                . $LayoutObject->{LanguageObject}->Translate('Search');
+            my $PrintedBy = $LayoutObject->{LanguageObject}->Translate('printed by');
+            my $Page      = $LayoutObject->{LanguageObject}->Translate('Page');
+            my $Time      = $LayoutObject->{Time};
+
+            # get maximum number of pages
+            my $MaxPages = $ConfigObject->Get('PDF::MaxPages');
+            if ( !$MaxPages || $MaxPages < 1 || $MaxPages > 1000 ) {
+                $MaxPages = 100;
+            }
+
+            my $CellData;
+
+            # verify if there are tickets to show
+            if (@PDFData) {
+
+                # create the header
+                $CellData->[0]->[0]->{Content} = $ConfigObject->Get('Ticket::Hook');
+                $CellData->[0]->[0]->{Font}    = 'ProportionalBold';
+                $CellData->[0]->[1]->{Content} = $LayoutObject->{LanguageObject}->Translate('Created');
+                $CellData->[0]->[1]->{Font}    = 'ProportionalBold';
+                $CellData->[0]->[2]->{Content} = $LayoutObject->{LanguageObject}->Translate('From');
+                $CellData->[0]->[2]->{Font}    = 'ProportionalBold';
+                $CellData->[0]->[3]->{Content} = $LayoutObject->{LanguageObject}->Translate('Subject');
+                $CellData->[0]->[3]->{Font}    = 'ProportionalBold';
+                $CellData->[0]->[4]->{Content} = $LayoutObject->{LanguageObject}->Translate('State');
+                $CellData->[0]->[4]->{Font}    = 'ProportionalBold';
+                $CellData->[0]->[5]->{Content} = $LayoutObject->{LanguageObject}->Translate('Queue');
+                $CellData->[0]->[5]->{Font}    = 'ProportionalBold';
+                $CellData->[0]->[6]->{Content} = $LayoutObject->{LanguageObject}->Translate('Owner');
+                $CellData->[0]->[6]->{Font}    = 'ProportionalBold';
+                $CellData->[0]->[7]->{Content} = $LayoutObject->{LanguageObject}->Translate('CustomerID');
+                $CellData->[0]->[7]->{Font}    = 'ProportionalBold';
+
+                # create the content array
+                my $CounterRow = 1;
+                for my $Row (@PDFData) {
+                    my $CounterColumn = 0;
+                    for my $Content ( @{$Row} ) {
+                        $CellData->[$CounterRow]->[$CounterColumn]->{Content} = $Content;
+                        $CounterColumn++;
+                    }
+                    $CounterRow++;
                 }
             }
 
-            # PDF Output
-            if ( $Self->{PDFObject} ) {
-                my $Title = $Self->{LayoutObject}->{LanguageObject}->Translate('Ticket') . ' '
-                    . $Self->{LayoutObject}->{LanguageObject}->Translate('Search');
-                my $PrintedBy = $Self->{LayoutObject}->{LanguageObject}->Translate('printed by');
-                my $Page      = $Self->{LayoutObject}->{LanguageObject}->Translate('Page');
-                my $Time      = $Self->{LayoutObject}->{Time};
-                my $Url       = '';
-                if ( $ENV{REQUEST_URI} ) {
-                    $Url = $Self->{ConfigObject}->Get('HttpType') . '://'
-                        . $Self->{ConfigObject}->Get('FQDN')
-                        . $ENV{REQUEST_URI};
-                }
+            # otherwise, show 'No ticket data found' message
+            else {
+                $CellData->[0]->[0]->{Content} = $LayoutObject->{LanguageObject}->Translate('No ticket data found.');
+            }
 
-                # get maximum number of pages
-                my $MaxPages = $Self->{ConfigObject}->Get('PDF::MaxPages');
-                if ( !$MaxPages || $MaxPages < 1 || $MaxPages > 1000 ) {
-                    $MaxPages = 100;
-                }
+            # page params
+            my %PageParam;
+            $PageParam{PageOrientation} = 'landscape';
+            $PageParam{MarginTop}       = 30;
+            $PageParam{MarginRight}     = 40;
+            $PageParam{MarginBottom}    = 40;
+            $PageParam{MarginLeft}      = 40;
+            $PageParam{HeaderRight}     = $Title;
+            $PageParam{HeadlineLeft}    = $Title;
 
-                my $CellData;
+            # table params
+            my %TableParam;
+            $TableParam{CellData}            = $CellData;
+            $TableParam{Type}                = 'Cut';
+            $TableParam{FontSize}            = 6;
+            $TableParam{Border}              = 0;
+            $TableParam{BackgroundColorEven} = '#DDDDDD';
+            $TableParam{Padding}             = 1;
+            $TableParam{PaddingTop}          = 3;
+            $TableParam{PaddingBottom}       = 3;
 
-                # verify if there are tickets to show
-                if (@PDFData) {
+            # create new pdf document
+            $PDFObject->DocumentNew(
+                Title  => $ConfigObject->Get('Product') . ': ' . $Title,
+                Encode => $LayoutObject->{UserCharset},
+            );
 
-                    # create the header
-                    $CellData->[0]->[0]->{Content} = $Self->{ConfigObject}->Get('Ticket::Hook');
-                    $CellData->[0]->[0]->{Font}    = 'ProportionalBold';
-                    $CellData->[0]->[1]->{Content} = $Self->{LayoutObject}->{LanguageObject}->Translate('Created');
-                    $CellData->[0]->[1]->{Font}    = 'ProportionalBold';
-                    $CellData->[0]->[2]->{Content} = $Self->{LayoutObject}->{LanguageObject}->Translate('From');
-                    $CellData->[0]->[2]->{Font}    = 'ProportionalBold';
-                    $CellData->[0]->[3]->{Content} = $Self->{LayoutObject}->{LanguageObject}->Translate('Subject');
-                    $CellData->[0]->[3]->{Font}    = 'ProportionalBold';
-                    $CellData->[0]->[4]->{Content} = $Self->{LayoutObject}->{LanguageObject}->Translate('State');
-                    $CellData->[0]->[4]->{Font}    = 'ProportionalBold';
-                    $CellData->[0]->[5]->{Content} = $Self->{LayoutObject}->{LanguageObject}->Translate('Queue');
-                    $CellData->[0]->[5]->{Font}    = 'ProportionalBold';
-                    $CellData->[0]->[6]->{Content} = $Self->{LayoutObject}->{LanguageObject}->Translate('Owner');
-                    $CellData->[0]->[6]->{Font}    = 'ProportionalBold';
-                    $CellData->[0]->[7]->{Content} = $Self->{LayoutObject}->{LanguageObject}->Translate('CustomerID');
-                    $CellData->[0]->[7]->{Font}    = 'ProportionalBold';
+            # start table output
+            $PDFObject->PageNew(
+                %PageParam,
+                FooterRight => $Page . ' 1',
+            );
 
-                    # create the content array
-                    my $CounterRow = 1;
-                    for my $Row (@PDFData) {
-                        my $CounterColumn = 0;
-                        for my $Content ( @{$Row} ) {
-                            $CellData->[$CounterRow]->[$CounterColumn]->{Content} = $Content;
-                            $CounterColumn++;
-                        }
-                        $CounterRow++;
-                    }
-                }
+            $PDFObject->PositionSet(
+                Move => 'relativ',
+                Y    => -6,
+            );
 
-                # otherwise, show 'No ticket data found' message
-                else {
-                    $CellData->[0]->[0]->{Content}
-                        = $Self->{LayoutObject}->{LanguageObject}->Translate('No ticket data found.');
-                }
+            # output title
+            $PDFObject->Text(
+                Text     => $Title,
+                FontSize => 13,
+            );
 
-                # page params
-                my %PageParam;
-                $PageParam{PageOrientation} = 'landscape';
-                $PageParam{MarginTop}       = 30;
-                $PageParam{MarginRight}     = 40;
-                $PageParam{MarginBottom}    = 40;
-                $PageParam{MarginLeft}      = 40;
-                $PageParam{HeaderRight}     = $Title;
-                $PageParam{FooterLeft}      = $Url;
-                $PageParam{HeadlineLeft}    = $Title;
-                $PageParam{HeadlineRight}   = $PrintedBy . ' '
+            $PDFObject->PositionSet(
+                Move => 'relativ',
+                Y    => -6,
+            );
+
+            # output "printed by"
+            $PDFObject->Text(
+                Text => $PrintedBy . ' '
                     . $Self->{UserFirstname} . ' '
                     . $Self->{UserLastname} . ' ('
-                    . $Self->{UserEmail} . ') '
-                    . $Time;
+                    . $Self->{UserEmail} . ')'
+                    . ', ' . $Time,
+                FontSize => 9,
+            );
 
-                # table params
-                my %TableParam;
-                $TableParam{CellData}            = $CellData;
-                $TableParam{Type}                = 'Cut';
-                $TableParam{FontSize}            = 6;
-                $TableParam{Border}              = 0;
-                $TableParam{BackgroundColorEven} = '#AAAAAA';
-                $TableParam{BackgroundColorOdd}  = '#DDDDDD';
-                $TableParam{Padding}             = 1;
-                $TableParam{PaddingTop}          = 3;
-                $TableParam{PaddingBottom}       = 3;
+            $PDFObject->PositionSet(
+                Move => 'relativ',
+                Y    => -14,
+            );
 
-                # create new pdf document
-                $Self->{PDFObject}->DocumentNew(
-                    Title  => $Self->{ConfigObject}->Get('Product') . ': ' . $Title,
-                    Encode => $Self->{LayoutObject}->{UserCharset},
-                );
+            PAGE:
+            for my $PageNumber ( 2 .. $MaxPages ) {
 
-                # start table output
-                $Self->{PDFObject}->PageNew(
-                    %PageParam,
-                    FooterRight => $Page . ' 1',
-                );
-                PAGE:
-                for my $PageNumber ( 2 .. $MaxPages ) {
+                # output table (or a fragment of it)
+                %TableParam = $PDFObject->Table(%TableParam);
 
-                    # output table (or a fragment of it)
-                    %TableParam = $Self->{PDFObject}->Table(%TableParam);
-
-                    # stop output or another page
-                    if ( $TableParam{State} ) {
-                        last PAGE;
-                    }
-                    else {
-                        $Self->{PDFObject}->PageNew(
-                            %PageParam,
-                            FooterRight => $Page . ' ' . $PageNumber,
-                        );
-                    }
+                # stop output or another page
+                if ( $TableParam{State} ) {
+                    last PAGE;
                 }
-
-                # return the pdf document
-                my $Filename = 'ticket_search';
-                my ( $s, $m, $h, $D, $M, $Y ) = $Self->{TimeObject}->SystemTime2Date(
-                    SystemTime => $Self->{TimeObject}->SystemTime(),
-                );
-                $M = sprintf( "%02d", $M );
-                $D = sprintf( "%02d", $D );
-                $h = sprintf( "%02d", $h );
-                $m = sprintf( "%02d", $m );
-                my $PDFString = $Self->{PDFObject}->DocumentOutput();
-                return $Self->{LayoutObject}->Attachment(
-                    Filename    => $Filename . "_" . "$Y-$M-$D" . "_" . "$h-$m.pdf",
-                    ContentType => "application/pdf",
-                    Content     => $PDFString,
-                    Type        => 'inline',
-                );
-            }
-            else {
-                $Output = $Self->{LayoutObject}->PrintHeader( Width => 800 );
-                if ( @ViewableTicketIDs == $Self->{SearchLimit} ) {
-                    $Param{Warning} = $Self->{LayoutObject}->{LanguageObject}->Translate(
-                        "Reached max. count of %s search hits!",
-                        $Self->{SearchLimit},
+                else {
+                    $PDFObject->PageNew(
+                        %PageParam,
+                        FooterRight => $Page . ' ' . $PageNumber,
                     );
                 }
-
-                $Output .= $Self->{LayoutObject}->Output(
-                    TemplateFile => 'AgentTicketSearchResultPrint',
-                    Data         => \%Param,
-                );
-
-                # add footer
-                $Output .= $Self->{LayoutObject}->PrintFooter();
-
-                # return output
-                return $Output;
             }
+
+            # return the pdf document
+            my $Filename = 'ticket_search';
+            my ( $s, $m, $h, $D, $M, $Y ) = $TimeObject->SystemTime2Date(
+                SystemTime => $TimeObject->SystemTime(),
+            );
+            $M = sprintf( "%02d", $M );
+            $D = sprintf( "%02d", $D );
+            $h = sprintf( "%02d", $h );
+            $m = sprintf( "%02d", $m );
+            my $PDFString = $PDFObject->DocumentOutput();
+            return $LayoutObject->Attachment(
+                Filename    => $Filename . "_" . "$Y-$M-$D" . "_" . "$h-$m.pdf",
+                ContentType => "application/pdf",
+                Content     => $PDFString,
+                Type        => 'inline',
+            );
         }
         else {
 
             # redirect to the ticketzoom if result of the search is only one
             if ( scalar @ViewableTicketIDs eq 1 && !$Self->{TakeLastSearch} ) {
-                return $Self->{LayoutObject}->Redirect(
+                return $LayoutObject->Redirect(
                     OP => "Action=AgentTicketZoom;TicketID=$ViewableTicketIDs[0]",
                 );
             }
 
             # store last overview screen
             my $URL = "Action=AgentTicketSearch;Subaction=Search"
-                . ";Profile=" . $Self->{LayoutObject}->LinkEncode( $Self->{Profile} )
-                . ";SortBy=" . $Self->{LayoutObject}->LinkEncode( $Self->{SortBy} )
-                . ";OrderBy=" . $Self->{LayoutObject}->LinkEncode( $Self->{OrderBy} )
+                . ";Profile=" . $LayoutObject->LinkEncode( $Self->{Profile} )
+                . ";SortBy=" . $LayoutObject->LinkEncode( $Self->{SortBy} )
+                . ";OrderBy=" . $LayoutObject->LinkEncode( $Self->{OrderBy} )
                 . ";TakeLastSearch=1;StartHit="
-                . $Self->{LayoutObject}->LinkEncode( $Self->{StartHit} );
+                . $LayoutObject->LinkEncode( $Self->{StartHit} );
 
-            $Self->{SessionObject}->UpdateSessionID(
+            $Kernel::OM->Get('Kernel::System::AuthSession')->UpdateSessionID(
                 SessionID => $Self->{SessionID},
                 Key       => 'LastScreenOverview',
                 Value     => $URL,
             );
 
             # start html page
-            my $Output = $Self->{LayoutObject}->Header();
-            $Output .= $Self->{LayoutObject}->NavigationBar();
+            my $Output = $LayoutObject->Header();
+            $Output .= $LayoutObject->NavigationBar();
 
-            $Self->{Filter} = $Self->{ParamObject}->GetParam( Param => 'Filter' ) || '';
-            $Self->{View}   = $Self->{ParamObject}->GetParam( Param => 'View' )   || '';
+            $Self->{Filter} = $ParamObject->GetParam( Param => 'Filter' ) || '';
+            $Self->{View}   = $ParamObject->GetParam( Param => 'View' )   || '';
 
             # show tickets
             my $LinkPage = 'Filter='
-                . $Self->{LayoutObject}->LinkEncode( $Self->{Filter} )
-                . ';View=' . $Self->{LayoutObject}->LinkEncode( $Self->{View} )
-                . ';SortBy=' . $Self->{LayoutObject}->LinkEncode( $Self->{SortBy} )
-                . ';OrderBy=' . $Self->{LayoutObject}->LinkEncode( $Self->{OrderBy} )
+                . $LayoutObject->LinkEncode( $Self->{Filter} )
+                . ';View=' . $LayoutObject->LinkEncode( $Self->{View} )
+                . ';SortBy=' . $LayoutObject->LinkEncode( $Self->{SortBy} )
+                . ';OrderBy=' . $LayoutObject->LinkEncode( $Self->{OrderBy} )
                 . ';Profile='
-                . $Self->{LayoutObject}->LinkEncode( $Self->{Profile} )
+                . $LayoutObject->LinkEncode( $Self->{Profile} )
                 . ';TakeLastSearch=1;Subaction=Search'
                 . ';';
             my $LinkSort = 'Filter='
-                . $Self->{LayoutObject}->LinkEncode( $Self->{Filter} )
-                . ';View=' . $Self->{LayoutObject}->LinkEncode( $Self->{View} )
+                . $LayoutObject->LinkEncode( $Self->{Filter} )
+                . ';View=' . $LayoutObject->LinkEncode( $Self->{View} )
                 . ';Profile='
-                . $Self->{LayoutObject}->LinkEncode( $Self->{Profile} )
+                . $LayoutObject->LinkEncode( $Self->{Profile} )
                 . ';TakeLastSearch=1;Subaction=Search'
                 . ';';
             my $LinkFilter = 'TakeLastSearch=1;Subaction=Search;Profile='
-                . $Self->{LayoutObject}->LinkEncode( $Self->{Profile} )
+                . $LayoutObject->LinkEncode( $Self->{Profile} )
                 . ';';
             my $LinkBack = 'Subaction=LoadProfile;Profile='
-                . $Self->{LayoutObject}->LinkEncode( $Self->{Profile} )
+                . $LayoutObject->LinkEncode( $Self->{Profile} )
                 . ';TakeLastSearch=1&';
 
-            my $FilterLink = 'SortBy=' . $Self->{LayoutObject}->LinkEncode( $Self->{SortBy} )
-                . ';OrderBy=' . $Self->{LayoutObject}->LinkEncode( $Self->{OrderBy} )
-                . ';View=' . $Self->{LayoutObject}->LinkEncode( $Self->{View} )
+            my $FilterLink = 'SortBy=' . $LayoutObject->LinkEncode( $Self->{SortBy} )
+                . ';OrderBy=' . $LayoutObject->LinkEncode( $Self->{OrderBy} )
+                . ';View=' . $LayoutObject->LinkEncode( $Self->{View} )
                 . ';Profile='
-                . $Self->{LayoutObject}->LinkEncode( $Self->{Profile} )
+                . $LayoutObject->LinkEncode( $Self->{Profile} )
                 . ';TakeLastSearch=1;Subaction=Search'
                 . ';';
-            $Output .= $Self->{LayoutObject}->TicketListShow(
+            $Output .= $LayoutObject->TicketListShow(
                 TicketIDs => \@ViewableTicketIDs,
                 Total     => scalar @ViewableTicketIDs,
 
@@ -1126,23 +1098,23 @@ sub Run {
             );
 
             # build footer
-            $Output .= $Self->{LayoutObject}->Footer();
+            $Output .= $LayoutObject->Footer();
             return $Output;
         }
     }
     elsif ( $Self->{Subaction} eq 'AJAXProfileDelete' ) {
-        my $Profile = $Self->{ParamObject}->GetParam( Param => 'Profile' );
+        my $Profile = $ParamObject->GetParam( Param => 'Profile' );
 
         # remove old profile stuff
-        $Self->{SearchProfileObject}->SearchProfileDelete(
+        $SearchProfileObject->SearchProfileDelete(
             Base      => 'TicketSearch',
             Name      => $Profile,
             UserLogin => $Self->{UserLogin},
         );
-        my $Output = $Self->{LayoutObject}->JSONEncode(
+        my $Output = $LayoutObject->JSONEncode(
             Data => 1,
         );
-        return $Self->{LayoutObject}->Attachment(
+        return $LayoutObject->Attachment(
             NoCache     => 1,
             ContentType => 'text/html',
             Content     => $Output,
@@ -1155,23 +1127,25 @@ sub Run {
             FoundStopWords => [],
         };
 
-        if ( $Self->{TicketObject}->SearchStringStopWordsUsageWarningActive() ) {
-            my @ParamNames = $Self->{ParamObject}->GetParamNames();
+        if ( $Kernel::OM->Get('Kernel::System::Ticket')->SearchStringStopWordsUsageWarningActive() ) {
+            my @ParamNames = $ParamObject->GetParamNames();
             my %SearchStrings;
             SEARCHSTRINGPARAMNAME:
             for my $SearchStringParamName ( sort @ParamNames ) {
                 next SEARCHSTRINGPARAMNAME if $SearchStringParamName !~ m{\ASearchStrings\[(.*)\]\z}sm;
-                $SearchStrings{$1} = $Self->{ParamObject}->GetParam( Param => $SearchStringParamName );
+                $SearchStrings{$1} = $ParamObject->GetParam( Param => $SearchStringParamName );
             }
 
             $StopWordCheckResult->{FoundStopWords}
-                = $Self->{TicketObject}->SearchStringStopWordsFind( SearchStrings => \%SearchStrings );
+                = $Kernel::OM->Get('Kernel::System::Ticket')->SearchStringStopWordsFind(
+                SearchStrings => \%SearchStrings,
+                );
         }
 
-        my $Output = $Self->{LayoutObject}->JSONEncode(
+        my $Output = $LayoutObject->JSONEncode(
             Data => $StopWordCheckResult,
         );
-        return $Self->{LayoutObject}->Attachment(
+        return $LayoutObject->Attachment(
             NoCache     => 1,
             ContentType => 'text/html',
             Content     => $Output,
@@ -1179,12 +1153,12 @@ sub Run {
         );
     }
     elsif ( $Self->{Subaction} eq 'AJAX' ) {
-        my $Profile = $Self->{ParamObject}->GetParam( Param => 'Profile' ) || '';
-        my $EmptySearch = $Self->{ParamObject}->GetParam( Param => 'EmptySearch' );
+        my $Profile = $ParamObject->GetParam( Param => 'Profile' ) || '';
+        my $EmptySearch = $ParamObject->GetParam( Param => 'EmptySearch' );
         if ( !$Profile ) {
             $EmptySearch = 1;
         }
-        my %GetParam = $Self->{SearchProfileObject}->SearchProfileGet(
+        my %GetParam = $SearchProfileObject->SearchProfileGet(
             Base      => 'TicketSearch',
             Name      => $Profile,
             UserLogin => $Self->{UserLogin},
@@ -1198,21 +1172,21 @@ sub Run {
 
         # if no profile is used, set default params of default attributes
         if ( !$Profile ) {
-            if ( $Self->{Config}->{Defaults} ) {
+            if ( $Config->{Defaults} ) {
                 KEY:
-                for my $Key ( sort keys %{ $Self->{Config}->{Defaults} } ) {
-                    next KEY if !$Self->{Config}->{Defaults}->{$Key};
+                for my $Key ( sort keys %{ $Config->{Defaults} } ) {
+                    next KEY if !$Config->{Defaults}->{$Key};
                     next KEY if $Key eq 'DynamicField';
 
                     if ( $Key =~ /^(Ticket|Article)(Create|Change|Close|Escalation)/ ) {
-                        my @Items = split /;/, $Self->{Config}->{Defaults}->{$Key};
+                        my @Items = split /;/, $Config->{Defaults}->{$Key};
                         for my $Item (@Items) {
                             my ( $Key, $Value ) = split /=/, $Item;
                             $GetParam{$Key} = $Value;
                         }
                     }
                     else {
-                        $GetParam{$Key} = $Self->{Config}->{Defaults}->{$Key};
+                        $GetParam{$Key} = $Config->{Defaults}->{$Key};
                     }
                 }
             }
@@ -1262,7 +1236,7 @@ sub Run {
         );
 
         if (
-            $Self->{ConfigObject}->Get('Ticket::StorageModule') eq
+            $ConfigObject->Get('Ticket::StorageModule') eq
             'Kernel::System::Ticket::ArticleStorageDB'
             )
         {
@@ -1311,7 +1285,7 @@ sub Run {
             },
         );
 
-        if ( $Self->{ConfigObject}->Get('Ticket::Type') ) {
+        if ( $ConfigObject->Get('Ticket::Type') ) {
             push @Attributes, (
                 {
                     Key   => 'TypeIDs',
@@ -1320,7 +1294,7 @@ sub Run {
             );
         }
 
-        if ( $Self->{ConfigObject}->Get('Ticket::Service') ) {
+        if ( $ConfigObject->Get('Ticket::Service') ) {
             push @Attributes, (
                 {
                     Key   => 'ServiceIDs',
@@ -1343,7 +1317,7 @@ sub Run {
                 Value => 'Created by',
             },
         );
-        if ( $Self->{ConfigObject}->Get('Ticket::Watcher') ) {
+        if ( $ConfigObject->Get('Ticket::Watcher') ) {
             push @Attributes, (
                 {
                     Key   => 'WatchUserIDs',
@@ -1351,7 +1325,7 @@ sub Run {
                 },
             );
         }
-        if ( $Self->{ConfigObject}->Get('Ticket::Responsible') ) {
+        if ( $ConfigObject->Get('Ticket::Responsible') ) {
             push @Attributes, (
                 {
                     Key   => 'ResponsibleIDs',
@@ -1417,7 +1391,7 @@ sub Run {
             },
         );
 
-        if ( $Self->{ConfigObject}->Get('Ticket::ArchiveSystem') ) {
+        if ( $ConfigObject->Get('Ticket::ArchiveSystem') ) {
             push @Attributes, (
                 {
                     Key   => 'SearchInArchive',
@@ -1432,7 +1406,7 @@ sub Run {
         # create dynamic fields search options for attribute select
         # cycle trough the activated Dynamic Fields for this screen
         DYNAMICFIELD:
-        for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
+        for my $DynamicFieldConfig ( @{$DynamicField} ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
             next DYNAMICFIELD if !$DynamicFieldConfig->{Name};
             next DYNAMICFIELD if $DynamicFieldConfig->{Name} eq '';
@@ -1450,14 +1424,14 @@ sub Run {
             }
 
             # get search field preferences
-            my $SearchFieldPreferences = $Self->{BackendObject}->SearchFieldPreferences(
+            my $SearchFieldPreferences = $BackendObject->SearchFieldPreferences(
                 DynamicFieldConfig => $DynamicFieldConfig,
             );
 
             next DYNAMICFIELD if !IsArrayRefWithData($SearchFieldPreferences);
 
             # translate the dynamic field label
-            my $TranslatedDynamicFieldLabel = $Self->{LayoutObject}->{LanguageObject}->Translate(
+            my $TranslatedDynamicFieldLabel = $LayoutObject->{LanguageObject}->Translate(
                 $DynamicFieldConfig->{Label},
             );
 
@@ -1465,7 +1439,7 @@ sub Run {
             for my $Preference ( @{$SearchFieldPreferences} ) {
 
                 # translate the suffix
-                my $TranslatedSuffix = $Self->{LayoutObject}->{LanguageObject}->Translate(
+                my $TranslatedSuffix = $LayoutObject->{LanguageObject}->Translate(
                     $Preference->{LabelSuffix},
                 ) || '';
 
@@ -1489,12 +1463,12 @@ sub Run {
 
         # cycle trough the activated Dynamic Fields for this screen
         DYNAMICFIELD:
-        for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
+        for my $DynamicFieldConfig ( @{$DynamicField} ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
             my $PossibleValuesFilter;
 
-            my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
+            my $IsACLReducible = $BackendObject->HasBehavior(
                 DynamicFieldConfig => $DynamicFieldConfig,
                 Behavior           => 'IsACLReducible',
             );
@@ -1502,7 +1476,7 @@ sub Run {
             if ($IsACLReducible) {
 
                 # get PossibleValues
-                my $PossibleValues = $Self->{BackendObject}->PossibleValuesGet(
+                my $PossibleValues = $BackendObject->PossibleValuesGet(
                     DynamicFieldConfig => $DynamicFieldConfig,
                 );
 
@@ -1510,7 +1484,7 @@ sub Run {
                 if ( IsHashRefWithData($PossibleValues) ) {
 
                     # get historical values from database
-                    my $HistoricalValues = $Self->{BackendObject}->HistoricalValuesGet(
+                    my $HistoricalValues = $BackendObject->HistoricalValuesGet(
                         DynamicFieldConfig => $DynamicFieldConfig,
                     );
 
@@ -1529,8 +1503,11 @@ sub Run {
                     my %AclData = %{$Data};
                     @AclData{ keys %AclData } = keys %AclData;
 
+                    # get ticket object
+                    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
                     # set possible values filter from ACLs
-                    my $ACL = $Self->{TicketObject}->TicketAcl(
+                    my $ACL = $TicketObject->TicketAcl(
                         Action        => $Self->{Action},
                         ReturnType    => 'Ticket',
                         ReturnSubType => 'DynamicField_' . $DynamicFieldConfig->{Name},
@@ -1538,7 +1515,7 @@ sub Run {
                         UserID        => $Self->{UserID},
                     );
                     if ($ACL) {
-                        my %Filter = $Self->{TicketObject}->TicketAclData();
+                        my %Filter = $TicketObject->TicketAclData();
 
                         # convert Filer key => key back to key => value using map
                         %{$PossibleValuesFilter} = map { $_ => $Data->{$_} } keys %Filter;
@@ -1547,7 +1524,7 @@ sub Run {
             }
 
             # get search field preferences
-            my $SearchFieldPreferences = $Self->{BackendObject}->SearchFieldPreferences(
+            my $SearchFieldPreferences = $BackendObject->SearchFieldPreferences(
                 DynamicFieldConfig => $DynamicFieldConfig,
             );
 
@@ -1558,37 +1535,39 @@ sub Run {
 
                 # get field html
                 $DynamicFieldHTML{ $DynamicFieldConfig->{Name} . $Preference->{Type} }
-                    = $Self->{BackendObject}->SearchFieldRender(
+                    = $BackendObject->SearchFieldRender(
                     DynamicFieldConfig   => $DynamicFieldConfig,
                     Profile              => \%GetParam,
                     PossibleValuesFilter => $PossibleValuesFilter,
                     DefaultValue =>
-                        $Self->{Config}->{Defaults}->{DynamicField}
+                        $Config->{Defaults}->{DynamicField}
                         ->{ $DynamicFieldConfig->{Name} },
-                    LayoutObject => $Self->{LayoutObject},
+                    LayoutObject => $LayoutObject,
                     Type         => $Preference->{Type},
                     );
             }
         }
 
-        $Param{AttributesStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{AttributesStrg} = $LayoutObject->BuildSelection(
             Data     => \@Attributes,
             Name     => 'Attribute',
             Multiple => 0,
+            Class    => 'Modernize',
         );
-        $Param{AttributesOrigStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{AttributesOrigStrg} = $LayoutObject->BuildSelection(
             Data     => \@Attributes,
             Name     => 'AttributeOrig',
             Multiple => 0,
+            Class    => 'Modernize',
         );
 
         # get all users of own groups
-        my %AllUsers = $Self->{UserObject}->UserList(
+        my %AllUsers = $UserObject->UserList(
             Type  => 'Long',
             Valid => 0,
         );
-        if ( !$Self->{ConfigObject}->Get('Ticket::ChangeOwnerToEveryone') ) {
-            my %Involved = $Self->{GroupObject}->GroupMemberInvolvedList(
+        if ( !$ConfigObject->Get('Ticket::ChangeOwnerToEveryone') ) {
+            my %Involved = $Kernel::OM->Get('Kernel::System::Group')->PermissionUserInvolvedGet(
                 UserID => $Self->{UserID},
                 Type   => 'ro',
             );
@@ -1603,7 +1582,7 @@ sub Run {
         my %UsersInvalid;
 
         # get valid users of own groups
-        my %ValidUsers = $Self->{UserObject}->UserList(
+        my %ValidUsers = $UserObject->UserList(
             Type  => 'Long',
             Valid => 1,
         );
@@ -1631,7 +1610,7 @@ sub Run {
             };
             push @ShownUsers, {
                 Key      => '-',
-                Value    => $Self->{LayoutObject}->{LanguageObject}->Translate('Invalid Users'),
+                Value    => $LayoutObject->{LanguageObject}->Translate('Invalid Users'),
                 Disabled => 1,
             };
             push @ShownUsers, {
@@ -1647,47 +1626,51 @@ sub Run {
             }
         }
 
-        $Param{UserStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{UserStrg} = $LayoutObject->BuildSelection(
             Data       => \@ShownUsers,
             Name       => 'OwnerIDs',
             Multiple   => 1,
             Size       => 5,
             SelectedID => $GetParam{OwnerIDs},
+            Class      => 'Modernize',
         );
-        $Param{CreatedUserStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{CreatedUserStrg} = $LayoutObject->BuildSelection(
             Data       => \@ShownUsers,
             Name       => 'CreatedUserIDs',
             Multiple   => 1,
             Size       => 5,
             SelectedID => $GetParam{CreatedUserIDs},
+            Class      => 'Modernize',
         );
-        if ( $Self->{ConfigObject}->Get('Ticket::Watcher') ) {
-            $Param{WatchUserStrg} = $Self->{LayoutObject}->BuildSelection(
+        if ( $ConfigObject->Get('Ticket::Watcher') ) {
+            $Param{WatchUserStrg} = $LayoutObject->BuildSelection(
                 Data       => \@ShownUsers,
                 Name       => 'WatchUserIDs',
                 Multiple   => 1,
                 Size       => 5,
                 SelectedID => $GetParam{WatchUserIDs},
+                Class      => 'Modernize',
             );
         }
-        if ( $Self->{ConfigObject}->Get('Ticket::Responsible') ) {
-            $Param{ResponsibleStrg} = $Self->{LayoutObject}->BuildSelection(
+        if ( $ConfigObject->Get('Ticket::Responsible') ) {
+            $Param{ResponsibleStrg} = $LayoutObject->BuildSelection(
                 Data       => \@ShownUsers,
                 Name       => 'ResponsibleIDs',
                 Multiple   => 1,
                 Size       => 5,
                 SelectedID => $GetParam{ResponsibleIDs},
+                Class      => 'Modernize',
             );
         }
 
         # build service string
-        if ( $Self->{ConfigObject}->Get('Ticket::Service') ) {
+        if ( $ConfigObject->Get('Ticket::Service') ) {
 
-            my %Service = $Self->{ServiceObject}->ServiceList(
+            my %Service = $Kernel::OM->Get('Kernel::System::Service')->ServiceList(
                 UserID       => $Self->{UserID},
-                KeepChildren => $Self->{ConfigObject}->Get('Ticket::Service::KeepChildren'),
+                KeepChildren => $ConfigObject->Get('Ticket::Service::KeepChildren'),
             );
-            $Param{ServicesStrg} = $Self->{LayoutObject}->BuildSelection(
+            $Param{ServicesStrg} = $LayoutObject->BuildSelection(
                 Data        => \%Service,
                 Name        => 'ServiceIDs',
                 SelectedID  => $GetParam{ServiceIDs},
@@ -1697,11 +1680,12 @@ sub Run {
                 Multiple    => 1,
                 Translation => 0,
                 Max         => 200,
+                Class       => 'Modernize',
             );
-            my %SLA = $Self->{SLAObject}->SLAList(
+            my %SLA = $Kernel::OM->Get('Kernel::System::SLA')->SLAList(
                 UserID => $Self->{UserID},
             );
-            $Param{SLAsStrg} = $Self->{LayoutObject}->BuildSelection(
+            $Param{SLAsStrg} = $LayoutObject->BuildSelection(
                 Data        => \%SLA,
                 Name        => 'SLAIDs',
                 SelectedID  => $GetParam{SLAIDs},
@@ -1710,10 +1694,11 @@ sub Run {
                 Multiple    => 1,
                 Translation => 0,
                 Max         => 200,
+                Class       => 'Modernize',
             );
         }
 
-        $Param{ResultFormStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{ResultFormStrg} = $LayoutObject->BuildSelection(
             Data => {
                 Normal => 'Normal',
                 Print  => 'Print',
@@ -1722,11 +1707,12 @@ sub Run {
             },
             Name       => 'ResultForm',
             SelectedID => $GetParam{ResultForm} || 'Normal',
+            Class      => 'Modernize',
         );
 
-        if ( $Self->{ConfigObject}->Get('Ticket::ArchiveSystem') ) {
+        if ( $ConfigObject->Get('Ticket::ArchiveSystem') ) {
 
-            $Param{SearchInArchiveStrg} = $Self->{LayoutObject}->BuildSelection(
+            $Param{SearchInArchiveStrg} = $LayoutObject->BuildSelection(
                 Data => {
                     ArchivedTickets    => 'Archived tickets',
                     NotArchivedTickets => 'Unarchived tickets',
@@ -1734,10 +1720,11 @@ sub Run {
                 },
                 Name       => 'SearchInArchive',
                 SelectedID => $GetParam{SearchInArchive} || 'NotArchivedTickets',
+                Class      => 'Modernize',
             );
         }
 
-        my %Profiles = $Self->{SearchProfileObject}->SearchProfileList(
+        my %Profiles = $SearchProfileObject->SearchProfileList(
             Base      => 'TicketSearch',
             UserLogin => $Self->{UserLogin},
         );
@@ -1749,16 +1736,18 @@ sub Run {
         else {
             $Profiles{'last-search'} = '-';
         }
-        $Param{ProfilesStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{ProfilesStrg} = $LayoutObject->BuildSelection(
             Data       => \%Profiles,
             Name       => 'Profile',
             ID         => 'SearchProfile',
             SelectedID => $Profile,
+
+            # Do not modernize this field as this causes problems with the automatic focussing of the first element.
         );
 
-        $Param{StatesStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{StatesStrg} = $LayoutObject->BuildSelection(
             Data => {
-                $Self->{StateObject}->StateList(
+                $Kernel::OM->Get('Kernel::System::State')->StateList(
                     UserID => $Self->{UserID},
                     Action => $Self->{Action},
                 ),
@@ -1767,12 +1756,13 @@ sub Run {
             Multiple   => 1,
             Size       => 5,
             SelectedID => $GetParam{StateIDs},
+            Class      => 'Modernize',
         );
-        my %AllQueues = $Self->{QueueObject}->GetAllQueues(
+        my %AllQueues = $Kernel::OM->Get('Kernel::System::Queue')->GetAllQueues(
             UserID => $Self->{UserID},
             Type   => 'ro',
         );
-        $Param{QueuesStrg} = $Self->{LayoutObject}->AgentQueueListOption(
+        $Param{QueuesStrg} = $LayoutObject->AgentQueueListOption(
             Data               => \%AllQueues,
             Size               => 5,
             Multiple           => 1,
@@ -1780,8 +1770,9 @@ sub Run {
             TreeView           => $TreeView,
             SelectedIDRefArray => $GetParam{QueueIDs},
             OnChangeSubmit     => 0,
+            Class              => 'Modernize',
         );
-        $Param{CreatedQueuesStrg} = $Self->{LayoutObject}->AgentQueueListOption(
+        $Param{CreatedQueuesStrg} = $LayoutObject->AgentQueueListOption(
             Data               => \%AllQueues,
             Size               => 5,
             Multiple           => 1,
@@ -1789,10 +1780,11 @@ sub Run {
             TreeView           => $TreeView,
             SelectedIDRefArray => $GetParam{CreatedQueueIDs},
             OnChangeSubmit     => 0,
+            Class              => 'Modernize',
         );
-        $Param{PrioritiesStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{PrioritiesStrg} = $LayoutObject->BuildSelection(
             Data => {
-                $Self->{PriorityObject}->PriorityList(
+                $Kernel::OM->Get('Kernel::System::Priority')->PriorityList(
                     UserID => $Self->{UserID},
                     Action => $Self->{Action},
                 ),
@@ -1801,10 +1793,11 @@ sub Run {
             Multiple   => 1,
             Size       => 5,
             SelectedID => $GetParam{PriorityIDs},
+            Class      => 'Modernize',
         );
-        $Param{LocksStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{LocksStrg} = $LayoutObject->BuildSelection(
             Data => {
-                $Self->{LockObject}->LockList(
+                $Kernel::OM->Get('Kernel::System::Lock')->LockList(
                     UserID => $Self->{UserID},
                     Action => $Self->{Action},
                 ),
@@ -1813,14 +1806,15 @@ sub Run {
             Multiple   => 1,
             Size       => 5,
             SelectedID => $GetParam{LockIDs},
+            Class      => 'Modernize',
         );
 
-        $Param{ArticleCreateTimePoint} = $Self->{LayoutObject}->BuildSelection(
+        $Param{ArticleCreateTimePoint} = $LayoutObject->BuildSelection(
             Data       => [ 1 .. 59 ],
             Name       => 'ArticleCreateTimePoint',
             SelectedID => $GetParam{ArticleCreateTimePoint},
         );
-        $Param{ArticleCreateTimePointStart} = $Self->{LayoutObject}->BuildSelection(
+        $Param{ArticleCreateTimePointStart} = $LayoutObject->BuildSelection(
             Data => {
                 'Last'   => 'within the last ...',
                 'Before' => 'more than ... ago',
@@ -1828,7 +1822,7 @@ sub Run {
             Name       => 'ArticleCreateTimePointStart',
             SelectedID => $GetParam{ArticleCreateTimePointStart} || 'Last',
         );
-        $Param{ArticleCreateTimePointFormat} = $Self->{LayoutObject}->BuildSelection(
+        $Param{ArticleCreateTimePointFormat} = $LayoutObject->BuildSelection(
             Data => {
                 minute => 'minute(s)',
                 hour   => 'hour(s)',
@@ -1840,23 +1834,23 @@ sub Run {
             Name       => 'ArticleCreateTimePointFormat',
             SelectedID => $GetParam{ArticleCreateTimePointFormat},
         );
-        $Param{ArticleCreateTimeStart} = $Self->{LayoutObject}->BuildDateSelection(
+        $Param{ArticleCreateTimeStart} = $LayoutObject->BuildDateSelection(
             %GetParam,
             Prefix   => 'ArticleCreateTimeStart',
             Format   => 'DateInputFormat',
             DiffTime => -( ( 60 * 60 * 24 ) * 30 ),
         );
-        $Param{ArticleCreateTimeStop} = $Self->{LayoutObject}->BuildDateSelection(
+        $Param{ArticleCreateTimeStop} = $LayoutObject->BuildDateSelection(
             %GetParam,
             Prefix => 'ArticleCreateTimeStop',
             Format => 'DateInputFormat',
         );
-        $Param{TicketCreateTimePoint} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TicketCreateTimePoint} = $LayoutObject->BuildSelection(
             Data       => [ 1 .. 59 ],
             Name       => 'TicketCreateTimePoint',
             SelectedID => $GetParam{TicketCreateTimePoint},
         );
-        $Param{TicketCreateTimePointStart} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TicketCreateTimePointStart} = $LayoutObject->BuildSelection(
             Data => {
                 'Last'   => 'within the last ...',
                 'Before' => 'more than ... ago',
@@ -1864,7 +1858,7 @@ sub Run {
             Name       => 'TicketCreateTimePointStart',
             SelectedID => $GetParam{TicketCreateTimePointStart} || 'Last',
         );
-        $Param{TicketCreateTimePointFormat} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TicketCreateTimePointFormat} = $LayoutObject->BuildSelection(
             Data => {
                 minute => 'minute(s)',
                 hour   => 'hour(s)',
@@ -1876,24 +1870,24 @@ sub Run {
             Name       => 'TicketCreateTimePointFormat',
             SelectedID => $GetParam{TicketCreateTimePointFormat},
         );
-        $Param{TicketCreateTimeStart} = $Self->{LayoutObject}->BuildDateSelection(
+        $Param{TicketCreateTimeStart} = $LayoutObject->BuildDateSelection(
             %GetParam,
             Prefix   => 'TicketCreateTimeStart',
             Format   => 'DateInputFormat',
             DiffTime => -( ( 60 * 60 * 24 ) * 30 ),
         );
-        $Param{TicketCreateTimeStop} = $Self->{LayoutObject}->BuildDateSelection(
+        $Param{TicketCreateTimeStop} = $LayoutObject->BuildDateSelection(
             %GetParam,
             Prefix => 'TicketCreateTimeStop',
             Format => 'DateInputFormat',
         );
 
-        $Param{TicketChangeTimePoint} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TicketChangeTimePoint} = $LayoutObject->BuildSelection(
             Data       => [ 1 .. 59 ],
             Name       => 'TicketChangeTimePoint',
             SelectedID => $GetParam{TicketChangeTimePoint},
         );
-        $Param{TicketChangeTimePointStart} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TicketChangeTimePointStart} = $LayoutObject->BuildSelection(
             Data => {
                 'Last'   => 'within the last ...',
                 'Before' => 'more than ... ago',
@@ -1901,7 +1895,7 @@ sub Run {
             Name       => 'TicketChangeTimePointStart',
             SelectedID => $GetParam{TicketChangeTimePointStart} || 'Last',
         );
-        $Param{TicketChangeTimePointFormat} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TicketChangeTimePointFormat} = $LayoutObject->BuildSelection(
             Data => {
                 minute => 'minute(s)',
                 hour   => 'hour(s)',
@@ -1913,24 +1907,24 @@ sub Run {
             Name       => 'TicketChangeTimePointFormat',
             SelectedID => $GetParam{TicketChangeTimePointFormat},
         );
-        $Param{TicketChangeTimeStart} = $Self->{LayoutObject}->BuildDateSelection(
+        $Param{TicketChangeTimeStart} = $LayoutObject->BuildDateSelection(
             %GetParam,
             Prefix   => 'TicketChangeTimeStart',
             Format   => 'DateInputFormat',
             DiffTime => -( ( 60 * 60 * 24 ) * 30 ),
         );
-        $Param{TicketChangeTimeStop} = $Self->{LayoutObject}->BuildDateSelection(
+        $Param{TicketChangeTimeStop} = $LayoutObject->BuildDateSelection(
             %GetParam,
             Prefix => 'TicketChangeTimeStop',
             Format => 'DateInputFormat',
         );
 
-        $Param{TicketCloseTimePoint} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TicketCloseTimePoint} = $LayoutObject->BuildSelection(
             Data       => [ 1 .. 59 ],
             Name       => 'TicketCloseTimePoint',
             SelectedID => $GetParam{TicketCloseTimePoint},
         );
-        $Param{TicketCloseTimePointStart} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TicketCloseTimePointStart} = $LayoutObject->BuildSelection(
             Data => {
                 'Last'   => 'within the last ...',
                 'Before' => 'more than ... ago',
@@ -1938,7 +1932,7 @@ sub Run {
             Name       => 'TicketCloseTimePointStart',
             SelectedID => $GetParam{TicketCloseTimePointStart} || 'Last',
         );
-        $Param{TicketCloseTimePointFormat} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TicketCloseTimePointFormat} = $LayoutObject->BuildSelection(
             Data => {
                 minute => 'minute(s)',
                 hour   => 'hour(s)',
@@ -1950,24 +1944,24 @@ sub Run {
             Name       => 'TicketCloseTimePointFormat',
             SelectedID => $GetParam{TicketCloseTimePointFormat},
         );
-        $Param{TicketCloseTimeStart} = $Self->{LayoutObject}->BuildDateSelection(
+        $Param{TicketCloseTimeStart} = $LayoutObject->BuildDateSelection(
             %GetParam,
             Prefix   => 'TicketCloseTimeStart',
             Format   => 'DateInputFormat',
             DiffTime => -( ( 60 * 60 * 24 ) * 30 ),
         );
-        $Param{TicketCloseTimeStop} = $Self->{LayoutObject}->BuildDateSelection(
+        $Param{TicketCloseTimeStop} = $LayoutObject->BuildDateSelection(
             %GetParam,
             Prefix => 'TicketCloseTimeStop',
             Format => 'DateInputFormat',
         );
 
-        $Param{TicketLastChangeTimePoint} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TicketLastChangeTimePoint} = $LayoutObject->BuildSelection(
             Data       => [ 1 .. 59 ],
             Name       => 'TicketLastChangeTimePoint',
             SelectedID => $GetParam{TicketLastChangeTimePoint},
         );
-        $Param{TicketLastChangeTimePointStart} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TicketLastChangeTimePointStart} = $LayoutObject->BuildSelection(
             Data => {
                 'Last'   => 'within the last ...',
                 'Before' => 'more than ... ago',
@@ -1975,7 +1969,7 @@ sub Run {
             Name       => 'TicketLastChangeTimePointStart',
             SelectedID => $GetParam{TicketLastChangeTimePointStart} || 'Last',
         );
-        $Param{TicketLastChangeTimePointFormat} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TicketLastChangeTimePointFormat} = $LayoutObject->BuildSelection(
             Data => {
                 minute => 'minute(s)',
                 hour   => 'hour(s)',
@@ -1987,24 +1981,24 @@ sub Run {
             Name       => 'TicketLastChangeTimePointFormat',
             SelectedID => $GetParam{TicketLastChangeTimePointFormat},
         );
-        $Param{TicketLastChangeTimeStart} = $Self->{LayoutObject}->BuildDateSelection(
+        $Param{TicketLastChangeTimeStart} = $LayoutObject->BuildDateSelection(
             %GetParam,
             Prefix   => 'TicketLastChangeTimeStart',
             Format   => 'DateInputFormat',
             DiffTime => -( ( 60 * 60 * 24 ) * 30 ),
         );
-        $Param{TicketLastChangeTimeStop} = $Self->{LayoutObject}->BuildDateSelection(
+        $Param{TicketLastChangeTimeStop} = $LayoutObject->BuildDateSelection(
             %GetParam,
             Prefix => 'TicketLastChangeTimeStop',
             Format => 'DateInputFormat',
         );
 
-        $Param{TicketEscalationTimePoint} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TicketEscalationTimePoint} = $LayoutObject->BuildSelection(
             Data       => [ 1 .. 59 ],
             Name       => 'TicketEscalationTimePoint',
             SelectedID => $GetParam{TicketEscalationTimePoint},
         );
-        $Param{TicketEscalationTimePointStart} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TicketEscalationTimePointStart} = $LayoutObject->BuildSelection(
             Data => {
                 'Last'   => 'within the last ...',
                 'Next'   => 'within the next ...',
@@ -2013,7 +2007,7 @@ sub Run {
             Name       => 'TicketEscalationTimePointStart',
             SelectedID => $GetParam{TicketEscalationTimePointStart} || 'Last',
         );
-        $Param{TicketEscalationTimePointFormat} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TicketEscalationTimePointFormat} = $LayoutObject->BuildSelection(
             Data => {
                 minute => 'minute(s)',
                 hour   => 'hour(s)',
@@ -2025,13 +2019,13 @@ sub Run {
             Name       => 'TicketEscalationTimePointFormat',
             SelectedID => $GetParam{TicketEscalationTimePointFormat},
         );
-        $Param{TicketEscalationTimeStart} = $Self->{LayoutObject}->BuildDateSelection(
+        $Param{TicketEscalationTimeStart} = $LayoutObject->BuildDateSelection(
             %GetParam,
             Prefix   => 'TicketEscalationTimeStart',
             Format   => 'DateInputFormat',
             DiffTime => -( ( 60 * 60 * 24 ) * 30 ),
         );
-        $Param{TicketEscalationTimeStop} = $Self->{LayoutObject}->BuildDateSelection(
+        $Param{TicketEscalationTimeStop} = $LayoutObject->BuildDateSelection(
             %GetParam,
             Prefix => 'TicketEscalationTimeStop',
             Format => 'DateInputFormat',
@@ -2049,11 +2043,11 @@ sub Run {
         }
 
         # build type string
-        if ( $Self->{ConfigObject}->Get('Ticket::Type') ) {
-            my %Type = $Self->{TypeObject}->TypeList(
+        if ( $ConfigObject->Get('Ticket::Type') ) {
+            my %Type = $Kernel::OM->Get('Kernel::System::Type')->TypeList(
                 UserID => $Self->{UserID},
             );
-            $Param{TypesStrg} = $Self->{LayoutObject}->BuildSelection(
+            $Param{TypesStrg} = $LayoutObject->BuildSelection(
                 Data        => \%Type,
                 Name        => 'TypeIDs',
                 SelectedID  => $GetParam{TypeIDs},
@@ -2061,11 +2055,12 @@ sub Run {
                 Size        => 3,
                 Multiple    => 1,
                 Translation => 0,
+                Class       => 'Modernize',
             );
         }
 
         # html search mask output
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'SearchAJAX',
             Data => {
                 %Param,
@@ -2077,11 +2072,11 @@ sub Run {
         # output Dynamic fields blocks
         # cycle trough the activated Dynamic Fields for this screen
         DYNAMICFIELD:
-        for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
+        for my $DynamicFieldConfig ( @{$DynamicField} ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
             # get search field preferences
-            my $SearchFieldPreferences = $Self->{BackendObject}->SearchFieldPreferences(
+            my $SearchFieldPreferences = $BackendObject->SearchFieldPreferences(
                 DynamicFieldConfig => $DynamicFieldConfig,
             );
 
@@ -2095,7 +2090,7 @@ sub Run {
                     $DynamicFieldHTML{ $DynamicFieldConfig->{Name} . $Preference->{Type} }
                 );
 
-                $Self->{LayoutObject}->Block(
+                $LayoutObject->Block(
                     Name => 'DynamicField',
                     Data => {
                         Label =>
@@ -2170,7 +2165,7 @@ sub Run {
                 # show attribute
                 next ITEM if $AlreadyShown{$Key};
                 $AlreadyShown{$Key} = 1;
-                $Self->{LayoutObject}->Block(
+                $LayoutObject->Block(
                     Name => 'SearchAJAXShow',
                     Data => {
                         Attribute => $Key,
@@ -2183,10 +2178,10 @@ sub Run {
         else {
 
             # Merge regular show/hide settings and the settings for the dynamic fields
-            my %Defaults = %{ $Self->{Config}->{Defaults} || {} };
-            for my $DynamicField ( sort keys %{ $Self->{Config}->{DynamicField} || {} } ) {
-                if ( $Self->{Config}->{DynamicField}->{$DynamicField} == 2 ) {
-                    $Defaults{"Search_DynamicField_$DynamicField"} = 1;
+            my %Defaults = %{ $Config->{Defaults} || {} };
+            for my $DynamicFields ( sort keys %{ $Config->{DynamicField} || {} } ) {
+                if ( $Config->{DynamicField}->{$DynamicFields} == 2 ) {
+                    $Defaults{"Search_DynamicField_$DynamicFields"} = 1;
                 }
             }
 
@@ -2209,7 +2204,7 @@ sub Run {
                     next KEY if $AlreadyShown{$Key};
                     $AlreadyShown{$Key} = 1;
 
-                    $Self->{LayoutObject}->Block(
+                    $LayoutObject->Block(
                         Name => 'SearchAJAXShow',
                         Data => {
                             Attribute => $Key,
@@ -2220,7 +2215,7 @@ sub Run {
 
             # If no attribute is shown, show fulltext search.
             if ( !keys %AlreadyShown ) {
-                $Self->{LayoutObject}->Block(
+                $LayoutObject->Block(
                     Name => 'SearchAJAXShow',
                     Data => {
                         Attribute => 'Fulltext',
@@ -2229,31 +2224,31 @@ sub Run {
             }
         }
 
-        my $Output .= $Self->{LayoutObject}->Output(
+        my $Output .= $LayoutObject->Output(
             TemplateFile => 'AgentTicketSearch',
             Data         => \%Param,
         );
-        return $Self->{LayoutObject}->Attachment(
+        return $LayoutObject->Attachment(
             NoCache     => 1,
             ContentType => 'text/html',
-            Charset     => $Self->{LayoutObject}->{UserCharset},
+            Charset     => $LayoutObject->{UserCharset},
             Content     => $Output,
             Type        => 'inline',
         );
     }
 
     # show default search screen
-    $Output = $Self->{LayoutObject}->Header();
-    $Output .= $Self->{LayoutObject}->NavigationBar();
-    $Self->{LayoutObject}->Block(
+    $Output = $LayoutObject->Header();
+    $Output .= $LayoutObject->NavigationBar();
+    $LayoutObject->Block(
         Name => 'Search',
         Data => \%Param,
     );
-    $Output .= $Self->{LayoutObject}->Output(
+    $Output .= $LayoutObject->Output(
         TemplateFile => 'AgentTicketSearch',
         Data         => \%Param,
     );
-    $Output .= $Self->{LayoutObject}->Footer();
+    $Output .= $LayoutObject->Footer();
     return $Output;
 }
 
