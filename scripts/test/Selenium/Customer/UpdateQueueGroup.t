@@ -1,5 +1,4 @@
 # --
-# UpdateQueueGroup.t - UpdateQueueGroup tests
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -16,23 +15,16 @@ use vars (qw($Self));
 # Update 'To' in CustomerTicketMessage on Add/Update Group (Bug#10988).
 
 # get selenium object
-$Kernel::OM->ObjectParamAdd(
-    'Kernel::System::UnitTest::Selenium' => {
-        Verbose => 1,
-    },
-);
 my $Selenium = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
 $Selenium->RunTest(
     sub {
 
-        # get helper object
         $Kernel::OM->ObjectParamAdd(
             'Kernel::System::UnitTest::Helper' => {
-                RestoreSystemConfiguration => 0,
-                }
+                RestoreSystemConfiguration => 1,
+            },
         );
-
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
         # create and login test customer

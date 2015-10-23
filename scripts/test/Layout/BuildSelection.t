@@ -1,5 +1,4 @@
 # --
-# scripts/test/Layout/BuildSelection.t - layout BuildSelection() testscript
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -170,7 +169,7 @@ my @Tests = (
             OptionTitle    => 0,
         },
         Response =>
-            q{<select id="Select1ID" name="Select1" onchange="Core.AJAX.FormUpdate($('#Select1ID'), 'test', 'Select1', ['1', '2']);">
+            q{<select id="Select1ID" name="Select1" onchange="Core.AJAX.FormUpdate($('#Select1ID'), 'test', 'Select1', ['1', '2']);" data-tree="true">
   <option value="1">Object1</option>
 </select> <a href="#" title="Baumauswahl anzeigen" class="ShowTreeSelection"><span>Baumauswahl anzeigen</span><i class="fa fa-sitemap"></i></a>},
         Success      => 1,
@@ -223,7 +222,7 @@ my @Tests = (
             OptionTitle    => 0,
         },
         Response =>
-            '<select id="Select1ID" name="Select1">
+            '<select id="Select1ID" name="Select1" data-tree="true">
   <option value="1">Object1</option>
   <option value="2" selected="selected">&nbsp;&nbsp;AttributeA</option>
   <option value="3">&nbsp;&nbsp;&nbsp;&nbsp;Value1</option>
@@ -460,7 +459,7 @@ my @Tests = (
             OptionTitle    => 0,
         },
         Response =>
-            '<select id="Select1ID" name="Select1">
+            '<select id="Select1ID" name="Select1" data-tree="true">
   <option value="1">Object1</option>
   <option value="-" disabled="disabled">&nbsp;&nbsp;AttributeA</option>
   <option value="3">&nbsp;&nbsp;&nbsp;&nbsp;Value1</option>
@@ -572,7 +571,7 @@ my @Tests = (
             OptionTitle    => 0,
         },
         Response =>
-            '<select id="Select1ID" name="Select1">
+            '<select id="Select1ID" name="Select1" data-tree="true">
   <option value="1">Object1</option>
   <option value="2" selected="selected">&nbsp;&nbsp;AttributeA</option>
   <option value="3">&nbsp;&nbsp;&nbsp;&nbsp;Value1</option>
@@ -672,7 +671,7 @@ my @Tests = (
             OptionTitle    => 0,
         },
         Response =>
-            '<select id="Select1ID" name="Select1">
+            '<select id="Select1ID" name="Select1" data-tree="true">
   <option value="Object1">Object1</option>
   <option value="Object1::AttributeA" selected="selected">&nbsp;&nbsp;AttributeA</option>
   <option value="Object1::AttributeA::Value1">&nbsp;&nbsp;&nbsp;&nbsp;Value1</option>
@@ -785,7 +784,7 @@ my @Tests = (
             OptionTitle    => 0,
         },
         Response =>
-            '<select id="Select1ID" name="Select1">
+            '<select id="Select1ID" name="Select1" data-tree="true">
   <option value="Object1">Object1</option>
   <option value="-" disabled="disabled">&nbsp;&nbsp;AttributeA</option>
   <option value="Object1::AttributeA::Value1">&nbsp;&nbsp;&nbsp;&nbsp;Value1</option>
@@ -898,7 +897,7 @@ my @Tests = (
             OptionTitle    => 0,
         },
         Response =>
-            '<select autocomplete="off" id="Select1ID" name="Select1" onchange="onchangeJS" onclick="onclickJS" title="Title&quot;\'&lt;&gt;">
+            '<select autocomplete="off" id="Select1ID" name="Select1" onchange="onchangeJS" onclick="onclickJS" title="Title&quot;\'&lt;&gt;" data-tree="true">
   <option value="Object1">Object1</option>
   <option value="Object1::AttributeA" selected="selected">&nbsp;&nbsp;AttributeA</option>
   <option value="Object1::AttributeA::Value1">&nbsp;&nbsp;&nbsp;&nbsp;Value1</option>
@@ -1253,7 +1252,7 @@ my @Tests = (
             OptionTitle    => 0,
         },
         Response =>
-            '<select id="Select1ID" name="Select1">
+            '<select id="Select1ID" name="Select1" data-tree="true">
   <option value="1">Object1</option>
   <option value="2" selected="selected">&nbsp;&nbsp;Attr[...]</option>
   <option value="3">&nbsp;&nbsp;&nbsp;&nbsp;Value1</option>
@@ -1330,7 +1329,7 @@ my @Tests = (
             OptionTitle    => 0,
         },
         Response =>
-            '<select id="Select1ID" name="Select1">
+            '<select id="Select1ID" name="Select1" data-tree="true">
   <option value="1">Object1&lt;test1&gt;</option>
   <option value="2" selected="selected">&nbsp;&nbsp;AttributeA[...]</option>
   <option value="3">&nbsp;&nbsp;&nbsp;&nbsp;Value1&lt;test3&gt;</option>
@@ -1676,7 +1675,7 @@ my @Tests = (
             OptionTitle    => 0,
         },
         Response =>
-            '<select id="Select1ID" name="Select1">
+            '<select id="Select1ID" name="Select1" data-tree="true">
   <option value="1">Object1</option>
   <option value="Object1::AttributeA_Disabled" disabled="disabled">&nbsp;&nbsp;AttributeA</option>
   <option value="3" selected="selected">&nbsp;&nbsp;&nbsp;&nbsp;Value1</option>
@@ -1716,6 +1715,58 @@ my @Tests = (
                 [
                     '7', '&nbsp;&nbsp;&nbsp;&nbsp;Value2',
                     $JSONFalse, $JSONFalse, $JSONTrue,
+                ],
+            ],
+        },
+    },
+    {
+        Name       => 'Hash, case insensitive sorting',
+        Definition => {
+            Data => {
+                1 => 'Daniel de Gryter',
+                2 => 'Daniel Denner',
+                3 => 'Daniel Ewald',
+            },
+            Name           => 'Select1',
+            ID             => 'Select1ID',
+            Sort           => 'AlphanumericValue',
+            Multiple       => 0,
+            AutoComplete   => undef,
+            OnChange       => undef,
+            OnClick        => undef,
+            SelectedID     => undef,
+            SelectedValue  => undef,
+            SortReverse    => 0,
+            Translation    => 0,
+            PossibleNone   => 0,
+            TreeView       => 0,
+            DisabledBranch => undef,
+            Max            => undef,
+            HTMLQuote      => 0,
+            Title          => undef,
+            OptionTitle    => 0,
+        },
+        Response =>
+            '<select id="Select1ID" name="Select1">
+  <option value="1">Daniel de Gryter</option>
+  <option value="2">Daniel Denner</option>
+  <option value="3">Daniel Ewald</option>
+</select>',
+        Success      => 1,
+        ExecuteJSON  => 1,
+        JSONResponse => {
+            'Select1' => [
+                [
+                    '1', 'Daniel de Gryter',
+                    $JSONFalse, $JSONFalse, $JSONFalse,
+                ],
+                [
+                    '2', 'Daniel Denner',
+                    $JSONFalse, $JSONFalse, $JSONFalse,
+                ],
+                [
+                    '3', 'Daniel Ewald',
+                    $JSONFalse, $JSONFalse, $JSONFalse,
                 ],
             ],
         },

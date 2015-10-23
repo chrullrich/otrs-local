@@ -1,6 +1,5 @@
 // --
-// Core.UI.Accessibility.UnitTest.js - UnitTests
-// Copyright (C) 2001-2015 OTRS AG, http://otrs.com/\n";
+// Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
 // the enclosed file COPYING for license information (AGPL). If you
@@ -9,15 +8,13 @@
 
 "use strict";
 
-var OTRS = OTRS || {};
+var Core = Core || {};
 Core.UI = Core.UI || {};
 
 Core.UI.Accessibility = (function (Namespace) {
     Namespace.RunUnitTests = function(){
         module('Core.UI.Accessibility');
         test('Core.UI.Accessibility.Init()', function(){
-
-            expect(8);
 
             /*
              * Create a div containter for the tests
@@ -37,6 +34,8 @@ Core.UI.Accessibility = (function (Namespace) {
              * Run the tests
              */
             Core.UI.Accessibility.Init();
+
+            expect(8);
 
             equal($('.ARIARoleBanner')
                 .attr('role'), 'banner', 'Role banner');

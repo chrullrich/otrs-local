@@ -7,7 +7,7 @@ FreeBSD, OpenBSD and Mac OS 10.x. Do you receive many e-mails and
 want to answer them with a team of agents? You're going to love OTRS!
 
 You can find a list of features in the
-[online documentation](http://otrs.github.io/doc/manual/admin/4.0/en/html/otrs.html#features-of-otrs).
+[online documentation](http://otrs.github.io/doc/manual/admin/5.0/en/html/otrs.html#features-of-otrs).
 
 
 License
@@ -19,7 +19,7 @@ accompanying [COPYING](COPYING) file for more details.
 Documentation
 =============
 You can find quick documentation in README.* and the long version
-[online](http://doc.otrs.org/). The source code of OTRS and its public extension
+[online](http://otrs.github.io/doc/). The source code of OTRS and its public extension
 modules is available on [github](http://otrs.github.io).
 
 
@@ -60,7 +60,7 @@ Databases
 Browsers
 - Use a modern web browser.
 - These browsers are not supported:
-  - Internet Explorer before version 8
+  - Internet Explorer before version 10
   - Firefox before version 10
   - Safari before version 5
 
@@ -89,7 +89,8 @@ Directories & Files
     |   |
     |   |---- /Output/        (all output generating modules)
     |   |      |---- /HTML/
-    |   |             |--- /Standard/*.dtl (all dtl files for Standard theme)
+    |   |             |---- /Templates/
+    |   |                    |--- /Standard/*.tt (all tt files for Standard theme)
     |   |
     |   |--- /GenericInterface (GenericInterface framework)
     |          |--- /Invoker/ (invoker backends)
@@ -107,6 +108,9 @@ Directories & Files
     |   |---- /System/         (back-end API modules, selection below)
     |           |--- /Auth.pm        (authentication module)
     |           |--- /AuthSession.pm (session authentication module)
+    |           |--- /Daemon         (all daemon files)
+    |                 |--- /DaemonModules    (all daemon modules)
+    |                       |---SchdulerTaskWorker    (all scheduler worker daemon task handlers)
     |           |--- /DB.pm          (central DB interface)
     |           |--- /DB/*.pm        (DB drivers)
     |           |--- /DynamicField.pm (Interface to the DynamicField configuration)
@@ -120,11 +124,10 @@ Directories & Files
     |           |--- /Group.pm       (group module)
     |           |--- /Log.pm         (log module)
     |           |--- /Queue.pm       (information about queues. e. g. response templates, ...)
-    |           |--- /Scheduler      (Scheduler files)
-    |                 |--- /TaskHandler/ (task handler backends for the Scheduler)
     |           |--- /Ticket.pm      (ticket and article functions)
     |           |--- /User.pm        (user module)
-    |           |--- /Request.pm    (HTTP/CGI abstraction module)
+    |           |--- /Web/*.pm       (core interface modules)
+    |                 |--- /Request.pm    (HTTP/CGI abstraction module)
     |
     |  (data stuff)
     |--/var/
@@ -168,9 +171,8 @@ Directories & Files
     |
     |  (tools stuff)
     |--/scripts/
-    |   |----  /database/
-    |           |--- /otrs-schema.(mysql|postgresql|*).sql (create database script)
-    |           |--- /otrs-initial_insert.(mysql|postgresql|*).sql (all initial sql data - e. g.
-    |           |                                                   root user, queues, ...)
-    |           |--- /otrs-schema-post.(mysql|postgresql|*).sql (create foreign keys script)
-    |
+        |----  /database/
+                |--- /otrs-schema.(mysql|postgresql|*).sql (create database script)
+                |--- /otrs-initial_insert.(mysql|postgresql|*).sql (all initial sql data - e. g.
+                |                                                   root user, queues, ...)
+                |--- /otrs-schema-post.(mysql|postgresql|*).sql (create foreign keys script)

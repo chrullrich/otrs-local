@@ -1,5 +1,4 @@
 # --
-# Kernel/Modules/AdminGenericInterfaceWebservice.pm - provides a webservice view for admins
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -13,9 +12,8 @@ use strict;
 use warnings;
 
 use Kernel::System::VariableCheck qw(:all);
-use Kernel::System::GenericInterface::Webservice;
-use Kernel::System::Valid;
-use Kernel::System::YAML;
+
+our $ObjectManagerDisabled = 1;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -23,56 +21,42 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    for (qw(ParamObject LayoutObject LogObject ConfigObject)) {
-        if ( !$Self->{$_} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $_!" );
-        }
-    }
-
-    # create addtional objects
-    $Self->{ValidObject}      = Kernel::System::Valid->new( %{$Self} );
-    $Self->{WebserviceObject} = Kernel::System::GenericInterface::Webservice->new( %{$Self} );
-    $Self->{YAMLObject}       = Kernel::System::YAML->new( %{$Self} );
-
-    # get configurations
-    # get configured transports
-    $Self->{GITransportConfig} = $Self->{ConfigObject}->Get('GenericInterface::Transport::Module');
-
-    # get configured operations
-    $Self->{GIOperationConfig} = $Self->{ConfigObject}->Get('GenericInterface::Operation::Module');
-
-    # get configured invokers
-    $Self->{GIInvokerConfig} = $Self->{ConfigObject}->Get('GenericInterface::Invoker::Module');
-
-    #  get Framework version
-    $Self->{FrameworkVersion} = $Self->{ConfigObject}->Get('Version');
-
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    my $WebserviceID = $Self->{ParamObject}->GetParam( Param => 'WebserviceID' ) || '';
+    # get param object
+    my $ParamObject = $Kernel::OM->Get('Kernel::System::Web::Request');
+
+    my $WebserviceID = $ParamObject->GetParam( Param => 'WebserviceID' ) || '';
+
+    # get needed objects
+    my $LayoutObject     = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $WebserviceObject = $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice');
+    my $YAMLObject       = $Kernel::OM->Get('Kernel::System::YAML');
 
     # ------------------------------------------------------------ #
-    # subaction Change: load webservice and show edit screen
+    # sub-action Change: load web service and show edit screen
     # ------------------------------------------------------------ #
     if ( $Self->{Subaction} eq 'Change' ) {
 
         # check for WebserviceID
         if ( !$WebserviceID ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "Need WebserviceID!",
             );
         }
 
-        # get webserice configuration
-        my $WebserviceData = $Self->{WebserviceObject}->WebserviceGet( ID => $WebserviceID );
+        # get web service configuration
+        my $WebserviceData = $WebserviceObject->WebserviceGet(
+            ID => $WebserviceID,
+        );
 
-        # check for valid webservice configuration
+        # check for valid web service configuration
         if ( !IsHashRefWithData($WebserviceData) ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "Could not get data for WebserviceID $WebserviceID",
             );
         }
@@ -86,28 +70,30 @@ sub Run {
     }
 
     # ------------------------------------------------------------ #
-    # subaction ChangeAction: write basic config and return to edit
-    #                         screen to continue with the rest of
-    #                         the configuration
+    # sub-action ChangeAction: write basic config and return to edit
+    #                          screen to continue with the rest of
+    #                          the configuration
     # ------------------------------------------------------------ #
     elsif ( $Self->{Subaction} eq 'ChangeAction' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         # check for WebserviceID
         if ( !$WebserviceID ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "Need WebserviceID!",
             );
         }
 
-        # get webserice configuration
-        my $WebserviceData = $Self->{WebserviceObject}->WebserviceGet( ID => $WebserviceID );
+        # get web service configuration
+        my $WebserviceData = $WebserviceObject->WebserviceGet(
+            ID => $WebserviceID,
+        );
 
-        # check for valid webservice configuration
+        # check for valid web service configuration
         if ( !IsHashRefWithData($WebserviceData) ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "Could not get data for WebserviceID $WebserviceID",
             );
         }
@@ -115,7 +101,7 @@ sub Run {
         # get parameter from web browser
         my $GetParam = $Self->_GetParams();
 
-        # set new confguration
+        # set new configuration
         $WebserviceData->{Name}                                 = $GetParam->{Name};
         $WebserviceData->{Config}->{Description}                = $GetParam->{Description};
         $WebserviceData->{Config}->{RemoteSystem}               = $GetParam->{RemoteSystem};
@@ -137,7 +123,7 @@ sub Run {
 
                 # replace the current transport type with the new selected one
                 # the rest of the configuration will be empty
-                # the trasport need to be configured impendently
+                # the transport need to be configured independently
                 $WebserviceData->{Config}->{$CommunicationType}->{Transport}->{Type} =
                     $GetParam->{ $CommunicationType . 'Transport' };
             }
@@ -153,7 +139,7 @@ sub Run {
         }
 
         # check if name is duplicated
-        my %WebserviceList = %{ $Self->{WebserviceObject}->WebserviceList() };
+        my %WebserviceList = %{ $WebserviceObject->WebserviceList() };
 
         %WebserviceList = reverse %WebserviceList;
 
@@ -165,7 +151,7 @@ sub Run {
 
             # add server error error class
             $Error{NameServerError}        = 'ServerError';
-            $Error{NameServerErrorMessage} = 'There is another webservice with the same name.';
+            $Error{NameServerErrorMessage} = 'There is another web service with the same name.';
         }
 
         # if there is an error return to edit screen
@@ -180,7 +166,7 @@ sub Run {
         }
 
         # otherwise save configuration and return to overview screen
-        my $Success = $Self->{WebserviceObject}->WebserviceUpdate(
+        my $Success = $WebserviceObject->WebserviceUpdate(
             ID      => $WebserviceID,
             Name    => $WebserviceData->{Name},
             Config  => $WebserviceData->{Config},
@@ -190,21 +176,21 @@ sub Run {
 
         # show error if cant update
         if ( !$Success ) {
-            return $Self->{LayoutObject}->ErrorScreen(
-                Message => "There was an error updating the webservice",
+            return $LayoutObject->ErrorScreen(
+                Message => "There was an error updating the web service",
             );
         }
 
         # define notification
-        my $Notify = $Self->{LayoutObject}->{LanguageObject}->Translate(
-            'Webservice "%s" updated!',
+        my $Notify = $LayoutObject->{LanguageObject}->Translate(
+            'Web service "%s" updated!',
             $WebserviceData->{Name},
         );
 
-        # Save and finish button: go to Webservice.
-        if ( $Self->{ParamObject}->GetParam( Param => 'ReturnToWebservice' ) ) {
+        # Save and finish button: go to web service.
+        if ( $ParamObject->GetParam( Param => 'ReturnToWebservice' ) ) {
             my $RedirectURL = "Action=AdminGenericInterfaceWebservice;";
-            return $Self->{LayoutObject}->Redirect(
+            return $LayoutObject->Redirect(
                 OP => $RedirectURL,
             );
         }
@@ -220,7 +206,7 @@ sub Run {
     }
 
     # ------------------------------------------------------------ #
-    # subaction Add: show edit screen (empty)
+    # sub-action Add: show edit screen (empty)
     # ------------------------------------------------------------ #
     if ( $Self->{Subaction} eq 'Add' ) {
 
@@ -230,22 +216,22 @@ sub Run {
     }
 
     # ------------------------------------------------------------ #
-    # subaction AddAction: create a webservice and return to edit
-    #                      screen to continue with the rest of
-    #                      the configuration
+    # sub-action AddAction: create a web service and return to edit
+    #                       screen to continue with the rest of
+    #                       the configuration
     # ------------------------------------------------------------ #
     elsif ( $Self->{Subaction} eq 'AddAction' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
-        # get webserice configuration
+        # get web service configuration
         my $WebserviceData;
 
         # get parameter from web browser
         my $GetParam = $Self->_GetParams();
 
-        # set new confguration
+        # set new configuration
         $WebserviceData->{Name}                                 = $GetParam->{Name};
         $WebserviceData->{Config}->{Description}                = $GetParam->{Description};
         $WebserviceData->{Config}->{RemoteSystem}               = $GetParam->{RemoteSystem};
@@ -269,7 +255,7 @@ sub Run {
         }
 
         # check if name is duplicated
-        my %WebserviceList = %{ $Self->{WebserviceObject}->WebserviceList() };
+        my %WebserviceList = %{ $WebserviceObject->WebserviceList() };
 
         %WebserviceList = reverse %WebserviceList;
 
@@ -281,7 +267,7 @@ sub Run {
 
             # add server error error class
             $Error{NameServerError}        = 'ServerError';
-            $Error{NameServerErrorMessage} = 'There is another webservice with the same name.';
+            $Error{NameServerErrorMessage} = 'There is another web service with the same name.';
         }
 
         # if there is an error return to edit screen
@@ -296,7 +282,7 @@ sub Run {
         }
 
         # otherwise save configuration and return to overview screen
-        my $ID = $Self->{WebserviceObject}->WebserviceAdd(
+        my $ID = $WebserviceObject->WebserviceAdd(
             Name    => $WebserviceData->{Name},
             Config  => $WebserviceData->{Config},
             ValidID => $WebserviceData->{ValidID},
@@ -305,8 +291,8 @@ sub Run {
 
         # show error if cant create
         if ( !$ID ) {
-            return $Self->{LayoutObject}->ErrorScreen(
-                Message => "There was an error creating the webservice",
+            return $LayoutObject->ErrorScreen(
+                Message => "There was an error creating the web service",
             );
         }
 
@@ -314,8 +300,8 @@ sub Run {
         $WebserviceID = $ID;
 
         # define notification
-        my $Notify = $Self->{LayoutObject}->{LanguageObject}->Translate(
-            'Webservice "%s" created!',
+        my $Notify = $LayoutObject->{LanguageObject}->Translate(
+            'Web service "%s" created!',
             $WebserviceData->{Name},
         );
 
@@ -330,60 +316,64 @@ sub Run {
     }
 
     # ------------------------------------------------------------ #
-    # subaction Export: create a YAML file with the configuration
+    # sub action Export: create a YAML file with the configuration
     # ------------------------------------------------------------ #
     elsif ( $Self->{Subaction} eq 'Export' ) {
 
         # check for WebserviceID
         if ( !$WebserviceID ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "Need WebserviceID!",
             );
         }
 
-        # get webserice configuration
-        my $WebserviceData = $Self->{WebserviceObject}->WebserviceGet( ID => $WebserviceID );
+        # get web service configuration
+        my $WebserviceData = $WebserviceObject->WebserviceGet(
+            ID => $WebserviceID
+        );
 
         # set Framework Version information for import purposes
-        $WebserviceData->{Config}->{FrameworkVersion} = $Self->{FrameworkVersion};
+        $WebserviceData->{Config}->{FrameworkVersion} = $Kernel::OM->Get('Kernel::Config')->Get('Version');
 
-        # check for valid webservice configuration
+        # check for valid web service configuration
         if ( !IsHashRefWithData($WebserviceData) ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "Could not get data for WebserviceID $WebserviceID",
             );
         }
 
         # dump configuration into a YAML structure
-        my $YAMLContent = $Self->{YAMLObject}->Dump( Data => $WebserviceData->{Config} );
+        my $YAMLContent = $YAMLObject->Dump( Data => $WebserviceData->{Config} );
 
-        # return yaml to download
+        # return YAML to download
         my $YAMLFile = $WebserviceData->{Name};
-        return $Self->{LayoutObject}->Attachment(
+        return $LayoutObject->Attachment(
             Filename    => $YAMLFile . '.yml',
-            ContentType => "text/plain; charset=" . $Self->{LayoutObject}->{UserCharset},
+            ContentType => "text/plain; charset=" . $LayoutObject->{UserCharset},
             Content     => $YAMLContent,
         );
     }
 
-    # ------------------------------------------------------------ #
-    # subaction Delete: delete webservice and return value to dialog
-    # ------------------------------------------------------------ #
+    # -------------------------------------------------------------- #
+    # sub-action Delete: delete web service and return value to dialog
+    # -------------------------------------------------------------- #
     elsif ( $Self->{Subaction} eq 'Delete' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
-        # get webserice configuration
-        my $WebserviceData = $Self->{WebserviceObject}->WebserviceGet( ID => $WebserviceID );
+        # get web service configuration
+        my $WebserviceData = $WebserviceObject->WebserviceGet(
+            ID => $WebserviceID,
+        );
 
-        my $Success = $Self->{WebserviceObject}->WebserviceDelete(
+        my $Success = $WebserviceObject->WebserviceDelete(
             ID     => $WebserviceID,
             UserID => $Self->{UserID},
         );
 
         # build JSON output
-        my $JSON = $Self->{LayoutObject}->JSONEncode(
+        my $JSON = $LayoutObject->JSONEncode(
             Data => {
                 Success           => $Success,
                 DeletedWebservice => $WebserviceData->{Name},
@@ -391,63 +381,65 @@ sub Run {
         );
 
         # send JSON response
-        return $Self->{LayoutObject}->Attachment(
-            ContentType => 'application/json; charset=' . $Self->{LayoutObject}->{Charset},
+        return $LayoutObject->Attachment(
+            ContentType => 'application/json; charset=' . $LayoutObject->{Charset},
             Content     => $JSON,
             Type        => 'inline',
             NoCache     => 1,
         );
     }
 
-    # ------------------------------------------------------------ #
-    # subaction Clone: clone webservice and return value to dialog
-    # ------------------------------------------------------------ #
+    # -------------------------------------------------------------- #
+    # sub-action Clone: clone web service and return value to dialog
+    # -------------------------------------------------------------- #
     elsif ( $Self->{Subaction} eq 'Clone' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         # check for WebserviceID
         if ( !$WebserviceID ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "Need WebserviceID!",
             );
         }
 
-        # get webserice configuration
-        my $WebserviceData = $Self->{WebserviceObject}->WebserviceGet( ID => $WebserviceID );
+        # get web service configuration
+        my $WebserviceData = $WebserviceObject->WebserviceGet(
+            ID => $WebserviceID,
+        );
 
-        # check for valid webservice configuration
+        # check for valid web service configuration
         if ( !IsHashRefWithData($WebserviceData) ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "Could not get data for WebserviceID $WebserviceID",
             );
         }
 
-        my $CloneName = $Self->{ParamObject}->GetParam( Param => 'CloneName' ) || '';
+        my $CloneName = $ParamObject->GetParam( Param => 'CloneName' ) || '';
 
         if ( !$CloneName ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "Need Name!",
             );
         }
 
-        # set new confguration
+        # set new configuration
         $WebserviceData->{Name} = $CloneName;
 
         # check if name is duplicated
-        my %WebserviceList = %{ $Self->{WebserviceObject}->WebserviceList() };
+        my %WebserviceList = %{ $WebserviceObject->WebserviceList() };
 
         %WebserviceList = reverse %WebserviceList;
 
         if ( $WebserviceList{$CloneName} ) {
-            return $Self->{LayoutObject}->ErrorScreen(
-                Message => "There is another webservice with the same name.",
+            return $LayoutObject->ErrorScreen(
+                Message => "There is another web service with the same name.",
             );
         }
 
         # otherwise save configuration and return to overview screen
-        my $Success = $Self->{WebserviceObject}->WebserviceAdd(
+        my $Success = $WebserviceObject->WebserviceAdd(
             Name    => $WebserviceData->{Name},
             Config  => $WebserviceData->{Config},
             ValidID => $WebserviceData->{ValidID},
@@ -455,14 +447,14 @@ sub Run {
         );
 
         if ( !$Success ) {
-            return $Self->{LayoutObject}->ErrorScreen(
-                Message => "There was an error creating the webservice.",
+            return $LayoutObject->ErrorScreen(
+                Message => "There was an error creating the web service.",
             );
         }
 
         # define notification
-        my $Notify = $Self->{LayoutObject}->{LanguageObject}->Translate(
-            'Webservice "%s" created!',
+        my $Notify = $LayoutObject->{LanguageObject}->Translate(
+            'Web service "%s" created!',
             $WebserviceData->{Name},
         );
 
@@ -475,22 +467,22 @@ sub Run {
     }
 
     # ------------------------------------------------------------ #
-    # subaction Import: parse the file and return to overview
-    #                   if name errors return to add screen
+    # sub-action Import: parse the file and return to overview
+    #                    if name errors return to add screen
     # ------------------------------------------------------------ #
     elsif ( $Self->{Subaction} eq 'Import' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
-        # get the webservice config file from the http request
-        my %ConfigFile = $Self->{ParamObject}->GetUploadAll(
+        # get the web service config file from the http request
+        my %ConfigFile = $ParamObject->GetUploadAll(
             Param => 'ConfigFile',
         );
 
         # check for file
         if ( !%ConfigFile ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "Need a file to import!",
             );
         }
@@ -498,11 +490,11 @@ sub Run {
         my $ImportedConfig;
 
         # read configuration from a YAML structure
-        $ImportedConfig = $Self->{YAMLObject}->Load( Data => $ConfigFile{Content} );
+        $ImportedConfig = $YAMLObject->Load( Data => $ConfigFile{Content} );
 
         # display any YAML error message as a normal otrs error message
         if ( !IsHashRefWithData($ImportedConfig) ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => 'The imported file has not valid YAML content!'
                     . ' Please check OTRS log for details',
             );
@@ -511,7 +503,7 @@ sub Run {
         # check if imported configuration has current framework version otherwise update it
         if (
             !$ImportedConfig->{FrameworkVersion}
-            || $ImportedConfig->{FrameworkVersion} ne $Self->{FrameworkVersion}
+            || $ImportedConfig->{FrameworkVersion} ne $Kernel::OM->Get('Kernel::Config')->Get('Version')
             )
         {
             $ImportedConfig = $Self->_UpdateConfiguration( Configuration => $ImportedConfig );
@@ -520,7 +512,7 @@ sub Run {
         # remove framework information since is not needed anymore
         delete $ImportedConfig->{FrameworkVersion};
 
-        # get webservice name
+        # get web service name
         my $WebserviceName = $ConfigFile{Filename};
 
         # remove file extension
@@ -543,7 +535,7 @@ sub Run {
         $WebserviceData->{ValidID} = 1;
 
         # check if name is duplicated
-        my %WebserviceList = %{ $Self->{WebserviceObject}->WebserviceList() };
+        my %WebserviceList = %{ $WebserviceObject->WebserviceList() };
 
         %WebserviceList = reverse %WebserviceList;
 
@@ -555,7 +547,7 @@ sub Run {
 
             # add server error error class
             $Error{NameServerError}        = 'ServerError';
-            $Error{NameServerErrorMessage} = 'There is another webservice with the same name.';
+            $Error{NameServerErrorMessage} = 'There is another web service with the same name.';
         }
 
         # if there is an error return to edit screen
@@ -570,7 +562,7 @@ sub Run {
         }
 
         # otherwise save configuration and return to overview screen
-        my $Success = $Self->{WebserviceObject}->WebserviceAdd(
+        my $Success = $WebserviceObject->WebserviceAdd(
             Name    => $WebserviceData->{Name},
             Config  => $WebserviceData->{Config},
             ValidID => $WebserviceData->{ValidID},
@@ -578,8 +570,8 @@ sub Run {
         );
 
         # define notification
-        my $Notify = $Self->{LayoutObject}->{LanguageObject}->Translate(
-            'Webservice "%s" created!',
+        my $Notify = $LayoutObject->{LanguageObject}->Translate(
+            'Web service "%s" created!',
             $WebserviceData->{Name},
         );
 
@@ -591,12 +583,12 @@ sub Run {
     }
 
     # ------------------------------------------------------------ #
-    # subaction DeleteAction: delete an operation or invoker
+    # sub-action DeleteAction: delete an operation or invoker
     # ------------------------------------------------------------ #
     elsif ( $Self->{Subaction} eq 'DeleteAction' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         return $Self->_DeleteAction(
             WebserviceID => $WebserviceID,
@@ -607,16 +599,16 @@ sub Run {
     # default: show start screen
     # ------------------------------------------------------------ #
 
-    # get Deleted Webservice if any
-    my $DeletedWebservice = $Self->{ParamObject}->GetParam( Param => 'DeletedWebservice' ) || '';
+    # get Deleted web service if any
+    my $DeletedWebservice = $ParamObject->GetParam( Param => 'DeletedWebservice' ) || '';
 
     my $Notify;
 
     if ($DeletedWebservice) {
 
         # define notification
-        $Notify = $Self->{LayoutObject}->{LanguageObject}->Translate(
-            'Webservice "%s" deleted!',
+        $Notify = $LayoutObject->{LanguageObject}->Translate(
+            'Web service "%s" deleted!',
             $DeletedWebservice,
         );
 
@@ -632,22 +624,24 @@ sub Run {
 sub _ShowOverview {
     my ( $Self, %Param ) = @_;
 
-    my $Output = $Self->{LayoutObject}->Header();
-    $Output .= $Self->{LayoutObject}->NavigationBar();
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
+    my $Output = $LayoutObject->Header();
+    $Output .= $LayoutObject->NavigationBar();
 
     # show notifications if any
     if ( $Param{Notify} ) {
-        $Output .= $Self->{LayoutObject}->Notify(
+        $Output .= $LayoutObject->Notify(
             Info => $Param{Notify},
         );
     }
 
-    # call all needed dtl blocks
-    $Self->{LayoutObject}->Block(
+    # call all needed tt blocks
+    $LayoutObject->Block(
         Name => 'Main',
         Data => \%Param,
     );
-    $Self->{LayoutObject}->Block(
+    $LayoutObject->Block(
         Name => 'WebservicePathElement',
         Data => {
             Name => 'Web Services',
@@ -655,20 +649,24 @@ sub _ShowOverview {
             Nav  => '',
         },
     );
-    $Self->{LayoutObject}->Block( Name => 'ActionList' );
-    $Self->{LayoutObject}->Block( Name => 'ActionAdd' );
-    $Self->{LayoutObject}->Block( Name => 'OverviewHeader' );
-    $Self->{LayoutObject}->Block( Name => 'OverviewResult' );
+    $LayoutObject->Block( Name => 'ActionList' );
+    $LayoutObject->Block( Name => 'ActionAdd' );
+    $LayoutObject->Block( Name => 'OverviewHeader' );
+    $LayoutObject->Block( Name => 'OverviewResult' );
 
-    # get webservices list
-    my $WebserviceList = $Self->{WebserviceObject}->WebserviceList( Valid => 0 );
+    my $WebserviceObject = $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice');
 
-    # check if no webservices are registered
+    # get web services list
+    my $WebserviceList = $WebserviceObject->WebserviceList(
+        Valid => 0,
+    );
+
+    # check if no web services are registered
     if ( !IsHashRefWithData($WebserviceList) ) {
-        $Self->{LayoutObject}->Block( Name => 'NoDataFoundMsg' );
+        $LayoutObject->Block( Name => 'NoDataFoundMsg' );
     }
 
-    #otherwise show all webservices
+    #otherwise show all web services
     else {
         WEBSERVICEID:
         for my $WebserviceID (
@@ -678,29 +676,29 @@ sub _ShowOverview {
         {
             next WEBSERVICEID if !$WebserviceID;
 
-            # get webservice data
-            my $Webservice = $Self->{WebserviceObject}->WebserviceGet( ID => $WebserviceID );
+            # get web service data
+            my $Webservice = $WebserviceObject->WebserviceGet( ID => $WebserviceID );
             next WEBSERVICEID if !$Webservice;
 
             # convert ValidID to text
-            my $ValidStrg = $Self->{ValidObject}->ValidLookup(
+            my $ValidStrg = $Kernel::OM->Get('Kernel::System::Valid')->ValidLookup(
                 ValidID => $Webservice->{ValidID},
             );
 
             if ( !$Webservice->{Config} || !IsHashRefWithData( $Webservice->{Config} ) ) {
 
                 # write an error message to the OTRS log
-                $Self->{LogObject}->Log(
+                $Kernel::OM->Get('Kernel::System::Log')->Log(
                     Priority => 'error',
                     Message  => "Configuration of WebserviceID $WebserviceID is invalid!",
                 );
 
-                # notify the user of problems loading this webservice
-                $Output .= $Self->{LayoutObject}->Notify(
+                # notify the user of problems loading this web service
+                $Output .= $LayoutObject->Notify(
                     Priority => 'Error',
                 );
 
-                # continue loading the list of webservices
+                # continue loading the list of web services
                 next WEBSERVICEID;
             }
 
@@ -717,21 +715,21 @@ sub _ShowOverview {
                 Valid => $ValidStrg,
             };
 
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'OverviewResultRow',
                 Data => $Data,
             );
         }
     }
 
-    $Output .= $Self->{LayoutObject}->Output(
+    $Output .= $LayoutObject->Output(
         TemplateFile => 'AdminGenericInterfaceWebservice',
         Data         => {
             %Param,
         },
     );
 
-    $Output .= $Self->{LayoutObject}->Footer();
+    $Output .= $LayoutObject->Footer();
     return $Output;
 }
 
@@ -746,23 +744,25 @@ sub _ShowEdit {
 
     my $RequesterData = $WebserviceData->{Config}->{Requester} || {};
 
-    my $Output = $Self->{LayoutObject}->Header();
-    $Output .= $Self->{LayoutObject}->NavigationBar();
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
+    my $Output = $LayoutObject->Header();
+    $Output .= $LayoutObject->NavigationBar();
 
     # show notifications if any
     if ( $Param{Notify} ) {
-        $Output .= $Self->{LayoutObject}->Notify(
+        $Output .= $LayoutObject->Notify(
             Info => $Param{Notify},
         );
     }
 
-    # call all needed dtl blocks
-    $Self->{LayoutObject}->Block(
+    # call all needed tt blocks
+    $LayoutObject->Block(
         Name => 'Main',
         Data => \%Param,
     );
 
-    $Self->{LayoutObject}->Block(
+    $LayoutObject->Block(
         Name => 'WebservicePathElement',
         Data => {
             Name => 'Web Services',
@@ -771,7 +771,7 @@ sub _ShowEdit {
         },
     );
     if ( $Param{Action} eq 'Change' && $WebserviceData->{Name} ) {
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'WebservicePathElementNoLink',
             Data => {
                 Name => $WebserviceData->{Name},
@@ -782,52 +782,52 @@ sub _ShowEdit {
         );
     }
     elsif ( $Param{Action} eq 'Add' ) {
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'WebservicePathElementNoLink',
             Data => {
-                Name => 'New Webservice',
+                Name => 'New Web service',
                 Link => 'Action=AdminGenericInterfaceWebservice;Subaction=' . $Param{Action},
                 Nav  => '',
             },
         );
     }
 
-    $Self->{LayoutObject}->Block( Name => 'ActionList' );
-    $Self->{LayoutObject}->Block( Name => 'ActionOverview' );
+    $LayoutObject->Block( Name => 'ActionList' );
+    $LayoutObject->Block( Name => 'ActionOverview' );
 
     if ( $Param{Action} eq 'Change' ) {
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'ActionClone',
             Data => \%Param,
         );
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'ActionExport',
             Data => \%Param,
         );
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'ActionImport',
             Data => \%Param,
         );
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'ActionHistory',
             Data => \%Param,
         );
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'ActionDelete',
             Data => \%Param,
         );
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'ActionDebugger',
             Data => \%Param,
         );
     }
     elsif ( $Param{Action} eq 'Add' ) {
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'ActionImport',
             Data => \%Param,
         );
     }
-    $Self->{LayoutObject}->Block( Name => 'Hint' );
+    $LayoutObject->Block( Name => 'Hint' );
 
     my %GeneralData = (
         Name         => $WebserviceData->{Name},
@@ -835,7 +835,7 @@ sub _ShowEdit {
         RemoteSystem => $WebserviceData->{Config}->{RemoteSystem},
     );
 
-    # define the debug Thresholds (this needs to be hardcoded)
+    # define the debug Thresholds (this needs to be hard-coded)
     my %DebugThreshold = (
         debug  => 'Debug',
         info   => 'Info',
@@ -844,74 +844,79 @@ sub _ShowEdit {
     );
 
     # create the DebugThreshold select
-    my $DebugThresholdStrg = $Self->{LayoutObject}->BuildSelection(
+    my $DebugThresholdStrg = $LayoutObject->BuildSelection(
         Data           => \%DebugThreshold,
         Name           => 'DebugThreshold',
         SelectedID     => $DebuggerData->{DebugThreshold} || '',
         PossibleNone   => 0,
         Translate      => 1,
-        Class          => 'HideTrigger',
+        Class          => 'Modernize HideTrigger',
         Sort           => 'IndividualKey',
         SortIndividual => [ 'debug', 'info', 'notice', 'error' ],
 
     );
 
-    my %ValidList = $Self->{ValidObject}->ValidList();
+    my %ValidList = $Kernel::OM->Get('Kernel::System::Valid')->ValidList();
 
-    # create the Validty select
-    my $ValidtyStrg = $Self->{LayoutObject}->BuildSelection(
+    # create the validity select
+    my $ValidtyStrg = $LayoutObject->BuildSelection(
         Data         => \%ValidList,
         Name         => 'ValidID',
         SelectedID   => $WebserviceData->{ValidID} || 1,
         PossibleNone => 0,
         Translate    => 1,
-        Class        => 'HideTrigger',
+        Class        => 'Modernize HideTrigger',
     );
 
-    # prevent html validation waring
+    # prevent HTML validation waring
     if ( !$Param{NameServerErrorMessage} ) {
         $Param{NameServerErrorMessage} = '-';
     }
 
-    $Self->{LayoutObject}->Block(
+    $LayoutObject->Block(
         Name => 'Details',
         Data => {
             %Param,
             %GeneralData,
             DebugThresholdStrg => $DebugThresholdStrg,
             ValidtyStrg        => $ValidtyStrg,
-            }
+        },
     );
 
     if ( $Param{Action} eq 'Change' ) {
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'SaveAndFinishButton',
             Data => \%Param
         );
     }
 
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
     # set transports data
     my %GITransports;
+    my $GITransportConfig = $ConfigObject->Get('GenericInterface::Transport::Module');
     TRANSPORT:
-    for my $Transport ( sort keys %{ $Self->{GITransportConfig} } ) {
+    for my $Transport ( sort keys %{$GITransportConfig} ) {
         next TRANSPORT if !$Transport;
-        $GITransports{$Transport} = $Self->{GITransportConfig}->{$Transport}->{ConfigDialog};
+        $GITransports{$Transport} = $GITransportConfig->{$Transport}->{ConfigDialog};
     }
 
     # get operations data
     my %GIOperations;
+    my $GIOperationConfig = $ConfigObject->Get('GenericInterface::Operation::Module');
     OPERATION:
-    for my $Operation ( sort keys %{ $Self->{GIOperationConfig} } ) {
+    for my $Operation ( sort keys %{$GIOperationConfig} ) {
         next OPERATION if !$Operation;
-        $GIOperations{$Operation} = $Self->{GIOperationConfig}->{$Operation}->{ConfigDialog};
+        $GIOperations{$Operation} = $GIOperationConfig->{$Operation}->{ConfigDialog};
     }
 
     # get operations data
     my %GIInvokers;
+    my $GIInvokerConfig = $ConfigObject->Get('GenericInterface::Invoker::Module');
     INVOKER:
-    for my $Invoker ( sort keys %{ $Self->{GIInvokerConfig} } ) {
+    for my $Invoker ( sort keys %{$GIInvokerConfig} ) {
         next INVOKER if !$Invoker;
-        $GIInvokers{$Invoker} = $Self->{GIInvokerConfig}->{$Invoker}->{ConfigDialog};
+        $GIInvokers{$Invoker} = $GIInvokerConfig->{$Invoker}->{ConfigDialog};
     }
 
     $Self->_OutputGIConfig(
@@ -950,13 +955,13 @@ sub _ShowEdit {
         }
 
         # create the list of transports
-        my $TransportsStrg = $Self->{LayoutObject}->BuildSelection(
+        my $TransportsStrg = $LayoutObject->BuildSelection(
             Data          => \@TransportList,
             Name          => $CommunicationType . 'TransportList',
             SelectedValue => $CommTypeConfig{$CommunicationType}->{SelectedTransport},
             PossibleNone  => 1,
             Sort          => 'AlphanumericValue',
-            Class         => 'HideTrigger',
+            Class         => 'Modernize HideTrigger',
         );
 
         # get the controllers config for Requesters or Providers
@@ -969,15 +974,15 @@ sub _ShowEdit {
         }
 
         # create the list of controllers
-        my $ControllersStrg = $Self->{LayoutObject}->BuildSelection(
+        my $ControllersStrg = $LayoutObject->BuildSelection(
             Data         => \@ControllerList,
             Name         => $CommTypeConfig{$CommunicationType}->{ActionType} . 'List',
             Sort         => 'AlphanumericValue',
             PossibleNone => 1,
-            Class        => 'HideOnChange',
+            Class        => 'Modernize',
         );
 
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'DetailsCommunicationType',
             Data => {
                 %Param,
@@ -987,44 +992,44 @@ sub _ShowEdit {
                 ActionType        => $CommTypeConfig{$CommunicationType}->{ActionType},
                 ControllersStrg   => $ControllersStrg,
                 ActionsTitle      => $CommTypeConfig{$CommunicationType}->{ActionsTitle},
-                }
+            },
         );
 
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'DetailsCommunicationTypeExplanation' . $CommunicationType,
         );
 
-        # check if selected trasnport can be configured and show the "configure button"
+        # check if selected transport can be configured and show the "configure button"
         if (
             $CommTypeConfig{$CommunicationType}->{SelectedTransport} &&
             $GITransports{ $CommTypeConfig{$CommunicationType}->{SelectedTransport} }
             )
         {
 
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'DetailsTransportPropertiesButton',
                 Data => {
                     CommunicationType => $CommunicationType,
-                    }
+                },
             );
         }
 
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'DetailsCommunicationTypeActionsExplanation' . $CommunicationType,
         );
 
-        # flag to display a message if at leat one controller was not found
+        # flag to display a message if at least one controller was not found
         my $NoControllerFound;
 
         if ( !IsHashRefWithData( $CommTypeConfig{$CommunicationType}->{ActionsConfig} ) ) {
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'DetailsActionsNoDataFoundMsg',
                 Data => {},
             );
         }
         else {
 
-            # output Opertions and Invokers tables
+            # output operation and invoker tables
             for my $ActionName (
                 sort keys %{ $CommTypeConfig{$CommunicationType}->{ActionsConfig} }
                 )
@@ -1047,10 +1052,10 @@ sub _ShowEdit {
                 my $ControllerClass = '';
                 if ( !$GIControllers{ $ActionData{Controller} } ) {
                     $NoControllerFound = 1;
-                    $ControllerClass   = 'Error',
+                    $ControllerClass   = 'Error';
                 }
 
-                $Self->{LayoutObject}->Block(
+                $LayoutObject->Block(
                     Name => 'DetailsActionsRow',
                     Data => {
                         %Param,
@@ -1060,7 +1065,7 @@ sub _ShowEdit {
                 );
 
                 if ( !$GIControllers{ $ActionData{Controller} } ) {
-                    $Self->{LayoutObject}->Block(
+                    $LayoutObject->Block(
                         Name => 'DetailsActionsRowDelete',
                         Data => {
                             %Param,
@@ -1069,7 +1074,7 @@ sub _ShowEdit {
                     );
                 }
                 else {
-                    $Self->{LayoutObject}->Block(
+                    $LayoutObject->Block(
                         Name => 'DetailsActionsRowLink',
                         Data => {
                             %Param,
@@ -1081,7 +1086,7 @@ sub _ShowEdit {
         }
 
         if ($NoControllerFound) {
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'DetailsActionsNoControllerFoundMsg',
                 Data => {
                     %Param,
@@ -1092,63 +1097,68 @@ sub _ShowEdit {
 
     }
 
-    $Output .= $Self->{LayoutObject}->Output(
+    $Output .= $LayoutObject->Output(
         TemplateFile => 'AdminGenericInterfaceWebservice',
         Data         => {
             %Param,
         },
     );
 
-    $Output .= $Self->{LayoutObject}->Footer();
+    $Output .= $LayoutObject->Footer();
     return $Output;
 }
 
 sub _OutputGIConfig {
     my ( $Self, %Param ) = @_;
 
-    # parse the transport config as JSON strucutre
-    my $TransportConfig = $Self->{LayoutObject}->JSONEncode(
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
+    # parse the transport config as JSON structure
+    my $TransportConfig = $LayoutObject->JSONEncode(
         Data => $Param{GITransports},
     );
 
-    # parse the operation config as JSON strucutre
-    my $OpertaionConfig = $Self->{LayoutObject}->JSONEncode(
+    # parse the operation config as JSON structure
+    my $OpertaionConfig = $LayoutObject->JSONEncode(
         Data => $Param{GIOperations},
     );
 
-    # parse the operation config as JSON strucutre
-    my $InvokerConfig = $Self->{LayoutObject}->JSONEncode(
+    # parse the operation config as JSON structure
+    my $InvokerConfig = $LayoutObject->JSONEncode(
         Data => $Param{GIInvokers},
     );
 
-    $Self->{LayoutObject}->Block(
+    $LayoutObject->Block(
         Name => 'ConfigSet',
         Data => {
             TransportConfig => $TransportConfig,
             OperationConfig => $OpertaionConfig,
             InvokerConfig   => $InvokerConfig,
-            }
+        },
     );
+
+    return 1;
 }
 
 sub _GetParams {
     my ( $Self, %Param ) = @_;
 
     my $GetParam;
+    my $ParamObject = $Kernel::OM->Get('Kernel::System::Web::Request');
 
     # get parameters from web browser
     for my $ParamName (
         qw( Name Description RemoteSystem DebugThreshold ValidID )
         )
     {
-        $GetParam->{$ParamName} = $Self->{ParamObject}->GetParam( Param => $ParamName ) || '';
+        $GetParam->{$ParamName} = $ParamObject->GetParam( Param => $ParamName ) || '';
     }
 
     $GetParam->{ProviderTransport} =
-        $Self->{ParamObject}->GetParam( Param => 'ProviderTransportList' ) || '';
+        $ParamObject->GetParam( Param => 'ProviderTransportList' ) || '';
 
     $GetParam->{RequesterTransport} =
-        $Self->{ParamObject}->GetParam( Param => 'RequesterTransportList' ) || '';
+        $ParamObject->GetParam( Param => 'RequesterTransportList' ) || '';
 
     return $GetParam;
 }
@@ -1159,27 +1169,32 @@ sub _UpdateConfiguration {
     my $Configuration = $Param{Configuration};
 
     # this function needs to be extended for further otrs versions
-    # it could be that newwer otrs versions has different configuration options
-    # migration from previos version sould be automatic and needs to be done here
+    # it could be that newer otrs versions has different configuration options
+    # migration from previous version should be automatic and needs to be done here
     return $Configuration;
 }
 
 sub _DeleteAction {
     my ( $Self, %Param ) = @_;
 
-    # get webserice configuration
-    my $WebserviceData = $Self->{WebserviceObject}->WebserviceGet( ID => $Param{WebserviceID} );
+    my $WebserviceObject = $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice');
+
+    # get web service configuration
+    my $WebserviceData = $WebserviceObject->WebserviceGet(
+        ID => $Param{WebserviceID},
+    );
 
     # get needed params
-    my $ActionType = $Self->{ParamObject}->GetParam( Param => 'ActionType' );
-    my $ActionName = $Self->{ParamObject}->GetParam( Param => 'ActionName' );
+    my $ParamObject = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $ActionType  = $ParamObject->GetParam( Param => 'ActionType' );
+    my $ActionName  = $ParamObject->GetParam( Param => 'ActionName' );
 
     # set the communication type to Provider or Requester
     my $CommunicationType = $ActionType eq 'Operation' ? 'Provider' : 'Requester';
 
     return if !$WebserviceData->{Config}->{$CommunicationType}->{$ActionType};
 
-    # get the configuration config for the comunnication type (all operations or all invokers)
+    # get the configuration config for the communication type (all operations or all invokers)
     my %ActionTypeConfig = %{ $WebserviceData->{Config}->{$CommunicationType}->{$ActionType} };
 
     my $Success;
@@ -1188,28 +1203,29 @@ sub _DeleteAction {
     if ( $ActionTypeConfig{$ActionName} ) {
         delete $ActionTypeConfig{$ActionName};
 
-        # update webservice configuration
+        # update web service configuration
         my %Config = %{ $WebserviceData->{Config} };
         $Config{$CommunicationType}->{$ActionType} = \%ActionTypeConfig;
 
-        # update webservice
-        $Success = $Self->{WebserviceObject}->WebserviceUpdate(
+        # update web service
+        $Success = $WebserviceObject->WebserviceUpdate(
             %{$WebserviceData},
             Config => \%Config,
             UserID => $Self->{UserID},
         );
     }
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
     # build JSON output
-    my $JSON = $Self->{LayoutObject}->JSONEncode(
+    my $JSON = $LayoutObject->JSONEncode(
         Data => {
             Success => $Success,
         },
     );
 
     # send JSON response
-    return $Self->{LayoutObject}->Attachment(
-        ContentType => 'application/json; charset=' . $Self->{LayoutObject}->{Charset},
+    return $LayoutObject->Attachment(
+        ContentType => 'application/json; charset=' . $LayoutObject->{Charset},
         Content     => $JSON,
         Type        => 'inline',
         NoCache     => 1,

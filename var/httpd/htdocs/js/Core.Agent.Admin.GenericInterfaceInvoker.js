@@ -1,5 +1,4 @@
 // --
-// Core.Agent.Admin.GenericInterfaceInvoker.js - provides the special module functions for the GenericInterface invoker.
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -14,33 +13,47 @@ Core.Agent = Core.Agent || {};
 Core.Agent.Admin = Core.Agent.Admin || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Agent.Admin.GenericInterfaceInvoker
+ * @namespace Core.Agent.Admin.GenericInterfaceInvoker
+ * @memberof Core.Agent.Admin
+ * @author OTRS AG
  * @description
  *      This namespace contains the special module functions for the GenericInterface invoker module.
  */
 Core.Agent.Admin.GenericInterfaceInvoker = (function (TargetNS) {
 
     /**
-     * @variable
      * @private
-     *     This variable stores the parameters that are passed from the DTL and contain all the data that the dialog needs.
+     * @name DialogData
+     * @memberof Core.Agent.Admin.GenericInterfaceInvoker
+     * @member {Array}
+     * @description
+     *     This variable stores the parameters that are passed from the TT and contain all the data that the dialog needs.
      */
     var DialogData = [];
 
     /**
+     * @name Init
+     * @memberof Core.Agent.Admin.GenericInterfaceInvoker
      * @function
-     * @param {Object} Params, initialization and internationalization parameters.
-     * @return nothing
-     *      This function initialize correctly all other function according to the local language
+     * @param {Object} Params
+     * @description
+     *      Initializes the module functions.
      */
     TargetNS.Init = function (Params) {
         TargetNS.WebserviceID = parseInt(Params.WebserviceID, 10);
-        TargetNS.Invoker      = Params.Invoker;
-        TargetNS.Action       = Params.Action;
+        TargetNS.Invoker = Params.Invoker;
+        TargetNS.Action = Params.Action;
         TargetNS.Localization = Params.Localization;
     };
 
+    /**
+     * @name ToogleEventSelect
+     * @memberof Core.Agent.Admin.GenericInterfaceInvoker
+     * @function
+     * @param {String} SelectedEventType
+     * @description
+     *      Toggles the event list.
+     */
     TargetNS.ToogleEventSelect = function (SelectedEventType) {
         $('.EventList').addClass('Hidden');
         $('#' + SelectedEventType + 'Event').removeClass('Hidden');
@@ -48,23 +61,24 @@ Core.Agent.Admin.GenericInterfaceInvoker = (function (TargetNS) {
 
 
     /**
+     * @name AddEvent
+     * @memberof Core.Agent.Admin.GenericInterfaceInvoker
      * @function
-     * @param {String} EventType, the type of event trigger to assign to an invoker
-     * i.e ticket or article
-     * @return nothing
-     *      This function calls the AddEvent action on the server
+     * @param {String} EventType - The type of event trigger to assign to an invoker i.e ticket or article.
+     * @description
+     *      This function calls the AddEvent action on the server.
      */
     TargetNS.AddEvent = function (EventType) {
         var Data = {
                 Action: TargetNS.Action,
                 Subaction: 'AddEvent',
-                NewEvent: $('#'+ EventType + 'Event').val(),
+                NewEvent: $('#' + EventType + 'Event').val(),
                 WebserviceID: TargetNS.WebserviceID,
                 Invoker: TargetNS.Invoker,
                 EventType: EventType
         };
 
-        if ( $('#Asynchronous').is(':checked') ) {
+        if ($('#Asynchronous').is(':checked')) {
             Data.Asynchronous = 1;
         }
 
@@ -74,10 +88,12 @@ Core.Agent.Admin.GenericInterfaceInvoker = (function (TargetNS) {
     };
 
     /**
+     * @name ShowDeleteDialog
+     * @memberof Core.Agent.Admin.GenericInterfaceInvoker
      * @function
-     * @param {EventObject} event object of the clicked element.
-     * @return nothing
-     *      This function shows a confirmation dialog with 2 buttons
+     * @param {Object} Event - Event object of the clicked element.
+     * @description
+     *      This function shows a confirmation dialog with 2 buttons.
      */
     TargetNS.ShowDeleteDialog = function(Event){
         Core.UI.Dialog.ShowContentDialog(
@@ -120,17 +136,20 @@ Core.Agent.Admin.GenericInterfaceInvoker = (function (TargetNS) {
 
                        Core.UI.Dialog.CloseDialog($('#DeleteDialog'));
                    }
-               }           ]
+               }
+           ]
         );
 
         Event.stopPropagation();
     };
 
     /**
+     * @name ShowDeleteEventDialog
+     * @memberof Core.Agent.Admin.GenericInterfaceInvoker
      * @function
-     * @param {EventObject} event object of the clicked element.
-     * @return nothing
-     *      This function shows a confirmation dialog with 2 buttons
+     * @param {Object} Event - Event object of the clicked element.
+     * @description
+     *      This function shows a confirmation dialog with 2 buttons.
      */
     TargetNS.ShowDeleteEventDialog = function(Event){
         var LocalDialogData;
@@ -188,12 +207,13 @@ Core.Agent.Admin.GenericInterfaceInvoker = (function (TargetNS) {
     };
 
     /**
+     * @name BindDeleteEventDialog
+     * @memberof Core.Agent.Admin.GenericInterfaceInvoker
      * @function
-     * @param {Object} Data a control structure that contains the jQueryObjectID,
-     * jQueryObjectSelector and the Invoker Event Trigger Name.
-     * @return nothing
+     * @param {Object} Data - A control structure that contains the jQueryObjectID, jQueryObjectSelector and the Invoker Event Trigger Name.
+     * @description
      *      This function binds a "trash can" link from the invoker event triggers table to the
-     *      function that opens a dialog to delete the event trigger
+     *      function that opens a dialog to delete the event trigger.
      */
     TargetNS.BindDeleteEventDialog = function (Data) {
         DialogData[Data.ElementID] = Data;

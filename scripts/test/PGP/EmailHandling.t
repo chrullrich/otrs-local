@@ -1,5 +1,4 @@
 # --
-# EmailHandling.t - PGP email handling tests
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -13,8 +12,7 @@ use utf8;
 
 use vars (qw($Self));
 
-use Kernel::Output::HTML::ArticleCheckPGP;
-use Kernel::System::Crypt;
+use Kernel::Output::HTML::ArticleCheck::PGP;
 use Kernel::System::PostMaster;
 
 use Kernel::System::VariableCheck qw(:all);
@@ -66,11 +64,9 @@ if ( !-e $ConfigObject->Get('PGP::Bin') ) {
 }
 
 # create local crypt object
-my $CryptObject = Kernel::System::Crypt->new(
-    CryptType => 'PGP',
-);
+my $PGPObject = $Kernel::OM->Get('Kernel::System::Crypt::PGP');
 
-if ( !$CryptObject ) {
+if ( !$PGPObject ) {
     print STDERR "NOTICE: No PGP support!\n";
     return;
 }
@@ -109,7 +105,7 @@ my %Check = (
 # add PGP keys and perform sanity check
 for my $Count ( 1 .. 2 ) {
 
-    my @Keys = $CryptObject->KeySearch(
+    my @Keys = $PGPObject->KeySearch(
         Search => $Search{$Count},
     );
     $Self->False(
@@ -122,7 +118,7 @@ for my $Count ( 1 .. 2 ) {
         Directory => $ConfigObject->Get('Home') . "/scripts/test/sample/Crypt/",
         Filename  => "PGPPrivateKey-$Count.asc",
     );
-    my $Message = $CryptObject->KeyAdd(
+    my $Message = $PGPObject->KeyAdd(
         Key => ${$KeyString},
     );
     $Self->True(
@@ -130,7 +126,7 @@ for my $Count ( 1 .. 2 ) {
         "Key:$Count - KeyAdd()",
     );
 
-    @Keys = $CryptObject->KeySearch(
+    @Keys = $PGPObject->KeySearch(
         Search => $Search{$Count},
     );
 
@@ -147,7 +143,7 @@ for my $Count ( 1 .. 2 ) {
         );
     }
 
-    my $PublicKeyString = $CryptObject->PublicKeyGet(
+    my $PublicKeyString = $PGPObject->PublicKeyGet(
         Key => $Keys[0]->{Key},
     );
     $Self->True(
@@ -155,7 +151,7 @@ for my $Count ( 1 .. 2 ) {
         "Key:$Count - PublicKeyGet()",
     );
 
-    my $PrivateKeyString = $CryptObject->SecretKeyGet(
+    my $PrivateKeyString = $PGPObject->SecretKeyGet(
         Key => $Keys[0]->{KeyPrivate},
     );
     $Self->True(
@@ -247,8 +243,8 @@ for my $Test (@Tests) {
             UserID        => 1,
         );
 
-        # use ArticleCheckPGP to decript the article
-        my $CheckObject = Kernel::Output::HTML::ArticleCheckPGP->new(
+        # use ArticleCheck::PGP to decript the article
+        my $CheckObject = Kernel::Output::HTML::ArticleCheck::PGP->new(
             ArticleID => $ArticleIDs[0],
             UserID    => 1,
         );
@@ -533,7 +529,7 @@ for my $Test (@TestVariations) {
         ArticleID => $ArticleID,
     );
 
-    my $CheckObject = Kernel::Output::HTML::ArticleCheckPGP->new(
+    my $CheckObject = Kernel::Output::HTML::ArticleCheck::PGP->new(
         ArticleID => $ArticleID,
         UserID    => 1,
     );
@@ -647,14 +643,14 @@ for my $TicketID (@AddedTickets) {
 
 # delete PGP keys
 for my $Count ( 1 .. 2 ) {
-    my @Keys = $CryptObject->KeySearch(
+    my @Keys = $PGPObject->KeySearch(
         Search => $Search{$Count},
     );
     $Self->True(
         $Keys[0] || '',
         "Key:$Count - KeySearch()",
     );
-    my $DeleteSecretKey = $CryptObject->SecretKeyDelete(
+    my $DeleteSecretKey = $PGPObject->SecretKeyDelete(
         Key => $Keys[0]->{KeyPrivate},
     );
     $Self->True(
@@ -662,7 +658,7 @@ for my $Count ( 1 .. 2 ) {
         "Key:$Count - SecretKeyDelete()",
     );
 
-    my $DeletePublicKey = $CryptObject->PublicKeyDelete(
+    my $DeletePublicKey = $PGPObject->PublicKeyDelete(
         Key => $Keys[0]->{Key},
     );
     $Self->True(
@@ -670,7 +666,7 @@ for my $Count ( 1 .. 2 ) {
         "Key:$Count - PublicKeyDelete()",
     );
 
-    @Keys = $CryptObject->KeySearch(
+    @Keys = $PGPObject->KeySearch(
         Search => $Search{$Count},
     );
     $Self->False(

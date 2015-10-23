@@ -1,5 +1,4 @@
 # --
-# Provider.t - Provider tests
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -305,6 +304,7 @@ for my $Test (@Tests) {
 
                 # reset CGI object from previous runs
                 CGI::initialize_globals();
+                $Kernel::OM->ObjectsDiscard('Kernel::System::Web::Request');
 
                 $ProviderObject->Run();
             }

@@ -1,5 +1,4 @@
 // --
-// Core.Agent.Dashboard.js - provides the special module functions for the dashboard
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -13,17 +12,21 @@ var Core = Core || {};
 Core.Agent = Core.Agent || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Agent.Dashboard
+ * @namespace Core.Agent.Dashboard
+ * @memberof Core.Agent
+ * @author OTRS AG
  * @description
  *      This namespace contains the special module functions for the Dashboard.
  */
 Core.Agent.Dashboard = (function (TargetNS) {
 
     /**
+     * @name InitCustomerIDAutocomplete
+     * @memberof Core.Agent.Dashboard
      * @function
-     * @param {jQueryObject} $Input Input element to add auto complete to
-     * @return nothing
+     * @param {jQueryObject} $Input - Input element to add auto complete to.
+     * @description
+     *      Initialize autocompletion for CustomerID.
      */
     TargetNS.InitCustomerIDAutocomplete = function ($Input) {
         $Input.autocomplete({
@@ -51,15 +54,15 @@ Core.Agent.Dashboard = (function (TargetNS) {
                 }
 
                 $Input.data('AutoCompleteXHR', Core.AJAX.FunctionCall(URL, Data, function (Result) {
-                    var Data = [];
+                    var ValueData = [];
                     $Input.removeData('AutoCompleteXHR');
                     $.each(Result, function () {
-                        Data.push({
+                        ValueData.push({
                             label: this.Label + ' (' + this.Value + ')',
                             value: this.Value
                         });
                     });
-                    Response(Data);
+                    Response(ValueData);
                 }));
             },
             select: function (Event, UI) {
@@ -74,10 +77,12 @@ Core.Agent.Dashboard = (function (TargetNS) {
     };
 
     /**
+     * @name InitCustomerUserAutocomplete
+     * @memberof Core.Agent.Dashboard
      * @function
-     * @param {jQueryObject} $Input Input element to add auto complete to
-     * @param {String} Subaction Subaction to execute, "SearchCustomerID" or "SearchCustomerUser"
-     * @return nothing
+     * @param {jQueryObject} $Input - Input element to add auto complete to.
+     * @description
+     *      Initialize autocompletion for CustomerUser.
      */
     TargetNS.InitCustomerUserAutocomplete = function ($Input) {
         $Input.autocomplete({
@@ -104,16 +109,16 @@ Core.Agent.Dashboard = (function (TargetNS) {
                 }
 
                 $Input.data('AutoCompleteXHR', Core.AJAX.FunctionCall(URL, Data, function (Result) {
-                    var Data = [];
+                    var ValueData = [];
                     $Input.removeData('AutoCompleteXHR');
                     $.each(Result, function () {
-                        Data.push({
+                        ValueData.push({
                             label: this.CustomerValue + " (" + this.CustomerKey + ")",
                             value: this.CustomerValue,
                             key: this.CustomerKey
                         });
                     });
-                    Response(Data);
+                    Response(ValueData);
                 }));
             },
             select: function (Event, UI) {
@@ -128,10 +133,13 @@ Core.Agent.Dashboard = (function (TargetNS) {
     };
 
     /**
+     * @name InitUserAutocomplete
+     * @memberof Core.Agent.Dashboard
      * @function
-     * @param {jQueryObject} $Input Input element to add auto complete to
-     * @param {String} Subaction Subaction to execute, "SearchCustomerID" or "SearchCustomerUser"
-     * @return nothing
+     * @param {jQueryObject} $Input - Input element to add auto complete to.
+     * @param {String} Subaction - Subaction to execute, "SearchCustomerID" or "SearchCustomerUser".
+     * @description
+     *      Initialize autocompletion for User.
      */
     TargetNS.InitUserAutocomplete = function ($Input, Subaction) {
         $Input.autocomplete({
@@ -159,16 +167,16 @@ Core.Agent.Dashboard = (function (TargetNS) {
                 }
 
                 $Input.data('AutoCompleteXHR', Core.AJAX.FunctionCall(URL, Data, function (Result) {
-                    var Data = [];
+                    var ValueData = [];
                     $Input.removeData('AutoCompleteXHR');
                     $.each(Result, function () {
-                        Data.push({
+                        ValueData.push({
                             label: this.UserValue + " (" + this.UserKey + ")",
                             value: this.UserValue,
                             key: this.UserKey
                         });
                     });
-                    Response(Data);
+                    Response(ValueData);
                 }));
             },
             select: function (Event, UI) {
@@ -182,62 +190,67 @@ Core.Agent.Dashboard = (function (TargetNS) {
         });
     };
 
-
     /**
+     * @name Init
+     * @memberof Core.Agent.Dashboard
      * @function
-     * @return nothing
-     *      This function initializes the special module functions
+     * @description
+     *      Initialize the dashboard module.
      */
     TargetNS.Init = function () {
-        Core.UI.DnD.Sortable(
-            $('.SidebarColumn'),
-            {
-                Handle: '.Header h2',
-                Items: '.CanDrag',
-                Placeholder: 'DropPlaceholder',
-                Tolerance: 'pointer',
-                Distance: 15,
-                Opacity: 0.6,
-                Update: function (event, ui) {
-                    var url = 'Action=' + Core.Config.Get('Action') + ';Subaction=UpdatePosition;';
-                    $('.CanDrag').each(
-                        function (i) {
-                            url = url + ';Backend=' + $(this).attr('id');
-                        }
-                    );
-                    Core.AJAX.FunctionCall(
-                        Core.Config.Get('CGIHandle'),
-                        url,
-                        function () {}
-                    );
+        // Disable drag and drop of dashboard widgets on mobile / touch devices
+        // to prevent accidentally moved widgets while tabbing/swiping
+        if (!Core.App.Responsive.IsTouchDevice()) {
+            Core.UI.DnD.Sortable(
+                $('.SidebarColumn'),
+                {
+                    Handle: '.Header h2',
+                    Items: '.CanDrag',
+                    Placeholder: 'DropPlaceholder',
+                    Tolerance: 'pointer',
+                    Distance: 15,
+                    Opacity: 0.6,
+                    Update: function () {
+                        var url = 'Action=' + Core.Config.Get('Action') + ';Subaction=UpdatePosition;';
+                        $('.CanDrag').each(
+                            function () {
+                                url = url + ';Backend=' + $(this).attr('id');
+                            }
+                        );
+                        Core.AJAX.FunctionCall(
+                            Core.Config.Get('CGIHandle'),
+                            url,
+                            function () {}
+                        );
+                    }
                 }
-            }
-        );
+            );
 
-        Core.UI.DnD.Sortable(
-            $('.ContentColumn'),
-            {
-                Handle: '.Header h2',
-                Items: '.CanDrag',
-                Placeholder: 'DropPlaceholder',
-                Tolerance: 'pointer',
-                Distance: 15,
-                Opacity: 0.6,
-                Update: function (event, ui) {
-                    var url = 'Action=' + Core.Config.Get('Action') + ';Subaction=UpdatePosition;';
-                    $('.CanDrag').each(
-                        function (i) {
-                            url = url + ';Backend=' + $(this).attr('id');
-                        }
-                    );
-                    Core.AJAX.FunctionCall(
-                        Core.Config.Get('CGIHandle'),
-                        url,
-                        function () {}
-                    );
+            Core.UI.DnD.Sortable(
+                $('.ContentColumn'),
+                {
+                    Handle: '.Header h2',
+                    Items: '.CanDrag',
+                    Placeholder: 'DropPlaceholder',
+                    Tolerance: 'pointer',
+                    Distance: 15,
+                    Opacity: 0.6,
+                    Update: function () {
+                        var url = 'Action=' + Core.Config.Get('Action') + ';Subaction=UpdatePosition;';
+                        $('.CanDrag').each(
+                            function () {
+                                url = url + ';Backend=' + $(this).attr('id');
+                            }
+                        );
+                        Core.AJAX.FunctionCall(
+                            Core.Config.Get('CGIHandle'),
+                            url,
+                            function () {}
+                        );
+                    }
                 }
-            }
-        );
+            );
+        }
 
         $('.SettingsWidget').find('label').each(function() {
             if ($(this).find('input').prop('checked')) {
@@ -249,15 +262,18 @@ Core.Agent.Dashboard = (function (TargetNS) {
         });
 
         Core.Agent.TableFilters.SetAllocationList();
+
     };
 
     /**
+     * @name RegisterUpdatePreferences
+     * @memberof Core.Agent.Dashboard
      * @function
-     * @return nothing
+     * @param {jQueryObject} $ClickedElement - The jQuery object of the element(s) that get the event listener.
+     * @param {string} ElementID - The ID of the element whose content should be updated with the server answer.
+     * @param {jQueryObject} $Form - The jQuery object of the form with the data for the server request.
+     * @description
      *      This function binds a click event on an html element to update the preferences of the given dahsboard widget
-     * @param {jQueryObject} $ClickedElement The jQuery object of the element(s) that get the event listener
-     * @param {string} ElementID The ID of the element whose content should be updated with the server answer
-     * @param {jQueryObject} $Form The jQuery object of the form with the data for the server request
      */
     TargetNS.RegisterUpdatePreferences = function ($ClickedElement, ElementID, $Form) {
         if (isJQueryObject($ClickedElement) && $ClickedElement.length) {
@@ -266,17 +282,24 @@ Core.Agent.Dashboard = (function (TargetNS) {
                     ValidationErrors = false;
 
                 // check for elements to validate
-                $ClickedElement.closest('fieldset').find('.StatsSettingsBox').find('.TimeRelativeUnitGeneric').each(function() {
-                    if (parseInt($(this).prev('select').val(), 10) * parseInt($(this).find('option:selected').attr('data-seconds'), 10) > parseInt($(this).closest('.Value').attr('data-max-seconds'), 10)) {
-                        ValidationErrors = true;
+                $ClickedElement.closest('fieldset').find('.StatsSettingsBox').find('.TimeRelativeUnitView').each(function() {
+                    var MaxXaxisAttributes = Core.Config.Get('StatsMaxXaxisAttributes') || 1000,
+                    TimePeriod             = parseInt($(this).prev('select').prev('select').val(), 10) * parseInt($(this).find('option:selected').attr('data-seconds'), 10),
+                    TimeUpcomingPeriod     = parseInt($(this).prev('select').val(), 10) * parseInt($(this).find('option:selected').attr('data-seconds'), 10),
+                    $ScaleCount            = $(this).closest('.Value').prevAll('.Value').first().children('select').first(),
+                    ScalePeriod            = parseInt($ScaleCount.val(), 10) * parseInt($ScaleCount.next('select').find('option:selected').attr('data-seconds'), 10)
+
+                    if ((TimePeriod + TimeUpcomingPeriod) / ScalePeriod > MaxXaxisAttributes) {
                         $(this)
                             .add($(this).prev('select'))
+                            .add($(this).prev('select').prev('select'))
                             .add($(this).closest('.Value'))
                             .addClass('Error');
                     }
                     else {
                         $(this)
                             .add($(this).prev('select'))
+                            .add($(this).prev('select').prev('select'))
                             .add($(this).closest('.Value'))
                             .removeClass('Error');
                     }
@@ -289,7 +312,6 @@ Core.Agent.Dashboard = (function (TargetNS) {
 
                 Core.AJAX.ContentUpdate($('#' + ElementID), URL, function () {
                     Core.UI.ToggleTwoContainer($('#' + ElementID + '-setting'), $('#' + ElementID));
-                    Core.UI.Table.InitCSSPseudoClasses();
                 });
                 return false;
             });
@@ -297,29 +319,24 @@ Core.Agent.Dashboard = (function (TargetNS) {
     };
 
     /**
+     * @name EventsTicketCalendarInit
+     * @memberof Core.Agent.Dashboard
      * @function
-     * @param Params Hash with different config options:
-     *               MonthNames: Array containing the localized strings for each month
-     *               MonthNamesShort: Array containing the localized strings for each month on shorth format
-     *               DayNames: Array containing the localized strings for each week day
-     *               DayNamesShort: Array containing the localized strings for each week day on short format
-     *               ButtonText: Array containing the localized strings for each week day on short format:
-     *                  today: Localized string for the word "Today"
-     *                  month: Localized string for the word "month"
-     *                  week: Localized string for the word "week"
-     *                  day: Localized string for the word "day"
-     *              Events: Array of hashes including the data for each event
-     * @return nothing
-     * @description The main dialog function used for all different types of dialogs.
+     * @param {Object} Params - Hash with different config options.
+     * @param {Array} Params.MonthNames - Array containing the localized strings for each month.
+     * @param {Array} Params.MonthNamesShort - Array containing the localized strings for each month on shorth format.
+     * @param {Array} Params.DayNames - Array containing the localized strings for each week day.
+     * @param {Array} Params.DayNamesShort - Array containing the localized strings for each week day on short format.
+     * @param {Array} Params.ButtonText - Array containing the localized strings for each week day on short format.
+     * @param {String} Params.ButtonText.today - Localized string for the word "Today".
+     * @param {String} Params.ButtonText.month - Localized string for the word "month".
+     * @param {String} Params.ButtonText.week - Localized string for the word "week".
+     * @param {String} Params.ButtonText.day - Localized string for the word "day".
+     * @param {Array} Params.Events - Array of hashes including the data for each event.
+     * @description
+     *      Initializes the event ticket calendar.
      */
-
     TargetNS.EventsTicketCalendarInit = function (Params) {
-        var date = new Date(),
-        d = date.getDate(),
-        m = date.getMonth(),
-        y = date.getFullYear(),
-        jsEvent;
-
         $('#calendar').fullCalendar({
             header: {
                 left: 'month,agendaWeek,agendaDay',
@@ -335,8 +352,8 @@ Core.Agent.Dashboard = (function (TargetNS) {
             dayNames: Params.DayNames,
             dayNamesShort: Params.DayNamesShort,
             buttonText: Params.ButtonText,
-            eventMouseover: function(calEvent, jsEvent, view) {
-                var Layer, Styles, PosX, PosY, DocumentVisible, ContainerHeight,
+            eventMouseover: function(calEvent, jsEvent) {
+                var Layer, PosX, PosY, DocumentVisible, ContainerHeight,
                     LastYPosition, VisibleScrollPosition, WindowHeight;
 
                 // define PosX and PosY
@@ -373,18 +390,18 @@ Core.Agent.Dashboard = (function (TargetNS) {
                 // re-calculate Top position if needed
                 VisibleScrollPosition = $(document).scrollTop();
                 WindowHeight = $(window).height();
-                DocumentVisible  = VisibleScrollPosition + WindowHeight;
+                DocumentVisible = VisibleScrollPosition + WindowHeight;
 
                 ContainerHeight = $('#events-layer').height();
                 LastYPosition = PosY + ContainerHeight;
-                if ( LastYPosition > DocumentVisible ) {
+                if (LastYPosition > DocumentVisible) {
                     PosY = PosY - (LastYPosition - DocumentVisible) - 10;
-                    $('#events-layer').css('top', PosY+'px');
+                    $('#events-layer').css('top', PosY + 'px');
                 }
 
                 $('#events-layer').fadeIn("fast");
             },
-            eventMouseout: function(calEvent, jsEvent, view) {
+            eventMouseout: function() {
                 $('#events-layer').fadeOut("fast");
                 $('#events-layer').remove();
             },
@@ -393,67 +410,80 @@ Core.Agent.Dashboard = (function (TargetNS) {
     };
 
     /**
+     * @name InitStatsConfiguration
+     * @memberof Core.Agent.Dashboard
      * @function
-     * @return nothing
-     *      Initializes the configuration page for a stats dashboard widget
+     * @param {jQueryObject} $Container
+     * @description
+     *      Initializes the configuration page for a stats dashboard widget.
      */
     TargetNS.InitStatsConfiguration = function($Container) {
 
         // Initialize the time multiplicators for the time validation.
-        $('.TimeRelativeUnitGeneric, .TimeScaleUnitGeneric', $Container).find('option').each(function() {
+        $('.TimeRelativeUnitView, .TimeScaleView', $Container).find('option').each(function() {
             var SecondsMapping = {
-                'Year'   : 31536000,
-                'Month'  : 2592000,
-                'Week'   : 604800,
-                'Day'    : 86400,
-                'Hour'   : 3600,
-                'Minute' : 60,
-                'Second' : 1
+                'Year': 31536000,
+                'HalfYear': 15724800,
+                'Quarter': 7862400,
+                'Month': 2592000,
+                'Week': 604800,
+                'Day': 86400,
+                'Hour': 3600,
+                'Minute': 60,
+                'Second': 1
             };
 
             $(this).attr('data-seconds', SecondsMapping[$(this).val()]);
         });
 
-        // check for validity of relative time settings
-        // each time setting has its own maximum value in data-max-seconds attribute on the .Value div.
-        // if the combination of unit and count is higher than this value, the select boxes will be
-        // colored with red and the submit button will be blocked.
+
+        /**
+         * @private
+         * @name ValidateTimeSettings
+         * @memberof Core.Agent.Dashboard.InitStatsConfiguration
+         * @function
+         * @description
+         *      Check for validity of relative time settings
+         *      Each time setting has its own maximum value in data-max-seconds and data-upcoming-max-seconds attribute on the .Value div.
+         *      If the combination of unit and count is higher than this value, the select boxes will be
+         *      colored with red and the submit button will be blocked.
+         */
         function ValidateTimeSettings() {
 
-            $Container.find('.TimeRelativeUnitGeneric').each(function() {
-                if (parseInt($(this).prev('select').val(), 10) * parseInt($(this).find('option:selected').attr('data-seconds'), 10) > parseInt($(this).closest('.Value').attr('data-max-seconds'), 10)) {
+            $Container.find('.TimeRelativeUnitView').each(function() {
+                var MaxXaxisAttributes = Core.Config.Get('StatsMaxXaxisAttributes') || 1000,
+                TimePeriod             = parseInt($(this).prev('select').prev('select').val(), 10) * parseInt($(this).find('option:selected').attr('data-seconds'), 10),
+                TimeUpcomingPeriod     = parseInt($(this).prev('select').val(), 10) * parseInt($(this).find('option:selected').attr('data-seconds'), 10),
+                $ScaleCount            = $(this).closest('.Value').prevAll('.Value').first().children('select').first(),
+                ScalePeriod            = parseInt($ScaleCount.val(), 10) * parseInt($ScaleCount.next('select').find('option:selected').attr('data-seconds'), 10)
 
+                if ((TimePeriod + TimeUpcomingPeriod) / ScalePeriod > MaxXaxisAttributes) {
                     $(this)
                         .add($(this).prev('select'))
+                        .add($(this).prev('select').prev('select'))
                         .add($(this).closest('.Value'))
                         .addClass('Error');
                 }
                 else {
                     $(this)
                         .add($(this).prev('select'))
+                        .add($(this).prev('select').prev('select'))
                         .add($(this).closest('.Value'))
                         .removeClass('Error');
                 }
             });
 
-            $Container.find('.TimeScaleUnitGeneric').each(function() {
-                if (parseInt($(this).prev('select').val(), 10) * parseInt($(this).find('option:selected').attr('data-seconds'), 10) < parseInt($(this).closest('.Value').attr('data-min-seconds'), 10)) {
-
-                    $(this)
-                        .add($(this).prev('select'))
-                        .add($(this).closest('.Value'))
-                        .addClass('Error');
+            $Container.find('.TimeScaleView').each(function() {
+                if ($(this).find('option').length == 0) {
+                    $(this).addClass('Error');
                 }
                 else {
-                    $(this)
-                        .add($(this).prev('select'))
-                        .add($(this).closest('.Value'))
-                        .removeClass('Error');
+                    $(this).removeClass('Error');
                 }
             });
 
             $Container.each(function() {
-                if ($(this).find('.TimeRelativeUnitGeneric.Error, .TimeScaleUnitGeneric.Error').length) {
+                if ($(this).find('.TimeRelativeUnitView.Error').length || $(this).find('.TimeScaleView.Error').length) {
                     $(this)
                         .next('.Buttons')
                         .find('button:first-child')
@@ -470,7 +500,14 @@ Core.Agent.Dashboard = (function (TargetNS) {
             });
         }
 
-        // Serializes all configured settings to a hidden field with JSON
+        /**
+         * @private
+         * @name CollectStatsData
+         * @memberof Core.Agent.Dashboard.InitStatsConfiguration
+         * @function
+         * @description
+         *      Serializes all configured settings to a hidden field with JSON.
+         */
         function CollectStatsData() {
             var Data = {};
 
@@ -487,9 +524,6 @@ Core.Agent.Dashboard = (function (TargetNS) {
         });
 
         ValidateTimeSettings();
-
-        // set chart type selection for dropdown
-        $('#ChartType').val($('#ChartType').data('selected'));
     };
 
     return TargetNS;

@@ -1,6 +1,4 @@
 # --
-# Kernel/System/Ticket/IndexAccelerator/RuntimeDB.pm - realtime database
-# queue ticket index module
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -75,11 +73,12 @@ sub TicketAcceleratorIndex {
         $Type = 'ro';
     }
 
-    my @GroupIDs = $Kernel::OM->Get('Kernel::System::Group')->GroupMemberList(
+    my %GroupList = $Kernel::OM->Get('Kernel::System::Group')->PermissionUserGet(
         UserID => $Param{UserID},
         Type   => $Type,
-        Result => 'ID',
     );
+
+    my @GroupIDs = sort keys %GroupList;
 
     my @QueueIDs = @{ $Param{ShownQueueIDs} };
     my %Queues;

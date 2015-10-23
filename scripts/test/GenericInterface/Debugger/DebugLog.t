@@ -1,5 +1,4 @@
 # --
-# DebugLog.t - DebugLog tests
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -457,6 +456,36 @@ for my $Test (@Tests) {
     }
 
 }
+
+# check if search contains exactly communication ids
+my %DebugLogIDCheck = map { $_ => 1 } @DebugLogIDs;
+my $AllEntries = $DebugLogObject->LogSearch(
+    WebserviceID => $WebserviceID,
+);
+for my $Entry ( @{$AllEntries} ) {
+    $Self->True(
+        $DebugLogIDCheck{ $Entry->{CommunicationID} },
+        "LogSearch() for webservice found CommunicationID $Entry->{CommunicationID}",
+    );
+    delete $DebugLogIDCheck{ $Entry->{CommunicationID} };
+}
+for my $CommunicationID ( sort keys %DebugLogIDCheck ) {
+    $Self->False(
+        $CommunicationID,
+        "LogSearch() for webservice found CommunicationID $CommunicationID",
+    );
+}
+
+# check LogSearch() limit
+my $OneEntry = $DebugLogObject->LogSearch(
+    WebserviceID => $WebserviceID,
+    Limit        => 1,
+);
+$Self->Is(
+    scalar @{$OneEntry},
+    1,
+    "LogSearch() limit returns expected number of results",
+);
 
 # end tests
 

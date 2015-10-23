@@ -45,10 +45,6 @@ ul.Tablelike li.OneRow .AsBlock {
     text-overflow: ellipsis;
 }
 
-ul.Tablelike li.Even {
-    background-color: #F5F5F5;
-}
-
 ul.Tablelike li:nth-child(even) {
     background-color: #F5F5F5;
 }
@@ -91,6 +87,16 @@ ul.Tablelike li.Header + li {
     background: #f5f5f5;
 }
 
+.WidgetSimple.MobileNotAvailableWidget {
+    display: none;
+}
+
+.WidgetSimple .WidgetSimple {
+    background: #F2EFEF;
+    border: 1px solid #ddd;
+    margin: 15px 10px;
+}
+
 .WidgetSimple > .Header,
 .WidgetSimple.Collapsed.AnimationRunning > .Header {
     padding: 2px 5px 2px 5px;
@@ -126,6 +132,10 @@ ul.Tablelike li.Header + li {
      */
     min-height: 0%;
     /* END IE9 Hover Bug Workaround */
+}
+
+.WidgetSimple > .Content.OverflowVisible {
+    overflow: visible;
 }
 
 .WidgetSimple.QueueOverview > .Content {
@@ -317,11 +327,11 @@ ul.Tablelike li.Header + li {
     color: #555 !important;
 }
 
-.Expanded .WidgetAction.Toggle i.fa-caret-right {
+.Expanded > .Header > .WidgetAction.Toggle i.fa-caret-right {
     display: none !important;
 }
 
-.Collapsed .WidgetAction.Toggle i.fa-caret-down {
+.Collapsed > .Header > .WidgetAction.Toggle i.fa-caret-down {
     display: none !important;
 }
 
@@ -367,8 +377,44 @@ ul.Tablelike li.Header + li {
     right: 0px;
 }
 
+ul.WidgetTooltip {
+    width: 170px;
+    right: -3px;
+    top: 21px;
+    background: rgba(216, 216, 216, 0.85);
+}
+
+ul.WidgetTooltip li {
+    padding: 7px 13px 2px 23px;
+    text-align: left;
+    position: relative;
+    border-bottom: 1px solid #ccc;
+}
+
+ul.WidgetTooltip li i {
+    position: absolute;
+    left: 6px;
+    top: 7px;
+    color: #aaa !important;
+}
+
+ul.WidgetTooltip li:last-child {
+    border-bottom: 0px;
+}
+
+ul.WidgetTooltip li a {
+    color: #333;
+}
+
+ul.WidgetTooltip li a:hover {
+    text-decoration: underline;
+}
+
+ul.WidgetTooltip li a:hover i {
+    color: #333 !important;
+}
+
 .WidgetTooltip a {
-    background-color: #fff;
     padding: 0px;
     line-height: 150%;
     font-size: 11px;
@@ -403,7 +449,7 @@ ul.Tablelike li.Header + li {
     margin: 0px auto;
     padding: 2px 3px;
     display: block;
-    width: 249px;
+    width: 240px;
 }
 
 .WidgetSimple .ActionList select + .FieldExplanation {
@@ -422,6 +468,10 @@ ul.Tablelike li.Header + li {
     display: inline-block;
     cursor: pointer;
     transition: all ease-in 0.2s;
+}
+
+.CallForAction:disabled {
+    cursor: default;
 }
 
 .cke_dialog_footer_buttons a.cke_dialog_ui_button {
@@ -485,6 +535,11 @@ ul.Tablelike li.Header + li {
     text-shadow: 0 1px 0 #FFF;
     cursor: pointer;
     position: relative;
+}
+
+.CallForAction:disabled span {
+    color: graytext !important;
+    cursor: default;
 }
 
 .cke_dialog_footer_buttons td a.cke_dialog_ui_button span {
@@ -697,11 +752,11 @@ input.FilterBox {
     background: none;
 }
 
-#ProgressBar li:last-child, #ProgressBar li.Last {
+#ProgressBar li:last-child {
     border-right-width: 1px;
 }
 
-#ProgressBar li:last-child a, #ProgressBar li.Last a {
+#ProgressBar li:last-child a {
     border-right-width: 1px;
     padding-right: 14px;
 }

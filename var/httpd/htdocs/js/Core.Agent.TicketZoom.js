@@ -1,5 +1,4 @@
 // --
-// Core.Agent.TicketZoom.js - provides the special module functions for TicketZoom
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -13,33 +12,53 @@ var Core = Core || {};
 Core.Agent = Core.Agent || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Agent.TicketZoom
+ * @namespace Core.Agent.TicketZoom
+ * @memberof Core.Agent
+ * @author OTRS AG
  * @description
  *      This namespace contains the special module functions for TicketZoom.
  */
 Core.Agent.TicketZoom = (function (TargetNS) {
+    /**
+     * @private
+     * @name CheckURLHashTimeout
+     * @memberof Core.Agent.TicketZoom
+     * @member {Object}
+     * @description
+     *      CheckURLHashTimeout
+     */
     var CheckURLHashTimeout,
+    /**
+     * @private
+     * @name InitialArticleID
+     * @memberof Core.Agent.TicketZoom
+     * @member {String}
+     * @description
+     *      InitialArticleID
+     */
         InitialArticleID;
 
     /**
+     * @name MarkTicketAsSeen
+     * @memberof Core.Agent.TicketZoom
      * @function
-     * @param {String} TicketID of ticket which get's shown
-     * @return nothing
+     * @param {String} TicketID - TicketID of ticket which gets shown
+     * @description
      *      Mark all articles as seen in frontend and backend.
      *      Article Filters will not be considered
      */
     TargetNS.MarkTicketAsSeen = function (TicketID) {
         TargetNS.TicketMarkAsSeenTimeout = window.setTimeout(function () {
-            // Mark old row as readed
-            $('#ArticleTable .ArticleID').closest('tr').removeClass('UnreadArticles').find('span.UnreadArticles').remove();
-
-            // Mark article as seen in backend
             var Data = {
                 Action: 'AgentTicketZoom',
                 Subaction: 'TicketMarkAsSeen',
                 TicketID: TicketID
             };
+
+            // Mark old row as read
+            $('#ArticleTable .ArticleID').closest('tr').removeClass('UnreadArticles').find('span.UnreadArticles').remove();
+
+            // Mark article as seen in backend
             Core.AJAX.FunctionCall(
                 Core.Config.Get('CGIHandle'),
                 Data,
@@ -49,10 +68,13 @@ Core.Agent.TicketZoom = (function (TargetNS) {
     };
 
     /**
+     * @name MarkAsSeen
+     * @memberof Core.Agent.TicketZoom
      * @function
-     * @param {String} TicketID of ticket which get's shown
-     * @param {String} ArticleID of article which get's shown
-     * @return nothing
+     * @param {String} TicketID - TicketID of ticket which get's shown.
+     * @param {String} ArticleID - ArticleID of article which get's shown.
+     * @param {String} [Timeout=3000] - Timeout in milliseconds
+     * @description
      *      Mark an article as seen in frontend and backend.
      */
     TargetNS.MarkAsSeen = function (TicketID, ArticleID, Timeout) {
@@ -63,19 +85,20 @@ Core.Agent.TicketZoom = (function (TargetNS) {
         }
 
         TargetNS.MarkAsSeenTimeout = window.setTimeout(function () {
-            // Mark old row as readed
-            $('#ArticleTable .ArticleID[value=' + ArticleID + ']').closest('tr').removeClass('UnreadArticles').find('span.UnreadArticles').remove();
-            $('.ChronicalView li#ArticleID_' + ArticleID).find('.UnreadArticles').fadeOut(function() {
-                $(this).closest('li').addClass('Seen');
-            });
-
-            // Mark article as seen in backend
             var Data = {
                 Action: 'AgentTicketZoom',
                 Subaction: 'MarkAsSeen',
                 TicketID: TicketID,
                 ArticleID: ArticleID
             };
+
+            // Mark old row as readed
+            $('#ArticleTable .ArticleID[value=' + ArticleID + ']').closest('tr').removeClass('UnreadArticles').find('span.UnreadArticles').remove();
+            $('.TimelineView li#ArticleID_' + ArticleID).find('.UnreadArticles').fadeOut(function() {
+                $(this).closest('li').addClass('Seen');
+            });
+
+            // Mark article as seen in backend
             Core.AJAX.FunctionCall(
                 Core.Config.Get('CGIHandle'),
                 Data,
@@ -85,14 +108,18 @@ Core.Agent.TicketZoom = (function (TargetNS) {
     };
 
     /**
+     * @name IframeAutoHeight
+     * @memberof Core.Agent.TicketZoom
      * @function
-     * @param {jQueryObject} $Iframe The iframe which should be auto-heighted
-     * @return nothing
-     *      This function initializes the special module functions
+     * @param {jQueryObject} $Iframe - The iframe which should be auto-heighted
+     * @description
+     *      Set iframe height automatically based on real content height and default config setting.
      */
     TargetNS.IframeAutoHeight = function ($Iframe) {
+        var NewHeight;
+
         if (isJQueryObject($Iframe)) {
-            var NewHeight = $Iframe.contents().height();
+            NewHeight = $Iframe.contents().height();
             if (!NewHeight || isNaN(NewHeight)) {
                 NewHeight = Core.Config.Get('Ticket::Frontend::HTMLArticleHeightDefault');
             }
@@ -106,12 +133,14 @@ Core.Agent.TicketZoom = (function (TargetNS) {
     };
 
     /**
-     * @function
      * @private
-     * @param {String} ArticleURL The URL which should be loaded via AJAX
-     * @param {String} ArticleID The article number of the loaded article
-     * @return nothing
-     *      This function loads the given article via ajax
+     * @name LoadArticle
+     * @memberof Core.Agent.TicketZoom
+     * @function
+     * @param {String} ArticleURL - The URL which should be loaded via AJAX
+     * @param {String} ArticleID - The article number of the loaded article
+     * @description
+     *      This function loads the given article via ajax.
      */
     function LoadArticle(ArticleURL, ArticleID) {
         // Clear timeout for URL hash check, because hash is now changed manually
@@ -135,7 +164,7 @@ Core.Agent.TicketZoom = (function (TargetNS) {
             // Offset of scroller element (relative)
                 ScrollerOffset = $('div.Scroller').get(0).scrollTop;
 
-            $('#ArticleItems a.AsPopup').bind('click', function (Event) {
+            $('#ArticleItems a.AsPopup').bind('click', function () {
                 var Matches,
                     PopupType = 'TicketAction';
 
@@ -160,6 +189,11 @@ Core.Agent.TicketZoom = (function (TargetNS) {
                 location.hash = '#' + ArticleID;
                 TargetNS.ActiveURLHash = ArticleID;
             }
+
+            // add switchable toggle for new article
+            $('label.Switchable').off('click.Switch').on('click.Switch', function() {
+                $(this).next('p.Value').find('.Switch').toggleClass('Hidden');
+            });
 
             //Remove Loading class
             $('#ArticleItems .WidgetBox').removeClass('Loading');
@@ -188,17 +222,21 @@ Core.Agent.TicketZoom = (function (TargetNS) {
     }
 
     /**
+     * @name LoadArticleFromExternal
+     * @memberof Core.Agent.TicketZoom
      * @function
-     * @return nothing
-     *      Used in OTRSBusiness
+     * @param {String} ArticleID - The article number of the loaded article
+     * @param {Object} WindowObject
+     * @description
+     *      Used in OTRS Business Solution (TM). Loads an article in the Zoom from another window context (e.g. popup).
      */
     TargetNS.LoadArticleFromExternal = function (ArticleID, WindowObject) {
-        var $Element = $('#ArticleTable td.No input.ArticleID[value=' + ArticleID +']'),
+        var $Element = $('#ArticleTable td.No input.ArticleID[value=' + ArticleID + ']'),
             ArticleURL;
 
         // Check if we are in timeline view
         // in this case we can jump directly to the article
-        if ($('.ArticleView .Chronical').hasClass('Active')) {
+        if ($('.ArticleView .Timeline').hasClass('Active')) {
             window.location.hash = '#ArticleID_' + ArticleID;
         }
         else {
@@ -217,8 +255,10 @@ Core.Agent.TicketZoom = (function (TargetNS) {
     };
 
     /**
+     * @name CheckURLHash
+     * @memberof Core.Agent.TicketZoom
      * @function
-     * @return nothing
+     * @description
      *      This function checks if the url hash (representing the current article)
      *      has changed and initiates an article load. A change can happen by clicking
      *      'back' in the browser, for example.
@@ -261,16 +301,19 @@ Core.Agent.TicketZoom = (function (TargetNS) {
     };
 
     /**
+     * @name Init
+     * @memberof Core.Agent.TicketZoom
      * @function
-     * @return nothing
-     *      This function initializes the special module functions
+     * @param {Object} Options - The options, mostly defined in SysConfig and passed through.
+     * @param {Number} Options.ArticleTableHeight - The height of the article table. Value is stored in the user preferences.
+     * @description
+     *      This function initializes the special module functions.
      */
     TargetNS.Init = function (Options) {
         var ZoomExpand = false,
             URLHash,
             $ArticleElement,
-            ResizeTimeoutScroller,
-            ResizeTimeoutWindow;
+            ResizeTimeoutScroller;
 
         // Check, if ZoomExpand is active or not
         // Only active on tickets with less than 400 articles (see bug#8424)
@@ -278,7 +321,7 @@ Core.Agent.TicketZoom = (function (TargetNS) {
             ZoomExpand = !$('div.ArticleView a.OneArticle').hasClass('Active');
         }
 
-        Core.UI.Resizable.Init($('#ArticleTableBody'), Options.ArticleTableHeight, function (Event, UI, Height, Width) {
+        Core.UI.Resizable.Init($('#ArticleTableBody'), Options.ArticleTableHeight, function (Event, UI, Height) {
             // remember new height for next reload
             window.clearTimeout(ResizeTimeoutScroller);
             ResizeTimeoutScroller = window.setTimeout(function () {
@@ -288,7 +331,7 @@ Core.Agent.TicketZoom = (function (TargetNS) {
 
 
         $('.DataTable tbody td a.Attachment').bind('click', function (Event) {
-            var Position, HTML, $HTMLObject;
+            var Position;
             if ($(this).attr('rel') && $('#' + $(this).attr('rel')).length) {
                 Position = $(this).offset();
                 Core.UI.Dialog.ShowContentDialog($('#' + $(this).attr('rel'))[0].innerHTML, 'Attachments', Position.top - $(window).scrollTop(), parseInt(Position.left, 10) + 25);
@@ -299,16 +342,7 @@ Core.Agent.TicketZoom = (function (TargetNS) {
         });
 
         // Table sorting
-        Core.UI.Table.Sort.Init($('#ArticleTable'), function () {
-            $(this).find('tr')
-                .removeClass('Even')
-                .filter(':even')
-                .addClass('Even')
-                .end()
-                .removeClass('Last')
-                .filter(':last')
-                .addClass('Last');
-        });
+        Core.UI.Table.Sort.Init($('#ArticleTable'));
 
         // load another article, if in "show one article" mode and article id is provided by location hash
         if (!ZoomExpand) {
@@ -332,12 +366,12 @@ Core.Agent.TicketZoom = (function (TargetNS) {
                 }
             }
         }
-        $('a.Chronical').bind('click', function() {
+        $('a.Timeline').bind('click', function() {
             $(this).attr('href', $(this).attr('href') + ';ArticleID=' + URLHash);
         });
 
         // loading new articles
-        $('#ArticleTable tbody tr').bind('click', function (Event) {
+        $('#ArticleTable tbody tr').bind('click', function () {
             // Mode: show one article - load new article via ajax
             if (!ZoomExpand) {
                 // Add active state to new row
@@ -363,7 +397,7 @@ Core.Agent.TicketZoom = (function (TargetNS) {
             TargetNS.CheckURLHash();
         }
 
-        $('a.AsPopup').bind('click', function (Event) {
+        $('a.AsPopup').bind('click', function () {
             var Matches,
                 PopupType = 'TicketAction';
 
@@ -377,7 +411,7 @@ Core.Agent.TicketZoom = (function (TargetNS) {
         });
 
         // Scroll to active article
-        if ( !ZoomExpand && $('#ArticleTable tbody tr.Active').length ) {
+        if (!ZoomExpand && $('#ArticleTable tbody tr.Active').length) {
             $('div.Scroller').get(0).scrollTop = parseInt($('#ArticleTable tbody tr.Active').position().top, 10) - 30;
         }
 
@@ -389,6 +423,11 @@ Core.Agent.TicketZoom = (function (TargetNS) {
                 return false;
             });
         }
+
+        // add switchable toggle
+        $('label.Switchable').off('click.Switch').on('click.Switch', function() {
+            $(this).next('p.Value').find('.Switch').toggleClass('Hidden');
+        });
     };
 
     return TargetNS;

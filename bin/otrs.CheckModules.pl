@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 # --
-# bin/otrs.CheckModules.pl - to check needed cpan framework modules
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
@@ -31,17 +30,6 @@ use lib dirname($RealBin) . '/Custom';
 use Kernel::System::Environment;
 use Kernel::System::VariableCheck qw( :all );
 
-# on Windows, we only have ANSI support if Win32::Console::ANSI is present
-# turn off colors if it is not available
-BEGIN {
-    if ( $^O eq 'MSWin32' ) {
-        ## no critic
-        eval 'use Win32::Console::ANSI';
-        ## use critic
-        $ENV{nocolors} = 1 if $@;
-    }
-}
-
 use Linux::Distribution;
 use ExtUtils::MakeMaker;
 use File::Path;
@@ -64,6 +52,10 @@ our %InstTypeToCMD = (
     # e.g. cpan DBD::Oracle
     aptget => {
         CMD       => 'apt-get install -y %s',
+        UseModule => 0,
+    },
+    emerge => {
+        CMD       => 'emerge %s',
         UseModule => 0,
     },
     ppm => {
@@ -90,6 +82,11 @@ our %DistToInstType = (
     debian => 'aptget',
     ubuntu => 'aptget',
 
+    # emerge
+    # for reasons unknown, some environments return "gentoo" (incl. the quotes)
+    '"gentoo"' => 'emerge',
+    gentoo     => 'emerge',
+
     # yum
     centos => 'yum',
     fedora => 'yum',
@@ -98,18 +95,9 @@ our %DistToInstType = (
 
     # zypper
     suse => 'zypper',
-
-    # ppm
-    win32as => 'ppm',
 );
 
 our $OSDist = Linux::Distribution::distribution_name() || '';
-
-# set win32as if active state perl is installed on windows.
-# for windows installations without active state perl we use the default.
-if ( _CheckActiveStatePerl() ) {
-    $OSDist = 'win32as';
-}
 
 my $AllModules;
 my $PackageList;
@@ -147,12 +135,22 @@ if ( $ENV{nocolors} || $Options =~ m{\A nocolors}msxi ) {
 # config
 my @NeededModules = (
     {
+        Module    => 'Apache::DBI',
+        Required  => 0,
+        Comment   => 'Improves Performance on Apache webservers with mod_perl enabled.',
+        InstTypes => {
+            aptget => 'libapache-dbi-perl',
+            emerge => 'dev-perl/Apache-DBI',
+            zypper => 'perl-Apache-DBI',
+        },
+    },
+    {
         Module    => 'Apache2::Reload',
         Required  => 0,
         Comment   => 'Avoids web server restarts on mod_perl.',
         InstTypes => {
             aptget => 'libapache2-mod-perl2',
-            ppm    => 'mod_perl-2.0',
+            emerge => 'dev-perl/Apache-Reload',
             zypper => 'apache2-mod_perl',
         },
     },
@@ -161,6 +159,7 @@ my @NeededModules = (
         Required  => 1,
         Comment   => 'Required for compressed file generation (in perlcore).',
         InstTypes => {
+            emerge => 'perl-core/Archive-Tar',
             zypper => 'perl-Archive-Tar',
         },
     },
@@ -170,6 +169,7 @@ my @NeededModules = (
         Comment   => 'Required for compressed file generation.',
         InstTypes => {
             aptget => 'libarchive-zip-perl',
+            emerge => 'dev-perl/Archive-Zip',
             zypper => 'Archive-Zip',
             zypper => 'perl-Archive-Zip',
         },
@@ -180,7 +180,7 @@ my @NeededModules = (
         Comment   => 'For strong password hashing.',
         InstTypes => {
             aptget => 'libcrypt-eksblowfish-perl',
-            ppm    => 'Crypt-Eksblowfish',
+            emerge => 'dev-perl/Crypt-Eksblowfish',
             zypper => 'perl-Crypt-Eksblowfish',
         },
     },
@@ -190,7 +190,7 @@ my @NeededModules = (
         Comment   => 'Required for Generic Interface REST transport and SOAP SSL connections.',
         InstTypes => {
             aptget => 'libcrypt-ssleay-perl',
-            ppm    => 'Crypt-SSLeay',
+            emerge => 'dev-perl/Crypt-SSLeay',
             zypper => 'perl-Crypt-SSLeay',
         },
     },
@@ -199,7 +199,7 @@ my @NeededModules = (
         Required  => 1,
         InstTypes => {
             aptget => 'libtimedate-perl',
-            ppm    => 'TimeDate',
+            emerge => 'dev-perl/TimeDate',
             zypper => 'perl-TimeDate',
         },
     },
@@ -208,7 +208,7 @@ my @NeededModules = (
         Required  => 1,
         InstTypes => {
             aptget => 'libdbi-perl',
-            ppm    => 'DBI',
+            emerge => 'dev-perl/DBI',
             zypper => 'perl-DBI'
         },
     },
@@ -218,7 +218,7 @@ my @NeededModules = (
         Comment   => 'Required to connect to a MySQL database.',
         InstTypes => {
             aptget => 'libdbd-mysql-perl',
-            ppm    => 'DBD-mysql',
+            emerge => 'dev-perl/DBD-mysql',
             zypper => 'perl-DBD-mysql'
         },
     },
@@ -235,7 +235,7 @@ my @NeededModules = (
         Comment   => 'Required to connect to a MS-SQL database.',
         InstTypes => {
             aptget => 'libdbd-odbc-perl',
-            ppm    => 'DBD-ODBC',
+            emerge => undef,
             yum    => undef,
             zypper => undef,
         },
@@ -246,7 +246,7 @@ my @NeededModules = (
         Comment   => 'Required to connect to a Oracle database.',
         InstTypes => {
             aptget => undef,
-            ppm    => 'DBD-Oracle',
+            emerge => undef,
             yum    => undef,
             zypper => undef,
         },
@@ -257,7 +257,7 @@ my @NeededModules = (
         Comment   => 'Required to connect to a PostgreSQL database.',
         InstTypes => {
             aptget => 'libdbd-pg-perl',
-            ppm    => 'DBD-Pg',
+            emerge => 'dev-perl/DBD-Pg',
             zypper => 'perl-DBD-Pg',
         },
     },
@@ -268,40 +268,9 @@ my @NeededModules = (
         Comment   => 'Required to handle mails with several Chinese character sets.',
         InstTypes => {
             aptget => 'libencode-hanextra-perl',
+            emerge => 'dev-perl/Encode-HanExtra',
             zypper => 'perl-Encode-HanExtra',
         },
-    },
-    {
-        Module    => 'GD',
-        Required  => 0,
-        Comment   => 'Required for stats.',
-        InstTypes => {
-            aptget => 'libgd-gd2-perl',
-            ppm    => 'GD',
-            zypper => 'perl-GD',
-        },
-        Depends => [
-            {
-                Module    => 'GD::Text',
-                Required  => 0,
-                Comment   => 'Required for stats.',
-                InstTypes => {
-                    aptget => 'libgd-text-perl',
-                    ppm    => 'GDTextUtil',
-                    zypper => 'perl-GDTextUtil',
-                },
-            },
-            {
-                Module    => 'GD::Graph',
-                Required  => 0,
-                Comment   => 'Required for stats.',
-                InstTypes => {
-                    aptget => 'libgd-graph-perl',
-                    ppm    => 'GDGraph',
-                    zypper => 'perl-GDGraph',
-                },
-            },
-        ],
     },
     {
         Module    => 'IO::Socket::SSL',
@@ -309,7 +278,7 @@ my @NeededModules = (
         Comment   => 'Required for SSL connections to web and mail servers.',
         InstTypes => {
             aptget => 'libio-socket-ssl-perl',
-            ppm    => 'IO-Socket-SSL',
+            emerge => 'dev-perl/IO-Socket-SSL',
             zypper => 'perl-IO-Socket-SSL',
         },
     },
@@ -319,7 +288,7 @@ my @NeededModules = (
         Comment   => 'Recommended for faster AJAX/JavaScript handling.',
         InstTypes => {
             aptget => 'libjson-xs-perl',
-            ppm    => 'JSON-XS',
+            emerge => 'dev-perl/JSON-XS',
             zypper => 'perl-JSON-XS',
         },
     },
@@ -330,7 +299,7 @@ my @NeededModules = (
             "Do a 'force install Scalar::Util' via cpan shell to fix this problem. Please make sure to have an c compiler and make installed before.",
         InstTypes => {
             aptget => 'libscalar-list-utils-perl',
-            ppm    => 'List-UtilsBy-XS',
+            emerge => 'perl-core/Scalar-List-Utils',
             zypper => 'perl-Scalar-List-Utils',
         },
     },
@@ -339,7 +308,7 @@ my @NeededModules = (
         Required  => 1,
         InstTypes => {
             aptget => 'libwww-perl',
-            ppm    => 'libwww-perl',
+            emerge => 'dev-perl/libwww-perl',
             zypper => 'perl-libwww-perl',
         },
     },
@@ -350,7 +319,7 @@ my @NeededModules = (
         Required  => 0,
         InstTypes => {
             aptget => 'libmail-imapclient-perl',
-            ppm    => 'Mail-IMAPClient',
+            emerge => 'dev-perl/Mail-IMAPClient',
             zypper => 'perl-Mail-IMAPClient',
         },
         Depends => [
@@ -360,7 +329,7 @@ my @NeededModules = (
                 Comment   => 'Required for IMAP TLS connections.',
                 InstTypes => {
                     aptget => 'libio-socket-ssl-perl',
-                    ppm    => 'IO-Socket-SSL',
+                    emerge => 'dev-perl/IO-Socket-SSL',
                     zypper => 'perl-IO-Socket-SSL',
                 },
             },
@@ -372,6 +341,7 @@ my @NeededModules = (
         Comment   => 'Improves Performance on Apache webservers dramatically.',
         InstTypes => {
             aptget => 'libapache2-mod-perl2',
+            emerge => 'www-apache/mod_perl',
             zypper => 'apache2-mod_perl',
         },
     },
@@ -387,7 +357,7 @@ my @NeededModules = (
         ],
         InstTypes => {
             aptget => 'libnet-dns-perl',
-            ppm    => 'Net-DNS',
+            emerge => 'dev-perl/Net-DNS',
             zypper => 'perl-Net-DNS',
         },
     },
@@ -397,41 +367,8 @@ my @NeededModules = (
         Comment   => 'Required for directory authentication.',
         InstTypes => {
             aptget => 'libnet-ldap-perl',
-            ppm    => 'Net-LDAP',
+            emerge => 'dev-perl/perl-ldap',
             zypper => 'perl-ldap',
-        },
-    },
-    {
-        Module       => 'PDF::API2',
-        Version      => '0.57',
-        Required     => 0,
-        Comment      => 'Required for PDF output.',
-        NotSupported => [
-            {
-                Version => '0.71.001',
-                Comment =>
-                    'This version is broken and not useable! Please upgrade to a higher version.',
-            },
-            {
-                Version => '0.72.001',
-                Comment =>
-                    'This version is broken and not useable! Please upgrade to a higher version.',
-            },
-            {
-                Version => '0.72.002',
-                Comment =>
-                    'This version is broken and not useable! Please upgrade to a higher version.',
-            },
-            {
-                Version => '0.72.003',
-                Comment =>
-                    'This version is broken and not useable! Please upgrade to a higher version.',
-            },
-        ],
-        InstTypes => {
-            aptget => 'libpdf-api2-perl',
-            ppm    => 'PDF-API2',
-            zypper => 'perl-PDF-API2',
         },
     },
     {
@@ -440,7 +377,7 @@ my @NeededModules = (
         Comment   => 'Template::Toolkit, the rendering engine of OTRS.',
         InstTypes => {
             aptget => 'libtemplate-perl',
-            ppm    => 'Template-Toolkit',
+            emerge => 'dev-perl/Template-Toolkit',
             zypper => 'perl-Template-Toolkit',
         },
     },
@@ -450,7 +387,7 @@ my @NeededModules = (
         Comment   => 'The fast data stash for Template::Toolkit.',
         InstTypes => {
             aptget => 'libtemplate-perl',
-            ppm    => 'Template-Toolkit',
+            emerge => 'dev-perl/Template-Toolkit',
             zypper => 'perl-Template-Toolkit',
         },
     },
@@ -460,7 +397,7 @@ my @NeededModules = (
         Comment   => 'Recommended for faster CSV handling.',
         InstTypes => {
             aptget => 'libtext-csv-xs-perl',
-            ppm    => 'Text-CSV_XS',
+            emerge => 'dev-perl/Text-CSV_XS',
             zypper => 'perl-Text-CSV_XS',
         },
     },
@@ -470,7 +407,7 @@ my @NeededModules = (
         Comment   => 'Required for high resolution timestamps.',
         InstTypes => {
             aptget => 'perl',
-            ppm    => 'Time-HiRes',
+            emerge => 'perl-core/Time-HiRes',
             zypper => 'perl-Time-HiRes',
         },
     },
@@ -481,12 +418,30 @@ my @NeededModules = (
         Comment  => 'Required for statistics.',
     },
     {
+        Module    => 'XML::LibXML',
+        Required  => 0,
+        Comment   => 'Required for Generic Interface XSLT mapping module.',
+        InstTypes => {
+            aptget => 'libxml-libxml-perl',
+            zypper => 'perl-XML-LibXML',
+        },
+    },
+    {
+        Module    => 'XML::LibXSLT',
+        Required  => 0,
+        Comment   => 'Required for Generic Interface XSLT mapping module.',
+        InstTypes => {
+            aptget => 'libxml-libxslt-perl',
+            zypper => 'perl-XML-LibXSLT',
+        },
+    },
+    {
         Module    => 'XML::Parser',
         Required  => 0,
         Comment   => 'Recommended for faster xml handling.',
         InstTypes => {
             aptget => 'libxml-parser-perl',
-            ppm    => 'XML-Parser',
+            emerge => 'dev-perl/XML-Parser',
             zypper => 'perl-XML-Parser',
         },
     },
@@ -496,35 +451,11 @@ my @NeededModules = (
         Comment   => 'Very important',
         InstTypes => {
             aptget => 'libyaml-libyaml-perl',
-            ppm    => 'YAML-XS',
+            emerge => 'dev-perl/YAML-LibYAML',
             zypper => 'perl-YAML-LibYAML',
         },
     },
 );
-
-# if we're on Windows we need some additional modules
-if ( $^O eq 'MSWin32' ) {
-
-    my @WindowsModules = (
-        {
-            Module    => 'Win32::Daemon',
-            Required  => 1,
-            Comment   => 'For running the OTRS Scheduler Service.',
-            InstTypes => {
-                ppm => 'Win32-Daemon',
-            },
-        },
-        {
-            Module    => 'Win32::Service',
-            Required  => 1,
-            Comment   => 'For running the OTRS Scheduler Service.',
-            InstTypes => {
-                ppm => 'Win32-Service',
-            },
-        },
-    );
-    push @NeededModules, @WindowsModules;
-}
 
 if ($PackageList) {
     my %PackageList = _PackageList( \@NeededModules );
@@ -572,12 +503,6 @@ else {
 
 sub _Check {
     my ( $Module, $Depends, $NoColors ) = @_;
-
-    # if we're on Windows we don't need to see Apache + mod_perl modules
-    if ( $^O eq 'MSWin32' ) {
-        return if $Module->{Module} =~ m{\A Apache }xms;
-        return if $Module->{Module} =~ m{\A ModPerl }xms;
-    }
 
     print "  " x ( $Depends + 1 );
     print "o $Module->{Module}";
@@ -722,10 +647,6 @@ sub _PackageList {
     # if we're on Windows we don't need to see Apache + mod_perl modules
     MODULE:
     for my $Module ( @{$PackageList} ) {
-        if ( $^O eq 'MSWin32' ) {
-            return if $Module->{Module} =~ m{\A Apache }xms;
-            return if $Module->{Module} =~ m{\A ModPerl }xms;
-        }
 
         my $Required = $Module->{Required};
         my $Version = Kernel::System::Environment->ModuleVersionGet( Module => $Module->{Module} );
@@ -836,16 +757,6 @@ sub _GetInstallCommand {
         SubCMD  => $SubCMD,
         Package => $Package,
     );
-}
-
-sub _CheckActiveStatePerl {
-
-    # checks if active state perl on windows is activated
-    ## no critic
-    my $ActiveStatePerl = eval 'use Win32; return Win32::BuildNumber();';
-    ## use critic
-
-    return $ActiveStatePerl ? 1 : 0;
 }
 
 exit 0;

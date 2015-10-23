@@ -1,5 +1,4 @@
 # --
-# Kernel/Modules/AgentTicketBulk.pm - to do bulk actions on tickets
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,12 +11,7 @@ package Kernel::Modules::AgentTicketBulk;
 use strict;
 use warnings;
 
-use Kernel::System::State;
-use Kernel::System::Priority;
-use Kernel::System::LinkObject;
-use Kernel::System::Web::UploadCache;
-use Kernel::System::CustomerUser;
-use Kernel::System::TemplateGenerator;
+our $ObjectManagerDisabled = 1;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -26,58 +20,28 @@ sub new {
     my $Self = {%Param};
     bless( $Self, $Type );
 
-    # check all needed objects
-    for my $Needed (qw(ParamObject DBObject QueueObject LayoutObject ConfigObject LogObject)) {
-        if ( !$Self->{$Needed} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $Needed!" );
-        }
-    }
-
-    $Self->{StateObject}             = Kernel::System::State->new(%Param);
-    $Self->{PriorityObject}          = Kernel::System::Priority->new(%Param);
-    $Self->{LinkObject}              = Kernel::System::LinkObject->new(%Param);
-    $Self->{CheckItemObject}         = Kernel::System::CheckItem->new(%Param);
-    $Self->{UploadCacheObject}       = Kernel::System::Web::UploadCache->new(%Param);
-    $Self->{CustomerUserObject}      = Kernel::System::CustomerUser->new(%Param);
-    $Self->{TemplateGeneratorObject} = Kernel::System::TemplateGenerator->new(
-        %Param,
-        CustomerUserObject => $Self->{CustomerUserObject},
-    );
-    $Self->{Config} = $Self->{ConfigObject}->Get("Ticket::Frontend::$Self->{Action}");
-
-    # get form id for note
-    $Self->{NoteFormID} = $Self->{ParamObject}->GetParam( Param => 'NoteFormID' );
-
-    # create form id for note
-    if ( !$Self->{NoteFormID} ) {
-        $Self->{NoteFormID} = $Self->{UploadCacheObject}->FormIDCreate();
-    }
-
-    # get form id for email
-    $Self->{EmailFormID} = $Self->{ParamObject}->GetParam( Param => 'EmailFormID' );
-
-    # create form id for email
-    if ( !$Self->{EmailFormID} ) {
-        $Self->{EmailFormID} = $Self->{UploadCacheObject}->FormIDCreate();
-    }
-
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
 
+    # get needed objects
+    my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
     if ( $Self->{Subaction} eq 'CancelAndUnlockTickets' ) {
 
         my @TicketIDs = grep {$_}
-            $Self->{ParamObject}->GetArray( Param => 'LockedTicketID' );
+            $ParamObject->GetArray( Param => 'LockedTicketID' );
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         # check needed stuff
         if ( !@TicketIDs ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => 'Can\'t lock Tickets, no TicketIDs are given!',
                 Comment => 'Please contact the admin.',
             );
@@ -88,7 +52,7 @@ sub Run {
         TICKET_ID:
         for my $TicketID (@TicketIDs) {
 
-            my $Access = $Self->{TicketObject}->TicketPermission(
+            my $Access = $TicketObject->TicketPermission(
                 Type     => 'lock',
                 TicketID => $TicketID,
                 UserID   => $Self->{UserID}
@@ -96,11 +60,11 @@ sub Run {
 
             # error screen, don't show ticket
             if ( !$Access ) {
-                return $Self->{LayoutObject}->NoPermission( WithHeader => 'yes' );
+                return $LayoutObject->NoPermission( WithHeader => 'yes' );
             }
 
             # set unlock
-            my $Lock = $Self->{TicketObject}->TicketLockSet(
+            my $Lock = $TicketObject->TicketLockSet(
                 TicketID => $TicketID,
                 Lock     => 'unlock',
                 UserID   => $Self->{UserID},
@@ -111,20 +75,23 @@ sub Run {
         }
 
         if ( $Message ne '' ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => "Ticket ($Message) is not unlocked!",
             );
         }
 
-        return $Self->{LayoutObject}->Redirect(
+        return $LayoutObject->Redirect(
             OP => $Self->{LastScreenOverview},
         );
 
     }
 
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
     # check if bulk feature is enabled
-    if ( !$Self->{ConfigObject}->Get('Ticket::Frontend::BulkFeature') ) {
-        return $Self->{LayoutObject}->ErrorScreen(
+    if ( !$ConfigObject->Get('Ticket::Frontend::BulkFeature') ) {
+        return $LayoutObject->ErrorScreen(
             Message => 'Bulk feature is not enabled!',
         );
     }
@@ -133,13 +100,15 @@ sub Run {
     my @ValidTicketIDs;
     my @IgnoreLockedTicketIDs;
     my @TicketIDs = grep {$_}
-        $Self->{ParamObject}->GetArray( Param => 'TicketID' );
+        $ParamObject->GetArray( Param => 'TicketID' );
+
+    my $Config = $ConfigObject->Get("Ticket::Frontend::$Self->{Action}");
 
     # check if only locked tickets have been selected
-    if ( $Self->{Config}->{RequiredLock} ) {
+    if ( $Config->{RequiredLock} ) {
         for my $TicketID (@TicketIDs) {
-            if ( $Self->{TicketObject}->TicketLockGet( TicketID => $TicketID ) ) {
-                my $AccessOk = $Self->{TicketObject}->OwnerCheck(
+            if ( $TicketObject->TicketLockGet( TicketID => $TicketID ) ) {
+                my $AccessOk = $TicketObject->OwnerCheck(
                     TicketID => $TicketID,
                     OwnerID  => $Self->{UserID},
                 );
@@ -161,22 +130,22 @@ sub Run {
 
     # check needed stuff
     if ( !@ValidTicketIDs ) {
-        if ( $Self->{Config}->{RequiredLock} ) {
-            return $Self->{LayoutObject}->ErrorScreen(
+        if ( $Config->{RequiredLock} ) {
+            return $LayoutObject->ErrorScreen(
                 Message => 'No selectable TicketID is given!',
                 Comment =>
                     'You either selected no ticket or only tickets which are locked by other agents',
             );
         }
         else {
-            return $Self->{LayoutObject}->ErrorScreen(
+            return $LayoutObject->ErrorScreen(
                 Message => 'No TicketID is given!',
                 Comment => 'You need to select at least one ticket',
             );
         }
     }
 
-    my $Output .= $Self->{LayoutObject}->Header(
+    my $Output = $LayoutObject->Header(
         Type => 'Small',
     );
 
@@ -185,11 +154,53 @@ sub Run {
     my %Time;
     my %GetParam;
 
+    # get bulk modules from SysConfig
+    my $BulkModuleConfig = $Kernel::OM->Get('Kernel::Config')->Get('Ticket::Frontend::BulkModule') || {};
+
+    # create bulk module objects
+    my @BulkModules;
+    MODULECONFIG:
+    for my $ModuleConfig ( sort keys %{$BulkModuleConfig} ) {
+
+        next MODULECONFIG if !$ModuleConfig;
+        next MODULECONFIG if !$BulkModuleConfig->{$ModuleConfig};
+        next MODULECONFIG if ref $BulkModuleConfig->{$ModuleConfig} ne 'HASH';
+        next MODULECONFIG if !$BulkModuleConfig->{$ModuleConfig}->{Module};
+
+        my $Module = $BulkModuleConfig->{$ModuleConfig}->{Module};
+
+        my $ModuleObject;
+        eval {
+            $ModuleObject = $Kernel::OM->Get($Module);
+        };
+
+        if ( !$ModuleObject ) {
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Could not create a new object for $Module!",
+            );
+            next MODULECONFIG;
+        }
+
+        if ( ref $ModuleObject ne $Module ) {
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Object for $Module is invalid!",
+            );
+            next MODULECONFIG;
+        }
+
+        push @BulkModules, $ModuleObject;
+    }
+
+    # get needed objects
+    my $StateObject = $Kernel::OM->Get('Kernel::System::State');
+
     # get all parameters and check for errors
     if ( $Self->{Subaction} eq 'Do' ) {
 
         # challenge token check for write action
-        $Self->{LayoutObject}->ChallengeTokenCheck();
+        $LayoutObject->ChallengeTokenCheck();
 
         # get all parameters
         for my $Key (
@@ -199,20 +210,20 @@ sub Run {
             LinkTogetherParent Unlock MergeToChecked MergeToOldestChecked)
             )
         {
-            $GetParam{$Key} = $Self->{ParamObject}->GetParam( Param => $Key ) || '';
+            $GetParam{$Key} = $ParamObject->GetParam( Param => $Key ) || '';
         }
 
         for my $Key (qw(TimeUnits)) {
-            $GetParam{$Key} = $Self->{ParamObject}->GetParam( Param => $Key );
+            $GetParam{$Key} = $ParamObject->GetParam( Param => $Key );
         }
 
         # get time stamp based on user time zone
-        %Time = $Self->{LayoutObject}->TransfromDateSelection(
-            Year   => $Self->{ParamObject}->GetParam( Param => 'Year' ),
-            Month  => $Self->{ParamObject}->GetParam( Param => 'Month' ),
-            Day    => $Self->{ParamObject}->GetParam( Param => 'Day' ),
-            Hour   => $Self->{ParamObject}->GetParam( Param => 'Hour' ),
-            Minute => $Self->{ParamObject}->GetParam( Param => 'Minute' ),
+        %Time = $LayoutObject->TransfromDateSelection(
+            Year   => $ParamObject->GetParam( Param => 'Year' ),
+            Month  => $ParamObject->GetParam( Param => 'Month' ),
+            Day    => $ParamObject->GetParam( Param => 'Day' ),
+            Hour   => $ParamObject->GetParam( Param => 'Hour' ),
+            Minute => $ParamObject->GetParam( Param => 'Minute' ),
         );
 
         if ( $GetParam{'MergeToSelection'} eq 'OptionMergeTo' ) {
@@ -226,8 +237,8 @@ sub Run {
         if (
             $GetParam{Subject}
             &&
-            $Self->{ConfigObject}->Get('Ticket::Frontend::AccountTime')
-            && $Self->{ConfigObject}->Get('Ticket::Frontend::NeedAccountedTime')
+            $ConfigObject->Get('Ticket::Frontend::AccountTime')
+            && $ConfigObject->Get('Ticket::Frontend::NeedAccountedTime')
             && $GetParam{TimeUnits} eq ''
             )
         {
@@ -237,8 +248,8 @@ sub Run {
         if (
             $GetParam{EmailSubject}
             &&
-            $Self->{ConfigObject}->Get('Ticket::Frontend::AccountTime')
-            && $Self->{ConfigObject}->Get('Ticket::Frontend::NeedAccountedTime')
+            $ConfigObject->Get('Ticket::Frontend::AccountTime')
+            && $ConfigObject->Get('Ticket::Frontend::NeedAccountedTime')
             && $GetParam{EmailTimeUnits} eq ''
             )
         {
@@ -265,35 +276,43 @@ sub Run {
         if ( $GetParam{StateID} || $GetParam{State} ) {
             my %StateData;
             if ( $GetParam{StateID} ) {
-                %StateData = $Self->{StateObject}->StateGet(
+                %StateData = $StateObject->StateGet(
                     ID => $GetParam{StateID},
                 );
             }
             else {
-                %StateData = $Self->{StateObject}->StateGet(
+                %StateData = $StateObject->StateGet(
                     Name => $GetParam{State},
                 );
             }
+
+            # get time object
+            my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
+
             if ( $StateData{TypeName} =~ /^pending/i ) {
-                if ( !$Self->{TimeObject}->Date2SystemTime( %Time, Second => 0 ) ) {
+                if ( !$TimeObject->Date2SystemTime( %Time, Second => 0 ) ) {
                     $Error{'DateInvalid'} = 'ServerError';
                 }
                 if (
-                    $Self->{TimeObject}->Date2SystemTime( %Time, Second => 0 )
-                    < $Self->{TimeObject}->SystemTime()
+                    $TimeObject->Date2SystemTime( %Time, Second => 0 )
+                    < $TimeObject->SystemTime()
                     )
                 {
                     $Error{'DateInvalid'} = 'ServerError';
                 }
             }
         }
+
+        # get check item object
+        my $CheckItemObject = $Kernel::OM->Get('Kernel::System::CheckItem');
+
         if ( $GetParam{'MergeToSelection'} eq 'OptionMergeTo' && $GetParam{'MergeTo'} ) {
-            $Self->{CheckItemObject}->StringClean(
+            $CheckItemObject->StringClean(
                 StringRef => \$GetParam{'MergeTo'},
                 TrimLeft  => 1,
                 TrimRight => 1,
             );
-            my $TicketID = $Self->{TicketObject}->TicketCheckNumber(
+            my $TicketID = $TicketObject->TicketCheckNumber(
                 Tn => $GetParam{'MergeTo'},
             );
             if ( !$TicketID ) {
@@ -301,16 +320,35 @@ sub Run {
             }
         }
         if ( $GetParam{'LinkTogetherParent'} ) {
-            $Self->{CheckItemObject}->StringClean(
+            $CheckItemObject->StringClean(
                 StringRef => \$GetParam{'LinkTogetherParent'},
                 TrimLeft  => 1,
                 TrimRight => 1,
             );
-            my $TicketID = $Self->{TicketObject}->TicketCheckNumber(
+            my $TicketID = $TicketObject->TicketCheckNumber(
                 Tn => $GetParam{'LinkTogetherParent'},
             );
             if ( !$TicketID ) {
                 $Error{'LinkTogetherParentInvalid'} = 'ServerError';
+            }
+        }
+
+        # call Validate() in all ticket bulk modules
+        if (@BulkModules) {
+            MODULEOBJECT:
+            for my $ModuleObject (@BulkModules) {
+                next MODULEOBJECT if !$ModuleObject->can('Validate');
+
+                my @Result = $ModuleObject->Validate(
+                    UserID => $Self->{UserID},
+                );
+
+                next MODULEOBJECT if !@Result;
+
+                # include all validation errors in the common error hash
+                for my $ValidationError (@Result) {
+                    $Error{ $ValidationError->{ErrorKey} } = $ValidationError->{ErrorValue};
+                }
             }
         }
     }
@@ -322,15 +360,52 @@ sub Run {
     my $Counter       = 1;
     $Param{TicketsWereLocked} = 0;
 
+    # if the tickets are to merged, precompute the ticket to merge to.
+    # (it's the same for all tickets, so do it only once):
+    my $MainTicketID;
+
+    if ( ( $Self->{Subaction} eq 'Do' ) && ( !%Error ) ) {
+
+        # merge to
+        if ( $GetParam{'MergeToSelection'} eq 'OptionMergeTo' && $GetParam{'MergeTo'} ) {
+            $MainTicketID = $TicketObject->TicketIDLookup(
+                TicketNumber => $GetParam{'MergeTo'},
+            );
+        }
+
+        # merge to oldest
+        elsif ( $GetParam{'MergeToSelection'} eq 'OptionMergeToOldest' ) {
+
+            # find oldest
+            my $TicketIDOldest;
+            my $TicketIDOldestID;
+            for my $TicketIDCheck (@TicketIDs) {
+                my %Ticket = $TicketObject->TicketGet(
+                    TicketID      => $TicketIDCheck,
+                    DynamicFields => 0,
+                );
+                if ( !defined $TicketIDOldest ) {
+                    $TicketIDOldest   = $Ticket{CreateTimeUnix};
+                    $TicketIDOldestID = $TicketIDCheck;
+                }
+                if ( $TicketIDOldest > $Ticket{CreateTimeUnix} ) {
+                    $TicketIDOldest   = $Ticket{CreateTimeUnix};
+                    $TicketIDOldestID = $TicketIDCheck;
+                }
+            }
+            $MainTicketID = $TicketIDOldestID;
+        }
+    }
+
     TICKET_ID:
     for my $TicketID (@TicketIDs) {
-        my %Ticket = $Self->{TicketObject}->TicketGet(
+        my %Ticket = $TicketObject->TicketGet(
             TicketID      => $TicketID,
             DynamicFields => 0,
         );
 
         # check permissions
-        my $Access = $Self->{TicketObject}->TicketPermission(
+        my $Access = $TicketObject->TicketPermission(
             Type     => 'rw',
             TicketID => $TicketID,
             UserID   => $Self->{UserID}
@@ -338,26 +413,26 @@ sub Run {
         if ( !$Access ) {
 
             # error screen, don't show ticket
-            $Output .= $Self->{LayoutObject}->Notify(
+            $Output .= $LayoutObject->Notify(
                 Data => "$Ticket{TicketNumber}: "
-                    . $Self->{LayoutObject}->{LanguageObject}->Translate("You don't have write access to this ticket."),
+                    . $LayoutObject->{LanguageObject}->Translate("You don't have write access to this ticket."),
             );
             next TICKET_ID;
         }
 
         # check if it's already locked by somebody else
-        if ( !$Self->{Config}->{RequiredLock} ) {
-            $Output .= $Self->{LayoutObject}->Notify(
+        if ( !$Config->{RequiredLock} ) {
+            $Output .= $LayoutObject->Notify(
                 Data => "$Ticket{TicketNumber}: "
-                    . $Self->{LayoutObject}->{LanguageObject}->Translate("Ticket selected."),
+                    . $LayoutObject->{LanguageObject}->Translate("Ticket selected."),
             );
         }
         else {
             if ( grep ( { $_ eq $TicketID } @IgnoreLockedTicketIDs ) ) {
-                $Output .= $Self->{LayoutObject}->Notify(
+                $Output .= $LayoutObject->Notify(
                     Priority => 'Error',
                     Data     => "$Ticket{TicketNumber}: "
-                        . $Self->{LayoutObject}->{LanguageObject}->Translate(
+                        . $LayoutObject->{LanguageObject}->Translate(
                         "Ticket is locked by another agent and will be ignored!"
                         ),
                 );
@@ -369,21 +444,21 @@ sub Run {
             }
 
             # set lock
-            $Self->{TicketObject}->TicketLockSet(
+            $TicketObject->TicketLockSet(
                 TicketID => $TicketID,
                 Lock     => 'lock',
                 UserID   => $Self->{UserID},
             );
 
             # set user id
-            $Self->{TicketObject}->TicketOwnerSet(
+            $TicketObject->TicketOwnerSet(
                 TicketID  => $TicketID,
                 UserID    => $Self->{UserID},
                 NewUserID => $Self->{UserID},
             );
-            $Output .= $Self->{LayoutObject}->Notify(
+            $Output .= $LayoutObject->Notify(
                 Data => "$Ticket{TicketNumber}: "
-                    . $Self->{LayoutObject}->{LanguageObject}->Translate("Ticket locked."),
+                    . $LayoutObject->{LanguageObject}->Translate("Ticket locked."),
             );
         }
 
@@ -394,18 +469,18 @@ sub Run {
         if ( ( $Self->{Subaction} eq 'Do' ) && ( !%Error ) ) {
 
             # challenge token check for write action
-            $Self->{LayoutObject}->ChallengeTokenCheck();
+            $LayoutObject->ChallengeTokenCheck();
 
             # set owner
-            if ( $Self->{Config}->{Owner} && ( $GetParam{'OwnerID'} || $GetParam{'Owner'} ) ) {
-                $Self->{TicketObject}->TicketOwnerSet(
+            if ( $Config->{Owner} && ( $GetParam{'OwnerID'} || $GetParam{'Owner'} ) ) {
+                $TicketObject->TicketOwnerSet(
                     TicketID  => $TicketID,
                     UserID    => $Self->{UserID},
                     NewUser   => $GetParam{'Owner'},
                     NewUserID => $GetParam{'OwnerID'},
                 );
-                if ( !$Self->{Config}->{RequiredLock} && $Ticket{StateType} !~ /^close/i ) {
-                    $Self->{TicketObject}->TicketLockSet(
+                if ( !$Config->{RequiredLock} && $Ticket{StateType} !~ /^close/i ) {
+                    $TicketObject->TicketLockSet(
                         TicketID => $TicketID,
                         Lock     => 'lock',
                         UserID   => $Self->{UserID},
@@ -415,12 +490,12 @@ sub Run {
 
             # set responsible
             if (
-                $Self->{ConfigObject}->Get('Ticket::Responsible')
-                && $Self->{Config}->{Responsible}
+                $ConfigObject->Get('Ticket::Responsible')
+                && $Config->{Responsible}
                 && ( $GetParam{'ResponsibleID'} || $GetParam{'Responsible'} )
                 )
             {
-                $Self->{TicketObject}->TicketResponsibleSet(
+                $TicketObject->TicketResponsibleSet(
                     TicketID  => $TicketID,
                     UserID    => $Self->{UserID},
                     NewUser   => $GetParam{'Responsible'},
@@ -430,11 +505,11 @@ sub Run {
 
             # set priority
             if (
-                $Self->{Config}->{Priority}
+                $Config->{Priority}
                 && ( $GetParam{'PriorityID'} || $GetParam{'Priority'} )
                 )
             {
-                $Self->{TicketObject}->TicketPrioritySet(
+                $TicketObject->TicketPrioritySet(
                     TicketID   => $TicketID,
                     UserID     => $Self->{UserID},
                     Priority   => $GetParam{'Priority'},
@@ -443,9 +518,9 @@ sub Run {
             }
 
             # set type
-            if ( $Self->{ConfigObject}->Get('Ticket::Type') && $Self->{Config}->{TicketType} ) {
+            if ( $ConfigObject->Get('Ticket::Type') && $Config->{TicketType} ) {
                 if ( $GetParam{'TypeID'} ) {
-                    $Self->{TicketObject}->TicketTypeSet(
+                    $TicketObject->TicketTypeSet(
                         TypeID   => $GetParam{'TypeID'},
                         TicketID => $TicketID,
                         UserID   => $Self->{UserID},
@@ -455,7 +530,7 @@ sub Run {
 
             # set queue
             if ( $GetParam{'QueueID'} || $GetParam{'Queue'} ) {
-                $Self->{TicketObject}->TicketQueueSet(
+                $TicketObject->TicketQueueSet(
                     QueueID  => $GetParam{'QueueID'},
                     Queue    => $GetParam{'Queue'},
                     TicketID => $TicketID,
@@ -471,19 +546,22 @@ sub Run {
                 )
             {
                 my $MimeType = 'text/plain';
-                if ( $Self->{LayoutObject}->{BrowserRichText} ) {
+                if ( $LayoutObject->{BrowserRichText} ) {
                     $MimeType = 'text/html';
 
                     # verify html document
-                    $GetParam{'EmailBody'} = $Self->{LayoutObject}->RichTextDocumentComplete(
+                    $GetParam{'EmailBody'} = $LayoutObject->RichTextDocumentComplete(
                         String => $GetParam{'EmailBody'},
                     );
                 }
 
+                # get customer user object
+                my $CustomerUserObject = $Kernel::OM->Get('Kernel::System::CustomerUser');
+
                 # get customer email address
                 my $Customer;
                 if ( $Ticket{CustomerUserID} ) {
-                    my %Customer = $Self->{CustomerUserObject}->CustomerUserDataGet(
+                    my %Customer = $CustomerUserObject->CustomerUserDataGet(
                         User => $Ticket{CustomerUserID}
                     );
                     if ( $Customer{UserEmail} ) {
@@ -493,7 +571,7 @@ sub Run {
 
                 # check if we have an address, otherwise deduct it from the articles
                 if ( !$Customer ) {
-                    my %Data = $Self->{TicketObject}->ArticleLastCustomerArticle(
+                    my %Data = $TicketObject->ArticleLastCustomerArticle(
                         TicketID      => $TicketID,
                         DynamicFields => 0,
                     );
@@ -510,21 +588,30 @@ sub Run {
 
                 }
 
+                # get template generator object
+                my $TemplateGeneratorObject = $Kernel::OM->ObjectParamAdd(
+                    'Kernel::System::TemplateGenerator' => {
+                        CustomerUserObject => $CustomerUserObject,
+                        }
+                );
+
+                $TemplateGeneratorObject = $Kernel::OM->Get('Kernel::System::TemplateGenerator');
+
                 # generate sender name
-                my $From = $Self->{TemplateGeneratorObject}->Sender(
+                my $From = $TemplateGeneratorObject->Sender(
                     QueueID => $Ticket{QueueID},
                     UserID  => $Self->{UserID},
                 );
 
                 # generate subject
-                my $TicketNumber = $Self->{TicketObject}->TicketNumberLookup( TicketID => $TicketID );
+                my $TicketNumber = $TicketObject->TicketNumberLookup( TicketID => $TicketID );
 
-                my $EmailSubject = $Self->{TicketObject}->TicketSubjectBuild(
+                my $EmailSubject = $TicketObject->TicketSubjectBuild(
                     TicketNumber => $TicketNumber,
                     Subject      => $GetParam{EmailSubject} || '',
                 );
 
-                $EmailArticleID = $Self->{TicketObject}->ArticleSend(
+                $EmailArticleID = $TicketObject->ArticleSend(
                     TicketID       => $TicketID,
                     ArticleType    => 'email-external',
                     SenderType     => 'agent',
@@ -533,7 +620,7 @@ sub Run {
                     Subject        => $EmailSubject,
                     Body           => $GetParam{EmailBody},
                     MimeType       => $MimeType,
-                    Charset        => $Self->{LayoutObject}->{UserCharset},
+                    Charset        => $LayoutObject->{UserCharset},
                     UserID         => $Self->{UserID},
                     HistoryType    => 'SendAnswer',
                     HistoryComment => '%%' . $Customer,
@@ -549,15 +636,15 @@ sub Run {
                 )
             {
                 my $MimeType = 'text/plain';
-                if ( $Self->{LayoutObject}->{BrowserRichText} ) {
+                if ( $LayoutObject->{BrowserRichText} ) {
                     $MimeType = 'text/html';
 
                     # verify html document
-                    $GetParam{'Body'} = $Self->{LayoutObject}->RichTextDocumentComplete(
+                    $GetParam{'Body'} = $LayoutObject->RichTextDocumentComplete(
                         String => $GetParam{'Body'},
                     );
                 }
-                $ArticleID = $Self->{TicketObject}->ArticleCreate(
+                $ArticleID = $TicketObject->ArticleCreate(
                     TicketID       => $TicketID,
                     ArticleTypeID  => $GetParam{'ArticleTypeID'},
                     ArticleType    => $GetParam{'ArticleType'},
@@ -566,7 +653,7 @@ sub Run {
                     Subject        => $GetParam{'Subject'},
                     Body           => $GetParam{'Body'},
                     MimeType       => $MimeType,
-                    Charset        => $Self->{LayoutObject}->{UserCharset},
+                    Charset        => $LayoutObject->{UserCharset},
                     UserID         => $Self->{UserID},
                     HistoryType    => 'AddNote',
                     HistoryComment => '%%Bulk',
@@ -574,18 +661,18 @@ sub Run {
             }
 
             # set state
-            if ( $Self->{Config}->{State} && ( $GetParam{'StateID'} || $GetParam{'State'} ) ) {
-                $Self->{TicketObject}->TicketStateSet(
+            if ( $Config->{State} && ( $GetParam{'StateID'} || $GetParam{'State'} ) ) {
+                $TicketObject->TicketStateSet(
                     TicketID => $TicketID,
                     StateID  => $GetParam{'StateID'},
                     State    => $GetParam{'State'},
                     UserID   => $Self->{UserID},
                 );
-                my %Ticket = $Self->{TicketObject}->TicketGet(
+                my %Ticket = $TicketObject->TicketGet(
                     TicketID      => $TicketID,
                     DynamicFields => 0,
                 );
-                my %StateData = $Self->{StateObject}->StateGet(
+                my %StateData = $StateObject->StateGet(
                     ID => $Ticket{StateID},
                 );
 
@@ -593,7 +680,7 @@ sub Run {
                 if ( $Ticket{StateType} =~ /^pending/i ) {
 
                     # set pending time
-                    $Self->{TicketObject}->TicketPendingTimeSet(
+                    $TicketObject->TicketPendingTimeSet(
                         %Time,
                         TicketID => $TicketID,
                         UserID   => $Self->{UserID},
@@ -602,7 +689,7 @@ sub Run {
 
                 # should I set an unlock?
                 if ( $Ticket{StateType} =~ /^close/i ) {
-                    $Self->{TicketObject}->TicketLockSet(
+                    $TicketObject->TicketLockSet(
                         TicketID => $TicketID,
                         Lock     => 'unlock',
                         UserID   => $Self->{UserID},
@@ -612,8 +699,8 @@ sub Run {
 
             # time units for note
             if ( $GetParam{TimeUnits} && $ArticleID ) {
-                if ( $Self->{ConfigObject}->Get('Ticket::Frontend::BulkAccountedTime') ) {
-                    $Self->{TicketObject}->TicketAccountTime(
+                if ( $ConfigObject->Get('Ticket::Frontend::BulkAccountedTime') ) {
+                    $TicketObject->TicketAccountTime(
                         TicketID  => $TicketID,
                         ArticleID => $ArticleID,
                         TimeUnit  => $GetParam{'TimeUnits'},
@@ -621,11 +708,11 @@ sub Run {
                     );
                 }
                 elsif (
-                    !$Self->{ConfigObject}->Get('Ticket::Frontend::BulkAccountedTime')
+                    !$ConfigObject->Get('Ticket::Frontend::BulkAccountedTime')
                     && $Counter == 1
                     )
                 {
-                    $Self->{TicketObject}->TicketAccountTime(
+                    $TicketObject->TicketAccountTime(
                         TicketID  => $TicketID,
                         ArticleID => $ArticleID,
                         TimeUnit  => $GetParam{'TimeUnits'},
@@ -636,8 +723,8 @@ sub Run {
 
             # time units for email
             if ( $GetParam{EmailTimeUnits} && $EmailArticleID ) {
-                if ( $Self->{ConfigObject}->Get('Ticket::Frontend::BulkAccountedTime') ) {
-                    $Self->{TicketObject}->TicketAccountTime(
+                if ( $ConfigObject->Get('Ticket::Frontend::BulkAccountedTime') ) {
+                    $TicketObject->TicketAccountTime(
                         TicketID  => $TicketID,
                         ArticleID => $EmailArticleID,
                         TimeUnit  => $GetParam{'EmailTimeUnits'},
@@ -645,11 +732,11 @@ sub Run {
                     );
                 }
                 elsif (
-                    !$Self->{ConfigObject}->Get('Ticket::Frontend::BulkAccountedTime')
+                    !$ConfigObject->Get('Ticket::Frontend::BulkAccountedTime')
                     && $Counter == 1
                     )
                 {
-                    $Self->{TicketObject}->TicketAccountTime(
+                    $TicketObject->TicketAccountTime(
                         TicketID  => $TicketID,
                         ArticleID => $EmailArticleID,
                         TimeUnit  => $GetParam{'EmailTimeUnits'},
@@ -658,60 +745,27 @@ sub Run {
                 }
             }
 
-            # merge to
-            if ( $GetParam{'MergeToSelection'} eq 'OptionMergeTo' && $GetParam{'MergeTo'} ) {
-                my $MainTicketID = $Self->{TicketObject}->TicketIDLookup(
-                    TicketNumber => $GetParam{'MergeTo'},
+            # merge
+            if ( $MainTicketID && $MainTicketID ne $TicketID ) {
+                $TicketObject->TicketMerge(
+                    MainTicketID  => $MainTicketID,
+                    MergeTicketID => $TicketID,
+                    UserID        => $Self->{UserID},
                 );
-                if ( $MainTicketID ne $TicketID ) {
-                    $Self->{TicketObject}->TicketMerge(
-                        MainTicketID  => $MainTicketID,
-                        MergeTicketID => $TicketID,
-                        UserID        => $Self->{UserID},
-                    );
-                }
             }
 
-            # merge to oldest
-            if ( $GetParam{'MergeToSelection'} eq 'OptionMergeToOldest' ) {
-
-                # find oldest
-                my $TicketIDOldest;
-                my $TicketIDOldestID;
-                for my $TicketIDCheck (@TicketIDs) {
-                    my %Ticket = $Self->{TicketObject}->TicketGet(
-                        TicketID      => $TicketIDCheck,
-                        DynamicFields => 0,
-                    );
-                    if ( !defined $TicketIDOldest ) {
-                        $TicketIDOldest   = $Ticket{CreateTimeUnix};
-                        $TicketIDOldestID = $TicketIDCheck;
-                    }
-                    if ( $TicketIDOldest > $Ticket{CreateTimeUnix} ) {
-                        $TicketIDOldest   = $Ticket{CreateTimeUnix};
-                        $TicketIDOldestID = $TicketIDCheck;
-                    }
-                }
-
-                # merge
-                if ( $TicketIDOldestID ne $TicketID ) {
-                    $Self->{TicketObject}->TicketMerge(
-                        MainTicketID  => $TicketIDOldestID,
-                        MergeTicketID => $TicketID,
-                        UserID        => $Self->{UserID},
-                    );
-                }
-            }
+            # get link object
+            my $LinkObject = $Kernel::OM->Get('Kernel::System::LinkObject');
 
             # link all tickets to a parent
             if ( $GetParam{'LinkTogetherParent'} ) {
-                my $MainTicketID = $Self->{TicketObject}->TicketIDLookup(
+                my $MainTicketID = $TicketObject->TicketIDLookup(
                     TicketNumber => $GetParam{'LinkTogetherParent'},
                 );
 
                 for my $TicketIDPartner (@TicketIDs) {
                     if ( $MainTicketID ne $TicketID ) {
-                        $Self->{LinkObject}->LinkAdd(
+                        $LinkObject->LinkAdd(
                             SourceObject => 'Ticket',
                             SourceKey    => $MainTicketID,
                             TargetObject => 'Ticket',
@@ -728,7 +782,7 @@ sub Run {
             if ( $GetParam{'LinkTogether'} ) {
                 for my $TicketIDPartner (@TicketIDs) {
                     if ( $TicketID ne $TicketIDPartner ) {
-                        $Self->{LinkObject}->LinkAdd(
+                        $LinkObject->LinkAdd(
                             SourceObject => 'Ticket',
                             SourceKey    => $TicketID,
                             TargetObject => 'Ticket',
@@ -743,12 +797,27 @@ sub Run {
 
             # should I unlock tickets at user request?
             if ( $GetParam{'Unlock'} ) {
-                $Self->{TicketObject}->TicketLockSet(
+                $TicketObject->TicketLockSet(
                     TicketID => $TicketID,
                     Lock     => 'unlock',
                     UserID   => $Self->{UserID},
                 );
             }
+
+            # call Store() in all ticket bulk modules
+            if (@BulkModules) {
+
+                MODULEOBJECT:
+                for my $ModuleObject (@BulkModules) {
+                    next MODULEOBJECT if !$ModuleObject->can('Store');
+
+                    $ModuleObject->Store(
+                        TicketID => $TicketID,
+                        UserID   => $Self->{UserID},
+                    );
+                }
+            }
+
             $ActionFlag = 1;
         }
         $Counter++;
@@ -756,8 +825,12 @@ sub Run {
 
     # redirect
     if ($ActionFlag) {
-        return $Self->{LayoutObject}->PopupClose(
-            URL => ( $Self->{LastScreenOverview} || 'Action=AgentDashboard' ),
+        my $DestURL = defined $MainTicketID
+            ? "Action=AgentTicketZoom;TicketID=$MainTicketID"
+            : ( $Self->{LastScreenOverview} || 'Action=AgentDashboard' );
+
+        return $LayoutObject->PopupClose(
+            URL => $DestURL,
         );
     }
 
@@ -768,8 +841,9 @@ sub Run {
         TicketIDs     => \@TicketIDSelected,
         LockedTickets => $LockedTickets,
         Errors        => \%Error,
+        BulkModules   => \@BulkModules,
     );
-    $Output .= $Self->{LayoutObject}->Footer(
+    $Output .= $LayoutObject->Footer(
         Type => 'Small',
     );
     return $Output;
@@ -778,14 +852,17 @@ sub Run {
 sub _Mask {
     my ( $Self, %Param ) = @_;
 
+    # get layout object
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     # prepare errors!
     if ( $Param{Errors} ) {
         for my $KeyError ( sort keys %{ $Param{Errors} } ) {
-            $Param{$KeyError} = $Self->{LayoutObject}->Ascii2Html( Text => $Param{Errors}->{$KeyError} );
+            $Param{$KeyError} = $LayoutObject->Ascii2Html( Text => $Param{Errors}->{$KeyError} );
         }
     }
 
-    $Self->{LayoutObject}->Block(
+    $LayoutObject->Block(
         Name => 'BulkAction',
         Data => \%Param,
     );
@@ -793,7 +870,7 @@ sub _Mask {
     # remember ticket ids
     if ( $Param{TicketIDs} ) {
         for my $TicketID ( @{ $Param{TicketIDs} } ) {
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'UsedTicketID',
                 Data => {
                     TicketID => $TicketID,
@@ -802,9 +879,16 @@ sub _Mask {
         }
     }
 
+    # get config object
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+    my $Config       = $ConfigObject->Get("Ticket::Frontend::$Self->{Action}");
+
+    # get ticket object
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
     # build ArticleTypeID string
-    my %DefaultNoteTypes = %{ $Self->{Config}->{ArticleTypes} };
-    my %NoteTypes = $Self->{TicketObject}->ArticleTypeList( Result => 'HASH' );
+    my %DefaultNoteTypes = %{ $Config->{ArticleTypes} };
+    my %NoteTypes = $TicketObject->ArticleTypeList( Result => 'HASH' );
     for my $KeyNoteType ( sort keys %NoteTypes ) {
         if ( !$DefaultNoteTypes{ $NoteTypes{$KeyNoteType} } ) {
             delete $NoteTypes{$KeyNoteType};
@@ -812,47 +896,54 @@ sub _Mask {
     }
 
     if ( $Param{ArticleTypeID} ) {
-        $Param{NoteStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{NoteStrg} = $LayoutObject->BuildSelection(
             Data       => \%NoteTypes,
             Name       => 'ArticleTypeID',
             SelectedID => $Param{ArticleTypeID},
+            Class      => 'Modernize',
         );
     }
     else {
-        $Param{NoteStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{NoteStrg} = $LayoutObject->BuildSelection(
             Data          => \%NoteTypes,
             Name          => 'ArticleTypeID',
-            SelectedValue => $Self->{Config}->{ArticleTypeDefault},
+            SelectedValue => $Config->{ArticleTypeDefault},
+            Class         => 'Modernize',
         );
     }
 
     # build next states string
-    if ( $Self->{Config}->{State} ) {
+    if ( $Config->{State} ) {
         my %State;
-        my %StateList = $Self->{StateObject}->StateGetStatesByType(
-            StateType => $Self->{Config}->{StateType},
+
+        # get state object
+        my $StateObject = $Kernel::OM->Get('Kernel::System::State');
+
+        my %StateList = $StateObject->StateGetStatesByType(
+            StateType => $Config->{StateType},
             Result    => 'HASH',
             Action    => $Self->{Action},
             UserID    => $Self->{UserID},
         );
-        if ( !$Self->{Config}->{StateDefault} ) {
+        if ( !$Config->{StateDefault} ) {
             $StateList{''} = '-';
         }
         if ( !$Param{StateID} ) {
-            if ( $Self->{Config}->{StateDefault} ) {
-                $State{SelectedValue} = $Self->{Config}->{StateDefault};
+            if ( $Config->{StateDefault} ) {
+                $State{SelectedValue} = $Config->{StateDefault};
             }
         }
         else {
             $State{SelectedID} = $Param{StateID};
         }
 
-        $Param{NextStatesStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{NextStatesStrg} = $LayoutObject->BuildSelection(
             Data => \%StateList,
             Name => 'StateID',
             %State,
+            Class => 'Modernize',
         );
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'State',
             Data => \%Param,
         );
@@ -860,17 +951,17 @@ sub _Mask {
         STATE_ID:
         for my $StateID ( sort keys %StateList ) {
             next STATE_ID if !$StateID;
-            my %StateData = $Self->{StateObject}->StateGet( ID => $StateID );
+            my %StateData = $StateObject->StateGet( ID => $StateID );
             next STATE_ID if $StateData{TypeName} !~ /pending/i;
-            $Param{DateString} = $Self->{LayoutObject}->BuildDateSelection(
+            $Param{DateString} = $LayoutObject->BuildDateSelection(
                 %Param,
                 Format               => 'DateInputFormatLong',
-                DiffTime             => $Self->{ConfigObject}->Get('Ticket::Frontend::PendingDiffTime') || 0,
+                DiffTime             => $ConfigObject->Get('Ticket::Frontend::PendingDiffTime') || 0,
                 Class                => $Param{Errors}->{DateInvalid} || '',
                 Validate             => 1,
                 ValidateDateInFuture => 1,
             );
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'StatePending',
                 Data => \%Param,
             );
@@ -879,46 +970,51 @@ sub _Mask {
     }
 
     # types
-    if ( $Self->{ConfigObject}->Get('Ticket::Type') && $Self->{Config}->{TicketType} ) {
-        my %Type = $Self->{TicketObject}->TicketTypeList(
+    if ( $ConfigObject->Get('Ticket::Type') && $Config->{TicketType} ) {
+        my %Type = $TicketObject->TicketTypeList(
             %Param,
             Action => $Self->{Action},
             UserID => $Self->{UserID},
         );
-        $Param{TypeStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{TypeStrg} = $LayoutObject->BuildSelection(
             Data         => \%Type,
             PossibleNone => 1,
             Name         => 'TypeID',
             SelectedID   => $Param{TypeID},
             Sort         => 'AlphanumericValue',
             Translation  => 0,
+            Class        => 'Modernize',
         );
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'Type',
             Data => {%Param},
         );
     }
 
+    # get needed objects
+    my $UserObject  = $Kernel::OM->Get('Kernel::System::User');
+    my $QueueObject = $Kernel::OM->Get('Kernel::System::Queue');
+    my $GroupObject = $Kernel::OM->Get('Kernel::System::Group');
+
     # owner list
-    if ( $Self->{Config}->{Owner} ) {
-        my %AllGroupsMembers = $Self->{UserObject}->UserList(
+    if ( $Config->{Owner} ) {
+        my %AllGroupsMembers = $UserObject->UserList(
             Type  => 'Long',
             Valid => 1
         );
 
         # only put possible rw agents to possible owner list
-        if ( !$Self->{ConfigObject}->Get('Ticket::ChangeOwnerToEveryone') ) {
+        if ( !$ConfigObject->Get('Ticket::ChangeOwnerToEveryone') ) {
             my %AllGroupsMembersNew;
             for my $TicketID ( @{ $Param{TicketIDs} } ) {
-                my %Ticket = $Self->{TicketObject}->TicketGet(
+                my %Ticket = $TicketObject->TicketGet(
                     TicketID      => $TicketID,
                     DynamicFields => 0,
                 );
-                my $GroupID = $Self->{QueueObject}->GetQueueGroupID( QueueID => $Ticket{QueueID} );
-                my %GroupMember = $Self->{GroupObject}->GroupMemberList(
+                my $GroupID = $QueueObject->GetQueueGroupID( QueueID => $Ticket{QueueID} );
+                my %GroupMember = $GroupObject->PermissionGroupGet(
                     GroupID => $GroupID,
                     Type    => 'rw',
-                    Result  => 'HASH',
                 );
                 USER_ID:
                 for my $UserID ( sort keys %GroupMember ) {
@@ -928,39 +1024,39 @@ sub _Mask {
                 %AllGroupsMembers = %AllGroupsMembersNew;
             }
         }
-        $Param{OwnerStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{OwnerStrg} = $LayoutObject->BuildSelection(
             Data         => \%AllGroupsMembers,
             Name         => 'OwnerID',
             Translation  => 0,
             SelectedID   => $Param{OwnerID},
             PossibleNone => 1,
+            Class        => 'Modernize',
         );
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'Owner',
             Data => \%Param,
         );
     }
 
     # responsible list
-    if ( $Self->{ConfigObject}->Get('Ticket::Responsible') && $Self->{Config}->{Responsible} ) {
-        my %AllGroupsMembers = $Self->{UserObject}->UserList(
+    if ( $ConfigObject->Get('Ticket::Responsible') && $Config->{Responsible} ) {
+        my %AllGroupsMembers = $UserObject->UserList(
             Type  => 'Long',
             Valid => 1
         );
 
         # only put possible rw agents to possible owner list
-        if ( !$Self->{ConfigObject}->Get('Ticket::ChangeOwnerToEveryone') ) {
+        if ( !$ConfigObject->Get('Ticket::ChangeOwnerToEveryone') ) {
             my %AllGroupsMembersNew;
             for my $TicketID ( @{ $Param{TicketIDs} } ) {
-                my %Ticket = $Self->{TicketObject}->TicketGet(
+                my %Ticket = $TicketObject->TicketGet(
                     TicketID      => $TicketID,
                     DynamicFields => 0,
                 );
-                my $GroupID = $Self->{QueueObject}->GetQueueGroupID( QueueID => $Ticket{QueueID} );
-                my %GroupMember = $Self->{GroupObject}->GroupMemberList(
+                my $GroupID = $QueueObject->GetQueueGroupID( QueueID => $Ticket{QueueID} );
+                my %GroupMember = $GroupObject->PermissionGroupGet(
                     GroupID => $GroupID,
                     Type    => 'rw',
-                    Result  => 'HASH',
                 );
                 USER_ID:
                 for my $UserID ( sort keys %GroupMember ) {
@@ -970,7 +1066,7 @@ sub _Mask {
                 %AllGroupsMembers = %AllGroupsMembersNew;
             }
         }
-        $Param{ResponsibleStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{ResponsibleStrg} = $LayoutObject->BuildSelection(
             Data => {
                 '' => '-',
                 %AllGroupsMembers
@@ -978,129 +1074,133 @@ sub _Mask {
             Name        => 'ResponsibleID',
             Translation => 0,
             SelectedID  => $Param{ResponsibleID},
+            Class       => 'Modernize',
         );
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'Responsible',
             Data => \%Param,
         );
     }
 
     # build move queue string
-    my %MoveQueues = $Self->{TicketObject}->MoveList(
+    my %MoveQueues = $TicketObject->MoveList(
         UserID => $Self->{UserID},
         Action => $Self->{Action},
         Type   => 'move_into',
     );
-    $Param{MoveQueuesStrg} = $Self->{LayoutObject}->AgentQueueListOption(
-        Data     => { %MoveQueues, '' => '-' },
-        Multiple => 0,
-        Size     => 0,
-        Name     => 'QueueID',
-
-        #       SelectedID => $Self->{DestQueueID},
+    $Param{MoveQueuesStrg} = $LayoutObject->AgentQueueListOption(
+        Data           => { %MoveQueues, '' => '-' },
+        Multiple       => 0,
+        Size           => 0,
+        Name           => 'QueueID',
         OnChangeSubmit => 0,
+        Class          => 'Modernize',
     );
 
     # get priority
-    if ( $Self->{Config}->{Priority} ) {
+    if ( $Config->{Priority} ) {
         my %Priority;
-        my %PriorityList = $Self->{PriorityObject}->PriorityList(
+        my %PriorityList = $Kernel::OM->Get('Kernel::System::Priority')->PriorityList(
             Valid  => 1,
             UserID => $Self->{UserID},
         );
-        if ( !$Self->{Config}->{PriorityDefault} ) {
+        if ( !$Config->{PriorityDefault} ) {
             $PriorityList{''} = '-';
         }
         if ( !$Param{PriorityID} ) {
-            if ( $Self->{Config}->{PriorityDefault} ) {
-                $Priority{SelectedValue} = $Self->{Config}->{PriorityDefault};
+            if ( $Config->{PriorityDefault} ) {
+                $Priority{SelectedValue} = $Config->{PriorityDefault};
             }
         }
         else {
             $Priority{SelectedID} = $Param{PriorityID};
         }
-        $Param{PriorityStrg} = $Self->{LayoutObject}->BuildSelection(
+        $Param{PriorityStrg} = $LayoutObject->BuildSelection(
             Data => \%PriorityList,
             Name => 'PriorityID',
             %Priority,
+            Class => 'Modernize',
+
         );
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'Priority',
             Data => \%Param,
         );
     }
 
     # show time accounting box
-    if ( $Self->{ConfigObject}->Get('Ticket::Frontend::AccountTime') ) {
+    if ( $ConfigObject->Get('Ticket::Frontend::AccountTime') ) {
         $Param{TimeUnitsRequired} = (
-            $Self->{ConfigObject}->Get('Ticket::Frontend::NeedAccountedTime')
+            $ConfigObject->Get('Ticket::Frontend::NeedAccountedTime')
             ? 'Validate_DependingRequiredAND Validate_Depending_Subject'
             : ''
         );
         $Param{TimeUnitsRequiredEmail} = (
-            $Self->{ConfigObject}->Get('Ticket::Frontend::NeedAccountedTime')
+            $ConfigObject->Get('Ticket::Frontend::NeedAccountedTime')
             ? 'Validate_DependingRequiredAND Validate_Depending_EmailSubject'
             : ''
         );
 
-        if ( $Self->{ConfigObject}->Get('Ticket::Frontend::NeedAccountedTime') ) {
-            $Self->{LayoutObject}->Block(
+        if ( $ConfigObject->Get('Ticket::Frontend::NeedAccountedTime') ) {
+            $LayoutObject->Block(
                 Name => 'TimeUnitsLabelMandatory',
                 Data => { TimeUnitsRequired => $Param{TimeUnitsRequired} },
             );
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'TimeUnitsLabelMandatoryEmail',
                 Data => { TimeUnitsRequired => $Param{TimeUnitsRequiredEmail} },
             );
         }
         else {
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'TimeUnitsLabel',
                 Data => \%Param,
             );
-            $Self->{LayoutObject}->Block(
+            $LayoutObject->Block(
                 Name => 'TimeUnitsLabelEmail',
                 Data => \%Param,
             );
         }
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'TimeUnits',
             Data => \%Param,
         );
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'TimeUnitsEmail',
             Data => \%Param,
         );
     }
 
-    $Param{LinkTogetherYesNoOption} = $Self->{LayoutObject}->BuildSelection(
-        Data       => $Self->{ConfigObject}->Get('YesNoOptions'),
+    $Param{LinkTogetherYesNoOption} = $LayoutObject->BuildSelection(
+        Data       => $ConfigObject->Get('YesNoOptions'),
         Name       => 'LinkTogether',
         SelectedID => $Param{LinkTogether} // 0,
+        Class      => 'Modernize',
     );
 
-    $Param{UnlockYesNoOption} = $Self->{LayoutObject}->BuildSelection(
-        Data       => $Self->{ConfigObject}->Get('YesNoOptions'),
+    $Param{UnlockYesNoOption} = $LayoutObject->BuildSelection(
+        Data       => $ConfigObject->Get('YesNoOptions'),
         Name       => 'Unlock',
         SelectedID => $Param{Unlock} // 1,
+        Class      => 'Modernize',
     );
 
     # show spell check
-    if ( $Self->{LayoutObject}->{BrowserSpellChecker} ) {
-        $Self->{LayoutObject}->Block(
+    if ( $LayoutObject->{BrowserSpellChecker} ) {
+        $LayoutObject->Block(
             Name => 'SpellCheck',
             Data => {},
         );
     }
 
     # add rich text editor for note & email
-    if ( $Self->{LayoutObject}->{BrowserRichText} ) {
+    if ( $LayoutObject->{BrowserRichText} ) {
 
         # use height/width defined for this screen
-        $Param{RichTextHeight} = $Self->{Config}->{RichTextHeight} || 0;
-        $Param{RichTextWidth}  = $Self->{Config}->{RichTextWidth}  || 0;
+        $Param{RichTextHeight} = $Config->{RichTextHeight} || 0;
+        $Param{RichTextWidth}  = $Config->{RichTextWidth}  || 0;
 
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'RichText',
             Data => \%Param,
         );
@@ -1116,7 +1216,7 @@ sub _Mask {
             $URL .= ';' . $Self->{SessionName} . '=' . $Self->{SessionID};
         }
 
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'ParentReload',
             Data => {
                 URL => $URL,
@@ -1124,7 +1224,7 @@ sub _Mask {
         );
 
         # show undo&close link
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'UndoClosePopup',
             Data => {%Param},
         );
@@ -1132,14 +1232,36 @@ sub _Mask {
     else {
 
         # show cancel&close link
-        $Self->{LayoutObject}->Block(
+        $LayoutObject->Block(
             Name => 'CancelClosePopup',
             Data => {%Param},
         );
     }
 
+    my @BulkModules = @{ $Param{BulkModules} };
+
+    # call Display() in all ticket bulk modules
+    if (@BulkModules) {
+
+        my @BulkModuleContent;
+
+        MODULEOBJECT:
+        for my $ModuleObject (@BulkModules) {
+            next MODULEOBJECT if !$ModuleObject->can('Display');
+
+            my $ModuleContent = $ModuleObject->Display(
+                Errors => $Param{Errors},
+                UserID => $Self->{UserID},
+            );
+
+            push @BulkModuleContent, $ModuleContent;
+        }
+
+        $Param{BulkModuleContent} = \@BulkModuleContent;
+    }
+
     # get output back
-    return $Self->{LayoutObject}->Output(
+    return $LayoutObject->Output(
         TemplateFile => 'AgentTicketBulk',
         Data         => \%Param
     );

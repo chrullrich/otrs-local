@@ -1,6 +1,5 @@
 // --
-// Core.App.UnitTest.js - UnitTests
-// Copyright (C) 2001-2015 OTRS AG, http://otrs.com/\n";
+// Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
 // the enclosed file COPYING for license information (AGPL). If you
@@ -9,7 +8,7 @@
 
 "use strict";
 
-var OTRS = OTRS || {};
+var Core = Core || {};
 Core.App = Core.App || {};
 
 Core.App = (function (Namespace) {
@@ -37,11 +36,11 @@ Core.App = (function (Namespace) {
         });
 
         test('Core.App.EscapeSelector()', function () {
-            expect(3);
             var Selector = 'ConfigItemClass::Config::Hardware::MapTypeAdd::Attribute###SubItem',
                 Id,
                 Value;
 
+            expect(3);
             equal(Core.App.EscapeSelector(Selector), 'ConfigItemClass\\:\\:Config\\:\\:Hardware\\:\\:MapTypeAdd\\:\\:Attribute\\#\\#\\#SubItem');
             equal(Core.App.EscapeSelector('ID-mit_anderen+Sonderzeichen'), 'ID-mit_anderen+Sonderzeichen');
 
@@ -53,13 +52,13 @@ Core.App = (function (Namespace) {
         });
 
         test('Core.App.Publish()/Subscribe()', function () {
-            expect(4);
             var Counter = 0, Handle;
 
+            expect(4);
             // Subscribe to channel
             Handle = Core.App.Subscribe('UNITTEST1', function () {
                 Counter++;
-            })
+            });
 
             // publish channel
             Core.App.Publish('UNITTEST1');

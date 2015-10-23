@@ -1,5 +1,4 @@
 # --
-# Kernel/Modules/AgentTicketQueue.pm - the queue view of all tickets
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,11 +11,9 @@ package Kernel::Modules::AgentTicketQueue;
 use strict;
 use warnings;
 
-use Kernel::System::JSON;
-use Kernel::System::State;
-use Kernel::System::Lock;
-use Kernel::System::DynamicField;
 use Kernel::System::VariableCheck qw(:all);
+
+our $ObjectManagerDisabled = 1;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -28,50 +25,28 @@ sub new {
     # set debug
     $Self->{Debug} = 0;
 
-    # check all needed objects
-    for (qw(ParamObject DBObject QueueObject LayoutObject ConfigObject LogObject UserObject)) {
-        if ( !$Self->{$_} ) {
-            $Self->{LayoutObject}->FatalError( Message => "Got no $_!" );
-        }
-    }
-
-    $Self->{Config} = $Self->{ConfigObject}->Get("Ticket::Frontend::$Self->{Action}");
-
-    # some new objects
-    $Self->{JSONObject}         = Kernel::System::JSON->new( %{$Self} );
-    $Self->{StateObject}        = Kernel::System::State->new(%Param);
-    $Self->{LockObject}         = Kernel::System::Lock->new(%Param);
-    $Self->{DynamicFieldObject} = Kernel::System::DynamicField->new(%Param);
-
-    # get config data
-    $Self->{ViewableSenderTypes} = $Self->{ConfigObject}->Get('Ticket::ViewableSenderTypes')
-        || $Self->{LayoutObject}->FatalError(
-        Message => 'No Config entry "Ticket::ViewableSenderTypes"!'
-        );
-    $Self->{CustomQueue} = $Self->{ConfigObject}->Get('Ticket::CustomQueue') || '???';
-
-    # get params
-    $Self->{ViewAll} = $Self->{ParamObject}->GetParam( Param => 'ViewAll' )  || 0;
-    $Self->{Start}   = $Self->{ParamObject}->GetParam( Param => 'StartHit' ) || 1;
-    $Self->{Filter}  = $Self->{ParamObject}->GetParam( Param => 'Filter' )   || 'Unlocked';
-    $Self->{View}    = $Self->{ParamObject}->GetParam( Param => 'View' )     || '';
-
     return $Self;
 }
 
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    my $SortBy = $Self->{ParamObject}->GetParam( Param => 'SortBy' )
-        || $Self->{Config}->{'SortBy::Default'}
+    # get needed objects
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+    my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
+
+    my $Config = $ConfigObject->Get("Ticket::Frontend::$Self->{Action}");
+
+    my $SortBy = $ParamObject->GetParam( Param => 'SortBy' )
+        || $Config->{'SortBy::Default'}
         || 'Age';
 
     # Determine the default ordering to be used. Observe the QueueSort setting.
-    my $DefaultOrderBy = $Self->{Config}->{'Order::Default'}
+    my $DefaultOrderBy = $Config->{'Order::Default'}
         || 'Up';
-    if ( $Self->{Config}->{QueueSort} ) {
-        if ( defined $Self->{Config}->{QueueSort}->{ $Self->{QueueID} } ) {
-            if ( $Self->{Config}->{QueueSort}->{ $Self->{QueueID} } ) {
+    if ( $Config->{QueueSort} ) {
+        if ( defined $Config->{QueueSort}->{ $Self->{QueueID} } ) {
+            if ( $Config->{QueueSort}->{ $Self->{QueueID} } ) {
                 $DefaultOrderBy = 'Down';
             }
             else {
@@ -81,34 +56,41 @@ sub Run {
     }
 
     # Set the sort order from the request parameters, or take the default.
-    my $OrderBy = $Self->{ParamObject}->GetParam( Param => 'OrderBy' )
+    my $OrderBy = $ParamObject->GetParam( Param => 'OrderBy' )
         || $DefaultOrderBy;
 
+    # get session object
+    my $SessionObject = $Kernel::OM->Get('Kernel::System::AuthSession');
+
     # store last queue screen
-    $Self->{SessionObject}->UpdateSessionID(
+    $SessionObject->UpdateSessionID(
         SessionID => $Self->{SessionID},
         Key       => 'LastScreenOverview',
         Value     => $Self->{RequestedURL},
     );
 
     # store last screen
-    $Self->{SessionObject}->UpdateSessionID(
+    $SessionObject->UpdateSessionID(
         SessionID => $Self->{SessionID},
         Key       => 'LastScreenView',
         Value     => $Self->{RequestedURL},
     );
 
+    # get user object
+    my $UserObject = $Kernel::OM->Get('Kernel::System::User');
+
     # get filters stored in the user preferences
-    my %Preferences = $Self->{UserObject}->GetPreferences(
+    my %Preferences = $UserObject->GetPreferences(
         UserID => $Self->{UserID},
     );
     my $StoredFiltersKey = 'UserStoredFilterColumns-' . $Self->{Action};
-    my $StoredFilters    = $Self->{JSONObject}->Decode(
+    my $JSONObject       = $Kernel::OM->Get('Kernel::System::JSON');
+    my $StoredFilters    = $JSONObject->Decode(
         Data => $Preferences{$StoredFiltersKey},
     );
 
     # delete stored filters if needed
-    if ( $Self->{ParamObject}->GetParam( Param => 'DeleteFilters' ) ) {
+    if ( $ParamObject->GetParam( Param => 'DeleteFilters' ) ) {
         $StoredFilters = {};
     }
 
@@ -121,7 +103,7 @@ sub Run {
         )
     {
         # get column filter from web request
-        my $FilterValue = $Self->{ParamObject}->GetParam( Param => 'ColumnFilter' . $ColumnName )
+        my $FilterValue = $ParamObject->GetParam( Param => 'ColumnFilter' . $ColumnName )
             || '';
 
         # if filter is not present in the web request, try with the user preferences
@@ -154,7 +136,7 @@ sub Run {
     }
 
     # get all dynamic fields
-    $Self->{DynamicField} = $Self->{DynamicFieldObject}->DynamicFieldListGet(
+    $Self->{DynamicField} = $Kernel::OM->Get('Kernel::System::DynamicField')->DynamicFieldListGet(
         Valid      => 1,
         ObjectType => ['Ticket'],
     );
@@ -165,7 +147,7 @@ sub Run {
         next DYNAMICFIELD if !$DynamicFieldConfig->{Name};
 
         # get filter from web request
-        my $FilterValue = $Self->{ParamObject}->GetParam(
+        my $FilterValue = $ParamObject->GetParam(
             Param => 'ColumnFilterDynamicField_' . $DynamicFieldConfig->{Name}
         );
 
@@ -190,26 +172,29 @@ sub Run {
         $Refresh = 60 * $Self->{UserRefreshTime};
     }
 
+    # get layout object
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     my $Output;
     if ( $Self->{Subaction} ne 'AJAXFilterUpdate' ) {
-        $Output = $Self->{LayoutObject}->Header(
+        $Output = $LayoutObject->Header(
             Refresh => $Refresh,
         );
-        $Output .= $Self->{LayoutObject}->NavigationBar();
+        $Output .= $LayoutObject->NavigationBar();
     }
 
     # viewable locks
-    my @ViewableLockIDs = $Self->{LockObject}->LockViewableLock( Type => 'ID' );
+    my @ViewableLockIDs = $Kernel::OM->Get('Kernel::System::Lock')->LockViewableLock( Type => 'ID' );
 
     # viewable states
-    my @ViewableStateIDs = $Self->{StateObject}->StateGetStatesByType(
+    my @ViewableStateIDs = $Kernel::OM->Get('Kernel::System::State')->StateGetStatesByType(
         Type   => 'Viewable',
         Result => 'ID',
     );
 
     # get permissions
     my $Permission = 'rw';
-    if ( $Self->{Config}->{ViewAllPossibleTickets} ) {
+    if ( $Config->{ViewAllPossibleTickets} ) {
         $Permission = 'ro';
     }
 
@@ -217,7 +202,7 @@ sub Run {
     my %Sort;
 
     # get if search result should be pre-sorted by priority
-    my $PreSortByPriority = $Self->{Config}->{'PreSort::ByPriority'};
+    my $PreSortByPriority = $Config->{'PreSort::ByPriority'};
     if ( !$PreSortByPriority ) {
         %Sort = (
             SortBy  => $SortBy,
@@ -234,13 +219,16 @@ sub Run {
     # get custom queues
     my @ViewableQueueIDs;
     if ( !$Self->{QueueID} ) {
-        @ViewableQueueIDs = $Self->{QueueObject}->GetAllCustomQueues(
+        @ViewableQueueIDs = $Kernel::OM->Get('Kernel::System::Queue')->GetAllCustomQueues(
             UserID => $Self->{UserID},
         );
     }
     else {
         @ViewableQueueIDs = ( $Self->{QueueID} );
     }
+
+    # get subqueue display setting
+    my $UseSubQueues = $ParamObject->GetParam( Param => 'UseSubQueues' ) // $Config->{UseSubQueues} || 0;
 
     my %Filters = (
         All => {
@@ -250,8 +238,9 @@ sub Run {
                 StateIDs => \@ViewableStateIDs,
                 QueueIDs => \@ViewableQueueIDs,
                 %Sort,
-                Permission => $Permission,
-                UserID     => $Self->{UserID},
+                Permission   => $Permission,
+                UserID       => $Self->{UserID},
+                UseSubQueues => $UseSubQueues,
             },
         },
         Unlocked => {
@@ -262,33 +251,38 @@ sub Run {
                 StateIDs => \@ViewableStateIDs,
                 QueueIDs => \@ViewableQueueIDs,
                 %Sort,
-                Permission => $Permission,
-                UserID     => $Self->{UserID},
+                Permission   => $Permission,
+                UserID       => $Self->{UserID},
+                UseSubQueues => $UseSubQueues,
             },
         },
     );
 
+    my $Filter = $ParamObject->GetParam( Param => 'Filter' ) || 'Unlocked';
+
     # check if filter is valid
-    if ( !$Filters{ $Self->{Filter} } ) {
-        $Self->{LayoutObject}->FatalError( Message => "Invalid Filter: $Self->{Filter}!" );
+    if ( !$Filters{$Filter} ) {
+        $LayoutObject->FatalError( Message => "Invalid Filter: $Filter!" );
     }
 
+    my $View = $ParamObject->GetParam( Param => 'View' ) || '';
+
     # lookup latest used view mode
-    if ( !$Self->{View} && $Self->{ 'UserTicketOverview' . $Self->{Action} } ) {
-        $Self->{View} = $Self->{ 'UserTicketOverview' . $Self->{Action} };
+    if ( !$View && $Self->{ 'UserTicketOverview' . $Self->{Action} } ) {
+        $View = $Self->{ 'UserTicketOverview' . $Self->{Action} };
     }
 
     # otherwise use Preview as default as in LayoutTicket
-    $Self->{View} ||= 'Preview';
+    $View ||= 'Preview';
 
     # get personal page shown count
-    my $PageShownPreferencesKey = 'UserTicketOverview' . $Self->{View} . 'PageShown';
+    my $PageShownPreferencesKey = 'UserTicketOverview' . $View . 'PageShown';
     my $PageShown = $Self->{$PageShownPreferencesKey} || 10;
 
     # do shown tickets lookup
     my $Limit = 10_000;
 
-    my $ElementChanged = $Self->{ParamObject}->GetParam( Param => 'ElementChanged' ) || '';
+    my $ElementChanged = $ParamObject->GetParam( Param => 'ElementChanged' ) || '';
     my $HeaderColumn = $ElementChanged;
     $HeaderColumn =~ s{\A ColumnFilter }{}msxg;
 
@@ -296,6 +290,9 @@ sub Run {
     # search all tickets
     my @ViewableTickets;
     my @OriginalViewableTickets;
+
+    # get ticket object
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
     if (@ViewableQueueIDs) {
 
@@ -305,23 +302,25 @@ sub Run {
             || (
                 IsStringWithData($HeaderColumn)
                 && (
-                    $Self->{ConfigObject}->Get('OnlyValuesOnTicket') ||
+                    $ConfigObject->Get('OnlyValuesOnTicket') ||
                     $HeaderColumn eq 'CustomerID' ||
                     $HeaderColumn eq 'CustomerUserID'
                 )
             )
             )
         {
-            @OriginalViewableTickets = $Self->{TicketObject}->TicketSearch(
-                %{ $Filters{ $Self->{Filter} }->{Search} },
+            @OriginalViewableTickets = $TicketObject->TicketSearch(
+                %{ $Filters{$Filter}->{Search} },
                 Limit  => $Limit,
                 Result => 'ARRAY',
             );
 
-            @ViewableTickets = $Self->{TicketObject}->TicketSearch(
-                %{ $Filters{ $Self->{Filter} }->{Search} },
+            my $Start = $ParamObject->GetParam( Param => 'StartHit' ) || 1;
+
+            @ViewableTickets = $TicketObject->TicketSearch(
+                %{ $Filters{$Filter}->{Search} },
                 %ColumnFilter,
-                Limit  => $Self->{Start} + $PageShown - 1,
+                Limit  => $Start + $PageShown - 1,
                 Result => 'ARRAY',
             );
         }
@@ -330,25 +329,25 @@ sub Run {
 
     if ( $Self->{Subaction} eq 'AJAXFilterUpdate' ) {
 
-        my $FilterContent = $Self->{LayoutObject}->TicketListShow(
+        my $FilterContent = $LayoutObject->TicketListShow(
             FilterContentOnly   => 1,
             HeaderColumn        => $HeaderColumn,
             ElementChanged      => $ElementChanged,
             OriginalTicketIDs   => \@OriginalViewableTickets,
-            Action              => 'AgentTicketStatusView',
+            Action              => 'AgentTicketQueue',
             Env                 => $Self,
-            View                => $Self->{View},
+            View                => $View,
             EnableColumnFilters => 1,
         );
 
         if ( !$FilterContent ) {
-            $Self->{LayoutObject}->FatalError(
+            $LayoutObject->FatalError(
                 Message => "Can't get filter content data of $HeaderColumn!",
             );
         }
 
-        return $Self->{LayoutObject}->Attachment(
-            ContentType => 'application/json; charset=' . $Self->{LayoutObject}->{Charset},
+        return $LayoutObject->Attachment(
+            ContentType => 'application/json; charset=' . $LayoutObject->{Charset},
             Content     => $FilterContent,
             Type        => 'inline',
             NoCache     => 1,
@@ -360,33 +359,33 @@ sub Run {
         my $StoredFilters = \%ColumnFilter;
 
         my $StoredFiltersKey = 'UserStoredFilterColumns-' . $Self->{Action};
-        $Self->{UserObject}->SetPreferences(
+        $UserObject->SetPreferences(
             UserID => $Self->{UserID},
             Key    => $StoredFiltersKey,
-            Value  => $Self->{JSONObject}->Encode( Data => $StoredFilters ),
+            Value  => $JSONObject->Encode( Data => $StoredFilters ),
         );
     }
 
     my $CountTotal = 0;
     my %NavBarFilter;
-    for my $Filter ( sort keys %Filters ) {
+    for my $FilterColumn ( sort keys %Filters ) {
         my $Count = 0;
         if (@ViewableQueueIDs) {
-            $Count = $Self->{TicketObject}->TicketSearch(
-                %{ $Filters{$Filter}->{Search} },
+            $Count = $TicketObject->TicketSearch(
+                %{ $Filters{$FilterColumn}->{Search} },
                 %ColumnFilter,
                 Result => 'COUNT',
             );
         }
 
-        if ( $Filter eq $Self->{Filter} ) {
+        if ( $FilterColumn eq $Filter ) {
             $CountTotal = $Count;
         }
 
-        $NavBarFilter{ $Filters{$Filter}->{Prio} } = {
+        $NavBarFilter{ $Filters{$FilterColumn}->{Prio} } = {
             Count  => $Count,
-            Filter => $Filter,
-            %{ $Filters{$Filter} },
+            Filter => $FilterColumn,
+            %{ $Filters{$FilterColumn} },
         };
     }
 
@@ -397,35 +396,47 @@ sub Run {
         next COLUMNNAME if !defined $GetColumnFilter{$ColumnName};
         next COLUMNNAME if $GetColumnFilter{$ColumnName} eq '';
         $ColumnFilterLink
-            .= ';' . $Self->{LayoutObject}->Ascii2Html( Text => 'ColumnFilter' . $ColumnName )
-            . '=' . $Self->{LayoutObject}->Ascii2Html( Text => $GetColumnFilter{$ColumnName} )
+            .= ';' . $LayoutObject->Ascii2Html( Text => 'ColumnFilter' . $ColumnName )
+            . '=' . $LayoutObject->Ascii2Html( Text => $GetColumnFilter{$ColumnName} )
+    }
+
+    my $SubQueueLink = '';
+    if ( !$Config->{UseSubQueues} && $UseSubQueues ) {
+        $SubQueueLink = ';UseSubQueues=1';
+    }
+    elsif ( $Config->{UseSubQueues} && !$UseSubQueues ) {
+        $SubQueueLink = ';UseSubQueues=0';
     }
 
     my $LinkPage = 'QueueID='
-        . $Self->{LayoutObject}->Ascii2Html( Text => $Self->{QueueID} )
+        . $LayoutObject->Ascii2Html( Text => $Self->{QueueID} )
         . ';Filter='
-        . $Self->{LayoutObject}->Ascii2Html( Text => $Self->{Filter} )
-        . ';View=' . $Self->{LayoutObject}->Ascii2Html( Text => $Self->{View} )
-        . ';SortBy=' . $Self->{LayoutObject}->Ascii2Html( Text => $SortBy )
-        . ';OrderBy=' . $Self->{LayoutObject}->Ascii2Html( Text => $OrderBy )
+        . $LayoutObject->Ascii2Html( Text => $Filter )
+        . ';View=' . $LayoutObject->Ascii2Html( Text => $View )
+        . ';SortBy=' . $LayoutObject->Ascii2Html( Text => $SortBy )
+        . ';OrderBy=' . $LayoutObject->Ascii2Html( Text => $OrderBy )
+        . $SubQueueLink
         . $ColumnFilterLink
         . ';';
+
     my $LinkSort = 'QueueID='
-        . $Self->{LayoutObject}->Ascii2Html( Text => $Self->{QueueID} )
-        . ';View=' . $Self->{LayoutObject}->Ascii2Html( Text => $Self->{View} )
+        . $LayoutObject->Ascii2Html( Text => $Self->{QueueID} )
+        . ';View=' . $LayoutObject->Ascii2Html( Text => $View )
         . ';Filter='
-        . $Self->{LayoutObject}->Ascii2Html( Text => $Self->{Filter} )
+        . $LayoutObject->Ascii2Html( Text => $Filter )
+        . $SubQueueLink
         . $ColumnFilterLink
         . ';';
 
     my $LinkFilter = 'QueueID='
-        . $Self->{LayoutObject}->Ascii2Html( Text => $Self->{QueueID} )
-        . ';SortBy=' . $Self->{LayoutObject}->Ascii2Html( Text => $SortBy )
-        . ';OrderBy=' . $Self->{LayoutObject}->Ascii2Html( Text => $OrderBy )
-        . ';View=' . $Self->{LayoutObject}->Ascii2Html( Text => $Self->{View} )
+        . $LayoutObject->Ascii2Html( Text => $Self->{QueueID} )
+        . ';SortBy=' . $LayoutObject->Ascii2Html( Text => $SortBy )
+        . ';OrderBy=' . $LayoutObject->Ascii2Html( Text => $OrderBy )
+        . ';View=' . $LayoutObject->Ascii2Html( Text => $View )
+        . $SubQueueLink
         . ';';
 
-    my $LastColumnFilter = $Self->{ParamObject}->GetParam( Param => 'LastColumnFilter' ) || '';
+    my $LastColumnFilter = $ParamObject->GetParam( Param => 'LastColumnFilter' ) || '';
 
     if ( !$LastColumnFilter && $ColumnFilterLink ) {
 
@@ -434,17 +445,26 @@ sub Run {
     }
 
     my %NavBar = $Self->BuildQueueView(
-        QueueIDs => \@ViewableQueueIDs,
-        Filter   => $Self->{Filter}
+        QueueIDs     => \@ViewableQueueIDs,
+        Filter       => $Filter,
+        UseSubQueues => $UseSubQueues,
     );
 
+    my $SubQueueIndicatorTitle = '';
+    if ( !$Config->{UseSubQueues} && $UseSubQueues ) {
+        $SubQueueIndicatorTitle = ' (' . $LayoutObject->{LanguageObject}->Translate('including subqueues') . ')';
+    }
+    elsif ( $Config->{UseSubQueues} && !$UseSubQueues ) {
+        $SubQueueIndicatorTitle = ' (' . $LayoutObject->{LanguageObject}->Translate('excluding subqueues') . ')';
+    }
+
     # show tickets
-    $Output .= $Self->{LayoutObject}->TicketListShow(
-        Filter     => $Self->{Filter},
+    $Output .= $LayoutObject->TicketListShow(
+        Filter     => $Filter,
         Filters    => \%NavBarFilter,
         FilterLink => $LinkFilter,
 
-        DataInTheMiddle => $Self->{LayoutObject}->Output(
+        DataInTheMiddle => $LayoutObject->Output(
             TemplateFile => 'AgentTicketQueue',
             Data         => \%NavBar,
         ),
@@ -459,11 +479,11 @@ sub Run {
         RequestedURL      => $Self->{RequestedURL},
 
         NavBar => \%NavBar,
-        View   => $Self->{View},
+        View   => $View,
 
         Bulk       => 1,
         TitleName  => 'QueueView',
-        TitleValue => $NavBar{SelectedQueue},
+        TitleValue => $NavBar{SelectedQueue} . $SubQueueIndicatorTitle,
 
         Env        => $Self,
         LinkPage   => $LinkPage,
@@ -475,7 +495,7 @@ sub Run {
         EnableColumnFilters => 1,
         ColumnFilterForm    => {
             QueueID => $Self->{QueueID} || '',
-            Filter  => $Self->{Filter}  || '',
+            Filter  => $Filter          || '',
         },
 
         # do not print the result earlier, but return complete content
@@ -483,26 +503,27 @@ sub Run {
     );
 
     # get page footer
-    $Output .= $Self->{LayoutObject}->Footer() if $Self->{Subaction} ne 'AJAXFilterUpdate';
+    $Output .= $LayoutObject->Footer() if $Self->{Subaction} ne 'AJAXFilterUpdate';
     return $Output;
 }
 
 sub BuildQueueView {
     my ( $Self, %Param ) = @_;
 
-    my %Data = $Self->{TicketObject}->TicketAcceleratorIndex(
+    my %Data = $Kernel::OM->Get('Kernel::System::Ticket')->TicketAcceleratorIndex(
         UserID        => $Self->{UserID},
         QueueID       => $Self->{QueueID},
         ShownQueueIDs => $Param{QueueIDs},
     );
 
     # build output ...
-    my %AllQueues = $Self->{QueueObject}->QueueList( Valid => 0 );
+    my %AllQueues = $Kernel::OM->Get('Kernel::System::Queue')->QueueList( Valid => 0 );
     return $Self->_MaskQueueView(
         %Data,
         QueueID         => $Self->{QueueID},
         AllQueues       => \%AllQueues,
         ViewableTickets => $Self->{ViewableTickets},
+        UseSubQueues    => $Param{UseSubQueues},
     );
 }
 
@@ -518,11 +539,15 @@ sub _MaskQueueView {
     my $HaveTotals = 0;    # flag for "Total" in index backend
     my %UsedQueue;
     my @ListedQueues;
-    my $Level       = 0;
-    my $CustomQueue = $Self->{LayoutObject}->{LanguageObject}->Translate( $Self->{CustomQueue} );
-    $Self->{HighlightAge1} = $Self->{Config}->{HighlightAge1};
-    $Self->{HighlightAge2} = $Self->{Config}->{HighlightAge2};
-    $Self->{Blink}         = $Self->{Config}->{Blink};
+    my $Level        = 0;
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+    my $CustomQueues = $ConfigObject->Get('Ticket::CustomQueue') || '???';
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $CustomQueue  = $LayoutObject->{LanguageObject}->Translate($CustomQueues);
+    my $Config       = $ConfigObject->Get("Ticket::Frontend::$Self->{Action}");
+    $Self->{HighlightAge1} = $Config->{HighlightAge1};
+    $Self->{HighlightAge2} = $Config->{HighlightAge2};
+    $Self->{Blink}         = $Config->{Blink};
 
     $Param{SelectedQueue} = $AllQueues{$QueueID} || $CustomQueue;
     my @MetaQueue = split /::/, $Param{SelectedQueue};
@@ -596,11 +621,18 @@ sub _MaskQueueView {
         $Queue{MaxAge} = $Queue{MaxAge} / 60;
         $Queue{QueueID} = 0 if ( !$Queue{QueueID} );
 
-        $QueueStrg
-            .= "<li><a href=\"$Self->{LayoutObject}->{Baselink}Action=AgentTicketQueue;QueueID=$Queue{QueueID}";
-        $QueueStrg .= ';View=' . $Self->{LayoutObject}->Ascii2Html( Text => $Self->{View} ) . '"';
+        my $View   = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => 'View' )   || '';
+        my $Filter = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => 'Filter' ) || 'Unlocked';
 
-        $QueueStrg .= ' class="';
+        $QueueStrg
+            .= "<li><a href=\"$LayoutObject->{Baselink}Action=AgentTicketQueue;QueueID=$Queue{QueueID}";
+        $QueueStrg .= ';View=' . $LayoutObject->Ascii2Html( Text => $View );
+        $QueueStrg .= ';Filter=' . $LayoutObject->Ascii2Html( Text => $Filter );
+        if ( $QueueID eq $Queue{QueueID} && $Config->{UseSubQueues} eq $Param{UseSubQueues} ) {
+            $QueueStrg .= ';UseSubQueues=';
+            $QueueStrg .= $Param{UseSubQueues} ? 0 : 1;
+        }
+        $QueueStrg .= '" class="';
 
         # should i highlight this queue
         # the oldest queue
@@ -646,7 +678,7 @@ sub _MaskQueueView {
         }
 
         # QueueStrg
-        $QueueStrg .= $Self->{LayoutObject}->Ascii2Html( Text => $ShortQueueName );
+        $QueueStrg .= $LayoutObject->Ascii2Html( Text => $ShortQueueName );
 
         # If the index backend supports totals, we show total tickets
         # as well as unlocked ones in the form  "QueueName (total / unlocked)"

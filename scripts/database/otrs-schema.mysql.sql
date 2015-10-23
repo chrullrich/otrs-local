@@ -751,10 +751,8 @@ CREATE TABLE auto_response (
     name VARCHAR (200) NOT NULL,
     text0 TEXT NULL,
     text1 TEXT NULL,
-    text2 TEXT NULL,
     type_id SMALLINT NOT NULL,
     system_address_id SMALLINT NOT NULL,
-    charset VARCHAR (80) NOT NULL,
     content_type VARCHAR (250) NULL,
     comments VARCHAR (250) NULL,
     valid_id SMALLINT NOT NULL,
@@ -999,32 +997,11 @@ CREATE TABLE web_upload_cache (
     create_time_unix BIGINT NOT NULL
 );
 # ----------------------------------------------------------
-#  create table notifications
-# ----------------------------------------------------------
-CREATE TABLE notifications (
-    id INTEGER NOT NULL AUTO_INCREMENT,
-    notification_type VARCHAR (200) NOT NULL,
-    notification_charset VARCHAR (60) NOT NULL,
-    notification_language VARCHAR (60) NOT NULL,
-    subject VARCHAR (200) NOT NULL,
-    text TEXT NOT NULL,
-    content_type VARCHAR (250) NULL,
-    create_time DATETIME NOT NULL,
-    create_by INTEGER NOT NULL,
-    change_time DATETIME NOT NULL,
-    change_by INTEGER NOT NULL,
-    PRIMARY KEY(id)
-);
-# ----------------------------------------------------------
 #  create table notification_event
 # ----------------------------------------------------------
 CREATE TABLE notification_event (
     id INTEGER NOT NULL AUTO_INCREMENT,
     name VARCHAR (200) NOT NULL,
-    subject VARCHAR (200) NOT NULL,
-    text TEXT NOT NULL,
-    content_type VARCHAR (250) NOT NULL,
-    charset VARCHAR (100) NOT NULL,
     valid_id SMALLINT NOT NULL,
     comments VARCHAR (250) NULL,
     create_time DATETIME NOT NULL,
@@ -1033,6 +1010,21 @@ CREATE TABLE notification_event (
     change_by INTEGER NOT NULL,
     PRIMARY KEY(id),
     UNIQUE INDEX notification_event_name (name)
+);
+# ----------------------------------------------------------
+#  create table notification_event_message
+# ----------------------------------------------------------
+CREATE TABLE notification_event_message (
+    id INTEGER NOT NULL AUTO_INCREMENT,
+    notification_id INTEGER NOT NULL,
+    subject VARCHAR (200) NOT NULL,
+    text TEXT NOT NULL,
+    content_type VARCHAR (250) NOT NULL,
+    language VARCHAR (60) NOT NULL,
+    PRIMARY KEY(id),
+    UNIQUE INDEX notification_event_message_notification_id_language (notification_id, language),
+    INDEX notification_event_message_language (language),
+    INDEX notification_event_message_notification_id (notification_id)
 );
 # ----------------------------------------------------------
 #  create table notification_event_item
@@ -1094,7 +1086,9 @@ CREATE TABLE link_relation (
     state_id SMALLINT NOT NULL,
     create_time DATETIME NOT NULL,
     create_by INTEGER NOT NULL,
-    UNIQUE INDEX link_relation_view (source_object_id, source_key, target_object_id, target_key, type_id)
+    UNIQUE INDEX link_relation_view (source_object_id, source_key, target_object_id, target_key, type_id),
+    INDEX link_relation_list_source (source_object_id, source_key, state_id),
+    INDEX link_relation_list_target (target_object_id, target_key, state_id)
 );
 # ----------------------------------------------------------
 #  create table system_data
@@ -1202,19 +1196,6 @@ CREATE TABLE gi_webservice_config_history (
     change_by INTEGER NOT NULL,
     PRIMARY KEY(id),
     UNIQUE INDEX gi_webservice_config_history_config_md5 (config_md5)
-);
-# ----------------------------------------------------------
-#  create table scheduler_task_list
-# ----------------------------------------------------------
-CREATE TABLE scheduler_task_list (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    task_data TEXT NOT NULL,
-    task_data_md5 VARCHAR (32) NOT NULL,
-    task_type VARCHAR (200) NOT NULL,
-    due_time DATETIME NOT NULL,
-    create_time DATETIME NOT NULL,
-    PRIMARY KEY(id),
-    UNIQUE INDEX scheduler_task_list_task_data_md5 (task_data_md5)
 );
 # ----------------------------------------------------------
 #  create table gi_debugger_entry
@@ -1395,4 +1376,79 @@ CREATE TABLE pm_entity_sync (
     create_time DATETIME NOT NULL,
     change_time DATETIME NOT NULL,
     UNIQUE INDEX pm_entity_sync_list (entity_type, entity_id)
+);
+# ----------------------------------------------------------
+#  create table scheduler_task
+# ----------------------------------------------------------
+CREATE TABLE scheduler_task (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    ident BIGINT NOT NULL,
+    name VARCHAR (150) NULL,
+    task_type VARCHAR (150) NOT NULL,
+    task_data LONGBLOB NOT NULL,
+    attempts SMALLINT NOT NULL,
+    lock_key BIGINT NOT NULL,
+    lock_time DATETIME NULL,
+    lock_update_time DATETIME NULL,
+    create_time DATETIME NOT NULL,
+    PRIMARY KEY(id),
+    UNIQUE INDEX scheduler_task_ident (ident),
+    INDEX scheduler_task_ident_id (ident, id),
+    INDEX scheduler_task_lock_key_id (lock_key, id)
+);
+# ----------------------------------------------------------
+#  create table scheduler_future_task
+# ----------------------------------------------------------
+CREATE TABLE scheduler_future_task (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    ident BIGINT NOT NULL,
+    execution_time DATETIME NOT NULL,
+    name VARCHAR (150) NULL,
+    task_type VARCHAR (150) NOT NULL,
+    task_data LONGBLOB NOT NULL,
+    attempts SMALLINT NOT NULL,
+    lock_key BIGINT NOT NULL,
+    lock_time DATETIME NULL,
+    create_time DATETIME NOT NULL,
+    PRIMARY KEY(id),
+    UNIQUE INDEX scheduler_future_task_ident (ident),
+    INDEX scheduler_future_task_ident_id (ident, id),
+    INDEX scheduler_future_task_lock_key_id (lock_key, id)
+);
+# ----------------------------------------------------------
+#  create table scheduler_recurrent_task
+# ----------------------------------------------------------
+CREATE TABLE scheduler_recurrent_task (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    name VARCHAR (150) NOT NULL,
+    task_type VARCHAR (150) NOT NULL,
+    last_execution_time DATETIME NOT NULL,
+    last_worker_task_id BIGINT NULL,
+    last_worker_status SMALLINT NULL,
+    last_worker_running_time INTEGER NULL,
+    lock_key BIGINT NOT NULL,
+    lock_time DATETIME NULL,
+    create_time DATETIME NOT NULL,
+    change_time DATETIME NOT NULL,
+    PRIMARY KEY(id),
+    UNIQUE INDEX scheduler_recurrent_task_name_task_type (name, task_type),
+    INDEX scheduler_recurrent_task_lock_key_id (lock_key, id),
+    INDEX scheduler_recurrent_task_task_type_name (task_type, name)
+);
+# ----------------------------------------------------------
+#  create table cloud_service_config
+# ----------------------------------------------------------
+CREATE TABLE cloud_service_config (
+    id INTEGER NOT NULL AUTO_INCREMENT,
+    name VARCHAR (200) NOT NULL,
+    config LONGBLOB NOT NULL,
+    config_md5 VARCHAR (32) NOT NULL,
+    valid_id SMALLINT NOT NULL,
+    create_time DATETIME NOT NULL,
+    create_by INTEGER NOT NULL,
+    change_time DATETIME NOT NULL,
+    change_by INTEGER NOT NULL,
+    PRIMARY KEY(id),
+    UNIQUE INDEX cloud_service_config_config_md5 (config_md5),
+    UNIQUE INDEX cloud_service_config_name (name)
 );

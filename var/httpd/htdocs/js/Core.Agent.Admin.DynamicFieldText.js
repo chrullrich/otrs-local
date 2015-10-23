@@ -1,5 +1,4 @@
 // --
-// Core.Agent.Admin.DynamicFieldText.js - provides the special module functions for the Text Dynamic Fields.
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -14,39 +13,46 @@ Core.Agent = Core.Agent || {};
 Core.Agent.Admin = Core.Agent.Admin || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Agent.Admin.DynamicFieldText
+ * @namespace Core.Agent.Admin.DynamicFieldText
+ * @memberof Core.Agent.Admin
+ * @author OTRS AG
  * @description
  *      This namespace contains the special module functions for the DynamicFieldText module.
  */
 Core.Agent.Admin.DynamicFieldText = (function (TargetNS) {
 
     /**
+     * @name RemoveRegEx
+     * @memberof Core.Agent.Admin.DynamicFieldText
      * @function
-     * @param {string} IDSelector, id of the pressed remove RegEx button.
-     * @return nothing
-     *      This function removes a RegEx
+     * @returns {Boolean} Returns true.
+     * @param {String} IDSelector - ID of the pressed remove value button.
+     * @description
+     *      This function removes a RegEx.
      */
     TargetNS.RemoveRegEx = function(IDSelector) {
 
         var ObjectIndex = IDSelector.match(/.+_(\d+)/)[1];
-        $('#RegExRow_'+ ObjectIndex).remove();
+        $('#RegExRow_' + ObjectIndex).remove();
 
         return true;
     };
 
     /**
+     * @name AddRegEx
+     * @memberof Core.Agent.Admin.DynamicFieldText
      * @function
-     * @param {Object} RegExInsert, HTML container of the RegEx
-     * @return nothing
-     *      This function add a new RegEx
+     * @returns {Boolean} Returns false
+     * @param {Object} RegExInsert - HTML container of the RegEx.
+     * @description
+     *      This function adds a new RegEx.
      */
     TargetNS.AddRegEx = function(RegExInsert) {
         var $Clone = $('.RegExTemplate').clone(),
             RegExCounter = $('#RegExCounter').val();
 
         // increment RegEx counter
-        RegExCounter ++;
+        RegExCounter++;
 
         // remove unnecessary classes
         $Clone.removeClass('Hidden RegExTemplate');
@@ -72,7 +78,7 @@ Core.Agent.Admin.DynamicFieldText = (function (TargetNS) {
             $(this).parent().find('#' + ID + 'ServerError').attr('name', ID + '_' + RegExCounter + 'ServerError');
 
             // add event handler to remove button
-            if( $(this).hasClass('RemoveRegEx') ) {
+            if($(this).hasClass('RemoveRegEx')) {
 
                 // bind click function to remove button
                 $(this).bind('click', function () {

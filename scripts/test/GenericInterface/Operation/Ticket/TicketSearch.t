@@ -1,5 +1,4 @@
 # --
-# TicketSearch.t - GenericInterface transport interface tests for TicketConnector backend
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -1301,7 +1300,7 @@ my @Tests = (
             Success => 1
         },
         ExpectedReturnRemoteData => {
-            Data    => undef,
+            Data    => {},
             Success => 1,
         },
         Operation => 'TicketSearch',
@@ -1433,7 +1432,7 @@ for my $Item (
             Success => 1
         },
         ExpectedReturnRemoteData => {
-            Data    => undef,
+            Data    => {},
             Success => 1
         },
         Operation => 'TicketSearch',
@@ -1466,7 +1465,7 @@ for my $Item (
             Success => 1
         },
         ExpectedReturnRemoteData => {
-            Data    => undef,
+            Data    => {},
             Success => 1
         },
         Operation => 'TicketSearch',
@@ -1503,7 +1502,7 @@ for my $Item (
             Success => 1
         },
         ExpectedReturnRemoteData => {
-            Data    => undef,
+            Data    => {},
             Success => 1
         },
         Operation => 'TicketSearch',

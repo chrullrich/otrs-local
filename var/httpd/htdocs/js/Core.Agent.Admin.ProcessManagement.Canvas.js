@@ -1,5 +1,4 @@
 // --
-// Core.Agent.Admin.ProcessManagement.Canvas.js - provides the special module functions for the Process Management Diagram Canvas.
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -17,25 +16,43 @@ Core.Agent.Admin = Core.Agent.Admin || {};
 Core.Agent.Admin.ProcessManagement = Core.Agent.Admin.ProcessManagement || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Agent.Admin.ProcessManagement.Canvas
+ * @namespace Core.Agent.Admin.ProcessManagement.Canvas
+ * @memberof Core.Agent.Admin.ProcessManagement
+ * @author OTRS AG
  * @description
  *      This namespace contains the special module functions for the ProcessManagement Diagram Canvas module.
  */
 Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
 
+    /**
+     * @private
+     * @name Elements
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @member {Array}
+     * @description
+     *      Glocal list of all process management elements (activities, ...).
+     */
     var Elements = {},
+    /**
+     * @private
+     * @name ActivityBoxHeight
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @member {Number}
+     * @description
+     *      Height of activity box in pixel.
+     */
         ActivityBoxHeight = 80;
 
-    function EscapeHTML(Content) {
-        return Content
-            .replace(/&/g, '&amp;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-    }
-
+    /**
+     * @private
+     * @name GetCanvasSize
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @returns {Object} Needed width and height of canvas.
+     * @param {jQueryObject} $Element - jQuery object of Canvas area element.
+     * @description
+     *      Calculate minimum needed width ans height of canvas area to show all elements.
+     */
     function GetCanvasSize($Element) {
         var MinWidth = 500,
             MinHeight = 500,
@@ -83,6 +100,18 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         };
     }
 
+    /**
+     * @private
+     * @name ShowRemoveEntityCanvasConfirmationDialog
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @param {String} EntityType
+     * @param {String} EntityName
+     * @param {String} EntityID
+     * @param {Function} Callback
+     * @description
+     *      Show confirmation dialog to remove entity from canvas.
+     */
     function ShowRemoveEntityCanvasConfirmationDialog(EntityType, EntityName, EntityID, Callback) {
         var DialogID = 'Remove' + EntityType + 'CanvasConfirmationDialog',
             $DialogElement = $('#Dialogs #' + DialogID);
@@ -107,7 +136,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
                {
                    Label: Core.Agent.Admin.ProcessManagement.Localization.DeleteMsg,
                    Function: function () {
-                       if (typeof(Callback) !== 'undefined') {
+                       if (typeof Callback !== 'undefined') {
                            Callback();
                        }
                    }
@@ -116,6 +145,15 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         );
     }
 
+    /**
+     * @name CreateStartEvent
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @param {String} PosX
+     * @param {String} PosY
+     * @description
+     *      Create the initial start event at a specific position.
+     */
     TargetNS.CreateStartEvent = function (PosX, PosY) {
         var DefaultX = 30,
             DefaultY = 30;
@@ -124,23 +162,33 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         PosY = PosY || DefaultY;
 
         $('#Canvas').append('<div id="StartEvent"></div>').find('#StartEvent').css({
-            'top' : PosY + 'px',
+            'top': PosY + 'px',
             'left': PosX + 'px'
         });
     };
 
+    /**
+     * @name CreateActivity
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @param {String} EntityID
+     * @param {String} EntityName
+     * @param {String} ActivityID
+     * @param {String} PosX
+     * @param {String} PosY
+     * @description
+     *      Create activity at specific position.
+     */
     TargetNS.CreateActivity = function (EntityID, EntityName, ActivityID, PosX, PosY) {
 
-        var Config = Core.Agent.Admin.ProcessManagement.ProcessData,
-            ProcessEntityID = $('#ProcessEntityID').val(),
-            EntityNameHeight,
+        var EntityNameHeight,
             $EntityBox;
 
         $('#Canvas')
-            .append('<div class="Activity Task" id="' + EscapeHTML(EntityID) + '"><span>' + EscapeHTML(EntityName) + '</span><div class="TaskTypeIcon"><i class="fa fa-user fa-lg"></i></div><div class="Icon Loader"></div><div class="Icon Success"></div></div>')
+            .append('<div class="Activity Task" id="' + Core.App.EscapeHTML(EntityID) + '"><span>' + Core.App.EscapeHTML(EntityName) + '</span><div class="TaskTypeIcon"><i class="fa fa-user fa-lg"></i></div><div class="Icon Loader"></div><div class="Icon Success"></div></div>')
             .find('#' + EntityID)
             .css({
-                'top' : PosY + 'px',
+                'top': PosY + 'px',
                 'left': PosX + 'px'
             })
             .bind('mouseenter.Activity', function() {
@@ -161,7 +209,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             .bind('dblclick.Activity', function() {
                 var Path = Core.Config.Get('Config.PopupPathActivity') + "EntityID=" + EntityID + ";ID=" + ActivityID,
                     SessionData = Core.App.GetSessionInformation();
-                if ( !Core.Config.Get('SessionIDCookie') && Path.indexOf(SessionData[Core.Config.Get('SessionName')]) === -1 ) {
+                if (!Core.Config.Get('SessionIDCookie') && Path.indexOf(SessionData[Core.Config.Get('SessionName')]) === -1) {
                     Path += ';' + encodeURIComponent(Core.Config.Get('SessionName')) + '=' + encodeURIComponent(SessionData[Core.Config.Get('SessionName')]);
                 }
 
@@ -172,7 +220,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         // Correct placing of activity name within box
         $EntityBox = $('#' + EntityID);
         EntityNameHeight = $EntityBox.find('span').height();
-        $EntityBox.find('span').css('margin-top', parseInt( (ActivityBoxHeight - EntityNameHeight) / 2, 10) );
+        $EntityBox.find('span').css('margin-top', parseInt((ActivityBoxHeight - EntityNameHeight) / 2, 10));
 
         // make the activity able to accept transitions
         jsPlumb.makeTarget(EntityID, {
@@ -191,9 +239,16 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         Elements[EntityID] = $('#' + EntityID);
     };
 
+    /**
+     * @name CreateActivityDummy
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @param {String} StartActivityID
+     * @description
+     *      Create a dummy activity.
+     */
     TargetNS.CreateActivityDummy = function (StartActivityID) {
-        var StartActivityPosition, DummyPosition, CanvasSize = {},
-            Activities = Core.Agent.Admin.ProcessManagement.ProcessData.Activity;
+        var StartActivityPosition, DummyPosition, CanvasSize = {};
 
         if ($('#Dummy').length) {
             $('#Dummy').remove();
@@ -222,7 +277,17 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         });
     };
 
-    TargetNS.ShowTransitionTooltip = function (Connection, StartActivity, EndActivity) {
+    /**
+     * @name ShowTransitionTooltip
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @returns {Boolean} Returns false, if transition is not defined.
+     * @param {Object} Connection
+     * @param {String} StartActivity
+     * @description
+     *      Show tooltip of a transition.
+     */
+    TargetNS.ShowTransitionTooltip = function (Connection, StartActivity) {
         var $Tooltip = $('#DiagramTooltip'),
             $Element = $(Connection.canvas),
             $TitleElement = $Element.clone(),
@@ -237,7 +302,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             TooltipWidth, TooltipHeight;
 
         $TitleElement.find('a').remove();
-        text = '<h4>' + EscapeHTML($TitleElement.text()) + '</h4>';
+        text = '<h4>' + Core.App.EscapeHTML($TitleElement.text()) + '</h4>';
 
         if (typeof Transition[ElementID] === 'undefined') {
             return false;
@@ -250,9 +315,9 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             $Tooltip.hide();
         }
 
-        $.each(PathInfo, function(Activity, Transition) {
-            if (Activity === StartActivity && typeof Transition[ElementID] !== 'undefined' && typeof Transition[ElementID].TransitionAction !== 'undefined') {
-                AssignedTransitionActions = Transition[ElementID].TransitionAction;
+        $.each(PathInfo, function(Activity, TransitionObject) {
+            if (Activity === StartActivity && typeof TransitionObject[ElementID] !== 'undefined' && typeof TransitionObject[ElementID].TransitionAction !== 'undefined') {
+                AssignedTransitionActions = TransitionObject[ElementID].TransitionAction;
                 return false;
             }
         });
@@ -261,7 +326,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         text += "<ul>";
         if (AssignedTransitionActions.length) {
             $.each(AssignedTransitionActions, function (Key, Value) {
-                text += "<li>" + EscapeHTML(Core.Agent.Admin.ProcessManagement.ProcessData.TransitionAction[Value].Name) + " (" + EscapeHTML(Value) + ") </li>";
+                text += "<li>" + Core.App.EscapeHTML(Core.Agent.Admin.ProcessManagement.ProcessData.TransitionAction[Value].Name) + "</li>";
             });
         }
         else {
@@ -312,13 +377,21 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             .show();
     };
 
+    /**
+     * @name ShowActivityTooltip
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @returns {Boolean} Returns false, if activity is not defined.
+     * @param {jQueryObject} $Element
+     * @description
+     *      Show tooltip of an activity.
+     */
     TargetNS.ShowActivityTooltip = function ($Element) {
         var $Tooltip = $('#DiagramTooltip'),
-            text = '<h4>' + EscapeHTML($Element.find('span').text()) + '</h4>',
+            text = '<h4>' + Core.App.EscapeHTML($Element.find('span').text()) + '</h4>',
             position = {x: 0, y: 0},
             Activity = Core.Agent.Admin.ProcessManagement.ProcessData.Activity,
             ActivityDialogs,
-            ElementID = $Element.attr('id'),
             CanvasWidth,
             CanvasHeight,
             TooltipWidth,
@@ -344,13 +417,13 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
                 var Interfaces = Core.Agent.Admin.ProcessManagement.ProcessData.ActivityDialog[Value].Interface,
                     SelectedInterface = '';
 
-                $.each(Interfaces, function (Key, Value) {
+                $.each(Interfaces, function (InterfaceKey, InterfaceValue) {
                     if (SelectedInterface.length) {
                         SelectedInterface += '/';
                     }
-                    SelectedInterface += Value.substr(0,1);
+                    SelectedInterface += InterfaceValue.substr(0, 1);
                 });
-                text += "<li><span class=\"AvailableIn\">" + SelectedInterface + "</span> " + EscapeHTML(Core.Agent.Admin.ProcessManagement.ProcessData.ActivityDialog[Value].Name) + " (" + EscapeHTML(Value) + ") </li>";
+                text += "<li><span class=\"AvailableIn\">" + SelectedInterface + "</span> " + Core.App.EscapeHTML(Core.Agent.Admin.ProcessManagement.ProcessData.ActivityDialog[Value].Name) + " </li>";
             });
         }
         else {
@@ -395,9 +468,17 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             .show();
     };
 
+    /**
+     * @name ShowActivityDeleteButton
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @returns {Boolean} Returns false, if activity is not defined.
+     * @param {jQueryObject} $Element
+     * @description
+     *      Show button to delete an activity.
+     */
     TargetNS.ShowActivityDeleteButton = function ($Element) {
         var $delete = $('.DiagramDeleteLink').clone(),
-            position = { x: 0, y: 0},
             Activity = Core.Agent.Admin.ProcessManagement.ProcessData.Activity,
             ElementID = $Element.attr('id');
 
@@ -423,9 +504,17 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             });
     };
 
+    /**
+     * @name ShowActivityEditButton
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @returns {Boolean} Returns false, if activity is not defined.
+     * @param {jQueryObject} $Element
+     * @description
+     *      Show button to edit an activity.
+     */
     TargetNS.ShowActivityEditButton = function ($Element) {
         var $edit = $('.DiagramEditLink').clone(),
-            position = { x: 0, y: 0},
             Activity = Core.Agent.Admin.ProcessManagement.ProcessData.Activity,
             ElementID = $Element.attr('id');
 
@@ -445,7 +534,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             .bind('click', function () {
                 var Path = Core.Config.Get('Config.PopupPathActivity') + "EntityID=" + ElementID + ";ID=" + Activity[ElementID].ID,
                     SessionData = Core.App.GetSessionInformation();
-                if ( !Core.Config.Get('SessionIDCookie') && Path.indexOf(SessionData[Core.Config.Get('SessionName')]) === -1 ) {
+                if (!Core.Config.Get('SessionIDCookie') && Path.indexOf(SessionData[Core.Config.Get('SessionName')]) === -1) {
                     Path += ';' + encodeURIComponent(Core.Config.Get('SessionName')) + '=' + encodeURIComponent(SessionData[Core.Config.Get('SessionName')]);
                 }
 
@@ -455,12 +544,28 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             });
     };
 
+    /**
+     * @name ShowActivityLoader
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @param {String} EntityID
+     * @description
+     *      Show loader on activity element.
+     */
     TargetNS.ShowActivityLoader = function (EntityID) {
         if (typeof Elements[EntityID] !== 'undefined') {
             $('#' + EntityID).find('span').hide().parent().find('.Loader').show();
         }
     };
 
+    /**
+     * @name ShowActivityAddActivityDialogSuccess
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @param {String} EntityID
+     * @description
+     *      Show success icon on activity (and fade out again after 1 second).
+     */
     TargetNS.ShowActivityAddActivityDialogSuccess = function (EntityID) {
         if (typeof Elements[EntityID] !== 'undefined') {
             // show icon for success
@@ -475,10 +580,26 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         }
     };
 
+    /**
+     * @name ShowActivityAddActivityDialogError
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @param {String} EntityID
+     * @description
+     *      Remove loader on activity on error.
+     */
     TargetNS.ShowActivityAddActivityDialogError = function (EntityID) {
         $('#' + EntityID).find('.Loader').hide().parent().find('span').show();
     };
 
+    /**
+     * @name RemoveActivity
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @param {String} EntityID
+     * @description
+     *      Remove activity from canvas an data structures.
+     */
     TargetNS.RemoveActivity = function (EntityID) {
         var Config = Core.Agent.Admin.ProcessManagement.ProcessData,
             Layout = Core.Agent.Admin.ProcessManagement.ProcessLayout,
@@ -527,10 +648,26 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         $('#Canvas').find('#' + EntityID).remove();
     };
 
+    /**
+     * @name RemoveActivityFromConfig
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @param {String} EntityID
+     * @description
+     *      Remove activity from config.
+     */
     TargetNS.RemoveActivityFromConfig = function (EntityID) {
         delete Elements[EntityID];
     };
 
+    /**
+     * @name UpdateElementPosition
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @param {jQueryObject} $Element
+     * @description
+     *      Update position of element in layout data structure.
+     */
     TargetNS.UpdateElementPosition = function ($Element) {
         var EntityID;
         // Element can be "false" if newly placed on the canvas
@@ -547,6 +684,14 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         }
     };
 
+    /**
+     * @name SetStartActivity
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @param {String} EntityID
+     * @description
+     *      Set start activity and add connection to it from start event.
+     */
     TargetNS.SetStartActivity = function (EntityID) {
 
         // Not more than one StartActivity allowed, function does not check this!
@@ -568,14 +713,32 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         }
     };
 
+    /**
+     * @name LastTransitionDetails
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @member {Object}
+     * @description
+     *     Structure to save last transition to restore correctly after repaint.
+     */
     TargetNS.LastTransitionDetails = {};
 
+    /**
+     * @name CreateTransition
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @returns {Boolean} Returns fale, if start activity or end activity is not defined.
+     * @param {String} StartElement
+     * @param {String} EndElement
+     * @param {String} EntityID
+     * @param {String} TransitionName
+     * @description
+     *      Create new transition between StartElement and EndElement.
+     */
     TargetNS.CreateTransition = function (StartElement, EndElement, EntityID, TransitionName) {
 
         var Config = Core.Agent.Admin.ProcessManagement.ProcessData,
             ProcessEntityID = $('#ProcessEntityID').val(),
-            Path = Config.Process[ProcessEntityID].Path,
-            StartActivity, EndActivity, OldActivity, Connection,
+            StartActivity, EndActivity, Connection,
             PopupPath;
 
         StartActivity = Elements[StartElement];
@@ -615,7 +778,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             reattach: true,
             overlays: [
                 [ "Diamond", { location: 18, width: 15, length: 25, paintStyle: { fillStyle: '#FFF', outlineWidth: 1, outlineColor: '#000'} } ],
-                [ "Label", { label: '<span id="' + EntityID + '" title="' + EscapeHTML(TransitionName) + '">' + EscapeHTML(TransitionName) + '</span>', location: 0.5, cssClass: 'TransitionLabel', id: 'label', events: {
+                [ "Label", { label: '<span id="' + EntityID + '" title="' + Core.App.EscapeHTML(TransitionName) + '">' + Core.App.EscapeHTML(TransitionName) + '</span>', location: 0.5, cssClass: 'TransitionLabel', id: 'label', events: {
                     mouseenter: function(labelOverlay, originalEvent) {
                         TargetNS.LastTransitionDetails = {
                             LabelOverlay: labelOverlay,
@@ -638,7 +801,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             }
         });
 
-        Connection.bind('mouseenter', function (ActiveConnection) {
+        Connection.bind('mouseenter', function () {
             var Overlay = Connection.getOverlay('label');
 
             // add class to label
@@ -647,7 +810,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             }
         });
 
-        Connection.bind('mouseleave', function (ActiveConnection) {
+        Connection.bind('mouseleave', function () {
             var Overlay = Connection.getOverlay('label');
 
             // remove hover class from label
@@ -656,16 +819,16 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             }
         });
 
-        Connection.bind('dblclick', function(Connection, Event) {
-            var EndActivity = Connection.endpoints[1],
+        Connection.bind('dblclick', function(ConnectionObject, Event) {
+            var EndActivityObject = ConnectionObject.endpoints[1],
                 SessionData = Core.App.GetSessionInformation();
             // Do not open path dialog for dummy connections
             // dblclick on overlays (e.g. labels) propagate to the connection
             // prevent opening path dialog twice if clicked on label
-            if (EndActivity !== 'Dummy' && !$(Event.srcElement).hasClass('TransitionLabel')) {
+            if (EndActivityObject !== 'Dummy' && !$(Event.srcElement).hasClass('TransitionLabel')) {
                 Core.Agent.Admin.ProcessManagement.ShowOverlay();
 
-                if ( !Core.Config.Get('SessionIDCookie') && PopupPath.indexOf(SessionData[Core.Config.Get('SessionName')]) === -1 ) {
+                if (!Core.Config.Get('SessionIDCookie') && PopupPath.indexOf(SessionData[Core.Config.Get('SessionName')]) === -1) {
                     PopupPath += ';' + encodeURIComponent(Core.Config.Get('SessionName')) + '=' + encodeURIComponent(SessionData[Core.Config.Get('SessionName')]);
                 }
 
@@ -676,6 +839,16 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         });
     };
 
+    /**
+     * @name HighlightTransitionLabel
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @param {String} Connection
+     * @param {String} StartActivity
+     * @param {String} EndActivity
+     * @description
+     *      Highlight transition label.
+     */
     TargetNS.HighlightTransitionLabel = function(Connection, StartActivity, EndActivity) {
 
         var Config = Core.Agent.Admin.ProcessManagement.ProcessData,
@@ -684,7 +857,6 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             TransitionEntityID = Connection.component.getParameter('TransitionID'),
             StartActivityID = Connection.component.sourceId,
             PopupPath = Core.Config.Get('Config.PopupPathPath') + "ProcessEntityID=" + ProcessEntityID + ";TransitionEntityID=" + TransitionEntityID + ";StartActivityID=" + StartActivityID,
-            Transition,
             SessionData = Core.App.GetSessionInformation();
 
         if (TargetNS.DragTransitionAction) {
@@ -712,7 +884,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         if (!$(Connection.canvas).find('.Edit').length) {
             $(Connection.canvas).append('<a class="Edit" title="' + Core.Agent.Admin.ProcessManagement.Localization.TransitionEditLink + '" href="#"><i class="fa fa-edit"></i></a>').find('.Edit').bind('click', function(Event) {
                 if (EndActivity !== 'Dummy') {
-                    if ( !Core.Config.Get('SessionIDCookie') && PopupPath.indexOf(SessionData[Core.Config.Get('SessionName')]) === -1 ) {
+                    if (!Core.Config.Get('SessionIDCookie') && PopupPath.indexOf(SessionData[Core.Config.Get('SessionName')]) === -1) {
                         PopupPath += ';' + encodeURIComponent(Core.Config.Get('SessionName')) + '=' + encodeURIComponent(SessionData[Core.Config.Get('SessionName')]);
                     }
                     Core.Agent.Admin.ProcessManagement.ShowOverlay();
@@ -728,7 +900,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         Connection.component.setPaintStyle({ strokeStyle: "#FF9922", lineWidth: '2' });
 
         // show tooltip with assigned transition actions
-        TargetNS.ShowTransitionTooltip(Connection, StartActivity, EndActivity);
+        TargetNS.ShowTransitionTooltip(Connection, StartActivity);
 
         $(Connection.canvas).unbind('dblclick.Transition').bind('dblclick.Transition', function(Event) {
             if (EndActivity !== 'Dummy') {
@@ -740,6 +912,14 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         });
     };
 
+    /**
+     * @name UnHighlightTransitionLabel
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @param {String} Connection
+     * @description
+     *      Unhighlight transition label.
+     */
     TargetNS.UnHighlightTransitionLabel = function(Connection) {
         $('#DiagramTooltip').hide();
         if (TargetNS.DragTransitionAction) {
@@ -750,10 +930,40 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         Connection.component.setPaintStyle({ strokeStyle: "#000", lineWidth: '2' });
     };
 
+    /**
+     * @name DragActivityItem
+     * @memberof Core.Agent.Admin.GenericAgentEvent
+     * @member {Bool}
+     * @description
+     *     DragActivityItem.
+     */
     TargetNS.DragActivityItem = false;
+
+    /**
+     * @name DragTransitionAction
+     * @memberof Core.Agent.Admin.GenericAgentEvent
+     * @member {Bool}
+     * @description
+     *     DragTransitionAction.
+     */
     TargetNS.DragTransitionAction = false;
+
+    /**
+     * @name DragTransitionActionTransition
+     * @memberof Core.Agent.Admin.GenericAgentEvent
+     * @member {Object}
+     * @description
+     *     DragTransitionActionTransition.
+     */
     TargetNS.DragTransitionActionTransition = {};
 
+    /**
+     * @name DrawDiagram
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @description
+     *      Draws the diagram on the canvas.
+     */
     TargetNS.DrawDiagram = function () {
         var Config = Core.Agent.Admin.ProcessManagement.ProcessData,
             Layout = Core.Agent.Admin.ProcessManagement.ProcessLayout,
@@ -762,7 +972,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
 
         // Set some jsPlumb defaults
         jsPlumb.importDefaults({
-            Connector: [ 'Flowchart', { curviness: 0, margin: -1, showLoopback:false } ],
+            Connector: [ 'Flowchart', { curviness: 0, margin: -1, showLoopback: false } ],
             PaintStyle: { strokeStyle: "#000", lineWidth: 2 },
             HoverPaintStyle: { strokeStyle: "#FF9922", lineWidth: 2 },
             ConnectionOverlays: [
@@ -774,7 +984,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         TargetNS.CreateStartEvent();
 
         // Draw all available Activities (Keys of the ProcessData-Path)
-        $.each(Config.Process[ProcessEntityID].Path, function (Key, Value) {
+        $.each(Config.Process[ProcessEntityID].Path, function (Key) {
             if (typeof Layout[Key] !== 'undefined') {
                 TargetNS.CreateActivity(Key, Config.Activity[Key].Name, Config.Activity[Key].ID, Layout[Key].left, Layout[Key].top);
             }
@@ -795,11 +1005,11 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
                 TransitionHash = Value;
 
             if (typeof TransitionHash !== 'undefined') {
-                $.each(TransitionHash, function (Key, Value) {
-                    TransitionID = Key;
+                $.each(TransitionHash, function (TransitionKey, TransitionValue) {
+                    TransitionID = TransitionKey;
                     // if EndActivity available, draw transition directly
-                    if (typeof Value !== 'undefined') {
-                        EndActivityID = Value.ActivityEntityID;
+                    if (typeof TransitionValue !== 'undefined') {
+                        EndActivityID = TransitionValue.ActivityEntityID;
                         TargetNS.CreateTransition(StartActivityID, EndActivityID, TransitionID);
                     }
 
@@ -830,6 +1040,13 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             });
     };
 
+    /**
+     * @name MakeDraggable
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @description
+     *      Makes all activities draggable.
+     */
     TargetNS.MakeDraggable = function() {
         // make all activities draggable (note the z-index!)
         jsPlumb.draggable($('#Canvas .Activity'), {
@@ -845,6 +1062,13 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         });
     };
 
+    /**
+     * @name Redraw
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @description
+     *      Redraws diagram.
+     */
     TargetNS.Redraw = function () {
         $('#ShowEntityIDs').removeClass('Visible').text(Core.Agent.Admin.ProcessManagement.Localization.ShowEntityIDs);
         jsPlumb.reset();
@@ -852,6 +1076,14 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         TargetNS.Init();
     };
 
+    /**
+     * @name Extend
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @param {Object} CanvasSize
+     * @description
+     *      Extends the canvas size.
+     */
     TargetNS.Extend = function (CanvasSize) {
         var CanvasWidth,
             CanvasHeight;
@@ -865,6 +1097,13 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         }
     };
 
+    /**
+     * @name Init
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @description
+     *      Initialize module functionality.
+     */
     TargetNS.Init = function () {
         var CanvasSize = GetCanvasSize($('#Canvas')),
             CanvasWidth = CanvasSize.Width,
@@ -880,13 +1119,14 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
 
         // init label spacer
         CanvasLabelSpacer = new LabelSpacer();
+        CanvasLabelSpacer.reset();
 
         // init binding to connection changes
-        jsPlumb.bind('connection', function(Data, OriginalEvent) {
+        jsPlumb.bind('connection', function(Data) {
             var Config = Core.Agent.Admin.ProcessManagement.ProcessData,
                 ProcessEntityID = $('#ProcessEntityID').val(),
                 Path = Config.Process[ProcessEntityID].Path,
-                TransitionID, TransitionName;
+                TransitionID;
 
             // check if we need to register a new StartActivity
             if (Data.sourceId === 'StartEvent') {
@@ -905,19 +1145,12 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             }
             // otherwise, an existing transition has been (re)connected
             else {
-                // get TransitionID and TransitionName
+                // get TransitionID
                 TransitionID = Data.connection.getParameter('TransitionID');
 
                 // Fallback: try to get the ID from the earlier saved variable, if it cannot be retrieved from the connection
                 if (typeof TransitionID === 'undefined') {
                     TransitionID = TargetNS.LatestConnectionTransitionID;
-                }
-
-                if (Config.Transition && Config.Transition[TransitionID]) {
-                    TransitionName = Config.Transition[TransitionID].Name;
-                }
-                else {
-                    TransitionName = 'NoName';
                 }
 
                 // set new Path
@@ -948,6 +1181,13 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
         TargetNS.DrawDiagram();
     };
 
+    /**
+     * @name ShowEntityIDs
+     * @memberof Core.Agent.Admin.ProcessManagement.Canvas
+     * @function
+     * @description
+     *      Shows EntityIDs on every element for debugging.
+     */
     TargetNS.ShowEntityIDs = function () {
 
         var ActivityEntityID, TransitionEntityID, Connections, Overlay;
@@ -957,7 +1197,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             ActivityEntityID = $(this).attr('id');
             $(this).append('<em class="EntityID"><input type="text" value="' + ActivityEntityID + '" /></em>').find('.EntityID input').unbind().bind('focus', function(Event) {
                 this.select();
-                Event.stopPropagation;
+                Event.stopPropagation();
             });
         });
 
@@ -969,7 +1209,7 @@ Core.Agent.Admin.ProcessManagement.Canvas = (function (TargetNS) {
             if (Overlay) {
                 $(Overlay.canvas).append('<em class="EntityID"><input type="text" value="' + TransitionEntityID + '" /></em>').find('.EntityID input').unbind().bind('focus', function(Event) {
                     this.select();
-                    Event.stopPropagation;
+                    Event.stopPropagation();
                 });
             }
         });

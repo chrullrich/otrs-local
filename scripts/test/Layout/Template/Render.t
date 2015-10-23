@@ -1,5 +1,4 @@
 # --
-# scripts/test/Layout/Template/Render.t - layout testscript
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -351,7 +350,7 @@ console.log(22);
 <form action="#"><input type="hidden" name="ChallengeToken" value="TestToken"/></form>',
         Env => {
             UserChallengeToken => 'TestToken',
-            }
+        },
     },
     {
         Name     => 'Form with SessionID (no cookie) and ChallengeToken',
@@ -364,7 +363,7 @@ console.log(22);
             SessionID          => '123',
             SessionName        => 'SID',
             SessionIDCookie    => 0,
-            }
+        },
     },
     {
         Name     => 'Form with SessionID (with cookie) and ChallengeToken',
@@ -377,7 +376,7 @@ console.log(22);
             SessionID          => '123',
             SessionName        => 'Session',
             SessionIDCookie    => 1,
-            }
+        },
     },
     {
         Name     => 'Link with SessionID (no cookie)',
@@ -390,7 +389,7 @@ console.log(22);
             SessionID          => '123',
             SessionName        => 'SID',
             SessionIDCookie    => 0,
-            }
+        },
     },
     {
         Name     => 'Link with SessionID (with cookie)',
@@ -403,9 +402,22 @@ console.log(22);
             SessionID          => '123',
             SessionName        => 'Session',
             SessionIDCookie    => 1,
-            }
+        },
     },
-
+    {
+        Name     => 'Bulk replace (used in email notifications)',
+        Template => <<'EOF',
+[% Data.HTML
+    .replace('<h1([^>]*)>', '<h1$1 style="...">')
+    .replace('<p>', '<p style="...">')
+%]
+EOF
+        Result => '<h1 class="test" style="...">Test</h1><p style="...">mytext</p><p style="...">mytext2</p>
+',
+        Data => {
+            HTML => '<h1 class="test">Test</h1><p>mytext</p><p>mytext2</p>'
+        },
+    },
 );
 
 for my $Test (@Tests) {

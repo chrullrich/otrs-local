@@ -1,5 +1,4 @@
 # --
-# ObjectManager/ObjectLifecycle.t - ObjectManager tests
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -35,6 +34,11 @@ my @Objects = (
     'Kernel::System::CustomerCompany',
     'Kernel::System::CustomerGroup',
     'Kernel::System::CustomerUser',
+    'Kernel::System::Daemon::SchedulerDB',
+    'Kernel::System::Daemon::DaemonModules::SchedulerTaskWorker',
+    'Kernel::System::Daemon::DaemonModules::SchedulerTaskWorker::AsynchronousExecutor',
+    'Kernel::System::Daemon::DaemonModules::SchedulerTaskWorker::Cron',
+    'Kernel::System::Daemon::DaemonModules::SchedulerTaskWorker::GenericInterface',
     'Kernel::System::DB',
     'Kernel::System::DynamicField',
     'Kernel::System::DynamicField::Backend',
@@ -58,7 +62,6 @@ my @Objects = (
     'Kernel::System::PID',
     'Kernel::System::Priority',
     'Kernel::System::Queue',
-    'Kernel::System::Scheduler::TaskManager',
     'Kernel::System::Service',
     'Kernel::System::SLA',
     'Kernel::System::StandardTemplate',

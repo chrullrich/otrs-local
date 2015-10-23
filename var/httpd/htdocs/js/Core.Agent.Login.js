@@ -1,5 +1,4 @@
 // --
-// Core.Agent.Login.js - provides the special module functions for the login
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -13,16 +12,20 @@ var Core = Core || {};
 Core.Agent = Core.Agent || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Agent.Login
+ * @namespace Core.Agent.Login
+ * @memberof Core.Agent
+ * @author OTRS AG
  * @description
- *      This namespace contains the special module functions for TicketZoom.
+ *      This namespace contains the special module functions for the Login.
  */
 Core.Agent.Login = (function (TargetNS) {
     /**
+     * @name Init
+     * @memberof Core.Agent.Login
      * @function
-     * @return nothing
-     *      This function initializes the special module functions
+     * @param {Boolean} LoginFailed
+     * @description
+     *      This function initializes the special module functions.
      */
     TargetNS.Init = function (LoginFailed) {
         // Browser is too old
@@ -58,7 +61,7 @@ Core.Agent.Login = (function (TargetNS) {
         }
 
         // if in PreLogin mode, automatically submit form
-        if ( $('#LoginBox').hasClass('PreLogin') ) {
+        if ($('#LoginBox').hasClass('PreLogin')) {
             $('#LoginBox form').submit();
         }
     };

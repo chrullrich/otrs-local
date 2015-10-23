@@ -1,5 +1,4 @@
 # --
-# Language.t - frontend tests for admin area
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -12,25 +11,18 @@ use warnings;
 use utf8;
 
 use vars (qw($Self));
-
 use Kernel::Language;
-use Kernel::System::UnitTest::Helper;
-use Kernel::System::UnitTest::Selenium;
 
-# get needed objects
-my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
-
-my $Selenium = Kernel::System::UnitTest::Selenium->new(
-    Verbose => 1,
-);
+# get selenium object
+my $Selenium = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
 $Selenium->RunTest(
     sub {
 
-        my $Helper = Kernel::System::UnitTest::Helper->new(
-            RestoreSystemConfiguration => 0,
-        );
+        # get helper object
+        my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
+        # create test user and login
         my $TestUserLogin = $Helper->TestUserCreate() || die "Did not get test user";
 
         $Selenium->Login(
@@ -39,8 +31,11 @@ $Selenium->RunTest(
             Password => $TestUserLogin,
         );
 
-        my $ScriptAlias = $ConfigObject->Get('ScriptAlias');
+        # get config object
+        my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
+        # navigate to AgentPReferences screen
+        my $ScriptAlias = $ConfigObject->Get('ScriptAlias');
         $Selenium->get("${ScriptAlias}index.pl?Action=AgentPreferences");
 
         my @Languages = sort keys %{ $ConfigObject->Get('DefaultUsedLanguages') };
@@ -49,40 +44,21 @@ $Selenium->RunTest(
         for my $Language (@Languages) {
 
             # check for the language selection box
-            my $Element = $Selenium->find_element( "select#UserLanguage", 'css' );
-
-            # select the current language & submit
-            $Element = $Selenium->find_child_element( $Element, "option[value='$Language']", 'css' );
-            $Element->click();
-            $Element->submit();
-
-            ACTIVESLEEP:
-            for my $Second ( 1 .. 20 ) {
-                if ( $Selenium->execute_script("return \$('.MainBox h1').length") ) {
-                    last ACTIVESLEEP;
-                }
-                sleep 1;
-            }
+            $Selenium->execute_script(
+                "\$('#UserLanguage').val('$Language').trigger('redraw.InputField').trigger('change');"
+            );
+            $Selenium->find_element( "select#UserLanguage", 'css' )->submit();
 
             # now check if the language was correctly applied in the interface
             my $LanguageObject = Kernel::Language->new(
                 UserLanguage => $Language,
             );
 
-            # Wait until form has loaded, if neccessary
-            ACTIVESLEEP:
-            for my $Second ( 1 .. 20 ) {
-                if ( $Selenium->execute_script('return typeof($) === "function" && $(".MainBox h1").length') ) {
-                    last ACTIVESLEEP;
-                }
-                sleep 0.5;
-            }
-
-            $Element = $Selenium->find_element( '.MainBox h1', 'css' );
+            my $Element = $Selenium->find_element( 'Label[for=UserLanguage]', 'css' );
             $Self->Is(
-                $Element->get_text(),
-                $LanguageObject->Get('Edit your preferences'),
-                "Heading translation in $Language",
+                substr( $Element->get_text(), 0, -1 ),
+                $LanguageObject->Get('Language'),
+                "String 'Language' in $Language",
             );
 
             $Self->True(

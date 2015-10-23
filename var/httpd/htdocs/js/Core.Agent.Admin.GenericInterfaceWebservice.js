@@ -1,5 +1,4 @@
 // --
-// Core.Agent.Admin.GenericInterfaceWebservice.js - provides the special module functions for the GenericInterface webservice.
 // Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -14,26 +13,45 @@ Core.Agent = Core.Agent || {};
 Core.Agent.Admin = Core.Agent.Admin || {};
 
 /**
- * @namespace
- * @exports TargetNS as Core.Agent.Admin.GenericInterfaceWebservice
+ * @namespace Core.Agent.Admin.GenericInterfaceWebservice
+ * @memberof Core.Agent.Admin
+ * @author OTRS AG
  * @description
  *      This namespace contains the special module functions for the GenericInterface webservice module.
  */
 Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
 
     /**
-     * @variable
      * @private
-     *     This variable stores the parameters that are passed from the DTL and contain all the data that the dialog needs.
+     * @name DialogData
+     * @memberof Core.Agent.Admin.GenericInterfaceWebservice
+     * @member {Array}
+     * @description
+     *     This variable stores the parameters that are passed from the TT and contain all the data that the dialog needs.
      */
     var DialogData = [];
 
+    /**
+     * @name HideElements
+     * @memberof Core.Agent.Admin.GenericInterfaceWebservice
+     * @function
+     * @description
+     *      Hides specific DOM elements.
+     */
     TargetNS.HideElements = function(){
         $('button.HideActionOnChange').parent().hide();
         $('.HideOnChange').hide();
         $('.HideLinkOnChange').contents().unwrap();
     };
 
+    /**
+     * @name Init
+     * @memberof Core.Agent.Admin.GenericInterfaceWebservice
+     * @function
+     * @param {Object} Params - Initialization and internationalization parameters.
+     * @description
+     *      This function initialize the module.
+     */
     TargetNS.Init = function (Params) {
         TargetNS.WebserviceID = parseInt(Params.WebserviceID, 10);
         TargetNS.Localization = Params.Localization;
@@ -67,6 +85,14 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
 
     };
 
+    /**
+     * @name ShowDeleteDialog
+     * @memberof Core.Agent.Admin.GenericInterfaceWebservice
+     * @function
+     * @param {Object} Event - The browser event object, e.g. of the clicked DOM element.
+     * @description
+     *      Shows a confirmation dialog to delete the webservice.
+     */
     TargetNS.ShowDeleteDialog = function(Event){
         Core.UI.Dialog.ShowContentDialog(
             $('#DeleteDialogContainer'),
@@ -111,6 +137,14 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
         Event.stopPropagation();
     };
 
+    /**
+     * @name ShowCloneDialog
+     * @memberof Core.Agent.Admin.GenericInterfaceWebservice
+     * @function
+     * @param {Object} Event - The browser event object, e.g. of the clicked DOM element.
+     * @description
+     *      Shows a dialog to clone a webservice.
+     */
     TargetNS.ShowCloneDialog = function(Event){
 
         var CurrentDate, CloneName;
@@ -129,10 +163,10 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
 
         // get current system time to define suggested the name of the cloned webservice
         CurrentDate = new Date();
-        CloneName = $('#Name').val() + "-" +CurrentDate.getTime();
+        CloneName = $('#Name').val() + "-" + CurrentDate.getTime();
 
         // set the suggested name
-        $('.CloneName').val( CloneName );
+        $('.CloneName').val(CloneName);
 
         // bind button actions
         $('#CancelCloneButtonAction').bind('click', function() {
@@ -146,6 +180,14 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
         Event.stopPropagation();
     };
 
+    /**
+     * @name ShowImportDialog
+     * @memberof Core.Agent.Admin.GenericInterfaceWebservice
+     * @function
+     * @param {Object} Event - The browser event object, e.g. of the clicked DOM element.
+     * @description
+     *      Shows a dialog to import a webservice.
+     */
     TargetNS.ShowImportDialog = function(Event){
 
         Core.UI.Dialog.ShowContentDialog(
@@ -171,7 +213,17 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
         Event.stopPropagation();
     };
 
-    TargetNS.Redirect = function( ConfigKey, DataSource, Data ) {
+    /**
+     * @name Redirect
+     * @memberof Core.Agent.Admin.GenericInterfaceWebservice
+     * @function
+     * @param {String} ConfigKey
+     * @param {String} DataSource
+     * @param {Object} Data
+     * @description
+     *      Redirects.
+     */
+    TargetNS.Redirect = function(ConfigKey, DataSource, Data) {
         var WebserviceConfigPart, Action, ConfigElement;
 
         // get configuration
@@ -181,7 +233,7 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
         ConfigElement = $('#' + DataSource).val();
 
         // check is config element is a valid scring
-        if ( ConfigElement !== null ) {
+        if (ConfigElement !== null) {
 
             // get action
             Action = WebserviceConfigPart[ ConfigElement ];
@@ -197,12 +249,13 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
         }
     };
 
-
     /**
+     * @name ShowDeleteActionDialog
+     * @memberof Core.Agent.Admin.GenericInterfaceWebservice
      * @function
-     * @param {EventObject} event object of the clicked element.
-     * @return nothing
-     *      This function shows a confirmation dialog with 2 buttons
+     * @param {Object} Event - The browser event object, e.g. of the clicked DOM element.
+     * @description
+     *      Shows a dialog to delete operation or invoker.
      */
     TargetNS.ShowDeleteActionDialog = function(Event){
         var LocalDialogData, ActionType, DialogTitle;
@@ -219,7 +272,7 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
         }
 
         Core.UI.Dialog.ShowContentDialog(
-            $('#Delete'+ ActionType + 'DialogContainer'),
+            $('#Delete' + ActionType + 'DialogContainer'),
             DialogTitle,
             '240px',
             'Center',
@@ -267,10 +320,11 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
     };
 
     /**
+     * @name BindDeleteActionDialog
+     * @memberof Core.Agent.Admin.GenericInterfaceWebservice
      * @function
-     * @param {Object} Data a control structure that contains the jQueryObjectID,
-     * jQueryObjectSelector the ActionType and the ActionName.
-     * @return nothing
+     * @param {Object} Data - A control structure that contains the jQueryObjectID, jQueryObjectSelector the ActionType and the ActionName.
+     * @description
      *      This function binds a "trash can" link from the action table to the
      *      function that opens a dialog to delete the action
      */

@@ -1,5 +1,4 @@
 # --
-# AdminState.t - frontend tests for AdminState
 # Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -13,22 +12,14 @@ use utf8;
 
 use vars (qw($Self));
 
-use Kernel::System::UnitTest::Helper;
-use Kernel::System::UnitTest::Selenium;
-
 # get needed objects
 my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
-
-my $Selenium = Kernel::System::UnitTest::Selenium->new(
-    Verbose => 1,
-);
+my $Selenium     = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
 $Selenium->RunTest(
     sub {
 
-        my $Helper = Kernel::System::UnitTest::Helper->new(
-            RestoreSystemConfiguration => 0,
-        );
+        my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
         my $TestUserLogin = $Helper->TestUserCreate(
             Groups => ['admin'],
@@ -41,7 +32,6 @@ $Selenium->RunTest(
         );
 
         my $ScriptAlias = $ConfigObject->Get('ScriptAlias');
-
         $Selenium->get("${ScriptAlias}index.pl?Action=AdminState");
 
         $Self->True(
@@ -55,8 +45,6 @@ $Selenium->RunTest(
         # click 'add new state' link
         $Selenium->find_element( "a.Create", 'css' )->click();
 
-        sleep 5;
-
         # check add page
         my $Element = $Selenium->find_element( "#Name", 'css' );
         $Element->is_displayed();
@@ -67,9 +55,6 @@ $Selenium->RunTest(
         # check client side validation
         $Selenium->find_element( "#Name", 'css' )->clear();
         $Selenium->find_element( "#Name", 'css' )->submit();
-
-        sleep 5;
-
         $Self->Is(
             $Selenium->execute_script(
                 "return \$('#Name').hasClass('Error')"
@@ -79,15 +64,13 @@ $Selenium->RunTest(
         );
 
         # create a real test state
-        my $RandomID = $Helper->GetRandomID();
+        my $RandomID = "State" . $Helper->GetRandomID();
 
-        $Selenium->find_element( "#Name",                      'css' )->send_keys($RandomID);
-        $Selenium->find_element( "#TypeID option[value='1']",  'css' )->click();
-        $Selenium->find_element( "#ValidID option[value='1']", 'css' )->click();
-        $Selenium->find_element( "#Comment",                   'css' )->send_keys('Selenium test state');
-        $Selenium->find_element( "#Name",                      'css' )->submit();
-
-        sleep 5;
+        $Selenium->find_element( "#Name", 'css' )->send_keys($RandomID);
+        $Selenium->execute_script("\$('#TypeID').val('1').trigger('redraw.InputField').trigger('change');");
+        $Selenium->execute_script("\$('#ValidID').val('1').trigger('redraw.InputField').trigger('change');");
+        $Selenium->find_element( "#Comment", 'css' )->send_keys('Selenium test state');
+        $Selenium->find_element( "#Name",    'css' )->submit();
 
         # check overview page
         $Self->True(
@@ -102,12 +85,8 @@ $Selenium->RunTest(
         $Selenium->find_element( "table thead tr th", 'css' );
         $Selenium->find_element( "table tbody tr td", 'css' );
 
-        sleep 5;
-
         # go to new state again
         $Selenium->find_element( $RandomID, 'link_text' )->click();
-
-        sleep 5;
 
         # check new state values
         $Self->Is(
@@ -132,12 +111,18 @@ $Selenium->RunTest(
         );
 
         # set test state to invalid
-        $Selenium->find_element( "#TypeID option[value='2']",  'css' )->click();
-        $Selenium->find_element( "#ValidID option[value='2']", 'css' )->click();
-        $Selenium->find_element( "#Comment",                   'css' )->clear();
-        $Selenium->find_element( "#Name",                      'css' )->submit();
+        $Selenium->execute_script("\$('#TypeID').val('2').trigger('redraw.InputField').trigger('change');");
+        $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
+        $Selenium->find_element( "#Comment", 'css' )->clear();
+        $Selenium->find_element( "#Name",    'css' )->submit();
 
-        sleep 5;
+        # check class of invalid State in the overview table
+        $Self->True(
+            $Selenium->execute_script(
+                "return \$('tr.Invalid td a:contains($RandomID)').length"
+            ),
+            "There is a class 'Invalid' for test State",
+        );
 
         # check overview page
         $Self->True(
@@ -154,8 +139,6 @@ $Selenium->RunTest(
 
         # go to new state again
         $Selenium->find_element( $RandomID, 'link_text' )->click();
-
-        sleep 5;
 
         # check new state values
         $Self->Is(
@@ -178,6 +161,25 @@ $Selenium->RunTest(
             '',
             "#Comment updated value",
         );
+
+        # Since there are no tickets that rely on our test state, we can remove them again
+        # from the DB.
+        my $StateID = $Kernel::OM->Get('Kernel::System::State')->StateLookup(
+            State => $RandomID,
+        );
+        my $Success = $Kernel::OM->Get('Kernel::System::DB')->Do(
+            SQL => "DELETE FROM ticket_state WHERE id = $StateID",
+        );
+        $Self->True(
+            $Success,
+            "StateDelete - $RandomID",
+        );
+
+        # Make sure the cache is correct.
+        $Kernel::OM->Get('Kernel::System::Cache')->CleanUp(
+            Type => 'State',
+        );
+
     }
 );
 
