@@ -82,7 +82,7 @@ $Selenium->RunTest(
 
             $Self->True(
                 $ServiceID,
-                "Service $ServiceID has been created."
+                "Service $ServiceID has been created.",
             );
 
             # add service as defalut service for all customers
@@ -104,7 +104,7 @@ $Selenium->RunTest(
 
             $Self->True(
                 $SLAID,
-                "SLA $SLAID has been created."
+                "SLA $SLAID has been created.",
             );
 
             push @SLAIDs, $SLAID;
@@ -118,19 +118,19 @@ $Selenium->RunTest(
 
         # check link 'DynamicMatrix'
         $Self->True(
-            $Selenium->find_element("//li[contains(\@data-statistic-preselection, \'DynamicMatrix\' )]"),
+            $Selenium->find_element("//a[contains(\@data-statistic-preselection, \'DynamicMatrix\' )]"),
             "There is a link for adding 'DynamicMatrix' statistics",
         );
 
         # check link 'DynamicList'
         $Self->True(
-            $Selenium->find_element("//li[contains(\@data-statistic-preselection, \'DynamicList\' )]"),
+            $Selenium->find_element("//a[contains(\@data-statistic-preselection, \'DynamicList\' )]"),
             "There is a link for adding 'DynamicList' statistics",
         );
 
         # check link 'Static'
         $Self->True(
-            $Selenium->find_element("//li[contains(\@data-statistic-preselection, \'Static\' )]"),
+            $Selenium->find_element("//a[contains(\@data-statistic-preselection, \'Static\' )]"),
             "There is a link for adding 'Static' statistics",
         );
 
@@ -211,7 +211,7 @@ $Selenium->RunTest(
             $Selenium->get("${ScriptAlias}index.pl?Action=AgentStatistics;Subaction=Add");
 
             # add new statistics
-            $Selenium->find_element("//li[contains(\@data-statistic-preselection, \'$StatsData->{Type}\' )]")->click();
+            $Selenium->find_element("//a[contains(\@data-statistic-preselection, \'$StatsData->{Type}\' )]")->click();
             $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#Title").length' );
 
             my $Description = 'Description ' . $StatsData->{Title};
