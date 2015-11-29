@@ -122,7 +122,11 @@ Please run it as the 'otrs' user or with the help of su:
         },
         {
             Message => 'Fixup statistics time field configuration where the time interval is too small',
-            Command => \&_FixupStatsTimeInterval
+            Command => \&_FixupStatsTimeInterval,
+        },
+        {
+            Message => 'Fixup wrong notification tags',
+            Command => \&_FixNotificationTags,
         },
         {
             Message => 'Fixup dashboard statistics output format configuration',
@@ -2179,10 +2183,10 @@ sub _NewAgentNotificationsLanguageGet {
             'de' => {
                 'Body' => 'Hallo <OTRS_NOTIFICATION_RECIPIENT_UserFirstname> <OTRS_NOTIFICATION_RECIPIENT_UserLastname>,
 
-das Ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] wurde in der Queue <OTRS_TICKET_Queue> erstellt.
+das Ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] wurde in der Queue <OTRS_TICKET_Queue> erstellt.
 
 <OTRS_CUSTOMER_REALNAME> schrieb:
-<OTRS_CUSTOMER_Body[30]>
+<OTRS_CUSTOMER_BODY[30]>
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2193,10 +2197,10 @@ das Ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] wurde in der Que
             'en' => {
                 'Body' => 'Hi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] has been created in queue <OTRS_TICKET_Queue>.
+ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] has been created in queue <OTRS_TICKET_Queue>.
 
 <OTRS_CUSTOMER_REALNAME> wrote:
-<OTRS_CUSTOMER_Body[30]>
+<OTRS_CUSTOMER_BODY[30]>
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2207,10 +2211,10 @@ ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] has been created in 
             'es_MX' => {
                 'Body' => 'Hola <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-el ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] se ha  creado en la fila <OTRS_TICKET_Queue>.
+el ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] se ha  creado en la fila <OTRS_TICKET_Queue>.
 
 <OTRS_CUSTOMER_REALNAME> escribió:
-<OTRS_CUSTOMER_Body[30]>
+<OTRS_CUSTOMER_BODY[30]>
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2221,10 +2225,10 @@ el ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] se ha  creado en 
             'pt_BR' => {
                 'Body' => 'Oi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-o ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] foi criado na fila <OTRS_TICKET_Queue>.
+o ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] foi criado na fila <OTRS_TICKET_Queue>.
 
 <OTRS_CUSTOMER_REALNAME> escreveu:
-<OTRS_CUSTOMER_Body[30]>
+<OTRS_CUSTOMER_BODY[30]>
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2235,23 +2239,23 @@ o ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] foi criado na fila
             'zh_CN' => {
                 'Body' => '您好 <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-票据工单 [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] 已在等待队列 已在队列<OTRS_TICKET_Queue> 中被编制完成。中被创建完成
+票据工单 [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] 已在等待队列 已在队列<OTRS_TICKET_Queue> 中被编制完成。中被创建完成
 
 <OTRS_CUSTOMER_REALNAME> 写道：
-<OTRS_CUSTOMER_Body[30]>
+<OTRS_CUSTOMER_BODY[30]>
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
 -- <OTRS_CONFIG_NotificationSenderName>',
                 'ContentType' => 'text/plain',
                 'Subject'     => '票据编制 工单已创建：<OTRS_TICKET_Title>'
-                }
+            },
         },
         'Ticket escalation notification' => {
             'de' => {
                 'Body' => 'Hallo <OTRS_NOTIFICATION_RECIPIENT_UserFirstname> <OTRS_NOTIFICATION_RECIPIENT_UserLastname>,
 
-das Ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] ist eskaliert!
+das Ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] ist eskaliert!
 
 Eskaliert am: <OTRS_TICKET_EscalationDestinationDate>
 Eskaliert seit: <OTRS_TICKET_EscalationDestinationIn>
@@ -2265,7 +2269,7 @@ Eskaliert seit: <OTRS_TICKET_EscalationDestinationIn>
             'en' => {
                 'Body' => 'Hi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] is escalated!
+ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] is escalated!
 
 Escalated at: <OTRS_TICKET_EscalationDestinationDate>
 Escalated since: <OTRS_TICKET_EscalationDestinationIn>
@@ -2279,7 +2283,7 @@ Escalated since: <OTRS_TICKET_EscalationDestinationIn>
             'es_MX' => {
                 'Body' => 'Hola <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-el ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] se ha escalado!
+el ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] se ha escalado!
 
 Escaló: <OTRS_TICKET_EscalationDestinationDate>
 Escalado desde: <OTRS_TICKET_EscalationDestinationIn>
@@ -2293,7 +2297,7 @@ Escalado desde: <OTRS_TICKET_EscalationDestinationIn>
             'pt_BR' => {
                 'Body' => 'Oi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-o ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] foi escalonado!
+o ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] foi escalonado!
 
 Escalonado em: <OTRS_TICKET_EscalationDestinationDate>
 Escalonado desde: <OTRS_TICKET_EscalationDestinationIn>
@@ -2307,7 +2311,7 @@ Escalonado desde: <OTRS_TICKET_EscalationDestinationIn>
             'zh_CN' => {
                 'Body' => '您好 <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-票据工单 [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] 已被升级！
+票据工单 [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] 已被升级！
 
 升级地点升级开始时间：<OTRS_TICKET_EscalationDestinationDate>
 升级开始时间升级在：<OTRS_TICKET_EscalationDestinationIn>内
@@ -2317,13 +2321,13 @@ Escalonado desde: <OTRS_TICKET_EscalationDestinationIn>
 -- <OTRS_CONFIG_NotificationSenderName>',
                 'ContentType' => 'text/plain',
                 'Subject'     => '票据升级！工单升级！<OTRS_TICKET_Title>'
-                }
+            },
         },
         'Ticket escalation warning notification' => {
             'de' => {
                 'Body' => 'Hallo <OTRS_NOTIFICATION_RECIPIENT_UserFirstname> <OTRS_NOTIFICATION_RECIPIENT_UserLastname>,
 
-das Ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] wird bald eskalieren!
+das Ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] wird bald eskalieren!
 
 Eskalation um: <OTRS_TICKET_EscalationDestinationDate>
 Eskalation in: <OTRS_TICKET_EscalationDestinationIn>
@@ -2338,7 +2342,7 @@ Eskalation in: <OTRS_TICKET_EscalationDestinationIn>
             'en' => {
                 'Body' => 'Hi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] will escalate!
+ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] will escalate!
 
 Escalation at: <OTRS_TICKET_EscalationDestinationDate>
 Escalation in: <OTRS_TICKET_EscalationDestinationIn>
@@ -2353,7 +2357,7 @@ Escalation in: <OTRS_TICKET_EscalationDestinationIn>
             'es_MX' => {
                 'Body' => 'Hola <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-el ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] se encuentra proximo a escalar!
+el ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] se encuentra proximo a escalar!
 
 Escalará: <OTRS_TICKET_EscalationDestinationDate>
 Escalará en: <OTRS_TICKET_EscalationDestinationIn>
@@ -2368,7 +2372,7 @@ Escalará en: <OTRS_TICKET_EscalationDestinationIn>
             'pt_BR' => {
                 'Body' => 'Oi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-o ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] será escalonado!
+o ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] será escalonado!
 
 Escalonamento em: <OTRS_TICKET_EscalationDestinationDate>
 Escalonamento em: <OTRS_TICKET_EscalationDestinationIn>
@@ -2383,7 +2387,7 @@ Escalonamento em: <OTRS_TICKET_EscalationDestinationIn>
             'zh_CN' => {
                 'Body' => '您好  <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-票据工单 [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] 将升级！
+票据工单 [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] 将升级！
 
 升级地点升级开始时间：<OTRS_TICKET_EscalationDestinationDate>
 升级开始时间升级在：<OTRS_TICKET_EscalationDestinationIn>内
@@ -2394,16 +2398,16 @@ Escalonamento em: <OTRS_TICKET_EscalationDestinationIn>
 -- <OTRS_CONFIG_NotificationSenderName>',
                 'ContentType' => 'text/plain',
                 'Subject'     => '工单升级警告Ticket Escalation Warning! <OTRS_TICKET_Title>'
-                }
+            },
         },
         'Ticket follow-up notification (locked)' => {
             'de' => {
                 'Body' => 'Hallo <OTRS_NOTIFICATION_RECIPIENT_UserFirstname> <OTRS_NOTIFICATION_RECIPIENT_UserLastname>,
 
-zum gesperrten Ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] gibt es eine Nachfrage.
+zum gesperrten Ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] gibt es eine Nachfrage.
 
 <OTRS_CUSTOMER_REALNAME> schrieb:
-<OTRS_CUSTOMER_Body[30]>
+<OTRS_CUSTOMER_BODY[30]>
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2414,10 +2418,10 @@ zum gesperrten Ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] gibt 
             'en' => {
                 'Body' => 'Hi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-the locked ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] received a follow-up.
+the locked ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] received a follow-up.
 
 <OTRS_CUSTOMER_REALNAME> wrote:
-<OTRS_CUSTOMER_Body[30]>
+<OTRS_CUSTOMER_BODY[30]>
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2428,10 +2432,10 @@ the locked ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] received 
             'es_MX' => {
                 'Body' => 'Hola <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-el ticket bloqueado [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] recibió un seguimiento.
+el ticket bloqueado [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] recibió un seguimiento.
 
 <OTRS_CUSTOMER_REALNAME> escribió:
-<OTRS_CUSTOMER_Body[30]>
+<OTRS_CUSTOMER_BODY[30]>
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2442,10 +2446,10 @@ el ticket bloqueado [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] recibi�
             'pt_BR' => {
                 'Body' => 'Oi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-o ticket bloqueado [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] recebeu uma resposta.
+o ticket bloqueado [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] recebeu uma resposta.
 
 <OTRS_CUSTOMER_REALNAME> escreveu:
-<OTRS_CUSTOMER_Body[30]>
+<OTRS_CUSTOMER_BODY[30]>
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2456,26 +2460,26 @@ o ticket bloqueado [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] recebeu 
             'zh_CN' => {
                 'Body' => '您好 <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-加锁票据锁定工单 [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] 已获得一项后续作业。
+加锁票据锁定工单 [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] 已获得一项后续作业。
 
 <OTRS_CUSTOMER_REALNAME> 写道：
-<OTRS_CUSTOMER_Body[30]>
+<OTRS_CUSTOMER_BODY[30]>
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
 -- <OTRS_CONFIG_NotificationSenderName>',
                 'ContentType' => 'text/plain',
                 'Subject'     => '加锁票据的后续作业 锁定工单后续：<OTRS_CUSTOMER_SUBJECT[24]>'
-                }
+            },
         },
         'Ticket follow-up notification (unlocked)' => {
             'de' => {
                 'Body' => 'Hallo <OTRS_NOTIFICATION_RECIPIENT_UserFirstname> <OTRS_NOTIFICATION_RECIPIENT_UserLastname>,
 
-zum freigegebenen Ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] gibt es eine Nachfrage.
+zum freigegebenen Ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] gibt es eine Nachfrage.
 
 <OTRS_CUSTOMER_REALNAME> schrieb:
-<OTRS_CUSTOMER_Body[30]>
+<OTRS_CUSTOMER_BODY[30]>
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2486,10 +2490,10 @@ zum freigegebenen Ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] gi
             'en' => {
                 'Body' => 'Hi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-the unlocked ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] received a follow-up.
+the unlocked ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] received a follow-up.
 
 <OTRS_CUSTOMER_REALNAME> wrote:
-<OTRS_CUSTOMER_Body[30]>
+<OTRS_CUSTOMER_BODY[30]>
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2500,10 +2504,10 @@ the unlocked ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] receive
             'es_MX' => {
                 'Body' => 'Hola <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-el ticket desbloqueado [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] recibió un seguimiento.
+el ticket desbloqueado [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] recibió un seguimiento.
 
 <OTRS_CUSTOMER_REALNAME> escribió:
-<OTRS_CUSTOMER_Body[30]>
+<OTRS_CUSTOMER_BODY[30]>
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2514,10 +2518,10 @@ el ticket desbloqueado [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] reci
             'pt_BR' => {
                 'Body' => 'Oi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-o ticket desbloqueado [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] recebeu uma resposta.
+o ticket desbloqueado [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] recebeu uma resposta.
 
 <OTRS_CUSTOMER_REALNAME> escreveu:
-<OTRS_CUSTOMER_Body[30]>
+<OTRS_CUSTOMER_BODY[30]>
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2528,23 +2532,23 @@ o ticket desbloqueado [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] receb
             'zh_CN' => {
                 'Body' => '您好<OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-解锁票据解锁工单[<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] 已获得一项后续作业。
+解锁票据解锁工单[<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] 已获得一项后续作业。
 
 <OTRS_CUSTOMER_REALNAME> 写道:
-<OTRS_CUSTOMER_Body[30]>
+<OTRS_CUSTOMER_BODY[30]>
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
 -- <OTRS_CONFIG_NotificationSenderName>',
                 'ContentType' => 'text/plain',
                 'Subject'     => '解锁票据的后续作业解锁工单的后续： <OTRS_CUSTOMER_SUBJECT[24]>'
-                }
+            },
         },
         'Ticket lock timeout notification' => {
             'de' => {
                 'Body' => 'Hallo <OTRS_NOTIFICATION_RECIPIENT_UserFirstname> <OTRS_NOTIFICATION_RECIPIENT_UserLastname>,
 
-die Sperrzeit des Tickets [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] ist abgelaufen. Es ist jetzt freigegeben.
+die Sperrzeit des Tickets [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] ist abgelaufen. Es ist jetzt freigegeben.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2555,7 +2559,7 @@ die Sperrzeit des Tickets [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] i
             'en' => {
                 'Body' => 'Hi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] has reached its lock timeout period and is now unlocked.
+ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] has reached its lock timeout period and is now unlocked.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2566,7 +2570,7 @@ ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] has reached its lock
             'es_MX' => {
                 'Body' => 'Hola <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-el ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>]  ha alcanzado su tiempo de espera como bloqueado y ahora se encuentra desbloqueado.
+el ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>]  ha alcanzado su tiempo de espera como bloqueado y ahora se encuentra desbloqueado.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2577,7 +2581,7 @@ el ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>]  ha alcanzado su 
             'pt_BR' => {
                 'Body' => 'Oi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-o ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] atingiu o seu período de tempo limite de bloqueio e agora está desbloqueado.
+o ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] atingiu o seu período de tempo limite de bloqueio e agora está desbloqueado.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2588,14 +2592,14 @@ o ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] atingiu o seu per�
             'zh_CN' => {
                 'Body' => '您好 <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-票据工单 [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] 已达到其锁定时限，现在解锁。
+票据工单 [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] 已达到其锁定时限，现在解锁。
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
 -- <OTRS_CONFIG_NotificationSenderName>',
                 'ContentType' => 'text/plain',
                 'Subject'     => '票据加锁超时工单锁定超时：<OTRS_TICKET_Title>'
-                }
+            },
         },
         'Ticket new note notification' => {
             'de' => {
@@ -2657,13 +2661,13 @@ o ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] atingiu o seu per�
 -- <OTRS_CONFIG_NotificationSenderName>',
                 'ContentType' => 'text/plain',
                 'Subject'     => '票据备注工单备注：<OTRS_AGENT_SUBJECT[24]>'
-                }
+            },
         },
         'Ticket owner update notification' => {
             'de' => {
                 'Body' => 'Hallo <OTRS_NOTIFICATION_RECIPIENT_UserFirstname> <OTRS_NOTIFICATION_RECIPIENT_UserLastname>,
 
-der Besitzer des Tickets [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] wurde von <OTRS_CURRENT_UserFullname> geändert auf <OTRS_TICKET_OWNER_UserFullname>.
+der Besitzer des Tickets [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] wurde von <OTRS_CURRENT_UserFullname> geändert auf <OTRS_TICKET_OWNER_UserFullname>.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2674,7 +2678,7 @@ der Besitzer des Tickets [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] wu
             'en' => {
                 'Body' => 'Hi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-the owner of ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] has been updated to <OTRS_TICKET_OWNER_UserFullname> by <OTRS_CURRENT_UserFullname>.
+the owner of ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] has been updated to <OTRS_TICKET_OWNER_UserFullname> by <OTRS_CURRENT_UserFullname>.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2685,7 +2689,7 @@ the owner of ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] has bee
             'es_MX' => {
                 'Body' => 'Hola <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-el propietario del ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] se ha modificado  a <OTRS_TICKET_OWNER_UserFullname> por <OTRS_CURRENT_UserFullname>.
+el propietario del ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] se ha modificado  a <OTRS_TICKET_OWNER_UserFullname> por <OTRS_CURRENT_UserFullname>.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2696,7 +2700,7 @@ el propietario del ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] s
             'pt_BR' => {
                 'Body' => 'Oi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-o proprietário do ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] foi atualizado para <OTRS_TICKET_OWNER_UserFullname> por <OTRS_CURRENT_UserFullname>.
+o proprietário do ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] foi atualizado para <OTRS_TICKET_OWNER_UserFullname> por <OTRS_CURRENT_UserFullname>.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2708,7 +2712,7 @@ o proprietário do ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] f
             'zh_CN' => {
                 'Body' => '您好 <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-票据的所有人工单的所有者 [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] 已被该信为 <OTRS_TICKET_OWNER_UserFullname> 的 <OTRS_CURRENT_UserFullname>。
+票据的所有人工单的所有者 [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] 已被该信为 <OTRS_TICKET_OWNER_UserFullname> 的 <OTRS_CURRENT_UserFullname>。
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2716,13 +2720,13 @@ o proprietário do ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] f
                 'ContentType' => 'text/plain',
                 'Subject' =>
                     '票据的拥有人升级为工单所有者更新为 <OTRS_OWNER_UserFullname>: <OTRS_TICKET_Title>'
-                }
+            },
         },
         'Ticket pending reminder notification (locked)' => {
             'de' => {
                 'Body' => 'Hallo <OTRS_NOTIFICATION_RECIPIENT_UserFirstname> <OTRS_NOTIFICATION_RECIPIENT_UserLastname>,
 
-die Erinnerungszeit für das gesperrte Ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] wurde erreicht.
+die Erinnerungszeit für das gesperrte Ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] wurde erreicht.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2733,7 +2737,7 @@ die Erinnerungszeit für das gesperrte Ticket [<OTRS_CONFIG_TicketHook><OTRS_TIC
             'en' => {
                 'Body' => 'Hi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-the pending reminder time of the locked ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] has been reached.
+the pending reminder time of the locked ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] has been reached.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2744,7 +2748,7 @@ the pending reminder time of the locked ticket [<OTRS_CONFIG_TicketHook><OTRS_TI
             'es_MX' => {
                 'Body' => 'Hola <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-el tiempo del recordatorio pendiente para el ticket bloqueado [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] se ha alcanzado.
+el tiempo del recordatorio pendiente para el ticket bloqueado [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] se ha alcanzado.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2755,7 +2759,7 @@ el tiempo del recordatorio pendiente para el ticket bloqueado [<OTRS_CONFIG_Tick
             'pt_BR' => {
                 'Body' => 'Oi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-o tempo de lembrete pendente do ticket bloqueado [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] foi atingido.
+o tempo de lembrete pendente do ticket bloqueado [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] foi atingido.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2766,7 +2770,7 @@ o tempo de lembrete pendente do ticket bloqueado [<OTRS_CONFIG_TicketHook><OTRS_
             'zh_CN' => {
                 'Body' => '您好 <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-锁定票据即将到期的提醒时间锁定工单挂起提醒时间 [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] 已到达。
+锁定票据即将到期的提醒时间锁定工单挂起提醒时间 [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] 已到达。
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2774,13 +2778,13 @@ o tempo de lembrete pendente do ticket bloqueado [<OTRS_CONFIG_TicketHook><OTRS_
                 'ContentType' => 'text/plain',
                 'Subject' =>
                     '已达到锁定票据即将到期的提醒时间已到达锁定工单挂起提醒时间：<OTRS_TICKET_Title>'
-                }
+            },
         },
         'Ticket pending reminder notification (unlocked)' => {
             'de' => {
                 'Body' => 'Hallo <OTRS_NOTIFICATION_RECIPIENT_UserFirstname> <OTRS_NOTIFICATION_RECIPIENT_UserLastname>,
 
-die Erinnerungszeit für das freigegebene Ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] wurde erreicht.
+die Erinnerungszeit für das freigegebene Ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] wurde erreicht.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2791,7 +2795,7 @@ die Erinnerungszeit für das freigegebene Ticket [<OTRS_CONFIG_TicketHook><OTRS_
             'en' => {
                 'Body' => 'Hi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-the pending reminder time of the unlocked ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] has been reached.
+the pending reminder time of the unlocked ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] has been reached.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2802,7 +2806,7 @@ the pending reminder time of the unlocked ticket [<OTRS_CONFIG_TicketHook><OTRS_
             'es_MX' => {
                 'Body' => 'Hola <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-el tiempo del recordatorio pendiente para el ticket desbloqueado [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] se ha alcanzado.
+el tiempo del recordatorio pendiente para el ticket desbloqueado [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] se ha alcanzado.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2813,7 +2817,7 @@ el tiempo del recordatorio pendiente para el ticket desbloqueado [<OTRS_CONFIG_T
             'pt_BR' => {
                 'Body' => 'Oi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-o tempo de lembrete pendente do ticket desbloqueado [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] foi atingido.
+o tempo de lembrete pendente do ticket desbloqueado [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] foi atingido.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2824,7 +2828,7 @@ o tempo de lembrete pendente do ticket desbloqueado [<OTRS_CONFIG_TicketHook><OT
             'zh_CN' => {
                 'Body' => '您好 <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-未锁定票据即将到期的提醒时间未锁定工单的挂起提醒时间 [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] 已到已到达。
+未锁定票据即将到期的提醒时间未锁定工单的挂起提醒时间 [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] 已到已到达。
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2832,13 +2836,13 @@ o tempo de lembrete pendente do ticket desbloqueado [<OTRS_CONFIG_TicketHook><OT
                 'ContentType' => 'text/plain',
                 'Subject' =>
                     '未锁定票据即将到期的提醒时间已到已到未锁定工单的挂起提醒时间：<OTRS_TICKET_Title>'
-                }
+            },
         },
         'Ticket queue update notification' => {
             'de' => {
                 'Body' => 'Hallo <OTRS_NOTIFICATION_RECIPIENT_UserFirstname> <OTRS_NOTIFICATION_RECIPIENT_UserLastname>,
 
-das Ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] wurde in die Queue <OTRS_TICKET_Queue> verschoben.
+das Ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] wurde in die Queue <OTRS_TICKET_Queue> verschoben.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2849,7 +2853,7 @@ das Ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] wurde in die Que
             'en' => {
                 'Body' => 'Hi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] has been updated to queue <OTRS_TICKET_Queue>.
+ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] has been updated to queue <OTRS_TICKET_Queue>.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2860,7 +2864,7 @@ ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] has been updated to 
             'es_MX' => {
                 'Body' => 'Hola <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-el ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] ha cambiado de fila a <OTRS_TICKET_Queue>.
+el ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] ha cambiado de fila a <OTRS_TICKET_Queue>.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2871,7 +2875,7 @@ el ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] ha cambiado de fi
             'pt_BR' => {
                 'Body' => 'Oi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-o ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] foi atualizado na fila <OTRS_TICKET_Queue>.
+o ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] foi atualizado na fila <OTRS_TICKET_Queue>.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2882,20 +2886,20 @@ o ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] foi atualizado na 
             'zh_CN' => {
                 'Body' => '您好 <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-票据工单 [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] 已被升级为序列已被更新为队列 <OTRS_TICKET_Queue>。
+票据工单 [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] 已被升级为序列已被更新为队列 <OTRS_TICKET_Queue>。
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
 -- <OTRS_CONFIG_NotificationSenderName>',
                 'ContentType' => 'text/plain',
                 'Subject'     => '票据序列已升级为工单队列更新为<OTRS_TICKET_Queue>: <OTRS_TICKET_Title>'
-                }
+            },
         },
         'Ticket responsible update notification' => {
             'de' => {
                 'Body' => 'Hallo <OTRS_NOTIFICATION_RECIPIENT_UserFirstname> <OTRS_NOTIFICATION_RECIPIENT_UserLastname>,
 
-der Verantwortliche für das Ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] wurde von <OTRS_CURRENT_UserFullname> geändert auf <OTRS_TICKET_RESPONSIBLE_UserFullname>.
+der Verantwortliche für das Ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] wurde von <OTRS_CURRENT_UserFullname> geändert auf <OTRS_TICKET_RESPONSIBLE_UserFullname>.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2907,7 +2911,7 @@ der Verantwortliche für das Ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_Ticket
             'en' => {
                 'Body' => 'Hi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-the responsible agent of ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] has been updated to <OTRS_TICKET_RESPONSIBLE_UserFullname> by <OTRS_CURRENT_UserFullname>.
+the responsible agent of ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] has been updated to <OTRS_TICKET_RESPONSIBLE_UserFullname> by <OTRS_CURRENT_UserFullname>.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2918,7 +2922,7 @@ the responsible agent of ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumb
             'es_MX' => {
                 'Body' => 'Hola <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-el agente responsable del ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] se ha modificado a <OTRS_TICKET_RESPONSIBLE_UserFullname> por <OTRS_CURRENT_UserFullname>.
+el agente responsable del ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] se ha modificado a <OTRS_TICKET_RESPONSIBLE_UserFullname> por <OTRS_CURRENT_UserFullname>.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2930,7 +2934,7 @@ el agente responsable del ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNum
             'pt_BR' => {
                 'Body' => 'Oi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-o agente responsável do ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] foi atualizado para <OTRS_TICKET_RESPONSIBLE_UserFullname> por <OTRS_CURRENT_UserFullname>.
+o agente responsável do ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] foi atualizado para <OTRS_TICKET_RESPONSIBLE_UserFullname> por <OTRS_CURRENT_UserFullname>.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2942,7 +2946,7 @@ o agente responsável do ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumb
             'zh_CN' => {
                 'Body' => '您好 <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-工单的负责人 [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] 已被升级为 已被更新为 <OTRS_TICKET_RESPONSIBLE_UserFullname> 的 <OTRS_CURRENT_UserFullname>.
+工单的负责人 [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] 已被升级为 已被更新为 <OTRS_TICKET_RESPONSIBLE_UserFullname> 的 <OTRS_CURRENT_UserFullname>.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2950,13 +2954,13 @@ o agente responsável do ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumb
                 'ContentType' => 'text/plain',
                 'Subject' =>
                     '票据的负责人 工单负责人更新为<OTRS_RESPONSIBLE_UserFullname>: <OTRS_TICKET_Title>'
-                }
+            },
         },
         'Ticket service update notification' => {
             'de' => {
                 'Body' => 'Hallo <OTRS_NOTIFICATION_RECIPIENT_UserFirstname> <OTRS_NOTIFICATION_RECIPIENT_UserLastname>,
 
-der Service des Tickets [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] wurde geändert zu <OTRS_TICKET_Service>.
+der Service des Tickets [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] wurde geändert zu <OTRS_TICKET_Service>.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2967,7 +2971,7 @@ der Service des Tickets [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] wur
             'en' => {
                 'Body' => 'Hi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-the service of ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] has been updated to <OTRS_TICKET_Service>.
+the service of ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] has been updated to <OTRS_TICKET_Service>.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2978,7 +2982,7 @@ the service of ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] has b
             'es_MX' => {
                 'Body' => 'Hola <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-el servicio del ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] se ha cambiado a <OTRS_TICKET_Service>.
+el servicio del ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] se ha cambiado a <OTRS_TICKET_Service>.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -2989,7 +2993,7 @@ el servicio del ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] se h
             'pt_BR' => {
                 'Body' => 'Oi <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-o serviço do ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] foi atualizado para <OTRS_TICKET_Service>.
+o serviço do ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] foi atualizado para <OTRS_TICKET_Service>.
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
@@ -3000,20 +3004,102 @@ o serviço do ticket [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] foi at
             'zh_CN' => {
                 'Body' => '您好 <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-票据服务工单服务 [<OTRS_CONFIG_TicketHook><OTRS_TICKET_TicketNumber>] 已被升级为已被更新为 <OTRS_TICKET_Service>。
+票据服务工单服务 [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] 已被升级为已被更新为 <OTRS_TICKET_Service>。
 
 <OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
 
 -- <OTRS_CONFIG_NotificationSenderName>',
                 'ContentType' => 'text/plain',
                 'Subject'     => '票据服务升级为工单服务更新为<OTRS_TICKET_Service>: <OTRS_TICKET_Title>'
-                }
-            }
-
+            },
+        },
     );
 
     return %NotificationLanguages;
+}
 
+
+=item _FixNotificationTags()
+
+Fix some wrong notification tags which have been introduced while upgrading to OTRS 5.0.1.
+
+    _FixNotificationTags();
+
+=cut
+
+sub _FixNotificationTags {
+
+    # map wrong to correct tags
+    my %NotificationTagsOld2New = (
+
+        # ATTENTION, don't use opening or closing tags here (< or >)
+        # because old notifications can contain quoted tags (&lt; or &gt;)
+        'OTRS_CUSTOMER_Body'     => 'OTRS_CUSTOMER_BODY',
+        'OTRS_CONFIG_TicketHook' => 'OTRS_CONFIG_Ticket::Hook',
+    );
+
+    # get needed objects
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
+    return if !$DBObject->Prepare(
+        SQL => 'SELECT id, subject, text FROM notification_event_message',
+    );
+
+    # get all notification messages
+    my @NotificationMessages;
+    while ( my @Row = $DBObject->FetchrowArray() ) {
+
+        push @NotificationMessages, {
+            ID      => $Row[0],
+            Subject => $Row[1],
+            Text    => $Row[2],
+        };
+    }
+
+    NOTIFICATIONMESSAGE:
+    for my $NotificationMessage (@NotificationMessages) {
+
+        # remember if we need to replace something
+        my $NeedToReplace;
+
+        # get old notification tag
+        for my $OldTag (sort keys %NotificationTagsOld2New) {
+
+            # get new notification tag
+            my $NewTag = $NotificationTagsOld2New{$OldTag};
+
+            # replace tags in Subject and Text
+            ATTRIBUTE:
+            for my $Attribute (qw(Subject Text)) {
+
+                # only if old tags are found
+                next ATTRIBUTE if $NotificationMessage->{$Attribute} !~ m{$OldTag}xms;
+
+                # replace the wrong tags
+                $NotificationMessage->{$Attribute} =~ s{$OldTag}{$NewTag}gxms;
+
+                # remember that we replaced something
+                $NeedToReplace = 1;
+            }
+        }
+
+        # only change the database if something has been really replaced
+        next NOTIFICATIONMESSAGE if !$NeedToReplace;
+
+        # update the database
+        $DBObject->Do(
+            SQL  => 'UPDATE notification_event_message
+                SET subject = ?, text = ?
+                WHERE id = ?',
+            Bind => [
+                \$NotificationMessage->{Subject},
+                \$NotificationMessage->{Text},
+                \$NotificationMessage->{ID},
+            ],
+        );
+    }
+
+    return 1;
 }
 
 1;
