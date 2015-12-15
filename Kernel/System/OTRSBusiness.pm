@@ -33,7 +33,7 @@ my $NoConnectWarningPeriod = 60 * 60 * 24 * 5;    # 5 days
 my $NoConnectErrorPeriod = 60 * 60 * 24 * 15;     # 15 days
 
 # If the contract is about to expire in less than this time, show a hint
-my $ContractExpiryWarningPeriod = 60 * 60 * 24 * 30;
+my $ContractExpiryWarningPeriod = 60 * 60 * 24 * 28;     # 28 days
 
 =head1 NAME
 
@@ -456,10 +456,6 @@ Returns the current entitlement status.
 sub OTRSBusinessEntitlementStatus {
     my ( $Self, %Param ) = @_;
 
-    if ( $Param{CallCloudService} ) {
-        $Self->OTRSBusinessEntitlementCheck();
-    }
-
     # If the system is not registered, it cannot have an OB permission.
     #   Also, the BusinessPermissionChecks will not work any more, so the permission
     #   would expire after our waiting period. But in this case we can immediately deny
@@ -469,6 +465,10 @@ sub OTRSBusinessEntitlementStatus {
     );
     if ( !$RegistrationState || $RegistrationState ne 'registered' ) {
         return 'forbidden';
+    }
+
+    if ( $Param{CallCloudService} ) {
+        $Self->OTRSBusinessEntitlementCheck();
     }
 
     # OK. Let's look at the system_data cache now and use it if appropriate
