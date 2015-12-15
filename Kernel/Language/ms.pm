@@ -23,7 +23,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.945285784074255;
+    $Self->{Completeness}        = 0.944538220400289;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -889,7 +889,7 @@ sub Data {
         'System registration is a service of OTRS Group, which provides a lot of advantages!' =>
             'Sistem pendaftaran ialah perkhirmatan Kumpulan OTRS, yang memberikan banyak kelebihan!',
         'Please note that the use of OTRS cloud services requires the system to be registered.' =>
-            '',
+            'Sila ambil perhatian bahawa penggunaan perkhidmatan cloud OTRS memerlukan pendaftaran sistem.',
         'Register this system' => 'Daftar sistem ini',
         'Here you can configure available cloud services that communicate securely with %s.' =>
             'Di sini anda boleh mengkonfigurasi perkhidmatan awan yang sedia ada yang berkomunikasi dengan selamat dengan %s.',
@@ -1318,12 +1318,12 @@ sub Data {
         'This configuration defines if incoming connections should get closed or kept alive.' =>
             'Konfigurasi ini mentakrifkan jika sambungan masuk seharusnya ditutup atau kekal hidup.',
         'Host' => 'Hos',
-        'Remote host URL for the REST requests.' => '',
+        'Remote host URL for the REST requests.' => 'URL hos jauh untuk permintaan REST.',
         'e.g https://www.otrs.com:10745/api/v1.0 (without trailing backslash)' =>
             'contoh https://www.otrs.com:10745/api/v1.0 (tanpa backslash berjela-jela)',
         'Controller mapping for Invoker' => 'Pengawal pemetaan untuk Invoker',
         'The controller that the invoker should send requests to. Variables marked by a \':\' will get replaced by the data value and passed along with the request. (e.g. /Ticket/:TicketID?UserLogin=:UserLogin&Password=:Password).' =>
-            '',
+            'Pengawal yang invoker perlu hantar permintaan untuk. Pembolehubah ditandai dengan \':\' akan dapat digantikan dengan nilai data dan diluluskan bersama-sama dengan permintaan itu. (contoh/Tiket/:TicketID Userlogin=:Userlogin&Kata Laluan=:Kata laluan).',
         'Valid request command for Invoker' => 'Arahan permohonan sah untuk Invoker',
         'A specific HTTP command to use for the requests with this Invoker (optional).' =>
             'Arahan HTTP spesifik untuk digunakan bagi permintaan dengan Invoker (pilihan) ini.',
@@ -1405,7 +1405,7 @@ sub Data {
         'Sort options' => 'Pilihan jenis',
         'Add new first level element' => 'Tambah baru unsur peringkat pertama',
         'Outbound sort order for xml fields (structure starting below function name wrapper) - see documentation for SOAP transport.' =>
-            '',
+            'Perintah jenis Outbound untuk bidang xml (struktur permulaan di bawah nama tugas pembungkus) - lihat dokumentasi untuk pengangkutan SOAP.',
 
         # Template: AdminGenericInterfaceWebservice
         'GenericInterface Web Service Management' => 'Pengurusan Perkhidmatan Wen GenericInterface',
@@ -1655,7 +1655,7 @@ sub Data {
         'You are about to downgrade to OTRS Free and will lose the following features and all data related to these:' =>
             'Anda akan menurunkan taraf kepada OTRS percuma dan akan kehilangan ciri-ciri berikut dan semua data yang berkaitan dengan ini:',
         'Chat' => 'Sembang',
-        'Report Generator' => '',
+        'Report Generator' => 'Penjana Laporan',
         'Timeline view in ticket zoom' => 'Pandangan garis masa di zum tiket',
         'DynamicField ContactWithData' => 'MedanDinamik KenalanDenganData',
         'DynamicField Database' => 'Pangkalan data MedanDinamik',
@@ -1838,7 +1838,6 @@ sub Data {
         'Filter available fields' => 'Tapis medan tersedia',
         'Available Fields' => 'Medan tersedia',
         'Assigned Fields' => 'Medan yang ditetapkan',
-        'Edit Details for Field' => 'Edit perincian medan',
         'ArticleType' => 'JenisArtikel',
         'Display' => 'Pameran',
         'Edit Field Details' => 'EditPerincianMedan',
@@ -1876,7 +1875,7 @@ sub Data {
         'You can place Activities on the canvas area to assign this Activity to the Process.' =>
             'Anda boleh meletakkan Aktiviti pada kawasan kanvas untuk menetapkan aktiviti ini kepada Proses.',
         'To assign an Activity Dialog to an Activity drop the Activity Dialog element from this sidebar over the Activity placed in the canvas area.' =>
-            '',
+            'Untuk memperuntukkan satu Dialog Aktiviti untuk aktiviti yang menggugurkan elemen Aktiviti Dialog daripada bar sisi ini ke atas aktiviti yang diletakkan di kawasan kanvas.',
         'You can start a connection between to Activities by dropping the Transition element over the Start Activity of the connection. After that you can move the loose end of the arrow to the End Activity.' =>
             'Anda boleh memulakan sambungan antara ke Aktiviti dengan menjatuhkan unsur Peralihan ke atas aktiviti Mulakan sambungan. Selepas itu anda boleh menggerakkan hujung anak panah ke Aktiviti Akhir.',
         'Actions can be assigned to a Transition by dropping the Action Element onto the label of a Transition.' =>
@@ -1946,9 +1945,9 @@ sub Data {
         'Type of Linking between Conditions' => 'Jenis Pemautan antara Syarat',
         'Remove this Condition' => 'Buang keadaan ini',
         'Type of Linking' => 'Jenis Pemautan',
+        'Add a new Field' => 'Tambah Medan baru',
         'Remove this Field' => 'Buang medan ini',
         'And can\'t be repeated on the same condition.' => 'Dan tidak boleh berulang pada keadaan yang sama.',
-        'Add a new Field' => 'Tambah Medan baru',
         'Add New Condition' => 'Tambah Keadaan Baru',
 
         # Template: AdminProcessManagementTransitionAction
@@ -1958,8 +1957,8 @@ sub Data {
         'Transition Action Name' => 'Nama Tindakan Peralihan',
         'Transition Action Module' => 'Modul Tindakan Peralihan',
         'Config Parameters' => 'Config Parameter',
-        'Remove this Parameter' => 'Buang Parameter ini',
         'Add a new Parameter' => 'Tambah Parameter baru',
+        'Remove this Parameter' => 'Buang Parameter ini',
 
         # Template: AdminQueue
         'Manage Queues' => 'Pengurusan Barisan',
@@ -2634,7 +2633,7 @@ sub Data {
         # Template: AgentTicketCompose
         'Compose Answer for %s%s' => 'Karang Jawapan untuk %s%s',
         'This address is registered as system address and cannot be used: %s' =>
-            '',
+            'Alamat ini didaftarkan sebagai alamat sistem dan tidak boleh digunakan: %s',
         'Please include at least one recipient' => 'Sila sertakan sekurang-kurangnya satu penerima',
         'Remove Ticket Customer' => 'Buang Pelanggan Tiket',
         'Please remove this entry and enter a new one with the correct value.' =>
@@ -3123,9 +3122,89 @@ sub Data {
         'No user configurable notifications found.' => 'Tiada pemberitahuan boleh dikonfigurasi pengguna dijumpai.',
         'Receive messages for notification \'%s\' by transport method \'%s\'.' =>
             'Terima mesej pemberitahuan \'%s\' dengan kaedah pengangkutan \'%s\'.',
+        'Please note that you can\'t completely disable notifications marked as mandatory.' =>
+            '',
+        'Sorry, but you can\'t disable all methods for notifications marked as mandatory.' =>
+            '',
+        'Sorry, but you can\'t disable all methods for this notification.' =>
+            '',
+
+        # Template: ActivityDialogHeader
+        'Process Information' => 'Proses maklumat ',
+        'Dialog' => 'Dialog',
+
+        # Template: Article
+        'Inform Agent' => 'Memaklumkan Agen.',
 
         # Template: PublicDefault
         'Welcome' => 'Selamat datang',
+
+        # Template: GeneralSpecificationsWidget
+        'Permissions' => 'kebenaran',
+        'You can select one or more groups to define access for different agents.' =>
+            'Anda boleh memilih satu atau lebih kumpulan untuk menentukan akses untuk ejen yang berbeza.',
+        'Result formats' => 'Format Keputusan',
+        'The selected time periods in the statistic are time zone neutral.' =>
+            'Tempoh masa yang dipilih di dalam statistik ialah zon masa neutral.',
+        'Create summation row' => 'Cipta baris penjumlahan',
+        'Generate an additional row containing sums for all data columns.' =>
+            'Hasilkan baris tambahan yang mengandungi jumlah untuk semua lajur data.',
+        'Create summation column' => 'Cipta lajur penjumlahan',
+        'Generate an additional column containing sums for all data rows.' =>
+            'Hasilkan lajur tambahan yang mengandungi jumlah untuk semua lajur baris.',
+        'Cache results' => 'Keputusan cache',
+        'Stores statistics result data in a cache to be used in subsequent views with the same configuration.' =>
+            'Simpan keputusan data statistik dalam cache untuk digunakan dalam paparan berikutnya dengan konfigurasi yang sama.',
+        'Provide the statistic as a widget that agents can activate in their dashboard.' =>
+            'Sediakan statistik sebagai widget yang ejen boleh aktifkan pada papan pemuka mereka.',
+        'Please note that enabling the dashboard widget will activate caching for this statistic in the dashboard.' =>
+            'Sila ambil perhatian bahawa membolehkan widget papan pemuka akan mengaktifkan caching untuk statistik ini pada papan pemuka.',
+        'If set to invalid end users can not generate the stat.' => 'Jika ditetapkan ke tidak sah, pengguna tidak boleh menjana stat',
+
+        # Template: PreviewWidget
+        'There are problems in the configuration of this statistic:' => 'Terdapat masalah dalam konfigurasi statistik ini:',
+        'You may now configure the X-axis of your statistic.' => 'Anda kini boleh mengkonfigurasi paksi-X statistik anda.',
+        'This statistic does not provide preview data.' => 'Statistik ini tidak menyediakan data pratonton.',
+        'Preview format:' => 'Format pratonton:',
+        'Please note that the preview uses random data and does not consider data filters.' =>
+            'Sila ambil perhatian bahawa pratonton menggunakan data rawak dan tidak mengambil kira penapis data.',
+        'Configure X-Axis' => 'Konfigurasi Paksi-X',
+        'X-axis' => 'Paksi-X',
+        'Configure Y-Axis' => 'Konfigurasi Paksi-Y',
+        'Y-axis' => 'Paksi-Y',
+        'Configure Filter' => 'Konfigurasi Tapisan',
+
+        # Template: RestrictionsWidget
+        'Please select only one element or turn off the button \'Fixed\'.' =>
+            'Sila pilih hanya satu elemen atau mematikan butang \'Tetap\'!',
+        'Absolute period' => 'Tempoh mutlak',
+        'Between' => 'Between',
+        'Relative period' => 'Tempoh relatif',
+        'The past complete %s and the current+upcoming complete %s %s' =>
+            '%s lengkap lalu dan  %s %s semasa+lengkap akan datang',
+        'Do not allow changes to this element when the statistic is generated.' =>
+            'Tidak membenarkan perubahan kepada unsur ini apabila statistik dihasilkan .',
+
+        # Template: StatsParamsWidget
+        'Format' => 'Format',
+        'Exchange Axis' => 'Paksi Pertukaran',
+        'Configurable params of static stat' => 'Parameter statistik statik yang boleh dikonfigurasi.',
+        'No element selected.' => 'Tiada unsur yang dipilih.',
+        'Scale' => 'Skala',
+
+        # Template: D3
+        'Download SVG' => 'Muat turun SVG',
+        'Download PNG' => 'Muat turun PNG',
+
+        # Template: XAxisWidget
+        'The selected time period defines the default time frame for this statistic to collect data from.' =>
+            'Tempoh masa yang dipilih mendefinisikan tempoh masa default untuk statistik ini untuk mengumpul data daripada.',
+        'Defines the time unit that will be used to split the selected time period into reporting data points.' =>
+            'Mentakrifkan unit masa yang akan digunakan untuk memisahkan tempoh masa yang dipilih ke dalam melaporkan titik data.',
+
+        # Template: YAxisWidget
+        'Please remember that the scale for the Y-axis has to be larger than the scale for the X-axis (e.g. X-axis => Month, Y-Axis => Year).' =>
+            'Sila ingat bahawa skala bagi paksi-Y telah menjadi lebih besar daripada skala untuk paksi-X (contoh: paksi-X => Bulan, paksi-Y => Tahun).',
 
         # Template: Test
         'OTRS Test Page' => 'Halaman percubaan OTRS',
@@ -3161,6 +3240,7 @@ sub Data {
         'All agents subscribed to both the ticket\'s queue and service' =>
             'Semua agen yang melanggan perkhidmatan dan barisan tiket',
         'Customer of the ticket' => 'Pelanggan tiket.',
+        'Yes, but require at least one active notification method' => '',
 
         # Perl Module: Kernel/Modules/AdminPackageManager.pm
         'Package not verified due a communication issue with verification server!' =>
@@ -3229,6 +3309,9 @@ sub Data {
             'Harap maaf, anda tidak mempunyai keizinan lagi untuk mengakses tiket ini dalam keadaan semasa.',
         ' You can take one of the next actions:' => 'Anda boleh mengambil salah satu tindakan berikut:',
 
+        # Perl Module: Kernel/Output/HTML/Layout/LinkObject.pm
+        'Linked as' => '',
+
         # Perl Module: Kernel/Output/HTML/Notification/AgentOTRSBusiness.pm
         '%s Upgrade to %s now! %s' => '%s Naik taraf ke %s sekarang! %s',
 
@@ -3241,6 +3324,10 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/Preferences/Language.pm
         '(in process)' => '(dalam proses)',
 
+        # Perl Module: Kernel/Output/HTML/Preferences/NotificationEvent.pm
+        'Please make sure you\'ve chosen at least one transport method for mandatory notifications.' =>
+            '',
+
         # Perl Module: Kernel/Output/HTML/Preferences/OutOfOffice.pm
         'Please specify an end date that is after the start date.' => 'Sila nyatakan tarikh akhir iaitu selepas tarikh mula.',
 
@@ -3248,8 +3335,6 @@ sub Data {
         'Please supply your new password!' => 'Sila berikan kata laluan baru anda!',
 
         # Perl Module: Kernel/Output/HTML/Statistics/View.pm
-        'X-axis' => 'Paksi-X',
-        'Y-axis' => 'Paksi-Y',
         'No past complete or the current+upcoming complete relative time value selected.' =>
             'Tiada lengkapan masa lalu atau nilai masa relatif lengkapan semasa+akan datang dipilih.',
         'The selected time period is larger than the allowed time period.' =>
@@ -3277,6 +3362,12 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/TicketOverviewMenu/Sort.pm
         'Order by' => 'Disusun mengikut',
+
+        # Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
+        'Configuration Options Reference' => '',
+        'This setting can not be changed.' => '',
+        'This setting is not active by default.' => '',
+        'This setting can not be deactivated.' => '',
 
         # Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
         'State Type' => 'Jenis Keadaan',
@@ -3469,7 +3560,7 @@ sub Data {
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/Ticket/IndexModule.pm
         'Ticket Index Module' => 'Modul Indeks Tiket',
         'You have more than 60,000 tickets and should use the StaticDB backend. See admin manual (Performance Tuning) for more information.' =>
-            '',
+            'Anda mempunyai lebih daripada 60,000 tiket dan harus menggunakan backend StaticDB. Lihat manual admin (Penalaan Prestasi) untuk maklumat lanjut.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/Ticket/OpenTickets.pm
         'Open Tickets' => 'TIket Terbuka',
@@ -3479,7 +3570,7 @@ sub Data {
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/Ticket/SearchIndexModule.pm
         'Ticket Search Index Module' => 'Modul Indeks Carian Tiket',
         'You have more than 50,000 articles and should use the StaticDB backend. See admin manual (Performance Tuning) for more information.' =>
-            '',
+            'Anda mempunyai lebih daripada 50,000 tiket dan harus menggunakan backend StaticDB. Lihat manual admin (Penalaan Prestasi) untuk maklumat lanjut.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/Ticket/StaticDBOrphanedRecords.pm
         'Orphaned Records In ticket_lock_index Table' => '',
@@ -4488,6 +4579,8 @@ dalaman.',
         'Defines the postmaster default queue.' => 'Mentakrifkan aturan postmaster default.',
         'Defines the priority in which the information is logged and presented.' =>
             'Mentakrifkan keutamaan di mana maklumat direkod dan dibentangkan.',
+        'Defines the queues the creator check will be active.' => '',
+        'Defines the queues the involved check will be active.' => '',
         'Defines the receipent target of the phone ticket and the sender of the email ticket ("Queue" shows all queues, "System address" displays all system addresses) in the agent interface.' =>
             '',
         'Defines the receipent target of the tickets ("Queue" shows all queues, "SystemAddress" displays all system addresses) in the customer interface.' =>
@@ -4608,6 +4701,8 @@ dalaman.',
         'Displays the accounted time for an article in the ticket zoom view.' =>
             'Pamerkan masa yang diperuntukkan untuk artikel dalam paparan zum tiket.',
         'Dropdown' => 'Dropdown',
+        'Dutch stop words for fulltext index. These words will be removed from the search index.' =>
+            '',
         'Dynamic Fields Checkbox Backend GUI' => 'GUI Backend Checkbox Medan Dinamik',
         'Dynamic Fields Date Time Backend GUI' => 'GUI Backend Tarikh Masa Medan Dinamik',
         'Dynamic Fields Drop-down Backend GUI' => 'GUI Backend Drop-down Medan Dinamik',
@@ -5072,9 +5167,11 @@ dalaman.',
         'Module to check customer permissions.' => 'Modul untuk menyemak kebenaran pelanggan.',
         'Module to check if a user is in a special group. Access is granted, if the user is in the specified group and has ro and rw permissions.' =>
             'Modul untuk menyemak jika suatu pengguna ada di dalam kumpulan yang istimewa. Akses diberikan, jika pengguna ada di dalam kumpulan yang ditentukan dan ada kebenaran ro dan rw.',
+        'Module to check if an agent is involved to a ticket.' => '',
         'Module to check if arrived emails should be marked as email-internal (because of original forwarded internal email). ArticleType and SenderType define the values for the arrived email/article.' =>
             '',
         'Module to check the agent responsible of a ticket.' => 'Modul untuk menyemak tanggungjawab ejen pada tiket.',
+        'Module to check the creator of a ticket.' => '',
         'Module to check the group permissions for the access to customer tickets.' =>
             'Modul untuk menyemak kebenaran kumpulan untuk akses kepada tiket pelanggan.',
         'Module to check the owner of a ticket.' => 'Modul untuk menyemak pemilik kepada tiket.',
@@ -5196,7 +5293,6 @@ dalaman.',
         'Portuguese (Brasil)' => 'Portugis (Brazil)',
         'PostMaster Filters' => 'Penapis PostMaster',
         'PostMaster Mail Accounts' => 'Akaun Mel PostMaster',
-        'Process Information' => 'Proses maklumat ',
         'Process Management Activity Dialog GUI' => 'Dialog Aktiviti Pengurusan Proses GUI',
         'Process Management Activity GUI' => 'Aktiviti Pengurusan Proses GUI',
         'Process Management Path GUI' => 'Laluan Pengurusan Proses GUI',

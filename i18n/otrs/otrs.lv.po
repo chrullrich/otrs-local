@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
 "POT-Creation-Date: 2014-08-08 19:10+0200\n"
-"PO-Revision-Date: 2015-11-11 15:57+0000\n"
+"PO-Revision-Date: 2015-11-25 17:57+0000\n"
 "Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
 "Language-Team: Latvian (http://www.transifex.com/otrs/OTRS/language/lv/)\n"
 "MIME-Version: 1.0\n"
@@ -6367,10 +6367,6 @@ msgid "Assigned Fields"
 msgstr ""
 
 #. Template: AdminProcessManagementActivityDialog
-msgid "Edit Details for Field"
-msgstr ""
-
-#. Template: AdminProcessManagementActivityDialog
 msgid "ArticleType"
 msgstr ""
 
@@ -6715,15 +6711,15 @@ msgid "Type of Linking"
 msgstr ""
 
 #. Template: AdminProcessManagementTransition
+msgid "Add a new Field"
+msgstr ""
+
+#. Template: AdminProcessManagementTransition
 msgid "Remove this Field"
 msgstr ""
 
 #. Template: AdminProcessManagementTransition
 msgid "And can't be repeated on the same condition."
-msgstr ""
-
-#. Template: AdminProcessManagementTransition
-msgid "Add a new Field"
 msgstr ""
 
 #. Template: AdminProcessManagementTransition
@@ -6753,11 +6749,11 @@ msgid "Config Parameters"
 msgstr ""
 
 #. Template: AdminProcessManagementTransitionAction
-msgid "Remove this Parameter"
+msgid "Add a new Parameter"
 msgstr ""
 
 #. Template: AdminProcessManagementTransitionAction
-msgid "Add a new Parameter"
+msgid "Remove this Parameter"
 msgstr ""
 
 #. Template: AdminQueue
@@ -10276,8 +10272,207 @@ msgstr ""
 msgid "Receive messages for notification '%s' by transport method '%s'."
 msgstr ""
 
+#. Template: PreferencesNotificationEvent
+msgid ""
+"Please note that you can't completely disable notifications marked as "
+"mandatory."
+msgstr ""
+
+#. Template: PreferencesNotificationEvent
+msgid ""
+"Sorry, but you can't disable all methods for notifications marked as "
+"mandatory."
+msgstr ""
+
+#. Template: PreferencesNotificationEvent
+msgid "Sorry, but you can't disable all methods for this notification."
+msgstr ""
+
+#. Template: ActivityDialogHeader
+msgid "Process Information"
+msgstr ""
+
+#. Template: ActivityDialogHeader
+msgid "Dialog"
+msgstr ""
+
+#. Template: Article
+msgid "Inform Agent"
+msgstr "Informēt aģentu"
+
 #. Template: PublicDefault
 msgid "Welcome"
+msgstr ""
+
+#. Template: GeneralSpecificationsWidget
+msgid "Permissions"
+msgstr "Tiesības"
+
+#. Template: GeneralSpecificationsWidget
+msgid ""
+"You can select one or more groups to define access for different agents."
+msgstr ""
+
+#. Template: GeneralSpecificationsWidget
+msgid "Result formats"
+msgstr ""
+
+#. Template: GeneralSpecificationsWidget
+msgid "The selected time periods in the statistic are time zone neutral."
+msgstr ""
+
+#. Template: GeneralSpecificationsWidget
+msgid "Create summation row"
+msgstr ""
+
+#. Template: GeneralSpecificationsWidget
+msgid "Generate an additional row containing sums for all data columns."
+msgstr ""
+
+#. Template: GeneralSpecificationsWidget
+msgid "Create summation column"
+msgstr ""
+
+#. Template: GeneralSpecificationsWidget
+msgid "Generate an additional column containing sums for all data rows."
+msgstr ""
+
+#. Template: GeneralSpecificationsWidget
+msgid "Cache results"
+msgstr ""
+
+#. Template: GeneralSpecificationsWidget
+msgid ""
+"Stores statistics result data in a cache to be used in subsequent views with"
+" the same configuration."
+msgstr ""
+
+#. Template: GeneralSpecificationsWidget
+msgid ""
+"Provide the statistic as a widget that agents can activate in their "
+"dashboard."
+msgstr ""
+
+#. Template: GeneralSpecificationsWidget
+msgid ""
+"Please note that enabling the dashboard widget will activate caching for "
+"this statistic in the dashboard."
+msgstr ""
+
+#. Template: GeneralSpecificationsWidget
+msgid "If set to invalid end users can not generate the stat."
+msgstr ""
+
+#. Template: PreviewWidget
+msgid "There are problems in the configuration of this statistic:"
+msgstr ""
+
+#. Template: PreviewWidget
+msgid "You may now configure the X-axis of your statistic."
+msgstr ""
+
+#. Template: PreviewWidget
+msgid "This statistic does not provide preview data."
+msgstr ""
+
+#. Template: PreviewWidget
+msgid "Preview format:"
+msgstr ""
+
+#. Template: PreviewWidget
+msgid ""
+"Please note that the preview uses random data and does not consider data "
+"filters."
+msgstr ""
+
+#. Template: PreviewWidget
+msgid "Configure X-Axis"
+msgstr ""
+
+#. Template: PreviewWidget
+msgid "X-axis"
+msgstr "X-ass"
+
+#. Template: PreviewWidget
+msgid "Configure Y-Axis"
+msgstr ""
+
+#. Template: PreviewWidget
+msgid "Y-axis"
+msgstr ""
+
+#. Template: PreviewWidget
+msgid "Configure Filter"
+msgstr ""
+
+#. Template: RestrictionsWidget
+msgid "Please select only one element or turn off the button 'Fixed'."
+msgstr "Lūdzu, izvēlieties tikai vienu elementu vai atstatiet pogu 'Fiksēts'."
+
+#. Template: RestrictionsWidget
+msgid "Absolute period"
+msgstr ""
+
+#. Template: RestrictionsWidget
+msgid "Between"
+msgstr "Starp"
+
+#. Template: RestrictionsWidget
+msgid "Relative period"
+msgstr ""
+
+#. Template: RestrictionsWidget
+msgid "The past complete %s and the current+upcoming complete %s %s"
+msgstr ""
+
+#. Template: RestrictionsWidget
+msgid "Do not allow changes to this element when the statistic is generated."
+msgstr ""
+
+#. Template: StatsParamsWidget
+msgid "Format"
+msgstr "Formāts"
+
+#. Template: StatsParamsWidget
+msgid "Exchange Axis"
+msgstr "Samainīt asis"
+
+#. Template: StatsParamsWidget
+msgid "Configurable params of static stat"
+msgstr "Statisko atskaišu konfigurējamie parametri"
+
+#. Template: StatsParamsWidget
+msgid "No element selected."
+msgstr "Nav izvēlēts neviens elements."
+
+#. Template: StatsParamsWidget
+msgid "Scale"
+msgstr "Mērogs"
+
+#. Template: D3
+msgid "Download SVG"
+msgstr ""
+
+#. Template: D3
+msgid "Download PNG"
+msgstr ""
+
+#. Template: XAxisWidget
+msgid ""
+"The selected time period defines the default time frame for this statistic "
+"to collect data from."
+msgstr ""
+
+#. Template: XAxisWidget
+msgid ""
+"Defines the time unit that will be used to split the selected time period "
+"into reporting data points."
+msgstr ""
+
+#. Template: YAxisWidget
+msgid ""
+"Please remember that the scale for the Y-axis has to be larger than the "
+"scale for the X-axis (e.g. X-axis => Month, Y-Axis => Year)."
 msgstr ""
 
 #. Template: Test
@@ -10356,6 +10551,10 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AdminNotificationEvent.pm
 msgid "Customer of the ticket"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AdminNotificationEvent.pm
+msgid "Yes, but require at least one active notification method"
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AdminPackageManager.pm
@@ -10487,6 +10686,10 @@ msgstr ""
 msgid " You can take one of the next actions:"
 msgstr ""
 
+#. Perl Module: Kernel/Output/HTML/Layout/LinkObject.pm
+msgid "Linked as"
+msgstr ""
+
 #. Perl Module: Kernel/Output/HTML/Notification/AgentOTRSBusiness.pm
 msgid "%s Upgrade to %s now! %s"
 msgstr ""
@@ -10504,20 +10707,18 @@ msgstr ""
 msgid "(in process)"
 msgstr ""
 
+#. Perl Module: Kernel/Output/HTML/Preferences/NotificationEvent.pm
+msgid ""
+"Please make sure you've chosen at least one transport method for mandatory "
+"notifications."
+msgstr ""
+
 #. Perl Module: Kernel/Output/HTML/Preferences/OutOfOffice.pm
 msgid "Please specify an end date that is after the start date."
 msgstr ""
 
 #. Perl Module: Kernel/Output/HTML/Preferences/Password.pm
 msgid "Please supply your new password!"
-msgstr ""
-
-#. Perl Module: Kernel/Output/HTML/Statistics/View.pm
-msgid "X-axis"
-msgstr "X-ass"
-
-#. Perl Module: Kernel/Output/HTML/Statistics/View.pm
-msgid "Y-axis"
 msgstr ""
 
 #. Perl Module: Kernel/Output/HTML/Statistics/View.pm
@@ -10598,6 +10799,22 @@ msgstr ""
 #. Perl Module: Kernel/Output/HTML/TicketOverviewMenu/Sort.pm
 msgid "Order by"
 msgstr "Kārtot pēc"
+
+#. Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
+msgid "Configuration Options Reference"
+msgstr ""
+
+#. Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
+msgid "This setting can not be changed."
+msgstr ""
+
+#. Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
+msgid "This setting is not active by default."
+msgstr ""
+
+#. Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
+msgid "This setting can not be deactivated."
+msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "State Type"
@@ -14297,6 +14514,14 @@ msgid "Defines the priority in which the information is logged and presented."
 msgstr ""
 
 #. SysConfig
+msgid "Defines the queues the creator check will be active."
+msgstr ""
+
+#. SysConfig
+msgid "Defines the queues the involved check will be active."
+msgstr ""
+
+#. SysConfig
 msgid ""
 "Defines the receipent target of the phone ticket and the sender of the email"
 " ticket (\"Queue\" shows all queues, \"System address\" displays all system "
@@ -14683,6 +14908,12 @@ msgstr ""
 
 #. SysConfig
 msgid "Dropdown"
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Dutch stop words for fulltext index. These words will be removed from the "
+"search index."
 msgstr ""
 
 #. SysConfig
@@ -16219,6 +16450,10 @@ msgid ""
 msgstr ""
 
 #. SysConfig
+msgid "Module to check if an agent is involved to a ticket."
+msgstr ""
+
+#. SysConfig
 msgid ""
 "Module to check if arrived emails should be marked as email-internal "
 "(because of original forwarded internal email). ArticleType and SenderType "
@@ -16227,6 +16462,10 @@ msgstr ""
 
 #. SysConfig
 msgid "Module to check the agent responsible of a ticket."
+msgstr ""
+
+#. SysConfig
+msgid "Module to check the creator of a ticket."
 msgstr ""
 
 #. SysConfig
@@ -16687,10 +16926,6 @@ msgstr ""
 
 #. SysConfig
 msgid "PostMaster Mail Accounts"
-msgstr ""
-
-#. SysConfig
-msgid "Process Information"
 msgstr ""
 
 #. SysConfig

@@ -26,7 +26,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.506350757205667;
+    $Self->{Completeness}        = 0.502531950807813;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -1841,7 +1841,6 @@ sub Data {
         'Filter available fields' => '',
         'Available Fields' => '',
         'Assigned Fields' => '',
-        'Edit Details for Field' => '',
         'ArticleType' => '',
         'Display' => '',
         'Edit Field Details' => '',
@@ -1949,9 +1948,9 @@ sub Data {
         'Type of Linking between Conditions' => '',
         'Remove this Condition' => '',
         'Type of Linking' => '',
+        'Add a new Field' => '',
         'Remove this Field' => '',
         'And can\'t be repeated on the same condition.' => '',
-        'Add a new Field' => '',
         'Add New Condition' => '',
 
         # Template: AdminProcessManagementTransitionAction
@@ -1961,8 +1960,8 @@ sub Data {
         'Transition Action Name' => '',
         'Transition Action Module' => '',
         'Config Parameters' => '',
-        'Remove this Parameter' => '',
         'Add a new Parameter' => '',
+        'Remove this Parameter' => '',
 
         # Template: AdminQueue
         'Manage Queues' => 'श्रेणी का प्रबंधन करें',
@@ -3126,9 +3125,89 @@ sub Data {
         'No user configurable notifications found.' => '',
         'Receive messages for notification \'%s\' by transport method \'%s\'.' =>
             '',
+        'Please note that you can\'t completely disable notifications marked as mandatory.' =>
+            '',
+        'Sorry, but you can\'t disable all methods for notifications marked as mandatory.' =>
+            '',
+        'Sorry, but you can\'t disable all methods for this notification.' =>
+            '',
+
+        # Template: ActivityDialogHeader
+        'Process Information' => '',
+        'Dialog' => '',
+
+        # Template: Article
+        'Inform Agent' => 'प्रतिनिधि को सूचित करें ',
 
         # Template: PublicDefault
         'Welcome' => '',
+
+        # Template: GeneralSpecificationsWidget
+        'Permissions' => 'अनुमतियाँ',
+        'You can select one or more groups to define access for different agents.' =>
+            'आप एक या अधिक समूहों का चयन करके विभिन्न प्रतिनिधियॊ के लिए उपयोग निर्धारित कर सकते हैं।',
+        'Result formats' => '',
+        'The selected time periods in the statistic are time zone neutral.' =>
+            '',
+        'Create summation row' => '',
+        'Generate an additional row containing sums for all data columns.' =>
+            '',
+        'Create summation column' => '',
+        'Generate an additional column containing sums for all data rows.' =>
+            '',
+        'Cache results' => '',
+        'Stores statistics result data in a cache to be used in subsequent views with the same configuration.' =>
+            '',
+        'Provide the statistic as a widget that agents can activate in their dashboard.' =>
+            '',
+        'Please note that enabling the dashboard widget will activate caching for this statistic in the dashboard.' =>
+            '',
+        'If set to invalid end users can not generate the stat.' => 'यदि अवैध अंत उपयोगकर्ताओं के लिए निर्धारित तॊ आँकड़े उत्पन्न नहीं कर सकते।',
+
+        # Template: PreviewWidget
+        'There are problems in the configuration of this statistic:' => '',
+        'You may now configure the X-axis of your statistic.' => '',
+        'This statistic does not provide preview data.' => '',
+        'Preview format:' => '',
+        'Please note that the preview uses random data and does not consider data filters.' =>
+            '',
+        'Configure X-Axis' => '',
+        'X-axis' => 'X-अक्ष',
+        'Configure Y-Axis' => '',
+        'Y-axis' => '',
+        'Configure Filter' => '',
+
+        # Template: RestrictionsWidget
+        'Please select only one element or turn off the button \'Fixed\'.' =>
+            'कृपया केवल एक ही तत्व का चयन करें या "निश्चित" बटन बंद करें।',
+        'Absolute period' => '',
+        'Between' => 'के बीच',
+        'Relative period' => '',
+        'The past complete %s and the current+upcoming complete %s %s' =>
+            '',
+        'Do not allow changes to this element when the statistic is generated.' =>
+            '',
+
+        # Template: StatsParamsWidget
+        'Format' => 'प्रारूप',
+        'Exchange Axis' => 'विनिमय अक्ष',
+        'Configurable params of static stat' => 'स्थिर आँकड़ॊ के विन्यास मापदंड',
+        'No element selected.' => 'कोई भी तत्व चयनित नहीं',
+        'Scale' => 'मापक',
+
+        # Template: D3
+        'Download SVG' => '',
+        'Download PNG' => '',
+
+        # Template: XAxisWidget
+        'The selected time period defines the default time frame for this statistic to collect data from.' =>
+            '',
+        'Defines the time unit that will be used to split the selected time period into reporting data points.' =>
+            '',
+
+        # Template: YAxisWidget
+        'Please remember that the scale for the Y-axis has to be larger than the scale for the X-axis (e.g. X-axis => Month, Y-Axis => Year).' =>
+            '',
 
         # Template: Test
         'OTRS Test Page' => 'OTRS परीक्षण पृष्ठ',
@@ -3164,6 +3243,7 @@ sub Data {
         'All agents subscribed to both the ticket\'s queue and service' =>
             '',
         'Customer of the ticket' => '',
+        'Yes, but require at least one active notification method' => '',
 
         # Perl Module: Kernel/Modules/AdminPackageManager.pm
         'Package not verified due a communication issue with verification server!' =>
@@ -3232,6 +3312,9 @@ sub Data {
             '',
         ' You can take one of the next actions:' => '',
 
+        # Perl Module: Kernel/Output/HTML/Layout/LinkObject.pm
+        'Linked as' => '',
+
         # Perl Module: Kernel/Output/HTML/Notification/AgentOTRSBusiness.pm
         '%s Upgrade to %s now! %s' => '',
 
@@ -3244,6 +3327,10 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/Preferences/Language.pm
         '(in process)' => '',
 
+        # Perl Module: Kernel/Output/HTML/Preferences/NotificationEvent.pm
+        'Please make sure you\'ve chosen at least one transport method for mandatory notifications.' =>
+            '',
+
         # Perl Module: Kernel/Output/HTML/Preferences/OutOfOffice.pm
         'Please specify an end date that is after the start date.' => '',
 
@@ -3251,8 +3338,6 @@ sub Data {
         'Please supply your new password!' => '',
 
         # Perl Module: Kernel/Output/HTML/Statistics/View.pm
-        'X-axis' => 'X-अक्ष',
-        'Y-axis' => '',
         'No past complete or the current+upcoming complete relative time value selected.' =>
             '',
         'The selected time period is larger than the allowed time period.' =>
@@ -3280,6 +3365,12 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/TicketOverviewMenu/Sort.pm
         'Order by' => 'के आदेश से',
+
+        # Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
+        'Configuration Options Reference' => '',
+        'This setting can not be changed.' => '',
+        'This setting is not active by default.' => '',
+        'This setting can not be deactivated.' => '',
 
         # Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
         'State Type' => '',
@@ -4478,6 +4569,8 @@ Thanks for your help!
         'Defines the postmaster default queue.' => 'डाकपाल तयशुदा श्रेणी को परिभाषित करता है।',
         'Defines the priority in which the information is logged and presented.' =>
             '',
+        'Defines the queues the creator check will be active.' => '',
+        'Defines the queues the involved check will be active.' => '',
         'Defines the receipent target of the phone ticket and the sender of the email ticket ("Queue" shows all queues, "System address" displays all system addresses) in the agent interface.' =>
             '',
         'Defines the receipent target of the tickets ("Queue" shows all queues, "SystemAddress" displays all system addresses) in the customer interface.' =>
@@ -4598,6 +4691,8 @@ Thanks for your help!
         'Displays the accounted time for an article in the ticket zoom view.' =>
             'टिकट ज़ूम दृश्य में एक अनुच्छेद के समय का हिसाब प्रदर्शित करता है।',
         'Dropdown' => '',
+        'Dutch stop words for fulltext index. These words will be removed from the search index.' =>
+            '',
         'Dynamic Fields Checkbox Backend GUI' => '',
         'Dynamic Fields Date Time Backend GUI' => '',
         'Dynamic Fields Drop-down Backend GUI' => '',
@@ -5062,9 +5157,11 @@ Thanks for your help!
         'Module to check customer permissions.' => 'ग्राहक अनुमतियाँ जाँच करने के लिए मॉड्यूल।',
         'Module to check if a user is in a special group. Access is granted, if the user is in the specified group and has ro and rw permissions.' =>
             'जाँच करने के लिए मॉड्यूल यदि कोई उपयोगकर्ता एक विशेष समूह में है। एक्सेस दी जाती है,यदि उपयोगकर्ता विशिष्ट समूह में है और ro और rw अनुमति है।',
+        'Module to check if an agent is involved to a ticket.' => '',
         'Module to check if arrived emails should be marked as email-internal (because of original forwarded internal email). ArticleType and SenderType define the values for the arrived email/article.' =>
             '',
         'Module to check the agent responsible of a ticket.' => 'एक टिकट के लिए जिम्मेदार प्रतिनिधि की जांच करने के लिए मॉड्यूल।',
+        'Module to check the creator of a ticket.' => '',
         'Module to check the group permissions for the access to customer tickets.' =>
             'ग्राहक टिकट  उपयोग करने के लिए समूह अनुमतियाँ जाँच करने के लिए मॉड्यूल।',
         'Module to check the owner of a ticket.' => 'टिकट के स्वामी की जांच करने के लिए मॉड्यूल।',
@@ -5186,7 +5283,6 @@ Thanks for your help!
         'Portuguese (Brasil)' => '',
         'PostMaster Filters' => 'डाकपाल निस्पादक',
         'PostMaster Mail Accounts' => 'डाकपाल मेल खाते',
-        'Process Information' => '',
         'Process Management Activity Dialog GUI' => '',
         'Process Management Activity GUI' => '',
         'Process Management Path GUI' => '',
