@@ -1113,6 +1113,9 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
                                      window.alert(Core.Agent.Admin.ProcessManagement.Localization.WrongArticleTypeMsg);
                                      return false;
                                  }
+
+                                 // add the time units value to the fieldconfig
+                                 FieldConfigElement.Config.TimeUnits = $('#TimeUnits').val();
                              }
 
                              $Element.closest('li').data('config', Core.JSON.Stringify(FieldConfigElement));
@@ -1169,6 +1172,9 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
                     if (FieldConfig.Config.ArticleType) {
                         $('#ArticleType').val(FieldConfig.Config.ArticleType);
                     }
+                    if (FieldConfig.Config.TimeUnits) {
+                        $('#TimeUnits').val(FieldConfig.Config.TimeUnits);
+                    }
                 }
 
             }
@@ -1181,13 +1187,22 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
 
             // only article should show ArticleType select.
             if (Fieldname === 'Article') {
+
                 $('#ArticleTypeContainer').removeClass('Hidden');
                 $('#ArticleTypeContainer').prev('label').css('display', 'block');
                 $('#ArticleTypeContainer .Modernize').trigger('redraw.InputField');
+
+                $('#TimeUnitsContainer').removeClass('Hidden');
+                $('#TimeUnitsContainer').prev('label').css('display', 'block');
+                $('#TimeUnitsContainer .Modernize').trigger('redraw.InputField');
             }
             else {
+
                 $('#ArticleTypeContainer').addClass('Hidden');
                 $('#ArticleTypeContainer').prev('label').css('display', 'none');
+
+                $('#TimeUnitsContainer').addClass('Hidden');
+                $('#TimeUnitsContainer').prev('label').css('display', 'none');
             }
 
             return false;

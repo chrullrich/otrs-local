@@ -220,6 +220,14 @@
                 </div>
                 <div class="Clear"></div>
 
+[% RenderBlockStart("TimeUnitsContainer") %]
+                <label for="TimeUnits">[% Translate("Time units") | html %]:</label>
+                <div class="Field" id="TimeUnitsContainer" class="Hidden">
+                    [% Data.TimeUnitsSelection %]
+                </div>
+                <div class="Clear"></div>
+[% RenderBlockEnd("TimeUnitsContainer") %]
+
                 <label for="Display">[% Translate("Display") | html %]:</label>
                 <div class="Field">
                     [% Data.DisplaySelection %]
