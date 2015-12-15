@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.549340498290181;
+    $Self->{Completeness}        = 0.5449722691102;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -1839,7 +1839,6 @@ sub Data {
         'Filter available fields' => '',
         'Available Fields' => '',
         'Assigned Fields' => '',
-        'Edit Details for Field' => '',
         'ArticleType' => '',
         'Display' => '',
         'Edit Field Details' => '',
@@ -1947,9 +1946,9 @@ sub Data {
         'Type of Linking between Conditions' => '',
         'Remove this Condition' => '',
         'Type of Linking' => '',
+        'Add a new Field' => '',
         'Remove this Field' => '',
         'And can\'t be repeated on the same condition.' => '',
-        'Add a new Field' => '',
         'Add New Condition' => '',
 
         # Template: AdminProcessManagementTransitionAction
@@ -1959,8 +1958,8 @@ sub Data {
         'Transition Action Name' => '',
         'Transition Action Module' => '',
         'Config Parameters' => '',
-        'Remove this Parameter' => '',
         'Add a new Parameter' => '',
+        'Remove this Parameter' => '',
 
         # Template: AdminQueue
         'Manage Queues' => 'Gestionar Filas',
@@ -3124,9 +3123,89 @@ sub Data {
         'No user configurable notifications found.' => '',
         'Receive messages for notification \'%s\' by transport method \'%s\'.' =>
             '',
+        'Please note that you can\'t completely disable notifications marked as mandatory.' =>
+            '',
+        'Sorry, but you can\'t disable all methods for notifications marked as mandatory.' =>
+            '',
+        'Sorry, but you can\'t disable all methods for this notification.' =>
+            '',
+
+        # Template: ActivityDialogHeader
+        'Process Information' => '',
+        'Dialog' => '',
+
+        # Template: Article
+        'Inform Agent' => 'Notificar a Agente',
 
         # Template: PublicDefault
         'Welcome' => '',
+
+        # Template: GeneralSpecificationsWidget
+        'Permissions' => 'Permisos',
+        'You can select one or more groups to define access for different agents.' =>
+            'Puede seleccionar uno o más grupos para definir el acceso para los diferentes agentes.',
+        'Result formats' => '',
+        'The selected time periods in the statistic are time zone neutral.' =>
+            '',
+        'Create summation row' => '',
+        'Generate an additional row containing sums for all data columns.' =>
+            '',
+        'Create summation column' => '',
+        'Generate an additional column containing sums for all data rows.' =>
+            '',
+        'Cache results' => '',
+        'Stores statistics result data in a cache to be used in subsequent views with the same configuration.' =>
+            '',
+        'Provide the statistic as a widget that agents can activate in their dashboard.' =>
+            '',
+        'Please note that enabling the dashboard widget will activate caching for this statistic in the dashboard.' =>
+            '',
+        'If set to invalid end users can not generate the stat.' => 'Si se define como inválida, los usuarios finales no podrán generar la estadística.',
+
+        # Template: PreviewWidget
+        'There are problems in the configuration of this statistic:' => '',
+        'You may now configure the X-axis of your statistic.' => '',
+        'This statistic does not provide preview data.' => '',
+        'Preview format:' => '',
+        'Please note that the preview uses random data and does not consider data filters.' =>
+            '',
+        'Configure X-Axis' => '',
+        'X-axis' => 'EjeX',
+        'Configure Y-Axis' => '',
+        'Y-axis' => '',
+        'Configure Filter' => '',
+
+        # Template: RestrictionsWidget
+        'Please select only one element or turn off the button \'Fixed\'.' =>
+            'Por favor seleccione sólo un elemento o desactive el botón \'Fijo\.',
+        'Absolute period' => '',
+        'Between' => 'Entre',
+        'Relative period' => '',
+        'The past complete %s and the current+upcoming complete %s %s' =>
+            '',
+        'Do not allow changes to this element when the statistic is generated.' =>
+            '',
+
+        # Template: StatsParamsWidget
+        'Format' => 'Formato',
+        'Exchange Axis' => 'Intercambiar Ejes',
+        'Configurable params of static stat' => 'Parámetro configurable de estadística estática',
+        'No element selected.' => 'No hay elemento seleccionado',
+        'Scale' => 'Escala',
+
+        # Template: D3
+        'Download SVG' => '',
+        'Download PNG' => '',
+
+        # Template: XAxisWidget
+        'The selected time period defines the default time frame for this statistic to collect data from.' =>
+            '',
+        'Defines the time unit that will be used to split the selected time period into reporting data points.' =>
+            '',
+
+        # Template: YAxisWidget
+        'Please remember that the scale for the Y-axis has to be larger than the scale for the X-axis (e.g. X-axis => Month, Y-Axis => Year).' =>
+            '',
 
         # Template: Test
         'OTRS Test Page' => 'Página de Prueba de OTRS',
@@ -3162,6 +3241,7 @@ sub Data {
         'All agents subscribed to both the ticket\'s queue and service' =>
             '',
         'Customer of the ticket' => '',
+        'Yes, but require at least one active notification method' => '',
 
         # Perl Module: Kernel/Modules/AdminPackageManager.pm
         'Package not verified due a communication issue with verification server!' =>
@@ -3230,6 +3310,9 @@ sub Data {
             '',
         ' You can take one of the next actions:' => '',
 
+        # Perl Module: Kernel/Output/HTML/Layout/LinkObject.pm
+        'Linked as' => '',
+
         # Perl Module: Kernel/Output/HTML/Notification/AgentOTRSBusiness.pm
         '%s Upgrade to %s now! %s' => '',
 
@@ -3242,6 +3325,10 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/Preferences/Language.pm
         '(in process)' => '',
 
+        # Perl Module: Kernel/Output/HTML/Preferences/NotificationEvent.pm
+        'Please make sure you\'ve chosen at least one transport method for mandatory notifications.' =>
+            '',
+
         # Perl Module: Kernel/Output/HTML/Preferences/OutOfOffice.pm
         'Please specify an end date that is after the start date.' => '',
 
@@ -3249,8 +3336,6 @@ sub Data {
         'Please supply your new password!' => '',
 
         # Perl Module: Kernel/Output/HTML/Statistics/View.pm
-        'X-axis' => 'EjeX',
-        'Y-axis' => '',
         'No past complete or the current+upcoming complete relative time value selected.' =>
             '',
         'The selected time period is larger than the allowed time period.' =>
@@ -3278,6 +3363,12 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/TicketOverviewMenu/Sort.pm
         'Order by' => 'Ordenar por',
+
+        # Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
+        'Configuration Options Reference' => '',
+        'This setting can not be changed.' => '',
+        'This setting is not active by default.' => '',
+        'This setting can not be deactivated.' => '',
 
         # Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
         'State Type' => '',
@@ -4476,6 +4567,8 @@ Thanks for your help!
         'Defines the postmaster default queue.' => 'Define la fila por defecto del administrador de correos.',
         'Defines the priority in which the information is logged and presented.' =>
             '',
+        'Defines the queues the creator check will be active.' => '',
+        'Defines the queues the involved check will be active.' => '',
         'Defines the receipent target of the phone ticket and the sender of the email ticket ("Queue" shows all queues, "System address" displays all system addresses) in the agent interface.' =>
             '',
         'Defines the receipent target of the tickets ("Queue" shows all queues, "SystemAddress" displays all system addresses) in the customer interface.' =>
@@ -4596,6 +4689,8 @@ Thanks for your help!
         'Displays the accounted time for an article in the ticket zoom view.' =>
             'Despliega la contabilidad de tiempo para un artículo, en la vista detallada del ticket.',
         'Dropdown' => '',
+        'Dutch stop words for fulltext index. These words will be removed from the search index.' =>
+            '',
         'Dynamic Fields Checkbox Backend GUI' => '',
         'Dynamic Fields Date Time Backend GUI' => '',
         'Dynamic Fields Drop-down Backend GUI' => '',
@@ -5060,9 +5155,11 @@ Thanks for your help!
         'Module to check customer permissions.' => 'Módulo para verificar los permisos del cliente.',
         'Module to check if a user is in a special group. Access is granted, if the user is in the specified group and has ro and rw permissions.' =>
             'Módulo para verificar si un usuario se encuentra en un grupo específico. Se permite el acceso si el usuario está en cierto grupo y tiene permisos ro y rw.',
+        'Module to check if an agent is involved to a ticket.' => '',
         'Module to check if arrived emails should be marked as email-internal (because of original forwarded internal email). ArticleType and SenderType define the values for the arrived email/article.' =>
             '',
         'Module to check the agent responsible of a ticket.' => 'Módulo para verificar el agente responsable de un ticket.',
+        'Module to check the creator of a ticket.' => '',
         'Module to check the group permissions for the access to customer tickets.' =>
             'Módulo para verificar los permisos de grupo para el acceso a los tickets de los clientes.',
         'Module to check the owner of a ticket.' => 'Módulo para verificar el propietario de un ticket.',
@@ -5184,7 +5281,6 @@ Thanks for your help!
         'Portuguese (Brasil)' => '',
         'PostMaster Filters' => 'Filtros del Administrador de Correos',
         'PostMaster Mail Accounts' => 'Cuentas del Administrador de Correos',
-        'Process Information' => '',
         'Process Management Activity Dialog GUI' => '',
         'Process Management Activity GUI' => '',
         'Process Management Path GUI' => '',

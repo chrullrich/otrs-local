@@ -30,7 +30,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y.%M.%D';
     $Self->{DateInputFormat}     = '%Y.%M.%D';
     $Self->{DateInputFormatLong} = '%Y.%M.%D - %T';
-    $Self->{Completeness}        = 0.549096238397655;
+    $Self->{Completeness}        = 0.546177959971063;
 
     # csv separator
     $Self->{Separator} = '';
@@ -81,8 +81,8 @@ sub Data {
         'week(s)' => '星期',
         'quarter' => '一刻钟',
         'quarter(s)' => '一刻钟',
-        'half-year' => '',
-        'half-year(s)' => '',
+        'half-year' => '半年',
+        'half-year(s)' => '半年',
         'year' => '年',
         'years' => '年',
         'year(s)' => '年',
@@ -1533,10 +1533,10 @@ sub Data {
         'Do you really want to delete this notification?' => '你确定要删除这个通知?',
         'Add Notification' => '添加通知',
         'Edit Notification' => '编辑通知',
-        'Show in agent preferences' => '',
-        'Agent preferences tooltip' => '',
+        'Show in agent preferences' => '在服务人员偏好设置里显示',
+        'Agent preferences tooltip' => '服务人员偏好设置提示',
         'This message will be shown on the agent preferences screen as a tooltip for this notification.' =>
-            '',
+            '该信息将会在服务人员配置他的个人偏好时显示.',
         'Here you can choose which events will trigger this notification. An additional ticket filter can be applied below to only send for ticket with certain criteria.' =>
             '',
         'Ticket Filter' => '工单过滤',
@@ -1845,7 +1845,6 @@ sub Data {
         'Filter available fields' => '过滤可选的字段',
         'Available Fields' => '可选的字段',
         'Assigned Fields' => '指派的字段',
-        'Edit Details for Field' => '编辑字段详情',
         'ArticleType' => '信件类型',
         'Display' => '显示',
         'Edit Field Details' => '编辑字段详情',
@@ -1953,9 +1952,9 @@ sub Data {
         'Type of Linking between Conditions' => '条件之间的逻辑关系',
         'Remove this Condition' => '删除这个条件',
         'Type of Linking' => '链接类型',
+        'Add a new Field' => '添加新的字段',
         'Remove this Field' => '删除这个字段',
         'And can\'t be repeated on the same condition.' => '',
-        'Add a new Field' => '添加新的字段',
         'Add New Condition' => '添加新的条件',
 
         # Template: AdminProcessManagementTransitionAction
@@ -1965,8 +1964,8 @@ sub Data {
         'Transition Action Name' => '转向动作名称',
         'Transition Action Module' => '转向动作模块',
         'Config Parameters' => '配置参数',
-        'Remove this Parameter' => '删除这个参数',
         'Add a new Parameter' => '添加新的参数',
+        'Remove this Parameter' => '删除这个参数',
 
         # Template: AdminQueue
         'Manage Queues' => '队列管理',
@@ -2538,7 +2537,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => '编辑个人设置',
-        'Did you know? You can help translating OTRS at %s.' => '',
+        'Did you know? You can help translating OTRS at %s.' => '你知道吗? 你也可以通过 %s 帮助翻译 OTRS.',
 
         # Template: AgentSpelling
         'Spell Checker' => '拼写检查',
@@ -3130,9 +3129,89 @@ sub Data {
         'No user configurable notifications found.' => '',
         'Receive messages for notification \'%s\' by transport method \'%s\'.' =>
             '',
+        'Please note that you can\'t completely disable notifications marked as mandatory.' =>
+            '',
+        'Sorry, but you can\'t disable all methods for notifications marked as mandatory.' =>
+            '',
+        'Sorry, but you can\'t disable all methods for this notification.' =>
+            '',
+
+        # Template: ActivityDialogHeader
+        'Process Information' => '进程信息',
+        'Dialog' => '',
+
+        # Template: Article
+        'Inform Agent' => '通知服务人员',
 
         # Template: PublicDefault
         'Welcome' => '',
+
+        # Template: GeneralSpecificationsWidget
+        'Permissions' => '权限',
+        'You can select one or more groups to define access for different agents.' =>
+            '可选中一个或多个组以便定义不同服务人员。',
+        'Result formats' => '',
+        'The selected time periods in the statistic are time zone neutral.' =>
+            '',
+        'Create summation row' => '',
+        'Generate an additional row containing sums for all data columns.' =>
+            '',
+        'Create summation column' => '',
+        'Generate an additional column containing sums for all data rows.' =>
+            '',
+        'Cache results' => '',
+        'Stores statistics result data in a cache to be used in subsequent views with the same configuration.' =>
+            '',
+        'Provide the statistic as a widget that agents can activate in their dashboard.' =>
+            '将该统计作为部件显示在信息中心中.',
+        'Please note that enabling the dashboard widget will activate caching for this statistic in the dashboard.' =>
+            '',
+        'If set to invalid end users can not generate the stat.' => '如果设置为无效，将无法生成统计。',
+
+        # Template: PreviewWidget
+        'There are problems in the configuration of this statistic:' => '',
+        'You may now configure the X-axis of your statistic.' => '',
+        'This statistic does not provide preview data.' => '',
+        'Preview format:' => '',
+        'Please note that the preview uses random data and does not consider data filters.' =>
+            '',
+        'Configure X-Axis' => '',
+        'X-axis' => 'X轴',
+        'Configure Y-Axis' => '',
+        'Y-axis' => '',
+        'Configure Filter' => '',
+
+        # Template: RestrictionsWidget
+        'Please select only one element or turn off the button \'Fixed\'.' =>
+            '请只选择一个元素或使“固定”复选框未被选中。',
+        'Absolute period' => '',
+        'Between' => '',
+        'Relative period' => '',
+        'The past complete %s and the current+upcoming complete %s %s' =>
+            '',
+        'Do not allow changes to this element when the statistic is generated.' =>
+            '',
+
+        # Template: StatsParamsWidget
+        'Format' => '格式',
+        'Exchange Axis' => '转换轴',
+        'Configurable params of static stat' => '静态统计的配置参数',
+        'No element selected.' => '没有被选参数',
+        'Scale' => '时间刻度',
+
+        # Template: D3
+        'Download SVG' => '',
+        'Download PNG' => '',
+
+        # Template: XAxisWidget
+        'The selected time period defines the default time frame for this statistic to collect data from.' =>
+            '',
+        'Defines the time unit that will be used to split the selected time period into reporting data points.' =>
+            '',
+
+        # Template: YAxisWidget
+        'Please remember that the scale for the Y-axis has to be larger than the scale for the X-axis (e.g. X-axis => Month, Y-Axis => Year).' =>
+            '',
 
         # Template: Test
         'OTRS Test Page' => 'OTRS测试页',
@@ -3168,6 +3247,7 @@ sub Data {
         'All agents subscribed to both the ticket\'s queue and service' =>
             '',
         'Customer of the ticket' => '',
+        'Yes, but require at least one active notification method' => '',
 
         # Perl Module: Kernel/Modules/AdminPackageManager.pm
         'Package not verified due a communication issue with verification server!' =>
@@ -3236,6 +3316,9 @@ sub Data {
             '',
         ' You can take one of the next actions:' => '',
 
+        # Perl Module: Kernel/Output/HTML/Layout/LinkObject.pm
+        'Linked as' => '',
+
         # Perl Module: Kernel/Output/HTML/Notification/AgentOTRSBusiness.pm
         '%s Upgrade to %s now! %s' => '',
 
@@ -3248,6 +3331,10 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/Preferences/Language.pm
         '(in process)' => '',
 
+        # Perl Module: Kernel/Output/HTML/Preferences/NotificationEvent.pm
+        'Please make sure you\'ve chosen at least one transport method for mandatory notifications.' =>
+            '',
+
         # Perl Module: Kernel/Output/HTML/Preferences/OutOfOffice.pm
         'Please specify an end date that is after the start date.' => '',
 
@@ -3255,8 +3342,6 @@ sub Data {
         'Please supply your new password!' => '',
 
         # Perl Module: Kernel/Output/HTML/Statistics/View.pm
-        'X-axis' => 'X轴',
-        'Y-axis' => '',
         'No past complete or the current+upcoming complete relative time value selected.' =>
             '',
         'The selected time period is larger than the allowed time period.' =>
@@ -3284,6 +3369,12 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/TicketOverviewMenu/Sort.pm
         'Order by' => '排序',
+
+        # Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
+        'Configuration Options Reference' => '',
+        'This setting can not be changed.' => '',
+        'This setting is not active by default.' => '',
+        'This setting can not be deactivated.' => '',
 
         # Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
         'State Type' => '',
@@ -3809,7 +3900,7 @@ Thanks for your help!
         'Chinese (Simplified)' => '',
         'Chinese (Traditional)' => '',
         'Choose for which kind of ticket changes you want to receive notifications.' =>
-            '',
+            '选择你需要接收哪一些工单变动通知消息.',
         'Closed tickets (customer user)' => '',
         'Closed tickets (customer)' => '',
         'Cloud Services' => '云服务',
@@ -4482,6 +4573,8 @@ Thanks for your help!
         'Defines the postmaster default queue.' => '',
         'Defines the priority in which the information is logged and presented.' =>
             '',
+        'Defines the queues the creator check will be active.' => '',
+        'Defines the queues the involved check will be active.' => '',
         'Defines the receipent target of the phone ticket and the sender of the email ticket ("Queue" shows all queues, "System address" displays all system addresses) in the agent interface.' =>
             '',
         'Defines the receipent target of the tickets ("Queue" shows all queues, "SystemAddress" displays all system addresses) in the customer interface.' =>
@@ -4602,6 +4695,8 @@ Thanks for your help!
         'Displays the accounted time for an article in the ticket zoom view.' =>
             '',
         'Dropdown' => '下拉',
+        'Dutch stop words for fulltext index. These words will be removed from the search index.' =>
+            '',
         'Dynamic Fields Checkbox Backend GUI' => '',
         'Dynamic Fields Date Time Backend GUI' => '',
         'Dynamic Fields Drop-down Backend GUI' => '',
@@ -5066,9 +5161,11 @@ Thanks for your help!
         'Module to check customer permissions.' => '',
         'Module to check if a user is in a special group. Access is granted, if the user is in the specified group and has ro and rw permissions.' =>
             '',
+        'Module to check if an agent is involved to a ticket.' => '',
         'Module to check if arrived emails should be marked as email-internal (because of original forwarded internal email). ArticleType and SenderType define the values for the arrived email/article.' =>
             '',
         'Module to check the agent responsible of a ticket.' => '',
+        'Module to check the creator of a ticket.' => '',
         'Module to check the group permissions for the access to customer tickets.' =>
             '',
         'Module to check the owner of a ticket.' => '',
@@ -5190,7 +5287,6 @@ Thanks for your help!
         'Portuguese (Brasil)' => '',
         'PostMaster Filters' => '收件过滤器',
         'PostMaster Mail Accounts' => '邮件接收地址',
-        'Process Information' => '进程信息',
         'Process Management Activity Dialog GUI' => '',
         'Process Management Activity GUI' => '',
         'Process Management Path GUI' => '',
