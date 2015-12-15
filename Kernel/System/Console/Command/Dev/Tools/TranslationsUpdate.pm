@@ -14,6 +14,7 @@ use warnings;
 use base qw(Kernel::System::Console::BaseCommand);
 
 use File::Basename;
+use File::Copy;
 use Lingua::Translit;
 use Pod::Strip;
 use Storable ();
@@ -200,6 +201,7 @@ sub HandleLanguage {
         my @TemplateList = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
             Directory => $Directory,
             Filter    => '*.tt',
+            Recursive => 1,
         );
 
         for my $File (@TemplateList) {

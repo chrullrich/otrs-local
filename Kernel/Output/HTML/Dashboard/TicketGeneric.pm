@@ -727,6 +727,19 @@ sub Run {
         );
     }
 
+    # show only locked if we have the filter
+    if ( $TicketSearchSummary{Locked} ) {
+        $LayoutObject->Block(
+            Name => 'ContentLargeTicketGenericFilterMyServices',
+            Data => {
+                %Param,
+                %{ $Self->{Config} },
+                Name => $Self->{Name},
+                %{$Summary},
+            },
+        );
+    }
+
     # add page nav bar
     my $Total = $Summary->{ $Self->{Filter} } || 0;
 
@@ -2114,8 +2127,13 @@ sub _SearchParamsGet {
         },
     );
 
+    if ( defined $TicketSearch{LockIDs} || defined $TicketSearch{Locks} ) {
+        delete $TicketSearchSummary{Locked};
+    }
+
     if ( defined $TicketSearch{QueueIDs} || defined $TicketSearch{Queues} ) {
         delete $TicketSearchSummary{MyQueues};
+        delete $TicketSearchSummary{MyServices}->{QueueIDs};
     }
 
     if ( !$Self->{UseTicketService} ) {

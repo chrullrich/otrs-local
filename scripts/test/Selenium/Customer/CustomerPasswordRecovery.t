@@ -41,11 +41,6 @@ $Selenium->RunTest(
             Value => 0,
         );
 
-        $ConfigObject->Set(
-            Key   => 'CheckMXRecord',
-            Value => 0,
-        );
-
         # clean up test email
         my $Success = $TestEmailObject->CleanUp();
         $Self->True(
@@ -71,7 +66,7 @@ $Selenium->RunTest(
         $Selenium->find_element( "#ForgotPassword", 'css' )->click();
 
         # request new password
-        $Selenium->find_element( "#ResetUser", 'css' )->send_keys($TestCustomerUser);
+        $Selenium->find_element( "#ResetUser",                   'css' )->send_keys($TestCustomerUser);
         $Selenium->find_element( "#Reset button[type='submit']", 'css' )->click();
 
         # check for password recovery message
@@ -123,7 +118,7 @@ $Selenium->RunTest(
         $Selenium->find_element( "#ForgotPassword", 'css' )->click();
 
         # request new password
-        $Selenium->find_element( "#ResetUser", 'css' )->send_keys($TestCustomerUser);
+        $Selenium->find_element( "#ResetUser",                   'css' )->send_keys($TestCustomerUser);
         $Selenium->find_element( "#Reset button[type='submit']", 'css' )->click();
 
         # check for password recovery message for invalid customer user, for security meassures it
