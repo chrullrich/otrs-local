@@ -29,7 +29,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.673668783585735;
+    $Self->{Completeness}        = 0.67398119122257;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -481,7 +481,7 @@ sub Data {
         'User Profile' => 'Perfil do Usuário',
         'Email Settings' => 'Configurações de E-mail',
         'Other Settings' => 'Outras Configurações',
-        'Notification Settings' => '',
+        'Notification Settings' => 'Configurações de notificação',
         'Change Password' => 'Trocar senha',
         'Current password' => 'Senha atual',
         'New password' => 'Nova senha',
@@ -1573,7 +1573,7 @@ sub Data {
         'Notification Text' => 'Texto da notificação',
         'This language is not present or enabled on the system. This notification text could be deleted if it is not needed anymore.' =>
             '',
-        'Remove Notification Language' => '',
+        'Remove Notification Language' => 'Remover notificação de idioma',
         'Message body' => 'Corpo da mensagem',
         'Add new notification language' => 'Adicionar novo idioma notificação',
         'Do you really want to delete this notification language?' => 'Você realmente quer apagar este idioma notificação?',
@@ -1597,14 +1597,14 @@ sub Data {
         'Ticket dynamic fields internal key values' => '',
         'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
             '',
-        'Example notification' => '',
+        'Example notification' => 'Exemplo de notificação',
 
         # Template: AdminNotificationEventTransportEmailSettings
         'Additional recipient email addresses' => '',
         'Notification article type' => 'Tipo de Artigo de Notificação',
         'An article will be created if the notification is sent to the customer or an additional email address.' =>
             '',
-        'Email template' => '',
+        'Email template' => 'Template de e-mail',
         'Use this template to generate the complete email (only for HTML emails).' =>
             '',
 
@@ -1627,7 +1627,7 @@ sub Data {
             '',
         'Update %s' => 'Atualizar %s',
         '%s Not Yet Available' => '',
-        '%s will be available soon.' => '',
+        '%s will be available soon.' => '%s estará disponível em breve.',
         '%s Update Available' => '%s Atualização Disponível',
         'An update for your %s is available! Please update at your earliest!' =>
             '',
@@ -1661,7 +1661,7 @@ sub Data {
         'You are about to downgrade to OTRS Free and will lose the following features and all data related to these:' =>
             '',
         'Chat' => 'Bate-papo',
-        'Report Generator' => '',
+        'Report Generator' => 'Gerador de relatório',
         'Timeline view in ticket zoom' => '',
         'DynamicField ContactWithData' => '',
         'DynamicField Database' => '',
@@ -1844,7 +1844,6 @@ sub Data {
         'Filter available fields' => 'Filtrar campos disponíveis',
         'Available Fields' => 'Campos Disponíveis',
         'Assigned Fields' => 'Campos Atribuidos',
-        'Edit Details for Field' => 'Editar Detalhes do Campo',
         'ArticleType' => 'Tipo de Artigo',
         'Display' => 'Exibir',
         'Edit Field Details' => 'Editar Detalhes do Campo',
@@ -1952,9 +1951,9 @@ sub Data {
         'Type of Linking between Conditions' => 'Tipo de Ligação Entre as Condições',
         'Remove this Condition' => 'Remover Esta Condição',
         'Type of Linking' => 'Tipo de Ligação',
+        'Add a new Field' => 'Adicionar Novo Campo',
         'Remove this Field' => 'Remover Este Campo',
         'And can\'t be repeated on the same condition.' => '',
-        'Add a new Field' => 'Adicionar Novo Campo',
         'Add New Condition' => 'Adicionar Nova Condição',
 
         # Template: AdminProcessManagementTransitionAction
@@ -1964,8 +1963,8 @@ sub Data {
         'Transition Action Name' => 'Nome da Ação de Transição',
         'Transition Action Module' => 'Módulo da Ação de Transição',
         'Config Parameters' => 'Parâmetros de Configuração',
-        'Remove this Parameter' => 'Remover Este Parâmetro',
         'Add a new Parameter' => 'Adicionar Novo Parâmetro',
+        'Remove this Parameter' => 'Remover Este Parâmetro',
 
         # Template: AdminQueue
         'Manage Queues' => 'Gerenciar Filas',
@@ -2027,7 +2026,7 @@ sub Data {
         'Please note that you can\'t register your system if OTRS Daemon is not running correctly!' =>
             '',
         'Instructions' => 'Instruções',
-        'System deregistration not possible' => '',
+        'System deregistration not possible' => 'Cancelamento do registro do sistema não é possível.',
         'Please note that you can\'t deregister your system if you\'re using the %s or having a valid service contract.' =>
             '',
         'OTRS-ID Login' => 'Login OTRS-ID',
@@ -2352,7 +2351,7 @@ sub Data {
 
         # Template: AdminSystemMaintenanceEdit
         'Edit System Maintenance %s' => 'Editar Manutenção do Sistema  %s',
-        'Edit System Maintenance information' => '',
+        'Edit System Maintenance information' => 'Editar informação de Manutenção do sistema',
         'Date invalid!' => 'Data inválida!',
         'Login message' => 'Mensagem de autenticação',
         'Show login message' => 'Mostrar mensagem de autenticação',
@@ -2361,7 +2360,7 @@ sub Data {
         'All Sessions' => 'Todas as Sessões',
         'Agent Sessions' => 'Sessões de Atendente',
         'Customer Sessions' => 'Sessões de Cliente',
-        'Kill all Sessions, except for your own' => '',
+        'Kill all Sessions, except for your own' => 'Matar todas as Sessões, exceto a sua.',
 
         # Template: AdminTemplate
         'Manage Templates' => 'Gerenciar Modelos',
@@ -2390,7 +2389,7 @@ sub Data {
         'Add ticket type' => 'Adicionar Tipo de Chamado',
         'Add Type' => 'Adicionar Tipo',
         'Edit Type' => 'Alterar Tipo',
-        'A type with this name already exists!' => '',
+        'A type with this name already exists!' => 'Um tipo com esse nome já existe!',
 
         # Template: AdminUser
         'Agents will be needed to handle tickets.' => 'Atendentes serão necessários para lidar com os chamados.',
@@ -2402,7 +2401,7 @@ sub Data {
         'Edit Agent' => 'Alterar Atendente',
         'Firstname' => 'Nome',
         'Lastname' => 'Sobrenome',
-        'A user with this username already exists!' => '',
+        'A user with this username already exists!' => 'Um usuário com esse Nome de usuário já existe!',
         'Will be auto-generated if left empty.' => 'Será autogerado se deixado em vazio.',
         'Start' => 'Início',
         'End' => 'Fim',
@@ -2438,8 +2437,8 @@ sub Data {
         'The OTRS Daemon is a daemon process that performs asynchronous tasks, e.g. ticket escalation triggering, email sending, etc.' =>
             '',
         'A running OTRS Daemon is mandatory for correct system operation.' =>
-            '',
-        'Starting the OTRS Daemon' => '',
+            'A execução do OTRS Daemon é obrigatório para a correta operação do sistema.',
+        'Starting the OTRS Daemon' => 'Iniciado o OTRS Daemon',
         'Make sure that the file \'%s\' exists (without .dist extension). This cron job will check every 5 minutes if the OTRS Daemon is running and start it if needed.' =>
             '',
         'Execute \'%s start\' to make sure the cron jobs of the \'otrs\' user are active.' =>
@@ -2545,15 +2544,15 @@ sub Data {
         'Apply these changes' => 'Aplicar estas modificações',
 
         # Template: AgentStatisticsAdd
-        'Statistics » Add' => '',
+        'Statistics » Add' => 'Estatística  » Adicionar',
         'Add New Statistic' => 'Adicionar Nova Estatística',
-        'Dynamic Matrix' => '',
+        'Dynamic Matrix' => 'Matriz Dinâmica ',
         'Tabular reporting data where each cell contains a singular data point (e. g. the number of tickets).' =>
             '',
-        'Dynamic List' => '',
+        'Dynamic List' => 'Lista Dinâmica',
         'Tabular reporting data where each row contains data of one entity (e. g. a ticket).' =>
             '',
-        'Static' => '',
+        'Static' => 'Estático',
         'Complex statistics that cannot be configured and may return non-tabular data.' =>
             '',
         'General Specification' => '',
@@ -2854,16 +2853,16 @@ sub Data {
         'Clear all' => 'Limpar todos',
         'Clear search' => 'Limpar busca',
         '%s selection(s)...' => '',
-        'and %s more...' => '',
+        'and %s more...' => 'e %s mais...',
         'Filters' => 'Filtros',
-        'Confirm' => '',
+        'Confirm' => 'Confirmar',
 
         # Template: CustomerLogin
         'JavaScript Not Available' => 'JavaScript não habilitado ou não é suportado.',
         'In order to experience OTRS, you\'ll need to enable JavaScript in your browser.' =>
             'A fim de experimentar o OTRS, você deve habilitar o JavaScript no seu navegador.',
         'Browser Warning' => 'Aviso de Navegador',
-        'One moment please, you are being redirected...' => '',
+        'One moment please, you are being redirected...' => 'Um momento por favor, você está sendo redirecionado...',
         'Login' => 'Login',
         'User name' => 'Nome de usuário',
         'Your user name' => 'Seu nome de usuário',
@@ -2982,9 +2981,9 @@ sub Data {
         'New personal chat request' => '',
         'New customer chat request' => '',
         'New public chat request' => '',
-        'New activity' => '',
+        'New activity' => 'Nova atividade',
         'New activity on one of your monitored chats.' => '',
-        'Do you really want to continue?' => '',
+        'Do you really want to continue?' => 'Você realmente quer continuar?',
         'Information about the OTRS Daemon' => '',
         'This feature is part of the %s.  Please contact us at %s for an upgrade.' =>
             '',
@@ -3129,9 +3128,89 @@ sub Data {
         'No user configurable notifications found.' => '',
         'Receive messages for notification \'%s\' by transport method \'%s\'.' =>
             '',
+        'Please note that you can\'t completely disable notifications marked as mandatory.' =>
+            '',
+        'Sorry, but you can\'t disable all methods for notifications marked as mandatory.' =>
+            '',
+        'Sorry, but you can\'t disable all methods for this notification.' =>
+            '',
+
+        # Template: ActivityDialogHeader
+        'Process Information' => 'Informação de Processo',
+        'Dialog' => '',
+
+        # Template: Article
+        'Inform Agent' => 'Informar Atendente',
 
         # Template: PublicDefault
         'Welcome' => '',
+
+        # Template: GeneralSpecificationsWidget
+        'Permissions' => 'Permissões',
+        'You can select one or more groups to define access for different agents.' =>
+            'Você pode selecionar um ou mais grupos para definir o acesso de diferentes atendentes.',
+        'Result formats' => '',
+        'The selected time periods in the statistic are time zone neutral.' =>
+            '',
+        'Create summation row' => '',
+        'Generate an additional row containing sums for all data columns.' =>
+            '',
+        'Create summation column' => '',
+        'Generate an additional column containing sums for all data rows.' =>
+            '',
+        'Cache results' => '',
+        'Stores statistics result data in a cache to be used in subsequent views with the same configuration.' =>
+            '',
+        'Provide the statistic as a widget that agents can activate in their dashboard.' =>
+            'Prover a estatística como um componente que agentes podem ativar em sues painéis de controle.',
+        'Please note that enabling the dashboard widget will activate caching for this statistic in the dashboard.' =>
+            '',
+        'If set to invalid end users can not generate the stat.' => 'Se configurado como inválido, usuários finais não poderão gerar a estatística.',
+
+        # Template: PreviewWidget
+        'There are problems in the configuration of this statistic:' => '',
+        'You may now configure the X-axis of your statistic.' => '',
+        'This statistic does not provide preview data.' => '',
+        'Preview format:' => '',
+        'Please note that the preview uses random data and does not consider data filters.' =>
+            '',
+        'Configure X-Axis' => '',
+        'X-axis' => 'Eixo-X',
+        'Configure Y-Axis' => '',
+        'Y-axis' => '',
+        'Configure Filter' => 'Configurar Filtro',
+
+        # Template: RestrictionsWidget
+        'Please select only one element or turn off the button \'Fixed\'.' =>
+            'Por favor, selecione apenas um elemento ou desabilite o botão "Fixo".',
+        'Absolute period' => 'Periodo absoluto',
+        'Between' => 'Entre',
+        'Relative period' => 'Período relativo',
+        'The past complete %s and the current+upcoming complete %s %s' =>
+            '',
+        'Do not allow changes to this element when the statistic is generated.' =>
+            '',
+
+        # Template: StatsParamsWidget
+        'Format' => 'Formato',
+        'Exchange Axis' => 'Trocar Eixo',
+        'Configurable params of static stat' => 'Parâmetros configuráveis da estatística estática',
+        'No element selected.' => 'Nenhum elemento selecionado.',
+        'Scale' => 'Escala',
+
+        # Template: D3
+        'Download SVG' => '',
+        'Download PNG' => '',
+
+        # Template: XAxisWidget
+        'The selected time period defines the default time frame for this statistic to collect data from.' =>
+            '',
+        'Defines the time unit that will be used to split the selected time period into reporting data points.' =>
+            '',
+
+        # Template: YAxisWidget
+        'Please remember that the scale for the Y-axis has to be larger than the scale for the X-axis (e.g. X-axis => Month, Y-Axis => Year).' =>
+            '',
 
         # Template: Test
         'OTRS Test Page' => 'Página de Teste do Gerenciador de Chamados',
@@ -3167,6 +3246,7 @@ sub Data {
         'All agents subscribed to both the ticket\'s queue and service' =>
             '',
         'Customer of the ticket' => '',
+        'Yes, but require at least one active notification method' => '',
 
         # Perl Module: Kernel/Modules/AdminPackageManager.pm
         'Package not verified due a communication issue with verification server!' =>
@@ -3235,6 +3315,9 @@ sub Data {
             '',
         ' You can take one of the next actions:' => '',
 
+        # Perl Module: Kernel/Output/HTML/Layout/LinkObject.pm
+        'Linked as' => '',
+
         # Perl Module: Kernel/Output/HTML/Notification/AgentOTRSBusiness.pm
         '%s Upgrade to %s now! %s' => '',
 
@@ -3247,6 +3330,10 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/Preferences/Language.pm
         '(in process)' => '',
 
+        # Perl Module: Kernel/Output/HTML/Preferences/NotificationEvent.pm
+        'Please make sure you\'ve chosen at least one transport method for mandatory notifications.' =>
+            '',
+
         # Perl Module: Kernel/Output/HTML/Preferences/OutOfOffice.pm
         'Please specify an end date that is after the start date.' => '',
 
@@ -3254,8 +3341,6 @@ sub Data {
         'Please supply your new password!' => '',
 
         # Perl Module: Kernel/Output/HTML/Statistics/View.pm
-        'X-axis' => 'Eixo-X',
-        'Y-axis' => '',
         'No past complete or the current+upcoming complete relative time value selected.' =>
             '',
         'The selected time period is larger than the allowed time period.' =>
@@ -3283,6 +3368,12 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/TicketOverviewMenu/Sort.pm
         'Order by' => 'Ordenar por',
+
+        # Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
+        'Configuration Options Reference' => '',
+        'This setting can not be changed.' => '',
+        'This setting is not active by default.' => '',
+        'This setting can not be deactivated.' => '',
 
         # Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
         'State Type' => '',
@@ -4481,6 +4572,8 @@ Thanks for your help!
         'Defines the postmaster default queue.' => '',
         'Defines the priority in which the information is logged and presented.' =>
             '',
+        'Defines the queues the creator check will be active.' => '',
+        'Defines the queues the involved check will be active.' => '',
         'Defines the receipent target of the phone ticket and the sender of the email ticket ("Queue" shows all queues, "System address" displays all system addresses) in the agent interface.' =>
             '',
         'Defines the receipent target of the tickets ("Queue" shows all queues, "SystemAddress" displays all system addresses) in the customer interface.' =>
@@ -4601,6 +4694,8 @@ Thanks for your help!
         'Displays the accounted time for an article in the ticket zoom view.' =>
             '',
         'Dropdown' => 'Suspenso',
+        'Dutch stop words for fulltext index. These words will be removed from the search index.' =>
+            '',
         'Dynamic Fields Checkbox Backend GUI' => '',
         'Dynamic Fields Date Time Backend GUI' => '',
         'Dynamic Fields Drop-down Backend GUI' => '',
@@ -5059,15 +5154,17 @@ Thanks for your help!
             '',
         'Merge this ticket and all articles into a another ticket' => '',
         'Merged Ticket <OTRS_TICKET> to <OTRS_MERGE_TO_TICKET>.' => '',
-        'Miscellaneous' => '',
+        'Miscellaneous' => 'Outros',
         'Module for To-selection in new ticket screen in the customer interface.' =>
             '',
         'Module to check customer permissions.' => '',
         'Module to check if a user is in a special group. Access is granted, if the user is in the specified group and has ro and rw permissions.' =>
             '',
+        'Module to check if an agent is involved to a ticket.' => '',
         'Module to check if arrived emails should be marked as email-internal (because of original forwarded internal email). ArticleType and SenderType define the values for the arrived email/article.' =>
             '',
         'Module to check the agent responsible of a ticket.' => '',
+        'Module to check the creator of a ticket.' => '',
         'Module to check the group permissions for the access to customer tickets.' =>
             '',
         'Module to check the owner of a ticket.' => '',
@@ -5189,7 +5286,6 @@ Thanks for your help!
         'Portuguese (Brasil)' => '',
         'PostMaster Filters' => 'Filtros PostMaster',
         'PostMaster Mail Accounts' => 'Contas de E-mail PostMaster',
-        'Process Information' => 'Informação de Processo',
         'Process Management Activity Dialog GUI' => 'Interface de Gerenciamento de Janela de Atividade de Processo',
         'Process Management Activity GUI' => 'Interface de Gerenciamento de Atividade de Processo',
         'Process Management Path GUI' => 'Interface de Gerenciamento de Caminho de Processo',

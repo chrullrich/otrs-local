@@ -41,11 +41,6 @@ $Selenium->RunTest(
             Value => 0,
         );
 
-        $ConfigObject->Set(
-            Key   => 'CheckMXRecord',
-            Value => 0,
-        );
-
         # clean up test email
         my $Success = $TestEmailObject->CleanUp();
         $Self->True(
