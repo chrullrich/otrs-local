@@ -1865,13 +1865,15 @@ sub _FixupStatsTimeInterval {
     my $Stats;
     {
         # Here we need to suppress warnings about dynamic statistics where the
-        #   statistics file is currently not present in the file system (e. g. ITSM)
+        #   statistics file is currently not present or outdated in the file system (e. g. ITSM)
         #   because of the OTRS upgrade. Just capture the error messages and continue
         #   (see bug##11532).
         local *STDERR;
         my $Dummy;
         open *STDERR, '>', \$Dummy;    ## no critic
-        $Stats = $StatsObject->StatsListGet( UserID => 1 );
+        eval {
+            $Stats = $StatsObject->StatsListGet( UserID => 1 );
+        };
     }
 
     print "\n";
@@ -1954,15 +1956,17 @@ sub _FixupStatsTimeInterval {
         my $StatWithObjectAttributes;
         {
             # Here we need to suppress warnings about dynamic statistics where the
-            #   statistics file is currently not present in the file system (e. g. ITSM or FAQ)
+            #   statistics file is currently not present or outdated in the file system (e. g. ITSM)
             #   because of the OTRS upgrade. Just capture the error messages and continue
             #   (see bug##11532).
             local *STDERR;
             my $Dummy;
             open *STDERR, '>', \$Dummy;    ## no critic
-            $StatWithObjectAttributes = $StatsObject->StatsGet(
-                StatID => $StatID,
-            );
+            eval {
+                $StatWithObjectAttributes = $StatsObject->StatsGet(
+                    StatID => $StatID,
+                );
+            };
         }
 
         my %StatsConfigurationErrors;
@@ -2041,13 +2045,15 @@ sub _FixupDashboardStatsFormats {
     my $Stats;
     {
         # Here we need to suppress warnings about dynamic statistics where the
-        #   statistics file is currently not present in the file system (e. g. ITSM)
+        #   statistics file is currently not present or outdated in the file system (e. g. ITSM)
         #   because of the OTRS upgrade. Just capture the error messages and continue
         #   (see bug##11532).
         local *STDERR;
         my $Dummy;
         open *STDERR, '>', \$Dummy;    ## no critic
-        $Stats = $StatsObject->StatsListGet( UserID => 1 );
+        eval {
+            $Stats = $StatsObject->StatsListGet( UserID => 1 );
+        };
     }
 
     print "\n";
@@ -3018,7 +3024,6 @@ o serviço do ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] foi 
     return %NotificationLanguages;
 }
 
-
 =item _FixNotificationTags()
 
 Fix some wrong notification tags which have been introduced while upgrading to OTRS 5.0.1.
@@ -3063,7 +3068,7 @@ sub _FixNotificationTags {
         my $NeedToReplace;
 
         # get old notification tag
-        for my $OldTag (sort keys %NotificationTagsOld2New) {
+        for my $OldTag ( sort keys %NotificationTagsOld2New ) {
 
             # get new notification tag
             my $NewTag = $NotificationTagsOld2New{$OldTag};
@@ -3088,7 +3093,7 @@ sub _FixNotificationTags {
 
         # update the database
         $DBObject->Do(
-            SQL  => 'UPDATE notification_event_message
+            SQL => 'UPDATE notification_event_message
                 SET subject = ?, text = ?
                 WHERE id = ?',
             Bind => [
