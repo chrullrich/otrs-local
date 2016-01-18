@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # Copyright (C) 2010-2011 Kaz Kamimura <kamypus at yahoo.co.jp>
 # Copyright (C) 2011/12/08 Kaoru Hayama TIS Inc.
 # Copyright (C) 2014 Norihiro Tanaka NTT Data Intellilink Corp.
@@ -27,7 +27,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y/%M/%D';
     $Self->{DateInputFormat}     = '%Y/%M/%D';
     $Self->{DateInputFormatLong} = '%Y/%M/%D - %T';
-    $Self->{Completeness}        = 0.728756601056169;
+    $Self->{Completeness}        = 0.735040689325036;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -906,6 +906,8 @@ sub Data {
         'Wildcards like \'*\' are allowed.' => 'ワイルドカード（*）が使用できます。',
         'Add customer' => '顧客を追加',
         'Select' => '選択',
+        'shown' => '',
+        'total' => '',
         'Please enter a search term to look for customers.' => '顧客を検索するための条件を入力してください',
         'Add Customer' => '顧客を追加',
 
@@ -1255,11 +1257,11 @@ sub Data {
         # Template: AdminGenericInterfaceMappingSimple
         'GenericInterface Mapping Simple for Web Service %s' => '',
         'Go back to' => 'に戻る',
-        'Mapping Simple' => '',
-        'Default rule for unmapped keys' => '',
-        'This rule will apply for all keys with no mapping rule.' => '',
-        'Default rule for unmapped values' => '',
-        'This rule will apply for all values with no mapping rule.' => '',
+        'Mapping Simple' => 'マッピング シンプル',
+        'Default rule for unmapped keys' => 'アンマップドキーのデフォルトルール',
+        'This rule will apply for all keys with no mapping rule.' => '本ルールはマッピングルールが指定されていないすべてのキーに適用されます。',
+        'Default rule for unmapped values' => 'アンマップドバリューのデフォルトルール',
+        'This rule will apply for all values with no mapping rule.' => '本ルールはマッピングルールが指定されていないすべてのバリューに適用されます。',
         'New key map' => '新しいキー割り当て',
         'Add key mapping' => 'キー割り当ての追加',
         'Mapping for Key ' => 'キーの割り当て',
@@ -1315,11 +1317,11 @@ sub Data {
         'Valid request methods for Operation' => '',
         'Limit this Operation to specific request methods. If no method is selected all requests will be accepted.' =>
             '',
-        'Maximum message length' => '',
+        'Maximum message length' => 'メッセージの最長値',
         'This field should be an integer number.' => '',
         'Here you can specify the maximum size (in bytes) of REST messages that OTRS will process.' =>
             '',
-        'Send Keep-Alive' => '',
+        'Send Keep-Alive' => 'Keep-Aliveを送信',
         'This configuration defines if incoming connections should get closed or kept alive.' =>
             '',
         'Host' => 'ホスト',
@@ -1380,7 +1382,7 @@ sub Data {
         'Here you can specify the maximum size (in bytes) of SOAP messages that OTRS will process.' =>
             '',
         'Encoding' => '',
-        'The character encoding for the SOAP message contents.' => '',
+        'The character encoding for the SOAP message contents.' => 'SOAPメッセージコンテントの文字エンコード',
         'e.g utf-8, latin1, iso-8859-1, cp1250, Etc.' => '例… utf-8, latin1, iso-8859-1, cp1250, Etc.',
         'SOAPAction' => 'SOAPアクション',
         'Set to "Yes" to send a filled SOAPAction header.' => '',
@@ -1567,13 +1569,13 @@ sub Data {
         'Should the notification be sent to agents who have not yet made a choice in their preferences?' =>
             '',
         'This feature is currently not available.' => 'この機能は現在利用できません。',
-        'No data found' => '',
+        'No data found' => 'データがありません。',
         'No notification method found.' => '',
         'Notification Text' => '通知文書',
         'This language is not present or enabled on the system. This notification text could be deleted if it is not needed anymore.' =>
             '',
         'Remove Notification Language' => '',
-        'Message body' => '',
+        'Message body' => 'メッセージボディー',
         'Add new notification language' => '新規通知言語を追加',
         'Do you really want to delete this notification language?' => '',
         'Tag Reference' => 'タグリファレンス',
@@ -2427,7 +2429,7 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
 
         # Template: AgentCustomerSearch
         'Duplicated entry' => '重複した登録',
-        'This address already exists on the address list.' => '',
+        'This address already exists on the address list.' => 'この住所はすでにアドレスリストに存在します。',
         'It is going to be deleted from the field, please try again.' => '',
 
         # Template: AgentCustomerTableView
@@ -2438,7 +2440,7 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
             '',
         'A running OTRS Daemon is mandatory for correct system operation.' =>
             '',
-        'Starting the OTRS Daemon' => '',
+        'Starting the OTRS Daemon' => 'OTRS デーモンを起動しています。',
         'Make sure that the file \'%s\' exists (without .dist extension). This cron job will check every 5 minutes if the OTRS Daemon is running and start it if needed.' =>
             '',
         'Execute \'%s start\' to make sure the cron jobs of the \'otrs\' user are active.' =>
@@ -2463,12 +2465,12 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
         'Customer information' => '顧客情報',
         'Phone ticket' => '電話チケット',
         'Email ticket' => 'メールチケット',
-        'Start Chat' => '',
+        'Start Chat' => 'チャットを開始する。',
         '%s open ticket(s) of %s' => '',
         '%s closed ticket(s) of %s' => '',
         'New phone ticket from %s' => '%sからの新規電話チケット',
         'New email ticket to %s' => '%s宛の新規メールチケット',
-        'Start chat' => '',
+        'Start chat' => 'チャットを開始する。',
 
         # Template: AgentDashboardProductNotify
         '%s %s is available!' => '%s %s が利用できます。',
@@ -2512,7 +2514,7 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
 
         # Template: AgentDashboardUserOnline
         'out of office' => '外出中',
-        'Selected agent is not available for chat' => '',
+        'Selected agent is not available for chat' => '選択されたエージェントは現在チャットに参加できません。',
 
         # Template: AgentDashboardUserOutOfOffice
         'until' => '',
@@ -2599,9 +2601,9 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
         'Change Responsible of %s%s' => '',
         'All fields marked with an asterisk (*) are mandatory.' => 'アスタリスク（*）が付いている全ての領域は必須入力です。',
         'Service invalid.' => '無効なサービスです',
-        'New Owner' => '新規所有者',
+        'New Owner' => '新しい所有者',
         'Please set a new owner!' => '新規所有者を設定してください。',
-        'New Responsible' => '新規 責任者',
+        'New Responsible' => '新しい責任者',
         'Next state' => '次の状態',
         'For all pending* states.' => '全ての保留状態に対して有効',
         'Add Article' => '記事を追加',
@@ -2714,12 +2716,12 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
 
         # Template: AgentTicketPhone
         'Split Into New Phone Ticket' => '新規電話チケットに分割',
-        'Save Chat Into New Phone Ticket' => '',
+        'Save Chat Into New Phone Ticket' => 'チャットを新規チケットに保存する。',
         'Create New Phone Ticket' => '新規電話チケットの作成',
         'Please include at least one customer for the ticket.' => '',
         'To queue' => 'キューへ',
-        'Chat protocol' => '',
-        'The chat will be appended as a separate article.' => '',
+        'Chat protocol' => 'チャットプロトコル',
+        'The chat will be appended as a separate article.' => 'チャットは新規記事として追加されます。',
 
         # Template: AgentTicketPhoneCommon
         'Phone Call for %s%s' => '',
@@ -2781,6 +2783,7 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
         'Save as default' => '',
         'Archive' => 'アーカイブ',
         'This ticket is archived.' => 'このチケットはアーカイブされています。',
+        'Note: Type is invalid!' => '',
         'Locked' => 'ロック状態',
         'Accounted time' => '作業時間',
         'Linked Objects' => '連結済対象',
@@ -2883,7 +2886,7 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
         'Your email address (this will become your username)' => 'あなたの電子メールアドレス (ユーザー名になります)',
 
         # Template: CustomerNavigationBar
-        'Incoming Chat Requests' => '',
+        'Incoming Chat Requests' => '受信チャット要求',
         'You have unanswered chat requests' => '',
         'Edit personal preferences' => '個人設定の編集',
         'Logout %s %s' => 'ログアウト %s %s',
@@ -2926,12 +2929,12 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
         'Remove this Search Term.' => '',
 
         # Template: CustomerTicketZoom
-        'Start a chat from this ticket' => '',
+        'Start a chat from this ticket' => 'このチケットからチャットを開始する。',
         'Expand article' => '記事を展開',
         'Information' => '情報',
         'Next Steps' => '次のステップ',
         'Reply' => '返信',
-        'Chat Protocol' => '',
+        'Chat Protocol' => 'チャットプロトコル',
 
         # Template: DashboardEventsTicketCalendar
         'All-day' => '終日',
@@ -2960,7 +2963,7 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
         'Open date selection' => '対応開始日を選択',
 
         # Template: Error
-        'Oops! An Error occurred.' => 'エラーが発生しました。',
+        'An error occurred.' => '',
         'You can' => '次のことができます: ',
         'Send a bugreport' => 'バグ報告を送信',
         'go back to the previous page' => '直前のページに戻る',
@@ -2974,15 +2977,15 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
         'Please check the fields marked as red for valid inputs.' => '',
         'Please perform a spell check on the the text first.' => '',
         'Slide the navigation bar' => '',
-        'Unavailable for chat' => '',
-        'Available for internal chats only' => '',
-        'Available for chats' => '',
-        'Please visit the chat manager' => '',
-        'New personal chat request' => '',
-        'New customer chat request' => '',
-        'New public chat request' => '',
+        'Unavailable for chat' => 'チャットに参加できません。',
+        'Available for internal chats only' => '内部チャットのみ参加できます。',
+        'Available for chats' => 'チャット可能です。',
+        'Please visit the chat manager' => 'チャットマネージャを確認してください。',
+        'New personal chat request' => '新規の個人チャット要求',
+        'New customer chat request' => '新規の顧客チャット要求',
+        'New public chat request' => '新規のパブリックチャット要求',
         'New activity' => '',
-        'New activity on one of your monitored chats.' => '',
+        'New activity on one of your monitored chats.' => 'あなたがモニターしているチャットで、新しい動きがあります。',
         'Do you really want to continue?' => '',
         'Information about the OTRS Daemon' => '',
         'This feature is part of the %s.  Please contact us at %s for an upgrade.' =>
@@ -3129,7 +3132,7 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
         'Receive messages for notification \'%s\' by transport method \'%s\'.' =>
             '',
         'Please note that you can\'t completely disable notifications marked as mandatory.' =>
-            '',
+            '必須とマークされている通知を完全に無効化することはできませんのでご了承ください。',
         'Sorry, but you can\'t disable all methods for notifications marked as mandatory.' =>
             '',
         'Sorry, but you can\'t disable all methods for this notification.' =>
@@ -3272,8 +3275,8 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
         'Ticket is locked by another agent and will be ignored!' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketPhone.pm
-        '%s has left the chat.' => '',
-        'This chat has been closed and will be removed in %s hours.' => '',
+        '%s has left the chat.' => '%s はチャットから退出しました。',
+        'This chat has been closed and will be removed in %s hours.' => 'このチャットはすでに閉じられています、  %s 時間後に削除されます。',
 
         # Perl Module: Kernel/Modules/AgentTicketPrint.pm
         'printed by' => 'printed by',
@@ -3699,18 +3702,18 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
         'email-notification-ext' => '',
         'email-notification-int' => '',
         'fax' => 'fax',
-        'Ticket create notification' => '',
-        'Ticket follow-up notification (unlocked)' => '',
-        'Ticket follow-up notification (locked)' => '',
+        'Ticket create notification' => '新規作成通知',
+        'Ticket follow-up notification (unlocked)' => 'チケット・フォローアップ通知 (ロック解除)',
+        'Ticket follow-up notification (locked)' => 'チケット・フォローアップ通知 (ロック)',
         'Ticket owner update notification' => '',
         'Ticket responsible update notification' => '',
         'Ticket new note notification' => '',
-        'Ticket queue update notification' => '',
+        'Ticket queue update notification' => 'チケット・キュー更新通知',
         'Ticket pending reminder notification (locked)' => '',
         'Ticket pending reminder notification (unlocked)' => '',
         'Ticket escalation notification' => '',
         'Ticket escalation warning notification' => '',
-        'Ticket service update notification' => '',
+        'Ticket service update notification' => 'チケット・サービス更新通知',
 
         # SysConfig
         '
@@ -3739,6 +3742,7 @@ Thanks for your help!
         '%s' => '%s',
         '%s time unit(s) accounted. Now total %s time unit(s).' => '%s time unit(s) accounted. Now total %s time unit(s).',
         '(UserLogin) Firstname Lastname' => '(ユーザー名) 姓 名 ',
+        '(UserLogin) Lastname Firstname' => '',
         '(UserLogin) Lastname, Firstname' => '(ユーザー名) 名, 姓',
         'A Website' => '',
         'A list of dynamic fields that are merged into the main ticket during a merge operation. Only dynamic fields that are empty in the main ticket will be set.' =>
@@ -3964,6 +3968,7 @@ Thanks for your help!
             '',
         'Controls how to display the ticket history entries as readable values.' =>
             '',
+        'Controls if CutomerID is editable in the agent interface.' => '',
         'Controls if customers have the ability to sort their tickets.' =>
             '顧客が自らのチケットをソートする機能を持つかどうかを、コントロールします。',
         'Controls if more than one from entry can be set in the new phone ticket in the agent interface.' =>
@@ -4344,6 +4349,7 @@ Thanks for your help!
             '担当者インタフェースのチケット責任者画面で、デフォルトのチケット優先度を定義します。',
         'Defines the default ticket type for new customer tickets in the customer interface.' =>
             '',
+        'Defines the default ticket type.' => '',
         'Defines the default type for article in the customer interface.' =>
             '顧客インタフェースで、項目のデフォルトのタイプを定義します。',
         'Defines the default type of forwarded message in the ticket forward screen of the agent interface.' =>
@@ -4701,6 +4707,8 @@ Thanks for your help!
             '',
         'Determines which queues will be valid for ticket\'s recepients in the customer interface.' =>
             '顧客インタフェースで、チケットの受信者としてどのキューを有効とするかを定義します。',
+        'Disable HTTP header "X-Frame-Options: SAMEORIGIN" to allow OTRS to be included as an IFrame in other websites. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
+            '',
         'Disable restricted security for IFrames in IE. May be required for SSO to work in IE8.' =>
             '',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be activated).' =>
@@ -5091,6 +5099,8 @@ Thanks for your help!
             '',
         'Japanese' => '日本語',
         'JavaScript function for the search frontend.' => '',
+        'Lastname Firstname' => '',
+        'Lastname Firstname (UserLogin)' => '',
         'Lastname, Firstname' => '名, 姓',
         'Lastname, Firstname (UserLogin)' => '名, 姓 (ユーザー名)',
         'Latvian' => 'ラトビア語',
@@ -5283,20 +5293,22 @@ Thanks for your help!
             '',
         'Parameters for the dashboard backend of the new tickets overview of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' =>
             '',
+        'Parameters for the dashboard backend of the open tickets overview of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' =>
+            '',
         'Parameters for the dashboard backend of the queue overview widget of the agent interface. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "QueuePermissionGroup" is not mandatory, queues are only listed if they belong to this permission group if you enable it. "States" is a list of states, the key is the sort order of the state in the widget. "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
             '',
         'Parameters for the dashboard backend of the running process tickets overview of the agent interface . "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
             '',
-        'Parameters for the dashboard backend of the ticket calendar of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
-            '担当者インタフェースにおけるチケット・カレンダーのダッシュボード・バックエンドに関するパラメータです。"Limit"は、表示されるデフォルトのエントリー数です。"Group"は、プラグインへのアクセスを制限するために使用されます(例：Group: admin;group1;group2;)。"Default"は、プラグインがデフォルトで有効となっているか、またはユーザがそれを手動で有効にする必要があるか、を定義します。"CacheTTLLocal"は、プラグインのキャッシュ・タイム（分）です。',
         'Parameters for the dashboard backend of the ticket escalation overview of the agent interface . "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' =>
+            '',
+        'Parameters for the dashboard backend of the ticket events calendar of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
             '',
         'Parameters for the dashboard backend of the ticket pending reminder overview of the agent interface . "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' =>
             '',
-        'Parameters for the dashboard backend of the ticket pending reminder overview of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' =>
-            '',
         'Parameters for the dashboard backend of the ticket stats of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
             '担当者インタフェースにおけるチケット統計のダッシュボード・バックエンドに関するパラメータです。"Limit"は、表示されるデフォルトのエントリー数です。"Group"は、プラグインへのアクセスを制限するために使用されます(例：Group: admin;group1;group2;)。"Default"は、プラグインがデフォルトで有効となっているか、またはユーザがそれを手動で有効にする必要があるか、を定義します。"CacheTTLLocal"は、プラグインのキャッシュ・タイム（分）です。',
+        'Parameters for the dashboard backend of the upcoming events widget of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
+            '',
         'Parameters for the pages (in which the dynamic fields are shown) of the dynamic fields overview.' =>
             '',
         'Parameters for the pages (in which the tickets are shown) of the medium ticket overview.' =>
@@ -5639,6 +5651,7 @@ Thanks for your help!
             '担当者インタフェースにおいて、電話およびEメールのチケットにおける責任者のセレクションを表示します。',
         'Show article as rich text even if rich text writing is disabled.' =>
             'リッチ・テキストのライティングが無効にされている場合でも、項目をリッチ・テキストで表示します。',
+        'Show queues even when only locked tickets are in.' => '',
         'Show the current owner in the customer interface.' => '',
         'Show the current queue in the customer interface.' => '',
         'Show the history for this ticket' => '',
@@ -5894,6 +5907,7 @@ Thanks for your help!
         'System Request (%s).' => 'System Request (%s).',
         'Templates <-> Queues' => 'テンプレート <-> キュー',
         'Textarea' => 'Textarea',
+        'Thai' => '',
         'The agent skin\'s InternalName which should be used in the agent interface. Please check the available skins in Frontend::Agent::Skins.' =>
             '担当者インタフェースで使用されるべき、担当者スキンのインターナル・ネームです。Frontend::Agent::Skinsにおける利用可能なスキンをチェックしてください。',
         'The customer skin\'s InternalName which should be used in the customer interface. Please check the available skins in Frontend::Customer::Skins.' =>

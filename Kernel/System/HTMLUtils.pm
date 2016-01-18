@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -1215,6 +1215,8 @@ sub EmbeddedImagesExtract {
 }
 
 =item HTMLTruncate()
+
+DEPRECATED: This function will be removed in further versions of OTRS
 
 truncate an HTML string to certain amount of characters without loosing the HTML tags, the resulting
 string will contain the specified amount of text characters plus the HTML tags, and ellipsis string.

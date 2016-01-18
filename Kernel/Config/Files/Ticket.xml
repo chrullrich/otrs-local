@@ -132,6 +132,14 @@
             </Option>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="Ticket::Type::Default" Required="1" Valid="1">
+        <Description Translatable="1">Defines the default ticket type.</Description>
+        <Group>Ticket</Group>
+        <SubGroup>Core::Ticket</SubGroup>
+        <Setting>
+            <String Regex="" Translatable="1">Unclassified</String>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="Ticket::Service" Required="1" Valid="1">
         <Description Translatable="1">Allows defining services and SLAs for tickets (e. g. email, desktop, network, ...), and escalation attributes for SLAs (if ticket service/SLA feature is enabled).</Description>
         <Group>Ticket</Group>
@@ -2010,6 +2018,17 @@
             </Option>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="Ticket::Frontend::AgentTicketQueue###HideEmptyQueues" Required="1" Valid="1">
+        <Description Translatable="1">Show queues even when only locked tickets are in.</Description>
+        <Group>Ticket</Group>
+        <SubGroup>Frontend::Agent::Ticket::ViewQueue</SubGroup>
+        <Setting>
+            <Option SelectedID="0">
+                <Item Key="0" Translatable="1">No</Item>
+                <Item Key="1" Translatable="1">Yes</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketQueue###HighlightAge1" Required="1" Valid="1">
         <Description Translatable="1">Sets the age in minutes (first level) for highlighting queues that contain untouched tickets.</Description>
         <Group>Ticket</Group>
@@ -3226,6 +3245,17 @@
             <String Regex="">customer</String>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="Ticket::Frontend::AgentTicketPhone::CustomerIDReadOnly" Required="1" Valid="1">
+        <Description Translatable="1">Controls if CutomerID is editable in the agent interface.</Description>
+        <Group>Ticket</Group>
+        <SubGroup>Frontend::Agent::Ticket::ViewPhoneNew</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0" Translatable="1">No</Item>
+                <Item Key="1" Translatable="1">Yes</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketPhone::AllowMultipleFrom" Required="1" Valid="1">
         <Description Translatable="1">Controls if more than one from entry can be set in the new phone ticket in the agent interface.</Description>
         <Group>Ticket</Group>
@@ -3350,6 +3380,17 @@
         <SubGroup>Frontend::Agent::Ticket::ViewEmailNew</SubGroup>
         <Setting>
             <String Regex="">agent</String>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="Ticket::Frontend::AgentTicketEmail::CustomerIDReadOnly" Required="1" Valid="1">
+        <Description Translatable="1">Controls if CutomerID is editable in the agent interface.</Description>
+        <Group>Ticket</Group>
+        <SubGroup>Frontend::Agent::Ticket::ViewEmailNew</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0" Translatable="1">No</Item>
+                <Item Key="1" Translatable="1">Yes</Item>
+            </Option>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketEmail###Subject" Required="1" Valid="1">
@@ -5564,6 +5605,17 @@
             </Option>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="Ticket::Frontend::AgentTicketCustomer::CustomerIDReadOnly" Required="1" Valid="1">
+        <Description Translatable="1">Controls if CutomerID is editable in the agent interface.</Description>
+        <Group>Ticket</Group>
+        <SubGroup>Frontend::Agent::Ticket::ViewCustomer</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0" Translatable="1">No</Item>
+                <Item Key="1" Translatable="1">Yes</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::MergeText" Required="1" Valid="1">
         <Description Translatable="1">When tickets are merged, the customer can be informed per email by setting the check box "Inform Sender". In this text area, you can define a pre-formatted text which can later be modified by the agents.</Description>
         <Group>Ticket</Group>
@@ -6992,7 +7044,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="DashboardBackend###0130-TicketOpen" Required="0" Valid="1">
-        <Description Translatable="1">Parameters for the dashboard backend of the ticket pending reminder overview of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.</Description>
+        <Description Translatable="1">Parameters for the dashboard backend of the open tickets overview of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Dashboard</SubGroup>
         <Setting>
@@ -7056,7 +7108,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="DashboardBackend###0260-TicketCalendar" Required="0" Valid="1">
-        <Description Translatable="1">Parameters for the dashboard backend of the ticket calendar of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.</Description>
+        <Description Translatable="1">Parameters for the dashboard backend of the upcoming events widget of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Dashboard</SubGroup>
         <Setting>
@@ -7100,7 +7152,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="DashboardBackend###0280-DashboardEventsTicketCalendar" Required="0" Valid="1">
-        <Description Translatable="1">Parameters for the dashboard backend of the ticket stats of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.</Description>
+        <Description Translatable="1">Parameters for the dashboard backend of the ticket events calendar of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Dashboard</SubGroup>
         <Setting>
@@ -7348,7 +7400,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="AgentCustomerInformationCenter::Backend###0130-CIC-TicketOpen" Required="0" Valid="1">
-        <Description Translatable="1">Parameters for the dashboard backend of the ticket pending reminder overview of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.</Description>
+        <Description Translatable="1">Parameters for the dashboard backend of the open tickets overview of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Dashboard</SubGroup>
         <Setting>
@@ -9961,6 +10013,7 @@
                 <Item>X-Original-To</Item>
                 <Item>Delivered-To</Item>
                 <Item>Envelope-To</Item>
+                <Item>X-Envelope-To</Item>
                 <Item>Return-Path</Item>
                 <Item>X-OTRS-Owner</Item>
                 <Item>X-OTRS-OwnerID</Item>
@@ -11634,7 +11687,7 @@ Thanks for your help!
     <ConfigItem Name="Ticket::Frontend::AgentTicketService###DefaultColumns" Required="0" Valid="1">
         <Description Translatable="1">Columns that can be filtered in the service view of the agent interface. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default. Note: Only Ticket attributes, Dynamic Fields (DynamicField_NameX) and Customer attributes (e.g. CustomerUserPhone, CustomerCompanyName, ...) are allowed.</Description>
         <Group>Ticket</Group>
-        <SubGroup>Frontend::Agent::Ticket::ViewQueue</SubGroup>
+        <SubGroup>Frontend::Agent::Ticket::ViewService</SubGroup>
         <Setting>
             <Hash>
                 <Item Key="Age">2</Item>

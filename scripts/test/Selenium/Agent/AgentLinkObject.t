@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -18,6 +18,7 @@ my $Selenium = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 $Selenium->RunTest(
     sub {
 
+        # get helper object
         $Kernel::OM->ObjectParamAdd(
             'Kernel::System::UnitTest::Helper' => {
                 RestoreSystemConfiguration => 1,
@@ -42,7 +43,7 @@ $Selenium->RunTest(
             Value => '60',
         );
 
-        # create and login test customer
+        # create test user and login
         my $TestUserLogin = $Helper->TestUserCreate(
             Groups => [ 'admin', 'users' ],
         ) || die "Did not get test user";
@@ -78,15 +79,19 @@ $Selenium->RunTest(
                 OwnerID      => $TestUserID,
                 UserID       => $TestUserID,
             );
+            $Self->True(
+                $TicketID,
+                "Created Ticket ID $TicketID - TN $TicketNumber",
+            );
             push @TicketIDs,     $TicketID;
             push @TicketNumbers, $TicketNumber;
         }
 
-        # navigate to zoom view of created test ticket
+        # get script alias
         my $ScriptAlias = $Kernel::OM->Get('Kernel::Config')->Get('ScriptAlias');
-        $Selenium->get("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketIDs[0]");
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("body").length' );
 
+        # navigate to zoom view of created test ticket
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketIDs[0]");
 
         # hover on menu bar on the misc cluster
         $Selenium->WaitFor(
@@ -97,7 +102,6 @@ $Selenium->RunTest(
         # click on 'Link'
         $Selenium->find_element("//a[contains(\@href, \'Action=AgentLinkObject;SourceObject=Ticket;' )]")->click();
 
-
         # switch to link object window
         $Selenium->WaitFor( WindowCount => 2 );
         my $Handles = $Selenium->get_window_handles();
@@ -106,23 +110,21 @@ $Selenium->RunTest(
 
         # search for second created test ticket
         $Selenium->find_element(".//*[\@id='SEARCH::TicketNumber']")->send_keys( $TicketNumbers[1] );
-        $Selenium->find_element(".//*[\@id='SEARCH::TicketNumber']")->submit();
+        $Selenium->find_element(".//*[\@id='SEARCH::TicketNumber']")->VerifiedSubmit();
 
         # link created test tickets
         $Selenium->find_element("//input[\@value='$TicketIDs[1]'][\@type='checkbox']")->click();
         $Selenium->execute_script(
             "\$('#TypeIdentifier').val('ParentChild::Target').trigger('redraw.InputField').trigger('change');"
         );
-        $Selenium->find_element("//button[\@type='submit'][\@name='AddLinks']")->click();
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("body").length' );
+        $Selenium->find_element("//button[\@type='submit'][\@name='AddLinks']")->VerifiedClick();
 
         # close link object window and switch back to agent ticket zoom
         $Selenium->close();
         $Selenium->switch_to_window( $Handles->[0] );
 
         # refresh agent ticket zoom
-        $Selenium->refresh();
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("body").length' );
+        $Selenium->VerifiedRefresh();
 
         # verify that parent test tickets is linked with child test ticket
         $Self->True(
@@ -135,8 +137,8 @@ $Selenium->RunTest(
         );
 
         # click on child ticket
-        $Selenium->find_element("//a[contains(\@href, \'Action=AgentTicketZoom;TicketID=$TicketIDs[1]' )]")->click();
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("body").length' );
+        $Selenium->find_element("//a[contains(\@href, \'Action=AgentTicketZoom;TicketID=$TicketIDs[1]' )]")
+            ->VerifiedClick();
 
         # verify that child test ticket is linked with parent test ticket
         $Self->True(
@@ -172,8 +174,7 @@ $Selenium->RunTest(
         );
 
         # navigate to AgentTicketZoom screen
-        $Selenium->get("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketIDs[0]");
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("body").length' );
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketIDs[0]");
 
         # check for updated ticket title in linked tickets complex view table
         $Self->True(
@@ -197,8 +198,7 @@ $Selenium->RunTest(
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("body").length' );
 
         # click on 'go to link delete screen'
-        $Selenium->find_element("//a[contains(\@href, \'Subaction=LinkDelete;' )]")->click();
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("body").length' );
+        $Selenium->find_element("//a[contains(\@href, \'Subaction=LinkDelete;' )]")->VerifiedClick();
 
         # check for long ticket title in LinkDelete screen
         # this one is displayed on hover

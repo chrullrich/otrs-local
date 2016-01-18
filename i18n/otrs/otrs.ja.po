@@ -2,7 +2,7 @@
 # Translators:
 # Hisatoshi Onishi <hisatoshi.onishi@gmail.com>, 2015
 # Tomy1984, 2015
-# Kentaro Hori <kentaro0919@gmail.com>, 2014-2015
+# Kentaro Hori <kentaro0919@gmail.com>, 2014-2016
 # Kozo Sakurai <sakurai@io-architect.com>, 2014
 # Makoto Miida, 2014
 # Makoto Miida, 2014
@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
 "POT-Creation-Date: 2014-08-08 19:10+0200\n"
-"PO-Revision-Date: 2015-12-08 20:37+0000\n"
+"PO-Revision-Date: 2016-01-13 16:17+0000\n"
 "Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
 "Language-Team: Japanese (http://www.transifex.com/otrs/OTRS/language/ja/)\n"
 "MIME-Version: 1.0\n"
@@ -3255,6 +3255,14 @@ msgid "Select"
 msgstr "選択"
 
 #. Template: AdminCustomerCompany
+msgid "shown"
+msgstr ""
+
+#. Template: AdminCustomerCompany
+msgid "total"
+msgstr ""
+
+#. Template: AdminCustomerCompany
 msgid "Please enter a search term to look for customers."
 msgstr "顧客を検索するための条件を入力してください"
 
@@ -4439,23 +4447,23 @@ msgstr "に戻る"
 
 #. Template: AdminGenericInterfaceMappingSimple
 msgid "Mapping Simple"
-msgstr ""
+msgstr "マッピング シンプル"
 
 #. Template: AdminGenericInterfaceMappingSimple
 msgid "Default rule for unmapped keys"
-msgstr ""
+msgstr "アンマップドキーのデフォルトルール"
 
 #. Template: AdminGenericInterfaceMappingSimple
 msgid "This rule will apply for all keys with no mapping rule."
-msgstr ""
+msgstr "本ルールはマッピングルールが指定されていないすべてのキーに適用されます。"
 
 #. Template: AdminGenericInterfaceMappingSimple
 msgid "Default rule for unmapped values"
-msgstr ""
+msgstr "アンマップドバリューのデフォルトルール"
 
 #. Template: AdminGenericInterfaceMappingSimple
 msgid "This rule will apply for all values with no mapping rule."
-msgstr ""
+msgstr "本ルールはマッピングルールが指定されていないすべてのバリューに適用されます。"
 
 #. Template: AdminGenericInterfaceMappingSimple
 msgid "New key map"
@@ -4644,7 +4652,7 @@ msgstr ""
 
 #. Template: AdminGenericInterfaceTransportHTTPREST
 msgid "Maximum message length"
-msgstr ""
+msgstr "メッセージの最長値"
 
 #. Template: AdminGenericInterfaceTransportHTTPREST
 msgid "This field should be an integer number."
@@ -4658,7 +4666,7 @@ msgstr ""
 
 #. Template: AdminGenericInterfaceTransportHTTPREST
 msgid "Send Keep-Alive"
-msgstr ""
+msgstr "Keep-Aliveを送信"
 
 #. Template: AdminGenericInterfaceTransportHTTPREST
 msgid ""
@@ -4853,7 +4861,7 @@ msgstr ""
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid "The character encoding for the SOAP message contents."
-msgstr ""
+msgstr "SOAPメッセージコンテントの文字エンコード"
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid "e.g utf-8, latin1, iso-8859-1, cp1250, Etc."
@@ -5485,7 +5493,7 @@ msgstr "この機能は現在利用できません。"
 
 #. Template: AdminNotificationEvent
 msgid "No data found"
-msgstr ""
+msgstr "データがありません。"
 
 #. Template: AdminNotificationEvent
 msgid "No notification method found."
@@ -5507,7 +5515,7 @@ msgstr ""
 
 #. Template: AdminNotificationEvent
 msgid "Message body"
-msgstr ""
+msgstr "メッセージボディー"
 
 #. Template: AdminNotificationEvent
 msgid "Add new notification language"
@@ -8228,7 +8236,7 @@ msgstr "重複した登録"
 
 #. Template: AgentCustomerSearch
 msgid "This address already exists on the address list."
-msgstr ""
+msgstr "この住所はすでにアドレスリストに存在します。"
 
 #. Template: AgentCustomerSearch
 msgid "It is going to be deleted from the field, please try again."
@@ -8250,7 +8258,7 @@ msgstr ""
 
 #. Template: AgentDaemonInfo
 msgid "Starting the OTRS Daemon"
-msgstr ""
+msgstr "OTRS デーモンを起動しています。"
 
 #. Template: AgentDaemonInfo
 msgid ""
@@ -8304,7 +8312,7 @@ msgstr "メールチケット"
 
 #. Template: AgentDashboardCustomerUserList
 msgid "Start Chat"
-msgstr ""
+msgstr "チャットを開始する。"
 
 #. Template: AgentDashboardCustomerUserList
 msgid "%s open ticket(s) of %s"
@@ -8324,7 +8332,7 @@ msgstr "%s宛の新規メールチケット"
 
 #. Template: AgentDashboardCustomerUserList
 msgid "Start chat"
-msgstr ""
+msgstr "チャットを開始する。"
 
 #. Template: AgentDashboardProductNotify
 msgid "%s %s is available!"
@@ -8443,7 +8451,7 @@ msgstr "外出中"
 
 #. Template: AgentDashboardUserOnline
 msgid "Selected agent is not available for chat"
-msgstr ""
+msgstr "選択されたエージェントは現在チャットに参加できません。"
 
 #. Template: AgentDashboardUserOutOfOffice
 msgid "until"
@@ -8686,7 +8694,7 @@ msgstr "無効なサービスです"
 
 #. Template: AgentTicketActionCommon
 msgid "New Owner"
-msgstr "新規所有者"
+msgstr "新しい所有者"
 
 #. Template: AgentTicketActionCommon
 msgid "Please set a new owner!"
@@ -8694,7 +8702,7 @@ msgstr "新規所有者を設定してください。"
 
 #. Template: AgentTicketActionCommon
 msgid "New Responsible"
-msgstr "新規 責任者"
+msgstr "新しい責任者"
 
 #. Template: AgentTicketActionCommon
 msgid "Next state"
@@ -9012,7 +9020,7 @@ msgstr "新規電話チケットに分割"
 
 #. Template: AgentTicketPhone
 msgid "Save Chat Into New Phone Ticket"
-msgstr ""
+msgstr "チャットを新規チケットに保存する。"
 
 #. Template: AgentTicketPhone
 msgid "Create New Phone Ticket"
@@ -9028,11 +9036,11 @@ msgstr "キューへ"
 
 #. Template: AgentTicketPhone
 msgid "Chat protocol"
-msgstr ""
+msgstr "チャットプロトコル"
 
 #. Template: AgentTicketPhone
 msgid "The chat will be appended as a separate article."
-msgstr ""
+msgstr "チャットは新規記事として追加されます。"
 
 #. Template: AgentTicketPhoneCommon
 msgid "Phone Call for %s%s"
@@ -9227,6 +9235,10 @@ msgstr "アーカイブ"
 #. Template: AgentTicketZoom
 msgid "This ticket is archived."
 msgstr "このチケットはアーカイブされています。"
+
+#. Template: AgentTicketZoom
+msgid "Note: Type is invalid!"
+msgstr ""
 
 #. Template: AgentTicketZoom
 msgid "Locked"
@@ -9553,7 +9565,7 @@ msgstr "あなたの電子メールアドレス (ユーザー名になります)
 
 #. Template: CustomerNavigationBar
 msgid "Incoming Chat Requests"
-msgstr ""
+msgstr "受信チャット要求"
 
 #. Template: CustomerNavigationBar
 msgid "You have unanswered chat requests"
@@ -9677,7 +9689,7 @@ msgstr ""
 
 #. Template: CustomerTicketZoom
 msgid "Start a chat from this ticket"
-msgstr ""
+msgstr "このチケットからチャットを開始する。"
 
 #. Template: CustomerTicketZoom
 msgid "Expand article"
@@ -9697,7 +9709,7 @@ msgstr "返信"
 
 #. Template: CustomerTicketZoom
 msgid "Chat Protocol"
-msgstr ""
+msgstr "チャットプロトコル"
 
 #. Template: DashboardEventsTicketCalendar
 msgid "All-day"
@@ -9788,8 +9800,8 @@ msgid "Open date selection"
 msgstr "対応開始日を選択"
 
 #. Template: Error
-msgid "Oops! An Error occurred."
-msgstr "エラーが発生しました。"
+msgid "An error occurred."
+msgstr ""
 
 #. Template: Error
 msgid "You can"
@@ -9831,31 +9843,31 @@ msgstr ""
 
 #. Template: FooterJS
 msgid "Unavailable for chat"
-msgstr ""
+msgstr "チャットに参加できません。"
 
 #. Template: FooterJS
 msgid "Available for internal chats only"
-msgstr ""
+msgstr "内部チャットのみ参加できます。"
 
 #. Template: FooterJS
 msgid "Available for chats"
-msgstr ""
+msgstr "チャット可能です。"
 
 #. Template: FooterJS
 msgid "Please visit the chat manager"
-msgstr ""
+msgstr "チャットマネージャを確認してください。"
 
 #. Template: FooterJS
 msgid "New personal chat request"
-msgstr ""
+msgstr "新規の個人チャット要求"
 
 #. Template: FooterJS
 msgid "New customer chat request"
-msgstr ""
+msgstr "新規の顧客チャット要求"
 
 #. Template: FooterJS
 msgid "New public chat request"
-msgstr ""
+msgstr "新規のパブリックチャット要求"
 
 #. Template: FooterJS
 msgid "New activity"
@@ -9863,7 +9875,7 @@ msgstr ""
 
 #. Template: FooterJS
 msgid "New activity on one of your monitored chats."
-msgstr ""
+msgstr "あなたがモニターしているチャットで、新しい動きがあります。"
 
 #. Template: FooterJS
 msgid "Do you really want to continue?"
@@ -10282,7 +10294,7 @@ msgstr ""
 msgid ""
 "Please note that you can't completely disable notifications marked as "
 "mandatory."
-msgstr ""
+msgstr "必須とマークされている通知を完全に無効化することはできませんのでご了承ください。"
 
 #. Template: PreferencesNotificationEvent
 msgid ""
@@ -10606,11 +10618,11 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketPhone.pm
 msgid "%s has left the chat."
-msgstr ""
+msgstr "%s はチャットから退出しました。"
 
 #. Perl Module: Kernel/Modules/AgentTicketPhone.pm
 msgid "This chat has been closed and will be removed in %s hours."
-msgstr ""
+msgstr "このチャットはすでに閉じられています、  %s 時間後に削除されます。"
 
 #. Perl Module: Kernel/Modules/AgentTicketPrint.pm
 msgid "printed by"
@@ -11731,15 +11743,15 @@ msgstr "fax"
 
 #. Database XML Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket create notification"
-msgstr ""
+msgstr "新規作成通知"
 
 #. Database XML Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket follow-up notification (unlocked)"
-msgstr ""
+msgstr "チケット・フォローアップ通知 (ロック解除)"
 
 #. Database XML Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket follow-up notification (locked)"
-msgstr ""
+msgstr "チケット・フォローアップ通知 (ロック)"
 
 #. Database XML Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket owner update notification"
@@ -11755,7 +11767,7 @@ msgstr ""
 
 #. Database XML Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket queue update notification"
-msgstr ""
+msgstr "チケット・キュー更新通知"
 
 #. Database XML Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket pending reminder notification (locked)"
@@ -11775,7 +11787,7 @@ msgstr ""
 
 #. Database XML Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket service update notification"
-msgstr ""
+msgstr "チケット・サービス更新通知"
 
 #. SysConfig
 msgid ""
@@ -11811,6 +11823,10 @@ msgstr "%s time unit(s) accounted. Now total %s time unit(s)."
 #. SysConfig
 msgid "(UserLogin) Firstname Lastname"
 msgstr "(ユーザー名) 姓 名 "
+
+#. SysConfig
+msgid "(UserLogin) Lastname Firstname"
+msgstr ""
 
 #. SysConfig
 msgid "(UserLogin) Lastname, Firstname"
@@ -12539,6 +12555,10 @@ msgstr ""
 
 #. SysConfig
 msgid "Controls how to display the ticket history entries as readable values."
+msgstr ""
+
+#. SysConfig
+msgid "Controls if CutomerID is editable in the agent interface."
 msgstr ""
 
 #. SysConfig
@@ -13800,6 +13820,10 @@ msgid ""
 msgstr ""
 
 #. SysConfig
+msgid "Defines the default ticket type."
+msgstr ""
+
+#. SysConfig
 msgid "Defines the default type for article in the customer interface."
 msgstr "顧客インタフェースで、項目のデフォルトのタイプを定義します。"
 
@@ -14916,6 +14940,13 @@ msgid ""
 "Determines which queues will be valid for ticket's recepients in the "
 "customer interface."
 msgstr "顧客インタフェースで、チケットの受信者としてどのキューを有効とするかを定義します。"
+
+#. SysConfig
+msgid ""
+"Disable HTTP header \"X-Frame-Options: SAMEORIGIN\" to allow OTRS to be "
+"included as an IFrame in other websites. Disabling this HTTP header can be a"
+" security issue! Only disable it, if you know what you are doing!"
+msgstr ""
 
 #. SysConfig
 msgid ""
@@ -16198,6 +16229,14 @@ msgid "JavaScript function for the search frontend."
 msgstr ""
 
 #. SysConfig
+msgid "Lastname Firstname"
+msgstr ""
+
+#. SysConfig
+msgid "Lastname Firstname (UserLogin)"
+msgstr ""
+
+#. SysConfig
 msgid "Lastname, Firstname"
 msgstr "名, 姓"
 
@@ -16838,6 +16877,18 @@ msgstr ""
 
 #. SysConfig
 msgid ""
+"Parameters for the dashboard backend of the open tickets overview of the "
+"agent interface. \"Limit\" is the number of entries shown by default. "
+"\"Group\" is used to restrict the access to the plugin (e. g. Group: "
+"admin;group1;group2;). \"Default\" determines if the plugin is enabled by "
+"default or if the user needs to enable it manually. \"CacheTTLLocal\" is the"
+" cache time in minutes for the plugin. Note: Only Ticket attributes and "
+"Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible"
+" settings: 0 = Disabled, 1 = Available, 2 = Enabled by default."
+msgstr ""
+
+#. SysConfig
+msgid ""
 "Parameters for the dashboard backend of the queue overview widget of the "
 "agent interface. \"Group\" is used to restrict the access to the plugin (e. "
 "g. Group: admin;group1;group2;). \"QueuePermissionGroup\" is not mandatory, "
@@ -16860,16 +16911,6 @@ msgstr ""
 
 #. SysConfig
 msgid ""
-"Parameters for the dashboard backend of the ticket calendar of the agent "
-"interface. \"Limit\" is the number of entries shown by default. \"Group\" is"
-" used to restrict the access to the plugin (e. g. Group: "
-"admin;group1;group2;). \"Default\" determines if the plugin is enabled by "
-"default or if the user needs to enable it manually. \"CacheTTLLocal\" is the"
-" cache time in minutes for the plugin."
-msgstr "担当者インタフェースにおけるチケット・カレンダーのダッシュボード・バックエンドに関するパラメータです。\"Limit\"は、表示されるデフォルトのエントリー数です。\"Group\"は、プラグインへのアクセスを制限するために使用されます(例：Group: admin;group1;group2;)。\"Default\"は、プラグインがデフォルトで有効となっているか、またはユーザがそれを手動で有効にする必要があるか、を定義します。\"CacheTTLLocal\"は、プラグインのキャッシュ・タイム（分）です。"
-
-#. SysConfig
-msgid ""
 "Parameters for the dashboard backend of the ticket escalation overview of "
 "the agent interface . \"Limit\" is the number of entries shown by default. "
 "\"Group\" is used to restrict the access to the plugin (e. g. Group: "
@@ -16882,21 +16923,18 @@ msgstr ""
 
 #. SysConfig
 msgid ""
-"Parameters for the dashboard backend of the ticket pending reminder overview"
-" of the agent interface . \"Limit\" is the number of entries shown by "
-"default. \"Group\" is used to restrict the access to the plugin (e. g. "
-"Group: admin;group1;group2;). \"Default\" determines if the plugin is "
-"enabled by default or if the user needs to enable it manually. "
-"\"CacheTTLLocal\" is the cache time in minutes for the plugin. Note: Only "
-"Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for "
-"DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled "
-"by default."
+"Parameters for the dashboard backend of the ticket events calendar of the "
+"agent interface. \"Limit\" is the number of entries shown by default. "
+"\"Group\" is used to restrict the access to the plugin (e. g. Group: "
+"admin;group1;group2;). \"Default\" determines if the plugin is enabled by "
+"default or if the user needs to enable it manually. \"CacheTTLLocal\" is the"
+" cache time in minutes for the plugin."
 msgstr ""
 
 #. SysConfig
 msgid ""
 "Parameters for the dashboard backend of the ticket pending reminder overview"
-" of the agent interface. \"Limit\" is the number of entries shown by "
+" of the agent interface . \"Limit\" is the number of entries shown by "
 "default. \"Group\" is used to restrict the access to the plugin (e. g. "
 "Group: admin;group1;group2;). \"Default\" determines if the plugin is "
 "enabled by default or if the user needs to enable it manually. "
@@ -16915,6 +16953,16 @@ msgid ""
 "default or if the user needs to enable it manually. \"CacheTTLLocal\" is the"
 " cache time in minutes for the plugin."
 msgstr "担当者インタフェースにおけるチケット統計のダッシュボード・バックエンドに関するパラメータです。\"Limit\"は、表示されるデフォルトのエントリー数です。\"Group\"は、プラグインへのアクセスを制限するために使用されます(例：Group: admin;group1;group2;)。\"Default\"は、プラグインがデフォルトで有効となっているか、またはユーザがそれを手動で有効にする必要があるか、を定義します。\"CacheTTLLocal\"は、プラグインのキャッシュ・タイム（分）です。"
+
+#. SysConfig
+msgid ""
+"Parameters for the dashboard backend of the upcoming events widget of the "
+"agent interface. \"Limit\" is the number of entries shown by default. "
+"\"Group\" is used to restrict the access to the plugin (e. g. Group: "
+"admin;group1;group2;). \"Default\" determines if the plugin is enabled by "
+"default or if the user needs to enable it manually. \"CacheTTLLocal\" is the"
+" cache time in minutes for the plugin."
+msgstr ""
 
 #. SysConfig
 msgid ""
@@ -17992,6 +18040,10 @@ msgid "Show article as rich text even if rich text writing is disabled."
 msgstr "リッチ・テキストのライティングが無効にされている場合でも、項目をリッチ・テキストで表示します。"
 
 #. SysConfig
+msgid "Show queues even when only locked tickets are in."
+msgstr ""
+
+#. SysConfig
 msgid "Show the current owner in the customer interface."
 msgstr ""
 
@@ -18876,6 +18928,10 @@ msgstr "テンプレート <-> キュー"
 #. SysConfig
 msgid "Textarea"
 msgstr "Textarea"
+
+#. SysConfig
+msgid "Thai"
+msgstr ""
 
 #. SysConfig
 msgid ""
