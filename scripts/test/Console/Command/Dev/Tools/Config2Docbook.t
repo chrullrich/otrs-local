@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -36,8 +36,7 @@ $Self->Is(
     "Dev::Tools::Config2Docbook exit code",
 );
 
-my $Test
-    = '<variablelist id="ConfigReference_Ticket:Frontend::SLA::Preferences">
+my $Test = '<variablelist id="ConfigReference_Ticket:Frontend::SLA::Preferences">
     <title>Ticket → Frontend::SLA::Preferences</title>';
 
 $Self->True(
