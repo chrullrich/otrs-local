@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -666,10 +666,25 @@ sub _Overview {
         );
     }
 
-    $LayoutObject->Block(
-        Name => 'OverviewHeader',
-        Data => {},
+    my %AllUsers = $CustomerUserObject->CustomerSearch(
+        Search => '*',
+        Limit  => 999999,
+        Valid  => 0,
     );
+
+    # same Limit as $Self->{CustomerUserMap}->{CustomerUserSearchListLimit}
+    my $Limit = 250;
+
+    if ( keys %AllUsers <= $Limit ) {
+        my $ListAll = keys %AllUsers;
+        $LayoutObject->Block(
+            Name => 'OverviewHeader',
+            Data => {
+                ListAll => $ListAll,
+                Limit   => $Limit,
+            },
+        );
+    }
 
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
@@ -677,10 +692,26 @@ sub _Overview {
     my $ColSpan = 6;
 
     if ( $Param{Search} ) {
+
         my %List = $CustomerUserObject->CustomerSearch(
             Search => $Param{Search},
             Valid  => 0,
         );
+
+        if ( keys %AllUsers > $Limit ) {
+            my $ListAll        = keys %AllUsers;
+            my $SearchListSize = keys %List;
+
+            $LayoutObject->Block(
+                Name => 'OverviewHeader',
+                Data => {
+                    SearchListSize => $SearchListSize,
+                    ListAll        => $ListAll,
+                    Limit          => $Limit,
+                },
+            );
+        }
+
         $LayoutObject->Block(
             Name => 'OverviewResult',
             Data => \%Param,
