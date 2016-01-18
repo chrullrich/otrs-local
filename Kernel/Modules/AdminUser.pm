@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -660,10 +660,45 @@ sub _Overview {
     $LayoutObject->Block( Name => 'ActionSearch' );
     $LayoutObject->Block( Name => 'ActionAdd' );
 
-    $LayoutObject->Block(
-        Name => 'OverviewHeader',
-        Data => {},
+    # get user object
+    my $UserObject = $Kernel::OM->Get('Kernel::System::User');
+
+    # ShownUsers limitation in AdminUser
+    my $Limit = 400;
+
+    my %List = $UserObject->UserSearch(
+        Search => $Param{Search} . '*',
+        Limit  => $Limit,
+        Valid  => 0,
     );
+    my %ListAll = $UserObject->UserSearch(
+        Search => '*',
+        Valid  => 0,
+    );
+
+    if ( keys %ListAll <= $Limit ) {
+        my $ListAll = keys %ListAll;
+        $LayoutObject->Block(
+            Name => 'OverviewHeader',
+            Data => {
+                ListAll => $ListAll,
+                Limit   => $Limit,
+            },
+        );
+    }
+    else {
+        my $ListAll        = keys %ListAll;
+        my $SearchListSize = keys %List;
+
+        $LayoutObject->Block(
+            Name => 'OverviewHeader',
+            Data => {
+                SearchListSize => $SearchListSize,
+                ListAll        => $ListAll,
+                Limit          => $Limit,
+            },
+        );
+    }
 
     $LayoutObject->Block(
         Name => 'OverviewResult',
@@ -679,15 +714,6 @@ sub _Overview {
             Name => 'OverviewResultSwitchToUser',
         );
     }
-
-    # get user object
-    my $UserObject = $Kernel::OM->Get('Kernel::System::User');
-
-    my %List = $UserObject->UserSearch(
-        Search => $Param{Search} . '*',
-        Limit  => 400,
-        Valid  => 0,
-    );
 
     # get valid list
     my %ValidList = $Kernel::OM->Get('Kernel::System::Valid')->ValidList();

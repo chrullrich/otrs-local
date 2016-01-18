@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -229,6 +229,28 @@ sub VerifiedGet {
     return;
 }
 
+=item VerifiedRefresh()
+
+perform a refresh() call, but wait for the page to be fully loaded (works only within OTRS).
+Will die() if the verification fails.
+
+    $SeleniumObject->VerifiedRefresh();
+
+=cut
+
+sub VerifiedRefresh {
+    my ( $Self, $URL ) = @_;
+
+    $Self->refresh();
+
+    $Self->WaitFor(
+        JavaScript =>
+            'return typeof(Core) == "object" && typeof(Core.Config) == "object" && Core.Config.Get("Baselink")'
+    ) || die "OTRS API verification failed after page load.";
+
+    return;
+}
+
 =item Login()
 
 login to agent or customer interface
@@ -258,8 +280,6 @@ sub Login {
     $Self->{UnitTestObject}->True( 1, 'Initiating login...' );
 
     eval {
-        $Self->delete_all_cookies();
-
         my $ScriptAlias = $Kernel::OM->Get('Kernel::Config')->Get('ScriptAlias');
 
         if ( $Param{Type} eq 'Agent' ) {
@@ -274,26 +294,16 @@ sub Login {
         $Self->delete_all_cookies();
 
         # Now load it again to login
-        $Self->get("${ScriptAlias}");
+        $Self->VerifiedGet("${ScriptAlias}");
 
-        my $Element = $Self->find_element( 'input#User', 'css' );
-        $Element->is_displayed();
-        $Element->is_enabled();
-        $Element->send_keys( $Param{User} );
-
-        $Element = $Self->find_element( 'input#Password', 'css' );
-        $Element->is_displayed();
-        $Element->is_enabled();
-        $Element->send_keys( $Param{Password} );
+        $Self->find_element( 'input#User', 'css' )->send_keys( $Param{User} );
+        $Self->find_element( 'input#Password', 'css' )->send_keys( $Param{Password} );
 
         # login
-        $Element->submit();
+        $Self->find_element( 'input#User', 'css' )->VerifiedSubmit();
 
-        # Wait until form has loaded, if neccessary
-        $Self->WaitFor( JavaScript => 'return typeof($) === "function" && $("a#LogoutButton").length' );
-
-        # login succressful?
-        $Element = $Self->find_element( 'a#LogoutButton', 'css' );
+        # login successful?
+        $Self->find_element( 'a#LogoutButton', 'css' ); # dies if not found
 
         $Self->{UnitTestObject}->True( 1, 'Login sequence ended...' );
     };

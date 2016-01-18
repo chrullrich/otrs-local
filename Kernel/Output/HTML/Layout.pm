@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -1024,7 +1024,7 @@ sub Error {
     if ( !$Param{Message} ) {
         $Param{Message} = $Param{BackendMessage};
     }
-    $Param{Message} =~ s/^(.{80}).*$/$1\[\.\.\]/gs;
+    $Param{Message} =~ s/^(.{200}).*$/${1}[...]/gs;
 
     if ( $Param{BackendTraceback} ) {
         $Self->Block(
@@ -2411,7 +2411,10 @@ sub Attachment {
     }
     $Output .= "Content-Length: $Param{Size}\n";
     $Output .= "X-UA-Compatible: IE=edge,chrome=1\n";
-    $Output .= "X-Frame-Options: SAMEORIGIN\n";
+
+    if ( !$Kernel::OM->Get('Kernel::Config')->Get('DisableIFrameOriginRestricted') ) {
+        $Output .= "X-Frame-Options: SAMEORIGIN\n";
+    }
 
     if ( $Param{Charset} ) {
         $Output .= "Content-Type: $Param{ContentType}; charset=$Param{Charset};\n\n";

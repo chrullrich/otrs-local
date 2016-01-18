@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -606,6 +606,7 @@ sub _MaskQueueView {
     }
 
     # build queue string
+    QUEUE:
     for my $QueueRef (@ListedQueues) {
         my $QueueStrg = '';
         my %Queue     = %$QueueRef;
@@ -620,6 +621,16 @@ sub _MaskQueueView {
         my $ShortQueueName = $QueueName[-1];
         $Queue{MaxAge} = $Queue{MaxAge} / 60;
         $Queue{QueueID} = 0 if ( !$Queue{QueueID} );
+
+        # skip empty Queues (or only locked tickets)
+        if (
+            $Counter{ $Queue{Queue} } < 1
+            && $Queue{Queue} ne $LayoutObject->{LanguageObject}->Translate('My Queues')
+            && $Config->{HideEmptyQueues}
+            )
+        {
+            next QUEUE;
+        }
 
         my $View   = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => 'View' )   || '';
         my $Filter = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => 'Filter' ) || 'Unlocked';
