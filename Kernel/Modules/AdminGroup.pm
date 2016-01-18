@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -303,12 +303,16 @@ sub _Overview {
     $LayoutObject->Block( Name => 'ActionList' );
     $LayoutObject->Block( Name => 'ActionAdd' );
 
+    my %List = $GroupObject->GroupList(
+        ValidID => 0,
+    );
+
+    my $ListSize = keys %List;
+    $Param{AllItemsCount} = $ListSize;
+
     $LayoutObject->Block(
         Name => 'OverviewResult',
         Data => \%Param,
-    );
-    my %List = $GroupObject->GroupList(
-        ValidID => 0,
     );
 
     # get valid list

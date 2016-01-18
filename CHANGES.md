@@ -1,4 +1,44 @@
-#5.0.6 2016-??-??
+#5.0.7 2016-??-??
+
+#5.0.6 2016-01-19
+ - 2016-01-13 Updated translations, thanks to all translators.
+ - 2016-01-12 Fixed bug#[11798](http://bugs.otrs.org/show_bug.cgi?id=11798) -  HTML preview on Ticket Notification is broken.
+ - 2016-01-12 Improved OTRS Business Solution™ availability check to be performed only on already upgraded systems.
+ - 2016-01-12 Fixed bug#[11793](http://bugs.otrs.org/show_bug.cgi?id=11793) - Wrong subgroup for agent preference settings.
+ - 2016-01-12 Fixed bug#[11728](http://bugs.otrs.org/show_bug.cgi?id=11728) - Dashboard Widget: Attributes OwnerIDs is not working.
+ - 2016-01-11 Updated CKEditor to version 4.5.6.
+ - 2016-01-10 Added Hungarian notification event messages, thanks to Balazs Ur.
+ - 2016-01-08 Fixed a bug where chat message times would not include user time zone information.
+ - 2016-01-07 Fixed bug#[11755](http://bugs.otrs.org/show_bug.cgi?id=11755) - PGP MIME signed email with long lines does not verify signature correctly.
+ - 2016-01-07 Slightly improved fatal error screen.
+ - 2016-01-04 Added new Thai translation.
+ - 2015-12-22 Fixed bug#[10969](http://bugs.otrs.org/show_bug.cgi?id=10969) - Problem whith SMIME-Cert that is valid for more than one E-Mail-Address.
+ - 2015-12-22 Fixed bug#[11764](http://bugs.otrs.org/show_bug.cgi?id=11764) - Wrong Ticket::Frontend::AgentTicketService###DefaultColumns subgroup.
+ - 2015-12-22 Fixed bug#[11765](http://bugs.otrs.org/show_bug.cgi?id=11765) - Wrong Sysconfig descriptions in Kernel/Config/Files/Ticket.xml.
+ - 2015-12-22 Improved support for Hungarian, thanks to Balazs Ur.
+ - 2015-12-17 Fixed bug#[11759](http://bugs.otrs.org/show_bug.cgi?id=11759) - AgentStats does not work if you try to configure the x-axis of an ITSMConfigItem statistic.
+ - 2015-12-16 Fixed bug#[11628](http://bugs.otrs.org/show_bug.cgi?id=11628) - DynamicField - BaseSelect.pm - missing check of DF in parameter Template in method "EditFieldValueGet".
+ - 2015-12-16 Fixed bug#[11696](http://bugs.otrs.org/show_bug.cgi?id=11696) - Queue overview displays Queues with no avaible tickets.
+ - 2015-12-16 Fixed bug#[9038](http://bugs.otrs.org/show_bug.cgi?id=9038) - Default Ticket Type in Emails.....
+ - 2015-12-16 Fixed bug#[11695](http://bugs.otrs.org/show_bug.cgi?id=11695) - Inconsistency with the sorting icon.
+ - 2015-12-16 Fixed bug#[8760](http://bugs.otrs.org/show_bug.cgi?id=8760) - digest algorithm SHA1 is hardcoded in PGP/MIME signed messages.
+ - 2015-12-16 Fixed bug#[3688](http://bugs.otrs.org/show_bug.cgi?id=3688) - Emails to a "deeply merged" ticket are added to the wrong ticket.
+ - 2015-12-16 Fixed bug#[6333](http://bugs.otrs.org/show_bug.cgi?id=6333) - Ticket merging does not work with customized state name.
+ - 2015-12-15 Fixed bug#[3785](http://bugs.otrs.org/show_bug.cgi?id=3785) - issuing cron jobs include backup files from them.
+ - 2015-12-15 Fixed bug#[8828](http://bugs.otrs.org/show_bug.cgi?id=8828) - No embedded images in autoresponses.
+ - 2015-12-15 Fixed bug#[7730](http://bugs.otrs.org/show_bug.cgi?id=7730) - Security: Notification Tags can be used to display critical data in Answers.
+ - 2015-12-15 Fixed bug#[11373](http://bugs.otrs.org/show_bug.cgi?id=11373) - CustomerID in AgentTicketPhone accepts any value, thanks to S7.
+ - 2015-12-15 Fixed bug#[10883](http://bugs.otrs.org/show_bug.cgi?id=10883) - Do not hardcode X-Frame-Options: SAMEORIGIN.
+ - 2015-12-15 Fixed bug#[11182](http://bugs.otrs.org/show_bug.cgi?id=11182) - otrs.SyncLDAP2DB.pl produces invalid SQL statements.
+ - 2015-12-15 Fixed bug#[11705](http://bugs.otrs.org/show_bug.cgi?id=11705) - Ticket filters are displayed incorrectly.
+ - 2015-12-14 Fixed bug#[7708](http://bugs.otrs.org/show_bug.cgi?id=7708) - Only 400 agents available in AdminUser.
+ - 2015-12-14 Fixed bug#[11406](http://bugs.otrs.org/show_bug.cgi?id=11406) - Values of a dynamic field of type multiselect are not shown in dashoard ticket calendar.
+ - 2015-12-14 Fixed bug#[11286](http://bugs.otrs.org/show_bug.cgi?id=11286) - Default-Value "X-Envelope-To" instead of "Envelope-To" in PostmasterX-Header.
+ - 2015-12-14 Fixed bug#[11738](http://bugs.otrs.org/show_bug.cgi?id=11738) - Generate Support Bundle throws errors when HTTPS is used as HTTPTYPE.
+ - 2015-12-14 Fixed bug#[10510](http://bugs.otrs.org/show_bug.cgi?id=10510) - Problem sending attachments with wrong mime type.
+ - 2015-12-14 Fixed bug#[11722](http://bugs.otrs.org/show_bug.cgi?id=11722) - Undefined for undefined variable at requesting LostPasswordToken, thanks to Norihiro Tanaka.
+ - 2015-12-14 Fixed bug#[11733](http://bugs.otrs.org/show_bug.cgi?id=11733) - Field details in activity dialogs are not correctly loaded if they contain single quotes.
+ - 2015-12-11 Fixed bug#[11667](http://bugs.otrs.org/show_bug.cgi?id=11667) - Can't perform POST on https://cloud.otrs.com/otrs/public.pl: 500 read timeout.
 
 #5.0.5 2015-12-15
  - 2015-12-08 Updated translations, thanks to all translators.
