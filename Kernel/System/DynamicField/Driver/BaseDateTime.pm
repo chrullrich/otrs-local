@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -310,7 +310,7 @@ sub EditFieldValueGet {
     my %DynamicFieldValues;
 
     # check if there is a Template and retrieve the dynamic field value from there
-    if ( IsHashRefWithData( $Param{Template} ) ) {
+    if ( IsHashRefWithData( $Param{Template} ) && defined $Param{Template}->{ $Prefix . 'Used' } ) {
         for my $Type (qw(Used Year Month Day Hour Minute)) {
             $DynamicFieldValues{ $Prefix . $Type } = $Param{Template}->{ $Prefix . $Type } || 0;
         }
