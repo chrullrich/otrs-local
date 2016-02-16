@@ -916,7 +916,9 @@ sub ArticleTypeList {
     my %Hash;
     while ( my @Row = $DBObject->FetchrowArray() ) {
         if ( $Param{Type} && $Param{Type} eq 'Customer' ) {
-            if ( $Row[1] !~ /int/i ) {
+
+            # Skip internal articles.
+            if ( $Row[1] !~ /-int/i ) {
                 push @Array, $Row[1];
                 $Hash{ $Row[0] } = $Row[1];
             }
@@ -984,7 +986,7 @@ sub ArticleLastCustomerArticle {
             Extended      => $Param{Extended},
             DynamicFields => $Param{DynamicFields},
         );
-        if ( $Article{StateType} eq 'merged' || $Article{ArticleType} !~ /int/ ) {
+        if ( $Article{StateType} eq 'merged' || $Article{ArticleType} !~ /-int/ ) {
             return %Article;
         }
     }
@@ -1672,7 +1674,7 @@ sub ArticleGet {
     my $DefaultTicketType = $Kernel::OM->Get('Kernel::Config')->Get('Ticket::Type::Default');
 
     # check if default ticket type exists
-    my $DefaultTicketTypeID = $TypeObject->TypeLookup( Type => $DefaultTicketType );
+    my %AllTicketTypes = reverse $TypeObject->TypeList();
 
     # get type
     if ( defined $Ticket{TypeID} ) {
@@ -1680,7 +1682,7 @@ sub ArticleGet {
             TypeID => $Ticket{TypeID}
         );
     }
-    elsif ( defined $DefaultTicketTypeID ) {
+    elsif ( $AllTicketTypes{$DefaultTicketType} ) {
         $Ticket{Type} = $DefaultTicketType;
     }
     else {

@@ -326,9 +326,9 @@ sub TicketCreate {
         my $DefaultTicketType = $Kernel::OM->Get('Kernel::Config')->Get('Ticket::Type::Default');
 
         # check if default ticket type exists
-        my $DefaultTicketTypeID = $TypeObject->TypeLookup( Type => $DefaultTicketType );
+        my %AllTicketTypes = reverse $TypeObject->TypeList();
 
-        if ( defined $DefaultTicketTypeID ) {
+        if ( $AllTicketTypes{$DefaultTicketType} ) {
             $Param{Type} = $DefaultTicketType;
         }
         else {
@@ -2819,8 +2819,8 @@ sub TicketEscalationIndexBuild {
             # do not use locked tickets for calculation
             #last ROW if $Ticket{Lock} eq 'lock';
 
-            # do not use /int/ article types for calculation
-            next ROW if $Row->{ArticleType} =~ /int/i;
+            # do not use internal article types for calculation
+            next ROW if $Row->{ArticleType} =~ /-int/i;
 
             # only use 'agent' and 'customer' sender types for calculation
             next ROW if $Row->{SenderType} !~ /^(agent|customer)$/;

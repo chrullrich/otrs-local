@@ -344,10 +344,10 @@ sub Run {
                         Result => 'ID',
                     );
                 }
-                elsif ( $Param{StateType} eq 'Closed' ) {
+                elsif ( $GetParam{StateType} eq 'Closed' ) {
                     @StateIDs = $Kernel::OM->Get('Kernel::System::State')->StateGetStatesByType(
-                        Type   => 'Viewable',
-                        Result => 'ID',
+                        StateType => 'closed',
+                        Result    => 'ID',
                     );
                 }
 
