@@ -46,6 +46,11 @@ $Self->True(
 );
 
 # get helper object
+$Kernel::OM->ObjectParamAdd(
+    'Kernel::System::UnitTest::Helper' => {
+        RestoreDatabase => 1,
+    },
+);
 my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 my $RandomID     = $HelperObject->GetRandomID();
 
@@ -61,8 +66,9 @@ my $TestUserLoginDE = $HelperObject->TestCustomerUserCreate(
 my $QueueObject = $Kernel::OM->Get('Kernel::System::Queue');
 
 # create new queue
+my $QueueName     = 'Some::Queue' . $RandomID;
 my %QueueTemplate = (
-    Name            => 'Some::Queue' . $RandomID,
+    Name            => $QueueName,
     ValidID         => 1,
     GroupID         => 1,
     SystemAddressID => 1,
@@ -82,15 +88,16 @@ $Self->IsNot(
 my $AutoResponseObject = $Kernel::OM->Get('Kernel::System::AutoResponse');
 
 # create new auto response
+my $AutoResonseName      = 'Some::AutoResponse' . $RandomID;
 my %AutoResponseTemplate = (
-    Name        => 'Some::AutoResponse' . $RandomID,
+    Name        => $AutoResonseName,
     ValidID     => 1,
     Subject     => 'Some Subject..',
     Response    => '<OTRS_TICKET_State>',
     Charset     => 'utf8',
     ContentType => 'text/plain',
     AddressID   => 1,
-    TypeID      => 4,                                  # auto reply/new ticket
+    TypeID      => 4,                       # auto reply/new ticket
     UserID      => 1,
 );
 my $AutoResponseID = $AutoResponseObject->AutoResponseAdd(%AutoResponseTemplate);
@@ -108,7 +115,7 @@ $Success = $AutoResponseObject->AutoResponseQueue(
 );
 $Self->True(
     $Success,
-    "AutoResponseQueue() - with true",
+    "AutoResponseQueue() - assigned auto response - $AutoResonseName to queue - $QueueName",
 );
 
 # get ticket object
@@ -180,39 +187,6 @@ for my $Test (@Tests) {
     );
 }
 
-# cleanup
-
-# set auto response to invalid
-$Success = $AutoResponseObject->AutoResponseUpdate(
-    %AutoResponseTemplate,
-    ID      => $AutoResponseID,
-    ValidID => 2,
-);
-$Self->True(
-    $Success,
-    "AutoResponseUpdate() - set auto response $AutoResponseID to invalid with true",
-);
-
-# set queue to invalid
-$Success = $QueueObject->QueueUpdate(
-    %QueueTemplate,
-    QueueID    => $QueueID,
-    ValidID    => 2,
-    FollowUpID => 1,
-);
-$Self->True(
-    $Success,
-    "QueueUpdate() - set queue $QueueID to invalid with true",
-);
-
-# delete ticket
-$Success = $TicketObject->TicketDelete(
-    TicketID => $TicketID,
-    UserID   => 1,
-);
-$Self->True(
-    $Success,
-    "TicketDelete() - for ticket $TicketID with true",
-);
+# Cleanup is done by RestoreDatabase.
 
 1;
