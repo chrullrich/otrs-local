@@ -210,6 +210,9 @@ sub Run {
 
                 GROUP:
                 for my $Group ( sort keys %Preferences ) {
+
+                    # skip groups should be changed in
+                    # AgentPreferences screen
                     next GROUP if $Group eq 'Password';
 
                     # get user data

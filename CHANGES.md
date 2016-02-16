@@ -1,9 +1,36 @@
-#5.0.7 2016-??-??
+#5.0.8 2016-??-??
+
+#5.0.7 2016-02-16
+ - 2016-02-10 Updated translations, thanks to all translators.
+ - 2016-02-08 Made both the Subject and Reference follow up checks optional, so that they can be turned off.
+ - 2016-02-08 Add new config setting Package::AllowLocalModifications. If this setting is active, local modifications will not be highlighted as errors in the package manager and the support data collector.
+ - 2016-02-05 Fixed bug#[11852](http://bugs.otrs.org/show_bug.cgi?id=11852) - Error in migration script with Ticket::Frontend::PreMenuModule.
+ - 2016-02-04 Added a --quiet option to suppress console command output, thanks to Moritz Lenz.
+ - 2016-02-01 Fixed bug#[11820](http://bugs.otrs.org/show_bug.cgi?id=11820) - Match on !~ "int" for external articles not enough.
+ - 2016-02-01 Fixed bug#[11838](http://bugs.otrs.org/show_bug.cgi?id=11838) - New tabs opened from links in a sandboxed Iframe cannot execute JavaScript.
+ - 2016-02-01 Fixed bug#[11829](http://bugs.otrs.org/show_bug.cgi?id=11829) - Main and ticket menu subentries disappear.
+ - 2016-01-28 Fixed bug#[11819](http://bugs.otrs.org/show_bug.cgi?id=11819) - Error when trying to edit/create new customer agent while SMIME activated.
+ - 2016-01-26 Fixed bug#[11827](http://bugs.otrs.org/show_bug.cgi?id=11827) - Invalid or missing default ticket type throws error in log.
+ - 2016-01-25 Fixed bug#[11825](http://bugs.otrs.org/show_bug.cgi?id=11825) - Agent Notification Preferences cannot be set in AdminUser.
+ - 2016-01-25 Added new button "Remove Quote" to richtext editor.
+ - 2016-01-22 Fixed bug#[11813](http://bugs.otrs.org/show_bug.cgi?id=11813) - Changing agent email address disables his notifications preferences.
+ - 2016-01-21 Fixed bug#[11818](http://bugs.otrs.org/show_bug.cgi?id=11818) - Missing required settings in default TicketConnecor SOAP yaml web service.
+ - 2016-01-21 Fixed bug#[11817](http://bugs.otrs.org/show_bug.cgi?id=11817) - SLAID from TicketGet response Article has wrong cardinality in WSDL.
+ - 2016-01-21 Fixed bug#[11803](http://bugs.otrs.org/show_bug.cgi?id=11803) - Got no ProcessEntityID or TicketID and ActivityDialogEntityID!.
+ - 2016-01-21 Fixed bug#[6350](http://bugs.otrs.org/show_bug.cgi?id=6350) - Sort order in "Auto Responses <-> Queues", thanks to S7.
+ - 2016-01-21 Fixed bug#[11802](http://bugs.otrs.org/show_bug.cgi?id=11802) - Customer user can get access to all ticket data.
+ - 2016-01-19 Fixed bug#[11717](http://bugs.otrs.org/show_bug.cgi?id=11717) - Views with iFrames not scrollable on iOS.
+ - 2016-01-15 Improved DBUpdate-to-5.pl to migrate notification config entries as well (S7).
+ - 2016-01-15 Follow-up fix for bug#[11696](http://bugs.otrs.org/show_bug.cgi?id=11696) - Queue overview displays Queues with no avaible tickets.
+ - 2016-01-15 Do not let customers know if other tickets exist or not (thanks to RenÃ©e BÃ¤cker).
+ - 2016-01-15 Fixed bug#[11786](http://bugs.otrs.org/show_bug.cgi?id=11786) - Reference of undefined variable in AgentTicketSearch.
+ - 2016-01-15 Fixed bug#[11794](http://bugs.otrs.org/show_bug.cgi?id=11794) - Agent with quote in this name cannot list owner.
+ - 2016-01-15 Fixed bug#[11801](http://bugs.otrs.org/show_bug.cgi?id=11801) - Default value "Lock after follow-up" changed in Queue Management.
 
 #5.0.6 2016-01-19
  - 2016-01-13 Updated translations, thanks to all translators.
  - 2016-01-12 Fixed bug#[11798](http://bugs.otrs.org/show_bug.cgi?id=11798) -  HTML preview on Ticket Notification is broken.
- - 2016-01-12 Improved OTRS Business Solution™ availability check to be performed only on already upgraded systems.
+ - 2016-01-12 Improved OTRS Business Solutionâ„¢ availability check to be performed only on already upgraded systems.
  - 2016-01-12 Fixed bug#[11793](http://bugs.otrs.org/show_bug.cgi?id=11793) - Wrong subgroup for agent preference settings.
  - 2016-01-12 Fixed bug#[11728](http://bugs.otrs.org/show_bug.cgi?id=11728) - Dashboard Widget: Attributes OwnerIDs is not working.
  - 2016-01-11 Updated CKEditor to version 4.5.6.
@@ -97,7 +124,7 @@
  - 2014-11-11 Updated translations, thanks to all translators.
  - 2015-11-11 Fixed bug#[11601](http://bugs.otrs.org/show_bug.cgi?id=11601) - OTRS 5 - 2fa and password change - error.
  - 2015-11-09 Fixed bug#[11511](http://bugs.otrs.org/show_bug.cgi?id=11511) - Text length for title is cut off after 50 characters.
- - 2015-11-09 Fixed bug#[11630](http://bugs.otrs.org/show_bug.cgi?id=11630) - Localization French (Français).
+ - 2015-11-09 Fixed bug#[11630](http://bugs.otrs.org/show_bug.cgi?id=11630) - Localization French.
  - 2015-11-09 Fixed bug#[11320](http://bugs.otrs.org/show_bug.cgi?id=11320) - Invalid customer user can update password.
  - 2015-11-09 Fixed bug#[11633](http://bugs.otrs.org/show_bug.cgi?id=11633) - When running the Maint::Database::Check before upgrading a confusing message appears.
  - 2015-11-09 Fixed bug#[11572](http://bugs.otrs.org/show_bug.cgi?id=11572) - Multiple responsive layout issues in AgentTicketCompose.

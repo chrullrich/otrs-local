@@ -14,8 +14,16 @@ use vars (qw($Self));
 
 use Kernel::System::EmailParser;
 
-# get needed objects
+# get config object
 my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
+# get helper object
+$Kernel::OM->ObjectParamAdd(
+    'Kernel::System::UnitTest::Helper' => {
+        RestoreDatabase => 1,
+    },
+);
+my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
 # do not really send emails
 $ConfigObject->Set(
@@ -156,5 +164,7 @@ for my $Encoding ( '', qw(base64 quoted-printable 8bit) ) {
         }
     }
 }
+
+# cleanup is done by RestoreDatabase
 
 1;
