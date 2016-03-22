@@ -53,7 +53,7 @@
                     </p>
                     <div class="Clear"></div>
                     <div class="Field SpacingTop">
-                        <form action="[% Env("CGIHandle") %]" method="post" enctype="multipart/form-data">
+                        <form action="[% Env("CGIHandle") %]" method="post" enctype="multipart/form-data" class="Validate PreventMultipleSubmits">
                             <input type="hidden" name="Action" value="[% Env("Action") %]"/>
                             <input type="hidden" name="Subaction" value="UninstallAction"/>
                             <input type="hidden" name="Name" value="[% Data.Name | html %]"/>
@@ -115,7 +115,7 @@
                     </p>
                     <div class="Clear"></div>
                     <div class="Field SpacingTop">
-                        <form action="[% Env("CGIHandle") %]" method="post" enctype="multipart/form-data">
+                        <form action="[% Env("CGIHandle") %]" method="post" enctype="multipart/form-data" class="Validate PreventMultipleSubmits">
                             <input type="hidden" name="Action" value="[% Env("Action") %]"/>
                             <input type="hidden" name="Subaction" value="ReinstallAction"/>
                             <input type="hidden" name="Name" value="[% Data.Name | html %]"/>
@@ -164,7 +164,7 @@
                     <p class="IntroInstall">
                         [% Data.Description %]
                     </p>
-                    <form action="[% Env("CGIHandle") %]" method="post" enctype="multipart/form-data">
+                    <form action="[% Env("CGIHandle") %]" method="post" enctype="multipart/form-data" class="Validate PreventMultipleSubmits">
                         <input type="hidden" name="Action" value="[% Env("Action") %]"/>
                         <input type="hidden" name="Subaction" value="[% Data.Subaction | html %]"/>
                         <input type="hidden" name="FormID" value="[% Data.FormID | html %]"/>
@@ -228,6 +228,27 @@
                                 </button>
                             </form>
                         </li>
+ [% RenderBlockStart("CloudServicesWarning") %]
+                        <li>
+                            <p class="FieldExplanation Error">
+                                [% Translate("Cloud services are currently disabled.") | html %]
+                                </br>
+                                [% Translate("OTRS Verify™ can not continue!") | html %]
+                            </p>
+                            <form action="[% Env("CGIHandle") %]" method="post">
+                                <input type="hidden" name="Action" value="AdminSysConfig"/>
+                                <input type="hidden" name="Subaction" value="Edit"/>
+                                <input type="hidden" name="SysConfigGroup" value="CloudService"/>
+                                <input type="hidden" name="SysConfigSubGroup" value="Core"/>
+                                <fieldset>
+                                    <button class="Fullsize CallForAction LittleSpacingTop Center" type="submit" value="[% Translate("Enable cloud services") | html %]">
+                                        <span><i class="fa fa-cloud"></i> [% Translate("Enable cloud services") | html %]</span>
+                                    </button>
+                                </fieldset>
+                            </form>
+                        </li>
+[% RenderBlockEnd("CloudServicesWarning") %]
+
                     </ul>
                 </div>
             </div>

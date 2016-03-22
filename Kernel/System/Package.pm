@@ -118,10 +118,7 @@ sub new {
     $Self->{Home} = $Self->{ConfigObject}->Get('Home');
 
     # permission check
-    if ( !$Self->_FileSystemCheck() ) {
-        die "ERROR: Need write permission in OTRS home\n"
-            . "Try: \$OTRS_HOME/bin/otrs.SetPermissions.pl !!!\n";
-    }
+    die if !$Self->_FileSystemCheck();
 
     # init of event handler
     $Self->EventHandlerInit(
@@ -130,6 +127,9 @@ sub new {
 
     # reserve space for merged packages
     $Self->{MergedPackages} = {};
+
+    # check if cloud services are disabled
+    $Self->{CloudServicesDisabled} = $Self->{ConfigObject}->Get('CloudServices::Disabled') || 0;
 
     return $Self;
 }
@@ -225,9 +225,10 @@ get a package from local repository
     );
 
     my $PackageScalar = $PackageObject->RepositoryGet(
-        Name    => 'Application A',
-        Version => '1.0',
-        Result  => 'SCALAR',
+        Name            => 'Application A',
+        Version         => '1.0',
+        Result          => 'SCALAR',
+        DisableWarnings => 1,         # optional
     );
 
 =cut
@@ -275,10 +276,14 @@ sub RepositoryGet {
     }
 
     if ( !$Package ) {
-        $Kernel::OM->Get('Kernel::System::Log')->Log(
-            Priority => 'notice',
-            Message  => "No such package: $Param{Name}-$Param{Version}!",
-        );
+
+        if ( !$Param{DisableWarnings} ) {
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'notice',
+                Message  => "No such package: $Param{Name}-$Param{Version}!",
+            );
+        }
+
         return;
     }
 
@@ -347,9 +352,10 @@ sub RepositoryAdd {
 
     # check if package already exists
     my $PackageExists = $Self->RepositoryGet(
-        Name    => $Structure{Name}->{Content},
-        Version => $Structure{Version}->{Content},
-        Result  => 'SCALAR',
+        Name            => $Structure{Name}->{Content},
+        Version         => $Structure{Version}->{Content},
+        Result          => 'SCALAR',
+        DisableWarnings => 1,
     );
 
     # get database object
@@ -1544,7 +1550,10 @@ sub PackageOnlineGet {
     }
 
     #check if file might be retrieved from cloud
-    my $RepositoryCloudList = $Self->RepositoryCloudList();
+    my $RepositoryCloudList;
+    if ( !$Self->{CloudServicesDisabled} ) {
+        $RepositoryCloudList = $Self->RepositoryCloudList();
+    }
     if ( IsHashRefWithData($RepositoryCloudList) && $RepositoryCloudList->{ $Param{Source} } ) {
 
         my $PackageFromCloud;
@@ -1730,6 +1739,11 @@ sub PackageVerify {
         return;
     }
 
+    # return package as verified if cloud services are disabled
+    if ( $Self->{CloudServicesDisabled} ) {
+        return 'verified';
+    }
+
     # define package verification info
     my $PackageVerifyInfo = {
         Description =>
@@ -1904,6 +1918,7 @@ sub PackageVerifyAll {
     }
 
     return %Result if !@PackagesToVerify;
+    return %Result if $Self->{CloudServicesDisabled};
 
     my $CloudService = 'PackageManagement';
     my $Operation    = 'PackageVerify';
@@ -3532,7 +3547,7 @@ sub _FileSystemCheck {
         qw(/bin/ /Kernel/ /Kernel/System/ /Kernel/Output/ /Kernel/Output/HTML/ /Kernel/Modules/)
         )
     {
-        my $Location = "$Home/$Filepath/check_permissons.$$";
+        my $Location = $Home . $Filepath . "check_permissions.$$";
         my $Content  = 'test';
 
         # create test file
@@ -3541,8 +3556,14 @@ sub _FileSystemCheck {
             Content  => \$Content,
         );
 
-        # return false if not created
-        return if !$Write;
+        if ( !$Write ) {
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "ERROR: Need write permissions for directory $Home$Filepath\n"
+                    . " Try: $Home/bin/otrs.SetPermissions.pl!",
+            );
+            return;
+        }
 
         # delete test file
         $Self->{MainObject}->FileDelete( Location => $Location );
@@ -3990,6 +4011,8 @@ returns a file from cloud
 
 sub CloudFileGet {
     my ( $Self, %Param ) = @_;
+
+    return if $Self->{CloudServicesDisabled};
 
     # check needed stuff
     if ( !defined $Param{Operation} ) {

@@ -11,10 +11,12 @@ package Kernel::Modules::AgentTicketBounce;
 use strict;
 use warnings;
 
-use Kernel::System::VariableCheck qw(:all);
 use Mail::Address;
 
 our $ObjectManagerDisabled = 1;
+
+use Kernel::Language qw(Translatable);
+use Kernel::System::VariableCheck qw(:all);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -39,8 +41,8 @@ sub Run {
     for my $Needed (qw(ArticleID TicketID QueueID)) {
         if ( !defined $Self->{$Needed} ) {
             return $LayoutObject->ErrorScreen(
-                Message => "$Needed is needed!",
-                Comment => 'Please contact your administrator',
+                Message => $LayoutObject->{LanguageObject}->Translate( '%s is needed!', $Needed ),
+                Comment => Translatable('Please contact your administrator'),
             );
         }
     }
@@ -162,7 +164,10 @@ sub Run {
         # check if plain article exists
         if ( !$TicketObject->ArticlePlain( ArticleID => $Self->{ArticleID} ) ) {
             return $LayoutObject->ErrorScreen(
-                Message => "Plain article not found for article $Self->{ArticleID}!",
+                Message => $LayoutObject->{LanguageObject}->Translate(
+                    'Plain article not found for article %s!',
+                    $Self->{ArticleID}
+                ),
             );
         }
 
@@ -175,7 +180,10 @@ sub Run {
         # Check if article is from the same TicketID as we checked permissions for.
         if ( $Article{TicketID} ne $Self->{TicketID} ) {
             return $LayoutObject->ErrorScreen(
-                Message => "Article does not belong to ticket $Self->{TicketID}!",
+                Message => $LayoutObject->{LanguageObject}->Translate(
+                    'Article does not belong to ticket %s!',
+                    $Self->{TicketID}
+                ),
             );
         }
 
