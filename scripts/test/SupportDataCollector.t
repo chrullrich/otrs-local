@@ -19,10 +19,10 @@ use Time::HiRes ();
 use Kernel::System::SupportDataCollector::PluginBase;
 
 # get needed objects
-my $HelperObject               = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 my $CacheObject                = $Kernel::OM->Get('Kernel::System::Cache');
 my $MainObject                 = $Kernel::OM->Get('Kernel::System::Main');
 my $SupportDataCollectorObject = $Kernel::OM->Get('Kernel::System::SupportDataCollector');
+my $HelperObject               = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
 # test the support data collect asynchronous function
 
@@ -75,7 +75,6 @@ $Self->True(
 );
 
 # test the support data collect function
-
 $CacheObject->CleanUp(
     Type => 'SupportDataCollector',
 );
@@ -84,6 +83,7 @@ $TimeStart = [ Time::HiRes::gettimeofday() ];
 
 %Result = $SupportDataCollectorObject->Collect(
     WebTimeout => 40,
+    Hostname   => $HelperObject->GetTestHTTPHostname(),
 );
 
 $TimeElapsed = Time::HiRes::tv_interval($TimeStart);
@@ -168,5 +168,8 @@ $Self->True(
     $TimeElapsedCache < $TimeElapsed,
     "Collect() - Should take less than $TimeElapsed seconds, it took $TimeElapsedCache",
 );
+
+# cleanup cache
+$CacheObject->CleanUp();
 
 1;

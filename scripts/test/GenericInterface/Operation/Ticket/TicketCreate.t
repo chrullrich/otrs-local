@@ -26,7 +26,7 @@ use Kernel::System::VariableCheck qw(IsArrayRefWithData IsHashRefWithData IsStri
 my $ConfigObject    = $Kernel::OM->Get('Kernel::Config');
 my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
 
-# helper object
+# get helper object
 # skip SSL certificate verification
 $Kernel::OM->ObjectParamAdd(
     'Kernel::System::UnitTest::Helper' => {
@@ -34,9 +34,9 @@ $Kernel::OM->ObjectParamAdd(
         SkipSSLVerify              => 1,
     },
 );
-my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
-my $RandomID = $HelperObject->GetRandomID();
+my $RandomID = $Helper->GetRandomID();
 
 $SysConfigObject->ConfigItemUpdate(
     Valid => 1,
@@ -105,9 +105,9 @@ $Self->Is(
     'Disabled SSL certificates verification in environment',
 );
 
-my $TestOwnerLogin        = $HelperObject->TestUserCreate();
-my $TestResponsibleLogin  = $HelperObject->TestUserCreate();
-my $TestCustomerUserLogin = $HelperObject->TestCustomerUserCreate();
+my $TestOwnerLogin        = $Helper->TestUserCreate();
+my $TestResponsibleLogin  = $Helper->TestUserCreate();
+my $TestCustomerUserLogin = $Helper->TestCustomerUserCreate();
 
 # create user object
 my $UserObject = $Kernel::OM->Get('Kernel::System::User');
@@ -126,35 +126,6 @@ $Self->IsNot(
     $InvalidID,
     undef,
     "ValidLookup() for 'invalid' should not be undef"
-);
-
-# create queue object
-my $QueueObject = $Kernel::OM->Get('Kernel::System::Queue');
-
-# create new queue
-my $QueueID = $QueueObject->QueueAdd(
-    Name            => 'TestQueue' . $RandomID,
-    ValidID         => 1,
-    GroupID         => 1,
-    SystemAddressID => 1,
-    SalutationID    => 1,
-    SignatureID     => 1,
-    Comment         => 'Some comment',
-    UserID          => 1,
-);
-
-# sanity check
-$Self->True(
-    $QueueID,
-    "QueueAdd() - create testing queue",
-);
-
-my %QueueData = $QueueObject->QueueGet( ID => $QueueID );
-
-# sanity check
-$Self->True(
-    IsHashRefWithData( \%QueueData ),
-    "QueueGet() - for testing queue",
 );
 
 # get group object
@@ -176,31 +147,43 @@ $Self->True(
     "GroupGet() - for testing group",
 );
 
-# create new queue (Admin)
-my $QueueID2 = $QueueObject->QueueAdd(
-    Name            => 'TestQueue2' . $RandomID,
-    ValidID         => 1,
-    GroupID         => $GroupID,
-    SystemAddressID => 1,
-    SalutationID    => 1,
-    SignatureID     => 1,
-    Comment         => 'Some comment',
-    UserID          => 1,
+# create queue object
+my $QueueObject = $Kernel::OM->Get('Kernel::System::Queue');
+
+my @Queues;
+
+my @QueueProperties = (
+    {
+        Name    => 'queue1' . $RandomID,
+        GroupID => 1,
+    },
+    {
+        Name    => 'queue2' . $RandomID,
+        GroupID => $GroupID,
+    }
 );
 
-# sanity check
-$Self->True(
-    $QueueID2,
-    "QueueAdd() - create testing queue2",
-);
+# create queues
+for my $QueueProperty (@QueueProperties) {
+    my $QueueID = $QueueObject->QueueAdd(
+        %{$QueueProperty},
+        ValidID         => 1,
+        SystemAddressID => 1,
+        SalutationID    => 1,
+        SignatureID     => 1,
+        Comment         => 'Some comment',
+        UserID          => 1,
+    );
 
-my %QueueData2 = $QueueObject->QueueGet( ID => $QueueID2 );
+    # sanity check
+    $Self->True(
+        $QueueID,
+        "QueueAdd() - create testing queue",
+    );
+    my %QueueData = $QueueObject->QueueGet( ID => $QueueID );
 
-# sanity check
-$Self->True(
-    IsHashRefWithData( \%QueueData2 ),
-    "QueueGet() - for testing queue2",
-);
+    push @Queues, \%QueueData;
+}
 
 # get type object
 my $TypeObject = $Kernel::OM->Get('Kernel::System::Type');
@@ -413,23 +396,7 @@ $Self->True(
 );
 
 # get remote host with some precautions for certain unit test systems
-my $Host;
-my $FQDN = $ConfigObject->Get('FQDN');
-
-# try to resolve FQDN host
-if ( $FQDN ne 'yourhost.example.com' && gethostbyname($FQDN) ) {
-    $Host = $FQDN;
-}
-
-# try to resolve localhost instead
-if ( !$Host && gethostbyname('localhost') ) {
-    $Host = 'localhost';
-}
-
-# use hard coded localhost IP address
-if ( !$Host ) {
-    $Host = '127.0.0.1';
-}
+my $Host = $Helper->GetTestHTTPHostname();
 
 # prepare webservice config
 my $RemoteSystem =
@@ -511,21 +478,21 @@ $Self->Is(
 );
 
 # create a new user for current test
-my $UserLogin = $HelperObject->TestUserCreate(
+my $UserLogin = $Helper->TestUserCreate(
     Groups => [ 'admin', 'users' ],
 );
 my $Password = $UserLogin;
 
 # create a new user without permissions for current test
-my $UserLogin2 = $HelperObject->TestUserCreate();
+my $UserLogin2 = $Helper->TestUserCreate();
 my $Password2  = $UserLogin2;
 
 # create a customer where a ticket will use and will have permissions
-my $CustomerUserLogin = $HelperObject->TestCustomerUserCreate();
+my $CustomerUserLogin = $Helper->TestCustomerUserCreate();
 my $CustomerPassword  = $CustomerUserLogin;
 
 # create a customer that will not have permissions
-my $CustomerUserLogin2 = $HelperObject->TestCustomerUserCreate();
+my $CustomerUserLogin2 = $Helper->TestCustomerUserCreate();
 my $CustomerPassword2  = $CustomerUserLogin2;
 
 # start requester with our webservice
@@ -845,7 +812,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 Lock         => 'Invalid' . $RandomID,
             },
             Article => {
@@ -876,7 +843,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 LockID       => 'Invalid' . $RandomID,
             },
             Article => {
@@ -907,7 +874,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
             },
             Article => {
                 Test => 1,
@@ -937,7 +904,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 Type         => 'Invalid' . $RandomID,
             },
             Article => {
@@ -968,7 +935,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 TypeID       => 'Invalid' . $RandomID,
             },
             Article => {
@@ -999,7 +966,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 TypeID       => $TypeID,
                 Service      => 'Invalid' . $RandomID,
             },
@@ -1031,7 +998,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 TypeID       => $TypeID,
                 ServiceID    => 'Invalid' . $RandomID,
             },
@@ -1063,7 +1030,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 TypeID       => $TypeID,
                 ServiceID    => $ServiceID,
                 SLA          => 'Invalid' . $RandomID,
@@ -1096,7 +1063,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 TypeID       => $TypeID,
                 ServiceID    => $ServiceID,
                 SLAID        => 'Invalid' . $RandomID,
@@ -1129,7 +1096,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 TypeID       => $TypeID,
                 ServiceID    => $ServiceID,
                 SLAID        => $SLAID,
@@ -1162,7 +1129,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 TypeID       => $TypeID,
                 ServiceID    => $ServiceID,
                 SLAID        => $SLAID,
@@ -1196,7 +1163,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 TypeID       => $TypeID,
                 ServiceID    => $ServiceID,
                 SLAID        => $SLAID,
@@ -1230,7 +1197,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 TypeID       => $TypeID,
                 ServiceID    => $ServiceID,
                 SLAID        => $SLAID,
@@ -1264,7 +1231,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 TypeID       => $TypeID,
                 ServiceID    => $ServiceID,
                 SLAID        => $SLAID,
@@ -1299,7 +1266,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 TypeID       => $TypeID,
                 ServiceID    => $ServiceID,
                 SLAID        => $SLAID,
@@ -1334,7 +1301,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 TypeID       => $TypeID,
                 ServiceID    => $ServiceID,
                 SLAID        => $SLAID,
@@ -1370,7 +1337,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 TypeID       => $TypeID,
                 ServiceID    => $ServiceID,
                 SLAID        => $SLAID,
@@ -1406,7 +1373,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                QueueID      => $QueueID,
+                QueueID      => $Queues[0]->{QueueID},
                 TypeID       => $TypeID,
                 ServiceID    => $ServiceID,
                 SLAID        => $SLAID,
@@ -1443,7 +1410,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -1480,7 +1447,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -1524,7 +1491,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -1564,7 +1531,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -1609,7 +1576,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -1653,7 +1620,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -1697,7 +1664,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -1742,7 +1709,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -1788,7 +1755,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -1835,7 +1802,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -1882,7 +1849,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -1930,7 +1897,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -1978,7 +1945,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2027,7 +1994,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2076,7 +2043,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2126,7 +2093,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2175,7 +2142,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2226,7 +2193,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2278,7 +2245,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2331,7 +2298,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2387,7 +2354,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2441,7 +2408,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2498,7 +2465,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2553,7 +2520,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2611,7 +2578,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2667,7 +2634,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2723,7 +2690,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2779,7 +2746,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2836,7 +2803,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2893,7 +2860,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -2950,7 +2917,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -3007,7 +2974,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -3065,7 +3032,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -3124,7 +3091,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -3176,7 +3143,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -3224,7 +3191,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -3280,7 +3247,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                Queue        => $QueueData{Name},
+                Queue        => $Queues[0]->{Name},
                 Type         => $TypeData{Name},
                 Service      => $ServiceData{Name},
                 SLA          => $SLAData{Name},
@@ -3333,7 +3300,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => 'someone@somehots.com',
-                Queue        => $QueueData{Name},
+                Queue        => $Queues[0]->{Name},
                 Type         => $TypeData{Name},
                 State        => $StateData{Name},
                 Priority     => $PriorityData{Name},
@@ -3383,7 +3350,7 @@ my @Tests        = (
             Ticket => {
                 Title        => 'Ticket Title',
                 CustomerUser => $TestCustomerUserLogin,
-                Queue        => $QueueData{Name},
+                Queue        => $Queues[0]->{Name},
                 Type         => $TypeData{Name},
                 Service      => $ServiceData{Name},
                 SLA          => $SLAData{Name},
@@ -3435,7 +3402,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -3499,7 +3466,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID,
+                QueueID       => $Queues[0]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -3555,7 +3522,7 @@ my @Tests        = (
             Ticket => {
                 Title         => 'Ticket Title',
                 CustomerUser  => $TestCustomerUserLogin,
-                QueueID       => $QueueID2,
+                QueueID       => $Queues[1]->{QueueID},
                 TypeID        => $TypeID,
                 ServiceID     => $ServiceID,
                 SLAID         => $SLAID,
@@ -4024,7 +3991,7 @@ for my $Test (@Tests) {
     }
 }
 
-# clean up webservice
+# delete webservice
 my $WebserviceDelete = $WebserviceObject->WebserviceDelete(
     ID     => $WebserviceID,
     UserID => 1,
@@ -4034,137 +4001,101 @@ $Self->True(
     "Deleted Webservice $WebserviceID",
 );
 
-# invalidate queues
-{
-    my $Success = $QueueObject->QueueUpdate(
-        %QueueData,
-        ValidID => $InvalidID,
-        UserID  => 1,
-    );
+# get DB object
+my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+my $Success;
 
-    # sanity check
+# delete queues
+for my $QueueData (@Queues) {
+    $Success = $DBObject->Do(
+        SQL => "DELETE FROM queue WHERE id = $QueueData->{QueueID}",
+    );
     $Self->True(
         $Success,
-        "QueueUpdate() set queue $QueueData{Name} to invalid",
-    );
-
-    $Success = $QueueObject->QueueUpdate(
-        %QueueData2,
-        ValidID => $InvalidID,
-        UserID  => 1,
-    );
-
-    # sanity check
-    $Self->True(
-        $Success,
-        "QueueUpdate() set queue $QueueData2{Name} to invalid",
-    );
-
-}
-
-# invalidate group
-{
-    my $Success = $GroupObject->GroupUpdate(
-        %GroupData,
-        ValidID => $InvalidID,
-        UserID  => 1,
-    );
-
-    # sanity check
-    $Self->True(
-        $Success,
-        "GroupUpdate() set type $GroupData{Name} to invalid",
+        "Queue with ID $QueueData->{QueueID} is deleted!",
     );
 }
 
-# invalidate type
-{
-    my $Success = $TypeObject->TypeUpdate(
-        %TypeData,
-        ValidID => $InvalidID,
-        UserID  => 1,
-    );
+# delete group
+$Success = $DBObject->Do(
+    SQL => "DELETE FROM groups WHERE id = $GroupID",
+);
+$Self->True(
+    $Success,
+    "Group with ID $GroupID is deleted!",
+);
 
-    # sanity check
-    $Self->True(
-        $Success,
-        "TypeUpdate() set type $TypeData{Name} to invalid",
-    );
-}
+# delete type
+$Success = $DBObject->Do(
+    SQL => "DELETE FROM ticket_type WHERE id = $TypeID",
+);
+$Self->True(
+    $Success,
+    "Type with ID $TypeID is deleted!",
+);
 
-# invalidate service
-{
-    my $Success = $ServiceObject->ServiceUpdate(
-        %ServiceData,
-        ValidID => $InvalidID,
-        UserID  => 1,
-    );
+# delete service_customer_user and service
+$Success = $DBObject->Do(
+    SQL => "DELETE FROM service_customer_user WHERE service_id = $ServiceID",
+);
+$Self->True(
+    $Success,
+    "Service user referenced to service ID $ServiceID is deleted!",
+);
 
-    # sanity check
-    $Self->True(
-        $Success,
-        "ServiceUpdate() set service $ServiceData{Name} to invalid",
-    );
-}
+$Success = $DBObject->Do(
+    SQL => "DELETE FROM service_sla WHERE service_id = $ServiceID OR sla_id = $SLAID",
+);
+$Self->True(
+    $Success,
+    "Service SLA referenced to service ID $ServiceID is deleted!",
+);
 
-# invalidate SLA
-{
-    my $Success = $SLAObject->SLAUpdate(
-        %SLAData,
-        ValidID => $InvalidID,
-        UserID  => 1,
-    );
+$Success = $DBObject->Do(
+    SQL => "DELETE FROM service WHERE id = $ServiceID",
+);
+$Self->True(
+    $Success,
+    "Service with ID $ServiceID is deleted!",
+);
 
-    # sanity check
-    $Self->True(
-        $Success,
-        "SLAUpdate() set SLA $SLAData{Name} to invalid",
-    );
-}
+# delete SLA
+$Success = $DBObject->Do(
+    SQL => "DELETE FROM sla WHERE id = $SLAID",
+);
+$Self->True(
+    $Success,
+    "SLA with ID $SLAID is deleted!",
+);
 
-# invalidate state
-{
-    my $Success = $StateObject->StateUpdate(
-        %StateData,
-        ValidID => $InvalidID,
-        UserID  => 1,
-    );
+# delete state
+$Success = $DBObject->Do(
+    SQL => "DELETE FROM ticket_state WHERE id = $StateID",
+);
+$Self->True(
+    $Success,
+    "State with ID $StateID is deleted!",
+);
 
-    # sanity check
-    $Self->True(
-        $Success,
-        "StateUpdate() set state $StateData{Name} to invalid",
-    );
-}
+# delete priority
+$Success = $DBObject->Do(
+    SQL => "DELETE FROM ticket_priority WHERE id = $PriorityID",
+);
+$Self->True(
+    $Success,
+    "Priority with ID $PriorityID is deleted!",
+);
 
-# invalidate type
-{
-    my $Success = $PriorityObject->PriorityUpdate(
-        %PriorityData,
-        PriorityID => $PriorityID,
-        ValidID    => $InvalidID,
-        UserID     => 1,
-    );
+# delete dynamic field
+$Success = $DBObject->Do(
+    SQL => "DELETE FROM dynamic_field WHERE id = $DynamicFieldID",
+);
+$Self->True(
+    $Success,
+    "Dynamic field with ID $DynamicFieldID is deleted!",
+);
 
-    # sanity check
-    $Self->True(
-        $Success,
-        "PriorityUpdate() set priority $PriorityData{Name} to invalid",
-    );
-}
-
-# remove DynamicFields
-{
-    my $Success = $DynamicFieldObject->DynamicFieldDelete(
-        ID     => $DynamicFieldID,
-        UserID => 1,
-    );
-
-    # sanity check
-    $Self->True(
-        $Success,
-        "DynamicFieldDelete() for DynamicField $DynamicFieldData->{Name}"
-    );
-}
+# cleanup cache
+$Kernel::OM->Get('Kernel::System::Cache')->CleanUp();
 
 1;

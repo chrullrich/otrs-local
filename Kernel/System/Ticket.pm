@@ -4466,7 +4466,6 @@ sub TicketOwnerSet {
 
     # lookup if no NewUserID is given
     if ( !$Param{NewUserID} ) {
-
         $Param{NewUserID} = $UserObject->UserLookup(
             UserLogin => $Param{NewUser},
         );
@@ -4474,10 +4473,18 @@ sub TicketOwnerSet {
 
     # lookup if no NewUser is given
     if ( !$Param{NewUser} ) {
-
         $Param{NewUser} = $UserObject->UserLookup(
             UserID => $Param{NewUserID},
         );
+    }
+
+    # make sure the user exists
+    if ( !$UserObject->UserLookup( UserID => $Param{NewUserID} ) ) {
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => "User does not exist.",
+        );
+        return;
     }
 
     # check if update is needed!
@@ -4690,6 +4697,15 @@ sub TicketResponsibleSet {
     # lookup if no NewUser is given
     if ( !$Param{NewUser} ) {
         $Param{NewUser} = $UserObject->UserLookup( UserID => $Param{NewUserID} );
+    }
+
+    # make sure the user exists
+    if ( !$UserObject->UserLookup( UserID => $Param{NewUserID} ) ) {
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => "User does not exist.",
+        );
+        return;
     }
 
     # check if update is needed!
@@ -5142,6 +5158,13 @@ sub HistoryTicketStatusGet {
         $SQLExt .= ')';
     }
 
+    # assemble stop date/time string for database comparison
+    my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
+    my $StopSystemTime
+        = $TimeObject->TimeStamp2SystemTime( String => "$Param{StopYear}-$Param{StopMonth}-$Param{StopDay} 00:00:00" );
+    my ( $StopSec, $StopMin, $StopHour, $StopDay, $StopMonth, $StopYear, $StopWDay )
+        = $TimeObject->SystemTime2Date( SystemTime => $StopSystemTime + 24 * 60 * 60 );    # add a day
+
     # get database object
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
@@ -5149,8 +5172,8 @@ sub HistoryTicketStatusGet {
         SQL => "
             SELECT DISTINCT(th.ticket_id), th.create_time
             FROM ticket_history th
-            WHERE th.create_time <= '$Param{StopYear}-$Param{StopMonth}-$Param{StopDay} 23:59:59'
-                AND th.create_time >= '$Param{StartYear}-$Param{StartMonth}-$Param{StartDay} 00:00:01'
+            WHERE th.create_time < '$StopYear-$StopMonth-$StopDay 00:00:00'
+                AND th.create_time >= '$Param{StartYear}-$Param{StartMonth}-$Param{StartDay} 00:00:00'
                 $SQLExt
             ORDER BY th.create_time DESC",
         Limit => 150000,
@@ -6935,7 +6958,6 @@ sub TicketArticleStorageSwitch {
                     %{$Attachment},
                     ArticleID => $ArticleID,
                     UserID    => $Param{UserID},
-                    Force     => 1,
                 );
             }
 

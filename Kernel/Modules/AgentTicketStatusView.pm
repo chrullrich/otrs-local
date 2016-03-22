@@ -11,6 +11,7 @@ package Kernel::Modules::AgentTicketStatusView;
 use strict;
 use warnings;
 
+use Kernel::Language qw(Translatable);
 use Kernel::System::VariableCheck qw(:all);
 
 our $ObjectManagerDisabled = 1;
@@ -187,7 +188,9 @@ sub Run {
 
     # check if filter is valid
     if ( !$Filters{$Filter} ) {
-        $LayoutObject->FatalError( Message => "Invalid Filter: $Filter!" );
+        $LayoutObject->FatalError(
+            Message => $LayoutObject->{LanguageObject}->Translate( 'Invalid Filter: %s!', $Filter ),
+        );
     }
 
     # do shown tickets lookup
@@ -253,7 +256,8 @@ sub Run {
 
         if ( !$FilterContent ) {
             $LayoutObject->FatalError(
-                Message => "Can't get filter content data of $HeaderColumn!",
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Can\'t get filter content data of %s!', $HeaderColumn ),
             );
         }
 
