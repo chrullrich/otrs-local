@@ -13,6 +13,7 @@ use warnings;
 
 our $ObjectManagerDisabled = 1;
 
+use Kernel::Language qw(Translatable);
 use Kernel::System::VariableCheck qw(:all);
 
 sub new {
@@ -195,11 +196,13 @@ sub Run {
     }
 
     if ( !$Access ) {
-        $LayoutObject->FatalError( Message => 'Feature not enabled!' );
+        $LayoutObject->FatalError(
+            Message => Translatable('Feature not enabled!'),
+        );
     }
     my %Filters = (
         All => {
-            Name   => 'All',
+            Name   => Translatable('All'),
             Prio   => 1000,
             Search => {
                 OrderBy      => $OrderBy,
@@ -210,7 +213,7 @@ sub Run {
             },
         },
         New => {
-            Name   => 'New Article',
+            Name   => Translatable('New Article'),
             Prio   => 1001,
             Search => {
                 WatchUserIDs => [ $Self->{UserID} ],
@@ -225,7 +228,7 @@ sub Run {
             },
         },
         Reminder => {
-            Name   => 'Pending',
+            Name   => Translatable('Pending'),
             Prio   => 1002,
             Search => {
                 StateType    => [ 'pending reminder', 'pending auto' ],
@@ -237,7 +240,7 @@ sub Run {
             },
         },
         ReminderReached => {
-            Name   => 'Reminder Reached',
+            Name   => Translatable('Reminder Reached'),
             Prio   => 1003,
             Search => {
                 StateType                     => ['pending reminder'],
@@ -255,7 +258,9 @@ sub Run {
 
     # check if filter is valid
     if ( !$Filters{$Filter} ) {
-        $LayoutObject->FatalError( Message => "Invalid Filter: $Filter!" );
+        $LayoutObject->FatalError(
+            Message => $LayoutObject->{LanguageObject}->Translate( 'Invalid Filter: %s!', $Filter ),
+        );
     }
 
     # do shown tickets lookup
@@ -358,7 +363,8 @@ sub Run {
 
         if ( !$FilterContent ) {
             $LayoutObject->FatalError(
-                Message => "Can't get filter content data of $HeaderColumn!",
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Can\'t get filter content data of %s!', $HeaderColumn ),
             );
         }
 

@@ -11,8 +11,10 @@ package Kernel::Modules::AgentTicketMerge;
 use strict;
 use warnings;
 
-use Kernel::System::VariableCheck qw(:all);
 use Mail::Address;
+
+use Kernel::Language qw(Translatable);
+use Kernel::System::VariableCheck qw(:all);
 
 our $ObjectManagerDisabled = 1;
 
@@ -39,8 +41,8 @@ sub Run {
     # check needed stuff
     if ( !$Self->{TicketID} ) {
         return $LayoutObject->ErrorScreen(
-            Message => 'No TicketID is given!',
-            Comment => 'Please contact the admin.',
+            Message => Translatable('No TicketID is given!'),
+            Comment => Translatable('Please contact the admin.'),
         );
     }
 
@@ -191,7 +193,9 @@ sub Run {
 
         # check if source and target TicketID are the same (bug#8667)
         if ( $MainTicketID && $MainTicketID == $Self->{TicketID} ) {
-            $LayoutObject->FatalError( Message => "Can't merge ticket with itself!" );
+            $LayoutObject->FatalError(
+                Message => Translatable('Can\'t merge ticket with itself!'),
+            );
         }
 
         # check for errors
