@@ -21,12 +21,13 @@ my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 $Kernel::OM->ObjectParamAdd(
     'Kernel::System::UnitTest::Helper' => {
         RestoreSystemConfiguration => 1,
+        RestoreDatabase            => 1,
     },
 );
-my $HelperObject    = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+my $Helper          = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
 
-my $RandomID = $HelperObject->GetRandomID();
+my $RandomID = $Helper->GetRandomID();
 
 # define SOAP variables
 my $SOAPUser     = 'User' . $RandomID;
@@ -45,23 +46,11 @@ $SysConfigObject->ConfigItemUpdate(
 );
 
 # get remote host with some precautions for certain unit test systems
-my $Host;
-my $FQDN = $ConfigObject->Get('FQDN');
+my $Host = $Helper->GetTestHTTPHostname();
 
-# try to resolve fqdn host
-if ( $FQDN ne 'yourhost.example.com' && gethostbyname($FQDN) ) {
-    $Host = $FQDN;
-}
-
-# try to resolve localhost instead
-if ( !$Host && gethostbyname('localhost') ) {
-    $Host = 'localhost';
-}
-
-# use hardcoded localhost ip address
-if ( !$Host ) {
-    $Host = '127.0.0.1';
-}
+# skip this test on Plack
+# TODO: fix this
+return 1 if $Host =~ m{:5000};
 
 # prepare RPC config
 my $Proxy = $ConfigObject->Get('HttpType')
@@ -165,7 +154,7 @@ for my $Test (@Tests) {
         $FaultString = $SOAPMessage->fault()->{faultstring};
     }
 
-    # get result form SOAP message if any
+    # get result from SOAP message if any
     my $Result;
     if ( $SOAPMessage->result() ) {
         $Result = $SOAPMessage->result();
@@ -183,5 +172,7 @@ for my $Test (@Tests) {
         "$Test->{Name}: Message result should have a value",
     );
 }
+
+# cleanup cache is done by RestoreDatabase
 
 1;
