@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.898782525662449;
+    $Self->{Completeness}        = 0.840268456375839;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -291,6 +291,7 @@ sub Data {
         'You have Out of Office enabled, would you like to disable it?' =>
             'Ten activado o servizo «fóra da oficina»; desexa desactivalo?',
         'News about OTRS releases!' => 'Novas sobre as versións novas de OTRS!',
+        'Go to dashboard!' => '',
         'Customer %s added' => 'Engadiuse o usuario %s',
         'Role added!' => 'Papel engadido!',
         'Role updated!' => 'Papel actualizado',
@@ -430,6 +431,7 @@ sub Data {
         'There was a problem during the upgrade of %s.' => 'Houbo un problema durante a actualización de %s.',
         '%s was correctly uninstalled.' => '%s foi desinstalado correctamente.',
         'There was a problem uninstalling %s.' => 'Houbo un problema desistalando %s.',
+        'Enable cloud services to unleash all OTRS features!' => '',
 
         # Template: AAACalendar
         'New Year\'s Day' => 'Aninovo',
@@ -1561,8 +1563,8 @@ sub Data {
         'Enable this notification method' => 'Activar este método de notificación',
         'Transport' => 'Transporte',
         'At least one method is needed per notification.' => 'Precísase ao menos un método por notificación.',
-        'Send by default' => '',
-        'Should the notification be sent to agents who have not yet made a choice in their preferences?' =>
+        'Active by default in agent preferences' => '',
+        'This is the default value for assigned recipient agents who didn\'t make a choice for this notification in their preferences yet. If the box is enabled, the notification will be sent to such agents.' =>
             '',
         'This feature is currently not available.' => 'Esta funcionalidade non está dispoñíbel actualmente.',
         'No data found' => 'Non se atoparon datos',
@@ -1695,6 +1697,9 @@ sub Data {
         'Install' => 'Instalar',
         'Install Package' => 'Paquete de instalación',
         'Update repository information' => 'Actualice a información do repositorio',
+        'Cloud services are currently disabled.' => '',
+        'OTRS Verify™ can not continue!' => '',
+        'Enable cloud services' => '',
         'Online Repository' => 'Repositorio na rede',
         'Module documentation' => 'Documentación do módulo',
         'Upgrade' => 'Repositorio local',
@@ -2241,6 +2246,8 @@ sub Data {
         'State type' => 'Tipo estado',
 
         # Template: AdminSupportDataCollector
+        'Sending support data to OTRS Group is not possible!' => '',
+        'Enable Cloud Services' => '',
         'This data is sent to OTRS Group on a regular basis. To stop sending this data please update your system registration.' =>
             'Estes datos son enviados a Grupo OTRS nunha base regular. Para parar de enviar a estes datos por favor actualice o seu rexistro de sistema.',
         'You can manually trigger the Support Data sending by pressing this button:' =>
@@ -2827,6 +2834,11 @@ sub Data {
         # Template: ChatStartForm
         'First message' => 'Primeiro mensaxe',
 
+        # Template: CloudServicesDisabled
+        'This feature requires cloud services.' => '',
+        'You can' => 'Vostede pode',
+        'go back to the previous page' => 'volte a páxina anterior',
+
         # Template: CustomerError
         'Traceback' => 'Imprimir',
 
@@ -2963,9 +2975,7 @@ sub Data {
 
         # Template: Error
         'An error occurred.' => '',
-        'You can' => 'Vostede pode',
         'Send a bugreport' => 'Enviar un reporte de bugs',
-        'go back to the previous page' => 'volte a páxina anterior',
         'Error Details' => 'Detalles do erro',
 
         # Template: FooterJS
@@ -3225,21 +3235,101 @@ sub Data {
         # Template: Warning
         'Go back to the previous page' => 'Volte a páxina anterior',
 
+        # Perl Module: Kernel/Modules/AdminACL.pm
+        'ACLs could not be Imported due to a unknown error, please check OTRS logs for more information' =>
+            '',
+        'The following ACLs have been added successfully: %s' => '',
+        'The following ACLs have been updated successfully: %s' => '',
+        'There where errors adding/updating the following ACLs: %s. Please check the log file for more information.' =>
+            '',
+        'This field is required' => 'Este campo é obrigatorio',
+        'There was an error creating the ACL' => '',
+        'Need ACLID!' => '',
+        'Could not get data for ACLID %s' => '',
+        'There was an error updating the ACL' => '',
+        'There was an error setting the entity sync status.' => '',
+        'There was an error synchronizing the ACLs.' => '',
+        'ACL %s could not be deleted' => '',
+        'There was an error getting data for ACL with ID %s' => '',
+
+        # Perl Module: Kernel/Modules/AdminCustomerCompany.pm
+        'Customer Company %s already exists!' => '',
+
         # Perl Module: Kernel/Modules/AdminCustomerUser.pm
         'New phone ticket' => 'Novo ticket telefónico',
         'New email ticket' => 'Novo ticket correo electrónico',
 
+        # Perl Module: Kernel/Modules/AdminDynamicField.pm
+        'Fields configuration is not valid' => '',
+        'Objects configuration is not valid' => '',
+        'Could not reset Dynamic Field order properly, please check the error log for more details.' =>
+            '',
+
         # Perl Module: Kernel/Modules/AdminDynamicFieldCheckbox.pm
+        'Undefined subaction.' => '',
+        'Need %s' => '',
+        'The field does not contain only ASCII letters and numbers.' => '',
+        'There is another field with the same name.' => '',
+        'The field must be numeric.' => '',
+        'Need ValidID' => '',
+        'Could not create the new field' => '',
+        'Need ID' => '',
+        'Could not get data for dynamic field %s' => '',
+        'The name for this field should not change.' => '',
+        'Could not update the field %s' => '',
         'Currently' => 'Actualmente',
 
+        # Perl Module: Kernel/Modules/AdminDynamicFieldDropdown.pm
+        'This field value is duplicated.' => '',
+
+        # Perl Module: Kernel/Modules/AdminEmail.pm
+        'Select at least one recipient.' => '',
+
         # Perl Module: Kernel/Modules/AdminGenericAgent.pm
+        'Got no values to check.' => '',
         'Please remove the following words because they cannot be used for the ticket selection:' =>
             'Por favor elimine as seguintes palabras porque non poden ser usadas para a selección de ticket:',
 
+        # Perl Module: Kernel/Modules/AdminGenericInterfaceDebugger.pm
+        'Need WebserviceID!' => '',
+        'Could not get data for WebserviceID %s' => '',
+
+        # Perl Module: Kernel/Modules/AdminGenericInterfaceInvokerDefault.pm
+        'Need InvokerType' => '',
+        'Invoker %s is not registered' => '',
+        'InvokerType % is not registered' => '',
+        'Need Invoker' => '',
+        'Could not determine config for invoker %s' => '',
+
+        # Perl Module: Kernel/Modules/AdminGenericInterfaceMappingSimple.pm
+        'Could not get registered configuration for action type %s' => '',
+        'Could not get backend for %s %s' => '',
+        'Could not update configuration data for WebserviceID %s' => '',
+
+        # Perl Module: Kernel/Modules/AdminGenericInterfaceOperationDefault.pm
+        'Need OperationType' => '',
+        'Operation %s is not registered' => '',
+        'OperationType %s is not registered' => '',
+        'Need Operation' => '',
+        'Could not determine config for operation %s' => '',
+
+        # Perl Module: Kernel/Modules/AdminGenericInterfaceTransportHTTPREST.pm
+        'Need Subaction!' => '',
+
         # Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
+        'There is another web service with the same name.' => '',
+        'There was an error updating the web service.' => '',
         'Web service "%s" updated!' => 'Servizo web "%s" actualizado!',
+        'There was an error creating the web service.' => '',
         'Web service "%s" created!' => 'Servizo web "%s" creado!',
+        'Need Name!' => '',
+        'Need a file to import!' => '',
+        'The imported file has not valid YAML content! Please check OTRS log for details' =>
+            '',
         'Web service "%s" deleted!' => 'Servizo web "%s" eliminado!',
+
+        # Perl Module: Kernel/Modules/AdminGenericInterfaceWebserviceHistory.pm
+        'Got no WebserviceHistoryID!' => '',
 
         # Perl Module: Kernel/Modules/AdminNotificationEvent.pm
         'Agent who owns the ticket' => 'Axente que é dono do ticket',
@@ -3253,51 +3343,276 @@ sub Data {
         'Customer of the ticket' => 'Cliente do ticket',
         'Yes, but require at least one active notification method' => '',
 
+        # Perl Module: Kernel/Modules/AdminPGP.pm
+        'Need param Key to delete!' => '',
+        'Key %s deleted!' => '',
+        'Need param Key to download!' => '',
+
         # Perl Module: Kernel/Modules/AdminPackageManager.pm
+        'Sorry, Apache::Reload is needed as PerlModule and PerlInitHandler in Apache config file. See also scripts/apache2-httpd.include.conf. Alternatively, you can use the commandline tool bin/otrs.Console.pl to install packages!' =>
+            '',
+        'No such package!' => '',
+        'No such file %s in package!' => '',
+        'No such file %s in local file system!' => '',
+        'Can\'t read %s!' => '',
         'Package has locally modified files.' => '',
+        'No packages or no new packages found in selected repository.' =>
+            '',
         'Package not verified due a communication issue with verification server!' =>
             'Paquete non verificado debido a un problema co servidor de verificación!',
+
+        # Perl Module: Kernel/Modules/AdminPostMasterFilter.pm
+        'No such filter: %s' => '',
+
+        # Perl Module: Kernel/Modules/AdminProcessManagementActivity.pm
+        'There was an error generating a new EntityID for this Activity' =>
+            '',
+        'There was an error creating the Activity' => '',
+        'There was an error setting the entity sync status for Activity entity: %s' =>
+            '',
+        'Need ActivityID!' => '',
+        'Could not get data for ActivityID %s' => '',
+        'There was an error updating the Activity' => '',
+        'Missing Parameter: Need Activity and ActivityDialog!' => '',
+        'Activity not found!' => '',
+        'ActivityDialog not found!' => '',
+        'ActivityDialog already assigned to Activity. You cannot add an ActivityDialog twice!' =>
+            '',
+        'Error while saving the Activity to the database!' => '',
+        'This subaction is not valid' => '',
+
+        # Perl Module: Kernel/Modules/AdminProcessManagementActivityDialog.pm
+        'There was an error setting the entity sync status for ActivityDialog entity: %s' =>
+            '',
+        'Could not get data for ActivityDialogID %s' => '',
+
+        # Perl Module: Kernel/Modules/AdminProcessManagementPath.pm
+        'Need %s!' => '',
+
+        # Perl Module: Kernel/Modules/AdminProcessManagementTransition.pm
+        'There was an error generating a new EntityID for this Transition' =>
+            '',
+        'There was an error creating the Transition' => '',
+        'There was an error setting the entity sync status for Transition entity: %s' =>
+            '',
+        'Need TransitionID!' => '',
+        'Could not get data for TransitionID %s' => '',
+        'There was an error updating the Transition' => '',
+
+        # Perl Module: Kernel/Modules/AdminProcessManagementTransitionAction.pm
+        'At least one valid config parameter is required.' => '',
+        'There was an error generating a new EntityID for this TransitionAction' =>
+            '',
+        'There was an error creating the TransitionAction' => '',
+        'There was an error setting the entity sync status for TransitionAction entity: %s' =>
+            '',
+        'Need TransitionActionID!' => '',
+        'Could not get data for TransitionActionID %s' => '',
+        'There was an error updating the TransitionAction' => '',
+        'Error: Not all keys seem to have values or vice versa.' => '',
 
         # Perl Module: Kernel/Modules/AdminQueueAutoResponse.pm
         'Queues ( without auto responses )' => '',
 
+        # Perl Module: Kernel/Modules/AdminSMIME.pm
+        'S/MIME support is disabled in Kernel::Config::SMIME.' => '',
+        'S/MIME environment is not working. Please check log for more info!' =>
+            '',
+        'Need param Filename to delete!' => '',
+        'Need param Filename to download!' => '',
+        'Needed CertFingerprint and CAFingerprint' => '',
+        'CAFingerprint must be different than CertFingerprint' => '',
+        'Relation exists!' => '',
+        'Relation added!' => '',
+        'Imposible to add relation!' => '',
+        'Needed CertFingerprint and CAFingerprint!' => '',
+        'Relation doesn\'t exists' => '',
+        'Relation deleted!' => '',
+        'Imposible to delete relation!' => '',
+        'Certificate %s could not be read!' => '',
+        'Needed Fingerprint' => '',
+
+        # Perl Module: Kernel/Modules/AdminSysConfig.pm
+        'Import not allowed!' => '',
+        'Need File!' => '',
+        'Can\'t write ConfigItem!' => '',
+
+        # Perl Module: Kernel/Modules/AdminSystemMaintenance.pm
+        'Start date shouldn\'t be defined after Stop date!' => '',
+        'There was an error creating the System Maintenance' => '',
+        'Need SystemMaintenanceID!' => '',
+        'Could not get data for SystemMaintenanceID %s' => '',
+        'System Maintenance was saved successfully!' => '',
+        'Session has been killed!' => '',
+        'All sessions have been killed, except for your own.' => 'Matáronse todas as sesións, excepto a súa.',
+        'There was an error updating the System Maintenance' => '',
+        'Was not possible to delete the SystemMaintenance entry: %s!' => '',
+
+        # Perl Module: Kernel/Modules/AdminType.pm
+        'Need Type!' => '',
+
         # Perl Module: Kernel/Modules/AgentDashboardCommon.pm
+        'No such config for %s' => '',
         'Statistic' => 'Estatística',
+        'No preferences for %s!' => '',
+        'Can\'t get element data of %s!' => '',
+        'Can\'t get filter content data of %s!' => '',
 
         # Perl Module: Kernel/Modules/AgentLinkObject.pm
         'Can not delete link with %s!' => 'Non se pode eliminar a ligazón con %s!',
         'Can not create link with %s!' => 'Non se pode crear a ligazón con %s!',
         'Object already linked as %s.' => 'Obxecto xa ligado coma %s.',
 
+        # Perl Module: Kernel/Modules/AgentPreferences.pm
+        'Param Group is required!' => '',
+
         # Perl Module: Kernel/Modules/AgentStatistics.pm
+        'Got no %s!' => '',
+        'Invalid Subaction.' => '',
         'Statistic could not be imported.' => 'Estatística non puido ser importada.',
         'Please upload a valid statistic file.' => 'Por favor cargue un arquivo de estatística valido.',
+        'Export: Need StatID!' => '',
+        'Delete: Get no StatID!' => '',
+        'Need StatID!' => '',
+        'Could not load stat.' => '',
+        'Could not create statistic.' => '',
+        'Run: Get no %s!' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketActionCommon.pm
+        'You need %s permissions!' => '',
         'No subject' => 'Ningún tema',
         'Previous Owner' => 'Anterior Propietario',
+
+        # Perl Module: Kernel/Modules/AgentTicketBounce.pm
+        '%s is needed!' => '',
+        'Plain article not found for article %s!' => '',
+        'Article does not belong to ticket %s!' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketBulk.pm
         'Ticket is locked by another agent and will be ignored!' => 'Ticket está bloqueado por outro axente e vai ser ignorado!',
 
+        # Perl Module: Kernel/Modules/AgentTicketCompose.pm
+        'Could not perform validation on field %s!' => '',
+        'Please contact the admin.' => '',
+        'Can not determine the ArticleType.' => '',
+
+        # Perl Module: Kernel/Modules/AgentTicketMerge.pm
+        'No TicketID is given!' => '',
+        'Can\'t merge ticket with itself!' => '',
+
         # Perl Module: Kernel/Modules/AgentTicketPhone.pm
+        'You need ro permission!' => '',
         '%s has left the chat.' => '',
         'This chat has been closed and will be removed in %s hours.' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketPrint.pm
+        'Need TicketID!' => '',
         'printed by' => 'imprimido por',
         'Ticket Dynamic Fields' => 'Campos Dinámicos do Ticket',
 
         # Perl Module: Kernel/Modules/AgentTicketProcess.pm
+        'Couldn\'t get ActivityDialogEntityID "%s"!' => '',
+        'No Process configured!' => '',
+        'Process %s is invalid!' => '',
+        'Subacion is invalid!' => '',
+        'Got no %s in _RenderAjax!' => '',
+        'Got no ActivityDialogEntityID in _RenderAjax!' => '',
+        'No ActivityDialog configured for %s in _RenderAjax!' => '',
+        'Got no %s in _GetParam!' => '',
+        'Got no Start ActivityEntityID or Start ActivityDialogEntityID for Process: %s in _GetParam!' =>
+            '',
+        'Couldn\'t get Ticket for TicketID: %s in _GetParam!' => '',
+        'Couldn\'t determine ActivityEntityID. DynamicField or Config isn\'t set properly!' =>
+            '',
+        'DynamicFieldConfig missing for field: %s, or is not a Ticket Dynamic Field!' =>
+            '',
+        'Process::Default%s Config Value missing!' => '',
+        'Got no ProcessEntityID or TicketID and ActivityDialogEntityID!' =>
+            '',
+        'Can\'t get StartActivityDialog and StartActivityDialog for the ProcessEntityID "%s"!' =>
+            '',
+        'Can\'t get Ticket "%s"!' => '',
+        'Can\'t get ProcessEntityID or ActivityEntityID for Ticket "%s"!' =>
+            '',
+        'Can\'t get Activity configuration for ActivityEntityID %s!' => '',
+        'Can\'t get ActivityDialog configuration for ActivityDialogEntityID "%s"!' =>
+            '',
+        'Can\'t get data for Field "%s" of ActivityDialog "%s"!' => '',
+        'PendingTime can just be used if State or StateID is configured for the same ActivityDialog. ActivityDialog: %s!' =>
+            '',
+        'Got no %s in _RenderResponsible!' => '',
+        'Got no ActivityDialogField in _RenderPendingTime!' => '',
         'Pending Date' => 'Á Espera de Data',
         'for pending* states' => 'para estados de espera* ',
+        'Got no %s in _RenderDynamicField!' => '',
+        'Got no %s in _RenderTitle!' => '',
+        'Got no ActivityDialogField in _RenderTitle!' => '',
+        'Got no %s in _RenderArticle!' => '',
+        'Got no ActivityDialogField in _RenderArticle!' => '',
+        'Got no ActivityDialogField in _RenderCustomer!' => '',
+        'Got no ActivityDialogField in _RenderResponsible!' => '',
+        'Got no %s in _RenderOwner!' => '',
+        'Got no ActivityDialogField in _RenderOwner!' => '',
+        'Got no %s in _RenderSLA!' => '',
+        'Got no ActivityDialogField in _RenderSLA!' => '',
+        'Got no %s in _RenderService!' => '',
+        'Got no ActivityDialogField in _RenderService!' => '',
+        'Got no %s in _RenderLock!' => '',
+        'Got no ActivityDialogField in _RenderLock!' => '',
+        'Got no %s in _RenderPriority!' => '',
+        'Got no ActivityDialogField in _RenderPriority!' => '',
+        'Got no %s in _RenderQueue!' => '',
+        'Got no ActivityDialogField in _RenderQueue!' => '',
+        'Got no %s in _RenderState!' => '',
+        'Got no ActivityDialogField in _RenderState!' => '',
+        'Got no %s in _RenderType!' => '',
+        'Got no ActivityDialogField in _RenderType!' => '',
+        'ActivityDialogEntityID missing!' => '',
+        'Couldn\'t get Config for ActivityDialogEntityID "%s"!' => '',
+        'Couldn\'t use CustomerID as an invisible field. Please contact your system administrator!' =>
+            '',
+        'Missing ProcessEntityID, check your ActivityDialogHeader.tt!' =>
+            '',
+        'No StartActivityDialog or StartActivityDialog for Process "%s" configured!' =>
+            '',
+        'Couldn\'t create ticket for Process with ProcessEntityID "%s"!' =>
+            '',
+        'Couldn\'t set ProcessEntityID "%s" on TicketID "%s"!' => '',
+        'Couldn\'t set ActivityEntityID "%s" on TicketID "%s"!' => '',
+        'Could not Store ActivityDialog, invalid TicketID: %s!' => '',
+        'Invalid TicketID: %s!' => '',
+        'Missing ActivityEntityID in Ticket %s!' => '',
+        'Missing ProcessEntityID in Ticket %s!' => '',
+        'Could not set DynamicField value for %s of Ticket with ID "%s" in ActivityDialog "%s"!' =>
+            '',
+        'Could not set PendingTime for Ticket with ID "%s" in ActivityDialog "%s"!' =>
+            '',
+        'Wrong ActivityDialog Field config: %s can\'t be Display => 1 / Show field (Please change its configuration to be Display => 0 / Do not show field or Display => 2 / Show field as mandatory)!' =>
+            '',
+        'Could not set %s for Ticket with ID "%s" in ActivityDialog "%s"!' =>
+            '',
+        'Default Config for Process::Default%s missing!' => '',
+        'Default Config for Process::Default%s invalid!' => '',
+
+        # Perl Module: Kernel/Modules/AgentTicketResponsibleView.pm
+        'Invalid Filter: %s!' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketSearch.pm
         'Invalid Users' => 'Usuarios Inválidos',
 
+        # Perl Module: Kernel/Modules/AgentTicketService.pm
+        'Feature not enabled!' => '',
+
+        # Perl Module: Kernel/Modules/AgentTicketWatcher.pm
+        'Feature is not active' => '',
+        'Invalid subaction' => '',
+
         # Perl Module: Kernel/Modules/AgentTicketZoom.pm
         'We are sorry, you do not have permissions anymore to access this ticket in its current state. ' =>
             'Sentímolo, non ten permisos nunca mais para acceder a este ticket no seu estado actual.',
+        'Can\'t get for ArticleID %s!' => '',
+        'Article filter settings were saved.' => '',
+        'Event type filter settings were saved.' => '',
         'Fields with no group' => 'Campos sen grupo',
 
         # Perl Module: Kernel/Modules/CustomerTicketSearch.pm
@@ -3309,6 +3624,9 @@ sub Data {
             'Erro: Por favor asegúrese de que a súa base de datos acepta paquetes de mais de %s MB en tamaño (actualmente só acepta paquetes de ata %s MB). Por favor adapte o axuste max_allowed_packet a súa base de datos para evitar erros.',
         'Error: Please set the value for innodb_log_file_size on your database to at least %s MB (current: %s MB, recommended: %s MB). For more information, please have a look at %s.' =>
             'Erro: Por favor estableza o valor para innodb_log_file_size na súa base de datos ata polo menos %s MB (actualmente: %s MB, recomendado: %s MB). Para mais información, por favor bote unha ollada en %s.',
+
+        # Perl Module: Kernel/Output/HTML/Dashboard/EventsTicketCalendar.pm
+        'The start time of a ticket has been set after the end time!' => '',
 
         # Perl Module: Kernel/Output/HTML/Dashboard/TicketGeneric.pm
         'This ticket has no title or subject' => 'Este ticket non ten título ou tema',
@@ -3747,6 +4065,7 @@ Thanks for your help!
         '(UserLogin) Firstname Lastname' => '(Usuario) Nome Apelido',
         '(UserLogin) Lastname Firstname' => '',
         '(UserLogin) Lastname, Firstname' => '(Usuario) Apelido, Nome',
+        'A TicketWatcher Module.' => '',
         'A Website' => 'Un sitio web',
         'A list of dynamic fields that are merged into the main ticket during a merge operation. Only dynamic fields that are empty in the main ticket will be set.' =>
             'Unha lista de campos dinámicos que se combinan no tícket principal durante unha operación de combinación. Só se fixan os campos dinámicos que estean baleiros no tícket principal.',
@@ -3794,21 +4113,26 @@ Thanks for your help!
         'Agent interface article notification module to check PGP.' => 'Módulo de notificación de artigo da interface de axente para comprobar PGP.',
         'Agent interface article notification module to check S/MIME.' =>
             'Módulo de notificación de artigo da interface de axente para comprobar S/MIME.',
-        'Agent interface module to access CIC search via nav bar.' => 'Módulo da interface de axente para acceder a busca CIC vía a barra de navegación.',
-        'Agent interface module to access fulltext search via nav bar.' =>
-            'Módulo da interface de axente para acceder a busca de texto completo vía a barra de navegación.',
-        'Agent interface module to access search profiles via nav bar.' =>
-            'Módulo da interface de axente para acceder a busca de perfís vía a barra de navegación.',
+        'Agent interface module to access CIC search via nav bar. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
+            '',
+        'Agent interface module to access fulltext search via nav bar. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
+            '',
+        'Agent interface module to access search profiles via nav bar. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
+            '',
         'Agent interface module to check incoming emails in the Ticket-Zoom-View if the S/MIME-key is available and true.' =>
             'Módulo da interface de axente para comprobar correos electrónicos entrantes na Vist-Ticket-Zoom se a chave  S/MIME está dispoñible e é verdadeira.',
-        'Agent interface notification module to see the number of locked tickets.' =>
-            'Módulo de notificación da interface de axente para ver o número de tíckets bloqueados.',
-        'Agent interface notification module to see the number of tickets an agent is responsible for.' =>
-            'Módulo de notificación da interface de axente para ver o número de tickets dos que un axente é responsable.',
-        'Agent interface notification module to see the number of tickets in My Services.' =>
-            'Módulo de notificación da interface de axente para ver o número de tickets nos Meu Servizos.',
-        'Agent interface notification module to see the number of watched tickets.' =>
-            'Módulo de notificación da interface de axente para ver o número de tickets mirados.',
+        'Agent interface notification module to see the number of locked tickets. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
+            '',
+        'Agent interface notification module to see the number of tickets an agent is responsible for. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
+            '',
+        'Agent interface notification module to see the number of tickets in My Services. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
+            '',
+        'Agent interface notification module to see the number of watched tickets. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
+            '',
+        'AgentCustomerSearch' => '',
+        'AgentCustomerSearch.' => '',
+        'AgentUserSearch' => '',
+        'AgentUserSearch.' => '',
         'Agents <-> Groups' => 'Axentes <-> Grupos',
         'Agents <-> Roles' => 'Axentes <-> Papeis',
         'All customer users of a CustomerID' => 'Todos os usuarios clientes dun identificador de cliente',
@@ -3880,8 +4204,8 @@ Thanks for your help!
             'Automaticamente bloqueado e establecido o propietario ao Axente actual despois de abrir a pantalla de movemento de ticket da interface de axente.',
         'Automatically lock and set owner to current Agent after selecting for an Bulk Action.' =>
             'Automaticamente bloqueado e establecido o propietario ao Axente actual despois de seleccionar unha Acción Masiva.',
-        'Automatically sets the owner of a ticket as the responsible for it (if ticket responsible feature is enabled).' =>
-            'Automaticamente establecido o propietario do ticket ao responsable do mesmo (se a función de responsable do ticket está habilitada).',
+        'Automatically sets the owner of a ticket as the responsible for it (if ticket responsible feature is enabled). This will only work by manually actions of the logged in user. It does not work for automated actions e.g. GenericAgent, Postmaster and GenericInterface.' =>
+            '',
         'Automatically sets the responsible of a ticket (if it is not set yet) after the first owner update.' =>
             'Establece automaticamente o responsable do ticket (se non está establecido ainda) despois da actualización do primeiro propietario.',
         'Balanced white skin by Felix Niklas (slim version).' => 'Apariencia blanca equilibrada por Felix Niklas (version slim).',
@@ -3894,6 +4218,7 @@ Thanks for your help!
         'Builds an article index right after the article\'s creation.' =>
             'Constrúe un índice de artigo xusto despois da creación do artigo.',
         'Bulgarian' => '',
+        'Bulk-Action' => '',
         'CMD example setup. Ignores emails where external CMD returns some output on STDOUT (email will be piped into STDIN of some.bin).' =>
             'Montaxe exemplo CMD. Ignora os correos electrónicos onde unha CMD externa retorna nun STDOUT (correo será canalizado en STDIN de some.bin).',
         'Cache time in seconds for agent authentication in the GenericInterface.' =>
@@ -3956,8 +4281,10 @@ Thanks for your help!
         'Communication' => '',
         'Company Status' => 'Estado da empresa',
         'Company Tickets' => 'Tíckets da empresa',
+        'Company Tickets.' => '',
         'Company name which will be included in outgoing emails as an X-Header.' =>
             'O nome da empresa que se inclúe no correo saínte como X-Header.',
+        'Compat module for AgentZoom to AgentTicketZoom.' => '',
         'Configure Processes.' => 'Configure Procesos.',
         'Configure and manage ACLs.' => 'Configurar e xestionar as ACL.',
         'Configure any additional readonly mirror databases that you want to use.' =>
@@ -4003,14 +4330,19 @@ Thanks for your help!
         'Create and manage ticket states.' => 'Cree e xestione estados de ticket.',
         'Create and manage ticket types.' => 'Cree e xestione tipos de ticket.',
         'Create and manage web services.' => 'Crear e xestionar servizos web.',
+        'Create new Ticket.' => '',
         'Create new email ticket and send this out (outbound)' => 'Crear un novo ticket de correo electrónico é envíelo (saída)',
+        'Create new email ticket.' => '',
         'Create new phone ticket (inbound)' => 'Crear un novo ticket telefónico (entrada)',
+        'Create new phone ticket.' => '',
         'Create new process ticket' => 'Crear un tícket de proceso novo',
+        'Create tickets.' => '',
         'Croatian' => '',
         'Custom RSS Feed' => 'Custom RSS Feed',
         'Custom text for the page shown to customers that have no tickets yet (if you need those text translated add them to a custom translation module).' =>
             'Texto personalizada para a páxina que se lles mostra aos clientes que aínda non teñen tíckets (se precisa traducir eses textos, engádaos a un módulo de tradución personalizada).',
         'Customer Administration' => 'Administración de clientes',
+        'Customer Ticket Print Module.' => '',
         'Customer User <-> Groups' => 'Usuario cliente <-> Grupos',
         'Customer User <-> Services' => 'Usuario cliente <-> Servizos',
         'Customer User Administration' => 'Administración de usuarios clientes',
@@ -4021,6 +4353,7 @@ Thanks for your help!
         'Customer item (icon) which shows the open tickets of this customer as info block. Setting CustomerUserLogin to 1 searches for tickets based on login name rather than CustomerID.' =>
             'Elemento de cliente (icono) o cal mostra os tickets abertos deste cliente coma un bloque de información. Establecendo CustomerUserLogin a 1 busca por tickets baseado no nome do login en lugar de IDCliente. ',
         'Customer request via web.' => 'Solicitude do cliente a través da web.',
+        'Customer ticket search.' => '',
         'Customer user search' => 'Busca de usuarios clientes',
         'CustomerID search' => 'Busca por identificador de cliente',
         'CustomerName' => 'NomeCliente',
@@ -4473,8 +4806,8 @@ Thanks for your help!
             'Define os grupos de tipos de enlace. Os tipos de enlace do mesmo grupo cancelan uns aos outros. Exemplo: Se ticket A é enlazado cun enlace \'Normal\' có ticket B, estos tickets non poden ser ligados adicionalmente cunha relación \'PaiFillo\'.',
         'Defines the list of online repositories. Another installations can be used as repository, for example: Key="http://example.com/otrs/public.pl?Action=PublicRepository;File=" and Content="Some Name".' =>
             'Define a lista de repositorios online. Outras instalacións poden empregarse coma repositorio, por exemplo: Chave="http://example.com/otrs/public.pl?Action=PublicRepository;File=" e Contido="Algún Nome".',
-        'Defines the list of possible next actions on an error screen.' =>
-            'Define a lista das posibles accións seguintes nunha pantalla de erro.',
+        'Defines the list of possible next actions on an error screen, a full path is required, then is possible to add external links if needed.' =>
+            '',
         'Defines the list of types for templates.' => 'Define a lista de tipos para modelos.',
         'Defines the location to get online repository list for additional packages. The first available result will be used.' =>
             'Define o lugar para obter a lista de repositorios online para paquetes adicionais. Emprégase o primeiro resultado dispoñíble.',
@@ -4504,6 +4837,8 @@ Thanks for your help!
         'Defines the module that shows the currently loged in customers in the customer interface.' =>
             'Define o módulo que mostra os clientes actualmente "logeados" na interface de cliente.',
         'Defines the module to authenticate customers.' => 'Define o módulo para autenticar clientes.',
+        'Defines the module to display a notification if cloud services are disabled.' =>
+            '',
         'Defines the module to display a notification in different interfaces on different occasions for OTRS Business Solution™.' =>
             'Define o módulo para mostrar unha notificación en direntes interfaces nas diferentes ocasións para OTRS Business Solution™. ',
         'Defines the module to display a notification in the agent interface if the OTRS Daemon is not running.' =>
@@ -4604,7 +4939,7 @@ Thanks for your help!
             'Define a prioridade na que á información é logeada e presentada. ',
         'Defines the recipient target of the phone ticket and the sender of the email ticket ("Queue" shows all queues, "System address" displays all system addresses) in the agent interface.' =>
             '',
-        'Defines the recipient target of the tickets ("Queue" shows all queues, "SystemAddress" displays all system addresses) in the customer interface.' =>
+        'Defines the recipient target of the tickets ("Queue" shows all queues, "SystemAddress" shows only the queues which are assigned to system addresses) in the customer interface.' =>
             '',
         'Defines the required permission to show a ticket in the escalation view of the agent interface.' =>
             'Define os permisos requiridos para mostrar un tícket na vista de escalado da interface de axente.',
@@ -4716,6 +5051,8 @@ Thanks for your help!
             'Desactive seguridade restrinxida para IFrames dentro IE. Pode ser pedido para que SSO traballe en IE8.',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be activated).' =>
             'Desactiva envio notificacións de recordatorio ao axente responsable dun ticket(Ticket::Responsible necesita ser activado).',
+        'Disables the communication between this system and OTRS Group servers that provides cloud services. If active, some functionality will be lost such as system registration, support data sending, upgrading to and use of OTRS Business Solution™, OTRS Verify™, OTRS News and product News dashboard widgets, among others.' =>
+            '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If set to "No", the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If not active, it also disables the GenericAgent, PackageManager and SQL Box.' =>
             'Desactiva o instalador web  (http://yourhost.example.com/otrs/installer.pl), para evitar que o sistema poda ser secuestrado. Se se configura como «Non», o sistema pode ser reinstalado e a configuración básica actual é a que se emprega para responder as preguntas que faga o script de instalación. Se non está activo, tamén desactiva GenericAgent, PackageManager e SQL Box.',
         'Display a warning and prevent search when using stop words within fulltext search.' =>
@@ -4801,6 +5138,7 @@ Thanks for your help!
         'E-Mail Outbound' => 'Correo electrónico De Ida',
         'Edit customer company' => 'Editar a empresa do cliente',
         'Email Addresses' => 'Enderezos de Correo Electronico',
+        'Email Outbound' => '',
         'Email sent to "%s".' => 'Correo Electrónico enviado a "%s".',
         'Email sent to customer.' => 'Mensaxe de correo enviada ao cliente.',
         'Enable keep-alive connection header for SOAP responses.' => 'Activar a cabeceira da conexión manterse-viva para respostas SOAP.',
@@ -5085,6 +5423,7 @@ Thanks for your help!
             '',
         'Includes article create times in the ticket search of the agent interface.' =>
             'Inclúe tempo creación artigo na busca de ticket da interface de axente.',
+        'Incoming Phone Call.' => '',
         'IndexAccelerator: to choose your backend TicketViewAccelerator module. "RuntimeDB" generates each queue view on the fly from ticket table (no performance problems up to approx. 60.000 tickets in total and 6.000 open tickets in the system). "StaticDB" is the most powerful module, it uses an extra ticket-index table that works like a view (recommended if more than 80.000 and 6.000 open tickets are stored in the system). Use the command "bin/otrs.Console.pl Maint::Ticket::QueueIndexRebuild" for initial index creation.' =>
             '',
         'Install ispell or aspell on the system, if you want to use a spell checker. Please specify the path to the aspell or ispell binary on your operating system.' =>
@@ -5142,6 +5481,7 @@ Thanks for your help!
         'List view' => 'Vista de lista',
         'Lithuanian' => '',
         'Lock / unlock this ticket' => '',
+        'Locked Tickets.' => '',
         'Locked ticket.' => 'Tícket bloqueado.',
         'Log file for the ticket counter.' => 'Arquivo log para o contador de ticket.',
         'Loop-Protection! No auto-response sent to "%s".' => 'Protección de bucle! Ningunha auto resposta enviada a "%s".',
@@ -5228,6 +5568,7 @@ Thanks for your help!
         'Multiselect' => 'Multiselección',
         'My Services' => 'Os meus servizos',
         'My Tickets' => 'Meus Tickets',
+        'My Tickets.' => '',
         'Name of custom queue. The custom queue is a queue selection of your preferred queues and can be selected in the preferences settings.' =>
             'Nome da fila personalizada. A fila personalizada é unha selección de filas das súas filas preferidas e pode ser seleccionada nas preferencias.',
         'Name of custom service. The custom service is a service selection of your preferred services and can be selected in the preferences settings.' =>
@@ -5270,9 +5611,12 @@ Thanks for your help!
         'Out Of Office' => 'Fóra da oficina',
         'Overloads (redefines) existing functions in Kernel::System::Ticket. Used to easily add customizations.' =>
             'Sobrecargas (redefine) funcións existentes en Kernel::System::Ticket. Utilizado para engadir facilmente personalizacións.',
-        'Overview Escalated Tickets' => 'Vista Xeral Tickets Escalados',
+        'Overview Escalated Tickets.' => '',
         'Overview Refresh Time' => 'Vista Xeral Tempo Recarga',
+        'Overview of all escalated tickets.' => '',
         'Overview of all open Tickets.' => 'Vista Xeral  de tódolos Tickets abertos.',
+        'Overview of all open tickets.' => '',
+        'Overview of customer tickets.' => '',
         'PGP Key Management' => 'Xestión Clave de PGP',
         'PGP Key Upload' => 'Carga Clave de PGP',
         'Package event module file a scheduler task for update registration.' =>
@@ -5329,6 +5673,7 @@ Thanks for your help!
         'Permitted width for compose email windows.' => 'Anchura permitida para compoñer ventás de correo electrónico.',
         'Permitted width for compose note windows.' => 'Anchura permitida para compoñer ventás de nota.',
         'Persian' => '',
+        'Phone Call.' => '',
         'Picture-Upload' => 'Carga-Imaxe',
         'Polish' => '',
         'Portuguese' => '',
@@ -5392,6 +5737,8 @@ Thanks for your help!
             'Permisos requiridos para empregar a pantalla de responsábel de tíckets da interface do axente.',
         'Resets and unlocks the owner of a ticket if it was moved to another queue.' =>
             'Restablece e desbloquea o propietario dun ticket se foi movido a outra cola.',
+        'Responsible Tickets' => '',
+        'Responsible Tickets.' => '',
         'Restores a ticket from the archive (only if the event is a state change, from closed to any open available state).' =>
             'Restablece un ticket dende o arquivo (só se o estado do evento cambia, de cerrado a calquera estado aberto dispoñible).',
         'Retains all services in listings even if they are children of invalid elements.' =>
@@ -5416,9 +5763,12 @@ Thanks for your help!
         'Schedule a maintenance period.' => 'Planifique un periodo mantemento.',
         'Screen' => '',
         'Search Customer' => 'Buscar clientes',
+        'Search Ticket.' => '',
+        'Search Tickets.' => '',
         'Search User' => 'Busque Usuario',
         'Search backend default router.' => 'Busca router por defecto de backend.',
         'Search backend router.' => 'Busca router backend.',
+        'Search.' => '',
         'Second Queue' => 'Segunda Cola',
         'Select your frontend Theme.' => 'Seleccione o seu Tema frontend.',
         'Selects the cache backend to use.' => 'Seleccione o cache backend a usar.',
@@ -5443,6 +5793,7 @@ Thanks for your help!
         'Serbian Cyrillic' => '',
         'Serbian Latin' => '',
         'Service view' => 'Vista de servizos',
+        'ServiceView' => '',
         'Set minimum loglevel. If you select \'error\', just errors are logged. With \'debug\' you get all logging messages.' =>
             '',
         'Set sender email addresses for this system.' => 'Estableza enderezos de correo electrónico de remitente para este sistema.',
@@ -5957,6 +6308,7 @@ Thanks for your help!
             'Este módulo de evento garda atributos de ClienteUsuario coma tickets CamposDinamicos. Por favor vexa o axuste arriba sobre como configurar o mapeado.',
         'This module and its PreRun() function will be executed, if defined, for every request. This module is useful to check some user options or to display news about new applications.' =>
             'Este módulo e a súa función PreRun() será executada, se definido, para cada petición. Este módulo é útil para comprobar algunhas  opcións de usuario ou para mostrar novas sobre novas aplicacións.',
+        'This module is part of the admin area of OTRS.' => '',
         'This option defines the dynamic field in which a Process Management activity entity id is stored.' =>
             'Esta opción define o campo dinámico no cal o id da entidade actividade Xestión Procedemento é almacenada.',
         'This option defines the dynamic field in which a Process Management process entity id is stored.' =>
@@ -5970,20 +6322,45 @@ Thanks for your help!
         'This setting allows you to override the built-in country list with your own list of countries. This is particularly handy if you just want to use a small select group of countries.' =>
             'Este axuste permite sobreescribir a lista construida de paises coa súa propia lista de paises. Isto é particularmente práctico se só quere usar un pequeno grupo seleccionado de países. ',
         'This will allow the system to send text messages via SMS.' => '',
+        'Ticket Close.' => '',
+        'Ticket Compose Bounce Email.' => '',
+        'Ticket Compose email Answer.' => '',
+        'Ticket Customer.' => '',
+        'Ticket Forward Email.' => '',
+        'Ticket FreeText.' => '',
+        'Ticket History.' => '',
+        'Ticket Lock.' => '',
+        'Ticket Merge.' => '',
+        'Ticket Move.' => '',
+        'Ticket Note.' => '',
         'Ticket Notifications' => '',
+        'Ticket Outbound Email.' => '',
+        'Ticket Owner.' => '',
+        'Ticket Pending.' => '',
+        'Ticket Print.' => '',
+        'Ticket Priority.' => '',
         'Ticket Queue Overview' => 'Vista xeral da fila de tíckets',
+        'Ticket Responsible.' => '',
+        'Ticket Zoom.' => '',
+        'Ticket bulk module.' => '',
         'Ticket event module that triggers the escalation stop events.' =>
             'Módulo evento de ticket que dispara os eventos de parada do escalado.',
         'Ticket moved into Queue "%s" (%s) from Queue "%s" (%s).' => 'O tícket foi movido á fila «%s» (%s) desde a fila «%s» (%s).',
         'Ticket notifications' => '',
         'Ticket overview' => 'Vista xeral de ticket',
+        'Ticket plain view of an email.' => '',
+        'Ticket zoom view.' => '',
+        'Ticket-Watcher' => '',
         'TicketNumber' => 'NúmeroTicket',
+        'Tickets.' => '',
         'Time in seconds that gets added to the actual time if setting a pending-state (default: 86400 = 1 day).' =>
             'Tempo en segundos que se engade á hora actual ao indicar estado pendente (predeterminado: 86400 = 1 día).',
         'Title updated: Old: "%s", New: "%s"' => 'Título actualizado: Anterior: «%s», Novo: «%s»',
+        'To download attachments.' => '',
         'Toggles display of OTRS FeatureAddons list in PackageManager.' =>
             'Alterna á mostra da lista de OTRS FeatureAddons no PackageManager.',
-        'Toolbar Item for a shortcut.' => 'Elemento da barra de ferramentas como atallo.',
+        'Toolbar Item for a shortcut. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
+            '',
         'Transport selection for ticket notifications.' => '',
         'Tree view' => 'Vista en árbore',
         'Triggers ticket escalation events and notification events for escalation.' =>
@@ -6027,6 +6404,7 @@ Thanks for your help!
         'View performance benchmark results.' => 'Ver os resultados das probas de banco de rendemento.',
         'View system log messages.' => 'Ver mensaxes log do sistema.',
         'Watch this ticket' => '',
+        'Watched Tickets.' => '',
         'We are performing scheduled maintenance.' => '',
         'We are performing scheduled maintenance. Login is temporarily not available.' =>
             '',

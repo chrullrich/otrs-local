@@ -13,6 +13,7 @@ use warnings;
 
 use Term::ANSIColor();
 use SOAP::Lite;
+use FileHandle;
 
 use Kernel::System::ObjectManager;
 ## nofilter(TidyAll::Plugin::OTRS::Perl::ObjectManagerCreation)
@@ -86,6 +87,11 @@ sub new {
     $Self->{XML}     = undef;
     $Self->{XMLUnit} = '';
 
+    open( $Self->{OriginalSTDOUT}, ">&STDOUT" );
+    open( $Self->{OriginalSTDERR}, ">&STDOUT" );
+    $Self->{OriginalSTDOUT}->autoflush(1);
+    $Self->{OriginalSTDERR}->autoflush(1);
+
     return $Self;
 }
 
@@ -96,8 +102,8 @@ Run all tests located in scripts/test/*.t and print result to stdout.
     $UnitTestObject->Run(
         Name      => 'JSON:User:Auth',  # optional, control which tests to select
         Directory => 'Selenium',        # optional, control which tests to select
-
         SubmitURL => $URL,              # optional, send results to unit test result server
+        Verbose   => 1,                 # optional (default 0), only show result details for all tests, not just failing
     );
 
 =cut
@@ -115,6 +121,8 @@ sub Run {
         $Directory .= "/$Param{Directory}";
         $Directory =~ s/\.//g;
     }
+
+    $Self->{Verbose} = $Param{Verbose};
 
     my @Files = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
         Directory => $Directory,
@@ -175,15 +183,27 @@ sub Run {
 
                 push @{ $Self->{NotOkInfo} }, [$File];
 
+                $Self->{OutputBuffer} = '';
+                local *STDOUT = *STDOUT;
+                local *STDERR = *STDERR;
+                if (!$Param{Verbose}) {
+                    undef *STDOUT;
+                    undef *STDERR;
+                    open STDOUT, '>:utf8', \$Self->{OutputBuffer};    ## no critic
+                    open STDERR, '>:utf8', \$Self->{OutputBuffer};    ## no critic
+                }
+
                 # HERE the actual tests are run!!!
-                if ( !eval ${$UnitTestFile} ) {    ## no critic
+                if ( !eval ${$UnitTestFile} ) {                   ## no critic
                     if ($@) {
                         $Self->True( 0, "ERROR: Error in $File: $@" );
-                        print STDERR "ERROR: Error in $File: $@\n";
+
+                        #print STDERR "ERROR: Error in $File: $@\n";
                     }
                     else {
                         $Self->True( 0, "ERROR: $File did not return a true value." );
-                        print STDERR "ERROR: $File did not return a true value.\n";
+
+                        #print STDERR "ERROR: $File did not return a true value.\n";
                     }
                 }
             }
@@ -785,6 +805,7 @@ sub _PrintHeadlineEnd {
         $Self->{Content} .= "</table><br>\n";
     }
     elsif ( $Self->{Output} eq 'ASCII' ) {
+        print "\n";
     }
 
     # calculate duration time
@@ -811,6 +832,11 @@ sub _Print {
         $PrintName = substr( $PrintName, 0, 1000 ) . "...";
     }
 
+    if ( $Self->{Output} eq 'ASCII' && ( $Self->{Verbose} || !$Test ) ) {
+        print { $Self->{OriginalSTDOUT} } $Self->{OutputBuffer};
+    }
+    $Self->{OutputBuffer} = '';
+
     $Self->{TestCount}++;
     if ($Test) {
         $Self->{TestCountOk}++;
@@ -819,7 +845,14 @@ sub _Print {
                 .= "<tr><td width='70' bgcolor='green'>ok $Self->{TestCount}</td><td>$Name</td></tr>\n";
         }
         elsif ( $Self->{Output} eq 'ASCII' ) {
-            print " " . $Self->_Color( 'green', "ok" ) . " $Self->{TestCount} - $PrintName\n";
+            if ( $Self->{Verbose} ) {
+                print { $Self->{OriginalSTDOUT} } " "
+                    . $Self->_Color( 'green', "ok" )
+                    . " $Self->{TestCount} - $PrintName\n";
+            }
+            else {
+                print { $Self->{OriginalSTDOUT} } $Self->_Color( 'green', "." );
+            }
         }
         $Self->{XML}->{Test}->{ $Self->{XMLUnit} }->{ $Self->{TestCount} }->{Result} = 'ok';
         $Self->{XML}->{Test}->{ $Self->{XMLUnit} }->{ $Self->{TestCount} }->{Name}   = $Name;
@@ -832,7 +865,9 @@ sub _Print {
                 .= "<tr><td width='70' bgcolor='red'>not ok $Self->{TestCount}</td><td>$Name</td></tr>\n";
         }
         elsif ( $Self->{Output} eq 'ASCII' ) {
-            print " " . $Self->_Color( 'red', "not ok" ) . " $Self->{TestCount} - $PrintName\n";
+            print { $Self->{OriginalSTDOUT} } " "
+                . $Self->_Color( 'red', "not ok" )
+                . " $Self->{TestCount} - $PrintName\n";
         }
         $Self->{XML}->{Test}->{ $Self->{XMLUnit} }->{ $Self->{TestCount} }->{Result} = 'not ok';
         $Self->{XML}->{Test}->{ $Self->{XMLUnit} }->{ $Self->{TestCount} }->{Name}   = $Name;

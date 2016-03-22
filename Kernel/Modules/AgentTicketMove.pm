@@ -11,6 +11,7 @@ package Kernel::Modules::AgentTicketMove;
 use strict;
 use warnings;
 
+use Kernel::Language qw(Translatable);
 use Kernel::System::VariableCheck qw(:all);
 
 our $ObjectManagerDisabled = 1;
@@ -44,7 +45,7 @@ sub Run {
     for my $Needed (qw(TicketID)) {
         if ( !$Self->{$Needed} ) {
             return $LayoutObject->ErrorScreen(
-                Message => "Need $Needed!",
+                Message => $LayoutObject->{LanguageObject}->Translate( 'Need %s!', $Needed ),
             );
         }
     }
@@ -237,6 +238,15 @@ sub Run {
     }
     if ( !$GetParam{DestQueueID} ) {
         $Error{DestQueue} = 1;
+    }
+
+    # check if destination queue is restricted by ACL
+    my %QueueList = $TicketObject->TicketMoveList(
+        TicketID => $Self->{TicketID},
+        UserID   => $Self->{UserID},
+    );
+    if ( $GetParam{DestQueueID} && !exists $QueueList{ $GetParam{DestQueueID} } ) {
+        return $LayoutObject->NoPermission( WithHeader => 'yes' );
     }
 
     # do not submit
@@ -697,9 +707,11 @@ sub Run {
 
                 if ( !IsHashRefWithData($ValidationResult) ) {
                     return $LayoutObject->ErrorScreen(
-                        Message =>
-                            "Could not perform validation on field $DynamicFieldConfig->{Label}!",
-                        Comment => 'Please contact the admin.',
+                        Message => $LayoutObject->{LanguageObject}->Translate(
+                            'Could not perform validation on field %s!',
+                            $DynamicFieldConfig->{Label},
+                        ),
+                        Comment => Translatable('Please contact the admin.'),
                     );
                 }
 

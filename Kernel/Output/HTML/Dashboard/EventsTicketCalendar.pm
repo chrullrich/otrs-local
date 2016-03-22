@@ -13,6 +13,8 @@ use warnings;
 
 use Kernel::System::VariableCheck qw(:all);
 
+use Kernel::Language qw(Translatable);
+
 our $ObjectManagerDisabled = 1;
 
 sub new {
@@ -134,6 +136,8 @@ sub Run {
     my $TimeObject   = $Kernel::OM->Get('Kernel::System::Time');
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
+    my $Content;
+
     if (%Tickets) {
         TICKET:
         for my $TicketID ( sort keys %Tickets ) {
@@ -158,7 +162,31 @@ sub Run {
                 my $EndTime = $TimeObject->TimeStamp2SystemTime(
                     String => $TicketDetail{ 'DynamicField_' . $EndTimeDynamicField },
                 );
-                next TICKET if $StartTime > $EndTime;
+
+                # check if start time is after end time
+                if ( $StartTime > $EndTime ) {
+
+                    # turn start and end time around for the calendar view
+                    my $NewStartTime = $EndTime;
+                    my $NewEndTime   = $StartTime;
+                    $StartTime = $NewStartTime;
+                    $EndTime   = $NewEndTime;
+
+                    # we also need to turn the time in the tooltip around, otherwiese the time bar display would be wrong
+                    $TicketDetail{ 'DynamicField_' . $StartTimeDynamicField } = $TimeObject->SystemTime2TimeStamp(
+                        SystemTime => $StartTime,
+                    );
+                    $TicketDetail{ 'DynamicField_' . $EndTimeDynamicField } = $TimeObject->SystemTime2TimeStamp(
+                        SystemTime => $EndTime,
+                    );
+
+                    # show a notification bar to indicate that the start and end time are set in a wrong way
+                    $Content .= $LayoutObject->Notify(
+                        Priority => 'Warning',
+                        Info     => Translatable('The start time of a ticket has been set after the end time!'),
+                        Link     => "index.pl?Action=AgentTicketZoom;TicketID=$TicketID",
+                    );
+                }
 
                 my %Data;
                 $Data{ID}    = $TicketID;
@@ -276,49 +304,17 @@ sub Run {
                         next DYNAMICFIELD if !$Self->{DynamicFieldLookup}->{$Item}->{Label};
 
                         # check if we need to format the date
-                        my $InfoValue = $TicketDetail{ 'DynamicField_' . $Item };
-                        if ( $Self->{DynamicFieldLookup}->{$Item}->{FieldType} eq 'DateTime' ) {
-                            $InfoValue = $LayoutObject->{LanguageObject}->FormatTimeString($InfoValue);
-                        }
-                        elsif ( $Self->{DynamicFieldLookup}->{$Item}->{FieldType} eq 'Date' ) {
-                            $InfoValue
-                                = $LayoutObject->{LanguageObject}->FormatTimeString( $InfoValue, 'DateFormatShort' );
-                        }
-                        elsif ( $Self->{DynamicFieldLookup}->{$Item}->{FieldType} eq 'Multiselect' ) {
-                            if ( IsArrayRefWithData($InfoValue) ) {
-
-                                my $DynamicFieldConfig
-                                    = $Kernel::OM->Get('Kernel::System::DynamicField')->DynamicFieldGet(
-                                    Name => $Item,
-                                    );
-
-                                # get possible values
-                                my $PossibleValues
-                                    = $Kernel::OM->Get('Kernel::System::DynamicField::Backend')->PossibleValuesGet(
-                                    DynamicFieldConfig => $DynamicFieldConfig,
-                                    );
-
-                                # include values for the selected keys
-                                my $DynamicFieldValues = [ map { $PossibleValues->{$_} } @{$InfoValue} ];
-
-                                # put all together in a single string
-                                $InfoValue = join ', ', @{$DynamicFieldValues};
-                            }
-                        }
-                        elsif ( $Self->{DynamicFieldLookup}->{$Item}->{FieldType} eq 'Checkbox' ) {
-                            if ($InfoValue) {
-                                $InfoValue = $LayoutObject->{LanguageObject}->Get('Selected');
-                            }
-                            if ( defined $InfoValue && $InfoValue eq '0' ) {
-                                $InfoValue = $LayoutObject->{LanguageObject}->Get('Not selected');
-                            }
-                        }
+                        my $DisplayValue = $Kernel::OM->Get('Kernel::System::DynamicField::Backend')->DisplayValueRender(
+                            DynamicFieldConfig => $Self->{DynamicFieldLookup}->{$Item},
+                            Value              => $TicketDetail{ 'DynamicField_' . $Item },
+                            LayoutObject       => $LayoutObject,
+                        );
 
                         $LayoutObject->Block(
                             Name => 'CalendarEventInfoDynamicFieldElement',
                             Data => {
                                 InfoLabel => $Self->{DynamicFieldLookup}->{$Item}->{Label},
-                                InfoValue => $InfoValue,
+                                InfoValue => $DisplayValue->{Value},
                             },
                         );
                     }
@@ -345,7 +341,7 @@ sub Run {
             }
     );
 
-    my $Content = $LayoutObject->Output(
+    $Content .= $LayoutObject->Output(
         TemplateFile => 'DashboardEventsTicketCalendar',
         Data         => {
             %{ $Self->{Config} },
