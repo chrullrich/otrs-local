@@ -11,6 +11,8 @@ package Kernel::Modules::AdminCustomerCompany;
 use strict;
 use warnings;
 
+use Kernel::Language qw(Translatable);
+
 our $ObjectManagerDisabled = 1;
 
 sub new {
@@ -146,7 +148,10 @@ sub Run {
         if ( $Errors{Duplicate} ) {
             $Output .= $LayoutObject->Notify(
                 Priority => 'Error',
-                Info     => "CustomerCompany $GetParam{CustomerID} already exists!.",
+                Info     => $LayoutObject->{LanguageObject}->Translate(
+                    'Customer Company %s already exists!',
+                    $GetParam{CustomerID},
+                ),
             );
         }
 
@@ -247,7 +252,9 @@ sub Run {
                 $Output .= $LayoutObject->NavigationBar(
                     Type => $NavigationBarType,
                 );
-                $Output .= $LayoutObject->Notify( Info => 'Customer company added!' );
+                $Output .= $LayoutObject->Notify(
+                    Info => Translatable('Customer company added!'),
+                );
                 $Output .= $LayoutObject->Output(
                     TemplateFile => 'AdminCustomerCompany',
                     Data         => \%Param,
@@ -269,7 +276,10 @@ sub Run {
         if ( $Errors{Duplicate} ) {
             $Output .= $LayoutObject->Notify(
                 Priority => 'Error',
-                Info     => "CustomerCompany $CustomerCompanyID already exists!.",
+                Info     => $LayoutObject->{LanguageObject}->Translate(
+                    'Customer Company %s already exists!',
+                    $CustomerCompanyID,
+                ),
             );
         }
 
