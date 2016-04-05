@@ -42,11 +42,11 @@ $Selenium->RunTest(
         # get sysconfig object
         my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
 
-        # enable PGP
+        # disable PGP in config
         $SysConfigObject->ConfigItemUpdate(
             Valid => 1,
             Key   => 'PGP',
-            Value => 1
+            Value => 0,
         );
 
         # get config object
@@ -56,17 +56,41 @@ $Selenium->RunTest(
         my $PGPPath = $ConfigObject->Get('Home') . "/var/tmp/pgp";
         mkpath( [$PGPPath], 0, 0770 );    ## no critic
 
+        # get script alias
+        my $ScriptAlias = $ConfigObject->Get('ScriptAlias');
+
+        # navigate to AdminPGP screen
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminPGP");
+
+        # check widget sidebar when PGP sysconfig is disabled
+        $Self->True(
+            $Selenium->find_element( 'h3 span.Warning', 'css' ),
+            "Widget sidebar with warning message is displayed.",
+        );
+        $Self->True(
+            $Selenium->find_element("//button[\@value='Enable it here!']"),
+            "Button 'Enable it here!' to the PGP SysConfig is displayed.",
+        );
+
+        # enable PGP in config
+        $SysConfigObject->ConfigItemUpdate(
+            Valid => 1,
+            Key   => 'PGP',
+            Value => 1,
+        );
+
+        # set PGP path in config
         $SysConfigObject->ConfigItemUpdate(
             Valid => 1,
             Key   => 'PGP::Options',
             Value => "--homedir $PGPPath --batch --no-tty --yes",
         );
 
-        # get script alias
-        my $ScriptAlias = $ConfigObject->Get('ScriptAlias');
+        # let mod_perl / Apache2::Reload pick up the changed configuration
+        sleep 3;
 
-        # navigate to AdminPGP screen
-        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminPGP");
+        # refresh AdminSPGP screen
+        $Selenium->VerifiedRefresh();
 
         # add first test PGP key
         $Selenium->find_element("//a[contains(\@href, \'Action=AdminPGP;Subaction=Add' )]")->VerifiedClick();

@@ -13,6 +13,7 @@ use strict;
 use warnings;
 
 use Kernel::System::VariableCheck qw(:all);
+use Kernel::Language qw(Translatable);
 
 our $ObjectManagerDisabled = 1;
 
@@ -57,7 +58,7 @@ sub Run {
                 if ( !$ApacheReload ) {
                     return $LayoutObject->ErrorScreen(
                         Message => Translatable(
-                            'Sorry, Apache::Reload is needed as PerlModule and PerlInitHandler in Apache config file. See also scripts/apache2-httpd.include.conf. Alternatively, you can use the commandline tool bin/otrs.Console.pl to install packages!'
+                            'Sorry, Apache::Reload is needed as PerlModule and PerlInitHandler in Apache config file. See also scripts/apache2-httpd.include.conf. Alternatively, you can use the command line tool bin/otrs.Console.pl to install packages!'
                         ),
                     );
                 }
@@ -526,7 +527,7 @@ sub Run {
             $Output .= $LayoutObject->Notify(
                 Priority => 'Error',
                 Data     => "$Name $Version - "
-                    . $LayoutObject->{LanguageObject}->Translate(
+                    . Translatable(
                     "Package not verified by the OTRS Group! It is recommended not to use this package."
                     ),
             );
@@ -1659,9 +1660,7 @@ sub Run {
         $Output .= $LayoutObject->Notify(
             Priority => 'Error',
             Data     => "$Package $NotVerifiedPackages{$Package} - "
-                . $LayoutObject->{LanguageObject}->Translate(
-                "Package not verified by the OTRS Group! It is recommended not to use this package."
-                ),
+                . Translatable("Package not verified by the OTRS Group! It is recommended not to use this package."),
         );
     }
 
@@ -1676,9 +1675,7 @@ sub Run {
             $Output .= $LayoutObject->Notify(
                 Priority => 'Error',
                 Data     => "$Package $UnknownVerficationPackages{$Package} - "
-                    . $LayoutObject->{LanguageObject}->Translate(
-                    "Package not verified due a communication issue with verification server!"
-                    ),
+                    . Translatable("Package not verified due a communication issue with verification server!"),
             );
         }
     }
