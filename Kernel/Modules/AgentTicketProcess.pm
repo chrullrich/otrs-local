@@ -157,9 +157,8 @@ sub Run {
                             Type => 'Small',
                         );
                         $Output .= $LayoutObject->Warning(
-                            Message =>
-                                'Sorry, you need to be the ticket owner to perform this action.',
-                            Comment => 'Please change the owner first.',
+                            Message => Translatable('Sorry, you need to be the ticket owner to perform this action.'),
+                            Comment => Translatable('Please change the owner first.'),
                         );
                         $Output .= $LayoutObject->Footer(
                             Type => 'Small',
@@ -412,7 +411,7 @@ sub Run {
         );
     }
     return $LayoutObject->ErrorScreen(
-        Message => Translatable('Subacion is invalid!'),
+        Message => Translatable('Subaction is invalid!'),
         Comment => Translatable('Please contact the admin.'),
     );
 }
@@ -429,14 +428,16 @@ sub _RenderAjax {
     for my $Needed (qw(ProcessEntityID)) {
         if ( !$Param{$Needed} ) {
             $LayoutObject->FatalError(
-                Message => $LayoutObject->{LanguageObject}->Translate( 'Got no %s in _RenderAjax!', $Needed ),
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Parameter %s is missing in %s.', $Needed, '_RenderAjax' ),
             );
         }
     }
     my $ActivityDialogEntityID = $Param{GetParam}{ActivityDialogEntityID};
     if ( !$ActivityDialogEntityID ) {
         $LayoutObject->FatalError(
-            Message => Translatable('Got no ActivityDialogEntityID in _RenderAjax!'),
+            Message => $LayoutObject->{LanguageObject}
+                ->Translate( 'Parameter %s is missing in %s.', 'ActivityDialogEntityID', '_RenderAjax' ),
         );
     }
     my $ActivityDialog = $Kernel::OM->Get('Kernel::System::ProcessManagement::ActivityDialog')->ActivityDialogGet(
@@ -803,7 +804,8 @@ sub _GetParam {
     for my $Needed (qw(ProcessEntityID)) {
         if ( !$Param{$Needed} ) {
             $LayoutObject->FatalError(
-                Message => $LayoutObject->{LanguageObject}->Translate( 'Got no %s in _GetParam!', $Needed ),
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Parameter %s is missing in %s.', $Needed, '_GetParam' ),
             );
         }
     }
@@ -1332,7 +1334,7 @@ sub _OutputActivityDialog {
     );
     if ( !$Activity ) {
         my $Message = $LayoutObject->{LanguageObject}->Translate(
-            'Can\'t get Activity configuration for ActivityEntityID %s!',
+            'Can\'t get Activity configuration for ActivityEntityID "%s"!',
             $ActivityActivityDialog->{Activity},
         );
 
@@ -2198,14 +2200,16 @@ sub _RenderPendingTime {
         if ( !$Param{$Needed} ) {
             return {
                 Success => 0,
-                Message => $LayoutObject->{LanguageObject}->Translate( 'Got no %s in _RenderResponsible!', $Needed ),
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Parameter %s is missing in %s.', $Needed, '_RenderResponsible' ),
             };
         }
     }
     if ( !IsHashRefWithData( $Param{ActivityDialogField} ) ) {
         return {
             Success => 0,
-            Message => Translatable('Got no ActivityDialogField in _RenderPendingTime!'),
+            Message => $LayoutObject->{LanguageObject}
+                ->Translate( 'Parameter %s is missing in %s.', 'ActivityDialogField', '_RenderPendingTime' ),
         };
     }
 
@@ -2299,7 +2303,8 @@ sub _RenderDynamicField {
         if ( !$Param{$Needed} ) {
             return {
                 Success => 0,
-                Message => $LayoutObject->{LanguageObject}->Translate( 'Got no %s in _RenderDynamicField!', $Needed ),
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Parameter %s is missing in %s.', $Needed, '_RenderDynamicField' ),
             };
         }
     }
@@ -2458,14 +2463,16 @@ sub _RenderTitle {
         if ( !$Param{$Needed} ) {
             return {
                 Success => 0,
-                Message => $LayoutObject->{LanguageObject}->Translate( 'Got no %s in _RenderTitle!', $Needed ),
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Parameter %s is missing in %s.', $Needed, '_RenderTitle' ),
             };
         }
     }
     if ( !IsHashRefWithData( $Param{ActivityDialogField} ) ) {
         return {
             Success => 0,
-            Message => Translatable('Got no ActivityDialogField in _RenderTitle!'),
+            Message => $LayoutObject->{LanguageObject}
+                ->Translate( 'Parameter %s is missing in %s.', 'ActivityDialogField', '_RenderTitle' ),
         };
     }
 
@@ -2539,14 +2546,16 @@ sub _RenderArticle {
         if ( !$Param{$Needed} ) {
             return {
                 Success => 0,
-                Message => $LayoutObject->{LanguageObject}->Translate( 'Got no %s in _RenderArticle!', $Needed ),
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Parameter %s is missing in %s.', $Needed, '_RenderArticle' ),
             };
         }
     }
     if ( !IsHashRefWithData( $Param{ActivityDialogField} ) ) {
         return {
             Success => 0,
-            Message => Translatable('Got no ActivityDialogField in _RenderArticle!'),
+            Message => $LayoutObject->{LanguageObject}
+                ->Translate( 'Parameter %s is missing in %s.', 'ActivityDialogField', '_RenderArticle' ),
         };
     }
 
@@ -2739,14 +2748,16 @@ sub _RenderCustomer {
         if ( !$Param{$Needed} ) {
             return {
                 Success => 0,
-                Message => $LayoutObject->{LanguageObject}->Translate( 'Got no %s in _RenderResponsible!', $Needed ),
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Parameter %s is missing in %s.', $Needed, '_RenderResponsible' ),
             };
         }
     }
     if ( !IsHashRefWithData( $Param{ActivityDialogField} ) ) {
         return {
             Success => 0,
-            Message => Translatable('Got no ActivityDialogField in _RenderCustomer!'),
+            Message => $LayoutObject->{LanguageObject}
+                ->Translate( 'Parameter %s is missing in %s.', 'ActivityDialogField', '_RenderCustomer' ),
         };
     }
 
@@ -2855,14 +2866,16 @@ sub _RenderResponsible {
         if ( !$Param{$Needed} ) {
             return {
                 Success => 0,
-                Message => $LayoutObject->{LanguageObject}->Translate( 'Got no %s in _RenderResponsible!', $Needed ),
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Parameter %s is missing in %s.', $Needed, '_RenderResponsible' ),
             };
         }
     }
     if ( !IsHashRefWithData( $Param{ActivityDialogField} ) ) {
         return {
             Success => 0,
-            Message => Translatable('Got no ActivityDialogField in _RenderResponsible!'),
+            Message => $LayoutObject->{LanguageObject}
+                ->Translate( 'Parameter %s is missing in %s.', 'ActivityDialogField', '_RenderResponsible' ),
         };
     }
 
@@ -3026,14 +3039,16 @@ sub _RenderOwner {
         if ( !$Param{$Needed} ) {
             return {
                 Success => 0,
-                Message => $LayoutObject->{LanguageObject}->Translate( 'Got no %s in _RenderOwner!', $Needed ),
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Parameter %s is missing in %s.', $Needed, '_RenderOwner' ),
             };
         }
     }
     if ( !IsHashRefWithData( $Param{ActivityDialogField} ) ) {
         return {
             Success => 0,
-            Message => Translatable('Got no ActivityDialogField in _RenderOwner!'),
+            Message => $LayoutObject->{LanguageObject}
+                ->Translate( 'Parameter %s is missing in %s.', 'ActivityDialogField', '_RenderOwner' ),
         };
     }
 
@@ -3200,14 +3215,16 @@ sub _RenderSLA {
         if ( !$Param{$Needed} ) {
             return {
                 Success => 0,
-                Message => $LayoutObject->{LanguageObject}->Translate( 'Got no %s in _RenderSLA!', $Needed ),
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Parameter %s is missing in %s.', $Needed, '_RenderSLA' ),
             };
         }
     }
     if ( !IsHashRefWithData( $Param{ActivityDialogField} ) ) {
         return {
             Success => 0,
-            Message => Translatable('Got no ActivityDialogField in _RenderSLA!'),
+            Message => $LayoutObject->{LanguageObject}
+                ->Translate( 'Parameter %s is missing in %s.', 'ActivityDialogField', '_RenderSLA' ),
         };
     }
 
@@ -3364,14 +3381,16 @@ sub _RenderService {
         if ( !$Param{$Needed} ) {
             return {
                 Success => 0,
-                Message => $LayoutObject->{LanguageObject}->Translate( 'Got no %s in _RenderService!', $Needed ),
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Parameter %s is missing in %s.', $Needed, '_RenderService' ),
             };
         }
     }
     if ( !IsHashRefWithData( $Param{ActivityDialogField} ) ) {
         return {
             Success => 0,
-            Message => Translatable('Got no ActivityDialogField in _RenderService!'),
+            Message => $LayoutObject->{LanguageObject}
+                ->Translate( 'Parameter %s is missing in %s.', 'ActivityDialogField', '_RenderService' ),
         };
     }
 
@@ -3535,14 +3554,16 @@ sub _RenderLock {
         if ( !$Param{$Needed} ) {
             return {
                 Success => 0,
-                Message => $LayoutObject->{LanguageObject}->Translate( 'Got no %s in _RenderLock!', $Needed ),
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Parameter %s is missing in %s.', $Needed, '_RenderLock' ),
             };
         }
     }
     if ( !IsHashRefWithData( $Param{ActivityDialogField} ) ) {
         return {
             Success => 0,
-            Message => Translatable('Got no ActivityDialogField in _RenderLock!'),
+            Message => $LayoutObject->{LanguageObject}
+                ->Translate( 'Parameter %s is missing in %s.', 'ActivityDialogField', '_RenderLock' ),
         };
     }
 
@@ -3667,14 +3688,16 @@ sub _RenderPriority {
         if ( !$Param{$Needed} ) {
             return {
                 Success => 0,
-                Message => $LayoutObject->{LanguageObject}->Translate( 'Got no %s in _RenderPriority!', $Needed ),
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Parameter %s is missing in %s.', $Needed, '_RenderPriority' ),
             };
         }
     }
     if ( !IsHashRefWithData( $Param{ActivityDialogField} ) ) {
         return {
             Success => 0,
-            Message => Translatable('Got no ActivityDialogField in _RenderPriority!'),
+            Message => $LayoutObject->{LanguageObject}
+                ->Translate( 'Parameter %s is missing in %s.', 'ActivityDialogField', '_RenderPriority' ),
         };
     }
 
@@ -3803,14 +3826,16 @@ sub _RenderQueue {
         if ( !$Param{$Needed} ) {
             return {
                 Success => 0,
-                Message => $LayoutObject->{LanguageObject}->Translate( 'Got no %s in _RenderQueue!', $Needed ),
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Parameter %s is missing in %s.', $Needed, '_RenderQueue' ),
             };
         }
     }
     if ( !IsHashRefWithData( $Param{ActivityDialogField} ) ) {
         return {
             Success => 0,
-            Message => Translatable('Got no ActivityDialogField in _RenderQueue!'),
+            Message => $LayoutObject->{LanguageObject}
+                ->Translate( 'Parameter %s is missing in %s.', 'ActivityDialogField', '_RenderQueue' ),
         };
     }
 
@@ -3947,14 +3972,16 @@ sub _RenderState {
         if ( !$Param{$Needed} ) {
             return {
                 Success => 0,
-                Message => $LayoutObject->{LanguageObject}->Translate( 'Got no %s in _RenderState!', $Needed ),
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Parameter %s is missing in %s.', $Needed, '_RenderState' ),
             };
         }
     }
     if ( !IsHashRefWithData( $Param{ActivityDialogField} ) ) {
         return {
             Success => 0,
-            Message => Translatable('Got no ActivityDialogField in _RenderState!'),
+            Message => $LayoutObject->{LanguageObject}
+                ->Translate( 'Parameter %s is missing in %s.', 'ActivityDialogField', '_RenderState' ),
         };
     }
 
@@ -4078,14 +4105,16 @@ sub _RenderType {
         if ( !$Param{$Needed} ) {
             return {
                 Success => 0,
-                Message => $LayoutObject->{LanguageObject}->Translate( 'Got no %s in _RenderType!', $Needed ),
+                Message => $LayoutObject->{LanguageObject}
+                    ->Translate( 'Parameter %s is missing in %s.', $Needed, '_RenderType' ),
             };
         }
     }
     if ( !IsHashRefWithData( $Param{ActivityDialogField} ) ) {
         return {
             Success => 0,
-            Message => Translatable('Got no ActivityDialogField in _RenderType!'),
+            Message => $LayoutObject->{LanguageObject}
+                ->Translate( 'Parameter %s is missing in %s.', 'ActivityDialogField', '_RenderType' ),
         };
     }
 
@@ -4652,7 +4681,7 @@ sub _StoreActivityDialog {
             if ( !IsHashRefWithData( \%Ticket ) ) {
                 $LayoutObject->FatalError(
                     Message => $LayoutObject->{LanguageObject}->Translate(
-                        'Could not Store ActivityDialog, invalid TicketID: %s!',
+                        'Could not store ActivityDialog, invalid TicketID: %s!',
                         $TicketID,
                     ),
                     Comment => Translatable('Please contact the admin.'),
@@ -4778,7 +4807,7 @@ sub _StoreActivityDialog {
         if ( !IsHashRefWithData( \%Ticket ) ) {
             $LayoutObject->FatalError(
                 Message => $LayoutObject->{LanguageObject}->Translate(
-                    'Could not Store ActivityDialog, invalid TicketID: %s!',
+                    'Could not store ActivityDialog, invalid TicketID: %s!',
                     $TicketID,
                 ),
             );
