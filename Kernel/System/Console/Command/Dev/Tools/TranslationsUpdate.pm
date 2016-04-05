@@ -26,6 +26,7 @@ our @ObjectDependencies = (
     'Kernel::System::Encode',
     'Kernel::System::Main',
     'Kernel::System::SysConfig',
+    'Kernel::System::Time',
 );
 
 sub Configure {
@@ -204,6 +205,15 @@ sub HandleLanguage {
             Recursive => 1,
         );
 
+        if ($IsSubTranslation) {
+            my @CustomTemplateList = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
+                Directory => "$ModuleDirectory/Custom/Kernel/Output/HTML/Templates/$DefaultTheme",
+                Filter    => '*.tt',
+                Recursive => 1,
+            );
+            push @TemplateList, @CustomTemplateList;
+        }
+
         for my $File (@TemplateList) {
 
             my $ContentRef = $Kernel::OM->Get('Kernel::System::Main')->FileRead(
@@ -251,6 +261,15 @@ sub HandleLanguage {
             Filter    => '*.pm',
             Recursive => 1,
         );
+
+        if ($IsSubTranslation) {
+            my @CustomPerlModuleList = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
+                Directory => "$ModuleDirectory/Custom/Kernel",
+                Filter    => '*.pm',
+                Recursive => 1,
+            );
+            push @PerlModuleList, @CustomPerlModuleList;
+        }
 
         FILE:
         for my $File (@PerlModuleList) {
@@ -580,11 +599,19 @@ sub WritePOTFile {
 
     my $Package = $Param{Module} // 'OTRS';
 
+    my $TimeObject   = $Kernel::OM->Get('Kernel::System::Time');
+    my $CreationDate = $TimeObject->SystemTime2TimeStamp(
+        SystemTime => $TimeObject->SystemTime(),
+    );
+
+    # only YEAR-MO-DA HO:MI is needed without seconds
+    $CreationDate = substr( $CreationDate, 0, -3 ) . '+0000';
+
     push @POTEntries, Locale::PO->new(
         -msgid => '',
         -msgstr =>
             "Project-Id-Version: $Package\n" .
-            "POT-Creation-Date: 2014-08-08 19:10+0200\n" .
+            "POT-Creation-Date: $CreationDate\n" .
             "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n" .
             "Last-Translator: FULL NAME <EMAIL\@ADDRESS>\n" .
             "Language-Team: LANGUAGE <LL\@li.org>\n" .

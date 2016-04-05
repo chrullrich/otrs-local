@@ -144,6 +144,31 @@ $Selenium->RunTest(
             "Queue is Raw",
         );
 
+        # check reply button
+        $Selenium->find_element("//a[contains(\@id, \'ReplyButton' )]")->click();
+        $Selenium->find_element("//button[contains(\@value, \'Submit' )]");
+
+        # change the ticket state to 'merged'
+        my $Merged = $TicketObject->TicketStateSet(
+            State    => 'merged',
+            TicketID => $TicketID,
+            UserID   => 1,
+        );
+        $Self->True(
+            $Merged,
+            "Ticket state changed to 'merged'",
+        );
+
+        # refresh the page
+        $Selenium->VerifiedRefresh();
+
+        # check if reply button is missing in merged ticket (bug#7301)
+        $Self->Is(
+            $Selenium->execute_script('return $("a#ReplyButton").length'),
+            0,
+            "Reply button not found",
+        );
+
         # check print button
         $Selenium->find_element("//a[contains(\@href, \'Action=CustomerTicketPrint;' )]")->VerifiedClick();
 
@@ -154,7 +179,7 @@ $Selenium->RunTest(
         );
         $Self->True(
             $Success,
-            "Ticket is deleted - $TicketID"
+            "Ticket is deleted - $TicketID",
         );
 
         # make sure the cache is correct
@@ -162,5 +187,3 @@ $Selenium->RunTest(
 
     }
 );
-
-1;
