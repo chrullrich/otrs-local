@@ -211,7 +211,7 @@ Core.UI.Dialog = (function (TargetNS) {
             var $CloseButton = $('.Dialog:visible button.Close');
 
             // publish close event
-            Core.App.Publish('Event.UI.Dialog.CloseDialog.Close', $Dialog);
+            Core.App.Publish('Event.UI.Dialog.CloseDialog.Close', [$Dialog]);
 
             // Hide any possibly existing tooltips.
             if (Core.Form && Core.Form.ErrorTooltips) {
@@ -602,7 +602,7 @@ Core.UI.Dialog = (function (TargetNS) {
         DialogCopySelector = Core.Data.Get($Dialog, 'DialogCopySelector');
 
         // publish close event
-        Core.App.Publish('Event.UI.Dialog.CloseDialog.Close', $Dialog);
+        Core.App.Publish('Event.UI.Dialog.CloseDialog.Close', [$Dialog]);
 
         $Dialog.remove();
         $('#Overlay').remove();
