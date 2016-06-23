@@ -527,7 +527,7 @@ sub Run {
             $Output .= $LayoutObject->Notify(
                 Priority => 'Error',
                 Data     => "$Name $Version - "
-                    . Translatable(
+                    . $LayoutObject->{LanguageObject}->Translate(
                     "Package not verified by the OTRS Group! It is recommended not to use this package."
                     ),
             );
@@ -1660,7 +1660,9 @@ sub Run {
         $Output .= $LayoutObject->Notify(
             Priority => 'Error',
             Data     => "$Package $NotVerifiedPackages{$Package} - "
-                . Translatable("Package not verified by the OTRS Group! It is recommended not to use this package."),
+                . $LayoutObject->{LanguageObject}->Translate(
+                "Package not verified by the OTRS Group! It is recommended not to use this package."
+                ),
         );
     }
 
@@ -1675,7 +1677,9 @@ sub Run {
             $Output .= $LayoutObject->Notify(
                 Priority => 'Error',
                 Data     => "$Package $UnknownVerficationPackages{$Package} - "
-                    . Translatable("Package not verified due a communication issue with verification server!"),
+                    . $LayoutObject->{LanguageObject}->Translate(
+                    "Package not verified due a communication issue with verification server!"
+                    ),
             );
         }
     }
@@ -2122,7 +2126,7 @@ sub _GetFeatureAddonData {
     # as this is the only operation an unsuccessful request means that the operation was also
     # unsuccessful
     if ( !IsHashRefWithData($RequestResult) ) {
-        return "Can't connect to OTRS Feature Add-on list server!";
+        return Translatable('Can\'t connect to OTRS Feature Add-on list server!');
     }
 
     my $OperationResult = $CloudServiceObject->OperationResultGet(
@@ -2132,10 +2136,10 @@ sub _GetFeatureAddonData {
     );
 
     if ( !IsHashRefWithData($OperationResult) ) {
-        return "Can't get OTRS Feature Add-on list from server";
+        return Translatable('Can\'t get OTRS Feature Add-on list from server!');
     }
     elsif ( !$OperationResult->{Success} ) {
-        return $OperationResult->{ErrorMessage} || "Can't get OTRS Feature Add-on from server!";
+        return $OperationResult->{ErrorMessage} || Translatable('Can\'t get OTRS Feature Add-on from server!');
     }
 
     my $FAOFeed = $OperationResult->{Data}->{FAOs};

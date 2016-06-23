@@ -17,6 +17,7 @@ use File::Temp();
 
 use Kernel::Config;
 use Kernel::System::User;
+use Kernel::System::UnitTest::Helper;
 
 our @ObjectDependencies = (
     'Kernel::Config',
@@ -100,85 +101,16 @@ sub new {
 
     #$Self->debug_on();
 
-    # Cleanup any leftovers from a previous session
-    my ( $MainHandle, @AdditionalHandles ) = @{ $Self->get_window_handles() // [] };
-    if (@AdditionalHandles) {
-        for my $Handle (@AdditionalHandles) {
-            $Self->switch_to_window($Handle);
-            $Self->close();
-        }
-    }
-
-    # make sure focus is correct
-    $Self->switch_to_window($MainHandle);
-
-    # just in case there are pending modal dialogs
-    eval { $Self->accept_alert(); };
-    eval { $Self->delete_all_cookies(); };
-    $Self->SUPER::get('about:blank');
-    eval { $Self->accept_alert(); };
-
     # set screen size from config or use defauls
-    my $Height = $SeleniumTestsConfig{window_height} || 1000;
-    my $Width  = $SeleniumTestsConfig{window_width}  || 1200;
+    my $Height = $SeleniumTestsConfig{window_height} || 1200;
+    my $Width  = $SeleniumTestsConfig{window_width}  || 1400;
+
     $Self->set_window_size( $Height, $Width );
 
-    # get remote host with some precautions for certain unit test systems
-    my $FQDN = $Kernel::OM->Get('Kernel::Config')->Get('FQDN');
-
-    # try to resolve fqdn host
-    if ( $FQDN ne 'yourhost.example.com' && gethostbyname($FQDN) ) {
-        $Self->{BaseURL} = $FQDN;
-    }
-
-    # try to resolve localhost instead
-    if ( !$Self->{BaseURL} && gethostbyname('localhost') ) {
-        $Self->{BaseURL} = 'localhost';
-    }
-
-    # use hardcoded localhost ip address
-    if ( !$Self->{BaseURL} ) {
-        $Self->{BaseURL} = '127.0.0.1';
-    }
-
-    $Self->{BaseURL} = $Kernel::OM->Get('Kernel::Config')->Get('HttpType') . '://' . $Self->{BaseURL};
+    $Self->{BaseURL} = $Kernel::OM->Get('Kernel::Config')->Get('HttpType') . '://';
+    $Self->{BaseURL} .= Kernel::System::UnitTest::Helper->GetTestHTTPHostname();
 
     return $Self;
-}
-
-#
-# Reuse Selenium session in subsequent tests. For this, we store the Selenium object in a global instance
-#   variable and take over the SessionID from it if a new one is created.
-#
-
-our $Instance;
-our $SessionRequests;
-
-sub _request_new_session {    ## no critic
-    my ( $Self, $Arguments ) = @_;
-
-    # First time call, or session refresh needed?
-    if ( !$Instance || $SessionRequests++ > 100 ) {
-        $Instance->quit() if $Instance;
-        $Self->SUPER::_request_new_session($Arguments);
-        $SessionRequests = 1;
-    }
-
-    # Reuse session from previous Selenium object.
-    else {
-        $Self->session_id( $Instance->session_id() );
-    }
-
-    # Remember new instance.
-    $Instance = $Self;
-    $Self->auto_close(0);
-}
-
-END {
-    # Cleanup: close Selenium session.
-    if ($Instance) {
-        $Instance->SUPER::quit();
-    }
 }
 
 =item RunTest()
@@ -220,9 +152,6 @@ sub _execute_command {    ## no critic
 
     my $Result = $Self->SUPER::_execute_command( $Res, $Params );
 
-    # Skip the rest if we are in global destruction phase (Selenium scenario shutdown).
-    return $Result if !$Kernel::OM;
-
     my $TestName = 'Selenium command success: ';
     $TestName .= $Kernel::OM->Get('Kernel::System::Main')->Dump(
         {
@@ -230,8 +159,6 @@ sub _execute_command {    ## no critic
             %{ $Params || {} },
         }
     );
-
-    return if !$Self->{UnitTestObject};
 
     $Self->{UnitTestObject}->True( 1, $TestName );
 
@@ -344,18 +271,9 @@ sub Login {
             $ScriptAlias .= 'customer.pl';
         }
 
-        # First load the page so we can delete any pre-existing cookies
         $Self->get("${ScriptAlias}");
         $Self->delete_all_cookies();
-
-        # Now load it again to login
-        $Self->VerifiedGet("${ScriptAlias}");
-
-        $Self->find_element( 'input#User',     'css' )->send_keys( $Param{User} );
-        $Self->find_element( 'input#Password', 'css' )->send_keys( $Param{Password} );
-
-        # login
-        $Self->find_element( 'input#User', 'css' )->VerifiedSubmit();
+        $Self->VerifiedGet("${ScriptAlias}?Action=Login;User=$Param{User};Password=$Param{Password}");
 
         # login successful?
         $Self->find_element( 'a#LogoutButton', 'css' );    # dies if not found
@@ -463,10 +381,10 @@ cleanup. Adds a unit test result to indicate the shutdown.
 sub DESTROY {
     my $Self = shift;
 
-    # # Could be missing on early die.
-    # if ( $Self->{UnitTestObject} ) {
-    #     $Self->{UnitTestObject}->True( 1, "Shutting down Selenium scenario." );
-    # }
+    # Could be missing on early die.
+    if ( $Self->{UnitTestObject} ) {
+        $Self->{UnitTestObject}->True( 1, "Shutting down Selenium scenario." );
+    }
 
     if ( $Self->{SeleniumTestsActive} ) {
         $Self->SUPER::DESTROY();
