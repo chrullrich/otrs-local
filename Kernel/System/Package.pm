@@ -118,9 +118,6 @@ sub new {
 
     $Self->{Home} = $Self->{ConfigObject}->Get('Home');
 
-    # permission check
-    die if !$Self->_FileSystemCheck();
-
     # init of event handler
     $Self->EventHandlerInit(
         Config => 'Package::EventModulePost',
