@@ -154,11 +154,13 @@ Core.UI.AdvancedChart = (function (TargetNS) {
 
         nv.addGraph(function() {
 
-            var Chart = nv.models.lineChart(),
+            var Chart = nv.models.OTRSlineChart(),
                 ShowLegend = Options.HideLegend ? false : true;
 
             // don't let nv/d3 exceptions block the rest of OTRS JavaScript
             try {
+
+                Chart.staggerLabels(true);
 
                 Chart.margin({
                     top: 20,
@@ -286,7 +288,7 @@ Core.UI.AdvancedChart = (function (TargetNS) {
 
         nv.addGraph(function() {
 
-            var Chart = nv.models.lineChart(),
+            var Chart = nv.models.OTRSlineChart(),
                 ShowLegend = Options.HideLegend ? false : true;
 
             // don't let nv/d3 exceptions block the rest of OTRS JavaScript
@@ -432,6 +434,8 @@ Core.UI.AdvancedChart = (function (TargetNS) {
             // don't let nv/d3 exceptions block the rest of OTRS JavaScript
             try {
 
+                Chart.staggerLabels(true);
+
                 Chart.margin({
                     top: 20,
                     right: 20,
@@ -441,8 +445,6 @@ Core.UI.AdvancedChart = (function (TargetNS) {
 
                 Chart.duration(Options.Duration || 0);
                 Chart.showLegend(ShowLegend);
-
-                Chart.staggerLabels(true);
 
                 Chart.tooltips(function(key, x, y) {
                     return '<h3>' + key + '</h3>' + '<p>' + x + ': ' + y + '</p>';
@@ -580,11 +582,13 @@ Core.UI.AdvancedChart = (function (TargetNS) {
             // don't let nv/d3 exceptions block the rest of OTRS JavaScript
             try {
 
+                Chart.staggerLabels(true);
+
                 Chart.margin({
                     top: 20,
-                    right: 30,
-                    bottom: 30,
-                    left: 60
+                    right: 50,
+                    bottom: 50,
+                    left: 50
                 });
 
                 Chart.duration(Options.Duration || 0);
