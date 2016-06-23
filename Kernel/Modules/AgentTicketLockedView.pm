@@ -104,10 +104,12 @@ sub Run {
 
         if ( $ColumnName eq 'CustomerID' ) {
             push @{ $ColumnFilter{$ColumnName} }, $FilterValue;
+            push @{ $ColumnFilter{ $ColumnName . 'Raw' } }, $FilterValue;
             $GetColumnFilter{$ColumnName} = $FilterValue;
         }
         elsif ( $ColumnName eq 'CustomerUserID' ) {
-            push @{ $ColumnFilter{CustomerUserLogin} }, $FilterValue;
+            push @{ $ColumnFilter{CustomerUserLogin} },    $FilterValue;
+            push @{ $ColumnFilter{CustomerUserLoginRaw} }, $FilterValue;
             $GetColumnFilter{$ColumnName} = $FilterValue;
         }
         else {
@@ -231,7 +233,9 @@ sub Run {
 
     # check if filter is valid
     if ( !$Filters{$Filter} ) {
-        $LayoutObject->FatalError( Message => "Invalid Filter: $Filter!" );
+        $LayoutObject->FatalError(
+            Message => $LayoutObject->{LanguageObject}->Translate( 'Invalid Filter: %s!', $Filter ),
+        );
     }
 
     # do shown tickets lookup

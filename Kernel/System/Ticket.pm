@@ -15,6 +15,7 @@ use File::Path;
 use utf8;
 use Encode ();
 
+use Kernel::Language qw(Translatable);
 use Kernel::System::EventHandler;
 use Kernel::System::Ticket::Article;
 use Kernel::System::Ticket::TicketACL;
@@ -582,10 +583,36 @@ sub TicketDelete {
         if ( !$Param{$Needed} ) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
-                Message  => "Need $Needed!"
+                Message  => "Need $Needed!",
             );
             return;
         }
+    }
+
+    # get dynamic field objects
+    my $DynamicFieldObject        = $Kernel::OM->Get('Kernel::System::DynamicField');
+    my $DynamicFieldBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
+
+    # get all dynamic fields for the object type Ticket
+    my $DynamicFieldListTicket = $DynamicFieldObject->DynamicFieldListGet(
+        ObjectType => 'Ticket',
+        Valid      => 0,
+    );
+
+    # delete dynamicfield values for this ticket
+    DYNAMICFIELD:
+    for my $DynamicFieldConfig ( @{$DynamicFieldListTicket} ) {
+
+        next DYNAMICFIELD if !$DynamicFieldConfig;
+        next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
+        next DYNAMICFIELD if !$DynamicFieldConfig->{Name};
+        next DYNAMICFIELD if !IsHashRefWithData( $DynamicFieldConfig->{Config} );
+
+        $DynamicFieldBackendObject->ValueDelete(
+            DynamicFieldConfig => $DynamicFieldConfig,
+            ObjectID           => $Param{TicketID},
+            UserID             => $Param{UserID},
+        );
     }
 
     # clear ticket cache
@@ -619,6 +646,12 @@ sub TicketDelete {
         Bind => [ \$Param{TicketID} ],
     );
 
+    # delete ticket flag cache
+    $Kernel::OM->Get('Kernel::System::Cache')->Delete(
+        Type => $Self->{CacheType},
+        Key  => 'TicketFlag::' . $Param{TicketID},
+    );
+
     # delete ticket_history
     return if !$Self->HistoryDelete(
         TicketID => $Param{TicketID},
@@ -631,32 +664,6 @@ sub TicketDelete {
         return if !$Self->ArticleDelete(
             ArticleID => $ArticleID,
             %Param,
-        );
-    }
-
-    # get dynamic field objects
-    my $DynamicFieldObject        = $Kernel::OM->Get('Kernel::System::DynamicField');
-    my $DynamicFieldBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
-
-    # get all dynamic fields for the object type Ticket
-    my $DynamicFieldListTicket = $DynamicFieldObject->DynamicFieldListGet(
-        ObjectType => 'Ticket',
-        Valid      => 0,
-    );
-
-    # delete dynamicfield values for this ticket
-    DYNAMICFIELD:
-    for my $DynamicFieldConfig ( @{$DynamicFieldListTicket} ) {
-
-        next DYNAMICFIELD if !$DynamicFieldConfig;
-        next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
-        next DYNAMICFIELD if !$DynamicFieldConfig->{Name};
-        next DYNAMICFIELD if !IsHashRefWithData( $DynamicFieldConfig->{Config} );
-
-        $DynamicFieldBackendObject->ValueDelete(
-            DynamicFieldConfig => $DynamicFieldConfig,
-            ObjectID           => $Param{TicketID},
-            UserID             => $Param{UserID},
         );
     }
 
@@ -1162,14 +1169,19 @@ sub TicketGet {
             $Ticket{ChangeBy} = $Row[25];
         }
 
-        $Kernel::OM->Get('Kernel::System::Cache')->Set(
-            Type => $Self->{CacheType},
-            TTL  => $Self->{CacheTTL},
-            Key  => $CacheKey,
+        # use cache only when a ticket number is found otherwise a non-existant ticket
+        # is cached. That can cause errors when the cache isn't expired and postmaster
+        # creates that ticket
+        if ( $Ticket{TicketID} ) {
+            $Kernel::OM->Get('Kernel::System::Cache')->Set(
+                Type => $Self->{CacheType},
+                TTL  => $Self->{CacheTTL},
+                Key  => $CacheKey,
 
-            # make a local copy of the ticket data to avoid it being altered in-memory later
-            Value => {%Ticket},
-        );
+                # make a local copy of the ticket data to avoid it being altered in-memory later
+                Value => {%Ticket},
+            );
+        }
     }
 
     # check ticket
@@ -1335,9 +1347,12 @@ sub _TicketCacheClear {
         }
     }
 
+    # get cache object
+    my $CacheObject = $Kernel::OM->Get('Kernel::System::Cache');
+
     # TicketGet()
     my $CacheKey = 'Cache::GetTicket' . $Param{TicketID};
-    $Kernel::OM->Get('Kernel::System::Cache')->Delete(
+    $CacheObject->Delete(
         Type => $Self->{CacheType},
         Key  => $CacheKey,
     );
@@ -1347,7 +1362,7 @@ sub _TicketCacheClear {
         for my $FetchDynamicFields ( 0 .. 1 ) {
             my $CacheKeyDynamicFields = $CacheKey . '::' . $Extended . '::' . $FetchDynamicFields;
 
-            $Kernel::OM->Get('Kernel::System::Cache')->Delete(
+            $CacheObject->Delete(
                 Type => $Self->{CacheType},
                 Key  => $CacheKeyDynamicFields,
             );
@@ -1355,23 +1370,24 @@ sub _TicketCacheClear {
     }
 
     # ArticleIndex()
-    $Kernel::OM->Get('Kernel::System::Cache')->Delete(
+    $CacheObject->Delete(
         Type => $Self->{CacheType},
         Key  => 'ArticleIndex::' . $Param{TicketID} . '::agent'
     );
-    $Kernel::OM->Get('Kernel::System::Cache')->Delete(
+    $CacheObject->Delete(
         Type => $Self->{CacheType},
         Key  => 'ArticleIndex::' . $Param{TicketID} . '::customer'
     );
-    $Kernel::OM->Get('Kernel::System::Cache')->Delete(
+    $CacheObject->Delete(
         Type => $Self->{CacheType},
         Key  => 'ArticleIndex::' . $Param{TicketID} . '::system'
     );
-    $Kernel::OM->Get('Kernel::System::Cache')->Delete(
+    $CacheObject->Delete(
         Type => $Self->{CacheType},
         Key  => 'ArticleIndex::' . $Param{TicketID} . '::ALL'
     );
 
+    return 1;
 }
 
 sub _TicketGetExtended {
@@ -1722,7 +1738,7 @@ sub TicketUnlockTimeoutUpdate {
         TicketID     => $Param{TicketID},
         CreateUserID => $Param{UserID},
         HistoryType  => 'Misc',
-        Name         => 'Reset of unlock time.',
+        Name         => Translatable('Reset of unlock time.'),
     );
 
     # trigger event
@@ -6510,13 +6526,17 @@ sub TicketFlagSet {
         if ( !defined $Param{$Needed} ) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
-                Message  => "Need $Needed!"
+                Message  => "Need $Needed!",
             );
             return;
         }
     }
 
-    my %Flag = $Self->TicketFlagGet(%Param);
+    # get flags
+    my %Flag = $Self->TicketFlagGet(
+        TicketID => $Param{TicketID},
+        UserID   => $Param{UserID},
+    );
 
     # check if set is needed
     return 1 if defined $Flag{ $Param{Key} } && $Flag{ $Param{Key} } eq $Param{Value};
@@ -6542,10 +6562,9 @@ sub TicketFlagSet {
     );
 
     # delete cache
-    my $CacheKey = 'TicketFlagGet::' . $Param{TicketID} . '::' . $Param{UserID};
     $Kernel::OM->Get('Kernel::System::Cache')->Delete(
         Type => $Self->{CacheType},
-        Key  => $CacheKey,
+        Key  => 'TicketFlag::' . $Param{TicketID},
     );
 
     # event
@@ -6592,7 +6611,7 @@ sub TicketFlagDelete {
         if ( !$Param{$Needed} ) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
-                Message  => "Need $Needed!"
+                Message  => "Need $Needed!",
             );
             return;
         }
@@ -6602,7 +6621,7 @@ sub TicketFlagDelete {
     if ( !$Param{UserID} && !$Param{AllUsers} ) {
         $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
-            Message  => "Need UserID or AllUsers param!"
+            Message  => "Need UserID or AllUsers param!",
         );
         return;
     }
@@ -6610,13 +6629,13 @@ sub TicketFlagDelete {
     # if all users parameter was given
     if ( $Param{AllUsers} ) {
 
-        # check all affected users
+        # get all affected users
         my @AllTicketFlags = $Self->TicketFlagGet(
             TicketID => $Param{TicketID},
             AllUsers => 1,
         );
 
-        # do db insert
+        # delete flags from database
         return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
             SQL => '
                 DELETE FROM ticket_flag
@@ -6625,15 +6644,13 @@ sub TicketFlagDelete {
             Bind => [ \$Param{TicketID}, \$Param{Key} ],
         );
 
-        # clean the cache
-        for my $Record (@AllTicketFlags) {
-            my $CacheKey = 'TicketFlagGet::' . $Param{TicketID} . '::' . $Record->{UserID};
+        # delete cache
+        $Kernel::OM->Get('Kernel::System::Cache')->Delete(
+            Type => $Self->{CacheType},
+            Key  => 'TicketFlag::' . $Param{TicketID},
+        );
 
-            # delete cache
-            $Kernel::OM->Get('Kernel::System::Cache')->Delete(
-                Type => $Self->{CacheType},
-                Key  => $CacheKey,
-            );
+        for my $Record (@AllTicketFlags) {
 
             $Self->EventHandler(
                 Event => 'TicketFlagDelete',
@@ -6648,7 +6665,7 @@ sub TicketFlagDelete {
     }
     else {
 
-        # do db insert
+        # delete flags from database
         return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
             SQL => '
                 DELETE FROM ticket_flag
@@ -6659,10 +6676,9 @@ sub TicketFlagDelete {
         );
 
         # delete cache
-        my $CacheKey = 'TicketFlagGet::' . $Param{TicketID} . '::' . $Param{UserID};
         $Kernel::OM->Get('Kernel::System::Cache')->Delete(
             Type => $Self->{CacheType},
-            Key  => $CacheKey,
+            Key  => 'TicketFlag::' . $Param{TicketID},
         );
 
         $Self->EventHandler(
@@ -6685,12 +6701,12 @@ get ticket flags
 
     my %Flags = $TicketObject->TicketFlagGet(
         TicketID => 123,
-        UserID   => 123, # to get flags one user
+        UserID   => 123,  # to get flags of one user
     );
 
     my @Flags = $TicketObject->TicketFlagGet(
         TicketID => 123,
-        AllUsers   => 1, # to get flags all users
+        AllUsers => 1,    # to get flags of all users
     );
 
 =cut
@@ -6702,7 +6718,7 @@ sub TicketFlagGet {
     if ( !$Param{TicketID} ) {
         $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
-            Message  => "Need TicketID!"
+            Message  => "Need TicketID!",
         );
         return;
     }
@@ -6711,79 +6727,71 @@ sub TicketFlagGet {
     if ( !$Param{UserID} && !$Param{AllUsers} ) {
         $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
-            Message  => "Need UserID or AllUsers param!"
+            Message  => "Need UserID or AllUsers param!",
         );
         return;
     }
 
-    # get database object
-    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+    # get cache object
+    my $CacheObject = $Kernel::OM->Get('Kernel::System::Cache');
 
-    if ( $Param{UserID} ) {
+    # check cache
+    my $Flags = $CacheObject->Get(
+        Type => $Self->{CacheType},
+        Key  => 'TicketFlag::' . $Param{TicketID},
+    );
 
-        # check cache
-        my $CacheKey = 'TicketFlagGet::' . $Param{TicketID} . '::' . $Param{UserID};
-        my $Cache    = $Kernel::OM->Get('Kernel::System::Cache')->Get(
-            Type => $Self->{CacheType},
-            Key  => $CacheKey,
-        );
-        return %{$Cache} if $Cache;
+    if ( !$Flags || ref $Flags ne 'HASH' ) {
 
-        my %Flag;
+        # get database object
+        my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
-        # sql query
+        # get all ticket flags of the given ticket
         return if !$DBObject->Prepare(
             SQL => '
-                SELECT ticket_key, ticket_value
+                SELECT create_by, ticket_key, ticket_value
                 FROM ticket_flag
-                WHERE ticket_id = ?
-                    AND create_by = ?',
-            Bind  => [ \$Param{TicketID}, \$Param{UserID} ],
-            Limit => 1500,
+                WHERE ticket_id = ?',
+            Bind => [ \$Param{TicketID} ],
         );
 
+        # fetch the result
+        $Flags = {};
         while ( my @Row = $DBObject->FetchrowArray() ) {
-            $Flag{ $Row[0] } = $Row[1];
+            $Flags->{ $Row[0] }->{ $Row[1] } = $Row[2];
         }
 
         # set cache
-        $Kernel::OM->Get('Kernel::System::Cache')->Set(
+        $CacheObject->Set(
             Type  => $Self->{CacheType},
             TTL   => $Self->{CacheTTL},
-            Key   => $CacheKey,
-            Value => \%Flag,
+            Key   => 'TicketFlag::' . $Param{TicketID},
+            Value => $Flags,
         );
-
-        return %Flag;
-
     }
 
-    # all users flags from ticket
-    else {
-
-        # sql query
-        return if !$DBObject->Prepare(
-            SQL => '
-                SELECT ticket_key, ticket_value, create_by
-                FROM ticket_flag
-                WHERE ticket_id = ?',
-            Bind  => [ \$Param{TicketID} ],
-            Limit => 1500,
-        );
+    if ( $Param{AllUsers} ) {
 
         my @FlagAllUsers;
-        while ( my @Row = $DBObject->FetchrowArray() ) {
-            push @FlagAllUsers, {
-                Key    => $Row[0],
-                Value  => $Row[1],
-                UserID => $Row[2],
-            };
+        for my $UserID ( sort keys %{$Flags} ) {
+
+            for my $Key ( sort keys %{ $Flags->{$UserID} } ) {
+
+                push @FlagAllUsers, {
+                    Key    => $Key,
+                    Value  => $Flags->{$UserID}->{$Key},
+                    UserID => $UserID,
+                };
+            }
         }
 
         return @FlagAllUsers;
     }
 
-    return;
+    # extract user tags
+    my $UserTags = $Flags->{ $Param{UserID} } || {};
+
+    return %{$UserTags};
 }
 
 =item TicketArticleStorageSwitch()

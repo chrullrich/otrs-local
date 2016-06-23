@@ -515,8 +515,8 @@
         <SubGroup>Core::Time</SubGroup>
         <Setting>
             <Option SelectedID="Option">
-                <Item Key="Option">Option</Item>
-                <Item Key="Input">Input</Item>
+                <Item Key="Option" Translatable="1">Option</Item>
+                <Item Key="Input" Translatable="1">Input</Item>
             </Option>
         </Setting>
     </ConfigItem>
@@ -2885,6 +2885,14 @@
             </Option>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="OutOfOfficeMessageTemplate" Required="0" Valid="1">
+        <Description Translatable="1">Defines out of office message template. Two string parameters (%s) available: end date and number of days left.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core</SubGroup>
+        <Setting>
+            <String Translatable="1">*** out of office until %s (%s d left) ***</String>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="SwitchToUser" Required="1" Valid="1">
         <Description Translatable="1">Allows the administrators to login as other users, via the users administration panel.</Description>
         <Group>Framework</Group>
@@ -4581,6 +4589,7 @@ via the Preferences button after logging in.
                     <JavaScript>thirdparty/fullcalendar-2.4.0/fullcalendar.min.js</JavaScript>
                     <JavaScript>thirdparty/d3-3.5.6/d3.min.js</JavaScript>
                     <JavaScript>thirdparty/nvd3-1.7.1/nvd3.min.js</JavaScript>
+                    <JavaScript>thirdparty/nvd3-1.7.1/models/OTRSLineChart.js</JavaScript>
                     <JavaScript>thirdparty/nvd3-1.7.1/models/OTRSMultiBarChart.js</JavaScript>
                     <JavaScript>thirdparty/nvd3-1.7.1/models/OTRSStackedAreaChart.js</JavaScript>
                     <JavaScript>thirdparty/canvg-1.4/rgbcolor.js</JavaScript>
@@ -5594,6 +5603,7 @@ via the Preferences button after logging in.
                 <Loader>
                     <JavaScript>thirdparty/d3-3.5.6/d3.min.js</JavaScript>
                     <JavaScript>thirdparty/nvd3-1.7.1/nvd3.min.js</JavaScript>
+                    <JavaScript>thirdparty/nvd3-1.7.1/models/OTRSLineChart.js</JavaScript>
                     <JavaScript>thirdparty/nvd3-1.7.1/models/OTRSMultiBarChart.js</JavaScript>
                     <JavaScript>thirdparty/nvd3-1.7.1/models/OTRSStackedAreaChart.js</JavaScript>
                     <JavaScript>thirdparty/canvg-1.4/rgbcolor.js</JavaScript>
@@ -6344,6 +6354,7 @@ via the Preferences button after logging in.
                 <Item>Core.UI.Accordion.js</Item>
                 <Item>Core.UI.Datepicker.js</Item>
                 <Item>Core.UI.DnD.js</Item>
+                <Item>Core.UI.Floater.js</Item>
                 <Item>Core.UI.Resizable.js</Item>
                 <Item>Core.UI.Table.js</Item>
                 <Item>Core.UI.Accessibility.js</Item>

@@ -118,6 +118,9 @@ sub _AddAction {
     $GetParam{TreeView} = $ParamObject->GetParam( Param => 'TreeView' );
     $GetParam{TreeView} = defined $GetParam{TreeView} && $GetParam{TreeView} ? '1' : '0';
 
+    # get the EnableLinkPreview option and set it to '0' if it is undefined
+    $GetParam{EnableLinkPreview} = $ParamObject->GetParam( Param => 'EnableLinkPreview' ) // 0;
+
     my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
 
     if ( $GetParam{Name} ) {
@@ -222,6 +225,7 @@ sub _AddAction {
     my $FieldConfig = {
         PossibleValues     => $PossibleValues,
         TreeView           => $GetParam{TreeView},
+        EnableLinkPreview  => $GetParam{EnableLinkPreview},
         DefaultValue       => $GetParam{DefaultValue},
         PossibleNone       => $GetParam{PossibleNone},
         TranslatableValues => $GetParam{TranslatableValues},
@@ -318,6 +322,9 @@ sub _Change {
         # set TreeView
         $Config{TreeView} = $DynamicFieldData->{Config}->{TreeView};
 
+        # set EnableLinkPreview
+        $Config{EnableLinkPreview} = $DynamicFieldData->{Config}->{EnableLinkPreview};
+
         # set Link
         $Config{Link} = $DynamicFieldData->{Config}->{Link};
     }
@@ -352,6 +359,9 @@ sub _ChangeAction {
     # get the TreeView option and set it to '0' if it is undefined
     $GetParam{TreeView} = $ParamObject->GetParam( Param => 'TreeView' );
     $GetParam{TreeView} = defined $GetParam{TreeView} && $GetParam{TreeView} ? '1' : '0';
+
+    # get the EnableLinkPreview option and set it to '0' if it is undefined
+    $GetParam{EnableLinkPreview} = $ParamObject->GetParam( Param => 'EnableLinkPreview' ) // 0;
 
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
@@ -495,6 +505,7 @@ sub _ChangeAction {
     my $FieldConfig = {
         PossibleValues     => $PossibleValues,
         TreeView           => $GetParam{TreeView},
+        EnableLinkPreview  => $GetParam{EnableLinkPreview},
         DefaultValue       => $GetParam{DefaultValue},
         PossibleNone       => $GetParam{PossibleNone},
         TranslatableValues => $GetParam{TranslatableValues},
@@ -712,8 +723,8 @@ sub _ShowScreen {
     # create translatable values option list
     my $PossibleNoneStrg = $LayoutObject->BuildSelection(
         Data => {
-            0 => 'No',
-            1 => 'Yes',
+            0 => Translatable('No'),
+            1 => Translatable('Yes'),
         },
         Name       => 'PossibleNone',
         SelectedID => $PossibleNone,
@@ -725,8 +736,8 @@ sub _ShowScreen {
     # create translatable values option list
     my $TranslatableValuesStrg = $LayoutObject->BuildSelection(
         Data => {
-            0 => 'No',
-            1 => 'Yes',
+            0 => Translatable('No'),
+            1 => Translatable('Yes'),
         },
         Name       => 'TranslatableValues',
         SelectedID => $TranslatableValues,
@@ -738,8 +749,8 @@ sub _ShowScreen {
     # create treeview option list
     my $TreeViewStrg = $LayoutObject->BuildSelection(
         Data => {
-            0 => 'No',
-            1 => 'Yes',
+            0 => Translatable('No'),
+            1 => Translatable('Yes'),
         },
         Name       => 'TreeView',
         SelectedID => $TreeView,
@@ -747,6 +758,19 @@ sub _ShowScreen {
     );
 
     my $Link = $Param{Link} || '';
+
+    my $EnableLinkPreview = $Param{EnableLinkPreview} || '0';
+
+    # create EnableLinkPreview option list
+    my $EnableLinkPreviewStrg = $LayoutObject->BuildSelection(
+        Data => {
+            0 => Translatable('No'),
+            1 => Translatable('Yes'),
+        },
+        Name       => 'EnableLinkPreview',
+        SelectedID => $EnableLinkPreview,
+        Class      => 'Modernize W50pc',
+    );
 
     my $ReadonlyInternalField = '';
 
@@ -773,6 +797,7 @@ sub _ShowScreen {
             TranslatableValuesStrg => $TranslatableValuesStrg,
             ReadonlyInternalField  => $ReadonlyInternalField,
             Link                   => $Link,
+            EnableLinkPreviewStrg  => $EnableLinkPreviewStrg,
             }
     );
 

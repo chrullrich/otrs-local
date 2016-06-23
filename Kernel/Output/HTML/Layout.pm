@@ -2237,13 +2237,11 @@ sub NoPermission {
 
     my $WithHeader = $Param{WithHeader} || 'yes';
 
-    my $TranslatableMessage = $Self->{LanguageObject}->Translate(
-        "We are sorry, you do not have permissions anymore to access this ticket in its current state."
-    );
-    $TranslatableMessage .= '<br/>';
-    $TranslatableMessage
-        .= $Self->{LanguageObject}->Translate(" You can take one of the next actions:");
-    $Param{Message} = $TranslatableMessage if ( !$Param{Message} );
+    if ( !$Param{Message} ) {
+        $Param{Message} = $Self->{LanguageObject}->Translate(
+            'We are sorry, you do not have permissions anymore to access this ticket in its current state. You can take one of the following actions:'
+        );
+    }
 
     # get config option for possible next actions
     my $PossibleNextActions = $Kernel::OM->Get('Kernel::Config')->Get('PossibleNextActions');
@@ -3923,8 +3921,7 @@ sub CustomerNavigationBar {
             # check if we must mark the parent element as selected
             if ( $ItemSub->{Link} ) {
                 if (
-                    !$SelectedFlag
-                    && $ItemSub->{Link} =~ /Action=$Self->{Action}/
+                    $ItemSub->{Link} =~ /Action=$Self->{Action}/
                     && $ItemSub->{Link} =~ /$Self->{Subaction}/    # Subaction can be empty
                     )
                 {
