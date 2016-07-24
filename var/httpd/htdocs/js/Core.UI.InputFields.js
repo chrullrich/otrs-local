@@ -35,7 +35,6 @@ Core.UI.InputFields = (function (TargetNS) {
         ErrorClass: 'Error',
         ServerErrorClass: 'ServerError',
         FadeDuration: 150,
-        SelectionNotAvailable: ' -',
         ResizeEvent: 'onorientationchange' in window ? 'orientationchange' : 'resize',
         ResizeTimeout: 0,
         SafeMargin: 30,
@@ -302,15 +301,15 @@ Core.UI.InputFields = (function (TargetNS) {
         {
 
             // Disable the field, add the tooltip and dash string
-            $SearchObj.attr('disabled', 'disabled')
-                .attr('title', Core.Config.Get('InputFieldsNotAvailable'))
-                .val(Config.SelectionNotAvailable);
+            $SearchObj
+                .attr('readonly', 'readonly')
+                .attr('title', Core.Config.Get('InputFieldsNotAvailable'));
         }
         else {
 
             // Enable the field, remove the tooltip and dash string
-            $SearchObj.removeAttr('disabled')
-                .removeAttr('title')
+            $SearchObj
+                .removeAttr('readonly title')
                 .val('');
         }
     }
@@ -376,6 +375,9 @@ Core.UI.InputFields = (function (TargetNS) {
 
         // Give up if field is expanded
         if ($SearchObj.attr('aria-expanded')) return;
+
+        // Give up is field is disabled
+        if ($SearchObj.attr('readonly')) return;
 
         // Remove any existing boxes in supplied container
         $InputContainerObj.find('.InputField_Selection').remove();
@@ -592,7 +594,7 @@ Core.UI.InputFields = (function (TargetNS) {
         }
 
         // Clear search field
-        if ($SearchObj.val() !== Config.SelectionNotAvailable && !$SearchObj.attr('disabled')) {
+        if (!$SearchObj.attr('readonly')) {
             $SearchObj.val('');
         }
 
@@ -653,6 +655,9 @@ Core.UI.InputFields = (function (TargetNS) {
                         .each(function () {
                             $TreeObj.jstree('select_node', this);
                         });
+
+                    return false;
+
                 });
                 break;
 
@@ -681,6 +686,9 @@ Core.UI.InputFields = (function (TargetNS) {
                             $TreeObj.jstree('deselect_node', this);
                         }
                     });
+
+                    return false;
+
                 });
                 break;
 
@@ -1160,6 +1168,11 @@ Core.UI.InputFields = (function (TargetNS) {
                     CloseOpenSelections();
                 });
 
+                // Handle article navigation in TicketZoom
+                Core.App.Subscribe('Event.Agent.TicketZoom.ArticleClick', function() {
+                    CloseOpenSelections();
+                });
+
                 // Register handler for on focus event
                 $SearchObj.off('focus.InputField')
                     .on('focus.InputField', function () {
@@ -1176,9 +1189,11 @@ Core.UI.InputFields = (function (TargetNS) {
                         PossibleNone,
                         $ClearAllObj,
                         $SelectAllObj,
-                        $ConfirmObj;
+                        $ConfirmObj,
+                        ErrorTooltipPosition = 'TongueTop';
 
                     function CalculateListPosition() {
+
                         // calculate available height to bottom of page
                         AvailableHeightBottom = parseInt(
                             $(window).scrollTop() + $(window).height()
@@ -1202,6 +1217,12 @@ Core.UI.InputFields = (function (TargetNS) {
                         // decide wether list should be positioned on top or at the bottom of the input field
                         if (AvailableHeightTop > AvailableHeightBottom) {
                             AvailableMaxHeight = AvailableHeightTop;
+
+                            // add a class to the searchobj itself to be able to react on it properly
+                            // e.g. to show the error tooltip
+                            $SearchObj.removeClass('ExpandToBottom')
+                                .addClass('ExpandToTop');
+
                             $ListContainerObj
                                 .removeClass('ExpandToBottom')
                                 .addClass('ExpandToTop')
@@ -1212,6 +1233,10 @@ Core.UI.InputFields = (function (TargetNS) {
                         }
                         else {
                             AvailableMaxHeight = AvailableHeightBottom;
+
+                            $SearchObj.removeClass('ExpandToTop')
+                                .addClass('ExpandToBottom');
+
                             $ListContainerObj
                                 .removeClass('ExpandToTop')
                                 .addClass('ExpandToBottom')
@@ -1229,19 +1254,32 @@ Core.UI.InputFields = (function (TargetNS) {
                         }
                     });
 
-                    // Show error tooltip if needed
-                    if ($SelectObj.attr('id')) {
-                        if ($SelectObj.hasClass(Config.ErrorClass)) {
-                            Core.Form.ErrorTooltips.ShowTooltip(
-                                $SearchObj, $('#' + Core.App.EscapeSelector($SelectObj.attr('id')) + Config.ErrorClass).html(), 'TongueTop'
-                            );
-                        }
-                        if ($SelectObj.hasClass(Config.ServerErrorClass)) {
-                            Core.Form.ErrorTooltips.ShowTooltip(
-                                $SearchObj, $('#' + Core.App.EscapeSelector($SelectObj.attr('id')) + Config.ServerErrorClass).html(), 'TongueTop'
-                            );
+                    function ShowErrorToolTip() {
+
+                        // Show error tooltip if needed
+                        if ($SelectObj.attr('id')) {
+
+                            if ($SearchObj.hasClass('ExpandToTop')) {
+                                ErrorTooltipPosition = 'TongueBottom';
+                            }
+                            else {
+                                ErrorTooltipPosition = 'TongueTop';
+                            }
+
+                            if ($SelectObj.hasClass(Config.ErrorClass)) {
+                                Core.Form.ErrorTooltips.ShowTooltip(
+                                    $SearchObj, $('#' + Core.App.EscapeSelector($SelectObj.attr('id')) + Config.ErrorClass).html(), ErrorTooltipPosition
+                                );
+                            }
+                            if ($SelectObj.hasClass(Config.ServerErrorClass)) {
+                                Core.Form.ErrorTooltips.ShowTooltip(
+                                    $SearchObj, $('#' + Core.App.EscapeSelector($SelectObj.attr('id')) + Config.ServerErrorClass).html(), ErrorTooltipPosition
+                                );
+                            }
                         }
                     }
+
+                    ShowErrorToolTip();
 
                     // Focus tracking
                     Focused = this;
@@ -1249,6 +1287,11 @@ Core.UI.InputFields = (function (TargetNS) {
 
                     // Do nothing if already expanded
                     if ($SearchObj.attr('aria-expanded')) {
+                        return false;
+                    }
+
+                    // Do nothing if disabled
+                    if ($SearchObj.attr('readonly')) {
                         return false;
                     }
 
@@ -1281,6 +1324,7 @@ Core.UI.InputFields = (function (TargetNS) {
                         }
 
                         CalculateListPosition();
+                        ShowErrorToolTip();
 
                         // This checks, if an inner element is scrolled (e.g. dialog)
                         // we only need to hide the list in this case, because scrolling the main window

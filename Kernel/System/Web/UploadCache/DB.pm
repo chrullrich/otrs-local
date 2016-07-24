@@ -132,7 +132,11 @@ sub FormIDRemoveFile {
     }
 
     my @Index = @{ $Self->FormIDGetAllFilesMeta(%Param) };
-    my $ID    = $Param{FileID} - 1;
+
+    # finish if files have been already removed by other process
+    return if !@Index;
+
+    my $ID = $Param{FileID} - 1;
     $Param{Filename} = $Index[$ID]->{Filename};
 
     return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
