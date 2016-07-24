@@ -1161,6 +1161,19 @@ continue {
     undef $NotificationID;
 }
 
-# cleanup is done by RestoreDatabase.
+# cleanup is done by RestoreDatabase but we need to run cleanup
+# code too to remove data if the FS backend is used
+
+# delete the ticket
+my $TicketDelete = $TicketObject->TicketDelete(
+    TicketID => $TicketID,
+    UserID   => $UserID,
+);
+
+# sanity check
+$Self->True(
+    $TicketDelete,
+    "TicketDelete() successful for Ticket ID $TicketID",
+);
 
 1;
