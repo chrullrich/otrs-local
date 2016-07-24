@@ -160,7 +160,12 @@ sub _execute_command {    ## no critic
         }
     );
 
-    $Self->{UnitTestObject}->True( 1, $TestName );
+    if ( $Self->{SuppressCommandRecording} ) {
+        print $TestName;
+    }
+    else {
+        $Self->{UnitTestObject}->True( 1, $TestName );
+    }
 
     return $Result;
 }
@@ -307,6 +312,8 @@ sub WaitFor {
     if ( !$Param{JavaScript} && !$Param{WindowCount} ) {
         die "Need JavaScript.";
     }
+
+    local $Self->{SuppressCommandRecording} = 1;
 
     $Param{Time} //= 20;
     my $WaitedSeconds = 0;
