@@ -1,5 +1,6 @@
 # 
 # Translators:
+# Daniel Schliemann <daniel.schliemann@googlemail.com>, 2016
 # Dominik <dominik@reichardt-online.it>, 2015
 # Ettore Atalan <atalanttore@googlemail.com>, 2014-2016
 # Florian Edlhuber <florian.edlhuber@otrs.com>, 2015-2016
@@ -28,8 +29,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
-"POT-Creation-Date: 2016-05-10 11:28+0000\n"
-"PO-Revision-Date: 2016-05-10 16:30+0000\n"
+"POT-Creation-Date: 2016-06-22 10:40+0000\n"
+"PO-Revision-Date: 2016-06-22 15:42+0000\n"
 "Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
 "Language-Team: German (http://www.transifex.com/otrs/OTRS/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -3281,8 +3282,16 @@ msgid "Select"
 msgstr "Auswahl"
 
 #. Template: AdminCustomerCompany
+msgid "only"
+msgstr ""
+
+#. Template: AdminCustomerCompany
 msgid "shown"
 msgstr "angezeigt"
+
+#. Template: AdminCustomerCompany
+msgid "more available"
+msgstr ""
 
 #. Template: AdminCustomerCompany
 msgid "total"
@@ -3675,14 +3684,15 @@ msgid ""
 msgstr "Hier können Sie einen optionalen Link für die Felddarstellung in Übersichten und Ansichtsseiten angeben."
 
 #. Template: AdminDynamicFieldDateTime
-msgid "Enable link preview"
-msgstr ""
+msgid "Link for preview"
+msgstr "Link für Vorschau"
 
 #. Template: AdminDynamicFieldDateTime
 msgid ""
-"Activate this option to display a preview of the link configured above in "
-"AgentTicketZoom."
-msgstr ""
+"If filled in, this URL will be used for a preview which is shown when this "
+"link is hovered in ticket zoom. Please note that for this to work, the "
+"regular URL field above needs to be filled in, too."
+msgstr "Diese URL wird (falls vorhanden) für eine Vorschau verwendet, wenn sich die Maus über diesem Link in der Ticketansicht befindet. Hierfür muss das oben stehende URL-Feld ebenso ausgefüllt werden."
 
 #. Template: AdminDynamicFieldDateTime
 msgid "Restrict entering of dates"
@@ -5068,23 +5078,23 @@ msgstr "Wollen Sie diesen Webservice wirklich löschen?"
 
 #. Template: AdminGenericInterfaceWebservice
 msgid "Example Web Services"
-msgstr ""
+msgstr "Beispiel-Webservices"
 
 #. Template: AdminGenericInterfaceWebservice
 msgid ""
 "Here you can activate best practice example web service that are part of %s."
 " Please note that some additional configuration may be required."
-msgstr ""
+msgstr "Hier können Sie \"Best-Practice\"-Beispiel-Webservices aktivieren, die Teil der %s sind. Bitte beachten Sie, dass weitere Konfiguration erforderlich sein kann."
 
 #. Template: AdminGenericInterfaceWebservice
 msgid "Import example web service"
-msgstr ""
+msgstr "Beispiel-Webservice importieren"
 
 #. Template: AdminGenericInterfaceWebservice
 msgid ""
 "Do you want to benefit from web services created by experts? Upgrade to %s "
-"to be able to import some sophisticated example processes."
-msgstr ""
+"to be able to import some sophisticated example web services."
+msgstr "Wollen Sie von Web-Diensten profitieren, die von Experten kreiert wurden? Aktualisieren Sie auf %s um einige anspruchsvolle Beispiel-Web-Dienste zu importieren."
 
 #. Template: AdminGenericInterfaceWebservice
 msgid ""
@@ -6926,7 +6936,7 @@ msgstr "Wenn ein Agent ein Ticket sperrt und es vor der Entsperrzeit nicht schli
 
 #. Template: AdminQueue
 msgid "Notify by"
-msgstr "Benachrichtigt nach"
+msgstr "Benachrichtigung durch"
 
 #. Template: AdminQueue
 msgid "0 = no escalation"
@@ -7002,7 +7012,7 @@ msgstr "Dieser Filter erlaubt das Anzeigen von Queues ohne Automatische Antworte
 
 #. Template: AdminQueueAutoResponse
 msgid "Queues without auto responses"
-msgstr "Warteschlangen ohne automatische Antworten"
+msgstr "Queues ohne automatische Antworten"
 
 #. Template: AdminQueueAutoResponse
 msgid "This filter allow you to show all queues"
@@ -7010,7 +7020,7 @@ msgstr "Dieser Filter erlaubt das Anzeigen aller Queues"
 
 #. Template: AdminQueueAutoResponse
 msgid "Show all queues"
-msgstr "Alle Warteschlangen anzeigen"
+msgstr "Alle Queues anzeigen"
 
 #. Template: AdminQueueAutoResponse
 msgid "Filter for Queues"
@@ -7461,7 +7471,7 @@ msgstr "Rollen-Zuordnungen verändern für Agenten"
 
 #. Template: AdminRoleUser
 msgid "Change Agent Relations for Role"
-msgstr "Agenten-Zurordnungen verändern für Rolle"
+msgstr "Agenten-Zuordnungen verändern für Rolle"
 
 #. Template: AdminSLA
 msgid "SLA Management"
@@ -8663,12 +8673,8 @@ msgid "Select Target Object"
 msgstr "Zielobjekt auswählen"
 
 #. Template: AgentLinkObject
-msgid "Link Object"
-msgstr "Verknüpfe Objekt"
-
-#. Template: AgentLinkObject
-msgid "with"
-msgstr "mit"
+msgid "Link object %s with"
+msgstr "Objekt %s verknüpfen mit"
 
 #. Template: AgentLinkObject
 msgid "Unlink Object: %s"
@@ -9553,21 +9559,21 @@ msgstr "Artikel konnte nicht geöffnet werden. Befindet er sich vielleicht auf e
 
 #. Template: AgentTicketZoom
 msgid "Scale preview content"
-msgstr ""
+msgstr "Vorschauinhalt skalieren"
 
 #. Template: AgentTicketZoom
 msgid "Open URL in new tab"
-msgstr ""
+msgstr "URL in neuem Tab öffnen"
 
 #. Template: AgentTicketZoom
 msgid "Close preview"
-msgstr ""
+msgstr "Vorschau schließen"
 
 #. Template: AgentTicketZoom
 msgid ""
-"OTRS can't provide a preview of this website because it seems as if it "
-"didn't allow to be embedded."
-msgstr ""
+"A preview of this website can't be provided because it didn't allow to be "
+"embedded."
+msgstr "Diese Webseite kann nicht als Vorschau angezeigt werden, weil sie keine Einbettung erlaubt."
 
 #. Template: AttachmentBlocker
 msgid "To protect your privacy, remote content was blocked."
@@ -9793,6 +9799,10 @@ msgstr "%s %s abmelden"
 #. Template: CustomerRichTextEditor
 msgid "Split Quote"
 msgstr "Zitat aufteilen"
+
+#. Template: CustomerRichTextEditor
+msgid "Open link"
+msgstr "Link öffnen"
 
 #. Template: CustomerTicketMessage
 msgid "Service level agreement"
@@ -10021,6 +10031,22 @@ msgstr "Datumsauswahl öffnen"
 #. Template: Error
 msgid "An error occurred."
 msgstr "Ein Fehler ist aufgetreten."
+
+#. Template: Error
+msgid ""
+"Really a bug? 5 out of 10 bug reports result from a wrong or incomplete "
+"installation of OTRS."
+msgstr "Wirklich ein Bug? 5 von 10 Bugmeldungen resultieren aus einer falschen oder unvollständigen Installation von OTRS."
+
+#. Template: Error
+msgid ""
+"With %s, our experts take care of correct installation and cover your back "
+"with support and periodic security updates."
+msgstr "Mit der %s übernehmen unsere Experten die korrekte Installation und halten Ihnen mit Support und regelmäßigen Sicherheitsupdates den Rücken frei."
+
+#. Template: Error
+msgid "Contact our service team now."
+msgstr "Kontaktieren Sie jetzt unser Service-Team."
 
 #. Template: Error
 msgid "Send a bugreport"
@@ -11062,7 +11088,7 @@ msgstr "Name benötigt!"
 
 #. Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
 msgid "Need ExampleWebService!"
-msgstr ""
+msgstr "Benötige ExampleWebService!"
 
 #. Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
 msgid "Could not read %s!"
@@ -11680,12 +11706,12 @@ msgid "Can not delete link with %s!"
 msgstr "Kann Link mit %s nicht entfernen."
 
 #. Perl Module: Kernel/Modules/AgentLinkObject.pm
-msgid "Can not create link with %s!"
-msgstr "Kann Link mit %s nicht erstellen."
+msgid "Can not create link with %s! Object already linked as %s."
+msgstr "Kann Verknüpfung zu %s nicht erstellen! Objekt bereits verknüpft als %s."
 
 #. Perl Module: Kernel/Modules/AgentLinkObject.pm
-msgid "Object already linked as %s."
-msgstr "Objekt bereits verknüpft als %s."
+msgid "Can not create link with %s!"
+msgstr "Kann Link mit %s nicht erstellen."
 
 #. Perl Module: Kernel/Modules/AgentLinkObject.pm
 msgid "The object %s cannot link with other object!"
@@ -12433,20 +12459,20 @@ msgid "The start time of a ticket has been set after the end time!"
 msgstr "Die Starten-Zeit eines Tickets wurde auf einen Zeitpunkt nach der Ende-Zeit gesetzt!"
 
 #. Perl Module: Kernel/Output/HTML/Dashboard/TicketGeneric.pm
-msgid "filter not active"
-msgstr "Filter nicht aktiv"
-
-#. Perl Module: Kernel/Output/HTML/Dashboard/TicketGeneric.pm
-msgid "filter active"
-msgstr "Filter aktiv"
-
-#. Perl Module: Kernel/Output/HTML/Dashboard/TicketGeneric.pm
 msgid "sorted ascending"
 msgstr "aufsteigend sortiert"
 
 #. Perl Module: Kernel/Output/HTML/Dashboard/TicketGeneric.pm
 msgid "sorted descending"
 msgstr "absteigend sortiert"
+
+#. Perl Module: Kernel/Output/HTML/Dashboard/TicketGeneric.pm
+msgid "filter not active"
+msgstr "Filter nicht aktiv"
+
+#. Perl Module: Kernel/Output/HTML/Dashboard/TicketGeneric.pm
+msgid "filter active"
+msgstr "Filter aktiv"
 
 #. Perl Module: Kernel/Output/HTML/Dashboard/TicketGeneric.pm
 msgid "This ticket has no title or subject"
@@ -13856,7 +13882,7 @@ msgstr "Abo für Benutzer \"%s\" eingetragen."
 
 #. SysConfig
 msgid "Address book of CustomerUser sources."
-msgstr ""
+msgstr "Adressbuch für Kundenbenutzer-Quellen."
 
 #. SysConfig
 msgid ""
@@ -13905,11 +13931,11 @@ msgstr "nach"
 
 #. SysConfig
 msgid "Agent Name"
-msgstr ""
+msgstr "Agentenname"
 
 #. SysConfig
 msgid "Agent Name + FromSeparator + System Address Display Name"
-msgstr ""
+msgstr "Agenten-Name + From-Trennzeichen + Anzeigename der System-Adresse"
 
 #. SysConfig
 msgid "Agent Preferences."
@@ -13932,21 +13958,21 @@ msgid ""
 "Agent interface module to access CIC search via nav bar. Additional access "
 "control to show or not show this link can be done by using Key \"Group\" and"
 " Content like \"rw:group1;move_into:group2\"."
-msgstr ""
+msgstr "Agenten-Schnittstellen-Modul für den Zugriff auf die CIC-Suche über die Navigationsleiste. Zusätzliche Zugriffssteuerung zum Zeigen oder Verstecken dieses Links können durch Nutzung des Schlüssels \"Group\" und Inhalten wie \"rw:group1;move_into:group2\" realisiert werden."
 
 #. SysConfig
 msgid ""
 "Agent interface module to access fulltext search via nav bar. Additional "
 "access control to show or not show this link can be done by using Key "
 "\"Group\" and Content like \"rw:group1;move_into:group2\"."
-msgstr ""
+msgstr "Agenten-Schnittstellen-Modul für den Zugriff auf die Volltext-Suche über die Navigationsleiste. Zusätzliche Zugriffssteuerung zum Zeigen oder Verstecken dieses Links können durch Nutzung des Schlüssels \"Group\" und Inhalten wie \"rw:group1;move_into:group2\" realisiert werden."
 
 #. SysConfig
 msgid ""
 "Agent interface module to access search profiles via nav bar. Additional "
 "access control to show or not show this link can be done by using Key "
 "\"Group\" and Content like \"rw:group1;move_into:group2\"."
-msgstr ""
+msgstr "Agenten-Schnittstellen-Modul für den Zugriff auf die Such-Profile über die Navigationsleiste. Zusätzliche Zugriffssteuerung zum Zeigen oder Verstecken dieses Links können durch Nutzung des Schlüssels \"Group\" und Inhalten wie \"rw:group1;move_into:group2\" realisiert werden."
 
 #. SysConfig
 msgid ""
@@ -13959,7 +13985,7 @@ msgid ""
 "Agent interface notification module to see the number of locked tickets. "
 "Additional access control to show or not show this link can be done by using"
 " Key \"Group\" and Content like \"rw:group1;move_into:group2\"."
-msgstr ""
+msgstr "Agenten-Schnittstellen Benachrichtigungs-Modul zum Anzeigen der Anzahl der gesperrten Tickets. Zusätzliche Zugriffssteuerung zum Zeigen oder Verstecken dieses Links können durch Nutzung des Schlüssels \"Group\" und Inhalten wie \"rw:group1;move_into:group2\" realisiert werden."
 
 #. SysConfig
 msgid ""
@@ -13967,21 +13993,21 @@ msgid ""
 " responsible for. Additional access control to show or not show this link "
 "can be done by using Key \"Group\" and Content like "
 "\"rw:group1;move_into:group2\"."
-msgstr ""
+msgstr "Agenten-Schnittstellen Benachrichtigungs-Modul zum Anzeigen der Anzahl der Tickets, für die der Agent verantwortlich ist. Zusätzliche Zugriffssteuerung zum Zeigen oder Verstecken dieses Links können durch Nutzung des Schlüssels \"Group\" und Inhalten wie \"rw:group1;move_into:group2\" realisiert werden."
 
 #. SysConfig
 msgid ""
 "Agent interface notification module to see the number of tickets in My "
 "Services. Additional access control to show or not show this link can be "
 "done by using Key \"Group\" and Content like \"rw:group1;move_into:group2\"."
-msgstr ""
+msgstr "Agenten-Schnittstellen Benachrichtigungs-Modul zum Anzeigen der Anzahl der Tickets in \"Meien Dienste\". Zusätzliche Zugriffssteuerung zum Zeigen oder Verstecken dieses Links können durch Nutzung des Schlüssels \"Group\" und Inhalten wie \"rw:group1;move_into:group2\" realisiert werden."
 
 #. SysConfig
 msgid ""
 "Agent interface notification module to see the number of watched tickets. "
 "Additional access control to show or not show this link can be done by using"
 " Key \"Group\" and Content like \"rw:group1;move_into:group2\"."
-msgstr ""
+msgstr "Agenten-Schnittstellen Benachrichtigungs-Modul zum Anzeigen der Anzahl der beobachteten Tickets. Zusätzliche Zugriffssteuerung zum Zeigen oder Verstecken dieses Links können durch Nutzung des Schlüssels \"Group\" und Inhalten wie \"rw:group1;move_into:group2\" realisiert werden."
 
 #. SysConfig
 msgid "AgentCustomerSearch"
@@ -14132,6 +14158,13 @@ msgid ""
 "interface. With this feature you can search e. g. with this kind of "
 "conditions like \"(key1&&key2)\" or \"(key1||key2)\"."
 msgstr "Erlaubt erweiterte Suchbedingungen in der Ticketsuche im Kundenbereich. Mit diesem Feature können Sie Suchbedingungen wie \"(key1&&key2)\" oder \"(key1||key2)\" festlegen."
+
+#. SysConfig
+msgid ""
+"Allows extended search conditions in ticket search of the generic agent "
+"interface. With this feature you can search e. g. ticket title with this "
+"kind of conditions like \"(*key1*&&*key2*)\" or \"(*key1*||*key2*)\"."
+msgstr "Erlaubt erweiterte Suchbedingungen der generischen Agenten-Schnittstelle. Mit diesem Feature kann man z.B. Ticket-Titel mit Bedingungen wie dieser \"(*key1*&&*key2*)\" oder \"(*key1*||*key2*)\" durchsuchen."
 
 #. SysConfig
 msgid ""
@@ -14769,7 +14802,7 @@ msgstr "Kunde stellte Anfrage über Web."
 
 #. SysConfig
 msgid "Customer ticket overview"
-msgstr ""
+msgstr "Kunden-Ticket-Übersicht"
 
 #. SysConfig
 msgid "Customer ticket search."
@@ -14777,7 +14810,7 @@ msgstr "Kunden-Ticketsuche."
 
 #. SysConfig
 msgid "Customer ticket zoom"
-msgstr ""
+msgstr "Ticketansicht für Kunden"
 
 #. SysConfig
 msgid "Customer user search"
@@ -14909,6 +14942,14 @@ msgstr "Standardwert für NameX"
 
 #. SysConfig
 msgid ""
+"Define Actions where Settings button is available in the Linked objects widget (LinkObject::ViewMode = \"complex\").\n"
+"            Please note that this Actions must have registered following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js,\n"
+"            Core.Agent.TableFilters.js.\n"
+"        "
+msgstr ""
+
+#. SysConfig
+msgid ""
 "Define a filter for html output to add links behind a defined string. The "
 "element Image allows two input kinds. At once the name of an image (e.g. "
 "faq.png). In this case the OTRS image path will be used. The second "
@@ -14966,6 +15007,13 @@ msgstr "Definiert den Wochentag, mit dem die Woche im angegebenen Kalender begin
 #. SysConfig
 msgid "Define the start day of the week for the date picker."
 msgstr "Definiert den Beginn einer Woche für den Datumswähler."
+
+#. SysConfig
+msgid ""
+"Define which columns are shown in the Linked tickets widget (LinkObject::ViewMode = \"complex\").\n"
+"            Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns.\n"
+"            Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default."
+msgstr ""
 
 #. SysConfig
 msgid ""
@@ -15032,11 +15080,12 @@ msgstr "Definiert einen Filter für die HTML-Ausgabe um Links hinter Bugtraq-Num
 msgid ""
 "Defines a filter to collect CVE numbers from article texts in "
 "AgentTicketZoom. The results will be displayed in a meta box next to the "
-"article. Set EnableLinkPreview to 1 if you would like to see a preview of "
-"the URL when moving your mouse cursor above the link element. Please note "
-"that some websites deny being displayed within an iframe (e.g. Google) and "
-"thus won't work with the preview mode."
-msgstr ""
+"article. Fill in URLPreview if you would like to see a preview when moving "
+"your mouse cursor above the link element. This could be the same URL as in "
+"URL, but also an alternate one. Please note that some websites deny being "
+"displayed within an iframe (e.g. Google) and thus won't work with the "
+"preview mode."
+msgstr "Definiert einen Filter zum Sammeln von CVE-Nummern von Artikel-Texten im AgentTicketZoom. Das Ergebnis wird in einer Meta-Box neben dem Artikel angezeigt. Füllen Sie URLPreview aus, wenn Sie beim halten des Cursors über dem Linkelement eine Vorschau sehen möchten. Das kann dieselbe URL wie in \"URL\", aber auch eine andere. Bitte beachten Sie, dass einige Webseiten es verbieten in einem iframe (z.B. Google) angezeigt zu werden. Diese würden mit dem Vorschau-Modus nicht funktionieren."
 
 #. SysConfig
 msgid ""
@@ -15297,7 +15346,7 @@ msgid ""
 "tickets. If set to \"Yes\", only values which are actually used in any "
 "ticket will be available for filtering. Please note: The list of customers "
 "will always be retrieved like this."
-msgstr ""
+msgstr "Definiert, ob die Werte für Filter von allen verfügbaren Tickets abgerufen werden sollen. Wenn auf \"Ja\" gesetzt, stehen nur Werte, die aktuell in irgendeinem Ticket für die Filterung verwendet werden zur Verfügung. Bitte beachten Sie: Die Liste der Kunden wird immer auf diesem Wege abgerufen."
 
 #. SysConfig
 msgid ""
@@ -15315,7 +15364,7 @@ msgstr "Bestimmt, ob das Zeiterfassungs-Feld für alle Tickets im Stapelverarbei
 msgid ""
 "Defines out of office message template. Two string parameters (%s) "
 "available: end date and number of days left."
-msgstr ""
+msgstr "Definiert \"Nicht im Büro\"-Nachrichten-Templates. Zwei String-Parameter (%s) stehen zur Verfügung: Enddatum und Anzahl der übrigen Tage."
 
 #. SysConfig
 msgid ""
@@ -15426,7 +15475,7 @@ msgid ""
 "Defines the config parameters of this item, to be shown in the preferences "
 "view. Take care to maintain the dictionaries installed in the system in the "
 "data section."
-msgstr ""
+msgstr "Definiert die Konfigurationsparameter dieses Elements, die in der Einstellungsansicht dargestellt werden."
 
 #. SysConfig
 msgid "Defines the connections for http/ftp, via a proxy."
@@ -15613,7 +15662,7 @@ msgstr "Definiert die Standardauswahl im Drop-down-Menü für Berechtigungen (Fo
 msgid ""
 "Defines the default selection at the drop down menu for stats format (Form: "
 "Common Specification). Please insert the format key (see Stats::Format)."
-msgstr ""
+msgstr "Legt die Standardauswahl im Dropdown-Menü für das Statistik-Format (Form: Gemeinsame Spezifikation) fest. Bitte legen Sie die Formattaste fest (siehe Stats::Format)."
 
 #. SysConfig
 msgid ""
@@ -15637,7 +15686,7 @@ msgstr "Bestimmt den Standard-Absendertp für Telefon-Tickets in der TicketZoom-
 msgid ""
 "Defines the default shown ticket search attribute for ticket search screen "
 "(AllTickets/ArchivedTickets/NotArchivedTickets)."
-msgstr ""
+msgstr "Definiert das standardmäßig angezeigte Ticket-Such-Attribut für die Ticket-Suchmaske (AlleTickets/ArchivierteTickets/NichtArchivierteTickets)."
 
 #. SysConfig
 msgid ""
@@ -16135,7 +16184,7 @@ msgstr "Definiert den Historien-Kommentar für die Aktion \"Warten auf Erinnerun
 msgid ""
 "Defines the history comment for this operation, which gets used for ticket "
 "history in the agent interface."
-msgstr ""
+msgstr "Definiert den Verlauf-Kommentar für diese Operation, der für den Ticket-Verlauf in der Agenten-Schnittstelle verwendet wird."
 
 #. SysConfig
 msgid ""
@@ -16207,19 +16256,19 @@ msgstr "Definiert den Historien-Typ für die Aktion \"Ticket Verantwortlicher\" 
 msgid ""
 "Defines the history type for the ticket zoom action, which gets used for "
 "ticket history in the customer interface."
-msgstr ""
+msgstr "Definiert den Verlaufstyp für die Ticket-Zoom-Aktion, der für den Ticket-Verlauf in der Kundenschnittstelle verwendet wird."
 
 #. SysConfig
 msgid ""
 "Defines the history type for this operation, which gets used for ticket "
 "history in the agent interface."
-msgstr ""
+msgstr "Definiert den Verlaufstyp für diese Operation, der für den Ticket-Verlauf in der Agenten-Schnittstelle verwendet wird."
 
 #. SysConfig
 msgid ""
 "Defines the hours and week days of the indicated calendar, to count the "
 "working time."
-msgstr ""
+msgstr "Definiert die Stunden und Wochentage des angegebenen Kalenders um die Arbeitszeit zu messen."
 
 #. SysConfig
 msgid "Defines the hours and week days to count the working time."
@@ -16229,27 +16278,27 @@ msgstr "Definiert den Zeitraum und die Wochentage welche als Arbeitszeit zählen
 msgid ""
 "Defines the key to be checked with Kernel::Modules::AgentInfo module. If "
 "this user preferences key is true, the message is accepted by the system."
-msgstr ""
+msgstr "Definiert den Schlüssel, der mit dem Modul Kernel::Modules::AgentInfo geprüft wird. Wenn dieser Nutzer-Einstellungs-Schlüssel \"wahr\" ist, wird die Nachricht vom System akzeptiert."
 
 #. SysConfig
 msgid ""
 "Defines the key to check with CustomerAccept. If this user preferences key "
 "is true, then the message is accepted by the system."
-msgstr ""
+msgstr "Definiert den Schlüssel, der mit CustomerAccept geprüft wird. Wenn dieser Nutzer-Einstellungs-Schlüssel \"wahr\" ist, wird die Nachricht vom System akzeptiert."
 
 #. SysConfig
 msgid ""
 "Defines the link type 'Normal'. If the source name and the target name "
 "contain the same value, the resulting link is a non-directional one; "
 "otherwise, the result is a directional link."
-msgstr ""
+msgstr "Definiert den Link-Typ 'Normal'. Wenn der Name der Quelle dem des Ziels entspricht, ist der resultierende Link ein nicht-direktionaler Link; Ansonsten ist das Resultat ein direktionaler Link."
 
 #. SysConfig
 msgid ""
 "Defines the link type 'ParentChild'. If the source name and the target name "
 "contain the same value, the resulting link is a non-directional one; "
 "otherwise, the result is a directional link."
-msgstr ""
+msgstr "Definiert den Link-Typ 'ParentChild'. Wenn der Quell- und der Zielname den selben Wert beinhalten, ist der Link nicht-direktional. Ansonsten ist das Ergebnis ein direktionaler Link."
 
 #. SysConfig
 msgid ""
@@ -16265,13 +16314,13 @@ msgid ""
 "as repository, for example: "
 "Key=\"http://example.com/otrs/public.pl?Action=PublicRepository;File=\" and "
 "Content=\"Some Name\"."
-msgstr ""
+msgstr "Definiert eine Liste von Online-Quellen. Andere Installationen können als Quelle genutzt werden z.B. Key=\"http://example.com/otrs/public.pl?Action=PublicRepository;File=\" and Content=\"Irgendein Name\". "
 
 #. SysConfig
 msgid ""
 "Defines the list of possible next actions on an error screen, a full path is"
 " required, then is possible to add external links if needed."
-msgstr ""
+msgstr "Definiert die Liste der möglichen Folgeaktionen in einer Fehleranzeige. Mit einem vollständigen Pfad kann man bei Bedarf externe Links einfügen."
 
 #. SysConfig
 msgid "Defines the list of types for templates."
@@ -16933,6 +16982,12 @@ msgstr "Löscht die Session, wenn die Session-ID mit einer ungültigen IP-Adress
 #. SysConfig
 msgid "Deletes requested sessions if they have timed out."
 msgstr "Löscht die angefragte Session, wenn ein Timeout vorliegt."
+
+#. SysConfig
+msgid ""
+"Delivers extended debugging information in the frontend in case any ajax "
+"errors occur, if enabled."
+msgstr ""
 
 #. SysConfig
 msgid "Deploy and manage OTRS Business Solution™."
@@ -18422,6 +18477,10 @@ msgstr "Lettisch"
 #. SysConfig
 msgid "Left"
 msgstr "Links"
+
+#. SysConfig
+msgid "Link Object"
+msgstr "Verknüpfe Objekt"
 
 #. SysConfig
 msgid "Link Object."
@@ -21129,11 +21188,11 @@ msgstr ""
 
 #. SysConfig
 msgid "Specify the password to authenticate for the first mirror database."
-msgstr ""
+msgstr "Geben Sie das Kennwort für die Authentifikation mit der ersten Spiegeldatenbank an."
 
 #. SysConfig
 msgid "Specify the username to authenticate for the first mirror database."
-msgstr ""
+msgstr "Geben Sie den Benutzernamen für die Authentifikation mit der ersten Spiegeldatenbank an."
 
 #. SysConfig
 msgid "Spell checker."
@@ -21174,11 +21233,11 @@ msgstr "Speichert Cookies nach dem Schließen des Browsers."
 
 #. SysConfig
 msgid "Strips empty lines on the ticket preview in the queue view."
-msgstr ""
+msgstr "Entfernt leere Zeilen in der Ticket-Vorschau in der Queue-Ansicht."
 
 #. SysConfig
 msgid "Strips empty lines on the ticket preview in the service view."
-msgstr ""
+msgstr "Entfernt leere Zeilen in der Ticket-Vorschau in der Service-Ansicht."
 
 #. SysConfig
 msgid "Swahili"
@@ -21190,7 +21249,7 @@ msgstr "Schwedisch"
 
 #. SysConfig
 msgid "System Address Display Name"
-msgstr ""
+msgstr "System-Adresse Anzeigename"
 
 #. SysConfig
 msgid "System Maintenance"
@@ -21230,11 +21289,11 @@ msgstr ""
 
 #. SysConfig
 msgid "The daemon registration for the scheduler cron task manager."
-msgstr ""
+msgstr "Der Hintergrundprozess für den zeitgesteuerten Aufgabenplaner."
 
 #. SysConfig
 msgid "The daemon registration for the scheduler future task manager."
-msgstr ""
+msgstr "Der Hintergrundprozess für die zeitgesteuerte Planung der zukünftigen Aufgaben."
 
 #. SysConfig
 msgid "The daemon registration for the scheduler generic agent task manager."
@@ -21525,7 +21584,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Ticket title"
-msgstr ""
+msgstr "Ticket-Titel"
 
 #. SysConfig
 msgid "Ticket zoom view."
@@ -21555,7 +21614,7 @@ msgstr ""
 
 #. SysConfig
 msgid "To download attachments."
-msgstr ""
+msgstr "Zum Herunterladen von Anhängen."
 
 #. SysConfig
 msgid "Toggles display of OTRS FeatureAddons list in PackageManager."
@@ -21614,12 +21673,12 @@ msgstr "Ukrainisch"
 
 #. SysConfig
 msgid "Unlock tickets that are past their unlock timeout."
-msgstr ""
+msgstr "Geben Sie Tickets frei, deren Freigabe-Timeout abgelaufen ist."
 
 #. SysConfig
 msgid ""
 "Unlock tickets whenever a note is added and the owner is out of office."
-msgstr ""
+msgstr "Geben Sie tickets frei, wenn eine Notiz hinzugefügt wurde und der Besitzer nicht im Büro ist."
 
 #. SysConfig
 msgid "Unlocked ticket."
@@ -21654,17 +21713,17 @@ msgstr "Aktualisiert: %s=%s;%s=%s;%s=%s;"
 #. SysConfig
 msgid ""
 "Updates the ticket escalation index after a ticket attribute got updated."
-msgstr ""
+msgstr "Aktualisiert den Ticket-Eskalations-Index nachdem ein Ticket-Attribut aktualisiert wurde."
 
 #. SysConfig
 msgid "Updates the ticket index accelerator."
-msgstr ""
+msgstr "Aktualisiert den Ticket-Index-Beschleuniger."
 
 #. SysConfig
 msgid ""
 "Use new type of select and autocomplete fields in agent interface, where "
 "applicable (InputFields)."
-msgstr ""
+msgstr "Nutzen Sie einen neuen Typ von Auswahl- und Autovervollständigen-Feldern in der Agenten-Schnittstelle, wo sie anwendbar sind (InputFields = Eingabefelder)."
 
 #. SysConfig
 msgid ""
@@ -21710,7 +21769,7 @@ msgstr "Dieses Ticket beobachten"
 
 #. SysConfig
 msgid "Watched Tickets."
-msgstr ""
+msgstr "Beobachtete Tickets."
 
 #. SysConfig
 msgid "We are performing scheduled maintenance."
@@ -21735,21 +21794,21 @@ msgid ""
 "When tickets are merged, a note will be added automatically to the ticket "
 "which is no longer active. Here you can define the body of this note (this "
 "text cannot be changed by the agent)."
-msgstr ""
+msgstr "Wenn Tickets zusammengefasst werden, wird automatisch zu dem Ticket, das nicht länger aktiv ist, eine Notiz hinzugefügt. Hier können Sie den Textköper dieser Notiz definieren (dieser Text kann nicht durch den Agent verändert werden)."
 
 #. SysConfig
 msgid ""
 "When tickets are merged, a note will be added automatically to the ticket "
 "which is no longer active. Here you can define the subject of this note "
 "(this subject cannot be changed by the agent)."
-msgstr ""
+msgstr "Wenn Tickets zusammengefasst werden, wird automatisch zu dem Ticket, das nicht länger aktiv ist, eine Notiz hinzugefügt. Hier können Sie den Gegenstand dieser Notiz definieren (dieser Text kann nicht durch den Agent verändert werden)."
 
 #. SysConfig
 msgid ""
 "When tickets are merged, the customer can be informed per email by setting "
 "the check box \"Inform Sender\". In this text area, you can define a pre-"
 "formatted text which can later be modified by the agents."
-msgstr ""
+msgstr "Wenn Tickets zusammengefasst werden, kann der Kunde durch Setzen des Kontrollkästchens \"Sender informieren\" per E-Mail informiert werden. In diesem Bereich können Sie einen vorformatierten Text definieren, der später durch die Agents modifiziert werden kann."
 
 #. SysConfig
 msgid ""
