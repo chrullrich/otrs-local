@@ -630,7 +630,10 @@ sub Run {
     }
 
     # generate output
-    my $Output = $LayoutObject->Header( Value => $Ticket{TicketNumber} );
+    my $Output = $LayoutObject->Header(
+        Value    => $Ticket{TicketNumber},
+        TicketID => $Ticket{TicketID},
+    );
     $Output .= $LayoutObject->NavigationBar();
     $Output .= $Self->MaskAgentZoom(
         Ticket    => \%Ticket,
@@ -1405,7 +1408,7 @@ sub MaskAgentZoom {
         ObjectType  => ['Ticket'],
         FieldFilter => $DynamicFieldFilter || {},
     );
-    my $DynamicFieldBeckendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
+    my $DynamicFieldBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
 
     # to store dynamic fields to be displayed in the process widget and in the sidebar
     my ( @FieldsWidget, @FieldsSidebar );
@@ -1425,7 +1428,7 @@ sub MaskAgentZoom {
             $Self->{DisplaySettings}->{ProcessWidgetDynamicField}->{ $DynamicFieldConfig->{Name} }
             )
         {
-            my $ValueStrg = $DynamicFieldBeckendObject->DisplayValueRender(
+            my $ValueStrg = $DynamicFieldBackendObject->DisplayValueRender(
                 DynamicFieldConfig => $DynamicFieldConfig,
                 Value              => $Ticket{ 'DynamicField_' . $DynamicFieldConfig->{Name} },
                 LayoutObject       => $LayoutObject,
@@ -1441,11 +1444,12 @@ sub MaskAgentZoom {
                     => $Ticket{ 'DynamicField_' . $DynamicFieldConfig->{Name} },
                 Label                       => $Label,
                 Link                        => $ValueStrg->{Link},
+                LinkPreview                 => $ValueStrg->{LinkPreview},
                 $DynamicFieldConfig->{Name} => $ValueStrg->{Title},
             };
         }
 
-        my $ValueStrg = $DynamicFieldBeckendObject->DisplayValueRender(
+        my $ValueStrg = $DynamicFieldBackendObject->DisplayValueRender(
             DynamicFieldConfig => $DynamicFieldConfig,
             Value              => $Ticket{ 'DynamicField_' . $DynamicFieldConfig->{Name} },
             LayoutObject       => $LayoutObject,
@@ -1464,7 +1468,7 @@ sub MaskAgentZoom {
                 Value                       => $ValueStrg->{Value},
                 Label                       => $Label,
                 Link                        => $ValueStrg->{Link},
-                EnableLinkPreview           => $ValueStrg->{EnableLinkPreview},
+                LinkPreview                 => $ValueStrg->{LinkPreview},
                 $DynamicFieldConfig->{Name} => $ValueStrg->{Title},
             };
         }
@@ -1535,6 +1539,7 @@ sub MaskAgentZoom {
                                     Value          => $Field->{Value},
                                     Title          => $Field->{Title},
                                     Link           => $Field->{Link},
+                                    LinkPreview    => $Field->{LinkPreview},
                                     $Field->{Name} => $Field->{Title},
                                 },
                             );
@@ -1611,6 +1616,7 @@ sub MaskAgentZoom {
                         Value          => $Field->{Value},
                         Title          => $Field->{Title},
                         Link           => $Field->{Link},
+                        LinkPreview    => $Field->{LinkPreview},
                         $Field->{Name} => $Field->{Title},
                     },
                 );
@@ -1644,12 +1650,12 @@ sub MaskAgentZoom {
                     %Ticket,
 
                     # alias for ticket title, Title will be overwritten
-                    TicketTitle       => $Ticket{Title},
-                    Value             => $Field->{Value},
-                    Title             => $Field->{Title},
-                    Link              => $Field->{Link},
-                    EnableLinkPreview => $Field->{EnableLinkPreview},
-                    $Field->{Name}    => $Field->{Title},
+                    TicketTitle    => $Ticket{Title},
+                    Value          => $Field->{Value},
+                    Title          => $Field->{Title},
+                    Link           => $Field->{Link},
+                    LinkPreview    => $Field->{LinkPreview},
+                    $Field->{Name} => $Field->{Title},
                 },
             );
         }
@@ -2477,8 +2483,8 @@ sub _ArticleTree {
             }
 
             # make the history type more readable (if applicable)
-            $Item->{HistoryTypeReadable}
-                = $Self->{HistoryTypeMapping}->{ $Item->{HistoryType} } || $Item->{HistoryType};
+            $Item->{HistoryTypeReadable} = $Self->{HistoryTypeMapping}->{ $Item->{HistoryType} }
+                || $Item->{HistoryType};
 
             # group items which happened (nearly) coincidently together
             $Item->{CreateSystemTime} = $Kernel::OM->Get('Kernel::System::Time')->TimeStamp2SystemTime(
@@ -2703,7 +2709,7 @@ sub _ArticleItem {
     for my $Key (qw(From To Cc)) {
         next KEY if !$Article{$Key};
 
-        my $DisplayType = $Key eq 'From'             ? $SenderDisplayType : $RecipientDisplayType;
+        my $DisplayType = $Key         eq 'From'     ? $SenderDisplayType : $RecipientDisplayType;
         my $HiddenType  = $DisplayType eq 'Realname' ? 'Value'            : 'Realname';
         $LayoutObject->Block(
             Name => 'RowRecipient',
@@ -2753,14 +2759,14 @@ sub _ArticleItem {
         ObjectType  => ['Article'],
         FieldFilter => $DynamicFieldFilter || {},
     );
-    my $DynamicFieldBeckendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
+    my $DynamicFieldBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
 
     # cycle trough the activated Dynamic Fields
     DYNAMICFIELD:
     for my $DynamicFieldConfig ( @{$DynamicField} ) {
         next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
-        my $Value = $DynamicFieldBeckendObject->ValueGet(
+        my $Value = $DynamicFieldBackendObject->ValueGet(
             DynamicFieldConfig => $DynamicFieldConfig,
             ObjectID           => $Article{ArticleID},
         );
@@ -2769,7 +2775,7 @@ sub _ArticleItem {
         next DYNAMICFIELD if $Value eq '';
 
         # get print string for this dynamic field
-        my $ValueStrg = $DynamicFieldBeckendObject->DisplayValueRender(
+        my $ValueStrg = $DynamicFieldBackendObject->DisplayValueRender(
             DynamicFieldConfig => $DynamicFieldConfig,
             Value              => $Value,
             ValueMaxChars      => $ConfigObject->
@@ -2800,6 +2806,7 @@ sub _ArticleItem {
                     Value                       => $ValueStrg->{Value},
                     Title                       => $ValueStrg->{Title},
                     Link                        => $ValueStrg->{Link},
+                    LinkPreview                 => $ValueStrg->{LinkPreview},
                     $DynamicFieldConfig->{Name} => $ValueStrg->{Title}
                 },
             );
@@ -2839,6 +2846,7 @@ sub _ArticleItem {
                     Value                       => $ValueStrg->{Value},
                     Title                       => $ValueStrg->{Title},
                     Link                        => $ValueStrg->{Link},
+                    LinkPreview                 => $ValueStrg->{LinkPreview},
                     $DynamicFieldConfig->{Name} => $ValueStrg->{Title}
                 },
             );
@@ -3507,7 +3515,7 @@ sub _ArticleCollectMeta {
         my @Matches;
         for my $RegExp ( @{ $Filter->{RegExp} } ) {
 
-            my @Count    = $RegExp =~ m{\(}gx;
+            my @Count = $RegExp =~ m{\(}gx;
             my $Elements = scalar @Count;
 
             if ( my @MatchData = $Article{Body} =~ m{([\s:]$RegExp)}gxi ) {
@@ -3545,23 +3553,26 @@ sub _ArticleCollectMeta {
             for my $Match (@Matches) {
 
                 my $MatchQuote = $LayoutObject->Ascii2Html( Text => $Match->{Name} );
-                my $URL = $Filter->{Meta}->{URL};
+                my $URL        = $Filter->{Meta}->{URL};
+                my $URLPreview = $Filter->{Meta}->{URLPreview};
 
                 # replace the whole keyword
                 my $MatchLinkEncode = $LayoutObject->LinkEncode( $Match->{Name} );
-                $URL =~ s/<MATCH>/$MatchLinkEncode/g;
+                $URL        =~ s/<MATCH>/$MatchLinkEncode/g;
+                $URLPreview =~ s/<MATCH>/$MatchLinkEncode/g;
 
                 # replace the keyword components
                 for my $Part ( sort keys %{ $Match->{Parts} || {} } ) {
                     $MatchLinkEncode = $LayoutObject->LinkEncode( $Match->{Parts}->{$Part} );
-                    $URL =~ s/<MATCH$Part>/$MatchLinkEncode/g;
+                    $URL        =~ s/<MATCH$Part>/$MatchLinkEncode/g;
+                    $URLPreview =~ s/<MATCH$Part>/$MatchLinkEncode/g;
                 }
 
                 push @{ $FilterData{Matches} }, {
-                    Text              => $Match->{Name},
-                    URL               => $URL,
-                    Target            => $Filter->{Meta}->{Target} || '_blank',
-                    EnableLinkPreview => $Filter->{Meta}->{EnableLinkPreview} || 0,
+                    Text       => $Match->{Name},
+                    URL        => $URL,
+                    URLPreview => $URLPreview,
+                    Target     => $Filter->{Meta}->{Target} || '_blank',
                 };
             }
             push @Data, \%FilterData;

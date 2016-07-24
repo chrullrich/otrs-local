@@ -831,7 +831,7 @@ sub _MaskUpdate {
         # get list type
         my %Service = $Kernel::OM->Get('Kernel::System::Service')->ServiceList(
             Valid        => 1,
-            KeepChildren => 1,
+            KeepChildren => $ConfigObject->Get('Ticket::Service::KeepChildren') // 0,
             UserID       => $Self->{UserID},
         );
         my %NewService = %Service;
@@ -1254,17 +1254,19 @@ sub _MaskRun {
         }
     }
 
-    # get ticket object
+    # get needed objects
     my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
     # perform ticket search
+    my $GenericAgentTicketSearch = $ConfigObject->Get("Ticket::GenericAgentTicketSearch") || {};
     my $Counter = $TicketObject->TicketSearch(
         Result          => 'COUNT',
         SortBy          => 'Age',
         OrderBy         => 'Down',
         UserID          => 1,
         Limit           => 60_000,
-        ConditionInline => 1,
+        ConditionInline => $GenericAgentTicketSearch->{ExtendedSearchCondition},
         %JobData,
         %DynamicFieldSearchParameters,
     ) || 0;
@@ -1275,7 +1277,7 @@ sub _MaskRun {
         OrderBy         => 'Down',
         UserID          => 1,
         Limit           => 30,
-        ConditionInline => 1,
+        ConditionInline => $GenericAgentTicketSearch->{ExtendedSearchCondition},
         %JobData,
         %DynamicFieldSearchParameters,
     );
@@ -1295,7 +1297,7 @@ sub _MaskRun {
         },
     );
 
-    my $RunLimit = $Kernel::OM->Get('Kernel::Config')->Get('Ticket::GenericAgentRunLimit');
+    my $RunLimit = $ConfigObject->Get('Ticket::GenericAgentRunLimit');
     if ( $Counter > $RunLimit ) {
         $LayoutObject->Block(
             Name => 'RunLimit',

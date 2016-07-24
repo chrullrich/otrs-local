@@ -929,7 +929,7 @@ sub _Edit {
         # get list type
         my %Service = $Kernel::OM->Get('Kernel::System::Service')->ServiceList(
             Valid        => 1,
-            KeepChildren => 1,
+            KeepChildren => $ConfigObject->Get('Ticket::Service::KeepChildren') // 0,
             UserID       => $Self->{UserID},
         );
         $Param{ServicesStrg} = $LayoutObject->BuildSelection(
