@@ -129,7 +129,7 @@ $Selenium->RunTest(
 
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("li.ui-menu-item:visible").length' );
 
-        $Selenium->find_element("//*[text()='$AutoCompleteString']")->click();
+        $Selenium->find_element("//*[text()='$AutoCompleteString']")->VerifiedClick();
         $Selenium->find_element( "#Subject",    'css' )->send_keys("TestSubject");
         $Selenium->find_element( "#ToCustomer", 'css' )->VerifiedSubmit();
 
@@ -141,7 +141,7 @@ $Selenium->RunTest(
         $Self->True(
             index( $Selenium->get_page_source(), $PriorityMsg ) > -1,
             "Ticket email outbound completed",
-        );
+        ) || die "Ticket email outbound not completed";
 
         # delete created test tickets
         my $Success = $TicketObject->TicketDelete(

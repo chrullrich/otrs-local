@@ -208,8 +208,8 @@ sub StatsParamsWidget {
     if ( $ConfigObject->Get('Stats::ExchangeAxis') ) {
         my $ExchangeAxis = $LayoutObject->BuildSelection(
             Data => {
-                1 => 'Yes',
-                0 => 'No'
+                1 => Translatable('Yes'),
+                0 => Translatable('No')
             },
             Name       => 'ExchangeAxis',
             SelectedID => $LocalGetParam->( Param => 'ExchangeAxis' ) // 0,
@@ -563,12 +563,12 @@ sub StatsParamsWidget {
         }
     }
     my %YesNo = (
-        0 => 'No',
-        1 => 'Yes'
+        0 => Translatable('No'),
+        1 => Translatable('Yes')
     );
     my %ValidInvalid = (
-        0 => 'invalid',
-        1 => 'valid'
+        0 => Translatable('invalid'),
+        1 => Translatable('valid')
     );
     $Stat->{SumRowValue}                = $YesNo{ $Stat->{SumRow} };
     $Stat->{SumColValue}                = $YesNo{ $Stat->{SumCol} };
@@ -621,8 +621,8 @@ sub GeneralSpecificationsWidget {
     for my $Key (qw(Cache ShowAsDashboardWidget SumRow SumCol)) {
         $Frontend{ 'Select' . $Key } = $LayoutObject->BuildSelection(
             Data => {
-                0 => 'No',
-                1 => 'Yes'
+                0 => Translatable('No'),
+                1 => Translatable('Yes')
             },
             SelectedID => $GetParam{$Key} // $Stat->{$Key} || 0,
             Name       => $Key,
@@ -634,7 +634,7 @@ sub GeneralSpecificationsWidget {
     if ( !$Stat->{ObjectBehaviours}->{ProvidesDashboardWidget} ) {
         $Frontend{'SelectShowAsDashboardWidget'} = $LayoutObject->BuildSelection(
             Data => {
-                0 => 'No (not supported)',
+                0 => Translatable('No (not supported)'),
             },
             SelectedID => 0,
             Name       => 'ShowAsDashboardWidget',
@@ -644,8 +644,8 @@ sub GeneralSpecificationsWidget {
 
     $Frontend{SelectValid} = $LayoutObject->BuildSelection(
         Data => {
-            0 => 'invalid',
-            1 => 'valid',
+            0 => Translatable('invalid'),
+            1 => Translatable('valid'),
         },
         SelectedID => $GetParam{Valid} // $Stat->{Valid},
         Name       => 'Valid',
@@ -1443,11 +1443,6 @@ sub StatsResultRender {
     my $Title         = $TitleArrayRef->[0];
     my $HeadArrayRef  = shift @StatArray;
 
-    # if array = empty
-    if ( !@StatArray ) {
-        push @StatArray, [ ' ', 0 ];
-    }
-
     # Generate Filename
     my $Filename = $Kernel::OM->Get('Kernel::System::Stats')->StringAndTimestamp2Filename(
         String   => $Stat->{Title} . ' Created',
@@ -1467,6 +1462,12 @@ sub StatsResultRender {
 
     # generate D3 output
     if ( $Param{Format} =~ m{^D3} ) {
+
+        # if array = empty
+        if ( !@StatArray ) {
+            push @StatArray, [ ' ', 0 ];
+        }
+
         my $Output = $LayoutObject->Header(
             Value => $Title,
             Type  => 'Small',
@@ -2268,15 +2269,7 @@ sub _ColumnAndRowTranslation {
         }
     }
 
-    # get config object
-    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
-
-    # create language object
-    $Kernel::OM->ObjectParamAdd(
-        'Kernel::Language' => {
-            UserLanguage => $Param{UserLanguage} || $ConfigObject->Get('DefaultLanguage') || 'en',
-            }
-    );
+    # get language object
     my $LanguageObject = $Kernel::OM->Get('Kernel::Language');
 
     # find out, if the column or row names should be translated
@@ -2474,7 +2467,9 @@ sub _StopWordErrorCheck {
     my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
     if ( !%Param ) {
-        $LayoutObject->FatalError( Message => "Got no values to check." );
+        $LayoutObject->FatalError(
+            Message => Translatable('Got no values to check.'),
+        );
     }
 
     my %StopWordsServerErrors;
