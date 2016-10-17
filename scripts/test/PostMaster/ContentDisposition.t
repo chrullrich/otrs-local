@@ -22,7 +22,8 @@ my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 # get helper object
 $Kernel::OM->ObjectParamAdd(
     'Kernel::System::UnitTest::Helper' => {
-        RestoreDatabase => 1,
+        RestoreDatabase  => 1,
+        UseTmpArticleDir => 1,
     },
 );
 my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
@@ -35,7 +36,7 @@ my @Tests = (
                 Filename           => 'ceeibejd.png',
                 ContentType        => 'image/png; name="ceeibejd.png"',
                 ContentID          => '<part1.02040705.00020608@otrs.com>',
-                ContentAlternative => '',
+                ContentAlternative => '1',
                 Disposition        => 'inline',
             },
             'ui-toolbar.png' => {
@@ -61,7 +62,7 @@ my @Tests = (
                 Filename           => 'ceeibejd.png',
                 ContentType        => 'image/png; name="ceeibejd.png"',
                 ContentID          => '<part1.02040705.00020608@otrs.com>',
-                ContentAlternative => '',
+                ContentAlternative => '1',
                 Disposition        => 'inline',
             },
             'ui-toolbar.png' => {
@@ -87,7 +88,7 @@ my @Tests = (
                 Filename           => 'ceeibejd.png',
                 ContentType        => 'image/png; name="ceeibejd.png"',
                 ContentID          => '<part1.02040705.00020608@otrs.com>',
-                ContentAlternative => '',
+                ContentAlternative => '1',
                 Disposition        => 'inline',
             },
             'ui-toolbar.png' => {
@@ -113,7 +114,7 @@ my @Tests = (
                 Filename           => 'ceeibejd.png',
                 ContentType        => 'image/png; name="ceeibejd.png"',
                 ContentID          => '<part1.02040705.00020608@otrs.com>',
-                ContentAlternative => '',
+                ContentAlternative => '1',
                 Disposition        => 'attachment',
             },
             'ui-toolbar.png' => {

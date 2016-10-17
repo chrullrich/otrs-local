@@ -19,11 +19,6 @@ $Selenium->RunTest(
     sub {
 
         # get helper object
-        $Kernel::OM->ObjectParamAdd(
-            'Kernel::System::UnitTest::Helper' => {
-                RestoreSystemConfiguration => 1,
-            },
-        );
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
         # enable TicketOverViewPageShown preference
@@ -49,12 +44,12 @@ $Selenium->RunTest(
             );
 
             my $Key = "PreferencesGroups###TicketOverview" . $View . "PageShown";
-            $Kernel::OM->Get('Kernel::Config')->Set(
+            $Helper->ConfigSettingChange(
                 Key   => $Key,
                 Value => \%TicketOverViewPageShown,
             );
 
-            $Kernel::OM->Get('Kernel::System::SysConfig')->ConfigItemUpdate(
+            $Helper->ConfigSettingChange(
                 Valid => 1,
                 Key   => $Key,
                 Value => \%TicketOverViewPageShown,

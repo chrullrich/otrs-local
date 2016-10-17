@@ -19,26 +19,35 @@ $Selenium->RunTest(
     sub {
 
         # get needed objects
-        $Kernel::OM->ObjectParamAdd(
-            'Kernel::System::UnitTest::Helper' => {
-                RestoreSystemConfiguration => 1,
-            },
-        );
-        my $Helper          = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
-        my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
-        my $ConfigObject    = $Kernel::OM->Get('Kernel::Config');
+        my $Helper       = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+        my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
         # disable all dashboard plugins
         my $Config = $ConfigObject->Get('DashboardBackend');
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 0,
             Key   => 'DashboardBackend',
             Value => \%$Config,
         );
 
         # add at least one dashboard setting dashboard sysconfig so dashboard can be loaded
-        $SysConfigObject->ConfigItemReset(
-            Name => 'DashboardBackend###0400-UserOnline',
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'DashboardBackend###0400-UserOnline',
+            Value => {
+                'Block'         => 'ContentSmall',
+                'CacheTTLLocal' => '5',
+                'Default'       => '0',
+                'Description'   => '',
+                'Filter'        => 'Agent',
+                'Group'         => '',
+                'IdleMinutes'   => '60',
+                'Limit'         => '10',
+                'Module'        => 'Kernel::Output::HTML::Dashboard::UserOnline',
+                'ShowEmail'     => '0',
+                'SortBy'        => 'UserFullname',
+                'Title'         => 'Online'
+            },
         );
 
         # create test user and login

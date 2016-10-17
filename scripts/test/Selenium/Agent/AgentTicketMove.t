@@ -19,16 +19,10 @@ $Selenium->RunTest(
     sub {
 
         # get helper object
-        $Kernel::OM->ObjectParamAdd(
-            'Kernel::System::UnitTest::Helper' => {
-                RestoreSystemConfiguration => 1,
-            },
-        );
-        my $Helper          = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
-        my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
+        my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
         # set to change queue for ticket in a new window
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'Ticket::Frontend::MoveType',
             Value => 'link'
@@ -74,7 +68,7 @@ $Selenium->RunTest(
         for my $SysConfigUpdate (@SysConfigData) {
 
             # enable menu module and modify destination link
-            my %MenuModuleConfig = $SysConfigObject->ConfigItemGet(
+            my %MenuModuleConfig = $Kernel::OM->Get('Kernel::System::SysConfig')->ConfigItemGet(
                 Name    => $SysConfigUpdate->{MenuModule},
                 Default => 1,
             );
@@ -83,7 +77,7 @@ $Selenium->RunTest(
 
             $MenuModuleConfigUpdate{Link} =~ s/$SysConfigUpdate->{OrgQueueLink}/$SysConfigUpdate->{TestQueueLink}/g;
 
-            $SysConfigObject->ConfigItemUpdate(
+            $Helper->ConfigSettingChange(
                 Valid => 1,
                 Key   => $SysConfigUpdate->{MenuModule},
                 Value => \%MenuModuleConfigUpdate,

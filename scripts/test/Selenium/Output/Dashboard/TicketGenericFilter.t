@@ -19,11 +19,6 @@ $Selenium->RunTest(
     sub {
 
         # get needed objects
-        $Kernel::OM->ObjectParamAdd(
-            'Kernel::System::UnitTest::Helper' => {
-                RestoreSystemConfiguration => 1,
-            },
-        );
         my $Helper       = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
         my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
@@ -92,20 +87,16 @@ $Selenium->RunTest(
         my $ScriptAlias = $Kernel::OM->Get('Kernel::Config')->Get('ScriptAlias');
 
         # get config objects
-        my $ConfigObject    = $Kernel::OM->Get('Kernel::Config');
-        my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
+        my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
         # turn on the CustomerUserID column by default
         my $Config = $ConfigObject->Get('DashboardBackend')->{'0120-TicketNew'};
         $Config->{DefaultColumns}->{CustomerUserID} = '2';
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'DashboardBackend###0120-TicketNew',
             Value => $Config,
         );
-
-        # allow mod_perl to pick up the changed configuration
-        sleep 1;
 
         # refresh dashboard screen and clean it's cache
         $Kernel::OM->Get('Kernel::System::Cache')->CleanUp(
@@ -254,14 +245,11 @@ $Selenium->RunTest(
         $Config                                     = $ConfigObject->Get('DashboardBackend')->{'0120-TicketNew'};
         $Config->{DefaultColumns}->{CustomerUserID} = '0';
         $Config->{DefaultColumns}->{CustomerID}     = '2';
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'DashboardBackend###0120-TicketNew',
             Value => $Config,
         );
-
-        # allow mod_perl to pick up the changed configuration
-        sleep 1;
 
         # refresh dashboard screen and clean it's cache
         $Kernel::OM->Get('Kernel::System::Cache')->CleanUp(
