@@ -27,7 +27,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%M/%D/%Y';
     $Self->{DateInputFormat}     = '%M/%D/%Y';
     $Self->{DateInputFormatLong} = '%M/%D/%Y - %T';
-    $Self->{Completeness}        = 0.731666316453036;
+    $Self->{Completeness}        = 0.726364014993753;
 
     # csv separator
     $Self->{Separator} = ',';
@@ -859,7 +859,8 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'You can use the following tags' => 'Unaweza kutumia lebo zifuatazo',
         'To get the first 20 character of the subject.' => 'Kupata herufi 20 za kwanza za somo',
         'To get the first 5 lines of the email.' => 'Kupata mistari 5 ya kwanza ya barua pepe.',
-        'To get the realname of the sender (if given).' => 'Kupata jina halisi la mtumaji ( kama limetolewa)',
+        'To get the realname of the ticket\'s customer user (if given).' =>
+            '',
         'To get the article attribute' => 'Kupata sifa za makala',
         ' e. g.' => 'Mfano',
         'Options of the current customer user data' => 'Chaguo la data za mtumiaji za mteja wa sasa',
@@ -908,10 +909,8 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Wildcards like \'*\' are allowed.' => 'Wildkadi kama \'*\' zinaruhusiwa.',
         'Add customer' => 'Ongeza mteja',
         'Select' => 'chagua',
-        'only' => '',
-        'shown' => '',
-        'more available' => '',
-        'total' => '',
+        'List (only %s shown - more available)' => '',
+        'List (%s total)' => '',
         'Please enter a search term to look for customers.' => 'Tafadhali ingiza neno la utafutaji kuwatafuta wateja.',
         'Add Customer' => 'Ongeza wateja',
 
@@ -1197,6 +1196,12 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Param %s key' => 'Ufunguo wa kigezo %s',
         'Param %s value' => 'Thamani ya kigezo %s',
         'Save Changes' => 'Hifadhi mabadiliko',
+        'Tag Reference' => '',
+        'In the note section, you can use the following tags' => '',
+        'Attributes of the current customer user data' => '',
+        'Attributes of the ticket data' => '',
+        'Ticket dynamic fields internal key values' => '',
+        'Example note' => '',
         'Results' => 'matokeo',
         '%s Tickets affected! What do you want to do?' => 'Tiketi %s zimeathirika. Unataka kufanya nini?',
         'Warning: You used the DELETE option. All deleted tickets will be lost!' =>
@@ -1499,6 +1504,7 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Create new groups to handle access permissions for different groups of agent (e. g. purchasing department, support department, sales department, ...). ' =>
             'Tengeneza makundi mapya kushughulikia ruhusa za kupata kwa ajili makundi mbalimbali ya wakala (mfano idara ya manunuzi, idara ya usaidizi, idara mauzo)',
         'It\'s useful for ASP solutions. ' => 'Inatumika kwa ufumbuzi wa ASP.',
+        'total' => '',
         'Add Group' => 'Kuongeza kundi',
         'Edit Group' => 'hariri kundi',
 
@@ -1593,7 +1599,6 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Message body' => '',
         'Add new notification language' => '',
         'Do you really want to delete this notification language?' => '',
-        'Tag Reference' => '',
         'Notifications are sent to an agent or a customer.' => 'Taarifa zimetumwa kwa wakala au mteja',
         'To get the first 20 character of the subject (of the latest agent article).' =>
             'Kupata herufi 20 za kwanza za somo (kutoka kwa wakala wa karibuni)',
@@ -1603,14 +1608,11 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
             'Kupata herufi 20 za kwanza za somo (kutoka kwa makala ya mteja wa karibuni)',
         'To get the first 5 lines of the body (of the latest customer article).' =>
             'Kupata mistari 5 ya kwanza ya kiini (kutoka kwa makala ya mteja wa karibuni)',
-        'Attributes of the current customer user data' => '',
         'Attributes of the current ticket owner user data' => '',
         'Attributes of the current ticket responsible user data' => '',
         'Attributes of the current agent user who requested this action' =>
             '',
         'Attributes of the recipient user for the notification' => '',
-        'Attributes of the ticket data' => '',
-        'Ticket dynamic fields internal key values' => '',
         'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
             '',
         'Example notification' => '',
@@ -1976,6 +1978,7 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
             'Tafadhali zingatia kwamba kubadili mpito huu utaathiri michakato ifuatayo',
         'Transition' => 'Mpito',
         'Transition Name' => 'Jina la mpito',
+        'Conditions can only operate on non-empty fields.' => '',
         'Type of Linking between Conditions' => 'Aina ya kunganisha kati ya masharti',
         'Remove this Condition' => 'Ondoa sharti hili',
         'Type of Linking' => 'Aina ya kiunganishi',
@@ -2212,6 +2215,7 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Relate this certificate' => 'Husisha hiki cheti',
 
         # Template: AdminSMIMECertRead
+        'Close dialog' => '',
         'Certificate details' => 'Maelezo ya ndani ya cheti',
 
         # Template: AdminSalutation
@@ -2635,13 +2639,13 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
             '',
 
         # Template: AgentTicketActionCommon
-        'Change Free Text of %s%s' => '',
-        'Change Owner of %s%s' => '',
-        'Close %s%s' => '',
-        'Add Note to %s%s' => '',
-        'Set Pending Time for %s%s' => '',
-        'Change Priority of %s%s' => '',
-        'Change Responsible of %s%s' => '',
+        'Change Free Text of %s%s%s' => '',
+        'Change Owner of %s%s%s' => '',
+        'Close %s%s%s' => '',
+        'Add Note to %s%s%s' => '',
+        'Set Pending Time for %s%s%s' => '',
+        'Change Priority of %s%s%s' => '',
+        'Change Responsible of %s%s%s' => '',
         'All fields marked with an asterisk (*) are mandatory.' => 'Uga zote zilizowekwa alama ya kinyota (*) ni za lazima.',
         'Service invalid.' => 'HUduma batili.',
         'New Owner' => 'Mmiliki mpya.',
@@ -2655,14 +2659,14 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Inform involved agents' => '',
         'Here you can select additional agents which should receive a notification regarding the new article.' =>
             'Hapa unaweza kuchagua mawakala wa kuongezea ambao watapokea taarifa kuhusiana na makala mpya.',
-        'Text will also be received by:' => '',
+        'Text will also be received by' => '',
         'Spell check' => 'Angalia herufi',
         'Text Template' => 'Kielezo cha matini',
         'Setting a template will overwrite any text or attachment.' => 'Kuweka kiolezo kutaandika juu ya matini yoyote au kiambatisho.',
         'Note type' => 'Aina ya kidokezo',
 
         # Template: AgentTicketBounce
-        'Bounce %s%s' => '',
+        'Bounce %s%s%s' => '',
         'Bounce to' => 'Dunda kwenda ',
         'You need a email address.' => 'Unahitaji anwani ya barua pepe',
         'Need a valid email address or don\'t use a local email address.' =>
@@ -2683,7 +2687,7 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Execute Bulk Action' => '',
 
         # Template: AgentTicketCompose
-        'Compose Answer for %s%s' => '',
+        'Compose Answer for %s%s%s' => '',
         'This address is registered as system address and cannot be used: %s' =>
             '',
         'Please include at least one recipient' => 'Tafadhali ambatanisha mpokeaji japo mmoja',
@@ -2696,7 +2700,7 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Date Invalid!' => 'Tarehe batili',
 
         # Template: AgentTicketCustomer
-        'Change Customer of %s%s' => '',
+        'Change Customer of %s%s%s' => '',
 
         # Template: AgentTicketEmail
         'Create New Email Ticket' => 'Tengeneza tiketi ya barua pepe mpya',
@@ -2709,7 +2713,7 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Get all' => 'Pata zote',
 
         # Template: AgentTicketEmailOutbound
-        'Outbound Email for %s%s' => '',
+        'Outbound Email for %s%s%s' => '',
 
         # Template: AgentTicketEscalation
         'Ticket %s: first response time is over (%s/%s)!' => '',
@@ -2720,22 +2724,22 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Ticket %s: solution time will be over in %s/%s!' => '',
 
         # Template: AgentTicketForward
-        'Forward %s%s' => '',
+        'Forward %s%s%s' => '',
 
         # Template: AgentTicketHistory
-        'History of %s%s' => '',
+        'History of %s%s%s' => '',
         'History Content' => 'Maudhui ya historia',
         'Zoom view' => 'Mandhari iliyokuzwa',
 
         # Template: AgentTicketMerge
-        'Merge %s%s' => '',
+        'Merge %s%s%s' => '',
         'Merge Settings' => '',
         'You need to use a ticket number!' => 'Unahitaji kutumia namba ya tiketi',
         'A valid ticket number is required.' => 'Namba ya tiketi halali inatakiwa.',
         'Need a valid email address.' => 'Anwani ya barua pepe halali inahitajika.',
 
         # Template: AgentTicketMove
-        'Move %s%s' => '',
+        'Move %s%s%s' => '',
         'New Queue' => 'Foleni mpya',
 
         # Template: AgentTicketOverviewMedium
@@ -2768,10 +2772,10 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'The chat will be appended as a separate article.' => 'Mazungumzo yataambatishwa kama makala ya tofauti.',
 
         # Template: AgentTicketPhoneCommon
-        'Phone Call for %s%s' => '',
+        'Phone Call for %s%s%s' => '',
 
         # Template: AgentTicketPlain
-        'View Email Plain Text for %s%s' => '',
+        'View Email Plain Text for %s%s%s' => '',
         'Plain' => 'Wazi',
         'Download this email' => 'Pakua barua pepe hii',
 
@@ -2796,7 +2800,10 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Remove' => 'Ondoa',
         'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.' =>
             'Tafuta katika sifa Kutoka, Kwenda, Cc, Somo na kiini cha makala, geuza sifa nyingine zenye jina sawa.',
-        'Customer User Login' => 'Kuingia kwa mtimiaji wa mteja',
+        'CustomerID (complex search)' => '',
+        'CustomerID (exact match)' => '',
+        'Customer User Login (complex search)' => '',
+        'Customer User Login (exact match)' => '',
         'Attachment Name' => 'Jina la kiambatanishi',
         '(e. g. m*file or myfi*)' => '(Mfano m*file au myfil*) ',
         'Created in Queue' => 'Tengenezwa katika foleni',
@@ -2883,6 +2890,8 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'go back to the previous page' => 'Rudi nyuma kwenye ukurasa uliopita',
 
         # Template: CustomerError
+        'An Error Occurred' => '',
+        'Error Details' => 'Makosa kwa undani',
         'Traceback' => 'Tafuta Nyuma',
 
         # Template: CustomerFooter
@@ -3027,7 +3036,6 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
             '',
         'Contact our service team now.' => '',
         'Send a bugreport' => 'Tuma repoti yenye makosa',
-        'Error Details' => 'Makosa kwa undani',
 
         # Template: FooterJS
         'Please enter at least one search value or * to find anything.' =>
@@ -3224,10 +3232,10 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'The selected time periods in the statistic are time zone neutral.' =>
             '',
         'Create summation row' => '',
-        'Generate an additional row containing sums for all data columns.' =>
+        'Generate an additional row containing sums for all data rows.' =>
             '',
         'Create summation column' => '',
-        'Generate an additional column containing sums for all data rows.' =>
+        'Generate an additional column containing sums for all data columns.' =>
             '',
         'Cache results' => '',
         'Stores statistics result data in a cache to be used in subsequent views with the same configuration.' =>
@@ -3268,6 +3276,8 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Configurable params of static stat' => 'Vigezo vilivyosanidiwa vya takwimu tuli',
         'No element selected.' => 'Hakuna elementi iliyochaguliwa',
         'Scale' => 'Mzani',
+        'show more' => '',
+        'show less' => '',
 
         # Template: D3
         'Download SVG' => '',
@@ -3725,8 +3735,6 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Couldn\'t get Ticket for TicketID: %s in _GetParam!' => '',
         'Couldn\'t determine ActivityEntityID. DynamicField or Config isn\'t set properly!' =>
             '',
-        'DynamicFieldConfig missing for field: %s, or is not a Ticket Dynamic Field!' =>
-            '',
         'Process::Default%s Config Value missing!' => '',
         'Got no ProcessEntityID or TicketID and ActivityDialogEntityID!' =>
             '',
@@ -3840,6 +3848,9 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
 
         # Perl Module: Kernel/Modules/CustomerTicketOverview.pm
         'Need CustomerID!' => '',
+        'My Tickets' => 'Tiketi zangu',
+        'Company Tickets' => 'Tiketi za kampuni',
+        'Untitled!' => '',
 
         # Perl Module: Kernel/Modules/CustomerTicketSearch.pm
         'Please remove the following words because they cannot be used for the search:' =>
@@ -3937,6 +3948,7 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Please supply your new password!' => '',
 
         # Perl Module: Kernel/Output/HTML/Statistics/View.pm
+        'No (not supported)' => 'Hapana (Haina usaidizi)',
         'No past complete or the current+upcoming complete relative time value selected.' =>
             '',
         'The selected time period is larger than the allowed time period.' =>
@@ -3984,7 +3996,8 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'State Type' => '',
         'Created Priority' => 'Kipaumbele kilichotengenezwa',
         'Created State' => 'Hali iliyotengenezwa',
-        'CustomerUserLogin' => 'MtejaMtumiajiIngia',
+        'CustomerUserLogin (complex search)' => '',
+        'CustomerUserLogin (exact match)' => '',
         'Create Time' => 'Muda wa kutengeneza',
         'Close Time' => 'Muda wa kufunga',
         'Escalation - First Response Time' => 'Kupanda - Muda wa kwanza wa kujibu',
@@ -3999,13 +4012,49 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Ticket Create Time' => 'Muda wa kutengeneza tiketi',
         'Ticket Close Time' => 'Muda wa kufunga tiketi',
         'Accounted time by Agent' => 'Muda una',
+        'Total Time' => 'Jumla ya muda',
+        'Ticket Average' => 'Wastani wa tiketi',
+        'Ticket Min Time' => 'Kiwango cha chini cha muda ',
+        'Ticket Max Time' => 'Kiwango cha juu cha muda',
+        'Number of Tickets' => 'Namba ya tiketi',
+        'Article Average' => 'Wastani wa makala',
+        'Article Min Time' => 'Kiwango cha chini cha muda cha makala',
+        'Article Max Time' => 'Kiwango cha juu cha muda cha makala',
+        'Number of Articles' => 'Namba ya makala',
 
         # Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+        'unlimited' => '',
+        'ascending' => 'Kupanda',
+        'descending' => 'Kushuka',
         'Attributes to be printed' => 'Viumbi vitachapishwa',
         'Sort sequence' => 'Panga mfuatano ',
         'State Historic' => '',
         'State Type Historic' => '',
         'Historic Time Range' => '',
+
+        # Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+        'Solution Average' => '',
+        'Solution Min Time' => '',
+        'Solution Max Time' => '',
+        'Solution Average (affected by escalation configuration)' => '',
+        'Solution Min Time (affected by escalation configuration)' => '',
+        'Solution Max Time (affected by escalation configuration)' => '',
+        'Solution Working Time Average (affected by escalation configuration)' =>
+            '',
+        'Solution Min Working Time (affected by escalation configuration)' =>
+            '',
+        'Solution Max Working Time (affected by escalation configuration)' =>
+            '',
+        'Response Average (affected by escalation configuration)' => '',
+        'Response Min Time (affected by escalation configuration)' => '',
+        'Response Max Time (affected by escalation configuration)' => '',
+        'Response Working Time Average (affected by escalation configuration)' =>
+            '',
+        'Response Min Working Time (affected by escalation configuration)' =>
+            '',
+        'Response Max Working Time (affected by escalation configuration)' =>
+            '',
+        'Number of Tickets (affected by escalation configuration)' => '',
 
         # Perl Module: Kernel/System/Stats/Static/StateAction.pm
         'Days' => 'Siku',
@@ -4606,7 +4655,6 @@ Thanks for your help!
         'Comment2' => '',
         'Communication' => '',
         'Company Status' => 'Hali ya kampuni',
-        'Company Tickets' => 'Tiketi za kampuni',
         'Company Tickets.' => '',
         'Company name which will be included in outgoing emails as an X-Header.' =>
             'Jina la kampuni litakalohusishwa katika barua pepe zinazotoka nje kama kichwa-X.',
@@ -4726,10 +4774,8 @@ Mfano:
         'Default ticket ID used by the system in the customer interface.' =>
             'Kitambulisho cha tiketi chaguo-msingi kinachotumika na mfumo katika kiolesura cha mteja.',
         'Default value for NameX' => 'Thamani chaguo msingi kwa jina X',
-        'Define Actions where Settings button is available in the Linked objects widget (LinkObject::ViewMode = "complex").
-            Please note that this Actions must have registered following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js,
-            Core.Agent.TableFilters.js.
-        ' => '',
+        'Define Actions where a settings button is available in the linked objects widget (LinkObject::ViewMode = "complex"). Please note that these Actions must have registered the following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js, Core.Agent.TableFilters.js.' =>
+            '',
         'Define a filter for html output to add links behind a defined string. The element Image allows two input kinds. At once the name of an image (e.g. faq.png). In this case the OTRS image path will be used. The second possiblity is to insert the link to the image.' =>
             'Inafafanua kichujio cha matokeo ya html ili kuongeza viunganishi nyuma ya tungo zilizo fafanuliwa. Sura ya elemnti hii inaruhusu maingizo ya aina mbili. Kwanza jinala sura (mf. faq.png). Kwa kesi hii sura ya njia ya OTRS itatumika. Njia ya pili ni kuingiza kiungo cha hiyo sura.',
         'Define a mapping between variables of the customer user data (keys) and dynamic fields of a ticket (values). The purpose is to store customer user data in ticket dynamic fields. The dynamic fields must be present in the system and should be enabled for AgentTicketFreeText, so that they can be set/updated manually by the agent. They mustn\'t be enabled for AgentTicketPhone, AgentTicketEmail and AgentTicketCustomer. If they were, they would have precedence over the automatically set values. To use this mapping, you have to also activate the next setting below.' =>
@@ -4745,9 +4791,8 @@ Mfano:
         'Define the start day of the week for the date picker for the indicated calendar.' =>
             'Inafafanua siku ya kwanza ya wiki kwa kichagua tarehe kama ilivyoonyeshwa kwenye kalenda.',
         'Define the start day of the week for the date picker.' => 'Inafafanua siku ya kwanza ya wiki kwa kichagua tarehe.',
-        'Define which columns are shown in the Linked tickets widget (LinkObject::ViewMode = "complex").
-            Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns.
-            Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' => '',
+        'Define which columns are shown in the linked tickets widget (LinkObject::ViewMode = "complex"). Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' =>
+            '',
         'Defines a customer item, which generates a LinkedIn icon at the end of a customer info block.' =>
             'Inafafanua kipengee cha mteja, ambacho kinatengeneza ikoni ya LinkedIn katika mwisho wa kifungu cha taarifa cha mteja.',
         'Defines a customer item, which generates a XING icon at the end of a customer info block.' =>
@@ -4789,6 +4834,8 @@ Mfano:
             'Inaelezea vigezo vyote kwa kipengee cha Tiketi zilizonyeshwa katika mapendeleo ya mteja ya kiolesura cha mteja.',
         'Defines all the parameters for this item in the customer preferences.' =>
             'Inafafanua vigezo vyote vya kipengele hiki katika mapendeleo ya mteja.',
+        'Defines all the parameters for this item in the customer preferences. \'PasswordRegExp\' allows to match passwords against a regular expression. Define the minimum number of characters using \'PasswordMinSize\'. Define if at least 2 lowercase and 2 uppercase letter characters are needed by setting the appropriate option to \'1\'. \'PasswordMin2Characters\' defines if the password needs to contain at least 2 letter characters (set to 0 or 1). \'PasswordNeedDigit\' controls the need of at least 1 digit (set to 0 or 1 to control).' =>
+            '',
         'Defines all the parameters for this notification transport.' => '',
         'Defines all the possible stats output formats.' => 'Inafafanua umbizo tokeo la takwimu zote zinazowezekana.',
         'Defines an alternate URL, where the login link refers to.' => 'Inafafanua URL mbadala, ambapo kiungo cha kuingia kinarejea.',
@@ -4841,6 +4888,8 @@ Mfano:
             'Inafafanua kama tiketi iliyotungwa inahitaji kuangaliwa herufi katika kiolesura cha wakala.',
         'Defines if customers should be allowed to login if they have no shared secret stored in their preferences and therefore are not using two-factor authentication.' =>
             '',
+        'Defines if the enhanced mode should be used (enables use of table, replace, subscript, superscript, paste from word, etc.) in customer interface.' =>
+            '',
         'Defines if the enhanced mode should be used (enables use of table, replace, subscript, superscript, paste from word, etc.).' =>
             'Inafafanua kama hali timizi ya uimarishaji itumike(Wezesha matumizi ya jedwali, kubadilisha,hati chini, hati juu, Bandika kutoka kwenye Word, n.k.).',
         'Defines if the previously valid token should be accepted for authentication. This is slightly less secure but gives users 30 seconds more time to enter their one-time password.' =>
@@ -4885,6 +4934,8 @@ Mfano:
         'Defines the config options for the autocompletion feature.' => 'Inafafanua michaguo ya usanidi kwa ajili ya kipengele cha ukamilifu otomatiki.',
         'Defines the config parameters of this item, to be shown in the preferences view.' =>
             'Inafafanua vigezo vya usanidi vya kipengele hiki, vitaonyeshwa katika mandhari ya mapendeleo.',
+        'Defines the config parameters of this item, to be shown in the preferences view. \'PasswordRegExp\' allows to match passwords against a regular expression. Define the minimum number of characters using \'PasswordMinSize\'. Define if at least 2 lowercase and 2 uppercase letter characters are needed by setting the appropriate option to \'1\'. \'PasswordMin2Characters\' defines if the password needs to contain at least 2 letter characters (set to 0 or 1). \'PasswordNeedDigit\' controls the need of at least 1 digit (set to 0 or 1 to control). \'PasswordMaxLoginFailed\' allows to set an agent to invalid-temporarily if max failed logins reached.' =>
+            '',
         'Defines the config parameters of this item, to be shown in the preferences view. Take care to maintain the dictionaries installed in the system in the data section.' =>
             'Inafafanua vigezo vya usanidi vya kipengele hiki, vitaonyeshwa katika mandhari ya mapendeleo. Kuwa makini na kamusi zilizosanisiwa katika mfumo katika sehemu cha data',
         'Defines the connections for http/ftp, via a proxy.' => 'Inafafanua miunganiko kwa ajili ya http/ftp, kupitia seva mbadala.',
@@ -5368,7 +5419,7 @@ Mfano:
         'Deletes a session if the session id is used with an invalid remote IP address.' =>
             'Inafuta kipindi kama kitambulisho cha kipindi kinatumika na anwani batili ya IP ya mbali.',
         'Deletes requested sessions if they have timed out.' => 'Inafuta vipindi vilivyoombwa kama vina muda ulioisha.',
-        'Delivers extended debugging information in the frontend in case any ajax errors occur, if enabled.' =>
+        'Delivers extended debugging information in the frontend in case any AJAX errors occur, if enabled.' =>
             '',
         'Deploy and manage OTRS Business Solution™.' => 'Tumia na simamia OTRS Business Solution™.',
         'Determines if the list of possible queues to move to ticket into should be displayed in a dropdown list or in a new window in the agent interface. If "New Window" is set you can add a move note to the ticket.' =>
@@ -5792,6 +5843,7 @@ Mfano:
         'Incoming Phone Call.' => '',
         'IndexAccelerator: to choose your backend TicketViewAccelerator module. "RuntimeDB" generates each queue view on the fly from ticket table (no performance problems up to approx. 60.000 tickets in total and 6.000 open tickets in the system). "StaticDB" is the most powerful module, it uses an extra ticket-index table that works like a view (recommended if more than 80.000 and 6.000 open tickets are stored in the system). Use the command "bin/otrs.Console.pl Maint::Ticket::QueueIndexRebuild" for initial index creation.' =>
             '',
+        'Indonesian' => '',
         'Input' => 'Ingizo',
         'Install ispell or aspell on the system, if you want to use a spell checker. Please specify the path to the aspell or ispell binary on your operating system.' =>
             'Sanidi ispell au aspell katika mfumo, kama unataka kutumia kiangalia herufi. Tafadhali bainisha njia ya kwenda bainari za aspell au ispell katika mfumo endeshi.',
@@ -5941,7 +5993,6 @@ Mfano:
         'Module to use database filter storage.' => 'Moduli ya kutumia hifadhi ya kichujua cha hifadhi data.',
         'Multiselect' => 'Uchaguzi wa wingi',
         'My Services' => 'Huduma zangu',
-        'My Tickets' => 'Tiketi zangu',
         'My Tickets.' => '',
         'Name of custom queue. The custom queue is a queue selection of your preferred queues and can be selected in the preferences settings.' =>
             'Jina la foleni maalum. Foleni maalum ni uchaguzi wa foleni wa foleni zako unazozipendelea na zinazeweza kuchaguliwa katika mipangilio ya mapendeleo.',
@@ -6166,8 +6217,7 @@ Mfano:
             'Tuma taarifa za ufuatiliaji za wakala kwa mmiliki tu, kama tiketi imefunguliwa (Chaguo-msingi ni kutuma taarifa kwa mawakala wote).',
         'Sends all outgoing email via bcc to the specified address. Please use this only for backup reasons.' =>
             'Tuma bariu pepe za kwenda nje zote kupitia bcc kwa anwani iliyobainishwa.Tafadhali tumia hii kwa sababu za chelezo.',
-        'Sends customer notifications just to the mapped customer. Normally, if no customer is mapped, the latest customer sender gets the notification.' =>
-            'Tuma taarifa za mteja kwa mteja wa kuunganisha. Kawaida, kama hakuna mteja aliyeunganishwa, mtumaji wa mteja wa sasa atapata taarifa.',
+        'Sends customer notifications just to the mapped customer.' => '',
         'Sends registration information to OTRS group.' => '',
         'Sends reminder notifications of unlocked ticket after reaching the reminder date (only sent to ticket owner).' =>
             'Tuma taarifa za kukumbusha za tiketi iliyofunguliwa baada ya kufikia tarehe kukumbushwa. (Inatumwa kwa mmiliki wa tiketi tu).',
@@ -6814,10 +6864,10 @@ Mfano:
         'Yes, but hide archived tickets' => '',
         'Your email with ticket number "<OTRS_TICKET>" is bounced to "<OTRS_BOUNCE_TO>". Contact this address for further information.' =>
             '',
-        'Your queue selection of your favorite queues. You also get notified about those queues via email if enabled.' =>
-            'Chaguo lako la foleni kwa foleni uzipendazo. Pia utapata kujulishwa kuhusu foleni hizi kwa kupitia barua pepe kama imewezeshwa.',
-        'Your service selection of your favorite services. You also get notified about those services via email if enabled.' =>
-            'Chaguo lako la huduma la huduma uzipendazo. Pia utapata kujulishwa kuhusu hizo huduma kwa kupitia barua pepe kama imewezeshwa.',
+        'Your queue selection of your preferred queues. You also get notified about those queues via email if enabled.' =>
+            '',
+        'Your service selection of your preferred services. You also get notified about those services via email if enabled.' =>
+            '',
         'attachment' => '',
         'debug' => '',
         'error' => '',

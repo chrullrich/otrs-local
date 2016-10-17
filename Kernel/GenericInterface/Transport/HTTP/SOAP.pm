@@ -175,12 +175,18 @@ sub ProviderProcessRequest {
             );
         }
 
+        # Remove trailing "/" form configuration and request for comparison
+        $NameSpaceFromHeader =~ s{\A ( .+? ) / \z}{$1}msx;
+
+        my $NameSpace = $Config->{NameSpace};
+        $NameSpace =~ s{\A ( .+? ) / \z}{$1}msx;
+
         # check name-space for match to configuration
-        if ( $NameSpaceFromHeader ne $Config->{NameSpace} ) {
+        if ( $NameSpaceFromHeader ne $NameSpace ) {
             return $Self->_Error(
                 Summary =>
                     "Namespace from SOAPAction '$NameSpaceFromHeader' does not match namespace"
-                    . " from configuration '$Config->{NameSpace}'",
+                    . " from configuration '$NameSpace'",
             );
         }
     }
@@ -564,30 +570,30 @@ sub RequesterPerformRequest {
                 };
             }
 
-            $ENV{HTTPS_PKCS12_FILE}     = $Config->{SSL}->{SSLP12Certificate};
-            $ENV{HTTPS_PKCS12_PASSWORD} = $Config->{SSL}->{SSLP12Password};
+            $ENV{HTTPS_PKCS12_FILE}     = $Config->{SSL}->{SSLP12Certificate};    ## no critic
+            $ENV{HTTPS_PKCS12_PASSWORD} = $Config->{SSL}->{SSLP12Password};       ## no critic
 
             # add certificate authority
             if ( IsStringWithData( $Config->{SSL}->{SSLCAFile} ) ) {
-                $ENV{HTTPS_CA_FILE} = $Config->{SSL}->{SSLCAFile};
+                $ENV{HTTPS_CA_FILE} = $Config->{SSL}->{SSLCAFile};                ## no critic
             }
             if ( IsStringWithData( $Config->{SSL}->{SSLCADir} ) ) {
-                $ENV{HTTPS_CA_DIR} = $Config->{SSL}->{SSLCADir};
+                $ENV{HTTPS_CA_DIR} = $Config->{SSL}->{SSLCADir};                  ## no critic
             }
         }
     }
 
     # add proxy
     if ( IsStringWithData( $Config->{SSL}->{SSLProxy} ) ) {
-        $ENV{HTTPS_PROXY} = $Config->{SSL}->{SSLProxy};
+        $ENV{HTTPS_PROXY} = $Config->{SSL}->{SSLProxy};                           ## no critic
     }
 
     # add proxy basic authentication
     if ( IsStringWithData( $Config->{SSL}->{SSLProxyUser} ) ) {
-        $ENV{HTTPS_PROXY_USERNAME} = $Config->{SSL}->{SSLProxyUser};
+        $ENV{HTTPS_PROXY_USERNAME} = $Config->{SSL}->{SSLProxyUser};              ## no critic
     }
     if ( IsStringWithData( $Config->{SSL}->{SSLProxyPassword} ) ) {
-        $ENV{HTTPS_PROXY_PASSWORD} = $Config->{SSL}->{SSLProxyPassword};
+        $ENV{HTTPS_PROXY_PASSWORD} = $Config->{SSL}->{SSLProxyPassword};          ## no critic
     }
 
     # prepare connect

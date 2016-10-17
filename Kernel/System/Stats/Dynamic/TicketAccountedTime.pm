@@ -212,11 +212,19 @@ sub GetObjectAttributes {
             Block            => 'InputField',
         },
         {
-            Name             => Translatable('CustomerUserLogin'),
+            Name             => Translatable('CustomerUserLogin (complex search)'),
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
             Element          => 'CustomerUserLogin',
+            Block            => 'InputField',
+        },
+        {
+            Name             => Translatable('CustomerUserLogin (exact match)'),
+            UseAsXvalue      => 0,
+            UseAsValueSeries => 0,
+            UseAsRestriction => 1,
+            Element          => 'CustomerUserLoginRaw',
             Block            => 'InputField',
         },
         {
@@ -450,9 +458,9 @@ sub GetObjectAttributes {
             Block            => 'SelectField',
             Translation      => 1,
             Values           => {
-                ArchivedTickets    => 'Archived tickets',
-                NotArchivedTickets => 'Unarchived tickets',
-                AllTickets         => 'All tickets',
+                ArchivedTickets    => Translatable('Archived tickets'),
+                NotArchivedTickets => Translatable('Unarchived tickets'),
+                AllTickets         => Translatable('All tickets'),
             },
         );
 
@@ -539,16 +547,26 @@ sub GetObjectAttributes {
     }
     else {
 
-        my %ObjectAttribute = (
-            Name             => Translatable('CustomerID'),
-            UseAsXvalue      => 0,
-            UseAsValueSeries => 0,
-            UseAsRestriction => 1,
-            Element          => 'CustomerID',
-            Block            => 'InputField',
+        my @CustomerIDAttributes = (
+            {
+                Name             => Translatable('CustomerID (complex search)'),
+                UseAsXvalue      => 0,
+                UseAsValueSeries => 0,
+                UseAsRestriction => 1,
+                Element          => 'CustomerID',
+                Block            => 'InputField',
+            },
+            {
+                Name             => Translatable('CustomerID (exact match)'),
+                UseAsXvalue      => 0,
+                UseAsValueSeries => 0,
+                UseAsRestriction => 1,
+                Element          => 'CustomerIDRaw',
+                Block            => 'InputField',
+            },
         );
 
-        push @ObjectAttributes, \%ObjectAttribute;
+        push @ObjectAttributes, @CustomerIDAttributes;
     }
 
     # get dynamic field backend object
@@ -838,7 +856,7 @@ sub ExportWrapper {
                 }
             }
             elsif (
-                $ElementName eq 'OwnerIDs'
+                $ElementName    eq 'OwnerIDs'
                 || $ElementName eq 'CreatedUserIDs'
                 || $ElementName eq 'ResponsibleIDs'
                 )
@@ -933,7 +951,7 @@ sub ImportWrapper {
                 }
             }
             elsif (
-                $ElementName eq 'OwnerIDs'
+                $ElementName    eq 'OwnerIDs'
                 || $ElementName eq 'CreatedUserIDs'
                 || $ElementName eq 'ResponsibleIDs'
                 )
@@ -1293,15 +1311,15 @@ sub _KindsOfReporting {
     my $Self = shift;
 
     my %KindsOfReporting = (
-        TotalTime        => 'Total Time',
-        TicketAverage    => 'Ticket Average',
-        TicketMinTime    => 'Ticket Min Time',
-        TicketMaxTime    => 'Ticket Max Time',
-        NumberOfTickets  => 'Number of Tickets',
-        ArticleAverage   => 'Article Average',
-        ArticleMinTime   => 'Article Min Time',
-        ArticleMaxTime   => 'Article Max Time',
-        NumberOfArticles => 'Number of Articles',
+        TotalTime        => Translatable('Total Time'),
+        TicketAverage    => Translatable('Ticket Average'),
+        TicketMinTime    => Translatable('Ticket Min Time'),
+        TicketMaxTime    => Translatable('Ticket Max Time'),
+        NumberOfTickets  => Translatable('Number of Tickets'),
+        ArticleAverage   => Translatable('Article Average'),
+        ArticleMinTime   => Translatable('Article Min Time'),
+        ArticleMaxTime   => Translatable('Article Max Time'),
+        NumberOfArticles => Translatable('Number of Articles'),
     );
     return \%KindsOfReporting;
 }
@@ -1349,7 +1367,9 @@ sub _AllowedTicketSearchAttributes {
         ResponsibleIDs
         WatchUserIDs
         CustomerID
+        CustomerIDRaw
         CustomerUserLogin
+        CustomerUserLoginRaw
         CreatedUserIDs
         CreatedTypes
         CreatedTypeIDs

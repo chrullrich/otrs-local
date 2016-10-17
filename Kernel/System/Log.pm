@@ -281,6 +281,9 @@ sub GetLog {
         shmread( $Self->{Key}, $String, 0, $Self->{IPCSize} ) || die "$!";
     }
 
+    # Remove \0 bytes that shmwrite adds for padding.
+    $String =~ s{\0}{}smxg;
+
     # encode the string
     $Kernel::OM->Get('Kernel::System::Encode')->EncodeInput( \$String );
 
@@ -303,11 +306,14 @@ sub CleanUp {
     # remove the shm
     if ( !shmctl( $Self->{Key}, 0, 0 ) ) {
         $Self->Log(
-            Priority => 'error',
+            Priority => 'notice',
             Message  => "Can't remove shm for log: $!",
         );
         return;
     }
+
+    # Re-initialize SHM segment.
+    $Self->{Key} = shmget( $Self->{IPCKey}, $Self->{IPCSize}, oct(1777) );
 
     return 1;
 }

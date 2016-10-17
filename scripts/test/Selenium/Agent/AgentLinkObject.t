@@ -15,66 +15,37 @@ use vars (qw($Self));
 # get selenium object
 my $Selenium = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
-my $DragAndDrop = sub {
-    my (%Param) = @_;
-
-    # Value is optional parameter
-    for my $Needed (qw(From To)) {
-        if ( !$Param{$Needed} ) {
-            $Kernel::OM->Get('Kernel::System::Log')->Log(
-                Priority => 'error',
-                Message  => "Need $Needed!"
-            );
-            return;
-        }
-    }
-
-    my $DragFrom = $Selenium->find_element( $Param{From}, 'css' );
-    my $DragTo   = $Selenium->find_element( $Param{To},   'css' );
-
-    # Move mouse to from element, drag and drop
-    $Selenium->mouse_move_to_location( element => $DragFrom );
-
-    # Holds the mouse button on the element
-    $Selenium->button_down();
-
-    # Move mouse to the destination
-    $Selenium->mouse_move_to_location(
-        element => $DragTo,
-        xoffset => 1,
-        yoffset => 1,
-    );
-
-    # Release
-    $Selenium->button_up();
-};
-
 $Selenium->RunTest(
     sub {
 
         # get helper object
-        $Kernel::OM->ObjectParamAdd(
-            'Kernel::System::UnitTest::Helper' => {
-                RestoreSystemConfiguration => 1,
-            },
-        );
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
-        # get sysconfig object
-        my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
-
         # set link object view mode to simple
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'LinkObject::ViewMode',
             Value => 'Simple',
         );
 
         # set Ticket::SubjectSize
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'Ticket::SubjectSize',
             Value => '60',
+        );
+
+        # Enable Ticket::ArchiveSystem
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'Ticket::ArchiveSystem',
+            Value => 1,
+        );
+
+        # Enable Ticket::ArchiveSystem
+        $Helper->ConfigSettingChange(
+            Key   => 'Ticket::ArchiveSystem',
+            Value => 1,
         );
 
         # create test user and login
@@ -134,7 +105,8 @@ $Selenium->RunTest(
         );
 
         # click on 'Link'
-        $Selenium->find_element("//a[contains(\@href, \'Action=AgentLinkObject;SourceObject=Ticket;' )]")->click();
+        $Selenium->find_element("//a[contains(\@href, \'Action=AgentLinkObject;SourceObject=Ticket;' )]")
+            ->VerifiedClick();
 
         # switch to link object window
         $Selenium->WaitFor( WindowCount => 2 );
@@ -147,7 +119,7 @@ $Selenium->RunTest(
         $Selenium->find_element(".//*[\@id='SEARCH::TicketNumber']")->VerifiedSubmit();
 
         # link created test tickets
-        $Selenium->find_element("//input[\@value='$TicketIDs[1]'][\@type='checkbox']")->click();
+        $Selenium->find_element("//input[\@value='$TicketIDs[1]'][\@type='checkbox']")->VerifiedClick();
         $Selenium->execute_script(
             "\$('#TypeIdentifier').val('ParentChild::Target').trigger('redraw.InputField').trigger('change');"
         );
@@ -186,7 +158,7 @@ $Selenium->RunTest(
 
         # test ticket title length in complex view for linked tickets, see bug #11511
         # set link object view mode to complex
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'LinkObject::ViewMode',
             Value => 'Complex',
@@ -269,21 +241,32 @@ $Selenium->RunTest(
         # check if column settings button is available in the Linked Ticket widget
         $Selenium->find_element( 'a#linkobject-Ticket-toggle', 'css' )->VerifiedClick();
 
+        # Wait for the complete widget to be fully slided in all the way down to the submit button.
         $Selenium->WaitFor(
             JavaScript =>
-                'return typeof($) === "function" && $("#linkobject-Ticket-setting:visible").length;'
+                'return typeof($) === "function" && $("#linkobject-Ticket_submit:visible").length;'
         );
 
+        sleep 1;
+
         # Remove Age from left side, and put it to the right side
-        $DragAndDrop->(
-            From => '#WidgetTicket li[data-fieldname="Age"]',
-            To   => '#AssignedFields-linkobject-Ticket',
+        $Selenium->DragAndDrop(
+            Element      => '#WidgetTicket #AvailableField-linkobject-Ticket li[data-fieldname="Age"]',
+            Target       => '#AssignedFields-linkobject-Ticket',
+            TargetOffset => {
+                X => 185,
+                Y => 10,
+            },
         );
 
         # Remove State from right side, and put it to the left side
-        $DragAndDrop->(
-            From => '#WidgetTicket li[data-fieldname="State"]',
-            To   => '#AvailableField-linkobject-Ticket',
+        $Selenium->DragAndDrop(
+            Element      => '#WidgetTicket #AssignedFields-linkobject-Ticket li[data-fieldname="State"]',
+            Target       => '#AvailableField-linkobject-Ticket',
+            TargetOffset => {
+                X => 185,
+                Y => 10,
+            },
         );
 
         # save
@@ -347,7 +330,8 @@ $Selenium->RunTest(
         );
 
         # click on 'Link'
-        $Selenium->find_element("//a[contains(\@href, \'Action=AgentLinkObject;SourceObject=Ticket;' )]")->click();
+        $Selenium->find_element("//a[contains(\@href, \'Action=AgentLinkObject;SourceObject=Ticket;' )]")
+            ->VerifiedClick();
 
         # switch to link object window
         $Selenium->WaitFor( WindowCount => 2 );
@@ -371,6 +355,85 @@ $Selenium->RunTest(
             "$ShortTitle - found in LinkDelete screen",
         );
 
+        # select all links
+        $Selenium->find_element( "#SelectAllLinks0", "css" )->VerifiedClick();
+
+        # make sure it's selected
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#SelectAllLinks0:checked").length' );
+
+        # click on delete links
+        $Selenium->find_element( ".Primary", "css" )->VerifiedClick();
+
+        # wait until page has loaded, if necessary
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#SelectAllLinks0").length' );
+
+        my $SuccessArchived = $TicketObject->TicketArchiveFlagSet(
+            ArchiveFlag => 'y',
+            TicketID    => $TicketIDs[1],
+            UserID      => $TestUserID,
+        );
+
+        $Self->True(
+            $SuccessArchived,
+            "Check if 2nd ticket is archived successfully."
+        );
+
+        # check if there is "Search archive" drop-down.
+        $Self->True(
+            $Selenium->execute_script(
+                "return \$('#SEARCH\\\\:\\\\:ArchiveID').length"
+            ),
+            'Search archive drop-down present.',
+        );
+
+        # search for 2nd ticket
+        $Selenium->find_element(".//*[\@id='SEARCH::TicketNumber']")->send_keys( $TicketNumbers[1] );
+        $Selenium->find_element(".//*[\@id='SEARCH::TicketNumber']")->VerifiedSubmit();
+
+        # make sure there are no results
+        $Self->False(
+            $Selenium->execute_script(
+                "return \$('#WidgetTicket').length"
+            ),
+            'No result.',
+        );
+
+        # click on the Archive search drop-down
+        $Selenium->find_element(".//*[\@id='SEARCH::ArchiveID_Search']")->VerifiedClick();
+
+        $Self->True(
+            $Selenium->WaitFor(
+                JavaScript => 'return typeof($) === "function" && $(\'li[data-id="ArchivedTickets"]\').length'
+            ),
+            "Wait for ArchivedTickets option to appear."
+        );
+
+        # select Search archived
+        $Selenium->execute_script(
+            "\$('li[data-id=\"ArchivedTickets\"] a').click();"
+        );
+
+        $Selenium->find_element( "#SubmitSearch", "css" )->VerifiedClick();
+
+        # wait till search is loaded
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#SelectAllLinks0").length' );
+
+        # link again
+        $Selenium->find_element( "#SelectAllLinks0",  "css" )->click();
+        $Selenium->find_element( "#AddLinks",         "css" )->VerifiedClick();
+        $Selenium->find_element( "#LinkAddCloseLink", "css" )->click();
+
+        # wait till popup is closed
+        $Selenium->WaitFor( WindowCount => 1 );
+
+        # switch to 1st window
+        $Handles = $Selenium->get_window_handles();
+        $Selenium->switch_to_window( $Handles->[0] );
+
+        # make sure they are really linked.
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#WidgetTicket").length' );
+        $Selenium->find_element( "#WidgetTicket", "css" );
+
         # delete created test tickets
         for my $TicketID (@TicketIDs) {
             $Success = $TicketObject->TicketDelete(
@@ -382,7 +445,7 @@ $Selenium->RunTest(
                 "Delete ticket - $TicketID"
             );
         }
-        }
+    }
 );
 
 1;

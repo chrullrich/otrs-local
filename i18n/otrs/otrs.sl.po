@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
-"POT-Creation-Date: 2016-06-22 10:40+0000\n"
-"PO-Revision-Date: 2016-06-22 15:42+0000\n"
+"POT-Creation-Date: 2016-09-14 10:25+0000\n"
+"PO-Revision-Date: 2016-09-14 15:43+0000\n"
 "Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
 "Language-Team: Slovenian (http://www.transifex.com/otrs/OTRS/language/sl/)\n"
 "MIME-Version: 1.0\n"
@@ -3104,8 +3104,8 @@ msgid "To get the first 5 lines of the email."
 msgstr "Da vidite prvih 5 vrst sporočila"
 
 #. Template: AdminAutoResponse
-msgid "To get the realname of the sender (if given)."
-msgstr "Da vidite ime pošiljatelja (če je dostopno)"
+msgid "To get the realname of the ticket's customer user (if given)."
+msgstr ""
 
 #. Template: AdminAutoResponse
 msgid "To get the article attribute"
@@ -3261,19 +3261,11 @@ msgid "Select"
 msgstr "Izberi"
 
 #. Template: AdminCustomerCompany
-msgid "only"
+msgid "List (only %s shown - more available)"
 msgstr ""
 
 #. Template: AdminCustomerCompany
-msgid "shown"
-msgstr ""
-
-#. Template: AdminCustomerCompany
-msgid "more available"
-msgstr ""
-
-#. Template: AdminCustomerCompany
-msgid "total"
+msgid "List (%s total)"
 msgstr ""
 
 #. Template: AdminCustomerCompany
@@ -4248,6 +4240,30 @@ msgstr "Vrednost parametra %s"
 #. Template: AdminGenericAgent
 msgid "Save Changes"
 msgstr "Shrani spremembe"
+
+#. Template: AdminGenericAgent
+msgid "Tag Reference"
+msgstr ""
+
+#. Template: AdminGenericAgent
+msgid "In the note section, you can use the following tags"
+msgstr ""
+
+#. Template: AdminGenericAgent
+msgid "Attributes of the current customer user data"
+msgstr ""
+
+#. Template: AdminGenericAgent
+msgid "Attributes of the ticket data"
+msgstr ""
+
+#. Template: AdminGenericAgent
+msgid "Ticket dynamic fields internal key values"
+msgstr ""
+
+#. Template: AdminGenericAgent
+msgid "Example note"
+msgstr ""
 
 #. Template: AdminGenericAgent
 msgid "Results"
@@ -5253,6 +5269,10 @@ msgid "It's useful for ASP solutions. "
 msgstr "Koristna rešitev za ASP."
 
 #. Template: AdminGroup
+msgid "total"
+msgstr ""
+
+#. Template: AdminGroup
 msgid "Add Group"
 msgstr "Dodaj skupino"
 
@@ -5580,10 +5600,6 @@ msgid "Do you really want to delete this notification language?"
 msgstr ""
 
 #. Template: AdminNotificationEvent
-msgid "Tag Reference"
-msgstr ""
-
-#. Template: AdminNotificationEvent
 msgid "Notifications are sent to an agent or a customer."
 msgstr "Obvestilo poslano zaposlenemu ali uporabniku."
 
@@ -5607,10 +5623,6 @@ msgid "To get the first 5 lines of the body (of the latest customer article)."
 msgstr "Pregled prvih 5 vrst sporočila (zadnji članek zaposlenega)."
 
 #. Template: AdminNotificationEvent
-msgid "Attributes of the current customer user data"
-msgstr ""
-
-#. Template: AdminNotificationEvent
 msgid "Attributes of the current ticket owner user data"
 msgstr ""
 
@@ -5624,14 +5636,6 @@ msgstr ""
 
 #. Template: AdminNotificationEvent
 msgid "Attributes of the recipient user for the notification"
-msgstr ""
-
-#. Template: AdminNotificationEvent
-msgid "Attributes of the ticket data"
-msgstr ""
-
-#. Template: AdminNotificationEvent
-msgid "Ticket dynamic fields internal key values"
 msgstr ""
 
 #. Template: AdminNotificationEvent
@@ -6813,6 +6817,10 @@ msgid "Transition Name"
 msgstr ""
 
 #. Template: AdminProcessManagementTransition
+msgid "Conditions can only operate on non-empty fields."
+msgstr ""
+
+#. Template: AdminProcessManagementTransition
 msgid "Type of Linking between Conditions"
 msgstr ""
 
@@ -7581,6 +7589,10 @@ msgstr "Certifikati na voljo"
 
 #. Template: AdminSMIME
 msgid "Relate this certificate"
+msgstr ""
+
+#. Template: AdminSMIMECertRead
+msgid "Close dialog"
 msgstr ""
 
 #. Template: AdminSMIMECertRead
@@ -8819,31 +8831,31 @@ msgid ""
 msgstr ""
 
 #. Template: AgentTicketActionCommon
-msgid "Change Free Text of %s%s"
+msgid "Change Free Text of %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketActionCommon
-msgid "Change Owner of %s%s"
+msgid "Change Owner of %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketActionCommon
-msgid "Close %s%s"
+msgid "Close %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketActionCommon
-msgid "Add Note to %s%s"
+msgid "Add Note to %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketActionCommon
-msgid "Set Pending Time for %s%s"
+msgid "Set Pending Time for %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketActionCommon
-msgid "Change Priority of %s%s"
+msgid "Change Priority of %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketActionCommon
-msgid "Change Responsible of %s%s"
+msgid "Change Responsible of %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketActionCommon
@@ -8897,7 +8909,7 @@ msgid ""
 msgstr ""
 
 #. Template: AgentTicketActionCommon
-msgid "Text will also be received by:"
+msgid "Text will also be received by"
 msgstr ""
 
 #. Template: AgentTicketActionCommon
@@ -8917,7 +8929,7 @@ msgid "Note type"
 msgstr "Tip opombe"
 
 #. Template: AgentTicketBounce
-msgid "Bounce %s%s"
+msgid "Bounce %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketBounce
@@ -8981,7 +8993,7 @@ msgid "Execute Bulk Action"
 msgstr ""
 
 #. Template: AgentTicketCompose
-msgid "Compose Answer for %s%s"
+msgid "Compose Answer for %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketCompose
@@ -9017,7 +9029,7 @@ msgid "Date Invalid!"
 msgstr "Nepravilen datum!"
 
 #. Template: AgentTicketCustomer
-msgid "Change Customer of %s%s"
+msgid "Change Customer of %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketEmail
@@ -9053,7 +9065,7 @@ msgid "Get all"
 msgstr "Dobi vse"
 
 #. Template: AgentTicketEmailOutbound
-msgid "Outbound Email for %s%s"
+msgid "Outbound Email for %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketEscalation
@@ -9081,11 +9093,11 @@ msgid "Ticket %s: solution time will be over in %s/%s!"
 msgstr ""
 
 #. Template: AgentTicketForward
-msgid "Forward %s%s"
+msgid "Forward %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketHistory
-msgid "History of %s%s"
+msgid "History of %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketHistory
@@ -9097,7 +9109,7 @@ msgid "Zoom view"
 msgstr "Povečan pogled"
 
 #. Template: AgentTicketMerge
-msgid "Merge %s%s"
+msgid "Merge %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketMerge
@@ -9117,7 +9129,7 @@ msgid "Need a valid email address."
 msgstr "Potreben je veljavni naslov E-pošte."
 
 #. Template: AgentTicketMove
-msgid "Move %s%s"
+msgid "Move %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketMove
@@ -9209,11 +9221,11 @@ msgid "The chat will be appended as a separate article."
 msgstr ""
 
 #. Template: AgentTicketPhoneCommon
-msgid "Phone Call for %s%s"
+msgid "Phone Call for %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketPlain
-msgid "View Email Plain Text for %s%s"
+msgid "View Email Plain Text for %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketPlain
@@ -9287,8 +9299,20 @@ msgid ""
 msgstr ""
 
 #. Template: AgentTicketSearch
-msgid "Customer User Login"
-msgstr "Prijava uporabnika"
+msgid "CustomerID (complex search)"
+msgstr ""
+
+#. Template: AgentTicketSearch
+msgid "CustomerID (exact match)"
+msgstr ""
+
+#. Template: AgentTicketSearch
+msgid "Customer User Login (complex search)"
+msgstr ""
+
+#. Template: AgentTicketSearch
+msgid "Customer User Login (exact match)"
+msgstr ""
 
 #. Template: AgentTicketSearch
 msgid "Attachment Name"
@@ -9577,6 +9601,14 @@ msgstr "Vi lahko"
 #. Template: CloudServicesDisabled
 msgid "go back to the previous page"
 msgstr "Pojdi nazaj na prejšnjo stran"
+
+#. Template: CustomerError
+msgid "An Error Occurred"
+msgstr ""
+
+#. Template: CustomerError
+msgid "Error Details"
+msgstr "Podrobnosti o napaki"
 
 #. Template: CustomerError
 msgid "Traceback"
@@ -10030,10 +10062,6 @@ msgstr ""
 #. Template: Error
 msgid "Send a bugreport"
 msgstr "pošlji poročilo o napaki"
-
-#. Template: Error
-msgid "Error Details"
-msgstr "Podrobnosti o napaki"
 
 #. Template: FooterJS
 msgid "Please enter at least one search value or * to find anything."
@@ -10580,7 +10608,7 @@ msgid "Create summation row"
 msgstr ""
 
 #. Template: GeneralSpecificationsWidget
-msgid "Generate an additional row containing sums for all data columns."
+msgid "Generate an additional row containing sums for all data rows."
 msgstr ""
 
 #. Template: GeneralSpecificationsWidget
@@ -10588,7 +10616,7 @@ msgid "Create summation column"
 msgstr ""
 
 #. Template: GeneralSpecificationsWidget
-msgid "Generate an additional column containing sums for all data rows."
+msgid "Generate an additional column containing sums for all data columns."
 msgstr ""
 
 #. Template: GeneralSpecificationsWidget
@@ -10702,6 +10730,14 @@ msgstr "Noben element ni izbran."
 #. Template: StatsParamsWidget
 msgid "Scale"
 msgstr "Lestvica"
+
+#. Template: StatsParamsWidget
+msgid "show more"
+msgstr ""
+
+#. Template: StatsParamsWidget
+msgid "show less"
+msgstr ""
 
 #. Template: D3
 msgid "Download SVG"
@@ -11945,11 +11981,6 @@ msgid ""
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
-msgid ""
-"DynamicFieldConfig missing for field: %s, or is not a Ticket Dynamic Field!"
-msgstr ""
-
-#. Perl Module: Kernel/Modules/AgentTicketProcess.pm
 msgid "Process::Default%s Config Value missing!"
 msgstr ""
 
@@ -12299,6 +12330,18 @@ msgstr ""
 msgid "Need CustomerID!"
 msgstr ""
 
+#. Perl Module: Kernel/Modules/CustomerTicketOverview.pm
+msgid "My Tickets"
+msgstr "Moji zahtevki"
+
+#. Perl Module: Kernel/Modules/CustomerTicketOverview.pm
+msgid "Company Tickets"
+msgstr "Zahtevek podjetja"
+
+#. Perl Module: Kernel/Modules/CustomerTicketOverview.pm
+msgid "Untitled!"
+msgstr ""
+
 #. Perl Module: Kernel/Modules/CustomerTicketSearch.pm
 msgid ""
 "Please remove the following words because they cannot be used for the "
@@ -12523,6 +12566,10 @@ msgid "Please supply your new password!"
 msgstr ""
 
 #. Perl Module: Kernel/Output/HTML/Statistics/View.pm
+msgid "No (not supported)"
+msgstr ""
+
+#. Perl Module: Kernel/Output/HTML/Statistics/View.pm
 msgid ""
 "No past complete or the current+upcoming complete relative time value "
 "selected."
@@ -12642,8 +12689,12 @@ msgid "Created State"
 msgstr "Odprto s statusom"
 
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
-msgid "CustomerUserLogin"
-msgstr "Prijava uporabnika"
+msgid "CustomerUserLogin (complex search)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin (exact match)"
+msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Create Time"
@@ -12693,6 +12744,54 @@ msgstr "Čas zaprtja zahtevka"
 msgid "Accounted time by Agent"
 msgstr "Obračun časa po zaposlenem"
 
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Total Time"
+msgstr "Skupni čas"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Ticket Average"
+msgstr "Povprečni čas za zahtevek"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Ticket Min Time"
+msgstr "Minimalni čas zahtevka"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Ticket Max Time"
+msgstr "Maksimalen čas zahtevka"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Number of Tickets"
+msgstr "Številka zahtevka"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Article Average"
+msgstr "Povprečen čas za članek"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Article Min Time"
+msgstr "Minimalen čas članka"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Article Max Time"
+msgstr "Maksimalni čas za članek"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Number of Articles"
+msgstr "Številka članka"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+msgid "unlimited"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+msgid "ascending"
+msgstr "naraščajoče"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+msgid "descending"
+msgstr "padajoče"
+
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
 msgid "Attributes to be printed"
 msgstr "Atributi za tiskanje"
@@ -12711,6 +12810,70 @@ msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
 msgid "Historic Time Range"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Average"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Min Time"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Max Time"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Average (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Min Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Max Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Working Time Average (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Min Working Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Max Working Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Average (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Min Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Max Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Working Time Average (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Min Working Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Max Working Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Number of Tickets (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Static/StateAction.pm
@@ -14506,10 +14669,6 @@ msgid "Company Status"
 msgstr ""
 
 #. SysConfig
-msgid "Company Tickets"
-msgstr "Zahtevek podjetja"
-
-#. SysConfig
 msgid "Company Tickets."
 msgstr ""
 
@@ -14921,10 +15080,11 @@ msgstr ""
 
 #. SysConfig
 msgid ""
-"Define Actions where Settings button is available in the Linked objects widget (LinkObject::ViewMode = \"complex\").\n"
-"            Please note that this Actions must have registered following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js,\n"
-"            Core.Agent.TableFilters.js.\n"
-"        "
+"Define Actions where a settings button is available in the linked objects "
+"widget (LinkObject::ViewMode = \"complex\"). Please note that these Actions "
+"must have registered the following JS and CSS files: "
+"Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js, "
+"Core.Agent.TableFilters.js."
 msgstr ""
 
 #. SysConfig
@@ -14989,9 +15149,10 @@ msgstr "Določi prvi dan v tednu za izbor datuma."
 
 #. SysConfig
 msgid ""
-"Define which columns are shown in the Linked tickets widget (LinkObject::ViewMode = \"complex\").\n"
-"            Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns.\n"
-"            Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default."
+"Define which columns are shown in the linked tickets widget "
+"(LinkObject::ViewMode = \"complex\"). Note: Only Ticket attributes and "
+"Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible"
+" settings: 0 = Disabled, 1 = Available, 2 = Enabled by default."
 msgstr ""
 
 #. SysConfig
@@ -15128,6 +15289,18 @@ msgstr ""
 #. SysConfig
 msgid "Defines all the parameters for this item in the customer preferences."
 msgstr "Določa vse parametre za to postavko v uporabniških nastavitvah."
+
+#. SysConfig
+msgid ""
+"Defines all the parameters for this item in the customer preferences. "
+"'PasswordRegExp' allows to match passwords against a regular expression. "
+"Define the minimum number of characters using 'PasswordMinSize'. Define if "
+"at least 2 lowercase and 2 uppercase letter characters are needed by setting"
+" the appropriate option to '1'. 'PasswordMin2Characters' defines if the "
+"password needs to contain at least 2 letter characters (set to 0 or 1). "
+"'PasswordNeedDigit' controls the need of at least 1 digit (set to 0 or 1 to "
+"control)."
+msgstr ""
 
 #. SysConfig
 msgid "Defines all the parameters for this notification transport."
@@ -15309,6 +15482,12 @@ msgstr ""
 #. SysConfig
 msgid ""
 "Defines if the enhanced mode should be used (enables use of table, replace, "
+"subscript, superscript, paste from word, etc.) in customer interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Defines if the enhanced mode should be used (enables use of table, replace, "
 "subscript, superscript, paste from word, etc.)."
 msgstr ""
 
@@ -15447,6 +15626,19 @@ msgstr ""
 msgid ""
 "Defines the config parameters of this item, to be shown in the preferences "
 "view."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Defines the config parameters of this item, to be shown in the preferences "
+"view. 'PasswordRegExp' allows to match passwords against a regular "
+"expression. Define the minimum number of characters using 'PasswordMinSize'."
+" Define if at least 2 lowercase and 2 uppercase letter characters are needed"
+" by setting the appropriate option to '1'. 'PasswordMin2Characters' defines "
+"if the password needs to contain at least 2 letter characters (set to 0 or "
+"1). 'PasswordNeedDigit' controls the need of at least 1 digit (set to 0 or 1"
+" to control). 'PasswordMaxLoginFailed' allows to set an agent to invalid-"
+"temporarily if max failed logins reached."
 msgstr ""
 
 #. SysConfig
@@ -16964,7 +17156,7 @@ msgstr ""
 
 #. SysConfig
 msgid ""
-"Delivers extended debugging information in the frontend in case any ajax "
+"Delivers extended debugging information in the frontend in case any AJAX "
 "errors occur, if enabled."
 msgstr ""
 
@@ -18359,6 +18551,10 @@ msgid ""
 msgstr ""
 
 #. SysConfig
+msgid "Indonesian"
+msgstr ""
+
+#. SysConfig
 msgid "Input"
 msgstr ""
 
@@ -18860,10 +19056,6 @@ msgstr ""
 #. SysConfig
 msgid "My Services"
 msgstr "Moji servisi"
-
-#. SysConfig
-msgid "My Tickets"
-msgstr "Moji zahtevki"
 
 #. SysConfig
 msgid "My Tickets."
@@ -19680,9 +19872,7 @@ msgid ""
 msgstr ""
 
 #. SysConfig
-msgid ""
-"Sends customer notifications just to the mapped customer. Normally, if no "
-"customer is mapped, the latest customer sender gets the notification."
+msgid "Sends customer notifications just to the mapped customer."
 msgstr ""
 
 #. SysConfig
@@ -21807,13 +21997,13 @@ msgstr ""
 
 #. SysConfig
 msgid ""
-"Your queue selection of your favorite queues. You also get notified about "
+"Your queue selection of your preferred queues. You also get notified about "
 "those queues via email if enabled."
-msgstr "Vrsta je izbor vaših najljubših čakalnih vrst. Dobite lahko tudi obvestilo o teh čakalnih vrstah preko e-pošte če je le-to omogočeno."
+msgstr ""
 
 #. SysConfig
 msgid ""
-"Your service selection of your favorite services. You also get notified "
+"Your service selection of your preferred services. You also get notified "
 "about those services via email if enabled."
 msgstr ""
 

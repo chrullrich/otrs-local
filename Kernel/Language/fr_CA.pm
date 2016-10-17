@@ -31,7 +31,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.545072494221475;
+    $Self->{Completeness}        = 0.541024573094544;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -862,7 +862,8 @@ sub Data {
         'You can use the following tags' => 'Vous pouvez utiliser les codets suivants ',
         'To get the first 20 character of the subject.' => 'Pour avoir les 20 premiers caractères du sujet.',
         'To get the first 5 lines of the email.' => 'Pour avoir les 5 premières lignes du courriel.',
-        'To get the realname of the sender (if given).' => 'Pour avoir le nom de l\'expéditeur s\'il est fourni.',
+        'To get the realname of the ticket\'s customer user (if given).' =>
+            '',
         'To get the article attribute' => 'Pour avoir l\'attribut de l\'article',
         ' e. g.' => ' p. ex.',
         'Options of the current customer user data' => 'Options des données du client actuel',
@@ -911,10 +912,8 @@ sub Data {
         'Wildcards like \'*\' are allowed.' => 'Les caractères génériques tels que \'*\' sont autorisés.',
         'Add customer' => 'Ajouter un client',
         'Select' => 'Sélectionner',
-        'only' => '',
-        'shown' => '',
-        'more available' => '',
-        'total' => '',
+        'List (only %s shown - more available)' => '',
+        'List (%s total)' => '',
         'Please enter a search term to look for customers.' => 'Pour trouver des clients, inscrire un terme de recherche.',
         'Add Customer' => 'Ajouter un client',
 
@@ -1200,6 +1199,12 @@ sub Data {
         'Param %s key' => 'Clé du paramètre %s ',
         'Param %s value' => 'Valeur du paramètre %s ',
         'Save Changes' => 'Sauvegarder les modifications',
+        'Tag Reference' => '',
+        'In the note section, you can use the following tags' => '',
+        'Attributes of the current customer user data' => '',
+        'Attributes of the ticket data' => '',
+        'Ticket dynamic fields internal key values' => '',
+        'Example note' => '',
         'Results' => 'Résultats',
         '%s Tickets affected! What do you want to do?' => '%s demandes touchées. Que voulez vous faire?',
         'Warning: You used the DELETE option. All deleted tickets will be lost!' =>
@@ -1502,6 +1507,7 @@ sub Data {
         'Create new groups to handle access permissions for different groups of agent (e. g. purchasing department, support department, sales department, ...). ' =>
             'Créer de nouveaux groupes de gestion des permissions d\'accès pour les différents groupes d\'agents (p. ex. achats, support, ventes). ',
         'It\'s useful for ASP solutions. ' => 'Cette fonction est pratique pour les solutions ASP. ',
+        'total' => '',
         'Add Group' => 'Ajouter un groupe',
         'Edit Group' => 'Éditer un groupe',
 
@@ -1596,7 +1602,6 @@ sub Data {
         'Message body' => 'Corps du message',
         'Add new notification language' => '',
         'Do you really want to delete this notification language?' => '',
-        'Tag Reference' => '',
         'Notifications are sent to an agent or a customer.' => 'Des notifications sont envoyées à un agent ou à un client.',
         'To get the first 20 character of the subject (of the latest agent article).' =>
             'Pour avoir les 20 premiers caractères du sujet (du dernier article de l\'agent).',
@@ -1606,14 +1611,11 @@ sub Data {
             'Pour avoir les 20 premiers caractères du sujet (du dernier article du client).',
         'To get the first 5 lines of the body (of the latest customer article).' =>
             'Pour avoir les 5 premières lignes du sujet (du dernier article du client).',
-        'Attributes of the current customer user data' => '',
         'Attributes of the current ticket owner user data' => '',
         'Attributes of the current ticket responsible user data' => '',
         'Attributes of the current agent user who requested this action' =>
             '',
         'Attributes of the recipient user for the notification' => '',
-        'Attributes of the ticket data' => '',
-        'Ticket dynamic fields internal key values' => '',
         'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
             '',
         'Example notification' => '',
@@ -1979,6 +1981,7 @@ sub Data {
             '',
         'Transition' => '',
         'Transition Name' => '',
+        'Conditions can only operate on non-empty fields.' => '',
         'Type of Linking between Conditions' => '',
         'Remove this Condition' => '',
         'Type of Linking' => '',
@@ -2215,6 +2218,7 @@ sub Data {
         'Relate this certificate' => 'Lie ce certificat',
 
         # Template: AdminSMIMECertRead
+        'Close dialog' => '',
         'Certificate details' => '',
 
         # Template: AdminSalutation
@@ -2638,13 +2642,13 @@ sub Data {
             '',
 
         # Template: AgentTicketActionCommon
-        'Change Free Text of %s%s' => '',
-        'Change Owner of %s%s' => '',
-        'Close %s%s' => '',
-        'Add Note to %s%s' => '',
-        'Set Pending Time for %s%s' => '',
-        'Change Priority of %s%s' => '',
-        'Change Responsible of %s%s' => '',
+        'Change Free Text of %s%s%s' => '',
+        'Change Owner of %s%s%s' => '',
+        'Close %s%s%s' => '',
+        'Add Note to %s%s%s' => '',
+        'Set Pending Time for %s%s%s' => '',
+        'Change Priority of %s%s%s' => '',
+        'Change Responsible of %s%s%s' => '',
         'All fields marked with an asterisk (*) are mandatory.' => 'Tous les champs marqués d\'une étoile (*) sont obligatoires.',
         'Service invalid.' => 'Service non admissible.',
         'New Owner' => 'Nouveau propriétaire ',
@@ -2658,14 +2662,14 @@ sub Data {
         'Inform involved agents' => '',
         'Here you can select additional agents which should receive a notification regarding the new article.' =>
             '',
-        'Text will also be received by:' => '',
+        'Text will also be received by' => '',
         'Spell check' => 'Vérifier L\'orthographe',
         'Text Template' => '',
         'Setting a template will overwrite any text or attachment.' => '',
         'Note type' => 'Type de note ',
 
         # Template: AgentTicketBounce
-        'Bounce %s%s' => '',
+        'Bounce %s%s%s' => '',
         'Bounce to' => 'Retourner à',
         'You need a email address.' => 'Vous devez avoir une adresse électronique.',
         'Need a valid email address or don\'t use a local email address.' =>
@@ -2686,7 +2690,7 @@ sub Data {
         'Execute Bulk Action' => '',
 
         # Template: AgentTicketCompose
-        'Compose Answer for %s%s' => '',
+        'Compose Answer for %s%s%s' => '',
         'This address is registered as system address and cannot be used: %s' =>
             '',
         'Please include at least one recipient' => 'Merci d\'inclure au moins un destinataire',
@@ -2699,7 +2703,7 @@ sub Data {
         'Date Invalid!' => 'Date invalide',
 
         # Template: AgentTicketCustomer
-        'Change Customer of %s%s' => '',
+        'Change Customer of %s%s%s' => '',
 
         # Template: AgentTicketEmail
         'Create New Email Ticket' => 'Créer une nouvelle demande courriel',
@@ -2712,7 +2716,7 @@ sub Data {
         'Get all' => 'Tout prendre',
 
         # Template: AgentTicketEmailOutbound
-        'Outbound Email for %s%s' => '',
+        'Outbound Email for %s%s%s' => '',
 
         # Template: AgentTicketEscalation
         'Ticket %s: first response time is over (%s/%s)!' => '',
@@ -2723,22 +2727,22 @@ sub Data {
         'Ticket %s: solution time will be over in %s/%s!' => '',
 
         # Template: AgentTicketForward
-        'Forward %s%s' => '',
+        'Forward %s%s%s' => '',
 
         # Template: AgentTicketHistory
-        'History of %s%s' => 'Historique de %s%',
+        'History of %s%s%s' => '',
         'History Content' => 'Contenu de l\'historique',
         'Zoom view' => 'Vue de la synthèse',
 
         # Template: AgentTicketMerge
-        'Merge %s%s' => '',
+        'Merge %s%s%s' => '',
         'Merge Settings' => '',
         'You need to use a ticket number!' => 'Vous devez inscrire un numéro de demande.',
         'A valid ticket number is required.' => 'Le numéro de demande doit être valide.',
         'Need a valid email address.' => 'L\'adresse de courrier électronique doit être valide.',
 
         # Template: AgentTicketMove
-        'Move %s%s' => '',
+        'Move %s%s%s' => '',
         'New Queue' => 'Nouvelle file',
 
         # Template: AgentTicketOverviewMedium
@@ -2771,10 +2775,10 @@ sub Data {
         'The chat will be appended as a separate article.' => '',
 
         # Template: AgentTicketPhoneCommon
-        'Phone Call for %s%s' => '',
+        'Phone Call for %s%s%s' => '',
 
         # Template: AgentTicketPlain
-        'View Email Plain Text for %s%s' => '',
+        'View Email Plain Text for %s%s%s' => '',
         'Plain' => 'Normal',
         'Download this email' => 'Télécharger ce courriel',
 
@@ -2799,7 +2803,10 @@ sub Data {
         'Remove' => 'Supprimer',
         'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.' =>
             '',
-        'Customer User Login' => 'Nom de connexion du client',
+        'CustomerID (complex search)' => '',
+        'CustomerID (exact match)' => '',
+        'Customer User Login (complex search)' => '',
+        'Customer User Login (exact match)' => '',
         'Attachment Name' => '',
         '(e. g. m*file or myfi*)' => '',
         'Created in Queue' => 'Créée dans la file ',
@@ -2886,6 +2893,8 @@ sub Data {
         'go back to the previous page' => 'Revenir à la page précédente',
 
         # Template: CustomerError
+        'An Error Occurred' => '',
+        'Error Details' => 'Détails de l\'erreur',
         'Traceback' => 'Traçage',
 
         # Template: CustomerFooter
@@ -3030,7 +3039,6 @@ sub Data {
             '',
         'Contact our service team now.' => '',
         'Send a bugreport' => 'Envoyer un rapport d\'erreur',
-        'Error Details' => 'Détails de l\'erreur',
 
         # Template: FooterJS
         'Please enter at least one search value or * to find anything.' =>
@@ -3227,10 +3235,10 @@ sub Data {
         'The selected time periods in the statistic are time zone neutral.' =>
             '',
         'Create summation row' => '',
-        'Generate an additional row containing sums for all data columns.' =>
+        'Generate an additional row containing sums for all data rows.' =>
             '',
         'Create summation column' => '',
-        'Generate an additional column containing sums for all data rows.' =>
+        'Generate an additional column containing sums for all data columns.' =>
             '',
         'Cache results' => '',
         'Stores statistics result data in a cache to be used in subsequent views with the same configuration.' =>
@@ -3271,6 +3279,8 @@ sub Data {
         'Configurable params of static stat' => 'Paramètres des statistiques configurables',
         'No element selected.' => 'Aucun élément n\'est sélectionné.',
         'Scale' => 'Échelle de l\'axe X ',
+        'show more' => '',
+        'show less' => '',
 
         # Template: D3
         'Download SVG' => '',
@@ -3728,8 +3738,6 @@ sub Data {
         'Couldn\'t get Ticket for TicketID: %s in _GetParam!' => '',
         'Couldn\'t determine ActivityEntityID. DynamicField or Config isn\'t set properly!' =>
             '',
-        'DynamicFieldConfig missing for field: %s, or is not a Ticket Dynamic Field!' =>
-            '',
         'Process::Default%s Config Value missing!' => '',
         'Got no ProcessEntityID or TicketID and ActivityDialogEntityID!' =>
             '',
@@ -3843,6 +3851,9 @@ sub Data {
 
         # Perl Module: Kernel/Modules/CustomerTicketOverview.pm
         'Need CustomerID!' => '',
+        'My Tickets' => 'Mes demandes',
+        'Company Tickets' => 'Demandes de l\'entreprise',
+        'Untitled!' => '',
 
         # Perl Module: Kernel/Modules/CustomerTicketSearch.pm
         'Please remove the following words because they cannot be used for the search:' =>
@@ -3940,6 +3951,7 @@ sub Data {
         'Please supply your new password!' => '',
 
         # Perl Module: Kernel/Output/HTML/Statistics/View.pm
+        'No (not supported)' => '',
         'No past complete or the current+upcoming complete relative time value selected.' =>
             '',
         'The selected time period is larger than the allowed time period.' =>
@@ -3987,7 +3999,8 @@ sub Data {
         'State Type' => '',
         'Created Priority' => 'Priorité créée ',
         'Created State' => 'État créé ',
-        'CustomerUserLogin' => 'Identifiant client ',
+        'CustomerUserLogin (complex search)' => '',
+        'CustomerUserLogin (exact match)' => '',
         'Create Time' => 'Date de création ',
         'Close Time' => 'Date de fermeture ',
         'Escalation - First Response Time' => '',
@@ -4002,13 +4015,49 @@ sub Data {
         'Ticket Create Time' => 'Heure de création de la demande',
         'Ticket Close Time' => 'Heure de fermeture de la demande',
         'Accounted time by Agent' => 'Temps alloué par agent',
+        'Total Time' => 'Temps Total',
+        'Ticket Average' => 'Moyenne des demandes',
+        'Ticket Min Time' => 'Temps minimum de la demande',
+        'Ticket Max Time' => 'Temps maximum de la demande',
+        'Number of Tickets' => 'Nombre de demandes',
+        'Article Average' => 'Moyenne des articles',
+        'Article Min Time' => 'Temps minimum des articles',
+        'Article Max Time' => 'Temps maximum des articles',
+        'Number of Articles' => 'Nombre d\'articles',
 
         # Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+        'unlimited' => '',
+        'ascending' => 'ascendant',
+        'descending' => 'descendant',
         'Attributes to be printed' => 'Attributs à imprimer',
         'Sort sequence' => 'Ordre de tri',
         'State Historic' => '',
         'State Type Historic' => '',
         'Historic Time Range' => '',
+
+        # Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+        'Solution Average' => '',
+        'Solution Min Time' => '',
+        'Solution Max Time' => '',
+        'Solution Average (affected by escalation configuration)' => '',
+        'Solution Min Time (affected by escalation configuration)' => '',
+        'Solution Max Time (affected by escalation configuration)' => '',
+        'Solution Working Time Average (affected by escalation configuration)' =>
+            '',
+        'Solution Min Working Time (affected by escalation configuration)' =>
+            '',
+        'Solution Max Working Time (affected by escalation configuration)' =>
+            '',
+        'Response Average (affected by escalation configuration)' => '',
+        'Response Min Time (affected by escalation configuration)' => '',
+        'Response Max Time (affected by escalation configuration)' => '',
+        'Response Working Time Average (affected by escalation configuration)' =>
+            '',
+        'Response Min Working Time (affected by escalation configuration)' =>
+            '',
+        'Response Max Working Time (affected by escalation configuration)' =>
+            '',
+        'Number of Tickets (affected by escalation configuration)' => '',
 
         # Perl Module: Kernel/System/Stats/Static/StateAction.pm
         'Days' => 'Jours',
@@ -4609,7 +4658,6 @@ Thanks for your help!
         'Comment2' => '',
         'Communication' => '',
         'Company Status' => 'Statut de l\'entreprise',
-        'Company Tickets' => 'Demandes de l\'entreprise',
         'Company Tickets.' => '',
         'Company name which will be included in outgoing emails as an X-Header.' =>
             '',
@@ -4726,10 +4774,8 @@ Thanks for your help!
         'Default ticket ID used by the system in the customer interface.' =>
             'Identification de demandes par défaut utilisée par le système dans l\'interface client.',
         'Default value for NameX' => 'Valeur par défaut pour un « NomX »',
-        'Define Actions where Settings button is available in the Linked objects widget (LinkObject::ViewMode = "complex").
-            Please note that this Actions must have registered following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js,
-            Core.Agent.TableFilters.js.
-        ' => '',
+        'Define Actions where a settings button is available in the linked objects widget (LinkObject::ViewMode = "complex"). Please note that these Actions must have registered the following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js, Core.Agent.TableFilters.js.' =>
+            '',
         'Define a filter for html output to add links behind a defined string. The element Image allows two input kinds. At once the name of an image (e.g. faq.png). In this case the OTRS image path will be used. The second possiblity is to insert the link to the image.' =>
             'Détermine un filtre pour les html sortants afin d\'ajouter des liens aux chaînes sélectionnées. L\'élément Image permet de faire deux sortes d\'entrées. Tout d\'abord, le nom de l\'image (ex. faq.png). Dans ce cas, le chemin de l\'image dans OTRS sera utilisé. Il est aussi possible d\'insérer le lien vers l\'image.',
         'Define a mapping between variables of the customer user data (keys) and dynamic fields of a ticket (values). The purpose is to store customer user data in ticket dynamic fields. The dynamic fields must be present in the system and should be enabled for AgentTicketFreeText, so that they can be set/updated manually by the agent. They mustn\'t be enabled for AgentTicketPhone, AgentTicketEmail and AgentTicketCustomer. If they were, they would have precedence over the automatically set values. To use this mapping, you have to also activate the next setting below.' =>
@@ -4745,9 +4791,8 @@ Thanks for your help!
         'Define the start day of the week for the date picker for the indicated calendar.' =>
             '',
         'Define the start day of the week for the date picker.' => 'Détermine le jour débutant la semaine pour le sélecteur de date.',
-        'Define which columns are shown in the Linked tickets widget (LinkObject::ViewMode = "complex").
-            Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns.
-            Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' => '',
+        'Define which columns are shown in the linked tickets widget (LinkObject::ViewMode = "complex"). Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' =>
+            '',
         'Defines a customer item, which generates a LinkedIn icon at the end of a customer info block.' =>
             'Détermine un élément client qui génère une icône LinkedIn à la fin du bloc d\'information client.',
         'Defines a customer item, which generates a XING icon at the end of a customer info block.' =>
@@ -4789,6 +4834,8 @@ Thanks for your help!
             'Détermine les paramètres pour l\'objet « Demandes affichées » (ShownTickets) dans les préférences du client de l\'interface client.',
         'Defines all the parameters for this item in the customer preferences.' =>
             'Détermine les paramètres pour cet article dans les préférences du client.',
+        'Defines all the parameters for this item in the customer preferences. \'PasswordRegExp\' allows to match passwords against a regular expression. Define the minimum number of characters using \'PasswordMinSize\'. Define if at least 2 lowercase and 2 uppercase letter characters are needed by setting the appropriate option to \'1\'. \'PasswordMin2Characters\' defines if the password needs to contain at least 2 letter characters (set to 0 or 1). \'PasswordNeedDigit\' controls the need of at least 1 digit (set to 0 or 1 to control).' =>
+            '',
         'Defines all the parameters for this notification transport.' => '',
         'Defines all the possible stats output formats.' => 'Détermine les formats sortants possibles de statistiques.',
         'Defines an alternate URL, where the login link refers to.' => 'Détermine une adresse URL alternative à l\'endroit ou mène le lien d\'ouverture de session.',
@@ -4841,6 +4888,8 @@ Thanks for your help!
             'Détermine si la correction orthographique des messages rédigés doit être effectuée dans l\'interface agent.',
         'Defines if customers should be allowed to login if they have no shared secret stored in their preferences and therefore are not using two-factor authentication.' =>
             '',
+        'Defines if the enhanced mode should be used (enables use of table, replace, subscript, superscript, paste from word, etc.) in customer interface.' =>
+            '',
         'Defines if the enhanced mode should be used (enables use of table, replace, subscript, superscript, paste from word, etc.).' =>
             '',
         'Defines if the previously valid token should be accepted for authentication. This is slightly less secure but gives users 30 seconds more time to enter their one-time password.' =>
@@ -4885,6 +4934,8 @@ Thanks for your help!
         'Defines the config options for the autocompletion feature.' => '',
         'Defines the config parameters of this item, to be shown in the preferences view.' =>
             'Détermine les paramètres de configuration de cet élément qui seront présentés dans la vue des préférences.',
+        'Defines the config parameters of this item, to be shown in the preferences view. \'PasswordRegExp\' allows to match passwords against a regular expression. Define the minimum number of characters using \'PasswordMinSize\'. Define if at least 2 lowercase and 2 uppercase letter characters are needed by setting the appropriate option to \'1\'. \'PasswordMin2Characters\' defines if the password needs to contain at least 2 letter characters (set to 0 or 1). \'PasswordNeedDigit\' controls the need of at least 1 digit (set to 0 or 1 to control). \'PasswordMaxLoginFailed\' allows to set an agent to invalid-temporarily if max failed logins reached.' =>
+            '',
         'Defines the config parameters of this item, to be shown in the preferences view. Take care to maintain the dictionaries installed in the system in the data section.' =>
             'Détermine les paramètres de configuration de cet élément qui seront présentés dans la vue des préférences. Assure l\'entretien des dictionnaires installés dans le système dans la section des données.',
         'Defines the connections for http/ftp, via a proxy.' => 'Détermine les connexions pour les protocoles HTTP ou FTP à partir d\'une passerelle de procuration.',
@@ -5368,7 +5419,7 @@ Thanks for your help!
         'Deletes a session if the session id is used with an invalid remote IP address.' =>
             'Supprime une session si l\'identification de session est utilisée avec une adresse IP distante non valide.',
         'Deletes requested sessions if they have timed out.' => 'Supprime les sessions demandées si elles sont expirées.',
-        'Delivers extended debugging information in the frontend in case any ajax errors occur, if enabled.' =>
+        'Delivers extended debugging information in the frontend in case any AJAX errors occur, if enabled.' =>
             '',
         'Deploy and manage OTRS Business Solution™.' => '',
         'Determines if the list of possible queues to move to ticket into should be displayed in a dropdown list or in a new window in the agent interface. If "New Window" is set you can add a move note to the ticket.' =>
@@ -5792,6 +5843,7 @@ Thanks for your help!
         'Incoming Phone Call.' => '',
         'IndexAccelerator: to choose your backend TicketViewAccelerator module. "RuntimeDB" generates each queue view on the fly from ticket table (no performance problems up to approx. 60.000 tickets in total and 6.000 open tickets in the system). "StaticDB" is the most powerful module, it uses an extra ticket-index table that works like a view (recommended if more than 80.000 and 6.000 open tickets are stored in the system). Use the command "bin/otrs.Console.pl Maint::Ticket::QueueIndexRebuild" for initial index creation.' =>
             '',
+        'Indonesian' => '',
         'Input' => '',
         'Install ispell or aspell on the system, if you want to use a spell checker. Please specify the path to the aspell or ispell binary on your operating system.' =>
             'Si vous souhaitez un correcteur othographique, ce module installe « ispell » ou « aspell » sur votre système. Veuillez spécifier le chemin du code binaire de l\'un ou l\'autre des correcteurs orthographiques de votre système.',
@@ -5941,7 +5993,6 @@ Thanks for your help!
         'Module to use database filter storage.' => 'Module qui permet d\'utiliser la mise en mémoire des filtres de base de données.',
         'Multiselect' => 'Multi-choix',
         'My Services' => 'Mes services',
-        'My Tickets' => 'Mes demandes',
         'My Tickets.' => '',
         'Name of custom queue. The custom queue is a queue selection of your preferred queues and can be selected in the preferences settings.' =>
             'Dénomination des files personnalisées. Les files personnalisées réfèrent aux files que vous avez choisies comme favorites.',
@@ -6165,8 +6216,7 @@ Thanks for your help!
             'N\'envoie la notification de suivi de l\'agent qu\'au propriétaire si la demande est déverrouillée (par défaut, on enverrait normalement la notification à tous les agents).',
         'Sends all outgoing email via bcc to the specified address. Please use this only for backup reasons.' =>
             'Envoie tous les courriels sortants en tant que copie conforme invisible (bcc) à l\'adresse spécifiée. Veuillez n\'utiliser cette option que pour les copies de secours.',
-        'Sends customer notifications just to the mapped customer. Normally, if no customer is mapped, the latest customer sender gets the notification.' =>
-            'Envoie les notifications aux clients identifiés seulement. En règle générale, si aucun client n\'est identifié, le dernier expéditeur client recevra la notification.',
+        'Sends customer notifications just to the mapped customer.' => '',
         'Sends registration information to OTRS group.' => '',
         'Sends reminder notifications of unlocked ticket after reaching the reminder date (only sent to ticket owner).' =>
             'Envoie les notifications de rappel des demandes déverrouillées après que la date de rappel est atteinte (envoyées seulement au propriétaire de la demande).',
@@ -6813,10 +6863,10 @@ Thanks for your help!
         'Yes, but hide archived tickets' => '',
         'Your email with ticket number "<OTRS_TICKET>" is bounced to "<OTRS_BOUNCE_TO>". Contact this address for further information.' =>
             '',
-        'Your queue selection of your favorite queues. You also get notified about those queues via email if enabled.' =>
-            'Votre sélection de files préférées. Vous recevrez l\'information pertinente au sujet de ces files par courriel (si l\'option est activé).',
-        'Your service selection of your favorite services. You also get notified about those services via email if enabled.' =>
-            'Votre sélection de services préférés. Vous recevrez l\'information pertinente au sujet de ces services par courriel (si l\'option est activée).',
+        'Your queue selection of your preferred queues. You also get notified about those queues via email if enabled.' =>
+            '',
+        'Your service selection of your preferred services. You also get notified about those services via email if enabled.' =>
+            '',
         'attachment' => '',
         'debug' => '',
         'error' => '',

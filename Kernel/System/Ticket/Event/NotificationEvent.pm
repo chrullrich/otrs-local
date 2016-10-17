@@ -53,7 +53,7 @@ sub Run {
         if ( !$Param{$Needed} ) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
-                Message  => "Need $Needed!"
+                Message  => "Need $Needed!",
             );
             return;
         }
@@ -287,6 +287,17 @@ sub Run {
                     next BUNDLE;
                 }
 
+                # Check if notification should not send to the customer.
+                if (
+                    $Bundle->{Recipient}->{Type} eq 'Customer'
+                    && $ConfigObject->Get('CustomerNotifyJustToRealCustomer')
+                    )
+                {
+
+                    # Not UserID means it's not a mapped customer.
+                    next BUNDLE if !$Bundle->{Recipient}->{UserID};
+                }
+
                 my $Success = $Self->_SendRecipientNotification(
                     TicketID              => $Param{Data}->{TicketID},
                     Notification          => $Bundle->{Notification},
@@ -436,9 +447,24 @@ sub _NotificationFilter {
 
                 next VALUE if !$IsNotificationEventCondition;
 
+                # Get match value from the dynamic field backend, if applicable (bug#12257).
+                my $MatchValue;
+                my $SearchFieldParameter = $DynamicFieldBackendObject->SearchFieldParameterBuild(
+                    DynamicFieldConfig => $DynamicFieldConfig,
+                    Profile            => {
+                        $Key => $Value,
+                    },
+                );
+                if ( defined $SearchFieldParameter->{Parameter}->{Equals} ) {
+                    $MatchValue = $SearchFieldParameter->{Parameter}->{Equals};
+                }
+                else {
+                    $MatchValue = $Value;
+                }
+
                 $Match = $DynamicFieldBackendObject->ObjectMatch(
                     DynamicFieldConfig => $DynamicFieldConfig,
-                    Value              => $Value,
+                    Value              => $MatchValue,
                     ObjectAttributes   => $Param{Ticket},
                 );
 

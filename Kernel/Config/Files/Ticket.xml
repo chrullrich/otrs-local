@@ -388,7 +388,7 @@
             </Hash>
         </Setting>
     </ConfigItem>
-    <ConfigItem Name="Ticket::EventModulePost###900-EscalationIndex" Required="0" Valid="1">
+    <ConfigItem Name="Ticket::EventModulePost###910-EscalationIndex" Required="0" Valid="1">
         <Description Translatable="1">Updates the ticket escalation index after a ticket attribute got updated.</Description>
         <Group>Ticket</Group>
         <SubGroup>Core::Ticket</SubGroup>
@@ -399,8 +399,8 @@
             </Hash>
         </Setting>
     </ConfigItem>
-    <!-- 900-EscalationStopEvents must come after 900-EscalationIndex -->
-    <ConfigItem Name="Ticket::EventModulePost###900-EscalationStopEvents" Required="0" Valid="1">
+    <!-- 910-EscalationStopEvents must come after 900-EscalationIndex -->
+    <ConfigItem Name="Ticket::EventModulePost###920-EscalationStopEvents" Required="0" Valid="1">
         <Description Translatable="1">Ticket event module that triggers the escalation stop events.</Description>
         <Group>Ticket</Group>
         <SubGroup>Core::Ticket</SubGroup>
@@ -411,7 +411,7 @@
             </Hash>
         </Setting>
     </ConfigItem>
-    <ConfigItem Name="Ticket::EventModulePost###910-ForceUnlockOnMove" Required="0" Valid="1">
+    <ConfigItem Name="Ticket::EventModulePost###930-ForceUnlockOnMove" Required="0" Valid="1">
         <Description Translatable="1">Forces to unlock tickets after being moved to another queue.</Description>
         <Group>Ticket</Group>
         <SubGroup>Core::Ticket</SubGroup>
@@ -422,7 +422,7 @@
             </Hash>
         </Setting>
     </ConfigItem>
-    <ConfigItem Name="Ticket::EventModulePost###920-TicketArticleNewMessageUpdate" Required="0" Valid="1">
+    <ConfigItem Name="Ticket::EventModulePost###940-TicketArticleNewMessageUpdate" Required="0" Valid="1">
         <Description Translatable="1">Update Ticket "Seen" flag if every article got seen or a new Article got created.</Description>
         <Group>Ticket</Group>
         <SubGroup>Core::Ticket</SubGroup>
@@ -467,7 +467,7 @@
             </Hash>
         </Setting>
     </ConfigItem>
-    <ConfigItem Name="Ticket::EventModulePost###930-DynamicFieldFromCustomerUser" Required="0" Valid="0">
+    <ConfigItem Name="Ticket::EventModulePost###950-DynamicFieldFromCustomerUser" Required="0" Valid="0">
         <Description Translatable="1">This event module stores attributes from CustomerUser as DynamicFields tickets. Please see the setting above for how to configure the mapping.</Description>
         <Group>Ticket</Group>
         <SubGroup>Core::Ticket</SubGroup>
@@ -1478,7 +1478,7 @@
             </Array>
         </Setting>
     </ConfigItem>
-    <ConfigItem Name="Ticket::EventModulePost###98-ArticleSearchIndex" Required="0" Valid="1">
+    <ConfigItem Name="Ticket::EventModulePost###098-ArticleSearchIndex" Required="0" Valid="1">
         <Description Translatable="1">Builds an article index right after the article's creation.</Description>
         <Group>Ticket</Group>
         <SubGroup>Core::FulltextSearch</SubGroup>
@@ -7488,7 +7488,7 @@
                 <Item Key="Module">Kernel::Output::HTML::Preferences::CustomQueue</Item>
                 <Item Key="Column" Translatable="1">Notification Settings</Item>
                 <Item Key="Label" Translatable="1">My Queues</Item>
-                <Item Key="Desc" Translatable="1">Your queue selection of your favorite queues. You also get notified about those queues via email if enabled.</Item>
+                <Item Key="Desc" Translatable="1">Your queue selection of your preferred queues. You also get notified about those queues via email if enabled.</Item>
                 <Item Key="Key" Translatable="1"></Item>
                 <Item Key="Prio">1000</Item>
                 <Item Key="Permission">ro</Item>
@@ -7505,7 +7505,7 @@
                 <Item Key="Module">Kernel::Output::HTML::Preferences::CustomService</Item>
                 <Item Key="Column" Translatable="1">Notification Settings</Item>
                 <Item Key="Label" Translatable="1">My Services</Item>
-                <Item Key="Desc" Translatable="1">Your service selection of your favorite services. You also get notified about those services via email if enabled.</Item>
+                <Item Key="Desc" Translatable="1">Your service selection of your preferred services. You also get notified about those services via email if enabled.</Item>
                 <Item Key="Key" Translatable="1"></Item>
                 <Item Key="Prio">1000</Item>
                 <Item Key="Active">1</Item>
@@ -7710,7 +7710,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="CustomerNotifyJustToRealCustomer" Required="1" Valid="1">
-        <Description Translatable="1">Sends customer notifications just to the mapped customer. Normally, if no customer is mapped, the latest customer sender gets the notification.</Description>
+        <Description Translatable="1">Sends customer notifications just to the mapped customer.</Description>
         <Group>Ticket</Group>
         <SubGroup>Core::Ticket</SubGroup>
         <Setting>
@@ -7798,7 +7798,7 @@
         <Group>Ticket</Group>
         <SubGroup>Frontend::Customer::Ticket::ViewNew</SubGroup>
         <Setting>
-            <String Regex="">default</String>
+            <String Regex="">Unclassified</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::CustomerTicketMessage###Service" Required="1" Valid="1">
@@ -9845,10 +9845,7 @@
                 <Item>AgentTicketWatcher</Item>
                 <Item>AgentTicketZoom</Item>
                 <Item>AgentLinkObject</Item>
-                <Item>CustomerTicketMessage</Item>
-                <Item>CustomerTicketPrint</Item>
                 <Item>CustomerTicketProcess</Item>
-                <Item>CustomerTicketZoom</Item>
             </Array>
         </Setting>
     </ConfigItem>
@@ -11480,6 +11477,16 @@ Thanks for your help!
             </Hash>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="StandardTemplate2QueueByCreating" Required="0" Valid="0">
+        <Description Translatable="1">List of default Standard Templates which are assigned automatically to new Queues upon creation.</Description>
+        <Group>Ticket</Group>
+        <SubGroup>Core::Ticket</SubGroup>
+        <Setting>
+            <Array>
+                <Item></Item>
+            </Array>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="DefaultOverviewColumns" Required="1" Valid="1">
         <Description Translatable="1">General ticket data shown in the ticket overviews (fall-back). Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default. Note that TicketNumber can not be disabled, because it is necessary.</Description>
         <Group>Ticket</Group>
@@ -11800,10 +11807,7 @@ Thanks for your help!
     </ConfigItem>
 
     <ConfigItem Name="LinkObject::ComplexTable::SettingsVisibility###Ticket" Required="0" Valid="1">
-        <Description Translatable="1">Define Actions where Settings button is available in the Linked objects widget (LinkObject::ViewMode = "complex").
-            Please note that this Actions must have registered following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js,
-            Core.Agent.TableFilters.js.
-        </Description>
+        <Description Translatable="1">Define Actions where a settings button is available in the linked objects widget (LinkObject::ViewMode = "complex"). Please note that these Actions must have registered the following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js, Core.Agent.TableFilters.js.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::LinkObject</SubGroup>
         <Setting>
@@ -11813,9 +11817,7 @@ Thanks for your help!
         </Setting>
     </ConfigItem>
     <ConfigItem Name="LinkObject::ComplexTable###Ticket" Required="0" Valid="1">
-        <Description Translatable="1">Define which columns are shown in the Linked tickets widget (LinkObject::ViewMode = "complex").
-            Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns.
-            Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.</Description>
+        <Description Translatable="1">Define which columns are shown in the linked tickets widget (LinkObject::ViewMode = "complex"). Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::LinkObject</SubGroup>
         <Setting>

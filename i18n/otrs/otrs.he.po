@@ -1,10 +1,11 @@
 # 
 # Translators:
+# Idan Cohen <idan2cohen@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
-"POT-Creation-Date: 2016-06-22 10:40+0000\n"
-"PO-Revision-Date: 2016-06-22 15:42+0000\n"
+"POT-Creation-Date: 2016-09-14 10:25+0000\n"
+"PO-Revision-Date: 2016-09-14 15:43+0000\n"
 "Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
 "Language-Team: Hebrew (http://www.transifex.com/otrs/OTRS/language/he/)\n"
 "MIME-Version: 1.0\n"
@@ -83,11 +84,11 @@ msgstr "ב ... הבאים"
 
 #. Template: AAABase
 msgid "Created within the last"
-msgstr ""
+msgstr "נוצר לפני"
 
 #. Template: AAABase
 msgid "Created more than ... ago"
-msgstr ""
+msgstr "התבצע לפני יותר מ... "
 
 #. Template: AAABase
 msgid "Today"
@@ -187,11 +188,11 @@ msgstr ""
 
 #. Template: AAABase
 msgid "half-year"
-msgstr ""
+msgstr "חצי שנה"
 
 #. Template: AAABase
 msgid "half-year(s)"
-msgstr ""
+msgstr "חצי שנה"
 
 #. Template: AAABase
 msgid "year"
@@ -1023,7 +1024,7 @@ msgstr ""
 
 #. Template: AAABase
 msgid "Go to dashboard!"
-msgstr ""
+msgstr "מעבר לדאשבורד"
 
 #. Template: AAABase
 msgid "Customer %s added"
@@ -1504,7 +1505,7 @@ msgstr "התהליך שנבחר אינו תקין!"
 
 #. Template: AAABase
 msgid "Upgrade to %s now!"
-msgstr ""
+msgstr "שדרג ל- s% עכשיו!"
 
 #. Template: AAABase
 msgid "%s Go to the upgrade center %s"
@@ -3099,8 +3100,8 @@ msgid "To get the first 5 lines of the email."
 msgstr "לקבל את 5 השורות הראשונות של הדוא\"ל"
 
 #. Template: AdminAutoResponse
-msgid "To get the realname of the sender (if given)."
-msgstr "לקבל את השם האמיתי של השולח (אם נמסר)"
+msgid "To get the realname of the ticket's customer user (if given)."
+msgstr ""
 
 #. Template: AdminAutoResponse
 msgid "To get the article attribute"
@@ -3256,19 +3257,11 @@ msgid "Select"
 msgstr "בחר"
 
 #. Template: AdminCustomerCompany
-msgid "only"
+msgid "List (only %s shown - more available)"
 msgstr ""
 
 #. Template: AdminCustomerCompany
-msgid "shown"
-msgstr ""
-
-#. Template: AdminCustomerCompany
-msgid "more available"
-msgstr ""
-
-#. Template: AdminCustomerCompany
-msgid "total"
+msgid "List (%s total)"
 msgstr ""
 
 #. Template: AdminCustomerCompany
@@ -4243,6 +4236,30 @@ msgstr "ערך פרמטר %s"
 #. Template: AdminGenericAgent
 msgid "Save Changes"
 msgstr "שמור שינויים"
+
+#. Template: AdminGenericAgent
+msgid "Tag Reference"
+msgstr "סמן הפנייה"
+
+#. Template: AdminGenericAgent
+msgid "In the note section, you can use the following tags"
+msgstr ""
+
+#. Template: AdminGenericAgent
+msgid "Attributes of the current customer user data"
+msgstr ""
+
+#. Template: AdminGenericAgent
+msgid "Attributes of the ticket data"
+msgstr ""
+
+#. Template: AdminGenericAgent
+msgid "Ticket dynamic fields internal key values"
+msgstr ""
+
+#. Template: AdminGenericAgent
+msgid "Example note"
+msgstr ""
 
 #. Template: AdminGenericAgent
 msgid "Results"
@@ -5248,6 +5265,10 @@ msgid "It's useful for ASP solutions. "
 msgstr ""
 
 #. Template: AdminGroup
+msgid "total"
+msgstr "סה\"כ"
+
+#. Template: AdminGroup
 msgid "Add Group"
 msgstr "הוסף קבוצה"
 
@@ -5257,7 +5278,7 @@ msgstr "ערוך קבוצה"
 
 #. Template: AdminLog
 msgid "System Log"
-msgstr ""
+msgstr "לוג מערכת"
 
 #. Template: AdminLog
 msgid "Here you will find log information about your system."
@@ -5310,7 +5331,7 @@ msgstr "למשל: mail.example.com"
 
 #. Template: AdminMailAccount
 msgid "IMAP Folder"
-msgstr ""
+msgstr "תיקיית IMAP"
 
 #. Template: AdminMailAccount
 msgid ""
@@ -5471,7 +5492,7 @@ msgstr ""
 
 #. Template: AdminNotificationEvent
 msgid "Send to"
-msgstr ""
+msgstr "נשלח אל"
 
 #. Template: AdminNotificationEvent
 msgid "Send to these agents"
@@ -5495,7 +5516,7 @@ msgstr ""
 
 #. Template: AdminNotificationEvent
 msgid "Once per day"
-msgstr ""
+msgstr "פעם אחת ביום"
 
 #. Template: AdminNotificationEvent
 msgid ""
@@ -5542,7 +5563,7 @@ msgstr ""
 
 #. Template: AdminNotificationEvent
 msgid "No data found"
-msgstr ""
+msgstr "לא נמצאו נתונים."
 
 #. Template: AdminNotificationEvent
 msgid "No notification method found."
@@ -5550,7 +5571,7 @@ msgstr ""
 
 #. Template: AdminNotificationEvent
 msgid "Notification Text"
-msgstr ""
+msgstr "התראה"
 
 #. Template: AdminNotificationEvent
 msgid ""
@@ -5572,10 +5593,6 @@ msgstr ""
 
 #. Template: AdminNotificationEvent
 msgid "Do you really want to delete this notification language?"
-msgstr ""
-
-#. Template: AdminNotificationEvent
-msgid "Tag Reference"
 msgstr ""
 
 #. Template: AdminNotificationEvent
@@ -5602,10 +5619,6 @@ msgid "To get the first 5 lines of the body (of the latest customer article)."
 msgstr ""
 
 #. Template: AdminNotificationEvent
-msgid "Attributes of the current customer user data"
-msgstr ""
-
-#. Template: AdminNotificationEvent
 msgid "Attributes of the current ticket owner user data"
 msgstr ""
 
@@ -5619,14 +5632,6 @@ msgstr ""
 
 #. Template: AdminNotificationEvent
 msgid "Attributes of the recipient user for the notification"
-msgstr ""
-
-#. Template: AdminNotificationEvent
-msgid "Attributes of the ticket data"
-msgstr ""
-
-#. Template: AdminNotificationEvent
-msgid "Ticket dynamic fields internal key values"
 msgstr ""
 
 #. Template: AdminNotificationEvent
@@ -5655,7 +5660,7 @@ msgstr ""
 
 #. Template: AdminNotificationEventTransportEmailSettings
 msgid "Email template"
-msgstr ""
+msgstr "תבנית דואר"
 
 #. Template: AdminNotificationEventTransportEmailSettings
 msgid ""
@@ -5664,7 +5669,7 @@ msgstr ""
 
 #. Template: AdminOTRSBusinessInstalled
 msgid "Manage %s"
-msgstr ""
+msgstr "נהל s%"
 
 #. Template: AdminOTRSBusinessInstalled
 msgid "Downgrade to OTRS Free"
@@ -6808,6 +6813,10 @@ msgid "Transition Name"
 msgstr ""
 
 #. Template: AdminProcessManagementTransition
+msgid "Conditions can only operate on non-empty fields."
+msgstr ""
+
+#. Template: AdminProcessManagementTransition
 msgid "Type of Linking between Conditions"
 msgstr ""
 
@@ -7576,6 +7585,10 @@ msgstr ""
 
 #. Template: AdminSMIME
 msgid "Relate this certificate"
+msgstr ""
+
+#. Template: AdminSMIMECertRead
+msgid "Close dialog"
 msgstr ""
 
 #. Template: AdminSMIMECertRead
@@ -8814,31 +8827,31 @@ msgid ""
 msgstr ""
 
 #. Template: AgentTicketActionCommon
-msgid "Change Free Text of %s%s"
+msgid "Change Free Text of %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketActionCommon
-msgid "Change Owner of %s%s"
+msgid "Change Owner of %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketActionCommon
-msgid "Close %s%s"
+msgid "Close %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketActionCommon
-msgid "Add Note to %s%s"
+msgid "Add Note to %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketActionCommon
-msgid "Set Pending Time for %s%s"
+msgid "Set Pending Time for %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketActionCommon
-msgid "Change Priority of %s%s"
+msgid "Change Priority of %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketActionCommon
-msgid "Change Responsible of %s%s"
+msgid "Change Responsible of %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketActionCommon
@@ -8892,7 +8905,7 @@ msgid ""
 msgstr ""
 
 #. Template: AgentTicketActionCommon
-msgid "Text will also be received by:"
+msgid "Text will also be received by"
 msgstr ""
 
 #. Template: AgentTicketActionCommon
@@ -8912,7 +8925,7 @@ msgid "Note type"
 msgstr "סוג ההערה"
 
 #. Template: AgentTicketBounce
-msgid "Bounce %s%s"
+msgid "Bounce %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketBounce
@@ -8976,7 +8989,7 @@ msgid "Execute Bulk Action"
 msgstr ""
 
 #. Template: AgentTicketCompose
-msgid "Compose Answer for %s%s"
+msgid "Compose Answer for %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketCompose
@@ -9012,7 +9025,7 @@ msgid "Date Invalid!"
 msgstr "תאריך לא תקין!"
 
 #. Template: AgentTicketCustomer
-msgid "Change Customer of %s%s"
+msgid "Change Customer of %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketEmail
@@ -9048,7 +9061,7 @@ msgid "Get all"
 msgstr "קבל הכל"
 
 #. Template: AgentTicketEmailOutbound
-msgid "Outbound Email for %s%s"
+msgid "Outbound Email for %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketEscalation
@@ -9076,11 +9089,11 @@ msgid "Ticket %s: solution time will be over in %s/%s!"
 msgstr ""
 
 #. Template: AgentTicketForward
-msgid "Forward %s%s"
+msgid "Forward %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketHistory
-msgid "History of %s%s"
+msgid "History of %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketHistory
@@ -9092,7 +9105,7 @@ msgid "Zoom view"
 msgstr "מבט זום"
 
 #. Template: AgentTicketMerge
-msgid "Merge %s%s"
+msgid "Merge %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketMerge
@@ -9112,7 +9125,7 @@ msgid "Need a valid email address."
 msgstr "Benötige gültige E-Mail-Adresse."
 
 #. Template: AgentTicketMove
-msgid "Move %s%s"
+msgid "Move %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketMove
@@ -9204,11 +9217,11 @@ msgid "The chat will be appended as a separate article."
 msgstr ""
 
 #. Template: AgentTicketPhoneCommon
-msgid "Phone Call for %s%s"
+msgid "Phone Call for %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketPlain
-msgid "View Email Plain Text for %s%s"
+msgid "View Email Plain Text for %s%s%s"
 msgstr ""
 
 #. Template: AgentTicketPlain
@@ -9282,8 +9295,20 @@ msgid ""
 msgstr "חיפושים במאפיינים של שדות מאת, אל, העתק, ובגוף המאמר, הגוברים על מאפיינים אחרים באותו שם."
 
 #. Template: AgentTicketSearch
-msgid "Customer User Login"
-msgstr "התחברות משתמש לקוח"
+msgid "CustomerID (complex search)"
+msgstr ""
+
+#. Template: AgentTicketSearch
+msgid "CustomerID (exact match)"
+msgstr ""
+
+#. Template: AgentTicketSearch
+msgid "Customer User Login (complex search)"
+msgstr ""
+
+#. Template: AgentTicketSearch
+msgid "Customer User Login (exact match)"
+msgstr ""
 
 #. Template: AgentTicketSearch
 msgid "Attachment Name"
@@ -9572,6 +9597,14 @@ msgstr "אתם יכולים"
 #. Template: CloudServicesDisabled
 msgid "go back to the previous page"
 msgstr "לחזור לעמוד הקודם"
+
+#. Template: CustomerError
+msgid "An Error Occurred"
+msgstr ""
+
+#. Template: CustomerError
+msgid "Error Details"
+msgstr "פרטי השגיאה"
 
 #. Template: CustomerError
 msgid "Traceback"
@@ -10025,10 +10058,6 @@ msgstr ""
 #. Template: Error
 msgid "Send a bugreport"
 msgstr "לשלוח דיווח על שגיאה"
-
-#. Template: Error
-msgid "Error Details"
-msgstr "פרטי השגיאה"
 
 #. Template: FooterJS
 msgid "Please enter at least one search value or * to find anything."
@@ -10575,7 +10604,7 @@ msgid "Create summation row"
 msgstr ""
 
 #. Template: GeneralSpecificationsWidget
-msgid "Generate an additional row containing sums for all data columns."
+msgid "Generate an additional row containing sums for all data rows."
 msgstr ""
 
 #. Template: GeneralSpecificationsWidget
@@ -10583,7 +10612,7 @@ msgid "Create summation column"
 msgstr ""
 
 #. Template: GeneralSpecificationsWidget
-msgid "Generate an additional column containing sums for all data rows."
+msgid "Generate an additional column containing sums for all data columns."
 msgstr ""
 
 #. Template: GeneralSpecificationsWidget
@@ -10697,6 +10726,14 @@ msgstr "לא נבחר רכיב."
 #. Template: StatsParamsWidget
 msgid "Scale"
 msgstr "סולם"
+
+#. Template: StatsParamsWidget
+msgid "show more"
+msgstr ""
+
+#. Template: StatsParamsWidget
+msgid "show less"
+msgstr ""
 
 #. Template: D3
 msgid "Download SVG"
@@ -10936,7 +10973,7 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AdminGenericAgent.pm
 msgid "Need Profile!"
-msgstr ""
+msgstr "נדרש פרופיל!"
 
 #. Perl Module: Kernel/Modules/AdminGenericAgent.pm
 msgid "Got no values to check."
@@ -11058,7 +11095,7 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
 msgid "Need Name!"
-msgstr ""
+msgstr "נדרש שם!"
 
 #. Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
 msgid "Need ExampleWebService!"
@@ -11066,7 +11103,7 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
 msgid "Could not read %s!"
-msgstr ""
+msgstr "לא ניתן לקרוא את s%!"
 
 #. Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
 msgid "Need a file to import!"
@@ -11940,11 +11977,6 @@ msgid ""
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
-msgid ""
-"DynamicFieldConfig missing for field: %s, or is not a Ticket Dynamic Field!"
-msgstr ""
-
-#. Perl Module: Kernel/Modules/AgentTicketProcess.pm
 msgid "Process::Default%s Config Value missing!"
 msgstr ""
 
@@ -12294,6 +12326,18 @@ msgstr ""
 msgid "Need CustomerID!"
 msgstr ""
 
+#. Perl Module: Kernel/Modules/CustomerTicketOverview.pm
+msgid "My Tickets"
+msgstr "Meine Tickets"
+
+#. Perl Module: Kernel/Modules/CustomerTicketOverview.pm
+msgid "Company Tickets"
+msgstr "פניות של החברה"
+
+#. Perl Module: Kernel/Modules/CustomerTicketOverview.pm
+msgid "Untitled!"
+msgstr ""
+
 #. Perl Module: Kernel/Modules/CustomerTicketSearch.pm
 msgid ""
 "Please remove the following words because they cannot be used for the "
@@ -12518,6 +12562,10 @@ msgid "Please supply your new password!"
 msgstr ""
 
 #. Perl Module: Kernel/Output/HTML/Statistics/View.pm
+msgid "No (not supported)"
+msgstr "לא (לא נתמך)"
+
+#. Perl Module: Kernel/Output/HTML/Statistics/View.pm
 msgid ""
 "No past complete or the current+upcoming complete relative time value "
 "selected."
@@ -12637,8 +12685,12 @@ msgid "Created State"
 msgstr "מצב נוכחי"
 
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
-msgid "CustomerUserLogin"
-msgstr "התחברות משתמש לקוח"
+msgid "CustomerUserLogin (complex search)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin (exact match)"
+msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Create Time"
@@ -12688,6 +12740,54 @@ msgstr "זמן סגירת הפניה"
 msgid "Accounted time by Agent"
 msgstr "זמן שהוקדש לפי סוכן"
 
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Total Time"
+msgstr "זמן כולל"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Ticket Average"
+msgstr "ממוצע פניה"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Ticket Min Time"
+msgstr "זמן מינימלי לפניה"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Ticket Max Time"
+msgstr "זמן מירבי לפניה"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Number of Tickets"
+msgstr "מספר הפניות"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Article Average"
+msgstr "ממוצע מאמר"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Article Min Time"
+msgstr "זמן מינימלי למאמר"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Article Max Time"
+msgstr "זמן מירבי למאמר"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Number of Articles"
+msgstr "מספר המאמרים"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+msgid "unlimited"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+msgid "ascending"
+msgstr "עולה"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+msgid "descending"
+msgstr "יורד"
+
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
 msgid "Attributes to be printed"
 msgstr "מאפיינים שיש להדפיס"
@@ -12706,6 +12806,70 @@ msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
 msgid "Historic Time Range"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Average"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Min Time"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Max Time"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Average (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Min Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Max Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Working Time Average (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Min Working Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Max Working Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Average (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Min Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Max Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Working Time Average (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Min Working Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Max Working Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Number of Tickets (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Static/StateAction.pm
@@ -14501,10 +14665,6 @@ msgid "Company Status"
 msgstr "סטטוס חברה"
 
 #. SysConfig
-msgid "Company Tickets"
-msgstr "פניות של החברה"
-
-#. SysConfig
 msgid "Company Tickets."
 msgstr ""
 
@@ -14916,10 +15076,11 @@ msgstr ""
 
 #. SysConfig
 msgid ""
-"Define Actions where Settings button is available in the Linked objects widget (LinkObject::ViewMode = \"complex\").\n"
-"            Please note that this Actions must have registered following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js,\n"
-"            Core.Agent.TableFilters.js.\n"
-"        "
+"Define Actions where a settings button is available in the linked objects "
+"widget (LinkObject::ViewMode = \"complex\"). Please note that these Actions "
+"must have registered the following JS and CSS files: "
+"Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js, "
+"Core.Agent.TableFilters.js."
 msgstr ""
 
 #. SysConfig
@@ -14984,9 +15145,10 @@ msgstr ""
 
 #. SysConfig
 msgid ""
-"Define which columns are shown in the Linked tickets widget (LinkObject::ViewMode = \"complex\").\n"
-"            Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns.\n"
-"            Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default."
+"Define which columns are shown in the linked tickets widget "
+"(LinkObject::ViewMode = \"complex\"). Note: Only Ticket attributes and "
+"Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible"
+" settings: 0 = Disabled, 1 = Available, 2 = Enabled by default."
 msgstr ""
 
 #. SysConfig
@@ -15122,6 +15284,18 @@ msgstr ""
 
 #. SysConfig
 msgid "Defines all the parameters for this item in the customer preferences."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Defines all the parameters for this item in the customer preferences. "
+"'PasswordRegExp' allows to match passwords against a regular expression. "
+"Define the minimum number of characters using 'PasswordMinSize'. Define if "
+"at least 2 lowercase and 2 uppercase letter characters are needed by setting"
+" the appropriate option to '1'. 'PasswordMin2Characters' defines if the "
+"password needs to contain at least 2 letter characters (set to 0 or 1). "
+"'PasswordNeedDigit' controls the need of at least 1 digit (set to 0 or 1 to "
+"control)."
 msgstr ""
 
 #. SysConfig
@@ -15304,6 +15478,12 @@ msgstr ""
 #. SysConfig
 msgid ""
 "Defines if the enhanced mode should be used (enables use of table, replace, "
+"subscript, superscript, paste from word, etc.) in customer interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Defines if the enhanced mode should be used (enables use of table, replace, "
 "subscript, superscript, paste from word, etc.)."
 msgstr ""
 
@@ -15442,6 +15622,19 @@ msgstr ""
 msgid ""
 "Defines the config parameters of this item, to be shown in the preferences "
 "view."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Defines the config parameters of this item, to be shown in the preferences "
+"view. 'PasswordRegExp' allows to match passwords against a regular "
+"expression. Define the minimum number of characters using 'PasswordMinSize'."
+" Define if at least 2 lowercase and 2 uppercase letter characters are needed"
+" by setting the appropriate option to '1'. 'PasswordMin2Characters' defines "
+"if the password needs to contain at least 2 letter characters (set to 0 or "
+"1). 'PasswordNeedDigit' controls the need of at least 1 digit (set to 0 or 1"
+" to control). 'PasswordMaxLoginFailed' allows to set an agent to invalid-"
+"temporarily if max failed logins reached."
 msgstr ""
 
 #. SysConfig
@@ -16959,7 +17152,7 @@ msgstr ""
 
 #. SysConfig
 msgid ""
-"Delivers extended debugging information in the frontend in case any ajax "
+"Delivers extended debugging information in the frontend in case any AJAX "
 "errors occur, if enabled."
 msgstr ""
 
@@ -18354,6 +18547,10 @@ msgid ""
 msgstr ""
 
 #. SysConfig
+msgid "Indonesian"
+msgstr ""
+
+#. SysConfig
 msgid "Input"
 msgstr ""
 
@@ -18855,10 +19052,6 @@ msgstr "Mehrfachauswahl"
 #. SysConfig
 msgid "My Services"
 msgstr ""
-
-#. SysConfig
-msgid "My Tickets"
-msgstr "Meine Tickets"
 
 #. SysConfig
 msgid "My Tickets."
@@ -19675,9 +19868,7 @@ msgid ""
 msgstr ""
 
 #. SysConfig
-msgid ""
-"Sends customer notifications just to the mapped customer. Normally, if no "
-"customer is mapped, the latest customer sender gets the notification."
+msgid "Sends customer notifications just to the mapped customer."
 msgstr ""
 
 #. SysConfig
@@ -21802,19 +21993,19 @@ msgstr ""
 
 #. SysConfig
 msgid ""
-"Your queue selection of your favorite queues. You also get notified about "
+"Your queue selection of your preferred queues. You also get notified about "
 "those queues via email if enabled."
 msgstr ""
 
 #. SysConfig
 msgid ""
-"Your service selection of your favorite services. You also get notified "
+"Your service selection of your preferred services. You also get notified "
 "about those services via email if enabled."
 msgstr ""
 
 #. SysConfig
 msgid "attachment"
-msgstr ""
+msgstr "קובץ מצורף"
 
 #. SysConfig
 msgid "debug"
@@ -21822,16 +22013,16 @@ msgstr ""
 
 #. SysConfig
 msgid "error"
-msgstr ""
+msgstr "שגיאה"
 
 #. SysConfig
 msgid "info"
-msgstr ""
+msgstr "מידע"
 
 #. SysConfig
 msgid "inline"
-msgstr ""
+msgstr "בין השורות"
 
 #. SysConfig
 msgid "notice"
-msgstr ""
+msgstr "הודעה"

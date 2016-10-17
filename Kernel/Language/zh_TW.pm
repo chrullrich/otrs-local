@@ -26,7 +26,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y.%M.%D';
     $Self->{DateInputFormat}     = '%Y.%M.%D';
     $Self->{DateInputFormatLong} = '%Y.%M.%D - %T';
-    $Self->{Completeness}        = 0.485816347972263;
+    $Self->{Completeness}        = 0.482923781757601;
 
     # csv separator
     $Self->{Separator} = '';
@@ -857,7 +857,8 @@ sub Data {
         'You can use the following tags' => '您可以使用以下的標記',
         'To get the first 20 character of the subject.' => '顯示主題的前20個字節',
         'To get the first 5 lines of the email.' => '顯示郵件的前五行',
-        'To get the realname of the sender (if given).' => '顯示發件人的真實姓名',
+        'To get the realname of the ticket\'s customer user (if given).' =>
+            '',
         'To get the article attribute' => '信件數據屬性',
         ' e. g.' => '例如',
         'Options of the current customer user data' => '用戶資料屬性',
@@ -906,10 +907,8 @@ sub Data {
         'Wildcards like \'*\' are allowed.' => '允許使用通配置符，例如\'*\'。',
         'Add customer' => '添加用戶單位',
         'Select' => '選擇',
-        'only' => '',
-        'shown' => '顯示',
-        'more available' => '',
-        'total' => '總計',
+        'List (only %s shown - more available)' => '',
+        'List (%s total)' => '',
         'Please enter a search term to look for customers.' => '請輸入搜索條件以便檢索用戶單位資料.',
         'Add Customer' => '添加用戶單位',
 
@@ -1195,6 +1194,12 @@ sub Data {
         'Param %s key' => '参數 %s key',
         'Param %s value' => '参數 %s value',
         'Save Changes' => '保存更改',
+        'Tag Reference' => '',
+        'In the note section, you can use the following tags' => '',
+        'Attributes of the current customer user data' => '',
+        'Attributes of the ticket data' => '',
+        'Ticket dynamic fields internal key values' => '',
+        'Example note' => '',
         'Results' => '結果',
         '%s Tickets affected! What do you want to do?' => '%s 個工單將被影響！您確定要這麼做?',
         'Warning: You used the DELETE option. All deleted tickets will be lost!' =>
@@ -1497,6 +1502,7 @@ sub Data {
         'Create new groups to handle access permissions for different groups of agent (e. g. purchasing department, support department, sales department, ...). ' =>
             '若要為不同的服務人員分配不同的訪問權限，應創建新的組。(例如，採購部、支持部、銷售部、...)',
         'It\'s useful for ASP solutions. ' => '這對於ASP解決方案它很有用。',
+        'total' => '總計',
         'Add Group' => '添加組',
         'Edit Group' => '編輯組',
 
@@ -1591,7 +1597,6 @@ sub Data {
         'Message body' => '訊息內容',
         'Add new notification language' => '添加新通知語言',
         'Do you really want to delete this notification language?' => '您確定要刪除此通知語言？',
-        'Tag Reference' => '',
         'Notifications are sent to an agent or a customer.' => '發送給服務人員或用戶的通知。',
         'To get the first 20 character of the subject (of the latest agent article).' =>
             '截取主題的前20個字符（最新的服務人員信件）',
@@ -1601,14 +1606,11 @@ sub Data {
             '截取郵件主題的前20個字符（最新的用戶信件）',
         'To get the first 5 lines of the body (of the latest customer article).' =>
             '截取郵件正文内容前5行（最新的用戶信件）',
-        'Attributes of the current customer user data' => '',
         'Attributes of the current ticket owner user data' => '',
         'Attributes of the current ticket responsible user data' => '',
         'Attributes of the current agent user who requested this action' =>
             '',
         'Attributes of the recipient user for the notification' => '',
-        'Attributes of the ticket data' => '',
-        'Ticket dynamic fields internal key values' => '',
         'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
             '',
         'Example notification' => '通知範例',
@@ -1974,6 +1976,7 @@ sub Data {
             '請注意，修改這個轉向將影響以下流程。',
         'Transition' => '轉向',
         'Transition Name' => '轉向名稱',
+        'Conditions can only operate on non-empty fields.' => '',
         'Type of Linking between Conditions' => '條件之間的邏輯關系',
         'Remove this Condition' => '刪除這個條件',
         'Type of Linking' => '鏈接類型',
@@ -2210,6 +2213,7 @@ sub Data {
         'Relate this certificate' => '關聯這個証書',
 
         # Template: AdminSMIMECertRead
+        'Close dialog' => '',
         'Certificate details' => '',
 
         # Template: AdminSalutation
@@ -2633,13 +2637,13 @@ sub Data {
             '',
 
         # Template: AgentTicketActionCommon
-        'Change Free Text of %s%s' => '',
-        'Change Owner of %s%s' => '',
-        'Close %s%s' => '',
-        'Add Note to %s%s' => '',
-        'Set Pending Time for %s%s' => '',
-        'Change Priority of %s%s' => '',
-        'Change Responsible of %s%s' => '',
+        'Change Free Text of %s%s%s' => '',
+        'Change Owner of %s%s%s' => '',
+        'Close %s%s%s' => '',
+        'Add Note to %s%s%s' => '',
+        'Set Pending Time for %s%s%s' => '',
+        'Change Priority of %s%s%s' => '',
+        'Change Responsible of %s%s%s' => '',
         'All fields marked with an asterisk (*) are mandatory.' => '所有带 * 的字段都是強制要求輸入的字段.',
         'Service invalid.' => '服務無效。',
         'New Owner' => '新所有者',
@@ -2653,14 +2657,14 @@ sub Data {
         'Inform involved agents' => '',
         'Here you can select additional agents which should receive a notification regarding the new article.' =>
             '',
-        'Text will also be received by:' => '',
+        'Text will also be received by' => '',
         'Spell check' => '拼寫檢查',
         'Text Template' => '文本模板',
         'Setting a template will overwrite any text or attachment.' => '',
         'Note type' => '備註類型',
 
         # Template: AgentTicketBounce
-        'Bounce %s%s' => '',
+        'Bounce %s%s%s' => '',
         'Bounce to' => '退回到 ',
         'You need a email address.' => '需要一個郵件地址。',
         'Need a valid email address or don\'t use a local email address.' =>
@@ -2681,7 +2685,7 @@ sub Data {
         'Execute Bulk Action' => '',
 
         # Template: AgentTicketCompose
-        'Compose Answer for %s%s' => '',
+        'Compose Answer for %s%s%s' => '',
         'This address is registered as system address and cannot be used: %s' =>
             '',
         'Please include at least one recipient' => '請包括至少一個收件人',
@@ -2694,7 +2698,7 @@ sub Data {
         'Date Invalid!' => '日期無效！',
 
         # Template: AgentTicketCustomer
-        'Change Customer of %s%s' => '',
+        'Change Customer of %s%s%s' => '',
 
         # Template: AgentTicketEmail
         'Create New Email Ticket' => '創建郵件工單',
@@ -2707,7 +2711,7 @@ sub Data {
         'Get all' => '獲取全部',
 
         # Template: AgentTicketEmailOutbound
-        'Outbound Email for %s%s' => '',
+        'Outbound Email for %s%s%s' => '',
 
         # Template: AgentTicketEscalation
         'Ticket %s: first response time is over (%s/%s)!' => '',
@@ -2718,22 +2722,22 @@ sub Data {
         'Ticket %s: solution time will be over in %s/%s!' => '',
 
         # Template: AgentTicketForward
-        'Forward %s%s' => '',
+        'Forward %s%s%s' => '',
 
         # Template: AgentTicketHistory
-        'History of %s%s' => '',
+        'History of %s%s%s' => '',
         'History Content' => '歷史内容',
         'Zoom view' => '缩放視圖',
 
         # Template: AgentTicketMerge
-        'Merge %s%s' => '',
+        'Merge %s%s%s' => '',
         'Merge Settings' => '',
         'You need to use a ticket number!' => '您需要使用一個工單編號!',
         'A valid ticket number is required.' => '需要有效的工單編號。',
         'Need a valid email address.' => '需要有效的郵件地址。',
 
         # Template: AgentTicketMove
-        'Move %s%s' => '',
+        'Move %s%s%s' => '',
         'New Queue' => '新隊列',
 
         # Template: AgentTicketOverviewMedium
@@ -2766,10 +2770,10 @@ sub Data {
         'The chat will be appended as a separate article.' => '',
 
         # Template: AgentTicketPhoneCommon
-        'Phone Call for %s%s' => '',
+        'Phone Call for %s%s%s' => '',
 
         # Template: AgentTicketPlain
-        'View Email Plain Text for %s%s' => '',
+        'View Email Plain Text for %s%s%s' => '',
         'Plain' => '純文本',
         'Download this email' => '下載該郵件',
 
@@ -2794,7 +2798,10 @@ sub Data {
         'Remove' => '刪除',
         'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.' =>
             '搜索範圍覆蓋From, To, Cc, 主題和信件.',
-        'Customer User Login' => '用戶登錄用戶名',
+        'CustomerID (complex search)' => '',
+        'CustomerID (exact match)' => '',
+        'Customer User Login (complex search)' => '',
+        'Customer User Login (exact match)' => '',
         'Attachment Name' => '',
         '(e. g. m*file or myfi*)' => '',
         'Created in Queue' => '隊列中創建',
@@ -2881,6 +2888,8 @@ sub Data {
         'go back to the previous page' => '返回上一頁',
 
         # Template: CustomerError
+        'An Error Occurred' => '',
+        'Error Details' => '詳細錯誤信息',
         'Traceback' => '追溯',
 
         # Template: CustomerFooter
@@ -3025,7 +3034,6 @@ sub Data {
             '',
         'Contact our service team now.' => '',
         'Send a bugreport' => '發送一個錯誤報告',
-        'Error Details' => '詳細錯誤信息',
 
         # Template: FooterJS
         'Please enter at least one search value or * to find anything.' =>
@@ -3222,10 +3230,10 @@ sub Data {
         'The selected time periods in the statistic are time zone neutral.' =>
             '',
         'Create summation row' => '',
-        'Generate an additional row containing sums for all data columns.' =>
+        'Generate an additional row containing sums for all data rows.' =>
             '',
         'Create summation column' => '',
-        'Generate an additional column containing sums for all data rows.' =>
+        'Generate an additional column containing sums for all data columns.' =>
             '',
         'Cache results' => '緩存結果',
         'Stores statistics result data in a cache to be used in subsequent views with the same configuration.' =>
@@ -3266,6 +3274,8 @@ sub Data {
         'Configurable params of static stat' => '静態統計的配置参數',
         'No element selected.' => '沒有被選参數',
         'Scale' => '時間刻度',
+        'show more' => '',
+        'show less' => '',
 
         # Template: D3
         'Download SVG' => '',
@@ -3723,8 +3733,6 @@ sub Data {
         'Couldn\'t get Ticket for TicketID: %s in _GetParam!' => '',
         'Couldn\'t determine ActivityEntityID. DynamicField or Config isn\'t set properly!' =>
             '',
-        'DynamicFieldConfig missing for field: %s, or is not a Ticket Dynamic Field!' =>
-            '',
         'Process::Default%s Config Value missing!' => '',
         'Got no ProcessEntityID or TicketID and ActivityDialogEntityID!' =>
             '',
@@ -3838,6 +3846,9 @@ sub Data {
 
         # Perl Module: Kernel/Modules/CustomerTicketOverview.pm
         'Need CustomerID!' => '',
+        'My Tickets' => '我的工單',
+        'Company Tickets' => '單位工單',
+        'Untitled!' => '',
 
         # Perl Module: Kernel/Modules/CustomerTicketSearch.pm
         'Please remove the following words because they cannot be used for the search:' =>
@@ -3935,6 +3946,7 @@ sub Data {
         'Please supply your new password!' => '請提供您的新密碼!',
 
         # Perl Module: Kernel/Output/HTML/Statistics/View.pm
+        'No (not supported)' => '不支持',
         'No past complete or the current+upcoming complete relative time value selected.' =>
             '',
         'The selected time period is larger than the allowed time period.' =>
@@ -3982,7 +3994,8 @@ sub Data {
         'State Type' => '狀態類別',
         'Created Priority' => '創建的優先級',
         'Created State' => '創建的狀態',
-        'CustomerUserLogin' => '用戶登陸',
+        'CustomerUserLogin (complex search)' => '',
+        'CustomerUserLogin (exact match)' => '',
         'Create Time' => '創建時間',
         'Close Time' => '關閉時間',
         'Escalation - First Response Time' => '',
@@ -3997,13 +4010,49 @@ sub Data {
         'Ticket Create Time' => '工單創建時間',
         'Ticket Close Time' => '工單關閉時間',
         'Accounted time by Agent' => '服務人員處理工單所用的時間',
+        'Total Time' => '時間總合',
+        'Ticket Average' => '工單平均處理時間',
+        'Ticket Min Time' => '工單最小處理時間',
+        'Ticket Max Time' => '工單最大處理時間',
+        'Number of Tickets' => '工單數',
+        'Article Average' => '信件平均處理時間',
+        'Article Min Time' => '信件最小處理時間',
+        'Article Max Time' => '信件最大處理時間',
+        'Number of Articles' => '信件數',
 
         # Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+        'unlimited' => '',
+        'ascending' => '升序',
+        'descending' => '降序',
         'Attributes to be printed' => '打印的屬性',
         'Sort sequence' => '排序',
         'State Historic' => '',
         'State Type Historic' => '',
         'Historic Time Range' => '',
+
+        # Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+        'Solution Average' => '',
+        'Solution Min Time' => '',
+        'Solution Max Time' => '',
+        'Solution Average (affected by escalation configuration)' => '',
+        'Solution Min Time (affected by escalation configuration)' => '',
+        'Solution Max Time (affected by escalation configuration)' => '',
+        'Solution Working Time Average (affected by escalation configuration)' =>
+            '',
+        'Solution Min Working Time (affected by escalation configuration)' =>
+            '',
+        'Solution Max Working Time (affected by escalation configuration)' =>
+            '',
+        'Response Average (affected by escalation configuration)' => '',
+        'Response Min Time (affected by escalation configuration)' => '',
+        'Response Max Time (affected by escalation configuration)' => '',
+        'Response Working Time Average (affected by escalation configuration)' =>
+            '',
+        'Response Min Working Time (affected by escalation configuration)' =>
+            '',
+        'Response Max Working Time (affected by escalation configuration)' =>
+            '',
+        'Number of Tickets (affected by escalation configuration)' => '',
 
         # Perl Module: Kernel/System/Stats/Static/StateAction.pm
         'Days' => '日',
@@ -4604,7 +4653,6 @@ Thanks for your help!
         'Comment2' => '',
         'Communication' => '',
         'Company Status' => '公司狀態',
-        'Company Tickets' => '單位工單',
         'Company Tickets.' => '公司工單',
         'Company name which will be included in outgoing emails as an X-Header.' =>
             '',
@@ -4721,10 +4769,8 @@ Thanks for your help!
         'Default ticket ID used by the system in the customer interface.' =>
             '',
         'Default value for NameX' => '',
-        'Define Actions where Settings button is available in the Linked objects widget (LinkObject::ViewMode = "complex").
-            Please note that this Actions must have registered following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js,
-            Core.Agent.TableFilters.js.
-        ' => '',
+        'Define Actions where a settings button is available in the linked objects widget (LinkObject::ViewMode = "complex"). Please note that these Actions must have registered the following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js, Core.Agent.TableFilters.js.' =>
+            '',
         'Define a filter for html output to add links behind a defined string. The element Image allows two input kinds. At once the name of an image (e.g. faq.png). In this case the OTRS image path will be used. The second possiblity is to insert the link to the image.' =>
             '',
         'Define a mapping between variables of the customer user data (keys) and dynamic fields of a ticket (values). The purpose is to store customer user data in ticket dynamic fields. The dynamic fields must be present in the system and should be enabled for AgentTicketFreeText, so that they can be set/updated manually by the agent. They mustn\'t be enabled for AgentTicketPhone, AgentTicketEmail and AgentTicketCustomer. If they were, they would have precedence over the automatically set values. To use this mapping, you have to also activate the next setting below.' =>
@@ -4740,9 +4786,8 @@ Thanks for your help!
         'Define the start day of the week for the date picker for the indicated calendar.' =>
             '',
         'Define the start day of the week for the date picker.' => '',
-        'Define which columns are shown in the Linked tickets widget (LinkObject::ViewMode = "complex").
-            Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns.
-            Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' => '',
+        'Define which columns are shown in the linked tickets widget (LinkObject::ViewMode = "complex"). Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' =>
+            '',
         'Defines a customer item, which generates a LinkedIn icon at the end of a customer info block.' =>
             '',
         'Defines a customer item, which generates a XING icon at the end of a customer info block.' =>
@@ -4783,6 +4828,8 @@ Thanks for your help!
         'Defines all the parameters for the ShownTickets object in the customer preferences of the customer interface.' =>
             '',
         'Defines all the parameters for this item in the customer preferences.' =>
+            '',
+        'Defines all the parameters for this item in the customer preferences. \'PasswordRegExp\' allows to match passwords against a regular expression. Define the minimum number of characters using \'PasswordMinSize\'. Define if at least 2 lowercase and 2 uppercase letter characters are needed by setting the appropriate option to \'1\'. \'PasswordMin2Characters\' defines if the password needs to contain at least 2 letter characters (set to 0 or 1). \'PasswordNeedDigit\' controls the need of at least 1 digit (set to 0 or 1 to control).' =>
             '',
         'Defines all the parameters for this notification transport.' => '',
         'Defines all the possible stats output formats.' => '',
@@ -4836,6 +4883,8 @@ Thanks for your help!
             '',
         'Defines if customers should be allowed to login if they have no shared secret stored in their preferences and therefore are not using two-factor authentication.' =>
             '',
+        'Defines if the enhanced mode should be used (enables use of table, replace, subscript, superscript, paste from word, etc.) in customer interface.' =>
+            '',
         'Defines if the enhanced mode should be used (enables use of table, replace, subscript, superscript, paste from word, etc.).' =>
             '',
         'Defines if the previously valid token should be accepted for authentication. This is slightly less secure but gives users 30 seconds more time to enter their one-time password.' =>
@@ -4879,6 +4928,8 @@ Thanks for your help!
             '',
         'Defines the config options for the autocompletion feature.' => '',
         'Defines the config parameters of this item, to be shown in the preferences view.' =>
+            '',
+        'Defines the config parameters of this item, to be shown in the preferences view. \'PasswordRegExp\' allows to match passwords against a regular expression. Define the minimum number of characters using \'PasswordMinSize\'. Define if at least 2 lowercase and 2 uppercase letter characters are needed by setting the appropriate option to \'1\'. \'PasswordMin2Characters\' defines if the password needs to contain at least 2 letter characters (set to 0 or 1). \'PasswordNeedDigit\' controls the need of at least 1 digit (set to 0 or 1 to control). \'PasswordMaxLoginFailed\' allows to set an agent to invalid-temporarily if max failed logins reached.' =>
             '',
         'Defines the config parameters of this item, to be shown in the preferences view. Take care to maintain the dictionaries installed in the system in the data section.' =>
             '',
@@ -5363,7 +5414,7 @@ Thanks for your help!
         'Deletes a session if the session id is used with an invalid remote IP address.' =>
             '',
         'Deletes requested sessions if they have timed out.' => '',
-        'Delivers extended debugging information in the frontend in case any ajax errors occur, if enabled.' =>
+        'Delivers extended debugging information in the frontend in case any AJAX errors occur, if enabled.' =>
             '',
         'Deploy and manage OTRS Business Solution™.' => '',
         'Determines if the list of possible queues to move to ticket into should be displayed in a dropdown list or in a new window in the agent interface. If "New Window" is set you can add a move note to the ticket.' =>
@@ -5787,6 +5838,7 @@ Thanks for your help!
         'Incoming Phone Call.' => '打進來電',
         'IndexAccelerator: to choose your backend TicketViewAccelerator module. "RuntimeDB" generates each queue view on the fly from ticket table (no performance problems up to approx. 60.000 tickets in total and 6.000 open tickets in the system). "StaticDB" is the most powerful module, it uses an extra ticket-index table that works like a view (recommended if more than 80.000 and 6.000 open tickets are stored in the system). Use the command "bin/otrs.Console.pl Maint::Ticket::QueueIndexRebuild" for initial index creation.' =>
             '',
+        'Indonesian' => '',
         'Input' => '輸入',
         'Install ispell or aspell on the system, if you want to use a spell checker. Please specify the path to the aspell or ispell binary on your operating system.' =>
             '',
@@ -5936,7 +5988,6 @@ Thanks for your help!
         'Module to use database filter storage.' => '',
         'Multiselect' => '多選',
         'My Services' => '我的服務',
-        'My Tickets' => '我的工單',
         'My Tickets.' => '我的工單',
         'Name of custom queue. The custom queue is a queue selection of your preferred queues and can be selected in the preferences settings.' =>
             '',
@@ -6160,8 +6211,7 @@ Thanks for your help!
             '',
         'Sends all outgoing email via bcc to the specified address. Please use this only for backup reasons.' =>
             '',
-        'Sends customer notifications just to the mapped customer. Normally, if no customer is mapped, the latest customer sender gets the notification.' =>
-            '',
+        'Sends customer notifications just to the mapped customer.' => '',
         'Sends registration information to OTRS group.' => '',
         'Sends reminder notifications of unlocked ticket after reaching the reminder date (only sent to ticket owner).' =>
             '',
@@ -6808,9 +6858,9 @@ Thanks for your help!
         'Yes, but hide archived tickets' => '',
         'Your email with ticket number "<OTRS_TICKET>" is bounced to "<OTRS_BOUNCE_TO>". Contact this address for further information.' =>
             '',
-        'Your queue selection of your favorite queues. You also get notified about those queues via email if enabled.' =>
-            '您的最常用隊列，如果您設置了郵件通知，您將會得到該隊列的狀態通知.',
-        'Your service selection of your favorite services. You also get notified about those services via email if enabled.' =>
+        'Your queue selection of your preferred queues. You also get notified about those queues via email if enabled.' =>
+            '',
+        'Your service selection of your preferred services. You also get notified about those services via email if enabled.' =>
             '',
         'attachment' => '附件',
         'debug' => '',

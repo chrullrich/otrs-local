@@ -23,7 +23,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.879386425719689;
+    $Self->{Completeness}        = 0.868179925031237;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -854,7 +854,8 @@ sub Data {
         'You can use the following tags' => 'Tag berikut boleh digunakan',
         'To get the first 20 character of the subject.' => '20 aksara pertama subjek',
         'To get the first 5 lines of the email.' => 'Yang pertama lima baris mesej',
-        'To get the realname of the sender (if given).' => 'Nama pengguna (jika dinyatakan)',
+        'To get the realname of the ticket\'s customer user (if given).' =>
+            '',
         'To get the article attribute' => 'Atribut Seksyen',
         ' e. g.' => 'cth.',
         'Options of the current customer user data' => 'Atribut pelanggan semasa',
@@ -903,10 +904,8 @@ sub Data {
         'Wildcards like \'*\' are allowed.' => 'Kad bebas seperti \'*\' adalah dibenarkan.',
         'Add customer' => 'menambah Pelanggan',
         'Select' => 'Pilih',
-        'only' => '',
-        'shown' => 'ditunjukkan',
-        'more available' => '',
-        'total' => 'jumlah',
+        'List (only %s shown - more available)' => '',
+        'List (%s total)' => '',
         'Please enter a search term to look for customers.' => 'Sila masukkan kata kunci untuk mencari pelanggan.',
         'Add Customer' => 'Tambah pelanggan',
 
@@ -1192,6 +1191,12 @@ sub Data {
         'Param %s key' => 'Parameter Utama %s',
         'Param %s value' => 'Nilai Parameter %s',
         'Save Changes' => 'Simpan Perubahan',
+        'Tag Reference' => 'Label Rujukan',
+        'In the note section, you can use the following tags' => '',
+        'Attributes of the current customer user data' => 'Sifat-sifat data pengguna semasa pelanggan',
+        'Attributes of the ticket data' => 'Sifat-sifat data tiket',
+        'Ticket dynamic fields internal key values' => 'Tiket medan dinamik nilai utama dalaman',
+        'Example note' => '',
         'Results' => 'Keputusan',
         '%s Tickets affected! What do you want to do?' => '%s Tiket terjejas! Apa yang anda mahu lakukan?',
         'Warning: You used the DELETE option. All deleted tickets will be lost!' =>
@@ -1494,6 +1499,7 @@ sub Data {
         'Create new groups to handle access permissions for different groups of agent (e. g. purchasing department, support department, sales department, ...). ' =>
             'Cipta kumpulan baru untuk memberi kebenaran untuk perbezaan kumpulan dari ejen (cth. membeli jabatan, sokongan jabatan, jabatan jualan, ...).',
         'It\'s useful for ASP solutions. ' => 'Ianya berguna untuk solusi ASP.',
+        'total' => 'jumlah',
         'Add Group' => 'Tambah Kumpulan',
         'Edit Group' => 'Audit Kumpulan',
 
@@ -1588,7 +1594,6 @@ sub Data {
         'Message body' => 'Badan Mesej',
         'Add new notification language' => 'Menambah bahasa pemberitahuan baru',
         'Do you really want to delete this notification language?' => 'Adakah anda pasti ingin menghapuskan bahasa pemberitahuan ini?',
-        'Tag Reference' => 'Label Rujukan',
         'Notifications are sent to an agent or a customer.' => 'Pemberitahuan dihantar kepada ejen atau pelanggan.',
         'To get the first 20 character of the subject (of the latest agent article).' =>
             'Untuk mendapatkan pertama 20 watak subjek (artikel ejen terbaru).',
@@ -1598,14 +1603,11 @@ sub Data {
             'Untuk mendapatkan pertama 20 watak subjek (artikel pelanggan terbaru)',
         'To get the first 5 lines of the body (of the latest customer article).' =>
             'Untuk mendapatkan 5 baris pertama badan (pelanggan artikel yang terbaru).',
-        'Attributes of the current customer user data' => 'Sifat-sifat data pengguna semasa pelanggan',
         'Attributes of the current ticket owner user data' => 'Sifat-sifat data pengguna pemilik tiket semasa',
         'Attributes of the current ticket responsible user data' => 'Sifat-sifat data tiket semasa pengguna bertanggungjawab',
         'Attributes of the current agent user who requested this action' =>
             'Sifat-sifat pengguna ejen semasa yang memohon tindakan ini',
         'Attributes of the recipient user for the notification' => 'Sifat-sifat pengguna penerima bagi pemberitahuan',
-        'Attributes of the ticket data' => 'Sifat-sifat data tiket',
-        'Ticket dynamic fields internal key values' => 'Tiket medan dinamik nilai utama dalaman',
         'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
             'Tiket bidang dinamik memaparkan nilai, berguna untuk medan Turun ke bawah dan Pelbagai pilihan.',
         'Example notification' => 'Contoh pemberitahuan',
@@ -1971,6 +1973,7 @@ sub Data {
             'Sila ambil perhatian bahawa perubahan peralihan ini akan memberi kesan kepada proses berikut',
         'Transition' => 'Peralihan',
         'Transition Name' => 'Nama Peralihan',
+        'Conditions can only operate on non-empty fields.' => '',
         'Type of Linking between Conditions' => 'Jenis Pemautan antara Syarat',
         'Remove this Condition' => 'Buang keadaan ini',
         'Type of Linking' => 'Jenis Pemautan',
@@ -2207,6 +2210,7 @@ sub Data {
         'Relate this certificate' => 'Hubungkaitkan sijil ini',
 
         # Template: AdminSMIMECertRead
+        'Close dialog' => '',
         'Certificate details' => 'Maklumat persijilan',
 
         # Template: AdminSalutation
@@ -2630,13 +2634,13 @@ sub Data {
             'Statistik ini mengandungi ralat konfigurasi dan tidak boleh digunakan pada masa sekarang.',
 
         # Template: AgentTicketActionCommon
-        'Change Free Text of %s%s' => 'Tukar Teks Percuma %s%s',
-        'Change Owner of %s%s' => 'Mengubah pemilik %s%s',
-        'Close %s%s' => 'Tutup %s%s',
-        'Add Note to %s%s' => 'Tambah nota pada %s%s',
-        'Set Pending Time for %s%s' => 'Tetapkan masa menunggu untuk %s%s',
-        'Change Priority of %s%s' => 'Perubahan keutamaan %s%s',
-        'Change Responsible of %s%s' => 'Menukar tanggungjawab %s%s',
+        'Change Free Text of %s%s%s' => '',
+        'Change Owner of %s%s%s' => '',
+        'Close %s%s%s' => '',
+        'Add Note to %s%s%s' => '',
+        'Set Pending Time for %s%s%s' => '',
+        'Change Priority of %s%s%s' => '',
+        'Change Responsible of %s%s%s' => '',
         'All fields marked with an asterisk (*) are mandatory.' => 'Semua medan bertanda bintang (*) adalah wajib.',
         'Service invalid.' => 'Perkhidmatan tidak sah.',
         'New Owner' => 'Pemilik baru',
@@ -2650,14 +2654,14 @@ sub Data {
         'Inform involved agents' => 'Beritahu ejen terlibat',
         'Here you can select additional agents which should receive a notification regarding the new article.' =>
             'Di sini anda boleh memilih ejen tambahan yang sepatutnya menerima pemberitahuan mengenai artikel baru.',
-        'Text will also be received by:' => 'Nota juga akan diterima oleh:',
+        'Text will also be received by' => '',
         'Spell check' => 'semak ejaan',
         'Text Template' => 'Templat teks',
         'Setting a template will overwrite any text or attachment.' => 'Menetapkan templat akan menulis ganti sebarang teks atau lampiran.',
         'Note type' => 'Jenis Nota',
 
         # Template: AgentTicketBounce
-        'Bounce %s%s' => 'Lantun %s%s',
+        'Bounce %s%s%s' => '',
         'Bounce to' => 'Bounce kepada',
         'You need a email address.' => 'Anda perlu alamat e-mel.',
         'Need a valid email address or don\'t use a local email address.' =>
@@ -2678,7 +2682,7 @@ sub Data {
         'Execute Bulk Action' => '',
 
         # Template: AgentTicketCompose
-        'Compose Answer for %s%s' => 'Karang Jawapan untuk %s%s',
+        'Compose Answer for %s%s%s' => '',
         'This address is registered as system address and cannot be used: %s' =>
             'Alamat ini didaftarkan sebagai alamat sistem dan tidak boleh digunakan: %s',
         'Please include at least one recipient' => 'Sila sertakan sekurang-kurangnya satu penerima',
@@ -2691,7 +2695,7 @@ sub Data {
         'Date Invalid!' => 'Tarikh tidak sah!',
 
         # Template: AgentTicketCustomer
-        'Change Customer of %s%s' => 'Mengubah Pelanggan %s%s',
+        'Change Customer of %s%s%s' => '',
 
         # Template: AgentTicketEmail
         'Create New Email Ticket' => 'Buat Tiket Email Baru.',
@@ -2704,7 +2708,7 @@ sub Data {
         'Get all' => 'Dapatkan semua.',
 
         # Template: AgentTicketEmailOutbound
-        'Outbound Email for %s%s' => 'Emel keluar untuk %s%s',
+        'Outbound Email for %s%s%s' => '',
 
         # Template: AgentTicketEscalation
         'Ticket %s: first response time is over (%s/%s)!' => 'Tiket %s: reaksi masa pertama sudah tamat (%s/%s)!',
@@ -2715,22 +2719,22 @@ sub Data {
         'Ticket %s: solution time will be over in %s/%s!' => 'Tiket %s: masa penyelesaian akan tamat dalam %s/%s!',
 
         # Template: AgentTicketForward
-        'Forward %s%s' => 'Kehadapan %s%s',
+        'Forward %s%s%s' => '',
 
         # Template: AgentTicketHistory
-        'History of %s%s' => 'Sejarah %s%s',
+        'History of %s%s%s' => '',
         'History Content' => 'Kandungan sejarah',
         'Zoom view' => 'Pandangan dibesarkan',
 
         # Template: AgentTicketMerge
-        'Merge %s%s' => 'Gabung %s%s',
+        'Merge %s%s%s' => '',
         'Merge Settings' => 'Gabung Aturan',
         'You need to use a ticket number!' => 'Anda perlu menggunakan nombor tiket!',
         'A valid ticket number is required.' => 'Nombor tiket yang sah diperlukan.',
         'Need a valid email address.' => 'Memerlukan alamat emel yang sah.',
 
         # Template: AgentTicketMove
-        'Move %s%s' => 'Pindah %s%s',
+        'Move %s%s%s' => '',
         'New Queue' => 'Barisan baru',
 
         # Template: AgentTicketOverviewMedium
@@ -2763,10 +2767,10 @@ sub Data {
         'The chat will be appended as a separate article.' => 'Perbualan akan dilampirkan sebagai artikel berasingan.',
 
         # Template: AgentTicketPhoneCommon
-        'Phone Call for %s%s' => 'Panggilan Telefon untuk %s%s',
+        'Phone Call for %s%s%s' => '',
 
         # Template: AgentTicketPlain
-        'View Email Plain Text for %s%s' => 'Lihat Email Teks Biasa untuk %s%s',
+        'View Email Plain Text for %s%s%s' => '',
         'Plain' => 'Biasa',
         'Download this email' => 'Muat turun emel ini',
 
@@ -2791,7 +2795,10 @@ sub Data {
         'Remove' => 'Buang',
         'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.' =>
             'Carian di dalam sifat Daripada, Kepada, Cc, Subjek dan badan artikel, mengatasi sifat-sifat yang lain dengan nama yang sama.',
-        'Customer User Login' => 'Log masuk pengguna pelanggan',
+        'CustomerID (complex search)' => '',
+        'CustomerID (exact match)' => '',
+        'Customer User Login (complex search)' => '',
+        'Customer User Login (exact match)' => '',
         'Attachment Name' => 'Nama Lampiran',
         '(e. g. m*file or myfi*)' => '(contoh: m*file atau myfi*)',
         'Created in Queue' => 'Dibuat dalam barisan',
@@ -2878,6 +2885,8 @@ sub Data {
         'go back to the previous page' => 'kembali ke halaman sebelum',
 
         # Template: CustomerError
+        'An Error Occurred' => '',
+        'Error Details' => 'Butiran kesilapan',
         'Traceback' => 'Menjejaki kembali',
 
         # Template: CustomerFooter
@@ -3022,7 +3031,6 @@ sub Data {
             '',
         'Contact our service team now.' => '',
         'Send a bugreport' => 'Hantar laporan bug',
-        'Error Details' => 'Butiran kesilapan',
 
         # Template: FooterJS
         'Please enter at least one search value or * to find anything.' =>
@@ -3219,11 +3227,11 @@ sub Data {
         'The selected time periods in the statistic are time zone neutral.' =>
             'Tempoh masa yang dipilih di dalam statistik ialah zon masa neutral.',
         'Create summation row' => 'Cipta baris penjumlahan',
-        'Generate an additional row containing sums for all data columns.' =>
-            'Hasilkan baris tambahan yang mengandungi jumlah untuk semua lajur data.',
+        'Generate an additional row containing sums for all data rows.' =>
+            '',
         'Create summation column' => 'Cipta lajur penjumlahan',
-        'Generate an additional column containing sums for all data rows.' =>
-            'Hasilkan lajur tambahan yang mengandungi jumlah untuk semua lajur baris.',
+        'Generate an additional column containing sums for all data columns.' =>
+            '',
         'Cache results' => 'Keputusan cache',
         'Stores statistics result data in a cache to be used in subsequent views with the same configuration.' =>
             'Simpan keputusan data statistik dalam cache untuk digunakan dalam paparan berikutnya dengan konfigurasi yang sama.',
@@ -3263,6 +3271,8 @@ sub Data {
         'Configurable params of static stat' => 'Parameter statistik statik yang boleh dikonfigurasi.',
         'No element selected.' => 'Tiada unsur yang dipilih.',
         'Scale' => 'Skala',
+        'show more' => '',
+        'show less' => '',
 
         # Template: D3
         'Download SVG' => 'Muat turun SVG',
@@ -3720,8 +3730,6 @@ sub Data {
         'Couldn\'t get Ticket for TicketID: %s in _GetParam!' => '',
         'Couldn\'t determine ActivityEntityID. DynamicField or Config isn\'t set properly!' =>
             '',
-        'DynamicFieldConfig missing for field: %s, or is not a Ticket Dynamic Field!' =>
-            '',
         'Process::Default%s Config Value missing!' => '',
         'Got no ProcessEntityID or TicketID and ActivityDialogEntityID!' =>
             '',
@@ -3835,6 +3843,9 @@ sub Data {
 
         # Perl Module: Kernel/Modules/CustomerTicketOverview.pm
         'Need CustomerID!' => '',
+        'My Tickets' => 'Tiket Saya',
+        'Company Tickets' => 'Tiket Syarikat',
+        'Untitled!' => '',
 
         # Perl Module: Kernel/Modules/CustomerTicketSearch.pm
         'Please remove the following words because they cannot be used for the search:' =>
@@ -3932,6 +3943,7 @@ sub Data {
         'Please supply your new password!' => 'Sila berikan kata laluan baru anda!',
 
         # Perl Module: Kernel/Output/HTML/Statistics/View.pm
+        'No (not supported)' => '',
         'No past complete or the current+upcoming complete relative time value selected.' =>
             'Tiada lengkapan masa lalu atau nilai masa relatif lengkapan semasa+akan datang dipilih.',
         'The selected time period is larger than the allowed time period.' =>
@@ -3979,7 +3991,8 @@ sub Data {
         'State Type' => 'Jenis Keadaan',
         'Created Priority' => 'Keutamaan dicipta',
         'Created State' => 'Status dicipta',
-        'CustomerUserLogin' => 'LogMasukPenggunaPelanggan',
+        'CustomerUserLogin (complex search)' => '',
+        'CustomerUserLogin (exact match)' => '',
         'Create Time' => 'Masa dicipta',
         'Close Time' => 'Masa tutup',
         'Escalation - First Response Time' => 'Peningkatan - Waktu Tindak balas Pertama',
@@ -3994,13 +4007,49 @@ sub Data {
         'Ticket Create Time' => 'Tiket Mencipta Masa',
         'Ticket Close Time' => 'Tiket Menutup Masa',
         'Accounted time by Agent' => 'Menyumbang masa oleh ejen',
+        'Total Time' => 'Jumlah masa',
+        'Ticket Average' => 'Purata tiket',
+        'Ticket Min Time' => 'Masa Minimum Tiket',
+        'Ticket Max Time' => 'Masa Maksimum Tiket',
+        'Number of Tickets' => 'Bilangan Tiket',
+        'Article Average' => 'Purata Artikel',
+        'Article Min Time' => 'Masa Minimum Artikel',
+        'Article Max Time' => 'Masa Maximum Artikel',
+        'Number of Articles' => 'Bilangan Artikel',
 
         # Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+        'unlimited' => '',
+        'ascending' => 'Menaik',
+        'descending' => 'Menurun',
         'Attributes to be printed' => 'Sifat-sifat untuk dicetak',
         'Sort sequence' => 'Susun urutan',
         'State Historic' => 'Sejarah Keadaan',
         'State Type Historic' => 'Sejarah Jenis Keadaan',
         'Historic Time Range' => 'Julat Masa Bersejarah',
+
+        # Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+        'Solution Average' => '',
+        'Solution Min Time' => '',
+        'Solution Max Time' => '',
+        'Solution Average (affected by escalation configuration)' => '',
+        'Solution Min Time (affected by escalation configuration)' => '',
+        'Solution Max Time (affected by escalation configuration)' => '',
+        'Solution Working Time Average (affected by escalation configuration)' =>
+            '',
+        'Solution Min Working Time (affected by escalation configuration)' =>
+            '',
+        'Solution Max Working Time (affected by escalation configuration)' =>
+            '',
+        'Response Average (affected by escalation configuration)' => '',
+        'Response Min Time (affected by escalation configuration)' => '',
+        'Response Max Time (affected by escalation configuration)' => '',
+        'Response Working Time Average (affected by escalation configuration)' =>
+            '',
+        'Response Min Working Time (affected by escalation configuration)' =>
+            '',
+        'Response Max Working Time (affected by escalation configuration)' =>
+            '',
+        'Number of Tickets (affected by escalation configuration)' => '',
 
         # Perl Module: Kernel/System/Stats/Static/StateAction.pm
         'Days' => 'Hari',
@@ -4614,7 +4663,6 @@ dalaman.',
         'Comment2' => 'Komen2',
         'Communication' => 'Komunikasi',
         'Company Status' => 'Status Syarikat',
-        'Company Tickets' => 'Tiket Syarikat',
         'Company Tickets.' => '',
         'Company name which will be included in outgoing emails as an X-Header.' =>
             'Nama syarikat yang akan dimasukkan ke dalam e-mel keluar sebagai X- Header.',
@@ -4731,10 +4779,8 @@ dalaman.',
         'Default ticket ID used by the system in the customer interface.' =>
             'Tiket ID asal digunakan oleh sistem di dalam paparan pengguna.',
         'Default value for NameX' => 'Nilai asal untuk NameX',
-        'Define Actions where Settings button is available in the Linked objects widget (LinkObject::ViewMode = "complex").
-            Please note that this Actions must have registered following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js,
-            Core.Agent.TableFilters.js.
-        ' => '',
+        'Define Actions where a settings button is available in the linked objects widget (LinkObject::ViewMode = "complex"). Please note that these Actions must have registered the following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js, Core.Agent.TableFilters.js.' =>
+            '',
         'Define a filter for html output to add links behind a defined string. The element Image allows two input kinds. At once the name of an image (e.g. faq.png). In this case the OTRS image path will be used. The second possiblity is to insert the link to the image.' =>
             'Mentakrif tapisan untuk output html untuk menambah pautan di sebalik takrifan yang berkait. Imej unsur membolehkan 2 jenis input. Sekaligus nama sesuatu imej (Contohnya faq.png). Dalam kes ini laluan imej OTRS akan digunakan. Kemungkinan kedua adalah untuk memasukkan pautan kepada imej.',
         'Define a mapping between variables of the customer user data (keys) and dynamic fields of a ticket (values). The purpose is to store customer user data in ticket dynamic fields. The dynamic fields must be present in the system and should be enabled for AgentTicketFreeText, so that they can be set/updated manually by the agent. They mustn\'t be enabled for AgentTicketPhone, AgentTicketEmail and AgentTicketCustomer. If they were, they would have precedence over the automatically set values. To use this mapping, you have to also activate the next setting below.' =>
@@ -4750,9 +4796,8 @@ dalaman.',
         'Define the start day of the week for the date picker for the indicated calendar.' =>
             'Menentukan hari permulaan minggu untuk pemilih tarikh untuk kalendar yang ditunjukkan.',
         'Define the start day of the week for the date picker.' => 'Menetukan hari permulaan mingguan untuk pemilih tarikh.',
-        'Define which columns are shown in the Linked tickets widget (LinkObject::ViewMode = "complex").
-            Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns.
-            Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' => '',
+        'Define which columns are shown in the linked tickets widget (LinkObject::ViewMode = "complex"). Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' =>
+            '',
         'Defines a customer item, which generates a LinkedIn icon at the end of a customer info block.' =>
             'Mentakrifkan item pelanggan, yang menjana ikon LinkedIn pada akhir blok info pelanggan.',
         'Defines a customer item, which generates a XING icon at the end of a customer info block.' =>
@@ -4794,6 +4839,8 @@ dalaman.',
             'Mentakrifkan semua parameter untuk objek ShownTickets dalam keutamaan pelanggan dari paparan pelanggan.',
         'Defines all the parameters for this item in the customer preferences.' =>
             'Mentakrifkan semua parameter untuk item ini dalam keutamaan pelanggan.',
+        'Defines all the parameters for this item in the customer preferences. \'PasswordRegExp\' allows to match passwords against a regular expression. Define the minimum number of characters using \'PasswordMinSize\'. Define if at least 2 lowercase and 2 uppercase letter characters are needed by setting the appropriate option to \'1\'. \'PasswordMin2Characters\' defines if the password needs to contain at least 2 letter characters (set to 0 or 1). \'PasswordNeedDigit\' controls the need of at least 1 digit (set to 0 or 1 to control).' =>
+            '',
         'Defines all the parameters for this notification transport.' => 'Mentakrifkan semua parameter bagi pengangkutan pemberitahuan ini.',
         'Defines all the possible stats output formats.' => 'Mentakrifkan semua kemungkinan statistik format output.',
         'Defines an alternate URL, where the login link refers to.' => 'Mentakrifkan URL gantian, dimana pautan log masuk merujuk kepada.',
@@ -4846,6 +4893,8 @@ dalaman.',
             'Mentakrifkan jika mesej yang digubah perlu diperiksa ejaanya dalam paparan ejen.',
         'Defines if customers should be allowed to login if they have no shared secret stored in their preferences and therefore are not using two-factor authentication.' =>
             'Mentakrifkan jika pelanggan harus dibenarkan untuk log masuk jika mereka tidak mempunyai rahsia dikongsi disimpan di dalam pilihan mereka dan oleh itu tidak menggunakan pengesahan dua faktor.',
+        'Defines if the enhanced mode should be used (enables use of table, replace, subscript, superscript, paste from word, etc.) in customer interface.' =>
+            '',
         'Defines if the enhanced mode should be used (enables use of table, replace, subscript, superscript, paste from word, etc.).' =>
             'Mentakrifkan jika mod dipertingkatkan harus digunakan (membolehkan penggunaan jadual, penggantian, subskrip, superskrip, tampal dari perkataan, dll).',
         'Defines if the previously valid token should be accepted for authentication. This is slightly less secure but gives users 30 seconds more time to enter their one-time password.' =>
@@ -4890,6 +4939,8 @@ dalaman.',
         'Defines the config options for the autocompletion feature.' => 'Mentakrifkan pilihan konfigurasi untuk ciri autolengkap.',
         'Defines the config parameters of this item, to be shown in the preferences view.' =>
             'Mentakrifkan parameter konfig dari item ini, untuk dipamerkan  dalam lihat keutamaan.',
+        'Defines the config parameters of this item, to be shown in the preferences view. \'PasswordRegExp\' allows to match passwords against a regular expression. Define the minimum number of characters using \'PasswordMinSize\'. Define if at least 2 lowercase and 2 uppercase letter characters are needed by setting the appropriate option to \'1\'. \'PasswordMin2Characters\' defines if the password needs to contain at least 2 letter characters (set to 0 or 1). \'PasswordNeedDigit\' controls the need of at least 1 digit (set to 0 or 1 to control). \'PasswordMaxLoginFailed\' allows to set an agent to invalid-temporarily if max failed logins reached.' =>
+            '',
         'Defines the config parameters of this item, to be shown in the preferences view. Take care to maintain the dictionaries installed in the system in the data section.' =>
             'Mentakrifkan parameter konfig dari item ini, untuk dipamerkan dalam lihat keutamaan. Menjaga untuk mengekalkan kamus yang dipasang dalam sistem  dalam bahagian data.',
         'Defines the connections for http/ftp, via a proxy.' => 'Mentakrifkan sambungan untuk http/ftp, melalui proksi.',
@@ -5374,7 +5425,7 @@ Search_DynamicField_XTimeSlotStartMonth=01; Search_DynamicField_XTimeSlotStartDa
         'Deletes a session if the session id is used with an invalid remote IP address.' =>
             'Memadam sesuatu sesi jika id sesi digunakan bersama alamat IP jarak jauh yang tidak sah.',
         'Deletes requested sessions if they have timed out.' => 'Memadam sesi yang diminta jika mereka telah tamat masa.',
-        'Delivers extended debugging information in the frontend in case any ajax errors occur, if enabled.' =>
+        'Delivers extended debugging information in the frontend in case any AJAX errors occur, if enabled.' =>
             '',
         'Deploy and manage OTRS Business Solution™.' => 'Menggerakkan dan menguruskan Penyelesaian Bisnes OTRS™.',
         'Determines if the list of possible queues to move to ticket into should be displayed in a dropdown list or in a new window in the agent interface. If "New Window" is set you can add a move note to the ticket.' =>
@@ -5687,7 +5738,7 @@ Search_DynamicField_XTimeSlotStartMonth=01; Search_DynamicField_XTimeSlotStartDa
         'If "HTTPBasicAuth" was selected for Customer::AuthModule, you can specify (by using a RegExp) to strip parts of REMOTE_USER (e. g. for to remove trailing domains). RegExp-Note, $1 will be the new Login.' =>
             'Jika "HTTPBasicAuth" dipilih untuk Customer::AuthModule, anda boleh tentukan (dengan menggunakan RegExp) untuk lucutkan bahagian dari REMOTE_USER (cth: untuk membuang trailing domain). RegExp-Note, $1 akan jadi log masuk yang baru.',
         'If "HTTPBasicAuth" was selected for Customer::AuthModule, you can specify to strip leading parts of user names (e. g. for domains like example_domain\user to user).' =>
-            'Jika "HTTPBasicAuth" dipilih untuk Customer::AuthModule, anda boleh tentukan untuk lucutkan bahagian nama pengguna (cth: untuk domain seperti example_domain\user to user).',
+            'Jika "HTTPBasicAuth" dipilih untuk Customer::AuthModule, anda boleh tentukan untuk lucutkan bahagian termuka dari nama pengguna (cth: untuk domain seperti example_domain\user kepada user).',
         'If "LDAP" was selected for Customer::AuthModule and if you want to add a suffix to every customer login name, specifiy it here, e. g. you just want to write the username user but in your LDAP directory exists user@domain.' =>
             'Jika "LDAP" dipilih untuk Customer::AuthModule dan jika anda mahu menambah akhiran kepada setiap nama log masuk pelanggan, tentukan ia disini, cthL anda hanya mahu menulis nama pengguna untuk pengguna tapi dalam direktori LDAP anda wujudnya user@domain.',
         'If "LDAP" was selected for Customer::AuthModule and special paramaters are needed for the Net::LDAP perl module, you can specify them here. See "perldoc Net::LDAP" for more information about the parameters.' =>
@@ -5798,6 +5849,7 @@ Search_DynamicField_XTimeSlotStartMonth=01; Search_DynamicField_XTimeSlotStartDa
         'Incoming Phone Call.' => '',
         'IndexAccelerator: to choose your backend TicketViewAccelerator module. "RuntimeDB" generates each queue view on the fly from ticket table (no performance problems up to approx. 60.000 tickets in total and 6.000 open tickets in the system). "StaticDB" is the most powerful module, it uses an extra ticket-index table that works like a view (recommended if more than 80.000 and 6.000 open tickets are stored in the system). Use the command "bin/otrs.Console.pl Maint::Ticket::QueueIndexRebuild" for initial index creation.' =>
             'IndexAccelerator: untuk memilih modul backend TicketViewAccelerator anda/ "RuntimeDB" menjana setiap paparan aturan pada jadual dengan cepat dari jadual tiket (tiada masalah prestasi dijangka sehingga berjumlah 60,000 tiket dan 6,000 tiket terbuka di dalam sistem). "StaticDB" ialah modul yang berkuasa, ia menggunakan jadual indeks-tiket ekstra yang bekerja seperti paparan (disyorkan jika lebih daripada 80,000 dan 6,000 tiket buka disimpan dalam sistem). Gunakan arahan "bin/otrs.Console.pl Maint::Ticket::QueueIndexRebuild" untuk ciptaan indeks awalan.',
+        'Indonesian' => '',
         'Input' => 'Input',
         'Install ispell or aspell on the system, if you want to use a spell checker. Please specify the path to the aspell or ispell binary on your operating system.' =>
             'Pasang ispell atau aspell pada sistem, jika anda mahu menggunakan penyemak ejaanSila tentukan laluan kepada binari aspell atau ispell pada sistem operasi anda.',
@@ -5947,7 +5999,6 @@ Search_DynamicField_XTimeSlotStartMonth=01; Search_DynamicField_XTimeSlotStartDa
         'Module to use database filter storage.' => 'Modul untuk menggunakan penyimpanan penapis pangkalan data.',
         'Multiselect' => 'Multiselect',
         'My Services' => 'Perkhidmatan Saya',
-        'My Tickets' => 'Tiket Saya',
         'My Tickets.' => '',
         'Name of custom queue. The custom queue is a queue selection of your preferred queues and can be selected in the preferences settings.' =>
             'Nama aturan tersuai. Aturan tersuai ialah pemilihan aturan pada aturan yang anda inginkan dan boleh dipilih dalam tetapan pilihan.',
@@ -6171,8 +6222,7 @@ Search_DynamicField_XTimeSlotStartMonth=01; Search_DynamicField_XTimeSlotStartDa
             'Menghantar notifikasi susulan ejen hanya kepada pemilik, jika tiket tidak dikunci (default ialah untuk hantar notifikasi kepada kesemua ejen).',
         'Sends all outgoing email via bcc to the specified address. Please use this only for backup reasons.' =>
             'Hantar kesemua emel keluar melalui bcc kepada alamat tertentu. Sila guna ini hanya untuk tindak balas sokongan.',
-        'Sends customer notifications just to the mapped customer. Normally, if no customer is mapped, the latest customer sender gets the notification.' =>
-            'Hantar notifikasi pelanggan hanya kepada pelanggan yang dipeta. Biasanya, jika tiada pelanggan yang dipeta, penghantar pelanggan yang terkini akan dapat notifikasi tersebut.',
+        'Sends customer notifications just to the mapped customer.' => '',
         'Sends registration information to OTRS group.' => 'Hantar maklumat pendaftaran kepada kumpulan OTRS.',
         'Sends reminder notifications of unlocked ticket after reaching the reminder date (only sent to ticket owner).' =>
             'Hantar notifikasi peringatan tiket terbuka selapas mencapai tarikh peringatan (hanya hantar kepada pemilik tiket).',
@@ -6819,10 +6869,10 @@ Search_DynamicField_XTimeSlotStartMonth=01; Search_DynamicField_XTimeSlotStartDa
         'Yes, but hide archived tickets' => 'Ya, tetapi sembunyi tiket disimpan.',
         'Your email with ticket number "<OTRS_TICKET>" is bounced to "<OTRS_BOUNCE_TO>". Contact this address for further information.' =>
             'Emel anda dengan nombor tiket "<OTRS_TICKET>" dilantunkan ke "<OTRS_BOUNCE_TO>".  Hubungi alamat ini untuk maklumat lanjut. ',
-        'Your queue selection of your favorite queues. You also get notified about those queues via email if enabled.' =>
-            'Pilihan aturan kegemaran anda. Anda juga dinotifikasikan mengenai aturan tersebut melalui emel jika diaktifkan.',
-        'Your service selection of your favorite services. You also get notified about those services via email if enabled.' =>
-            'Pilihan perkhidmatan anda daripada perkhidmatan kesukaan anda. Anda juga akan diberitahu mengenai perkhidmatan tersebut melalui emel jika dibolehkan.',
+        'Your queue selection of your preferred queues. You also get notified about those queues via email if enabled.' =>
+            '',
+        'Your service selection of your preferred services. You also get notified about those services via email if enabled.' =>
+            '',
         'attachment' => '',
         'debug' => '',
         'error' => '',

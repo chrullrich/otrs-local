@@ -19,29 +19,12 @@ my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 # get helper object
 $Kernel::OM->ObjectParamAdd(
     'Kernel::System::UnitTest::Helper' => {
-        RestoreDatabase => 1,
+        RestoreDatabase  => 1,
+        UseTmpArticleDir => 1,
     },
 );
 my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
-
-my $UserID   = 1;
-my $RandomID = $Helper->GetRandomID();
-
-my $TicketID = $TicketObject->TicketCreate(
-    Title        => 'Some Ticket_Title',
-    Queue        => 'Raw',
-    Lock         => 'unlock',
-    Priority     => '3 normal',
-    State        => 'closed successful',
-    CustomerNo   => '123465',
-    CustomerUser => 'customer@example.com',
-    OwnerID      => 1,
-    UserID       => 1,
-);
-$Self->True(
-    $TicketID,
-    "TicketCreate() - TicketID:'$TicketID'",
-);
+my $UserID = 1;
 
 my @Tests = (
 
@@ -416,8 +399,25 @@ my @Tests = (
     },
 );
 
-for my $Test (@Tests) {
-    for my $Backend (qw(DB FS)) {
+for my $Backend (qw(DB FS)) {
+
+    my $TicketID = $TicketObject->TicketCreate(
+        Title        => 'Some Ticket_Title',
+        Queue        => 'Raw',
+        Lock         => 'unlock',
+        Priority     => '3 normal',
+        State        => 'closed successful',
+        CustomerNo   => 'unittest',
+        CustomerUser => 'customer@example.com',
+        OwnerID      => 1,
+        UserID       => 1,
+    );
+    $Self->True(
+        $TicketID,
+        "TicketCreate() - TicketID:'$TicketID'",
+    );
+
+    for my $Test (@Tests) {
 
         # Make sure that the TicketObject gets recreated for each loop.
         $Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::Ticket'] );
@@ -494,18 +494,19 @@ for my $Test (@Tests) {
             \%ExpectedAttachment,
             "$Test->{Name} | $Backend ArticleAttachment",
         );
-    }
-}
 
-# cleanup is done by RestoreDatabase, but we need to additionaly
-# run TicketDelete() to cleanup the FS backend too
-my $Success = $TicketObject->TicketDelete(
-    TicketID => $TicketID,
-    UserID   => 1,
-);
-$Self->True(
-    $Success,
-    "TicketDelete() - TicketID:'$TicketID'",
-);
+    }
+
+    # cleanup is done by RestoreDatabase, but we need to additionaly
+    # run TicketDelete() to cleanup the FS backend too
+    my $Success = $TicketObject->TicketDelete(
+        TicketID => $TicketID,
+        UserID   => 1,
+    );
+    $Self->True(
+        $Success,
+        "TicketDelete() - TicketID:'$TicketID'",
+    );
+}
 
 1;

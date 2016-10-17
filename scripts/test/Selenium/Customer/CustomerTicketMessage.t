@@ -18,31 +18,25 @@ my $Selenium = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 $Selenium->RunTest(
     sub {
 
-        # get needed objects
-        $Kernel::OM->ObjectParamAdd(
-            'Kernel::System::UnitTest::Helper' => {
-                RestoreSystemConfiguration => 1,
-            },
-        );
-        my $Helper          = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
-        my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
+        # get helper object
+        my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
         # do not check RichText
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'Frontend::RichText',
             Value => 0
         );
 
         # do not check Service
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'Ticket::Service',
             Value => 0
         );
 
         # do not check Type
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'Ticket::Type',
             Value => 0
@@ -125,21 +119,37 @@ $Selenium->RunTest(
             "Queue preselected in URL"
         );
 
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'CustomerPanelOwnSelection',
             Value => {
                 Junk => 'First Queue',
-                }
+            },
         );
 
-        # allow mod_perl to pick up the changed configuration
         $Selenium->VerifiedGet("${ScriptAlias}customer.pl?Action=CustomerTicketMessage;Dest=3||Junk");
 
         $Self->Is(
             $Selenium->execute_script("return \$('#Dest').val();"),
             '3||First Queue',
             "Queue preselected in URL"
+        );
+
+        # test prefilling of some parameters with StoreNew
+        $Selenium->VerifiedGet(
+            "${ScriptAlias}customer.pl?Action=CustomerTicketMessage;Subject=TestSubject;Body=TestBody;Subaction=StoreNew;Expand=1"
+        );
+
+        $Self->Is(
+            $Selenium->execute_script("return \$('#Subject').val();"),
+            'TestSubject',
+            "Subject preselected in URL"
+        );
+
+        $Self->Is(
+            $Selenium->execute_script("return \$('#RichText').val();"),
+            'TestBody',
+            "Subject preselected in URL"
         );
 
         # clean up test data from the DB

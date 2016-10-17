@@ -480,6 +480,9 @@ sub PackageInstall {
         }
     }
 
+    # write permission check
+    return if !$Self->_FileSystemCheck();
+
     # check OS
     if ( $Structure{OS} && !$Param{Force} ) {
         return if !$Self->_OSCheck( OS => $Structure{OS} );
@@ -647,6 +650,9 @@ sub PackageReinstall {
     # parse source file
     my %Structure = $Self->PackageParse(%Param);
 
+    # write permission check
+    return if !$Self->_FileSystemCheck();
+
     # check OS
     if ( $Structure{OS} && !$Param{Force} ) {
         return if !$Self->_OSCheck( OS => $Structure{OS} );
@@ -754,6 +760,9 @@ sub PackageUpgrade {
         );
         return;
     }
+
+    # write permission check
+    return if !$Self->_FileSystemCheck();
 
     # check OS
     if ( $Structure{OS} && !$Param{Force} ) {
@@ -1142,6 +1151,9 @@ sub PackageUninstall {
     if ( !$Param{Force} ) {
         return if !$Self->_CheckPackageDepends( Name => $Structure{Name}->{Content} );
     }
+
+    # write permission check
+    return if !$Self->_FileSystemCheck();
 
     # uninstall code (pre)
     if ( $Structure{CodeUninstall} ) {
@@ -1657,7 +1669,7 @@ sub DeployCheck {
 
                 if ( ${$Content} ne $File->{Content} ) {
 
-                    if ( $Param{Log} ) {
+                    if ( $Param{Log} && !$Kernel::OM->Get('Kernel::Config')->Get('Package::AllowLocalModifications') ) {
                         $Kernel::OM->Get('Kernel::System::Log')->Log(
                             Priority => 'error',
                             Message  => "$Param{Name}-$Param{Version}: $LocalFile is different!",
@@ -2609,6 +2621,9 @@ returns true if the distribution package (located under ) can get installed
 sub PackageInstallDefaultFiles {
     my ( $Self, %Param ) = @_;
 
+    # write permission check
+    return if !$Self->_FileSystemCheck();
+
     my $Directory    = $Self->{ConfigObject}->Get('Home') . '/var/packages';
     my @PackageFiles = $Self->{MainObject}->DirectoryRead(
         Directory => $Directory,
@@ -3536,6 +3551,8 @@ sub _ReadDistArchive {
 sub _FileSystemCheck {
     my ( $Self, %Param ) = @_;
 
+    return 1 if $Self->{FileSystemCheckAlreadyDone};
+
     my $Home = $Param{Home} || $Self->{Home};
 
     # check Home
@@ -3573,6 +3590,8 @@ sub _FileSystemCheck {
         # delete test file
         $Self->{MainObject}->FileDelete( Location => $Location );
     }
+
+    $Self->{FileSystemCheckAlreadyDone} = 1;
 
     return 1;
 }

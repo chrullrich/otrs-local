@@ -844,7 +844,7 @@ sub SumBuild {
     my @Data = @{ $Param{Array} };
 
     # add sum y
-    if ( $Param{SumRow} ) {
+    if ( $Param{SumCol} ) {
 
         push @{ $Data[1] }, 'Sum';
 
@@ -875,7 +875,7 @@ sub SumBuild {
     }
 
     # add sum x
-    if ( $Param{SumCol} ) {
+    if ( $Param{SumRow} ) {
 
         my @SumRow = ();
         $SumRow[0] = 'Sum';
@@ -3256,6 +3256,7 @@ sub _GenerateDynamicStats {
 
     # Dynamic Matrix Statistic
     else {
+
         if ($Preview) {
             return if !$StatObject->can('GetStatElementPreview');
         }
@@ -3272,38 +3273,38 @@ sub _GenerateDynamicStats {
             }
             push @DataArray, \@ResultRow;
         }
-    }
 
-    my $RowCounter = 0;
+        my $RowCounter = 0;
 
-    # fill up empty array elements, e.g month as value series (February has 28 day and Januar 31)
-    for my $Row (@DataArray) {
+        # fill up empty array elements, e.g month as value series (February has 28 day and Januar 31)
+        for my $Row (@DataArray) {
 
-        $RowCounter++;
+            $RowCounter++;
 
-        if ( $RowCounter == 1 && $HeaderLineStart ) {
+            if ( $RowCounter == 1 && $HeaderLineStart ) {
 
-            # determine the skipping counter
-            my $SkippingCounter = 0;
+                # determine the skipping counter
+                my $SkippingCounter = 0;
 
-            INDEX:
-            for my $Index ( 1 .. $#HeaderLine ) {
+                INDEX:
+                for my $Index ( 1 .. $#HeaderLine ) {
 
-                if ( $HeaderLine[$Index] eq $HeaderLineStart ) {
-                    last INDEX;
+                    if ( $HeaderLine[$Index] eq $HeaderLineStart ) {
+                        last INDEX;
+                    }
+
+                    $SkippingCounter++;
                 }
 
-                $SkippingCounter++;
+                for my $Index ( 1 .. $SkippingCounter ) {
+                    splice @{$Row}, $Index, 0, '';
+                }
             }
 
-            for my $Index ( 1 .. $SkippingCounter ) {
-                splice @{$Row}, $Index, 0, '';
-            }
-        }
-
-        for my $Index ( 1 .. $#HeaderLine ) {
-            if ( !defined $Row->[$Index] ) {
-                $Row->[$Index] = '';
+            for my $Index ( 1 .. $#HeaderLine ) {
+                if ( !defined $Row->[$Index] ) {
+                    $Row->[$Index] = '';
+                }
             }
         }
     }
@@ -3731,10 +3732,9 @@ with the given parameters.
 
 sub _GetCacheString {
     my ( $Self, %Param ) = @_;
-    my $Result = '';
 
     # add the Language to the cache key
-    $Result .= 'Language:' . $Kernel::OM->Get('Kernel::Language')->{UserLanguage};
+    my $Result = 'Language:' . $Kernel::OM->Get('Kernel::Language')->{UserLanguage};
 
     if ( $Param{TimeZone} ) {
         $Result .= 'TimeZone:' . $Param{TimeZone};

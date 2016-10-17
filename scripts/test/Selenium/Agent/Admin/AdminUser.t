@@ -21,6 +21,12 @@ $Selenium->RunTest(
         # get helper object
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
+        # do not check email addresses
+        $Helper->ConfigSettingChange(
+            Key   => 'CheckEmailAddresses',
+            Value => 0,
+        );
+
         # create test user and login
         my $TestUserLogin = $Helper->TestUserCreate(
             Groups => ['admin'],
@@ -82,6 +88,9 @@ $Selenium->RunTest(
             'Client side validation correctly detected missing input value',
         );
 
+        # Reload page
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminUser;Subaction=Add");
+
         # create a real test agent
         my $UserRandomID = 'TestAgent' . $Helper->GetRandomID();
         $Selenium->find_element( "#UserFirstname", 'css' )->send_keys($UserRandomID);
@@ -91,7 +100,7 @@ $Selenium->RunTest(
         $Selenium->find_element( "#UserFirstname", 'css' )->VerifiedSubmit();
 
         # test search filter by agent $UserRandomID
-        $Selenium->get("${ScriptAlias}index.pl?Action=AdminUser");
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminUser");
         $Selenium->find_element( "#Search", 'css' )->clear();
         $Selenium->find_element( "#Search", 'css' )->send_keys($UserRandomID);
         $Selenium->find_element( "#Search", 'css' )->VerifiedSubmit();

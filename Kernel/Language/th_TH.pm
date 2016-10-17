@@ -19,12 +19,12 @@ sub Data {
     # possible charsets
     $Self->{Charset} = ['utf-8', ];
     # date formats (%A=WeekDay;%B=LongMonth;%T=Time;%D=Day;%M=Month;%Y=Year;)
-    $Self->{DateFormat}          = '%M/%D/%Y %T';
-    $Self->{DateFormatLong}      = '%T - %M/%D/%Y';
-    $Self->{DateFormatShort}     = '%M/%D/%Y';
-    $Self->{DateInputFormat}     = '%M/%D/%Y';
-    $Self->{DateInputFormatLong} = '%M/%D/%Y - %T';
-    $Self->{Completeness}        = 0.874973733977726;
+    $Self->{DateFormat}          = '%D/%M/%Y %T';
+    $Self->{DateFormatLong}      = '%T - %D/%M/%Y';
+    $Self->{DateFormatShort}     = '%D/%M/%Y';
+    $Self->{DateInputFormat}     = '%D/%M/%Y';
+    $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
+    $Self->{Completeness}        = 0.862140774677218;
 
     # csv separator
     $Self->{Separator} = ',';
@@ -855,7 +855,8 @@ sub Data {
         'You can use the following tags' => 'คุณสามารถใช้แท็กต่อไปนี้',
         'To get the first 20 character of the subject.' => 'เพื่อให้ได้20 ตัวอักษรแรกของเนื้อเรื่อง',
         'To get the first 5 lines of the email.' => 'เพื่อให้ได้5 บรรทัดแรกของอีเมล',
-        'To get the realname of the sender (if given).' => 'เพื่อให้ได้ชื่อจริงของผู้ส่ง (ถ้ามี)',
+        'To get the realname of the ticket\'s customer user (if given).' =>
+            '',
         'To get the article attribute' => 'เพื่อให้ได้คุณลักษณะของบทความ',
         ' e. g.' => 'ตัวอย่างเช่น',
         'Options of the current customer user data' => 'ตัวเลือกของลูกค้าผู้ใช้ข้อมูลในปัจจุบัน',
@@ -904,10 +905,8 @@ sub Data {
         'Wildcards like \'*\' are allowed.' => 'สัญลักษณ์เช่น \'*\' ได้รับอนุญาต',
         'Add customer' => 'เพิ่มลูกค้า',
         'Select' => 'เลือก',
-        'only' => '',
-        'shown' => 'แสดงให้เห็น',
-        'more available' => '',
-        'total' => 'ผลรวม',
+        'List (only %s shown - more available)' => '',
+        'List (%s total)' => '',
         'Please enter a search term to look for customers.' => 'กรุณากรอกคำค้นหาที่จะค้นหาลูกค้า',
         'Add Customer' => 'เพิ่มลูกค้า',
 
@@ -1193,6 +1192,12 @@ sub Data {
         'Param %s key' => 'กุญแจสำคัญของพารามิเตอร์ %s ',
         'Param %s value' => 'ค่าพารามิเตอร์ %s',
         'Save Changes' => 'บันทึกการเปลี่ยนแปลง',
+        'Tag Reference' => 'แท็กข้อมูลอ้างอิง',
+        'In the note section, you can use the following tags' => '',
+        'Attributes of the current customer user data' => 'คุณลักษณะของข้อมูลลูกค้าผู้ใช้ปัจจุบัน',
+        'Attributes of the ticket data' => 'คุณลักษณะของข้อมูลตั๋ว',
+        'Ticket dynamic fields internal key values' => 'ค่าคีย์ภายในช่องตั๋วแบบไดนามิก',
+        'Example note' => '',
         'Results' => 'ผลลัพธ์',
         '%s Tickets affected! What do you want to do?' => 'ตั๋ว s% ได้รับผลกระทบ! คุณต้องการจะทำอะไร?',
         'Warning: You used the DELETE option. All deleted tickets will be lost!' =>
@@ -1496,6 +1501,7 @@ sub Data {
         'Create new groups to handle access permissions for different groups of agent (e. g. purchasing department, support department, sales department, ...). ' =>
             'สร้างกลุ่มใหม่เพื่อจัดการสิทธิ์การเข้าถึงสำหรับกลุ่มที่แตกต่างกันของเอเย่นต์ (เช่นฝ่ายจัดซื้อ, ฝ่ายสนับสนุนฝ่ายขาย, ... )',
         'It\'s useful for ASP solutions. ' => 'ซึ่งจะมีประโยชน์สำหรับการแก้ปัญหา ASP',
+        'total' => 'ผลรวม',
         'Add Group' => 'เพิ่มกลุ่ม',
         'Edit Group' => 'แก้ไขกลุ่ม',
 
@@ -1590,7 +1596,6 @@ sub Data {
         'Message body' => 'เนื้อหาของข้อความ',
         'Add new notification language' => 'เพิ่มภาษาใหม่ของการแจ้งเตือน',
         'Do you really want to delete this notification language?' => 'คุณต้องการที่จะลบภาษาของการแจ้งเตือนนี้หรือไม่?',
-        'Tag Reference' => 'แท็กข้อมูลอ้างอิง',
         'Notifications are sent to an agent or a customer.' => 'การแจ้งเตือนจะถูกส่งไปยังเอเย่นต์หรือลูกค้า',
         'To get the first 20 character of the subject (of the latest agent article).' =>
             'เพื่อให้ได้20 ตัวอักษรแรกของเนื้อเรื่อง(จากบทความเอเย่นต์ล่าสุด) ',
@@ -1600,14 +1605,11 @@ sub Data {
             'เพื่อให้ได้20 ตัวอักษรแรกของเนื้อเรื่อง(จากบทความลูกค้าล่าสุด) ',
         'To get the first 5 lines of the body (of the latest customer article).' =>
             'เพื่อให้ได้5 บรรทัดแรกของเนื้อหา(จากบทความลูกค้าล่าสุด) ',
-        'Attributes of the current customer user data' => 'คุณลักษณะของข้อมูลลูกค้าผู้ใช้ปัจจุบัน',
         'Attributes of the current ticket owner user data' => 'คุณลักษณะของข้อมูลผู้ใช้เจ้าของตั๋วปัจจุบัน',
         'Attributes of the current ticket responsible user data' => 'คุณลักษณะของข้อมูลผู้ใช้ที่ดูแลตั๋วปัจจุบัน',
         'Attributes of the current agent user who requested this action' =>
             'คุณลักษณะของผู้ใช้เอเย่นต์ปัจจุบันที่ร้องขอการดำเนินการนี้',
         'Attributes of the recipient user for the notification' => 'คุณลักษณะของผู้ใช้ผู้รับสำหรับการแจ้งเตือน',
-        'Attributes of the ticket data' => 'คุณลักษณะของข้อมูลตั๋ว',
-        'Ticket dynamic fields internal key values' => 'ค่าคีย์ภายในช่องตั๋วแบบไดนามิก',
         'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
             'ช่องตั๋วแบบไดนามิกแสดงค่าที่มีประโยชน์สำหรับDropdownและช่องสำหรับเลือกหลายรายการ',
         'Example notification' => 'ตัวอย่างการแจ้งเตือน',
@@ -1976,6 +1978,7 @@ sub Data {
             'หมายเหตุ การเปลี่ยนการเปลี่ยนผ่านนี้จะมีผลต่อกระบวนการถัดไป',
         'Transition' => 'การเปลี่ยนผ่าน',
         'Transition Name' => 'ชื่อการเปลี่ยนผ่าน',
+        'Conditions can only operate on non-empty fields.' => '',
         'Type of Linking between Conditions' => 'ประเภทของการเชื่อมโยงระหว่างเงื่อนไขต่างๆ',
         'Remove this Condition' => 'ลบเงื่อนไขนี้',
         'Type of Linking' => 'ประเภทของการเชื่อมโยง',
@@ -2212,6 +2215,7 @@ sub Data {
         'Relate this certificate' => 'เกี่ยวข้องกับใบรับรองนี้',
 
         # Template: AdminSMIMECertRead
+        'Close dialog' => '',
         'Certificate details' => 'รายละเอียดของหนังสือรับรอง',
 
         # Template: AdminSalutation
@@ -2636,13 +2640,13 @@ sub Data {
             'สถิตินี้ประกอบด้วยข้อผิดพลาดการตั้งค่าและไม่สามารถใช้งานได้ในขณะนี้',
 
         # Template: AgentTicketActionCommon
-        'Change Free Text of %s%s' => 'เปลี่ยนข้อความฟรีของ',
-        'Change Owner of %s%s' => 'เปลี่ยนเจ้าของของ %s%s',
-        'Close %s%s' => 'ปิด %s%s',
-        'Add Note to %s%s' => 'เพิ่มโน้ตไปยัง %s%s',
-        'Set Pending Time for %s%s' => 'ระบุเวลาการรอดำเนินการสำหรับ %s%s',
-        'Change Priority of %s%s' => 'เปลี่ยนลำดับความสำคัญของ %s%s',
-        'Change Responsible of %s%s' => 'เปลี่ยนความรับผิดชอบของ %s%s',
+        'Change Free Text of %s%s%s' => '',
+        'Change Owner of %s%s%s' => '',
+        'Close %s%s%s' => '',
+        'Add Note to %s%s%s' => '',
+        'Set Pending Time for %s%s%s' => '',
+        'Change Priority of %s%s%s' => '',
+        'Change Responsible of %s%s%s' => '',
         'All fields marked with an asterisk (*) are mandatory.' => 'ฟิลด์ที่มีเครื่องหมายดอกจันทั้งหมด (*) มีผลบังคับใช้',
         'Service invalid.' => 'การบริการที่ใช้ไม่ได้',
         'New Owner' => 'เจ้าของใหม่',
@@ -2656,14 +2660,14 @@ sub Data {
         'Inform involved agents' => 'แจ้งเอเย่นต์ที่เกี่ยวข้อง',
         'Here you can select additional agents which should receive a notification regarding the new article.' =>
             'คุณสามารถเลือกเอเย่นต์เพิ่มเติมที่นี้ซึ่งควรได้รับการแจ้งเตือนเกี่ยวกับบทความใหม่',
-        'Text will also be received by:' => 'ข้อความก็จะได้รับโดย:',
+        'Text will also be received by' => '',
         'Spell check' => 'ตรวจสอบการสะกด',
         'Text Template' => 'รูปแบบข้อความ',
         'Setting a template will overwrite any text or attachment.' => 'การตั้งค่าแม่แบบจะเขียนทับข้อความหรือสิ่งที่แนบมา',
         'Note type' => 'ประเภทโน้ต',
 
         # Template: AgentTicketBounce
-        'Bounce %s%s' => 'การตีกลับ %s%s',
+        'Bounce %s%s%s' => '',
         'Bounce to' => 'การตีกลับไปยัง',
         'You need a email address.' => 'คุณจำเป็นต้องมีที่อยู่อีเมล',
         'Need a valid email address or don\'t use a local email address.' =>
@@ -2684,7 +2688,7 @@ sub Data {
         'Execute Bulk Action' => 'เริ่มดำเนินการเป็นกลุ่ม',
 
         # Template: AgentTicketCompose
-        'Compose Answer for %s%s' => 'เขียนคำตอบสำหรับ %s%s',
+        'Compose Answer for %s%s%s' => '',
         'This address is registered as system address and cannot be used: %s' =>
             'ที่อยู่นี้ถูกลงทะเบียนเป็นที่อยู่ในระบบและไม่สามารถนำมาใช้: %s',
         'Please include at least one recipient' => 'โปรดระบุผู้รับอย่างน้อยหนึ่งคน',
@@ -2697,7 +2701,7 @@ sub Data {
         'Date Invalid!' => 'วันที่ไม่ถูกต้อง!',
 
         # Template: AgentTicketCustomer
-        'Change Customer of %s%s' => 'เปลี่ยนลูกค้าของ %s%s',
+        'Change Customer of %s%s%s' => '',
 
         # Template: AgentTicketEmail
         'Create New Email Ticket' => 'สร้างอีเมล์ตั๋วใหม่',
@@ -2710,7 +2714,7 @@ sub Data {
         'Get all' => 'ได้รับทั้งหมด',
 
         # Template: AgentTicketEmailOutbound
-        'Outbound Email for %s%s' => 'อีเมล์ขาออกสำหรับ %s%s',
+        'Outbound Email for %s%s%s' => '',
 
         # Template: AgentTicketEscalation
         'Ticket %s: first response time is over (%s/%s)!' => 'ตั๋ว %s: หมดเวลาสำหรับตอบสนองครั้งแรก (%s/%s)!',
@@ -2721,22 +2725,22 @@ sub Data {
         'Ticket %s: solution time will be over in %s/%s!' => 'ตั๋ว %s: เวลาการแก้ปัญหาจะจบลงภายใน %s/%s!',
 
         # Template: AgentTicketForward
-        'Forward %s%s' => 'ส่งต่อ %s%s',
+        'Forward %s%s%s' => '',
 
         # Template: AgentTicketHistory
-        'History of %s%s' => 'ประวัติของ %s%s',
+        'History of %s%s%s' => '',
         'History Content' => 'เนื้อหาประวัติ',
         'Zoom view' => 'มุมมองการซูม',
 
         # Template: AgentTicketMerge
-        'Merge %s%s' => 'ผสาน %s%s',
+        'Merge %s%s%s' => '',
         'Merge Settings' => 'การตั้งค่าการผสาน',
         'You need to use a ticket number!' => 'คุณจำเป็นต้องใช้หมายเลขตั๋ว!',
         'A valid ticket number is required.' => 'จำเป็นต้องใช้หมายเลขตั๋วที่ถูกต้อง',
         'Need a valid email address.' => 'ต้องการที่อยู่อีเมลที่ถูกต้อง',
 
         # Template: AgentTicketMove
-        'Move %s%s' => 'ย้าย %s%s',
+        'Move %s%s%s' => '',
         'New Queue' => 'คิวใหม่',
 
         # Template: AgentTicketOverviewMedium
@@ -2769,10 +2773,10 @@ sub Data {
         'The chat will be appended as a separate article.' => 'แชทจะถูกผนวกเป็นบทความที่แยกต่างหาก',
 
         # Template: AgentTicketPhoneCommon
-        'Phone Call for %s%s' => 'โทรศัพท์สำหรับ %s%s',
+        'Phone Call for %s%s%s' => '',
 
         # Template: AgentTicketPlain
-        'View Email Plain Text for %s%s' => 'ดูอีเมล์ข้อความธรรมดาสำหรับ %s%s',
+        'View Email Plain Text for %s%s%s' => '',
         'Plain' => 'ว่าง',
         'Download this email' => 'ดาวน์โหลดอีเมล์นี้',
 
@@ -2797,7 +2801,10 @@ sub Data {
         'Remove' => 'ลบ',
         'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.' =>
             'การค้นหาในแอตทริบิวต์ จาก ถึง สำเนา เรื่องและเนื้อเรื่องของบทความ การแทนที่คุณลักษณะอื่น ๆ ที่มีชื่อเดียวกัน',
-        'Customer User Login' => 'ล็อคอินลูกค้าผู้ใช้',
+        'CustomerID (complex search)' => '',
+        'CustomerID (exact match)' => '',
+        'Customer User Login (complex search)' => '',
+        'Customer User Login (exact match)' => '',
         'Attachment Name' => 'ชื่อเอกสารที่แนบมา',
         '(e. g. m*file or myfi*)' => '(เช่น. m*file or myfi*)',
         'Created in Queue' => 'สร้างขึ้นในคิว',
@@ -2884,6 +2891,8 @@ sub Data {
         'go back to the previous page' => 'กลับไปที่หน้าก่อนหน้านี้',
 
         # Template: CustomerError
+        'An Error Occurred' => '',
+        'Error Details' => 'รายละเอียด ข้อผิดพลาด',
         'Traceback' => 'ตรวจสอบย้อนกลับ',
 
         # Template: CustomerFooter
@@ -3028,7 +3037,6 @@ sub Data {
             '',
         'Contact our service team now.' => '',
         'Send a bugreport' => 'ส่งรายงานข้อบกพร่อง',
-        'Error Details' => 'รายละเอียด ข้อผิดพลาด',
 
         # Template: FooterJS
         'Please enter at least one search value or * to find anything.' =>
@@ -3225,11 +3233,11 @@ sub Data {
         'The selected time periods in the statistic are time zone neutral.' =>
             'ช่วงเวลาที่เลือกไว้ในสถิติเป็นโซนเวลาที่เป็นกลาง',
         'Create summation row' => 'สร้างแถวผลรวม',
-        'Generate an additional row containing sums for all data columns.' =>
-            'สร้างแถวเพิ่มเติมที่ประกอบด้วยผลรวมสำหรับคอลัมน์ข้อมูลทั้งหมด',
+        'Generate an additional row containing sums for all data rows.' =>
+            '',
         'Create summation column' => 'สร้างคอลัมน์ผลรวม',
-        'Generate an additional column containing sums for all data rows.' =>
-            'สร้างคอลัมน์เพิ่มเติมที่ประกอบด้วยผลรวมสำหรับแถวข้อมูลทั้งหมด',
+        'Generate an additional column containing sums for all data columns.' =>
+            '',
         'Cache results' => 'ผลการแคช',
         'Stores statistics result data in a cache to be used in subsequent views with the same configuration.' =>
             'เก็บข้อมูลผลสถิติในแคชเพื่อที่จะใช้ในมุมมองที่ตามมากับการตั้งค่าเดียวกัน',
@@ -3269,6 +3277,8 @@ sub Data {
         'Configurable params of static stat' => 'พารามิเตอร์ที่กำหนดค่าได้ของสถิติแบบคงที่',
         'No element selected.' => 'ไม่มีองค์ประกอบที่ถูกเลือก',
         'Scale' => 'สเกล',
+        'show more' => '',
+        'show less' => '',
 
         # Template: D3
         'Download SVG' => 'ดาวน์โหลด SVG',
@@ -3726,8 +3736,6 @@ sub Data {
         'Couldn\'t get Ticket for TicketID: %s in _GetParam!' => 'ไม่สามารถรับตั๋วสำหรับ TicketID: %s in _GetParam!',
         'Couldn\'t determine ActivityEntityID. DynamicField or Config isn\'t set properly!' =>
             'ไม่สามารถตรวจสอบ ActivityEntityID ได้เพราะไม่ได้ตั้งค่า DynamicField หรือ Config อย่างถูกต้อง!',
-        'DynamicFieldConfig missing for field: %s, or is not a Ticket Dynamic Field!' =>
-            'DynamicFieldConfig ขาดหายไปสำหรับฟิลด์:% s หรือไม่ได้เป็นฟิลด์ตั๋วแบบไดนามิก!',
         'Process::Default%s Config Value missing!' => 'Process::Default%s การกำหนดค่า ค่าที่หายไป!',
         'Got no ProcessEntityID or TicketID and ActivityDialogEntityID!' =>
             'ไม่ได้รับ ProcessEntityID หรือ TicketID และ ActivityDialogEntityID!',
@@ -3841,6 +3849,9 @@ sub Data {
 
         # Perl Module: Kernel/Modules/CustomerTicketOverview.pm
         'Need CustomerID!' => 'ต้องการ CustomerID!',
+        'My Tickets' => 'ตั๋วของฉัน',
+        'Company Tickets' => 'ตั๋วของบริษัท',
+        'Untitled!' => '',
 
         # Perl Module: Kernel/Modules/CustomerTicketSearch.pm
         'Please remove the following words because they cannot be used for the search:' =>
@@ -3938,6 +3949,7 @@ sub Data {
         'Please supply your new password!' => 'กรุณาใส่รหัสผ่านใหม่ของคุณ!',
 
         # Perl Module: Kernel/Output/HTML/Statistics/View.pm
+        'No (not supported)' => '',
         'No past complete or the current+upcoming complete relative time value selected.' =>
             'ที่ผ่านมาหรือในปัจจุบัน+กำลังจะมาถึงไม่สมบูรณ์ในเวลาที่สัมพันธ์กันค่าที่เลือก',
         'The selected time period is larger than the allowed time period.' =>
@@ -3985,7 +3997,8 @@ sub Data {
         'State Type' => 'ประเภทสถานะ',
         'Created Priority' => 'ลำดับความสำคัญถูกสร้างแล้ว',
         'Created State' => 'สถานะถูกสร้างแล้ว',
-        'CustomerUserLogin' => 'CustomerUserLogin',
+        'CustomerUserLogin (complex search)' => '',
+        'CustomerUserLogin (exact match)' => '',
         'Create Time' => 'เวลาที่สร้าง',
         'Close Time' => 'เวลาที่ปิด',
         'Escalation - First Response Time' => 'การขยาย - เวลาที่ตอบสนองครั้งแรก',
@@ -4000,13 +4013,49 @@ sub Data {
         'Ticket Create Time' => 'เวลาที่สร้างตั๋ว',
         'Ticket Close Time' => 'เวลาที่ปิดตั๋ว',
         'Accounted time by Agent' => 'เวลาที่คิดโดยเอเย่นต์',
+        'Total Time' => '',
+        'Ticket Average' => '',
+        'Ticket Min Time' => '',
+        'Ticket Max Time' => '',
+        'Number of Tickets' => '',
+        'Article Average' => '',
+        'Article Min Time' => '',
+        'Article Max Time' => '',
+        'Number of Articles' => '',
 
         # Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+        'unlimited' => '',
+        'ascending' => '',
+        'descending' => '',
         'Attributes to be printed' => 'แอตทริบิวต์ที่จะพิมพ์',
         'Sort sequence' => 'เรียงลำดับ',
         'State Historic' => 'ประวัติสถานะ',
         'State Type Historic' => 'ประวัติประเภทสถานะ',
         'Historic Time Range' => 'ช่วงเวลาของประวัติ',
+
+        # Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+        'Solution Average' => '',
+        'Solution Min Time' => '',
+        'Solution Max Time' => '',
+        'Solution Average (affected by escalation configuration)' => '',
+        'Solution Min Time (affected by escalation configuration)' => '',
+        'Solution Max Time (affected by escalation configuration)' => '',
+        'Solution Working Time Average (affected by escalation configuration)' =>
+            '',
+        'Solution Min Working Time (affected by escalation configuration)' =>
+            '',
+        'Solution Max Working Time (affected by escalation configuration)' =>
+            '',
+        'Response Average (affected by escalation configuration)' => '',
+        'Response Min Time (affected by escalation configuration)' => '',
+        'Response Max Time (affected by escalation configuration)' => '',
+        'Response Working Time Average (affected by escalation configuration)' =>
+            '',
+        'Response Min Working Time (affected by escalation configuration)' =>
+            '',
+        'Response Max Working Time (affected by escalation configuration)' =>
+            '',
+        'Number of Tickets (affected by escalation configuration)' => '',
 
         # Perl Module: Kernel/System/Stats/Static/StateAction.pm
         'Days' => 'วัน',
@@ -4618,7 +4667,6 @@ Thanks for your help!
         'Comment2' => 'ความคิดเห็นที่ 2',
         'Communication' => 'การสื่อสาร',
         'Company Status' => 'สถานนะของบริษัท',
-        'Company Tickets' => 'ตั๋วของบริษัท',
         'Company Tickets.' => 'ตั๋วบริษัท',
         'Company name which will be included in outgoing emails as an X-Header.' =>
             'ชื่อบริษัทที่จะรวมอยู่ในอีเมลขาออกเป็น ส่วนหัว X',
@@ -4735,10 +4783,8 @@ Thanks for your help!
         'Default ticket ID used by the system in the customer interface.' =>
             'ไอดีตั๋วเริ่มต้นถูกใช้โดยระบบในอินเตอร์เฟซลูกค้า',
         'Default value for NameX' => 'ค่าเริ่มต้นสำหรับ NameX',
-        'Define Actions where Settings button is available in the Linked objects widget (LinkObject::ViewMode = "complex").
-            Please note that this Actions must have registered following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js,
-            Core.Agent.TableFilters.js.
-        ' => '',
+        'Define Actions where a settings button is available in the linked objects widget (LinkObject::ViewMode = "complex"). Please note that these Actions must have registered the following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js, Core.Agent.TableFilters.js.' =>
+            '',
         'Define a filter for html output to add links behind a defined string. The element Image allows two input kinds. At once the name of an image (e.g. faq.png). In this case the OTRS image path will be used. The second possiblity is to insert the link to the image.' =>
             'กำหนดตัวกรองสำหรับการแสดงผล HTMLเพื่อเพิ่มการเชื่อมโยงที่อยู่เบื้องหลังของอักขระที่กำหนดไว้ องค์ประกอบของภาพที่จะช่วยให้สามารถป้อนข้อมูลสองชนิดได้ หนึ่งคือชื่อของภาพ (เช่น faq.png)ในกรณีนี้เส้นทางของภาพOTRS จะถูกนำมาใช้ สองคือการแทรกการเชื่อมโยงไปยังภาพ',
         'Define a mapping between variables of the customer user data (keys) and dynamic fields of a ticket (values). The purpose is to store customer user data in ticket dynamic fields. The dynamic fields must be present in the system and should be enabled for AgentTicketFreeText, so that they can be set/updated manually by the agent. They mustn\'t be enabled for AgentTicketPhone, AgentTicketEmail and AgentTicketCustomer. If they were, they would have precedence over the automatically set values. To use this mapping, you have to also activate the next setting below.' =>
@@ -4754,9 +4800,8 @@ Thanks for your help!
         'Define the start day of the week for the date picker for the indicated calendar.' =>
             'กำหนดวันเริ่มต้นของสัปดาห์สำหรับตัวเลือกวันสำหรับปฏิทินที่ระบุไว้',
         'Define the start day of the week for the date picker.' => 'กำหนดวันเริ่มต้นของสัปดาห์สำหรับตัวเลือกวัน',
-        'Define which columns are shown in the Linked tickets widget (LinkObject::ViewMode = "complex").
-            Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns.
-            Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' => '',
+        'Define which columns are shown in the linked tickets widget (LinkObject::ViewMode = "complex"). Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default.' =>
+            '',
         'Defines a customer item, which generates a LinkedIn icon at the end of a customer info block.' =>
             'กำหนดรายการลูกค้าซึ่งจะสร้างไอคอน LinkedIn ในตอนท้ายของบล็อกข้อมูลลูกค้า',
         'Defines a customer item, which generates a XING icon at the end of a customer info block.' =>
@@ -4798,6 +4843,8 @@ Thanks for your help!
             'กำหนดพารามิเตอร์ทั้งหมดสำหรับออบเจค ShownTickets ในการตั้งค่าลูกค้าของอินเตอร์เฟซลูกค้า',
         'Defines all the parameters for this item in the customer preferences.' =>
             'กำหนดพารามิเตอร์ทั้งหมดสำหรับรายการนี้ในการตั้งค่าลูกค้า',
+        'Defines all the parameters for this item in the customer preferences. \'PasswordRegExp\' allows to match passwords against a regular expression. Define the minimum number of characters using \'PasswordMinSize\'. Define if at least 2 lowercase and 2 uppercase letter characters are needed by setting the appropriate option to \'1\'. \'PasswordMin2Characters\' defines if the password needs to contain at least 2 letter characters (set to 0 or 1). \'PasswordNeedDigit\' controls the need of at least 1 digit (set to 0 or 1 to control).' =>
+            '',
         'Defines all the parameters for this notification transport.' => 'กำหนดพารามิเตอร์ทั้งหมดสำหรับการขนส่งการแจ้งเตือนนี้',
         'Defines all the possible stats output formats.' => 'กำหนดรูปแบบผลผลิตสถิติที่เป็นไปได้ทั้งหมด',
         'Defines an alternate URL, where the login link refers to.' => 'กำหนด URL สำรองซึ่งการเชื่อมโยงการเข้าสู่ระบบอ้างถึง.',
@@ -4851,6 +4898,8 @@ Thanks for your help!
             'กำหนดหากข้อความเงียบจะต้องมีการสะกดตรวจสอบในอินเตอร์เฟซเอเย่นต์',
         'Defines if customers should be allowed to login if they have no shared secret stored in their preferences and therefore are not using two-factor authentication.' =>
             'กำหนดหากลูกค้าควรได้รับอนุญาตในการเข้าสู่ระบบหากพวกเขาไม่มีความลับที่ใช้ร่วมกันเก็บไว้ในการตั้งค่าของพวกเขา เพราะฉะนั้นจึงไม่ได้ใช้ตรวจสอบสองปัจจัย',
+        'Defines if the enhanced mode should be used (enables use of table, replace, subscript, superscript, paste from word, etc.) in customer interface.' =>
+            '',
         'Defines if the enhanced mode should be used (enables use of table, replace, subscript, superscript, paste from word, etc.).' =>
             'กำหนดหากโหมดเสริมควรถูกใช้ (ช่วยให้สามารถใช้ตาราง, แทนที่,ดรรชนีล่าง,ดรรชนีบน,วางจากประโยคและอื่น ๆ )',
         'Defines if the previously valid token should be accepted for authentication. This is slightly less secure but gives users 30 seconds more time to enter their one-time password.' =>
@@ -4897,6 +4946,8 @@ Thanks for your help!
         'Defines the config options for the autocompletion feature.' => 'กำหนดตัวเลือกการตั้งค่าสำหรับฟีเจอร์autocompletion',
         'Defines the config parameters of this item, to be shown in the preferences view.' =>
             'กำหนดค่าพารามิเตอร์ของการตั้งค่าของรายการนี้จะแสดงในมุมมองการตั้งค่า',
+        'Defines the config parameters of this item, to be shown in the preferences view. \'PasswordRegExp\' allows to match passwords against a regular expression. Define the minimum number of characters using \'PasswordMinSize\'. Define if at least 2 lowercase and 2 uppercase letter characters are needed by setting the appropriate option to \'1\'. \'PasswordMin2Characters\' defines if the password needs to contain at least 2 letter characters (set to 0 or 1). \'PasswordNeedDigit\' controls the need of at least 1 digit (set to 0 or 1 to control). \'PasswordMaxLoginFailed\' allows to set an agent to invalid-temporarily if max failed logins reached.' =>
+            '',
         'Defines the config parameters of this item, to be shown in the preferences view. Take care to maintain the dictionaries installed in the system in the data section.' =>
             'กำหนดค่าพารามิเตอร์ของการตั้งค่าของรายการนี้จะแสดงในมุมมองการตั้งค่า การดูแลเพื่อรักษาพจนานุกรมที่ติดตั้งในระบบในส่วนของข้อมูล',
         'Defines the connections for http/ftp, via a proxy.' => 'กำหนดการเชื่อมต่อสำหรับ http/ftp ผ่านพร็อกซี่',
@@ -5381,7 +5432,7 @@ Thanks for your help!
         'Deletes a session if the session id is used with an invalid remote IP address.' =>
             'ลบเซสชั่นถ้าหากรหัสเซสชั่นที่ใช้กับที่อยู่ IP ระยะไกลไม่ถูกต้อง',
         'Deletes requested sessions if they have timed out.' => 'ลบเซสชันที่ร้องขอหากหมดเวลา',
-        'Delivers extended debugging information in the frontend in case any ajax errors occur, if enabled.' =>
+        'Delivers extended debugging information in the frontend in case any AJAX errors occur, if enabled.' =>
             '',
         'Deploy and manage OTRS Business Solution™.' => 'ปรับใช้และจัดการ OTRS Business Solution™.',
         'Determines if the list of possible queues to move to ticket into should be displayed in a dropdown list or in a new window in the agent interface. If "New Window" is set you can add a move note to the ticket.' =>
@@ -5695,7 +5746,7 @@ Thanks for your help!
         'If "HTTPBasicAuth" was selected for Customer::AuthModule, you can specify (by using a RegExp) to strip parts of REMOTE_USER (e. g. for to remove trailing domains). RegExp-Note, $1 will be the new Login.' =>
             'คุณสามารถกำหนด (โดยการใช้ RegEx )เพื่อจะตัดส่วนของ REMOTE_USER (เช่น สำหรับการลบโดเมนที่ต่อท้าย) RegExp-Note, $1 จะกลายเป็นล็อกอินใหม่',
         'If "HTTPBasicAuth" was selected for Customer::AuthModule, you can specify to strip leading parts of user names (e. g. for domains like example_domain\user to user).' =>
-            '',
+            'หาก "HTTPBasicAuth" ถูกเลือกให้ Customer::AuthModule คุณสามารถกำหนดเพื่อตัดส่วนหน้าของชื่อผู้ใช้ (เช่น สำหรับโดเมน example_domain\user ไปยังผู้ใช้)',
         'If "LDAP" was selected for Customer::AuthModule and if you want to add a suffix to every customer login name, specifiy it here, e. g. you just want to write the username user but in your LDAP directory exists user@domain.' =>
             'หาก "LDAP" ถูกเลือกให้ Customer::AuthModule และถ้าคุณต้องการที่จะเพิ่มคำต่อท้ายชื่อสำหรับเข้าสู่ระบบให้ลูกค้าทุกคน โปรดระบุที่นี่ เช่น คุณเพียงแค่เขียนชื่อผู้ใช้ แต่ในไดเรกทอรี LDAP จะเป็น user@domain.',
         'If "LDAP" was selected for Customer::AuthModule and special paramaters are needed for the Net::LDAP perl module, you can specify them here. See "perldoc Net::LDAP" for more information about the parameters.' =>
@@ -5806,6 +5857,7 @@ Thanks for your help!
         'Incoming Phone Call.' => 'โทรศัพท์สายเข้า',
         'IndexAccelerator: to choose your backend TicketViewAccelerator module. "RuntimeDB" generates each queue view on the fly from ticket table (no performance problems up to approx. 60.000 tickets in total and 6.000 open tickets in the system). "StaticDB" is the most powerful module, it uses an extra ticket-index table that works like a view (recommended if more than 80.000 and 6.000 open tickets are stored in the system). Use the command "bin/otrs.Console.pl Maint::Ticket::QueueIndexRebuild" for initial index creation.' =>
             '',
+        'Indonesian' => '',
         'Input' => 'การป้อนเข้า',
         'Install ispell or aspell on the system, if you want to use a spell checker. Please specify the path to the aspell or ispell binary on your operating system.' =>
             '',
@@ -5955,7 +6007,6 @@ Thanks for your help!
         'Module to use database filter storage.' => 'โมดูลที่จะใช้จัดเก็บฐานข้อมูลของตัวกรอง',
         'Multiselect' => 'หลายรายการ',
         'My Services' => 'การบริการของฉัน',
-        'My Tickets' => 'ตั๋วของฉัน',
         'My Tickets.' => 'ตั๋วของฉัน',
         'Name of custom queue. The custom queue is a queue selection of your preferred queues and can be selected in the preferences settings.' =>
             '',
@@ -6179,8 +6230,7 @@ Thanks for your help!
             '',
         'Sends all outgoing email via bcc to the specified address. Please use this only for backup reasons.' =>
             '',
-        'Sends customer notifications just to the mapped customer. Normally, if no customer is mapped, the latest customer sender gets the notification.' =>
-            '',
+        'Sends customer notifications just to the mapped customer.' => '',
         'Sends registration information to OTRS group.' => '',
         'Sends reminder notifications of unlocked ticket after reaching the reminder date (only sent to ticket owner).' =>
             '',
@@ -6827,9 +6877,9 @@ Thanks for your help!
         'Yes, but hide archived tickets' => '',
         'Your email with ticket number "<OTRS_TICKET>" is bounced to "<OTRS_BOUNCE_TO>". Contact this address for further information.' =>
             '',
-        'Your queue selection of your favorite queues. You also get notified about those queues via email if enabled.' =>
+        'Your queue selection of your preferred queues. You also get notified about those queues via email if enabled.' =>
             '',
-        'Your service selection of your favorite services. You also get notified about those services via email if enabled.' =>
+        'Your service selection of your preferred services. You also get notified about those services via email if enabled.' =>
             '',
         'attachment' => '',
         'debug' => '',

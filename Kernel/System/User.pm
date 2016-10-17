@@ -390,6 +390,10 @@ sub UserAdd {
     # get database object
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
+    # Don't store the user's password in plaintext initially. It will be stored in a
+    #   hashed version later with SetPassword().
+    my $RandomPassword = $Self->GenerateRandomPassword();
+
     # sql
     return if !$DBObject->Do(
         SQL => "INSERT INTO $Self->{UserTable} "
@@ -400,7 +404,7 @@ sub UserAdd {
             . " (?, ?, ?, ?, ?, ?, current_timestamp, ?, current_timestamp, ?)",
         Bind => [
             \$Param{UserTitle}, \$Param{UserFirstname}, \$Param{UserLastname},
-            \$Param{UserLogin}, \$Param{UserPw},        \$Param{ValidID},
+            \$Param{UserLogin}, \$RandomPassword, \$Param{ValidID},
             \$Param{ChangeUserID}, \$Param{ChangeUserID},
         ],
     );
@@ -875,10 +879,12 @@ user login or id lookup
 
     my $UserLogin = $UserObject->UserLookup(
         UserID => 1,
+        Silent => 1, # optional, don't generate log entry if user was not found
     );
 
     my $UserID = $UserObject->UserLookup(
         UserLogin => 'some_user_login',
+        Silent    => 1, # optional, don't generate log entry if user was not found
     );
 
 =cut
@@ -925,10 +931,12 @@ sub UserLookup {
         }
 
         if ( !$ID ) {
-            $Kernel::OM->Get('Kernel::System::Log')->Log(
-                Priority => 'error',
-                Message  => "No UserID found for '$Param{UserLogin}'!",
-            );
+            if ( !$Param{Silent} ) {
+                $Kernel::OM->Get('Kernel::System::Log')->Log(
+                    Priority => 'error',
+                    Message  => "No UserID found for '$Param{UserLogin}'!",
+                );
+            }
             return;
         }
 
@@ -968,10 +976,12 @@ sub UserLookup {
         }
 
         if ( !$Login ) {
-            $Kernel::OM->Get('Kernel::System::Log')->Log(
-                Priority => 'error',
-                Message  => "No UserLogin found for '$Param{UserID}'!",
-            );
+            if ( !$Param{Silent} ) {
+                $Kernel::OM->Get('Kernel::System::Log')->Log(
+                    Priority => 'error',
+                    Message  => "No UserLogin found for '$Param{UserID}'!",
+                );
+            }
             return;
         }
 

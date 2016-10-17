@@ -23,7 +23,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Frontend::AjaxDebug" Required="1" Valid="1">
-        <Description Translatable="1">Delivers extended debugging information in the frontend in case any ajax errors occur, if enabled.</Description>
+        <Description Translatable="1">Delivers extended debugging information in the frontend in case any AJAX errors occur, if enabled.</Description>
         <Group>Framework</Group>
         <SubGroup>Core</SubGroup>
         <Setting>
@@ -171,6 +171,7 @@
                 <Item Key="hi" Translatable="1">Hindi</Item>
                 <Item Key="hr" Translatable="1">Croatian</Item>
                 <Item Key="hu" Translatable="1">Hungarian</Item>
+                <Item Key="id" Translatable="1">Indonesian</Item>
                 <Item Key="it" Translatable="1">Italian</Item>
                 <Item Key="ja" Translatable="1">Japanese</Item>
                 <Item Key="lt" Translatable="1">Lithuanian</Item>
@@ -226,6 +227,7 @@
                 <Item Key="hi">हिन्दी</Item>
                 <Item Key="hr">Hrvatski</Item>
                 <Item Key="hu">Magyar</Item>
+                <Item Key="id">Bahasa Indonesia</Item>
                 <Item Key="it">Italiano</Item>
                 <Item Key="ja">日本語</Item>
                 <Item Key="lt">Lietuvių kalba</Item>
@@ -451,6 +453,17 @@
     </ConfigItem>
     <ConfigItem Name="Frontend::RichText::EnhancedMode" Required="1" Valid="1">
         <Description Translatable="1">Defines if the enhanced mode should be used (enables use of table, replace, subscript, superscript, paste from word, etc.).</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Web</SubGroup>
+        <Setting>
+            <Option SelectedID="0">
+                <Item Key="0" Translatable="1">No</Item>
+                <Item Key="1" Translatable="1">Yes</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="Frontend::RichText::EnhancedMode::Customer" Required="1" Valid="1">
+        <Description Translatable="1">Defines if the enhanced mode should be used (enables use of table, replace, subscript, superscript, paste from word, etc.) in customer interface.</Description>
         <Group>Framework</Group>
         <SubGroup>Core::Web</SubGroup>
         <Setting>
@@ -3635,7 +3648,7 @@ You can log in via the following URL:
         </Setting>
     </ConfigItem>
     <ConfigItem Name="PreferencesGroups###Password" Required="0" Valid="1">
-        <Description Translatable="1">Defines the config parameters of this item, to be shown in the preferences view.</Description>
+        <Description Translatable="1">Defines the config parameters of this item, to be shown in the preferences view. 'PasswordRegExp' allows to match passwords against a regular expression. Define the minimum number of characters using 'PasswordMinSize'. Define if at least 2 lowercase and 2 uppercase letter characters are needed by setting the appropriate option to '1'. 'PasswordMin2Characters' defines if the password needs to contain at least 2 letter characters (set to 0 or 1). 'PasswordNeedDigit' controls the need of at least 1 digit (set to 0 or 1 to control). 'PasswordMaxLoginFailed' allows to set an agent to invalid-temporarily if max failed logins reached.</Description>
         <Group>Framework</Group>
         <SubGroup>Frontend::Agent::Preferences</SubGroup>
         <Setting>
@@ -4442,7 +4455,7 @@ via the Preferences button after logging in.
         </Setting>
     </ConfigItem>
     <ConfigItem Name="CustomerPreferencesGroups###Password" Required="0" Valid="1">
-        <Description Translatable="1">Defines all the parameters for this item in the customer preferences.</Description>
+        <Description Translatable="1">Defines all the parameters for this item in the customer preferences. 'PasswordRegExp' allows to match passwords against a regular expression. Define the minimum number of characters using 'PasswordMinSize'. Define if at least 2 lowercase and 2 uppercase letter characters are needed by setting the appropriate option to '1'. 'PasswordMin2Characters' defines if the password needs to contain at least 2 letter characters (set to 0 or 1). 'PasswordNeedDigit' controls the need of at least 1 digit (set to 0 or 1 to control).</Description>
         <Group>Framework</Group>
         <SubGroup>Frontend::Customer::Preferences</SubGroup>
         <Setting>
@@ -6265,16 +6278,6 @@ via the Preferences button after logging in.
                 <Item Key="0" Translatable="1">No</Item>
                 <Item Key="1" Translatable="1">Yes</Item>
             </Option>
-        </Setting>
-    </ConfigItem>
-    <ConfigItem Name="StandardTemplate2QueueByCreating" Required="0" Valid="0">
-        <Description Translatable="1">List of default Standard Templates which are assigned automatically to new Queues upon creation.</Description>
-        <Group>Framework</Group>
-        <SubGroup>Core</SubGroup>
-        <Setting>
-            <Array>
-                <Item></Item>
-            </Array>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Loader::Enabled::CSS" Required="1" Valid="1">

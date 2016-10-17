@@ -30,6 +30,9 @@ use lib dirname($Bin) . '/Custom';
 use File::stat;
 use Digest::MD5;
 
+use Exporter qw(import);
+our @EXPORT = qw(Translatable);
+
 our @ObjectDependencies = ();
 
 sub LoadDefaults {
@@ -175,6 +178,7 @@ sub LoadDefaults {
         'hi' => 'Hindi',
         'hr' => 'Croatian',
         'hu' => 'Hungarian',
+        'id' => 'Indonesian',
         'it' => 'Italian',
         'ja' => 'Japanese',
         'lt' => 'Lithuanian',
@@ -224,6 +228,7 @@ sub LoadDefaults {
         'hi' => 'हिन्दी',
         'hr' => 'Hrvatski',
         'hu' => 'Magyar',
+        'id' => 'Bahasa Indonesia',
         'it' => 'Italiano',
         'ja' => '日本語',
         'lt' => 'Lietuvių kalba',

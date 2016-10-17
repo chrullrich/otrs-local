@@ -1436,6 +1436,66 @@ sub _MigrateConfigs {
     }
 
     print "...done.\n";
+    print "--- Article attachment modules...";
+
+    # Article View Modules
+    for my $Type (qw(Ticket::Frontend::ArticleAttachmentModule)) {
+
+        $Setting = $ConfigObject->Get($Type);
+
+        ARTICLEMODULE:
+        for my $ArticleAttachmentModule ( sort keys %{$Setting} ) {
+
+            # update module location
+            my $Module = $Setting->{$ArticleAttachmentModule}->{'Module'};
+            next ARTICLEMODULE if ( $Module !~ m{Kernel::Output::HTML::ArticleAttachment(\w+)} );
+
+            $Module =~ s{Kernel::Output::HTML::ArticleAttachment(\w+)}{Kernel::Output::HTML::ArticleAttachment::$1}xmsg;
+            next ARTICLEMODULE if ( $Setting->{$ArticleAttachmentModule}->{'Module'} eq $Module );
+
+            # update sysconfig if it is necessary
+            $Setting->{$ArticleAttachmentModule}->{'Module'} = $Module;
+
+            # set new setting
+            my $Success = $SysConfigObject->ConfigItemUpdate(
+                Valid => 1,
+                Key   => $Type . '###' . $ArticleAttachmentModule,
+                Value => $Setting->{$ArticleAttachmentModule},
+            );
+        }
+    }
+
+    print "...done.\n";
+    print "--- Article compose modules...";
+
+    # Article View Modules
+    for my $Type (qw(Ticket::Frontend::ArticleComposeModule)) {
+
+        $Setting = $ConfigObject->Get($Type);
+
+        ARTICLEMODULE:
+        for my $ArticleComposeModule ( sort keys %{$Setting} ) {
+
+            # update module location
+            my $Module = $Setting->{$ArticleComposeModule}->{'Module'};
+            next ARTICLEMODULE if ( $Module !~ m{Kernel::Output::HTML::ArticleCompose(\w+)} );
+
+            $Module =~ s{Kernel::Output::HTML::ArticleCompose(\w+)}{Kernel::Output::HTML::ArticleCompose::$1}xmsg;
+            next ARTICLEMODULE if ( $Setting->{$ArticleComposeModule}->{'Module'} eq $Module );
+
+            # update sysconfig if it is necessary
+            $Setting->{$ArticleComposeModule}->{'Module'} = $Module;
+
+            # set new setting
+            my $Success = $SysConfigObject->ConfigItemUpdate(
+                Valid => 1,
+                Key   => $Type . '###' . $ArticleComposeModule,
+                Value => $Setting->{$ArticleComposeModule},
+            );
+        }
+    }
+
+    print "...done.\n";
     print "--- NavBar menu modules...";
 
     # NavBar Menu Modules
@@ -2271,7 +2331,7 @@ ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] has been created i
             'es_MX' => {
                 'Body' => 'Hola <OTRS_NOTIFICATION_RECIPIENT_UserFirstname>,
 
-el ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] se ha  creado en la fila <OTRS_TICKET_Queue>.
+el ticket [<OTRS_CONFIG_Ticket::Hook><OTRS_TICKET_TicketNumber>] se ha creado en la fila <OTRS_TICKET_Queue>.
 
 <OTRS_CUSTOMER_REALNAME> escribió:
 <OTRS_CUSTOMER_BODY[30]>

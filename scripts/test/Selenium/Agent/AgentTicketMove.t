@@ -19,16 +19,10 @@ $Selenium->RunTest(
     sub {
 
         # get helper object
-        $Kernel::OM->ObjectParamAdd(
-            'Kernel::System::UnitTest::Helper' => {
-                RestoreSystemConfiguration => 1,
-            },
-        );
-        my $Helper          = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
-        my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
+        my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
         # set to change queue for ticket in a new window
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'Ticket::Frontend::MoveType',
             Value => 'link'
@@ -74,7 +68,7 @@ $Selenium->RunTest(
         for my $SysConfigUpdate (@SysConfigData) {
 
             # enable menu module and modify destination link
-            my %MenuModuleConfig = $SysConfigObject->ConfigItemGet(
+            my %MenuModuleConfig = $Kernel::OM->Get('Kernel::System::SysConfig')->ConfigItemGet(
                 Name    => $SysConfigUpdate->{MenuModule},
                 Default => 1,
             );
@@ -83,7 +77,7 @@ $Selenium->RunTest(
 
             $MenuModuleConfigUpdate{Link} =~ s/$SysConfigUpdate->{OrgQueueLink}/$SysConfigUpdate->{TestQueueLink}/g;
 
-            $SysConfigObject->ConfigItemUpdate(
+            $Helper->ConfigSettingChange(
                 Valid => 1,
                 Key   => $SysConfigUpdate->{MenuModule},
                 Value => \%MenuModuleConfigUpdate,
@@ -162,7 +156,7 @@ $Selenium->RunTest(
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketID");
 
         # click on 'Move' and switch window
-        $Selenium->find_element("//a[contains(\@title, \'Change Queue' )]")->click();
+        $Selenium->find_element("//a[contains(\@title, \'Change Queue' )]")->VerifiedClick();
 
         $Selenium->WaitFor( WindowCount => 2 );
         my $Handles = $Selenium->get_window_handles();
@@ -191,7 +185,7 @@ $Selenium->RunTest(
         # force sub menus to be visible in order to be able to click one of the links
         $Selenium->execute_script("\$('.Cluster ul ul').addClass('ForceVisible');");
 
-        $Selenium->find_element("//*[text()='History']")->click();
+        $Selenium->find_element("//*[text()='History']")->VerifiedClick();
 
         $Selenium->WaitFor( WindowCount => 2 );
         $Handles = $Selenium->get_window_handles();

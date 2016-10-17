@@ -946,10 +946,8 @@ sub _GetParam {
             my $DynamicFieldConfig = ( grep { $_->{Name} eq $DynamicFieldName } @{$DynamicField} )[0];
 
             if ( !IsHashRefWithData($DynamicFieldConfig) ) {
-                my $Message = $LayoutObject->{LanguageObject}->Translate(
-                    'DynamicFieldConfig missing for field: %s, or is not a Ticket Dynamic Field!',
-                    $DynamicFieldName,
-                );
+                my $Message =
+                    "DynamicFieldConfig missing for field: $DynamicFieldName, or is not a Ticket Dynamic Field!";
 
                 # log error but does not stop the execution as it could be an old Article
                 # DynamicField, see bug#11666
@@ -4932,7 +4930,7 @@ sub _StoreActivityDialog {
 
             my $TicketID = $UpdateTicketID || $NewTicketID;
 
-            if ( $Param{GetParam}{Subject} && $Param{GetParam}{Body} ) {
+            if ( $Param{GetParam}->{Subject} && $Param{GetParam}->{Body} ) {
 
                 # add note
                 my $ArticleID = '';
@@ -4941,12 +4939,12 @@ sub _StoreActivityDialog {
                     $MimeType = 'text/html';
 
                     # verify html document
-                    $Param{GetParam}{Body} = $LayoutObject->RichTextDocumentComplete(
-                        String => $Param{GetParam}{Body},
+                    $Param{GetParam}->{Body} = $LayoutObject->RichTextDocumentComplete(
+                        String => $Param{GetParam}->{Body},
                     );
                 }
 
-                my $From = "$Self->{UserFirstname} $Self->{UserLastname} <$Self->{UserEmail}>";
+                my $From = "\"$Self->{UserFirstname} $Self->{UserLastname}\" <$Self->{UserEmail}>";
                 $ArticleID = $TicketObject->ArticleCreate(
                     TicketID                  => $TicketID,
                     SenderType                => 'agent',
