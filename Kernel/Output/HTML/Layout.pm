@@ -1026,7 +1026,6 @@ sub Error {
     if ( !$Param{Message} ) {
         $Param{Message} = $Param{BackendMessage};
     }
-    $Param{Message} =~ s/^(.{200}).*$/${1}[...]/gs;
 
     if ( $Param{BackendTraceback} ) {
         $Self->Block(
@@ -2836,8 +2835,10 @@ sub NavigationBar {
             },
         );
 
-        # show sub menu
+        # show sub menu (only if sub elements available)
         next ITEM if !$Sub;
+        next ITEM if !keys %{$Sub};
+
         $Self->Block(
             Name => 'ItemAreaSub',
             Data => $Item,
@@ -3743,7 +3744,7 @@ sub CustomerFatalError {
         Area  => 'Frontend',
         Title => 'Fatal Error'
     );
-    $Output .= $Self->Error(%Param);
+    $Output .= $Self->CustomerError(%Param);
     $Output .= $Self->CustomerFooter();
     $Self->Print( Output => \$Output );
     exit;

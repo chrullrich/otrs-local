@@ -361,8 +361,11 @@ sub ProcessTransition {
 
     my %Data;
 
+    # Get Ticket object
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
     # Get Ticket Data
-    %Data = $Kernel::OM->Get('Kernel::System::Ticket')->TicketGet(
+    %Data = $TicketObject->TicketGet(
         TicketID      => $Param{TicketID},
         DynamicFields => 1,
         UserID        => $Param{UserID},
@@ -559,7 +562,21 @@ sub ProcessTransition {
 
     for my $TransitionAction ( @{$TransitionActions} ) {
 
+        # Refresh ticket data, as transition actions could already had modified the ticket
+        #   e.g TicketServiceSet -> TicketSLASet, SLA needs to already have a Service,
+        #   see bug#12147.
+        %Data = $TicketObject->TicketGet(
+            TicketID      => $Param{TicketID},
+            DynamicFields => 1,
+            UserID        => $Param{UserID},
+        );
+
         my $TransitionActionModuleObject = $TransitionAction->{Module}->new();
+
+        # Transition actions could replace configuration tags with actual ticket values,
+        #   copying the configuration prevents unwanted results if same Transition action is called
+        #   for multiple tickets, see bug#12179
+        my %Config = %{ $TransitionAction->{Config} || {} };
 
         my $Success = $TransitionActionModuleObject->Run(
             UserID                   => $Param{UserID},
@@ -568,7 +585,7 @@ sub ProcessTransition {
             ActivityEntityID         => $Param{ActivityEntityID},
             TransitionEntityID       => $TransitionEntityID,
             TransitionActionEntityID => $TransitionAction->{TransitionActionEntityID},
-            Config                   => $TransitionAction->{Config} || {},
+            Config                   => \%Config,
         );
     }
 
