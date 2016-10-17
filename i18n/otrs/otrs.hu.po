@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
-"POT-Creation-Date: 2016-06-22 10:40+0000\n"
-"PO-Revision-Date: 2016-06-22 15:42+0000\n"
+"POT-Creation-Date: 2016-08-03 10:16+0000\n"
+"PO-Revision-Date: 2016-08-03 15:18+0000\n"
 "Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/otrs/OTRS/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -3266,20 +3266,12 @@ msgid "Select"
 msgstr "Kiválasztás"
 
 #. Template: AdminCustomerCompany
-msgid "only"
-msgstr ""
+msgid "List (only %s shown - more available)"
+msgstr "Lista (csak %s látható - több érhető el)"
 
 #. Template: AdminCustomerCompany
-msgid "shown"
-msgstr "megjelenített"
-
-#. Template: AdminCustomerCompany
-msgid "more available"
-msgstr ""
-
-#. Template: AdminCustomerCompany
-msgid "total"
-msgstr "összesen"
+msgid "List (%s total)"
+msgstr "Lista (összesen %s)"
 
 #. Template: AdminCustomerCompany
 msgid "Please enter a search term to look for customers."
@@ -3384,7 +3376,7 @@ msgstr "Ezeket a csoportokat a „CustomerGroupAlwaysGroups” beállításon ke
 
 #. Template: AdminCustomerUserGroup
 msgid "Filter for Groups"
-msgstr "Csoportok szűrése"
+msgstr "Szűrő a csoportokhoz"
 
 #. Template: AdminCustomerUserGroup
 msgid "Just start typing to filter..."
@@ -3466,7 +3458,7 @@ msgstr "Alapértelmezett szolgáltatások szerkesztése"
 
 #. Template: AdminCustomerUserService
 msgid "Filter for Services"
-msgstr "Szolgáltatások szűrése"
+msgstr "Szűrő a szolgáltatásokhoz"
 
 #. Template: AdminCustomerUserService
 msgid "Allocate Services to Customer"
@@ -5256,6 +5248,10 @@ msgstr "Új csoportok létrehozása a hozzáférési jogosultságok kezeléséhe
 #. Template: AdminGroup
 msgid "It's useful for ASP solutions. "
 msgstr "Ez ASP megoldásoknál hasznos. "
+
+#. Template: AdminGroup
+msgid "total"
+msgstr "összesen"
 
 #. Template: AdminGroup
 msgid "Add Group"
@@ -7589,6 +7585,10 @@ msgid "Relate this certificate"
 msgstr "Tanúsítvány összekapcsolása"
 
 #. Template: AdminSMIMECertRead
+msgid "Close dialog"
+msgstr "Párbeszédablak bezárása"
+
+#. Template: AdminSMIMECertRead
 msgid "Certificate details"
 msgstr "Tanúsítvány részletek"
 
@@ -8824,32 +8824,32 @@ msgid ""
 msgstr "Ez a statisztika beállítási hibákat tartalmaz, és jelenleg nem használható."
 
 #. Template: AgentTicketActionCommon
-msgid "Change Free Text of %s%s"
-msgstr "%s%s szabad szövegének módosítása"
+msgid "Change Free Text of %s%s%s"
+msgstr "%s%s%s szabad szövegének módosítása"
 
 #. Template: AgentTicketActionCommon
-msgid "Change Owner of %s%s"
-msgstr "%s%s tulajdonosának módosítása"
+msgid "Change Owner of %s%s%s"
+msgstr "%s%s%s tulajdonosának módosítása"
 
 #. Template: AgentTicketActionCommon
-msgid "Close %s%s"
-msgstr "%s%s lezárása"
+msgid "Close %s%s%s"
+msgstr "%s%s%s lezárása"
 
 #. Template: AgentTicketActionCommon
-msgid "Add Note to %s%s"
-msgstr "Jegyzet hozzáadása ehhez: %s%s"
+msgid "Add Note to %s%s%s"
+msgstr "Jegyzet hozzáadása ehhez: %s%s%s"
 
 #. Template: AgentTicketActionCommon
-msgid "Set Pending Time for %s%s"
-msgstr "%s%s várakozó idejének beállítása"
+msgid "Set Pending Time for %s%s%s"
+msgstr "%s%s%s várakozó idejének beállítása"
 
 #. Template: AgentTicketActionCommon
-msgid "Change Priority of %s%s"
-msgstr "%s%s prioritásának módosítása"
+msgid "Change Priority of %s%s%s"
+msgstr "%s%s%s prioritásának módosítása"
 
 #. Template: AgentTicketActionCommon
-msgid "Change Responsible of %s%s"
-msgstr "%s%s felelősének módosítása"
+msgid "Change Responsible of %s%s%s"
+msgstr "%s%s%s felelősének módosítása"
 
 #. Template: AgentTicketActionCommon
 msgid "All fields marked with an asterisk (*) are mandatory."
@@ -8902,8 +8902,8 @@ msgid ""
 msgstr "Itt választhat ki további ügyintézőket, akiknek értesítést kell kapniuk az új bejegyzést illetően."
 
 #. Template: AgentTicketActionCommon
-msgid "Text will also be received by:"
-msgstr "Szöveg is fogadásra kerül ettől:"
+msgid "Text will also be received by"
+msgstr "A szöveget meg fogja még kapni"
 
 #. Template: AgentTicketActionCommon
 msgid "Spell check"
@@ -8922,8 +8922,8 @@ msgid "Note type"
 msgstr "Jegyzet típusa"
 
 #. Template: AgentTicketBounce
-msgid "Bounce %s%s"
-msgstr "%s%s visszaküldése"
+msgid "Bounce %s%s%s"
+msgstr "%s%s%s visszaküldése"
 
 #. Template: AgentTicketBounce
 msgid "Bounce to"
@@ -8986,8 +8986,8 @@ msgid "Execute Bulk Action"
 msgstr "Tömeges művelet végrehajtása"
 
 #. Template: AgentTicketCompose
-msgid "Compose Answer for %s%s"
-msgstr "Válasz írása ehhez: %s%s"
+msgid "Compose Answer for %s%s%s"
+msgstr "Válasz írása ehhez: %s%s%s"
 
 #. Template: AgentTicketCompose
 msgid "This address is registered as system address and cannot be used: %s"
@@ -9022,8 +9022,8 @@ msgid "Date Invalid!"
 msgstr "Érvénytelen dátum!"
 
 #. Template: AgentTicketCustomer
-msgid "Change Customer of %s%s"
-msgstr "%s%s ügyfelének módosítása"
+msgid "Change Customer of %s%s%s"
+msgstr "%s%s%s ügyfelének módosítása"
 
 #. Template: AgentTicketEmail
 msgid "Create New Email Ticket"
@@ -9058,8 +9058,8 @@ msgid "Get all"
 msgstr "Összes lekérése"
 
 #. Template: AgentTicketEmailOutbound
-msgid "Outbound Email for %s%s"
-msgstr "Kimenő e-mail ehhez: %s%s"
+msgid "Outbound Email for %s%s%s"
+msgstr "Kimenő e-mail ehhez: %s%s%s"
 
 #. Template: AgentTicketEscalation
 msgid "Ticket %s: first response time is over (%s/%s)!"
@@ -9086,12 +9086,12 @@ msgid "Ticket %s: solution time will be over in %s/%s!"
 msgstr "%s jegy: a megoldási idő le fog járni: %s/%s!"
 
 #. Template: AgentTicketForward
-msgid "Forward %s%s"
-msgstr "%s%s továbbítása"
+msgid "Forward %s%s%s"
+msgstr "%s%s%s továbbítása"
 
 #. Template: AgentTicketHistory
-msgid "History of %s%s"
-msgstr "%s%s előzményei"
+msgid "History of %s%s%s"
+msgstr "%s%s%s előzményei"
 
 #. Template: AgentTicketHistory
 msgid "History Content"
@@ -9102,8 +9102,8 @@ msgid "Zoom view"
 msgstr "Nagyítási nézet"
 
 #. Template: AgentTicketMerge
-msgid "Merge %s%s"
-msgstr "%s%s egyesítése"
+msgid "Merge %s%s%s"
+msgstr "%s%s%s egyesítése"
 
 #. Template: AgentTicketMerge
 msgid "Merge Settings"
@@ -9122,8 +9122,8 @@ msgid "Need a valid email address."
 msgstr "Érvényes e-mail cím szükséges."
 
 #. Template: AgentTicketMove
-msgid "Move %s%s"
-msgstr "%s%s áthelyezése"
+msgid "Move %s%s%s"
+msgstr "%s%s%s áthelyezése"
 
 #. Template: AgentTicketMove
 msgid "New Queue"
@@ -9214,12 +9214,12 @@ msgid "The chat will be appended as a separate article."
 msgstr "A csevegés elkülönített bejegyzésként lesz hozzáfűzve."
 
 #. Template: AgentTicketPhoneCommon
-msgid "Phone Call for %s%s"
-msgstr "Telefonhívás ehhez: %s%s"
+msgid "Phone Call for %s%s%s"
+msgstr "Telefonhívás ehhez: %s%s%s"
 
 #. Template: AgentTicketPlain
-msgid "View Email Plain Text for %s%s"
-msgstr "Egyszerű szöveges e-mail megtekintése ennél: %s%s"
+msgid "View Email Plain Text for %s%s%s"
+msgstr "Egyszerű szöveges e-mail megtekintése ennél: %s%s%s"
 
 #. Template: AgentTicketPlain
 msgid "Plain"
@@ -9582,6 +9582,14 @@ msgstr "Lehetőségei"
 #. Template: CloudServicesDisabled
 msgid "go back to the previous page"
 msgstr "visszatérés az előző oldalra"
+
+#. Template: CustomerError
+msgid "An Error Occurred"
+msgstr "Hiba történt"
+
+#. Template: CustomerError
+msgid "Error Details"
+msgstr "Hiba részletei"
 
 #. Template: CustomerError
 msgid "Traceback"
@@ -10035,10 +10043,6 @@ msgstr "Vegye fel a kapcsolatot a szolgáltatási csapatunkkal most."
 #. Template: Error
 msgid "Send a bugreport"
 msgstr "Hibajelentés küldése"
-
-#. Template: Error
-msgid "Error Details"
-msgstr "Hiba részletei"
 
 #. Template: FooterJS
 msgid "Please enter at least one search value or * to find anything."
@@ -10585,16 +10589,16 @@ msgid "Create summation row"
 msgstr "Összegző sor létrehozása"
 
 #. Template: GeneralSpecificationsWidget
-msgid "Generate an additional row containing sums for all data columns."
-msgstr "Egy további sort állít elő, amely az összes adatoszlop összegeit tartalmazza."
+msgid "Generate an additional row containing sums for all data rows."
+msgstr "Egy további sort állít elő, amely az összes adatsor összegeit tartalmazza."
 
 #. Template: GeneralSpecificationsWidget
 msgid "Create summation column"
 msgstr "Összegző oszlop létrehozása"
 
 #. Template: GeneralSpecificationsWidget
-msgid "Generate an additional column containing sums for all data rows."
-msgstr "Egy további oszlopot állít elő, amely az összes adatsor összegeit tartalmazza."
+msgid "Generate an additional column containing sums for all data columns."
+msgstr "Egy további oszlopot állít elő, amely az összes adatoszlop összegeit tartalmazza."
 
 #. Template: GeneralSpecificationsWidget
 msgid "Cache results"
@@ -10707,6 +10711,14 @@ msgstr "Nincs elem kiválasztva."
 #. Template: StatsParamsWidget
 msgid "Scale"
 msgstr "Skála"
+
+#. Template: StatsParamsWidget
+msgid "show more"
+msgstr "több megjelenítése"
+
+#. Template: StatsParamsWidget
+msgid "show less"
+msgstr "kevesebb megjelenítése"
 
 #. Template: D3
 msgid "Download SVG"
@@ -11950,11 +11962,6 @@ msgid ""
 msgstr "Nem sikerült meghatározni a tevékenység egyedazonosítóját. A dinamikus mező vagy a beállítás nincs megfelelően beállítva!"
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
-msgid ""
-"DynamicFieldConfig missing for field: %s, or is not a Ticket Dynamic Field!"
-msgstr "A dinamikus mező beállítása hiányzik a(z) %s mezőnél, vagy az nem jegy dinamikus mező!"
-
-#. Perl Module: Kernel/Modules/AgentTicketProcess.pm
 msgid "Process::Default%s Config Value missing!"
 msgstr "A Process::Default%s beállítás értéke hiányzik!"
 
@@ -12304,6 +12311,18 @@ msgstr "Rendszerbeállítás ellenőrzése ennél: %s::TicketTypeDefault."
 msgid "Need CustomerID!"
 msgstr "Ügyfél-azonosító szükséges!"
 
+#. Perl Module: Kernel/Modules/CustomerTicketOverview.pm
+msgid "My Tickets"
+msgstr "Saját jegyek"
+
+#. Perl Module: Kernel/Modules/CustomerTicketOverview.pm
+msgid "Company Tickets"
+msgstr "Vállalati jegyek"
+
+#. Perl Module: Kernel/Modules/CustomerTicketOverview.pm
+msgid "Untitled!"
+msgstr "Névtelen!"
+
 #. Perl Module: Kernel/Modules/CustomerTicketSearch.pm
 msgid ""
 "Please remove the following words because they cannot be used for the "
@@ -12528,6 +12547,10 @@ msgid "Please supply your new password!"
 msgstr "Adja meg az új jelszavát!"
 
 #. Perl Module: Kernel/Output/HTML/Statistics/View.pm
+msgid "No (not supported)"
+msgstr "Nincs (nem támogatott)"
+
+#. Perl Module: Kernel/Output/HTML/Statistics/View.pm
 msgid ""
 "No past complete or the current+upcoming complete relative time value "
 "selected."
@@ -12698,6 +12721,54 @@ msgstr "Jegy lezárásának ideje"
 msgid "Accounted time by Agent"
 msgstr "Ügyintéző által elszámolt idő"
 
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Total Time"
+msgstr "Teljes idő"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Ticket Average"
+msgstr "Jegy átlag"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Ticket Min Time"
+msgstr "Jegy legkisebb ideje"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Ticket Max Time"
+msgstr "Jegy legnagyobb ideje"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Number of Tickets"
+msgstr "Jegyek száma"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Article Average"
+msgstr "Bejegyzés átlag"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Article Min Time"
+msgstr "Bejegyzés legkisebb ideje"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Article Max Time"
+msgstr "Bejegyzés legnagyobb ideje"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Number of Articles"
+msgstr "Bejegyzések száma"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+msgid "unlimited"
+msgstr "korlátlan"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+msgid "ascending"
+msgstr "növekvő"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+msgid "descending"
+msgstr "csökkenő"
+
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
 msgid "Attributes to be printed"
 msgstr "Nyomtatandó jellemzők"
@@ -12717,6 +12788,70 @@ msgstr "Történelmi állapottípus"
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
 msgid "Historic Time Range"
 msgstr "Történelmi időtartomány"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Average"
+msgstr "Megoldás átlaga"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Min Time"
+msgstr "Megoldás legkisebb ideje"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Max Time"
+msgstr "Megoldás legnagyobb ideje"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Average (affected by escalation configuration)"
+msgstr "Megoldás átlaga (az eszkalációs beállítás által érintett)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Min Time (affected by escalation configuration)"
+msgstr "Megoldás legkisebb ideje (az eszkalációs beállítás által érintett)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Max Time (affected by escalation configuration)"
+msgstr "Megoldás legnagyobb ideje (az eszkalációs beállítás által érintett)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Working Time Average (affected by escalation configuration)"
+msgstr "Megoldás munkaidejének átlaga (az eszkalációs beállítás által érintett)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Min Working Time (affected by escalation configuration)"
+msgstr "Megoldás legkisebb munkaideje (az eszkalációs beállítás által érintett)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Max Working Time (affected by escalation configuration)"
+msgstr "Megoldás legnagyobb munkaideje (az eszkalációs beállítás által érintett)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Average (affected by escalation configuration)"
+msgstr "Válasz átlaga (az eszkalációs beállítás által érintett)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Min Time (affected by escalation configuration)"
+msgstr "Válasz legkisebb ideje (az eszkalációs beállítás által érintett)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Max Time (affected by escalation configuration)"
+msgstr "Válasz legnagyobb ideje (az eszkalációs beállítás által érintett)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Working Time Average (affected by escalation configuration)"
+msgstr "Válasz munkaidejének átlaga (az eszkalációs beállítás által érintett)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Min Working Time (affected by escalation configuration)"
+msgstr "Válasz legkisebb munkaideje (az eszkalációs beállítás által érintett)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Max Working Time (affected by escalation configuration)"
+msgstr "Válasz legnagyobb munkaideje (az eszkalációs beállítás által érintett)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Number of Tickets (affected by escalation configuration)"
+msgstr "Jegyek száma (az eszkalációs beállítás által érintett)"
 
 #. Perl Module: Kernel/System/Stats/Static/StateAction.pm
 msgid "Days"
@@ -13858,7 +13993,7 @@ msgstr "Hivatkozás hozzáadva a következő jegyhez: „%s”."
 
 #. SysConfig
 msgid "Added note (%s)"
-msgstr "Megjegyzés hozzáadva (%s)"
+msgstr "Jegyzet hozzáadva (%s)"
 
 #. SysConfig
 msgid "Added subscription for user \"%s\"."
@@ -14511,10 +14646,6 @@ msgid "Company Status"
 msgstr "Vállalat állapot"
 
 #. SysConfig
-msgid "Company Tickets"
-msgstr "Vállalati jegyek"
-
-#. SysConfig
 msgid "Company Tickets."
 msgstr "Vállalati jegyek."
 
@@ -14926,11 +15057,12 @@ msgstr "A NameX alapértelmezett értéke"
 
 #. SysConfig
 msgid ""
-"Define Actions where Settings button is available in the Linked objects widget (LinkObject::ViewMode = \"complex\").\n"
-"            Please note that this Actions must have registered following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js,\n"
-"            Core.Agent.TableFilters.js.\n"
-"        "
-msgstr ""
+"Define Actions where a settings button is available in the linked objects "
+"widget (LinkObject::ViewMode = \"complex\"). Please note that these Actions "
+"must have registered the following JS and CSS files: "
+"Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js, "
+"Core.Agent.TableFilters.js."
+msgstr "Műveletek meghatározása, ahol egy beállítások gomb érhető el a kapcsolt objektumok felületi elemen (LinkObject::ViewMode = „összetett”). Ne feledje, hogy ezeknek a műveleteknek rendelkezniük kell a következő JS és CSS fájlok regisztrálásával: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js, Core.Agent.TableFilters.js."
 
 #. SysConfig
 msgid ""
@@ -14994,10 +15126,11 @@ msgstr "A hét kezdőnapjának meghatározása a dátumválasztónál."
 
 #. SysConfig
 msgid ""
-"Define which columns are shown in the Linked tickets widget (LinkObject::ViewMode = \"complex\").\n"
-"            Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns.\n"
-"            Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default."
-msgstr ""
+"Define which columns are shown in the linked tickets widget "
+"(LinkObject::ViewMode = \"complex\"). Note: Only Ticket attributes and "
+"Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible"
+" settings: 0 = Disabled, 1 = Available, 2 = Enabled by default."
+msgstr "Annak meghatározása, hogy mely oszlopok legyenek láthatók a kapcsolt jegyek felületi elemen (LinkObject::ViewMode = „összetett”). Megjegyzés: csak jegyattribútumok és dinamikus mezők (DynamicField_NévX) engedélyezettek az alapértelmezett oszlopoknál. Lehetséges beállítások: 0 = letiltva, 1 = elérhető, 2 = alapértelmezetten engedélyezett."
 
 #. SysConfig
 msgid ""
@@ -15133,6 +15266,18 @@ msgstr "Meghatározza a ShownTickets objektum összes paraméterét az ügyfélf
 #. SysConfig
 msgid "Defines all the parameters for this item in the customer preferences."
 msgstr "Meghatározza ennek az elemnek az összes paraméterét az ügyfél beállításaiban."
+
+#. SysConfig
+msgid ""
+"Defines all the parameters for this item in the customer preferences. "
+"'PasswordRegExp' allows to match passwords against a regular expression. "
+"Define the minimum number of characters using 'PasswordMinSize'. Define if "
+"at least 2 lowercase and 2 uppercase letter characters are needed by setting"
+" the appropriate option to '1'. 'PasswordMin2Characters' defines if the "
+"password needs to contain at least 2 letter characters (set to 0 or 1). "
+"'PasswordNeedDigit' controls the need of at least 1 digit (set to 0 or 1 to "
+"control)."
+msgstr "Meghatározza az összes paramétert ehhez az elemhez az ügyfél beállításaiban. A „PasswordRegExp” lehetővé teszi a jelszavak illesztését egy reguláris kifejezéssel. A „PasswordMinSize” használatával meghatározható a karakterek legkisebb száma. A megfelelő beállítás „1”-re állításával meghatározható, hogy legalább 2 kisbetűs és 2 nagybetűs karakter szükséges. A „PasswordMin2Characters” azt határozza meg, hogy a jelszónak tartalmaznia kell legalább 2 betű karaktert (állítsa 0-ra vagy 1-re). A „PasswordNeedDigit” szabályozza a legalább 1 számjegy szükségét (állítsa 0-ra vagy 1-re a szabályzáshoz)."
 
 #. SysConfig
 msgid "Defines all the parameters for this notification transport."
@@ -15453,6 +15598,19 @@ msgid ""
 "Defines the config parameters of this item, to be shown in the preferences "
 "view."
 msgstr "Meghatározza ennek az elemnek a beállítási paramétereit, amelyek a beállítások nézetben jelennek meg."
+
+#. SysConfig
+msgid ""
+"Defines the config parameters of this item, to be shown in the preferences "
+"view. 'PasswordRegExp' allows to match passwords against a regular "
+"expression. Define the minimum number of characters using 'PasswordMinSize'."
+" Define if at least 2 lowercase and 2 uppercase letter characters are needed"
+" by setting the appropriate option to '1'. 'PasswordMin2Characters' defines "
+"if the password needs to contain at least 2 letter characters (set to 0 or "
+"1). 'PasswordNeedDigit' controls the need of at least 1 digit (set to 0 or 1"
+" to control). 'PasswordMaxLoginFailed' allows to set an agent to invalid-"
+"temporarily if max failed logins reached."
+msgstr "Meghatározza ennek az elemnek a beállítási paramétereit a beállítások nézetben történő megjelenítéshez. A „PasswordRegExp” lehetővé teszi a jelszavak illesztését egy reguláris kifejezéssel. A „PasswordMinSize” használatával meghatározható a karakterek legkisebb száma. A megfelelő beállítás „1”-re állításával meghatározható, hogy legalább 2 kisbetűs és 2 nagybetűs karakter szükséges. A „PasswordMin2Characters” azt határozza meg, hogy a jelszónak tartalmaznia kell legalább 2 betű karaktert (állítsa 0-ra vagy 1-re). A „PasswordNeedDigit” szabályozza a legalább 1 számjegy szükségét (állítsa 0-ra vagy 1-re a szabályzáshoz). A „PasswordMaxLoginFailed” lehetővé teszi egy ügyintéző átmenetileg érvénytelenre állítását, ha a maximális sikertelen bejelentkezést elérte."
 
 #. SysConfig
 msgid ""
@@ -16969,7 +17127,7 @@ msgstr "Törli a kért munkameneteket, ha túllépték az időkorlátot."
 
 #. SysConfig
 msgid ""
-"Delivers extended debugging information in the frontend in case any ajax "
+"Delivers extended debugging information in the frontend in case any AJAX "
 "errors occur, if enabled."
 msgstr "Kiterjesztett hibakeresési információkat szolgáltat az előtétprogramon abban az esetben, ha bármilyen AJAX-hiba történik, ha engedélyezve van."
 
@@ -18364,6 +18522,10 @@ msgid ""
 msgstr "IndexAccelerator: a TicketViewAccelerator háttérprogram modul választásához. A „RuntimeDB” minden egyes várólista nézetet valós időben állít elő a jegytáblából (nincs teljesítmény-probléma a rendszeren körülbelül 60.000 összes jegyig és 6.000 nyitott jegyig). A „StaticDB” a legerősebb modul, amely egy további jegyindex táblát használ, amely úgy működik mint egy nézet (javasolt, ha több mint 80.000 és 6.000 nyitott jegy van a rendszeren tárolva). Használja a „bin/otrs.Console.pl Maint::Ticket::QueueIndexRebuild” parancsot a kezdeti index létrehozásához."
 
 #. SysConfig
+msgid "Indonesian"
+msgstr ""
+
+#. SysConfig
 msgid "Input"
 msgstr "Beviteli mező"
 
@@ -18865,10 +19027,6 @@ msgstr "Többválasztós"
 #. SysConfig
 msgid "My Services"
 msgstr "Saját szolgáltatások"
-
-#. SysConfig
-msgid "My Tickets"
-msgstr "Saját jegyek"
 
 #. SysConfig
 msgid "My Tickets."

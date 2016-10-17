@@ -23,8 +23,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
-"POT-Creation-Date: 2016-06-22 10:40+0000\n"
-"PO-Revision-Date: 2016-06-22 15:42+0000\n"
+"POT-Creation-Date: 2016-08-03 10:16+0000\n"
+"PO-Revision-Date: 2016-08-03 15:18+0000\n"
 "Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
 "Language-Team: Russian (http://www.transifex.com/otrs/OTRS/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -3276,20 +3276,12 @@ msgid "Select"
 msgstr "Выбор"
 
 #. Template: AdminCustomerCompany
-msgid "only"
+msgid "List (only %s shown - more available)"
 msgstr ""
 
 #. Template: AdminCustomerCompany
-msgid "shown"
-msgstr "показано"
-
-#. Template: AdminCustomerCompany
-msgid "more available"
+msgid "List (%s total)"
 msgstr ""
-
-#. Template: AdminCustomerCompany
-msgid "total"
-msgstr "всего"
 
 #. Template: AdminCustomerCompany
 msgid "Please enter a search term to look for customers."
@@ -5266,6 +5258,10 @@ msgstr "Создать новые группы, чтобы управлять п
 #. Template: AdminGroup
 msgid "It's useful for ASP solutions. "
 msgstr "Полезно для сервис-провайдеров."
+
+#. Template: AdminGroup
+msgid "total"
+msgstr "всего"
 
 #. Template: AdminGroup
 msgid "Add Group"
@@ -7599,6 +7595,10 @@ msgid "Relate this certificate"
 msgstr "Связать этот сертификат"
 
 #. Template: AdminSMIMECertRead
+msgid "Close dialog"
+msgstr "Закрыть диалог"
+
+#. Template: AdminSMIMECertRead
 msgid "Certificate details"
 msgstr "Подробности сертификата"
 
@@ -8834,32 +8834,32 @@ msgid ""
 msgstr "Этот отчет содержит ошибки в настройках и не может в настоящее время использоваться."
 
 #. Template: AgentTicketActionCommon
-msgid "Change Free Text of %s%s"
-msgstr "Изменить Free Text для %s%s"
+msgid "Change Free Text of %s%s%s"
+msgstr "Изменить свободный текст для %s%s%s"
 
 #. Template: AgentTicketActionCommon
-msgid "Change Owner of %s%s"
+msgid "Change Owner of %s%s%s"
 msgstr "Изменить владельца для %s%s"
 
 #. Template: AgentTicketActionCommon
-msgid "Close %s%s"
-msgstr "Закрыть %s%s"
+msgid "Close %s%s%s"
+msgstr "Закрыть %s%s%s"
 
 #. Template: AgentTicketActionCommon
-msgid "Add Note to %s%s"
-msgstr "Добавить заметку/сообщение к %s%s"
+msgid "Add Note to %s%s%s"
+msgstr "Добавить заметку к %s%s%s"
 
 #. Template: AgentTicketActionCommon
-msgid "Set Pending Time for %s%s"
-msgstr "Установить время ожидания до %s%s"
+msgid "Set Pending Time for %s%s%s"
+msgstr "Установить время ожидания до %s%s%s"
 
 #. Template: AgentTicketActionCommon
-msgid "Change Priority of %s%s"
-msgstr "Изменить приоритет для %s%s"
+msgid "Change Priority of %s%s%s"
+msgstr "Сменить приоритет %s%s%s"
 
 #. Template: AgentTicketActionCommon
-msgid "Change Responsible of %s%s"
-msgstr "Изменить ответственного для %s%s"
+msgid "Change Responsible of %s%s%s"
+msgstr "Изменить ответственного для %s%s%s"
 
 #. Template: AgentTicketActionCommon
 msgid "All fields marked with an asterisk (*) are mandatory."
@@ -8912,8 +8912,8 @@ msgid ""
 msgstr "Здесь вы можете выбрать дополнительных агентов, которые получат уведомление в зависимости от нового сообщения/заметки"
 
 #. Template: AgentTicketActionCommon
-msgid "Text will also be received by:"
-msgstr "Текст будет (также) получен:"
+msgid "Text will also be received by"
+msgstr "Текст будет также получен"
 
 #. Template: AgentTicketActionCommon
 msgid "Spell check"
@@ -8932,8 +8932,8 @@ msgid "Note type"
 msgstr "Тип заметки/сообщения"
 
 #. Template: AgentTicketBounce
-msgid "Bounce %s%s"
-msgstr "Перенаправить  %s%s"
+msgid "Bounce %s%s%s"
+msgstr "Перенаправить %s%s%s"
 
 #. Template: AgentTicketBounce
 msgid "Bounce to"
@@ -8996,8 +8996,8 @@ msgid "Execute Bulk Action"
 msgstr "Выполнить Массовое действие"
 
 #. Template: AgentTicketCompose
-msgid "Compose Answer for %s%s"
-msgstr "Создать ответ для %s%s"
+msgid "Compose Answer for %s%s%s"
+msgstr "Создать ответ для %s%s%s"
 
 #. Template: AgentTicketCompose
 msgid "This address is registered as system address and cannot be used: %s"
@@ -9032,8 +9032,8 @@ msgid "Date Invalid!"
 msgstr "Неверная дата!"
 
 #. Template: AgentTicketCustomer
-msgid "Change Customer of %s%s"
-msgstr "Изменить клиента для %s%s"
+msgid "Change Customer of %s%s%s"
+msgstr "Изменить клиента для %s%s%s"
 
 #. Template: AgentTicketEmail
 msgid "Create New Email Ticket"
@@ -9068,8 +9068,8 @@ msgid "Get all"
 msgstr "Получить всех"
 
 #. Template: AgentTicketEmailOutbound
-msgid "Outbound Email for %s%s"
-msgstr "Исходящее письмо для %s%s"
+msgid "Outbound Email for %s%s%s"
+msgstr "Исходящее письмо для %s%s%s"
 
 #. Template: AgentTicketEscalation
 msgid "Ticket %s: first response time is over (%s/%s)!"
@@ -9096,12 +9096,12 @@ msgid "Ticket %s: solution time will be over in %s/%s!"
 msgstr "Заявка %s: время решения истекает через %s/%s!"
 
 #. Template: AgentTicketForward
-msgid "Forward %s%s"
-msgstr "Переслать %s%s"
+msgid "Forward %s%s%s"
+msgstr "Переслать %s%s%s"
 
 #. Template: AgentTicketHistory
-msgid "History of %s%s"
-msgstr "История для %s%s"
+msgid "History of %s%s%s"
+msgstr "История для %s%s%s"
 
 #. Template: AgentTicketHistory
 msgid "History Content"
@@ -9112,8 +9112,8 @@ msgid "Zoom view"
 msgstr "Подробный показ"
 
 #. Template: AgentTicketMerge
-msgid "Merge %s%s"
-msgstr "Объединить %s%s"
+msgid "Merge %s%s%s"
+msgstr "Объединить %s%s%s"
 
 #. Template: AgentTicketMerge
 msgid "Merge Settings"
@@ -9132,8 +9132,8 @@ msgid "Need a valid email address."
 msgstr "Требуется верный почтовый адрес."
 
 #. Template: AgentTicketMove
-msgid "Move %s%s"
-msgstr "Переслать %s%s"
+msgid "Move %s%s%s"
+msgstr "Переслать %s%s%s"
 
 #. Template: AgentTicketMove
 msgid "New Queue"
@@ -9224,12 +9224,12 @@ msgid "The chat will be appended as a separate article."
 msgstr "Содержание чата будет добавлено в виде отдельной заметки."
 
 #. Template: AgentTicketPhoneCommon
-msgid "Phone Call for %s%s"
-msgstr "Телефонный звонок для %s%s"
+msgid "Phone Call for %s%s%s"
+msgstr "Телефонный звонок для %s%s%s"
 
 #. Template: AgentTicketPlain
-msgid "View Email Plain Text for %s%s"
-msgstr "Показать исходный формат письма / Plain Text для %s%s"
+msgid "View Email Plain Text for %s%s%s"
+msgstr "Показать исходный формат письма для %s%s%s"
 
 #. Template: AgentTicketPlain
 msgid "Plain"
@@ -9553,7 +9553,7 @@ msgstr "Заметка не может быть открыта! Возможно
 
 #. Template: AgentTicketZoom
 msgid "Scale preview content"
-msgstr ""
+msgstr "Масштабировать предпросмотр"
 
 #. Template: AgentTicketZoom
 msgid "Open URL in new tab"
@@ -9592,6 +9592,14 @@ msgstr "Вы можете"
 #. Template: CloudServicesDisabled
 msgid "go back to the previous page"
 msgstr "перейти на предыдущую страницу"
+
+#. Template: CustomerError
+msgid "An Error Occurred"
+msgstr "Произошла ошибка"
+
+#. Template: CustomerError
+msgid "Error Details"
+msgstr "Детали ошибки"
 
 #. Template: CustomerError
 msgid "Traceback"
@@ -10045,10 +10053,6 @@ msgstr "Свяжитесь с нашей командой поддержки."
 #. Template: Error
 msgid "Send a bugreport"
 msgstr "Отправить сообщение об ошибке"
-
-#. Template: Error
-msgid "Error Details"
-msgstr "Детали ошибки"
 
 #. Template: FooterJS
 msgid "Please enter at least one search value or * to find anything."
@@ -10595,16 +10599,16 @@ msgid "Create summation row"
 msgstr "Создать итоговую строку"
 
 #. Template: GeneralSpecificationsWidget
-msgid "Generate an additional row containing sums for all data columns."
-msgstr "Генерирует дополнительную строку, содержащую суммы по колонкам."
+msgid "Generate an additional row containing sums for all data rows."
+msgstr ""
 
 #. Template: GeneralSpecificationsWidget
 msgid "Create summation column"
 msgstr "Создать итоговую колонку"
 
 #. Template: GeneralSpecificationsWidget
-msgid "Generate an additional column containing sums for all data rows."
-msgstr "Генерирует дополнительную колонку, содержащую суммы по строкам."
+msgid "Generate an additional column containing sums for all data columns."
+msgstr ""
 
 #. Template: GeneralSpecificationsWidget
 msgid "Cache results"
@@ -10717,6 +10721,14 @@ msgstr "Элементы не выбраны"
 #. Template: StatsParamsWidget
 msgid "Scale"
 msgstr "Масштаб"
+
+#. Template: StatsParamsWidget
+msgid "show more"
+msgstr "показать далее"
+
+#. Template: StatsParamsWidget
+msgid "show less"
+msgstr "скрыть"
 
 #. Template: D3
 msgid "Download SVG"
@@ -11960,11 +11972,6 @@ msgid ""
 msgstr "Не удалось определить ActivityEntityID. Динамическое поле или конфигурация настроены некорректно!"
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
-msgid ""
-"DynamicFieldConfig missing for field: %s, or is not a Ticket Dynamic Field!"
-msgstr "DynamicFieldConfig не задан для поля: %s, или это поле не является динамическим полем типа Заявка!"
-
-#. Perl Module: Kernel/Modules/AgentTicketProcess.pm
 msgid "Process::Default%s Config Value missing!"
 msgstr "Не указаны настройки Process::Default%s!"
 
@@ -12314,6 +12321,18 @@ msgstr "Проверьте настройки SysConfig setting для %s::Ticke
 msgid "Need CustomerID!"
 msgstr "Требуется CustomerID!"
 
+#. Perl Module: Kernel/Modules/CustomerTicketOverview.pm
+msgid "My Tickets"
+msgstr "Мои заявки"
+
+#. Perl Module: Kernel/Modules/CustomerTicketOverview.pm
+msgid "Company Tickets"
+msgstr "Заявки компании"
+
+#. Perl Module: Kernel/Modules/CustomerTicketOverview.pm
+msgid "Untitled!"
+msgstr "Без заголовка!"
+
 #. Perl Module: Kernel/Modules/CustomerTicketSearch.pm
 msgid ""
 "Please remove the following words because they cannot be used for the "
@@ -12538,6 +12557,10 @@ msgid "Please supply your new password!"
 msgstr "Пожалуйста, укажите ваш новый пароль!"
 
 #. Perl Module: Kernel/Output/HTML/Statistics/View.pm
+msgid "No (not supported)"
+msgstr "Нет (не поддерживается)"
+
+#. Perl Module: Kernel/Output/HTML/Statistics/View.pm
 msgid ""
 "No past complete or the current+upcoming complete relative time value "
 "selected."
@@ -12708,6 +12731,54 @@ msgstr "Время закрытия заявки"
 msgid "Accounted time by Agent"
 msgstr "Затраты рабочего времени по агентам"
 
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Total Time"
+msgstr "Всего времени"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Ticket Average"
+msgstr "Среднее время рассмотрения заявки"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Ticket Min Time"
+msgstr "Мин. время рассмотрения заявки"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Ticket Max Time"
+msgstr "Макс. время рассмотрения заявки"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Number of Tickets"
+msgstr "Количество заявок"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Article Average"
+msgstr "Среднее время между сообщениями"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Article Min Time"
+msgstr "Мин. время между сообщениями"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Article Max Time"
+msgstr "Макс. время между сообщениями"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
+msgid "Number of Articles"
+msgstr "Количество сообщений"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+msgid "unlimited"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+msgid "ascending"
+msgstr "По возрастанию"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
+msgid "descending"
+msgstr "По убыванию"
+
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
 msgid "Attributes to be printed"
 msgstr "Атрибуты для печати"
@@ -12727,6 +12798,70 @@ msgstr "Тип состояния истории"
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
 msgid "Historic Time Range"
 msgstr "Период истории"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Average"
+msgstr "Среднее время решения заявки"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Min Time"
+msgstr "Минимальное время решения заявки"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Max Time"
+msgstr "Максимальное время решения заявки"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Average (affected by escalation configuration)"
+msgstr "Среднее время решения заявки (учитывая настройки эскалации)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Min Time (affected by escalation configuration)"
+msgstr "Минимальное время решения заявки (учитывая настройки эскалации)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Max Time (affected by escalation configuration)"
+msgstr "Максимальное время решения заявки (учитывая настройки эскалации)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Working Time Average (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Min Working Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Solution Max Working Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Average (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Min Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Max Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Working Time Average (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Min Working Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Response Max Working Time (affected by escalation configuration)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
+msgid "Number of Tickets (affected by escalation configuration)"
+msgstr "Количество заявок (учитывая настройки эскалации)"
 
 #. Perl Module: Kernel/System/Stats/Static/StateAction.pm
 msgid "Days"
@@ -14521,10 +14656,6 @@ msgid "Company Status"
 msgstr "Информация по компании клиента"
 
 #. SysConfig
-msgid "Company Tickets"
-msgstr "Заявки компании"
-
-#. SysConfig
 msgid "Company Tickets."
 msgstr "Заявки компании."
 
@@ -14936,10 +15067,11 @@ msgstr "Умалчиваемое значение для NameX"
 
 #. SysConfig
 msgid ""
-"Define Actions where Settings button is available in the Linked objects widget (LinkObject::ViewMode = \"complex\").\n"
-"            Please note that this Actions must have registered following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js,\n"
-"            Core.Agent.TableFilters.js.\n"
-"        "
+"Define Actions where a settings button is available in the linked objects "
+"widget (LinkObject::ViewMode = \"complex\"). Please note that these Actions "
+"must have registered the following JS and CSS files: "
+"Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js, "
+"Core.Agent.TableFilters.js."
 msgstr ""
 
 #. SysConfig
@@ -15004,9 +15136,10 @@ msgstr "Укажите первый день недели для использ�
 
 #. SysConfig
 msgid ""
-"Define which columns are shown in the Linked tickets widget (LinkObject::ViewMode = \"complex\").\n"
-"            Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns.\n"
-"            Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default."
+"Define which columns are shown in the linked tickets widget "
+"(LinkObject::ViewMode = \"complex\"). Note: Only Ticket attributes and "
+"Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible"
+" settings: 0 = Disabled, 1 = Available, 2 = Enabled by default."
 msgstr ""
 
 #. SysConfig
@@ -15143,6 +15276,18 @@ msgstr "Задать все параметры для объекта \"Заяв�
 #. SysConfig
 msgid "Defines all the parameters for this item in the customer preferences."
 msgstr "Задать все параметры для этого элемента в личных настройках в интерфейсе клиента"
+
+#. SysConfig
+msgid ""
+"Defines all the parameters for this item in the customer preferences. "
+"'PasswordRegExp' allows to match passwords against a regular expression. "
+"Define the minimum number of characters using 'PasswordMinSize'. Define if "
+"at least 2 lowercase and 2 uppercase letter characters are needed by setting"
+" the appropriate option to '1'. 'PasswordMin2Characters' defines if the "
+"password needs to contain at least 2 letter characters (set to 0 or 1). "
+"'PasswordNeedDigit' controls the need of at least 1 digit (set to 0 or 1 to "
+"control)."
+msgstr ""
 
 #. SysConfig
 msgid "Defines all the parameters for this notification transport."
@@ -15463,6 +15608,19 @@ msgid ""
 "Defines the config parameters of this item, to be shown in the preferences "
 "view."
 msgstr "Задает параметры для этого элемента, которые будут отображаться на экране личных настроек."
+
+#. SysConfig
+msgid ""
+"Defines the config parameters of this item, to be shown in the preferences "
+"view. 'PasswordRegExp' allows to match passwords against a regular "
+"expression. Define the minimum number of characters using 'PasswordMinSize'."
+" Define if at least 2 lowercase and 2 uppercase letter characters are needed"
+" by setting the appropriate option to '1'. 'PasswordMin2Characters' defines "
+"if the password needs to contain at least 2 letter characters (set to 0 or "
+"1). 'PasswordNeedDigit' controls the need of at least 1 digit (set to 0 or 1"
+" to control). 'PasswordMaxLoginFailed' allows to set an agent to invalid-"
+"temporarily if max failed logins reached."
+msgstr ""
 
 #. SysConfig
 msgid ""
@@ -16979,7 +17137,7 @@ msgstr "Удаляет запрошенные сеансы с истекшим �
 
 #. SysConfig
 msgid ""
-"Delivers extended debugging information in the frontend in case any ajax "
+"Delivers extended debugging information in the frontend in case any AJAX "
 "errors occur, if enabled."
 msgstr ""
 
@@ -18374,6 +18532,10 @@ msgid ""
 msgstr "IndexAccelerator: для выбора серверного TicketViewAccelerator модуля. \"RuntimeDB\" - строит каждый обзор на лету из таблицы заявок (не будет проблем с производительностью, примерно, до общего объема в 60.000 заявок и 6.000 открытых). \"StaticDB\" - наиболее мощный модуль, он использует внешнюю таблицу индексов заявок (рекомендуется при объеме более 80.000 заявок при 6.000 открытых хранимых в системе). Используйте скрипт \"bin/otrs.Console.pl Maint::Ticket::QueueIndexRebuild\"  для первичного создания индексов."
 
 #. SysConfig
+msgid "Indonesian"
+msgstr ""
+
+#. SysConfig
 msgid "Input"
 msgstr "Input"
 
@@ -18772,11 +18934,11 @@ msgstr "Модуль для проверки, должно ли  поступи�
 
 #. SysConfig
 msgid "Module to check the group permissions for customer access to tickets."
-msgstr ""
+msgstr "Модуль проверки прав в группах для доступа пользователей к заявкам."
 
 #. SysConfig
 msgid "Module to check the group permissions for the access to tickets."
-msgstr ""
+msgstr "Модуль проверки прав в группах для доступа к заявкам."
 
 #. SysConfig
 msgid "Module to compose signed messages (PGP or S/MIME)."
@@ -18839,7 +19001,7 @@ msgstr ""
 msgid ""
 "Module to grant access to any agent that has been involved in a ticket in "
 "the past (based on ticket history entries)."
-msgstr ""
+msgstr "Модуль предоставления прав любому агенту, вовлеченному в работу с заявкой в прошлом (на основании записей в истории заявки)."
 
 #. SysConfig
 msgid "Module to grant access to the agent responsible of a ticket."
@@ -18847,15 +19009,15 @@ msgstr "Модуль для предоставления прав агенту �
 
 #. SysConfig
 msgid "Module to grant access to the creator of a ticket."
-msgstr ""
+msgstr "Модуль предоставления прав создателю заявки."
 
 #. SysConfig
 msgid "Module to grant access to the owner of a ticket."
-msgstr ""
+msgstr "Модуль предоставления прав владельцу заявки."
 
 #. SysConfig
 msgid "Module to grant access to the watcher agents of a ticket."
-msgstr ""
+msgstr "Модуль предоставления прав агентам для наблюдения за заявкой."
 
 #. SysConfig
 msgid ""
@@ -18875,10 +19037,6 @@ msgstr "Multiselect - множественный выбор"
 #. SysConfig
 msgid "My Services"
 msgstr "Мои сервисы"
-
-#. SysConfig
-msgid "My Tickets"
-msgstr "Мои заявки"
 
 #. SysConfig
 msgid "My Tickets."
@@ -19093,7 +19251,7 @@ msgstr "Параметры для объекта RefreshTime в личных н�
 
 #. SysConfig
 msgid "Parameters for the column filters of the small ticket overview."
-msgstr ""
+msgstr "Параметры фильтров колонок при обзора заявки в формате small."
 
 #. SysConfig
 msgid ""
@@ -20339,7 +20497,7 @@ msgstr "Должны ли данные кэша храниться в памят
 
 #. SysConfig
 msgid "Should the cache data be stored in the selected cache backend?"
-msgstr ""
+msgstr "Должны ли данные кэша храниться в выбранном бэкенде кэширования?"
 
 #. SysConfig
 msgid ""
@@ -20974,7 +21132,7 @@ msgstr "Словенский"
 
 #. SysConfig
 msgid "Software Package Manager."
-msgstr ""
+msgstr "Управление пакетами программного обеспечения"
 
 #. SysConfig
 msgid "SolutionDiffInMin"
@@ -21490,7 +21648,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Ticket FreeText."
-msgstr ""
+msgstr "Произвольный текст заявки"
 
 #. SysConfig
 msgid "Ticket History."
