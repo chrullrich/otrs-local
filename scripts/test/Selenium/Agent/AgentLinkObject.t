@@ -19,40 +19,31 @@ $Selenium->RunTest(
     sub {
 
         # get helper object
-        $Kernel::OM->ObjectParamAdd(
-            'Kernel::System::UnitTest::Helper' => {
-                RestoreSystemConfiguration => 1,
-            },
-        );
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
-        # get sysconfig object
-        my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
-        my $ConfigObject    = $Kernel::OM->Get('Kernel::Config');
-
         # set link object view mode to simple
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'LinkObject::ViewMode',
             Value => 'Simple',
         );
 
         # set Ticket::SubjectSize
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'Ticket::SubjectSize',
             Value => '60',
         );
 
         # Enable Ticket::ArchiveSystem
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'Ticket::ArchiveSystem',
             Value => 1,
         );
 
         # Enable Ticket::ArchiveSystem
-        $ConfigObject->Set(
+        $Helper->ConfigSettingChange(
             Key   => 'Ticket::ArchiveSystem',
             Value => 1,
         );
@@ -167,7 +158,7 @@ $Selenium->RunTest(
 
         # test ticket title length in complex view for linked tickets, see bug #11511
         # set link object view mode to complex
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'LinkObject::ViewMode',
             Value => 'Complex',

@@ -282,22 +282,42 @@ $Self->True(
     "TicketCreate() successful for Ticket ID $TicketID",
 );
 
-# get dynamic field object
-my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
+my $DynamicFieldObject      = $Kernel::OM->Get('Kernel::System::DynamicField');
+my $DynamicFieldValueObject = $Kernel::OM->Get('Kernel::System::DynamicFieldValue');
 
-# create a dynamic field
+# Create test ticket dynamic field of type checkbox.
 my $FieldID = $DynamicFieldObject->DynamicFieldAdd(
     Name       => "DFT1$RandomID",
     Label      => 'Description',
     FieldOrder => 9991,
-    FieldType  => 'Text',
+    FieldType  => 'Checkbox',
     ObjectType => 'Ticket',
     Config     => {
-        DefaultValue => 'Default',
+        DefaultValue => 1,
     },
     ValidID => 1,
     UserID  => 1,
     Reorder => 0,
+);
+$Self->True(
+    $Success,
+    "DynamicFieldAdd - Added checkbox field ($FieldID)",
+);
+
+# Set ticket dynamic field checkbox value to unchecked.
+$Success = $DynamicFieldValueObject->ValueSet(
+    FieldID  => $FieldID,
+    ObjectID => $TicketID,
+    Value    => [
+        {
+            ValueInt => 0,
+        },
+    ],
+    UserID => 1,
+);
+$Self->True(
+    $Success,
+    'ValueSet - Checkbox value set to unchecked',
 );
 
 my $SuccessWatcher = $TicketObject->TicketWatchSubscribe(
@@ -660,7 +680,7 @@ my @Tests = (
         Success => 1,
     },
     {
-        Name => 'Recipients Write Permissions - xyz',
+        Name => 'Recipients Write Permissions',
         Data => {
             Events     => [ 'TicketDynamicFieldUpdate_DFT1' . $RandomID . 'Update' ],
             Recipients => ['AgentWritePermissions'],
@@ -873,7 +893,32 @@ my @Tests = (
         ],
         Success => 1,
     },
+    {
+        Name => 'RecipientEmail filter by unchecked dynamic field',
+        Data => {
+            Events         => [ 'TicketDynamicFieldUpdate_DFT1' . $RandomID . 'Update' ],
+            RecipientEmail => ['test@otrsexample.com'],
 
+            # Filter by unchecked checbox dynamic field value. Note that the search value (-1) is
+            #   different than the match value (0). See bug#12257 for more information.
+            'Search_DynamicField_DFT1' . $RandomID => [-1],
+        },
+        Config => {
+            Event => 'TicketDynamicFieldUpdate_DFT1' . $RandomID . 'Update',
+            Data  => {
+                TicketID => $TicketID,
+            },
+            Config => {},
+            UserID => 1,
+        },
+        ExpectedResults => [
+            {
+                ToArray => ['test@otrsexample.com'],
+                Body    => "JobName $TicketID Kernel::System::Email::Test $UserData{UserFirstname}=\n",
+            },
+        ],
+        Success => 1,
+    },
 );
 
 my $SetPostMasterUserID = sub {
@@ -1103,33 +1148,17 @@ for my $Test (@Tests) {
         }
 
         # de-reference body
-        $Email->{Body} = ${ $Email->{Body} }
+        $Email->{Body} = ${ $Email->{Body} };
     }
 
-    my $IsDeeply = 0;
+    my @EmailSorted           = sort { $a->{ToArray}->[0] cmp $b->{ToArray}->[0] } @{$Emails};
+    my @ExpectedResultsSorted = sort { $a->{ToArray}->[0] cmp $b->{ToArray}->[0] } @{ $Test->{ExpectedResults} };
 
-    # check if expected ToArray exists, order does not matter
-    for my $CheckedEmail ( @{$Emails} ) {
-        for my $ExpectedResults ( @{ $Test->{ExpectedResults} } ) {
-            if ( $CheckedEmail->{ToArray}->[0] eq $ExpectedResults->{ToArray}->[0] ) {
-                $IsDeeply++;
-            }
-        }
-    }
-    if ( $IsDeeply eq scalar @{$Emails} ) {
-        $Self->Is(
-            $IsDeeply,
-            scalar @{$Emails},
-            "$Test->{Name} - Recipients",
-        );
-    }
-    else {
-        $Self->IsDeeply(
-            $Emails,
-            $Test->{ExpectedResults},
-            "$Test->{Name} - Recipients",
-        );
-    }
+    $Self->IsDeeply(
+        \@EmailSorted,
+        \@ExpectedResultsSorted,
+        "$Test->{Name} - Recipients",
+    );
 
     # check if there is email-notification-int article type when sending notification
     # to customer see bug#11592
