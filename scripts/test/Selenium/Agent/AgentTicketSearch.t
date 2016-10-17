@@ -19,25 +19,11 @@ $Selenium->RunTest(
     sub {
 
         # get helper object
-        $Kernel::OM->ObjectParamAdd(
-            'Kernel::System::UnitTest::Helper' => {
-                RestoreSystemConfiguration => 1,
-            },
-        );
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
-        # get sysconfig object
-        my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
-
         # make sure we start with RuntimeDB search
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
-            Key   => 'Ticket::SearchIndexModule',
-            Value => 'Kernel::System::Ticket::ArticleSearchIndex::RuntimeDB',
-        );
-
-        my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
-        $ConfigObject->Set(
             Key   => 'Ticket::SearchIndexModule',
             Value => 'Kernel::System::Ticket::ArticleSearchIndex::RuntimeDB',
         );
@@ -80,7 +66,7 @@ $Selenium->RunTest(
 
         # create test article
         my $MinCharString = 'ct';
-        my $MaxCharString = $RandomID . 'text' . $RandomID;
+        my $MaxCharString = $RandomID . ('t' x 50);
         my $Subject       = 'SubjectTitle' . $RandomID;
         my $ArticleID     = $TicketObject->ArticleCreate(
             TicketID    => $TicketID,
@@ -137,7 +123,7 @@ $Selenium->RunTest(
         $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#SearchProfile').length" );
 
         # input wrong search parameters, result should be 'No ticket data found'
-        $Selenium->find_element( "Fulltext", 'name' )->send_keys("abcdfgh");
+        $Selenium->find_element( "Fulltext", 'name' )->send_keys("abcdfgh_nonexisting_ticket_text");
         $Selenium->find_element( "Fulltext", 'name' )->VerifiedSubmit();
 
         # check for expected result
@@ -152,7 +138,7 @@ $Selenium->RunTest(
         # wait until form and overlay has loaded, if neccessary
         $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#SearchProfile').length" );
 
-        # input wrong search parameters, result should be 'No ticket data found'
+        # search for $MaxCharString with RuntimeDB - ticket must be found
         $Selenium->find_element( "Fulltext", 'name' )->send_keys($MaxCharString);
         $Selenium->find_element( "Fulltext", 'name' )->VerifiedSubmit();
 
@@ -163,26 +149,18 @@ $Selenium->RunTest(
         );
 
         # change search index module
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
-            Key   => 'Ticket::SearchIndexModule',
-            Value => 'Kernel::System::Ticket::ArticleSearchIndex::StaticDB',
-        );
-
-        $ConfigObject->Set(
             Key   => 'Ticket::SearchIndexModule',
             Value => 'Kernel::System::Ticket::ArticleSearchIndex::StaticDB',
         );
 
         # enable warn on stop word usage
-        $SysConfigObject->ConfigItemUpdate(
+        $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'Ticket::SearchIndex::WarnOnStopWordUsage',
             Value => 1,
         );
-
-        # allow mod_perl to pick up the configuration changes
-        sleep 1;
 
         # Recreate TicketObject and update article index for staticdb
         $Kernel::OM->ObjectsDiscard( Objects => ['Kernel::System::Ticket'] );
@@ -202,13 +180,13 @@ $Selenium->RunTest(
         $Selenium->find_element( "Fulltext", 'name' )->send_keys($MinCharString);
         $Selenium->find_element("//button[\@id='SearchFormSubmit']")->click();
 
-        $Selenium->WaitFor( AlertPresent => 1 ) || die 'Alert not found';
+        $Selenium->WaitFor( AlertPresent => 1 ) || die 'Alert for MinCharString not found';
 
         # verify alert message
         my $ExpectedAlertText = "Fulltext: $MinCharString";
         $Self->True(
             $Selenium->get_alert_text() =~ /$ExpectedAlertText/,
-            'Minimum character string search warning is found'
+            'Minimum character string search warning is found',
         );
 
         # accept alert
@@ -219,13 +197,13 @@ $Selenium->RunTest(
         $Selenium->find_element( "Fulltext", 'name' )->send_keys($MaxCharString);
         $Selenium->find_element("//button[\@id='SearchFormSubmit']")->click();
 
-        $Selenium->WaitFor( AlertPresent => 1 ) || die 'Alert not found';
+        $Selenium->WaitFor( AlertPresent => 1 ) || die 'Alert for MaxCharString not found';
 
         # verify alert message
         $ExpectedAlertText = "Fulltext: $MaxCharString";
         $Self->True(
             $Selenium->get_alert_text() =~ /$ExpectedAlertText/,
-            'Maximum character string search warning is found'
+            'Maximum character string search warning is found',
         );
 
         # accept alert
@@ -236,13 +214,13 @@ $Selenium->RunTest(
         $Selenium->find_element( "Fulltext", 'name' )->send_keys('because');
         $Selenium->find_element("//button[\@id='SearchFormSubmit']")->click();
 
-        $Selenium->WaitFor( AlertPresent => 1 ) || die 'Alert not found';
+        $Selenium->WaitFor( AlertPresent => 1 ) || die 'Alert for stop word not found';
 
         # verify alert message
         $ExpectedAlertText = "Fulltext: because";
         $Self->True(
             $Selenium->get_alert_text() =~ /$ExpectedAlertText/,
-            'Stop word search string warning is found'
+            'Stop word search string warning is found',
         );
 
         # accept alert
@@ -261,6 +239,38 @@ $Selenium->RunTest(
             "Ticket $TitleRandom found on page with correct StaticDB search",
         );
 
+        # navigate to AgentTicketSearch screen again
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketSearch");
+
+        # wait until form and overlay has loaded, if neccessary
+        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#SearchProfile').length" );
+
+        # add search filter by priority and run it
+        $Selenium->execute_script(
+            "\$('#Attribute').val('PriorityIDs').trigger('redraw.InputField').trigger('change');",
+        );
+        $Selenium->find_element( '.AddButton',          'css' )->click();
+        $Selenium->find_element( '#PriorityIDs_Search', 'css' )->click();
+
+        # wait until drop down list is shown
+        $Selenium->WaitFor(
+            JavaScript => "return typeof(\$) === 'function' && \$('.InputField_ListContainer').length"
+        );
+
+        # click on remove button next to priority field
+        $Selenium->find_element( '#PriorityIDs + .RemoveButton', 'css' )->click();
+
+        # wait until drop down list is hidden
+        $Selenium->WaitFor(
+            JavaScript => "return typeof(\$) === 'function' && \$('.InputField_ListContainer').length == 0"
+        );
+
+        # verify dropdown list has been hidden (bug#12243)
+        $Self->True(
+            index( $Selenium->get_page_source(), 'InputField_ListContainer' ) == -1,
+            "InputField list not found on page",
+        );
+
         # clean up test data from the DB
         my $Success = $TicketObject->TicketDelete(
             TicketID => $TicketID,
@@ -268,13 +278,13 @@ $Selenium->RunTest(
         );
         $Self->True(
             $Success,
-            "Ticket with ticket ID $TicketID is deleted"
+            "Ticket with ticket ID $TicketID is deleted",
         );
 
         # make sure the cache is correct
         $Kernel::OM->Get('Kernel::System::Cache')->CleanUp( Type => 'Ticket' );
 
-    }
+    },
 );
 
 1;

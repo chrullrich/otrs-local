@@ -19,11 +19,6 @@ $Selenium->RunTest(
     sub {
 
         # get helper object
-        $Kernel::OM->ObjectParamAdd(
-            'Kernel::System::UnitTest::Helper' => {
-                RestoreSystemConfiguration => 1,
-                }
-        );
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
         # enable CustomerUserGenericTicket sysconfig
@@ -34,12 +29,9 @@ $Selenium->RunTest(
 
         for my $SysConfigChange (@CustomerSysConfig) {
 
-            # get sysconfig object
-            my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
-
             # get default sysconfig
             my $SysConfigName = 'Frontend::CustomerUser::Item###' . $SysConfigChange;
-            my %Config        = $SysConfigObject->ConfigItemGet(
+            my %Config        = $Kernel::OM->Get('Kernel::System::SysConfig')->ConfigItemGet(
                 Name    => $SysConfigName,
                 Default => 1,
             );
@@ -48,7 +40,7 @@ $Selenium->RunTest(
             %Config = map { $_->{Key} => $_->{Content} }
                 grep { defined $_->{Key} } @{ $Config{Setting}->[1]->{Hash}->[1]->{Item} };
 
-            $SysConfigObject->ConfigItemUpdate(
+            $Helper->ConfigSettingChange(
                 Valid => 1,
                 Key   => $SysConfigName,
                 Value => \%Config,
