@@ -310,7 +310,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::EventModulePost###100-ArchiveRestore" Required="0" Valid="1">
-        <Description Translatable="1">Restores a ticket from the archive (only if the event is a state change, from closed to any open available state).</Description>
+        <Description Translatable="1">Restores a ticket from the archive (only if the event is a state change to any open available state).</Description>
         <Group>Ticket</Group>
         <SubGroup>Core::Ticket</SubGroup>
         <Setting>
@@ -2942,7 +2942,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketFreeText###Title" Required="0" Valid="1">
-        <Description Translatable="1">Shows the title fields in the ticket free text screen of the agent interface.</Description>
+        <Description Translatable="1">Shows the title field in the ticket free text screen of the agent interface.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewFreeText</SubGroup>
         <Setting>
@@ -5651,7 +5651,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::ViewableLocks" Required="1" Valid="1">
-        <Description Translatable="1">Defines the viewable locks of a ticket. Default: unlock, tmp_lock.</Description>
+        <Description Translatable="1">Defines the viewable locks of a ticket. NOTE: When you change this setting, make sure to delete the cache in order to use the new value. Default: unlock, tmp_lock.</Description>
         <Group>Ticket</Group>
         <SubGroup>Core::Ticket</SubGroup>
         <Setting>
@@ -9842,6 +9842,7 @@
                 <Item>AgentTicketPriority</Item>
                 <Item>AgentTicketProcess</Item>
                 <Item>AgentTicketResponsible</Item>
+                <Item>AgentTicketSearch</Item>
                 <Item>AgentTicketWatcher</Item>
                 <Item>AgentTicketZoom</Item>
                 <Item>AgentLinkObject</Item>
@@ -10083,6 +10084,7 @@
                 <Item>X-OTRS-FollowUp-SLA</Item>
                 <Item>X-OTRS-FollowUp-SenderType</Item>
                 <Item>X-OTRS-FollowUp-ArticleType</Item>
+                <Item>X-OTRS-BodyDecrypted</Item>
             </Array>
         </Setting>
     </ConfigItem>
@@ -10240,7 +10242,7 @@ Thanks for your help!
             </Hash>
         </Setting>
     </ConfigItem>
-    <ConfigItem Name="PostMaster::PostFilterModule###000-FollowUpArticleTypeCheck" Required="0" Valid="1">
+    <ConfigItem Name="PostMaster::PreCreateFilterModule###000-FollowUpArticleTypeCheck" Required="0" Valid="1">
         <Description Translatable="1">Module to check if arrived emails should be marked as email-internal (because of original forwarded internal email). ArticleType and SenderType define the values for the arrived email/article.</Description>
         <Group>Ticket</Group>
         <SubGroup>Core::PostMaster</SubGroup>
@@ -10325,6 +10327,27 @@ Thanks for your help!
                 <Item Key="DynamicFieldName">Name_X</Item>
                 <Item Key="SenderType" Translatable="1">system</Item>
                 <Item Key="ArticleType" Translatable="1">note-report</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="PostMaster::PreFilterModule###000-DecryptBody" Required="0" Valid="0">
+        <Description Translatable="1">Module to filter encrypted bodies of incoming messages.</Description>
+        <Group>Ticket</Group>
+        <SubGroup>Core::PostMaster</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="Module">Kernel::System::PostMaster::Filter::Decrypt</Item>
+                <Item Key="StoreDecryptedBody">0</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="PostMaster::PreFilterModule###000-SMIMEFetchFromCustomer" Required="0" Valid="1">
+        <Description Translatable="1">Module to fetch customer users SMIME certificates of incoming messages.</Description>
+        <Group>Ticket</Group>
+        <SubGroup>Core::PostMaster</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="Module">Kernel::System::PostMaster::Filter::SMIMEFetchFromCustomer</Item>
             </Hash>
         </Setting>
     </ConfigItem>

@@ -39,16 +39,30 @@ $Selenium->RunTest(
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminSysConfig");
 
         # check for AdminSysConfig groups
-        for my $SysGroupValues (
-            qw (DynamicFields Framework GenericInterface ProcessManagement Daemon Ticket)
-            )
-        {
+        for my $SysGroupValues (qw(DynamicFields Framework GenericInterface ProcessManagement Daemon Ticket)) {
             $Selenium->find_element( "#SysConfigGroup option[value='$SysGroupValues']", 'css' );
 
         }
 
-        # check for export and import buttons
-        $Selenium->find_element("//a[contains(\@href, \'Subaction=Download')]");
+        # select Ticket sysconfig group
+        $Selenium->execute_script(
+            "\$('#SysConfigGroup').val('Ticket').trigger('redraw.InputField').trigger('change');"
+        );
+
+        sleep 0.5;    # Wait for reload to kick in
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".Remove").length' );
+
+        # remove selected Ticket sysconfig group
+        $Selenium->find_element( ".Remove", 'css' )->VerifiedClick();
+
+        # verify no result are found on after removing sysconfig group
+        $Self->Is(
+            $Selenium->execute_script("return \$('.DataTable tbody td').text().trim();"),
+            'No data found.',
+            "No result message is found"
+        );
+
+        # check for the import button
         $Selenium->find_element("//a[contains(\@href, \'Subaction=Import')]");
 
         # test search AdminSysConfig and check for some of the results
@@ -56,10 +70,7 @@ $Selenium->RunTest(
         $Selenium->find_element( "#SysConfigSearch", 'css' )->send_keys("admin");
         $Selenium->find_element( "#SysConfigSearch", 'css' )->VerifiedSubmit();
 
-        for my $SysConfSearch (
-            qw (PerformanceLog Ticket)
-            )
-        {
+        for my $SysConfSearch (qw(PerformanceLog Ticket)) {
             $Self->True(
                 $Selenium->find_element("//a[contains(\@href, \'SysConfigSubGroup=Core%3A%3A$SysConfSearch')]")
                     ->is_displayed(),
@@ -112,16 +123,11 @@ $Selenium->RunTest(
         );
 
         # restore edited values back to default
-        for my $ResetDefault (
-            qw (CustomQueue CustomService NewArticleIgnoreSystemSender)
-            )
-        {
+        for my $ResetDefault (qw(CustomQueue CustomService NewArticleIgnoreSystemSender)) {
             $Selenium->find_element("//button[\@value='Reset this setting'][\@name='ResetTicket::$ResetDefault']")
                 ->VerifiedClick();
         }
-
     }
-
 );
 
 1;

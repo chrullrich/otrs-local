@@ -9,12 +9,12 @@
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 # or see http://www.gnu.org/licenses/agpl.txt.
 # --
 
@@ -131,6 +131,12 @@ for my $CMD ( 'cp', 'tar', $DBDump, $CompressCMD ) {
 
 # create new backup directory
 my $Home = $Kernel::OM->Get('Kernel::Config')->Get('Home');
+
+# append trailing slash to home directory, if it's missing
+if ( $Home !~ m{\/\z} ) {
+    $Home .= '/';
+}
+
 chdir($Home);
 
 my ( $Sec, $Min, $Hour, $Day, $Month, $Year, $WeekDay ) = $Kernel::OM->Get('Kernel::System::Time')->SystemTime2Date(
@@ -187,7 +193,7 @@ else {
     }
 
     # backup datadir
-    if ( $ArticleDir !~ m/\Q$Home\E/ ) {
+    if ( $ArticleDir !~ m/\A\Q$Home\E/ ) {
         print "Backup $Directory/DataDir.tar.gz ... ";
         if ( !system("tar -czf $Directory/DataDir.tar.gz $ArticleDir") ) {
             print "done\n";

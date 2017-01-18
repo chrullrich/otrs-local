@@ -1,11 +1,12 @@
 # 
 # Translators:
 # OTRS SDN BHD <otrssdnbhd@gmail.com>, 2015-2016
+# OTRS SDN BHD <otrssdnbhd@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
-"POT-Creation-Date: 2016-09-14 10:25+0000\n"
-"PO-Revision-Date: 2016-09-14 15:43+0000\n"
+"POT-Creation-Date: 2016-12-07 16:14+0000\n"
+"PO-Revision-Date: 2016-12-07 22:21+0000\n"
 "Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
 "Language-Team: Malay (http://www.transifex.com/otrs/OTRS/language/ms/)\n"
 "MIME-Version: 1.0\n"
@@ -1024,7 +1025,7 @@ msgstr "Berita mengenai pengeluaran OTRS!"
 
 #. Template: AAABase
 msgid "Go to dashboard!"
-msgstr ""
+msgstr "Pergi ke papan pemuka!"
 
 #. Template: AAABase
 msgid "Customer %s added"
@@ -1557,7 +1558,7 @@ msgstr "Terdapat masalah membuang pemasangan %s."
 
 #. Template: AAABase
 msgid "Enable cloud services to unleash all OTRS features!"
-msgstr ""
+msgstr "Membolehkan servis awan untuk mengeluarkan semua ciri-ciri OTRS!"
 
 #. Template: AAACalendar
 msgid "New Year's Day"
@@ -2992,6 +2993,14 @@ msgid "Edit ACL structure"
 msgstr "Sunting struktur Senarai Kawalan Akses"
 
 #. Template: AdminACLEdit
+msgid "Save settings"
+msgstr "Simpan tetapan"
+
+#. Template: AdminACLEdit
+msgid "Save ACL"
+msgstr "Simpan ACL"
+
+#. Template: AdminACLEdit
 msgid "Save"
 msgstr "Simpan"
 
@@ -3052,6 +3061,10 @@ msgid "Delete this attachment"
 msgstr "Padam lampiran ini"
 
 #. Template: AdminAttachment
+msgid "Do you really want to delete this attachment?"
+msgstr "Adakah anda benar ingin buang lampiran ini?"
+
+#. Template: AdminAttachment
 msgid "Add Attachment"
 msgstr "Tambah lampiran"
 
@@ -3100,8 +3113,8 @@ msgid "To get the first 5 lines of the email."
 msgstr "Yang pertama lima baris mesej"
 
 #. Template: AdminAutoResponse
-msgid "To get the realname of the ticket's customer user (if given)."
-msgstr ""
+msgid "To get the name of the ticket's customer user (if given)."
+msgstr "Untuk mendapatkan nama tiket pengguna pelanggan (jika diberikan)."
 
 #. Template: AdminAutoResponse
 msgid "To get the article attribute"
@@ -3258,11 +3271,11 @@ msgstr "Pilih"
 
 #. Template: AdminCustomerCompany
 msgid "List (only %s shown - more available)"
-msgstr ""
+msgstr "Senarai (jika %s ditunjukkan - terdapat lebih)"
 
 #. Template: AdminCustomerCompany
 msgid "List (%s total)"
-msgstr ""
+msgstr "Senarai (%s jumlah)"
 
 #. Template: AdminCustomerCompany
 msgid "Please enter a search term to look for customers."
@@ -3522,7 +3535,7 @@ msgstr "Padam bidang"
 
 #. Template: AdminDynamicField
 msgid "Deleting the field and its data. This may take a while..."
-msgstr ""
+msgstr "Membuang bahagian serta datanya. Ini mungkin mengambil sedikit masa..."
 
 #. Template: AdminDynamicFieldCheckbox
 msgid "Dynamic Fields"
@@ -3652,14 +3665,14 @@ msgstr "Disini anda boleh menyatakan pilihan pautan HTTP untuk nilai bidang dala
 
 #. Template: AdminDynamicFieldDateTime
 msgid "Link for preview"
-msgstr ""
+msgstr "Sambungan untuk pratonton"
 
 #. Template: AdminDynamicFieldDateTime
 msgid ""
 "If filled in, this URL will be used for a preview which is shown when this "
 "link is hovered in ticket zoom. Please note that for this to work, the "
 "regular URL field above needs to be filled in, too."
-msgstr ""
+msgstr "Jika diisi, URL ini akan digunakan untuk pratonton yang mana ditunjukkan apabila pautan ini berlegar-legar dalam zum tiket. Sila pastikan untuk perkara ini berjaya, kawasan URL biasa yang diatas perlu diisi, juga."
 
 #. Template: AdminDynamicFieldDateTime
 msgid "Restrict entering of dates"
@@ -3840,6 +3853,10 @@ msgstr "Padam tugas ini"
 #. Template: AdminGenericAgent
 msgid "Run this task"
 msgstr "Jalankan tugas ini"
+
+#. Template: AdminGenericAgent
+msgid "Do you really want to delete this task?"
+msgstr "Adakah anda benar ingin buang tugasan ini?"
 
 #. Template: AdminGenericAgent
 msgid "Job Settings"
@@ -4163,7 +4180,7 @@ msgstr "Tetapkan kunci tiket baru"
 
 #. Template: AdminGenericAgent
 msgid "New customer user"
-msgstr ""
+msgstr "pengguna pelanggan baharu"
 
 #. Template: AdminGenericAgent
 msgid "New customer ID"
@@ -4236,30 +4253,6 @@ msgstr "Nilai Parameter %s"
 #. Template: AdminGenericAgent
 msgid "Save Changes"
 msgstr "Simpan Perubahan"
-
-#. Template: AdminGenericAgent
-msgid "Tag Reference"
-msgstr "Label Rujukan"
-
-#. Template: AdminGenericAgent
-msgid "In the note section, you can use the following tags"
-msgstr ""
-
-#. Template: AdminGenericAgent
-msgid "Attributes of the current customer user data"
-msgstr "Sifat-sifat data pengguna semasa pelanggan"
-
-#. Template: AdminGenericAgent
-msgid "Attributes of the ticket data"
-msgstr "Sifat-sifat data tiket"
-
-#. Template: AdminGenericAgent
-msgid "Ticket dynamic fields internal key values"
-msgstr "Tiket medan dinamik nilai utama dalaman"
-
-#. Template: AdminGenericAgent
-msgid "Example note"
-msgstr ""
 
 #. Template: AdminGenericAgent
 msgid "Results"
@@ -5007,7 +5000,7 @@ msgstr "Tambah baru unsur peringkat pertama"
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid "Element"
-msgstr ""
+msgstr "Elemen"
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid ""
@@ -5068,24 +5061,31 @@ msgid "Do you really want to delete this web service?"
 msgstr "Anda pasti mahu memadam perkhidmatan web ini?"
 
 #. Template: AdminGenericInterfaceWebservice
-msgid "Example Web Services"
-msgstr ""
+msgid "Ready-to-run Web Services"
+msgstr "Servis-servis Web Sedia-untuk-larikan"
 
 #. Template: AdminGenericInterfaceWebservice
 msgid ""
-"Here you can activate best practice example web service that are part of %s."
-" Please note that some additional configuration may be required."
-msgstr ""
-
-#. Template: AdminGenericInterfaceWebservice
-msgid "Import example web service"
-msgstr ""
+"Here you can activate ready-to-run web services showcasing our best "
+"practices that are a part of %s."
+msgstr "Disini anda boleh aktifkan servis-servis web sedia-untuk-larikan mempamerkan latihan-latihan terbaik kami yang mana sebahagian daripada %s."
 
 #. Template: AdminGenericInterfaceWebservice
 msgid ""
-"Do you want to benefit from web services created by experts? Upgrade to %s "
-"to be able to import some sophisticated example web services."
-msgstr ""
+"Please note that these web services may depend on other modules only "
+"available with certain %s contract levels (there will be a notification with"
+" further details when importing)."
+msgstr "Sila pastikan yang servis-servis web ini boleh bergantung pada modul-modul lain hanya terdapat dengan sesetengah %s tahap-tahap kontrak (ia akan ada satu notifikasi dengan butiran selanjutnya apabila mengimport)."
+
+#. Template: AdminGenericInterfaceWebservice
+msgid "Import ready-to-run web service"
+msgstr "Import servis sedia-untuk-larikan"
+
+#. Template: AdminGenericInterfaceWebservice
+msgid ""
+"Would you like to benefit from web services created by experts? Upgrade to "
+"%s to import some sophisticated ready-to-run web services."
+msgstr "Adakah anda mahu untuk manfaat daripada servis-servis web dicipta oleh pakar-pakar? Tingkatkan kepada %s untuk import sesetengah servis-servis web sedia-untuk-larikan yang canggih."
 
 #. Template: AdminGenericInterfaceWebservice
 msgid ""
@@ -5548,14 +5548,14 @@ msgstr "Sekurang-kurangnya satu kaedah diperlukan bagi setiap pemberitahuan."
 
 #. Template: AdminNotificationEvent
 msgid "Active by default in agent preferences"
-msgstr ""
+msgstr "Aktif ikut lalai dalam kesukaan ejen"
 
 #. Template: AdminNotificationEvent
 msgid ""
 "This is the default value for assigned recipient agents who didn't make a "
 "choice for this notification in their preferences yet. If the box is "
 "enabled, the notification will be sent to such agents."
-msgstr ""
+msgstr "Ini adalah nilai lazim untuk menentukan ejen-ejen penerima yang tidak membuat pilihan untuk notifikasi ini dalam kesukaan mereka lagi. Jika kotak itu dibolehkan, notifikasi itu akan dihantar kepada ejen-ejen sepatutnya."
 
 #. Template: AdminNotificationEvent
 msgid "This feature is currently not available."
@@ -5596,6 +5596,10 @@ msgid "Do you really want to delete this notification language?"
 msgstr "Adakah anda pasti ingin menghapuskan bahasa pemberitahuan ini?"
 
 #. Template: AdminNotificationEvent
+msgid "Tag Reference"
+msgstr "Label Rujukan"
+
+#. Template: AdminNotificationEvent
 msgid "Notifications are sent to an agent or a customer."
 msgstr "Pemberitahuan dihantar kepada ejen atau pelanggan."
 
@@ -5619,6 +5623,10 @@ msgid "To get the first 5 lines of the body (of the latest customer article)."
 msgstr "Untuk mendapatkan 5 baris pertama badan (pelanggan artikel yang terbaru)."
 
 #. Template: AdminNotificationEvent
+msgid "Attributes of the current customer user data"
+msgstr "Sifat-sifat data pengguna semasa pelanggan"
+
+#. Template: AdminNotificationEvent
 msgid "Attributes of the current ticket owner user data"
 msgstr "Sifat-sifat data pengguna pemilik tiket semasa"
 
@@ -5633,6 +5641,14 @@ msgstr "Sifat-sifat pengguna ejen semasa yang memohon tindakan ini"
 #. Template: AdminNotificationEvent
 msgid "Attributes of the recipient user for the notification"
 msgstr "Sifat-sifat pengguna penerima bagi pemberitahuan"
+
+#. Template: AdminNotificationEvent
+msgid "Attributes of the ticket data"
+msgstr "Sifat-sifat data tiket"
+
+#. Template: AdminNotificationEvent
+msgid "Ticket dynamic fields internal key values"
+msgstr "Tiket medan dinamik nilai utama dalaman"
 
 #. Template: AdminNotificationEvent
 msgid ""
@@ -5666,6 +5682,22 @@ msgstr "Templat e-mel"
 msgid ""
 "Use this template to generate the complete email (only for HTML emails)."
 msgstr "Menggunakan templat ini untuk menjana e-mel yang lengkap (hanya untuk e-mel HTML)."
+
+#. Template: AdminNotificationEventTransportEmailSettings
+msgid "Enable email security"
+msgstr "Membolehkan keselamatan email"
+
+#. Template: AdminNotificationEventTransportEmailSettings
+msgid "Email security level"
+msgstr "tahap keselamatan email"
+
+#. Template: AdminNotificationEventTransportEmailSettings
+msgid "If signing key/certificate is missing"
+msgstr "Jika kunci penandatangan/sijil hilang"
+
+#. Template: AdminNotificationEventTransportEmailSettings
+msgid "If encryption key/certificate is missing"
+msgstr "Jika kunci penyulitan/sijil hilang"
 
 #. Template: AdminOTRSBusinessInstalled
 msgid "Manage %s"
@@ -5850,33 +5882,33 @@ msgstr "PGP-Pengurusan"
 
 #. Template: AdminPGP
 msgid "PGP support is disabled"
-msgstr ""
+msgstr "sokongan PGP tidak dibolehkan"
 
 #. Template: AdminPGP
 msgid "To be able to use PGP in OTRS, you have to enable it first."
-msgstr ""
+msgstr "Untuk boleh menggunakan PGP dalam OTRS, anda perlu membolehkannya terlebih dahulu."
 
 #. Template: AdminPGP
 msgid "Enable PGP support"
-msgstr ""
+msgstr "Bolehkan sokongan PGP"
 
 #. Template: AdminPGP
 msgid "Faulty PGP configuration"
-msgstr ""
+msgstr "Konfigurasi PGP tidak betul"
 
 #. Template: AdminPGP
 msgid ""
 "PGP support is enabled, but the relevant configuration contains errors. "
 "Please check the configuration using the button below."
-msgstr ""
+msgstr "sokongan PGP dibolehkan, tetapi konfigurasi berkaitan mempunyai kesilapan-kesilapan. Sila periksa konfigurasi itu dengan butang dibawah."
 
 #. Template: AdminPGP
 msgid "Configure it here!"
-msgstr ""
+msgstr "Konfigurasi ia di sini!"
 
 #. Template: AdminPGP
 msgid "Check PGP configuration"
-msgstr ""
+msgstr "Semak konfigurasi PGP"
 
 #. Template: AdminPGP
 msgid "Add PGP key"
@@ -5969,15 +6001,15 @@ msgstr "Kemaskini maklumat repositori"
 
 #. Template: AdminPackageManager
 msgid "Cloud services are currently disabled."
-msgstr ""
+msgstr "Servis-servis awan tidak dibolehkan buat sementara."
 
 #. Template: AdminPackageManager
 msgid "OTRS Verify™ can not continue!"
-msgstr ""
+msgstr "OTRS Verify™ tidak boleh diteruskan."
 
 #. Template: AdminPackageManager
 msgid "Enable cloud services"
-msgstr ""
+msgstr "Bolehkan servis-servis awan"
 
 #. Template: AdminPackageManager
 msgid "Online Repository"
@@ -6058,11 +6090,11 @@ msgid "Required"
 msgstr "Diperlukan"
 
 #. Template: AdminPackageManager
-msgid "PrimaryKey"
+msgid "Primary Key"
 msgstr "Kunci Utama"
 
 #. Template: AdminPackageManager
-msgid "AutoIncrement"
+msgid "Auto Increment"
 msgstr "Kenaikan Auto"
 
 #. Template: AdminPackageManager
@@ -6180,6 +6212,10 @@ msgid "Delete this filter"
 msgstr "Padam penapis ini"
 
 #. Template: AdminPostMasterFilter
+msgid "Do you really want to delete this filter?"
+msgstr "Adakah anda benar hendak buang tapisan ini?"
+
+#. Template: AdminPostMasterFilter
 msgid "Add PostMaster Filter"
 msgstr "Tambah Postmaster Penapis"
 
@@ -6283,24 +6319,24 @@ msgid "Import process configuration"
 msgstr "Import konfigurasi proses"
 
 #. Template: AdminProcessManagement
-msgid "Example processes"
-msgstr "Contoh proses"
+msgid "Ready-to-run Processes"
+msgstr "Proses-proses sedia-untuk-larikan"
 
 #. Template: AdminProcessManagement
 msgid ""
-"Here you can activate best practice example processes that are part of %s. "
+"Here you can activate ready-to-run processes showcasing our best practices. "
 "Please note that some additional configuration may be required."
-msgstr "Di sini anda boleh mengaktifkan amalan terbaik contoh proses yang merupakan sebahagian daripada %s. Sila ambil perhatian bahawa beberapa konfigurasi tambahan mungkin diperlukan."
-
-#. Template: AdminProcessManagement
-msgid "Import example process"
-msgstr "Import contoh proses"
+msgstr "Disini anda boleh aktifkan proses-proses sedia-untuk-larikan menunjukkan latihan-latihan terbaik kami. Sila pastikan yang sesetengah konfigurasi tambahan mungkin diperlukan."
 
 #. Template: AdminProcessManagement
 msgid ""
-"Do you want to benefit from processes created by experts? Upgrade to %s to "
-"be able to import some sophisticated example processes."
-msgstr "Adakah anda ingin mendapat manfaat daripada proses yang dicipta oleh pakar-pakar? Naik taraf ke %s dapat mengimport beberapa proses contoh canggih."
+"Would you like to benefit from processes created by experts? Upgrade to %s "
+"to import some sophisticated ready-to-run processes."
+msgstr "Adakah anda ingin untuk memanfaat daripada proses-proses dicipta oleh pakar-pakar? Tambahbaik kepada %s untuk import sedikit proses-proses sedia-untuk-larikan yang canggih."
+
+#. Template: AdminProcessManagement
+msgid "Import ready-to-run process"
+msgstr "Import proses sedia-untuk-larikan"
 
 #. Template: AdminProcessManagement
 msgid ""
@@ -6381,7 +6417,7 @@ msgstr "Dialog Aktiviti Tersedia"
 
 #. Template: AdminProcessManagementActivity
 msgid "Name: %s, EntityID: %s"
-msgstr ""
+msgstr "Nama: %s, EntitiID: %s"
 
 #. Template: AdminProcessManagementActivity
 msgid "Create New Activity Dialog"
@@ -6474,7 +6510,7 @@ msgstr "Medan tersedia"
 
 #. Template: AdminProcessManagementActivityDialog
 msgid "Name: %s"
-msgstr ""
+msgstr "Nama: %s"
 
 #. Template: AdminProcessManagementActivityDialog
 msgid "Assigned Fields"
@@ -6650,10 +6686,6 @@ msgid "Edit this Activity"
 msgstr "Edit Aktiviti ini"
 
 #. Template: AdminProcessManagementProcessEdit
-msgid "Save settings"
-msgstr "Simpan tetapan"
-
-#. Template: AdminProcessManagementProcessEdit
 msgid "Save Activities, Activity Dialogs and Transitions"
 msgstr "Simpan Aktiviti, Aktiviti Dialog dan Peralihan"
 
@@ -6751,6 +6783,10 @@ msgid ""
 msgstr "Pada skrin ini, anda boleh mencipta proses baru. Dalam usaha untuk membuat proses yang baru yang tersedia kepada pengguna , sila pastikan untuk menetapkan keadaannya kepada 'Aktif' dan menyelaraskan selepas menamatkan kerja anda."
 
 #. Template: AdminProcessManagementProcessPrint
+msgid "cancel & close"
+msgstr "batal & tutup"
+
+#. Template: AdminProcessManagementProcessPrint
 msgid "Start Activity"
 msgstr "Mula Aktiviti"
 
@@ -6814,7 +6850,7 @@ msgstr "Nama Peralihan"
 
 #. Template: AdminProcessManagementTransition
 msgid "Conditions can only operate on non-empty fields."
-msgstr ""
+msgstr "Keadaan hanya boleh beroperasi pada ruang-ruang tidak-kosong."
 
 #. Template: AdminProcessManagementTransition
 msgid "Type of Linking between Conditions"
@@ -6991,19 +7027,19 @@ msgstr "Mengurus Perhubungan Response Barisan-Auto"
 
 #. Template: AdminQueueAutoResponse
 msgid "This filter allow you to show queues without auto responses"
-msgstr ""
+msgstr "Tapisan ini membenarkan anda untuk menunjukkan barisan-barisan tanpa tindak balas auto"
 
 #. Template: AdminQueueAutoResponse
 msgid "Queues without auto responses"
-msgstr ""
+msgstr "Barisan-barisan tanpa tindak balas auto"
 
 #. Template: AdminQueueAutoResponse
 msgid "This filter allow you to show all queues"
-msgstr ""
+msgstr "Tapisan ini membenarkan anda untuk menunjukkan semua barisan"
 
 #. Template: AdminQueueAutoResponse
 msgid "Show all queues"
-msgstr ""
+msgstr "menunjukkan semua barisan"
 
 #. Template: AdminQueueAutoResponse
 msgid "Filter for Queues"
@@ -7478,29 +7514,29 @@ msgstr "S/MIME-Pengurusan"
 
 #. Template: AdminSMIME
 msgid "SMIME support is disabled"
-msgstr ""
+msgstr "sokongan SMIME dinyahaktifkan"
 
 #. Template: AdminSMIME
 msgid "To be able to use SMIME in OTRS, you have to enable it first."
-msgstr ""
+msgstr "Untuk boleh menggunakan SMIME dalam OTRS, anda perlu membolehkannya terlebih dahulu."
 
 #. Template: AdminSMIME
 msgid "Enable SMIME support"
-msgstr ""
+msgstr "Bolehkan sokongan SMIME"
 
 #. Template: AdminSMIME
 msgid "Faulty SMIME configuration"
-msgstr ""
+msgstr "Konfigurasi SMIME tidak betul"
 
 #. Template: AdminSMIME
 msgid ""
 "SMIME support is enabled, but the relevant configuration contains errors. "
 "Please check the configuration using the button below."
-msgstr ""
+msgstr "sokongan SMIME dibolehkan, tetapi konfigurasi berkaitan mempunyai kesilapan. Sila semak konfigurasi tersebut menggunakan butang dibawah."
 
 #. Template: AdminSMIME
 msgid "Check SMIME configuration"
-msgstr ""
+msgstr "Semak konfigurasi SMIME"
 
 #. Template: AdminSMIME
 msgid "Add certificate"
@@ -7589,7 +7625,7 @@ msgstr "Hubungkaitkan sijil ini"
 
 #. Template: AdminSMIMECertRead
 msgid "Close dialog"
-msgstr ""
+msgstr "dialog penutup"
 
 #. Template: AdminSMIMECertRead
 msgid "Certificate details"
@@ -7786,11 +7822,11 @@ msgstr "Jenis Keadaan"
 
 #. Template: AdminSupportDataCollector
 msgid "Sending support data to OTRS Group is not possible!"
-msgstr ""
+msgstr "Menghantar data sokongan kepada Kumpulan OTRS adalah tidak mungkin!"
 
 #. Template: AdminSupportDataCollector
 msgid "Enable Cloud Services"
-msgstr ""
+msgstr "Bolehkan Servis Awan"
 
 #. Template: AdminSupportDataCollector
 msgid ""
@@ -7954,7 +7990,7 @@ msgstr "Elemen"
 
 #. Template: AdminSysConfigEdit
 msgid "Edit Config Settings in %s → %s"
-msgstr ""
+msgstr "Edit Tetapan Config dalam %s → %s"
 
 #. Template: AdminSysConfigEdit
 msgid "This setting is read only."
@@ -8062,7 +8098,7 @@ msgstr "Tambah entri BarNav"
 
 #. Template: AdminSysConfigEdit
 msgid "NavBar module"
-msgstr ""
+msgstr "modul NavBar"
 
 #. Template: AdminSysConfigEdit
 msgid "Year"
@@ -8225,6 +8261,10 @@ msgid "Don't forget to add new templates to queues."
 msgstr "Jangan lupa untuk menambah templat baru kepada barisan."
 
 #. Template: AdminTemplate
+msgid "Do you really want to delete this template?"
+msgstr "Adakah anda benar-benar mahu untuk memadam template ini?"
+
+#. Template: AdminTemplate
 msgid "Add Template"
 msgstr "Tambah Templat"
 
@@ -8326,7 +8366,7 @@ msgstr "Edit Agen"
 
 #. Template: AdminUser
 msgid "Title or salutation"
-msgstr ""
+msgstr "Tajuk atau sapaan"
 
 #. Template: AdminUser
 msgid "Firstname"
@@ -8412,6 +8452,18 @@ msgstr "Ia akan dipadam daripada medan, sila cuba lagi."
 msgid "Note: Customer is invalid!"
 msgstr "Nota: Pelanggan tidak sah!"
 
+#. Template: AgentCustomerTableView
+msgid "Start chat"
+msgstr "Memulakan perbualan"
+
+#. Template: AgentCustomerTableView
+msgid "Video call"
+msgstr "Panggilan video"
+
+#. Template: AgentCustomerTableView
+msgid "Audio call"
+msgstr "Panggilan audio"
+
 #. Template: AgentDaemonInfo
 msgid ""
 "The OTRS Daemon is a daemon process that performs asynchronous tasks, e.g. "
@@ -8454,7 +8506,7 @@ msgstr "dalam"
 
 #. Template: AgentDashboardCommon
 msgid "Close this widget"
-msgstr ""
+msgstr "Tutup widget ini"
 
 #. Template: AgentDashboardCommon
 msgid "Available Columns"
@@ -8485,10 +8537,6 @@ msgid "Email ticket"
 msgstr "Tiket emel"
 
 #. Template: AgentDashboardCustomerUserList
-msgid "Start Chat"
-msgstr "Memulakan Perbualan"
-
-#. Template: AgentDashboardCustomerUserList
 msgid "%s open ticket(s) of %s"
 msgstr "%s membuka tiket(tiket-tiket) %s"
 
@@ -8503,10 +8551,6 @@ msgstr "Tiket telefon baru daripada %s"
 #. Template: AgentDashboardCustomerUserList
 msgid "New email ticket to %s"
 msgstr "Tiket emel baru kepada %s"
-
-#. Template: AgentDashboardCustomerUserList
-msgid "Start chat"
-msgstr "Memulakan perbualan"
 
 #. Template: AgentDashboardProductNotify
 msgid "%s %s is available!"
@@ -8623,10 +8667,6 @@ msgstr "Jumlah"
 msgid "out of office"
 msgstr "keluar dari pejabat"
 
-#. Template: AgentDashboardUserOnline
-msgid "Selected agent is not available for chat"
-msgstr "Ejen dipilih tidak tersedia untuk sembang"
-
 #. Template: AgentDashboardUserOutOfOffice
 msgid "until"
 msgstr "sehingga"
@@ -8661,7 +8701,7 @@ msgstr "Pilih Objek Sasaran"
 
 #. Template: AgentLinkObject
 msgid "Link object %s with"
-msgstr ""
+msgstr "Menghubungkan objek %s dengan "
 
 #. Template: AgentLinkObject
 msgid "Unlink Object: %s"
@@ -8670,6 +8710,16 @@ msgstr "Nyahpaut Objek: %s"
 #. Template: AgentLinkObject
 msgid "go to link add screen"
 msgstr "pergi untuk menghubungkan skrin menambah"
+
+#. Template: AgentOTRSBusinessBlockScreen
+msgid "Unauthorized usage of %s detected"
+msgstr "Penggunaan tidak sah bagi %s dikesan"
+
+#. Template: AgentOTRSBusinessBlockScreen
+msgid ""
+"If you decide to downgrade to OTRS Free, you will lose all database tables "
+"and data related to %s."
+msgstr "Jika anda membuat keputusan untuk turun taraf kepada OTRS Free, anda akan kehilangan kesemua jadual-jadual pangkalan data dan data berkaitan dengan %s."
 
 #. Template: AgentPreferences
 msgid "Edit your preferences"
@@ -8828,31 +8878,31 @@ msgstr "Statistik ini mengandungi ralat konfigurasi dan tidak boleh digunakan pa
 
 #. Template: AgentTicketActionCommon
 msgid "Change Free Text of %s%s%s"
-msgstr ""
+msgstr "Tukar Teks Percuma bagi %s%s%s"
 
 #. Template: AgentTicketActionCommon
 msgid "Change Owner of %s%s%s"
-msgstr ""
+msgstr "Tukar Pemilik bagi %s%s%s"
 
 #. Template: AgentTicketActionCommon
 msgid "Close %s%s%s"
-msgstr ""
+msgstr "Tutup %s%s%s"
 
 #. Template: AgentTicketActionCommon
 msgid "Add Note to %s%s%s"
-msgstr ""
+msgstr "Tambah Nota pada %s%s%s"
 
 #. Template: AgentTicketActionCommon
 msgid "Set Pending Time for %s%s%s"
-msgstr ""
+msgstr "Tentukan Waktu Sementara bagi %s%s%s"
 
 #. Template: AgentTicketActionCommon
 msgid "Change Priority of %s%s%s"
-msgstr ""
+msgstr "Tukar Kewajipan bagi %s%s%s"
 
 #. Template: AgentTicketActionCommon
 msgid "Change Responsible of %s%s%s"
-msgstr ""
+msgstr " "
 
 #. Template: AgentTicketActionCommon
 msgid "All fields marked with an asterisk (*) are mandatory."
@@ -8906,7 +8956,7 @@ msgstr "Di sini anda boleh memilih ejen tambahan yang sepatutnya menerima pember
 
 #. Template: AgentTicketActionCommon
 msgid "Text will also be received by"
-msgstr ""
+msgstr "Teks juga akan diterima oleh"
 
 #. Template: AgentTicketActionCommon
 msgid "Spell check"
@@ -8926,7 +8976,7 @@ msgstr "Jenis Nota"
 
 #. Template: AgentTicketBounce
 msgid "Bounce %s%s%s"
-msgstr ""
+msgstr "Lantunan %s%s%s"
 
 #. Template: AgentTicketBounce
 msgid "Bounce to"
@@ -8986,11 +9036,11 @@ msgstr "Buka tiket"
 
 #. Template: AgentTicketBulk
 msgid "Execute Bulk Action"
-msgstr ""
+msgstr "Laksanakan Tindakan Pukal"
 
 #. Template: AgentTicketCompose
 msgid "Compose Answer for %s%s%s"
-msgstr ""
+msgstr "Mengarang Jawapan untuk %s%s%s"
 
 #. Template: AgentTicketCompose
 msgid "This address is registered as system address and cannot be used: %s"
@@ -9697,6 +9747,22 @@ msgstr "Tapisan"
 msgid "Confirm"
 msgstr "Sah"
 
+#. Template: CustomerFooterJS
+msgid "You have unanswered chat requests"
+msgstr "Anda mempunyai permohonan perbualan yang tidak berjawab."
+
+#. Template: CustomerFooterJS
+msgid "Accept"
+msgstr "Terima"
+
+#. Template: CustomerFooterJS
+msgid "Decline"
+msgstr "Tolak"
+
+#. Template: CustomerFooterJS
+msgid "An internal error occurred."
+msgstr "Berlakunya kesilapan dalaman."
+
 #. Template: CustomerLogin
 msgid "JavaScript Not Available"
 msgstr "JavaScript idak disediakan"
@@ -9792,10 +9858,6 @@ msgid "Incoming Chat Requests"
 msgstr "Kemasukan Permohonan Perbualan"
 
 #. Template: CustomerNavigationBar
-msgid "You have unanswered chat requests"
-msgstr "Anda mempunyai permohonan perbualan yang tidak berjawab."
-
-#. Template: CustomerNavigationBar
 msgid "Edit personal preferences"
 msgstr "Edit pilihan peribadi"
 
@@ -9809,7 +9871,7 @@ msgstr "Pisah Petikan"
 
 #. Template: CustomerRichTextEditor
 msgid "Open link"
-msgstr ""
+msgstr "buka sambungan"
 
 #. Template: CustomerTicketMessage
 msgid "Service level agreement"
@@ -10110,12 +10172,28 @@ msgid "New public chat request"
 msgstr "Permohonan perbualan orang ramai baharu"
 
 #. Template: FooterJS
+msgid "Selected user is not available for chat."
+msgstr ""
+
+#. Template: FooterJS
 msgid "New activity"
 msgstr "Aktiviti baru"
 
 #. Template: FooterJS
 msgid "New activity on one of your monitored chats."
 msgstr "Aktiviti baru pada salah satu perbualan pantauan anda."
+
+#. Template: FooterJS
+msgid "Your browser does not support video and audio calling."
+msgstr ""
+
+#. Template: FooterJS
+msgid "Selected user is not available for video and audio call."
+msgstr ""
+
+#. Template: FooterJS
+msgid "Target user's browser does not support video and audio calling."
+msgstr ""
 
 #. Template: FooterJS
 msgid "Do you really want to continue?"
@@ -11705,7 +11783,7 @@ msgid "Need SourceObject and SourceKey!"
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentLinkObject.pm
-msgid "Please contact the admin."
+msgid "Please contact the administrator."
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentLinkObject.pm
@@ -11835,11 +11913,11 @@ msgstr ""
 #. Perl Module: Kernel/Modules/AgentTicketBulk.pm
 msgid ""
 "You either selected no ticket or only tickets which are locked by other "
-"agents"
+"agents."
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketBulk.pm
-msgid "You need to select at least one ticket"
+msgid "You need to select at least one ticket."
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketBulk.pm
@@ -12033,9 +12111,7 @@ msgid "Couldn't get Config for ActivityDialogEntityID \"%s\"!"
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
-msgid ""
-"Couldn't use CustomerID as an invisible field. Please contact your system "
-"administrator!"
+msgid "Couldn't use CustomerID as an invisible field."
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
@@ -12109,6 +12185,10 @@ msgid "Untitled"
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketSearch.pm
+msgid "Customer Name"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketSearch.pm
 msgid "Invalid Users"
 msgstr "Pengguna Tidak Sah"
 
@@ -12129,8 +12209,56 @@ msgid "Feature is not active"
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Link Deleted"
+msgstr "Pautan Dipadam"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Ticket Locked"
+msgstr "Tiket Dikunci"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Pending Time Set"
+msgstr "Penangguhan Set Masa"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Dynamic Field Updated"
+msgstr "Medan Dinamik Dikemaskini"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Outgoing Email (internal)"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "Ticket Created"
 msgstr "Tiket DIcipta"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Type Updated"
+msgstr "Jenis Dikemaskini"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Escalation Update Time In Effect"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Escalation Update Time Stopped"
+msgstr "Peningkatan Masa Kemaskini Dihentikan"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Escalation First Response Time Stopped"
+msgstr "Peningkatan Waktu Tindak Balas Pertama Dihentikan"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Customer Updated"
+msgstr "Pelanggan Dikemaskini"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Internal Chat"
+msgstr "Chat Dalaman"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Automatic Follow-Up Sent"
+msgstr "Susulan Automatik Dihantar"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "Note Added"
@@ -12141,137 +12269,125 @@ msgid "Note Added (Customer)"
 msgstr "Nota Ditambah (Pelanggan)"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Outgoing Email"
-msgstr "Emel Keluar"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Outgoing Email (internal)"
-msgstr ""
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Incoming Customer Email"
-msgstr "Emel Pelanggan Masuk"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Dynamic Field Updated"
-msgstr "Medan Dinamik Dikemaskini"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Outgoing Phone Call"
-msgstr "Panggilan Telefon Keluar"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Incoming Phone Call"
-msgstr "Panggilan Telefon Masuk"
+msgid "State Updated"
+msgstr "Keadaan Dikemaskini"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "Outgoing Answer"
 msgstr "Jawapan Keluar"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "SLA Updated"
-msgstr "SLA Dikemaskini"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "Service Updated"
 msgstr "Servis Dikemaskini"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Customer Updated"
-msgstr "Pelanggan Dikemaskini"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "State Updated"
-msgstr "Keadaan Dikemaskini"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Incoming Follow-Up"
-msgstr "Susulan Masuk"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Escalation Update Time Stopped"
-msgstr "Peningkatan Masa Kemaskini Dihentikan"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Escalation Solution Time Stopped"
-msgstr "Peningkatan Masa Penyelesaian Dihentikan"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Escalation First Response Time Stopped"
-msgstr "Peningkatan Waktu Tindak Balas Pertama Dihentikan"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Escalation Response Time Stopped"
-msgstr "Peningkatan Waktu Tindak Balas Dihentikan"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "Link Added"
 msgstr "Pautan Ditambah"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Link Deleted"
-msgstr "Pautan Dipadam"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Ticket Merged"
-msgstr "Tiket Digabungkan"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Pending Time Set"
-msgstr "Penangguhan Set Masa"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Ticket Locked"
-msgstr "Tiket Dikunci"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Ticket Unlocked"
-msgstr "Tiket Dibuka"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Queue Updated"
-msgstr "Barisan Dikemaskini"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Priority Updated"
-msgstr "Keutamaan Dikemaskini "
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Title Updated"
-msgstr "Tajuk Dikemaskini"
-
-#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Type Updated"
-msgstr "Jenis Dikemaskini"
+msgid "Incoming Customer Email"
+msgstr "Emel Pelanggan Masuk"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "Incoming Web Request"
 msgstr "Permohonan Web Masuk"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Automatic Follow-Up Sent"
-msgstr "Susulan Automatik Dihantar"
+msgid "Priority Updated"
+msgstr "Keutamaan Dikemaskini "
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Automatic Reply Sent"
-msgstr "Jawapan Automatik Dihantar"
+msgid "Ticket Unlocked"
+msgstr "Tiket Dibuka"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Outgoing Email"
+msgstr "Emel Keluar"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Title Updated"
+msgstr "Tajuk Dikemaskini"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Ticket Merged"
+msgstr "Tiket Digabungkan"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Outgoing Phone Call"
+msgstr "Panggilan Telefon Keluar"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Forwarded Message"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Removed User Subscription"
+msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "Time Accounted"
 msgstr "Masa Perakaunan"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Incoming Phone Call"
+msgstr "Panggilan Telefon Masuk"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "System Request."
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Incoming Follow-Up"
+msgstr "Susulan Masuk"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Automatic Reply Sent"
+msgstr "Jawapan Automatik Dihantar"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Automatic Reject Sent"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Escalation Solution Time In Effect"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Escalation Solution Time Stopped"
+msgstr "Peningkatan Masa Penyelesaian Dihentikan"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Escalation Response Time In Effect"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Escalation Response Time Stopped"
+msgstr "Peningkatan Waktu Tindak Balas Dihentikan"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "SLA Updated"
+msgstr "SLA Dikemaskini"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Queue Updated"
+msgstr "Barisan Dikemaskini"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "External Chat"
 msgstr "Chat Luaran"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
-msgid "Internal Chat"
-msgstr "Chat Dalaman"
+msgid "Queue Changed"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Notification Was Sent"
+msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid ""
 "We are sorry, you do not have permissions anymore to access this ticket in "
-"its current state. "
+"its current state."
 msgstr "Harap maaf, anda tidak mempunyai keizinan lagi untuk mengakses tiket ini dalam keadaan semasa."
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
@@ -12292,6 +12408,34 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "Invalid ArticleID!"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Offline"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "User is currently offline."
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "User is currently active."
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Away"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "User was inactive for a while."
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Unavailable"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "User set their status to unavailable."
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
@@ -12395,7 +12539,7 @@ msgid "Unknown database type \"%s\"."
 msgstr ""
 
 #. Perl Module: Kernel/Modules/Installer.pm
-msgid "Please go back"
+msgid "Please go back."
 msgstr ""
 
 #. Perl Module: Kernel/Modules/Installer.pm
@@ -12476,6 +12620,26 @@ msgstr ""
 msgid "The start time of a ticket has been set after the end time!"
 msgstr ""
 
+#. Perl Module: Kernel/Output/HTML/Dashboard/News.pm
+msgid "Can't connect to OTRS News server!"
+msgstr ""
+
+#. Perl Module: Kernel/Output/HTML/Dashboard/News.pm
+msgid "Can't get OTRS News from server!"
+msgstr ""
+
+#. Perl Module: Kernel/Output/HTML/Dashboard/ProductNotify.pm
+msgid "Can't connect to Product News server!"
+msgstr ""
+
+#. Perl Module: Kernel/Output/HTML/Dashboard/ProductNotify.pm
+msgid "Can't get Product News from server!"
+msgstr ""
+
+#. Perl Module: Kernel/Output/HTML/Dashboard/RSS.pm
+msgid "Can't connect to %s!"
+msgstr ""
+
 #. Perl Module: Kernel/Output/HTML/Dashboard/TicketGeneric.pm
 msgid "sorted ascending"
 msgstr ""
@@ -12496,22 +12660,6 @@ msgstr ""
 msgid "This ticket has no title or subject"
 msgstr "Tiket ini tidak mempunyai tajuk atau subjek"
 
-#. Perl Module: Kernel/Output/HTML/Dashboard/UserOnline.pm
-msgid "This user is currently offline"
-msgstr "Pengguna ini sedang tutup talian"
-
-#. Perl Module: Kernel/Output/HTML/Dashboard/UserOnline.pm
-msgid "This user is currently active"
-msgstr "Pengguna ini sedang aktif"
-
-#. Perl Module: Kernel/Output/HTML/Dashboard/UserOnline.pm
-msgid "This user is currently away"
-msgstr "Pengguna ini sedang tiada"
-
-#. Perl Module: Kernel/Output/HTML/Dashboard/UserOnline.pm
-msgid "This user is currently unavailable"
-msgstr "Pengguna ini sedang  tidak tersedia."
-
 #. Perl Module: Kernel/Output/HTML/Layout.pm
 msgid ""
 "We are sorry, you do not have permissions anymore to access this ticket in "
@@ -12530,6 +12678,10 @@ msgstr "Dipautkan sebagai"
 msgid "Search Result"
 msgstr ""
 
+#. Perl Module: Kernel/Output/HTML/LinkObject/Ticket.pm
+msgid "Archive search"
+msgstr ""
+
 #. Perl Module: Kernel/Output/HTML/Notification/AgentOTRSBusiness.pm
 msgid "%s Upgrade to %s now! %s"
 msgstr "%s Naik taraf ke %s sekarang! %s"
@@ -12538,10 +12690,6 @@ msgstr "%s Naik taraf ke %s sekarang! %s"
 #. Kernel/Output/HTML/Notification/CustomerSystemMaintenanceCheck.pm
 msgid "A system maintenance period will start at: "
 msgstr "Tempoh penyelenggaraan sistem akan bermula pada:"
-
-#. Perl Module: Kernel/Output/HTML/Notification/DaemonCheck.pm
-msgid "Please contact your administrator!"
-msgstr "Sila hubungi pentadbir anda!"
 
 #. Perl Module: Kernel/Output/HTML/Preferences/Language.pm
 msgid "(in process)"
@@ -12644,7 +12792,22 @@ msgstr "Sila keluarkan perkataan yang berikut kerana mereka tidak boleh digunaka
 msgid "Order by"
 msgstr "Disusun mengikut"
 
-#. Perl Module: Kernel/System/AuthSession/DB.pm
+#. Perl Module: Kernel/System/AuthSession.pm
+msgid ""
+"You have exceeded the number of concurrent agents - contact sales@otrs.com."
+msgstr ""
+
+#. Perl Module: Kernel/System/AuthSession.pm
+msgid "Please note that the session limit is almost reached."
+msgstr ""
+
+#. Perl Module: Kernel/System/AuthSession.pm
+msgid ""
+"Login rejected! You have exceeded the maximum number of concurrent Agents! "
+"Contact sales@otrs.com immediately!"
+msgstr ""
+
+#. Perl Module: Kernel/System/AuthSession.pm
 msgid "Session per user limit reached!"
 msgstr ""
 
@@ -12666,6 +12829,14 @@ msgstr "Tetapan ini tidak boleh dinyahaktifkan."
 
 #. Perl Module: Kernel/System/Package.pm
 msgid "not installed"
+msgstr ""
+
+#. Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
+msgid "Inactive"
+msgstr "Tidak Aktif"
+
+#. Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
+msgid "FadeAway"
 msgstr ""
 
 #. Perl Module: Kernel/System/Registration.pm
@@ -13073,8 +13244,8 @@ msgstr "Pembahagian di mana OTRS diletakkan tidak mempunyai masalah ruangan cake
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OS/DiskSpacePartitions.pm
-msgid "Operating System/Disk Partitions Usage"
-msgstr "Sistem Operasi/Penggunaan Pembahagian Cakera"
+msgid "Disk Partitions Usage"
+msgstr ""
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/Distribution.pm
 msgid "Distribution"
@@ -13128,8 +13299,13 @@ msgstr "Ia sepatutnya mempunyai tidak lebih daripada 200 MB ruang tukaran yang d
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/ConfigSettings.pm
-msgid "OTRS/Config Settings"
-msgstr "Tetapan OTRS/Konfig"
+msgid "OTRS"
+msgstr "OTRS"
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/ConfigSettings.pm
+msgid "Config Settings"
+msgstr ""
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/ConfigSettings.pm
@@ -13138,13 +13314,13 @@ msgstr "Tidak dapat menentukan nilai."
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DaemonRunning.pm
-msgid "OTRS"
-msgstr "OTRS"
+msgid "Daemon"
+msgstr "Daemon"
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DaemonRunning.pm
-msgid "Daemon"
-msgstr "Daemon"
+msgid "Daemon is running."
+msgstr ""
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DaemonRunning.pm
@@ -13153,8 +13329,8 @@ msgstr "Daemon tidak berjalan."
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
-msgid "OTRS/Database Records"
-msgstr "Rekod Pangkalan Data/OTRS"
+msgid "Database Records"
+msgstr ""
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
@@ -13200,6 +13376,11 @@ msgstr "Nilai Medan Dinamik tidak sah"
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
 msgid "GenericInterface Webservices"
 msgstr "AntaramukaGenerik Servisweb"
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
+msgid "Process Tickets"
+msgstr ""
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
@@ -13282,9 +13463,39 @@ msgstr ""
 msgid "Some packages are not correctly installed."
 msgstr "Sesetengah pakej tidak dipasang dengan betul."
 
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/PackageDeployment.pm
+msgid "Package Verification Status"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/PackageDeployment.pm
+msgid ""
+"Some packages are not verified by the OTRS Group! It is recommended not to "
+"use this packages."
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/PackageDeployment.pm
+msgid "Package Framework Version Status"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/PackageDeployment.pm
+msgid "Some packages are not allowed for the current framework version."
+msgstr ""
+
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageList.pm
-msgid "OTRS/Package List"
-msgstr "Senarai Pakej/OTRS"
+msgid "Package List"
+msgstr ""
+
+#. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
+msgid "Spooled Emails"
+msgstr ""
+
+#. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
+msgid "There are emails in var/spool that OTRS could not process."
+msgstr ""
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SystemID.pm
 msgid "Your SystemID setting is invalid, it should only contain digits."
@@ -13367,13 +13578,13 @@ msgstr "Rekod piatu dalam Jadual ticket_index"
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/Ticket/StaticDBOrphanedRecords.pm
 msgid ""
-"Table ticket_index contains orphaned records. Please run "
-"otrs/bin/otrs.CleanTicketIndex.pl to clean the StaticDB index."
-msgstr "Jadual ticket_index mengandungi rekod piatu. Sila jalankan otrs/bin/otrs.CleanTicketIndex.pl untuk membersihkan indeks StaticDB."
+"Table ticket_index contains orphaned records. Please run bin/otrs.Console.pl"
+" \"Maint::Ticket::QueueIndexCleanup\" to clean the StaticDB index."
+msgstr ""
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/TimeSettings.pm
-msgid "OTRS/Time Settings"
-msgstr "Tetapan Masa/OTRS"
+msgid "Time Settings"
+msgstr ""
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/TimeSettings.pm
 msgid "Server time zone"
@@ -13407,13 +13618,13 @@ msgstr "Tetapan ZonMasa OTRS untuk kalendar"
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/LoadedModules.pm
-msgid "Webserver/Loaded Apache Modules"
-msgstr "Modul Apache PelayanWeb/Dimuatkan"
-
-#. Perl Module:
-#. Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/MPMModel.pm
 msgid "Webserver"
 msgstr "Pelayan web"
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/LoadedModules.pm
+msgid "Loaded Apache Modules"
+msgstr ""
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/MPMModel.pm
@@ -13492,13 +13703,8 @@ msgstr "Apache2::DBI harus digunakan untuk mendapatkan prestasi yang lebih baik 
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/Webserver/EnvironmentVariables.pm
-msgid "Webserver/Environment Variables"
-msgstr "Pembolehubah Pelayanweb/Persekitaran"
-
-#. Perl Module:
-#. Kernel/System/SupportDataCollector/Plugin/Webserver/IIS/Performance.pm
-msgid "You should use PerlEx to increase your performance."
-msgstr "Anda harus menggunakan PerlEx untuk meningkatkan prestasi anda."
+msgid "Environment Variables"
+msgstr ""
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Version.pm
 msgid "Webserver Version"
@@ -13507,6 +13713,16 @@ msgstr "Versi pelayan web"
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Version.pm
 msgid "Could not determine webserver version."
 msgstr "Tidak dapat menentukan versi pelayan web."
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/PluginAsynchronous/OTRS/ConcurrentUsers.pm
+msgid "Concurrent Users Details"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/PluginAsynchronous/OTRS/ConcurrentUsers.pm
+msgid "Concurrent Users"
+msgstr "Pengguna Sedia ada"
 
 #. Perl Module: Kernel/System/SupportDataCollector/PluginBase.pm
 msgid "Unknown"
@@ -13524,6 +13740,56 @@ msgstr "Masalah"
 msgid "Reset of unlock time."
 msgstr ""
 
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "PGP sign only"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "PGP encrypt only"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "PGP sign and encrypt"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "SMIME sign only"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "SMIME encrypt only"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "SMIME sign and encrypt"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "PGP and SMIME not enabled."
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "Skip notification delivery"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "Send unsigned notification"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "Send unencrypted notification"
+msgstr ""
+
 #. Perl Module: Kernel/System/Web/InterfaceAgent.pm
 msgid ""
 "Panic, user authenticated but no user data can be found in OTRS DB!! Perhaps"
@@ -13531,7 +13797,7 @@ msgid ""
 msgstr ""
 
 #. Perl Module: Kernel/System/Web/InterfaceAgent.pm
-msgid "Can`t remove SessionID"
+msgid "Can`t remove SessionID."
 msgstr ""
 
 #. Perl Module: Kernel/System/Web/InterfaceAgent.pm
@@ -13547,8 +13813,14 @@ msgid "No Permission to use this frontend module!"
 msgstr ""
 
 #. Perl Module: Kernel/System/Web/InterfaceCustomer.pm
-msgid "Reset password unsuccessful. Please contact your administrator"
-msgstr "Set semula kata laluan tidak berjaya. Sila hubungi pentadbir anda."
+msgid ""
+"Authentication succeeded, but no customer record is found in the customer "
+"backend. Please contact the administrator."
+msgstr ""
+
+#. Perl Module: Kernel/System/Web/InterfaceCustomer.pm
+msgid "Reset password unsuccessful. Please contact the administrator."
+msgstr ""
 
 #. Perl Module: Kernel/System/Web/InterfaceCustomer.pm
 msgid "Added via Customer Panel (%s)"
@@ -13568,7 +13840,8 @@ msgstr ""
 
 #. Perl Module: Kernel/System/Web/InterfaceInstaller.pm
 msgid ""
-"If you want to re-run the Installer, disable the SecureMode in the SysConfig"
+"If you want to re-run the Installer, disable the SecureMode in the "
+"SysConfig."
 msgstr ""
 
 #. Perl Module: Kernel/System/Web/InterfaceInstaller.pm
@@ -15527,6 +15800,12 @@ msgstr "Mentakrifkan barisan bahawa tiket digunakan untuk dipaparkan sebagai aca
 
 #. SysConfig
 msgid ""
+"Defines the HTTP hostname for the support data collection with the public "
+"module 'PublicSupportDataCollector' (e.g. used from the OTRS Daemon)."
+msgstr ""
+
+#. SysConfig
+msgid ""
 "Defines the IP regular expression for accessing the local repository. You "
 "need to enable this to have access to your local repository and the "
 "package::RepositoryList is required on the remote host."
@@ -16553,27 +16832,27 @@ msgstr "Mentakrifkan modul yang menunjukkan notifikasi generik dalam paparan eje
 
 #. SysConfig
 msgid ""
-"Defines the module that shows all the currently loged in customers in the "
-"agent interface."
-msgstr "Mentakrifkan modul yang menunjukkan kesemua pelanggan yang sedang log masuk dalam paparan ejen."
-
-#. SysConfig
-msgid ""
 "Defines the module that shows all the currently logged in agents in the "
 "agent interface."
 msgstr "Mentakrifkan modul yang menunjukkan kesemua ejen yang sedang log masuk dalam paparan ejen."
 
 #. SysConfig
 msgid ""
-"Defines the module that shows the currently loged in agents in the customer "
-"interface."
-msgstr "Mentakrifkan modul yang menunjukkan kesemua ejen yang sedang log masuk dalam paparan pelanggan"
+"Defines the module that shows all the currently logged in customers in the "
+"agent interface."
+msgstr ""
 
 #. SysConfig
 msgid ""
-"Defines the module that shows the currently loged in customers in the "
+"Defines the module that shows the currently logged in agents in the customer"
+" interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Defines the module that shows the currently logged in customers in the "
 "customer interface."
-msgstr "Mentakrifkan modul yang menunjukkan kesemua pelanggan yang sedang log masuk dalam paparan pelanggan."
+msgstr ""
 
 #. SysConfig
 msgid "Defines the module to authenticate customers."
@@ -16607,6 +16886,12 @@ msgid ""
 "Defines the module to display a notification in the agent interface, if the "
 "agent is logged in while having system maintenance active."
 msgstr "Mentakrifkan modul untuk memaparkan pemberitahuan dalam antara muka ejen, jika ejen log masuk sambil mengalami penyelenggaraan sistem aktif."
+
+#. SysConfig
+msgid ""
+"Defines the module to display a notification in the agent interface, if the "
+"agent session limit prior warning is reached."
+msgstr ""
 
 #. SysConfig
 msgid ""
@@ -17070,8 +17355,11 @@ msgid ""
 msgstr "Mentakrifkan keadaan sah untuk tiket dibuka. Untuk membuka kunci tiket skrip \"bin/otrs.Console.pl Maint::Tiket::UnlockTimeout\" yang boleh digunakan."
 
 #. SysConfig
-msgid "Defines the viewable locks of a ticket. Default: unlock, tmp_lock."
-msgstr "Mentakrifkan tiket dikunci yang boleh dilihat. Default: unlock. tmp_lock."
+msgid ""
+"Defines the viewable locks of a ticket. NOTE: When you change this setting, "
+"make sure to delete the cache in order to use the new value. Default: "
+"unlock, tmp_lock."
+msgstr ""
 
 #. SysConfig
 msgid ""
@@ -17191,6 +17479,12 @@ msgstr "Menetukan status tiket kemungkinan yang seterusnya, untuk tiket proses d
 
 #. SysConfig
 msgid ""
+"Determines the next possible ticket states, for process tickets in the "
+"customer interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
 "Determines the next screen after new customer ticket in the customer "
 "interface."
 msgstr "Menentukan skrin seterusnya selepas tiket pelanggan baru dalam paparan pelanggan."
@@ -17246,6 +17540,13 @@ msgid ""
 "Determines which queues will be valid for ticket's recepients in the "
 "customer interface."
 msgstr "Menentukan aturan mana akan sah untuk penerima tiket dalam paparan pelanggan."
+
+#. SysConfig
+msgid ""
+"Disable HTTP header \"Content-Security-Policy\" to allow loading of external"
+" script contents. Disabling this HTTP header can be a security issue! Only "
+"disable it, if you know what you are doing!"
+msgstr ""
 
 #. SysConfig
 msgid ""
@@ -17602,6 +17903,10 @@ msgstr "Mengaktifkan sokongan S/MIME."
 #. SysConfig
 msgid "Enables customers to create their own accounts."
 msgstr "Membolehkan pelanggan untuk mencipta akaun mereka sendiri."
+
+#. SysConfig
+msgid "Enables fetch S/MIME from CustomerUser backend support."
+msgstr ""
 
 #. SysConfig
 msgid "Enables file upload in the package manager frontend."
@@ -18965,6 +19270,11 @@ msgstr "Modul untuk crypt mesej yang dikarang (PGP atau S/MIME)."
 
 #. SysConfig
 msgid ""
+"Module to fetch customer users SMIME certificates of incoming messages."
+msgstr ""
+
+#. SysConfig
+msgid ""
 "Module to filter and manipulate incoming messages. Block/ignore all spam "
 "email with From: noreply@ address."
 msgstr "Modul untuk menapis dan memanipulasi mesej yang masuk. Halang/abai kesemua emel span dengan Dari: noreply@ address."
@@ -18975,6 +19285,10 @@ msgid ""
 "ticket free text, use regex in Match e. g. From => '(.+?)@.+?', and use () "
 "as [***] in Set =>."
 msgstr "Modul untuk menapis dan memanipulasi mesej yang masuk. Dapatkan nombor 4 digit kepada tiket bebas teks, guna regex dalam Padanan cth: From => '(.+?)@.+?', dan guna () sebagai [***] dalam Set =>."
+
+#. SysConfig
+msgid "Module to filter encrypted bodies of incoming messages."
+msgstr ""
 
 #. SysConfig
 msgid "Module to generate accounted time ticket statistics."
@@ -19575,6 +19889,13 @@ msgstr "Mengalihkan maklumat pemerhati tiket apabila tiket diarkibkan."
 
 #. SysConfig
 msgid ""
+"Renew existing SMIME certificates from customer backend. Note: SMIME and "
+"SMIME::FetchFromCustomer needs to be active in SysConfig and customer "
+"backend needs to be configured to fetch UserSMIMECertificate attribute."
+msgstr ""
+
+#. SysConfig
+msgid ""
 "Replaces the original sender with current customer's email address on "
 "compose answer in the ticket compose screen of the agent interface."
 msgstr "Menggantikan pengganti asal dengan alamat emel pelanggan semasa pada jawapan dikarang dalam skrin karang tiket dari paparan ejen."
@@ -19695,9 +20016,9 @@ msgstr ""
 
 #. SysConfig
 msgid ""
-"Restores a ticket from the archive (only if the event is a state change, "
-"from closed to any open available state)."
-msgstr "Memulihkan tiket daripada arkib (hanya jika acara ialah status berubah, daripada tertutup kepada mana-mana status terbuka yang tersedia)."
+"Restores a ticket from the archive (only if the event is a state change to "
+"any open available state)."
+msgstr ""
 
 #. SysConfig
 msgid ""
@@ -20171,8 +20492,15 @@ msgstr "Tetapkan giliran paparan dari item yang berbeza dalam paparan pilihan."
 #. SysConfig
 msgid ""
 "Sets the inactivity time (in seconds) to pass before a session is killed and"
-" a user is loged out."
-msgstr "Tetapkan masa tidak aktif (dalam saat) untuk berlalu sebelum suatu sesi dimatikan dan pengguna dilog keluar."
+" a user is logged out."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the maximum number of active agents within the timespan defined in "
+"SessionActiveTime before a prior warning will be visible for the logged in "
+"agents."
+msgstr ""
 
 #. SysConfig
 msgid ""
@@ -20475,8 +20803,10 @@ msgid ""
 msgstr "Tetapkan jenis tiket dalam skrin tanggungjawab tiket dari paparan ejen (Ticket::Type perlu diaktifkan)."
 
 #. SysConfig
-msgid "Sets the time (in seconds) a user is marked as active."
-msgstr "Set masa (dalam saat) pengguna ditanda sebagai aktif."
+msgid ""
+"Sets the time (in seconds) a user is marked as active (minimum active time "
+"is 300 seconds)."
+msgstr ""
 
 #. SysConfig
 msgid "Sets the timeout (in seconds) for http/ftp downloads."
@@ -21077,14 +21407,13 @@ msgstr "Menunjukkan pilihan keutamaan tiket dalam skrin tanggungjawab tiket dari
 
 #. SysConfig
 msgid ""
-"Shows the title fields in the close ticket screen of the agent interface."
-msgstr "Menunjukkan medan tajuk dari skrin tiket tertutup dari paparan ejen."
+"Shows the title field in the ticket free text screen of the agent interface."
+msgstr ""
 
 #. SysConfig
 msgid ""
-"Shows the title fields in the ticket free text screen of the agent "
-"interface."
-msgstr "Menunjukkan medan tajuk dari skrin tiket bebas teks dari paparan ejen."
+"Shows the title fields in the close ticket screen of the agent interface."
+msgstr "Menunjukkan medan tajuk dari skrin tiket tertutup dari paparan ejen."
 
 #. SysConfig
 msgid ""
@@ -21725,7 +22054,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Ticket bulk module."
-msgstr ""
+msgstr "modul pukal tiket"
 
 #. SysConfig
 msgid "Ticket event module that triggers the escalation stop events."
@@ -21745,15 +22074,15 @@ msgstr "Overview tiket"
 
 #. SysConfig
 msgid "Ticket plain view of an email."
-msgstr ""
+msgstr "pandangan dataran tiket suatu e-mel"
 
 #. SysConfig
 msgid "Ticket title"
-msgstr ""
+msgstr "tajuk tiket"
 
 #. SysConfig
 msgid "Ticket zoom view."
-msgstr ""
+msgstr "pandangan zum tiket"
 
 #. SysConfig
 msgid "TicketNumber"
@@ -21761,7 +22090,7 @@ msgstr "NomborTiket"
 
 #. SysConfig
 msgid "Tickets."
-msgstr ""
+msgstr "Tiket-tiket"
 
 #. SysConfig
 msgid ""
@@ -21779,7 +22108,7 @@ msgstr ""
 
 #. SysConfig
 msgid "To download attachments."
-msgstr ""
+msgstr "untuk memuat turun lampiran"
 
 #. SysConfig
 msgid "Toggles display of OTRS FeatureAddons list in PackageManager."
@@ -21934,7 +22263,7 @@ msgstr "Perhatikan tiket ini"
 
 #. SysConfig
 msgid "Watched Tickets."
-msgstr ""
+msgstr "Tiket-tiket dilihat."
 
 #. SysConfig
 msgid "We are performing scheduled maintenance."
@@ -21952,7 +22281,7 @@ msgstr "Kami sedang menjalankan penyelenggaraan berjadual. Kami akan kembali seb
 
 #. SysConfig
 msgid "Web View"
-msgstr ""
+msgstr "Pandangan Web"
 
 #. SysConfig
 msgid ""
@@ -22005,24 +22334,24 @@ msgstr ""
 
 #. SysConfig
 msgid "attachment"
-msgstr ""
+msgstr "lampiran"
 
 #. SysConfig
 msgid "debug"
-msgstr ""
+msgstr "nyahpepijat"
 
 #. SysConfig
 msgid "error"
-msgstr ""
+msgstr "ralat"
 
 #. SysConfig
 msgid "info"
-msgstr ""
+msgstr "info"
 
 #. SysConfig
 msgid "inline"
-msgstr ""
+msgstr "sebaris"
 
 #. SysConfig
 msgid "notice"
-msgstr ""
+msgstr "notis"

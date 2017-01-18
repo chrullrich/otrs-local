@@ -9,12 +9,12 @@
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 # or see http://www.gnu.org/licenses/agpl.txt.
 # --
 
@@ -259,6 +259,15 @@ my @NeededModules = (
             aptget => 'libdbd-pg-perl',
             emerge => 'dev-perl/DBD-Pg',
             zypper => 'perl-DBD-Pg',
+        },
+    },
+    {
+        Module    => 'Digest::SHA',    # Supposed to be in perlcore, but seems to be missing on some distributions.
+        Required  => 1,
+        InstTypes => {
+            aptget => 'libdigest-sha-perl',
+            emerge => 'dev-perl/Digest-SHA',
+            zypper => 'perl-Digest-SHA'
         },
     },
     {

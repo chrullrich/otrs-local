@@ -71,7 +71,8 @@ $Selenium->RunTest(
         );
 
         # disable frontend service module
-        my $FrontendCustomerTicketOverview = $Kernel::OM->Get('Kernel::Config')->Get('CustomerFrontend::Module')->{CustomerTicketOverview};
+        my $FrontendCustomerTicketOverview
+            = $Kernel::OM->Get('Kernel::Config')->Get('CustomerFrontend::Module')->{CustomerTicketOverview};
 
         # change the group for the CompanyTickets
         for my $NavBarItem ( @{ $FrontendCustomerTicketOverview->{NavBar} } ) {
@@ -101,7 +102,7 @@ $Selenium->RunTest(
         $Selenium->VerifiedGet("${ScriptAlias}customer.pl?Action=CustomerTicketOverview;Subaction=CompanyTickets");
 
         # check for customer user fatal error
-        my $ExpectedMsg = 'Please contact your administrator';
+        my $ExpectedMsg = 'Please contact the administrator';
         $Self->True(
             index( $Selenium->get_page_source(), $ExpectedMsg ) > -1,
             "Customer fatal error message - found",

@@ -50,9 +50,9 @@ $Self->True(
     "Set Email Test backend with true",
 );
 
-# ----------------------------------------
+#
 # Create a test ticket
-# ----------------------------------------
+#
 my $TicketID = $TicketObject->TicketCreate(
     Title         => 'test',
     QueueID       => 1,
@@ -85,8 +85,6 @@ my @AddedTickets = ($TicketID);
 my $UserLogin = $Kernel::OM->Get('Kernel::System::User')->UserLookup(
     UserID => 1,
 );
-
-# ----------------------------------------
 
 # create dynamic fields
 my $DynamicFieldID1 = $DynamicFieldObject->DynamicFieldAdd(
@@ -161,7 +159,7 @@ for my $DynamicFieldID ( $DynamicFieldID1, $DynamicFieldID2, $DynamicFieldID3 ) 
     );
 }
 
-# ----------------------------------------
+#
 my $DynamicFieldBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
 
 # set a value for multiselect dynamic field
@@ -945,9 +943,15 @@ for my $Test (@Tests) {
                     my $DynamicFieldConfig = $DynamicFieldObject->DynamicFieldGet(
                         Name => $DynamicFieldName,
                     );
+
+                    my $DisplayValue = $DynamicFieldBackendObject->ValueLookup(
+                        DynamicFieldConfig => $DynamicFieldConfig,
+                        Key                => $Ticket{"DynamicField_$DynamicFieldName"},
+                    );
+
                     my $DisplayValueStrg = $DynamicFieldBackendObject->ReadableValueRender(
                         DynamicFieldConfig => $DynamicFieldConfig,
-                        Value              => $Ticket{"DynamicField_$DynamicFieldName"},
+                        Value              => $DisplayValue,
                     );
 
                     $Self->Is(
@@ -1000,9 +1004,15 @@ for my $Test (@Tests) {
                     my $DynamicFieldConfig = $DynamicFieldObject->DynamicFieldGet(
                         Name => $DynamicFieldName,
                     );
+
+                    my $DisplayValue = $DynamicFieldBackendObject->ValueLookup(
+                        DynamicFieldConfig => $DynamicFieldConfig,
+                        Key                => $Ticket{"DynamicField_$DynamicFieldName"},
+                    );
+
                     my $DisplayValueStrg = $DynamicFieldBackendObject->ReadableValueRender(
                         DynamicFieldConfig => $DynamicFieldConfig,
-                        Value              => $Ticket{"DynamicField_$DynamicFieldName"},
+                        Value              => $DisplayValue,
                     );
 
                     $Self->Is(

@@ -32,6 +32,7 @@ our @ObjectDependencies = (
     'Kernel::System::SystemMaintenance',
     'Kernel::System::Time',
     'Kernel::System::User',
+    'Kernel::System::VideoChat',
     'Kernel::System::Web::Request',
     'Kernel::System::Group',
 );
@@ -488,15 +489,12 @@ sub SetEnv {
 
 =item Block()
 
-use a dtl block
+call a block and pass data to it (optional) to generate the block's output.
 
     $LayoutObject->Block(
         Name => 'Row',
         Data => {
-            Time     => $Row[0],
-            Priority => $Row[1],
-            Facility => $Row[2],
-            Message  => $Row[3],
+            Time => ...,
         },
     );
 
@@ -1023,8 +1021,19 @@ sub Error {
             ) || '';
         }
     }
+
     if ( !$Param{Message} ) {
         $Param{Message} = $Param{BackendMessage};
+
+        # Don't check for business package if the database was not yet configured (in the installer).
+        if (
+            $Kernel::OM->Get('Kernel::Config')->Get('SecureMode')
+            && $Kernel::OM->Get('Kernel::Config')->Get('DatabaseDSN')
+            && !$Kernel::OM->Get('Kernel::System::OTRSBusiness')->OTRSBusinessIsInstalled()
+            )
+        {
+            $Param{ShowOTRSBusinessHint}++;
+        }
     }
 
     if ( $Param{BackendTraceback} ) {
@@ -1032,11 +1041,6 @@ sub Error {
             Name => 'ShowBackendTraceback',
             Data => \%Param,
         );
-    }
-
-    # Don't check for business package if the database was not yet configured (in the installer)
-    if ( $Kernel::OM->Get('Kernel::Config')->Get('SecureMode') ) {
-        $Param{OTRSBusinessIsInstalled} = $Kernel::OM->Get('Kernel::System::OTRSBusiness')->OTRSBusinessIsInstalled();
     }
 
     # create & return output
@@ -1548,6 +1552,12 @@ sub Footer {
         $Param{OTRSBusinessIsInstalled} = $Kernel::OM->Get('Kernel::System::OTRSBusiness')->OTRSBusinessIsInstalled();
     }
 
+    # Check if video chat is enabled.
+    if ( $Kernel::OM->Get('Kernel::System::Main')->Require( 'Kernel::System::VideoChat', Silent => 1 ) ) {
+        $Param{VideoChatEnabled} = $Kernel::OM->Get('Kernel::System::VideoChat')->IsEnabled()
+            || $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => 'UnitTestMode' ) // 0;
+    }
+
     # create & return output
     return $Self->Output(
         TemplateFile => "Footer$Type",
@@ -1670,7 +1680,7 @@ sub Ascii2Html {
     else {
         $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
-            Message  => 'Invalid ref "' . ref $Param{Text} . '" of Text param!',
+            Message  => 'Invalid ref "' . ref( $Param{Text} ) . '" of Text param!',
         );
         return '';
     }
@@ -2409,6 +2419,8 @@ returns browser output to display/download a attachment
         Filename    => 'FileName.png',  # optional
         ContentType => 'image/png',
         Content     => $Content,
+        Sandbox     => 1,               # optional, default 0; use content security policy to prohibit external
+                                        #   scripts, flash etc.
     );
 
     or for AJAX html snippets
@@ -2471,6 +2483,21 @@ sub Attachment {
 
     if ( !$Kernel::OM->Get('Kernel::Config')->Get('DisableIFrameOriginRestricted') ) {
         $Output .= "X-Frame-Options: SAMEORIGIN\n";
+    }
+
+    if ( $Param{Sandbox} && !$Kernel::OM->Get('Kernel::Config')->Get('DisableContentSecurityPolicy') ) {
+
+        # Disallow external and inline scripts, active content, frames, but keep allowing inline styles
+        #   as this is a common use case in emails.
+        # Also disallow referrer headers to prevent referrer leaks.
+        # img-src:    allow external and inline (data:) images
+        # script-src: block all scripts
+        # object-src: allow 'self' so that the browser can load plugins for PDF display
+        # frame-src:  block all frames
+        # style-src:  allow inline styles for nice email display
+        # referrer:   don't send referrers to prevent referrer-leak attacks
+        $Output
+            .= "Content-Security-Policy: default-src *; img-src * data:; script-src 'none'; object-src 'self'; frame-src 'none'; style-src 'unsafe-inline'; referrer no-referrer;\n";
     }
 
     if ( $Param{Charset} ) {
@@ -3121,7 +3148,7 @@ sub BuildDateSelection {
             Data        => \%Year,
             SelectedID  => int( $Param{ $Prefix . 'Year' } || $Y ),
             Translation => 0,
-            Class       => $Validate ? 'Validate_DateYear' : '',
+            Class       => $Validate ? "Validate_DateYear $Class" : $Class,
             Title       => $Self->{LanguageObject}->Translate('Year'),
             Disabled    => $Param{Disabled},
         );
@@ -3145,7 +3172,7 @@ sub BuildDateSelection {
             Data        => \%Month,
             SelectedID  => int( $Param{ $Prefix . 'Month' } || $M ),
             Translation => 0,
-            Class       => $Validate ? 'Validate_DateMonth' : '',
+            Class       => $Validate ? "Validate_DateMonth $Class" : $Class,
             Title       => $Self->{LanguageObject}->Translate('Month'),
             Disabled    => $Param{Disabled},
         );
@@ -3720,6 +3747,12 @@ sub CustomerFooter {
         },
     );
 
+    # Check if video chat is enabled.
+    if ( $Kernel::OM->Get('Kernel::System::Main')->Require( 'Kernel::System::VideoChat', Silent => 1 ) ) {
+        $Param{VideoChatEnabled} = $Kernel::OM->Get('Kernel::System::VideoChat')->IsEnabled()
+            || $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => 'UnitTestMode' ) // 0;
+    }
+
     # create & return output
     return $Self->Output(
         TemplateFile => "CustomerFooter$Type",
@@ -3897,7 +3930,7 @@ sub CustomerNavigationBar {
             if (
                 !$SelectedFlag
                 && $NavBarModule{$Item}->{Link} =~ /Action=$Self->{Action}/
-                && $NavBarModule{$Item}->{Link} =~ /$Self->{Subaction}/       # Subaction can be empty
+                && $NavBarModule{$Item}->{Link} =~ /$Self->{Subaction}/    # Subaction can be empty
                 )
             {
                 $NavBarModule{$Item}->{Class} .= ' Selected';
@@ -4001,27 +4034,28 @@ sub CustomerNavigationBar {
             );
         }
 
-        # show open chat requests (if chat engine is active)
-        if ( $ConfigObject->Get('ChatEngine::Active') ) {
+        # Show open chat requests (if chat engine is active).
+        if ( $Kernel::OM->Get('Kernel::System::Main')->Require( 'Kernel::System::Chat', Silent => 1 ) ) {
+            if ( $ConfigObject->Get('ChatEngine::Active') ) {
+                my $ChatObject = $Kernel::OM->Get('Kernel::System::Chat');
+                my $Chats      = $ChatObject->ChatList(
+                    Status        => 'request',
+                    TargetType    => 'Customer',
+                    ChatterID     => $Self->{UserID},
+                    ChatterType   => 'Customer',
+                    ChatterActive => 0,
+                );
 
-            my $ChatObject = $Kernel::OM->Get('Kernel::System::Chat');
-            my $Chats      = $ChatObject->ChatList(
-                Status        => 'request',
-                TargetType    => 'Customer',
-                ChatterID     => $Self->{UserID},
-                ChatterType   => 'Customer',
-                ChatterActive => 0,
-            );
+                my $Count = scalar $Chats;
 
-            my $Count = scalar $Chats;
-
-            $Self->Block(
-                Name => 'ChatRequests',
-                Data => {
-                    Count => $Count,
-                    Class => ($Count) ? '' : 'Hidden',
-                },
-            );
+                $Self->Block(
+                    Name => 'ChatRequests',
+                    Data => {
+                        Count => $Count,
+                        Class => ($Count) ? '' : 'Hidden',
+                    },
+                );
+            }
         }
     }
 
@@ -4326,14 +4360,15 @@ sub RichTextDocumentServe {
     # convert charset
     if ($Charset) {
         $Param{Data}->{Content} = $Kernel::OM->Get('Kernel::System::Encode')->Convert(
-            Text => $Param{Data}->{Content},
-            From => $Charset,
-            To   => 'utf-8',
+            Text  => $Param{Data}->{Content},
+            From  => $Charset,
+            To    => 'utf-8',
+            Check => 1,
         );
 
         # replace charset in content
         $Param{Data}->{ContentType} =~ s/\Q$Charset\E/utf-8/gi;
-        $Param{Data}->{Content}     =~ s/(<meta[^>]+charset=("|'|))\Q$Charset\E/$1utf-8/gi;
+        $Param{Data}->{Content} =~ s/(<meta[^>]+charset=("|'|))\Q$Charset\E/$1utf-8/gi;
     }
 
     # add html links

@@ -72,7 +72,9 @@ sub Run {
     }
 
     my @TablesWithInvalidCharset;
-    $DBObject->Prepare( SQL => 'show table status' );
+
+    # Views have engine == null, ignore those.
+    $DBObject->Prepare( SQL => 'show table status where engine is not null' );
     while ( my @Row = $DBObject->FetchrowArray() ) {
         if ( $Row[14] !~ /^utf8/i ) {
             push @TablesWithInvalidCharset, $Row[0];
@@ -96,17 +98,5 @@ sub Run {
 
     return $Self->GetResults();
 }
-
-=back
-
-=head1 TERMS AND CONDITIONS
-
-This software is part of the OTRS project (L<http://otrs.org/>).
-
-This software comes with ABSOLUTELY NO WARRANTY. For details, see
-the enclosed file COPYING for license information (AGPL). If you
-did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
-
-=cut
 
 1;

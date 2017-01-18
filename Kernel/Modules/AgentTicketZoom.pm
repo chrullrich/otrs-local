@@ -132,43 +132,52 @@ sub new {
     # this is a mapping of history types which is being used
     # for the timeline view and its event type filter
     $Self->{HistoryTypeMapping} = {
+        TicketLinkDelete                => Translatable('Link Deleted'),
+        Lock                            => Translatable('Ticket Locked'),
+        SetPendingTime                  => Translatable('Pending Time Set'),
+        TicketDynamicFieldUpdate        => Translatable('Dynamic Field Updated'),
+        EmailAgentInternal              => Translatable('Outgoing Email (internal)'),
         NewTicket                       => Translatable('Ticket Created'),
+        TypeUpdate                      => Translatable('Type Updated'),
+        EscalationUpdateTimeStart       => Translatable('Escalation Update Time In Effect'),
+        EscalationUpdateTimeStop        => Translatable('Escalation Update Time Stopped'),
+        EscalationFirstResponseTimeStop => Translatable('Escalation First Response Time Stopped'),
+        CustomerUpdate                  => Translatable('Customer Updated'),
+        ChatInternal                    => Translatable('Internal Chat'),
+        SendAutoFollowUp                => Translatable('Automatic Follow-Up Sent'),
         AddNote                         => Translatable('Note Added'),
         AddNoteCustomer                 => Translatable('Note Added (Customer)'),
-        EmailAgent                      => Translatable('Outgoing Email'),
-        EmailAgentInternal              => Translatable('Outgoing Email (internal)'),
-        EmailCustomer                   => Translatable('Incoming Customer Email'),
-        TicketDynamicFieldUpdate        => Translatable('Dynamic Field Updated'),
-        PhoneCallAgent                  => Translatable('Outgoing Phone Call'),
-        PhoneCallCustomer               => Translatable('Incoming Phone Call'),
-        SendAnswer                      => Translatable('Outgoing Answer'),
-        ResponsibleUpdate               => Translatable('New Responsible'),
-        OwnerUpdate                     => Translatable('New Owner'),
-        SLAUpdate                       => Translatable('SLA Updated'),
-        ServiceUpdate                   => Translatable('Service Updated'),
-        CustomerUpdate                  => Translatable('Customer Updated'),
         StateUpdate                     => Translatable('State Updated'),
-        FollowUp                        => Translatable('Incoming Follow-Up'),
-        EscalationUpdateTimeStop        => Translatable('Escalation Update Time Stopped'),
-        EscalationSolutionTimeStop      => Translatable('Escalation Solution Time Stopped'),
-        EscalationFirstResponseTimeStop => Translatable('Escalation First Response Time Stopped'),
-        EscalationResponseTimeStop      => Translatable('Escalation Response Time Stopped'),
+        SendAnswer                      => Translatable('Outgoing Answer'),
+        ServiceUpdate                   => Translatable('Service Updated'),
         TicketLinkAdd                   => Translatable('Link Added'),
-        TicketLinkDelete                => Translatable('Link Deleted'),
-        Merged                          => Translatable('Ticket Merged'),
-        SetPendingTime                  => Translatable('Pending Time Set'),
-        Lock                            => Translatable('Ticket Locked'),
-        Unlock                          => Translatable('Ticket Unlocked'),
-        Move                            => Translatable('Queue Updated'),
-        PriorityUpdate                  => Translatable('Priority Updated'),
-        TitleUpdate                     => Translatable('Title Updated'),
-        TypeUpdate                      => Translatable('Type Updated'),
+        EmailCustomer                   => Translatable('Incoming Customer Email'),
         WebRequestCustomer              => Translatable('Incoming Web Request'),
-        SendAutoFollowUp                => Translatable('Automatic Follow-Up Sent'),
-        SendAutoReply                   => Translatable('Automatic Reply Sent'),
+        PriorityUpdate                  => Translatable('Priority Updated'),
+        Unlock                          => Translatable('Ticket Unlocked'),
+        EmailAgent                      => Translatable('Outgoing Email'),
+        TitleUpdate                     => Translatable('Title Updated'),
+        OwnerUpdate                     => Translatable('New Owner'),
+        Merged                          => Translatable('Ticket Merged'),
+        PhoneCallAgent                  => Translatable('Outgoing Phone Call'),
+        Forward                         => Translatable('Forwarded Message'),
+        Unsubscribe                     => Translatable('Removed User Subscription'),
         TimeAccounting                  => Translatable('Time Accounted'),
+        PhoneCallCustomer               => Translatable('Incoming Phone Call'),
+        SystemRequest                   => Translatable('System Request.'),
+        FollowUp                        => Translatable('Incoming Follow-Up'),
+        SendAutoReply                   => Translatable('Automatic Reply Sent'),
+        SendAutoReject                  => Translatable('Automatic Reject Sent'),
+        ResponsibleUpdate               => Translatable('New Responsible'),
+        EscalationSolutionTimeStart     => Translatable('Escalation Solution Time In Effect'),
+        EscalationSolutionTimeStop      => Translatable('Escalation Solution Time Stopped'),
+        EscalationResponseTimeStart     => Translatable('Escalation Response Time In Effect'),
+        EscalationResponseTimeStop      => Translatable('Escalation Response Time Stopped'),
+        SLAUpdate                       => Translatable('SLA Updated'),
+        Move                            => Translatable('Queue Updated'),
         ChatExternal                    => Translatable('External Chat'),
-        ChatInternal                    => Translatable('Internal Chat'),
+        Move                            => Translatable('Queue Changed'),
+        SendAgentNotification           => Translatable('Notification Was Sent'),
     };
 
     # Add custom files to the zoom's frontend module registration on the fly
@@ -198,7 +207,7 @@ sub Run {
     if ( !$Self->{TicketID} ) {
         return $LayoutObject->ErrorScreen(
             Message => Translatable('No TicketID is given!'),
-            Comment => Translatable('Please contact the admin.'),
+            Comment => Translatable('Please contact the administrator.'),
         );
     }
 
@@ -213,16 +222,12 @@ sub Run {
     );
 
     # error screen, don't show ticket
-    if ( !$Access ) {
-        my $TranslatableMessage = $LayoutObject->{LanguageObject}->Translate(
-            "We are sorry, you do not have permissions anymore to access this ticket in its current state. "
-        );
-
-        return $LayoutObject->NoPermission(
-            Message    => $TranslatableMessage,
-            WithHeader => 'yes',
-        );
-    }
+    return $LayoutObject->NoPermission(
+        Message => Translatable(
+            'We are sorry, you do not have permissions anymore to access this ticket in its current state.'
+        ),
+        WithHeader => 'yes',
+    ) if !$Access;
 
     # get ticket attributes
     my %Ticket = $TicketObject->TicketGet(
@@ -782,26 +787,58 @@ sub MaskAgentZoom {
         $Pages = ceil( $ArticleCount / $Limit );
     }
 
-    # add counter
-    my $Count = ( $Page - 1 ) * $Limit;
-
-    # in case of reverse sorting, count top-down
+    my $Count;
     if ( $ConfigObject->Get('Ticket::Frontend::ZoomExpandSort') eq 'reverse' ) {
-        $Count = $ArticleCount - ( ( $Page - 1 ) * $Limit ) + 1;
+        $Count = scalar @ArticleBox + 1;
+    }
+    else {
+        $Count = 0;
+    }
+
+    # get all articles
+    my @ArticleContentArgsAll = (
+        TicketID                   => $Self->{TicketID},
+        StripPlainBodyAsAttachment => $Self->{StripPlainBodyAsAttachment},
+        UserID                     => $Self->{UserID},
+        Order                      => $Order,
+        DynamicFields => 0,    # fetch later only for the article(s) to display
+    );
+    my @ArticleBoxAll = $TicketObject->ArticleContentIndex(@ArticleContentArgsAll);
+
+    if ( scalar @ArticleBox != scalar @ArticleBoxAll ) {
+
+        if ( $ConfigObject->Get('Ticket::Frontend::ZoomExpandSort') eq 'reverse' ) {
+            $Count = scalar @ArticleBoxAll + 1;
+        }
+
+        for my $Article (@ArticleBoxAll) {
+            if ( $ConfigObject->Get('Ticket::Frontend::ZoomExpandSort') eq 'reverse' ) {
+                $Count--;
+            }
+            else {
+                $Count++;
+            }
+            $Article->{Count} = $Count;
+        }
     }
 
     my $ArticleIDFound = 0;
     ARTICLE:
     for my $Article (@ArticleBox) {
 
-        if ( $ConfigObject->Get('Ticket::Frontend::ZoomExpandSort') eq 'reverse' ) {
-            $Count--;
+        if ( scalar @ArticleBox != scalar @ArticleBoxAll ) {
+            my @ArticleOnPage = grep { $_->{ArticleID} =~ $Article->{ArticleID} } @ArticleBoxAll;
+            $Article->{Count} = $ArticleOnPage[0]->{Count};
         }
         else {
-            $Count++;
+            if ( $ConfigObject->Get('Ticket::Frontend::ZoomExpandSort') eq 'reverse' ) {
+                $Count--;
+            }
+            else {
+                $Count++;
+            }
+            $Article->{Count} = $Count;
         }
-
-        $Article->{Count} = $Count;
 
         next ARTICLE if !$Self->{ArticleID};
         next ARTICLE if !$Article->{ArticleID};
@@ -1235,17 +1272,118 @@ sub MaskAgentZoom {
         );
     }
 
+    # Check if agent has permission to start chats with agents.
+    my $EnableChat               = 1;
+    my $ChatStartingAgentsGroup  = $ConfigObject->Get('ChatEngine::PermissionGroup::ChatStartingAgents') || 'users';
+    my $ChatReceivingAgentsGroup = $ConfigObject->Get('ChatEngine::PermissionGroup::ChatReceivingAgents') || 'users';
+
+    if (
+        !$ConfigObject->Get('ChatEngine::Active')
+        || !defined $LayoutObject->{"UserIsGroup[$ChatStartingAgentsGroup]"}
+        || $LayoutObject->{"UserIsGroup[$ChatStartingAgentsGroup]"} ne 'Yes'
+        )
+    {
+        $EnableChat = 0;
+    }
+    if (
+        $EnableChat
+        && !$ConfigObject->Get('ChatEngine::ChatDirection::AgentToAgent')
+        )
+    {
+        $EnableChat = 0;
+    }
+
+    my %OnlineData;
+    if ($EnableChat) {
+        my $VideoChatEnabled = 0;
+        my $VideoChatAgentsGroup = $ConfigObject->Get('ChatEngine::PermissionGroup::VideoChatAgents') || 'users';
+
+        # Enable the video chat feature if system is entitled and agent is a member of configured group.
+        if (
+            $ConfigObject->Get('ChatEngine::Active')
+            && defined $LayoutObject->{"UserIsGroup[$VideoChatAgentsGroup]"}
+            && $LayoutObject->{"UserIsGroup[$VideoChatAgentsGroup]"} eq 'Yes'
+            )
+        {
+            if ( $Kernel::OM->Get('Kernel::System::Main')->Require( 'Kernel::System::VideoChat', Silent => 1 ) ) {
+                $VideoChatEnabled = $Kernel::OM->Get('Kernel::System::VideoChat')->IsEnabled();
+            }
+        }
+
+        FIELD:
+        for my $Field (qw(OwnerID ResponsibleID)) {
+            next FIELD if !$Ticket{$Field};
+            next FIELD if $Field eq 'ResponsibleID' && !$ConfigObject->Get('Ticket::Responsible');
+
+            my $UserID = $Ticket{$Field};
+
+            $OnlineData{$Field}->{EnableChat}         = $EnableChat;
+            $OnlineData{$Field}->{AgentEnableChat}    = 0;
+            $OnlineData{$Field}->{ChatAccess}         = 0;
+            $OnlineData{$Field}->{VideoChatAvailable} = 0;
+            $OnlineData{$Field}->{VideoChatSupport}   = 0;
+            $OnlineData{$Field}->{VideoChatEnabled}   = $VideoChatEnabled;
+
+            # Default status is offline.
+            $OnlineData{$Field}->{UserState} = Translatable('Offline');
+            $OnlineData{$Field}->{UserStateDescription}
+                = $LayoutObject->{LanguageObject}->Translate('User is currently offline.');
+
+            # We also need to check if the receiving agent has chat permissions.
+            my %UserGroups = $Kernel::OM->Get('Kernel::System::Group')->PermissionUserGet(
+                UserID => $UserID,
+                Type   => 'rw',
+            );
+
+            my %UserGroupsReverse = reverse %UserGroups;
+            $OnlineData{$Field}->{ChatAccess} = $UserGroupsReverse{$ChatReceivingAgentsGroup} ? 1 : 0;
+
+            my %User = $Kernel::OM->Get('Kernel::System::User')->GetUserData(
+                UserID => $UserID,
+            );
+            $OnlineData{$Field}->{VideoChatSupport} = $User{VideoChatHasWebRTC};
+
+            # Check agent's availability.
+            if ( $OnlineData{$Field}->{ChatAccess} ) {
+                $OnlineData{$Field}->{AgentChatAvailability}
+                    = $Kernel::OM->Get('Kernel::System::Chat')->AgentAvailabilityGet(
+                    UserID   => $UserID,
+                    External => 0,
+                    );
+
+                if ( $OnlineData{$Field}->{AgentChatAvailability} == 3 ) {
+                    $OnlineData{$Field}->{UserState}       = Translatable('Active');
+                    $OnlineData{$Field}->{AgentEnableChat} = 1;
+                    $OnlineData{$Field}->{UserStateDescription}
+                        = $LayoutObject->{LanguageObject}->Translate('User is currently active.');
+                    $OnlineData{$Field}->{VideoChatAvailable} = 1;
+                }
+                elsif ( $OnlineData{$Field}->{AgentChatAvailability} == 2 ) {
+                    $OnlineData{$Field}->{UserState}       = Translatable('Away');
+                    $OnlineData{$Field}->{AgentEnableChat} = 1;
+                    $OnlineData{$Field}->{UserStateDescription}
+                        = $LayoutObject->{LanguageObject}->Translate('User was inactive for a while.');
+                }
+                elsif ( $OnlineData{$Field}->{AgentChatAvailability} == 1 ) {
+                    $OnlineData{$Field}->{UserState} = Translatable('Unavailable');
+                    $OnlineData{$Field}->{UserStateDescription}
+                        = $LayoutObject->{LanguageObject}->Translate('User set their status to unavailable.');
+                }
+            }
+        }
+    }
+
     # show owner
     $LayoutObject->Block(
         Name => 'Owner',
-        Data => { %Ticket, %OwnerInfo, %AclAction },
+        Data => { %Ticket, %OwnerInfo, %AclAction, %{ $OnlineData{OwnerID} // {} } },
     );
 
     # show responsible
     if ( $ConfigObject->Get('Ticket::Responsible') ) {
         $LayoutObject->Block(
             Name => 'Responsible',
-            Data => { %Ticket, %ResponsibleInfo, %AclAction },
+            Data => { %Ticket, %ResponsibleInfo, %AclAction, %{ $OnlineData{ResponsibleID} // {} } },
         );
     }
 

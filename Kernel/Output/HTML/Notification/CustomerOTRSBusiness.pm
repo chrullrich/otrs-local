@@ -37,14 +37,14 @@ sub Run {
 
     return '' if !$OTRSBusinessObject->OTRSBusinessIsInstalled();
 
-    # ----------------------------------------
+    #
     # check entitlement status
-    # ----------------------------------------
+    #
     my $EntitlementStatus = $OTRSBusinessObject->OTRSBusinessEntitlementStatus(
         CallCloudService => 0,
     );
 
-    if ( $EntitlementStatus eq 'forbidden' ) {
+    if ( $EntitlementStatus eq 'warning-error' || $EntitlementStatus eq 'forbidden' ) {
 
         my $OTRSBusinessLabel = '<b>OTRS Business Solution</b>™';
 

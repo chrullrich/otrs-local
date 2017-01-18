@@ -43,9 +43,9 @@ sub Run {
     # get layout object
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
-    # ----------------------------------------
+    #
     # check if OTRS Business Solution™ is not installed
-    # ----------------------------------------
+    #
     if ( $Param{Type} eq 'Admin' && !$IsInstalled ) {
         my $Text = $LayoutObject->{LanguageObject}->Translate(
             '%s Upgrade to %s now! %s',
@@ -66,20 +66,31 @@ sub Run {
     # all following checks require OTRS Business Solution™ to be installed
     return '' if !$IsInstalled;
 
-    # ----------------------------------------
+    #
     # check entitlement status
-    # ----------------------------------------
+    #
     my $EntitlementStatus = $OTRSBusinessObject->OTRSBusinessEntitlementStatus(
         CallCloudService => 0,
     );
 
-    if ( $EntitlementStatus eq 'forbidden' ) {
+    if ( $EntitlementStatus eq 'warning-error' || $EntitlementStatus eq 'forbidden' ) {
 
         my $Text = $LayoutObject->{LanguageObject}->Translate(
             'This system uses the %s without a proper license! Please make contact with %s to renew or activate your contract!',
             $OTRSBusinessLabel,
             'sales@otrs.com',
         );
+
+        # Redirect to error screen because of unauthorized usage.
+        if ( $EntitlementStatus eq 'forbidden' ) {
+            $Text .= '
+<script>
+if (!window.location.search.match(/^[?]Action=(AgentOTRSBusiness|Admin.*)/)) {
+    window.location.search = "Action=AgentOTRSBusiness;Subaction=BlockScreen";
+}
+</script>'
+        }
+
         return $LayoutObject->Notify(
             Data     => $Text,
             Priority => 'Error',
@@ -103,9 +114,9 @@ sub Run {
         return '';
     }
 
-    # ----------------------------------------
+    #
     # check contract expiry
-    # ----------------------------------------
+    #
     my $ExpiryDate = $OTRSBusinessObject->OTRSBusinessContractExpiryDateCheck();
 
     if ($ExpiryDate) {
@@ -121,9 +132,9 @@ sub Run {
         );
     }
 
-    # ----------------------------------------
+    #
     # check for available updates
-    # ----------------------------------------
+    #
     my %UpdatesAvailable = $OTRSBusinessObject->OTRSBusinessVersionCheckOffline();
 
     if ( $UpdatesAvailable{OTRSBusinessUpdateAvailable} ) {

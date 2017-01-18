@@ -9,12 +9,12 @@
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 # or see http://www.gnu.org/licenses/agpl.txt.
 # --
 
@@ -52,7 +52,7 @@ local $Kernel::OM = Kernel::System::ObjectManager->new(
         print <<"EOF";
 
 DBUpdate-to-5.pl - Upgrade script for OTRS 4 to 5 migration.
-Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
+Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 
 Usage: $0 [-h]
     Options are as follows:
@@ -119,6 +119,10 @@ Please run it as the 'otrs' user or with the help of su:
         {
             Message => 'Add TicketZoom menu cluster configurations',
             Command => \&_AddZoomMenuClusters,
+        },
+        {
+            Message => 'Fix wrong entries in module registrations',
+            Command => \&_FixModuleRegistration,
         },
         {
             Message => 'Fixup statistics time field configuration where the time interval is too small',
@@ -1959,6 +1963,42 @@ sub _AddEmailNotificationMethod {
             Bind => [ \$NotificationID, \$TransportsKey, \$TransportName ],
         );
     }
+
+    return 1;
+}
+
+=item _FixModuleRegistration()
+
+Fix a wrong entry in the Frontend::Module###AdminCustomerCompany
+registration which caused bug#11986.
+
+    _FixModuleRegistration();
+
+=cut
+
+sub _FixModuleRegistration {
+
+    # get needed objects
+    my $ConfigObject    = $Kernel::OM->Get('Kernel::Config');
+    my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
+
+    # Toolbar Modules
+    my $Setting      = $ConfigObject->Get('Frontend::Module');
+    my $ModuleConfig = $Setting->{'AdminCustomerCompany'};
+    if ( !IsHashRefWithData($ModuleConfig) ) {
+        return;
+    }
+
+    $ModuleConfig->{NavBarName} = 'Customers';
+
+    # save setting
+    my $Success = $SysConfigObject->ConfigItemUpdate(
+        Valid => 1,
+        Key   => 'Frontend::Module###AdminCustomerCompany',
+        Value => $ModuleConfig,
+    );
+
+    print "...done.\n";
 
     return 1;
 }
