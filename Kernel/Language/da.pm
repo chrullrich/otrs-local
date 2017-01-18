@@ -25,7 +25,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.55319587628866;
+    $Self->{Completeness}        = 0.549261083743842;
 
     # csv separator
     $Self->{Separator} = '';
@@ -823,6 +823,8 @@ Opdater venligst dit framework først!',
         'Edit ACL information' => 'Rediger ACL-information',
         'Stop after match' => 'Stop, hvis matcher',
         'Edit ACL structure' => 'Rediger ACL-struktur',
+        'Save settings' => 'Gem ændringer',
+        'Save ACL' => '',
         'Save' => 'Gem',
         'or' => 'eller',
         'Save and finish' => 'Gem og afslut',
@@ -843,6 +845,7 @@ Opdater venligst dit framework først!',
         'List' => 'Liste',
         'Download file' => 'Download fil',
         'Delete this attachment' => 'Slet denne vedhæftede fil',
+        'Do you really want to delete this attachment?' => '',
         'Add Attachment' => 'Tilføj vedhæftet fil',
         'Edit Attachment' => 'Rediger vedhæftet fil',
 
@@ -857,8 +860,7 @@ Opdater venligst dit framework først!',
         'You can use the following tags' => 'Du kan bruge følgende tags',
         'To get the first 20 character of the subject.' => 'For at få de første 20 tegn af emnet.',
         'To get the first 5 lines of the email.' => 'For at få de første 5 linjer af mailen.',
-        'To get the realname of the ticket\'s customer user (if given).' =>
-            '',
+        'To get the name of the ticket\'s customer user (if given).' => '',
         'To get the article attribute' => 'For at få indlægges attributter',
         ' e. g.' => 'f.eks.',
         'Options of the current customer user data' => 'Valgmuligheder for den nuværende kundebruger',
@@ -1090,6 +1092,7 @@ Opdater venligst dit framework først!',
         'Run Now!' => 'Kør nu',
         'Delete this task' => 'Slet dette job',
         'Run this task' => 'Kør job',
+        'Do you really want to delete this task?' => '',
         'Job Settings' => 'Job-indstillinger',
         'Job name' => 'Job-navn',
         'The name you entered already exists.' => 'Det indtastede navn eksisterer allerede.',
@@ -1748,8 +1751,8 @@ Opdater venligst dit framework først!',
         'Download' => 'Download',
         'Download file from package!' => 'Download fil fra pakke!',
         'Required' => 'Påkrævet',
-        'PrimaryKey' => 'PrimærNøgle',
-        'AutoIncrement' => 'AutoForhøjelse',
+        'Primary Key' => '',
+        'Auto Increment' => '',
         'SQL' => 'SQL',
         'File differences for file %s' => 'Fil-difference for fil %s',
 
@@ -1785,6 +1788,7 @@ Opdater venligst dit framework først!',
         'If you use Regular Expressions, you also can use the matched value in () as [***] in the \'Set\' action.' =>
             'Hvis du bruger regulære udtryk, kan du også bruge den matchede værdi i (), som [***] i \'Set\'-handlingen.',
         'Delete this filter' => 'Slet dette filter',
+        'Do you really want to delete this filter?' => '',
         'Add PostMaster Filter' => 'Tilføj Postmaster-filter',
         'Edit PostMaster Filter' => 'Rediger Postmaster-filter',
         'The name is required.' => 'Navnet er påkrævet.',
@@ -1816,12 +1820,12 @@ Opdater venligst dit framework først!',
         'Overwrite existing entities' => 'Overskriv eksisterende enheder',
         'Upload process configuration' => 'Upload proces-konfiguration',
         'Import process configuration' => 'Importer proces-konfiguration',
-        'Example processes' => 'Eksempel processer',
-        'Here you can activate best practice example processes. Please note that some additional configuration may be required.' =>
+        'Ready-to-run Processes' => '',
+        'Here you can activate ready-to-run processes showcasing our best practices. Please note that some additional configuration may be required.' =>
             '',
-        'Do you want to benefit from processes created by experts? Upgrade to %s to be able to import additional sophisticated example processes.' =>
+        'Would you like to benefit from processes created by experts? Upgrade to %s to import some sophisticated ready-to-run processes.' =>
             '',
-        'Import example process' => 'Importer eksempel processer',
+        'Import ready-to-run process' => '',
         'To create a new Process you can either import a Process that was exported from another system or create a complete new one.' =>
             'For at lave en ny proces kan du enten importere en proces fra et andet system eller kreere en helt ny.',
         'Changes to the Processes here only affect the behavior of the system, if you synchronize the Process data. By synchronizing the Processes, the newly made changes will be written to the Configuration.' =>
@@ -1927,7 +1931,6 @@ Opdater venligst dit framework først!',
         'Extend the height of the Canvas' => '',
         'Remove the Activity from this Process' => '',
         'Edit this Activity' => 'Rediger denne aktivitet',
-        'Save settings' => 'Gem ændringer',
         'Save Activities, Activity Dialogs and Transitions' => '',
         'Do you really want to delete this Process?' => 'Vil du virkelig slette denne proces?',
         'Do you really want to delete this Activity?' => 'Vil du virkelig slette denne aktivitet?',
@@ -2418,6 +2421,7 @@ Opdater venligst dit framework først!',
         'A template is a default text which helps your agents to write faster tickets, answers or forwards.' =>
             'En skabelon er en standard-tekst, der hjælper dine agenter til at skrive hurtigere sager, svar og videresendelser.',
         'Don\'t forget to add new templates to queues.' => 'Husk at tilføje nye skabeloner til køer.',
+        'Do you really want to delete this template?' => '',
         'Add Template' => 'Tilføj skabelon',
         'Edit Template' => 'Rediger skabelon',
         'A standard template with this name already exists!' => 'En standard-skabelon med dette navn eksisterer allerede!',
@@ -3647,7 +3651,7 @@ Opdater venligst dit framework først!',
 
         # Perl Module: Kernel/Modules/AgentLinkObject.pm
         'Need SourceObject and SourceKey!' => '',
-        'Please contact the admin.' => '',
+        'Please contact the administrator.' => '',
         'You need ro permission!' => '',
         'Can not delete link with %s!' => 'Kan ikke slette link med %s!',
         'Can not create link with %s! Object already linked as %s.' => '',
@@ -3689,9 +3693,9 @@ Opdater venligst dit framework først!',
         'Ticket (%s) is not unlocked!' => '',
         'Bulk feature is not enabled!' => '',
         'No selectable TicketID is given!' => '',
-        'You either selected no ticket or only tickets which are locked by other agents' =>
+        'You either selected no ticket or only tickets which are locked by other agents.' =>
             '',
-        'You need to select at least one ticket' => '',
+        'You need to select at least one ticket.' => '',
         'Ticket is locked by another agent and will be ignored!' => 'Sagen er trukket af en anden agent og ignoreres',
 
         # Perl Module: Kernel/Modules/AgentTicketCompose.pm
@@ -3770,8 +3774,7 @@ Opdater venligst dit framework først!',
         'for pending* states' => 'for afventende tilstande',
         'ActivityDialogEntityID missing!' => '',
         'Couldn\'t get Config for ActivityDialogEntityID "%s"!' => '',
-        'Couldn\'t use CustomerID as an invisible field. Please contact your system administrator!' =>
-            '',
+        'Couldn\'t use CustomerID as an invisible field.' => '',
         'Missing ProcessEntityID, check your ActivityDialogHeader.tt!' =>
             '',
         'No StartActivityDialog or StartActivityDialog for Process "%s" configured!' =>
@@ -3797,6 +3800,7 @@ Opdater venligst dit framework først!',
 
         # Perl Module: Kernel/Modules/AgentTicketSearch.pm
         'Untitled' => '',
+        'Customer Name' => '',
         'Invalid Users' => '',
         'CSV' => 'CSV',
         'Excel' => '',
@@ -3808,42 +3812,51 @@ Opdater venligst dit framework først!',
         'Feature is not active' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketZoom.pm
+        'Link Deleted' => 'Link Slettet',
+        'Ticket Locked' => 'Sag Trukket',
+        'Pending Time Set' => '',
+        'Dynamic Field Updated' => 'Dynamisk Felt Opdateret',
+        'Outgoing Email (internal)' => '',
         'Ticket Created' => 'Sag Oprettet',
+        'Type Updated' => 'Type Opdateret',
+        'Escalation Update Time In Effect' => '',
+        'Escalation Update Time Stopped' => '',
+        'Escalation First Response Time Stopped' => '',
+        'Customer Updated' => 'Kunde Opdateret',
+        'Internal Chat' => 'Intern Chat',
+        'Automatic Follow-Up Sent' => 'Automatisk Opfølgning Sendt',
         'Note Added' => 'Note Tilføjet',
         'Note Added (Customer)' => 'Note Tilføjet (Kunde)',
-        'Outgoing Email' => 'Udgående Email',
-        'Outgoing Email (internal)' => '',
-        'Incoming Customer Email' => 'Indgående Kunde Email',
-        'Dynamic Field Updated' => 'Dynamisk Felt Opdateret',
-        'Outgoing Phone Call' => 'Udgående Telefonopkald',
-        'Incoming Phone Call' => 'Indgående Telefonopkald',
-        'Outgoing Answer' => 'Udgående Svar',
-        'SLA Updated' => 'SLA Opdateret',
-        'Service Updated' => 'Service Opdateret',
-        'Customer Updated' => 'Kunde Opdateret',
         'State Updated' => 'Tilstand Opdateret',
-        'Incoming Follow-Up' => 'Indgående Opfølgning',
-        'Escalation Update Time Stopped' => '',
-        'Escalation Solution Time Stopped' => '',
-        'Escalation First Response Time Stopped' => '',
-        'Escalation Response Time Stopped' => '',
+        'Outgoing Answer' => 'Udgående Svar',
+        'Service Updated' => 'Service Opdateret',
         'Link Added' => 'Link Tilføjet',
-        'Link Deleted' => 'Link Slettet',
-        'Ticket Merged' => 'Sag Samlet',
-        'Pending Time Set' => '',
-        'Ticket Locked' => 'Sag Trukket',
-        'Ticket Unlocked' => 'Sag Frigjort',
-        'Queue Updated' => 'Kø Opdateret',
-        'Priority Updated' => 'Prioritet Opdateret',
-        'Title Updated' => 'Titel Opdateret',
-        'Type Updated' => 'Type Opdateret',
+        'Incoming Customer Email' => 'Indgående Kunde Email',
         'Incoming Web Request' => 'Indgående Web Forespørgsel',
-        'Automatic Follow-Up Sent' => 'Automatisk Opfølgning Sendt',
-        'Automatic Reply Sent' => 'Automatisk Svar Sendt',
+        'Priority Updated' => 'Prioritet Opdateret',
+        'Ticket Unlocked' => 'Sag Frigjort',
+        'Outgoing Email' => 'Udgående Email',
+        'Title Updated' => 'Titel Opdateret',
+        'Ticket Merged' => 'Sag Samlet',
+        'Outgoing Phone Call' => 'Udgående Telefonopkald',
+        'Forwarded Message' => '',
+        'Removed User Subscription' => '',
         'Time Accounted' => '',
+        'Incoming Phone Call' => 'Indgående Telefonopkald',
+        'System Request.' => '',
+        'Incoming Follow-Up' => 'Indgående Opfølgning',
+        'Automatic Reply Sent' => 'Automatisk Svar Sendt',
+        'Automatic Reject Sent' => '',
+        'Escalation Solution Time In Effect' => '',
+        'Escalation Solution Time Stopped' => '',
+        'Escalation Response Time In Effect' => '',
+        'Escalation Response Time Stopped' => '',
+        'SLA Updated' => 'SLA Opdateret',
+        'Queue Updated' => 'Kø Opdateret',
         'External Chat' => 'Ekstern Chat',
-        'Internal Chat' => 'Intern Chat',
-        'We are sorry, you do not have permissions anymore to access this ticket in its current state. ' =>
+        'Queue Changed' => '',
+        'Notification Was Sent' => '',
+        'We are sorry, you do not have permissions anymore to access this ticket in its current state.' =>
             '',
         'Can\'t get for ArticleID %s!' => '',
         'Article filter settings were saved.' => '',
@@ -3851,12 +3864,12 @@ Opdater venligst dit framework først!',
         'Need ArticleID!' => '',
         'Invalid ArticleID!' => '',
         'Offline' => '',
-        'This user is currently offline' => 'Brugeren er offline',
-        'This user is currently active' => 'Brugeren er aktiv',
+        'User is currently offline.' => '',
+        'User is currently active.' => '',
         'Away' => '',
-        'This user is currently away' => '',
+        'User was inactive for a while.' => '',
         'Unavailable' => '',
-        'This user is currently unavailable' => '',
+        'User set their status to unavailable.' => '',
         'Fields with no group' => '',
         'View the source for this Article' => '',
 
@@ -3895,7 +3908,7 @@ Opdater venligst dit framework først!',
         'The check "%s" doesn\'t exist!' => '',
         'Database %s' => '',
         'Unknown database type "%s".' => '',
-        'Please go back' => '',
+        'Please go back.' => '',
         'Install OTRS - Error' => '',
         'File "%s/%s.xml" not found!' => '',
         'Contact your Admin!' => '',
@@ -3926,6 +3939,17 @@ Opdater venligst dit framework først!',
         # Perl Module: Kernel/Output/HTML/Dashboard/EventsTicketCalendar.pm
         'The start time of a ticket has been set after the end time!' => '',
 
+        # Perl Module: Kernel/Output/HTML/Dashboard/News.pm
+        'Can\'t connect to OTRS News server!' => '',
+        'Can\'t get OTRS News from server!' => '',
+
+        # Perl Module: Kernel/Output/HTML/Dashboard/ProductNotify.pm
+        'Can\'t connect to Product News server!' => '',
+        'Can\'t get Product News from server!' => '',
+
+        # Perl Module: Kernel/Output/HTML/Dashboard/RSS.pm
+        'Can\'t connect to %s!' => '',
+
         # Perl Module: Kernel/Output/HTML/Dashboard/TicketGeneric.pm
         'sorted ascending' => '',
         'sorted descending' => '',
@@ -3942,14 +3966,14 @@ Opdater venligst dit framework først!',
         'Linked as' => '',
         'Search Result' => '',
 
+        # Perl Module: Kernel/Output/HTML/LinkObject/Ticket.pm
+        'Archive search' => '',
+
         # Perl Module: Kernel/Output/HTML/Notification/AgentOTRSBusiness.pm
         '%s Upgrade to %s now! %s' => '%s Opgrader til %s nu! %s',
 
         # Perl Module: Kernel/Output/HTML/Notification/CustomerSystemMaintenanceCheck.pm
         'A system maintenance period will start at: ' => '',
-
-        # Perl Module: Kernel/Output/HTML/Notification/DaemonCheck.pm
-        'Please contact your administrator!' => 'Kontakt venligst din administrator!',
 
         # Perl Module: Kernel/Output/HTML/Preferences/Language.pm
         '(in process)' => '',
@@ -4359,13 +4383,15 @@ Opdater venligst dit framework først!',
         # Perl Module: Kernel/System/Web/InterfaceAgent.pm
         'Panic, user authenticated but no user data can be found in OTRS DB!! Perhaps the user is invalid.' =>
             '',
-        'Can`t remove SessionID' => '',
+        'Can`t remove SessionID.' => '',
         'Logout successful.' => '',
         'Panic! Invalid Session!!!' => 'Panik! Ugyldig session!!!',
         'No Permission to use this frontend module!' => '',
 
         # Perl Module: Kernel/System/Web/InterfaceCustomer.pm
-        'Reset password unsuccessful. Please contact your administrator' =>
+        'Authentication succeeded, but no customer record is found in the customer backend. Please contact the administrator.' =>
+            '',
+        'Reset password unsuccessful. Please contact the administrator.' =>
             '',
         'Added via Customer Panel (%s)' => '',
         'Customer user can\'t be added!' => '',
@@ -4373,7 +4399,7 @@ Opdater venligst dit framework først!',
 
         # Perl Module: Kernel/System/Web/InterfaceInstaller.pm
         'SecureMode active!' => '',
-        'If you want to re-run the Installer, disable the SecureMode in the SysConfig' =>
+        'If you want to re-run the Installer, disable the SecureMode in the SysConfig.' =>
             '',
         'Action "%s" not found!' => '',
 
@@ -5281,13 +5307,13 @@ Thanks for your help!
             '',
         'Defines the module that shows a generic notification in the agent interface. Either "Text" - if configured - or the contents of "File" will be displayed.' =>
             '',
-        'Defines the module that shows all the currently loged in customers in the agent interface.' =>
-            '',
         'Defines the module that shows all the currently logged in agents in the agent interface.' =>
             '',
-        'Defines the module that shows the currently loged in agents in the customer interface.' =>
+        'Defines the module that shows all the currently logged in customers in the agent interface.' =>
             '',
-        'Defines the module that shows the currently loged in customers in the customer interface.' =>
+        'Defines the module that shows the currently logged in agents in the customer interface.' =>
+            '',
+        'Defines the module that shows the currently logged in customers in the customer interface.' =>
             '',
         'Defines the module to authenticate customers.' => 'Definerer modul til godkendelse af kunder.',
         'Defines the module to display a notification if cloud services are disabled.' =>
@@ -5483,6 +5509,8 @@ Thanks for your help!
         'Determines the next possible ticket states, after the creation of a new phone ticket in the agent interface.' =>
             '',
         'Determines the next possible ticket states, for process tickets in the agent interface.' =>
+            '',
+        'Determines the next possible ticket states, for process tickets in the customer interface.' =>
             '',
         'Determines the next screen after new customer ticket in the customer interface.' =>
             '',
@@ -6231,7 +6259,7 @@ Thanks for your help!
             '',
         'Responsible Tickets' => '',
         'Responsible Tickets.' => '',
-        'Restores a ticket from the archive (only if the event is a state change, from closed to any open available state).' =>
+        'Restores a ticket from the archive (only if the event is a state change to any open available state).' =>
             '',
         'Retains all services in listings even if they are children of invalid elements.' =>
             '',
@@ -6376,7 +6404,7 @@ Thanks for your help!
             '',
         'Sets the display order of the different items in the preferences view.' =>
             '',
-        'Sets the inactivity time (in seconds) to pass before a session is killed and a user is loged out.' =>
+        'Sets the inactivity time (in seconds) to pass before a session is killed and a user is logged out.' =>
             '',
         'Sets the maximum number of active agents within the timespan defined in SessionActiveTime before a prior warning will be visible for the logged in agents.' =>
             '',
@@ -6649,9 +6677,9 @@ Thanks for your help!
             '',
         'Shows the ticket priority options in the ticket responsible screen of the agent interface.' =>
             '',
-        'Shows the title fields in the close ticket screen of the agent interface.' =>
+        'Shows the title field in the ticket free text screen of the agent interface.' =>
             '',
-        'Shows the title fields in the ticket free text screen of the agent interface.' =>
+        'Shows the title fields in the close ticket screen of the agent interface.' =>
             '',
         'Shows the title fields in the ticket note screen of the agent interface.' =>
             '',

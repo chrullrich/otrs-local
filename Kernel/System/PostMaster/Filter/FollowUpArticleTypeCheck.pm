@@ -33,8 +33,11 @@ sub new {
 sub Run {
     my ( $Self, %Param ) = @_;
 
+    # FollowUpArticleTypeCheck is not needed if there is no TicketID.
+    return 1 if !$Param{TicketID};
+
     # check needed stuff
-    for (qw(TicketID JobConfig GetParam)) {
+    for (qw(JobConfig GetParam)) {
         if ( !$Param{$_} ) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
@@ -139,35 +142,11 @@ sub Run {
 
     return 1 if !$InternalForward;
 
-    # get latest customer article (current arrival)
-    my $ArticleID;
-    ARTICLE:
-    for my $Article ( reverse @ArticleIndex ) {
-        next ARTICLE if $Article->{SenderType} ne 'customer';
-        $ArticleID = $Article->{ArticleID};
-        last ARTICLE;
-    }
-    return 1 if !$ArticleID;
+    # set 'X-OTRS-FollowUp-ArticleType to 'email-internal'
+    $Param{GetParam}->{'X-OTRS-FollowUp-ArticleType'} = $Param{JobConfig}->{ArticleType} || 'email-internal';
 
-    # set article type to email-internal
-    my $ArticleType = $Param{JobConfig}->{ArticleType} || 'email-internal';
-    $TicketObject->ArticleUpdate(
-        ArticleID => $ArticleID,
-        Key       => 'ArticleType',
-        Value     => $ArticleType,
-        UserID    => 1,
-        TicketID  => $Param{TicketID},
-    );
-
-    # set sender type to agent/customer
-    my $SenderType = $Param{JobConfig}->{SenderType} || 'customer';
-    $TicketObject->ArticleUpdate(
-        ArticleID => $ArticleID,
-        Key       => 'SenderType',
-        Value     => $SenderType,
-        UserID    => 1,
-        TicketID  => $Param{TicketID},
-    );
+    # set 'X-OTRS-FollowUp-SenderType to 'customer'
+    $Param{GetParam}->{'X-OTRS-FollowUp-SenderType'} = $Param{JobConfig}->{SenderType} || 'customer';
 
     return 1;
 }

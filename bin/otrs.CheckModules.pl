@@ -262,6 +262,15 @@ my @NeededModules = (
         },
     },
     {
+        Module    => 'Digest::SHA',    # Supposed to be in perlcore, but seems to be missing on some distributions.
+        Required  => 1,
+        InstTypes => {
+            aptget => 'libdigest-sha-perl',
+            emerge => 'dev-perl/Digest-SHA',
+            zypper => 'perl-Digest-SHA'
+        },
+    },
+    {
         Module    => 'Encode::HanExtra',
         Version   => '0.23',
         Required  => 0,
