@@ -29,7 +29,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.685755935027072;
+    $Self->{Completeness}        = 0.697113402061856;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -861,7 +861,7 @@ sub Data {
         'To get the first 20 character of the subject.' => 'Para obter os primeiros 20 caracteres do assunto.',
         'To get the first 5 lines of the email.' => 'Para obter as primeiras 5 linhas do e-mail.',
         'To get the realname of the ticket\'s customer user (if given).' =>
-            '',
+            'Para obter o nome real do usuário cliente do chamado (se fornecido).',
         'To get the article attribute' => 'Para obter o atributo do artigo',
         ' e. g.' => 'ex.',
         'Options of the current customer user data' => 'Opções para os dados do atual usuário cliente',
@@ -906,7 +906,7 @@ sub Data {
         'Upgrade to %s' => 'Atualize para %s',
 
         # Template: AdminCustomerCompany
-        'Customer Management' => 'Gerenciamento de Clientes',
+        'Customer Management' => 'Gerenciamento de Entidade',
         'Wildcards like \'*\' are allowed.' => 'Coringas como \'*\' são permitidos.',
         'Add customer' => 'Adicionar Cliente',
         'Select' => 'Selecionar',
@@ -1197,12 +1197,6 @@ sub Data {
         'Param %s key' => 'Parâmetro Chave %s',
         'Param %s value' => 'Valor do Parâmetro %s',
         'Save Changes' => 'Salvar Alterações',
-        'Tag Reference' => 'Referência de Tag',
-        'In the note section, you can use the following tags' => '',
-        'Attributes of the current customer user data' => 'Atributos  de dados do usuário cliente atual',
-        'Attributes of the ticket data' => 'Atributos dos dados do chamado',
-        'Ticket dynamic fields internal key values' => 'Chave de valores interna dos campos dinâmicos do chamado',
-        'Example note' => '',
         'Results' => 'Resultados',
         '%s Tickets affected! What do you want to do?' => '%s chamados afetados! O que você quer fazer?',
         'Warning: You used the DELETE option. All deleted tickets will be lost!' =>
@@ -1444,12 +1438,14 @@ sub Data {
         'Configuration history' => 'Histórico de configuração',
         'Delete web service' => 'Apagar Web Service',
         'Do you really want to delete this web service?' => 'Você realmente deseja apagar este web service?',
-        'Example Web Services' => 'Exemplos de Web Services',
-        'Here you can activate best practice example web service that are part of %s. Please note that some additional configuration may be required.' =>
-            'Aqui você pode ativar exemplos de boas práticas de web service que fazem parte do %s. Por favor, note que alguma configuração adicional poderá ser necessária.',
-        'Import example web service' => 'Importar exemplo de web service',
-        'Do you want to benefit from web services created by experts? Upgrade to %s to be able to import some sophisticated example web services.' =>
-            'Você quer se beneficiar de serviços web criados por experts? Dê um upgrade para %s para poder importar alguns exemplos de serviço web sofisticados.',
+        'Ready-to-run Web Services' => '',
+        'Here you can activate ready-to-run web services showcasing our best practices that are a part of %s.' =>
+            '',
+        'Please note that these web services may depend on other modules only available with certain %s contract levels (there will be a notification with further details when importing).' =>
+            '',
+        'Import ready-to-run web service' => '',
+        'Would you like to benefit from web services created by experts? Upgrade to %s to import some sophisticated ready-to-run web services.' =>
+            '',
         'After you save the configuration you will be redirected again to the edit screen.' =>
             'Após salvar as configuração você será redirecionado novamente para a tela de edição.',
         'If you want to return to overview please click the "Go to overview" button.' =>
@@ -1600,6 +1596,7 @@ sub Data {
         'Message body' => 'Corpo da mensagem',
         'Add new notification language' => 'Adicionar novo idioma notificação',
         'Do you really want to delete this notification language?' => 'Você realmente quer apagar este idioma notificação?',
+        'Tag Reference' => 'Referência de Tag',
         'Notifications are sent to an agent or a customer.' => 'Notificações serão enviadas para um Atendente ou Cliente.',
         'To get the first 20 character of the subject (of the latest agent article).' =>
             'Para buscar os primeiros 20 caracteres do assunto (do último artigo do atendente)',
@@ -1609,11 +1606,14 @@ sub Data {
             'Para buscar os primeiros 20 caracteres do assunto (do último artigo do cliente)',
         'To get the first 5 lines of the body (of the latest customer article).' =>
             'Para buscar as primeiras 5 linhas do corpo (do último artigo do cliente)',
+        'Attributes of the current customer user data' => 'Atributos  de dados do usuário cliente atual',
         'Attributes of the current ticket owner user data' => 'Atributos de dados do usuário atual proprietário do chamado',
         'Attributes of the current ticket responsible user data' => 'Atributos de dados do usuário atual responsável pelo chamado',
         'Attributes of the current agent user who requested this action' =>
             'Atributos do usuário agente atual que solicitaram esta ação',
         'Attributes of the recipient user for the notification' => 'Atributos do usuário destinatário da notificação',
+        'Attributes of the ticket data' => 'Atributos dos dados do chamado',
+        'Ticket dynamic fields internal key values' => 'Chave de valores interna dos campos dinâmicos do chamado',
         'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
             'Campos dinâmicos bilhete exibem valores, útil para campos do tipo Dropdown e Multiselect',
         'Example notification' => 'Exemplo de notificação',
@@ -1626,6 +1626,10 @@ sub Data {
         'Email template' => 'Template de e-mail',
         'Use this template to generate the complete email (only for HTML emails).' =>
             'Use este modelo para gerar o e-mail completo (somente para e-mails HTML)',
+        'Enable email security' => 'Habilitar segurança de email',
+        'Email security level' => 'Nível de segurança do email',
+        'If signing key/certificate is missing' => 'Se a assinatura de chave/certificado está faltando',
+        'If encryption key/certificate is missing' => '',
 
         # Template: AdminOTRSBusinessInstalled
         'Manage %s' => 'Gerenciar %s',
@@ -1816,11 +1820,11 @@ sub Data {
         'Upload process configuration' => 'Enviar Configuração de Processo',
         'Import process configuration' => 'Importar Configuração de Processo',
         'Example processes' => 'Exemplo de processos',
-        'Here you can activate best practice example processes that are part of %s. Please note that some additional configuration may be required.' =>
-            'Aqui você pode ativar exemplos de processos de boas práticas que fazem parte do %s. Por favor, note que alguma configuração adicional poderá ser necessária.',
+        'Here you can activate best practice example processes. Please note that some additional configuration may be required.' =>
+            '',
+        'Do you want to benefit from processes created by experts? Upgrade to %s to be able to import additional sophisticated example processes.' =>
+            '',
         'Import example process' => 'Importar exemplo de processo',
-        'Do you want to benefit from processes created by experts? Upgrade to %s to be able to import some sophisticated example processes.' =>
-            'Você quer se beneficiar de processos criados por especialistas? Atualize para %s para ser capaz de importar alguns exemplos de processos sofisticados.',
         'To create a new Process you can either import a Process that was exported from another system or create a complete new one.' =>
             'Para criar um novo Processo você pode importar um Processo exportado de outro sistema ou criar um Processo completamente novo.',
         'Changes to the Processes here only affect the behavior of the system, if you synchronize the Process data. By synchronizing the Processes, the newly made changes will be written to the Configuration.' =>
@@ -1961,6 +1965,7 @@ sub Data {
             'Nesta tela você pode criar um novo processo. Para tornar o novo processo disponível aos usuários, por favor, certifique-se de definir o estado como \'Ativo\' e sincronizar após completar o seu trabalho.',
 
         # Template: AdminProcessManagementProcessPrint
+        'cancel & close' => 'cancelar e fechar',
         'Start Activity' => 'Início da Atividade',
         'Contains %s dialog(s)' => 'Contém %s janela(s)',
         'Assigned dialogs' => 'Janelas Atribuídas',
@@ -1979,7 +1984,7 @@ sub Data {
             'Por favor, note que alterar esta transição afetará os seguintes processos',
         'Transition' => 'Transição',
         'Transition Name' => 'Nome da Transição',
-        'Conditions can only operate on non-empty fields.' => '',
+        'Conditions can only operate on non-empty fields.' => 'Condições podem operar somente em campos não vazios.',
         'Type of Linking between Conditions' => 'Tipo de Ligação Entre as Condições',
         'Remove this Condition' => 'Remover Esta Condição',
         'Type of Linking' => 'Tipo de Ligação',
@@ -2481,6 +2486,9 @@ sub Data {
 
         # Template: AgentCustomerTableView
         'Note: Customer is invalid!' => 'Nota: Cliente inválido!',
+        'Start chat' => 'Iniciar chat',
+        'Video call' => 'Vídeo chamada',
+        'Audio call' => '',
 
         # Template: AgentDaemonInfo
         'The OTRS Daemon is a daemon process that performs asynchronous tasks, e.g. ticket escalation triggering, email sending, etc.' =>
@@ -2514,12 +2522,10 @@ sub Data {
         'Customer information' => 'Informação do Cliente',
         'Phone ticket' => 'Chamado Fone',
         'Email ticket' => 'Chamado E-mail',
-        'Start Chat' => 'Iniciar Chat',
         '%s open ticket(s) of %s' => '%s chamado(s) aberto(s) de %s',
         '%s closed ticket(s) of %s' => '%s chamado(s) fechado(s) de %s',
         'New phone ticket from %s' => 'Novo chamado via fone de %s',
         'New email ticket to %s' => 'Novo chamado via e-mail de %s',
-        'Start chat' => 'Iniciar chat',
 
         # Template: AgentDashboardProductNotify
         '%s %s is available!' => '%s %s está disponível!',
@@ -2563,7 +2569,6 @@ sub Data {
 
         # Template: AgentDashboardUserOnline
         'out of office' => 'fora do escritório',
-        'Selected agent is not available for chat' => 'O agente selecionado não está disponível para bate-papo',
 
         # Template: AgentDashboardUserOutOfOffice
         'until' => 'até',
@@ -2583,6 +2588,11 @@ sub Data {
         'Link object %s with' => 'Associe objeto %s com',
         'Unlink Object: %s' => 'Desassociar Objeto: %s',
         'go to link add screen' => 'ir para a tela de inclusão de associação',
+
+        # Template: AgentOTRSBusinessBlockScreen
+        'Unauthorized usage of %s detected' => '',
+        'If you decide to downgrade to OTRS Free, you will lose all database tables and data related to %s.' =>
+            '',
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Alterar Suas Preferências',
@@ -2801,10 +2811,10 @@ sub Data {
         'Remove' => 'Remover',
         'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.' =>
             'Buscas pelos atributos De, Para, Cc, Assunto e corpo do artigo, sobrescreve outros atributos com o mesmo nome.',
-        'CustomerID (complex search)' => '',
-        'CustomerID (exact match)' => '',
-        'Customer User Login (complex search)' => '',
-        'Customer User Login (exact match)' => '',
+        'CustomerID (complex search)' => 'CustomerID (procura complexa)',
+        'CustomerID (exact match)' => 'CustomerID (correspondência exata)',
+        'Customer User Login (complex search)' => 'Login de Usuário Cliente (busca complexa)',
+        'Customer User Login (exact match)' => 'Login de Usuário Cliente (correspondência exata)',
         'Attachment Name' => 'Nome do Anexo',
         '(e. g. m*file or myfi*)' => '(ex. meu*rquivo ou meuarq*)',
         'Created in Queue' => 'Criado na Fila',
@@ -2876,7 +2886,7 @@ sub Data {
         'Open URL in new tab' => 'Abrir URL em nova aba',
         'Close preview' => 'Fechar Pré-visualização',
         'A preview of this website can\'t be provided because it didn\'t allow to be embedded.' =>
-            '',
+            'Uma prévia deste site não pode ser fornecida porque ele não é permitido ser embutido.',
 
         # Template: AttachmentBlocker
         'To protect your privacy, remote content was blocked.' => 'Para proteger sua privacidade, o conteúdo remoto foi desabilitado.',
@@ -2923,6 +2933,10 @@ sub Data {
         'and %s more...' => 'e %s mais...',
         'Filters' => 'Filtros',
         'Confirm' => 'Confirmar',
+        'You have unanswered chat requests' => 'Você tem uma requisição de bate-papo não respondida',
+        'Accept' => 'Aceitar',
+        'Decline' => 'Rejeitar',
+        'An internal error occurred.' => 'Um erro interno ocorreu',
 
         # Template: CustomerLogin
         'JavaScript Not Available' => 'JavaScript não habilitado ou não é suportado.',
@@ -2951,7 +2965,6 @@ sub Data {
 
         # Template: CustomerNavigationBar
         'Incoming Chat Requests' => 'Recebendo requisições de bate-papo',
-        'You have unanswered chat requests' => 'Você tem uma requisição de bate-papo não respondida',
         'Edit personal preferences' => 'Editar preferências pessoais',
         'Logout %s %s' => 'Sair %s %s',
 
@@ -3032,7 +3045,7 @@ sub Data {
         # Template: Error
         'An error occurred.' => 'Um erro ocorreu.',
         'Really a bug? 5 out of 10 bug reports result from a wrong or incomplete installation of OTRS.' =>
-            '',
+            'Realmente um  erro? 5 de 10 informes de erro resultam de uma errada ou incompleta instalação do OTRS.',
         'With %s, our experts take care of correct installation and cover your back with support and periodic security updates.' =>
             '',
         'Contact our service team now.' => 'Contacte agora a nossa equipe de serviço.',
@@ -3053,8 +3066,13 @@ sub Data {
         'New personal chat request' => 'Nova solicitação de bate-papo pessoal',
         'New customer chat request' => 'Nova solicitação de bate-papo do cliente',
         'New public chat request' => 'Nova solicitação publica de bate-papo',
+        'Selected user is not available for chat.' => '',
         'New activity' => 'Nova atividade',
         'New activity on one of your monitored chats.' => 'Nova atividade em um dos seus bate-papos monitorados.',
+        'Your browser does not support video and audio calling.' => '',
+        'Selected user is not available for video and audio call.' => '',
+        'Target user\'s browser does not support video and audio calling.' =>
+            '',
         'Do you really want to continue?' => 'Você realmente quer continuar?',
         'Information about the OTRS Daemon' => 'Informação sobre o OTRS Daemon',
         'This feature is part of the %s.  Please contact us at %s for an upgrade.' =>
@@ -3381,16 +3399,16 @@ sub Data {
         'Could not get data for WebserviceID %s' => '',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceInvokerDefault.pm
-        'Need InvokerType' => '',
-        'Invoker %s is not registered' => '',
-        'InvokerType %s is not registered' => '',
+        'Need InvokerType' => 'Necessário InvokerType',
+        'Invoker %s is not registered' => 'Invoker %s não está registrado',
+        'InvokerType %s is not registered' => 'InvokerType %s não está registrado',
         'Need Invoker' => 'Necessário Invoker',
         'Could not determine config for invoker %s' => '',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceMappingSimple.pm
         'Could not get registered configuration for action type %s' => '',
         'Could not get backend for %s %s' => '',
-        'Could not update configuration data for WebserviceID %s' => '',
+        'Could not update configuration data for WebserviceID %s' => 'Não foi possível atualizar dados de configuração para WebserviceID %s',
         'Keep (leave unchanged)' => 'Ignorar (deixar inalterado)',
         'Ignore (drop key/value pair)' => 'Ignorar (apagar par chave/valor)',
         'Map to (use provided value as default)' => '',
@@ -3398,51 +3416,51 @@ sub Data {
         'Ignore (drop Value/value pair)' => '',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceMappingXSLT.pm
-        'Could not find required library %s' => '',
+        'Could not find required library %s' => 'Não foi possível encontrar a biblioteca necessária %s',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceOperationDefault.pm
-        'Need OperationType' => '',
-        'Operation %s is not registered' => '',
-        'OperationType %s is not registered' => '',
+        'Need OperationType' => 'Necessário OperationType',
+        'Operation %s is not registered' => 'Operation %s não está registrado',
+        'OperationType %s is not registered' => 'OperationType %s não está registrado',
         'Need Operation' => 'Necessário Operação',
-        'Could not determine config for operation %s' => '',
+        'Could not determine config for operation %s' => 'Não foi possível determinar a configuração para a operação %s',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceTransportHTTPREST.pm
-        'Need Subaction!' => '',
+        'Need Subaction!' => 'Necessário Subação!',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
-        'There is another web service with the same name.' => '',
-        'There was an error updating the web service.' => '',
+        'There is another web service with the same name.' => 'Há outro web service com o mesmo nome.',
+        'There was an error updating the web service.' => 'Houve um erro ao atualizar o web service.',
         'Web service "%s" updated!' => 'Web service "%s" atualizado!',
-        'There was an error creating the web service.' => '',
+        'There was an error creating the web service.' => 'Houve um erro ao criar o web service.',
         'Web service "%s" created!' => 'Web service "%s" criado!',
         'Need Name!' => 'Necessário Nome!',
-        'Need ExampleWebService!' => '',
+        'Need ExampleWebService!' => 'Necessário ExampleWebService!',
         'Could not read %s!' => 'Não pôde ser lido %s!',
         'Need a file to import!' => 'Necessário um arquivo para importar!',
         'The imported file has not valid YAML content! Please check OTRS log for details' =>
-            '',
+            'O arquivo importado tem conteúdo YAML inválido! Por favor, verifique o log do OTRS para obter mais detalhes',
         'Web service "%s" deleted!' => 'Web service "%s" excluído!',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceWebserviceHistory.pm
-        'Got no WebserviceHistoryID!' => '',
-        'Could not get history data for WebserviceHistoryID %s' => '',
+        'Got no WebserviceHistoryID!' => 'Não há WebserviceHistoryID!',
+        'Could not get history data for WebserviceHistoryID %s' => 'Não foi possível obter dados do histórico para WebserviceHistoryID %s',
 
         # Perl Module: Kernel/Modules/AdminNotificationEvent.pm
         'Notification updated!' => 'Notificação atualizada!',
         'Notification added!' => 'Notificação adicionada!',
         'There was an error getting data for Notification with ID:%s!' =>
-            '',
+            'Houve um erro na obtenção de dados para a Notificação com ID:%s!',
         'Unknown Notification %s!' => 'Notificação Desconhecida %s!',
         'There was an error creating the Notification' => 'Houve algum erro ao criar a Notificação',
         'Notifications could not be Imported due to a unknown error, please check OTRS logs for more information' =>
             '',
         'The following Notifications have been added successfully: %s' =>
-            '',
+            'As seguintes Notificações foram adicionados com êxito: %s',
         'The following Notifications have been updated successfully: %s' =>
-            '',
+            'As seguintes Notificações foram atualizados com sucesso: %s',
         'There where errors adding/updating the following Notifications: %s. Please check the log file for more information.' =>
-            '',
+            'Houve erros ao adicionar/atualizar as seguintes Notificações: %s. Por favor, verifique o log para mais informações!',
         'Agent who owns the ticket' => 'Atendente que possui o chamado',
         'Agent who is responsible for the ticket' => 'Atendente que é responsável pelo chamado',
         'All agents watching the ticket' => 'Todos os atendentes monitorando o chamado',
@@ -3456,17 +3474,17 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminPGP.pm
         'PGP environment is not working. Please check log for more info!' =>
-            '',
-        'Need param Key to delete!' => '',
-        'Key %s deleted!' => '',
-        'Need param Key to download!' => '',
+            'Ambiente PGP não está funcionando. Por favor, verifique o log para mais informações!',
+        'Need param Key to delete!' => 'Necessário o parâmetro Chave para deletar!',
+        'Key %s deleted!' => 'Chave %s deletada!',
+        'Need param Key to download!' => 'Necessário parâmetro Chave para o download!',
 
         # Perl Module: Kernel/Modules/AdminPackageManager.pm
         'Sorry, Apache::Reload is needed as PerlModule and PerlInitHandler in Apache config file. See also scripts/apache2-httpd.include.conf. Alternatively, you can use the command line tool bin/otrs.Console.pl to install packages!' =>
             '',
         'No such package!' => 'Não existe este pacote!',
-        'No such file %s in package!' => '',
-        'No such file %s in local file system!' => '',
+        'No such file %s in package!' => 'Arquivo inexistente %s no pacote!',
+        'No such file %s in local file system!' => 'Arquivo inexistente %s no sistema de arquivos local!',
         'Can\'t read %s!' => 'Não pôde ser lido %s!',
         'Package has locally modified files.' => 'Pacote possui arquivos locais modificados.',
         'No packages or no new packages found in selected repository.' =>
@@ -3478,31 +3496,31 @@ sub Data {
         'Can\'t get OTRS Feature Add-on from server!' => '',
 
         # Perl Module: Kernel/Modules/AdminPostMasterFilter.pm
-        'No such filter: %s' => '',
+        'No such filter: %s' => 'Filtro inexistente: %s',
 
         # Perl Module: Kernel/Modules/AdminProcessManagement.pm
         'Need ExampleProcesses!' => '',
         'Need ProcessID!' => 'Necessário ProcessID!',
         'Yes (mandatory)' => 'Sim (mandatório)',
-        'Unknown Process %s!' => '',
+        'Unknown Process %s!' => 'Processo Desconhecido %s!',
         'There was an error generating a new EntityID for this Process' =>
             '',
         'The StateEntityID for state Inactive does not exists' => '',
-        'There was an error creating the Process' => '',
+        'There was an error creating the Process' => 'Houve um erro ao criar o Processo',
         'There was an error setting the entity sync status for Process entity: %s' =>
             '',
-        'Could not get data for ProcessID %s' => '',
+        'Could not get data for ProcessID %s' => 'Não foi possível obter dados para ProcessID %s',
         'There was an error updating the Process' => '',
-        'Process: %s could not be deleted' => '',
-        'There was an error synchronizing the processes.' => '',
+        'Process: %s could not be deleted' => 'Processo: %s não pode ser excluído',
+        'There was an error synchronizing the processes.' => 'Houve um erro na sincronização dos processos.',
         'The %s:%s is still in use' => '',
         'The %s:%s has a different EntityID' => '',
-        'Could not delete %s:%s' => '',
+        'Could not delete %s:%s' => 'Não foi possível deletar %s:%s',
         'There was an error setting the entity sync status for %s entity: %s' =>
             '',
         'Could not get %s' => '',
         'Need %s!' => 'Necessário %s!',
-        'Process: %s is not Inactive' => '',
+        'Process: %s is not Inactive' => 'Processo: %s não é Inativo',
 
         # Perl Module: Kernel/Modules/AdminProcessManagementActivity.pm
         'There was an error generating a new EntityID for this Activity' =>
@@ -3513,14 +3531,14 @@ sub Data {
         'Need ActivityID!' => 'Necessário ActivityID!',
         'Could not get data for ActivityID %s' => '',
         'There was an error updating the Activity' => '',
-        'Missing Parameter: Need Activity and ActivityDialog!' => '',
+        'Missing Parameter: Need Activity and ActivityDialog!' => 'Parâmetro faltando: Necessário Activity  e ActivityDialog!',
         'Activity not found!' => 'Atividade não localizada!',
-        'ActivityDialog not found!' => '',
+        'ActivityDialog not found!' => 'ActivityDialog não encontrado!',
         'ActivityDialog already assigned to Activity. You cannot add an ActivityDialog twice!' =>
             '',
         'Error while saving the Activity to the database!' => '',
-        'This subaction is not valid' => '',
-        'Edit Activity "%s"' => '',
+        'This subaction is not valid' => 'Esta subaction não é valida',
+        'Edit Activity "%s"' => 'Editar Activity "%s"',
 
         # Perl Module: Kernel/Modules/AdminProcessManagementActivityDialog.pm
         'There was an error generating a new EntityID for this ActivityDialog' =>
@@ -3531,17 +3549,17 @@ sub Data {
         'Need ActivityDialogID!' => 'Necessário ActivityDialogID!',
         'Could not get data for ActivityDialogID %s' => '',
         'There was an error updating the ActivityDialog' => '',
-        'Edit Activity Dialog "%s"' => '',
+        'Edit Activity Dialog "%s"' => 'Editar Activity Dialog "%s"',
         'Agent Interface' => 'Interface do Agente',
         'Customer Interface' => 'Interface do Cliente',
-        'Agent and Customer Interface' => '',
-        'Do not show Field' => '',
-        'Show Field' => '',
-        'Show Field As Mandatory' => '',
+        'Agent and Customer Interface' => 'Atendente e Interface do Cliente',
+        'Do not show Field' => 'Não exibir campo',
+        'Show Field' => 'Exibir Campo',
+        'Show Field As Mandatory' => 'Exibir campo como mandatório',
         'fax' => 'fax',
 
         # Perl Module: Kernel/Modules/AdminProcessManagementPath.pm
-        'Edit Path' => '',
+        'Edit Path' => 'Editar Path',
 
         # Perl Module: Kernel/Modules/AdminProcessManagementTransition.pm
         'There was an error generating a new EntityID for this Transition' =>
@@ -3549,22 +3567,22 @@ sub Data {
         'There was an error creating the Transition' => 'Ocorreu um erro ao criar a alteração',
         'There was an error setting the entity sync status for Transition entity: %s' =>
             '',
-        'Need TransitionID!' => '',
+        'Need TransitionID!' => 'Necessário TransitionID!',
         'Could not get data for TransitionID %s' => '',
         'There was an error updating the Transition' => '',
         'Edit Transition "%s"' => '',
         'xor' => '',
         'String' => '',
-        'Transition validation module' => '',
+        'Transition validation module' => 'Módulo de validação de transição',
 
         # Perl Module: Kernel/Modules/AdminProcessManagementTransitionAction.pm
-        'At least one valid config parameter is required.' => '',
+        'At least one valid config parameter is required.' => 'Pelo menos, um parâmetro de configuração válido é necessário.',
         'There was an error generating a new EntityID for this TransitionAction' =>
             '',
         'There was an error creating the TransitionAction' => '',
         'There was an error setting the entity sync status for TransitionAction entity: %s' =>
             '',
-        'Need TransitionActionID!' => '',
+        'Need TransitionActionID!' => 'Necessário TransitionActionID!',
         'Could not get data for TransitionActionID %s' => '',
         'There was an error updating the TransitionAction' => '',
         'Edit Transition Action "%s"' => '',
@@ -3572,16 +3590,16 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminQueue.pm
         'Don\'t use :: in queue name!' => 'Não use :: no nome da fila!',
-        'Click back and change it!' => '',
+        'Click back and change it!' => 'Clique voltar para mudá-lo!',
 
         # Perl Module: Kernel/Modules/AdminQueueAutoResponse.pm
-        'Queues ( without auto responses )' => '',
+        'Queues ( without auto responses )' => 'Filas (sem auto respostas)',
 
         # Perl Module: Kernel/Modules/AdminSMIME.pm
         'S/MIME environment is not working. Please check log for more info!' =>
-            '',
-        'Need param Filename to delete!' => '',
-        'Need param Filename to download!' => '',
+            'O ambiente S/MIME não está funcionando. Por favor, verifique o log para mais informações!',
+        'Need param Filename to delete!' => 'Necessário o parâmetro Filename  para deletar!',
+        'Need param Filename to download!' => 'Necessário o parâmetro Filename  para download!',
         'Needed CertFingerprint and CAFingerprint!' => '',
         'CAFingerprint must be different than CertFingerprint' => '',
         'Relation exists!' => '',
@@ -3610,8 +3628,8 @@ sub Data {
         'There was an error creating the System Maintenance' => '',
         'Need SystemMaintenanceID!' => '',
         'Could not get data for SystemMaintenanceID %s' => '',
-        'System Maintenance was saved successfully!' => '',
-        'Session has been killed!' => '',
+        'System Maintenance was saved successfully!' => 'Manutenção do Sistema foi salva com sucesso!',
+        'Session has been killed!' => 'Sessão foi eliminada!',
         'All sessions have been killed, except for your own.' => 'Todas sessões foram desconectadas, exceto por esta.',
         'There was an error updating the System Maintenance' => '',
         'Was not possible to delete the SystemMaintenance entry: %s!' => '',
@@ -3632,7 +3650,7 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AgentLinkObject.pm
         'Need SourceObject and SourceKey!' => '',
-        'Please contact the admin.' => '',
+        'Please contact the admin.' => 'Por favor entre em contato com o administrador.',
         'You need ro permission!' => '',
         'Can not delete link with %s!' => '',
         'Can not create link with %s! Object already linked as %s.' => '',
@@ -3644,7 +3662,7 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AgentStatistics.pm
         'Parameter %s is missing.' => '',
-        'Invalid Subaction.' => '',
+        'Invalid Subaction.' => 'Subaction Inválida.',
         'Statistic could not be imported.' => '',
         'Please upload a valid statistic file.' => '',
         'Export: Need StatID!' => '',
@@ -3662,7 +3680,7 @@ sub Data {
         'Previous Owner' => 'Proprietário Anterior',
 
         # Perl Module: Kernel/Modules/AgentTicketBounce.pm
-        '%s is needed!' => '',
+        '%s is needed!' => '%s é necessário!',
         'Plain article not found for article %s!' => '',
         'Article does not belong to ticket %s!' => '',
         'Can\'t bounce email!' => '',
@@ -3683,7 +3701,7 @@ sub Data {
         'Can not determine the ArticleType!' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketEmail.pm
-        'No Subaction!' => '',
+        'No Subaction!' => 'Nenhuma Subaction!',
 
         # Perl Module: Kernel/Modules/AgentTicketEmailOutbound.pm
         'Got no TicketID!' => '',
@@ -3709,13 +3727,13 @@ sub Data {
         'You need move permissions!' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketPhone.pm
-        'Chat is not active.' => '',
-        'No permission.' => '',
+        'Chat is not active.' => 'Chat não está ativo.',
+        'No permission.' => 'Sem permissão.',
         '%s has left the chat.' => '',
-        'This chat has been closed and will be removed in %s hours.' => '',
+        'This chat has been closed and will be removed in %s hours.' => 'Este chat foi fechado e será removido em %s horas.',
 
         # Perl Module: Kernel/Modules/AgentTicketPlain.pm
-        'No ArticleID!' => '',
+        'No ArticleID!' => 'Nenhum ArticleID!',
         'Can\'t read plain article! Maybe there is no plain email in backend! Read backend message.' =>
             '',
 
@@ -3726,10 +3744,10 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AgentTicketProcess.pm
         'Couldn\'t get ActivityDialogEntityID "%s"!' => '',
-        'No Process configured!' => '',
-        'Process %s is invalid!' => '',
-        'Subaction is invalid!' => '',
-        'Parameter %s is missing in %s.' => '',
+        'No Process configured!' => 'Nenhum Processo configurado!',
+        'Process %s is invalid!' => 'Processo %s é inválido!',
+        'Subaction is invalid!' => 'Subaction é inválida!',
+        'Parameter %s is missing in %s.' => 'Parâmetro %s está faltando em %s.',
         'No ActivityDialog configured for %s in _RenderAjax!' => '',
         'Got no Start ActivityEntityID or Start ActivityDialogEntityID for Process: %s in _GetParam!' =>
             '',
@@ -3781,16 +3799,16 @@ sub Data {
         'Default Config for Process::Default%s invalid!' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketSearch.pm
-        'Untitled' => '',
+        'Untitled' => 'Sem título',
         'Invalid Users' => 'Usuários Inválidos',
         'CSV' => 'CSV',
         'Excel' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketService.pm
-        'Feature not enabled!' => '',
+        'Feature not enabled!' => 'Recurso não habilitado!',
 
         # Perl Module: Kernel/Modules/AgentTicketWatcher.pm
-        'Feature is not active' => '',
+        'Feature is not active' => 'Recurso não está ativo',
 
         # Perl Module: Kernel/Modules/AgentTicketZoom.pm
         'Ticket Created' => 'Chamado criado',
@@ -3812,7 +3830,7 @@ sub Data {
         'Escalation Solution Time Stopped' => '',
         'Escalation First Response Time Stopped' => '',
         'Escalation Response Time Stopped' => '',
-        'Link Added' => '',
+        'Link Added' => 'Link Adicionado',
         'Link Deleted' => '',
         'Ticket Merged' => '',
         'Pending Time Set' => '',
@@ -3835,6 +3853,13 @@ sub Data {
         'Event type filter settings were saved.' => '',
         'Need ArticleID!' => '',
         'Invalid ArticleID!' => '',
+        'Offline' => '',
+        'This user is currently offline' => '',
+        'This user is currently active' => '',
+        'Away' => '',
+        'This user is currently away' => '',
+        'Unavailable' => '',
+        'This user is currently unavailable' => '',
         'Fields with no group' => '',
         'View the source for this Article' => '',
 
@@ -3911,12 +3936,6 @@ sub Data {
         'filter active' => '',
         'This ticket has no title or subject' => '',
 
-        # Perl Module: Kernel/Output/HTML/Dashboard/UserOnline.pm
-        'This user is currently offline' => '',
-        'This user is currently active' => '',
-        'This user is currently away' => '',
-        'This user is currently unavailable' => '',
-
         # Perl Module: Kernel/Output/HTML/Layout.pm
         'We are sorry, you do not have permissions anymore to access this ticket in its current state. You can take one of the following actions:' =>
             '',
@@ -3978,7 +3997,12 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/TicketOverviewMenu/Sort.pm
         'Order by' => 'Ordenar por',
 
-        # Perl Module: Kernel/System/AuthSession/DB.pm
+        # Perl Module: Kernel/System/AuthSession.pm
+        'You have exceeded the number of concurrent agents - contact sales@otrs.com.' =>
+            '',
+        'Please note that the session limit is almost reached.' => '',
+        'Login rejected! You have exceeded the maximum number of concurrent Agents! Contact sales@otrs.com immediately!' =>
+            '',
         'Session per user limit reached!' => '',
 
         # Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
@@ -3989,6 +4013,10 @@ sub Data {
 
         # Perl Module: Kernel/System/Package.pm
         'not installed' => '',
+
+        # Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
+        'Inactive' => 'Inativo',
+        'FadeAway' => '',
 
         # Perl Module: Kernel/System/Registration.pm
         'Can\'t get Token from sever' => '',
@@ -4135,7 +4163,7 @@ sub Data {
             'A partição onde o OTRS está localizado não apresenta problemas de espaço.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/DiskSpacePartitions.pm
-        'Operating System/Disk Partitions Usage' => '',
+        'Disk Partitions Usage' => 'Partições em uso',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/Distribution.pm
         'Distribution' => 'Distribuição',
@@ -4161,16 +4189,17 @@ sub Data {
         'There should be no more than 200 MB swap space used.' => 'Não mais de 200 MB de espaço Swap deverá estar em utilização.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/ConfigSettings.pm
-        'OTRS/Config Settings' => '',
+        'OTRS' => 'OTRS',
+        'Config Settings' => 'Definições de configuração',
         'Could not determine value.' => 'Não foi possível determinar o valor.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/DaemonRunning.pm
-        'OTRS' => 'OTRS',
         'Daemon' => '',
+        'Daemon is running.' => '',
         'Daemon is not running.' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
-        'OTRS/Database Records' => '',
+        'Database Records' => 'Registros de Banco',
         'Tickets' => 'Chamados',
         'Ticket History Entries' => 'Entradas de Histórico de Chamados',
         'Articles' => 'Artigos',
@@ -4180,6 +4209,7 @@ sub Data {
         'Invalid Dynamic Fields' => 'Campos dinâmicos inválidos',
         'Invalid Dynamic Field Values' => 'Valor do Campo Dinâmico inválido',
         'GenericInterface Webservices' => 'GenericInterface serviços Web',
+        'Process Tickets' => '',
         'Months Between First And Last Ticket' => 'Meses Entre o Primeiro e o Último Chamado',
         'Tickets Per Month (avg)' => 'Chamados por Mês (méd.)',
 
@@ -4211,9 +4241,19 @@ sub Data {
         'Package Installation Status' => 'Estado da Instalação do Pacote',
         'Some packages have locally modified files.' => '',
         'Some packages are not correctly installed.' => 'Alguns pacotes não foram instalados corretamente.',
+        'Package Verification Status' => '',
+        'Some packages are not verified by the OTRS Group! It is recommended not to use this packages.' =>
+            '',
+        'Package Framework Version Status' => '',
+        'Some packages are not allowed for the current framework version.' =>
+            '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageList.pm
-        'OTRS/Package List' => '',
+        'Package List' => 'Lista de Pacotes',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
+        'Spooled Emails' => '',
+        'There are emails in var/spool that OTRS could not process.' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SystemID.pm
         'Your SystemID setting is invalid, it should only contain digits.' =>
@@ -4248,11 +4288,11 @@ sub Data {
         'Table ticket_lock_index contains orphaned records. Please run bin/otrs.Console.pl "Maint::Ticket::QueueIndexCleanup" to clean the StaticDB index.' =>
             '',
         'Orphaned Records In ticket_index Table' => 'Registros órfãos na tabela ticket_index',
-        'Table ticket_index contains orphaned records. Please run otrs/bin/otrs.CleanTicketIndex.pl to clean the StaticDB index.' =>
-            'A tabela ticket_index contém registros órfãos. Por favor execute o comando otrs/bin/otrs.CleanTicketIndex.pl para limpar o índice StaticDB.',
+        'Table ticket_index contains orphaned records. Please run bin/otrs.Console.pl "Maint::Ticket::QueueIndexCleanup" to clean the StaticDB index.' =>
+            '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/TimeSettings.pm
-        'OTRS/Time Settings' => '',
+        'Time Settings' => '',
         'Server time zone' => '',
         'Computed server time offset' => '',
         'OTRS TimeZone setting (global time offset)' => '',
@@ -4263,10 +4303,10 @@ sub Data {
         'OTRS TimeZone setting for calendar ' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/LoadedModules.pm
-        'Webserver/Loaded Apache Modules' => '',
+        'Webserver' => 'Servidor de Web',
+        'Loaded Apache Modules' => 'Módulos Apache Carregados',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/MPMModel.pm
-        'Webserver' => 'Servidor de Web',
         'MPM model' => 'Modelo MPM',
         'OTRS requires apache to be run with the \'prefork\' MPM model.' =>
             'OTRS necessita do apache para executar o modelo MPM \'prefork\'',
@@ -4289,14 +4329,15 @@ sub Data {
             '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/EnvironmentVariables.pm
-        'Webserver/Environment Variables' => '',
-
-        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/IIS/Performance.pm
-        'You should use PerlEx to increase your performance.' => 'Você deve usar o PerlEx para melhorar o desempenho.',
+        'Environment Variables' => 'Variáveis de ambiente',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Version.pm
         'Webserver Version' => 'Versão do Servidor WEB',
         'Could not determine webserver version.' => 'Não foi possível determinar a versão do servidor WEB.',
+
+        # Perl Module: Kernel/System/SupportDataCollector/PluginAsynchronous/OTRS/ConcurrentUsers.pm
+        'Concurrent Users Details' => '',
+        'Concurrent Users' => 'Usuários Concorrentes',
 
         # Perl Module: Kernel/System/SupportDataCollector/PluginBase.pm
         'Unknown' => 'Desconhecido',
@@ -4305,6 +4346,18 @@ sub Data {
 
         # Perl Module: Kernel/System/Ticket.pm
         'Reset of unlock time.' => '',
+
+        # Perl Module: Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+        'PGP sign only' => '',
+        'PGP encrypt only' => '',
+        'PGP sign and encrypt' => '',
+        'SMIME sign only' => '',
+        'SMIME encrypt only' => '',
+        'SMIME sign and encrypt' => '',
+        'PGP and SMIME not enabled.' => '',
+        'Skip notification delivery' => '',
+        'Send unsigned notification' => '',
+        'Send unencrypted notification' => '',
 
         # Perl Module: Kernel/System/Web/InterfaceAgent.pm
         'Panic, user authenticated but no user data can be found in OTRS DB!! Perhaps the user is invalid.' =>
@@ -4565,7 +4618,7 @@ Thanks for your help!
             'Permite que administradores personifiquem (se loguem como) outros usuários, através do painel de administração de usuários.',
         'Allows to set a new ticket state in the move ticket screen of the agent interface.' =>
             'Permite definir um novo estado de chamado na tela de movimentação de chamado da interface de atendente.',
-        'Always show RichText if available' => '',
+        'Always show RichText if available' => 'Sempre exibir RichText se disponível',
         'Arabic (Saudi Arabia)' => '',
         'Archive state changed: "%s"' => 'Estado de arquivamento alterado: "%s".',
         'ArticleTree' => 'Árvore de Artigo',
@@ -4901,6 +4954,8 @@ Thanks for your help!
         'Defines out of office message template. Two string parameters (%s) available: end date and number of days left.' =>
             '',
         'Defines queues that\'s tickets are used for displaying as calendar events.' =>
+            '',
+        'Defines the HTTP hostname for the support data collection with the public module \'PublicSupportDataCollector\' (e.g. used from the OTRS Daemon).' =>
             '',
         'Defines the IP regular expression for accessing the local repository. You need to enable this to have access to your local repository and the package::RepositoryList is required on the remote host.' =>
             'Define a expressão regular IP para acessar o repositório local. Você precisa habilitar isso para ter acesso ao seu repositório local e o pacote: RepositoryList é obrigatório na máquina remota.',
@@ -5248,6 +5303,8 @@ Thanks for your help!
             '',
         'Defines the module to display a notification in the agent interface, if the agent is logged in while having system maintenance active.' =>
             '',
+        'Defines the module to display a notification in the agent interface, if the agent session limit prior warning is reached.' =>
+            '',
         'Defines the module to display a notification in the agent interface, if the system is used by the admin user (normally you shouldn\'t work as admin).' =>
             '',
         'Defines the module to generate code for periodic page reloads.' =>
@@ -5390,7 +5447,7 @@ Thanks for your help!
         'Defines the valid state types for a ticket.' => '',
         'Defines the valid states for unlocked tickets. To unlock tickets the script "bin/otrs.Console.pl Maint::Ticket::UnlockTimeout" can be used.' =>
             '',
-        'Defines the viewable locks of a ticket. Default: unlock, tmp_lock.' =>
+        'Defines the viewable locks of a ticket. NOTE: When you change this setting, make sure to delete the cache in order to use the new value. Default: unlock, tmp_lock.' =>
             '',
         'Defines the width for the rich text editor component for this screen. Enter number (pixels) or percent value (relative).' =>
             '',
@@ -5447,6 +5504,8 @@ Thanks for your help!
         'Determines which options will be valid of the recipient (phone ticket) and the sender (email ticket) in the agent interface.' =>
             '',
         'Determines which queues will be valid for ticket\'s recepients in the customer interface.' =>
+            '',
+        'Disable HTTP header "Content-Security-Policy" to allow loading of external script contents. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             '',
         'Disable HTTP header "X-Frame-Options: SAMEORIGIN" to allow OTRS to be included as an IFrame in other websites. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             '',
@@ -5553,6 +5612,7 @@ Thanks for your help!
             '',
         'Enables S/MIME support.' => 'Habilita suporte a S/MIME.',
         'Enables customers to create their own accounts.' => '',
+        'Enables fetch S/MIME from CustomerUser backend support.' => '',
         'Enables file upload in the package manager frontend.' => '',
         'Enables or disables the caching for templates. WARNING: Do NOT disable template caching for production environments for it will cause a massive performance drop! This setting should only be disabled for debugging reasons!' =>
             '',
@@ -5963,10 +6023,13 @@ Thanks for your help!
             '',
         'Module to compose signed messages (PGP or S/MIME).' => '',
         'Module to crypt composed messages (PGP or S/MIME).' => '',
+        'Module to fetch customer users SMIME certificates of incoming messages.' =>
+            '',
         'Module to filter and manipulate incoming messages. Block/ignore all spam email with From: noreply@ address.' =>
             '',
         'Module to filter and manipulate incoming messages. Get a 4 digit number to ticket free text, use regex in Match e. g. From => \'(.+?)@.+?\', and use () as [***] in Set =>.' =>
             '',
+        'Module to filter encrypted bodies of incoming messages.' => '',
         'Module to generate accounted time ticket statistics.' => '',
         'Module to generate html OpenSearch profile for short ticket search in the agent interface.' =>
             '',
@@ -6129,6 +6192,8 @@ Thanks for your help!
         'Removed subscription for user "%s".' => 'Removida assinatura para o usuário "%s".',
         'Removes the ticket watcher information when a ticket is archived.' =>
             'Remove a informação de monitoramento quando o chamado é arquivado.',
+        'Renew existing SMIME certificates from customer backend. Note: SMIME and SMIME::FetchFromCustomer needs to be active in SysConfig and customer backend needs to be configured to fetch UserSMIMECertificate attribute.' =>
+            '',
         'Replaces the original sender with current customer\'s email address on compose answer in the ticket compose screen of the agent interface.' =>
             '',
         'Reports' => 'Relatórios',
@@ -6316,6 +6381,8 @@ Thanks for your help!
             '',
         'Sets the inactivity time (in seconds) to pass before a session is killed and a user is loged out.' =>
             '',
+        'Sets the maximum number of active agents within the timespan defined in SessionActiveTime before a prior warning will be visible for the logged in agents.' =>
+            '',
         'Sets the maximum number of active agents within the timespan defined in SessionActiveTime.' =>
             '',
         'Sets the maximum number of active customers within the timespan defined in SessionActiveTime.' =>
@@ -6417,7 +6484,8 @@ Thanks for your help!
             '',
         'Sets the ticket type in the ticket responsible screen of the agent interface (Ticket::Type needs to be activated).' =>
             '',
-        'Sets the time (in seconds) a user is marked as active.' => '',
+        'Sets the time (in seconds) a user is marked as active (minimum active time is 300 seconds).' =>
+            '',
         'Sets the timeout (in seconds) for http/ftp downloads.' => '',
         'Sets the timeout (in seconds) for package downloads. Overwrites "WebUserAgent::Timeout".' =>
             '',
@@ -6789,7 +6857,7 @@ Thanks for your help!
         'Ticket notifications' => 'Notificações de chamados',
         'Ticket overview' => 'Visão Geral de Chamados',
         'Ticket plain view of an email.' => 'Visualizar texto plano como um e-mail',
-        'Ticket title' => '',
+        'Ticket title' => 'Título do chamado.',
         'Ticket zoom view.' => 'Detalhes do chamado.',
         'TicketNumber' => 'Número Chamado',
         'Tickets.' => 'Chamados.',

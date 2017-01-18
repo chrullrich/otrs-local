@@ -14,6 +14,7 @@ use warnings;
 use Getopt::Long();
 use Term::ANSIColor();
 use IO::Interactive();
+use Encode::Locale();
 
 our @ObjectDependencies = (
     'Kernel::Config',
@@ -236,7 +237,7 @@ indicate which arguments it can process.
         Multiple     => 0,  # optional, allow more than one occurrence (only possible if HasValue is true)
     );
 
-=head4 Option Naming Conventions
+B<Option Naming Conventions>
 
 If there is a source and a target involved in the command, the related options should start
 with C<--source> and C<--target>, for example C<--source-path>.
@@ -425,6 +426,21 @@ sub Execute {
     if ( !%{ $Self->{_ParsedARGV} // {} } ) {
         print STDERR "\n" . $Self->GetUsageHelp();
         return $Self->ExitCodeError();
+    }
+
+    # If we have an interactive console, make sure that the output can handle UTF-8.
+    if (
+        IO::Interactive::is_interactive()
+        && !$Kernel::OM->Get('Kernel::Config')->Get('SuppressConsoleEncodingCheck')
+        )
+    {
+        my $ConsoleEncoding = lc $Encode::Locale::ENCODING_CONSOLE_OUT;    ## no critic
+
+        if ( $ConsoleEncoding ne 'utf-8' ) {
+            $Self->PrintError(
+                "The terminal encoding should be set to 'utf-8', but is '$ConsoleEncoding'. Some characters might not be displayed correctly."
+            );
+        }
     }
 
     eval { $Self->PreRun(); };

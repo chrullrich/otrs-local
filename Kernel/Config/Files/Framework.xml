@@ -72,7 +72,7 @@
         <Group>Framework</Group>
         <SubGroup>Core</SubGroup>
         <Setting>
-            <String Regex="">OTRS 5</String>
+            <String Regex="">OTRS 5s</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="SystemID" Required="1" Valid="1" ConfigLevel="200">
@@ -89,6 +89,23 @@
         <SubGroup>Core</SubGroup>
         <Setting>
             <String Regex="">yourhost.example.com</String>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="SupportDataCollector::HTTPHostname" Required="0" Valid="0" ConfigLevel="200">
+        <Description Translatable="1">Defines the HTTP hostname for the support data collection with the public module 'PublicSupportDataCollector' (e.g. used from the OTRS Daemon).</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core</SubGroup>
+        <Setting>
+            <String Regex=""></String>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="SupportDataCollector::DisablePlugins" Required="0" Valid="0" ConfigLevel="200">
+        <Description Translatable="1">Defines the HTTP hostname for the support data collection with the public module 'PublicSupportDataCollector' (e.g. used from the OTRS Daemon).</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core</SubGroup>
+        <Setting>
+            <Array>
+            </Array>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="NodeID" Required="0" Valid="0" ConfigLevel="200">
@@ -495,6 +512,17 @@
             </Option>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="DisableContentSecurityPolicy" Required="0" Valid="1">
+        <Description Translatable="1">Disable HTTP header "Content-Security-Policy" to allow loading of external script contents. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Web</SubGroup>
+        <Setting>
+            <Option SelectedID="0">
+                <Item Key="0" Translatable="1">No</Item>
+                <Item Key="1" Translatable="1">Yes</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="DefaultViewNewLine" Required="1" Valid="1">
         <Description Translatable="1">Automated line break in text messages after x number of chars.</Description>
         <Group>Framework</Group>
@@ -885,6 +913,16 @@
             </Hash>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="Frontend::NotifyModule###250-AgentSessionLimit" Required="1" Valid="1">
+        <Description Translatable="1">Defines the module to display a notification in the agent interface, if the agent session limit prior warning is reached.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Agent::ModuleNotify</SubGroup>
+        <Setting>
+            <Hash>
+                <Item Key="Module">Kernel::Output::HTML::Notification::AgentSessionLimit</Item>
+            </Hash>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="Frontend::NotifyModule###300-ShowAgentOnline" Required="0" Valid="0">
         <Description Translatable="1">Defines the module that shows all the currently logged in agents in the agent interface.</Description>
         <Group>Framework</Group>
@@ -1006,11 +1044,11 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="SessionActiveTime" Required="1" Valid="1">
-        <Description Translatable="1">Sets the time (in seconds) a user is marked as active.</Description>
+        <Description Translatable="1">Sets the time (in seconds) a user is marked as active (minimum active time is 300 seconds).</Description>
         <Group>Framework</Group>
         <SubGroup>Core::Session</SubGroup>
         <Setting>
-            <String Regex="^[0-9]{1,8}$">600</String>
+            <String Regex="^[3-9][0-9]{2,6}|[1-9][0-9]{3,6}$">600</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="SessionDeleteIfTimeToOld" Required="1" Valid="1">
@@ -1055,6 +1093,14 @@
                 <Item Key="0" Translatable="1">No</Item>
                 <Item Key="1" Translatable="1">Yes</Item>
             </Option>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="AgentSessionLimitPriorWarning" Required="0" Valid="0">
+        <Description Translatable="1">Sets the maximum number of active agents within the timespan defined in SessionActiveTime before a prior warning will be visible for the logged in agents.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core::Session</SubGroup>
+        <Setting>
+            <String Regex="^[0-9]{1,8}$">90</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="AgentSessionLimit" Required="0" Valid="1">
@@ -3436,6 +3482,17 @@
             </Option>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="SMIME::FetchFromCustomer" Required="1" Valid="1">
+        <Description Translatable="1">Enables fetch S/MIME from CustomerUser backend support.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Crypt::SMIME</SubGroup>
+        <Setting>
+            <Option SelectedID="0">
+                <Item Key="0" Translatable="1">No</Item>
+                <Item Key="1" Translatable="1">Yes</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="NotificationSenderName" Required="1" Valid="1">
         <Description Translatable="1">Specifies the name that should be used by the application when sending notifications. The sender name is used to build the complete display name for the notification master (i.e. "OTRS Notifications" otrs@your.example.com).</Description>
         <Group>Framework</Group>
@@ -5306,6 +5363,21 @@ via the Preferences button after logging in.
                     <Block>System</Block>
                     <Prio>360</Prio>
                 </NavBarModule>
+                <Loader>
+                    <CSS>Core.Agent.Admin.OTRSBusiness.css</CSS>
+                </Loader>
+            </FrontendModuleReg>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="Frontend::Module###AgentOTRSBusiness" Required="0" Valid="1">
+        <Description Translatable="1">Frontend module registration for the agent interface.</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Agent::ModuleRegistration</SubGroup>
+        <Setting>
+            <FrontendModuleReg>
+                <Description>Agent</Description>
+                <Title>OTRS Business Solution™</Title>
+                <NavBarName></NavBarName>
                 <Loader>
                     <CSS>Core.Agent.Admin.OTRSBusiness.css</CSS>
                 </Loader>
