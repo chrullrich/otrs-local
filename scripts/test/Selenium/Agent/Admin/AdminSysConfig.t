@@ -44,6 +44,24 @@ $Selenium->RunTest(
 
         }
 
+        # select Ticket sysconfig group
+        $Selenium->execute_script(
+            "\$('#SysConfigGroup').val('Ticket').trigger('redraw.InputField').trigger('change');"
+        );
+
+        sleep 0.5;    # Wait for reload to kick in
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".Remove").length' );
+
+        # remove selected Ticket sysconfig group
+        $Selenium->find_element( ".Remove", 'css' )->VerifiedClick();
+
+        # verify no result are found on after removing sysconfig group
+        $Self->Is(
+            $Selenium->execute_script("return \$('.DataTable tbody td').text().trim();"),
+            'No data found.',
+            "No result message is found"
+        );
+
         # check for the import button
         $Selenium->find_element("//a[contains(\@href, \'Subaction=Import')]");
 

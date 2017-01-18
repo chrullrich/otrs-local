@@ -268,8 +268,16 @@ $Selenium->RunTest(
         );
 
         # delete test job
-        $Selenium->find_element("//a[contains(\@href, \'Subaction=Delete;Profile=$GenericAgentJob\' )]")
-            ->VerifiedClick();
+        $Selenium->find_element("//a[contains(\@href, \'Subaction=Delete;Profile=$GenericAgentJob\' )]")->click();
+
+        # Accept delete confirmation dialog
+        $Selenium->accept_alert();
+
+        # check overview page
+        $Self->True(
+            index( $Selenium->get_page_source(), $GenericAgentJob ) == -1,
+            'Generic Agent job is deleted - $GenericAgentJob'
+        );
 
         # delete created test dynamic field
         my $Success = $DynamicFieldObject->DynamicFieldDelete(
