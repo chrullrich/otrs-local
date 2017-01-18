@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
-"POT-Creation-Date: 2016-09-14 10:25+0000\n"
-"PO-Revision-Date: 2016-09-14 15:43+0000\n"
+"POT-Creation-Date: 2016-10-27 10:09+0000\n"
+"PO-Revision-Date: 2016-10-27 15:10+0000\n"
 "Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
 "Language-Team: Danish (http://www.transifex.com/otrs/OTRS/language/da/)\n"
 "MIME-Version: 1.0\n"
@@ -4242,30 +4242,6 @@ msgid "Save Changes"
 msgstr "Gem ændringer"
 
 #. Template: AdminGenericAgent
-msgid "Tag Reference"
-msgstr ""
-
-#. Template: AdminGenericAgent
-msgid "In the note section, you can use the following tags"
-msgstr ""
-
-#. Template: AdminGenericAgent
-msgid "Attributes of the current customer user data"
-msgstr ""
-
-#. Template: AdminGenericAgent
-msgid "Attributes of the ticket data"
-msgstr ""
-
-#. Template: AdminGenericAgent
-msgid "Ticket dynamic fields internal key values"
-msgstr ""
-
-#. Template: AdminGenericAgent
-msgid "Example note"
-msgstr ""
-
-#. Template: AdminGenericAgent
 msgid "Results"
 msgstr "Resultater"
 
@@ -5072,23 +5048,30 @@ msgid "Do you really want to delete this web service?"
 msgstr "Vil du virkelig slette denne web-service?"
 
 #. Template: AdminGenericInterfaceWebservice
-msgid "Example Web Services"
+msgid "Ready-to-run Web Services"
 msgstr ""
 
 #. Template: AdminGenericInterfaceWebservice
 msgid ""
-"Here you can activate best practice example web service that are part of %s."
-" Please note that some additional configuration may be required."
-msgstr ""
-
-#. Template: AdminGenericInterfaceWebservice
-msgid "Import example web service"
+"Here you can activate ready-to-run web services showcasing our best "
+"practices that are a part of %s."
 msgstr ""
 
 #. Template: AdminGenericInterfaceWebservice
 msgid ""
-"Do you want to benefit from web services created by experts? Upgrade to %s "
-"to be able to import some sophisticated example web services."
+"Please note that these web services may depend on other modules only "
+"available with certain %s contract levels (there will be a notification with"
+" further details when importing)."
+msgstr ""
+
+#. Template: AdminGenericInterfaceWebservice
+msgid "Import ready-to-run web service"
+msgstr ""
+
+#. Template: AdminGenericInterfaceWebservice
+msgid ""
+"Would you like to benefit from web services created by experts? Upgrade to "
+"%s to import some sophisticated ready-to-run web services."
 msgstr ""
 
 #. Template: AdminGenericInterfaceWebservice
@@ -5600,6 +5583,10 @@ msgid "Do you really want to delete this notification language?"
 msgstr "Er du sikker på at du vil slette dette meldingssprog"
 
 #. Template: AdminNotificationEvent
+msgid "Tag Reference"
+msgstr ""
+
+#. Template: AdminNotificationEvent
 msgid "Notifications are sent to an agent or a customer."
 msgstr "Meldinger sendes til en agent eller kunde."
 
@@ -5623,6 +5610,10 @@ msgid "To get the first 5 lines of the body (of the latest customer article)."
 msgstr "For at få de første 5 linier af indholdet (af det seneste agent-indlæg)."
 
 #. Template: AdminNotificationEvent
+msgid "Attributes of the current customer user data"
+msgstr ""
+
+#. Template: AdminNotificationEvent
 msgid "Attributes of the current ticket owner user data"
 msgstr ""
 
@@ -5636,6 +5627,14 @@ msgstr ""
 
 #. Template: AdminNotificationEvent
 msgid "Attributes of the recipient user for the notification"
+msgstr ""
+
+#. Template: AdminNotificationEvent
+msgid "Attributes of the ticket data"
+msgstr ""
+
+#. Template: AdminNotificationEvent
+msgid "Ticket dynamic fields internal key values"
 msgstr ""
 
 #. Template: AdminNotificationEvent
@@ -5669,6 +5668,22 @@ msgstr "Email skabelon"
 #. Template: AdminNotificationEventTransportEmailSettings
 msgid ""
 "Use this template to generate the complete email (only for HTML emails)."
+msgstr ""
+
+#. Template: AdminNotificationEventTransportEmailSettings
+msgid "Enable email security"
+msgstr ""
+
+#. Template: AdminNotificationEventTransportEmailSettings
+msgid "Email security level"
+msgstr ""
+
+#. Template: AdminNotificationEventTransportEmailSettings
+msgid "If signing key/certificate is missing"
+msgstr ""
+
+#. Template: AdminNotificationEventTransportEmailSettings
+msgid "If encryption key/certificate is missing"
 msgstr ""
 
 #. Template: AdminOTRSBusinessInstalled
@@ -6292,19 +6307,19 @@ msgstr "Eksempel processer"
 
 #. Template: AdminProcessManagement
 msgid ""
-"Here you can activate best practice example processes that are part of %s. "
-"Please note that some additional configuration may be required."
-msgstr "Her kan du aktivere \"Best Practice\" processer der er en del af %s. Bemærk at yderligere konfiguration kan være nødvendig."
-
-#. Template: AdminProcessManagement
-msgid "Import example process"
-msgstr "Importer eksempel processer"
+"Here you can activate best practice example processes. Please note that some"
+" additional configuration may be required."
+msgstr ""
 
 #. Template: AdminProcessManagement
 msgid ""
 "Do you want to benefit from processes created by experts? Upgrade to %s to "
-"be able to import some sophisticated example processes."
-msgstr "Vil du have udbytte af processer lavet af experter? Opgrader til %s for at importere nogle sofistikerede eksempel processer."
+"be able to import additional sophisticated example processes."
+msgstr ""
+
+#. Template: AdminProcessManagement
+msgid "Import example process"
+msgstr "Importer eksempel processer"
 
 #. Template: AdminProcessManagement
 msgid ""
@@ -6752,6 +6767,10 @@ msgid ""
 "In this screen, you can create a new process. In order to make the new "
 "process available to users, please make sure to set its state to 'Active' "
 "and synchronize after completing your work."
+msgstr ""
+
+#. Template: AdminProcessManagementProcessPrint
+msgid "cancel & close"
 msgstr ""
 
 #. Template: AdminProcessManagementProcessPrint
@@ -8416,6 +8435,18 @@ msgstr "Det vil blive slettet fra feltet. Prøv venligst igen."
 msgid "Note: Customer is invalid!"
 msgstr "Bemærk: Kunden er ugyldig"
 
+#. Template: AgentCustomerTableView
+msgid "Start chat"
+msgstr "Start chat"
+
+#. Template: AgentCustomerTableView
+msgid "Video call"
+msgstr ""
+
+#. Template: AgentCustomerTableView
+msgid "Audio call"
+msgstr ""
+
 #. Template: AgentDaemonInfo
 msgid ""
 "The OTRS Daemon is a daemon process that performs asynchronous tasks, e.g. "
@@ -8489,10 +8520,6 @@ msgid "Email ticket"
 msgstr "Mail-sager"
 
 #. Template: AgentDashboardCustomerUserList
-msgid "Start Chat"
-msgstr "Start Chat"
-
-#. Template: AgentDashboardCustomerUserList
 msgid "%s open ticket(s) of %s"
 msgstr "%s åbne sager af %s"
 
@@ -8507,10 +8534,6 @@ msgstr "Nye sager fra %s"
 #. Template: AgentDashboardCustomerUserList
 msgid "New email ticket to %s"
 msgstr "Nye mail-sager til %s"
-
-#. Template: AgentDashboardCustomerUserList
-msgid "Start chat"
-msgstr "Start chat"
 
 #. Template: AgentDashboardProductNotify
 msgid "%s %s is available!"
@@ -8627,10 +8650,6 @@ msgstr "Totaler"
 msgid "out of office"
 msgstr "ude af kontoret"
 
-#. Template: AgentDashboardUserOnline
-msgid "Selected agent is not available for chat"
-msgstr "Den valgte agent er ikke tilgængelig i chat"
-
 #. Template: AgentDashboardUserOutOfOffice
 msgid "until"
 msgstr "til"
@@ -8674,6 +8693,16 @@ msgstr "Fjern k?dning af objekt: %s"
 #. Template: AgentLinkObject
 msgid "go to link add screen"
 msgstr "gå til skærmen, hvor links kan tilføjes"
+
+#. Template: AgentOTRSBusinessBlockScreen
+msgid "Unauthorized usage of %s detected"
+msgstr ""
+
+#. Template: AgentOTRSBusinessBlockScreen
+msgid ""
+"If you decide to downgrade to OTRS Free, you will lose all database tables "
+"and data related to %s."
+msgstr ""
 
 #. Template: AgentPreferences
 msgid "Edit your preferences"
@@ -9701,6 +9730,22 @@ msgstr "Filtre"
 msgid "Confirm"
 msgstr "Bekræft"
 
+#. Template: CustomerFooterJS
+msgid "You have unanswered chat requests"
+msgstr ""
+
+#. Template: CustomerFooterJS
+msgid "Accept"
+msgstr ""
+
+#. Template: CustomerFooterJS
+msgid "Decline"
+msgstr ""
+
+#. Template: CustomerFooterJS
+msgid "An internal error occurred."
+msgstr ""
+
 #. Template: CustomerLogin
 msgid "JavaScript Not Available"
 msgstr "JavaScript ikke tilgængeligt"
@@ -9793,10 +9838,6 @@ msgstr "Din mail-adresse (den bliver dit brugernavn)"
 
 #. Template: CustomerNavigationBar
 msgid "Incoming Chat Requests"
-msgstr ""
-
-#. Template: CustomerNavigationBar
-msgid "You have unanswered chat requests"
 msgstr ""
 
 #. Template: CustomerNavigationBar
@@ -10114,12 +10155,28 @@ msgid "New public chat request"
 msgstr ""
 
 #. Template: FooterJS
+msgid "Selected user is not available for chat."
+msgstr ""
+
+#. Template: FooterJS
 msgid "New activity"
 msgstr "Ny aktivitet"
 
 #. Template: FooterJS
 msgid "New activity on one of your monitored chats."
 msgstr "Ny aktivitet i en af dine monitorerede chats."
+
+#. Template: FooterJS
+msgid "Your browser does not support video and audio calling."
+msgstr ""
+
+#. Template: FooterJS
+msgid "Selected user is not available for video and audio call."
+msgstr ""
+
+#. Template: FooterJS
+msgid "Target user's browser does not support video and audio calling."
+msgstr ""
 
 #. Template: FooterJS
 msgid "Do you really want to continue?"
@@ -12299,6 +12356,34 @@ msgid "Invalid ArticleID!"
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Offline"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "This user is currently offline"
+msgstr "Brugeren er offline"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "This user is currently active"
+msgstr "Brugeren er aktiv"
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Away"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "This user is currently away"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "Unavailable"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
+msgid "This user is currently unavailable"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "Fields with no group"
 msgstr ""
 
@@ -12500,22 +12585,6 @@ msgstr ""
 msgid "This ticket has no title or subject"
 msgstr "Denne sag mangler overskrift eller emne"
 
-#. Perl Module: Kernel/Output/HTML/Dashboard/UserOnline.pm
-msgid "This user is currently offline"
-msgstr "Brugeren er offline"
-
-#. Perl Module: Kernel/Output/HTML/Dashboard/UserOnline.pm
-msgid "This user is currently active"
-msgstr "Brugeren er aktiv"
-
-#. Perl Module: Kernel/Output/HTML/Dashboard/UserOnline.pm
-msgid "This user is currently away"
-msgstr ""
-
-#. Perl Module: Kernel/Output/HTML/Dashboard/UserOnline.pm
-msgid "This user is currently unavailable"
-msgstr ""
-
 #. Perl Module: Kernel/Output/HTML/Layout.pm
 msgid ""
 "We are sorry, you do not have permissions anymore to access this ticket in "
@@ -12648,7 +12717,22 @@ msgstr ""
 msgid "Order by"
 msgstr "Sorter efter"
 
-#. Perl Module: Kernel/System/AuthSession/DB.pm
+#. Perl Module: Kernel/System/AuthSession.pm
+msgid ""
+"You have exceeded the number of concurrent agents - contact sales@otrs.com."
+msgstr ""
+
+#. Perl Module: Kernel/System/AuthSession.pm
+msgid "Please note that the session limit is almost reached."
+msgstr ""
+
+#. Perl Module: Kernel/System/AuthSession.pm
+msgid ""
+"Login rejected! You have exceeded the maximum number of concurrent Agents! "
+"Contact sales@otrs.com immediately!"
+msgstr ""
+
+#. Perl Module: Kernel/System/AuthSession.pm
 msgid "Session per user limit reached!"
 msgstr ""
 
@@ -12670,6 +12754,14 @@ msgstr ""
 
 #. Perl Module: Kernel/System/Package.pm
 msgid "not installed"
+msgstr ""
+
+#. Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
+msgid "Inactive"
+msgstr "Inaktiv"
+
+#. Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
+msgid "FadeAway"
 msgstr ""
 
 #. Perl Module: Kernel/System/Registration.pm
@@ -13077,7 +13169,7 @@ msgstr "Den partition OTRS befinder sig på har ingen pladsproblemer."
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OS/DiskSpacePartitions.pm
-msgid "Operating System/Disk Partitions Usage"
+msgid "Disk Partitions Usage"
 msgstr ""
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/Distribution.pm
@@ -13132,8 +13224,13 @@ msgstr "Der bør ikke være mere end 200 MB brugt swap."
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/ConfigSettings.pm
-msgid "OTRS/Config Settings"
-msgstr "OTRS/Konfigurations indstillinger"
+msgid "OTRS"
+msgstr "OTRS"
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/ConfigSettings.pm
+msgid "Config Settings"
+msgstr "Konfigurationsindstillinger"
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/ConfigSettings.pm
@@ -13142,13 +13239,13 @@ msgstr "Kunne ikke fastslå værdi."
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DaemonRunning.pm
-msgid "OTRS"
-msgstr "OTRS"
+msgid "Daemon"
+msgstr "Tjeneste"
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DaemonRunning.pm
-msgid "Daemon"
-msgstr "Tjeneste"
+msgid "Daemon is running."
+msgstr ""
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DaemonRunning.pm
@@ -13157,7 +13254,7 @@ msgstr "Tjeneste kører ikke."
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
-msgid "OTRS/Database Records"
+msgid "Database Records"
 msgstr ""
 
 #. Perl Module:
@@ -13203,6 +13300,11 @@ msgstr ""
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
 msgid "GenericInterface Webservices"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
+msgid "Process Tickets"
 msgstr ""
 
 #. Perl Module:
@@ -13286,8 +13388,38 @@ msgstr ""
 msgid "Some packages are not correctly installed."
 msgstr "Nogle pakker er ikke korrekt installeret."
 
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/PackageDeployment.pm
+msgid "Package Verification Status"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/PackageDeployment.pm
+msgid ""
+"Some packages are not verified by the OTRS Group! It is recommended not to "
+"use this packages."
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/PackageDeployment.pm
+msgid "Package Framework Version Status"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/PackageDeployment.pm
+msgid "Some packages are not allowed for the current framework version."
+msgstr ""
+
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageList.pm
-msgid "OTRS/Package List"
+msgid "Package List"
+msgstr "Pakkeliste"
+
+#. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
+msgid "Spooled Emails"
+msgstr ""
+
+#. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
+msgid "There are emails in var/spool that OTRS could not process."
 msgstr ""
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SystemID.pm
@@ -13371,13 +13503,13 @@ msgstr ""
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/Ticket/StaticDBOrphanedRecords.pm
 msgid ""
-"Table ticket_index contains orphaned records. Please run "
-"otrs/bin/otrs.CleanTicketIndex.pl to clean the StaticDB index."
+"Table ticket_index contains orphaned records. Please run bin/otrs.Console.pl"
+" \"Maint::Ticket::QueueIndexCleanup\" to clean the StaticDB index."
 msgstr ""
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/TimeSettings.pm
-msgid "OTRS/Time Settings"
-msgstr "OTRS/Tids indstillinger"
+msgid "Time Settings"
+msgstr ""
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/TimeSettings.pm
 msgid "Server time zone"
@@ -13411,13 +13543,13 @@ msgstr "OTRS tidszone indstilling for kalender"
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/LoadedModules.pm
-msgid "Webserver/Loaded Apache Modules"
-msgstr "Webserver/indlæste Apache moduler"
-
-#. Perl Module:
-#. Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/MPMModel.pm
 msgid "Webserver"
 msgstr "Web-server"
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/LoadedModules.pm
+msgid "Loaded Apache Modules"
+msgstr "Indlæste Apache-moduler"
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/MPMModel.pm
@@ -13496,13 +13628,8 @@ msgstr ""
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/Webserver/EnvironmentVariables.pm
-msgid "Webserver/Environment Variables"
-msgstr ""
-
-#. Perl Module:
-#. Kernel/System/SupportDataCollector/Plugin/Webserver/IIS/Performance.pm
-msgid "You should use PerlEx to increase your performance."
-msgstr ""
+msgid "Environment Variables"
+msgstr "Miljøvariable"
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Version.pm
 msgid "Webserver Version"
@@ -13511,6 +13638,16 @@ msgstr "Webserver-version"
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Version.pm
 msgid "Could not determine webserver version."
 msgstr "Kunne ikke fastslå webserver-version."
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/PluginAsynchronous/OTRS/ConcurrentUsers.pm
+msgid "Concurrent Users Details"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/PluginAsynchronous/OTRS/ConcurrentUsers.pm
+msgid "Concurrent Users"
+msgstr "Samtidige brugere"
 
 #. Perl Module: Kernel/System/SupportDataCollector/PluginBase.pm
 msgid "Unknown"
@@ -13527,6 +13664,56 @@ msgstr "Problem"
 #. Perl Module: Kernel/System/Ticket.pm
 msgid "Reset of unlock time."
 msgstr "Tid til automatisk frigivelse nulstillet."
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "PGP sign only"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "PGP encrypt only"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "PGP sign and encrypt"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "SMIME sign only"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "SMIME encrypt only"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "SMIME sign and encrypt"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "PGP and SMIME not enabled."
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "Skip notification delivery"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "Send unsigned notification"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+msgid "Send unencrypted notification"
+msgstr ""
 
 #. Perl Module: Kernel/System/Web/InterfaceAgent.pm
 msgid ""
@@ -15531,6 +15718,12 @@ msgstr ""
 
 #. SysConfig
 msgid ""
+"Defines the HTTP hostname for the support data collection with the public "
+"module 'PublicSupportDataCollector' (e.g. used from the OTRS Daemon)."
+msgstr ""
+
+#. SysConfig
+msgid ""
 "Defines the IP regular expression for accessing the local repository. You "
 "need to enable this to have access to your local repository and the "
 "package::RepositoryList is required on the remote host."
@@ -16615,6 +16808,12 @@ msgstr ""
 #. SysConfig
 msgid ""
 "Defines the module to display a notification in the agent interface, if the "
+"agent session limit prior warning is reached."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Defines the module to display a notification in the agent interface, if the "
 "system is used by the admin user (normally you shouldn't work as admin)."
 msgstr ""
 
@@ -17074,7 +17273,10 @@ msgid ""
 msgstr ""
 
 #. SysConfig
-msgid "Defines the viewable locks of a ticket. Default: unlock, tmp_lock."
+msgid ""
+"Defines the viewable locks of a ticket. NOTE: When you change this setting, "
+"make sure to delete the cache in order to use the new value. Default: "
+"unlock, tmp_lock."
 msgstr ""
 
 #. SysConfig
@@ -17249,6 +17451,13 @@ msgstr ""
 msgid ""
 "Determines which queues will be valid for ticket's recepients in the "
 "customer interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Disable HTTP header \"Content-Security-Policy\" to allow loading of external"
+" script contents. Disabling this HTTP header can be a security issue! Only "
+"disable it, if you know what you are doing!"
 msgstr ""
 
 #. SysConfig
@@ -17606,6 +17815,10 @@ msgstr "Aktiverer S/MIME-understøttelse"
 #. SysConfig
 msgid "Enables customers to create their own accounts."
 msgstr "Lader kunder oprette deres egne konti."
+
+#. SysConfig
+msgid "Enables fetch S/MIME from CustomerUser backend support."
+msgstr ""
 
 #. SysConfig
 msgid "Enables file upload in the package manager frontend."
@@ -18969,6 +19182,11 @@ msgstr ""
 
 #. SysConfig
 msgid ""
+"Module to fetch customer users SMIME certificates of incoming messages."
+msgstr ""
+
+#. SysConfig
+msgid ""
 "Module to filter and manipulate incoming messages. Block/ignore all spam "
 "email with From: noreply@ address."
 msgstr ""
@@ -18978,6 +19196,10 @@ msgid ""
 "Module to filter and manipulate incoming messages. Get a 4 digit number to "
 "ticket free text, use regex in Match e. g. From => '(.+?)@.+?', and use () "
 "as [***] in Set =>."
+msgstr ""
+
+#. SysConfig
+msgid "Module to filter encrypted bodies of incoming messages."
 msgstr ""
 
 #. SysConfig
@@ -19575,6 +19797,13 @@ msgstr "Bruger \"%s\" følger ikke længere sagen."
 
 #. SysConfig
 msgid "Removes the ticket watcher information when a ticket is archived."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Renew existing SMIME certificates from customer backend. Note: SMIME and "
+"SMIME::FetchFromCustomer needs to be active in SysConfig and customer "
+"backend needs to be configured to fetch UserSMIMECertificate attribute."
 msgstr ""
 
 #. SysConfig
@@ -20181,6 +20410,13 @@ msgstr ""
 #. SysConfig
 msgid ""
 "Sets the maximum number of active agents within the timespan defined in "
+"SessionActiveTime before a prior warning will be visible for the logged in "
+"agents."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the maximum number of active agents within the timespan defined in "
 "SessionActiveTime."
 msgstr ""
 
@@ -20479,7 +20715,9 @@ msgid ""
 msgstr ""
 
 #. SysConfig
-msgid "Sets the time (in seconds) a user is marked as active."
+msgid ""
+"Sets the time (in seconds) a user is marked as active (minimum active time "
+"is 300 seconds)."
 msgstr ""
 
 #. SysConfig

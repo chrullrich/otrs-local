@@ -294,7 +294,7 @@ sub Run {
                     )
                 {
 
-                    # Not UserID means it's not a mapped customer.
+                    # No UserID means it's not a mapped customer.
                     next BUNDLE if !$Bundle->{Recipient}->{UserID};
                 }
 
@@ -311,8 +311,9 @@ sub Run {
                 );
 
                 # remember to have sent
-                $AlreadySent{ $Bundle->{Recipient}->{UserID} } = 1;
-
+                if ( $Bundle->{Recipient}->{UserID} ) {
+                    $AlreadySent{ $Bundle->{Recipient}->{UserID} } = 1;
+                }
             }
 
             # get special recipients specific for each transport
@@ -410,6 +411,12 @@ sub _NotificationFilter {
         next KEY if $Key eq 'LanguageID';
         next KEY if $Key eq 'SendOnOutOfOffice';
         next KEY if $Key eq 'AgentEnabledByDefault';
+        next KEY if $Key eq 'EmailSecuritySettings';
+        next KEY if $Key eq 'EmailSigningCrypting';
+        next KEY if $Key eq 'EmailMissingCryptingKeys';
+        next KEY if $Key eq 'EmailMissingSigningKeys';
+        next KEY if $Key eq 'EmailDefaultSigningKeys';
+        next KEY if $Key eq 'NotificationType';
 
         # check recipient fields from transport methods
         if ( $Key =~ m{\A Recipient}xms ) {

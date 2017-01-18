@@ -17,6 +17,7 @@ use Kernel::Language qw(Translatable);
 
 our @ObjectDependencies = (
     'Kernel::Config',
+    'Kernel::Language',
     'Kernel::Output::HTML::Layout',
     'Kernel::System::CustomerUser',
     'Kernel::System::DynamicField',
@@ -73,7 +74,7 @@ sub new {
     $Self->{ObjectData} = {
         Object     => 'Ticket',
         Realname   => 'Ticket',
-        ObjectName => 'TicketID',
+        ObjectName => 'SourceObjectID',
     };
 
     # get the dynamic fields for this screen
@@ -221,8 +222,9 @@ sub TableCreateComplex {
     );
 
     # Get needed objects.
-    my $UserObject = $Kernel::OM->Get('Kernel::System::User');
-    my $JSONObject = $Kernel::OM->Get('Kernel::System::JSON');
+    my $UserObject     = $Kernel::OM->Get('Kernel::System::User');
+    my $JSONObject     = $Kernel::OM->Get('Kernel::System::JSON');
+    my $LanguageObject = $Kernel::OM->Get('Kernel::Language');
 
     # load user preferences
     my %Preferences = $UserObject->GetPreferences(
@@ -251,7 +253,6 @@ sub TableCreateComplex {
     my %UserColumns = %{$DefaultColumns};
 
     if ( $Preferences{'LinkObject::ComplexTable-Ticket'} ) {
-        my $JSONObject = $Kernel::OM->Get('Kernel::System::JSON');
 
         my $ColumnsEnabled = $JSONObject->Decode(
             Data => $Preferences{'LinkObject::ComplexTable-Ticket'},
@@ -461,6 +462,9 @@ sub TableCreateComplex {
                             );
                         }
                         $Hash{'Content'} = $CustomerName;
+                    }
+                    elsif ( $Column eq 'State' || $Column eq 'Priority' || $Column eq 'Lock' ) {
+                        $Hash{'Content'} = $LanguageObject->Translate( $Ticket->{$Column} );
                     }
                     else {
                         $Hash{'Content'} = $Ticket->{$Column};
@@ -877,7 +881,7 @@ sub SearchOptionList {
 
 =head1 TERMS AND CONDITIONS
 
-This software is part of the OTRS project (http://otrs.org/).
+This software is part of the OTRS project (L<http://otrs.org/>).
 
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
 the enclosed file COPYING for license information (AGPL). If you

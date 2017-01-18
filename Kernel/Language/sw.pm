@@ -27,7 +27,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%M/%D/%Y';
     $Self->{DateInputFormat}     = '%M/%D/%Y';
     $Self->{DateInputFormatLong} = '%M/%D/%Y - %T';
-    $Self->{Completeness}        = 0.726364014993753;
+    $Self->{Completeness}        = 0.71979381443299;
 
     # csv separator
     $Self->{Separator} = ',';
@@ -1196,12 +1196,6 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Param %s key' => 'Ufunguo wa kigezo %s',
         'Param %s value' => 'Thamani ya kigezo %s',
         'Save Changes' => 'Hifadhi mabadiliko',
-        'Tag Reference' => '',
-        'In the note section, you can use the following tags' => '',
-        'Attributes of the current customer user data' => '',
-        'Attributes of the ticket data' => '',
-        'Ticket dynamic fields internal key values' => '',
-        'Example note' => '',
         'Results' => 'matokeo',
         '%s Tickets affected! What do you want to do?' => 'Tiketi %s zimeathirika. Unataka kufanya nini?',
         'Warning: You used the DELETE option. All deleted tickets will be lost!' =>
@@ -1443,11 +1437,13 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Configuration history' => 'Historia ya usanidi',
         'Delete web service' => 'Futa huduma ya tovuti',
         'Do you really want to delete this web service?' => 'Je unataka kufuta huduma hii ya tovuti?',
-        'Example Web Services' => '',
-        'Here you can activate best practice example web service that are part of %s. Please note that some additional configuration may be required.' =>
+        'Ready-to-run Web Services' => '',
+        'Here you can activate ready-to-run web services showcasing our best practices that are a part of %s.' =>
             '',
-        'Import example web service' => '',
-        'Do you want to benefit from web services created by experts? Upgrade to %s to be able to import some sophisticated example web services.' =>
+        'Please note that these web services may depend on other modules only available with certain %s contract levels (there will be a notification with further details when importing).' =>
+            '',
+        'Import ready-to-run web service' => '',
+        'Would you like to benefit from web services created by experts? Upgrade to %s to import some sophisticated ready-to-run web services.' =>
             '',
         'After you save the configuration you will be redirected again to the edit screen.' =>
             'Baada ya kuhifadhi usanidi utaelekezwa tena kwenye skrini ya kuhariri.',
@@ -1599,6 +1595,7 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Message body' => '',
         'Add new notification language' => '',
         'Do you really want to delete this notification language?' => '',
+        'Tag Reference' => '',
         'Notifications are sent to an agent or a customer.' => 'Taarifa zimetumwa kwa wakala au mteja',
         'To get the first 20 character of the subject (of the latest agent article).' =>
             'Kupata herufi 20 za kwanza za somo (kutoka kwa wakala wa karibuni)',
@@ -1608,11 +1605,14 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
             'Kupata herufi 20 za kwanza za somo (kutoka kwa makala ya mteja wa karibuni)',
         'To get the first 5 lines of the body (of the latest customer article).' =>
             'Kupata mistari 5 ya kwanza ya kiini (kutoka kwa makala ya mteja wa karibuni)',
+        'Attributes of the current customer user data' => '',
         'Attributes of the current ticket owner user data' => '',
         'Attributes of the current ticket responsible user data' => '',
         'Attributes of the current agent user who requested this action' =>
             '',
         'Attributes of the recipient user for the notification' => '',
+        'Attributes of the ticket data' => '',
+        'Ticket dynamic fields internal key values' => '',
         'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
             '',
         'Example notification' => '',
@@ -1625,6 +1625,10 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Email template' => '',
         'Use this template to generate the complete email (only for HTML emails).' =>
             '',
+        'Enable email security' => '',
+        'Email security level' => '',
+        'If signing key/certificate is missing' => '',
+        'If encryption key/certificate is missing' => '',
 
         # Template: AdminOTRSBusinessInstalled
         'Manage %s' => 'Sisamia %s',
@@ -1815,11 +1819,11 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Upload process configuration' => 'Pakia usanidi wa mchakato',
         'Import process configuration' => 'Leta usanidi wa mchakato',
         'Example processes' => '',
-        'Here you can activate best practice example processes that are part of %s. Please note that some additional configuration may be required.' =>
+        'Here you can activate best practice example processes. Please note that some additional configuration may be required.' =>
+            '',
+        'Do you want to benefit from processes created by experts? Upgrade to %s to be able to import additional sophisticated example processes.' =>
             '',
         'Import example process' => '',
-        'Do you want to benefit from processes created by experts? Upgrade to %s to be able to import some sophisticated example processes.' =>
-            '',
         'To create a new Process you can either import a Process that was exported from another system or create a complete new one.' =>
             'Kutengeenza mchakato mpya unaweza kuleta mchakato ambao uliumehamishwa kutoka kwenye mfumo mwingine au kutengeneza mpya uliokamilika.',
         'Changes to the Processes here only affect the behavior of the system, if you synchronize the Process data. By synchronizing the Processes, the newly made changes will be written to the Configuration.' =>
@@ -1960,6 +1964,7 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
             'Katika skrini hii, unaweza kutengeneza mchakato mpya. Ili kufanya mchakato mpya utakaopatikana kwa watumiaji, tafadhali hakikisha unaweka hali yake kuwa \'Amilifu\' na landanisha baada ya kumaliza kazi yako.',
 
         # Template: AdminProcessManagementProcessPrint
+        'cancel & close' => '',
         'Start Activity' => 'Anza shughuli',
         'Contains %s dialog(s)' => 'Yenye %s mazungumzo',
         'Assigned dialogs' => 'Mazungumzo yaliyogaiwa',
@@ -2480,6 +2485,9 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
 
         # Template: AgentCustomerTableView
         'Note: Customer is invalid!' => 'Kidokezo: Mteja ni batili!',
+        'Start chat' => 'Anza maongezi',
+        'Video call' => '',
+        'Audio call' => '',
 
         # Template: AgentDaemonInfo
         'The OTRS Daemon is a daemon process that performs asynchronous tasks, e.g. ticket escalation triggering, email sending, etc.' =>
@@ -2513,12 +2521,10 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Customer information' => 'Taarifa za mteja',
         'Phone ticket' => 'Tiketi ya simu',
         'Email ticket' => 'Tiketi ya barua pepe',
-        'Start Chat' => 'Anza maongezi',
         '%s open ticket(s) of %s' => 'Tiketi %s zilizowazi kati ya %s',
         '%s closed ticket(s) of %s' => 'Tiketi %s i(z)liyofungwa kati ya %s ',
         'New phone ticket from %s' => 'Tiketi mpya za simu kutoka %s',
         'New email ticket to %s' => 'Tiketi mpya ya barua pepe kwenda %s',
-        'Start chat' => 'Anza maongezi',
 
         # Template: AgentDashboardProductNotify
         '%s %s is available!' => '%s inapatikana',
@@ -2562,7 +2568,6 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
 
         # Template: AgentDashboardUserOnline
         'out of office' => 'Nje ya office',
-        'Selected agent is not available for chat' => '',
 
         # Template: AgentDashboardUserOutOfOffice
         'until' => 'Mpaka',
@@ -2582,6 +2587,11 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Link object %s with' => '',
         'Unlink Object: %s' => 'Kipengele kisichokiunganishi',
         'go to link add screen' => 'Nenda kwenye skrini ya kiunganishi cha kuongeza.',
+
+        # Template: AgentOTRSBusinessBlockScreen
+        'Unauthorized usage of %s detected' => '',
+        'If you decide to downgrade to OTRS Free, you will lose all database tables and data related to %s.' =>
+            '',
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Harir mapendeleo yako',
@@ -2922,6 +2932,10 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'and %s more...' => '',
         'Filters' => '',
         'Confirm' => '',
+        'You have unanswered chat requests' => 'Unamaombi ya mazungumzo ambayo hayajajibiwa',
+        'Accept' => '',
+        'Decline' => '',
+        'An internal error occurred.' => '',
 
         # Template: CustomerLogin
         'JavaScript Not Available' => 'JavaScript haipatikani',
@@ -2950,7 +2964,6 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
 
         # Template: CustomerNavigationBar
         'Incoming Chat Requests' => 'Maombi ya mazungumzo yanayoingia',
-        'You have unanswered chat requests' => 'Unamaombi ya mazungumzo ambayo hayajajibiwa',
         'Edit personal preferences' => 'Hariri mapendeleo binafsi',
         'Logout %s %s' => '',
 
@@ -3052,8 +3065,13 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'New personal chat request' => '',
         'New customer chat request' => '',
         'New public chat request' => '',
+        'Selected user is not available for chat.' => '',
         'New activity' => '',
         'New activity on one of your monitored chats.' => '',
+        'Your browser does not support video and audio calling.' => '',
+        'Selected user is not available for video and audio call.' => '',
+        'Target user\'s browser does not support video and audio calling.' =>
+            '',
         'Do you really want to continue?' => '',
         'Information about the OTRS Daemon' => '',
         'This feature is part of the %s.  Please contact us at %s for an upgrade.' =>
@@ -3834,6 +3852,13 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Event type filter settings were saved.' => '',
         'Need ArticleID!' => '',
         'Invalid ArticleID!' => '',
+        'Offline' => '',
+        'This user is currently offline' => '',
+        'This user is currently active' => '',
+        'Away' => '',
+        'This user is currently away' => '',
+        'Unavailable' => '',
+        'This user is currently unavailable' => '',
         'Fields with no group' => '',
         'View the source for this Article' => '',
 
@@ -3910,12 +3935,6 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'filter active' => '',
         'This ticket has no title or subject' => '',
 
-        # Perl Module: Kernel/Output/HTML/Dashboard/UserOnline.pm
-        'This user is currently offline' => '',
-        'This user is currently active' => '',
-        'This user is currently away' => '',
-        'This user is currently unavailable' => '',
-
         # Perl Module: Kernel/Output/HTML/Layout.pm
         'We are sorry, you do not have permissions anymore to access this ticket in its current state. You can take one of the following actions:' =>
             '',
@@ -3977,7 +3996,12 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         # Perl Module: Kernel/Output/HTML/TicketOverviewMenu/Sort.pm
         'Order by' => 'Panga kwa',
 
-        # Perl Module: Kernel/System/AuthSession/DB.pm
+        # Perl Module: Kernel/System/AuthSession.pm
+        'You have exceeded the number of concurrent agents - contact sales@otrs.com.' =>
+            '',
+        'Please note that the session limit is almost reached.' => '',
+        'Login rejected! You have exceeded the maximum number of concurrent Agents! Contact sales@otrs.com immediately!' =>
+            '',
         'Session per user limit reached!' => '',
 
         # Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
@@ -3988,6 +4012,10 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
 
         # Perl Module: Kernel/System/Package.pm
         'not installed' => '',
+
+        # Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
+        'Inactive' => 'Isiyo amilifu',
+        'FadeAway' => '',
 
         # Perl Module: Kernel/System/Registration.pm
         'Can\'t get Token from sever' => '',
@@ -4134,7 +4162,7 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
             'Kitenga ambacho OTRS imewekwa kina matatizo ya nafasi katika disk.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/DiskSpacePartitions.pm
-        'Operating System/Disk Partitions Usage' => '',
+        'Disk Partitions Usage' => 'Matumizi ya vitenga diski',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/Distribution.pm
         'Distribution' => 'Usambazaji',
@@ -4160,16 +4188,17 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'There should be no more than 200 MB swap space used.' => 'Hakuna zaidi ya MB 200 ya nafasi ilitumika ya kubadilishana.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/ConfigSettings.pm
-        'OTRS/Config Settings' => '',
+        'OTRS' => 'OTRS',
+        'Config Settings' => 'Mipangilio ya kusanidi',
         'Could not determine value.' => 'Haikuweza kutambua thamani',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/DaemonRunning.pm
-        'OTRS' => 'OTRS',
         'Daemon' => '',
+        'Daemon is running.' => '',
         'Daemon is not running.' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
-        'OTRS/Database Records' => '',
+        'Database Records' => 'Rekodi ya hifadhi data',
         'Tickets' => 'Tiketi',
         'Ticket History Entries' => 'Historia ya ingizo ya tiketi',
         'Articles' => 'Makala',
@@ -4179,6 +4208,7 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Invalid Dynamic Fields' => 'Uga zenye nguvu batili',
         'Invalid Dynamic Field Values' => 'Thamani za uga wenye nguvu batili',
         'GenericInterface Webservices' => 'Huduma za wavuti za kiolesura cha jumla.',
+        'Process Tickets' => '',
         'Months Between First And Last Ticket' => 'Miezi kati ya tiketi ya kwanza na ya mwisho',
         'Tickets Per Month (avg)' => 'Tiketi za kila mwezi (wastani)',
 
@@ -4210,9 +4240,19 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Package Installation Status' => '',
         'Some packages have locally modified files.' => '',
         'Some packages are not correctly installed.' => 'kuna vifurishi havijasanikishwa kwa usahihi.',
+        'Package Verification Status' => '',
+        'Some packages are not verified by the OTRS Group! It is recommended not to use this packages.' =>
+            '',
+        'Package Framework Version Status' => '',
+        'Some packages are not allowed for the current framework version.' =>
+            '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageList.pm
-        'OTRS/Package List' => '',
+        'Package List' => 'Orodha ya vifurushi',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
+        'Spooled Emails' => '',
+        'There are emails in var/spool that OTRS could not process.' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SystemID.pm
         'Your SystemID setting is invalid, it should only contain digits.' =>
@@ -4247,11 +4287,11 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'Table ticket_lock_index contains orphaned records. Please run bin/otrs.Console.pl "Maint::Ticket::QueueIndexCleanup" to clean the StaticDB index.' =>
             '',
         'Orphaned Records In ticket_index Table' => 'Rekodi zilizoachwa katika jedwali la Kielezo_cha Tiketi.',
-        'Table ticket_index contains orphaned records. Please run otrs/bin/otrs.CleanTicketIndex.pl to clean the StaticDB index.' =>
-            'Jedwali la Kielezo cha_Tiketi lina rekodi zilizoachwa. Tafadhali fanya otrs/bin/otrs.CleanTicketIndex.pl kusafisha kielezo cha DBTuli.',
+        'Table ticket_index contains orphaned records. Please run bin/otrs.Console.pl "Maint::Ticket::QueueIndexCleanup" to clean the StaticDB index.' =>
+            '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/TimeSettings.pm
-        'OTRS/Time Settings' => '',
+        'Time Settings' => '',
         'Server time zone' => '',
         'Computed server time offset' => '',
         'OTRS TimeZone setting (global time offset)' => '',
@@ -4262,10 +4302,10 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
         'OTRS TimeZone setting for calendar ' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/LoadedModules.pm
-        'Webserver/Loaded Apache Modules' => '',
+        'Webserver' => 'Seva ya tovuti',
+        'Loaded Apache Modules' => 'Moduli za Apache zilizopakiwa',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/MPMModel.pm
-        'Webserver' => 'Seva ya tovuti',
         'MPM model' => '',
         'OTRS requires apache to be run with the \'prefork\' MPM model.' =>
             '',
@@ -4288,14 +4328,15 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
             '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/EnvironmentVariables.pm
-        'Webserver/Environment Variables' => '',
-
-        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/IIS/Performance.pm
-        'You should use PerlEx to increase your performance.' => 'Tumia PerlEx kuongeza utendaji wako.',
+        'Environment Variables' => 'Vishika nafsi vya mazingira',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Version.pm
         'Webserver Version' => 'Toleo la tovuti',
         'Could not determine webserver version.' => 'Haikuweza kutambua toleo la seva ya tovuti.',
+
+        # Perl Module: Kernel/System/SupportDataCollector/PluginAsynchronous/OTRS/ConcurrentUsers.pm
+        'Concurrent Users Details' => '',
+        'Concurrent Users' => 'Watumiaji wa kwa pamoja',
 
         # Perl Module: Kernel/System/SupportDataCollector/PluginBase.pm
         'Unknown' => 'Haijulikani',
@@ -4304,6 +4345,18 @@ Matatizo<br>&nbsp;-utendaji wa matatizo<br><br> tafadhali kumbuka kwamba mambo y
 
         # Perl Module: Kernel/System/Ticket.pm
         'Reset of unlock time.' => '',
+
+        # Perl Module: Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+        'PGP sign only' => '',
+        'PGP encrypt only' => '',
+        'PGP sign and encrypt' => '',
+        'SMIME sign only' => '',
+        'SMIME encrypt only' => '',
+        'SMIME sign and encrypt' => '',
+        'PGP and SMIME not enabled.' => '',
+        'Skip notification delivery' => '',
+        'Send unsigned notification' => '',
+        'Send unencrypted notification' => '',
 
         # Perl Module: Kernel/System/Web/InterfaceAgent.pm
         'Panic, user authenticated but no user data can be found in OTRS DB!! Perhaps the user is invalid.' =>
@@ -4904,6 +4957,8 @@ Mfano:
             '',
         'Defines queues that\'s tickets are used for displaying as calendar events.' =>
             'Inafafanua foleni ambazo tiketi zake zinatumika kuonyesha kama matukio ya kalenda.',
+        'Defines the HTTP hostname for the support data collection with the public module \'PublicSupportDataCollector\' (e.g. used from the OTRS Daemon).' =>
+            '',
         'Defines the IP regular expression for accessing the local repository. You need to enable this to have access to your local repository and the package::RepositoryList is required on the remote host.' =>
             'Inafafanua maelezo ya kawaida ya IP ya kufikia hifadhi ya ndani. Unahitaji kuwezesha hii ili kuweza kufikia hifadhi yako ya ndani na kifurushi:: Orodha ya hifadhi inahitajika kwa mwenyeji wa mbali.',
         'Defines the URL CSS path.' => 'Inafafanua njia ya URL CSS.',
@@ -5250,6 +5305,8 @@ Mfano:
             'Inafafanua moduli ya kuonyesha taarifa katika kiolesura cha wakala, kama wakala aliingiia  nje-ya-ofisi ikiwa amilifu.',
         'Defines the module to display a notification in the agent interface, if the agent is logged in while having system maintenance active.' =>
             'Inafafanua moduli ya kuonyesha taarifa katika kiolesura cha wakala, kama wakala aliingia wakati matengenezo ya mfumo ikiwa amilifu.',
+        'Defines the module to display a notification in the agent interface, if the agent session limit prior warning is reached.' =>
+            '',
         'Defines the module to display a notification in the agent interface, if the system is used by the admin user (normally you shouldn\'t work as admin).' =>
             'Inafafanua moduli ya kuonyesha taarifa katika kiolesura cha wakala, kama mfumo unatumika na mtumiaji wa muongozaji(mara zote usipende kufanya kazi kama kiongozi)',
         'Defines the module to generate code for periodic page reloads.' =>
@@ -5392,8 +5449,8 @@ Mfano:
         'Defines the valid state types for a ticket.' => 'Inafafanua aina ya hali halali ya tiketi.',
         'Defines the valid states for unlocked tickets. To unlock tickets the script "bin/otrs.Console.pl Maint::Ticket::UnlockTimeout" can be used.' =>
             '',
-        'Defines the viewable locks of a ticket. Default: unlock, tmp_lock.' =>
-            'Inafafanua kufuli zinazooneka za tiketi. Chaguo: fungua, tmp_lock.',
+        'Defines the viewable locks of a ticket. NOTE: When you change this setting, make sure to delete the cache in order to use the new value. Default: unlock, tmp_lock.' =>
+            '',
         'Defines the width for the rich text editor component for this screen. Enter number (pixels) or percent value (relative).' =>
             'Inafafanua upana kwa ajili ya kijenzi wa kihariri cha matini tajiri kwa skrini hii. Ingiza namba (pikseli) au thamani ya asilimia (inayohusiana).',
         'Defines the width for the rich text editor component. Enter number (pixels) or percent value (relative).' =>
@@ -5450,6 +5507,8 @@ Mfano:
             '',
         'Determines which queues will be valid for ticket\'s recepients in the customer interface.' =>
             'Inaamua foleni zipi zitakuwa halali kwa wapokeaji wa tiketi katika kiolesura cha mteja.',
+        'Disable HTTP header "Content-Security-Policy" to allow loading of external script contents. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
+            '',
         'Disable HTTP header "X-Frame-Options: SAMEORIGIN" to allow OTRS to be included as an IFrame in other websites. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             '',
         'Disable restricted security for IFrames in IE. May be required for SSO to work in IE.' =>
@@ -5555,6 +5614,7 @@ Mfano:
             'Inawezesha msaada wa PGP. Wakati msaada wa PGP umewezeshwa kwa ajili ya kuipa na usimbaji fiche barua bebe, inashauriwa kwamba seva ya wavuti kufanya kazi kama mtumiaji wa OTRS. Vinginevyo kutakuwa na matatizo na mapendeleo wakati wa kufikia mpangilio orodha wa .gnupg.',
         'Enables S/MIME support.' => 'Wezesha msaada wa S/MIME.',
         'Enables customers to create their own accounts.' => 'Inawawezesha wateja kutengeneza akaunti zao wenyeye.',
+        'Enables fetch S/MIME from CustomerUser backend support.' => '',
         'Enables file upload in the package manager frontend.' => 'Inawezeshesha upakiaji wa faili katika mazinga ya mbele ya msimamizi ya kifurushi.',
         'Enables or disables the caching for templates. WARNING: Do NOT disable template caching for production environments for it will cause a massive performance drop! This setting should only be disabled for debugging reasons!' =>
             'Wezesha au lemaza uhifadhi muda wa violezo. ONYO: usilemaze uhifadhi muda wa kiolezo kwa ajili ya mazingira ya uzalishaji itasababisha kushuka kwa utendaji! mpangilio huu ulemazwe kwa sababu za ueuaji!',
@@ -5965,10 +6025,13 @@ Mfano:
             '',
         'Module to compose signed messages (PGP or S/MIME).' => 'Moduli ya kutunga ujumbe uliosainiwa (PGP au S/MIME).',
         'Module to crypt composed messages (PGP or S/MIME).' => 'Moduli ya ujumbe uliotungwa wa ufichami (PGP au S/MIME).',
+        'Module to fetch customer users SMIME certificates of incoming messages.' =>
+            '',
         'Module to filter and manipulate incoming messages. Block/ignore all spam email with From: noreply@ address.' =>
             'Moduli ya kuchuja na kuendesha ujumbe unaoingia. Funga/zuia barua pepe taka kutoka: noreply@ address.',
         'Module to filter and manipulate incoming messages. Get a 4 digit number to ticket free text, use regex in Match e. g. From => \'(.+?)@.+?\', and use () as [***] in Set =>.' =>
             'Moduli ya kuchuja na kuendesha ujumbe zinazoingia. Pata namba yenye tarakimu 4 kwenye matini huru ya tiketi, tumia regex kufananisha mfano =>\'(.+?)@.+?\', na tumia () kama [***] katika seti ya =>.',
+        'Module to filter encrypted bodies of incoming messages.' => '',
         'Module to generate accounted time ticket statistics.' => 'Moduli ya kutengeneza takwimu za tiketi za muda unaohusika',
         'Module to generate html OpenSearch profile for short ticket search in the agent interface.' =>
             'Moduli ya kutengeneza umbo la Utafutaji wazi wa html kwa utafutaji wa tiketi mfupi katika kiolesura cha wakala.',
@@ -6131,6 +6194,8 @@ Mfano:
         'Removed subscription for user "%s".' => 'Toa kujiunga kwa mtumiaji "%s".',
         'Removes the ticket watcher information when a ticket is archived.' =>
             'Inatoa taarifa za mwangaliaji wa tiketi wakati imehifadhiwa.',
+        'Renew existing SMIME certificates from customer backend. Note: SMIME and SMIME::FetchFromCustomer needs to be active in SysConfig and customer backend needs to be configured to fetch UserSMIMECertificate attribute.' =>
+            '',
         'Replaces the original sender with current customer\'s email address on compose answer in the ticket compose screen of the agent interface.' =>
             'Inabadilisha anwani ya barua pepe ya  mtumaji wa mwanzo naya  mteja wa katika kutunga jibu katika skrini ya kutunga tiketi ya kiolesura cha wakala.',
         'Reports' => '',
@@ -6319,6 +6384,8 @@ Mfano:
             'Inaweka mpangilio wa kuonyesha ya vipengele mbalimbali katika mandhari ya kuona ya mapendeleo.',
         'Sets the inactivity time (in seconds) to pass before a session is killed and a user is loged out.' =>
             'Inaweka muda ambao hauna tukio (katika sekunde) kupita kabla ya kipindi kukatwa na mtumiaji kutolewa.',
+        'Sets the maximum number of active agents within the timespan defined in SessionActiveTime before a prior warning will be visible for the logged in agents.' =>
+            '',
         'Sets the maximum number of active agents within the timespan defined in SessionActiveTime.' =>
             'Inaweka upeo wa juu ya namba wa makala amilifu katika kipindi cha muda kilichofafanuliwa katika Muda amilifu wa Kipindi. ',
         'Sets the maximum number of active customers within the timespan defined in SessionActiveTime.' =>
@@ -6420,7 +6487,8 @@ Mfano:
             'Inaweka aina ya tiketi katika skrini ya kipaumbele cha tiketi ya tiketi iliyokuzwa katika kiolesura cha wakala (Tiketi:: aina inahitaji kuamilishwa).',
         'Sets the ticket type in the ticket responsible screen of the agent interface (Ticket::Type needs to be activated).' =>
             'Inaweka aina ya tiketi katika skrini husika ya tiketi ya kiolesura cha wakala (Tiketi::Aina inahitaji kuamilishwa).',
-        'Sets the time (in seconds) a user is marked as active.' => 'Inaweka muda (katika sekunde) mtumiaji anawekwa alama kama amilifu.',
+        'Sets the time (in seconds) a user is marked as active (minimum active time is 300 seconds).' =>
+            '',
         'Sets the timeout (in seconds) for http/ftp downloads.' => 'Inaweka muda wa kuisha (katika sekunde) kwa http/ftp za kupakua.',
         'Sets the timeout (in seconds) for package downloads. Overwrites "WebUserAgent::Timeout".' =>
             'InawekInaweka muda wa kuisha (katika sekunde) kwa vifurushi vya kupakua. Inaandika kwa juu ya "wakala wa mtumiaji wa tovuti::Muda umekwisha".',

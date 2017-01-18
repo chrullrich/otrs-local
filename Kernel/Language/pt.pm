@@ -25,7 +25,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y-%M-%D';
     $Self->{DateInputFormat}     = '%Y-%M-%D';
     $Self->{DateInputFormatLong} = '%Y-%M-%D - %T';
-    $Self->{Completeness}        = 0.328821324448147;
+    $Self->{Completeness}        = 0.329896907216495;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -43,9 +43,9 @@ sub Data {
         'on' => 'ligado',
         'top' => 'início',
         'end' => 'fim',
-        'Done' => 'Feito',
+        'Done' => 'Concluído',
         'Cancel' => 'Cancelar',
-        'Reset' => 'Limpar',
+        'Reset' => 'Restaurar',
         'more than ... ago' => 'mais de ... atrás',
         'in more than ...' => 'em mais de ...',
         'within the last ...' => 'no último ...',
@@ -76,8 +76,8 @@ sub Data {
         'week(s)' => 'semana(s)',
         'quarter' => 'quarto',
         'quarter(s)' => 'quarto(s)',
-        'half-year' => 'meio ano',
-        'half-year(s)' => 'meio(s) ano(s)',
+        'half-year' => 'semestre',
+        'half-year(s)' => 'semestre(s)',
         'year' => 'ano',
         'years' => 'anos',
         'year(s)' => 'ano(s)',
@@ -122,7 +122,7 @@ sub Data {
         'none!' => 'nenhum(a)!',
         'none - answered' => 'nenhum - respondido',
         'please do not edit!' => 'por favor não editar!',
-        'Need Action' => 'Precisa de Actividade',
+        'Need Action' => 'Ação Necessária',
         'AddLink' => 'Adicionar Ligação',
         'Link' => 'Ligar',
         'Unlink' => 'Desligar',
@@ -150,14 +150,14 @@ sub Data {
         'Signatures' => 'Assinaturas',
         'Customer' => 'Cliente',
         'CustomerID' => 'ID de Cliente',
-        'CustomerIDs' => 'ID de Cliente',
+        'CustomerIDs' => 'IDs de Clientes',
         'customer' => 'cliente',
         'agent' => 'agente',
         'system' => 'sistema',
         'Customer Info' => 'Informação de Cliente',
         'Customer Information' => 'Informação de cliente',
-        'Customer Companies' => 'Companhias de clientes',
-        'Company' => 'Companhia',
+        'Customer Companies' => 'Empresas de clientes',
+        'Company' => 'Empresa',
         'go!' => 'ir!',
         'go' => 'ir',
         'All' => 'Todos',
@@ -292,7 +292,7 @@ sub Data {
         'You have Out of Office enabled, would you like to disable it?' =>
             'Tem Fora do Escritório activo, deseja desactivar?',
         'News about OTRS releases!' => 'Notícias acerca dos lançamentos OTRS!',
-        'Go to dashboard!' => '',
+        'Go to dashboard!' => 'Ir para o Dashboard',
         'Customer %s added' => 'Cliente %s adicionado.',
         'Role added!' => 'Papel adicionado!',
         'Role updated!' => 'Popel atualizado!',
@@ -329,7 +329,7 @@ sub Data {
         'Sign' => 'Assinar',
         'Crypted' => 'Cifrado',
         'Crypt' => 'Cifrar',
-        'PGP' => '',
+        'PGP' => 'PGP',
         'PGP Key' => 'Chave PGP',
         'PGP Keys' => 'Chaves PGP',
         'S/MIME' => 'S/MIME',
@@ -340,7 +340,7 @@ sub Data {
         'Fax' => 'Fax',
         'Mobile' => 'Movel',
         'Zip' => 'Código Postal',
-        'City' => 'CAntiguidade',
+        'City' => 'Cidade',
         'Street' => 'Rua',
         'Country' => 'País',
         'Location' => 'Localização',
@@ -411,7 +411,7 @@ sub Data {
         'SHIFT' => 'Shift',
         'Undo' => 'Desfazer',
         'Redo' => 'Refazer',
-        'OTRS Daemon is not running.' => '',
+        'OTRS Daemon is not running.' => 'O Daemon OTRS não está em execução.',
         'Can\'t contact registration server. Please try again later.' => 'Não é possivel contatar o servidor de registo. Por favor tente novamente mais tarde.',
         'No content received from registration server. Please try again later.' =>
             'Não foi recebido nenhum conteudo do servidor de registo. Por favor tente novamente mais tarde.',
@@ -432,7 +432,7 @@ sub Data {
         'There was a problem during the upgrade of %s.' => 'Existiu um problema durante a atualização de %s',
         '%s was correctly uninstalled.' => '%s foi corretamente desinstalado.',
         'There was a problem uninstalling %s.' => 'Existiu um problema a desinstalar %s.',
-        'Enable cloud services to unleash all OTRS features!' => '',
+        'Enable cloud services to unleash all OTRS features!' => 'Active os serviços cloud para desbloquear todas as funcionalidades OTRS!',
 
         # Template: AAACalendar
         'New Year\'s Day' => 'Dia de Ano Novo',
@@ -545,8 +545,8 @@ sub Data {
         'Pending' => 'Pendências',
         'Owner' => 'Proprietário',
         'Owner Update' => 'Atualizar Proprietário',
-        'Responsible' => 'ResponsabilAntiguidade',
-        'Responsible Update' => 'Atualização da ResponsabilAntiguidade',
+        'Responsible' => 'Responsável',
+        'Responsible Update' => 'Atualização de Responsável',
         'Sender' => 'Remetente',
         'Article' => 'Artigo',
         'Ticket' => 'Ticket',
@@ -670,7 +670,7 @@ sub Data {
         'Watched Tickets' => 'Ticket vigiados',
         'Watched' => 'Vigiado',
         'Watch' => 'Vigiar',
-        'Unwatch' => '',
+        'Unwatch' => 'Parar de seguir',
         'Lock it to work on it' => 'Bloqueá-lo para trabalhar com ele',
         'Unlock to give it back to the queue' => 'Destranca para voltar à fila',
         'Show the ticket history' => 'Mostra a história do pedido',
@@ -816,25 +816,25 @@ sub Data {
         'Change settings' => 'Alterar definições',
         'Set up what you want to change if the criteria match. Keep in mind that \'Possible\' is a white list, \'PossibleNot\' a black list.' =>
             '',
-        'Check the official' => '',
+        'Check the official' => 'Verificar a documentação oficial',
         'documentation' => '',
         'Show or hide the content' => 'Mostrar ou esconder o conteúdo',
-        'Edit ACL information' => '',
+        'Edit ACL information' => 'Editar informação de ACL',
         'Stop after match' => 'Parar após encontrar',
-        'Edit ACL structure' => '',
+        'Edit ACL structure' => 'Editar estrutura de ACL',
         'Save' => 'Guardar',
         'or' => 'ou',
         'Save and finish' => 'Grava e termina',
-        'Do you really want to delete this ACL?' => '',
+        'Do you really want to delete this ACL?' => 'Quer mesmo remover esta ACL?',
         'This item still contains sub items. Are you sure you want to remove this item including its sub items?' =>
-            '',
-        'An item with this name is already present.' => '',
-        'Add all' => '',
-        'There was an error reading the ACL data.' => '',
+            'Este item ainda contem sub items. Tem a certeza que quer remover este item incluindo os sub items?',
+        'An item with this name is already present.' => 'Um item com este nome já existe.',
+        'Add all' => 'Adicionar todos',
+        'There was an error reading the ACL data.' => 'Ocorreu um erro a ler os dados da ACL',
 
         # Template: AdminACLNew
         'Create a new ACL by submitting the form data. After creating the ACL, you will be able to add configuration items in edit mode.' =>
-            '',
+            'Criar uma nova ACL com dados de formulário. Após criar a ACL poderá adicionar items de configuração em modo de edição.',
 
         # Template: AdminAttachment
         'Attachment Management' => 'Gestão de Anexos',
@@ -857,7 +857,7 @@ sub Data {
         'To get the first 20 character of the subject.' => 'Para obter os primeiros 20 Caracteres do assunto',
         'To get the first 5 lines of the email.' => 'Para obter as primeiras 5 linhas do email',
         'To get the realname of the ticket\'s customer user (if given).' =>
-            '',
+            'Para obter o nome real do customer user do ticket (se existente).',
         'To get the article attribute' => 'Para obter os atributos do artigo',
         ' e. g.' => 'ex:',
         'Options of the current customer user data' => 'Opções disponíveis para o cliente atual',
@@ -865,7 +865,7 @@ sub Data {
         'Ticket responsible options' => 'Opções do responsável do ticket',
         'Options of the current user who requested this action' => 'Opções do utilizador atual que pediu esta ação',
         'Options of the ticket data' => 'Opções para informação do ticket',
-        'Options of ticket dynamic fields internal key values' => '',
+        'Options of ticket dynamic fields internal key values' => 'Opções de valores de chave internos dos campos dinâmicos',
         'Options of ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
             '',
         'Config options' => 'Opções de configuração',
@@ -873,8 +873,8 @@ sub Data {
 
         # Template: AdminCloudServiceSupportDataCollector
         'Cloud Service Management' => '',
-        'Support Data Collector' => '',
-        'Support data collector' => '',
+        'Support Data Collector' => 'Agregador de Informação de Suporte',
+        'Support data collector' => 'Agregador de informação de suporte',
         'Hint' => 'Sugestão',
         'Currently support data is only shown in this system.' => '',
         'It is highly recommended to send this data to OTRS Group in order to get better support.' =>
@@ -886,7 +886,7 @@ sub Data {
         'System Registration' => 'Registo de Sistema',
         'To enable data sending, please register your system with OTRS Group or update your system registration information (make sure to activate the \'send support data\' option.)' =>
             'Para permitir o envio de dados, por favor registe o seu sistema no Group OTRS ou atualise a informação de registo do sitstema (confirme que a opção \'Enviar dados de suporte\' está ativa)',
-        'Register this System' => '',
+        'Register this System' => 'Registar este Sistema',
         'System Registration is disabled for your system. Please check your configuration.' =>
             '',
 
@@ -1092,7 +1092,7 @@ sub Data {
         'Job Settings' => 'Definições da tarefa',
         'Job name' => 'Nome da tarefa',
         'The name you entered already exists.' => '',
-        'Toggle this widget' => 'Ativar esta funcionalAntiguidade',
+        'Toggle this widget' => 'Ativar esta widget',
         'Automatic execution (multiple tickets)' => '',
         'Execution Schedule' => '',
         'Schedule minutes' => 'Minutos agendados',
@@ -1180,7 +1180,7 @@ sub Data {
         'New Dynamic Field Values' => '',
         'Archive selected tickets' => 'Arquivar tickets selecionados',
         'Add Note' => 'Adicionar nota',
-        'Time units' => 'UnAntiguidades de tempo',
+        'Time units' => 'Unidades de tempo',
         'Execute Ticket Commands' => '',
         'Send agent/customer notifications on changes' => 'Enviar notificações de alterações a agente/cliente ',
         'CMD' => 'Este comando será executado. ARG[0] será o número do ticket e ARG[1] o seu ID.',
@@ -1193,12 +1193,6 @@ sub Data {
         'Param %s key' => 'Chave do parametro %s',
         'Param %s value' => 'Valor do parametro %s',
         'Save Changes' => 'Guardar alterações ',
-        'Tag Reference' => '',
-        'In the note section, you can use the following tags' => '',
-        'Attributes of the current customer user data' => '',
-        'Attributes of the ticket data' => '',
-        'Ticket dynamic fields internal key values' => '',
-        'Example note' => '',
         'Results' => 'Resultados',
         '%s Tickets affected! What do you want to do?' => '%s tickets afetados. O que deseja fazer ?',
         'Warning: You used the DELETE option. All deleted tickets will be lost!' =>
@@ -1440,11 +1434,13 @@ sub Data {
         'Configuration history' => '',
         'Delete web service' => '',
         'Do you really want to delete this web service?' => '',
-        'Example Web Services' => '',
-        'Here you can activate best practice example web service that are part of %s. Please note that some additional configuration may be required.' =>
+        'Ready-to-run Web Services' => '',
+        'Here you can activate ready-to-run web services showcasing our best practices that are a part of %s.' =>
             '',
-        'Import example web service' => '',
-        'Do you want to benefit from web services created by experts? Upgrade to %s to be able to import some sophisticated example web services.' =>
+        'Please note that these web services may depend on other modules only available with certain %s contract levels (there will be a notification with further details when importing).' =>
+            '',
+        'Import ready-to-run web service' => '',
+        'Would you like to benefit from web services created by experts? Upgrade to %s to import some sophisticated ready-to-run web services.' =>
             '',
         'After you save the configuration you will be redirected again to the edit screen.' =>
             '',
@@ -1596,6 +1592,7 @@ sub Data {
         'Message body' => '',
         'Add new notification language' => '',
         'Do you really want to delete this notification language?' => '',
+        'Tag Reference' => '',
         'Notifications are sent to an agent or a customer.' => 'As notificações são enviadas para um agente ou um cliente.',
         'To get the first 20 character of the subject (of the latest agent article).' =>
             'Para obter os primeiros 20 carateres do assunto (do último artigo do agente)',
@@ -1605,11 +1602,14 @@ sub Data {
             'Para obter os primeiros 20 carateres do assunto (do último artigo do cliente)',
         'To get the first 5 lines of the body (of the latest customer article).' =>
             'Para obter as últimas 5 linhas do corpo do email (do último artigo do cliente)',
+        'Attributes of the current customer user data' => '',
         'Attributes of the current ticket owner user data' => '',
         'Attributes of the current ticket responsible user data' => '',
         'Attributes of the current agent user who requested this action' =>
             '',
         'Attributes of the recipient user for the notification' => '',
+        'Attributes of the ticket data' => '',
+        'Ticket dynamic fields internal key values' => '',
         'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
             '',
         'Example notification' => '',
@@ -1622,6 +1622,10 @@ sub Data {
         'Email template' => '',
         'Use this template to generate the complete email (only for HTML emails).' =>
             '',
+        'Enable email security' => '',
+        'Email security level' => '',
+        'If signing key/certificate is missing' => '',
+        'If encryption key/certificate is missing' => '',
 
         # Template: AdminOTRSBusinessInstalled
         'Manage %s' => '',
@@ -1812,11 +1816,11 @@ sub Data {
         'Upload process configuration' => '',
         'Import process configuration' => '',
         'Example processes' => '',
-        'Here you can activate best practice example processes that are part of %s. Please note that some additional configuration may be required.' =>
+        'Here you can activate best practice example processes. Please note that some additional configuration may be required.' =>
+            '',
+        'Do you want to benefit from processes created by experts? Upgrade to %s to be able to import additional sophisticated example processes.' =>
             '',
         'Import example process' => '',
-        'Do you want to benefit from processes created by experts? Upgrade to %s to be able to import some sophisticated example processes.' =>
-            '',
         'To create a new Process you can either import a Process that was exported from another system or create a complete new one.' =>
             '',
         'Changes to the Processes here only affect the behavior of the system, if you synchronize the Process data. By synchronizing the Processes, the newly made changes will be written to the Configuration.' =>
@@ -1957,6 +1961,7 @@ sub Data {
             '',
 
         # Template: AdminProcessManagementProcessPrint
+        'cancel & close' => '',
         'Start Activity' => '',
         'Contains %s dialog(s)' => '',
         'Assigned dialogs' => '',
@@ -2477,6 +2482,9 @@ sub Data {
 
         # Template: AgentCustomerTableView
         'Note: Customer is invalid!' => '',
+        'Start chat' => '',
+        'Video call' => '',
+        'Audio call' => '',
 
         # Template: AgentDaemonInfo
         'The OTRS Daemon is a daemon process that performs asynchronous tasks, e.g. ticket escalation triggering, email sending, etc.' =>
@@ -2510,12 +2518,10 @@ sub Data {
         'Customer information' => '',
         'Phone ticket' => '',
         'Email ticket' => '',
-        'Start Chat' => '',
         '%s open ticket(s) of %s' => '',
         '%s closed ticket(s) of %s' => '',
         'New phone ticket from %s' => '',
         'New email ticket to %s' => '',
-        'Start chat' => '',
 
         # Template: AgentDashboardProductNotify
         '%s %s is available!' => '%s %s está disponível!',
@@ -2559,7 +2565,6 @@ sub Data {
 
         # Template: AgentDashboardUserOnline
         'out of office' => '',
-        'Selected agent is not available for chat' => '',
 
         # Template: AgentDashboardUserOutOfOffice
         'until' => '',
@@ -2579,6 +2584,11 @@ sub Data {
         'Link object %s with' => '',
         'Unlink Object: %s' => 'Quebrar ligação %s',
         'go to link add screen' => 'Ir para a ecrã de adicionar link',
+
+        # Template: AgentOTRSBusinessBlockScreen
+        'Unauthorized usage of %s detected' => '',
+        'If you decide to downgrade to OTRS Free, you will lose all database tables and data related to %s.' =>
+            '',
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Editar preferências',
@@ -2919,6 +2929,10 @@ sub Data {
         'and %s more...' => '',
         'Filters' => '',
         'Confirm' => '',
+        'You have unanswered chat requests' => '',
+        'Accept' => '',
+        'Decline' => '',
+        'An internal error occurred.' => '',
 
         # Template: CustomerLogin
         'JavaScript Not Available' => 'Javascript não disponível',
@@ -2947,7 +2961,6 @@ sub Data {
 
         # Template: CustomerNavigationBar
         'Incoming Chat Requests' => '',
-        'You have unanswered chat requests' => '',
         'Edit personal preferences' => 'Preferências pessoais',
         'Logout %s %s' => '',
 
@@ -3049,8 +3062,13 @@ sub Data {
         'New personal chat request' => '',
         'New customer chat request' => '',
         'New public chat request' => '',
+        'Selected user is not available for chat.' => '',
         'New activity' => '',
         'New activity on one of your monitored chats.' => '',
+        'Your browser does not support video and audio calling.' => '',
+        'Selected user is not available for video and audio call.' => '',
+        'Target user\'s browser does not support video and audio calling.' =>
+            '',
         'Do you really want to continue?' => '',
         'Information about the OTRS Daemon' => '',
         'This feature is part of the %s.  Please contact us at %s for an upgrade.' =>
@@ -3831,6 +3849,13 @@ sub Data {
         'Event type filter settings were saved.' => '',
         'Need ArticleID!' => '',
         'Invalid ArticleID!' => '',
+        'Offline' => '',
+        'This user is currently offline' => '',
+        'This user is currently active' => '',
+        'Away' => '',
+        'This user is currently away' => '',
+        'Unavailable' => '',
+        'This user is currently unavailable' => '',
         'Fields with no group' => '',
         'View the source for this Article' => '',
 
@@ -3907,12 +3932,6 @@ sub Data {
         'filter active' => '',
         'This ticket has no title or subject' => '',
 
-        # Perl Module: Kernel/Output/HTML/Dashboard/UserOnline.pm
-        'This user is currently offline' => '',
-        'This user is currently active' => '',
-        'This user is currently away' => '',
-        'This user is currently unavailable' => '',
-
         # Perl Module: Kernel/Output/HTML/Layout.pm
         'We are sorry, you do not have permissions anymore to access this ticket in its current state. You can take one of the following actions:' =>
             '',
@@ -3974,7 +3993,12 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/TicketOverviewMenu/Sort.pm
         'Order by' => 'Ordenado por',
 
-        # Perl Module: Kernel/System/AuthSession/DB.pm
+        # Perl Module: Kernel/System/AuthSession.pm
+        'You have exceeded the number of concurrent agents - contact sales@otrs.com.' =>
+            '',
+        'Please note that the session limit is almost reached.' => '',
+        'Login rejected! You have exceeded the maximum number of concurrent Agents! Contact sales@otrs.com immediately!' =>
+            '',
         'Session per user limit reached!' => '',
 
         # Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
@@ -3985,6 +4009,10 @@ sub Data {
 
         # Perl Module: Kernel/System/Package.pm
         'not installed' => '',
+
+        # Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
+        'Inactive' => 'Inativo',
+        'FadeAway' => '',
 
         # Perl Module: Kernel/System/Registration.pm
         'Can\'t get Token from sever' => '',
@@ -4131,7 +4159,7 @@ sub Data {
             '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/DiskSpacePartitions.pm
-        'Operating System/Disk Partitions Usage' => '',
+        'Disk Partitions Usage' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/Distribution.pm
         'Distribution' => '',
@@ -4157,16 +4185,17 @@ sub Data {
         'There should be no more than 200 MB swap space used.' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/ConfigSettings.pm
-        'OTRS/Config Settings' => '',
+        'OTRS' => '',
+        'Config Settings' => '',
         'Could not determine value.' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/DaemonRunning.pm
-        'OTRS' => '',
         'Daemon' => '',
+        'Daemon is running.' => '',
         'Daemon is not running.' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
-        'OTRS/Database Records' => '',
+        'Database Records' => '',
         'Tickets' => 'Tickets',
         'Ticket History Entries' => '',
         'Articles' => '',
@@ -4176,6 +4205,7 @@ sub Data {
         'Invalid Dynamic Fields' => '',
         'Invalid Dynamic Field Values' => '',
         'GenericInterface Webservices' => '',
+        'Process Tickets' => '',
         'Months Between First And Last Ticket' => '',
         'Tickets Per Month (avg)' => '',
 
@@ -4207,9 +4237,19 @@ sub Data {
         'Package Installation Status' => '',
         'Some packages have locally modified files.' => '',
         'Some packages are not correctly installed.' => '',
+        'Package Verification Status' => '',
+        'Some packages are not verified by the OTRS Group! It is recommended not to use this packages.' =>
+            '',
+        'Package Framework Version Status' => '',
+        'Some packages are not allowed for the current framework version.' =>
+            '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageList.pm
-        'OTRS/Package List' => '',
+        'Package List' => '',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
+        'Spooled Emails' => '',
+        'There are emails in var/spool that OTRS could not process.' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SystemID.pm
         'Your SystemID setting is invalid, it should only contain digits.' =>
@@ -4244,11 +4284,11 @@ sub Data {
         'Table ticket_lock_index contains orphaned records. Please run bin/otrs.Console.pl "Maint::Ticket::QueueIndexCleanup" to clean the StaticDB index.' =>
             '',
         'Orphaned Records In ticket_index Table' => '',
-        'Table ticket_index contains orphaned records. Please run otrs/bin/otrs.CleanTicketIndex.pl to clean the StaticDB index.' =>
+        'Table ticket_index contains orphaned records. Please run bin/otrs.Console.pl "Maint::Ticket::QueueIndexCleanup" to clean the StaticDB index.' =>
             '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/TimeSettings.pm
-        'OTRS/Time Settings' => '',
+        'Time Settings' => '',
         'Server time zone' => '',
         'Computed server time offset' => '',
         'OTRS TimeZone setting (global time offset)' => '',
@@ -4259,10 +4299,10 @@ sub Data {
         'OTRS TimeZone setting for calendar ' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/LoadedModules.pm
-        'Webserver/Loaded Apache Modules' => '',
+        'Webserver' => '',
+        'Loaded Apache Modules' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/MPMModel.pm
-        'Webserver' => '',
         'MPM model' => '',
         'OTRS requires apache to be run with the \'prefork\' MPM model.' =>
             '',
@@ -4285,14 +4325,15 @@ sub Data {
             '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/EnvironmentVariables.pm
-        'Webserver/Environment Variables' => '',
-
-        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/IIS/Performance.pm
-        'You should use PerlEx to increase your performance.' => '',
+        'Environment Variables' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Version.pm
         'Webserver Version' => '',
         'Could not determine webserver version.' => '',
+
+        # Perl Module: Kernel/System/SupportDataCollector/PluginAsynchronous/OTRS/ConcurrentUsers.pm
+        'Concurrent Users Details' => '',
+        'Concurrent Users' => 'Utilizadores Concorrentes',
 
         # Perl Module: Kernel/System/SupportDataCollector/PluginBase.pm
         'Unknown' => '',
@@ -4301,6 +4342,18 @@ sub Data {
 
         # Perl Module: Kernel/System/Ticket.pm
         'Reset of unlock time.' => '',
+
+        # Perl Module: Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+        'PGP sign only' => '',
+        'PGP encrypt only' => '',
+        'PGP sign and encrypt' => '',
+        'SMIME sign only' => '',
+        'SMIME encrypt only' => '',
+        'SMIME sign and encrypt' => '',
+        'PGP and SMIME not enabled.' => '',
+        'Skip notification delivery' => '',
+        'Send unsigned notification' => '',
+        'Send unencrypted notification' => '',
 
         # Perl Module: Kernel/System/Web/InterfaceAgent.pm
         'Panic, user authenticated but no user data can be found in OTRS DB!! Perhaps the user is invalid.' =>
@@ -4421,7 +4474,7 @@ Thanks for your help!
         '"Slim" skin which tries to save screen space for power users.' =>
             '',
         '%s' => '%s',
-        '%s time unit(s) accounted. Now total %s time unit(s).' => '%s unAntiguidades de tempo contabilizadas. Total %s unAntiguidades de tempo.',
+        '%s time unit(s) accounted. Now total %s time unit(s).' => '%s unidade(s) de tempo contabilizada(s). Total %s unidade(s) de tempo.',
         '(UserLogin) Firstname Lastname' => '',
         '(UserLogin) Lastname Firstname' => '',
         '(UserLogin) Lastname, Firstname' => '',
@@ -4541,9 +4594,9 @@ Thanks for your help!
         'Allows default services to be selected also for non existing customers.' =>
             '',
         'Allows defining new types for ticket (if ticket type feature is enabled).' =>
-            'Permite definir novos tipos de tickets (se a funcionalAntiguidade de tipo de ticket estiver ativa).',
+            'Permite definir novos tipos de tickets (se a funcionalidade de tipo de ticket estiver ativa).',
         'Allows defining services and SLAs for tickets (e. g. email, desktop, network, ...), and escalation attributes for SLAs (if ticket service/SLA feature is enabled).' =>
-            'Permite definir serviços e SLAs para os tickets(ex. email, desktop, network, ...), e atributos de escalagem para os SLAs(caso a funcionalAntiguidade service/SLA esteja ativa).',
+            'Permite definir serviços e SLAs para os tickets(ex. email, desktop, network, ...), e atributos de escalagem para os SLAs(caso a funcionalidade service/SLA esteja ativa).',
         'Allows extended search conditions in ticket search of the agent interface. With this feature you can search e. g. with this kind of conditions like "(key1&&key2)" or "(key1||key2)".' =>
             '',
         'Allows extended search conditions in ticket search of the customer interface. With this feature you can search e. g. with this kind of conditions like "(key1&&key2)" or "(key1||key2)".' =>
@@ -4898,6 +4951,8 @@ Thanks for your help!
             '',
         'Defines queues that\'s tickets are used for displaying as calendar events.' =>
             '',
+        'Defines the HTTP hostname for the support data collection with the public module \'PublicSupportDataCollector\' (e.g. used from the OTRS Daemon).' =>
+            '',
         'Defines the IP regular expression for accessing the local repository. You need to enable this to have access to your local repository and the package::RepositoryList is required on the remote host.' =>
             '',
         'Defines the URL CSS path.' => '',
@@ -5244,6 +5299,8 @@ Thanks for your help!
             '',
         'Defines the module to display a notification in the agent interface, if the agent is logged in while having system maintenance active.' =>
             '',
+        'Defines the module to display a notification in the agent interface, if the agent session limit prior warning is reached.' =>
+            '',
         'Defines the module to display a notification in the agent interface, if the system is used by the admin user (normally you shouldn\'t work as admin).' =>
             '',
         'Defines the module to generate code for periodic page reloads.' =>
@@ -5386,7 +5443,7 @@ Thanks for your help!
         'Defines the valid state types for a ticket.' => '',
         'Defines the valid states for unlocked tickets. To unlock tickets the script "bin/otrs.Console.pl Maint::Ticket::UnlockTimeout" can be used.' =>
             '',
-        'Defines the viewable locks of a ticket. Default: unlock, tmp_lock.' =>
+        'Defines the viewable locks of a ticket. NOTE: When you change this setting, make sure to delete the cache in order to use the new value. Default: unlock, tmp_lock.' =>
             '',
         'Defines the width for the rich text editor component for this screen. Enter number (pixels) or percent value (relative).' =>
             '',
@@ -5443,6 +5500,8 @@ Thanks for your help!
         'Determines which options will be valid of the recipient (phone ticket) and the sender (email ticket) in the agent interface.' =>
             '',
         'Determines which queues will be valid for ticket\'s recepients in the customer interface.' =>
+            '',
+        'Disable HTTP header "Content-Security-Policy" to allow loading of external script contents. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             '',
         'Disable HTTP header "X-Frame-Options: SAMEORIGIN" to allow OTRS to be included as an IFrame in other websites. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             '',
@@ -5549,6 +5608,7 @@ Thanks for your help!
             '',
         'Enables S/MIME support.' => '',
         'Enables customers to create their own accounts.' => '',
+        'Enables fetch S/MIME from CustomerUser backend support.' => '',
         'Enables file upload in the package manager frontend.' => '',
         'Enables or disables the caching for templates. WARNING: Do NOT disable template caching for production environments for it will cause a massive performance drop! This setting should only be disabled for debugging reasons!' =>
             '',
@@ -5959,10 +6019,13 @@ Thanks for your help!
             '',
         'Module to compose signed messages (PGP or S/MIME).' => '',
         'Module to crypt composed messages (PGP or S/MIME).' => '',
+        'Module to fetch customer users SMIME certificates of incoming messages.' =>
+            '',
         'Module to filter and manipulate incoming messages. Block/ignore all spam email with From: noreply@ address.' =>
             '',
         'Module to filter and manipulate incoming messages. Get a 4 digit number to ticket free text, use regex in Match e. g. From => \'(.+?)@.+?\', and use () as [***] in Set =>.' =>
             '',
+        'Module to filter encrypted bodies of incoming messages.' => '',
         'Module to generate accounted time ticket statistics.' => '',
         'Module to generate html OpenSearch profile for short ticket search in the agent interface.' =>
             '',
@@ -6124,6 +6187,8 @@ Thanks for your help!
         'Refresh interval' => '',
         'Removed subscription for user "%s".' => 'Subscrição de ticket removida "%s".',
         'Removes the ticket watcher information when a ticket is archived.' =>
+            '',
+        'Renew existing SMIME certificates from customer backend. Note: SMIME and SMIME::FetchFromCustomer needs to be active in SysConfig and customer backend needs to be configured to fetch UserSMIMECertificate attribute.' =>
             '',
         'Replaces the original sender with current customer\'s email address on compose answer in the ticket compose screen of the agent interface.' =>
             '',
@@ -6312,6 +6377,8 @@ Thanks for your help!
             '',
         'Sets the inactivity time (in seconds) to pass before a session is killed and a user is loged out.' =>
             '',
+        'Sets the maximum number of active agents within the timespan defined in SessionActiveTime before a prior warning will be visible for the logged in agents.' =>
+            '',
         'Sets the maximum number of active agents within the timespan defined in SessionActiveTime.' =>
             '',
         'Sets the maximum number of active customers within the timespan defined in SessionActiveTime.' =>
@@ -6413,7 +6480,8 @@ Thanks for your help!
             '',
         'Sets the ticket type in the ticket responsible screen of the agent interface (Ticket::Type needs to be activated).' =>
             '',
-        'Sets the time (in seconds) a user is marked as active.' => '',
+        'Sets the time (in seconds) a user is marked as active (minimum active time is 300 seconds).' =>
+            '',
         'Sets the timeout (in seconds) for http/ftp downloads.' => '',
         'Sets the timeout (in seconds) for package downloads. Overwrites "WebUserAgent::Timeout".' =>
             '',
