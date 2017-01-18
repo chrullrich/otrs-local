@@ -1666,11 +1666,15 @@ sub TicketTitleUpdate {
     # clear ticket cache
     $Self->_TicketCacheClear( TicketID => $Param{TicketID} );
 
+    # truncate title
+    my $Title = substr( $Param{Title}, 0, 50 );
+    $Title .= '...' if length($Title) == 50;
+
     # history insert
     $Self->HistoryAdd(
         TicketID     => $Param{TicketID},
         HistoryType  => 'TitleUpdate',
-        Name         => "\%\%$Ticket{Title}\%\%$Param{Title}",
+        Name         => "\%\%$Ticket{Title}\%\%$Title",
         CreateUserID => $Param{UserID},
     );
 

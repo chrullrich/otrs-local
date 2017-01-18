@@ -206,7 +206,7 @@ sub ProviderProcessRequest {
 
     # convert charset if necessary
     my $ContentCharset;
-    if ( $ENV{'CONTENT_TYPE'} =~ m{ \A ( .+ ) ;charset= ["']{0,1} ( .+? ) ["']{0,1} \z }xmsi ) {
+    if ( $ENV{'CONTENT_TYPE'} =~ m{ \A ( .+ ) ;charset= ["']{0,1} ( .+? ) ["']{0,1} (;|\z) }xmsi ) {
 
         # remember content type for the response
         $Self->{ContentType} = $1;
@@ -559,16 +559,10 @@ sub RequesterPerformRequest {
             )
         {
 
-            # force Net::SSL instead of IO::Socket::SSL, otherwise GI can't connect to certificate
-            # authentication restricted servers
-            my $SSLModule = 'Net::SSL';
-            if ( !$Kernel::OM->Get('Kernel::System::Main')->Require($SSLModule) ) {
-                return {
-                    Success      => 0,
-                    ErrorMessage => "The Perl module \"$SSLModule\" needed to manage SSL"
-                        . " connections with certificates is missing!",
-                };
-            }
+            # Force Net::SSL instead of IO::Socket::SSL, otherwise GI can't connect to certificate
+            #   authentication restricted servers, see https://metacpan.org/pod/Net::HTTPS#ENVIRONMENT,
+            #   see bug #12306.
+            $ENV{PERL_NET_HTTPS_SSL_SOCKET_CLASS} = 'Net::SSL';    ## no critic
 
             $ENV{HTTPS_PKCS12_FILE}     = $Config->{SSL}->{SSLP12Certificate};    ## no critic
             $ENV{HTTPS_PKCS12_PASSWORD} = $Config->{SSL}->{SSLP12Password};       ## no critic

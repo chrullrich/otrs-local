@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -34,6 +34,25 @@ use Exporter qw(import);
 our @EXPORT = qw(Translatable);
 
 our @ObjectDependencies = ();
+
+=head1 NAME
+
+Kernel::Config::Defaults - Base class for the ConfigObject.
+
+=head1 DESCRIPTION
+
+This class implements several internal functions that are used internally in
+L<Kernel::Config>. The two externally used functions are documented as part
+of L<Kernel::Config>, even though they are actually implemented here.
+
+=head1 PUBLIC INTERFACE
+
+=head2 LoadDefaults()
+
+loads the default values of settings that are required to run OTRS even
+when it was not fully configured yet.
+
+=cut
 
 sub LoadDefaults {
     my $Self = shift;
@@ -86,7 +105,7 @@ sub LoadDefaults {
 
     # ProductName
     # (Application name displayed in frontend.)
-    $Self->{ProductName} = 'OTRS 5';
+    $Self->{ProductName} = 'OTRS 5s';
 
     # --------------------------------------------------- #
     # database settings                                   #
@@ -704,6 +723,9 @@ sub LoadDefaults {
         },
         '200-UID-Check' => {
           'Module' => 'Kernel::Output::HTML::Notification::UIDCheck',
+        },
+        '250-AgentSessionLimit' => {
+          'Module' => 'Kernel::Output::HTML::Notification::AgentSessionLimit',
         },
         '500-OutofOffice-Check' => {
           'Module' => 'Kernel::Output::HTML::Notification::OutofOfficeCheck',
@@ -1575,6 +1597,8 @@ via the Preferences button after logging in.
 #            [ 'UserPhone',      'Phone',      'telephonenumber', 1, 0, 'var', '', 0 ],
 #            [ 'UserAddress',    'Address',    'postaladdress',   1, 0, 'var', '', 0 ],
 #            [ 'UserComment',    'Comment',    'description',     1, 0, 'var', '', 0 ],
+#            # this is needed, if "SMIME::FetchFromCustomer" is active
+#            # [ 'UserSMIMECertificate', 'SMIMECertificate', 'userSMIMECertificate',      0, 1, 'var', '', 0 ],
 #        ],
 #    };
 
@@ -1792,105 +1816,12 @@ via the Preferences button after logging in.
     return;
 }
 
-sub Get {
-    my ( $Self, $What ) = @_;
-
-    # debug
-    if ( $Self->{Debug} > 1 ) {
-        my $Value = defined $Self->{$What} ? $Self->{$What} : '<undef>';
-        print STDERR "Debug: Config.pm ->Get('$What') --> $Value\n";
-    }
-
-    return $Self->{$What};
-}
-
-sub Set {
-    my ( $Self, %Param ) = @_;
-
-    for (qw(Key)) {
-        if ( !defined $Param{$_} ) {
-            $Param{$_} = '';
-        }
-    }
-
-    # debug
-    if ( $Self->{Debug} > 1 ) {
-        my $Value = defined $Param{Value} ? $Param{Value} : '<undef>';
-        print STDERR "Debug: Config.pm ->Set(Key => $Param{Key}, Value => $Value)\n";
-    }
-
-    # set runtime config option
-    if ( $Param{Key} =~ /^(.+?)###(.+?)$/ ) {
-        if ( !defined $Param{Value} ) {
-            delete $Self->{$1}->{$2};
-        }
-        else {
-            $Self->{$1}->{$2} = $Param{Value};
-        }
-    }
-    else {
-        if ( !defined $Param{Value} ) {
-            delete $Self->{ $Param{Key} };
-        }
-        else {
-            $Self->{ $Param{Key} } = $Param{Value};
-        }
-    }
-    return 1;
-}
-
-## nofilter(TidyAll::Plugin::OTRS::Perl::Translatable)
-
-=item Translatable()
-
-this is a no-op to mark a text as translatable in the Perl code.
-We use our own version here instead of importing Language::Translatable to not add a dependency.
-
-=cut
-
-sub Translatable {
-    return shift;
-}
-
 #
-# ConfigChecksum
+# Hereafter the functions should be documented in Kernel::Config (Kernel/Config.pod.dist), not in
+#   Kernel::Config:Defaults.
 #
-# This function returns an MD5 sum that is generated from all available
-#   config files (Kernel/Config.pm, Kernel/Config/Defaults.pm, Kernel/Config/Files/*.(pm|xml) except ZZZAAuto.pm) and their
-#   modification timestamps. Whenever a file is changed, added or removed,
-#   this checksum will change.
-#
-sub ConfigChecksum {
-    my $Self = shift;
 
-    my @Files = glob( $Self->{Home} . "/Kernel/Config/Files/*.pm");
-
-    # Ignore ZZZAAuto.pm, because this is only a cached version of the XML files which
-    # will be in the checksum. Otherwise the SysConfig cannot use its cache files.
-    @Files = grep { $_!~ m/ZZZAAuto\.pm$/smx } @Files;
-
-    push @Files, glob( $Self->{Home} . "/Kernel/Config/Files/*.xml");
-    push @Files, $Self->{Home} . "/Kernel/Config/Defaults.pm" ;
-    push @Files, $Self->{Home} . "/Kernel/Config.pm";
-
-    # Create a string with filenames and file mtimes of the config files
-    my $ConfigString;
-    for my $File (@Files) {
-
-        # get file metadata
-        my $Stat = stat( $File );
-
-        if ( !$Stat ) {
-            print STDERR "Error: cannot stat file '$File': $!";
-            return;
-        }
-
-        $ConfigString .= $File . $Stat->mtime();
-    }
-
-    return Digest::MD5::md5_hex( $ConfigString );
-}
-
+# Please see the documentation in Kernel/Config.pod.dist.
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -2089,6 +2020,96 @@ sub new {
     }
 
     return $Self;
+}
+
+# Please see the documentation in Kernel/Config.pod.dist.
+sub Get {
+    my ( $Self, $What ) = @_;
+
+    # debug
+    if ( $Self->{Debug} > 1 ) {
+        my $Value = defined $Self->{$What} ? $Self->{$What} : '<undef>';
+        print STDERR "Debug: Config.pm ->Get('$What') --> $Value\n";
+    }
+
+    return $Self->{$What};
+}
+
+# Please see the documentation in Kernel/Config.pod.dist.
+sub Set {
+    my ( $Self, %Param ) = @_;
+
+    for (qw(Key)) {
+        if ( !defined $Param{$_} ) {
+            $Param{$_} = '';
+        }
+    }
+
+    # debug
+    if ( $Self->{Debug} > 1 ) {
+        my $Value = defined $Param{Value} ? $Param{Value} : '<undef>';
+        print STDERR "Debug: Config.pm ->Set(Key => $Param{Key}, Value => $Value)\n";
+    }
+
+    # set runtime config option
+    if ( $Param{Key} =~ /^(.+?)###(.+?)$/ ) {
+        if ( !defined $Param{Value} ) {
+            delete $Self->{$1}->{$2};
+        }
+        else {
+            $Self->{$1}->{$2} = $Param{Value};
+        }
+    }
+    else {
+        if ( !defined $Param{Value} ) {
+            delete $Self->{ $Param{Key} };
+        }
+        else {
+            $Self->{ $Param{Key} } = $Param{Value};
+        }
+    }
+    return 1;
+}
+
+## nofilter(TidyAll::Plugin::OTRS::Perl::Translatable)
+
+# This is a no-op to mark a text as translatable in the Perl code.
+#   We use our own version here instead of importing Language::Translatable to not add a dependency.
+
+sub Translatable {
+    return shift;
+}
+
+# Please see the documentation in Kernel/Config.pod.dist.
+sub ConfigChecksum {
+    my $Self = shift;
+
+    my @Files = glob( $Self->{Home} . "/Kernel/Config/Files/*.pm");
+
+    # Ignore ZZZAAuto.pm, because this is only a cached version of the XML files which
+    # will be in the checksum. Otherwise the SysConfig cannot use its cache files.
+    @Files = grep { $_!~ m/ZZZAAuto\.pm$/smx } @Files;
+
+    push @Files, glob( $Self->{Home} . "/Kernel/Config/Files/*.xml");
+    push @Files, $Self->{Home} . "/Kernel/Config/Defaults.pm" ;
+    push @Files, $Self->{Home} . "/Kernel/Config.pm";
+
+    # Create a string with filenames and file mtimes of the config files
+    my $ConfigString;
+    for my $File (@Files) {
+
+        # get file metadata
+        my $Stat = stat( $File );
+
+        if ( !$Stat ) {
+            print STDERR "Error: cannot stat file '$File': $!";
+            return;
+        }
+
+        $ConfigString .= $File . $Stat->mtime();
+    }
+
+    return Digest::MD5::md5_hex( $ConfigString );
 }
 
 1;

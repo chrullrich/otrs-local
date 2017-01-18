@@ -26,7 +26,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y.%M.%D';
     $Self->{DateInputFormat}     = '%Y.%M.%D';
     $Self->{DateInputFormatLong} = '%Y.%M.%D - %T';
-    $Self->{Completeness}        = 0.522282382340691;
+    $Self->{Completeness}        = 0.517113402061856;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -425,7 +425,7 @@ sub Data {
             'Din licens för %s håller på att gå ut. Vänligen ta kontakt med %s för att förnya ditt kontrakt!',
         'An update for your %s is available, but there is a conflict with your framework version! Please update your framework first!' =>
             'En uppdatering för %s är tillgänglig som inte är kompatibel med din ramverksversion. Du behöver därför uppdatera ditt ramverk först.',
-        'Your system was successfully upgraded to %s.' => 'Ditt system är nu lyckad uppgraderad till %s.',
+        'Your system was successfully upgraded to %s.' => 'Ditt system är nu uppgraderat till %s.',
         'There was a problem during the upgrade to %s.' => 'Det blev ett problem under uppgraderingen till %s.',
         '%s was correctly reinstalled.' => '%s blev ominstallerat korrekt.',
         'There was a problem reinstalling %s.' => 'Det blev ett problem med att ominstallera %s.',
@@ -1194,12 +1194,6 @@ sub Data {
         'Param %s key' => 'Parameter %s nyckel',
         'Param %s value' => 'Parameter %s värde',
         'Save Changes' => 'Spara ändringar',
-        'Tag Reference' => '',
-        'In the note section, you can use the following tags' => '',
-        'Attributes of the current customer user data' => 'Egenskaper för kundens användardata',
-        'Attributes of the ticket data' => '',
-        'Ticket dynamic fields internal key values' => '',
-        'Example note' => 'Exempelnotis',
         'Results' => 'Resultat',
         '%s Tickets affected! What do you want to do?' => '%s Påverkade ärenden! Vad vill du göra?',
         'Warning: You used the DELETE option. All deleted tickets will be lost!' =>
@@ -1441,11 +1435,13 @@ sub Data {
         'Configuration history' => 'Konfigurationshistorik',
         'Delete web service' => 'Radera webbtjänst',
         'Do you really want to delete this web service?' => 'Vill du verkligen radera denna webbtjänst?',
-        'Example Web Services' => '',
-        'Here you can activate best practice example web service that are part of %s. Please note that some additional configuration may be required.' =>
+        'Ready-to-run Web Services' => '',
+        'Here you can activate ready-to-run web services showcasing our best practices that are a part of %s.' =>
             '',
-        'Import example web service' => '',
-        'Do you want to benefit from web services created by experts? Upgrade to %s to be able to import some sophisticated example web services.' =>
+        'Please note that these web services may depend on other modules only available with certain %s contract levels (there will be a notification with further details when importing).' =>
+            '',
+        'Import ready-to-run web service' => '',
+        'Would you like to benefit from web services created by experts? Upgrade to %s to import some sophisticated ready-to-run web services.' =>
             '',
         'After you save the configuration you will be redirected again to the edit screen.' =>
             '',
@@ -1597,6 +1593,7 @@ sub Data {
         'Message body' => 'Meddelandekropp',
         'Add new notification language' => 'Lägg till nytt notifieringsspråk',
         'Do you really want to delete this notification language?' => 'Vill du verkligen radera detta notifieringsspråk?',
+        'Tag Reference' => '',
         'Notifications are sent to an agent or a customer.' => 'Notifieringar skickas till handläggare eller kunder.',
         'To get the first 20 character of the subject (of the latest agent article).' =>
             'För att få de första 20 tecknen i ärenderaden (på senaste handläggarartikeln).',
@@ -1606,11 +1603,14 @@ sub Data {
             'För att då de första 20 tecknen i ärenderaden (på senaste kundartikeln).',
         'To get the first 5 lines of the body (of the latest customer article).' =>
             'För att få de fem första raderna i kroppen (på senaste kundartikeln).',
+        'Attributes of the current customer user data' => 'Egenskaper för kundens användardata',
         'Attributes of the current ticket owner user data' => '',
         'Attributes of the current ticket responsible user data' => '',
         'Attributes of the current agent user who requested this action' =>
             '',
         'Attributes of the recipient user for the notification' => '',
+        'Attributes of the ticket data' => '',
+        'Ticket dynamic fields internal key values' => '',
         'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
             '',
         'Example notification' => 'Exempelnotifiering',
@@ -1623,6 +1623,10 @@ sub Data {
         'Email template' => 'E-postmall',
         'Use this template to generate the complete email (only for HTML emails).' =>
             '',
+        'Enable email security' => '',
+        'Email security level' => '',
+        'If signing key/certificate is missing' => '',
+        'If encryption key/certificate is missing' => '',
 
         # Template: AdminOTRSBusinessInstalled
         'Manage %s' => 'Hantera %s',
@@ -1813,11 +1817,11 @@ sub Data {
         'Upload process configuration' => '',
         'Import process configuration' => '',
         'Example processes' => 'Exempelprocesser',
-        'Here you can activate best practice example processes that are part of %s. Please note that some additional configuration may be required.' =>
+        'Here you can activate best practice example processes. Please note that some additional configuration may be required.' =>
+            '',
+        'Do you want to benefit from processes created by experts? Upgrade to %s to be able to import additional sophisticated example processes.' =>
             '',
         'Import example process' => 'Importera exempelprocess',
-        'Do you want to benefit from processes created by experts? Upgrade to %s to be able to import some sophisticated example processes.' =>
-            '',
         'To create a new Process you can either import a Process that was exported from another system or create a complete new one.' =>
             '',
         'Changes to the Processes here only affect the behavior of the system, if you synchronize the Process data. By synchronizing the Processes, the newly made changes will be written to the Configuration.' =>
@@ -1958,6 +1962,7 @@ sub Data {
             '',
 
         # Template: AdminProcessManagementProcessPrint
+        'cancel & close' => '',
         'Start Activity' => 'Påbörja aktivitet',
         'Contains %s dialog(s)' => 'Innehåller %s dialoger',
         'Assigned dialogs' => 'Tilldelade dialoger',
@@ -2367,7 +2372,7 @@ sub Data {
         'Invalid year' => 'Ogiltigt år',
         'Invalid month' => 'Ogiltig månad',
         'Invalid day' => 'Ogiltig dag',
-        'Show more' => 'Visa fler',
+        'Show more' => 'Visa mer',
 
         # Template: AdminSystemAddress
         'System Email Addresses Management' => 'Hantera systemets e-postadresser',
@@ -2478,6 +2483,9 @@ sub Data {
 
         # Template: AgentCustomerTableView
         'Note: Customer is invalid!' => 'OBS: Kunden är ogiltig!',
+        'Start chat' => 'Starta chatt',
+        'Video call' => '',
+        'Audio call' => '',
 
         # Template: AgentDaemonInfo
         'The OTRS Daemon is a daemon process that performs asynchronous tasks, e.g. ticket escalation triggering, email sending, etc.' =>
@@ -2511,12 +2519,10 @@ sub Data {
         'Customer information' => 'Kundinformation',
         'Phone ticket' => 'Telefonärende',
         'Email ticket' => 'Epost-ärende',
-        'Start Chat' => 'Starta chatt',
         '%s open ticket(s) of %s' => '%s öppna ärenden av %s',
         '%s closed ticket(s) of %s' => '%s stängda ärenden av %s',
         'New phone ticket from %s' => 'Nytt telefonärende från %s',
         'New email ticket to %s' => 'Nytt e-postärende från %s',
-        'Start chat' => 'Starta chatt',
 
         # Template: AgentDashboardProductNotify
         '%s %s is available!' => '%s %s är tillgänlig!',
@@ -2560,7 +2566,6 @@ sub Data {
 
         # Template: AgentDashboardUserOnline
         'out of office' => 'frånvarande',
-        'Selected agent is not available for chat' => 'Vald handläggare är inte tillgänglig för chat',
 
         # Template: AgentDashboardUserOutOfOffice
         'until' => 'till',
@@ -2580,6 +2585,11 @@ sub Data {
         'Link object %s with' => '',
         'Unlink Object: %s' => 'Avlänka objekt: %s',
         'go to link add screen' => 'gå till lägg till länk-vyn',
+
+        # Template: AgentOTRSBusinessBlockScreen
+        'Unauthorized usage of %s detected' => '',
+        'If you decide to downgrade to OTRS Free, you will lose all database tables and data related to %s.' =>
+            '',
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Ändra dina inställningar',
@@ -2920,6 +2930,10 @@ sub Data {
         'and %s more...' => 'och %s ytterligare ...',
         'Filters' => 'Filter',
         'Confirm' => 'Bekräfta',
+        'You have unanswered chat requests' => 'Du har osvarade chattförfrågningar',
+        'Accept' => '',
+        'Decline' => '',
+        'An internal error occurred.' => '',
 
         # Template: CustomerLogin
         'JavaScript Not Available' => 'Javaskript är avstängt',
@@ -2948,7 +2962,6 @@ sub Data {
 
         # Template: CustomerNavigationBar
         'Incoming Chat Requests' => 'Inkommande chattförfrågningar',
-        'You have unanswered chat requests' => 'Du har osvarade chattförfrågningar',
         'Edit personal preferences' => 'Ändra personliga inställningar',
         'Logout %s %s' => '',
 
@@ -3050,8 +3063,13 @@ sub Data {
         'New personal chat request' => 'Ny personlig chatbegäran',
         'New customer chat request' => 'Ny kundchatbegäran',
         'New public chat request' => 'Ny publik chatbegäran.',
+        'Selected user is not available for chat.' => '',
         'New activity' => 'Ny aktivitet',
         'New activity on one of your monitored chats.' => '',
+        'Your browser does not support video and audio calling.' => '',
+        'Selected user is not available for video and audio call.' => '',
+        'Target user\'s browser does not support video and audio calling.' =>
+            '',
         'Do you really want to continue?' => 'Vill du verkligen fortsätta?',
         'Information about the OTRS Daemon' => 'Information om OTRS-demonen',
         'This feature is part of the %s.  Please contact us at %s for an upgrade.' =>
@@ -3274,7 +3292,7 @@ sub Data {
         'Configurable params of static stat' => '',
         'No element selected.' => '',
         'Scale' => 'Skala om',
-        'show more' => '',
+        'show more' => 'visa mer',
         'show less' => '',
 
         # Template: D3
@@ -3832,6 +3850,13 @@ sub Data {
         'Event type filter settings were saved.' => '',
         'Need ArticleID!' => '',
         'Invalid ArticleID!' => '',
+        'Offline' => '',
+        'This user is currently offline' => 'Användaren är inte inloggad',
+        'This user is currently active' => 'Användaren är aktiv',
+        'Away' => '',
+        'This user is currently away' => 'Användaren är inloggad men frånvarande',
+        'Unavailable' => '',
+        'This user is currently unavailable' => 'Användaren är inloggad men inte tillgänglig',
         'Fields with no group' => 'Fält utan grupper',
         'View the source for this Article' => '',
 
@@ -3908,12 +3933,6 @@ sub Data {
         'filter active' => '',
         'This ticket has no title or subject' => 'Detta ärende har ingen rubrik eller ämne',
 
-        # Perl Module: Kernel/Output/HTML/Dashboard/UserOnline.pm
-        'This user is currently offline' => 'Användaren är inte inloggad',
-        'This user is currently active' => 'Användaren är aktiv',
-        'This user is currently away' => 'Användaren är inloggad men frånvarande',
-        'This user is currently unavailable' => 'Användaren är inloggad men inte tillgänglig',
-
         # Perl Module: Kernel/Output/HTML/Layout.pm
         'We are sorry, you do not have permissions anymore to access this ticket in its current state. You can take one of the following actions:' =>
             '',
@@ -3924,7 +3943,7 @@ sub Data {
         'Search Result' => '',
 
         # Perl Module: Kernel/Output/HTML/Notification/AgentOTRSBusiness.pm
-        '%s Upgrade to %s now! %s' => 'Uppgradera till %s nu! %s',
+        '%s Upgrade to %s now! %s' => '%s Uppgradera till %s nu! %s',
 
         # Perl Module: Kernel/Output/HTML/Notification/CustomerSystemMaintenanceCheck.pm
         'A system maintenance period will start at: ' => 'Systemunderhåll kommer att påbörjas:',
@@ -3975,7 +3994,12 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/TicketOverviewMenu/Sort.pm
         'Order by' => 'Sortera efter',
 
-        # Perl Module: Kernel/System/AuthSession/DB.pm
+        # Perl Module: Kernel/System/AuthSession.pm
+        'You have exceeded the number of concurrent agents - contact sales@otrs.com.' =>
+            '',
+        'Please note that the session limit is almost reached.' => '',
+        'Login rejected! You have exceeded the maximum number of concurrent Agents! Contact sales@otrs.com immediately!' =>
+            '',
         'Session per user limit reached!' => '',
 
         # Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
@@ -3986,6 +4010,10 @@ sub Data {
 
         # Perl Module: Kernel/System/Package.pm
         'not installed' => '',
+
+        # Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
+        'Inactive' => 'Inaktiv',
+        'FadeAway' => '',
 
         # Perl Module: Kernel/System/Registration.pm
         'Can\'t get Token from sever' => '',
@@ -4132,7 +4160,7 @@ sub Data {
             '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/DiskSpacePartitions.pm
-        'Operating System/Disk Partitions Usage' => 'Operativsystem/diskanvändning',
+        'Disk Partitions Usage' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/Distribution.pm
         'Distribution' => 'Distribution',
@@ -4158,16 +4186,17 @@ sub Data {
         'There should be no more than 200 MB swap space used.' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/ConfigSettings.pm
-        'OTRS/Config Settings' => '',
+        'OTRS' => 'OTRS',
+        'Config Settings' => '',
         'Could not determine value.' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/DaemonRunning.pm
-        'OTRS' => 'OTRS',
         'Daemon' => '',
+        'Daemon is running.' => '',
         'Daemon is not running.' => 'OTRS-demonen körs inte.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
-        'OTRS/Database Records' => '',
+        'Database Records' => '',
         'Tickets' => 'Ärenden',
         'Ticket History Entries' => '',
         'Articles' => 'Artiklar',
@@ -4177,6 +4206,7 @@ sub Data {
         'Invalid Dynamic Fields' => '',
         'Invalid Dynamic Field Values' => '',
         'GenericInterface Webservices' => '',
+        'Process Tickets' => '',
         'Months Between First And Last Ticket' => 'Antal månader mellan första och sista ärende',
         'Tickets Per Month (avg)' => 'Ärenden per månad (genomsnitt)',
 
@@ -4208,9 +4238,19 @@ sub Data {
         'Package Installation Status' => 'Paketinstallationsstatus',
         'Some packages have locally modified files.' => '',
         'Some packages are not correctly installed.' => '',
+        'Package Verification Status' => '',
+        'Some packages are not verified by the OTRS Group! It is recommended not to use this packages.' =>
+            '',
+        'Package Framework Version Status' => '',
+        'Some packages are not allowed for the current framework version.' =>
+            '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageList.pm
-        'OTRS/Package List' => '',
+        'Package List' => 'Paketlista',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
+        'Spooled Emails' => '',
+        'There are emails in var/spool that OTRS could not process.' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SystemID.pm
         'Your SystemID setting is invalid, it should only contain digits.' =>
@@ -4245,11 +4285,11 @@ sub Data {
         'Table ticket_lock_index contains orphaned records. Please run bin/otrs.Console.pl "Maint::Ticket::QueueIndexCleanup" to clean the StaticDB index.' =>
             '',
         'Orphaned Records In ticket_index Table' => '',
-        'Table ticket_index contains orphaned records. Please run otrs/bin/otrs.CleanTicketIndex.pl to clean the StaticDB index.' =>
+        'Table ticket_index contains orphaned records. Please run bin/otrs.Console.pl "Maint::Ticket::QueueIndexCleanup" to clean the StaticDB index.' =>
             '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/TimeSettings.pm
-        'OTRS/Time Settings' => '',
+        'Time Settings' => '',
         'Server time zone' => '',
         'Computed server time offset' => '',
         'OTRS TimeZone setting (global time offset)' => '',
@@ -4260,10 +4300,10 @@ sub Data {
         'OTRS TimeZone setting for calendar ' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/LoadedModules.pm
-        'Webserver/Loaded Apache Modules' => '',
+        'Webserver' => 'Webbserver',
+        'Loaded Apache Modules' => 'Laddade Apache-moduler',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/MPMModel.pm
-        'Webserver' => 'Webbserver',
         'MPM model' => '',
         'OTRS requires apache to be run with the \'prefork\' MPM model.' =>
             '',
@@ -4286,14 +4326,15 @@ sub Data {
             'Apache2::DBI ger bättre prestanda med beständiga databasuppkopplingar.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/EnvironmentVariables.pm
-        'Webserver/Environment Variables' => 'Miljövariabler för webbservern',
-
-        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/IIS/Performance.pm
-        'You should use PerlEx to increase your performance.' => 'Använd PerlEx för att få bättre prestanda.',
+        'Environment Variables' => 'Miljövariabler',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Version.pm
         'Webserver Version' => 'Webbserver, version',
         'Could not determine webserver version.' => 'Kunde inte avgöra webbserverns version.',
+
+        # Perl Module: Kernel/System/SupportDataCollector/PluginAsynchronous/OTRS/ConcurrentUsers.pm
+        'Concurrent Users Details' => '',
+        'Concurrent Users' => 'Samtidiga användare',
 
         # Perl Module: Kernel/System/SupportDataCollector/PluginBase.pm
         'Unknown' => 'Okänd',
@@ -4302,6 +4343,18 @@ sub Data {
 
         # Perl Module: Kernel/System/Ticket.pm
         'Reset of unlock time.' => '',
+
+        # Perl Module: Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
+        'PGP sign only' => '',
+        'PGP encrypt only' => '',
+        'PGP sign and encrypt' => '',
+        'SMIME sign only' => '',
+        'SMIME encrypt only' => '',
+        'SMIME sign and encrypt' => '',
+        'PGP and SMIME not enabled.' => '',
+        'Skip notification delivery' => '',
+        'Send unsigned notification' => '',
+        'Send unencrypted notification' => '',
 
         # Perl Module: Kernel/System/Web/InterfaceAgent.pm
         'Panic, user authenticated but no user data can be found in OTRS DB!! Perhaps the user is invalid.' =>
@@ -4899,6 +4952,8 @@ Thanks for your help!
             '',
         'Defines queues that\'s tickets are used for displaying as calendar events.' =>
             'Köer vars ärenden visas som kalenderhändelser.',
+        'Defines the HTTP hostname for the support data collection with the public module \'PublicSupportDataCollector\' (e.g. used from the OTRS Daemon).' =>
+            '',
         'Defines the IP regular expression for accessing the local repository. You need to enable this to have access to your local repository and the package::RepositoryList is required on the remote host.' =>
             '',
         'Defines the URL CSS path.' => '',
@@ -5245,6 +5300,8 @@ Thanks for your help!
             '',
         'Defines the module to display a notification in the agent interface, if the agent is logged in while having system maintenance active.' =>
             '',
+        'Defines the module to display a notification in the agent interface, if the agent session limit prior warning is reached.' =>
+            '',
         'Defines the module to display a notification in the agent interface, if the system is used by the admin user (normally you shouldn\'t work as admin).' =>
             '',
         'Defines the module to generate code for periodic page reloads.' =>
@@ -5387,7 +5444,7 @@ Thanks for your help!
         'Defines the valid state types for a ticket.' => 'Giltiga tillståndstyper för ett ärende. ',
         'Defines the valid states for unlocked tickets. To unlock tickets the script "bin/otrs.Console.pl Maint::Ticket::UnlockTimeout" can be used.' =>
             '',
-        'Defines the viewable locks of a ticket. Default: unlock, tmp_lock.' =>
+        'Defines the viewable locks of a ticket. NOTE: When you change this setting, make sure to delete the cache in order to use the new value. Default: unlock, tmp_lock.' =>
             '',
         'Defines the width for the rich text editor component for this screen. Enter number (pixels) or percent value (relative).' =>
             '',
@@ -5444,6 +5501,8 @@ Thanks for your help!
         'Determines which options will be valid of the recipient (phone ticket) and the sender (email ticket) in the agent interface.' =>
             '',
         'Determines which queues will be valid for ticket\'s recepients in the customer interface.' =>
+            '',
+        'Disable HTTP header "Content-Security-Policy" to allow loading of external script contents. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             '',
         'Disable HTTP header "X-Frame-Options: SAMEORIGIN" to allow OTRS to be included as an IFrame in other websites. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             '',
@@ -5550,6 +5609,7 @@ Thanks for your help!
             '',
         'Enables S/MIME support.' => '',
         'Enables customers to create their own accounts.' => 'Aktivera rätt att skapa egna användarkonton för kunderna.',
+        'Enables fetch S/MIME from CustomerUser backend support.' => '',
         'Enables file upload in the package manager frontend.' => '',
         'Enables or disables the caching for templates. WARNING: Do NOT disable template caching for production environments for it will cause a massive performance drop! This setting should only be disabled for debugging reasons!' =>
             '',
@@ -5960,10 +6020,13 @@ Thanks for your help!
             '',
         'Module to compose signed messages (PGP or S/MIME).' => '',
         'Module to crypt composed messages (PGP or S/MIME).' => '',
+        'Module to fetch customer users SMIME certificates of incoming messages.' =>
+            '',
         'Module to filter and manipulate incoming messages. Block/ignore all spam email with From: noreply@ address.' =>
             '',
         'Module to filter and manipulate incoming messages. Get a 4 digit number to ticket free text, use regex in Match e. g. From => \'(.+?)@.+?\', and use () as [***] in Set =>.' =>
             '',
+        'Module to filter encrypted bodies of incoming messages.' => '',
         'Module to generate accounted time ticket statistics.' => '',
         'Module to generate html OpenSearch profile for short ticket search in the agent interface.' =>
             '',
@@ -6125,6 +6188,8 @@ Thanks for your help!
         'Refresh interval' => 'Uppdateringsintervall',
         'Removed subscription for user "%s".' => 'Removed subscription for user "%s".',
         'Removes the ticket watcher information when a ticket is archived.' =>
+            '',
+        'Renew existing SMIME certificates from customer backend. Note: SMIME and SMIME::FetchFromCustomer needs to be active in SysConfig and customer backend needs to be configured to fetch UserSMIMECertificate attribute.' =>
             '',
         'Replaces the original sender with current customer\'s email address on compose answer in the ticket compose screen of the agent interface.' =>
             '',
@@ -6313,6 +6378,8 @@ Thanks for your help!
             '',
         'Sets the inactivity time (in seconds) to pass before a session is killed and a user is loged out.' =>
             '',
+        'Sets the maximum number of active agents within the timespan defined in SessionActiveTime before a prior warning will be visible for the logged in agents.' =>
+            '',
         'Sets the maximum number of active agents within the timespan defined in SessionActiveTime.' =>
             '',
         'Sets the maximum number of active customers within the timespan defined in SessionActiveTime.' =>
@@ -6414,7 +6481,8 @@ Thanks for your help!
             '',
         'Sets the ticket type in the ticket responsible screen of the agent interface (Ticket::Type needs to be activated).' =>
             '',
-        'Sets the time (in seconds) a user is marked as active.' => '',
+        'Sets the time (in seconds) a user is marked as active (minimum active time is 300 seconds).' =>
+            '',
         'Sets the timeout (in seconds) for http/ftp downloads.' => '',
         'Sets the timeout (in seconds) for package downloads. Overwrites "WebUserAgent::Timeout".' =>
             '',
