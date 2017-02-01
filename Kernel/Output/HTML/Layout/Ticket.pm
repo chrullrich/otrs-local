@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -220,8 +220,13 @@ sub AgentCustomerViewTable {
                         UserID => $Param{Data}->{UserID},
                     );
 
-                    my %CustomerUser = $Kernel::OM->Get('Kernel::System::CustomerUser')->CustomerUserDataGet(
+                    my $CustomerUserObject = $Kernel::OM->Get('Kernel::System::CustomerUser');
+
+                    my %CustomerUser = $CustomerUserObject->CustomerUserDataGet(
                         User => $Param{Data}->{UserID},
+                    );
+                    $CustomerUser{UserFullname} = $CustomerUserObject->CustomerName(
+                        UserLogin => $Param{Data}->{UserID},
                     );
                     $VideoChatSupport = 1 if $CustomerUser{VideoChatHasWebRTC};
 
@@ -250,6 +255,7 @@ sub AgentCustomerViewTable {
                         $Self->Block(
                             Name => 'CustomerRowChatIcons',
                             Data => {
+                                %{ $Param{Data} },
                                 %CustomerUser,
                                 VideoChatEnabled   => $VideoChatEnabled,
                                 VideoChatAvailable => $VideoChatAvailable,
