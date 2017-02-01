@@ -1,5 +1,5 @@
 // --
-// Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
+// Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
 // the enclosed file COPYING for license information (AGPL). If you
@@ -351,7 +351,7 @@ Core.UI.Dialog = (function (TargetNS) {
                 Type: 'Close',
                 Function: Params.OnClose
             }];
-            $Content.append('<div class="Center Spacing"><button type="button" id="DialogButton1" class="CallForAction Close"><span>Ok</span></button></div>');
+            $Content.append('<div class="Center Spacing"><button type="button" id="DialogButton1" class="CallForAction Close"><span>OK</span></button></div>');
         }
         // Define different other types here...
         else if (Params.Type === 'Search') {
@@ -371,14 +371,14 @@ Core.UI.Dialog = (function (TargetNS) {
                 $Content.append('<div class="InnerContent"></div>').find('.InnerContent').append(Params.HTML);
                 $ButtonFooter = $('<div class="ContentFooter Center"></div>');
                 $.each(Params.Buttons, function (Index, Value) {
-                    var Classes = '';
+                    var Classes = 'CallForAction';
                     if (Value.Type === 'Close') {
-                        Classes = 'Close';
+                        Classes += ' Close';
                     }
                     if (Value.Class) {
                         Classes += ' ' + Value.Class;
                     }
-                    $ButtonFooter.append('<button id="DialogButton' + (Index - 0 + 1) + '" ' + (Classes.length ? ('class="' + Classes + ' CallForAction" ') : '') + 'type="button"><span>' + Value.Label + '</span></button> ');
+                    $ButtonFooter.append('<button id="DialogButton' + (Index - 0 + 1) + '" class="' + Classes + '" type="button"><span>' + Value.Label + '</span></button> ');
                 });
                 $ButtonFooter.appendTo($Content);
             }
