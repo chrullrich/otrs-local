@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -288,8 +288,13 @@ sub Run {
                     UserID => $CustomerKey,
                 );
 
-                my %CustomerUser = $Kernel::OM->Get('Kernel::System::CustomerUser')->CustomerUserDataGet(
+                my $CustomerUserObject = $Kernel::OM->Get('Kernel::System::CustomerUser');
+
+                my %CustomerUser = $CustomerUserObject->CustomerUserDataGet(
                     User => $CustomerKey,
+                );
+                $CustomerUser{UserFullname} = $CustomerUserObject->CustomerName(
+                    UserLogin => $CustomerKey,
                 );
                 $VideoChatSupport = 1 if $CustomerUser{VideoChatHasWebRTC};
 

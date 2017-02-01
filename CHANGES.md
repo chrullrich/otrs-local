@@ -1,4 +1,25 @@
-#5.0.16 2017-??-??
+#5.0.17 2017-??-??
+
+#5.0.16 2017-01-24
+ - 2017-01-16 Updated translations, thanks to all translators.
+ - 2017-01-13 Fixed bug#[12494](https://bugs.otrs.org/show_bug.cgi?id=12494) - Not able to start chat at AgentTicketZoom and CIC with customer.
+ - 2017-01-12 Updated translations, thanks to all translators.
+ - 2017-01-06 Fixed bug#[12523](https://bugs.otrs.org/show_bug.cgi?id=12523) - Can't cache: StatID  has no time period, so you can't cache the stat!.
+ - 2017-01-06 Fixed bug#[12516](https://bugs.otrs.org/show_bug.cgi?id=12516) - Error when next state is not set and state is disabled in AgentTicketPhoneCommon.
+ - 2017-01-06 Fixed bug#[12421](https://bugs.otrs.org/show_bug.cgi?id=12421) - Wrong out of office state in statistics.
+ - 2017-01-06 Fixed bug#[12512](https://bugs.otrs.org/show_bug.cgi?id=12512) - https RSS feeds don't use the proxy.
+ - 2016-12-23 Fixed bug#[12471](https://bugs.otrs.org/show_bug.cgi?id=12471) - out of office time calculation wrong if user time zone differs from OTRS default.
+ - 2016-12-23 Fixed bug#[10691](https://bugs.otrs.org/show_bug.cgi?id=10691) - No CustomerID shown after TicketCreate (for unknown customers).
+ - 2016-12-23 Fixed bug#[12480](https://bugs.otrs.org/show_bug.cgi?id=12480) - Bulk function ignores queues <-> agent/role permissions. Thanks to S7 (PR#1590).
+ - 2016-12-20 Fixed bug#[11197](https://bugs.otrs.org/show_bug.cgi?id=11197) - AJAX Error while being logged in but nothing is done for a while.
+ - 2016-12-19 Fixed bug#[12501](https://bugs.otrs.org/show_bug.cgi?id=12501) - Mandatoy dyn. multiselect field occur error message in AgentTicketEmailOutbound;.
+ - 2016-12-16 Fixed bug#[12486](https://bugs.otrs.org/show_bug.cgi?id=12486) - Return-path is set to "<>" instead of having SMTP-From identical to Mailheader-From.
+ - 2016-12-16 Fixed bug#[12435](https://bugs.otrs.org/show_bug.cgi?id=12435) - otrs.Console.pl Maint::Stats::Generate - ISO-8859 encoding.
+ - 2016-12-16 Improved the support data collection to work without a internal web request.
+ - 2016-12-16 Follow-up fix for bug#[12040](https://bugs.otrs.org/show_bug.cgi?id=12040) - Emails are incorrectly attached to tickets.
+ - 2016-12-16 Fixed bug#[12473](https://bugs.otrs.org/show_bug.cgi?id=12473) - Banner cannot be disabled in customer interface.
+ - 2016-12-09 Fixed bug#[12487](https://bugs.otrs.org/show_bug.cgi?id=12487) - Statistic with a  '+' in the  CustomerId doesn't work.
+ - 2016-12-09 Fixed bug#[12429](https://bugs.otrs.org/show_bug.cgi?id=12429) - Nested form elements in AgentLinkObject prevent submit, thanks to Thorsten Eckel.
 
 #5.0.15 2016-12-13
  - 2016-12-07 Updated translations, thanks to all translators.

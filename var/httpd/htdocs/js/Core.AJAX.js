@@ -1,5 +1,5 @@
 // --
-// Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
+// Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
 // the enclosed file COPYING for license information (AGPL). If you
@@ -43,6 +43,48 @@ Core.AJAX = (function (TargetNS) {
 
     if (!Core.Debug.CheckDependency('Core.AJAX', 'Core.App', 'Core.App')) {
         return;
+    }
+
+    /**
+     * @private
+     * @name HandleAJAXError
+     * @memberof Core.AJAX
+     * @function
+     * @param {Object} XHRObject - Meta data returned by the ajax request
+     * @param {String} Status - Status information of the ajax request
+     * @param {String} Error - Error information of the ajax request
+     * @description
+     *      Handles failing ajax request (only used as error callback in $.ajax calls)
+     */
+    function HandleAJAXError(XHRObject, Status, Error) {
+        var ErrorMessage = 'Error during AJAX communication. Status: ' + Status + ', Error: ' + Error;
+
+        // Check for expired sessions.
+        if (RedirectAfterSessionTimeOut(XHRObject)) {
+            return;
+        }
+
+        // Ignore aborted AJAX calls.
+        if (Status === 'abort') {
+            return;
+        }
+
+        // Collect debug information if configured.
+        if (Core.Config.Get('AjaxDebug') && typeof XHRObject === 'object') {
+            ErrorMessage += "\n\nResponse status: " + XHRObject.status + " (" + XHRObject.statusText + ")\n";
+            ErrorMessage += "Response headers: " + XHRObject.getAllResponseHeaders() + "\n";
+            ErrorMessage += "Response content: " + XHRObject.responseText;
+        }
+
+        if (!XHRObject.status) {
+
+            // If we didn't receive a status, the request didn't get any result, which is most likely a connection issue.
+            Core.Exception.HandleFinalError(new Core.Exception.ApplicationError(ErrorMessage, 'ConnectionError'));
+            return;
+        }
+
+        // We are out of the OTRS App scope, that's why an exception would not be caught. Therefore we handle the error manually.
+        Core.Exception.HandleFinalError(new Core.Exception.ApplicationError(ErrorMessage, 'CommunicationError'));
     }
 
     /**
@@ -118,28 +160,6 @@ Core.AJAX = (function (TargetNS) {
             QueryString += ';' + encodeURIComponent(Key) + '=' + encodeURIComponent(Value);
         });
         return QueryString;
-    }
-
-    /**
-     * @private
-     * @name AddDebugInformation
-     * @memberof Core.AJAX
-     * @function
-     * @returns {String} Error message with added debug information
-     * @param {String} ErrorMessage - The original error message to be extended
-     * @param {Object} XHRObject - The original XHRObject from the ajax request
-     * @description
-     *      Adds some debug response information to the error message and tries to show
-     *      a dialog with this information to allow seeing all debug data (browser alert will truncate).
-     */
-    function AddDebugInformation(ErrorMessage, XHRObject) {
-
-        if (Core.Config.Get('AjaxDebug') && typeof XHRObject === 'object') {
-            ErrorMessage += "\n\nResponse status: " + XHRObject.status + " (" + XHRObject.statusText + ")\n";
-            ErrorMessage += "Response headers: " + XHRObject.getAllResponseHeaders() + "\n";
-            ErrorMessage += "Response content: " + XHRObject.responseText;
-        }
-        return ErrorMessage;
     }
 
     /**
@@ -462,6 +482,9 @@ Core.AJAX = (function (TargetNS) {
             data: QueryString,
             dataType: 'json',
             success: function (Response, Status, XHRObject) {
+
+                Core.App.Publish('Core.App.AjaxErrorResolved');
+
                 if (RedirectAfterSessionTimeOut(XHRObject)) {
                     return false;
                 }
@@ -485,20 +508,8 @@ Core.AJAX = (function (TargetNS) {
                     });
                 }
             },
-            error: function (XHRObject, Status, Error) {
-
-                var ErrorMessage = "Error during AJAX communication. Status: " + Status + ", Error: " + Error;
-
-                if (RedirectAfterSessionTimeOut(XHRObject)) {
-                    return false;
-                }
-
-                ErrorMessage = AddDebugInformation(ErrorMessage, XHRObject);
-
-                if (Status !== 'abort') {
-                    // We are out of the OTRS App scope, that's why an exception would not be caught. Therefore we handle the error manually.
-                    Core.Exception.HandleFinalError(new Core.Exception.ApplicationError(ErrorMessage, 'CommunicationError'));
-                }
+            error: function(XHRObject, Status, Error) {
+                HandleAJAXError(XHRObject, Status, Error)
             }
         });
     };
@@ -529,6 +540,9 @@ Core.AJAX = (function (TargetNS) {
             data: QueryString,
             dataType: 'html',
             success: function (Response, Status, XHRObject) {
+
+                Core.App.Publish('Core.App.AjaxErrorResolved');
+
                 if (RedirectAfterSessionTimeOut(XHRObject)) {
                     return false;
                 }
@@ -552,21 +566,8 @@ Core.AJAX = (function (TargetNS) {
                 }
                 Core.App.Publish('Event.AJAX.ContentUpdate.Callback', [GlobalResponse]);
             },
-            error: function (XHRObject, Status, Error) {
-
-                var ErrorMessage = "Error during AJAX communication. Status: " + Status + ", Error: " + Error;
-
-                if (RedirectAfterSessionTimeOut(XHRObject)) {
-                    return false;
-                }
-
-                if (Status !== 'abort') {
-
-                    ErrorMessage = AddDebugInformation(ErrorMessage, XHRObject);
-
-                    // We are out of the OTRS App scope, that's why an exception would not be caught. Therefore we handle the error manually.
-                    Core.Exception.HandleFinalError(new Core.Exception.ApplicationError(ErrorMessage, 'CommunicationError'));
-                }
+            error: function(XHRObject, Status, Error) {
+                HandleAJAXError(XHRObject, Status, Error)
             }
         });
     };
@@ -596,6 +597,9 @@ Core.AJAX = (function (TargetNS) {
             data: Data,
             dataType: (typeof DataType === 'undefined') ? 'json' : DataType,
             success: function (Response, Status, XHRObject) {
+
+                Core.App.Publish('Core.App.AjaxErrorResolved');
+
                 if (RedirectAfterSessionTimeOut(XHRObject)) {
                     return false;
                 }
@@ -611,21 +615,8 @@ Core.AJAX = (function (TargetNS) {
                     Core.Exception.HandleFinalError(new Core.Exception.ApplicationError("Invalid callback method: " + ((typeof Callback === 'undefined') ? 'undefined' : Callback.toString())));
                 }
             },
-            error: function (XHRObject, Status, Error) {
-
-                var ErrorMessage = "Error during AJAX communication. Status: " + Status + ", Error: " + Error;
-
-                if (RedirectAfterSessionTimeOut(XHRObject)) {
-                    return false;
-                }
-
-                ErrorMessage = AddDebugInformation(ErrorMessage, XHRObject);
-
-                // We sometimes manually abort an ajax request (e.g. in autocompletion). This should not throw a global error message
-                if (Status !== 'abort') {
-                    // We are out of the OTRS App scope, that's why an exception would not be caught. Therefore we handle the error manually.
-                    Core.Exception.HandleFinalError(new Core.Exception.ApplicationError(ErrorMessage, 'CommunicationError'));
-                }
+            error: function(XHRObject, Status, Error) {
+                HandleAJAXError(XHRObject, Status, Error)
             }
         });
     };

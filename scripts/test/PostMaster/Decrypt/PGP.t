@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -251,6 +251,12 @@ $Self->Is(
     "Body decrypted $ArticleIndex[0]{Body}",
 );
 
+# Read email again to make sure that everything is there in the array.
+$Email = $MainObject->FileRead(
+    Location => $ConfigObject->Get('Home') . '/scripts/test/sample/PGP/PGP_Test_2013-07-02-1977-2.eml',
+    Result   => 'ARRAY',
+);
+
 # Part where StoreDecryptedBody is disabled
 $PostMasterObject = Kernel::System::PostMaster->new(
     Email   => $Email,
@@ -308,8 +314,8 @@ $Self->Is(
 my $GetBodyEncrypted = $ArticleIndexEncrypted[0]{Body};
 
 $Self->True(
-    $GetBodyEncrypted =~ m{This is an OpenPGP/MIME},
-    "Found PGP",
+    scalar $GetBodyEncrypted =~ m{no text message => see attachment},
+    "Body was not decrypted",
 );
 
 # Delete PGP keys.
