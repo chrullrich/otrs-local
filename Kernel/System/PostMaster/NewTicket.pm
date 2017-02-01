@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -204,11 +204,6 @@ sub Run {
                     . " from customer source backend based on ($GetParam{'EmailFrom'}).",
             );
         }
-    }
-
-    # if there is no customer id found!
-    if ( !$GetParam{'X-OTRS-CustomerNo'} ) {
-        $GetParam{'X-OTRS-CustomerNo'} = $GetParam{SenderEmailAddress};
     }
 
     # if there is no customer user found!

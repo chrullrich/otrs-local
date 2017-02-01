@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -156,9 +156,4 @@ window.location.hash = 'Signup';
 //]]></script>
 [% END %]
 
-<div id="Footer" class="ARIARoleContentinfo">
-    <a href="https://www.otrs.com/otrs-business-solution-managed" title="[% Config("Product") %]" target="_blank">[% Translate("Powered by") | html %] [% Config("Product") %]</a>
-    <div class="Clear"></div>
-</div>
-
-[% InsertTemplate("CustomerFooterJS.tt") %]
+[% InsertTemplate("CustomerFooter.tt") %]
