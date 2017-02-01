@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -52,7 +52,7 @@ sub Run {
     # Try to get message & encryption method.
     my $Message;
     my $ContentType;
-    my $EncryptionMethod;
+    my $EncryptionMethod = '';
 
     if ( $Param{GetParam}->{Body} =~ /\A[\s\n]*^-----BEGIN PGP MESSAGE-----/m ) {
         $Message          = $Param{GetParam}->{Body};
@@ -109,7 +109,7 @@ sub Run {
         $Param{GetParam}->{'X-OTRS-BodyDecrypted'} = '';
     }
 
-    return;
+    return 1;
 }
 
 sub _DecryptPGP {
