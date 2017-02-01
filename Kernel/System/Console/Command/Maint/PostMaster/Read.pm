@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -133,9 +133,10 @@ sub Run {
         # it; see sysexits.h. Most mail programs will retry an
         # EX_TEMPFAIL delivery for about four days, then bounce the
         # message.)
+        my $Message = $@;
         $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
-            Message  => $@,
+            Message  => $Message,
         );
         return $Self->ExitCodeError(75);
     }

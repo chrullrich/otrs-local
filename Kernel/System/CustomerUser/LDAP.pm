@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -346,9 +346,15 @@ sub CustomerSearch {
     elsif ( $Param{PostMasterSearch} ) {
 
         if ( $Self->{CustomerUserMap}->{CustomerUserPostMasterSearchFields} ) {
+
+            # quote LDAP filter value but keep asterisks unescaped (wildcard)
+            $Param{PostMasterSearch} =~ s/\*/encodedasterisk20160930/g;
+            $Param{PostMasterSearch} = escape_filter_value( $Param{PostMasterSearch} );
+            $Param{PostMasterSearch} =~ s/encodedasterisk20160930/*/g;
+
             $Filter = '(|';
             for my $Field ( @{ $Self->{CustomerUserMap}->{CustomerUserPostMasterSearchFields} } ) {
-                $Filter .= "($Field=" . escape_filter_value( $Param{PostMasterSearch} ) . ')';
+                $Filter .= "($Field=$Param{PostMasterSearch})";
             }
             $Filter .= ')';
         }
