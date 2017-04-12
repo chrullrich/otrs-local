@@ -7,6 +7,7 @@
 # Davi Albergaria <davialbergaria@gmail.com>, 2016
 # Diego Fialho Rodrigues <dfialho84@gmail.com>, 2015
 # eder.brito <ederbritoo@gmail.com>, 2015
+# Edicarlos Lopes <edicarlos.lds@gmail.com>, 2017
 # Edicarlos Lopes Santos <esantos@beonup.com.br>, 2016
 # Edicarlos Lopes Santos <esantos@beonup.com.br>, 2016
 # Edson S Freitas <edson.s.freitas@gmail.com>, 2016
@@ -30,8 +31,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
-"POT-Creation-Date: 2017-01-16 17:40+0000\n"
-"PO-Revision-Date: 2017-01-16 23:41+0000\n"
+"POT-Creation-Date: 2017-03-22 12:37+0000\n"
+"PO-Revision-Date: 2017-03-22 18:44+0000\n"
 "Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/otrs/OTRS/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -3023,7 +3024,7 @@ msgstr "Salvar configurações"
 
 #. Template: AdminACLEdit
 msgid "Save ACL"
-msgstr ""
+msgstr "Salvar ACL"
 
 #. Template: AdminACLEdit
 msgid "Save"
@@ -3087,7 +3088,7 @@ msgstr "Deletar este anexo"
 
 #. Template: AdminAttachment
 msgid "Do you really want to delete this attachment?"
-msgstr ""
+msgstr "Deseja realmente excluir este anexo?"
 
 #. Template: AdminAttachment
 msgid "Add Attachment"
@@ -4887,8 +4888,8 @@ msgid "'FreeText' is used as example for actual configured value."
 msgstr "'FreeText' é usado como exemplo para o real valor configurado."
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
-msgid "Response name free text"
-msgstr "Nome da resposta free text"
+msgid "Request name free text"
+msgstr ""
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid "Text to be used to as function wrapper name suffix or replacement."
@@ -4907,6 +4908,10 @@ msgstr "Esquema de nome da resposta"
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid "Select how SOAP response function wrapper should be constructed."
 msgstr "Selecione como a função de encapsulamento da resposta SOAP precisa ser construída."
+
+#. Template: AdminGenericInterfaceTransportHTTPSOAP
+msgid "Response name free text"
+msgstr "Nome da resposta free text"
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid ""
@@ -5688,6 +5693,12 @@ msgstr "Exemplo de notificação"
 #. Template: AdminNotificationEventTransportEmailSettings
 msgid "Additional recipient email addresses"
 msgstr "Caixa de endereço de e-mail adicional"
+
+#. Template: AdminNotificationEventTransportEmailSettings
+msgid ""
+"You can use OTRS-tags like <OTRS_TICKET_DynamicField_...> to insert values "
+"from the current ticket."
+msgstr ""
 
 #. Template: AdminNotificationEventTransportEmailSettings
 msgid "Notification article type"
@@ -8228,8 +8239,8 @@ msgid "Edit System Maintenance %s"
 msgstr "Editar Manutenção do Sistema  %s"
 
 #. Template: AdminSystemMaintenanceEdit
-msgid "Edit System Maintenance information"
-msgstr "Editar informação de Manutenção do sistema"
+msgid "Edit System Maintenance Information"
+msgstr ""
 
 #. Template: AdminSystemMaintenanceEdit
 msgid "Date invalid!"
@@ -8638,6 +8649,10 @@ msgstr "Expandido"
 #. Template: AgentDashboardStats
 msgid "Stream"
 msgstr "Fluxo"
+
+#. Template: AgentDashboardStats
+msgid "No Data Available."
+msgstr ""
 
 #. Template: AgentDashboardStats
 msgid ""
@@ -9374,12 +9389,20 @@ msgid "CustomerID (complex search)"
 msgstr "CustomerID (procura complexa)"
 
 #. Template: AgentTicketSearch
+msgid "(e. g. 234*)"
+msgstr ""
+
+#. Template: AgentTicketSearch
 msgid "CustomerID (exact match)"
 msgstr "CustomerID (correspondência exata)"
 
 #. Template: AgentTicketSearch
 msgid "Customer User Login (complex search)"
 msgstr "Login de Usuário Cliente (busca complexa)"
+
+#. Template: AgentTicketSearch
+msgid "(e. g. U51*)"
+msgstr ""
 
 #. Template: AgentTicketSearch
 msgid "Customer User Login (exact match)"
@@ -9790,11 +9813,11 @@ msgstr "Um erro interno ocorreu"
 
 #. Template: CustomerFooterJS
 msgid "Connection error"
-msgstr ""
+msgstr "Erro de Conexão"
 
 #. Template: CustomerFooterJS
 msgid "Reload page"
-msgstr ""
+msgstr "Atualizar página"
 
 #. Template: CustomerFooterJS
 msgid ""
@@ -11246,6 +11269,10 @@ msgstr "O arquivo importado tem conteúdo YAML inválido! Por favor, verifique o
 msgid "Web service \"%s\" deleted!"
 msgstr "Web service \"%s\" excluído!"
 
+#. Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
+msgid "New Web service"
+msgstr ""
+
 #. Perl Module: Kernel/Modules/AdminGenericInterfaceWebserviceHistory.pm
 msgid "Got no WebserviceHistoryID!"
 msgstr "Não há WebserviceHistoryID!"
@@ -11379,7 +11406,7 @@ msgstr "Pacote possui arquivos locais modificados."
 
 #. Perl Module: Kernel/Modules/AdminPackageManager.pm
 msgid "No packages or no new packages found in selected repository."
-msgstr ""
+msgstr "Nenhum pacote ou nenhum novo pacote encontrado no repositório selecionado."
 
 #. Perl Module: Kernel/Modules/AdminPackageManager.pm
 msgid ""
@@ -11831,6 +11858,14 @@ msgstr ""
 msgid "Can't get filter content data of %s!"
 msgstr ""
 
+#. Perl Module: Kernel/Modules/AgentDashboardCommon.pm
+msgid "Customer Company Name"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentDashboardCommon.pm
+msgid "Customer User ID"
+msgstr ""
+
 #. Perl Module: Kernel/Modules/AgentLinkObject.pm
 msgid "Need SourceObject and SourceKey!"
 msgstr ""
@@ -11974,8 +12009,14 @@ msgid "You need to select at least one ticket."
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketBulk.pm
-msgid "Ticket is locked by another agent and will be ignored!"
-msgstr "Chamado está bloqueado por outro atendente e será ignorado!"
+msgid ""
+"The following tickets were ignored because they are locked by another agent "
+"or you don't have write access to these tickets: %s."
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketBulk.pm
+msgid "The following tickets were locked: %s."
+msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketCompose.pm
 msgid "Can not determine the ArticleType!"
@@ -12198,6 +12239,18 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
 msgid "Missing ActivityEntityID in Ticket %s!"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketProcess.pm
+msgid ""
+"This step does not belong anymore the current activity in process for Ticket"
+" %s!"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketProcess.pm
+msgid ""
+"Another user changed this ticket in the meantime. Please close this window "
+"and reload the ticket."
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
@@ -12588,6 +12641,18 @@ msgid "Database %s"
 msgstr ""
 
 #. Perl Module: Kernel/Modules/Installer.pm
+msgid "Configure MySQL"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid "Configure PostgreSQL"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid "Configure Oracle"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/Installer.pm
 msgid "Unknown database type \"%s\"."
 msgstr ""
 
@@ -12605,6 +12670,10 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/Installer.pm
 msgid "Contact your Admin!"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid "Syslog"
 msgstr ""
 
 #. Perl Module: Kernel/Modules/Installer.pm
@@ -12880,6 +12949,14 @@ msgstr ""
 msgid "This setting can not be deactivated."
 msgstr ""
 
+#. Perl Module: Kernel/System/DynamicField/Driver/BaseText.pm
+msgid "e.g. Text or Te*t"
+msgstr ""
+
+#. Perl Module: Kernel/System/DynamicField/Driver/Checkbox.pm
+msgid "Ignore this field."
+msgstr ""
+
 #. Perl Module: Kernel/System/Package.pm
 msgid "not installed"
 msgstr ""
@@ -12908,6 +12985,10 @@ msgstr ""
 msgid "Can't get Token from sever"
 msgstr ""
 
+#. Perl Module: Kernel/System/Stats.pm
+msgid "Sum"
+msgstr "Soma"
+
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "State Type"
 msgstr "Tipo de Estado"
@@ -12919,14 +13000,6 @@ msgstr "Prioridade"
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Created State"
 msgstr "Criado com o Estado"
-
-#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
-msgid "CustomerUserLogin (complex search)"
-msgstr ""
-
-#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
-msgid "CustomerUserLogin (exact match)"
-msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Create Time"
@@ -12955,6 +13028,18 @@ msgstr "Atendente/Proprietário"
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Created by Agent/Owner"
 msgstr "Criado pelo Atendente/Proprietário"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin"
+msgstr "Usuário do Cliente"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin (complex search)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin (exact match)"
+msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
 msgid "Evaluation by"
@@ -13081,27 +13166,28 @@ msgid "Solution Max Working Time (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Average (affected by escalation configuration)"
+msgid "First Response Average (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Min Time (affected by escalation configuration)"
+msgid "First Response Min Time (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Max Time (affected by escalation configuration)"
+msgid "First Response Max Time (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Working Time Average (affected by escalation configuration)"
+msgid ""
+"First Response Working Time Average (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Min Working Time (affected by escalation configuration)"
+msgid "First Response Min Working Time (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Max Working Time (affected by escalation configuration)"
+msgid "First Response Max Working Time (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
@@ -13553,6 +13639,11 @@ msgstr ""
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageList.pm
 msgid "Package List"
 msgstr "Lista de Pacotes"
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/SessionConfigSettings.pm
+msgid "Session Config Settings"
+msgstr ""
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
 msgid "Spooled Emails"
@@ -14634,15 +14725,15 @@ msgstr "Permite definir serviços e SLAs para chamados (ex.: e-mail, área de tr
 #. SysConfig
 msgid ""
 "Allows extended search conditions in ticket search of the agent interface. "
-"With this feature you can search e. g. with this kind of conditions like "
-"\"(key1&&key2)\" or \"(key1||key2)\"."
-msgstr "Permite estender condições de pesquisa na tela de busca de chamados da interface de atendente. Com esse recurso, você pode pesquisar fazendo uso de condições como \"(chave1 & & chave2) \" ou \"(chave1 | | chave2)\"."
+"With this feature you can search e. g. ticket title with this kind of "
+"conditions like \"(*key1*&&*key2*)\" or \"(*key1*||*key2*)\"."
+msgstr ""
 
 #. SysConfig
 msgid ""
 "Allows extended search conditions in ticket search of the customer "
-"interface. With this feature you can search e. g. with this kind of "
-"conditions like \"(key1&&key2)\" or \"(key1||key2)\"."
+"interface. With this feature you can search e. g. ticket title with this "
+"kind of conditions like \"(*key1*&&*key2*)\" or \"(*key1*||*key2*)\"."
 msgstr ""
 
 #. SysConfig
@@ -15067,11 +15158,13 @@ msgid "Controls how to display the ticket history entries as readable values."
 msgstr ""
 
 #. SysConfig
-msgid "Controls if CustomerID is editable in the agent interface."
+msgid ""
+"Controls if CustomerID is automatically copied from the sender address for "
+"unknown customers."
 msgstr ""
 
 #. SysConfig
-msgid "Controls if CutomerID is editable in the agent interface."
+msgid "Controls if CustomerID is read-only in the agent interface."
 msgstr ""
 
 #. SysConfig
@@ -17621,6 +17714,10 @@ msgid ""
 msgstr ""
 
 #. SysConfig
+msgid "Development"
+msgstr "Desenvolvimento"
+
+#. SysConfig
 msgid ""
 "Disable HTTP header \"Content-Security-Policy\" to allow loading of external"
 " script contents. Disabling this HTTP header can be a security issue! Only "
@@ -18717,54 +18814,6 @@ msgstr ""
 
 #. SysConfig
 msgid ""
-"If a note is added by an agent, sets the state of a ticket in the close "
-"ticket screen of the agent interface."
-msgstr ""
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"bulk screen of the agent interface."
-msgstr ""
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"free text screen of the agent interface."
-msgstr ""
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"note screen of the agent interface."
-msgstr ""
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"responsible screen of the agent interface."
-msgstr ""
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of the ticket in the ticket "
-"owner screen of a zoomed ticket in the agent interface."
-msgstr ""
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of the ticket in the ticket "
-"pending screen of a zoomed ticket in the agent interface."
-msgstr ""
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of the ticket in the ticket "
-"priority screen of a zoomed ticket in the agent interface."
-msgstr ""
-
-#. SysConfig
-msgid ""
 "If active, none of the regular expressions may match the user's email "
 "address to allow registration."
 msgstr ""
@@ -18905,8 +18954,15 @@ msgstr ""
 
 #. SysConfig
 msgid ""
-"Ignore article with system sender type for new article feature (e. g. auto "
-"responses or email notifications)."
+"If you're going to be out of office, you may wish to let other users know by"
+" setting the exact dates of your absence."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Ignore system sender article types (e. g. auto responses or email "
+"notifications) to be flagged as 'Unread Article' in AgentTicketZoom or "
+"expanded automatically in Large view screens."
 msgstr ""
 
 #. SysConfig
@@ -20223,8 +20279,25 @@ msgid "Second Queue"
 msgstr "Segunda Fila"
 
 #. SysConfig
+msgid ""
+"Select after which period ticket overviews should refresh automatically."
+msgstr ""
+
+#. SysConfig
+msgid "Select how many tickets should be shown in overviews by default."
+msgstr ""
+
+#. SysConfig
+msgid "Select the main interface language."
+msgstr ""
+
+#. SysConfig
 msgid "Select your frontend Theme."
 msgstr "Selecione seu tema de interface."
+
+#. SysConfig
+msgid "Select your preferred layout for OTRS."
+msgstr ""
 
 #. SysConfig
 msgid "Selects the cache backend to use."
@@ -20309,6 +20382,10 @@ msgstr "Visão de serviços"
 
 #. SysConfig
 msgid "ServiceView"
+msgstr ""
+
+#. SysConfig
+msgid "Set a new password by filling in your current password and a new one."
 msgstr ""
 
 #. SysConfig
@@ -20787,6 +20864,52 @@ msgstr ""
 msgid ""
 "Sets the service in the ticket responsible screen of the agent interface "
 "(Ticket::Service needs to be activated)."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the close ticket screen of the agent "
+"interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket bulk screen of the agent interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket free text screen of the agent "
+"interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket note screen of the agent interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket responsible screen of the agent "
+"interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of the ticket in the ticket owner screen of a zoomed ticket "
+"in the agent interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of the ticket in the ticket pending screen of a zoomed ticket"
+" in the agent interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of the ticket in the ticket priority screen of a zoomed "
+"ticket in the agent interface."
 msgstr ""
 
 #. SysConfig
@@ -21372,6 +21495,12 @@ msgstr ""
 
 #. SysConfig
 msgid ""
+"Shows all the customer user identifiers in a multi-select field (not useful "
+"if you have a lot of customer user identifiers)."
+msgstr ""
+
+#. SysConfig
+msgid ""
 "Shows an owner selection in phone and email tickets in the agent interface."
 msgstr ""
 
@@ -21777,6 +21906,10 @@ msgstr ""
 
 #. SysConfig
 msgid "Spell checker."
+msgstr ""
+
+#. SysConfig
+msgid "Stable"
 msgstr ""
 
 #. SysConfig
@@ -22424,12 +22557,24 @@ msgid "attachment"
 msgstr "anexo"
 
 #. SysConfig
+msgid "bounce"
+msgstr ""
+
+#. SysConfig
+msgid "compose"
+msgstr ""
+
+#. SysConfig
 msgid "debug"
 msgstr "debug"
 
 #. SysConfig
 msgid "error"
 msgstr "erro"
+
+#. SysConfig
+msgid "forward"
+msgstr ""
 
 #. SysConfig
 msgid "info"
@@ -22442,3 +22587,15 @@ msgstr "inline"
 #. SysConfig
 msgid "notice"
 msgstr "aviso"
+
+#. SysConfig
+msgid "pending"
+msgstr ""
+
+#. SysConfig
+msgid "responsible"
+msgstr ""
+
+#. SysConfig
+msgid "stats"
+msgstr ""

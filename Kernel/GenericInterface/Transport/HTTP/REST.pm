@@ -62,7 +62,7 @@ from from the web server process.
 
 Based on the request the Operation to be used is determined.
 
-No outbound communication is done here, except from continue requests.
+No out-bound communication is done here, except from continue requests.
 
 In case of an error, the resulting http error code and message are remembered for the response.
 
@@ -330,9 +330,9 @@ In case of an error, error code and message are taken from environment
 (previously set on request processing).
 
 The HTTP code is set accordingly
-- 200 for (syntactically) correct messages
-- 4xx for http errors
-- 500 for content syntax errors
+- C<200> for (syntactically) correct messages
+- C<4xx> for http errors
+- C<500> for content syntax errors
 
     my $Result = $TransportObject->ProviderGenerateResponse(
         Success => 1

@@ -78,7 +78,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::NewArticleIgnoreSystemSender" Required="1" Valid="1">
-        <Description Translatable="1">Ignore article with system sender type for new article feature (e. g. auto responses or email notifications).</Description>
+        <Description Translatable="1">Ignore system sender article types (e. g. auto responses or email notifications) to be flagged as 'Unread Article' in AgentTicketZoom or expanded automatically in Large view screens.</Description>
         <Group>Ticket</Group>
         <SubGroup>Core::Ticket</SubGroup>
         <Setting>
@@ -2315,7 +2315,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketSearch###ExtendedSearchCondition" Required="1" Valid="1">
-        <Description Translatable="1">Allows extended search conditions in ticket search of the agent interface. With this feature you can search e. g. with this kind of conditions like "(key1&amp;&amp;key2)" or "(key1||key2)".</Description>
+        <Description Translatable="1">Allows extended search conditions in ticket search of the agent interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&amp;&amp;*key2*)" or "(*key1*||*key2*)".</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewSearch</SubGroup>
         <Setting>
@@ -2809,7 +2809,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketFreeText###State" Required="0" Valid="1">
-        <Description Translatable="1">If a note is added by an agent, sets the state of a ticket in the ticket free text screen of the agent interface.</Description>
+        <Description Translatable="1">Sets the state of a ticket in the ticket free text screen of the agent interface.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewFreeText</SubGroup>
         <Setting>
@@ -2973,7 +2973,7 @@
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewPhoneOutbound</SubGroup>
         <Setting>
-            <String Regex="">phone</String>
+            <String Regex="" Translatable="1">phone</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketPhoneOutbound###RequiredLock" Required="0" Valid="1">
@@ -3246,7 +3246,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketPhone::CustomerIDReadOnly" Required="1" Valid="1">
-        <Description Translatable="1">Controls if CustomerID is editable in the agent interface.</Description>
+        <Description Translatable="1">Controls if CustomerID is read-only in the agent interface.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewPhoneNew</SubGroup>
         <Setting>
@@ -3383,7 +3383,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketEmail::CustomerIDReadOnly" Required="1" Valid="1">
-        <Description Translatable="1">Controls if CutomerID is editable in the agent interface.</Description>
+        <Description Translatable="1">Controls if CustomerID is read-only in the agent interface.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewEmailNew</SubGroup>
         <Setting>
@@ -3581,7 +3581,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketClose###State" Required="0" Valid="1">
-        <Description Translatable="1">If a note is added by an agent, sets the state of a ticket in the close ticket screen of the agent interface.</Description>
+        <Description Translatable="1">Sets the state of a ticket in the close ticket screen of the agent interface.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewClose</SubGroup>
         <Setting>
@@ -3848,7 +3848,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketNote###State" Required="0" Valid="1">
-        <Description Translatable="1">If a note is added by an agent, sets the state of a ticket in the ticket note screen of the agent interface.</Description>
+        <Description Translatable="1">Sets the state of a ticket in the ticket note screen of the agent interface.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewNote</SubGroup>
         <Setting>
@@ -4118,7 +4118,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketOwner###State" Required="0" Valid="1">
-        <Description Translatable="1">If a note is added by an agent, sets the state of the ticket in the ticket owner screen of a zoomed ticket in the agent interface.</Description>
+        <Description Translatable="1">Sets the state of the ticket in the ticket owner screen of a zoomed ticket in the agent interface.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewOwner</SubGroup>
         <Setting>
@@ -4281,7 +4281,7 @@
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewPending</SubGroup>
         <Setting>
-            <String Regex="">pending</String>
+            <String Regex="" Translatable="1">pending</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketPending###RequiredLock" Required="0" Valid="1">
@@ -4386,7 +4386,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketPending###State" Required="0" Valid="1">
-        <Description Translatable="1">If a note is added by an agent, sets the state of the ticket in the ticket pending screen of a zoomed ticket in the agent interface.</Description>
+        <Description Translatable="1">Sets the state of the ticket in the ticket pending screen of a zoomed ticket in the agent interface.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewPending</SubGroup>
         <Setting>
@@ -4654,7 +4654,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketPriority###State" Required="0" Valid="1">
-        <Description Translatable="1">If a note is added by an agent, sets the state of the ticket in the ticket priority screen of a zoomed ticket in the agent interface.</Description>
+        <Description Translatable="1">Sets the state of the ticket in the ticket priority screen of a zoomed ticket in the agent interface.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewPriority</SubGroup>
         <Setting>
@@ -4818,7 +4818,7 @@
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewResponsible</SubGroup>
         <Setting>
-            <String Regex="">responsible</String>
+            <String Regex="" Translatable="1">responsible</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketResponsible###RequiredLock" Required="0" Valid="1">
@@ -4923,7 +4923,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketResponsible###State" Required="0" Valid="1">
-        <Description Translatable="1">If a note is added by an agent, sets the state of a ticket in the ticket responsible screen of the agent interface.</Description>
+        <Description Translatable="1">Sets the state of a ticket in the ticket responsible screen of the agent interface.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewResponsible</SubGroup>
         <Setting>
@@ -5126,7 +5126,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketBulk###State" Required="0" Valid="1">
-        <Description Translatable="1">If a note is added by an agent, sets the state of a ticket in the ticket bulk screen of the agent interface.</Description>
+        <Description Translatable="1">Sets the state of a ticket in the ticket bulk screen of the agent interface.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewBulk</SubGroup>
         <Setting>
@@ -5280,7 +5280,7 @@
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewBounce</SubGroup>
         <Setting>
-            <String Regex="">bounce</String>
+            <String Regex="" Translatable="1">bounce</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketBounce###RequiredLock" Required="0" Valid="1">
@@ -5328,7 +5328,7 @@
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewCompose</SubGroup>
         <Setting>
-            <String Regex="">compose</String>
+            <String Regex="" Translatable="1">compose</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketCompose###RequiredLock" Required="0" Valid="1">
@@ -5451,7 +5451,7 @@
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewForward</SubGroup>
         <Setting>
-            <String Regex="">forward</String>
+            <String Regex="" Translatable="1">forward</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketForward###RequiredLock" Required="0" Valid="1">
@@ -5606,7 +5606,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::AgentTicketCustomer::CustomerIDReadOnly" Required="1" Valid="1">
-        <Description Translatable="1">Controls if CutomerID is editable in the agent interface.</Description>
+        <Description Translatable="1">Controls if CustomerID is read-only in the agent interface.</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Agent::Ticket::ViewCustomer</SubGroup>
         <Setting>
@@ -8080,7 +8080,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Ticket::Frontend::CustomerTicketSearch###ExtendedSearchCondition" Required="1" Valid="1">
-        <Description Translatable="1">Allows extended search conditions in ticket search of the customer interface. With this feature you can search e. g. with this kind of conditions like "(key1&amp;&amp;key2)" or "(key1||key2)".</Description>
+        <Description Translatable="1">Allows extended search conditions in ticket search of the customer interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&amp;&amp;*key2*)" or "(*key1*||*key2*)".</Description>
         <Group>Ticket</Group>
         <SubGroup>Frontend::Customer::Ticket::ViewSearch</SubGroup>
         <Setting>
@@ -8142,6 +8142,7 @@
                 <Item Key="Column">User Profile</Item>
                 <Item Key="Label" Translatable="1">Number of displayed tickets</Item>
                 <Item Key="Key" Translatable="1">Tickets per page</Item>
+                <Item Key="Desc" Translatable="1">Select how many tickets should be shown in overviews by default.</Item>
                 <Item Key="Data">
                     <Hash>
                         <Item Key="15">15</Item>
@@ -8166,6 +8167,7 @@
                 <Item Key="Module">Kernel::Output::HTML::Preferences::Generic</Item>
                 <Item Key="Column">User Profile</Item>
                 <Item Key="Label" Translatable="1">Ticket overview</Item>
+                <Item Key="Desc" Translatable="1">Select after which period ticket overviews should refresh automatically.</Item>
                 <Item Key="Key" Translatable="1">Refresh interval</Item>
                 <Item Key="Data">
                     <Hash>
@@ -10399,6 +10401,17 @@ Thanks for your help!
             <Hash>
                 <Item Key="Module">Kernel::System::PostMaster::FollowUpCheck::RawEmail</Item>
             </Hash>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="PostMaster::NewTicket::AutoAssignCustomerIDForUnknownCustomers" Required="0" Valid="0">
+        <Description Translatable="1">Controls if CustomerID is automatically copied from the sender address for unknown customers.</Description>
+        <Group>Ticket</Group>
+        <SubGroup>Core::PostMaster</SubGroup>
+        <Setting>
+            <Option SelectedID="1">
+                <Item Key="0" Translatable="1">No</Item>
+                <Item Key="1" Translatable="1">Yes</Item>
+            </Option>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="SendNoAutoResponseRegExp" Required="1" Valid="1">

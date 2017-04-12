@@ -12,6 +12,8 @@ use utf8;
 
 use vars (qw($Self));
 
+use Encode();
+
 # get needed objects
 my $ConfigObject    = $Kernel::OM->Get('Kernel::Config');
 my $CheckItemObject = $Kernel::OM->Get('Kernel::System::CheckItem');
@@ -141,6 +143,44 @@ my @Tests = (
         Email =>
             'modperl-uc.1384763750.ffhelkebjhfdihihkbce-michiel.beijen=otrs.com@perl.apache.org',
         Valid => 0,
+    },
+
+    # Complex addresses
+    {
+        Email => 'test@home.com (Test)',
+        Valid => 1,
+    },
+    {
+        Email => '"Test Test" <test@home.com>',
+        Valid => 1,
+    },
+    {
+        Email => '"Test Test" <test@home.com> (Test)',
+        Valid => 1,
+    },
+    {
+        Email => 'Test <test@home(Test).com>',
+        Valid => 1,
+    },
+    {
+        Email => '<test@home.com',
+        Valid => 0,
+    },
+    {
+        Email => 'test@home.com>',
+        Valid => 0,
+    },
+    {
+        Email => 'test@home.com(Test)',
+        Valid => 1,
+    },
+    {
+        Email => 'test@home.com>(Test)',
+        Valid => 0,
+    },
+    {
+        Email => 'Test <test@home.com> (Test)',
+        Valid => 1,
     },
 
 );
@@ -302,12 +342,12 @@ for my $Test (@Tests) {
         Result => 'aäöüß€z',
     },
     {
-        String => eval {'a�z'},    # iso-8859 string
+        String => eval { my $String = "a\372z"; Encode::_utf8_on($String); $String },    # iso-8859 string
         Params => {},
         Result => undef,
     },
     {
-        String => eval {'aúz'},    # utf-8 string
+        String => eval {'aúz'},                                                         # utf-8 string
         Params => {},
         Result => 'aúz',
     },

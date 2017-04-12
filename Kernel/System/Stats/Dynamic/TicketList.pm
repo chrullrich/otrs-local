@@ -309,22 +309,6 @@ sub GetObjectAttributes {
             Block            => 'InputField',
         },
         {
-            Name             => Translatable('CustomerUserLogin (complex search)'),
-            UseAsXvalue      => 0,
-            UseAsValueSeries => 0,
-            UseAsRestriction => 1,
-            Element          => 'CustomerUserLogin',
-            Block            => 'InputField',
-        },
-        {
-            Name             => Translatable('CustomerUserLogin (exact match)'),
-            UseAsXvalue      => 0,
-            UseAsValueSeries => 0,
-            UseAsRestriction => 1,
-            Element          => 'CustomerUserLoginRaw',
-            Block            => 'InputField',
-        },
-        {
             Name             => Translatable('From'),
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
@@ -636,6 +620,57 @@ sub GetObjectAttributes {
         push @ObjectAttributes, @CustomerIDAttributes;
     }
 
+    if ( $ConfigObject->Get('Stats::CustomerUserLoginsAsMultiSelect') ) {
+
+        # Get all CustomerUserLogins which are related to a tiket.
+        $DBObject->Prepare(
+            SQL => "SELECT DISTINCT customer_user_id FROM ticket",
+        );
+
+        # fetch the result
+        my %CustomerUserIDs;
+        while ( my @Row = $DBObject->FetchrowArray() ) {
+            if ( $Row[0] ) {
+                $CustomerUserIDs{ $Row[0] } = $Row[0];
+            }
+        }
+
+        my %ObjectAttribute = (
+            Name             => Translatable('CustomerUserLogin'),
+            UseAsXvalue      => 0,
+            UseAsValueSeries => 0,
+            UseAsRestriction => 1,
+            Element          => 'CustomerUserLoginRaw',
+            Block            => 'MultiSelectField',
+            Values           => \%CustomerUserIDs,
+        );
+
+        push @ObjectAttributes, \%ObjectAttribute;
+    }
+    else {
+
+        my @CustomerIDAttributes = (
+            {
+                Name             => Translatable('CustomerUserLogin (complex search)'),
+                UseAsXvalue      => 0,
+                UseAsValueSeries => 0,
+                UseAsRestriction => 1,
+                Element          => 'CustomerUserLogin',
+                Block            => 'InputField',
+            },
+            {
+                Name             => Translatable('CustomerUserLogin (exact match)'),
+                UseAsXvalue      => 0,
+                UseAsValueSeries => 0,
+                UseAsRestriction => 1,
+                Element          => 'CustomerUserLoginRaw',
+                Block            => 'InputField',
+            },
+        );
+
+        push @ObjectAttributes, @CustomerIDAttributes;
+    }
+
     if ( $ConfigObject->Get('Ticket::ArchiveSystem') ) {
 
         my %ObjectAttribute = (
@@ -756,7 +791,7 @@ sub GetObjectAttributes {
                     Element          => $DynamicFieldStatsParameter->{Element},
                     Block            => $DynamicFieldStatsParameter->{Block},
                     Values           => $DynamicFieldStatsParameter->{Values},
-                    Translation      => 0,
+                    Translation      => $DynamicFieldStatsParameter->{TranslatableValues} || 0,
                     IsDynamicField   => 1,
                     ShowAsTree       => $DynamicFieldConfig->{Config}->{TreeView} || 0,
                 );
@@ -822,6 +857,12 @@ sub GetStatTable {
         'CustomerID' => 1,
         'Title'      => 1,
     );
+
+    # Map the CustomerID search parameter to CustomerIDRaw search parameter for the
+    #   exact search match, if the 'Stats::CustomerIDAsMultiSelect' is active.
+    if ( $Kernel::OM->Get('Kernel::Config')->Get('Stats::CustomerIDAsMultiSelect') ) {
+        $Param{Restrictions}->{CustomerIDRaw} = $Param{Restrictions}->{CustomerID};
+    }
 
     ATTRIBUTE:
     for my $Key ( sort keys %{ $Param{Restrictions} } ) {
@@ -986,12 +1027,6 @@ sub GetStatTable {
         $UnixTimeEnd = $TimeObject->TimeStamp2SystemTime(
             String => $Param{Restrictions}->{HistoricTimeRangeTimeOlderDate}
         );
-    }
-
-    # Map the CustomerID search parameter to CustomerIDRaw search parameter for the
-    #   exact search match, if the 'Stats::CustomerIDAsMultiSelect' is active.
-    if ( $Kernel::OM->Get('Kernel::Config')->Get('Stats::CustomerIDAsMultiSelect') ) {
-        $Param{Restrictions}->{CustomerIDRaw} = $Param{Restrictions}->{CustomerID};
     }
 
     # get the involved tickets

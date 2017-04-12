@@ -12,14 +12,14 @@
 # Spiros Georgaras <sng@hellug.gr>, 2016
 # Stang . <Cosine02@outlook.com>, 2016
 # 文浩坚 <never.min@gmail.com>, 2015-2016
-# 汇民 王 <whuim@163.com>, 2016
+# 汇民 王 <whuim@163.com>, 2016-2017
 # 汇民 王 <whuim@qq.com>, 2016
 # 陈德文 <sggggy@gmail.com>, 2014-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
-"POT-Creation-Date: 2017-01-16 17:40+0000\n"
-"PO-Revision-Date: 2017-01-16 23:41+0000\n"
+"POT-Creation-Date: 2017-03-22 12:37+0000\n"
+"PO-Revision-Date: 2017-03-22 18:44+0000\n"
 "Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/otrs/OTRS/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -4875,8 +4875,8 @@ msgid "'FreeText' is used as example for actual configured value."
 msgstr "“FreeText”可用作实际配置值的样例。"
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
-msgid "Response name free text"
-msgstr "回复名称自由文本"
+msgid "Request name free text"
+msgstr ""
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid "Text to be used to as function wrapper name suffix or replacement."
@@ -4895,6 +4895,10 @@ msgstr "回复名称方案"
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid "Select how SOAP response function wrapper should be constructed."
 msgstr "选择如何构建SOAP回复函数封装器。"
+
+#. Template: AdminGenericInterfaceTransportHTTPSOAP
+msgid "Response name free text"
+msgstr "回复名称自由文本"
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid ""
@@ -5678,6 +5682,12 @@ msgid "Additional recipient email addresses"
 msgstr "额外的收件人邮件地址"
 
 #. Template: AdminNotificationEventTransportEmailSettings
+msgid ""
+"You can use OTRS-tags like <OTRS_TICKET_DynamicField_...> to insert values "
+"from the current ticket."
+msgstr "你可以使用诸如<OTRS_TICKET_DynamicField_...>之类的OTRS标签来插入当前工单中的值。"
+
+#. Template: AdminNotificationEventTransportEmailSettings
 msgid "Notification article type"
 msgstr "信件类型"
 
@@ -6339,13 +6349,13 @@ msgstr "就绪的流程"
 msgid ""
 "Here you can activate ready-to-run processes showcasing our best practices. "
 "Please note that some additional configuration may be required."
-msgstr ""
+msgstr "你可以在此激活能展示我们最佳实践的就绪流程，请注意可能需要一些额外的配置。"
 
 #. Template: AdminProcessManagement
 msgid ""
 "Would you like to benefit from processes created by experts? Upgrade to %s "
 "to import some sophisticated ready-to-run processes."
-msgstr ""
+msgstr "你想从专家创建的流程中受益吗？升级到%s 就能导入一些复杂的运行就绪的流程。"
 
 #. Template: AdminProcessManagement
 msgid "Import ready-to-run process"
@@ -6654,7 +6664,7 @@ msgid ""
 "You can start a connection between two Activities by dropping the Transition"
 " element over the Start Activity of the connection. After that you can move "
 "the loose end of the arrow to the End Activity."
-msgstr ""
+msgstr "要创建两个活动的连接，你可以先拖放转换元素到开始活动上，然后移动连接箭头的尾端到结束活动上。"
 
 #. Template: AdminProcessManagementProcessEdit
 msgid ""
@@ -8216,7 +8226,7 @@ msgid "Edit System Maintenance %s"
 msgstr "编辑系统维护%s"
 
 #. Template: AdminSystemMaintenanceEdit
-msgid "Edit System Maintenance information"
+msgid "Edit System Maintenance Information"
 msgstr "编辑系统维护信息"
 
 #. Template: AdminSystemMaintenanceEdit
@@ -8626,6 +8636,10 @@ msgstr "展开的"
 #. Template: AgentDashboardStats
 msgid "Stream"
 msgstr "流"
+
+#. Template: AgentDashboardStats
+msgid "No Data Available."
+msgstr ""
 
 #. Template: AgentDashboardStats
 msgid ""
@@ -9362,12 +9376,20 @@ msgid "CustomerID (complex search)"
 msgstr "CustomerID(复合搜索)"
 
 #. Template: AgentTicketSearch
+msgid "(e. g. 234*)"
+msgstr "(例如： 234*)"
+
+#. Template: AgentTicketSearch
 msgid "CustomerID (exact match)"
 msgstr "CustomerID(精确匹配)"
 
 #. Template: AgentTicketSearch
 msgid "Customer User Login (complex search)"
 msgstr "客户联系人登录名(复合搜索)"
+
+#. Template: AgentTicketSearch
+msgid "(e. g. U51*)"
+msgstr "(例如：U51*)"
 
 #. Template: AgentTicketSearch
 msgid "Customer User Login (exact match)"
@@ -9778,11 +9800,11 @@ msgstr "发生了一个内部错误。"
 
 #. Template: CustomerFooterJS
 msgid "Connection error"
-msgstr ""
+msgstr "连接错误"
 
 #. Template: CustomerFooterJS
 msgid "Reload page"
-msgstr ""
+msgstr "刷新页面"
 
 #. Template: CustomerFooterJS
 msgid ""
@@ -9790,7 +9812,7 @@ msgid ""
 "be something wrong with your network connection. You could either try "
 "reloading this page manually or wait until your browser has re-established "
 "the connection on its own."
-msgstr ""
+msgstr "你的浏览器无法与OTRS正常通讯，可能有网络连接问题。你可以手动刷新页面或者等待浏览器自动重连。"
 
 #. Template: CustomerFooterJS
 msgid ""
@@ -9798,7 +9820,7 @@ msgid ""
 "Due to this, elements on this page could have stopped to work correctly. In "
 "order to be able to use all elements correctly again, it is strongly "
 "recommended to reload this page."
-msgstr ""
+msgstr "连接在临时中断后已重连，因此本页面上的元素可能已无法正常工作。为了能重新正常使用所有的元素，强烈建议刷新本页面。"
 
 #. Template: CustomerLogin
 msgid "JavaScript Not Available"
@@ -10738,7 +10760,7 @@ msgstr "缓存结果"
 msgid ""
 "Stores statistics result data in a cache to be used in subsequent views with"
 " the same configuration (requires at least one selected time field)."
-msgstr ""
+msgstr "在缓存中保存统计结果，以便在相同配置（需要至少一个选定的时间字段）时能够用于随后的视图。"
 
 #. Template: GeneralSpecificationsWidget
 msgid ""
@@ -11234,6 +11256,10 @@ msgstr "导入的文件没有有效的YAML内容！请检查OTRS日志以获取�
 msgid "Web service \"%s\" deleted!"
 msgstr "Web服务“%s”已经删除！"
 
+#. Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
+msgid "New Web service"
+msgstr ""
+
 #. Perl Module: Kernel/Modules/AdminGenericInterfaceWebserviceHistory.pm
 msgid "Got no WebserviceHistoryID!"
 msgstr "没有 WebserviceHistoryID ！"
@@ -11359,7 +11385,7 @@ msgstr "不能读取%s！"
 
 #. Perl Module: Kernel/Modules/AdminPackageManager.pm
 msgid "File is OK"
-msgstr ""
+msgstr "文件正常"
 
 #. Perl Module: Kernel/Modules/AdminPackageManager.pm
 msgid "Package has locally modified files."
@@ -11819,6 +11845,14 @@ msgstr "不能获得%s 的元素数据！"
 msgid "Can't get filter content data of %s!"
 msgstr "不能获得%s 的过滤器内容数据！"
 
+#. Perl Module: Kernel/Modules/AgentDashboardCommon.pm
+msgid "Customer Company Name"
+msgstr "客户单位名称"
+
+#. Perl Module: Kernel/Modules/AgentDashboardCommon.pm
+msgid "Customer User ID"
+msgstr "客户联系人ID"
+
 #. Perl Module: Kernel/Modules/AgentLinkObject.pm
 msgid "Need SourceObject and SourceKey!"
 msgstr "需要SourceObject（源对象）和SourceKey（源键）！"
@@ -11962,8 +11996,14 @@ msgid "You need to select at least one ticket."
 msgstr "你需要选择至少一个工单。"
 
 #. Perl Module: Kernel/Modules/AgentTicketBulk.pm
-msgid "Ticket is locked by another agent and will be ignored!"
-msgstr "工单已被其他服务人员锁定，将被忽略！"
+msgid ""
+"The following tickets were ignored because they are locked by another agent "
+"or you don't have write access to these tickets: %s."
+msgstr "由于被其它服务人员锁定或者你没有其写入权限，下列工单将被忽略：%s。"
+
+#. Perl Module: Kernel/Modules/AgentTicketBulk.pm
+msgid "The following tickets were locked: %s."
+msgstr "下列工单已被锁定：%s。"
 
 #. Perl Module: Kernel/Modules/AgentTicketCompose.pm
 msgid "Can not determine the ArticleType!"
@@ -12187,6 +12227,18 @@ msgstr "无效的工单ID： “%s”！"
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
 msgid "Missing ActivityEntityID in Ticket %s!"
 msgstr "在工单 “%s”中缺少活动实体ID！"
+
+#. Perl Module: Kernel/Modules/AgentTicketProcess.pm
+msgid ""
+"This step does not belong anymore the current activity in process for Ticket"
+" %s!"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketProcess.pm
+msgid ""
+"Another user changed this ticket in the meantime. Please close this window "
+"and reload the ticket."
+msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
 msgid "Missing ProcessEntityID in Ticket %s!"
@@ -12576,6 +12628,18 @@ msgid "Database %s"
 msgstr "数据库%s"
 
 #. Perl Module: Kernel/Modules/Installer.pm
+msgid "Configure MySQL"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid "Configure PostgreSQL"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid "Configure Oracle"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/Installer.pm
 msgid "Unknown database type \"%s\"."
 msgstr "未知的数据库类型“%s”。"
 
@@ -12594,6 +12658,10 @@ msgstr "没有找到文件“%s/%s.xml”！"
 #. Perl Module: Kernel/Modules/Installer.pm
 msgid "Contact your Admin!"
 msgstr "联系你的系统管理员！"
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid "Syslog"
+msgstr ""
 
 #. Perl Module: Kernel/Modules/Installer.pm
 msgid "Can't write Config file!"
@@ -12868,21 +12936,29 @@ msgstr "这个设置默认没有激活。"
 msgid "This setting can not be deactivated."
 msgstr "不能使这个设置失效。"
 
+#. Perl Module: Kernel/System/DynamicField/Driver/BaseText.pm
+msgid "e.g. Text or Te*t"
+msgstr ""
+
+#. Perl Module: Kernel/System/DynamicField/Driver/Checkbox.pm
+msgid "Ignore this field."
+msgstr ""
+
 #. Perl Module: Kernel/System/Package.pm
 msgid "not installed"
 msgstr "没有安装"
 
 #. Perl Module: Kernel/System/Package.pm
 msgid "File is not installed!"
-msgstr ""
+msgstr "文件没有安装！"
 
 #. Perl Module: Kernel/System/Package.pm
 msgid "File is different!"
-msgstr ""
+msgstr "文件被修改！"
 
 #. Perl Module: Kernel/System/Package.pm
 msgid "Can't read file!"
-msgstr ""
+msgstr "不能读取文件！"
 
 #. Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
 msgid "Inactive"
@@ -12896,6 +12972,10 @@ msgstr "消退"
 msgid "Can't get Token from sever"
 msgstr "不能从服务器获取令牌"
 
+#. Perl Module: Kernel/System/Stats.pm
+msgid "Sum"
+msgstr "总和"
+
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "State Type"
 msgstr "工单状态类型"
@@ -12907,14 +12987,6 @@ msgstr "创建的优先级"
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Created State"
 msgstr "创建的状态"
-
-#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
-msgid "CustomerUserLogin (complex search)"
-msgstr "客户联系人登录名(复合搜索)"
-
-#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
-msgid "CustomerUserLogin (exact match)"
-msgstr "客户联系人登录名(精确匹配)"
 
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Create Time"
@@ -12943,6 +13015,18 @@ msgstr "服务人员/所有者"
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Created by Agent/Owner"
 msgstr "创建人"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin"
+msgstr "客户联系人登录"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin (complex search)"
+msgstr "客户联系人登录名(复合搜索)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin (exact match)"
+msgstr "客户联系人登录名(精确匹配)"
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
 msgid "Evaluation by"
@@ -13069,28 +13153,29 @@ msgid "Solution Max Working Time (affected by escalation configuration)"
 msgstr "最大解决工作时间（受升级配置影响）"
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Average (affected by escalation configuration)"
-msgstr "平均响应时间（受升级配置影响）"
+msgid "First Response Average (affected by escalation configuration)"
+msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Min Time (affected by escalation configuration)"
-msgstr "最小响应时间（受升级配置影响）"
+msgid "First Response Min Time (affected by escalation configuration)"
+msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Max Time (affected by escalation configuration)"
-msgstr "最大响应时间（受升级配置影响）"
+msgid "First Response Max Time (affected by escalation configuration)"
+msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Working Time Average (affected by escalation configuration)"
-msgstr "平均响应工作时间（受升级配置影响）"
+msgid ""
+"First Response Working Time Average (affected by escalation configuration)"
+msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Min Working Time (affected by escalation configuration)"
-msgstr "最小响应工作时间（受升级配置影响）"
+msgid "First Response Min Working Time (affected by escalation configuration)"
+msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Max Working Time (affected by escalation configuration)"
-msgstr "最大响应工作时间（受升级配置影响）"
+msgid "First Response Max Working Time (affected by escalation configuration)"
+msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
 msgid "Number of Tickets (affected by escalation configuration)"
@@ -13542,6 +13627,11 @@ msgstr "一些软件包无法在当前的框架版本中使用。"
 msgid "Package List"
 msgstr "软件包列表"
 
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/SessionConfigSettings.pm
+msgid "Session Config Settings"
+msgstr "会话配置设置"
+
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
 msgid "Spooled Emails"
 msgstr "假脱机邮件"
@@ -13762,12 +13852,12 @@ msgstr "环境变量"
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/Webserver/InternalWebRequest.pm
 msgid "Support Data Collection"
-msgstr ""
+msgstr "收集支持数据"
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/Webserver/InternalWebRequest.pm
 msgid "Support data could not be collected from the web server."
-msgstr ""
+msgstr "不能从WEB服务器收集支持数据。"
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Version.pm
 msgid "Webserver Version"
@@ -14622,16 +14712,16 @@ msgstr "允许定义工单的服务和SLA（例如：邮件、桌面、网络等
 #. SysConfig
 msgid ""
 "Allows extended search conditions in ticket search of the agent interface. "
-"With this feature you can search e. g. with this kind of conditions like "
-"\"(key1&&key2)\" or \"(key1||key2)\"."
-msgstr "允许在服务人员界面搜索工单时扩展搜索条件，通过这个功能您可以按如下条件搜索：“(key1&&key2)”或“(key1||key2)”。"
+"With this feature you can search e. g. ticket title with this kind of "
+"conditions like \"(*key1*&&*key2*)\" or \"(*key1*||*key2*)\"."
+msgstr "允许在服务人员界面搜索工单时扩展搜索条件，通过这个功能您可以按如下条件搜索：带“(*key1*&&*key2*)”或“(*key1*||*key2*)”条件的工单标题。"
 
 #. SysConfig
 msgid ""
 "Allows extended search conditions in ticket search of the customer "
-"interface. With this feature you can search e. g. with this kind of "
-"conditions like \"(key1&&key2)\" or \"(key1||key2)\"."
-msgstr "允许在客户界面搜索工单时扩展搜索条件，通过这个功能您可以按如下条件搜索：“(key1&&key2)”或“(key1||key2)”。"
+"interface. With this feature you can search e. g. ticket title with this "
+"kind of conditions like \"(*key1*&&*key2*)\" or \"(*key1*||*key2*)\"."
+msgstr "允许在客户界面搜索工单时扩展搜索条件，通过这个功能您可以按如下条件搜索：带“(*key1*&&*key2*)”或“(*key1*||*key2*)”条件的工单标题。"
 
 #. SysConfig
 msgid ""
@@ -15055,12 +15145,14 @@ msgid "Controls how to display the ticket history entries as readable values."
 msgstr "控制如何显示工单历史条目为可读值。"
 
 #. SysConfig
-msgid "Controls if CustomerID is editable in the agent interface."
-msgstr ""
+msgid ""
+"Controls if CustomerID is automatically copied from the sender address for "
+"unknown customers."
+msgstr "控制是否自动将未知客户的发件人地址复制为CustomerID 。"
 
 #. SysConfig
-msgid "Controls if CutomerID is editable in the agent interface."
-msgstr "控制在服务人员界面中客户ID能否编辑。"
+msgid "Controls if CustomerID is read-only in the agent interface."
+msgstr "控制在服务人员界面中CustomerID 是否为只读。"
 
 #. SysConfig
 msgid "Controls if customers have the ability to sort their tickets."
@@ -16907,19 +16999,19 @@ msgstr "定义服务人员界面显示当前登录的所有服务人员的模块
 msgid ""
 "Defines the module that shows all the currently logged in customers in the "
 "agent interface."
-msgstr ""
+msgstr "定义服务人员界面显示当前登录的所有客户人员的模块。"
 
 #. SysConfig
 msgid ""
 "Defines the module that shows the currently logged in agents in the customer"
 " interface."
-msgstr ""
+msgstr "定义客户界面显示当前登录的所有服务人员的模块。"
 
 #. SysConfig
 msgid ""
 "Defines the module that shows the currently logged in customers in the "
 "customer interface."
-msgstr ""
+msgstr "定义客户界面显示当前登录的所有客户人员的模块。"
 
 #. SysConfig
 msgid "Defines the module to authenticate customers."
@@ -17548,7 +17640,7 @@ msgstr "确定在服务人员界面处理工单下一个可能的工单状态。
 msgid ""
 "Determines the next possible ticket states, for process tickets in the "
 "customer interface."
-msgstr ""
+msgstr "确定在客户界面处理工单下一个可能的工单状态。"
 
 #. SysConfig
 msgid ""
@@ -17607,6 +17699,10 @@ msgid ""
 "Determines which queues will be valid for ticket's recepients in the "
 "customer interface."
 msgstr "确定客户界面哪些队列可以作为工单的有效收件人。"
+
+#. SysConfig
+msgid "Development"
+msgstr "开发"
 
 #. SysConfig
 msgid ""
@@ -18705,54 +18801,6 @@ msgstr "如果日志模块选用了“文件”，必须指定日志文件名。
 
 #. SysConfig
 msgid ""
-"If a note is added by an agent, sets the state of a ticket in the close "
-"ticket screen of the agent interface."
-msgstr "在服务人员界面工单关闭窗口，如果服务人员添加了一个备注，设置工单的状态。"
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"bulk screen of the agent interface."
-msgstr "在服务人员界面工单批量操作窗口，如果服务人员添加了一个备注，设置工单的状态。"
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"free text screen of the agent interface."
-msgstr "在服务人员界面工单自定义字段窗口，如果服务人员添加了一个备注，设置工单的状态。"
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"note screen of the agent interface."
-msgstr "在服务人员界面工单备注窗口，如果服务人员添加了一个备注，设置工单的状态。"
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"responsible screen of the agent interface."
-msgstr "在服务人员界面工单负责人窗口，如果服务人员添加了一个备注，设置工单的状态。"
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of the ticket in the ticket "
-"owner screen of a zoomed ticket in the agent interface."
-msgstr "在服务人员界面工单所有者窗口，如果服务人员添加了一个备注，设置工单的状态。"
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of the ticket in the ticket "
-"pending screen of a zoomed ticket in the agent interface."
-msgstr "在服务人员界面工单挂起窗口，如果服务人员添加了一个备注，设置工单的状态。"
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of the ticket in the ticket "
-"priority screen of a zoomed ticket in the agent interface."
-msgstr "在服务人员界面工单优先级窗口，如果服务人员添加了一个备注，设置工单的状态。"
-
-#. SysConfig
-msgid ""
 "If active, none of the regular expressions may match the user's email "
 "address to allow registration."
 msgstr "如果激活此选项，没有正则表达式能够匹配允许用户注册的邮件地址。"
@@ -18827,7 +18875,7 @@ msgid ""
 "If enabled, the OTRS version tag will be removed from the Webinterface, the "
 "HTTP headers and the X-Headers of outgoing mails. NOTE: If you change this "
 "option, please make sure to delete the cache."
-msgstr ""
+msgstr "如果启用了此选项，将从WEB界面、HTTP头信息和外发邮件的X-Headers头信息中移除OTRS版本标签。注意：如果你要修改这个选项，请确保清空缓存。"
 
 #. SysConfig
 msgid ""
@@ -18852,14 +18900,14 @@ msgid ""
 "If no SendmailNotificationEnvelopeFrom is specified, this setting makes it "
 "possible to use the email's from address instead of an empty envelope sender"
 " (required in certain mail server configurations)."
-msgstr ""
+msgstr "如果没有指定SendmailNotificationEnvelopeFrom，这个选项可确保使用邮件的发件人地址而不是空白的发件人（在某些邮件服务器的配置中需要此选项）。"
 
 #. SysConfig
 msgid ""
 "If set, this address is used as envelope sender header in outgoing "
 "notifications. If no address is specified, the envelope sender header is "
 "empty (unless SendmailNotificationEnvelopeFrom::FallbackToEmailFrom is set)."
-msgstr ""
+msgstr "如果设置了此参数，这个地址用于外发通知的信件发件人头信息。如果没有指定地址，则信件发件人头信息为空（除非设置了SendmailNotificationEnvelopeFrom::FallbackToEmailFrom参数）。"
 
 #. SysConfig
 msgid ""
@@ -18893,9 +18941,16 @@ msgstr "如果激活这个设置，本地修改内容不会在软件包管理器
 
 #. SysConfig
 msgid ""
-"Ignore article with system sender type for new article feature (e. g. auto "
-"responses or email notifications)."
-msgstr "创建信件功能忽略系统发件人的信件（例如：自动响应或邮件通知）。"
+"If you're going to be out of office, you may wish to let other users know by"
+" setting the exact dates of your absence."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Ignore system sender article types (e. g. auto responses or email "
+"notifications) to be flagged as 'Unread Article' in AgentTicketZoom or "
+"expanded automatically in Large view screens."
+msgstr ""
 
 #. SysConfig
 msgid "Include tickets of subqueues per default when selecting a queue."
@@ -20211,8 +20266,25 @@ msgid "Second Queue"
 msgstr "第二队列"
 
 #. SysConfig
+msgid ""
+"Select after which period ticket overviews should refresh automatically."
+msgstr ""
+
+#. SysConfig
+msgid "Select how many tickets should be shown in overviews by default."
+msgstr ""
+
+#. SysConfig
+msgid "Select the main interface language."
+msgstr ""
+
+#. SysConfig
 msgid "Select your frontend Theme."
 msgstr "选择您的界面主题。"
+
+#. SysConfig
+msgid "Select your preferred layout for OTRS."
+msgstr ""
 
 #. SysConfig
 msgid "Selects the cache backend to use."
@@ -20298,6 +20370,10 @@ msgstr "服务视图"
 #. SysConfig
 msgid "ServiceView"
 msgstr "服务视图"
+
+#. SysConfig
+msgid "Set a new password by filling in your current password and a new one."
+msgstr ""
 
 #. SysConfig
 msgid ""
@@ -20568,7 +20644,7 @@ msgstr "设置在偏好设置视图显示不同条目的顺序。"
 msgid ""
 "Sets the inactivity time (in seconds) to pass before a session is killed and"
 " a user is logged out."
-msgstr ""
+msgstr "设置一个会话被终止且用户登出前的非活动时间（单位：秒）。"
 
 #. SysConfig
 msgid ""
@@ -20776,6 +20852,52 @@ msgid ""
 "Sets the service in the ticket responsible screen of the agent interface "
 "(Ticket::Service needs to be activated)."
 msgstr "设置服务人员界面工单负责人窗口的服务（需要激活工单::服务）。"
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the close ticket screen of the agent "
+"interface."
+msgstr "设置服务人员界面关闭工单窗口的工单状态。"
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket bulk screen of the agent interface."
+msgstr "设置服务人员界面工单批量处理窗口的工单状态。"
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket free text screen of the agent "
+"interface."
+msgstr "设置服务人员界面工单自定义字段窗口的工单状态。"
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket note screen of the agent interface."
+msgstr "设置服务人员界面工单备注窗口的工单状态。"
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket responsible screen of the agent "
+"interface."
+msgstr "设置服务人员界面工单负责人窗口的工单状态。"
+
+#. SysConfig
+msgid ""
+"Sets the state of the ticket in the ticket owner screen of a zoomed ticket "
+"in the agent interface."
+msgstr "设置服务人员界面工单详情的所有者窗口的工单状态。"
+
+#. SysConfig
+msgid ""
+"Sets the state of the ticket in the ticket pending screen of a zoomed ticket"
+" in the agent interface."
+msgstr "设置服务人员界面工单详情的挂起窗口的工单状态。"
+
+#. SysConfig
+msgid ""
+"Sets the state of the ticket in the ticket priority screen of a zoomed "
+"ticket in the agent interface."
+msgstr "设置服务人员界面工单详情的优先级窗口的工单状态。"
 
 #. SysConfig
 msgid "Sets the stats hook."
@@ -21360,6 +21482,12 @@ msgstr "在多选框字段中显示所有的客户ID（如果客户ID过多则�
 
 #. SysConfig
 msgid ""
+"Shows all the customer user identifiers in a multi-select field (not useful "
+"if you have a lot of customer user identifiers)."
+msgstr ""
+
+#. SysConfig
+msgid ""
 "Shows an owner selection in phone and email tickets in the agent interface."
 msgstr "在服务人员界面电话和邮件工单窗口显示所有者选择器。"
 
@@ -21766,6 +21894,10 @@ msgstr "指定第一个镜像数据库的认证用户名。"
 #. SysConfig
 msgid "Spell checker."
 msgstr "拼写检查器。"
+
+#. SysConfig
+msgid "Stable"
+msgstr "稳定的"
 
 #. SysConfig
 msgid ""
@@ -22412,12 +22544,24 @@ msgid "attachment"
 msgstr "附件"
 
 #. SysConfig
+msgid "bounce"
+msgstr "退回"
+
+#. SysConfig
+msgid "compose"
+msgstr "编写"
+
+#. SysConfig
 msgid "debug"
 msgstr "调试"
 
 #. SysConfig
 msgid "error"
 msgstr "错误"
+
+#. SysConfig
+msgid "forward"
+msgstr "转发"
 
 #. SysConfig
 msgid "info"
@@ -22430,3 +22574,15 @@ msgstr "内联"
 #. SysConfig
 msgid "notice"
 msgstr "注意"
+
+#. SysConfig
+msgid "pending"
+msgstr "挂起"
+
+#. SysConfig
+msgid "responsible"
+msgstr "负责人"
+
+#. SysConfig
+msgid "stats"
+msgstr "stats"

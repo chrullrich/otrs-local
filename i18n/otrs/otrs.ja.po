@@ -3,18 +3,18 @@
 # Hisatoshi Onishi <hisatoshi.onishi@gmail.com>, 2015-2016
 # Tomy1984, 2015
 # Kentaro Hori <kentaro0919@gmail.com>, 2014-2016
-# Kozo Sakurai <sakurai@io-architect.com>, 2014
+# Kozo Sakurai <sakurai@io-architect.com>, 2014,2017
 # Makoto Miida, 2014
 # Makoto Miida, 2014
-# Norihiro Tanaka <noritnk@kcn.ne.jp>, 2014-2016
+# Norihiro Tanaka <noritnk@kcn.ne.jp>, 2014-2017
 # Takayuki MINATO <turbo@minato.tv>, 2016
 # Tomohisa Hirami <hirami@io-architect.com>, 2016
 # Toshihiro Takehara aka nouphet <nouphet.ratanavong@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
-"POT-Creation-Date: 2017-01-16 17:40+0000\n"
-"PO-Revision-Date: 2017-01-16 23:41+0000\n"
+"POT-Creation-Date: 2017-03-22 12:37+0000\n"
+"PO-Revision-Date: 2017-03-22 18:44+0000\n"
 "Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
 "Language-Team: Japanese (http://www.transifex.com/otrs/OTRS/language/ja/)\n"
 "MIME-Version: 1.0\n"
@@ -385,31 +385,31 @@ msgstr "操作が必要"
 
 #. Template: AAABase
 msgid "AddLink"
-msgstr "連結を追加"
+msgstr "リンクを追加"
 
 #. Template: AAABase
 msgid "Link"
-msgstr "連結"
+msgstr "リンク"
 
 #. Template: AAABase
 msgid "Unlink"
-msgstr "連結解除"
+msgstr "リンク解除"
 
 #. Template: AAABase
 msgid "Linked"
-msgstr "連結済"
+msgstr "リンク済"
 
 #. Template: AAABase
 msgid "Link (Normal)"
-msgstr "連結 (標準)"
+msgstr "リンク(標準)"
 
 #. Template: AAABase
 msgid "Link (Parent)"
-msgstr "連結 (親)"
+msgstr "リンク (親)"
 
 #. Template: AAABase
 msgid "Link (Child)"
-msgstr "連結 (子)"
+msgstr "リンク (子)"
 
 #. Template: AAABase
 msgid "Normal"
@@ -2310,7 +2310,7 @@ msgstr "チケット対象"
 
 #. Template: AAATicket
 msgid "No such Ticket Number \"%s\"! Can't link it!"
-msgstr "チケット番号 \"%s\" がありません。連結できません。"
+msgstr "チケット番号 \"%s\" がありません。リンクできません。"
 
 #. Template: AAATicket
 msgid "You don't have write access to this ticket."
@@ -3154,13 +3154,13 @@ msgstr "チケットデータのオプション"
 
 #. Template: AdminAutoResponse
 msgid "Options of ticket dynamic fields internal key values"
-msgstr "チケットの動的フィールドの内部キー値のオプション"
+msgstr "チケットのダイナミックフィールドの内部キー値のオプション"
 
 #. Template: AdminAutoResponse
 msgid ""
 "Options of ticket dynamic fields display values, useful for Dropdown and "
 "Multiselect fields"
-msgstr "チケットの動的フィールドの表示値のオプション。ドロップダウンまたは複数選択領域で利用可能"
+msgstr "チケットのダイナミックフィールドの表示値のオプション。ドロップダウンまたは複数選択領域で利用可能"
 
 #. Template: AdminAutoResponse
 msgid "Config options"
@@ -3494,7 +3494,7 @@ msgstr "有効な状態 %s を切り替え"
 
 #. Template: AdminDynamicField
 msgid "Dynamic Fields Management"
-msgstr "動的フィールドの管理"
+msgstr "ダイナミックフィールドの管理"
 
 #. Template: AdminDynamicField
 msgid "Add new field for object"
@@ -3509,11 +3509,11 @@ msgstr "新しいフィールドを追加するには、オブジェクトのリ
 
 #. Template: AdminDynamicField
 msgid "Dynamic Fields List"
-msgstr "動的フィールド一覧"
+msgstr "ダイナミックフィールド一覧"
 
 #. Template: AdminDynamicField
 msgid "Dynamic fields per page"
-msgstr "ページ毎の動的フィールド"
+msgstr "ページ毎のダイナミックフィールド"
 
 #. Template: AdminDynamicField
 msgid "Label"
@@ -3535,7 +3535,7 @@ msgstr "この領域を削除"
 msgid ""
 "Do you really want to delete this dynamic field? ALL associated data will be"
 " LOST!"
-msgstr "この動的フィールドを本当に削除しますか？全てのデータが失われます。"
+msgstr "このダイナミックフィールドを本当に削除しますか？全てのデータが失われます。"
 
 #. Template: AdminDynamicField
 msgid "Delete field"
@@ -3547,7 +3547,7 @@ msgstr "フィールドとそれに属するデータを削除します。これ
 
 #. Template: AdminDynamicFieldCheckbox
 msgid "Dynamic Fields"
-msgstr "動的フィールド"
+msgstr "ダイナミックフィールド"
 
 #. Template: AdminDynamicFieldCheckbox
 msgid "Field"
@@ -4204,7 +4204,7 @@ msgstr "新しいタイプ"
 
 #. Template: AdminGenericAgent
 msgid "New Dynamic Field Values"
-msgstr "動的フィールドの値を設定"
+msgstr "ダイナミックフィールドの値を設定"
 
 #. Template: AdminGenericAgent
 msgid "Archive selected tickets"
@@ -4870,7 +4870,7 @@ msgid "'FreeText' is used as example for actual configured value."
 msgstr ""
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
-msgid "Response name free text"
+msgid "Request name free text"
 msgstr ""
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
@@ -4889,6 +4889,10 @@ msgstr ""
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid "Select how SOAP response function wrapper should be constructed."
+msgstr ""
+
+#. Template: AdminGenericInterfaceTransportHTTPSOAP
+msgid "Response name free text"
 msgstr ""
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
@@ -5656,13 +5660,13 @@ msgstr ""
 
 #. Template: AdminNotificationEvent
 msgid "Ticket dynamic fields internal key values"
-msgstr "チケットの動的フィールドの内部用キー値"
+msgstr "チケットのダイナミックフィールドの内部用キー値"
 
 #. Template: AdminNotificationEvent
 msgid ""
 "Ticket dynamic fields display values, useful for Dropdown and Multiselect "
 "fields"
-msgstr "チケットの動的フィールドの表示値。ドロップダウンまたは複数選択領域で利用可能"
+msgstr "チケットのダイナミックフィールドの表示値。ドロップダウンまたは複数選択領域で利用可能"
 
 #. Template: AdminNotificationEvent
 msgid "Example notification"
@@ -5671,6 +5675,12 @@ msgstr "通知例"
 #. Template: AdminNotificationEventTransportEmailSettings
 msgid "Additional recipient email addresses"
 msgstr "追加の受信者のメールアドレス"
+
+#. Template: AdminNotificationEventTransportEmailSettings
+msgid ""
+"You can use OTRS-tags like <OTRS_TICKET_DynamicField_...> to insert values "
+"from the current ticket."
+msgstr ""
 
 #. Template: AdminNotificationEventTransportEmailSettings
 msgid "Notification article type"
@@ -5866,11 +5876,11 @@ msgstr "チケット・ズームにおけるタイムライン"
 
 #. Template: AdminOTRSBusinessUninstall
 msgid "DynamicField ContactWithData"
-msgstr "動的フィールド日付でコンタクトする"
+msgstr "ダイナミックフィールド日付でコンタクトする"
 
 #. Template: AdminOTRSBusinessUninstall
 msgid "DynamicField Database"
-msgstr "動的フィールド用データベース"
+msgstr "ダイナミックフィールド用データベース"
 
 #. Template: AdminOTRSBusinessUninstall
 msgid "SLA Selection Dialog"
@@ -7332,7 +7342,7 @@ msgstr "登録"
 
 #. Template: AdminRegistration
 msgid "Deregister System"
-msgstr ""
+msgstr "システム登録"
 
 #. Template: AdminRegistration
 msgid "Continuing with this step will deregister the system from OTRS Group."
@@ -7366,11 +7376,11 @@ msgstr ""
 
 #. Template: AdminRegistration
 msgid "System Registration Data"
-msgstr ""
+msgstr "システム登録データ"
 
 #. Template: AdminRegistration
 msgid "Support Data"
-msgstr ""
+msgstr "サポートデータ"
 
 #. Template: AdminRole
 msgid "Role Management"
@@ -7434,7 +7444,7 @@ msgstr "全ての %s の権限を切り替え"
 
 #. Template: AdminRoleGroup
 msgid "move_into"
-msgstr "移動"
+msgstr "移転"
 
 #. Template: AdminRoleGroup
 msgid "Permissions to move tickets into this group/queue."
@@ -8090,7 +8100,7 @@ msgstr "ナビゲーションバー"
 
 #. Template: AdminSysConfigEdit
 msgid "LinkOption"
-msgstr "連結オプション"
+msgstr "リンクオプション"
 
 #. Template: AdminSysConfigEdit
 msgid "Block"
@@ -8211,8 +8221,8 @@ msgid "Edit System Maintenance %s"
 msgstr "システムメンテナンス%sを編集"
 
 #. Template: AdminSystemMaintenanceEdit
-msgid "Edit System Maintenance information"
-msgstr "システムメンテナンス情報を編集"
+msgid "Edit System Maintenance Information"
+msgstr ""
 
 #. Template: AdminSystemMaintenanceEdit
 msgid "Date invalid!"
@@ -8322,7 +8332,7 @@ msgstr "全てを有効に切り替え"
 
 #. Template: AdminTemplateAttachment
 msgid "Link %s to selected %s"
-msgstr "%s を選択された %s へ連結"
+msgstr "%s を選択された %s へリンク"
 
 #. Template: AdminType
 msgid "Type Management"
@@ -8374,7 +8384,7 @@ msgstr "担当者の編集"
 
 #. Template: AdminUser
 msgid "Title or salutation"
-msgstr ""
+msgstr "タイトルまたは挨拶文"
 
 #. Template: AdminUser
 msgid "Firstname"
@@ -8623,6 +8633,10 @@ msgid "Stream"
 msgstr ""
 
 #. Template: AgentDashboardStats
+msgid "No Data Available."
+msgstr ""
+
+#. Template: AgentDashboardStats
 msgid ""
 "Please select a valid graph output format in the configuration of this "
 "widget."
@@ -8697,11 +8711,11 @@ msgstr "ニュース、ライセンスなどの変更を受け付ける。"
 
 #. Template: AgentLinkObject
 msgid "Link Object: %s"
-msgstr "連結対象: %s"
+msgstr "リンク対象: %s"
 
 #. Template: AgentLinkObject
 msgid "go to link delete screen"
-msgstr "連結解除画面へ移動"
+msgstr "リンク解除画面へ移動"
 
 #. Template: AgentLinkObject
 msgid "Select Target Object"
@@ -8709,15 +8723,15 @@ msgstr "対象を選択"
 
 #. Template: AgentLinkObject
 msgid "Link object %s with"
-msgstr ""
+msgstr "オブジェクト％sをリンク"
 
 #. Template: AgentLinkObject
 msgid "Unlink Object: %s"
-msgstr "連結解除対象: %s"
+msgstr "リンク解除対象: %s"
 
 #. Template: AgentLinkObject
 msgid "go to link add screen"
-msgstr "連結画面へ移動"
+msgstr "リンク画面へ移動"
 
 #. Template: AgentOTRSBusinessBlockScreen
 msgid "Unauthorized usage of %s detected"
@@ -8759,7 +8773,7 @@ msgstr ""
 
 #. Template: AgentStatisticsAdd
 msgid "Dynamic Matrix"
-msgstr "動的フィールドの値"
+msgstr "ダイナミックフィールドの値"
 
 #. Template: AgentStatisticsAdd
 msgid ""
@@ -8769,7 +8783,7 @@ msgstr ""
 
 #. Template: AgentStatisticsAdd
 msgid "Dynamic List"
-msgstr "動的フィールド一覧"
+msgstr "ダイナミックフィールド一覧"
 
 #. Template: AgentStatisticsAdd
 msgid ""
@@ -9032,11 +9046,11 @@ msgstr "古いものへ結合"
 
 #. Template: AgentTicketBulk
 msgid "Link together"
-msgstr "一緒に連結"
+msgstr "一緒にリンク"
 
 #. Template: AgentTicketBulk
 msgid "Link to parent"
-msgstr "親へ連結"
+msgstr "親へリンク"
 
 #. Template: AgentTicketBulk
 msgid "Unlock tickets"
@@ -9300,7 +9314,7 @@ msgstr "プロセス"
 
 #. Template: AgentTicketProcessSmall
 msgid "Enroll Ticket into a Process"
-msgstr ""
+msgstr "チケットをプロセスに登録する"
 
 #. Template: AgentTicketSearch
 msgid "Search template"
@@ -9316,7 +9330,7 @@ msgstr "新規作成"
 
 #. Template: AgentTicketSearch
 msgid "Profile link"
-msgstr "編集せずに検索"
+msgstr "プロファイル・リンク"
 
 #. Template: AgentTicketSearch
 msgid "Save changes in template"
@@ -9357,11 +9371,19 @@ msgid "CustomerID (complex search)"
 msgstr ""
 
 #. Template: AgentTicketSearch
+msgid "(e. g. 234*)"
+msgstr ""
+
+#. Template: AgentTicketSearch
 msgid "CustomerID (exact match)"
 msgstr ""
 
 #. Template: AgentTicketSearch
 msgid "Customer User Login (complex search)"
+msgstr ""
+
+#. Template: AgentTicketSearch
+msgid "(e. g. U51*)"
 msgstr ""
 
 #. Template: AgentTicketSearch
@@ -9494,7 +9516,7 @@ msgstr "作業時間"
 
 #. Template: AgentTicketZoom
 msgid "Linked Objects"
-msgstr "連結済対象"
+msgstr "オブジェクトをリンク"
 
 #. Template: AgentTicketZoom
 msgid "Change Queue"
@@ -9903,7 +9925,7 @@ msgstr ""
 
 #. Template: CustomerRichTextEditor
 msgid "Open link"
-msgstr ""
+msgstr "リンクを開く"
 
 #. Template: CustomerTicketMessage
 msgid "Service level agreement"
@@ -10111,7 +10133,7 @@ msgstr "チケット・フィールド"
 
 #. Template: DashboardEventsTicketCalendar
 msgid "Dynamic fields"
-msgstr "動的フィールド"
+msgstr "ダイナミックフィールド"
 
 #. Template: Datepicker
 msgid "Invalid date (need a future date)!"
@@ -10555,11 +10577,11 @@ msgstr "対象の番号"
 
 #. Template: LinkObject
 msgid "Add links"
-msgstr "連結を追加"
+msgstr "リンクを追加"
 
 #. Template: LinkObject
 msgid "Delete links"
-msgstr "連結を削除"
+msgstr "リンクを削除"
 
 #. Template: Login
 msgid "Lost your password?"
@@ -10999,7 +11021,7 @@ msgstr ""
 msgid ""
 "Could not reset Dynamic Field order properly, please check the error log for"
 " more details."
-msgstr "動的フィールドのオーダー定義を初期化できませんでした。詳細はエラーログを参照願います。"
+msgstr "ダイナミックフィールドのオーダー定義を初期化できませんでした。詳細はエラーログを参照願います。"
 
 #. Perl Module: Kernel/Modules/AdminDynamicFieldCheckbox.pm
 msgid "Undefined subaction."
@@ -11035,7 +11057,7 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AdminDynamicFieldCheckbox.pm
 msgid "Could not get data for dynamic field %s"
-msgstr "動的フィールド %s の値を取得できませんでした"
+msgstr "ダイナミックフィールド %s の値を取得できませんでした"
 
 #. Perl Module: Kernel/Modules/AdminDynamicFieldCheckbox.pm
 msgid "The name for this field should not change."
@@ -11229,6 +11251,10 @@ msgstr ""
 msgid "Web service \"%s\" deleted!"
 msgstr "Webサービス \"%s\" を削除しました。"
 
+#. Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
+msgid "New Web service"
+msgstr ""
+
 #. Perl Module: Kernel/Modules/AdminGenericInterfaceWebserviceHistory.pm
 msgid "Got no WebserviceHistoryID!"
 msgstr ""
@@ -11387,11 +11413,11 @@ msgstr "そのようなフィルタはありません: %s"
 
 #. Perl Module: Kernel/Modules/AdminProcessManagement.pm
 msgid "Need ExampleProcesses!"
-msgstr ""
+msgstr "プロセス例が必要!"
 
 #. Perl Module: Kernel/Modules/AdminProcessManagement.pm
 msgid "Need ProcessID!"
-msgstr ""
+msgstr "ProcessIDが必要!"
 
 #. Perl Module: Kernel/Modules/AdminProcessManagement.pm
 msgid "Yes (mandatory)"
@@ -11477,7 +11503,7 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AdminProcessManagementActivity.pm
 msgid "Need ActivityID!"
-msgstr ""
+msgstr "ActivityIDが必要!"
 
 #. Perl Module: Kernel/Modules/AdminProcessManagementActivity.pm
 msgid "Could not get data for ActivityID %s"
@@ -11493,11 +11519,11 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AdminProcessManagementActivity.pm
 msgid "Activity not found!"
-msgstr ""
+msgstr "Activityが見つかりません!"
 
 #. Perl Module: Kernel/Modules/AdminProcessManagementActivity.pm
 msgid "ActivityDialog not found!"
-msgstr ""
+msgstr "ActivityDialogが見つかりません!"
 
 #. Perl Module: Kernel/Modules/AdminProcessManagementActivity.pm
 msgid ""
@@ -11549,11 +11575,11 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AdminProcessManagementActivityDialog.pm
 msgid "Agent Interface"
-msgstr ""
+msgstr "担当者インターフェース"
 
 #. Perl Module: Kernel/Modules/AdminProcessManagementActivityDialog.pm
 msgid "Customer Interface"
-msgstr ""
+msgstr "顧客インターフェース"
 
 #. Perl Module: Kernel/Modules/AdminProcessManagementActivityDialog.pm
 msgid "Agent and Customer Interface"
@@ -11561,15 +11587,15 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AdminProcessManagementActivityDialog.pm
 msgid "Do not show Field"
-msgstr ""
+msgstr "フィールドを表示しない"
 
 #. Perl Module: Kernel/Modules/AdminProcessManagementActivityDialog.pm
 msgid "Show Field"
-msgstr ""
+msgstr "フィールドを表示する"
 
 #. Perl Module: Kernel/Modules/AdminProcessManagementActivityDialog.pm
 msgid "Show Field As Mandatory"
-msgstr ""
+msgstr "フィールドを必須として表示する"
 
 #. Perl Module: Kernel/Modules/AdminProcessManagementActivityDialog.pm
 msgid "fax"
@@ -11664,7 +11690,7 @@ msgstr "キューの名称に\"::\"を使わないでください！"
 
 #. Perl Module: Kernel/Modules/AdminQueue.pm
 msgid "Click back and change it!"
-msgstr ""
+msgstr "クリックして変更してください！"
 
 #. Perl Module: Kernel/Modules/AdminQueueAutoResponse.pm
 msgid "Queues ( without auto responses )"
@@ -11814,6 +11840,14 @@ msgstr ""
 msgid "Can't get filter content data of %s!"
 msgstr ""
 
+#. Perl Module: Kernel/Modules/AgentDashboardCommon.pm
+msgid "Customer Company Name"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentDashboardCommon.pm
+msgid "Customer User ID"
+msgstr ""
+
 #. Perl Module: Kernel/Modules/AgentLinkObject.pm
 msgid "Need SourceObject and SourceKey!"
 msgstr ""
@@ -11957,7 +11991,13 @@ msgid "You need to select at least one ticket."
 msgstr "少なくとも1件のチケットを選択する必要があります。"
 
 #. Perl Module: Kernel/Modules/AgentTicketBulk.pm
-msgid "Ticket is locked by another agent and will be ignored!"
+msgid ""
+"The following tickets were ignored because they are locked by another agent "
+"or you don't have write access to these tickets: %s."
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketBulk.pm
+msgid "The following tickets were locked: %s."
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketCompose.pm
@@ -12048,7 +12088,7 @@ msgstr "printed by"
 
 #. Perl Module: Kernel/Modules/AgentTicketPrint.pm
 msgid "Ticket Dynamic Fields"
-msgstr "チケットの動的フィールド"
+msgstr "チケットのダイナミックフィールド"
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
 msgid "Couldn't get ActivityDialogEntityID \"%s\"!"
@@ -12088,7 +12128,7 @@ msgstr ""
 msgid ""
 "Couldn't determine ActivityEntityID. DynamicField or Config isn't set "
 "properly!"
-msgstr ""
+msgstr "ActivityEntityIDを特定できませんでした。 ダイナミックフィールドまたはコンフィグが正しく設定されていません。"
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
 msgid "Process::Default%s Config Value missing!"
@@ -12184,6 +12224,18 @@ msgid "Missing ActivityEntityID in Ticket %s!"
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
+msgid ""
+"This step does not belong anymore the current activity in process for Ticket"
+" %s!"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketProcess.pm
+msgid ""
+"Another user changed this ticket in the meantime. Please close this window "
+"and reload the ticket."
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketProcess.pm
 msgid "Missing ProcessEntityID in Ticket %s!"
 msgstr ""
 
@@ -12191,7 +12243,7 @@ msgstr ""
 msgid ""
 "Could not set DynamicField value for %s of Ticket with ID \"%s\" in "
 "ActivityDialog \"%s\"!"
-msgstr ""
+msgstr "ActivityDialog \"％s\"のID \"％s\"を持つチケットの％sのダイナミックフィールドの値を設定できませんでした！"
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
 msgid "Could not set PendingTime for Ticket with ID \"%s\" in ActivityDialog \"%s\"!"
@@ -12258,7 +12310,7 @@ msgstr "保留時間を設定"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "Dynamic Field Updated"
-msgstr "動的フィールドを更新しました"
+msgstr "ダイナミックフィールドを更新しました"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "Outgoing Email (internal)"
@@ -12571,6 +12623,18 @@ msgid "Database %s"
 msgstr "データベース %s"
 
 #. Perl Module: Kernel/Modules/Installer.pm
+msgid "Configure MySQL"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid "Configure PostgreSQL"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid "Configure Oracle"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/Installer.pm
 msgid "Unknown database type \"%s\"."
 msgstr "\"%s\"は不明なデータベース形式です。"
 
@@ -12589,6 +12653,10 @@ msgstr "ファイル \"%s/%s.xml\" が見つかりません！"
 #. Perl Module: Kernel/Modules/Installer.pm
 msgid "Contact your Admin!"
 msgstr "管理者に連絡してください！"
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid "Syslog"
+msgstr ""
 
 #. Perl Module: Kernel/Modules/Installer.pm
 msgid "Can't write Config file!"
@@ -12863,6 +12931,14 @@ msgstr "この設定は標準では有効ではありません。"
 msgid "This setting can not be deactivated."
 msgstr "この設定は無効化することはできません。"
 
+#. Perl Module: Kernel/System/DynamicField/Driver/BaseText.pm
+msgid "e.g. Text or Te*t"
+msgstr ""
+
+#. Perl Module: Kernel/System/DynamicField/Driver/Checkbox.pm
+msgid "Ignore this field."
+msgstr ""
+
 #. Perl Module: Kernel/System/Package.pm
 msgid "not installed"
 msgstr "未インストール"
@@ -12891,6 +12967,10 @@ msgstr ""
 msgid "Can't get Token from sever"
 msgstr "サーバーからトークンを取得できませんでした"
 
+#. Perl Module: Kernel/System/Stats.pm
+msgid "Sum"
+msgstr "合計"
+
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "State Type"
 msgstr ""
@@ -12902,14 +12982,6 @@ msgstr "作成時の優先度"
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Created State"
 msgstr "作成時の状態"
-
-#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
-msgid "CustomerUserLogin (complex search)"
-msgstr ""
-
-#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
-msgid "CustomerUserLogin (exact match)"
-msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Create Time"
@@ -12938,6 +13010,18 @@ msgstr "担当者／所有者"
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Created by Agent/Owner"
 msgstr "作成した担当者／所有者"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin"
+msgstr "顧客ユーザーログイン"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin (complex search)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin (exact match)"
+msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
 msgid "Evaluation by"
@@ -13064,27 +13148,28 @@ msgid "Solution Max Working Time (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Average (affected by escalation configuration)"
+msgid "First Response Average (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Min Time (affected by escalation configuration)"
+msgid "First Response Min Time (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Max Time (affected by escalation configuration)"
+msgid "First Response Max Time (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Working Time Average (affected by escalation configuration)"
+msgid ""
+"First Response Working Time Average (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Min Working Time (affected by escalation configuration)"
+msgid "First Response Min Working Time (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Max Working Time (affected by escalation configuration)"
+msgid "First Response Max Working Time (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
@@ -13408,17 +13493,17 @@ msgstr "一つ以上のチケットがある顧客"
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
 msgid "Dynamic Field Values"
-msgstr "動的フィールドの値"
+msgstr "ダイナミックフィールドの値"
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
 msgid "Invalid Dynamic Fields"
-msgstr "不正な動的フィールドです"
+msgstr "不正なダイナミックフィールドです"
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
 msgid "Invalid Dynamic Field Values"
-msgstr "動的フィールドの値は不正です"
+msgstr "ダイナミックフィールドの値は不正です"
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
@@ -13536,6 +13621,11 @@ msgstr "いくつかのパッケージは現在のフレームワークのバー
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageList.pm
 msgid "Package List"
 msgstr "パッケージリスト"
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/SessionConfigSettings.pm
+msgid "Session Config Settings"
+msgstr ""
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
 msgid "Spooled Emails"
@@ -14256,7 +14346,7 @@ msgid ""
 "A list of dynamic fields that are merged into the main ticket during a merge"
 " operation. Only dynamic fields that are empty in the main ticket will be "
 "set."
-msgstr "マージ操作中にメインチケットにマージされる動的フィールドの一覧。 メインチケットで空の動的フィールドのみが設定されます。"
+msgstr "マージ操作中にメインチケットにマージされる動的フィールドの一覧。 メインチケットで空のダイナミックフィールドのみが設定されます。"
 
 #. SysConfig
 msgid "A picture"
@@ -14370,7 +14460,7 @@ msgstr ""
 msgid ""
 "Adds the one time vacation days for the indicated calendar. Please use "
 "single digit pattern for numbers from 1 to 9 (instead of 01 - 09)."
-msgstr ""
+msgstr "指定したカレンダーの休日を1回追加します。 1〜9の数字（01〜09ではなく）には1桁のパターンを使用して下さい。"
 
 #. SysConfig
 msgid ""
@@ -14617,15 +14707,15 @@ msgstr "チケットに関するサービスおよびSLA（例：email, desktop,
 #. SysConfig
 msgid ""
 "Allows extended search conditions in ticket search of the agent interface. "
-"With this feature you can search e. g. with this kind of conditions like "
-"\"(key1&&key2)\" or \"(key1||key2)\"."
+"With this feature you can search e. g. ticket title with this kind of "
+"conditions like \"(*key1*&&*key2*)\" or \"(*key1*||*key2*)\"."
 msgstr ""
 
 #. SysConfig
 msgid ""
 "Allows extended search conditions in ticket search of the customer "
-"interface. With this feature you can search e. g. with this kind of "
-"conditions like \"(key1&&key2)\" or \"(key1||key2)\"."
+"interface. With this feature you can search e. g. ticket title with this "
+"kind of conditions like \"(*key1*&&*key2*)\" or \"(*key1*||*key2*)\"."
 msgstr ""
 
 #. SysConfig
@@ -14914,7 +15004,7 @@ msgid ""
 "Note: Only Ticket attributes, Dynamic Fields (DynamicField_NameX) and "
 "Customer attributes (e.g. CustomerUserPhone, CustomerCompanyName, ...) are "
 "allowed."
-msgstr "担当者インターフェイスのエスカレーション・ビューでこの項目をフィルタリングする（設定可能な値：0=無効, 1=有効, 2=デフォルトで有効）\n注意：チケット属性、動的フィールド（DynamicField_NameX）、顧客属性（顧客ユーザー電話番号、顧客企業名など）のみが許可されます。"
+msgstr "担当者インターフェイスのエスカレーション・ビューでこの項目をフィルタリングする（設定可能な値：0=無効, 1=有効, 2=デフォルトで有効）\n注意：チケット属性、ダイナミックフィールド（DynamicField_NameX）、顧客属性（顧客ユーザー電話番号、顧客企業名など）のみが許可されます。"
 
 #. SysConfig
 msgid ""
@@ -14923,7 +15013,7 @@ msgid ""
 "Note: Only Ticket attributes, Dynamic Fields (DynamicField_NameX) and "
 "Customer attributes (e.g. CustomerUserPhone, CustomerCompanyName, ...) are "
 "allowed."
-msgstr "担当者インターフェイスのロック・ビューでこの項目をフィルタリングする（設定可能な値：0=無効, 1=有効, 2=デフォルトで有効）\n注意：チケット属性、動的フィールド（DynamicField_NameX）、顧客属性（顧客ユーザー電話番号、顧客企業名など）のみが許可されます。"
+msgstr "担当者インターフェイスのロック・ビューでこの項目をフィルタリングする（設定可能な値：0=無効, 1=有効, 2=デフォルトで有効）\n注意：チケット属性、ダイナミックフィールド（DynamicField_NameX）、顧客属性（顧客ユーザー電話番号、顧客企業名など）のみが許可されます。"
 
 #. SysConfig
 msgid ""
@@ -14932,7 +15022,7 @@ msgid ""
 "Note: Only Ticket attributes, Dynamic Fields (DynamicField_NameX) and "
 "Customer attributes (e.g. CustomerUserPhone, CustomerCompanyName, ...) are "
 "allowed."
-msgstr "担当者インターフェイスのキュー・ビューでこの項目をフィルタリングする（設定可能な値：0=無効, 1=有効, 2=デフォルトで有効）\n注意：チケット属性、動的フィールド（DynamicField_NameX）、顧客属性（顧客ユーザー電話番号、顧客企業名など）のみが許可されます。"
+msgstr "担当者インターフェイスのキュー・ビューでこの項目をフィルタリングする（設定可能な値：0=無効, 1=有効, 2=デフォルトで有効）\n注意：チケット属性、ダイナミックフィールド（DynamicField_NameX）、顧客属性（顧客ユーザー電話番号、顧客企業名など）のみが許可されます。"
 
 #. SysConfig
 msgid ""
@@ -14941,7 +15031,7 @@ msgid ""
 "Note: Only Ticket attributes, Dynamic Fields (DynamicField_NameX) and "
 "Customer attributes (e.g. CustomerUserPhone, CustomerCompanyName, ...) are "
 "allowed."
-msgstr "担当者インターフェイスの解答待ち一覧でこの項目をフィルタリングする（設定可能な値：0=無効, 1=有効, 2=デフォルトで有効）\n注意：チケット属性、動的フィールド（DynamicField_NameX）、顧客属性（顧客ユーザー電話番号、顧客企業名など）のみが許可されます。"
+msgstr "担当者インターフェイスの解答待ち一覧でこの項目をフィルタリングする（設定可能な値：0=無効, 1=有効, 2=デフォルトで有効）\n注意：チケット属性、ダイナミックフィールド（DynamicField_NameX）、顧客属性（顧客ユーザー電話番号、顧客企業名など）のみが許可されます。"
 
 #. SysConfig
 msgid ""
@@ -14950,7 +15040,7 @@ msgid ""
 "Note: Only Ticket attributes, Dynamic Fields (DynamicField_NameX) and "
 "Customer attributes (e.g. CustomerUserPhone, CustomerCompanyName, ...) are "
 "allowed."
-msgstr "担当者インターフェイスのサービス・ビューでこの項目をフィルタリングする（設定可能な値：0=無効, 1=有効, 2=デフォルトで有効）\n注意：チケット属性、動的フィールド（DynamicField_NameX）、顧客属性（顧客ユーザー電話番号、顧客企業名など）のみが許可されます。"
+msgstr "担当者インターフェイスのサービス・ビューでこの項目をフィルタリングする（設定可能な値：0=無効, 1=有効, 2=デフォルトで有効）\n注意：チケット属性、ダイナミックフィールド（DynamicField_NameX）、顧客属性（顧客ユーザー電話番号、顧客企業名など）のみが許可されます。"
 
 #. SysConfig
 msgid ""
@@ -14959,7 +15049,7 @@ msgid ""
 "Note: Only Ticket attributes, Dynamic Fields (DynamicField_NameX) and "
 "Customer attributes (e.g. CustomerUserPhone, CustomerCompanyName, ...) are "
 "allowed."
-msgstr "担当者インターフェイスのステータス・ビューでこの項目をフィルタリングする（設定可能な値：0=無効, 1=有効, 2=デフォルトで有効）\n注意：チケット属性、動的フィールド（DynamicField_NameX）、顧客属性（顧客ユーザー電話番号、顧客企業名など）のみが許可されます。"
+msgstr "担当者インターフェイスのステータス・ビューでこの項目をフィルタリングする（設定可能な値：0=無効, 1=有効, 2=デフォルトで有効）\n注意：チケット属性、ダイナミックフィールド（DynamicField_NameX）、顧客属性（顧客ユーザー電話番号、顧客企業名など）のみが許可されます。"
 
 #. SysConfig
 msgid ""
@@ -14968,7 +15058,7 @@ msgid ""
 "default. Note: Only Ticket attributes, Dynamic Fields (DynamicField_NameX) "
 "and Customer attributes (e.g. CustomerUserPhone, CustomerCompanyName, ...) "
 "are allowed."
-msgstr "担当者インターフェイスの結果ビューでこの項目をフィルタリングする（設定可能な値：0=無効, 1=有効, 2=デフォルトで有効）\n注意：チケット属性、動的フィールド（DynamicField_NameX）、顧客属性（顧客ユーザー電話番号、顧客企業名など）のみが許可されます。"
+msgstr "担当者インターフェイスの結果ビューでこの項目をフィルタリングする（設定可能な値：0=無効, 1=有効, 2=デフォルトで有効）\n注意：チケット属性、ダイナミックフィールド（DynamicField_NameX）、顧客属性（顧客ユーザー電話番号、顧客企業名など）のみが許可されます。"
 
 #. SysConfig
 msgid ""
@@ -14977,7 +15067,7 @@ msgid ""
 "Note: Only Ticket attributes, Dynamic Fields (DynamicField_NameX) and "
 "Customer attributes (e.g. CustomerUserPhone, CustomerCompanyName, ...) are "
 "allowed."
-msgstr "担当者インターフェイスの監視ビューでこの項目をフィルタリングする（設定可能な値：0=無効, 1=有効, 2=デフォルトで有効）\n注意：チケット属性、動的フィールド（DynamicField_NameX）、顧客属性（顧客ユーザー電話番号、顧客企業名など）のみが許可されます。"
+msgstr "担当者インターフェイスの監視ビューでこの項目をフィルタリングする（設定可能な値：0=無効, 1=有効, 2=デフォルトで有効）\n注意：チケット属性、ダイナミックフィールド（DynamicField_NameX）、顧客属性（顧客ユーザー電話番号、顧客企業名など）のみが許可されます。"
 
 #. SysConfig
 msgid "Comment for new history entries in the customer interface."
@@ -15050,11 +15140,13 @@ msgid "Controls how to display the ticket history entries as readable values."
 msgstr ""
 
 #. SysConfig
-msgid "Controls if CustomerID is editable in the agent interface."
+msgid ""
+"Controls if CustomerID is automatically copied from the sender address for "
+"unknown customers."
 msgstr ""
 
 #. SysConfig
-msgid "Controls if CutomerID is editable in the agent interface."
+msgid "Controls if CustomerID is read-only in the agent interface."
 msgstr ""
 
 #. SysConfig
@@ -15091,7 +15183,7 @@ msgstr "HTMLメールをテキストメッセージに変換"
 
 #. SysConfig
 msgid "Create New process ticket."
-msgstr ""
+msgstr "プロセスチケットを作成"
 
 #. SysConfig
 msgid "Create and manage Service Level Agreements (SLAs)."
@@ -15115,7 +15207,7 @@ msgstr "顧客の作成と管理"
 
 #. SysConfig
 msgid "Create and manage dynamic fields."
-msgstr "動的フィールドの作成と管理"
+msgstr "ダイナミックフィールドの作成と管理"
 
 #. SysConfig
 msgid "Create and manage groups."
@@ -15191,7 +15283,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Create new process ticket."
-msgstr ""
+msgstr "プロセスチケットを作成"
 
 #. SysConfig
 msgid "Create tickets."
@@ -16158,7 +16250,7 @@ msgstr "顧客インタフェースで、新規顧客チケットのためのデ
 msgid ""
 "Defines the default selection at the drop down menu for dynamic objects "
 "(Form: Common Specification)."
-msgstr "動的オブジェクトに関するドロップダウン・メニューにおいて、デフォルトの選択を定義します(Form: Common Specification)。"
+msgstr "ダイナミックオブジェクトに関するドロップダウン・メニューにおいて、デフォルトの選択を定義します(Form: Common Specification)。"
 
 #. SysConfig
 msgid ""
@@ -16222,7 +16314,7 @@ msgid ""
 "'Search_DynamicField_XTimePointFormat=week; "
 "Search_DynamicField_XTimePointStart=Before; "
 "Search_DynamicField_XTimePointValue=7';."
-msgstr "デフォルトで表示するチケット検索条件を定義します。\nKeyは動的フィールドの名前（この例の場合は\"X\"）を指定します。\nContentは動的フィールドの形式によって設定内容が異なります。\n例）\n[テキスト]\n’文字列’ （任意の文字列）\n[ドロップダウン]\n'1' （項目の順番）\n[日時]\n'Search_DynamicField_XTimeSlotStartYear=1974; Search_DynamicField_XTimeSlotStartMonth=01; Search_DynamicField_XTimeSlotStartDay=26; Search_DynamicField_XTimeSlotStartHour=00; Search_DynamicField_XTimeSlotStartMinute=00; Search_DynamicField_XTimeSlotStartSecond=00; Search_DynamicField_XTimeSlotStopYear=2013; Search_DynamicField_XTimeSlotStopMonth=01; Search_DynamicField_XTimeSlotStopDay=26; Search_DynamicField_XTimeSlotStopHour=23; Search_DynamicField_XTimeSlotStopMinute=59; Search_DynamicField_XTimeSlotStopSecond=59;' and or 'Search_DynamicField_XTimePointFormat=week; Search_DynamicField_XTimePointStart=Before; Search_DynamicField_XTimePointValue=7';"
+msgstr "デフォルトで表示するチケット検索条件を定義します。\nKeyはダイナミックフィールドの名前（この例の場合は\"X\"）を指定します。\nContentはダイナミックフィールドの形式によって設定内容が異なります。\n例）\n[テキスト]\n’文字列’ （任意の文字列）\n[ドロップダウン]\n'1' （項目の順番）\n[日時]\n'Search_DynamicField_XTimeSlotStartYear=1974; Search_DynamicField_XTimeSlotStartMonth=01; Search_DynamicField_XTimeSlotStartDay=26; Search_DynamicField_XTimeSlotStartHour=00; Search_DynamicField_XTimeSlotStartMinute=00; Search_DynamicField_XTimeSlotStartSecond=00; Search_DynamicField_XTimeSlotStopYear=2013; Search_DynamicField_XTimeSlotStopMonth=01; Search_DynamicField_XTimeSlotStopDay=26; Search_DynamicField_XTimeSlotStopHour=23; Search_DynamicField_XTimeSlotStopMinute=59; Search_DynamicField_XTimeSlotStopSecond=59;' and or 'Search_DynamicField_XTimePointFormat=week; Search_DynamicField_XTimePointStart=Before; Search_DynamicField_XTimePointValue=7';"
 
 #. SysConfig
 msgid ""
@@ -17604,6 +17696,10 @@ msgid ""
 msgstr "顧客インタフェースで、チケットの受信者としてどのキューを有効とするかを定義します。"
 
 #. SysConfig
+msgid "Development"
+msgstr ""
+
+#. SysConfig
 msgid ""
 "Disable HTTP header \"Content-Security-Policy\" to allow loading of external"
 " script contents. Disabling this HTTP header can be a security issue! Only "
@@ -17673,31 +17769,31 @@ msgstr ""
 
 #. SysConfig
 msgid "Dynamic Fields Checkbox Backend GUI"
-msgstr ""
+msgstr "ダイナミックフィールド・チェックボックス・バックエンドGUI"
 
 #. SysConfig
 msgid "Dynamic Fields Date Time Backend GUI"
-msgstr ""
+msgstr "ダイナミックフィールド・日時バックエンドGUI"
 
 #. SysConfig
 msgid "Dynamic Fields Drop-down Backend GUI"
-msgstr ""
+msgstr "ダイナミックフィールド・ドロップダウン・バックエンドGUI"
 
 #. SysConfig
 msgid "Dynamic Fields GUI"
-msgstr ""
+msgstr "ダイナミックフィーールドのGUI"
 
 #. SysConfig
 msgid "Dynamic Fields Multiselect Backend GUI"
-msgstr ""
+msgstr "ダイナミックフィールド複数選択バックエンドGUI"
 
 #. SysConfig
 msgid "Dynamic Fields Overview Limit"
-msgstr ""
+msgstr "ダイナミックフィールド一覧制限"
 
 #. SysConfig
 msgid "Dynamic Fields Text Backend GUI"
-msgstr ""
+msgstr "ダイナミックフィールド・テキストバックエンドGUI"
 
 #. SysConfig
 msgid "Dynamic Fields used to export the search result in CSV format."
@@ -17746,7 +17842,7 @@ msgstr ""
 msgid ""
 "Dynamic fields shown in the sidebar of the ticket zoom screen of the agent "
 "interface. Possible settings: 0 = Disabled, 1 = Enabled."
-msgstr "担当者インターフェイスのチケットズーム画面にあるサイドバーで表示される動的フィールド。 選択可能な設定値: 0 = 無効, 1 = 有効"
+msgstr "担当者インターフェイスのチケットズーム画面にあるサイドバーで表示されるダイナミックフィールド。 選択可能な設定値: 0 = 無効, 1 = 有効"
 
 #. SysConfig
 msgid ""
@@ -17900,15 +17996,15 @@ msgstr "顧客インターフェイスのチケット・ズーム画面で表示
 
 #. SysConfig
 msgid "DynamicField"
-msgstr "動的フィールド"
+msgstr "ダイナミックフィールド"
 
 #. SysConfig
 msgid "DynamicField backend registration."
-msgstr ""
+msgstr "ダイナミックフィールドのバックエンド登録"
 
 #. SysConfig
 msgid "DynamicField object registration."
-msgstr ""
+msgstr "ダイナミックフィールドのオブジェクト登録"
 
 #. SysConfig
 msgid "E-Mail Outbound"
@@ -18700,54 +18796,6 @@ msgstr "もしログ・モジュールに関して\"File\"が選択されてい�
 
 #. SysConfig
 msgid ""
-"If a note is added by an agent, sets the state of a ticket in the close "
-"ticket screen of the agent interface."
-msgstr "担当者インタフェースのクローズ・チケット画面で、チケットのメモを追加した後の次の状態を定義します。"
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"bulk screen of the agent interface."
-msgstr "担当者インタフェースのチケット・バルク画面で、担当者によってメモが追加された場合にチケットの状態を設定します。"
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"free text screen of the agent interface."
-msgstr "担当者インタフェースのチケット・フリー・テキスト・スクリーンで、メモが担当者によって追加された場合、チケットの状態を設定します。"
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"note screen of the agent interface."
-msgstr "メモが担当者によって追加された場合、担当者インタフェースのチケット・メモ画面でチケットの状態を設定します。"
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"responsible screen of the agent interface."
-msgstr "メモが担当者によって追加された場合、担当者インタフェースのチケット責任者画面でチケットの状態を設定します。"
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of the ticket in the ticket "
-"owner screen of a zoomed ticket in the agent interface."
-msgstr "担当者インタフェースのズームされたチケットのチケット所有者画面で、メモが担当者によって追加された場合、チケットの状態を設定します。"
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of the ticket in the ticket "
-"pending screen of a zoomed ticket in the agent interface."
-msgstr "担当者インタフェースのズームされたチケットのチケット保留画面で、メモが担当者によって追加された場合、チケットの状態を設定します。"
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of the ticket in the ticket "
-"priority screen of a zoomed ticket in the agent interface."
-msgstr "担当者インタフェースのズームされたチケットのチケット優先度画面で、メモが担当者によって追加された場合、チケットの状態を設定します。"
-
-#. SysConfig
-msgid ""
 "If active, none of the regular expressions may match the user's email "
 "address to allow registration."
 msgstr ""
@@ -18888,9 +18936,16 @@ msgstr ""
 
 #. SysConfig
 msgid ""
-"Ignore article with system sender type for new article feature (e. g. auto "
-"responses or email notifications)."
-msgstr "新規項目機能のシステム・センダー・タイプを持つ項目を、無視します（例：自動返答またはEメール通知など）。"
+"If you're going to be out of office, you may wish to let other users know by"
+" setting the exact dates of your absence."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Ignore system sender article types (e. g. auto responses or email "
+"notifications) to be flagged as 'Unread Article' in AgentTicketZoom or "
+"expanded automatically in Large view screens."
+msgstr ""
 
 #. SysConfig
 msgid "Include tickets of subqueues per default when selecting a queue."
@@ -20206,8 +20261,25 @@ msgid "Second Queue"
 msgstr ""
 
 #. SysConfig
+msgid ""
+"Select after which period ticket overviews should refresh automatically."
+msgstr ""
+
+#. SysConfig
+msgid "Select how many tickets should be shown in overviews by default."
+msgstr ""
+
+#. SysConfig
+msgid "Select the main interface language."
+msgstr ""
+
+#. SysConfig
 msgid "Select your frontend Theme."
 msgstr "フロントエンドのテーマを選択してください。"
+
+#. SysConfig
+msgid "Select your preferred layout for OTRS."
+msgstr ""
 
 #. SysConfig
 msgid "Selects the cache backend to use."
@@ -20293,6 +20365,10 @@ msgstr "サービス・ビュー"
 #. SysConfig
 msgid "ServiceView"
 msgstr "サービス・ビュー"
+
+#. SysConfig
+msgid "Set a new password by filling in your current password and a new one."
+msgstr ""
 
 #. SysConfig
 msgid ""
@@ -20771,6 +20847,52 @@ msgid ""
 "Sets the service in the ticket responsible screen of the agent interface "
 "(Ticket::Service needs to be activated)."
 msgstr "担当者インタフェースのチケット責任者画面で、サービスを設定します(Ticket::Serviceを有効とする必要があります)。"
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the close ticket screen of the agent "
+"interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket bulk screen of the agent interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket free text screen of the agent "
+"interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket note screen of the agent interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket responsible screen of the agent "
+"interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of the ticket in the ticket owner screen of a zoomed ticket "
+"in the agent interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of the ticket in the ticket pending screen of a zoomed ticket"
+" in the agent interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of the ticket in the ticket priority screen of a zoomed "
+"ticket in the agent interface."
+msgstr ""
 
 #. SysConfig
 msgid "Sets the stats hook."
@@ -21355,6 +21477,12 @@ msgstr "全ての顧客識別子をマルチ・セレクトのフィールドに
 
 #. SysConfig
 msgid ""
+"Shows all the customer user identifiers in a multi-select field (not useful "
+"if you have a lot of customer user identifiers)."
+msgstr ""
+
+#. SysConfig
+msgid ""
 "Shows an owner selection in phone and email tickets in the agent interface."
 msgstr "担当者インタフェースにおいて、電話およびEメールのチケットにおける所有者のセレクションを表示します。"
 
@@ -21760,6 +21888,10 @@ msgstr ""
 
 #. SysConfig
 msgid "Spell checker."
+msgstr ""
+
+#. SysConfig
+msgid "Stable"
 msgstr ""
 
 #. SysConfig
@@ -22394,17 +22526,25 @@ msgstr "チケット番号\"<OTRS_TICKET>\" のメールは、\"<OTRS_BOUNCE_TO>
 msgid ""
 "Your queue selection of your preferred queues. You also get notified about "
 "those queues via email if enabled."
-msgstr ""
+msgstr "優先キューの選択。有効になっている場合は、電子メールでこれらのキューについての通知を受け取ります。"
 
 #. SysConfig
 msgid ""
 "Your service selection of your preferred services. You also get notified "
 "about those services via email if enabled."
-msgstr ""
+msgstr "優先サービスの選択。有効になっている場合は、電子メールでこれらのサービスについての通知を受け取ります。"
 
 #. SysConfig
 msgid "attachment"
 msgstr "添付ファイル"
+
+#. SysConfig
+msgid "bounce"
+msgstr "bounce（返送）"
+
+#. SysConfig
+msgid "compose"
+msgstr "compose（作成）"
 
 #. SysConfig
 msgid "debug"
@@ -22413,6 +22553,10 @@ msgstr "デバッグ"
 #. SysConfig
 msgid "error"
 msgstr "エラー"
+
+#. SysConfig
+msgid "forward"
+msgstr "転送"
 
 #. SysConfig
 msgid "info"
@@ -22425,3 +22569,15 @@ msgstr ""
 #. SysConfig
 msgid "notice"
 msgstr "通知"
+
+#. SysConfig
+msgid "pending"
+msgstr "pending （保留）"
+
+#. SysConfig
+msgid "responsible"
+msgstr "responsible （責任者）"
+
+#. SysConfig
+msgid "stats"
+msgstr "stats"

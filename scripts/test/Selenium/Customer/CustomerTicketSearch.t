@@ -21,6 +21,12 @@ $Selenium->RunTest(
         # get helper object
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
+        # do not check email addresses
+        $Helper->ConfigSettingChange(
+            Key   => 'CheckEmailAddresses',
+            Value => 0,
+        );
+
         # do not check Service
         $Helper->ConfigSettingChange(
             Valid => 1,
@@ -35,14 +41,35 @@ $Selenium->RunTest(
             Value => 1,
         );
 
-        # create test customer user and login
-        my $TestCustomerUserLogin = $Helper->TestCustomerUserCreate(
-        ) || die "Did not get test customer user";
+        my $RandomID = $Helper->GetRandomID();
+
+        # Create test customer user.
+        my $TestCustomerUserLogin = $Kernel::OM->Get('Kernel::System::CustomerUser')->CustomerUserAdd(
+            Source         => 'CustomerUser',
+            UserFirstname  => $RandomID,
+            UserLastname   => $RandomID,
+            UserCustomerID => $RandomID,
+            UserLogin      => 'CustomerUser (Example) ' . $RandomID,
+            UserPassword   => $RandomID,
+            UserEmail      => "$RandomID\@example.com",
+            ValidID        => 1,
+            UserID         => 1
+        );
+        $Self->True(
+            $TestCustomerUserLogin,
+            "CustomerUser $TestCustomerUserLogin is created",
+        );
+
+        $Kernel::OM->Get('Kernel::System::CustomerUser')->SetPreferences(
+            UserID => $TestCustomerUserLogin,
+            Key    => 'UserLanguage',
+            Value  => 'en',
+        );
 
         $Selenium->Login(
             Type     => 'Customer',
             User     => $TestCustomerUserLogin,
-            Password => $TestCustomerUserLogin,
+            Password => $RandomID,
         );
 
         # get script alias
@@ -69,7 +96,7 @@ $Selenium->RunTest(
         my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
         # create ticket for test scenario
-        my $TitleRandom = 'Title' . $Helper->GetRandomID();
+        my $TitleRandom = 'Title' . $RandomID;
         my $TicketID    = $TicketObject->TicketCreate(
             Title        => $TitleRandom,
             Queue        => 'Raw',
@@ -137,6 +164,25 @@ $Selenium->RunTest(
             "Filter data is found - Priority: 2 low+3 normal",
         );
 
+        # Test without customer company ticket access for bug#12595.
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'Ticket::Frontend::CustomerDisableCompanyTicketAccess',
+            Value => 1,
+        );
+
+        $Selenium->VerifiedGet("${ScriptAlias}customer.pl?Action=CustomerTicketSearch");
+
+        # input ticket number as search parameter
+        $Selenium->find_element( "#TicketNumber", 'css' )->send_keys( $Ticket{TicketNumber} );
+        $Selenium->find_element( "#TicketNumber", 'css' )->VerifiedSubmit();
+
+        # check for expected result
+        $Self->True(
+            index( $Selenium->get_page_source(), $TitleRandom ) > -1,
+            "Ticket $TitleRandom found on page",
+        );
+
         # clean up test data from the DB
         my $Success = $TicketObject->TicketDelete(
             TicketID => $TicketID,
@@ -147,8 +193,23 @@ $Selenium->RunTest(
             "Ticket is deleted - $TicketID"
         );
 
-        # make sure the cache is correct
-        $Kernel::OM->Get('Kernel::System::Cache')->CleanUp( Type => 'Ticket' );
+        my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
+        # Delete test created customer user.
+        $Success = $DBObject->Do(
+            SQL  => "DELETE FROM customer_user WHERE login = ?",
+            Bind => [ \$TestCustomerUserLogin ],
+        );
+        $Self->True(
+            $Success,
+            "CustomerUser $TestCustomerUserLogin is deleted",
+        );
+
+        for my $Cache (qw (Ticket CustomerUser)) {
+            $Kernel::OM->Get('Kernel::System::Cache')->CleanUp(
+                Type => $Cache,
+            );
+        }
     }
 );
 

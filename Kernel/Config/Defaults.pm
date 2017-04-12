@@ -1129,6 +1129,7 @@ sub LoadDefaults {
         'Active' => '1',
         'Area' => 'Agent',
         'Column' => 'User Profile',
+        'Desc' => 'Set a new password by filling in your current password and a new one.',
         'Label' => 'Change password',
         'Module' => 'Kernel::Output::HTML::Preferences::Password',
         'PasswordMaxLoginFailed' => '0',
@@ -1176,6 +1177,7 @@ sub LoadDefaults {
         'Column' => 'User Profile',
         'Key' => 'Language',
         'Label' => 'Language',
+        'Desc' => 'Select the main interface language.',
         'Module' => 'Kernel::Output::HTML::Preferences::Language',
         'PrefKey' => 'UserLanguage',
         'Prio' => '1000'
@@ -1579,7 +1581,7 @@ via the Preferences button after logging in.
 #        CacheTTL => 0,
 #        Map => [
 #            # note: Login, Email and CustomerID needed!
-#            # var, frontend, storage, shown (1=always,2=lite), required, storage-type, http-link, readonly
+#            # var, frontend, storage, shown (1=always,2=lite), required, storage-type, http-link, readonly, http-link-target, link class(es)
 #            [ 'UserTitle',      'Title',      'title',           1, 0, 'var', '', 0 ],
 #            [ 'UserFirstname',  'Firstname',  'givenname',       1, 1, 'var', '', 0 ],
 #            [ 'UserLastname',   'Lastname',   'sn',              1, 1, 'var', '', 0 ],
