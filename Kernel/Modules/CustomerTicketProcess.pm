@@ -3670,18 +3670,18 @@ sub _StoreActivityDialog {
         # Make sure the activity dialog to save is still the correct activity
         my $Activity = $Kernel::OM->Get('Kernel::System::ProcessManagement::Activity')->ActivityGet(
             ActivityEntityID => $ActivityEntityID,
-            Interface        => ['AgentInterface'],
+            Interface        => ['CustomerInterface'],
         );
         my %ActivityDialogs = reverse %{ $Activity->{ActivityDialog} // {} };
         if ( !$ActivityDialogs{$ActivityDialogEntityID} ) {
 
             return $Self->_ShowDialogError(
                 Message => $LayoutObject->{LanguageObject}->Translate(
-                    'This activity dialog does not belong to current activity in Ticket %s!',
+                    'This step does not belong anymore the current activity in process for Ticket %s!',
                     $Ticket{TicketID},
                 ),
                 Comment => Translatable(
-                    'It might be possible that the ticket was updated by another user in the mean time, please close this window and reload ticket.'
+                    'Another user changed this ticket in the meantime. Please close this window and reload the ticket.'
                 ),
             );
         }

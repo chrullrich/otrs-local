@@ -443,20 +443,17 @@ sub Run {
 
             # Fallback for tickets without articles: get at least basic ticket data
             if ( !%Article ) {
-                %Article = $TicketObject->TicketGet(
-                    TicketID      => $TicketID,
-                    DynamicFields => 0,
-                );
+                %Article = %Ticket;
                 if ( !$Article{Title} ) {
                     $Article{Title} = $LayoutObject->{LanguageObject}->Translate(
                         'This ticket has no title or subject'
                     );
                 }
                 $Article{Subject} = $Article{Title};
-
-                # show ticket create time in small view
-                $Article{Created} = $Ticket{Created};
             }
+
+            # show ticket create time in small view
+            $Article{Created} = $Ticket{Created};
 
             # prepare a "long" version of the subject to show in the title attribute. We don't take
             # the whole string (which could be VERY long) to avoid polluting the DOM and having too
@@ -614,6 +611,7 @@ sub Run {
     my %SpecialColumns = (
         TicketNumber => 1,
         Owner        => 1,
+        Responsible  => 1,
         CustomerID   => 1,
         Title        => 1,
     );
@@ -670,7 +668,8 @@ sub Run {
             $LayoutObject->Block(
                 Name => 'OverviewNavBarPageFlag',
                 Data => {
-                    CSS => $CSS,
+                    CSS   => $CSS,
+                    Title => $Title,
                 },
             );
 
@@ -1392,6 +1391,12 @@ sub Run {
             UserID => $Article{OwnerID},
         );
 
+        # Responsible info.
+        my %ResponsibleInfo = $UserObject->GetUserData(
+            UserID => $Article{ResponsibleID},
+        );
+        $UserInfo{ResponsibleInfo} = \%ResponsibleInfo;
+
         $LayoutObject->Block(
             Name => 'Record',
             Data => { %Article, %UserInfo },
@@ -1555,15 +1560,6 @@ sub Run {
                 elsif ( $TicketColumn eq 'Created' || $TicketColumn eq 'Changed' ) {
                     $BlockType = 'Time';
                     $DataValue = $Article{$TicketColumn} || $UserInfo{$TicketColumn};
-                }
-                elsif ( $TicketColumn eq 'Responsible' ) {
-
-                    # get responsible info
-                    my %ResponsibleInfo = $UserObject->GetUserData(
-                        UserID => $Article{ResponsibleID},
-                    );
-                    $DataValue = $ResponsibleInfo{'UserFirstname'} . ' '
-                        . $ResponsibleInfo{'UserLastname'};
                 }
                 else {
                     $DataValue = $Article{$TicketColumn}
