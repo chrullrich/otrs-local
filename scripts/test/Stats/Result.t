@@ -38,7 +38,8 @@ my $DynamicFieldBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::
 # get helper object
 $Kernel::OM->ObjectParamAdd(
     'Kernel::System::UnitTest::Helper' => {
-        RestoreDatabase => 1,
+        RestoreDatabase  => 1,
+        UseTmpArticleDir => 1,
     },
 );
 my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
@@ -126,7 +127,7 @@ my @Tickets = (
             Queue        => $QueueNames[0],
             Lock         => 'unlock',
             Priority     => '3 normal',
-            State        => 'new',
+            State        => 'open',
             CustomerID   => 'example + test',
             CustomerUser => 'customer@example.com',
             OwnerID      => 1,
@@ -144,7 +145,7 @@ my @Tickets = (
             Lock         => 'unlock',
             Priority     => '3 normal',
             State        => 'new',
-            CustomerID   => '123465',
+            CustomerID   => 'test & example',
             CustomerUser => 'customer@example.com',
             OwnerID      => 1,
             UserID       => 1,
@@ -228,7 +229,7 @@ my @Tickets = (
             Queue         => $QueueNames[2],
             Lock          => 'unlock',
             Priority      => '3 normal',
-            State         => 'new',
+            State         => 'open',
             CustomerID    => '123465',
             CustomerUser  => 'customer@example.com',
             OwnerID       => 1,
@@ -351,6 +352,11 @@ for my $Ticket (@Tickets) {
 continue {
     $Helper->FixedTimeUnset();
 }
+
+my %StateList = $Kernel::OM->Get('Kernel::System::State')->StateList(
+    UserID => 1,
+);
+my %LookupStateList = map { $StateList{$_} => $_ } sort keys %StateList;
 
 # set the language to 'en' before the StatsRun
 $Kernel::OM->ObjectParamAdd(
@@ -1599,6 +1605,73 @@ my @Tests = (
         ],
     },
 
+    # Test with StateIDs on the X-Axis to test some translations:
+    #   Fixed TimeStamp: '2015-12-31 20:00:00'
+    #   TimeZone: -
+    #   X-Axis: 'StateIDs' with 'new' and 'open'.
+    #   Y-Axis: 'QueueIDs' to select only the created tickets for the test.
+    #   Language: es
+    {
+        Description => 'Test with StateIDs on the X-Axis to test some translations',
+        TimeStamp   => '2015-12-31 20:00:00',
+        Language    => 'es',
+        StatsUpdate => {
+            StatID => $DynamicMatrixStatID,
+            Hash   => {
+                SumRow      => 0,
+                SumCol      => 0,
+                UseAsXvalue => [
+                    {
+                        'Element'        => 'StateIDs',
+                        'Block'          => 'MultiSelectField',
+                        'Selected'       => 1,
+                        'Fixed'          => 1,
+                        'SelectedValues' => [
+                            $LookupStateList{'new'},
+                            $LookupStateList{'open'},
+                        ],
+                    },
+                ],
+                UseAsValueSeries => [
+                    {
+                        'Element'        => 'QueueIDs',
+                        'Block'          => 'MultiSelectField',
+                        'Selected'       => 1,
+                        'Fixed'          => 1,
+                        'SelectedValues' => \@QueueIDs,
+                    },
+                ],
+                UseAsRestriction => [],
+            },
+            UserID => 1,
+        },
+        ReferenceResultData => [
+            [
+                'Title for result tests',
+            ],
+            [
+                'Cola',
+                'abierto',
+                'nuevo',
+            ],
+            [
+                $QueueNames[0],
+                1,
+                5,
+            ],
+            [
+                $QueueNames[1],
+                0,
+                2,
+            ],
+            [
+                $QueueNames[2],
+                1,
+                1,
+            ],
+        ],
+    },
+
     # Test with a relative time period and a other language
     # Fixed TimeStamp: '2015-08-15 20:00:00'
     # TimeZone: 0
@@ -2609,14 +2682,15 @@ my @Tests = (
         ],
     },
 
-    # Test with a relative time period and a restriction for a dynamic field text and textarea
+    # Test with a relative time period and a restriction (special CustomerID value with '+')
     # Fixed TimeStamp: '2014-10-12 20:00:00'
     # TimeZone: -
     # X-Axis: 'CreateTime' with a relative period 'the last complete 7 days' and 'scale 1 day'.
     # Y-Axis: 'QueueIDs' to select only the created tickets for the test.
     # Restrictions: 'CustomerID' => 'example + test' (exact match),
     {
-        Description => 'Test stat with a restriction for a special customer id (last complete 7 days and scale 1 day)',
+        Description =>
+            'Test stat with a restriction for a special customer id with a "+" (last complete 7 days and scale 1 day)',
         TimeStamp   => '2014-10-12 20:00:00',
         Language    => 'en',
         StatsUpdate => {
@@ -2710,7 +2784,7 @@ my @Tests = (
     },
 
     # Test for a dynamic list with some selected columns and restrictions (special CustomerID value with '+')
-    # Fixed TimeStamp: '2015-08-15 20:00:00'
+    # Fixed TimeStamp: '2014-10-12 20:00:00'
     # TimeZone: -
     # X-Axis: 'TicketAttributes' - Number, TicketNumber, Title, Created, Queue
     # Y-Axis: 'OrderBy' - TicketNumber, 'SortSequence' - Up
@@ -2808,6 +2882,190 @@ my @Tests = (
                 $TicketIDs[0]->{Title},
                 $TicketIDs[0]->{Created},
                 $TicketIDs[0]->{Queue},
+            ],
+        ],
+    },
+
+    # Test with a relative time period and a restriction (special CustomerID value with '&')
+    # Fixed TimeStamp: '2014-12-11 20:00:00'
+    # TimeZone: -
+    # X-Axis: 'CreateTime' with a relative period 'the last complete 7 days' and 'scale 1 day'.
+    # Y-Axis: 'QueueIDs' to select only the created tickets for the test.
+    # Restrictions: 'CustomerID' => 'test & example' (exact match),
+    {
+        Description =>
+            'Test stat with a restriction for a special customer id with a "&" (last complete 7 days and scale 1 day)',
+        TimeStamp   => '2014-12-11 20:00:00',
+        Language    => 'en',
+        StatsUpdate => {
+            StatID => $DynamicMatrixStatID,
+            Hash   => {
+                SumRow      => 0,
+                SumCol      => 0,
+                UseAsXvalue => [
+                    {
+                        Element                   => 'CreateTime',
+                        Block                     => 'Time',
+                        Fixed                     => 1,
+                        Selected                  => 1,
+                        TimeRelativeCount         => 2,
+                        TimeRelativeUpcomingCount => 0,
+                        TimeRelativeUnit          => 'Day',
+                        TimeScaleCount            => 1,
+                        SelectedValues            => [
+                            'Day',
+                        ],
+                    },
+                ],
+                UseAsValueSeries => [
+                    {
+                        'Element'        => 'QueueIDs',
+                        'Block'          => 'MultiSelectField',
+                        'Selected'       => 1,
+                        'Fixed'          => 1,
+                        'SelectedValues' => \@QueueIDs,
+                    },
+                ],
+                UseAsRestriction => [
+                    {
+                        'Element'        => 'CustomerID',
+                        'Block'          => 'MultiSelectField',
+                        'Selected'       => 1,
+                        'Fixed'          => 1,
+                        'SelectedValues' => [
+                            'test & example',
+                        ],
+                    },
+                ],
+            },
+            UserID => 1,
+        },
+        ReferenceResultData => [
+            [
+                'Title for result tests 2014-12-09 00:00:00-2014-12-10 23:59:59',
+            ],
+            [
+                'Queue',
+                'Tue 9',
+                'Wed 10',
+            ],
+            [
+                $QueueNames[0],
+                0,
+                1,
+            ],
+            [
+                $QueueNames[1],
+                0,
+                0,
+            ],
+            [
+                $QueueNames[2],
+                0,
+                0,
+            ],
+        ],
+    },
+
+    # Test for a dynamic list with some selected columns and restrictions (special CustomerID value with '&')
+    # Fixed TimeStamp: '2014-12-12 20:00:00'
+    # TimeZone: -
+    # X-Axis: 'TicketAttributes' - Number, TicketNumber, Title, Created, Queue
+    # Y-Axis: 'OrderBy' - TicketNumber, 'SortSequence' - Up
+    # Restrictions: 'QueueIDs' to select only the created tickets for the test,
+    #               'CreateTime' with a relative period 'the last complete 7 days'
+    #               'CustomerID' with a selected customer id 'test & example'
+    {
+        Description =>
+            "Test dynamic list stat with some selected columns and a restriction for the create time and a selected customer id with a '&'",
+        TimeStamp   => '2014-12-12 20:00:00',
+        Language    => 'en',
+        StatsUpdate => {
+            StatID => $DynamicListStatID,
+            Hash   => {
+                UseAsXvalue => [
+                    {
+                        'Element'        => 'TicketAttributes',
+                        'Block'          => 'MultiSelectField',
+                        'Selected'       => 1,
+                        'Fixed'          => 1,
+                        'SelectedValues' => [
+                            'Number',
+                            'TicketNumber',
+                            'Title',
+                            'Created',
+                            'Queue',
+                        ],
+                    },
+                ],
+                UseAsValueSeries => [
+                    {
+                        'Element'        => 'OrderBy',
+                        'Block'          => 'SelectField',
+                        'Selected'       => 1,
+                        'Fixed'          => 1,
+                        'SelectedValues' => [
+                            'TicketNumber',
+                        ],
+                    },
+                    {
+                        'Element'        => 'SortSequence',
+                        'Block'          => 'SelectField',
+                        'Selected'       => 1,
+                        'Fixed'          => 1,
+                        'SelectedValues' => [
+                            'Up',
+                        ],
+                    },
+                ],
+                UseAsRestriction => [
+                    {
+                        'Element'        => 'QueueIDs',
+                        'Block'          => 'MultiSelectField',
+                        'Selected'       => 1,
+                        'Fixed'          => 1,
+                        'SelectedValues' => \@QueueIDs,
+                    },
+                    {
+                        Element                   => 'CreateTime',
+                        Block                     => 'Time',
+                        Fixed                     => 1,
+                        Selected                  => 1,
+                        TimeRelativeCount         => 7,
+                        TimeRelativeUpcomingCount => 0,
+                        TimeRelativeUnit          => 'Day',
+                        SelectedValues            => [],
+                    },
+                    {
+                        'Element'        => 'CustomerID',
+                        'Block'          => 'MultiSelectField',
+                        'Selected'       => 1,
+                        'Fixed'          => 1,
+                        'SelectedValues' => [
+                            'test & example',
+                        ],
+                    },
+                ],
+            },
+            UserID => 1,
+        },
+        ReferenceResultData => [
+            [
+                'Title for result tests 2014-12-05 00:00:00-2014-12-11 23:59:59',
+            ],
+            [
+                'Number',
+                'Ticket#',
+                'Title',
+                'Created',
+                'Queue',
+            ],
+            [
+                1,
+                $TicketIDs[1]->{TicketNumber},
+                $TicketIDs[1]->{Title},
+                $TicketIDs[1]->{Created},
+                $TicketIDs[1]->{Queue},
             ],
         ],
     },
@@ -3053,6 +3311,135 @@ my @Tests = (
             ],
         ],
     },
+
+    # Test the ExchangeAxis functionality.
+    # Fixed TimeStamp: '2015-12-31 20:00:00'
+    # TimeZone: -
+    # X-Axis: 'StateIDs' with 'new' and 'open'.
+    # Y-Axis: 'QueueIDs' to select only the created tickets for the test.
+    # Language: en
+    {
+        Description => 'Test the ExchangeAxis functionality',
+        TimeStamp   => '2015-12-31 20:00:00',
+        Language    => 'en',
+        StatsUpdate => {
+            StatID => $DynamicMatrixStatID,
+            Hash   => {
+                ExchangeAxis => 1,
+                UseAsXvalue  => [
+                    {
+                        'Element'        => 'StateIDs',
+                        'Block'          => 'MultiSelectField',
+                        'Selected'       => 1,
+                        'Fixed'          => 1,
+                        'SelectedValues' => [
+                            $LookupStateList{'new'},
+                            $LookupStateList{'open'},
+                        ],
+                    },
+                ],
+                UseAsValueSeries => [
+                    {
+                        'Element'        => 'QueueIDs',
+                        'Block'          => 'MultiSelectField',
+                        'Selected'       => 1,
+                        'Fixed'          => 1,
+                        'SelectedValues' => \@QueueIDs,
+                    },
+                ],
+                UseAsRestriction => [],
+            },
+            UserID => 1,
+        },
+        ReferenceResultData => [
+            [
+                'Title for result tests',
+            ],
+            [
+                '',
+                $QueueNames[0],
+                $QueueNames[1],
+                $QueueNames[2],
+            ],
+            [
+                'new',
+                5,
+                2,
+                1,
+            ],
+            [
+                'open',
+                1,
+                0,
+                1,
+            ],
+        ],
+    },
+
+    # Test the ExchangeAxis functionality with diffrent language 'de'.
+    # Fixed TimeStamp: '2015-12-31 20:00:00'
+    # TimeZone: -
+    # X-Axis: 'StateIDs' with 'new' and 'open'.
+    # Y-Axis: 'QueueIDs' to select only the created tickets for the test.
+    # Language: de
+    {
+        Description => "Test the ExchangeAxis functionality with diffrent language 'de'",
+        TimeStamp   => '2015-12-31 20:00:00',
+        Language    => 'de',
+        StatsUpdate => {
+            StatID => $DynamicMatrixStatID,
+            Hash   => {
+                ExchangeAxis => 1,
+                UseAsXvalue  => [
+                    {
+                        'Element'        => 'StateIDs',
+                        'Block'          => 'MultiSelectField',
+                        'Selected'       => 1,
+                        'Fixed'          => 1,
+                        'SelectedValues' => [
+                            $LookupStateList{'new'},
+                            $LookupStateList{'open'},
+                        ],
+                    },
+                ],
+                UseAsValueSeries => [
+                    {
+                        'Element'        => 'QueueIDs',
+                        'Block'          => 'MultiSelectField',
+                        'Selected'       => 1,
+                        'Fixed'          => 1,
+                        'SelectedValues' => \@QueueIDs,
+                    },
+                ],
+                UseAsRestriction => [],
+            },
+            UserID => 1,
+        },
+        ReferenceResultData => [
+            [
+                'Title for result tests',
+            ],
+            [
+                '',
+                $QueueNames[0],
+                $QueueNames[1],
+                $QueueNames[2],
+            ],
+            [
+                'neu',
+                5,
+                2,
+                1,
+            ],
+            [
+                'offen',
+                1,
+                0,
+                1,
+            ],
+        ],
+    },
+
 );
 
 # ------------------------------------------------------------ #
@@ -3114,6 +3501,9 @@ for my $Test (@Tests) {
     );
 
     my $Stat = $StatsObject->StatsGet( StatID => $Test->{StatsUpdate}->{StatID} );
+
+    # Add the ExchangeAxis param to the stat hash, because this can only be changed at runtime.
+    $Stat->{ExchangeAxis} = $Test->{StatsUpdate}->{Hash}->{ExchangeAxis};
 
     $Self->True(
         $Stat->{Title},

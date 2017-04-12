@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.972358722358722;
+    $Self->{Completeness}        = 0.96593227254182;
 
     # csv separator
     $Self->{Separator} = ',';
@@ -1618,6 +1618,8 @@ sub Data {
 
         # Template: AdminNotificationEventTransportEmailSettings
         'Additional recipient email addresses' => 'Penambahan penerima alamat surat',
+        'You can use OTRS-tags like <OTRS_TICKET_DynamicField_...> to insert values from the current ticket.' =>
+            '',
         'Notification article type' => 'Pemberitahuan jenis artikel',
         'An article will be created if the notification is sent to the customer or an additional email address.' =>
             'Sebuah artikel akan dibuat jika pemberitahuan tersebut dikirim ke pelanggan atau alamat email tambahan.',
@@ -2403,7 +2405,7 @@ EMAILADDRESS:info@example.com dari, kepada atau Cc.',
 
         # Template: AdminSystemMaintenanceEdit
         'Edit System Maintenance %s' => 'Ubah sistem pemeliharaan %s',
-        'Edit System Maintenance information' => 'Ubah sistem informasi pemeliharaan',
+        'Edit System Maintenance Information' => '',
         'Date invalid!' => 'Tanggal tidak sah',
         'Login message' => 'Masukkan surat',
         'Show login message' => 'Tampilkan surat',
@@ -2813,8 +2815,10 @@ bin/otrs.Daemon.pl status\').',
         'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.' =>
             'Pencarian di atribut Dari, Untuk, Cc, Subjek dan tubuh artikel, mengesampingkan atribut lainnya dengan nama yang sama.',
         'CustomerID (complex search)' => '',
+        '(e. g. 234*)' => '',
         'CustomerID (exact match)' => '',
         'Customer User Login (complex search)' => '',
+        '(e. g. U51*)' => '',
         'Customer User Login (exact match)' => '',
         'Attachment Name' => 'Lampirkan nama',
         '(e. g. m*file or myfi*)' => '(Contoh: m*file atau myfl*)',
@@ -3655,6 +3659,8 @@ bin/otrs.Daemon.pl status\').',
         'No preferences for %s!' => 'Tidak ada preferensi untuk %s!',
         'Can\'t get element data of %s!' => 'Tidak bisa mendapatkan data unsur %s!',
         'Can\'t get filter content data of %s!' => 'Tidak bisa mendapatkan data filter konten dari %s!',
+        'Customer Company Name' => '',
+        'Customer User ID' => '',
 
         # Perl Module: Kernel/Modules/AgentLinkObject.pm
         'Need SourceObject and SourceKey!' => 'Perlu sumber objek dan sumber kunci!',
@@ -3703,7 +3709,9 @@ bin/otrs.Daemon.pl status\').',
         'You either selected no ticket or only tickets which are locked by other agents.' =>
             '',
         'You need to select at least one ticket.' => '',
-        'Ticket is locked by another agent and will be ignored!' => 'Tiket dikunci oleh agen lain dan akan diabaikan!',
+        'The following tickets were ignored because they are locked by another agent or you don\'t have write access to these tickets: %s.' =>
+            '',
+        'The following tickets were locked: %s.' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketCompose.pm
         'Can not determine the ArticleType!' => 'Tidak bisa menentukan ArticleType!',
@@ -3793,6 +3801,10 @@ bin/otrs.Daemon.pl status\').',
         'Could not store ActivityDialog, invalid TicketID: %s!' => 'Tidak bisa menyimpan ActivityDialog. TicketID tidak sah: %s!',
         'Invalid TicketID: %s!' => 'TicketID tidak sah : %s!',
         'Missing ActivityEntityID in Ticket %s!' => 'ActivityEntityID hilang di Ticket %s!',
+        'This activity dialog does not belong to current activity in Ticket %s!' =>
+            '',
+        'It might be possible that the ticket was updated by another user in the mean time, please close this window and reload ticket.' =>
+            '',
         'Missing ProcessEntityID in Ticket %s!' => 'ProcessEntityID hilang di Tiket %s!',
         'Could not set DynamicField value for %s of Ticket with ID "%s" in ActivityDialog "%s"!' =>
             'Tidak bisa set SynamicField nilai untuk %s dari Ticket dengan ID "%s" di ActivityDialog "%s"!',
@@ -4052,6 +4064,9 @@ bin/otrs.Daemon.pl status\').',
         # Perl Module: Kernel/System/Registration.pm
         'Can\'t get Token from sever' => 'Tidak bisa mendapatkan Token dari server',
 
+        # Perl Module: Kernel/System/Stats.pm
+        'Sum' => '',
+
         # Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
         'State Type' => 'Jenis stat',
         'Created Priority' => 'dibuat Prioritas',
@@ -4281,6 +4296,9 @@ bin/otrs.Daemon.pl status\').',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageList.pm
         'Package List' => '',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SessionConfigSettings.pm
+        'Session Config Settings' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
         'Spooled Emails' => '',
@@ -4650,10 +4668,10 @@ Helpdesk Team Anda
             'Memungkinkan mendefinisikan jenis baru untuk tiket (jika fitur jenis tiket diaktifkan).',
         'Allows defining services and SLAs for tickets (e. g. email, desktop, network, ...), and escalation attributes for SLAs (if ticket service/SLA feature is enabled).' =>
             'Memungkinkan mendefinisikan layanan dan SLA tiket (e. G. Email, desktop, jaringan, ...), dan eskalasi atribut untuk SLA (jika layanan tiket / fitur SLA diaktifkan).',
-        'Allows extended search conditions in ticket search of the agent interface. With this feature you can search e. g. with this kind of conditions like "(key1&&key2)" or "(key1||key2)".' =>
-            'Memungkinkan kondisi pencarian diperpanjang mencari tiket dari antarmuka agen. Dengan fitur ini Anda dapat mencari e. g. dengan jenis kondisi seperti "(key1 && key2)" atau "(key1 || key2)".',
-        'Allows extended search conditions in ticket search of the customer interface. With this feature you can search e. g. with this kind of conditions like "(key1&&key2)" or "(key1||key2)".' =>
-            'Memungkinkan kondisi pencarian diperpanjang mencari tiket dari antarmuka pelanggan. Dengan fitur ini Anda dapat mencari e. g. dengan jenis kondisi seperti "(key1 && key2)" atau "(key1 || key2)"',
+        'Allows extended search conditions in ticket search of the agent interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".' =>
+            '',
+        'Allows extended search conditions in ticket search of the customer interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".' =>
+            '',
         'Allows extended search conditions in ticket search of the generic agent interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".' =>
             'Memungkinkan kondisi pencarian diperpanjang mencari tiket dari antarmuka agen generik. Dengan fitur ini Anda dapat mencari e. g. title tiket dengan jenis kondisi seperti "(* key1 * && * key2 *)" atau "(* key1 * || * key2 *)".',
         'Allows having a medium format ticket overview (CustomerInfo => 1 - shows also the customer information).' =>
@@ -4776,8 +4794,9 @@ Helpdesk Team Anda
             'Mengkonfigurasi TicketDynamicField pengaturan default. "Nama" mendefinisikan bidang yang dinamis yang harus digunakan, "Value" adalah data yang akan ditetapkan, dan "Event" mendefinisikan acara pemicu. Silakan periksa pengembang user (http://otrs.github.io/doc/), bab "Ticket acara Modul".',
         'Controls how to display the ticket history entries as readable values.' =>
             'Kontrol bagaimana menampilkan entri sejarah tiket sebagai nilai-nilai yang dapat dibaca.',
-        'Controls if CustomerID is editable in the agent interface.' => '',
-        'Controls if CutomerID is editable in the agent interface.' => 'Kontrol jika Pelanggan dapat diedit di antarmuka agen.',
+        'Controls if CustomerID is automatically copied from the sender address for unknown customers.' =>
+            '',
+        'Controls if CustomerID is read-only in the agent interface.' => '',
         'Controls if customers have the ability to sort their tickets.' =>
             'Kontrol jika pelanggan memiliki kemampuan untuk memilah tiket mereka.',
         'Controls if more than one from entry can be set in the new phone ticket in the agent interface.' =>
@@ -5558,6 +5577,7 @@ Helpdesk Team Anda
             'Menentukan opsi yang akan berlaku jika penerima (tiket ponsel) dan pengirim (tiket email) dalam antarmuka agen.',
         'Determines which queues will be valid for ticket\'s recepients in the customer interface.' =>
             'Menentukan antrian yang akan berlaku untuk tiket penerima di antarmuka pelanggan.',
+        'Development' => '',
         'Disable HTTP header "Content-Security-Policy" to allow loading of external script contents. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             '',
         'Disable HTTP header "X-Frame-Options: SAMEORIGIN" to allow OTRS to be included as an IFrame in other websites. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
@@ -5884,22 +5904,6 @@ Helpdesk Team Anda
             'Jika "syslog" dipilih untuk LogModule, yang charset harus digunakan untuk penebangan dapat ditentukan.',
         'If "file" was selected for LogModule, a logfile must be specified. If the file doesn\'t exist, it will be created by the system.' =>
             'Jika "file" dipilih untuk LogModule, file log harus ditentukan. Jika file tidak ada, maka akan dibuat oleh sistem.',
-        'If a note is added by an agent, sets the state of a ticket in the close ticket screen of the agent interface.' =>
-            'Jika catatan ditambahkan oleh agen, menetapkan keadaan tiket di layar tiket penutupan antarmuka agen.',
-        'If a note is added by an agent, sets the state of a ticket in the ticket bulk screen of the agent interface.' =>
-            'Jika catatan ditambahkan oleh agen, menetapkan keadaan tiket di layar massal tiket dari antarmuka agen.',
-        'If a note is added by an agent, sets the state of a ticket in the ticket free text screen of the agent interface.' =>
-            'Jika catatan ditambahkan oleh agen, menetapkan keadaan tiket di tiket layar teks bebas dari antarmuka agen.',
-        'If a note is added by an agent, sets the state of a ticket in the ticket note screen of the agent interface.' =>
-            'Jika catatan ditambahkan oleh agen, menetapkan keadaan tiket di layar catatan tiket dari antarmuka agen.',
-        'If a note is added by an agent, sets the state of a ticket in the ticket responsible screen of the agent interface.' =>
-            'Jika catatan ditambahkan oleh agen, menetapkan keadaan tiket di tiket layar yang bertanggung jawab dari antarmuka agen.',
-        'If a note is added by an agent, sets the state of the ticket in the ticket owner screen of a zoomed ticket in the agent interface.' =>
-            'Jika catatan ditambahkan oleh agen, menetapkan keadaan tiket di layar pemilik tiket dari tiket yang diperbesar di antarmuka agen.',
-        'If a note is added by an agent, sets the state of the ticket in the ticket pending screen of a zoomed ticket in the agent interface.' =>
-            'JIKA Catatan ditambahkan Oleh agen, menetapkan keadaan Tiket di Layar pemilik Tiket Dari Tiket Yang diperbesar di Antarmuka agen.',
-        'If a note is added by an agent, sets the state of the ticket in the ticket priority screen of a zoomed ticket in the agent interface.' =>
-            'Jika catatan ditambahkan oleh agen, menetapkan keadaan tiket di layar prioritas tiket dari tiket yang diperbesar di antarmuka agen.',
         'If active, none of the regular expressions may match the user\'s email address to allow registration.' =>
             'Jika aktif, tidak ada ekspresi reguler dapat mencocokkan alamat email pengguna untuk memungkinkan pendaftaran.',
         'If active, one of the regular expressions has to match the user\'s email address to allow registration.' =>
@@ -5946,8 +5950,8 @@ Helpdesk Team Anda
             'Jika regex ini cocok, tidak ada pesan akan dikirim oleh autoresponder.',
         'If this setting is active, local modifications will not be highlighted as errors in the package manager and support data collector.' =>
             'Jika pengaturan ini aktif, modifikasi lokal tidak akan disorot sebagai kesalahan dalam paket manager dan data dukungan kolektor.',
-        'Ignore article with system sender type for new article feature (e. g. auto responses or email notifications).' =>
-            'Abaikan artikel dengan jenis sensor sistem untuk fitur artikel baru (Contoh: tanggapan auto untuk pemberitahuan email).',
+        'Ignore system sender article types (e. g. auto responses or email notifications) to be flagged as \'Unread Article\' in AgentTicketZoom or expanded automatically in Large view screens.' =>
+            '',
         'Include tickets of subqueues per default when selecting a queue.' =>
             'Termasuk tiket dari subqueues per default ketika memilih antrian.',
         'Include unknown customers in ticket filter.' => 'Termasuk pelanggan yang tidak diketahui dalam filter tiket.',
@@ -6504,6 +6508,22 @@ Helpdesk Team Anda
             'Set layanan di layar prioritas tiket dari tiket yang diperbesar di antarmuka agen (Ticket :: Layanan harus diaktifkan).',
         'Sets the service in the ticket responsible screen of the agent interface (Ticket::Service needs to be activated).' =>
             'Set layanan dalam tiket layar yang bertanggung jawab dari antarmuka agen (Ticket::Layanan harus diaktifkan).',
+        'Sets the state of a ticket in the close ticket screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the ticket bulk screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the ticket free text screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the ticket note screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the ticket responsible screen of the agent interface.' =>
+            '',
+        'Sets the state of the ticket in the ticket owner screen of a zoomed ticket in the agent interface.' =>
+            '',
+        'Sets the state of the ticket in the ticket pending screen of a zoomed ticket in the agent interface.' =>
+            '',
+        'Sets the state of the ticket in the ticket priority screen of a zoomed ticket in the agent interface.' =>
+            '',
         'Sets the stats hook.' => 'Mengatur stats hook',
         'Sets the system time zone (required a system with UTC as system time). Otherwise this is a diff time to the local time.' =>
             'Menetapkan zona waktu sistem (diperlukan suatu sistem dengan UTC sebagai waktu sistem). Sebaliknya ini adalah waktu diff untuk waktu setempat.',
@@ -6798,6 +6818,7 @@ Helpdesk Team Anda
         'Specify the username to authenticate for the first mirror database.' =>
             'Tentukan username untuk otentikasi untuk database cermin pertama.',
         'Spell checker.' => 'Pemeriksa ejaan.',
+        'Stable' => '',
         'Standard available permissions for agents within the application. If more permissions are needed, they can be entered here. Permissions must be defined to be effective. Some other good permissions have also been provided built-in: note, close, pending, customer, freetext, move, compose, responsible, forward, and bounce. Make sure that "rw" is always the last registered permission.' =>
             'izin tersedia standar untuk agen dalam aplikasi. Jika lebih banyak izin yang diperlukan, mereka dapat dimasukkan di sini. Izin harus didefinisikan untuk menjadi efektif. Beberapa izin yang baik lainnya juga telah tersedia built-in: dicatat, dekat, tertunda, pelanggan, FREETEXT, bergerak, menulis, bertanggung jawab, maju, dan mental. Pastikan bahwa "rw" selalu izin terdaftar terakhir.',
         'Start number for statistics counting. Every new stat increments this number.' =>
@@ -6989,11 +7010,17 @@ Helpdesk Team Anda
         'Your service selection of your preferred services. You also get notified about those services via email if enabled.' =>
             '',
         'attachment' => 'Lampiran',
+        'bounce' => '',
+        'compose' => '',
         'debug' => 'Debug',
         'error' => 'eror',
+        'forward' => '',
         'info' => 'Info',
         'inline' => 'Di barisan',
         'notice' => 'Peringatan',
+        'pending' => '',
+        'responsible' => '',
+        'stats' => '',
 
     };
     # $$STOP$$

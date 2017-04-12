@@ -27,7 +27,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.975839475839476;
+    $Self->{Completeness}        = 0.969400244798042;
 
     # csv separator
     $Self->{Separator} = ',';
@@ -1621,6 +1621,8 @@ sub Data {
 
         # Template: AdminNotificationEventTransportEmailSettings
         'Additional recipient email addresses' => 'Additional recipient email addresses',
+        'You can use OTRS-tags like <OTRS_TICKET_DynamicField_...> to insert values from the current ticket.' =>
+            '',
         'Notification article type' => 'Notification article type',
         'An article will be created if the notification is sent to the customer or an additional email address.' =>
             'An article will be created if the notification is sent to the customer or an additional email address.',
@@ -2405,7 +2407,7 @@ sub Data {
 
         # Template: AdminSystemMaintenanceEdit
         'Edit System Maintenance %s' => 'Edit System Maintenance %s',
-        'Edit System Maintenance information' => 'Edit System Maintenance information',
+        'Edit System Maintenance Information' => '',
         'Date invalid!' => 'Date invalid!',
         'Login message' => 'Login message',
         'Show login message' => 'Show login message',
@@ -2814,8 +2816,10 @@ sub Data {
         'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.' =>
             'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.',
         'CustomerID (complex search)' => 'CustomerID (complex search)',
+        '(e. g. 234*)' => '',
         'CustomerID (exact match)' => 'CustomerID (exact match)',
         'Customer User Login (complex search)' => 'Customer User Login (complex search)',
+        '(e. g. U51*)' => '',
         'Customer User Login (exact match)' => 'Customer User Login (exact match)',
         'Attachment Name' => 'Attachment Name',
         '(e. g. m*file or myfi*)' => '(e. g. m*file or myfi*)',
@@ -3656,6 +3660,8 @@ sub Data {
         'No preferences for %s!' => 'No preferences for %s!',
         'Can\'t get element data of %s!' => 'Can\'t get element data of %s!',
         'Can\'t get filter content data of %s!' => 'Can\'t get filter content data of %s!',
+        'Customer Company Name' => '',
+        'Customer User ID' => '',
 
         # Perl Module: Kernel/Modules/AgentLinkObject.pm
         'Need SourceObject and SourceKey!' => 'Need SourceObject and SourceKey!',
@@ -3704,7 +3710,9 @@ sub Data {
         'You either selected no ticket or only tickets which are locked by other agents.' =>
             '',
         'You need to select at least one ticket.' => '',
-        'Ticket is locked by another agent and will be ignored!' => 'Ticket is locked by another agent and will be ignored!',
+        'The following tickets were ignored because they are locked by another agent or you don\'t have write access to these tickets: %s.' =>
+            '',
+        'The following tickets were locked: %s.' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketCompose.pm
         'Can not determine the ArticleType!' => 'Can not determine the ArticleType!',
@@ -3794,6 +3802,10 @@ sub Data {
         'Could not store ActivityDialog, invalid TicketID: %s!' => 'Could not store ActivityDialog, invalid TicketID: %s!',
         'Invalid TicketID: %s!' => 'Invalid TicketID: %s!',
         'Missing ActivityEntityID in Ticket %s!' => 'Missing ActivityEntityID in Ticket %s!',
+        'This activity dialog does not belong to current activity in Ticket %s!' =>
+            '',
+        'It might be possible that the ticket was updated by another user in the mean time, please close this window and reload ticket.' =>
+            '',
         'Missing ProcessEntityID in Ticket %s!' => 'Missing ProcessEntityID in Ticket %s!',
         'Could not set DynamicField value for %s of Ticket with ID "%s" in ActivityDialog "%s"!' =>
             'Could not set DynamicField value for %s of Ticket with ID "%s" in ActivityDialog "%s"!',
@@ -4053,6 +4065,9 @@ sub Data {
         # Perl Module: Kernel/System/Registration.pm
         'Can\'t get Token from sever' => 'Can\'t get Token from sever',
 
+        # Perl Module: Kernel/System/Stats.pm
+        'Sum' => '',
+
         # Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
         'State Type' => 'State Type',
         'Created Priority' => 'Created Priority',
@@ -4282,6 +4297,9 @@ sub Data {
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageList.pm
         'Package List' => 'Package List',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SessionConfigSettings.pm
+        'Session Config Settings' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
         'Spooled Emails' => '',
@@ -4650,10 +4668,10 @@ Thanks for your help!
             'Allows defining new types for ticket (if ticket type feature is enabled).',
         'Allows defining services and SLAs for tickets (e. g. email, desktop, network, ...), and escalation attributes for SLAs (if ticket service/SLA feature is enabled).' =>
             'Allows defining services and SLAs for tickets (e. g. email, desktop, network, ...), and escalation attributes for SLAs (if ticket service/SLA feature is enabled).',
-        'Allows extended search conditions in ticket search of the agent interface. With this feature you can search e. g. with this kind of conditions like "(key1&&key2)" or "(key1||key2)".' =>
-            'Allows extended search conditions in ticket search of the agent interface. With this feature you can search e. g. with this kind of conditions like "(key1&&key2)" or "(key1||key2)".',
-        'Allows extended search conditions in ticket search of the customer interface. With this feature you can search e. g. with this kind of conditions like "(key1&&key2)" or "(key1||key2)".' =>
-            'Allows extended search conditions in ticket search of the customer interface. With this feature you can search e. g. with this kind of conditions like "(key1&&key2)" or "(key1||key2)".',
+        'Allows extended search conditions in ticket search of the agent interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".' =>
+            '',
+        'Allows extended search conditions in ticket search of the customer interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".' =>
+            '',
         'Allows extended search conditions in ticket search of the generic agent interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".' =>
             'Allows extended search conditions in ticket search of the generic agent interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".',
         'Allows having a medium format ticket overview (CustomerInfo => 1 - shows also the customer information).' =>
@@ -4776,8 +4794,9 @@ Thanks for your help!
             'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (http://otrs.github.io/doc/), chapter "Ticket Event Module".',
         'Controls how to display the ticket history entries as readable values.' =>
             'Controls how to display the ticket history entries as readable values.',
-        'Controls if CustomerID is editable in the agent interface.' => '',
-        'Controls if CutomerID is editable in the agent interface.' => 'Controls if CutomerID is editable in the agent interface.',
+        'Controls if CustomerID is automatically copied from the sender address for unknown customers.' =>
+            '',
+        'Controls if CustomerID is read-only in the agent interface.' => '',
         'Controls if customers have the ability to sort their tickets.' =>
             'Controls if customers have the ability to sort their tickets.',
         'Controls if more than one from entry can be set in the new phone ticket in the agent interface.' =>
@@ -5557,6 +5576,7 @@ Thanks for your help!
             'Determines which options will be valid of the recipient (phone ticket) and the sender (email ticket) in the agent interface.',
         'Determines which queues will be valid for ticket\'s recepients in the customer interface.' =>
             'Determines which queues will be valid for ticket\'s recepients in the customer interface.',
+        'Development' => '',
         'Disable HTTP header "Content-Security-Policy" to allow loading of external script contents. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             '',
         'Disable HTTP header "X-Frame-Options: SAMEORIGIN" to allow OTRS to be included as an IFrame in other websites. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
@@ -5883,22 +5903,6 @@ Thanks for your help!
             'If "SysLog" was selected for LogModule, the charset that should be used for logging can be specified.',
         'If "file" was selected for LogModule, a logfile must be specified. If the file doesn\'t exist, it will be created by the system.' =>
             'If "file" was selected for LogModule, a logfile must be specified. If the file doesn\'t exist, it will be created by the system.',
-        'If a note is added by an agent, sets the state of a ticket in the close ticket screen of the agent interface.' =>
-            'If a note is added by an agent, sets the state of a ticket in the close ticket screen of the agent interface.',
-        'If a note is added by an agent, sets the state of a ticket in the ticket bulk screen of the agent interface.' =>
-            'If a note is added by an agent, sets the state of a ticket in the ticket bulk screen of the agent interface.',
-        'If a note is added by an agent, sets the state of a ticket in the ticket free text screen of the agent interface.' =>
-            'If a note is added by an agent, sets the state of a ticket in the ticket free text screen of the agent interface.',
-        'If a note is added by an agent, sets the state of a ticket in the ticket note screen of the agent interface.' =>
-            'If a note is added by an agent, sets the state of a ticket in the ticket note screen of the agent interface.',
-        'If a note is added by an agent, sets the state of a ticket in the ticket responsible screen of the agent interface.' =>
-            'If a note is added by an agent, sets the state of a ticket in the ticket responsible screen of the agent interface.',
-        'If a note is added by an agent, sets the state of the ticket in the ticket owner screen of a zoomed ticket in the agent interface.' =>
-            'If a note is added by an agent, sets the state of the ticket in the ticket owner screen of a zoomed ticket in the agent interface.',
-        'If a note is added by an agent, sets the state of the ticket in the ticket pending screen of a zoomed ticket in the agent interface.' =>
-            'If a note is added by an agent, sets the state of the ticket in the ticket pending screen of a zoomed ticket in the agent interface.',
-        'If a note is added by an agent, sets the state of the ticket in the ticket priority screen of a zoomed ticket in the agent interface.' =>
-            'If a note is added by an agent, sets the state of the ticket in the ticket priority screen of a zoomed ticket in the agent interface.',
         'If active, none of the regular expressions may match the user\'s email address to allow registration.' =>
             'If active, none of the regular expressions may match the user\'s email address to allow registration.',
         'If active, one of the regular expressions has to match the user\'s email address to allow registration.' =>
@@ -5945,8 +5949,8 @@ Thanks for your help!
             'If this regex matches, no message will be send by the autoresponder.',
         'If this setting is active, local modifications will not be highlighted as errors in the package manager and support data collector.' =>
             'If this setting is active, local modifications will not be highlighted as errors in the package manager and support data collector.',
-        'Ignore article with system sender type for new article feature (e. g. auto responses or email notifications).' =>
-            'Ignore article with system sender type for new article feature (e. g. auto responses or email notifications).',
+        'Ignore system sender article types (e. g. auto responses or email notifications) to be flagged as \'Unread Article\' in AgentTicketZoom or expanded automatically in Large view screens.' =>
+            '',
         'Include tickets of subqueues per default when selecting a queue.' =>
             'Include tickets of subqueues per default when selecting a queue.',
         'Include unknown customers in ticket filter.' => 'Include unknown customers in ticket filter.',
@@ -6503,6 +6507,22 @@ Thanks for your help!
             'Sets the service in the ticket priority screen of a zoomed ticket in the agent interface (Ticket::Service needs to be activated).',
         'Sets the service in the ticket responsible screen of the agent interface (Ticket::Service needs to be activated).' =>
             'Sets the service in the ticket responsible screen of the agent interface (Ticket::Service needs to be activated).',
+        'Sets the state of a ticket in the close ticket screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the ticket bulk screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the ticket free text screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the ticket note screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the ticket responsible screen of the agent interface.' =>
+            '',
+        'Sets the state of the ticket in the ticket owner screen of a zoomed ticket in the agent interface.' =>
+            '',
+        'Sets the state of the ticket in the ticket pending screen of a zoomed ticket in the agent interface.' =>
+            '',
+        'Sets the state of the ticket in the ticket priority screen of a zoomed ticket in the agent interface.' =>
+            '',
         'Sets the stats hook.' => 'Sets the stats hook.',
         'Sets the system time zone (required a system with UTC as system time). Otherwise this is a diff time to the local time.' =>
             'Sets the system time zone (required a system with UTC as system time). Otherwise this is a diff time to the local time.',
@@ -6797,6 +6817,7 @@ Thanks for your help!
         'Specify the username to authenticate for the first mirror database.' =>
             'Specify the username to authenticate for the first mirror database.',
         'Spell checker.' => 'Spell checker.',
+        'Stable' => '',
         'Standard available permissions for agents within the application. If more permissions are needed, they can be entered here. Permissions must be defined to be effective. Some other good permissions have also been provided built-in: note, close, pending, customer, freetext, move, compose, responsible, forward, and bounce. Make sure that "rw" is always the last registered permission.' =>
             'Standard available permissions for agents within the application. If more permissions are needed, they can be entered here. Permissions must be defined to be effective. Some other good permissions have also been provided built-in: note, close, pending, customer, freetext, move, compose, responsible, forward, and bounce. Make sure that "rw" is always the last registered permission.',
         'Start number for statistics counting. Every new stat increments this number.' =>
@@ -6988,11 +7009,17 @@ Thanks for your help!
         'Your service selection of your preferred services. You also get notified about those services via email if enabled.' =>
             'Your service selection of your preferred services. You also get notified about those services via email if enabled.',
         'attachment' => 'attachment',
+        'bounce' => '',
+        'compose' => '',
         'debug' => 'debug',
         'error' => 'error',
+        'forward' => '',
         'info' => 'info',
         'inline' => 'inline',
         'notice' => 'notice',
+        'pending' => '',
+        'responsible' => '',
+        'stats' => '',
 
     };
     # $$STOP$$

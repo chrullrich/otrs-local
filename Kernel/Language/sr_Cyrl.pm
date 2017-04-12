@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.99979524979525;
+    $Self->{Completeness}        = 0.999796001631987;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -1618,6 +1618,8 @@ sub Data {
 
         # Template: AdminNotificationEventTransportEmailSettings
         'Additional recipient email addresses' => 'Имејл адреса додатног примаоца',
+        'You can use OTRS-tags like <OTRS_TICKET_DynamicField_...> to insert values from the current ticket.' =>
+            'Можете користити OTRS тагове као <OTRS_TICKET_DynamicField_...> за уметање вредности из тренутног тикета.',
         'Notification article type' => 'Тип чланка обавештења',
         'An article will be created if the notification is sent to the customer or an additional email address.' =>
             'Чланак је креиран и обавештење послато клијенту или на другу имејл адресу.',
@@ -2402,7 +2404,7 @@ sub Data {
 
         # Template: AdminSystemMaintenanceEdit
         'Edit System Maintenance %s' => 'Уреди одржавање система %s',
-        'Edit System Maintenance information' => 'Уреди информације о одржавању система',
+        'Edit System Maintenance Information' => 'Уреди одржавање система',
         'Date invalid!' => 'Неисправан датум',
         'Login message' => 'Порука пријаве',
         'Show login message' => 'Покажи поруку пријаве',
@@ -2811,8 +2813,10 @@ sub Data {
         'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.' =>
             'Претраге у атрибутима Од, До, Cc, Предмет и телу чланка, редефинишу друге атрибуте са истим именом.',
         'CustomerID (complex search)' => 'ИД клијента (сложена претрага)',
+        '(e. g. 234*)' => '(нпр. 234*)',
         'CustomerID (exact match)' => 'ИД клијента (тачно поклапање)',
         'Customer User Login (complex search)' => 'Пријава клијента корисника (сложена претрага)',
+        '(e. g. U51*)' => '(нпр.  U51*)',
         'Customer User Login (exact match)' => 'Пријава клијента корисника (тачно поклапање)',
         'Attachment Name' => 'Назив прилога',
         '(e. g. m*file or myfi*)' => '(нпр m*file или myfi*)',
@@ -3263,7 +3267,7 @@ sub Data {
             'Генериши додатну колону која садржи суме за све колоне са подацима.',
         'Cache results' => 'Кеширај резултате',
         'Stores statistics result data in a cache to be used in subsequent views with the same configuration (requires at least one selected time field).' =>
-            '',
+            'Чува резултате статистика у кешу за коришћење у следећим прегледима са истим подешавањима (захтева изабрано бар једно временско поље).',
         'Provide the statistic as a widget that agents can activate in their dashboard.' =>
             'Обезбеди статистику као апликативни додатак (widget), који опертатери могу активирати путем своје контролне табле.',
         'Please note that enabling the dashboard widget will activate caching for this statistic in the dashboard.' =>
@@ -3654,6 +3658,8 @@ sub Data {
         'No preferences for %s!' => 'Нема поставки за %s!',
         'Can\'t get element data of %s!' => 'Не могу прибавити податке елемента за „%s”!',
         'Can\'t get filter content data of %s!' => 'Не могу прибавити податке сарджаја филтера за „%s”!',
+        'Customer Company Name' => 'Назив фирме клијента',
+        'Customer User ID' => 'ИД клијента корисника',
 
         # Perl Module: Kernel/Modules/AgentLinkObject.pm
         'Need SourceObject and SourceKey!' => 'Неопходан изворни објект и изворни кључ!',
@@ -3702,7 +3708,9 @@ sub Data {
         'You either selected no ticket or only tickets which are locked by other agents.' =>
             'Нисте селектовали ни један тикет или само тикете које су закључали други оператери.',
         'You need to select at least one ticket.' => 'Неопходно је да изаберете бар један тикет.',
-        'Ticket is locked by another agent and will be ignored!' => 'Тикет је закључан од стране другог оператера и биће игнорисан!',
+        'The following tickets were ignored because they are locked by another agent or you don\'t have write access to these tickets: %s.' =>
+            'Следећи тикети су били игнорисани зато што су закључани од стране другог оператера или зато што немате право уписа у њих: %s.',
+        'The following tickets were locked: %s.' => 'Следећи тикети су били закључани: %s.',
 
         # Perl Module: Kernel/Modules/AgentTicketCompose.pm
         'Can not determine the ArticleType!' => 'Није могуће утврдити Тип чланка.',
@@ -3792,6 +3800,10 @@ sub Data {
         'Could not store ActivityDialog, invalid TicketID: %s!' => 'Не могу снимити дијалог активности, неважећи ИД тикета: %s!',
         'Invalid TicketID: %s!' => 'Неважећи ИД тикета: %s!',
         'Missing ActivityEntityID in Ticket %s!' => 'Недостаје ИД ентитета активности на тикету %s!',
+        'This activity dialog does not belong to current activity in Ticket %s!' =>
+            'Овај дијалог не припада тренутној активности у тикету %s!',
+        'It might be possible that the ticket was updated by another user in the mean time, please close this window and reload ticket.' =>
+            'Могуће је да је тикет измењен од стране другог оператера у међувремену, молимо затворите овај прозор и поново учитајте тикет.',
         'Missing ProcessEntityID in Ticket %s!' => 'Недостаје ИД ентитета процеса на тикету %s!',
         'Could not set DynamicField value for %s of Ticket with ID "%s" in ActivityDialog "%s"!' =>
             'Не могу поставити вредност динамичког поља за %s за ИД тикета „%s” у дијалогу активности „%s”!',
@@ -4051,6 +4063,9 @@ sub Data {
         # Perl Module: Kernel/System/Registration.pm
         'Can\'t get Token from sever' => 'Не могу прибавити токен од сервера',
 
+        # Perl Module: Kernel/System/Stats.pm
+        'Sum' => 'Сума',
+
         # Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
         'State Type' => 'Тип статуса',
         'Created Priority' => 'Направљени приоритети',
@@ -4280,6 +4295,9 @@ sub Data {
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageList.pm
         'Package List' => 'Листа пакета',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SessionConfigSettings.pm
+        'Session Config Settings' => 'Подешавања сесија',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
         'Spooled Emails' => 'Имејлови у реду чекања',
@@ -4648,10 +4666,10 @@ Thanks for your help!
             'Дозвољава дефинисање новог типа тикета (ако је опција типа тикета активирана).',
         'Allows defining services and SLAs for tickets (e. g. email, desktop, network, ...), and escalation attributes for SLAs (if ticket service/SLA feature is enabled).' =>
             'Дозвољава дефинисање услуге и СЛА за тикете (нпр. имејл, радна површина, мрежа, ...), и ескалационе атрибуте за СЛА (ако је активирана функција услуга/СЛА за тикет).',
-        'Allows extended search conditions in ticket search of the agent interface. With this feature you can search e. g. with this kind of conditions like "(key1&&key2)" or "(key1||key2)".' =>
-            'Дозвољава проширене услове претраге у тикету на интерфејсу оператера. Помоћу ове функције можете вршити претраге нпр. са врстом услова као што су: „(key1&&key2)” или „(key1||key2)”.',
-        'Allows extended search conditions in ticket search of the customer interface. With this feature you can search e. g. with this kind of conditions like "(key1&&key2)" or "(key1||key2)".' =>
-            'Дозвољава проширене услове претраге у претрази тикета на клијентском интерфејсу. Помоћу ове функције можете вршити претраге нпр. са врстом услова као што су: „(key1&&key2)” или „(key1||key2)”.',
+        'Allows extended search conditions in ticket search of the agent interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".' =>
+            'Омогућава напредне услове претраге тикета у интерфејсу оператера. Са овом опцијом моћете претраживати нпр. наслов тикета са условима као "(*key1*&&*key2*)" или "(*key1*||*key2*)".',
+        'Allows extended search conditions in ticket search of the customer interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".' =>
+            'Омогућава напредне услове претраге тикета у интерфејсу корисника. Са овом опцијом моћете претраживати нпр. наслов тикета са условима као "(*key1*&&*key2*)" или "(*key1*||*key2*)".',
         'Allows extended search conditions in ticket search of the generic agent interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".' =>
             'Дозвољава проширене услове претраге у претрази тикета на интерфејсу општег оператера. Помоћу ове функције можете вршити претраге нпр. са врстом услова као што су: „(key1&&key2)” или „(key1||key2)”.',
         'Allows having a medium format ticket overview (CustomerInfo => 1 - shows also the customer information).' =>
@@ -4774,8 +4792,9 @@ Thanks for your help!
             'Конфигурише подразумевана подешавања динамичког поља тикета. „Name” дефинише динамичко поље које ће бити коришћено, „Value” је податак који ће бити подешен, а „Event” дефинише окидач догађаја. Молимо консултујте упутство за програмере (http://otrs.github.io/doc/), поглавље "Модул догађаја тикета".',
         'Controls how to display the ticket history entries as readable values.' =>
             'Контролише начин приказа историјских уноса тикета као читљивих вредности. ',
-        'Controls if CustomerID is editable in the agent interface.' => 'Контролише да ли је ИД клијента изменљив у интерфејсу оператера.',
-        'Controls if CutomerID is editable in the agent interface.' => 'Контролише да ли је ИД клијента у интерфејсу оператера изменљив.',
+        'Controls if CustomerID is automatically copied from the sender address for unknown customers.' =>
+            'Контролише да ли се ИД клијента аутоматски поставља на адресу пошиљаоца за непознате кориснике.',
+        'Controls if CustomerID is read-only in the agent interface.' => 'Контролише да ли се ИД клијента може само прегледати у интерфејсу оператера.',
         'Controls if customers have the ability to sort their tickets.' =>
             'Контролише да ли клијенти имају могућност да сортирају своје тикете.',
         'Controls if more than one from entry can be set in the new phone ticket in the agent interface.' =>
@@ -5344,7 +5363,7 @@ Thanks for your help!
         'Defines the module to display a notification if cloud services are disabled.' =>
             'Дефинише модул за приказивање обавештења ако су сервиси у облаку онемогућени.',
         'Defines the module to display a notification in different interfaces on different occasions for OTRS Business Solution™.' =>
-            'Одређује модул за приказ обавештења у разним интерфејсима у различитим приликама за „OTRS пословно решење”.',
+            'Одређује модул за приказ обавештења у разним интерфејсима у различитим приликама за OTRS Business Solution™.',
         'Defines the module to display a notification in the agent interface if the OTRS Daemon is not running.' =>
             'Одређује модул за приказ обавештења у интерфејсу оператера ако „OTRS” системски процес не ради.',
         'Defines the module to display a notification in the agent interface, if the agent is logged in while having out-of-office active.' =>
@@ -5524,7 +5543,7 @@ Thanks for your help!
         'Deletes requested sessions if they have timed out.' => 'Брише захтевану сесију ако је истекло време.',
         'Delivers extended debugging information in the frontend in case any AJAX errors occur, if enabled.' =>
             'Омогућава прибављање додатних информација о грешкама у интерфејсу, у случају проблема са AJAX методом.',
-        'Deploy and manage OTRS Business Solution™.' => 'Примени и управљај „OTRS пословно решење™”.',
+        'Deploy and manage OTRS Business Solution™.' => 'Примени и управљај OTRS Business Solution™.',
         'Determines if the list of possible queues to move to ticket into should be displayed in a dropdown list or in a new window in the agent interface. If "New Window" is set you can add a move note to the ticket.' =>
             'Одређује да ли листа могућих редова за премештање у тикет треба да буде приказана у падајућој листи или у новом прозору у интерфејсу оператера. Ако је подешен „Нови прозор” можете додавати напомене о премештању у тикет.',
         'Determines if the statistics module may generate ticket lists.' =>
@@ -5555,6 +5574,7 @@ Thanks for your help!
             'Одређује које опције ће бити важеће за примаоца (телефонски тикет) и пошиљаоца (имејл тикет) у интерфејсу оператера.',
         'Determines which queues will be valid for ticket\'s recepients in the customer interface.' =>
             'Одређује који ће редови бити важећи за тикете примаоца у интерфејсу клијента.',
+        'Development' => 'Развој',
         'Disable HTTP header "Content-Security-Policy" to allow loading of external script contents. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             'Онемогућава HTTP заглавље „Content-Security-Policy” ради учитавања екстерних скриптова. Онемогућавање овог HTTP заглавља сноси сигурносни ризик! Искључите га само ако знате шта радите!',
         'Disable HTTP header "X-Frame-Options: SAMEORIGIN" to allow OTRS to be included as an IFrame in other websites. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
@@ -5564,7 +5584,7 @@ Thanks for your help!
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be activated).' =>
             'Онемогућује слање обавештења подсетника одговорном оператеру тикета (Ticket::Responsible мора бити активиран).',
         'Disables the communication between this system and OTRS Group servers that provides cloud services. If active, some functionality will be lost such as system registration, support data sending, upgrading to and use of OTRS Business Solution™, OTRS Verify™, OTRS News and product News dashboard widgets, among others.' =>
-            'Онемогућава комуникацију између овог система и „OTRS” групних сервера који обезбеђују сервисе у облаку. Ако је активирано, неке функционалности неће радити, а то су регистрација система, слање података подршке, унапређење на „OTRS” Пословно решење, „OTRS” Верификација, „OTRS” Новости и новости о производу у додацима на контролној табли, између осталих',
+            'Онемогућава комуникацију између овог система и сервера OTRS групе који обезбеђују сервисе у облаку. Ако је активирано, неке функционалности неће радити, а то су регистрација система, слање података подршке, унапређење на OTRS Business Solution™, OTRS верификација, OTRS новости и новости о производу у додацима на контролној табли, између осталих.',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If set to "No", the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If not active, it also disables the GenericAgent, PackageManager and SQL Box.' =>
             'Онемогућује веб инсталационом програму (http://yourhost.example.com/otrs/installer.pl) да заштити систем од недозвољеног преузимања. Ако подесите на „Не”, систем може бити поново инсталиран и тренутна основна конфигурација ће бити коришћена да унапред попуни питања унутар инсталационе скрипте. Уколико није активно, такође се онемогућују GenericAgent, PackageManager и SQL Box.',
         'Display a warning and prevent search when using stop words within fulltext search.' =>
@@ -5881,22 +5901,6 @@ Thanks for your help!
             'Уколико је подешен SysLog за LogModule, може бити дефинисан карактерсет за логовање.',
         'If "file" was selected for LogModule, a logfile must be specified. If the file doesn\'t exist, it will be created by the system.' =>
             'Уколико је подешен File за LogModule, мора бити дефинисана локација лог датотеке. Уколико датотека не постоји, биће креирана од стране система.',
-        'If a note is added by an agent, sets the state of a ticket in the close ticket screen of the agent interface.' =>
-            'Ако је оператер додао напомену, подешава статус тикета у приказу екрана затварања тикета интерфејса оператера.',
-        'If a note is added by an agent, sets the state of a ticket in the ticket bulk screen of the agent interface.' =>
-            'Ако је оператер додао напомену, подешава статус тикета на екрану масовне акције тикета интерфејса оператера.',
-        'If a note is added by an agent, sets the state of a ticket in the ticket free text screen of the agent interface.' =>
-            'Ако је оператер додао напомену, подешава статус тикета на екрану слободног текста тикета интерфејса оператера.',
-        'If a note is added by an agent, sets the state of a ticket in the ticket note screen of the agent interface.' =>
-            'Ако је оператер додао напомену, подешава статус тикета на екрану напомене тикета интерфејса оператера.',
-        'If a note is added by an agent, sets the state of a ticket in the ticket responsible screen of the agent interface.' =>
-            'Ако је оператер додао напомену, подешава статус тикета на екрану одговорног за тикет интерфејса оператера.',
-        'If a note is added by an agent, sets the state of the ticket in the ticket owner screen of a zoomed ticket in the agent interface.' =>
-            'Ако је оператер додао напомену, подешава статус тикета на екрану власника тикета у детаљном приказу тикета интерфејса оператера.',
-        'If a note is added by an agent, sets the state of the ticket in the ticket pending screen of a zoomed ticket in the agent interface.' =>
-            'Ако је оператер додао напомену, подешава статус тикета на екрану тикета на чекању у детаљном приказу тикета интерфејса оператера.',
-        'If a note is added by an agent, sets the state of the ticket in the ticket priority screen of a zoomed ticket in the agent interface.' =>
-            'Ако је оператер додао напомену, подешава статус тикета на екрану приоритета тикета у детаљном приказу тикета интерфејса оператера.',
         'If active, none of the regular expressions may match the user\'s email address to allow registration.' =>
             'Ако је активно, ни један регуларни израз se не може поклопити са корисниковом имејл адресом да би дозволио регистрацију.',
         'If active, one of the regular expressions has to match the user\'s email address to allow registration.' =>
@@ -5943,8 +5947,8 @@ Thanks for your help!
             'Ако се овај израз поклапа, аутоматски одговарач неће послати ниједну поруку.',
         'If this setting is active, local modifications will not be highlighted as errors in the package manager and support data collector.' =>
             'Ако је ова поставка активна, локалне измене неће бити наглашене као грешке у управљачу пакетима и сакупљачу података подршке.',
-        'Ignore article with system sender type for new article feature (e. g. auto responses or email notifications).' =>
-            'Игнориши чланак са системским типом пошиљаоца за својство новог чланка (нпр аутоматски одговори или имејл обавештења).',
+        'Ignore system sender article types (e. g. auto responses or email notifications) to be flagged as \'Unread Article\' in AgentTicketZoom or expanded automatically in Large view screens.' =>
+            '',
         'Include tickets of subqueues per default when selecting a queue.' =>
             'Код избора реда, подразумевано укључи и тикете подредова.',
         'Include unknown customers in ticket filter.' => 'Укључите непознате клијенте у филтер тикета.',
@@ -6249,7 +6253,7 @@ Thanks for your help!
         'Replaces the original sender with current customer\'s email address on compose answer in the ticket compose screen of the agent interface.' =>
             'Замењује оригиналног пошиљаоца са имејл адресом актуелног клијента при креирању одговора у прозору за писање одговора интерфејса оператера.',
         'Reports' => 'Извештаји',
-        'Reports (OTRS Business Solution™)' => 'Извештаји („OTRS” Пословно Решење™)',
+        'Reports (OTRS Business Solution™)' => 'Извештаји (OTRS Business Solution™)',
         'Reprocess mails from spool directory that could not be imported in the first place.' =>
             'Поново обради имејлове из директоријума реда чекања који први пут нису могли бити увезени.',
         'Required permissions to change the customer of a ticket in the agent interface.' =>
@@ -6501,6 +6505,22 @@ Thanks for your help!
             'Подешава сервис на екрану приоритета тикета на детаљном прегледу тикета у интерфејсу оператера (неопходно је активирати Ticket::Service).',
         'Sets the service in the ticket responsible screen of the agent interface (Ticket::Service needs to be activated).' =>
             'Подешава сервис на екрану одговорног за тикет у интерфејсу оператера (неопходно је активирати Ticket::Service).',
+        'Sets the state of a ticket in the close ticket screen of the agent interface.' =>
+            'Поставља статус тикета у екрану затварања тикета у интерфејсу оператера.',
+        'Sets the state of a ticket in the ticket bulk screen of the agent interface.' =>
+            'Поставља статус тикета у екрану масовних акција у интерфејсу оператера.',
+        'Sets the state of a ticket in the ticket free text screen of the agent interface.' =>
+            'Поставља статус тикета у екрану слободног текста у интерфејсу оператера.',
+        'Sets the state of a ticket in the ticket note screen of the agent interface.' =>
+            'Поставља статус тикета у екрану напомене у интерфејсу оператера.',
+        'Sets the state of a ticket in the ticket responsible screen of the agent interface.' =>
+            'Поставља статус тикета у екрану одговорног у интерфејсу оператера.',
+        'Sets the state of the ticket in the ticket owner screen of a zoomed ticket in the agent interface.' =>
+            'Поставља статус тикета у екрану власника у интерфејсу оператера.',
+        'Sets the state of the ticket in the ticket pending screen of a zoomed ticket in the agent interface.' =>
+            'Поставља статус тикета у екрану чекања у интерфејсу оператера.',
+        'Sets the state of the ticket in the ticket priority screen of a zoomed ticket in the agent interface.' =>
+            'Поставља статус тикета у екрану приоритета у интерфејсу оператера.',
         'Sets the stats hook.' => 'Дефинише ознаку за статистике.',
         'Sets the system time zone (required a system with UTC as system time). Otherwise this is a diff time to the local time.' =>
             'Подешава системску временску зону (неопходан је систем са „UTC” као системским временом). Иначе ово је временска разлика у односу на локално време.',
@@ -6795,6 +6815,7 @@ Thanks for your help!
         'Specify the username to authenticate for the first mirror database.' =>
             'Наведи корисничко име за ауторизацију на прву пресликану базу података.',
         'Spell checker.' => 'Провера правописа.',
+        'Stable' => ' Стабилно',
         'Standard available permissions for agents within the application. If more permissions are needed, they can be entered here. Permissions must be defined to be effective. Some other good permissions have also been provided built-in: note, close, pending, customer, freetext, move, compose, responsible, forward, and bounce. Make sure that "rw" is always the last registered permission.' =>
             'Стандардне расположиве дозволе за оператере унутар апликације. Уколико је потребно више дозвола они могу унети овде. Дозволе морају бити дефинисане да буду ефективне. Неке друге дозволе су такође обезбеђене уграђивањем у: напомену, затвори, на чекању, клијент, слободан текст, помери, отвори, одговоран, проследи и поврати. Обезбеди да „rw” увек буде последња регистрована дозвола.',
         'Start number for statistics counting. Every new stat increments this number.' =>
@@ -6986,11 +7007,17 @@ Thanks for your help!
         'Your service selection of your preferred services. You also get notified about those services via email if enabled.' =>
             'Ваш избор из ваших пожељних услуга. Ако је активирано, добићете и обавештења о овим сервисима путем имејла.',
         'attachment' => 'прилог',
+        'bounce' => 'преусмери',
+        'compose' => 'састави',
         'debug' => 'отклањање неисправности',
         'error' => 'грешка',
+        'forward' => 'проследи',
         'info' => 'инфо',
         'inline' => 'у истом реду',
         'notice' => 'напомена',
+        'pending' => 'на чекању',
+        'responsible' => 'одговорност',
+        'stats' => 'статистика',
 
     };
     # $$STOP$$
