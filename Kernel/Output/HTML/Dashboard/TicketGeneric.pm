@@ -377,6 +377,7 @@ sub Preferences {
                 15 => '15',
                 20 => '20',
                 25 => '25',
+                50 => '50',
             },
             SelectedID  => $Self->{PageShown},
             Translation => 0,
@@ -839,7 +840,8 @@ sub Run {
         $LayoutObject->Block(
             Name => 'ContentLargeTicketGenericHeaderMeta',
             Data => {
-                CSS => $CSS,
+                CSS              => $CSS,
+                HeaderColumnName => $Item,
             },
         );
 
@@ -917,6 +919,12 @@ sub Run {
             }
             elsif ( $HeaderColumn eq 'PendingTime' ) {
                 $TranslatedWord = $LayoutObject->{LanguageObject}->Translate('Pending till');
+            }
+            elsif ( $HeaderColumn eq 'CustomerCompanyName' ) {
+                $TranslatedWord = $LayoutObject->{LanguageObject}->Translate('Customer Company Name');
+            }
+            elsif ( $HeaderColumn eq 'CustomerUserID' ) {
+                $TranslatedWord = $LayoutObject->{LanguageObject}->Translate('Customer User ID');
             }
             else {
                 $TranslatedWord = $LayoutObject->{LanguageObject}->Translate($HeaderColumn);
