@@ -83,7 +83,7 @@ sub SystemTime {
 
 =item SystemTime2TimeStamp()
 
-returns a time stamp for a given system time in "yyyy-mm-dd 23:59:59" format.
+returns a time stamp for a given system time in C<yyyy-mm-dd 23:59:59> format.
 
     my $TimeStamp = $TimeObject->SystemTime2TimeStamp(
         SystemTime => $SystemTime,
@@ -127,7 +127,7 @@ sub SystemTime2TimeStamp {
 =item CurrentTimestamp()
 
 returns a time stamp of the local system time (see L<SystemTime()>)
-in "yyyy-mm-dd 23:59:59" format.
+in C<yyyy-mm-dd 23:59:59> format.
 
     my $TimeStamp = $TimeObject->CurrentTimestamp();
 
@@ -782,7 +782,7 @@ sub DestinationTime {
 
 =item VacationCheck()
 
-check if the selected day is a vacation (it doesn't matter if you
+check if the selected day is a vacation (it does not matter if you
 insert 01 or 1 for month or day in the function or in the SysConfig)
 
 returns (true) vacation day if exists, returns false if date is no

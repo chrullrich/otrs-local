@@ -302,7 +302,7 @@ sub EncodeInput {
 
 =item EncodeOutput()
 
-Convert utf-8 to a sequence of octets. All possible characters have
+Convert utf-8 to a sequence of bytes. All possible characters have
 a UTF-8 representation so this function cannot fail.
 
 This should be used in for output of utf-8 chars.
@@ -365,7 +365,7 @@ sub SetIO {
 
 =item EncodingIsAsciiSuperset()
 
-Checks if an encoding is a superset of ASCII, that is, encodes the
+Checks if an encoding is a super-set of ASCII, that is, encodes the
 codepoints from 0 to 127 the same way as ASCII.
 
     my $IsSuperset = $EncodeObject->EncodingIsAsciiSuperset(
@@ -392,7 +392,7 @@ sub EncodingIsAsciiSuperset {
 =item FindAsciiSupersetEncoding()
 
 From a list of character encodings, returns the first that
-is a superset of ASCII. If none matches, C<ASCII> is returned.
+is a super-set of ASCII. If none matches, C<ASCII> is returned.
 
     my $Encoding = $EncodeObject->FindAsciiSupersetEncoding(
         Encodings   => [ 'UTF-16LE', 'UTF-8' ],

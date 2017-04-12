@@ -1307,7 +1307,7 @@ only requested article types
 
 returns articles in array / hash by given ticket id but
 only requested article sender types (could be useful when
-trying to exclude autoreplies sent by system sender from
+trying to exclude auto replies sent by system sender from
 certain views)
 
     my @ArticleIndex = $TicketObject->ArticleGet(
@@ -3174,6 +3174,7 @@ sub ArticleAttachmentIndex {
                 &&
                 $File{Filename} eq 'file-1'
                 && $File{ContentType} =~ /text\/plain/i
+                && $File{Disposition} eq 'inline'
                 )
             {
                 $AttachmentIDPlain = $AttachmentID;
@@ -3187,6 +3188,7 @@ sub ArticleAttachmentIndex {
                 &&
                 ( $File{Filename} =~ /^file-[12]$/ || $File{Filename} eq 'file-1.html' )
                 && $File{ContentType} =~ /text\/html/i
+                && $File{Disposition} eq 'inline'
                 )
             {
                 $AttachmentIDHTML = $AttachmentID;

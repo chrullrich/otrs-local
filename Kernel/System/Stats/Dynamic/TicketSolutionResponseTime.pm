@@ -215,22 +215,6 @@ sub GetObjectAttributes {
             Block            => 'InputField',
         },
         {
-            Name             => Translatable('CustomerUserLogin (complex search)'),
-            UseAsXvalue      => 0,
-            UseAsValueSeries => 0,
-            UseAsRestriction => 1,
-            Element          => 'CustomerUserLogin',
-            Block            => 'InputField',
-        },
-        {
-            Name             => Translatable('CustomerUserLogin (exact match)'),
-            UseAsXvalue      => 0,
-            UseAsValueSeries => 0,
-            UseAsRestriction => 1,
-            Element          => 'CustomerUserLoginRaw',
-            Block            => 'InputField',
-        },
-        {
             Name             => Translatable('From'),
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
@@ -320,58 +304,6 @@ sub GetObjectAttributes {
             Values           => {
                 TimeStart => 'TicketCloseTimeNewerDate',
                 TimeStop  => 'TicketCloseTimeOlderDate',
-            },
-        },
-        {
-            Name             => Translatable('Escalation'),
-            UseAsXvalue      => 1,
-            UseAsValueSeries => 1,
-            UseAsRestriction => 1,
-            Element          => 'EscalationTime',
-            TimePeriodFormat => 'DateInputFormatLong',        # 'DateInputFormat',
-            Block            => 'Time',
-            Values           => {
-                TimeStart => 'TicketEscalationTimeNewerDate',
-                TimeStop  => 'TicketEscalationTimeOlderDate',
-            },
-        },
-        {
-            Name             => Translatable('Escalation - First Response Time'),
-            UseAsXvalue      => 1,
-            UseAsValueSeries => 1,
-            UseAsRestriction => 1,
-            Element          => 'EscalationResponseTime',
-            TimePeriodFormat => 'DateInputFormatLong',                              # 'DateInputFormat',
-            Block            => 'Time',
-            Values           => {
-                TimeStart => 'TicketEscalationResponseTimeNewerDate',
-                TimeStop  => 'TicketEscalationResponseTimeOlderDate',
-            },
-        },
-        {
-            Name             => Translatable('Escalation - Update Time'),
-            UseAsXvalue      => 1,
-            UseAsValueSeries => 1,
-            UseAsRestriction => 1,
-            Element          => 'EscalationUpdateTime',
-            TimePeriodFormat => 'DateInputFormatLong',                      # 'DateInputFormat',
-            Block            => 'Time',
-            Values           => {
-                TimeStart => 'TicketEscalationUpdateTimeNewerDate',
-                TimeStop  => 'TicketEscalationUpdateTimeOlderDate',
-            },
-        },
-        {
-            Name             => Translatable('Escalation - Solution Time'),
-            UseAsXvalue      => 1,
-            UseAsValueSeries => 1,
-            UseAsRestriction => 1,
-            Element          => 'EscalationSolutionTime',
-            TimePeriodFormat => 'DateInputFormatLong',                        # 'DateInputFormat',
-            Block            => 'Time',
-            Values           => {
-                TimeStart => 'TicketEscalationSolutionTimeNewerDate',
-                TimeStop  => 'TicketEscalationSolutionTimeOlderDate',
             },
         },
     );
@@ -499,8 +431,7 @@ sub GetObjectAttributes {
 
     if ( $ConfigObject->Get('Stats::CustomerIDAsMultiSelect') ) {
 
-        # Get CustomerID
-        # (This way also can be the solution for the CustomerUserID)
+        # Get all CustomerIDs which are related to a ticket.
         $DBObject->Prepare(
             SQL => "SELECT DISTINCT customer_id FROM ticket",
         );
@@ -542,6 +473,57 @@ sub GetObjectAttributes {
                 UseAsValueSeries => 0,
                 UseAsRestriction => 1,
                 Element          => 'CustomerIDRaw',
+                Block            => 'InputField',
+            },
+        );
+
+        push @ObjectAttributes, @CustomerIDAttributes;
+    }
+
+    if ( $ConfigObject->Get('Stats::CustomerUserLoginsAsMultiSelect') ) {
+
+        # Get all CustomerUserLogins which are related to a tiket.
+        $DBObject->Prepare(
+            SQL => "SELECT DISTINCT customer_user_id FROM ticket",
+        );
+
+        # fetch the result
+        my %CustomerUserIDs;
+        while ( my @Row = $DBObject->FetchrowArray() ) {
+            if ( $Row[0] ) {
+                $CustomerUserIDs{ $Row[0] } = $Row[0];
+            }
+        }
+
+        my %ObjectAttribute = (
+            Name             => Translatable('CustomerUserLogin'),
+            UseAsXvalue      => 1,
+            UseAsValueSeries => 1,
+            UseAsRestriction => 1,
+            Element          => 'CustomerUserLoginRaw',
+            Block            => 'MultiSelectField',
+            Values           => \%CustomerUserIDs,
+        );
+
+        push @ObjectAttributes, \%ObjectAttribute;
+    }
+    else {
+
+        my @CustomerIDAttributes = (
+            {
+                Name             => Translatable('CustomerUserLogin (complex search)'),
+                UseAsXvalue      => 0,
+                UseAsValueSeries => 0,
+                UseAsRestriction => 1,
+                Element          => 'CustomerUserLogin',
+                Block            => 'InputField',
+            },
+            {
+                Name             => Translatable('CustomerUserLogin (exact match)'),
+                UseAsXvalue      => 0,
+                UseAsValueSeries => 0,
+                UseAsRestriction => 1,
+                Element          => 'CustomerUserLoginRaw',
                 Block            => 'InputField',
             },
         );
@@ -651,7 +633,7 @@ sub GetObjectAttributes {
                     Element          => $DynamicFieldStatsParameter->{Element},
                     Block            => $DynamicFieldStatsParameter->{Block},
                     Values           => $DynamicFieldStatsParameter->{Values},
-                    Translation      => 0,
+                    Translation      => $DynamicFieldStatsParameter->{TranslatableValues} || 0,
                     IsDynamicField   => 1,
                     ShowAsTree       => $DynamicFieldConfig->{Config}->{TreeView} || 0,
                 );
@@ -1122,6 +1104,8 @@ sub _ReportingValues {
     my %SolutionAllOver;
     my %Solution;
     my %SolutionWorkingTime;
+
+    # Response is only the first response and nothing with the update time.
     my %Response;
     my %ResponseWorkingTime;
 
@@ -1352,15 +1336,15 @@ sub _KindsOfReporting {
             Translatable('Solution Min Working Time (affected by escalation configuration)'),
         SolutionMaxWorkingTime =>
             Translatable('Solution Max Working Time (affected by escalation configuration)'),
-        ResponseAverage => Translatable('Response Average (affected by escalation configuration)'),
-        ResponseMinTime => Translatable('Response Min Time (affected by escalation configuration)'),
-        ResponseMaxTime => Translatable('Response Max Time (affected by escalation configuration)'),
+        ResponseAverage => Translatable('First Response Average (affected by escalation configuration)'),
+        ResponseMinTime => Translatable('First Response Min Time (affected by escalation configuration)'),
+        ResponseMaxTime => Translatable('First Response Max Time (affected by escalation configuration)'),
         ResponseWorkingTimeAverage =>
-            Translatable('Response Working Time Average (affected by escalation configuration)'),
+            Translatable('First Response Working Time Average (affected by escalation configuration)'),
         ResponseMinWorkingTime =>
-            Translatable('Response Min Working Time (affected by escalation configuration)'),
+            Translatable('First Response Min Working Time (affected by escalation configuration)'),
         ResponseMaxWorkingTime =>
-            Translatable('Response Max Working Time (affected by escalation configuration)'),
+            Translatable('First Response Max Working Time (affected by escalation configuration)'),
         NumberOfTickets => Translatable('Number of Tickets (affected by escalation configuration)'),
     );
     return \%KindsOfReporting;
@@ -1441,16 +1425,6 @@ sub _AllowedTicketSearchAttributes {
         TicketLastChangeTimeOlderDate
         TicketCloseTimeNewerDate
         TicketCloseTimeOlderDate
-        TicketPendingTimeNewerDate
-        TicketPendingTimeOlderDate
-        TicketEscalationTimeNewerDate
-        TicketEscalationTimeOlderDate
-        TicketEscalationUpdateTimeNewerDate
-        TicketEscalationUpdateTimeOlderDate
-        TicketEscalationResponseTimeNewerDate
-        TicketEscalationResponseTimeOlderDate
-        TicketEscalationSolutionTimeNewerDate
-        TicketEscalationSolutionTimeOlderDate
     );
 
     # loop over the dynamic fields configured
