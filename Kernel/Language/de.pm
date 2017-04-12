@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.962530712530713;
+    $Self->{Completeness}        = 0.962872297021624;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -858,7 +858,7 @@ sub Data {
         'You can use the following tags' => 'Die folgenden Tags können benutzt werden',
         'To get the first 20 character of the subject.' => 'Die ersten 20 Zeichen des Betreffs',
         'To get the first 5 lines of the email.' => 'Die ersten fünf Zeilen der Nachricht',
-        'To get the name of the ticket\'s customer user (if given).' => '',
+        'To get the name of the ticket\'s customer user (if given).' => 'Um den Namen des Kunden-Benutzer (falls vorhanden) eines Tickets zu erhalten.',
         'To get the article attribute' => 'Die Artikel-Attribute',
         ' e. g.' => 'z. B.',
         'Options of the current customer user data' => 'Attribute des aktuellen Kunden',
@@ -1618,6 +1618,8 @@ sub Data {
 
         # Template: AdminNotificationEventTransportEmailSettings
         'Additional recipient email addresses' => 'Zusätzliche Empfänger-E-Mail-Adressen',
+        'You can use OTRS-tags like <OTRS_TICKET_DynamicField_...> to insert values from the current ticket.' =>
+            '',
         'Notification article type' => 'Artikeltyp der Benachrichtigung',
         'An article will be created if the notification is sent to the customer or an additional email address.' =>
             'Ein Artikel wird erstellt, wenn die Benachrichtigung an den Kunden oder an eine zusätzliche E-Mail-Adresse versendet wird.',
@@ -1818,12 +1820,12 @@ sub Data {
         'Overwrite existing entities' => 'Bestehende Einträge überschreiben',
         'Upload process configuration' => 'Prozesskonfiguration hochladen',
         'Import process configuration' => 'Prozesskonfiguration importieren',
-        'Ready-to-run Processes' => '',
+        'Ready-to-run Processes' => 'Lauffähige Prozesse',
         'Here you can activate ready-to-run processes showcasing our best practices. Please note that some additional configuration may be required.' =>
-            '',
+            'Hier können Sie von uns erstellte lauffähige Prozesse zur Demonstration aktivieren. Bitte beachten Sie, dass eventuell weitere Einstellungen erforderlich sind.',
         'Would you like to benefit from processes created by experts? Upgrade to %s to import some sophisticated ready-to-run processes.' =>
-            '',
-        'Import ready-to-run process' => '',
+            'Möchten Sie von Prozessen profitieren, die von Experten erstellt wurden? Dann wechseln Sie auf die %s, um ausgefeilte Prozesse zur sofortigen Nutzung importieren zu können.',
+        'Import ready-to-run process' => 'Prozess zur sofortigen Nutzung importieren',
         'To create a new Process you can either import a Process that was exported from another system or create a complete new one.' =>
             'Um einen neuen Prozess zu erstellen, können Sie entweder einen Prozess aus einem anderen System importieren, oder einen ganz neuen erstellen.',
         'Changes to the Processes here only affect the behavior of the system, if you synchronize the Process data. By synchronizing the Processes, the newly made changes will be written to the Configuration.' =>
@@ -2402,7 +2404,7 @@ sub Data {
 
         # Template: AdminSystemMaintenanceEdit
         'Edit System Maintenance %s' => 'Systemwartung %s bearbeiten',
-        'Edit System Maintenance information' => 'Systemwartungs-Information bearbeiten',
+        'Edit System Maintenance Information' => '',
         'Date invalid!' => 'Ungültiges Datum',
         'Login message' => 'Anmeldungs-Nachricht',
         'Show login message' => 'Anmeldungs-Nachricht anzeigen',
@@ -2811,8 +2813,10 @@ sub Data {
         'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.' =>
             'Sucht in den Attributen Von, Cc, Betreff, Artikelinhalt und überschreibt Attribute mit dem selben Namen.',
         'CustomerID (complex search)' => 'Kundennummer (komplexe Suche)',
+        '(e. g. 234*)' => '(z. B. 234*)',
         'CustomerID (exact match)' => 'Kundennummer (genaue Übereinstimmung)',
         'Customer User Login (complex search)' => 'Kundenbenutzer (komplexe Suche)',
+        '(e. g. U51*)' => '(z. B. U51*)',
         'Customer User Login (exact match)' => 'Kundenbenutzer (genaue Übereinstimmung)',
         'Attachment Name' => 'Name der Anlage',
         '(e. g. m*file or myfi*)' => '(z.B. m*file oder myfi*)',
@@ -2936,12 +2940,12 @@ sub Data {
         'Accept' => 'Annehmen',
         'Decline' => 'Ablehnen',
         'An internal error occurred.' => 'Ein interner Fehler ist aufgetreten.',
-        'Connection error' => '',
-        'Reload page' => '',
+        'Connection error' => 'Verbindungsfehler',
+        'Reload page' => 'Seite aktualisieren',
         'Your browser was not able to communicate with OTRS properly, there seems to be something wrong with your network connection. You could either try reloading this page manually or wait until your browser has re-established the connection on its own.' =>
-            '',
+            'Ihr Browser konnte keine Verbunding mit OTRS herstellen, es scheint an ihrere Netzwerk Verbindung zu liegen. Sie könnten versuchen die Seite manuell neu zu Laden oder warten bis ihr Browser die Verbindung wieder herstellt.',
         'The connection has been re-established after a temporary connection loss. Due to this, elements on this page could have stopped to work correctly. In order to be able to use all elements correctly again, it is strongly recommended to reload this page.' =>
-            '',
+            'Die Verbindungen wurde nach einer kurzen Unterbrechung wiederhergestellt. Aus diesem Grund könnte es sein das einige Elemente der Seite nicht korrekt funktionieren. Um alle Elemente erneut korrekt nutzen zu können sollten Sie ihre Seite neue laden.',
 
         # Template: CustomerLogin
         'JavaScript Not Available' => 'JavaScript nicht aktiviert oder nicht unterstützt.',
@@ -3491,7 +3495,7 @@ sub Data {
         'No such file %s in package!' => 'Keine solche Datei %s im Paket!',
         'No such file %s in local file system!' => 'Datei %s existiert nicht im Dateisystem!',
         'Can\'t read %s!' => 'Kann %s nicht lesen!',
-        'File is OK' => '',
+        'File is OK' => 'Datei ist OK',
         'Package has locally modified files.' => 'Das Paket enthält lokal angepasste Dateien.',
         'No packages or no new packages found in selected repository.' =>
             'Keine (neuen) Pakete im ausgewählten Verzeichnis gefunden.',
@@ -3653,6 +3657,8 @@ sub Data {
         'No preferences for %s!' => 'Keine Einstellungen für %s!',
         'Can\'t get element data of %s!' => 'Konnte Daten zu Element %s nicht ermitteln!',
         'Can\'t get filter content data of %s!' => 'Kann Filter-Daten von %s nicht ermitteln!',
+        'Customer Company Name' => '',
+        'Customer User ID' => 'Kundenbenutzerkennung',
 
         # Perl Module: Kernel/Modules/AgentLinkObject.pm
         'Need SourceObject and SourceKey!' => 'Benötige SourceObject und SourceKey!',
@@ -3701,7 +3707,9 @@ sub Data {
         'You either selected no ticket or only tickets which are locked by other agents.' =>
             'Sie haben entweder kein Ticket ausgewählt, oder nur Tickets, die von anderen Agenten gesperrt sind.',
         'You need to select at least one ticket.' => 'Sie müssen mindestens ein Ticket auswählen.',
-        'Ticket is locked by another agent and will be ignored!' => 'Ticket ist von einem anderen Agenten gesperrt und wird ignoriert!',
+        'The following tickets were ignored because they are locked by another agent or you don\'t have write access to these tickets: %s.' =>
+            '',
+        'The following tickets were locked: %s.' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketCompose.pm
         'Can not determine the ArticleType!' => 'Konnte Artikel-Typ nicht bestimmen!',
@@ -3791,6 +3799,10 @@ sub Data {
         'Could not store ActivityDialog, invalid TicketID: %s!' => 'Konnte Aktivitätsdialog nicht speichern, ungültige TicketID: %s!',
         'Invalid TicketID: %s!' => 'Ungültige TicketID: %s!',
         'Missing ActivityEntityID in Ticket %s!' => 'ActivityEntityID fehlt für Ticket %s!',
+        'This activity dialog does not belong to current activity in Ticket %s!' =>
+            '',
+        'It might be possible that the ticket was updated by another user in the mean time, please close this window and reload ticket.' =>
+            '',
         'Missing ProcessEntityID in Ticket %s!' => 'ProcessEntityID fehlt für Ticket %s!',
         'Could not set DynamicField value for %s of Ticket with ID "%s" in ActivityDialog "%s"!' =>
             'Konnte Wert des dynamischen Feldes %s für TicketID %s im Aktivitätsdialog "%s" nicht speichern!',
@@ -3845,13 +3857,13 @@ sub Data {
         'Ticket Merged' => 'Ticket zusammengefasst',
         'Outgoing Phone Call' => 'Ausgehender Telefonanruf',
         'Forwarded Message' => 'Weitergeleitete Nachricht',
-        'Removed User Subscription' => '',
+        'Removed User Subscription' => 'Benutzer-Abonnement entfernt',
         'Time Accounted' => 'Zeit erfasst',
         'Incoming Phone Call' => 'Eingehender Telefonanruf',
         'System Request.' => 'Systemanfrage.',
         'Incoming Follow-Up' => 'Eingehende Rückfrage',
         'Automatic Reply Sent' => 'Automatische Antwort gesendet',
-        'Automatic Reject Sent' => '',
+        'Automatic Reject Sent' => 'Automatische Ablehnung gesendet',
         'Escalation Solution Time In Effect' => '',
         'Escalation Solution Time Stopped' => 'Lösungszeit-Eskalation angehalten',
         'Escalation Response Time In Effect' => '',
@@ -4039,9 +4051,9 @@ sub Data {
 
         # Perl Module: Kernel/System/Package.pm
         'not installed' => 'nicht installiert',
-        'File is not installed!' => '',
-        'File is different!' => '',
-        'Can\'t read file!' => '',
+        'File is not installed!' => 'Datei ist nicht installiert!',
+        'File is different!' => 'Datei unterschiedlich!',
+        'Can\'t read file!' => 'Datei kann nicht gelesen werden!',
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
         'Inactive' => 'Inaktiv',
@@ -4049,6 +4061,9 @@ sub Data {
 
         # Perl Module: Kernel/System/Registration.pm
         'Can\'t get Token from sever' => 'Kann Token nicht vom Server ermitteln!',
+
+        # Perl Module: Kernel/System/Stats.pm
+        'Sum' => 'Summe',
 
         # Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
         'State Type' => 'Statustyp',
@@ -4279,6 +4294,9 @@ sub Data {
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageList.pm
         'Package List' => 'Paketliste',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SessionConfigSettings.pm
+        'Session Config Settings' => 'Sitzungskonfigurationseinstellungen',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
         'Spooled Emails' => '',
@@ -4646,10 +4664,10 @@ Ihr Helpdesk-Team
             'Ermöglicht die Definition neuer Ticket-Typen  (wenn Ticket-Typ-Funktion aktiviert ist).',
         'Allows defining services and SLAs for tickets (e. g. email, desktop, network, ...), and escalation attributes for SLAs (if ticket service/SLA feature is enabled).' =>
             'Erlaubt die Definition von Services und SLAs für Tickets (zum Beispiel: E-Mail, Desktop, Network, ...) und Eskalationsattributen für SLAs (wenn die Ticket Service/SLA Einstellung aktiviert ist).',
-        'Allows extended search conditions in ticket search of the agent interface. With this feature you can search e. g. with this kind of conditions like "(key1&&key2)" or "(key1||key2)".' =>
-            'Erlaubt erweiterte Suchbedingungen in der Ticket-Suche des Agenten-Bereichs. Mit dieser Funktion können Sie z.B. mit Bedingungen wie "(key1&&key2)" oder "(key1||key2)" suchen.',
-        'Allows extended search conditions in ticket search of the customer interface. With this feature you can search e. g. with this kind of conditions like "(key1&&key2)" or "(key1||key2)".' =>
-            'Erlaubt erweiterte Suchbedingungen in der Ticketsuche im Kundenbereich. Mit diesem Feature können Sie Suchbedingungen wie "(key1&&key2)" oder "(key1||key2)" festlegen.',
+        'Allows extended search conditions in ticket search of the agent interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".' =>
+            '',
+        'Allows extended search conditions in ticket search of the customer interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".' =>
+            '',
         'Allows extended search conditions in ticket search of the generic agent interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".' =>
             'Erlaubt erweiterte Suchbedingungen der generischen Agenten-Schnittstelle. Mit diesem Feature kann man z.B. Ticket-Titel mit Bedingungen wie dieser "(*key1*&&*key2*)" oder "(*key1*||*key2*)" durchsuchen.',
         'Allows having a medium format ticket overview (CustomerInfo => 1 - shows also the customer information).' =>
@@ -4772,8 +4790,9 @@ Ihr Helpdesk-Team
             'Konfiguriert eine Standardeinstellung für ein dynamisches Ticketfeld. "Name" beschreibt das dynamische Feld, das genutzt werden soll, "Value" die Daten, mit denen das Feld befüllt werden soll. "Event" enthält das auslösende Ereignis. Weitere Informationen finden Sie im Entwicklerhandbuch (http://otrs.github.io/doc/) im Kapitel "Ticket-Eventmodule".',
         'Controls how to display the ticket history entries as readable values.' =>
             'Kontrolliert wie die Ticket-Historie in lesbaren Werten dargestellt wird.',
-        'Controls if CustomerID is editable in the agent interface.' => '',
-        'Controls if CutomerID is editable in the agent interface.' => 'Bestimmt, ob CustomerID im Agenten-Interface bearbeitet werden kann.',
+        'Controls if CustomerID is automatically copied from the sender address for unknown customers.' =>
+            '',
+        'Controls if CustomerID is read-only in the agent interface.' => '',
         'Controls if customers have the ability to sort their tickets.' =>
             'Legt fest, ob Kunden die Möglichkeit haben ihre Tickets zu sortieren.',
         'Controls if more than one from entry can be set in the new phone ticket in the agent interface.' =>
@@ -5553,6 +5572,7 @@ Ihr Helpdesk-Team
             '',
         'Determines which queues will be valid for ticket\'s recepients in the customer interface.' =>
             '',
+        'Development' => 'Entwicklung',
         'Disable HTTP header "Content-Security-Policy" to allow loading of external script contents. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             '',
         'Disable HTTP header "X-Frame-Options: SAMEORIGIN" to allow OTRS to be included as an IFrame in other websites. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
@@ -5879,22 +5899,6 @@ Ihr Helpdesk-Team
             'Wenn "SysLog" als LogModule konfiguriert wurde, kann hier der Zeichensatz, der für das Logging verwendet werden soll, festgelegt werden.',
         'If "file" was selected for LogModule, a logfile must be specified. If the file doesn\'t exist, it will be created by the system.' =>
             'Wenn "Datei" als LogModule konfiguriert wurde, muss hier eine Log-Datei hinterlegt werden. Existiert die Datei nicht, wird sie automatisch vom System erstellt.',
-        'If a note is added by an agent, sets the state of a ticket in the close ticket screen of the agent interface.' =>
-            'Ermöglicht das Ändern des Ticket-Status beim Hinzufügen einer Notiz innerhalb des Schließen-Bildschirms.',
-        'If a note is added by an agent, sets the state of a ticket in the ticket bulk screen of the agent interface.' =>
-            'Ermöglicht das Ändern des Ticket-Status beim Hinzufügen einer Notiz innerhalb des Stapelverarbeitungs-Bildschirms.',
-        'If a note is added by an agent, sets the state of a ticket in the ticket free text screen of the agent interface.' =>
-            'Ermöglicht das Ändern des Ticket-Status beim Hinzufügen einer Notiz innerhalb des Freitext-Felder-Bildschirms.',
-        'If a note is added by an agent, sets the state of a ticket in the ticket note screen of the agent interface.' =>
-            'Ermöglicht das Ändern des Ticket-Status beim Hinzufügen einer Notiz innerhalb des Notiz-Bildschirms.',
-        'If a note is added by an agent, sets the state of a ticket in the ticket responsible screen of the agent interface.' =>
-            'Ermöglicht das Ändern des Ticket-Status beim Hinzufügen einer Notiz innerhalb des Verantwortlicher-Bildschirms.',
-        'If a note is added by an agent, sets the state of the ticket in the ticket owner screen of a zoomed ticket in the agent interface.' =>
-            'Ermöglicht das Ändern des Ticket-Status beim Hinzufügen einer Notiz innerhalb des Besitzer-Bildschirms.',
-        'If a note is added by an agent, sets the state of the ticket in the ticket pending screen of a zoomed ticket in the agent interface.' =>
-            'Ermöglicht das Ändern des Ticket-Status beim Hinzufügen einer Notiz innerhalb des Wartezeit-Bildschirms.',
-        'If a note is added by an agent, sets the state of the ticket in the ticket priority screen of a zoomed ticket in the agent interface.' =>
-            'Ermöglicht das Ändern des Ticket-Status beim Hinzufügen einer Notiz innerhalb des Prioritäts-Bildschirms.',
         'If active, none of the regular expressions may match the user\'s email address to allow registration.' =>
             'Wenn aktiviert, darf keiner der hier definierten regulären Ausdrücke auf die E-Mail-Adresse des Benutzers, der sich registrieren möchte, matchen.',
         'If active, one of the regular expressions has to match the user\'s email address to allow registration.' =>
@@ -5941,8 +5945,8 @@ Ihr Helpdesk-Team
             'Wenn dieser reguläre Ausdruck zutrifft, wird durch den Autoresponder keine Nachricht versendet.',
         'If this setting is active, local modifications will not be highlighted as errors in the package manager and support data collector.' =>
             'Wenn die Einstellung aktiv ist, werden lokale Änderungen nicht als Fehler in der Supportdaten-Analyse angezeigt.',
-        'Ignore article with system sender type for new article feature (e. g. auto responses or email notifications).' =>
-            'Artikel mit Sendertyp "system" für das Erzeugen neuer Artikel ignorieren (z.B. automatische Antworten oder E-Mail-Benachrichtigungen).',
+        'Ignore system sender article types (e. g. auto responses or email notifications) to be flagged as \'Unread Article\' in AgentTicketZoom or expanded automatically in Large view screens.' =>
+            '',
         'Include tickets of subqueues per default when selecting a queue.' =>
             'Tickets von Unterqueues automatisch mit einschließen, wenn eine Queue ausgewählt wird.',
         'Include unknown customers in ticket filter.' => 'Unbekannte Kunden in Ticketfiltern mit einschließen.',
@@ -6332,9 +6336,9 @@ Ihr Helpdesk-Team
         'Sends customer notifications just to the mapped customer.' => 'Versendet Kundenbenachrichtigungen nur für den gemappten Kunden.',
         'Sends registration information to OTRS group.' => 'Übermitteln der Registrierungsinformationen an die OTRS Group.',
         'Sends reminder notifications of unlocked ticket after reaching the reminder date (only sent to ticket owner).' =>
-            '',
+            'Sendet eine Erinnerung eines Entsperrten Tickets nachdem das Erinnerungsdatum erreicht wurde. (Nur zum Besitzer des Tickets gesendet).',
         'Sends the notifications which are configured in the admin interface under "Notfication (Event)".' =>
-            '',
+            'Sendet eine Benachrichtigung welche im Admin Menü unter "Benachrichtig (Event)" eingestellt werden kann.',
         'Serbian Cyrillic' => 'Kyrillisches Serbisch',
         'Serbian Latin' => 'Lateinisches Serbisch',
         'Service view' => 'Ansicht nach Services',
@@ -6499,6 +6503,22 @@ Ihr Helpdesk-Team
             'Setzt den Service im Priorität-Bildschirm für Tickets im Agentenbereich (Ticket::Service muss aktiviert sein).',
         'Sets the service in the ticket responsible screen of the agent interface (Ticket::Service needs to be activated).' =>
             'Setzt den Service im Verantwortlicher-Bildschirm für Tickets im Agentenbereich (Ticket::Service muss aktiviert sein).',
+        'Sets the state of a ticket in the close ticket screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the ticket bulk screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the ticket free text screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the ticket note screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the ticket responsible screen of the agent interface.' =>
+            '',
+        'Sets the state of the ticket in the ticket owner screen of a zoomed ticket in the agent interface.' =>
+            '',
+        'Sets the state of the ticket in the ticket pending screen of a zoomed ticket in the agent interface.' =>
+            '',
+        'Sets the state of the ticket in the ticket priority screen of a zoomed ticket in the agent interface.' =>
+            '',
         'Sets the stats hook.' => 'Steuert den Hook für Statistiken.',
         'Sets the system time zone (required a system with UTC as system time). Otherwise this is a diff time to the local time.' =>
             'Legt die Zeitzone des Systems fest (benötigt ein System mit UTC als Systemzeit). Andernfalls ist dies die Differenzzeit zur lokalen Zeit.',
@@ -6793,6 +6813,7 @@ Ihr Helpdesk-Team
         'Specify the username to authenticate for the first mirror database.' =>
             'Geben Sie den Benutzernamen für die Authentifikation mit der ersten Spiegeldatenbank an.',
         'Spell checker.' => 'Rechtschreibprüfung.',
+        'Stable' => '',
         'Standard available permissions for agents within the application. If more permissions are needed, they can be entered here. Permissions must be defined to be effective. Some other good permissions have also been provided built-in: note, close, pending, customer, freetext, move, compose, responsible, forward, and bounce. Make sure that "rw" is always the last registered permission.' =>
             '',
         'Start number for statistics counting. Every new stat increments this number.' =>
@@ -6912,7 +6933,7 @@ Ihr Helpdesk-Team
         'TicketNumber' => 'Ticketnummer',
         'Tickets.' => 'Tickets.',
         'Time in seconds that gets added to the actual time if setting a pending-state (default: 86400 = 1 day).' =>
-            '',
+            'Zeit in Sekunden wird der aktuellen Zeit hinzugefügt wenn ein unerledigter-zustand gesetzt wird (Standard: 86400 = 1 Tag).',
         'Title updated: Old: "%s", New: "%s"' => 'Titel geändert: Alt: "%s", Neu: "%s"',
         'To accept login information, such as an EULA or license.' => 'Um Login-Informationen zu akzeptieren, wie EULAs oder Lizenzen.',
         'To download attachments.' => 'Zum Herunterladen von Anhängen.',
@@ -6955,9 +6976,9 @@ Ihr Helpdesk-Team
         'UserLastname' => 'Benutzernachname',
         'Uses Cc recipients in reply Cc list on compose an email answer in the ticket compose screen of the agent interface.' =>
             '',
-        'Uses richtext for viewing and editing ticket notification.' => '',
+        'Uses richtext for viewing and editing ticket notification.' => 'Nutzt richtext zum betrachten und bearbeiten von Ticket-Benachrichtigungen.',
         'Uses richtext for viewing and editing: articles, salutations, signatures, standard templates, auto responses and notifications.' =>
-            '',
+            'Nutzt richtext zum betrachten und bearbeiten von: Artikeln, Begrüßungen, Signaturen, Standard Vorlagen, Automatische Antworten und Benachrichtigungen.',
         'Vietnam' => 'Vietnamesisch',
         'View performance benchmark results.' => 'Ergebnisse der Leistungsmessung ansehen.',
         'Watch this ticket' => 'Dieses Ticket beobachten',
@@ -6982,13 +7003,19 @@ Ihr Helpdesk-Team
         'Your queue selection of your preferred queues. You also get notified about those queues via email if enabled.' =>
             'Die Auswahl ihrer bevorzugten (abbonnierten) Queues. Sie werden auch per E-Mail über diese Queues benachrichtigt, wenn die Einstellung aktiv ist.',
         'Your service selection of your preferred services. You also get notified about those services via email if enabled.' =>
-            '',
+            'Auswahl der bevorzugten Services. Es werden E-Mail-Benachrichtigungen über diesen ausgewählten Services versendet, falls aktiviert.',
         'attachment' => 'attachment',
+        'bounce' => 'Umleiten',
+        'compose' => 'Verfassen',
         'debug' => 'debug',
         'error' => 'error',
+        'forward' => 'Weiterleiten',
         'info' => 'info',
         'inline' => 'inline',
         'notice' => 'notice',
+        'pending' => 'Warten',
+        'responsible' => 'Verantwortlicher',
+        'stats' => 'stats',
 
     };
     # $$STOP$$

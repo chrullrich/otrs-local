@@ -322,58 +322,6 @@ sub GetObjectAttributes {
                 TimeStop  => 'TicketCloseTimeOlderDate',
             },
         },
-        {
-            Name             => Translatable('Escalation'),
-            UseAsXvalue      => 1,
-            UseAsValueSeries => 1,
-            UseAsRestriction => 1,
-            Element          => 'EscalationTime',
-            TimePeriodFormat => 'DateInputFormatLong',        # 'DateInputFormat',
-            Block            => 'Time',
-            Values           => {
-                TimeStart => 'TicketEscalationTimeNewerDate',
-                TimeStop  => 'TicketEscalationTimeOlderDate',
-            },
-        },
-        {
-            Name             => Translatable('Escalation - First Response Time'),
-            UseAsXvalue      => 1,
-            UseAsValueSeries => 1,
-            UseAsRestriction => 1,
-            Element          => 'EscalationResponseTime',
-            TimePeriodFormat => 'DateInputFormatLong',                              # 'DateInputFormat',
-            Block            => 'Time',
-            Values           => {
-                TimeStart => 'TicketEscalationResponseTimeNewerDate',
-                TimeStop  => 'TicketEscalationResponseTimeOlderDate',
-            },
-        },
-        {
-            Name             => Translatable('Escalation - Update Time'),
-            UseAsXvalue      => 1,
-            UseAsValueSeries => 1,
-            UseAsRestriction => 1,
-            Element          => 'EscalationUpdateTime',
-            TimePeriodFormat => 'DateInputFormatLong',                      # 'DateInputFormat',
-            Block            => 'Time',
-            Values           => {
-                TimeStart => 'TicketEscalationUpdateTimeNewerDate',
-                TimeStop  => 'TicketEscalationUpdateTimeOlderDate',
-            },
-        },
-        {
-            Name             => Translatable('Escalation - Solution Time'),
-            UseAsXvalue      => 1,
-            UseAsValueSeries => 1,
-            UseAsRestriction => 1,
-            Element          => 'EscalationSolutionTime',
-            TimePeriodFormat => 'DateInputFormatLong',                        # 'DateInputFormat',
-            Block            => 'Time',
-            Values           => {
-                TimeStart => 'TicketEscalationSolutionTimeNewerDate',
-                TimeStop  => 'TicketEscalationSolutionTimeOlderDate',
-            },
-        },
     );
 
     if ( $ConfigObject->Get('Ticket::Service') ) {
@@ -651,7 +599,7 @@ sub GetObjectAttributes {
                     Element          => $DynamicFieldStatsParameter->{Element},
                     Block            => $DynamicFieldStatsParameter->{Block},
                     Values           => $DynamicFieldStatsParameter->{Values},
-                    Translation      => 0,
+                    Translation      => $DynamicFieldStatsParameter->{TranslatableValues} || 0,
                     IsDynamicField   => 1,
                     ShowAsTree       => $DynamicFieldConfig->{Config}->{TreeView} || 0,
                 );
@@ -1441,16 +1389,6 @@ sub _AllowedTicketSearchAttributes {
         TicketLastChangeTimeOlderDate
         TicketCloseTimeNewerDate
         TicketCloseTimeOlderDate
-        TicketPendingTimeNewerDate
-        TicketPendingTimeOlderDate
-        TicketEscalationTimeNewerDate
-        TicketEscalationTimeOlderDate
-        TicketEscalationUpdateTimeNewerDate
-        TicketEscalationUpdateTimeOlderDate
-        TicketEscalationResponseTimeNewerDate
-        TicketEscalationResponseTimeOlderDate
-        TicketEscalationSolutionTimeNewerDate
-        TicketEscalationSolutionTimeOlderDate
     );
 
     # loop over the dynamic fields configured

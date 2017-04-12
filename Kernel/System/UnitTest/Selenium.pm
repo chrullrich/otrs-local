@@ -7,13 +7,14 @@
 # --
 
 package Kernel::System::UnitTest::Selenium;
-## nofilter(TidyAll::Plugin::OTRS::Perl::Goto)
 
 use strict;
 use warnings;
 
 use MIME::Base64();
+use File::Path();
 use File::Temp();
+use Time::HiRes();
 
 use Kernel::Config;
 use Kernel::System::User;
@@ -25,11 +26,12 @@ our @ObjectDependencies = (
     'Kernel::System::Main',
     'Kernel::System::Time',
     'Kernel::System::UnitTest',
+    'Kernel::System::UnitTest::Helper',
 );
 
 =head1 NAME
 
-Kernel::System::UnitTest::Selenium - run frontend tests
+Kernel::System::UnitTest::Selenium - run front end tests
 
 This class inherits from Selenium::Remote::Driver. You can use
 its full API (see
@@ -38,7 +40,7 @@ L<http://search.cpan.org/~aivaturi/Selenium-Remote-Driver-0.15/lib/Selenium/Remo
 Every successful Selenium command will be logged as a successful unit test.
 In case of an error, an exception will be thrown that you can catch in your
 unit test file and handle with C<HandleError()> in this class. It will output
-a failing test result and generate a screenshot for analysis.
+a failing test result and generate a screen shot for analysis.
 
 =over 4
 
@@ -46,11 +48,11 @@ a failing test result and generate a screenshot for analysis.
 
 =item new()
 
-create a selenium object to run fontend tests.
+create a selenium object to run front end tests.
 
-To do this, you need a running selenium or phantomjs server.
+To do this, you need a running C<selenium> or C<phantomjs> server.
 
-Specify the connection details in Config.pm, like this:
+Specify the connection details in C<Config.pm>, like this:
 
     $Self->{'SeleniumTestsConfig'} = {
         remote_server_addr  => 'localhost',
@@ -59,9 +61,12 @@ Specify the connection details in Config.pm, like this:
         platform            => 'ANY',
         window_height       => 1200,    # optional, default 1000
         window_width        => 1600,    # optional, default 1200
+        extra_capabilities => {
+            marionette     => \0,   # Required to run FF 47 or older on Selenium 3+.
+        },
     };
 
-Then you can use the full API of Selenium::Remote::Driver on this object.
+Then you can use the full API of L<Selenium::Remote::Driver> on this object.
 
 =cut
 
@@ -358,7 +363,7 @@ sub WaitFor {
         elsif ( $Param{Callback} ) {
             return 1 if $Param{Callback}->();
         }
-        sleep $Interval;
+        Time::HiRes::sleep($Interval);
         $WaitedSeconds += $Interval;
         $Interval += 0.1;
     }
@@ -435,8 +440,8 @@ use this method to handle any Selenium exceptions.
 
     $SeleniumObject->HandleError($@);
 
-It will create a failing test result and store a screenshot of the page
-for analysis (in folder /var/otrs-unittest if it exists, in /tmp otherwise).
+It will create a failing test result and store a screen shot of the page
+for analysis (in folder /var/otrs-unittest if it exists, in $Home/var/httpd/htdocs otherwise).
 
 =cut
 
@@ -450,38 +455,58 @@ sub HandleError {
     return if !$Data;
     $Data = MIME::Base64::decode_base64($Data);
 
-    my $TmpDir = -d '/var/otrs-unittest/' ? '/var/otrs-unittest/' : '/tmp/';
-    $TmpDir .= 'SeleniumScreenshots/';
-    mkdir $TmpDir || return $Self->False( 1, "Could not create $TmpDir." );
-
-    my $Product = $Self->{UnitTestObject}->{Product};
-    $Product =~ s{[^a-z0-9_.\-]+}{_}smxig;
-    $TmpDir .= $Product;
-    mkdir $TmpDir || return $Self->False( 1, "Could not create $TmpDir." );
+    #
+    # Store screenshots in a local folder from where they can be opened directly in the browser.
+    #
+    my $LocalScreenshotDir = $Kernel::OM->Get('Kernel::Config')->Get('Home') . '/var/httpd/htdocs/SeleniumScreenshots';
+    mkdir $LocalScreenshotDir || return $Self->False( 1, "Could not create $LocalScreenshotDir." );
 
     my $Filename = $Kernel::OM->Get('Kernel::System::Time')->CurrentTimestamp();
     $Filename .= '-' . ( int rand 100_000_000 ) . '.png';
     $Filename =~ s{[ :]}{-}smxg;
 
+    my $HttpType = $Kernel::OM->Get('Kernel::Config')->Get('HttpType');
+    my $Hostname = $Kernel::OM->Get('Kernel::System::UnitTest::Helper')->GetTestHTTPHostname();
+    my $URL      = "$HttpType://$Hostname/"
+        . $Kernel::OM->Get('Kernel::Config')->Get('Frontend::WebPath')
+        . "SeleniumScreenshots/$Filename";
+
     $Kernel::OM->Get('Kernel::System::Main')->FileWrite(
-        Directory => $TmpDir,
+        Directory => $LocalScreenshotDir,
         Filename  => $Filename,
         Content   => \$Data,
-    ) || return $Self->False( 1, "Could not write file $TmpDir/$Filename" );
+    ) || return $Self->False( 1, "Could not write file $LocalScreenshotDir/$Filename" );
 
-    $Self->{UnitTestObject}->False(
-        1,
-        "Saved screenshot in file://$TmpDir/$Filename",
+    #
+    # If a shared screenshot folder is present, then we also store the screenshot there for external use.
+    #
+    if ( -d '/var/otrs-unittest/' ) {
+
+        my $SharedScreenshotDir = '/var/otrs-unittest/SeleniumScreenshots';
+        mkdir $SharedScreenshotDir || return $Self->False( 1, "Could not create $SharedScreenshotDir." );
+
+        $Kernel::OM->Get('Kernel::System::Main')->FileWrite(
+            Directory => $SharedScreenshotDir,
+            Filename  => $Filename,
+            Content   => \$Data,
+        ) || return $Self->False( 1, "Could not write file $SharedScreenshotDir/$Filename" );
+    }
+
+    $Self->{UnitTestObject}->False( 1, "Saved screenshot in $URL" );
+    $Self->{UnitTestObject}->AttachSeleniumScreenshot(
+        Filename => $Filename,
+        Content  => $Data
     );
 }
 
-=item DESTROY()
+=head2 DEMOLISH()
 
-cleanup. Adds a unit test result to indicate the shutdown.
+override DEMOLISH from L<Selenium::Remote::Driver> (required because this class is managed by L<Moo>).
+Adds a unit test result to indicate the shutdown, and performs some clean-ups.
 
 =cut
 
-sub DESTROY {
+sub DEMOLISH {
     my $Self = shift;
 
     # Could be missing on early die.
@@ -490,7 +515,19 @@ sub DESTROY {
     }
 
     if ( $Self->{SeleniumTestsActive} ) {
-        $Self->SUPER::DESTROY();
+        $Self->SUPER::DEMOLISH(@_);
+    }
+
+    # Cleanup possibly leftover zombie firefox profiles.
+    my @LeftoverFirefoxProfiles = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
+        Directory => '/tmp/',
+        Filter    => 'anonymous*webdriver-profile',
+    );
+
+    for my $LeftoverFirefoxProfile (@LeftoverFirefoxProfiles) {
+        if ( -d $LeftoverFirefoxProfile ) {
+            File::Path::remove_tree($LeftoverFirefoxProfile);
+        }
     }
 }
 
