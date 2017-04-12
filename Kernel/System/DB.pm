@@ -7,7 +7,7 @@
 # --
 
 package Kernel::System::DB;
-## nofilter(TidyAll::Plugin::OTRS::Perl::PODSpelling)
+## nofilter(TidyAll::Plugin::OTRS::Perl::Pod::FunctionPod)
 
 use strict;
 use warnings;
@@ -834,19 +834,20 @@ sub SelectAll {
 =item GetDatabaseFunction()
 
 to get database functions like
-    o Limit
-    o DirectBlob
-    o QuoteSingle
-    o QuoteBack
-    o QuoteSemicolon
-    o NoLikeInLargeText
-    o CurrentTimestamp
-    o Encode
-    o Comment
-    o ShellCommit
-    o ShellConnect
-    o Connect
-    o LikeEscapeString
+
+    - Limit
+    - DirectBlob
+    - QuoteSingle
+    - QuoteBack
+    - QuoteSemicolon
+    - NoLikeInLargeText
+    - CurrentTimestamp
+    - Encode
+    - Comment
+    - ShellCommit
+    - ShellConnect
+    - Connect
+    - LikeEscapeString
 
     my $What = $DBObject->GetDatabaseFunction('DirectBlob');
 
@@ -1139,8 +1140,8 @@ generate SQL condition query based on a search expression
     )
 
 Note that the comparisons are usually performed case insensitively.
-Only VARCHAR colums with a size less or equal 3998 are supported,
-as for locator objects the functioning of SQL function LOWER() can't
+Only C<VARCHAR> columns with a size less or equal 3998 are supported,
+as for locator objects the functioning of SQL function C<LOWER()> can't
 be guaranteed.
 
 =cut

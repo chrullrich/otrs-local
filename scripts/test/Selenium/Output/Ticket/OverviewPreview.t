@@ -44,6 +44,14 @@ $Selenium->RunTest(
             Value => 0,
         );
 
+        # Override FirstnameLastnameOrder setting to check if it is taken into account
+        #   (see bug#12554 for more information).
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'FirstnameLastnameOrder',
+            Value => 5,
+        );
+
         # create test user and login
         my $TestUserLogin = $Helper->TestUserCreate(
             Groups => [ 'admin', 'users' ],
@@ -55,13 +63,22 @@ $Selenium->RunTest(
             Password => $TestUserLogin,
         );
 
+        my $UserObject = $Kernel::OM->Get('Kernel::System::User');
+
         # get test user ID
         my $TestUserID = $Kernel::OM->Get('Kernel::System::User')->UserLookup(
             UserLogin => $TestUserLogin,
         );
 
+        # Get user data.
+        my %TestUser = $UserObject->GetUserData(
+            UserID => $TestUserID,
+        );
+
+        my $RandomID = $Helper->GetRandomID();
+
         # create test queue
-        my $QueueName = 'Queue' . $Helper->GetRandomID();
+        my $QueueName = 'Queue' . $RandomID;
         my $QueueID   = $Kernel::OM->Get('Kernel::System::Queue')->QueueAdd(
             Name            => $QueueName,
             ValidID         => 1,
@@ -81,7 +98,7 @@ $Selenium->RunTest(
 
         # create auto response
         my $AutoResponseID = $AutoResponseObject->AutoResponseAdd(
-            Name        => 'TestOTRSAutoResponse',
+            Name        => 'AutoResponse' . $RandomID,
             ValidID     => 1,
             Subject     => 'Some Subject..',
             Response    => 'Auto Response Test....',
@@ -188,35 +205,20 @@ $Selenium->RunTest(
                     "Second article created for ticket# $Index",
                 );
             }
-
-            if ( $Index > 0 ) {
-
-                # mark articles seen
-                my @ArticleIDs = $TicketObject->ArticleIndex(
-                    TicketID => $TicketIDs[$Index],
-                );
-
-                for my $ArticleID (@ArticleIDs) {
-                    my $SeenSuccess = $TicketObject->ArticleFlagSet(
-                        ArticleID => $ArticleID,
-                        Key       => 'Seen',
-                        Value     => 1,
-                        UserID    => $TestUserID,
-                    );
-                    $Self->True(
-                        $SeenSuccess,
-                        "Article $ArticleID marked as seen",
-                    );
-                }
-            }
         }
 
         # go to queue ticket overview
         my $ScriptAlias = $Kernel::OM->Get('Kernel::Config')->Get('ScriptAlias');
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketQueue;QueueID=$QueueID;View=");
 
-        # switch to medium view
+        # Switch to large view.
         $Selenium->find_element( "a.Large", 'css' )->VerifiedClick();
+
+        # Check if owner name conforms to current FirstnameLastNameOrder setting.
+        $Self->True(
+            index( $Selenium->get_page_source(), $TestUser{UserFullname} ) > -1,
+            "$TestUser{UserFullname} - found on screen"
+        );
 
         # sort by ticket number
         $Selenium->execute_script(
@@ -283,7 +285,7 @@ $Selenium->RunTest(
         );
         $Self->Is(
             $SelectedArticle2,
-            0,
+            1,
             "Selected article for Second ticket is OK.",
         );
 
@@ -292,7 +294,7 @@ $Selenium->RunTest(
         );
         $Self->Is(
             $SelectedArticle3,
-            0,
+            2,
             "Selected article for Third ticket is OK.",
         );
 
@@ -341,7 +343,7 @@ $Selenium->RunTest(
         );
         $Self->Is(
             $SelectedArticle3,
-            0,
+            2,
             "Selected article for Third ticket is OK(Ticket::NewArticleIgnoreSystemSender enabled).",
         );
 

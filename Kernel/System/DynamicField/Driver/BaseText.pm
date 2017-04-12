@@ -12,6 +12,7 @@ use strict;
 use warnings;
 
 use Kernel::System::VariableCheck qw(:all);
+use Kernel::Language qw(Translatable);
 
 use base qw(Kernel::System::DynamicField::Driver::Base);
 
@@ -121,8 +122,14 @@ sub SearchSQLGet {
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
     if ( $Operators{ $Param{Operator} } ) {
-        my $SQL = " $Param{TableAlias}.value_text $Operators{$Param{Operator}} '";
-        $SQL .= $DBObject->Quote( $Param{SearchTerm} ) . "' ";
+        my $Lower = '';
+        if ( $DBObject->GetDatabaseFunction('CaseSensitive') ) {
+            $Lower = 'LOWER';
+        }
+
+        my $SQL = " $Lower($Param{TableAlias}.value_text) $Operators{ $Param{Operator} } ";
+        $SQL .= "$Lower('" . $DBObject->Quote( $Param{SearchTerm} ) . "') ";
+
         return $SQL;
     }
 
@@ -418,7 +425,7 @@ EOF
 
     my $AdditionalText;
     if ( $Param{UseLabelHints} ) {
-        $AdditionalText = 'e.g. Text or Te*t';
+        $AdditionalText = Translatable('e.g. Text or Te*t');
     }
 
     # call EditLabelRender on the common Driver
