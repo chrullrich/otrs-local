@@ -36,7 +36,7 @@ use Kernel::GenericInterface::Provider;
 use Kernel::System::ObjectManager;
 
 # response loop
-while ( my $WebRequest = CGI::Fast->new() ) {
+while ( our $WebRequest = CGI::Fast->new() ) {
 
     # Reload files in @INC that have changed since the last request.
     eval {
