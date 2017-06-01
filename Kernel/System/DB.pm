@@ -22,6 +22,7 @@ our @ObjectDependencies = (
     'Kernel::System::Encode',
     'Kernel::System::Log',
     'Kernel::System::Main',
+    'Kernel::System::Storable',
     'Kernel::System::Time',
 );
 
@@ -786,10 +787,10 @@ to retrieve the column names of a database statement
 sub GetColumnNames {
     my $Self = shift;
 
-    my $ColumnNames = $Self->{Cursor}->{NAME};
+    my $ColumnNames = $Kernel::OM->Get('Kernel::System::Encode')->EncodeInput( $Self->{Cursor}->{NAME} );
 
     my @Result;
-    if ( ref $ColumnNames eq 'ARRAY' ) {
+    if ( IsArrayRefWithData($ColumnNames) ) {
         @Result = @{$ColumnNames};
     }
 
@@ -893,8 +894,17 @@ sub SQLProcessor {
     my @SQL;
     if ( $Param{Database} && ref $Param{Database} eq 'ARRAY' ) {
 
+        # make a deep copy in order to prevent modyfing the input data
+        # see also Bug#12764 - Database function SQLProcessor() modifies given parameter data
+        # https://bugs.otrs.org/show_bug.cgi?id=12764
+        my @Database = @{
+            $Kernel::OM->Get('Kernel::System::Storable')->Clone(
+                Data => $Param{Database},
+                )
+        };
+
         my @Table;
-        for my $Tag ( @{ $Param{Database} } ) {
+        for my $Tag (@Database) {
 
             # create table
             if ( $Tag->{Tag} eq 'Table' || $Tag->{Tag} eq 'TableCreate' ) {

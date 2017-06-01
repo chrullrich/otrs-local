@@ -29,7 +29,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.686928237446635;
+    $Self->{Completeness}        = 0.701577031945006;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -863,7 +863,7 @@ sub Data {
         'You can use the following tags' => 'Você pode usar os seguintes rótulos',
         'To get the first 20 character of the subject.' => 'Para obter os primeiros 20 caracteres do assunto.',
         'To get the first 5 lines of the email.' => 'Para obter as primeiras 5 linhas do e-mail.',
-        'To get the name of the ticket\'s customer user (if given).' => '',
+        'To get the name of the ticket\'s customer user (if given).' => 'Para obter o nome do usuário cliente do chamado (se fornecido).',
         'To get the article attribute' => 'Para obter o atributo do artigo',
         ' e. g.' => 'ex.',
         'Options of the current customer user data' => 'Opções para os dados do atual usuário cliente',
@@ -1095,7 +1095,7 @@ sub Data {
         'Run Now!' => 'Executar Agora',
         'Delete this task' => 'Excluir esta Tarefa',
         'Run this task' => 'Executar esta Tarefa',
-        'Do you really want to delete this task?' => '',
+        'Do you really want to delete this task?' => 'Você realmente deseja excluir essa tarefa?',
         'Job Settings' => 'Configurações de Tarefa',
         'Job name' => 'Tarefa',
         'The name you entered already exists.' => 'O nome digitado já existe.',
@@ -1382,7 +1382,7 @@ sub Data {
             '\'FunctionName\' é usado como exemplo para o verdadeiro nome de invoker/operation.',
         '\'FreeText\' is used as example for actual configured value.' =>
             '\'FreeText\' é usado como exemplo para o real valor configurado.',
-        'Request name free text' => '',
+        'Request name free text' => 'Texto livre do nome da requisição',
         'Text to be used to as function wrapper name suffix or replacement.' =>
             'Texto a ser usado como sufixo ou substituto de nome da função de encapsulamento.',
         'Please consider XML element naming restrictions (e.g. don\'t use \'<\' and \'&\').' =>
@@ -1442,14 +1442,14 @@ sub Data {
         'Configuration history' => 'Histórico de configuração',
         'Delete web service' => 'Apagar Web Service',
         'Do you really want to delete this web service?' => 'Você realmente deseja apagar este web service?',
-        'Ready-to-run Web Services' => '',
+        'Ready-to-run Web Services' => 'Web Services prontos para executar',
         'Here you can activate ready-to-run web services showcasing our best practices that are a part of %s.' =>
-            '',
+            'Aqui você pode ativar web services prontos para execução demonstrando nossas boas práticas que são parte de %s.',
         'Please note that these web services may depend on other modules only available with certain %s contract levels (there will be a notification with further details when importing).' =>
-            '',
-        'Import ready-to-run web service' => '',
+            'Por favor note que estes web services podem depender de outros módulos disponíveis apenas com certos %s níveis de contrato (haverá uma notificação com maiores detalhes quando da importação).',
+        'Import ready-to-run web service' => 'Importar web service pronto para execução',
         'Would you like to benefit from web services created by experts? Upgrade to %s to import some sophisticated ready-to-run web services.' =>
-            '',
+            'Você gostaria de se beneficiar de web services criados por especialistas? Faça o upgrade para %s para importar alguns web services sofisticados prontos para execução.',
         'After you save the configuration you will be redirected again to the edit screen.' =>
             'Após salvar as configuração você será redirecionado novamente para a tela de edição.',
         'If you want to return to overview please click the "Go to overview" button.' =>
@@ -1625,7 +1625,7 @@ sub Data {
         # Template: AdminNotificationEventTransportEmailSettings
         'Additional recipient email addresses' => 'Caixa de endereço de e-mail adicional',
         'You can use OTRS-tags like <OTRS_TICKET_DynamicField_...> to insert values from the current ticket.' =>
-            '',
+            'Você pode utilizar OTRS-tags como <OTRS_TICKET_DynamicField_...> para inserir valores do chamado atual.',
         'Notification article type' => 'Tipo de Artigo de Notificação',
         'An article will be created if the notification is sent to the customer or an additional email address.' =>
             'Um artigo será criado se as notificações são enviadas para o usuário ou para um endereço de e-mail adicional.',
@@ -1635,10 +1635,11 @@ sub Data {
         'Enable email security' => 'Habilitar segurança de email',
         'Email security level' => 'Nível de segurança do email',
         'If signing key/certificate is missing' => 'Se a assinatura de chave/certificado está faltando',
-        'If encryption key/certificate is missing' => '',
+        'If encryption key/certificate is missing' => 'Se a chave/certificado de encriptação está faltando',
 
         # Template: AdminOTRSBusinessInstalled
         'Manage %s' => 'Gerenciar %s',
+        'Go to the OTRS customer portal' => 'Vá para o portal de clientes do OTRS',
         'Downgrade to OTRS Free' => 'Downgrade para o OTRS Free',
         'Read documentation' => 'Leia a documentação',
         '%s makes contact regularly with cloud.otrs.com to check on available updates and the validity of the underlying contract.' =>
@@ -1658,6 +1659,19 @@ sub Data {
         '%s Not Yet Available' => '%s Não Disponível Ainda',
         '%s will be available soon.' => '%s estará disponível em breve.',
         '%s Update Available' => '%s Atualização Disponível',
+        'Package installation requires patch level update of OTRS.' => 'Instalação do pacote requer atualização de nível de patch do OTRS.',
+        'Please visit our customer portal and file a request.' => 'Por favor visite nosso portal de clientes e registre um pedido.',
+        'Everything else will be done as part of your contract.' => 'Tudo mais será feito como parte do seu contrato.',
+        'Your installed OTRS version is %s.' => 'Sua versão do OTRS instalada é %s.',
+        'To install the current version of OTRS Business Solution™, you need to update to OTRS %s or higher.' =>
+            'Para instalar a versão atual do OTRS Business Solution™, você precisa atualizar para OTRS %s ou superior.',
+        'To install the current version of OTRS Business Solution™, the Maximum OTRS Version is %s.' =>
+            'Para instalar a versão atual do OTRS Business Solution™, a versão máxima do OTRS é %s.',
+        'To install this package, the required Framework version is %s.' =>
+            'Para instalar este pacote, a versão do framework requerida é %s.',
+        'Why should I keep OTRS up to date?' => 'Por que eu deveria manter o OTRS atualizado?',
+        'You will receive updates about relevant security issues.' => 'Você receberá atualizações sobre questões de segurança relevantes.',
+        'You will receive updates for all other relevant OTRS issues' => 'Você receberá atualizações para todas as outras questões relevantes do OTRS',
         'An update for your %s is available! Please update at your earliest!' =>
             'Uma atualização para seu %s está disponível! Por favor, atualize o mais breve possível!',
         '%s Correctly Deployed' => '%s Instalado Corretamente',
@@ -1674,6 +1688,9 @@ sub Data {
             'Antes que você possa se beneficiar do %s, por favor, entre em contato com %s para o obter seu contrato de %s.',
         'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.' =>
             'Conexão com cloud.otrs.com via HTTPS não pôde ser estabelecida. Por favor, certifique-se de que seu OTRS pode se conectar a cloud.otrs.com através da porta 443.',
+        'To install this package, you need to update to OTRS %s or higher.' =>
+            'Para instalar este pacote, você precisa atualizar para OTRS %s ou superior.',
+        'To install this package, the Maximum OTRS Version is %s.' => 'Para instalar este pacote, a versão máxima do OTRS é %s.',
         'With your existing contract you can only use a small part of the %s.' =>
             'Com seu contrato existente você pode usar apenas uma pequena parte do %s.',
         'If you would like to take full advantage of the %s get your contract upgraded now! Contact %s.' =>
@@ -1728,6 +1745,21 @@ sub Data {
         'Reinstall package' => 'Reinstalar Pacote',
         'Do you really want to reinstall this package? Any manual changes will be lost.' =>
             'Você realmente quer reinstalar este pacote? Quaisquer alterações manuais serão perdidas.',
+        'Go to upgrading instructions' => 'Vá para orientações de upgrade',
+        'package information' => 'informação do pacote',
+        'Package upgrade requires patch level update of OTRS.' => 'Upgrade do pacote requer atualização de nível de patch do OTRS.',
+        'If you are a OTRS Business Solution™ customer, please visit our customer portal and file a request.' =>
+            'Se você é um cliente OTRS Business Solution™, por favor visite nosso portal de clientes e registre um pedido.',
+        'Please note that your installed OTRS version is %s.' => 'Por favor note que a sua versão do OTRS instalada é %s.',
+        'How can I do a patch level update if I don’t have a contract?' =>
+            'Como eu posso fazer uma atualização de nível de patch se eu não tenho um contrato?',
+        'Please find all relevant information within' => 'Por favor encontre toda informação relevante aqui dentro',
+        'the upgrading instructions' => 'as instruções para fazer upgrade',
+        'In case you would have further questions we would be glad to answer them.' =>
+            'No caso de você ter mais perguntas, teremos prazer em respondê-las.',
+        'Please visit our customer' => 'Por favor visite nosso cliente',
+        'portal' => 'portal',
+        'and file a request.' => 'e encaminhe uma requisição.',
         'Continue' => 'Continuar',
         'Please make sure your database accepts packages over %s MB in size (it currently only accepts packages up to %s MB). Please adapt the max_allowed_packet setting of your database in order to avoid errors.' =>
             'Por favor, certifique-se de que seu banco de dados aceita pacotes com mais de %s MB de tamanho (tamanho máximo suportado é de %s MB). Altere o parâmetro max_allowed_packet do seu banco de dados para evitar erros.',
@@ -1757,8 +1789,8 @@ sub Data {
         'Download' => 'Baixar',
         'Download file from package!' => 'Baixar arquivo do pacote!',
         'Required' => 'Obrigatório',
-        'Primary Key' => '',
-        'Auto Increment' => '',
+        'Primary Key' => 'Chave Primária',
+        'Auto Increment' => 'Auto Incremento',
         'SQL' => 'SQL',
         'File differences for file %s' => 'Diferenças de arquivo para o arquivo %s',
 
@@ -1794,10 +1826,10 @@ sub Data {
         'If you use Regular Expressions, you also can use the matched value in () as [***] in the \'Set\' action.' =>
             'Se você usar Expressões Regulares, você também pode usar o valor encontrado em () como [***] na ação \'Set\'.',
         'Delete this filter' => 'Excluir este filtro',
-        'Do you really want to delete this filter?' => '',
+        'Do you really want to delete this filter?' => 'Você realmente quer excluir este filtro?',
         'Add PostMaster Filter' => 'Adicionar Filtro PostMaster',
         'Edit PostMaster Filter' => 'Alterar Filtro PostMaster',
-        'The name is required.' => 'O nome é obrigatório.',
+        'A postmaster filter with this name already exists!' => 'Um filtro postmaster com este nome já existe!',
         'Filter Condition' => 'Condição do Filtro',
         'AND Condition' => 'Condição E',
         'Check email header' => 'Checar cabeçalho do Email',
@@ -1826,12 +1858,12 @@ sub Data {
         'Overwrite existing entities' => 'Substituir entidades existentes',
         'Upload process configuration' => 'Enviar Configuração de Processo',
         'Import process configuration' => 'Importar Configuração de Processo',
-        'Ready-to-run Processes' => '',
+        'Ready-to-run Processes' => 'Processos prontos para execução',
         'Here you can activate ready-to-run processes showcasing our best practices. Please note that some additional configuration may be required.' =>
-            '',
+            'Aqui você pode ativar processos prontos para execução demonstrando nossas boas práticas. Por favor note que alguma configuração adicional pode ser requerida.',
         'Would you like to benefit from processes created by experts? Upgrade to %s to import some sophisticated ready-to-run processes.' =>
-            '',
-        'Import ready-to-run process' => '',
+            'Você gostaria de se beneficiar de processos criados por especialistas? Faça o upgrade para %s para importa alguns processos prontos para execução sofisticados.',
+        'Import ready-to-run process' => 'Importar processos prontos para execução',
         'To create a new Process you can either import a Process that was exported from another system or create a complete new one.' =>
             'Para criar um novo Processo você pode importar um Processo exportado de outro sistema ou criar um Processo completamente novo.',
         'Changes to the Processes here only affect the behavior of the system, if you synchronize the Process data. By synchronizing the Processes, the newly made changes will be written to the Configuration.' =>
@@ -1925,7 +1957,7 @@ sub Data {
         'To assign an Activity Dialog to an Activity drop the Activity Dialog element from this sidebar over the Activity placed in the canvas area.' =>
             'Para atribuir uma Janela de Atividade à uma Atividade arraste o elemento de Janela de Atividade desta barra lateral sobre a Atividade colocada na área da tela.',
         'You can start a connection between two Activities by dropping the Transition element over the Start Activity of the connection. After that you can move the loose end of the arrow to the End Activity.' =>
-            '',
+            'Você pode iniciar uma conexão entre duas atividades arrastando e soltando a transição sobre a atividade inicial da conexão. Depois disso você pode mover a ponta final livre para a atividade final.',
         'Actions can be assigned to a Transition by dropping the Action Element onto the label of a Transition.' =>
             'Ações podem ser atribuidas para Transições arrastando o elemento de Ação sobre a etiqueta da Transição.',
         'Edit Process Information' => 'Editar Informação do Processo',
@@ -2107,11 +2139,7 @@ sub Data {
         'Your system will send updates to the registration server at regular intervals.' =>
             'Seu sistema enviará atualizações para o registro do servidor em intervalos regulares.',
         'Typically this would be around once every three days.' => 'Normalmente, isso seria em torno de uma vez a cada três dias.',
-        'In case you would have further questions we would be glad to answer them.' =>
-            'No caso de você ter mais perguntas, teremos prazer em respondê-las.',
         'Please visit our' => 'Por favor, visite nosso',
-        'portal' => 'portal',
-        'and file a request.' => 'e encaminhe uma requisição.',
         'If you deregister your system, you will lose these benefits:' =>
             'Se você cancelar o registro de seu sistema, você vai perder estes benefícios:',
         'You need to log in with your OTRS-ID to deregister your system.' =>
@@ -2410,7 +2438,7 @@ sub Data {
 
         # Template: AdminSystemMaintenanceEdit
         'Edit System Maintenance %s' => 'Editar Manutenção do Sistema  %s',
-        'Edit System Maintenance Information' => '',
+        'Edit System Maintenance Information' => 'Editar informação da manutenção de sistema',
         'Date invalid!' => 'Data inválida!',
         'Login message' => 'Mensagem de autenticação',
         'Show login message' => 'Mostrar mensagem de autenticação',
@@ -2495,7 +2523,7 @@ sub Data {
         'Note: Customer is invalid!' => 'Nota: Cliente inválido!',
         'Start chat' => 'Iniciar chat',
         'Video call' => 'Vídeo chamada',
-        'Audio call' => '',
+        'Audio call' => 'Chamada por áudio',
 
         # Template: AgentDaemonInfo
         'The OTRS Daemon is a daemon process that performs asynchronous tasks, e.g. ticket escalation triggering, email sending, etc.' =>
@@ -2555,7 +2583,7 @@ sub Data {
         'Stacked' => 'Empilhado',
         'Expanded' => 'Expandido',
         'Stream' => 'Fluxo',
-        'No Data Available.' => '',
+        'No Data Available.' => 'Nenhum dado disponível.',
         'Please select a valid graph output format in the configuration of this widget.' =>
             'Por favor selecione um formato de saída de gráfico válido na configuração desse widget.',
         'The content of this statistic is being prepared for you, please be patient.' =>
@@ -2598,9 +2626,9 @@ sub Data {
         'go to link add screen' => 'ir para a tela de inclusão de associação',
 
         # Template: AgentOTRSBusinessBlockScreen
-        'Unauthorized usage of %s detected' => '',
+        'Unauthorized usage of %s detected' => 'Uso não autorizado de %s detectado',
         'If you decide to downgrade to OTRS Free, you will lose all database tables and data related to %s.' =>
-            '',
+            'Se você decidir fazer o downgrade para OTRS Free, você perderá todas as tabelas de banco e dados relacionados ao %s.',
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Alterar Suas Preferências',
@@ -2685,7 +2713,7 @@ sub Data {
         'Note type' => 'Tipo de nota',
 
         # Template: AgentTicketBounce
-        'Bounce %s%s%s' => '',
+        'Bounce %s%s%s' => 'Repassar %s%s%s',
         'Bounce to' => 'Devolver para',
         'You need a email address.' => 'Você precisa de um endereço de e-mail.',
         'Need a valid email address or don\'t use a local email address.' =>
@@ -2820,10 +2848,10 @@ sub Data {
         'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.' =>
             'Buscas pelos atributos De, Para, Cc, Assunto e corpo do artigo, sobrescreve outros atributos com o mesmo nome.',
         'CustomerID (complex search)' => 'CustomerID (procura complexa)',
-        '(e. g. 234*)' => '',
+        '(e. g. 234*)' => '(ex.: 234*)',
         'CustomerID (exact match)' => 'CustomerID (correspondência exata)',
         'Customer User Login (complex search)' => 'Login de Usuário Cliente (busca complexa)',
-        '(e. g. U51*)' => '',
+        '(e. g. U51*)' => '(ex.: U51*)',
         'Customer User Login (exact match)' => 'Login de Usuário Cliente (correspondência exata)',
         'Attachment Name' => 'Nome do Anexo',
         '(e. g. m*file or myfi*)' => '(ex. meu*rquivo ou meuarq*)',
@@ -2950,9 +2978,9 @@ sub Data {
         'Connection error' => 'Erro de Conexão',
         'Reload page' => 'Atualizar página',
         'Your browser was not able to communicate with OTRS properly, there seems to be something wrong with your network connection. You could either try reloading this page manually or wait until your browser has re-established the connection on its own.' =>
-            '',
+            'Seu navegador não foi capaz de se comunicar corretamente com o OTRS. Parece que há algo errado com a sua conexão de rede. Você pode ou tentar recarregar esta página manualmente ou esperar até que seu navegador tenha restabelecido ele mesmo a conexão.',
         'The connection has been re-established after a temporary connection loss. Due to this, elements on this page could have stopped to work correctly. In order to be able to use all elements correctly again, it is strongly recommended to reload this page.' =>
-            '',
+            'A conexão foi restabelecida após uma perda temporária de conexão. Por causa disso, elementos nesta página podem ter parado de funcionar corretamente. Para ser capaz de novamente usar todos elementos corretamente, é altamente recomendado recarregar esta página.',
 
         # Template: CustomerLogin
         'JavaScript Not Available' => 'JavaScript não habilitado ou não é suportado.',
@@ -3063,7 +3091,7 @@ sub Data {
         'Really a bug? 5 out of 10 bug reports result from a wrong or incomplete installation of OTRS.' =>
             'Realmente um  erro? 5 de 10 informes de erro resultam de uma errada ou incompleta instalação do OTRS.',
         'With %s, our experts take care of correct installation and cover your back with support and periodic security updates.' =>
-            '',
+            'Com %s, nossos especialistas vão cuidar de uma instalação correta e da sua retaguarda com suporte e atualizações de segurança periódicas.',
         'Contact our service team now.' => 'Contacte agora a nossa equipe de serviço.',
         'Send a bugreport' => 'Enviar um relatório de erro',
 
@@ -3082,13 +3110,13 @@ sub Data {
         'New personal chat request' => 'Nova solicitação de bate-papo pessoal',
         'New customer chat request' => 'Nova solicitação de bate-papo do cliente',
         'New public chat request' => 'Nova solicitação publica de bate-papo',
-        'Selected user is not available for chat.' => '',
+        'Selected user is not available for chat.' => 'Usuário selecionado não está disponível para bate-papo.',
         'New activity' => 'Nova atividade',
         'New activity on one of your monitored chats.' => 'Nova atividade em um dos seus bate-papos monitorados.',
-        'Your browser does not support video and audio calling.' => '',
-        'Selected user is not available for video and audio call.' => '',
+        'Your browser does not support video and audio calling.' => 'Seu navegador não suporta chamada de áudio e vídeo.',
+        'Selected user is not available for video and audio call.' => 'Usuário selecionado não está disponível para chamada de áudio e vídeo.',
         'Target user\'s browser does not support video and audio calling.' =>
-            '',
+            'Navegador alvo do usuário não suporta chamada de áudio e vídeo.',
         'Do you really want to continue?' => 'Você realmente quer continuar?',
         'Information about the OTRS Daemon' => 'Informação sobre o OTRS Daemon',
         'This feature is part of the %s.  Please contact us at %s for an upgrade.' =>
@@ -3254,7 +3282,7 @@ sub Data {
         'This is the default public interface of OTRS! There was no action parameter given.' =>
             'Esta é a interface pública padrão do OTRS! Não foi dado nenhum parâmetro de ação.',
         'You could install a custom public module (via the package manager), for example the FAQ module, which has a public interface.' =>
-            '',
+            'Você pode instalar um módulo público customizado (por meio do gerenciador de pacotes), por exemplo o módulo de FAQ, o qual possui uma interface pública.',
 
         # Template: RichTextEditor
         'Remove Quote' => 'Remover citação',
@@ -3274,7 +3302,7 @@ sub Data {
             'Gerar uma coluna adicional contendo somas para todas as colunas de dados.',
         'Cache results' => 'Resultado em cache',
         'Stores statistics result data in a cache to be used in subsequent views with the same configuration (requires at least one selected time field).' =>
-            '',
+            'Armazena em cache dados resultantes de estatísticas para serem usados em visualizações subsequentes com a mesma configuração (requer pelo menos um campo de tempo selecionado).',
         'Provide the statistic as a widget that agents can activate in their dashboard.' =>
             'Prover a estatística como um componente que agentes podem ativar no painel.',
         'Please note that enabling the dashboard widget will activate caching for this statistic in the dashboard.' =>
@@ -3412,24 +3440,24 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceDebugger.pm
         'Need WebserviceID!' => 'WebserviceID Necessário!',
-        'Could not get data for WebserviceID %s' => '',
+        'Could not get data for WebserviceID %s' => 'Não foi possível obter dados para WebserviceID %s',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceInvokerDefault.pm
         'Need InvokerType' => 'Necessário InvokerType',
         'Invoker %s is not registered' => 'Invoker %s não está registrado',
         'InvokerType %s is not registered' => 'InvokerType %s não está registrado',
         'Need Invoker' => 'Necessário Invoker',
-        'Could not determine config for invoker %s' => '',
+        'Could not determine config for invoker %s' => 'Não foi possível determinar a configuração para o invoker %s',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceMappingSimple.pm
-        'Could not get registered configuration for action type %s' => '',
-        'Could not get backend for %s %s' => '',
+        'Could not get registered configuration for action type %s' => 'Não foi possível obter a configuração registrada para o tipo de ação %s',
+        'Could not get backend for %s %s' => 'Não foi possível obter o backend para %s %s',
         'Could not update configuration data for WebserviceID %s' => 'Não foi possível atualizar dados de configuração para WebserviceID %s',
         'Keep (leave unchanged)' => 'Ignorar (deixar inalterado)',
         'Ignore (drop key/value pair)' => 'Ignorar (apagar par chave/valor)',
-        'Map to (use provided value as default)' => '',
+        'Map to (use provided value as default)' => 'Mapear para (use o valor fornecido como padrão)',
         'Exact value(s)' => 'Valor(es) exato(s)',
-        'Ignore (drop Value/value pair)' => '',
+        'Ignore (drop Value/value pair)' => 'Ignorar (descartar valor/par de valor)',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceMappingXSLT.pm
         'Could not find required library %s' => 'Não foi possível encontrar a biblioteca necessária %s',
@@ -3457,7 +3485,7 @@ sub Data {
         'The imported file has not valid YAML content! Please check OTRS log for details' =>
             'O arquivo importado tem conteúdo YAML inválido! Por favor, verifique o log do OTRS para obter mais detalhes',
         'Web service "%s" deleted!' => 'Web service "%s" excluído!',
-        'New Web service' => '',
+        'New Web service' => 'Novo web service',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceWebserviceHistory.pm
         'Got no WebserviceHistoryID!' => 'Não há WebserviceHistoryID!',
@@ -3471,7 +3499,7 @@ sub Data {
         'Unknown Notification %s!' => 'Notificação Desconhecida %s!',
         'There was an error creating the Notification' => 'Houve algum erro ao criar a Notificação',
         'Notifications could not be Imported due to a unknown error, please check OTRS logs for more information' =>
-            '',
+            'Notificações não puderam ser importadas devido a um erro desconhecido. Por favor verifique os logs do OTRS para mais informações',
         'The following Notifications have been added successfully: %s' =>
             'As seguintes Notificações foram adicionados com êxito: %s',
         'The following Notifications have been updated successfully: %s' =>
@@ -3498,52 +3526,52 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminPackageManager.pm
         'Sorry, Apache::Reload is needed as PerlModule and PerlInitHandler in Apache config file. See also scripts/apache2-httpd.include.conf. Alternatively, you can use the command line tool bin/otrs.Console.pl to install packages!' =>
-            '',
+            'Desculpe, Apache::Reload é necessário como PerlModule e PerlInitHandler no arquivo de configuração do Apache. Veja também scripts/apache2-httpd.include.conf. Alternativamente, você pode usar a ferramenta de linha de comando bin/otrs.Console.pl para instalar pacotes!',
         'No such package!' => 'Não existe este pacote!',
         'No such file %s in package!' => 'Arquivo inexistente %s no pacote!',
         'No such file %s in local file system!' => 'Arquivo inexistente %s no sistema de arquivos local!',
         'Can\'t read %s!' => 'Não pôde ser lido %s!',
-        'File is OK' => '',
+        'File is OK' => 'Arquivo está ok',
         'Package has locally modified files.' => 'Pacote possui arquivos locais modificados.',
         'No packages or no new packages found in selected repository.' =>
             'Nenhum pacote ou nenhum novo pacote encontrado no repositório selecionado.',
         'Package not verified due a communication issue with verification server!' =>
-            '',
-        'Can\'t connect to OTRS Feature Add-on list server!' => '',
-        'Can\'t get OTRS Feature Add-on list from server!' => '',
-        'Can\'t get OTRS Feature Add-on from server!' => '',
+            'Pacote não verificado devido a um problema de comunicação com o servidor de verificação!',
+        'Can\'t connect to OTRS Feature Add-on list server!' => 'Não foi possível conectar com o servidor da lista de recursos adicionais (add-ons) da OTRS!',
+        'Can\'t get OTRS Feature Add-on list from server!' => 'Não foi possível obter do servidor a lista de recursos adicionais (add-ons) da OTRS!',
+        'Can\'t get OTRS Feature Add-on from server!' => 'Não foi possível obter do servidor o recurso adicional (add-on) da OTRS!',
 
         # Perl Module: Kernel/Modules/AdminPostMasterFilter.pm
         'No such filter: %s' => 'Filtro inexistente: %s',
 
         # Perl Module: Kernel/Modules/AdminProcessManagement.pm
-        'Need ExampleProcesses!' => '',
+        'Need ExampleProcesses!' => 'Requer ExampleProcesses!',
         'Need ProcessID!' => 'Necessário ProcessID!',
         'Yes (mandatory)' => 'Sim (mandatório)',
         'Unknown Process %s!' => 'Processo Desconhecido %s!',
         'There was an error generating a new EntityID for this Process' =>
-            '',
-        'The StateEntityID for state Inactive does not exists' => '',
+            'Ocorreu um erro durante a geração de um novo EntityID para este processo',
+        'The StateEntityID for state Inactive does not exists' => 'O StateEntityID para o estado Inativo não existe',
         'There was an error creating the Process' => 'Houve um erro ao criar o Processo',
         'There was an error setting the entity sync status for Process entity: %s' =>
-            '',
+            'Ocorreu um erro durante a configuração do estado de sincronização para a entidade de processo: %s',
         'Could not get data for ProcessID %s' => 'Não foi possível obter dados para ProcessID %s',
-        'There was an error updating the Process' => '',
+        'There was an error updating the Process' => 'Ocorreu um erro durante a atualização do processo',
         'Process: %s could not be deleted' => 'Processo: %s não pode ser excluído',
         'There was an error synchronizing the processes.' => 'Houve um erro na sincronização dos processos.',
-        'The %s:%s is still in use' => '',
-        'The %s:%s has a different EntityID' => '',
+        'The %s:%s is still in use' => 'O %s:%s ainda está em uso',
+        'The %s:%s has a different EntityID' => 'O s%:%s tem um EntityID diferente',
         'Could not delete %s:%s' => 'Não foi possível deletar %s:%s',
         'There was an error setting the entity sync status for %s entity: %s' =>
-            '',
-        'Could not get %s' => '',
+            'Ocorreu um erro durante a configuração do estado de sincronização para a entidade de %s: %s',
+        'Could not get %s' => 'Não foi possível obter %s',
         'Need %s!' => 'Necessário %s!',
         'Process: %s is not Inactive' => 'Processo: %s não é Inativo',
 
         # Perl Module: Kernel/Modules/AdminProcessManagementActivity.pm
         'There was an error generating a new EntityID for this Activity' =>
-            '',
-        'There was an error creating the Activity' => '',
+            'Ocorreu um erro durante a geração de um novo EntityID para esta atividade',
+        'There was an error creating the Activity' => 'Ocorreu um erro durante a criação da atividade',
         'There was an error setting the entity sync status for Activity entity: %s' =>
             '',
         'Need ActivityID!' => 'Necessário ActivityID!',
@@ -3588,7 +3616,7 @@ sub Data {
         'Need TransitionID!' => 'Necessário TransitionID!',
         'Could not get data for TransitionID %s' => '',
         'There was an error updating the Transition' => '',
-        'Edit Transition "%s"' => '',
+        'Edit Transition "%s"' => 'Editar Transição "%s"',
         'xor' => '',
         'String' => '',
         'Transition validation module' => 'Módulo de validação de transição',
@@ -3620,9 +3648,9 @@ sub Data {
         'Need param Filename to download!' => 'Necessário o parâmetro Filename  para download!',
         'Needed CertFingerprint and CAFingerprint!' => '',
         'CAFingerprint must be different than CertFingerprint' => '',
-        'Relation exists!' => '',
+        'Relation exists!' => 'Relação já existe!',
         'Relation added!' => '',
-        'Impossible to add relation!' => '',
+        'Impossible to add relation!' => 'Impossível adicionar relação!',
         'Relation doesn\'t exists' => '',
         'Relation deleted!' => '',
         'Impossible to delete relation!' => '',
@@ -3653,11 +3681,11 @@ sub Data {
         'Was not possible to delete the SystemMaintenance entry: %s!' => '',
 
         # Perl Module: Kernel/Modules/AdminTemplate.pm
-        'Template updated!' => '',
+        'Template updated!' => 'Modelo Atualizado!',
         'Template added!' => '',
 
         # Perl Module: Kernel/Modules/AdminType.pm
-        'Need Type!' => '',
+        'Need Type!' => 'Tipo é necessário!',
 
         # Perl Module: Kernel/Modules/AgentDashboardCommon.pm
         'No such config for %s' => '',
@@ -3687,8 +3715,8 @@ sub Data {
         'Please upload a valid statistic file.' => '',
         'Export: Need StatID!' => '',
         'Delete: Get no StatID!' => '',
-        'Need StatID!' => '',
-        'Could not load stat.' => '',
+        'Need StatID!' => 'StatID é necessário!',
+        'Could not load stat.' => 'Não é possível carregar a estatística.',
         'Could not create statistic.' => '',
         'Run: Get no %s!' => '',
 
@@ -3704,7 +3732,7 @@ sub Data {
         'Plain article not found for article %s!' => '',
         'Article does not belong to ticket %s!' => '',
         'Can\'t bounce email!' => '',
-        'Can\'t send email!' => '',
+        'Can\'t send email!' => 'Não é possível enviar o email!',
         'Wrong Subaction!' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketBulk.pm
@@ -3807,10 +3835,8 @@ sub Data {
         'Could not store ActivityDialog, invalid TicketID: %s!' => '',
         'Invalid TicketID: %s!' => '',
         'Missing ActivityEntityID in Ticket %s!' => '',
-        'This step does not belong anymore the current activity in process for Ticket %s!' =>
-            '',
-        'Another user changed this ticket in the meantime. Please close this window and reload the ticket.' =>
-            '',
+        'This step does not belong anymore the current activity in process for ticket \'%s%s%s\'! Another user changed this ticket in the meantime.' =>
+            'Este passo não pertence mais à atividade atual para o chamado \'%s%s%s\'! Outro usuário alterou este chamado durante a execução.',
         'Missing ProcessEntityID in Ticket %s!' => '',
         'Could not set DynamicField value for %s of Ticket with ID "%s" in ActivityDialog "%s"!' =>
             '',
@@ -4047,6 +4073,10 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/TicketOverviewMenu/Sort.pm
         'Order by' => 'Ordenar por',
 
+        # Perl Module: Kernel/System/ACL/DB/ACL.pm
+        'Couldn\'t read ACL configuration file. Please make sure the file is valid.' =>
+            '',
+
         # Perl Module: Kernel/System/AuthSession.pm
         'You have exceeded the number of concurrent agents - contact sales@otrs.com.' =>
             '',
@@ -4061,17 +4091,32 @@ sub Data {
         'This setting is not active by default.' => '',
         'This setting can not be deactivated.' => '',
 
+        # Perl Module: Kernel/System/CustomerUser.pm
+        'Customer user "%s" already exists.' => '',
+
+        # Perl Module: Kernel/System/CustomerUser/DB.pm
+        'This email address is already in use for another customer user.' =>
+            '',
+
         # Perl Module: Kernel/System/DynamicField/Driver/BaseText.pm
         'e.g. Text or Te*t' => '',
 
         # Perl Module: Kernel/System/DynamicField/Driver/Checkbox.pm
         'Ignore this field.' => '',
 
+        # Perl Module: Kernel/System/NotificationEvent.pm
+        'Couldn\'t read Notification configuration file. Please make sure the file is valid.' =>
+            '',
+
         # Perl Module: Kernel/System/Package.pm
         'not installed' => '',
         'File is not installed!' => '',
         'File is different!' => '',
         'Can\'t read file!' => '',
+
+        # Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
+        'The process "%s" and all of its data has been imported successfully.' =>
+            '',
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
         'Inactive' => 'Inativo',
@@ -5512,6 +5557,8 @@ Thanks for your help!
             '',
         'Defines the time zone of the indicated calendar, which can be assigned later to a specific queue.' =>
             '',
+        'Defines the timeout (in seconds, minimum is 20 seconds) for the support data collection with the public module \'PublicSupportDataCollector\' (e.g. used from the OTRS Daemon).' =>
+            '',
         'Defines the two-factor module to authenticate agents.' => '',
         'Defines the two-factor module to authenticate customers.' => '',
         'Defines the type of protocol, used by the web server, to serve the application. If https protocol will be used instead of plain http, it must be specified here. Since this has no affect on the web server\'s settings or behavior, it will not change the method of access to the application and, if it is wrong, it will not prevent you from logging into the application. This setting is only used as a variable, OTRS_CONFIG_HttpType which is found in all forms of messaging used by the application, to build links to the tickets within your system.' =>
@@ -6365,14 +6412,14 @@ Thanks for your help!
         'ServiceView' => '',
         'Set a new password by filling in your current password and a new one.' =>
             '',
-        'Set minimum loglevel. If you select \'error\', just errors are logged. With \'debug\' you get all logging messages.' =>
-            '',
         'Set sender email addresses for this system.' => 'Configurar endereços de e-mail de remetente para o sistema.',
         'Set the default height (in pixels) of inline HTML articles in AgentTicketZoom.' =>
             '',
         'Set the limit of tickets that will be executed on a single genericagent job execution.' =>
             '',
         'Set the maximum height (in pixels) of inline HTML articles in AgentTicketZoom.' =>
+            '',
+        'Set the minimum log level. If you select \'error\', just errors are logged. With \'debug\' you get all logging messages. The order of log levels is: \'debug\', \'info\', \'notice\' and \'error\'.' =>
             '',
         'Set this to yes if you trust in all your public and private pgp keys, even if they are not certified with a trusted signature.' =>
             '',

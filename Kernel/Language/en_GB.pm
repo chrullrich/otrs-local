@@ -27,7 +27,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.964830250050823;
+    $Self->{Completeness}        = 0.959158916295997;
 
     # csv separator
     $Self->{Separator} = ',';
@@ -1637,6 +1637,7 @@ sub Data {
 
         # Template: AdminOTRSBusinessInstalled
         'Manage %s' => 'Manage %s',
+        'Go to the OTRS customer portal' => '',
         'Downgrade to OTRS Free' => 'Downgrade to OTRS Free',
         'Read documentation' => 'Read documentation',
         '%s makes contact regularly with cloud.otrs.com to check on available updates and the validity of the underlying contract.' =>
@@ -1656,6 +1657,19 @@ sub Data {
         '%s Not Yet Available' => '%s Not Yet Available',
         '%s will be available soon.' => '%s will be available soon.',
         '%s Update Available' => '%s Update Available',
+        'Package installation requires patch level update of OTRS.' => '',
+        'Please visit our customer portal and file a request.' => '',
+        'Everything else will be done as part of your contract.' => '',
+        'Your installed OTRS version is %s.' => '',
+        'To install the current version of OTRS Business Solution™, you need to update to OTRS %s or higher.' =>
+            '',
+        'To install the current version of OTRS Business Solution™, the Maximum OTRS Version is %s.' =>
+            '',
+        'To install this package, the required Framework version is %s.' =>
+            '',
+        'Why should I keep OTRS up to date?' => '',
+        'You will receive updates about relevant security issues.' => '',
+        'You will receive updates for all other relevant OTRS issues' => '',
         'An update for your %s is available! Please update at your earliest!' =>
             'An update for your %s is available! Please update at your earliest!',
         '%s Correctly Deployed' => '%s Correctly Deployed',
@@ -1672,6 +1686,9 @@ sub Data {
             'Before you can benefit from %s, please contact %s to get your %s contract.',
         'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.' =>
             'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.',
+        'To install this package, you need to update to OTRS %s or higher.' =>
+            '',
+        'To install this package, the Maximum OTRS Version is %s.' => '',
         'With your existing contract you can only use a small part of the %s.' =>
             'With your existing contract you can only use a small part of the %s.',
         'If you would like to take full advantage of the %s get your contract upgraded now! Contact %s.' =>
@@ -1726,6 +1743,21 @@ sub Data {
         'Reinstall package' => 'Reinstall package',
         'Do you really want to reinstall this package? Any manual changes will be lost.' =>
             'Do you really want to reinstall this package? Any manual changes will be lost.',
+        'Go to upgrading instructions' => '',
+        'package information' => '',
+        'Package upgrade requires patch level update of OTRS.' => '',
+        'If you are a OTRS Business Solution™ customer, please visit our customer portal and file a request.' =>
+            '',
+        'Please note that your installed OTRS version is %s.' => '',
+        'How can I do a patch level update if I don’t have a contract?' =>
+            '',
+        'Please find all relevant information within' => '',
+        'the upgrading instructions' => '',
+        'In case you would have further questions we would be glad to answer them.' =>
+            'In case you would have further questions we would be glad to answer them.',
+        'Please visit our customer' => '',
+        'portal' => 'portal',
+        'and file a request.' => 'and file a request.',
         'Continue' => 'Continue',
         'Please make sure your database accepts packages over %s MB in size (it currently only accepts packages up to %s MB). Please adapt the max_allowed_packet setting of your database in order to avoid errors.' =>
             'Please make sure your database accepts packages over %s MB in size (it currently only accepts packages up to %s MB). Please adapt the max_allowed_packet setting of your database in order to avoid errors.',
@@ -1795,7 +1827,7 @@ sub Data {
         'Do you really want to delete this filter?' => '',
         'Add PostMaster Filter' => 'Add PostMaster Filter',
         'Edit PostMaster Filter' => 'Edit PostMaster Filter',
-        'The name is required.' => 'The name is required.',
+        'A postmaster filter with this name already exists!' => '',
         'Filter Condition' => 'Filter Condition',
         'AND Condition' => 'AND Condition',
         'Check email header' => 'Check email header',
@@ -2105,11 +2137,7 @@ sub Data {
         'Your system will send updates to the registration server at regular intervals.' =>
             'Your system will send updates to the registration server at regular intervals.',
         'Typically this would be around once every three days.' => 'Typically this would be around once every three days.',
-        'In case you would have further questions we would be glad to answer them.' =>
-            'In case you would have further questions we would be glad to answer them.',
         'Please visit our' => 'Please visit our',
-        'portal' => 'portal',
-        'and file a request.' => 'and file a request.',
         'If you deregister your system, you will lose these benefits:' =>
             'If you deregister your system, you will lose these benefits:',
         'You need to log in with your OTRS-ID to deregister your system.' =>
@@ -3805,9 +3833,7 @@ sub Data {
         'Could not store ActivityDialog, invalid TicketID: %s!' => 'Could not store ActivityDialog, invalid TicketID: %s!',
         'Invalid TicketID: %s!' => 'Invalid TicketID: %s!',
         'Missing ActivityEntityID in Ticket %s!' => 'Missing ActivityEntityID in Ticket %s!',
-        'This step does not belong anymore the current activity in process for Ticket %s!' =>
-            '',
-        'Another user changed this ticket in the meantime. Please close this window and reload the ticket.' =>
+        'This step does not belong anymore the current activity in process for ticket \'%s%s%s\'! Another user changed this ticket in the meantime.' =>
             '',
         'Missing ProcessEntityID in Ticket %s!' => 'Missing ProcessEntityID in Ticket %s!',
         'Could not set DynamicField value for %s of Ticket with ID "%s" in ActivityDialog "%s"!' =>
@@ -4045,6 +4071,10 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/TicketOverviewMenu/Sort.pm
         'Order by' => 'Order by',
 
+        # Perl Module: Kernel/System/ACL/DB/ACL.pm
+        'Couldn\'t read ACL configuration file. Please make sure the file is valid.' =>
+            '',
+
         # Perl Module: Kernel/System/AuthSession.pm
         'You have exceeded the number of concurrent agents - contact sales@otrs.com.' =>
             '',
@@ -4059,17 +4089,32 @@ sub Data {
         'This setting is not active by default.' => 'This setting is not active by default.',
         'This setting can not be deactivated.' => 'This setting can not be deactivated.',
 
+        # Perl Module: Kernel/System/CustomerUser.pm
+        'Customer user "%s" already exists.' => '',
+
+        # Perl Module: Kernel/System/CustomerUser/DB.pm
+        'This email address is already in use for another customer user.' =>
+            '',
+
         # Perl Module: Kernel/System/DynamicField/Driver/BaseText.pm
         'e.g. Text or Te*t' => '',
 
         # Perl Module: Kernel/System/DynamicField/Driver/Checkbox.pm
         'Ignore this field.' => '',
 
+        # Perl Module: Kernel/System/NotificationEvent.pm
+        'Couldn\'t read Notification configuration file. Please make sure the file is valid.' =>
+            '',
+
         # Perl Module: Kernel/System/Package.pm
         'not installed' => 'not installed',
         'File is not installed!' => '',
         'File is different!' => '',
         'Can\'t read file!' => '',
+
+        # Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
+        'The process "%s" and all of its data has been imported successfully.' =>
+            '',
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
         'Inactive' => '',
@@ -5521,6 +5566,8 @@ Thanks for your help!
             'Defines the ticket fields that are going to be displayed calendar events. The "Key" defines the field or ticket attribute and the "Content" defines the display name.',
         'Defines the time zone of the indicated calendar, which can be assigned later to a specific queue.' =>
             'Defines the time zone of the indicated calendar, which can be assigned later to a specific queue.',
+        'Defines the timeout (in seconds, minimum is 20 seconds) for the support data collection with the public module \'PublicSupportDataCollector\' (e.g. used from the OTRS Daemon).' =>
+            '',
         'Defines the two-factor module to authenticate agents.' => 'Defines the two-factor module to authenticate agents.',
         'Defines the two-factor module to authenticate customers.' => 'Defines the two-factor module to authenticate customers.',
         'Defines the type of protocol, used by the web server, to serve the application. If https protocol will be used instead of plain http, it must be specified here. Since this has no affect on the web server\'s settings or behavior, it will not change the method of access to the application and, if it is wrong, it will not prevent you from logging into the application. This setting is only used as a variable, OTRS_CONFIG_HttpType which is found in all forms of messaging used by the application, to build links to the tickets within your system.' =>
@@ -6374,8 +6421,6 @@ Thanks for your help!
         'ServiceView' => 'ServiceView',
         'Set a new password by filling in your current password and a new one.' =>
             '',
-        'Set minimum loglevel. If you select \'error\', just errors are logged. With \'debug\' you get all logging messages.' =>
-            'Set minimum loglevel. If you select \'error\', just errors are logged. With \'debug\' you get all logging messages.',
         'Set sender email addresses for this system.' => 'Set sender email addresses for this system.',
         'Set the default height (in pixels) of inline HTML articles in AgentTicketZoom.' =>
             'Set the default height (in pixels) of inline HTML articles in AgentTicketZoom.',
@@ -6383,6 +6428,8 @@ Thanks for your help!
             'Set the limit of tickets that will be executed on a single genericagent job execution.',
         'Set the maximum height (in pixels) of inline HTML articles in AgentTicketZoom.' =>
             'Set the maximum height (in pixels) of inline HTML articles in AgentTicketZoom.',
+        'Set the minimum log level. If you select \'error\', just errors are logged. With \'debug\' you get all logging messages. The order of log levels is: \'debug\', \'info\', \'notice\' and \'error\'.' =>
+            '',
         'Set this to yes if you trust in all your public and private pgp keys, even if they are not certified with a trusted signature.' =>
             'Set this to yes if you trust in all your public and private pgp keys, even if they are not certified with a trusted signature.',
         'Sets if SLA must be selected by the agent.' => 'Sets if SLA must be selected by the agent.',
