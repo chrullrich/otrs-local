@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.961577556413905;
+    $Self->{Completeness}        = 0.955923978972907;
 
     # csv separator
     $Self->{Separator} = ',';
@@ -1634,6 +1634,7 @@ sub Data {
 
         # Template: AdminOTRSBusinessInstalled
         'Manage %s' => 'Mengatur %s',
+        'Go to the OTRS customer portal' => '',
         'Downgrade to OTRS Free' => 'Menurunkan OTRS gratis',
         'Read documentation' => 'Baca dokumentasi',
         '%s makes contact regularly with cloud.otrs.com to check on available updates and the validity of the underlying contract.' =>
@@ -1653,6 +1654,19 @@ sub Data {
         '%s Not Yet Available' => '%s belum tersedia',
         '%s will be available soon.' => '%s akan segera tersedia',
         '%s Update Available' => '%s update tersedia',
+        'Package installation requires patch level update of OTRS.' => '',
+        'Please visit our customer portal and file a request.' => '',
+        'Everything else will be done as part of your contract.' => '',
+        'Your installed OTRS version is %s.' => '',
+        'To install the current version of OTRS Business Solution™, you need to update to OTRS %s or higher.' =>
+            '',
+        'To install the current version of OTRS Business Solution™, the Maximum OTRS Version is %s.' =>
+            '',
+        'To install this package, the required Framework version is %s.' =>
+            '',
+        'Why should I keep OTRS up to date?' => '',
+        'You will receive updates about relevant security issues.' => '',
+        'You will receive updates for all other relevant OTRS issues' => '',
         'An update for your %s is available! Please update at your earliest!' =>
             'Update untuk %s anda tersedia! Silahkan perbarui seperti awal!',
         '%s Correctly Deployed' => '%s Benar Dikerahkan',
@@ -1669,6 +1683,9 @@ sub Data {
             'Sebelum anda bisa mendapatkan keuntungan dari %s, silahkan hubungi %s untuk mendapatkan kontrak %s anda.',
         'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.' =>
             'Koneksi ke cloud.otrs.com melalui HTTPS tidak dapat ditentukan. Pastikan bahwa OTRS anda dapat terhubung ke cloud.otrs.com melalui port 443.',
+        'To install this package, you need to update to OTRS %s or higher.' =>
+            '',
+        'To install this package, the Maximum OTRS Version is %s.' => '',
         'With your existing contract you can only use a small part of the %s.' =>
             'Dengan kontrak yang ada, anda hanya dapat menggunakan sebagian kecil dari %s.',
         'If you would like to take full advantage of the %s get your contract upgraded now! Contact %s.' =>
@@ -1723,6 +1740,21 @@ sub Data {
         'Reinstall package' => 'Instal ulang paket',
         'Do you really want to reinstall this package? Any manual changes will be lost.' =>
             'Apakah anda ingin menginstal ulang paket ini? Semua perubahan manual akan hilang.',
+        'Go to upgrading instructions' => '',
+        'package information' => '',
+        'Package upgrade requires patch level update of OTRS.' => '',
+        'If you are a OTRS Business Solution™ customer, please visit our customer portal and file a request.' =>
+            '',
+        'Please note that your installed OTRS version is %s.' => '',
+        'How can I do a patch level update if I don’t have a contract?' =>
+            '',
+        'Please find all relevant information within' => '',
+        'the upgrading instructions' => '',
+        'In case you would have further questions we would be glad to answer them.' =>
+            'Dalam hal ini anda akan memiliki pertanyaan lebih lanjut, dan kami akan menjawab mereka dengan senang hati',
+        'Please visit our customer' => '',
+        'portal' => 'Portal',
+        'and file a request.' => 'dan mengajukan permohonan',
         'Continue' => 'Teruskan',
         'Please make sure your database accepts packages over %s MB in size (it currently only accepts packages up to %s MB). Please adapt the max_allowed_packet setting of your database in order to avoid errors.' =>
             'Pastikan database anda meneri paket melebihi ukuran %s MB (Menerima paket lebih dari %s MB saat ini). Sesuaikan pengaturan max_allowed_packet dari database and untuk mengindari kesalahan',
@@ -1793,7 +1825,7 @@ EMAILADDRESS:info@example.com dari, kepada atau Cc.',
         'Do you really want to delete this filter?' => '',
         'Add PostMaster Filter' => 'Tambah penyaring PostMaster',
         'Edit PostMaster Filter' => 'Ubah penyaring PostMaster',
-        'The name is required.' => 'Nama diperlukan.',
+        'A postmaster filter with this name already exists!' => '',
         'Filter Condition' => 'Keadaan penyaringan',
         'AND Condition' => 'kondisi AND',
         'Check email header' => 'Periksa header surat',
@@ -2103,11 +2135,7 @@ EMAILADDRESS:info@example.com dari, kepada atau Cc.',
         'Your system will send updates to the registration server at regular intervals.' =>
             'Sistem anda akan mengirimkan pembaruan ke server pendaftaran secara berkala.',
         'Typically this would be around once every three days.' => 'Biasanya ini akan menjadi sekitar tiga hari sekali.',
-        'In case you would have further questions we would be glad to answer them.' =>
-            'Dalam hal ini anda akan memiliki pertanyaan lebih lanjut, dan kami akan menjawab mereka dengan senang hati',
         'Please visit our' => 'Silahkan kunjungi kami',
-        'portal' => 'Portal',
-        'and file a request.' => 'dan mengajukan permohonan',
         'If you deregister your system, you will lose these benefits:' =>
             'Jika anda melakukan deregister sistem anda, maka anda akan kehilangan manfaat berikut:',
         'You need to log in with your OTRS-ID to deregister your system.' =>
@@ -3804,9 +3832,7 @@ bin/otrs.Daemon.pl status\').',
         'Could not store ActivityDialog, invalid TicketID: %s!' => 'Tidak bisa menyimpan ActivityDialog. TicketID tidak sah: %s!',
         'Invalid TicketID: %s!' => 'TicketID tidak sah : %s!',
         'Missing ActivityEntityID in Ticket %s!' => 'ActivityEntityID hilang di Ticket %s!',
-        'This step does not belong anymore the current activity in process for Ticket %s!' =>
-            '',
-        'Another user changed this ticket in the meantime. Please close this window and reload the ticket.' =>
+        'This step does not belong anymore the current activity in process for ticket \'%s%s%s\'! Another user changed this ticket in the meantime.' =>
             '',
         'Missing ProcessEntityID in Ticket %s!' => 'ProcessEntityID hilang di Tiket %s!',
         'Could not set DynamicField value for %s of Ticket with ID "%s" in ActivityDialog "%s"!' =>
@@ -4044,6 +4070,10 @@ bin/otrs.Daemon.pl status\').',
         # Perl Module: Kernel/Output/HTML/TicketOverviewMenu/Sort.pm
         'Order by' => 'Dipesan oleh',
 
+        # Perl Module: Kernel/System/ACL/DB/ACL.pm
+        'Couldn\'t read ACL configuration file. Please make sure the file is valid.' =>
+            '',
+
         # Perl Module: Kernel/System/AuthSession.pm
         'You have exceeded the number of concurrent agents - contact sales@otrs.com.' =>
             '',
@@ -4058,17 +4088,32 @@ bin/otrs.Daemon.pl status\').',
         'This setting is not active by default.' => 'Pengaturan ini tidak aktif secara default.',
         'This setting can not be deactivated.' => 'Pengaturan ini tidak dapat dinonaktifkan.',
 
+        # Perl Module: Kernel/System/CustomerUser.pm
+        'Customer user "%s" already exists.' => '',
+
+        # Perl Module: Kernel/System/CustomerUser/DB.pm
+        'This email address is already in use for another customer user.' =>
+            '',
+
         # Perl Module: Kernel/System/DynamicField/Driver/BaseText.pm
         'e.g. Text or Te*t' => '',
 
         # Perl Module: Kernel/System/DynamicField/Driver/Checkbox.pm
         'Ignore this field.' => '',
 
+        # Perl Module: Kernel/System/NotificationEvent.pm
+        'Couldn\'t read Notification configuration file. Please make sure the file is valid.' =>
+            '',
+
         # Perl Module: Kernel/System/Package.pm
         'not installed' => 'Tidak diinstall',
         'File is not installed!' => '',
         'File is different!' => '',
         'Can\'t read file!' => '',
+
+        # Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
+        'The process "%s" and all of its data has been imported successfully.' =>
+            '',
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
         'Inactive' => 'Tidak aktif',
@@ -5522,6 +5567,8 @@ Helpdesk Team Anda
             'Mendefinisikan bidang tiket yang akan menjadi ditampilkan acara kalender. "Kunci" mendefinisikan atribut lapangan atau tiket dan "Konten" mendefinisikan nama tampilan.',
         'Defines the time zone of the indicated calendar, which can be assigned later to a specific queue.' =>
             'Mendefinisikan zona waktu kalender ditunjukkan, yang dapat diberikan kemudian untuk antrian tertentu.',
+        'Defines the timeout (in seconds, minimum is 20 seconds) for the support data collection with the public module \'PublicSupportDataCollector\' (e.g. used from the OTRS Daemon).' =>
+            '',
         'Defines the two-factor module to authenticate agents.' => 'Mendefinisikan modul dua faktor untuk otentikasi agen.',
         'Defines the two-factor module to authenticate customers.' => 'Mendefinisikan modul dua faktor untuk mengotentikasi pelanggan.',
         'Defines the type of protocol, used by the web server, to serve the application. If https protocol will be used instead of plain http, it must be specified here. Since this has no affect on the web server\'s settings or behavior, it will not change the method of access to the application and, if it is wrong, it will not prevent you from logging into the application. This setting is only used as a variable, OTRS_CONFIG_HttpType which is found in all forms of messaging used by the application, to build links to the tickets within your system.' =>
@@ -6375,8 +6422,6 @@ Helpdesk Team Anda
         'ServiceView' => 'Tampilan servis',
         'Set a new password by filling in your current password and a new one.' =>
             '',
-        'Set minimum loglevel. If you select \'error\', just errors are logged. With \'debug\' you get all logging messages.' =>
-            'Mengatur tingkat log minimum. Jika Anda memilih \'kesalahan\', hanya kesalahan login. Dengan \'men-debug\' Anda mendapatkan semua pesan masuk.',
         'Set sender email addresses for this system.' => 'Mengatur alamat email pengirim untuk sistem ini.',
         'Set the default height (in pixels) of inline HTML articles in AgentTicketZoom.' =>
             'Mengatur tinggi default (dalam piksel) dari artikel HTML inline di Agen Tiket Zoom.',
@@ -6384,6 +6429,8 @@ Helpdesk Team Anda
             'Mengatur batas dari tiket yang akan dilaksanakan pada agen generik yang akan mengeksekusi pekerjaan tunggal.',
         'Set the maximum height (in pixels) of inline HTML articles in AgentTicketZoom.' =>
             'Mengatur ketinggian maksimum (dalam piksel) dari artikel HTML inline di Agen Tiket Zoom.',
+        'Set the minimum log level. If you select \'error\', just errors are logged. With \'debug\' you get all logging messages. The order of log levels is: \'debug\', \'info\', \'notice\' and \'error\'.' =>
+            '',
         'Set this to yes if you trust in all your public and private pgp keys, even if they are not certified with a trusted signature.' =>
             'Set ini untuk "Ya". jika Anda percaya di semua kunci publik pgp dan pribadi Anda, bahkan jika mereka tidak bersertifikat dengan tanda tangan yang terpercaya.',
         'Sets if SLA must be selected by the agent.' => 'Set SLA harus dipilih oleh agen.',
