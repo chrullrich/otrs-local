@@ -11,6 +11,7 @@ package Kernel::System::NotificationEvent;
 use strict;
 use warnings;
 
+use Kernel::Language qw(Translatable);
 use Kernel::System::VariableCheck qw(:all);
 
 our @ObjectDependencies = (
@@ -776,7 +777,7 @@ sub NotificationImport {
         return {
             Success => 0,
             Message =>
-                "Couldn't read Notification configuration file. Please make sure the file is valid.",
+                Translatable("Couldn't read Notification configuration file. Please make sure the file is valid."),
         };
     }
 
