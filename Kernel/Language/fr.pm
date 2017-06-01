@@ -32,7 +32,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.475299857694653;
+    $Self->{Completeness}        = 0.473311767084513;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -54,7 +54,7 @@ sub Data {
         'Cancel' => 'Annuler',
         'Reset' => 'Remise à zéro',
         'more than ... ago' => 'il y a plus de ...',
-        'in more than ...' => 'en plus de ...',
+        'in more than ...' => 'dans plus de ...',
         'within the last ...' => 'dans les dernier(e)s',
         'within the next ...' => 'dans les prochain(e)s',
         'Created within the last' => 'Créé dans les dernier(e)s',
@@ -81,8 +81,8 @@ sub Data {
         'month(s)' => 'mois',
         'week' => 'semaine',
         'week(s)' => 'semaine(s)',
-        'quarter' => 'ex. /opt/otrs/var/certificates/REST/CA/ca.file',
-        'quarter(s)' => 'quart d\'heure',
+        'quarter' => 'trimestre',
+        'quarter(s)' => 'trimestre(s)',
         'half-year' => 'semestre',
         'half-year(s)' => 'semestre(s)',
         'year' => 'année',
@@ -109,10 +109,10 @@ sub Data {
         'Examples' => 'Exemples',
         'valid' => 'valide',
         'Valid' => 'Valide',
-        'invalid' => 'invalide',
-        'Invalid' => 'Invalide',
-        '* invalid' => '* invalide',
-        'invalid-temporarily' => 'temporairement invalide',
+        'invalid' => 'non valide',
+        'Invalid' => 'Non valide',
+        '* invalid' => '* non valide',
+        'invalid-temporarily' => 'temporairement invalidé',
         ' 2 minutes' => ' 2 minutes',
         ' 5 minutes' => ' 5 minutes',
         ' 7 minutes' => ' 7 minutes',
@@ -128,7 +128,7 @@ sub Data {
         'none' => 'aucun',
         'none!' => 'aucun !',
         'none - answered' => 'aucun - réponse faite',
-        'please do not edit!' => 'Ne pas modifier !',
+        'please do not edit!' => 'ne pas modifier !',
         'Need Action' => 'Requiert une action',
         'AddLink' => 'Ajouter un lien',
         'Link' => 'Lier',
@@ -182,9 +182,9 @@ sub Data {
         'change' => 'modifier',
         'click here' => 'Cliquer ici',
         'Comment' => 'Commentaire',
-        'Invalid Option!' => 'Option invalide !',
-        'Invalid time!' => 'Heure/Durée invalide !',
-        'Invalid date!' => 'Date invalide !',
+        'Invalid Option!' => 'Option non valide !',
+        'Invalid time!' => 'Heure/Durée non valide !',
+        'Invalid date!' => 'Date non valide !',
         'Name' => 'Nom',
         'Group' => 'Groupe',
         'Description' => 'Description',
@@ -235,7 +235,7 @@ sub Data {
         'The recommended charset for your language is %s!' => 'Le jeu de caractère correspondant à votre langue est %s !',
         'Change your password.' => 'Modifier votre mot de passe',
         'Please activate %s first!' => 'Merci d\'activer %s en premier lieu',
-        'No suggestions' => 'Pas de suggestions',
+        'No suggestions' => 'Pas de suggestion',
         'Word' => 'Mot',
         'Ignore' => 'Ignorer',
         'replace with' => 'remplacer par',
@@ -243,9 +243,9 @@ sub Data {
         'Login failed! Your user name or password was entered incorrectly.' =>
             'Mauvaise authentification! Votre nom de compte ou mot de passe étaient erronés',
         'There is no acount with that user name.' => 'Il n\'y a aucun compte avec ce nom d\'utilisateur',
-        'Please contact your administrator' => 'Veuillez contacter votre administrateur SVP',
+        'Please contact your administrator' => 'Veuillez contacter votre administrateur',
         'Authentication succeeded, but no customer record is found in the customer backend. Please contact your administrator.' =>
-            'L\'authentification est réussie mais aucun enregistrement client n\'a été trouvé dans la base OTRS. Veuillez en informer votre administrateur.',
+            'L\'authentification a réussi mais aucun enregistrement client correspondant n\'a été trouvé. Veuillez en informer votre administrateur.',
         'This e-mail address already exists. Please log in or reset your password.' =>
             'Cet e-mail existe déjà. Merci de vous connecter ou de réinitailiser votre mot de passe.',
         'Logout' => 'Déconnexion',
@@ -260,13 +260,13 @@ sub Data {
         'Install OTRS' => 'Installer OTRS',
         'Intro' => 'Introduction',
         'License' => 'Licence',
-        'Database' => 'Base de donnée',
+        'Database' => 'Base de données',
         'Configure Mail' => 'Configurer Mail',
         'Database deleted.' => 'Base de données effacée.',
         'Enter the password for the administrative database user.' => 'Entrer le mot de passe de l\'administrateur de la base de données',
         'Enter the password for the database user.' => 'Entrer le mot de passe pour l\'utilisateur base de données',
         'If you have set a root password for your database, it must be entered here. If not, leave this field empty.' =>
-            'Si vous avez défini un mot de passe root pour votre base de donnée, il doit être rempli ici. Sinon, laisser ce champ vide',
+            'Si vous avez défini un mot de passe root pour votre base de données, il doit être indiqué ici. Sinon, laissez ce champ vide.',
         'Database already contains data - it should be empty!' => 'La base de données contient déjà des données - elle doit être vide',
         'Login is needed!' => 'Authentification requise !',
         'It is currently not possible to login due to a scheduled system maintenance.' =>
@@ -279,7 +279,7 @@ sub Data {
         'reverse' => 'inverse',
         'Facility' => 'Service',
         'Time Zone' => 'Fuseau horaire',
-        'Pending till' => 'En attendant jusqu\'à',
+        'Pending till' => 'En attente jusque',
         'Don\'t use the Superuser account to work with OTRS! Create new Agents and work with these accounts instead.' =>
             'N\'utilisez pas le compte Superuser pour travailler avec OTRS! Créez de nouveaux agents et travaillez plutôt avec ces agents.',
         'Dispatching by email To: field.' => 'Répartition par le champ \'À:\' de l\'e-mail',
@@ -379,7 +379,7 @@ sub Data {
         'Upcoming Events' => 'Évènements à venir',
         'Event' => 'Évènement',
         'Events' => 'Évènements',
-        'Invalid Token!' => 'Jeton invalide !',
+        'Invalid Token!' => 'Jeton non valide !',
         'more' => 'plus',
         'Collapse' => 'Réduire',
         'Shown' => 'Affiché(s)',
@@ -424,7 +424,7 @@ sub Data {
             'Aucune donnée reçue depuis le serveur d\'enregistrement. Veuillez réessayer ultérieurement. ',
         'Problems processing server result. Please try again later.' => 'Problèmes sur le serveur de processus. Veuillez réessayer ultérieurement.',
         'Username and password do not match. Please try again.' => 'Le nom et mot de passe ne correspondent pas. Merci d\'essayer à nouveau.',
-        'The selected process is invalid!' => 'The processus sélectionné est invalide.',
+        'The selected process is invalid!' => 'Le processus sélectionné n\'est pas valide !',
         'Upgrade to %s now!' => 'Mettre à jour vers %s maintenant ! ',
         '%s Go to the upgrade center %s' => '%s Se rendre sur le serveur de mise à jour %s',
         'The license for your %s is about to expire. Please make contact with %s to renew your contract!' =>
@@ -497,7 +497,7 @@ sub Data {
         'The current password is not correct. Please try again!' => 'Le mot de passe actuel n\'est pas correct. Merci d\'essayer à nouveau!',
         'Can\'t update password, your new passwords do not match. Please try again!' =>
             'Impossible de mettre à jour le mot de passe, votre nouveau mot de passe ne correspond pas. Merci d\'essayer à nouveau!',
-        'Can\'t update password, it contains invalid characters!' => 'Impossible de mettre à jour le mot de passe, il contienti des caractères invalides!',
+        'Can\'t update password, it contains invalid characters!' => 'Impossible de mettre à jour le mot de passe car il contient des caractères non valables !',
         'Can\'t update password, it must be at least %s characters long!' =>
             'Impossible de mettre à jour le mot de passe,, il doit contenir au moins %s caractères!',
         'Can\'t update password, it must contain at least 2 lowercase and 2 uppercase characters!' =>
@@ -816,7 +816,7 @@ sub Data {
         'Edit ACL %s' => 'Editer %s de ACL',
         'Go to overview' => 'Aller à la vue d\'ensemble',
         'Delete ACL' => 'Effacer ACL',
-        'Delete Invalid ACL' => 'Supprimer ACL invalide',
+        'Delete Invalid ACL' => 'Supprimer les ACL non valides',
         'Match settings' => 'Paramètres correspondants',
         'Set up matching criteria for this ACL. Use \'Properties\' to match the current screen or \'PropertiesDatabase\' to match attributes of the current ticket that are in the database.' =>
             'Etablir les critères correspondants pour ce ACL. Utiliser "Properties" pour faire un correspondance entre cet écran ou "PropertiesDatabase" avec les attribues de ce ticket qui est dans la base des données.',
@@ -911,7 +911,7 @@ sub Data {
         'Upgrade to %s' => 'Mettre à jour vers %s',
 
         # Template: AdminCustomerCompany
-        'Customer Management' => 'Gestion des clients',
+        'Customer Management' => 'Gestion des Clients',
         'Wildcards like \'*\' are allowed.' => 'Les caractères génériques tels que \'*\ sont autorisés',
         'Add customer' => 'Ajouter un client',
         'Select' => 'Sélectionner',
@@ -1133,7 +1133,7 @@ sub Data {
         'Select Tickets' => 'Sélectionner des tickets',
         '(e. g. 10*5155 or 105658*)' => '(ex: 10*5155 or 105658*)',
         '(e. g. 234321)' => '(ex: 234321)',
-        'Customer user' => 'Client utilisateur',
+        'Customer user' => 'Utilisateur client',
         '(e. g. U5150)' => '(ex: U5150)',
         'Fulltext-search in article (e. g. "Mar*in" or "Baue*").' => 'Recherche plein texte dans article (p. ex. "Valérie*m" ou "Eco*").',
         'Agent' => 'Opérateur',
@@ -1183,14 +1183,14 @@ sub Data {
         'new owner' => 'nouveau propriétaire',
         'new responsible' => 'nouveau responsable',
         'Set new ticket lock' => 'Placer un nouveau verrou sur le ticket',
-        'New customer user' => 'Nouveau client utilisateur',
+        'New customer user' => 'Nouvel utilisateur client',
         'New customer ID' => 'Nouvel ID client',
         'New title' => 'Nouveau titre',
         'New type' => 'Nouveau type',
         'New Dynamic Field Values' => 'Nouvelles Valeurs de Champ Dynamique',
         'Archive selected tickets' => 'Archiver tickets sélectionnés',
         'Add Note' => 'Ajouter une note',
-        'Time units' => 'Unité de temps',
+        'Time units' => 'Unités de temps',
         'Execute Ticket Commands' => '',
         'Send agent/customer notifications on changes' => 'Envoyer des notifications à l\'opérateur/au client sur les changements',
         'CMD' => 'CMD',
@@ -1642,6 +1642,7 @@ sub Data {
 
         # Template: AdminOTRSBusinessInstalled
         'Manage %s' => 'Gérer %s',
+        'Go to the OTRS customer portal' => '',
         'Downgrade to OTRS Free' => 'Retour à OTRS libre',
         'Read documentation' => 'Lire la documentation',
         '%s makes contact regularly with cloud.otrs.com to check on available updates and the validity of the underlying contract.' =>
@@ -1661,6 +1662,19 @@ sub Data {
         '%s Not Yet Available' => '%s n\'est pas encore disponible',
         '%s will be available soon.' => '%s sera bientôt disponible.',
         '%s Update Available' => '%S Mise à jour disponible',
+        'Package installation requires patch level update of OTRS.' => '',
+        'Please visit our customer portal and file a request.' => '',
+        'Everything else will be done as part of your contract.' => '',
+        'Your installed OTRS version is %s.' => '',
+        'To install the current version of OTRS Business Solution™, you need to update to OTRS %s or higher.' =>
+            '',
+        'To install the current version of OTRS Business Solution™, the Maximum OTRS Version is %s.' =>
+            '',
+        'To install this package, the required Framework version is %s.' =>
+            '',
+        'Why should I keep OTRS up to date?' => '',
+        'You will receive updates about relevant security issues.' => '',
+        'You will receive updates for all other relevant OTRS issues' => '',
         'An update for your %s is available! Please update at your earliest!' =>
             'Une mise à jour est disponible pour votre %s! Merci de l\'effectuer le plus rapidement possible!',
         '%s Correctly Deployed' => '%S Installé Correctement',
@@ -1677,6 +1691,9 @@ sub Data {
             'Avant de pouvoir bénéficier de %s, merci de contacter %s pour obtenir votre contrat.',
         'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.' =>
             'La connexion à cloud.otrs.com via HTTPS aboutit pas. Merci de vérifier que OTRS peut se connecter à cloud.otrs.com via le port 443.',
+        'To install this package, you need to update to OTRS %s or higher.' =>
+            '',
+        'To install this package, the Maximum OTRS Version is %s.' => '',
         'With your existing contract you can only use a small part of the %s.' =>
             'Avec votre contrat actuel vous pouvez seulement utiliser une petite partie de %s.',
         'If you would like to take full advantage of the %s get your contract upgraded now! Contact %s.' =>
@@ -1684,12 +1701,12 @@ sub Data {
 
         # Template: AdminOTRSBusinessUninstall
         'Cancel downgrade and go back' => 'Annuler la rétrogradation et retour.',
-        'Go to OTRS Package Manager' => 'Aller au gestionnaire de paquet d\'OTRS',
+        'Go to OTRS Package Manager' => 'Aller au gestionnaire de paquets d\'OTRS',
         'Sorry, but currently you can\'t downgrade due to the following packages which depend on %s:' =>
             'Désolé, mais vous ne pouvez pas rétrograder en raison des paquets suivants qui dépendent de %s:',
         'Vendor' => 'Vendeur',
         'Please uninstall the packages first using the package manager and try again.' =>
-            'Merci de désinstaller les paquets en utilisant le gestionnaire de paquet et ressayer.',
+            'Veuillez désinstaller les paquets en utilisant le gestionnaire de paquets, puis ré-essayer.',
         'You are about to downgrade to OTRS Free and will lose the following features and all data related to these:' =>
             'Vous êtes sur le point de rétrograder vers OTRS libre et vous allez perdre les fonctionnalités suivantes avec leurs données relatives:',
         'Chat' => 'Chat',
@@ -1725,12 +1742,27 @@ sub Data {
         'PGP key' => 'Clé PGP',
 
         # Template: AdminPackageManager
-        'Package Manager' => 'Gestionnaire de paquet',
+        'Package Manager' => 'Gestionnaire de paquets',
         'Uninstall package' => 'Désinstaller package',
         'Do you really want to uninstall this package?' => 'Voulez-vous vraiment déinstaller ce paquet ?',
         'Reinstall package' => 'Réinstaller package',
         'Do you really want to reinstall this package? Any manual changes will be lost.' =>
             'Voulez-vous vraiment réinstaller ce package? Un quelconque changement manuel sera perdu. ',
+        'Go to upgrading instructions' => '',
+        'package information' => '',
+        'Package upgrade requires patch level update of OTRS.' => '',
+        'If you are a OTRS Business Solution™ customer, please visit our customer portal and file a request.' =>
+            '',
+        'Please note that your installed OTRS version is %s.' => '',
+        'How can I do a patch level update if I don’t have a contract?' =>
+            '',
+        'Please find all relevant information within' => '',
+        'the upgrading instructions' => '',
+        'In case you would have further questions we would be glad to answer them.' =>
+            '',
+        'Please visit our customer' => '',
+        'portal' => '',
+        'and file a request.' => '',
         'Continue' => 'Continuer',
         'Please make sure your database accepts packages over %s MB in size (it currently only accepts packages up to %s MB). Please adapt the max_allowed_packet setting of your database in order to avoid errors.' =>
             'Merci de vérifier que votre base de données accepte les paquets supérieurs à %s MB (elle supporte actuellement uniquement les paquets jusqu\'à %s MB). Merci de mettre à jour le paramètre max_allowed_packet dans votre base de données pour éviter les erreurs.',
@@ -1800,7 +1832,7 @@ sub Data {
         'Do you really want to delete this filter?' => '',
         'Add PostMaster Filter' => 'Ajouter un filtre PostMaster',
         'Edit PostMaster Filter' => 'Editer ce filtre PostMaster',
-        'The name is required.' => 'Le nom est requis',
+        'A postmaster filter with this name already exists!' => '',
         'Filter Condition' => 'Condition de filtre',
         'AND Condition' => 'condition ET',
         'Check email header' => 'Vérifier l\'en-tête de l\'email',
@@ -2110,11 +2142,7 @@ sub Data {
         'Your system will send updates to the registration server at regular intervals.' =>
             '',
         'Typically this would be around once every three days.' => '',
-        'In case you would have further questions we would be glad to answer them.' =>
-            '',
         'Please visit our' => '',
-        'portal' => '',
-        'and file a request.' => '',
         'If you deregister your system, you will lose these benefits:' =>
             '',
         'You need to log in with your OTRS-ID to deregister your system.' =>
@@ -2340,10 +2368,10 @@ sub Data {
         'Navigate by searching in %s settings' => 'Naviguer en cherchant parmi %s réglages',
         'Navigate by selecting config groups' => 'Naviguer en sélectionnant les groupes de configuration',
         'Download all system config changes' => 'Télécharger toutes les modifications de configuration système',
-        'Export settings' => 'Configuration d\'export',
+        'Export settings' => 'Exporter configuration',
         'Load SysConfig settings from file' => 'Charger la configuration SysConfig à partir du fichier',
-        'Import settings' => 'configuration d\'import',
-        'Import Settings' => 'Configuration d\'Import',
+        'Import settings' => 'Importer configuration',
+        'Import Settings' => 'Importer Configuration',
         'Please enter a search term to look for settings.' => 'Merci d\'entrer un motif de recherche pour chercher dans la configuration',
         'Subgroup' => 'Sous-groupe',
         'Elements' => 'Éléments',
@@ -2414,7 +2442,7 @@ sub Data {
         # Template: AdminSystemMaintenanceEdit
         'Edit System Maintenance %s' => '',
         'Edit System Maintenance Information' => '',
-        'Date invalid!' => 'Date invalide',
+        'Date invalid!' => 'Date non valide !',
         'Login message' => '',
         'Show login message' => '',
         'Notify message' => '',
@@ -2487,7 +2515,7 @@ sub Data {
         'Customer Information Center' => 'Tableau de Bord Client',
 
         # Template: AgentCustomerInformationCenterSearch
-        'Customer User' => 'Client Utilisateur',
+        'Customer User' => 'Utilisateur Client',
 
         # Template: AgentCustomerSearch
         'Duplicated entry' => 'Doublon',
@@ -2669,7 +2697,7 @@ sub Data {
         'Change Priority of %s%s%s' => '',
         'Change Responsible of %s%s%s' => '',
         'All fields marked with an asterisk (*) are mandatory.' => 'Tous les champs marqués avec un astérisque (*) sont obligatoires.',
-        'Service invalid.' => 'Service invalide',
+        'Service invalid.' => 'Service non valide !',
         'New Owner' => 'Nouveau Propriétaire',
         'Please set a new owner!' => 'Merci de renseigner un propriétaire',
         'New Responsible' => '',
@@ -2701,7 +2729,7 @@ sub Data {
         'Ticket Bulk Action' => 'Ticket en action groupée',
         'Send Email' => 'Envoyer E-mail',
         'Merge to' => 'Fusionner avec',
-        'Invalid ticket identifier!' => 'Identifiant de ticket invalide !',
+        'Invalid ticket identifier!' => 'Identifiant de ticket non valide !',
         'Merge to oldest' => 'Fusionner avec le plus ancien',
         'Link together' => 'Lier ensemble',
         'Link to parent' => 'Lier au parent',
@@ -2719,7 +2747,7 @@ sub Data {
         'Remove Cc' => 'Retirer le Cc',
         'Remove Bcc' => 'Retirer le Bcc',
         'Address book' => 'Carnet d\'adresse',
-        'Date Invalid!' => 'Date invalide',
+        'Date Invalid!' => 'Date non valide !',
 
         # Template: AgentTicketCustomer
         'Change Customer of %s%s%s' => '',
@@ -3056,8 +3084,8 @@ sub Data {
         'Dynamic fields' => 'Champs dynamiques',
 
         # Template: Datepicker
-        'Invalid date (need a future date)!' => 'Date invalide (une date future est nécessaire) !',
-        'Invalid date (need a past date)!' => 'Date invalide (une date passée est nécessaire) ! ',
+        'Invalid date (need a future date)!' => 'Date non valide (elle doit être future) !',
+        'Invalid date (need a past date)!' => 'Date non valide (elle doit être passée) !',
         'Previous' => 'Précédent',
         'Open date selection' => 'Sélection date d\'ouverture',
 
@@ -3282,7 +3310,7 @@ sub Data {
             '',
         'Please note that enabling the dashboard widget will activate caching for this statistic in the dashboard.' =>
             '',
-        'If set to invalid end users can not generate the stat.' => 'Si mis à invalide, les utilisateurs finaux ne pourront pas générer la statistique.',
+        'If set to invalid end users can not generate the stat.' => 'Si mis à "non valide", les utilisateurs finaux ne pourront pas générer la statistique.',
 
         # Template: PreviewWidget
         'There are problems in the configuration of this statistic:' => '',
@@ -3810,9 +3838,7 @@ sub Data {
         'Could not store ActivityDialog, invalid TicketID: %s!' => '',
         'Invalid TicketID: %s!' => '',
         'Missing ActivityEntityID in Ticket %s!' => '',
-        'This step does not belong anymore the current activity in process for Ticket %s!' =>
-            '',
-        'Another user changed this ticket in the meantime. Please close this window and reload the ticket.' =>
+        'This step does not belong anymore the current activity in process for ticket \'%s%s%s\'! Another user changed this ticket in the meantime.' =>
             '',
         'Missing ProcessEntityID in Ticket %s!' => '',
         'Could not set DynamicField value for %s of Ticket with ID "%s" in ActivityDialog "%s"!' =>
@@ -4050,6 +4076,10 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/TicketOverviewMenu/Sort.pm
         'Order by' => 'Trier par',
 
+        # Perl Module: Kernel/System/ACL/DB/ACL.pm
+        'Couldn\'t read ACL configuration file. Please make sure the file is valid.' =>
+            '',
+
         # Perl Module: Kernel/System/AuthSession.pm
         'You have exceeded the number of concurrent agents - contact sales@otrs.com.' =>
             '',
@@ -4064,17 +4094,32 @@ sub Data {
         'This setting is not active by default.' => '',
         'This setting can not be deactivated.' => '',
 
+        # Perl Module: Kernel/System/CustomerUser.pm
+        'Customer user "%s" already exists.' => '',
+
+        # Perl Module: Kernel/System/CustomerUser/DB.pm
+        'This email address is already in use for another customer user.' =>
+            '',
+
         # Perl Module: Kernel/System/DynamicField/Driver/BaseText.pm
         'e.g. Text or Te*t' => '',
 
         # Perl Module: Kernel/System/DynamicField/Driver/Checkbox.pm
         'Ignore this field.' => '',
 
+        # Perl Module: Kernel/System/NotificationEvent.pm
+        'Couldn\'t read Notification configuration file. Please make sure the file is valid.' =>
+            '',
+
         # Perl Module: Kernel/System/Package.pm
         'not installed' => '',
         'File is not installed!' => '',
         'File is different!' => '',
         'Can\'t read file!' => '',
+
+        # Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
+        'The process "%s" and all of its data has been imported successfully.' =>
+            '',
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
         'Inactive' => 'Inactif',
@@ -4762,7 +4807,7 @@ Thanks for your help!
             '',
         'Closed tickets (customer user)' => 'Tickets fermés (utilisateur client)',
         'Closed tickets (customer)' => 'Tickets fermés (client)',
-        'Cloud Services' => '',
+        'Cloud Services' => 'Services Cloud',
         'Cloud service admin module registration for the transport layer.' =>
             '',
         'Collect support data for asynchronous plug-in modules.' => '',
@@ -4834,7 +4879,7 @@ Thanks for your help!
         'Create and manage services.' => 'Créer et gérer les services.',
         'Create and manage signatures.' => 'Créer et gérer les signatures.',
         'Create and manage templates.' => 'Créer et gérer les modèles.',
-        'Create and manage ticket notifications.' => '',
+        'Create and manage ticket notifications.' => 'Créer et gérer les notifications des tickets.',
         'Create and manage ticket priorities.' => 'Créer et gérer les priorités de ticket.',
         'Create and manage ticket states.' => 'Créer et gérer les états de ticket.',
         'Create and manage ticket types.' => 'Créer et gérer les types de ticket.',
@@ -5515,6 +5560,8 @@ Thanks for your help!
             '',
         'Defines the time zone of the indicated calendar, which can be assigned later to a specific queue.' =>
             '',
+        'Defines the timeout (in seconds, minimum is 20 seconds) for the support data collection with the public module \'PublicSupportDataCollector\' (e.g. used from the OTRS Daemon).' =>
+            '',
         'Defines the two-factor module to authenticate agents.' => '',
         'Defines the two-factor module to authenticate customers.' => '',
         'Defines the type of protocol, used by the web server, to serve the application. If https protocol will be used instead of plain http, it must be specified here. Since this has no affect on the web server\'s settings or behavior, it will not change the method of access to the application and, if it is wrong, it will not prevent you from logging into the application. This setting is only used as a variable, OTRS_CONFIG_HttpType which is found in all forms of messaging used by the application, to build links to the tickets within your system.' =>
@@ -5685,7 +5732,7 @@ Thanks for your help!
         'Edit Customer Companies.' => '',
         'Edit Customer Users.' => '',
         'Edit customer company' => '',
-        'Email Addresses' => 'Adresses E-mail',
+        'Email Addresses' => 'Adresses e-mail',
         'Email Outbound' => '',
         'Email sent to "%s".' => 'E-mail envoyé à "%s".',
         'Email sent to customer.' => 'E-mail envoyé au client.',
@@ -6240,7 +6287,7 @@ Thanks for your help!
         'Polish' => '',
         'Portuguese' => '',
         'Portuguese (Brasil)' => '',
-        'PostMaster Filters' => 'Filtres Postmasters',
+        'PostMaster Filters' => 'Filtres Postmaster',
         'PostMaster Mail Accounts' => 'Comptes Mail PostMaster',
         'Process Management Activity Dialog GUI' => '',
         'Process Management Activity GUI' => '',
@@ -6368,14 +6415,14 @@ Thanks for your help!
         'ServiceView' => '',
         'Set a new password by filling in your current password and a new one.' =>
             '',
-        'Set minimum loglevel. If you select \'error\', just errors are logged. With \'debug\' you get all logging messages.' =>
-            '',
-        'Set sender email addresses for this system.' => 'Mettre en place les adresses d\'envoi de messages électroniques pour ce système.',
+        'Set sender email addresses for this system.' => 'Mettre en place les adresses d\'envoi d\'e-mails pour ce système.',
         'Set the default height (in pixels) of inline HTML articles in AgentTicketZoom.' =>
             '',
         'Set the limit of tickets that will be executed on a single genericagent job execution.' =>
             '',
         'Set the maximum height (in pixels) of inline HTML articles in AgentTicketZoom.' =>
+            '',
+        'Set the minimum log level. If you select \'error\', just errors are logged. With \'debug\' you get all logging messages. The order of log levels is: \'debug\', \'info\', \'notice\' and \'error\'.' =>
             '',
         'Set this to yes if you trust in all your public and private pgp keys, even if they are not certified with a trusted signature.' =>
             '',
@@ -6938,13 +6985,13 @@ Thanks for your help!
         'Ticket Merge.' => '',
         'Ticket Move.' => '',
         'Ticket Note.' => '',
-        'Ticket Notifications' => '',
+        'Ticket Notifications' => 'Notifications des tickets',
         'Ticket Outbound Email.' => '',
         'Ticket Owner.' => '',
         'Ticket Pending.' => '',
         'Ticket Print.' => '',
         'Ticket Priority.' => '',
-        'Ticket Queue Overview' => 'Aperçu de la file de ticket',
+        'Ticket Queue Overview' => 'Vue d\'ensemble des files de tickets',
         'Ticket Responsible.' => '',
         'Ticket Watcher' => '',
         'Ticket Zoom.' => '',
@@ -6952,7 +6999,7 @@ Thanks for your help!
         'Ticket event module that triggers the escalation stop events.' =>
             '',
         'Ticket moved into Queue "%s" (%s) from Queue "%s" (%s).' => 'Le ticket a été déplacé dans la file "%s" (%s) - Ancienne file: "%s" (%s).',
-        'Ticket notifications' => '',
+        'Ticket notifications' => 'Notifications des tickets',
         'Ticket overview' => 'Vue d\'ensemble du Ticket',
         'Ticket plain view of an email.' => '',
         'Ticket title' => '',
@@ -6965,7 +7012,7 @@ Thanks for your help!
         'To accept login information, such as an EULA or license.' => '',
         'To download attachments.' => '',
         'Toggles display of OTRS FeatureAddons list in PackageManager.' =>
-            'Déclenche l\'affichage de la liste des fonctions Add-ons dans les gestionnaire de paquet',
+            'Déclenche l\'affichage de la liste des modules complémentaires d\'OTRS dans le gestionnaire de paquets.',
         'Toolbar Item for a shortcut. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
             '',
         'Transport selection for ticket notifications.' => '',
