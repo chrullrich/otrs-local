@@ -16,17 +16,19 @@
 # Matthieu HUTIN, 2015
 # osallou <olivier.sallou@irisa.fr>, 2014
 # osallou <olivier.sallou@irisa.fr>, 2014
+# Patrick Lentz, 2017
 # Raphaël Doursenaud <rdoursenaud@gpcsolutions.fr>, 2014-2015
 # remidoc <Remi.seguy@gmail.com>, 2015
 # remidoc <Remi.seguy@gmail.com>, 2015
 # Thierry Larmier <tlarmier@free.fr>, 2015
+# Thomas Imbreckx <zinks@member.fsf.org>, 2017
 # v cw <vincentcw@yahoo.fr>, 2017
 # Vincent SAOUT <v.saout@atool-dev.fr>, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
-"POT-Creation-Date: 2017-03-22 12:37+0000\n"
-"PO-Revision-Date: 2017-03-22 18:44+0000\n"
+"POT-Creation-Date: 2017-05-04 12:03+0000\n"
+"PO-Revision-Date: 2017-05-04 17:04+0000\n"
 "Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
 "Language-Team: French (http://www.transifex.com/otrs/OTRS/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -93,7 +95,7 @@ msgstr "il y a plus de ..."
 
 #. Template: AAABase
 msgid "in more than ..."
-msgstr "en plus de ..."
+msgstr "dans plus de ..."
 
 #. Template: AAABase
 msgid "within the last ..."
@@ -201,11 +203,11 @@ msgstr "semaine(s)"
 
 #. Template: AAABase
 msgid "quarter"
-msgstr "ex. /opt/otrs/var/certificates/REST/CA/ca.file"
+msgstr "trimestre"
 
 #. Template: AAABase
 msgid "quarter(s)"
-msgstr "quart d'heure"
+msgstr "trimestre(s)"
 
 #. Template: AAABase
 msgid "half-year"
@@ -313,19 +315,19 @@ msgstr "Valide"
 
 #. Template: AAABase
 msgid "invalid"
-msgstr "invalide"
+msgstr "non valide"
 
 #. Template: AAABase
 msgid "Invalid"
-msgstr "Invalide"
+msgstr "Non valide"
 
 #. Template: AAABase
 msgid "* invalid"
-msgstr "* invalide"
+msgstr "* non valide"
 
 #. Template: AAABase
 msgid "invalid-temporarily"
-msgstr "temporairement invalide"
+msgstr "temporairement invalidé"
 
 #. Template: AAABase
 msgid " 2 minutes"
@@ -389,7 +391,7 @@ msgstr "aucun - réponse faite"
 
 #. Template: AAABase
 msgid "please do not edit!"
-msgstr "Ne pas modifier !"
+msgstr "ne pas modifier !"
 
 #. Template: AAABase
 msgid "Need Action"
@@ -605,15 +607,15 @@ msgstr "Commentaire"
 
 #. Template: AAABase
 msgid "Invalid Option!"
-msgstr "Option invalide !"
+msgstr "Option non valide !"
 
 #. Template: AAABase
 msgid "Invalid time!"
-msgstr "Heure/Durée invalide !"
+msgstr "Heure/Durée non valide !"
 
 #. Template: AAABase
 msgid "Invalid date!"
-msgstr "Date invalide !"
+msgstr "Date non valide !"
 
 #. Template: AAABase
 msgid "Name"
@@ -813,7 +815,7 @@ msgstr "Merci d'activer %s en premier lieu"
 
 #. Template: AAABase
 msgid "No suggestions"
-msgstr "Pas de suggestions"
+msgstr "Pas de suggestion"
 
 #. Template: AAABase
 msgid "Word"
@@ -841,13 +843,13 @@ msgstr "Il n'y a aucun compte avec ce nom d'utilisateur"
 
 #. Template: AAABase
 msgid "Please contact your administrator"
-msgstr "Veuillez contacter votre administrateur SVP"
+msgstr "Veuillez contacter votre administrateur"
 
 #. Template: AAABase
 msgid ""
 "Authentication succeeded, but no customer record is found in the customer "
 "backend. Please contact your administrator."
-msgstr "L'authentification est réussie mais aucun enregistrement client n'a été trouvé dans la base OTRS. Veuillez en informer votre administrateur."
+msgstr "L'authentification a réussi mais aucun enregistrement client correspondant n'a été trouvé. Veuillez en informer votre administrateur."
 
 #. Template: AAABase
 msgid ""
@@ -904,7 +906,7 @@ msgstr "Licence"
 
 #. Template: AAABase
 msgid "Database"
-msgstr "Base de donnée"
+msgstr "Base de données"
 
 #. Template: AAABase
 msgid "Configure Mail"
@@ -926,7 +928,7 @@ msgstr "Entrer le mot de passe pour l'utilisateur base de données"
 msgid ""
 "If you have set a root password for your database, it must be entered here. "
 "If not, leave this field empty."
-msgstr "Si vous avez défini un mot de passe root pour votre base de donnée, il doit être rempli ici. Sinon, laisser ce champ vide"
+msgstr "Si vous avez défini un mot de passe root pour votre base de données, il doit être indiqué ici. Sinon, laissez ce champ vide."
 
 #. Template: AAABase
 msgid "Database already contains data - it should be empty!"
@@ -975,7 +977,7 @@ msgstr "Fuseau horaire"
 
 #. Template: AAABase
 msgid "Pending till"
-msgstr "En attendant jusqu'à"
+msgstr "En attente jusque"
 
 #. Template: AAABase
 msgid ""
@@ -1349,7 +1351,7 @@ msgstr "Évènements"
 
 #. Template: AAABase
 msgid "Invalid Token!"
-msgstr "Jeton invalide !"
+msgstr "Jeton non valide !"
 
 #. Template: AAABase
 msgid "more"
@@ -1522,7 +1524,7 @@ msgstr "Le nom et mot de passe ne correspondent pas. Merci d'essayer à nouveau.
 
 #. Template: AAABase
 msgid "The selected process is invalid!"
-msgstr "The processus sélectionné est invalide."
+msgstr "Le processus sélectionné n'est pas valide !"
 
 #. Template: AAABase
 msgid "Upgrade to %s now!"
@@ -1775,7 +1777,7 @@ msgstr "Impossible de mettre à jour le mot de passe, votre nouveau mot de passe
 
 #. Template: AAAPreferences
 msgid "Can't update password, it contains invalid characters!"
-msgstr "Impossible de mettre à jour le mot de passe, il contienti des caractères invalides!"
+msgstr "Impossible de mettre à jour le mot de passe car il contient des caractères non valables !"
 
 #. Template: AAAPreferences
 msgid "Can't update password, it must be at least %s characters long!"
@@ -2965,7 +2967,7 @@ msgstr "Effacer ACL"
 
 #. Template: AdminACLEdit
 msgid "Delete Invalid ACL"
-msgstr "Supprimer ACL invalide"
+msgstr "Supprimer les ACL non valides"
 
 #. Template: AdminACLEdit
 msgid "Match settings"
@@ -3275,7 +3277,7 @@ msgstr "Mettre à jour vers %s"
 
 #. Template: AdminCustomerCompany
 msgid "Customer Management"
-msgstr "Gestion des clients"
+msgstr "Gestion des Clients"
 
 #. Template: AdminCustomerCompany
 msgid "Wildcards like '*' are allowed."
@@ -4000,7 +4002,7 @@ msgstr "(ex: 234321)"
 
 #. Template: AdminGenericAgent
 msgid "Customer user"
-msgstr "Client utilisateur"
+msgstr "Utilisateur client"
 
 #. Template: AdminGenericAgent
 msgid "(e. g. U5150)"
@@ -4200,7 +4202,7 @@ msgstr "Placer un nouveau verrou sur le ticket"
 
 #. Template: AdminGenericAgent
 msgid "New customer user"
-msgstr "Nouveau client utilisateur"
+msgstr "Nouvel utilisateur client"
 
 #. Template: AdminGenericAgent
 msgid "New customer ID"
@@ -4228,7 +4230,7 @@ msgstr "Ajouter une note"
 
 #. Template: AdminGenericAgent
 msgid "Time units"
-msgstr "Unité de temps"
+msgstr "Unités de temps"
 
 #. Template: AdminGenericAgent
 msgid "Execute Ticket Commands"
@@ -5734,6 +5736,10 @@ msgid "Manage %s"
 msgstr "Gérer %s"
 
 #. Template: AdminOTRSBusinessInstalled
+msgid "Go to the OTRS customer portal"
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
 msgid "Downgrade to OTRS Free"
 msgstr "Retour à OTRS libre"
 
@@ -5799,6 +5805,50 @@ msgid "%s Update Available"
 msgstr "%S Mise à jour disponible"
 
 #. Template: AdminOTRSBusinessInstalled
+msgid "Package installation requires patch level update of OTRS."
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "Please visit our customer portal and file a request."
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "Everything else will be done as part of your contract."
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "Your installed OTRS version is %s."
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
+msgid ""
+"To install the current version of OTRS Business Solution™, you need to "
+"update to OTRS %s or higher."
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
+msgid ""
+"To install the current version of OTRS Business Solution™, the Maximum OTRS "
+"Version is %s."
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "To install this package, the required Framework version is %s."
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "Why should I keep OTRS up to date?"
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "You will receive updates about relevant security issues."
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "You will receive updates for all other relevant OTRS issues"
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
 msgid "An update for your %s is available! Please update at your earliest!"
 msgstr "Une mise à jour est disponible pour votre %s! Merci de l'effectuer le plus rapidement possible!"
 
@@ -5836,6 +5886,14 @@ msgid ""
 msgstr "La connexion à cloud.otrs.com via HTTPS aboutit pas. Merci de vérifier que OTRS peut se connecter à cloud.otrs.com via le port 443."
 
 #. Template: AdminOTRSBusinessNotInstalled
+msgid "To install this package, you need to update to OTRS %s or higher."
+msgstr ""
+
+#. Template: AdminOTRSBusinessNotInstalled
+msgid "To install this package, the Maximum OTRS Version is %s."
+msgstr ""
+
+#. Template: AdminOTRSBusinessNotInstalled
 msgid "With your existing contract you can only use a small part of the %s."
 msgstr "Avec votre contrat actuel vous pouvez seulement utiliser une petite partie de %s."
 
@@ -5851,7 +5909,7 @@ msgstr "Annuler la rétrogradation et retour."
 
 #. Template: AdminOTRSBusinessUninstall
 msgid "Go to OTRS Package Manager"
-msgstr "Aller au gestionnaire de paquet d'OTRS"
+msgstr "Aller au gestionnaire de paquets d'OTRS"
 
 #. Template: AdminOTRSBusinessUninstall
 msgid ""
@@ -5866,7 +5924,7 @@ msgstr "Vendeur"
 #. Template: AdminOTRSBusinessUninstall
 msgid ""
 "Please uninstall the packages first using the package manager and try again."
-msgstr "Merci de désinstaller les paquets en utilisant le gestionnaire de paquet et ressayer."
+msgstr "Veuillez désinstaller les paquets en utilisant le gestionnaire de paquets, puis ré-essayer."
 
 #. Template: AdminOTRSBusinessUninstall
 msgid ""
@@ -5986,7 +6044,7 @@ msgstr "Clé PGP"
 
 #. Template: AdminPackageManager
 msgid "Package Manager"
-msgstr "Gestionnaire de paquet"
+msgstr "Gestionnaire de paquets"
 
 #. Template: AdminPackageManager
 msgid "Uninstall package"
@@ -6005,6 +6063,57 @@ msgid ""
 "Do you really want to reinstall this package? Any manual changes will be "
 "lost."
 msgstr "Voulez-vous vraiment réinstaller ce package? Un quelconque changement manuel sera perdu. "
+
+#. Template: AdminPackageManager
+msgid "Go to upgrading instructions"
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "package information"
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "Package upgrade requires patch level update of OTRS."
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid ""
+"If you are a OTRS Business Solution™ customer, please visit our customer "
+"portal and file a request."
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "Please note that your installed OTRS version is %s."
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "How can I do a patch level update if I don’t have a contract?"
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "Please find all relevant information within"
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "the upgrading instructions"
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid ""
+"In case you would have further questions we would be glad to answer them."
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "Please visit our customer"
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "portal"
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "and file a request."
+msgstr ""
 
 #. Template: AdminPackageManager
 msgid "Continue"
@@ -6254,8 +6363,8 @@ msgid "Edit PostMaster Filter"
 msgstr "Editer ce filtre PostMaster"
 
 #. Template: AdminPostMasterFilter
-msgid "The name is required."
-msgstr "Le nom est requis"
+msgid "A postmaster filter with this name already exists!"
+msgstr ""
 
 #. Template: AdminPostMasterFilter
 msgid "Filter Condition"
@@ -7274,20 +7383,7 @@ msgid "Typically this would be around once every three days."
 msgstr ""
 
 #. Template: AdminRegistration
-msgid ""
-"In case you would have further questions we would be glad to answer them."
-msgstr ""
-
-#. Template: AdminRegistration
 msgid "Please visit our"
-msgstr ""
-
-#. Template: AdminRegistration
-msgid "portal"
-msgstr ""
-
-#. Template: AdminRegistration
-msgid "and file a request."
 msgstr ""
 
 #. Template: AdminRegistration
@@ -7992,7 +8088,7 @@ msgstr "Télécharger toutes les modifications de configuration système"
 
 #. Template: AdminSysConfig
 msgid "Export settings"
-msgstr "Configuration d'export"
+msgstr "Exporter configuration"
 
 #. Template: AdminSysConfig
 msgid "Load SysConfig settings from file"
@@ -8000,11 +8096,11 @@ msgstr "Charger la configuration SysConfig à partir du fichier"
 
 #. Template: AdminSysConfig
 msgid "Import settings"
-msgstr "configuration d'import"
+msgstr "Importer configuration"
 
 #. Template: AdminSysConfig
 msgid "Import Settings"
-msgstr "Configuration d'Import"
+msgstr "Importer Configuration"
 
 #. Template: AdminSysConfig
 msgid "Please enter a search term to look for settings."
@@ -8238,7 +8334,7 @@ msgstr ""
 
 #. Template: AdminSystemMaintenanceEdit
 msgid "Date invalid!"
-msgstr "Date invalide"
+msgstr "Date non valide !"
 
 #. Template: AdminSystemMaintenanceEdit
 msgid "Login message"
@@ -8464,7 +8560,7 @@ msgstr "Tableau de Bord Client"
 
 #. Template: AgentCustomerInformationCenterSearch
 msgid "Customer User"
-msgstr "Client Utilisateur"
+msgstr "Utilisateur Client"
 
 #. Template: AgentCustomerSearch
 msgid "Duplicated entry"
@@ -8944,7 +9040,7 @@ msgstr "Tous les champs marqués avec un astérisque (*) sont obligatoires."
 
 #. Template: AgentTicketActionCommon
 msgid "Service invalid."
-msgstr "Service invalide"
+msgstr "Service non valide !"
 
 #. Template: AgentTicketActionCommon
 msgid "New Owner"
@@ -9050,7 +9146,7 @@ msgstr "Fusionner avec"
 
 #. Template: AgentTicketBulk
 msgid "Invalid ticket identifier!"
-msgstr "Identifiant de ticket invalide !"
+msgstr "Identifiant de ticket non valide !"
 
 #. Template: AgentTicketBulk
 msgid "Merge to oldest"
@@ -9106,7 +9202,7 @@ msgstr "Carnet d'adresse"
 
 #. Template: AgentTicketCompose
 msgid "Date Invalid!"
-msgstr "Date invalide"
+msgstr "Date non valide !"
 
 #. Template: AgentTicketCustomer
 msgid "Change Customer of %s%s%s"
@@ -10149,11 +10245,11 @@ msgstr "Champs dynamiques"
 
 #. Template: Datepicker
 msgid "Invalid date (need a future date)!"
-msgstr "Date invalide (une date future est nécessaire) !"
+msgstr "Date non valide (elle doit être future) !"
 
 #. Template: Datepicker
 msgid "Invalid date (need a past date)!"
-msgstr "Date invalide (une date passée est nécessaire) ! "
+msgstr "Date non valide (elle doit être passée) !"
 
 #. Template: Datepicker
 msgid "Previous"
@@ -10783,7 +10879,7 @@ msgstr ""
 
 #. Template: GeneralSpecificationsWidget
 msgid "If set to invalid end users can not generate the stat."
-msgstr "Si mis à invalide, les utilisateurs finaux ne pourront pas générer la statistique."
+msgstr "Si mis à \"non valide\", les utilisateurs finaux ne pourront pas générer la statistique."
 
 #. Template: PreviewWidget
 msgid "There are problems in the configuration of this statistic:"
@@ -12237,14 +12333,8 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
 msgid ""
-"This step does not belong anymore the current activity in process for Ticket"
-" %s!"
-msgstr ""
-
-#. Perl Module: Kernel/Modules/AgentTicketProcess.pm
-msgid ""
-"Another user changed this ticket in the meantime. Please close this window "
-"and reload the ticket."
+"This step does not belong anymore the current activity in process for ticket"
+" '%s%s%s'! Another user changed this ticket in the meantime."
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
@@ -12908,6 +12998,11 @@ msgstr ""
 msgid "Order by"
 msgstr "Trier par"
 
+#. Perl Module: Kernel/System/ACL/DB/ACL.pm
+msgid ""
+"Couldn't read ACL configuration file. Please make sure the file is valid."
+msgstr ""
+
 #. Perl Module: Kernel/System/AuthSession.pm
 msgid ""
 "You have exceeded the number of concurrent agents - contact sales@otrs.com."
@@ -12943,12 +13038,26 @@ msgstr ""
 msgid "This setting can not be deactivated."
 msgstr ""
 
+#. Perl Module: Kernel/System/CustomerUser.pm
+msgid "Customer user \"%s\" already exists."
+msgstr ""
+
+#. Perl Module: Kernel/System/CustomerUser/DB.pm
+msgid "This email address is already in use for another customer user."
+msgstr ""
+
 #. Perl Module: Kernel/System/DynamicField/Driver/BaseText.pm
 msgid "e.g. Text or Te*t"
 msgstr ""
 
 #. Perl Module: Kernel/System/DynamicField/Driver/Checkbox.pm
 msgid "Ignore this field."
+msgstr ""
+
+#. Perl Module: Kernel/System/NotificationEvent.pm
+msgid ""
+"Couldn't read Notification configuration file. Please make sure the file is "
+"valid."
 msgstr ""
 
 #. Perl Module: Kernel/System/Package.pm
@@ -12965,6 +13074,10 @@ msgstr ""
 
 #. Perl Module: Kernel/System/Package.pm
 msgid "Can't read file!"
+msgstr ""
+
+#. Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
+msgid "The process \"%s\" and all of its data has been imported successfully."
 msgstr ""
 
 #. Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
@@ -14995,7 +15108,7 @@ msgstr "Tickets fermés (client)"
 
 #. SysConfig
 msgid "Cloud Services"
-msgstr ""
+msgstr "Services Cloud"
 
 #. SysConfig
 msgid "Cloud service admin module registration for the transport layer."
@@ -15255,7 +15368,7 @@ msgstr "Créer et gérer les modèles."
 
 #. SysConfig
 msgid "Create and manage ticket notifications."
-msgstr ""
+msgstr "Créer et gérer les notifications des tickets."
 
 #. SysConfig
 msgid "Create and manage ticket priorities."
@@ -17476,6 +17589,13 @@ msgid ""
 msgstr ""
 
 #. SysConfig
+msgid ""
+"Defines the timeout (in seconds, minimum is 20 seconds) for the support data"
+" collection with the public module 'PublicSupportDataCollector' (e.g. used "
+"from the OTRS Daemon)."
+msgstr ""
+
+#. SysConfig
 msgid "Defines the two-factor module to authenticate agents."
 msgstr ""
 
@@ -18036,7 +18156,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Email Addresses"
-msgstr "Adresses E-mail"
+msgstr "Adresses e-mail"
 
 #. SysConfig
 msgid "Email Outbound"
@@ -19946,7 +20066,7 @@ msgstr ""
 
 #. SysConfig
 msgid "PostMaster Filters"
-msgstr "Filtres Postmasters"
+msgstr "Filtres Postmaster"
 
 #. SysConfig
 msgid "PostMaster Mail Accounts"
@@ -20383,14 +20503,8 @@ msgid "Set a new password by filling in your current password and a new one."
 msgstr ""
 
 #. SysConfig
-msgid ""
-"Set minimum loglevel. If you select 'error', just errors are logged. With "
-"'debug' you get all logging messages."
-msgstr ""
-
-#. SysConfig
 msgid "Set sender email addresses for this system."
-msgstr "Mettre en place les adresses d'envoi de messages électroniques pour ce système."
+msgstr "Mettre en place les adresses d'envoi d'e-mails pour ce système."
 
 #. SysConfig
 msgid ""
@@ -20408,6 +20522,13 @@ msgstr ""
 msgid ""
 "Set the maximum height (in pixels) of inline HTML articles in "
 "AgentTicketZoom."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Set the minimum log level. If you select 'error', just errors are logged. "
+"With 'debug' you get all logging messages. The order of log levels is: "
+"'debug', 'info', 'notice' and 'error'."
 msgstr ""
 
 #. SysConfig
@@ -22228,7 +22349,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Ticket Notifications"
-msgstr ""
+msgstr "Notifications des tickets"
 
 #. SysConfig
 msgid "Ticket Outbound Email."
@@ -22252,7 +22373,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Ticket Queue Overview"
-msgstr "Aperçu de la file de ticket"
+msgstr "Vue d'ensemble des files de tickets"
 
 #. SysConfig
 msgid "Ticket Responsible."
@@ -22280,7 +22401,7 @@ msgstr "Le ticket a été déplacé dans la file \"%s\" (%s) - Ancienne file: \"
 
 #. SysConfig
 msgid "Ticket notifications"
-msgstr ""
+msgstr "Notifications des tickets"
 
 #. SysConfig
 msgid "Ticket overview"
@@ -22326,7 +22447,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Toggles display of OTRS FeatureAddons list in PackageManager."
-msgstr "Déclenche l'affichage de la liste des fonctions Add-ons dans les gestionnaire de paquet"
+msgstr "Déclenche l'affichage de la liste des modules complémentaires d'OTRS dans le gestionnaire de paquets."
 
 #. SysConfig
 msgid ""
