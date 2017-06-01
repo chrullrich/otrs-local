@@ -246,8 +246,7 @@ sub ProviderProcessRequest {
     }
 
     # read request
-    my $Content;
-    read STDIN, $Content, $Length;
+    my $Content = $::WebRequest->param("POSTDATA");
 
     # check if we have content
     if ( !IsStringWithData($Content) ) {

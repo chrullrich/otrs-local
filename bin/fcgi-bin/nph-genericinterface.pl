@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 # --
 # Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
@@ -35,9 +35,13 @@ use Kernel::GenericInterface::Provider;
 use Kernel::System::ObjectManager;
 
 # response loop
-while ( my $WebRequest = new CGI::Fast ) {
+while ( our $WebRequest = new CGI::Fast ) {
 
-    local $Kernel::OM = Kernel::System::ObjectManager->new();
+    local $Kernel::OM = Kernel::System::ObjectManager->new(
+        'Kernel::System::Log' => {
+            LogPrefix => 'GenericInterfaceProvider',
+        },
+    );
     my $Provider = Kernel::GenericInterface::Provider->new();
 
     $Provider->Run();
