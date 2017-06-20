@@ -6455,7 +6455,7 @@
             <Hash>
                 <Item Key="Module">Kernel::Output::HTML::TicketMenu::Generic</Item>
                 <Item Key="Name" Translatable="1">Merge</Item>
-                <Item Key="Description" Translatable="1">Merge this ticket and all articles into a another ticket</Item>
+                <Item Key="Description" Translatable="1">Merge this ticket and all articles into another ticket</Item>
                 <Item Key="Action">AgentTicketMerge</Item>
                 <Item Key="Link">Action=AgentTicketMerge;TicketID=[% Data.TicketID | html %]</Item>
                 <Item Key="Target"></Item>
@@ -11810,7 +11810,7 @@ Thanks for your help!
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Frontend::NavBarModule###7-AgentTicketService" Required="0" Valid="1">
-        <Description Translatable="1">Frontend module registration (disable AgentTicketService link if Ticket Serivice feature is not used).</Description>
+        <Description Translatable="1">Frontend module registration (disable AgentTicketService link if Ticket Service feature is not used).</Description>
         <Group>Framework</Group>
         <SubGroup>Frontend::Agent::NavBarModule</SubGroup>
         <Setting>
@@ -11867,6 +11867,7 @@ Thanks for your help!
                         <Item Key="CustomerID">1</Item>
                         <Item Key="CustomerName">1</Item>
                         <Item Key="CustomerUserID">1</Item>
+                        <Item Key="CustomerCompanyName">1</Item>
                         <Item Key="EscalationResponseTime">1</Item>
                         <Item Key="EscalationSolutionTime">1</Item>
                         <Item Key="EscalationTime">1</Item>
@@ -11893,6 +11894,7 @@ Thanks for your help!
                         <Item Key="CustomerID">240</Item>
                         <Item Key="CustomerName">250</Item>
                         <Item Key="CustomerUserID">260</Item>
+                        <Item Key="CustomerCompanyName">320</Item>
                         <Item Key="EscalationResponseTime">160</Item>
                         <Item Key="EscalationSolutionTime">150</Item>
                         <Item Key="EscalationTime">140</Item>
