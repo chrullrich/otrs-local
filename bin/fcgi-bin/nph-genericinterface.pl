@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 # --
 # Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
@@ -38,6 +38,9 @@ use Kernel::System::ObjectManager;
 while ( my $WebRequest = new CGI::Fast ) {
 
     local $Kernel::OM = Kernel::System::ObjectManager->new(
+        'Kernel::System::Log' => {
+            LogPrefix => 'GenericInterfaceProvider',
+        },
         'Kernel::System::Web::Request' => {
             WebRequest => $WebRequest,
             }
