@@ -988,6 +988,7 @@ sub LoadDefaults {
         'Core.UI.InputFields.js',
         'Core.UI.Accessibility.js',
         'Core.UI.Dialog.js',
+        'Core.UI.Floater.js',
         'Core.UI.RichTextEditor.js',
         'Core.UI.Datepicker.js',
         'Core.UI.Popup.js',
@@ -1185,6 +1186,7 @@ sub LoadDefaults {
     $Self->{PreferencesGroups}->{Theme} = {
         'Active' => '1',
         'Column' => 'User Profile',
+        'Desc' => 'Select your preferred theme for OTRS.',
         'Key' => 'Frontend theme',
         'Label' => 'Theme',
         'Module' => 'Kernel::Output::HTML::Preferences::Theme',

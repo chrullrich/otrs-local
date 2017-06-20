@@ -29,7 +29,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.701577031945006;
+    $Self->{Completeness}        = 0.711604439959637;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -1747,19 +1747,25 @@ sub Data {
             'Você realmente quer reinstalar este pacote? Quaisquer alterações manuais serão perdidas.',
         'Go to upgrading instructions' => 'Vá para orientações de upgrade',
         'package information' => 'informação do pacote',
-        'Package upgrade requires patch level update of OTRS.' => 'Upgrade do pacote requer atualização de nível de patch do OTRS.',
+        'Package installation requires a patch level update of OTRS.' => '',
+        'Package update requires a patch level update of OTRS.' => '',
         'If you are a OTRS Business Solution™ customer, please visit our customer portal and file a request.' =>
             'Se você é um cliente OTRS Business Solution™, por favor visite nosso portal de clientes e registre um pedido.',
         'Please note that your installed OTRS version is %s.' => 'Por favor note que a sua versão do OTRS instalada é %s.',
+        'To install this package, you need to update OTRS to version %s or newer.' =>
+            '',
+        'This package can only be installed on OTRS version %s or older.' =>
+            '',
+        'This package can only be installed on OTRS version %s or newer.' =>
+            '',
+        'You will receive updates for all other relevant OTRS issues.' =>
+            '',
         'How can I do a patch level update if I don’t have a contract?' =>
             'Como eu posso fazer uma atualização de nível de patch se eu não tenho um contrato?',
-        'Please find all relevant information within' => 'Por favor encontre toda informação relevante aqui dentro',
-        'the upgrading instructions' => 'as instruções para fazer upgrade',
+        'Please find all relevant information within the upgrading instructions at %s.' =>
+            '',
         'In case you would have further questions we would be glad to answer them.' =>
             'No caso de você ter mais perguntas, teremos prazer em respondê-las.',
-        'Please visit our customer' => 'Por favor visite nosso cliente',
-        'portal' => 'portal',
-        'and file a request.' => 'e encaminhe uma requisição.',
         'Continue' => 'Continuar',
         'Please make sure your database accepts packages over %s MB in size (it currently only accepts packages up to %s MB). Please adapt the max_allowed_packet setting of your database in order to avoid errors.' =>
             'Por favor, certifique-se de que seu banco de dados aceita pacotes com mais de %s MB de tamanho (tamanho máximo suportado é de %s MB). Altere o parâmetro max_allowed_packet do seu banco de dados para evitar erros.',
@@ -2140,6 +2146,8 @@ sub Data {
             'Seu sistema enviará atualizações para o registro do servidor em intervalos regulares.',
         'Typically this would be around once every three days.' => 'Normalmente, isso seria em torno de uma vez a cada três dias.',
         'Please visit our' => 'Por favor, visite nosso',
+        'portal' => 'portal',
+        'and file a request.' => 'e encaminhe uma requisição.',
         'If you deregister your system, you will lose these benefits:' =>
             'Se você cancelar o registro de seu sistema, você vai perder estes benefícios:',
         'You need to log in with your OTRS-ID to deregister your system.' =>
@@ -2293,6 +2301,8 @@ sub Data {
         'Add service' => 'Adicionar Serviço',
         'Add Service' => 'Adicionar Serviço',
         'Edit Service' => 'Alterar Serviço',
+        'Service name maximum length is 200 characters (with Sub-service).' =>
+            '',
         'Sub-service of' => 'Subserviço de',
 
         # Template: AdminSession
@@ -2420,8 +2430,11 @@ sub Data {
         'Display name' => 'Nome de Exibição',
         'Add System Email Address' => 'Adicionar Endereço de E-mail de Sistema',
         'Edit System Email Address' => 'Alterar Endereço de e-mail de Sistema',
+        'This email address is already used as system email address.' => '',
         'The display name and email address will be shown on mail you send.' =>
             'O nome de exibição e endereço de e-mail serão mostrados no e-mail enviado.',
+        'This system address cannot be set to invalid, because it is used in one or more queue(s).' =>
+            '',
 
         # Template: AdminSystemMaintenance
         'System Maintenance Management' => 'Gerenciamento de Manutenção do Sistema',
@@ -2860,6 +2873,7 @@ sub Data {
         'Watcher' => 'Monitorante',
         'Article Create Time (before/after)' => 'Tempo de Criação do Artigo (antes/depois)',
         'Article Create Time (between)' => 'Tempo de Criação do Artigo (entre)',
+        'Invalid date' => '',
         'Ticket Create Time (before/after)' => 'Tempo de Criação do Chamado (antes/depois)',
         'Ticket Create Time (between)' => 'Tempo de Criação do Chamado (entre)',
         'Ticket Change Time (before/after)' => 'Tempo de Modificação do Chamado (antes/depois)',
@@ -2920,11 +2934,6 @@ sub Data {
         'Close this message' => 'Fechar esta mensagem',
         'Article could not be opened! Perhaps it is on another article page?' =>
             'O artigo não pôde ser aberto! Talvez ele esteja em outra página de artigo?',
-        'Scale preview content' => 'Escalar conteúdo anterior',
-        'Open URL in new tab' => 'Abrir URL em nova aba',
-        'Close preview' => 'Fechar Pré-visualização',
-        'A preview of this website can\'t be provided because it didn\'t allow to be embedded.' =>
-            'Uma prévia deste site não pode ser fornecida porque ele não é permitido ser embutido.',
 
         # Template: AttachmentBlocker
         'To protect your privacy, remote content was blocked.' => 'Para proteger sua privacidade, o conteúdo remoto foi desabilitado.',
@@ -3232,6 +3241,13 @@ sub Data {
         'Lost your password?' => 'Esqueceu sua senha?',
         'Request New Password' => 'Solicitar uma nova senha',
         'Back to login' => 'Voltar para o login',
+
+        # Template: MetaFloater
+        'Scale preview content' => 'Escalar conteúdo anterior',
+        'Open URL in new tab' => 'Abrir URL em nova aba',
+        'Close preview' => 'Fechar Pré-visualização',
+        'A preview of this website can\'t be provided because it didn\'t allow to be embedded.' =>
+            'Uma prévia deste site não pode ser fornecida porque ele não é permitido ser embutido.',
 
         # Template: MobileNotAvailableWidget
         'Feature not available' => 'Recursos não está disponível',
@@ -3573,28 +3589,28 @@ sub Data {
             'Ocorreu um erro durante a geração de um novo EntityID para esta atividade',
         'There was an error creating the Activity' => 'Ocorreu um erro durante a criação da atividade',
         'There was an error setting the entity sync status for Activity entity: %s' =>
-            '',
+            'Ocorreu um erro ao configurar o estado de sincronização da entidade de atividade: %s',
         'Need ActivityID!' => 'Necessário ActivityID!',
-        'Could not get data for ActivityID %s' => '',
-        'There was an error updating the Activity' => '',
+        'Could not get data for ActivityID %s' => 'Não foi possível obter dados para ActivityID %s',
+        'There was an error updating the Activity' => 'Ocorreu um erro durante a atualização da atividade',
         'Missing Parameter: Need Activity and ActivityDialog!' => 'Parâmetro faltando: Necessário Activity  e ActivityDialog!',
         'Activity not found!' => 'Atividade não localizada!',
         'ActivityDialog not found!' => 'ActivityDialog não encontrado!',
         'ActivityDialog already assigned to Activity. You cannot add an ActivityDialog twice!' =>
-            '',
-        'Error while saving the Activity to the database!' => '',
+            'Janela já atribuída à atividade. Você não pode adicionar a mesma janela duas vezes!',
+        'Error while saving the Activity to the database!' => 'Erro ao salvar a atividade no banco de dados!',
         'This subaction is not valid' => 'Esta subaction não é valida',
         'Edit Activity "%s"' => 'Editar Activity "%s"',
 
         # Perl Module: Kernel/Modules/AdminProcessManagementActivityDialog.pm
         'There was an error generating a new EntityID for this ActivityDialog' =>
-            '',
-        'There was an error creating the ActivityDialog' => '',
+            'Ocorreu um erro durante a geração de um novo EntityID para esta janela de atividade',
+        'There was an error creating the ActivityDialog' => 'Ocorreu um erro durante a criação da janela de atividade',
         'There was an error setting the entity sync status for ActivityDialog entity: %s' =>
-            '',
+            'Ocorreu um erro durante a configuração do estado de sincronização da entidade para a janela de diálogo: %s',
         'Need ActivityDialogID!' => 'Necessário ActivityDialogID!',
-        'Could not get data for ActivityDialogID %s' => '',
-        'There was an error updating the ActivityDialog' => '',
+        'Could not get data for ActivityDialogID %s' => 'Não foi possível obter dados para ActivityDialogID %s',
+        'There was an error updating the ActivityDialog' => 'Ocorreu um erro durante a atualização da janela de atividade',
         'Edit Activity Dialog "%s"' => 'Editar Activity Dialog "%s"',
         'Agent Interface' => 'Interface do Agente',
         'Customer Interface' => 'Interface do Cliente',
@@ -3609,30 +3625,30 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminProcessManagementTransition.pm
         'There was an error generating a new EntityID for this Transition' =>
-            '',
+            'Ocorreu um erro durante a geração de um novo EntityID para esta transição',
         'There was an error creating the Transition' => 'Ocorreu um erro ao criar a alteração',
         'There was an error setting the entity sync status for Transition entity: %s' =>
-            '',
+            'Ocorreu um erro durante a configuração do estado de sincronização para a entidade de transição: %s',
         'Need TransitionID!' => 'Necessário TransitionID!',
-        'Could not get data for TransitionID %s' => '',
-        'There was an error updating the Transition' => '',
+        'Could not get data for TransitionID %s' => 'Não foi possível obter dados para TransitionID %s',
+        'There was an error updating the Transition' => 'Ocorreu um erro durante a atualização da transição',
         'Edit Transition "%s"' => 'Editar Transição "%s"',
-        'xor' => '',
-        'String' => '',
+        'xor' => 'xor',
+        'String' => 'String',
         'Transition validation module' => 'Módulo de validação de transição',
 
         # Perl Module: Kernel/Modules/AdminProcessManagementTransitionAction.pm
         'At least one valid config parameter is required.' => 'Pelo menos, um parâmetro de configuração válido é necessário.',
         'There was an error generating a new EntityID for this TransitionAction' =>
-            '',
-        'There was an error creating the TransitionAction' => '',
+            'Ocorreu um erro durante a geração de um novo EntityID para esta ação de transição',
+        'There was an error creating the TransitionAction' => 'Ocorreu um erro durante a criação da ação de transição',
         'There was an error setting the entity sync status for TransitionAction entity: %s' =>
-            '',
+            'Ocorreu um erro durante a configuração do estado de sincronização para a entidade de ação de transição: %s',
         'Need TransitionActionID!' => 'Necessário TransitionActionID!',
-        'Could not get data for TransitionActionID %s' => '',
-        'There was an error updating the TransitionAction' => '',
-        'Edit Transition Action "%s"' => '',
-        'Error: Not all keys seem to have values or vice versa.' => '',
+        'Could not get data for TransitionActionID %s' => 'Não foi possível obter dados para TransitionActionID %s',
+        'There was an error updating the TransitionAction' => 'Ocorreu um erro durante a atualização da ação de transição',
+        'Edit Transition Action "%s"' => 'Editar ação de transição "%s"',
+        'Error: Not all keys seem to have values or vice versa.' => 'Erro: Nem todas as chaves parecem ter valores ou vice versa.',
 
         # Perl Module: Kernel/Modules/AdminQueue.pm
         'Don\'t use :: in queue name!' => 'Não use :: no nome da fila!',
@@ -3646,63 +3662,63 @@ sub Data {
             'O ambiente S/MIME não está funcionando. Por favor, verifique o log para mais informações!',
         'Need param Filename to delete!' => 'Necessário o parâmetro Filename  para deletar!',
         'Need param Filename to download!' => 'Necessário o parâmetro Filename  para download!',
-        'Needed CertFingerprint and CAFingerprint!' => '',
-        'CAFingerprint must be different than CertFingerprint' => '',
+        'Needed CertFingerprint and CAFingerprint!' => 'Necessário CertFingerprint e CAFingerprint!',
+        'CAFingerprint must be different than CertFingerprint' => 'CAFingerprint precisa ser diferente do CertFingerprint',
         'Relation exists!' => 'Relação já existe!',
-        'Relation added!' => '',
+        'Relation added!' => 'Associação adicionada!',
         'Impossible to add relation!' => 'Impossível adicionar relação!',
-        'Relation doesn\'t exists' => '',
-        'Relation deleted!' => '',
-        'Impossible to delete relation!' => '',
-        'Certificate %s could not be read!' => '',
-        'Needed Fingerprint' => '',
+        'Relation doesn\'t exists' => 'Associação não existe',
+        'Relation deleted!' => 'Associação excluída!',
+        'Impossible to delete relation!' => 'Impossível excluir associação!',
+        'Certificate %s could not be read!' => 'Certificado %s não pode ser lido!',
+        'Needed Fingerprint' => 'Necessário Fingerprint',
 
         # Perl Module: Kernel/Modules/AdminSalutation.pm
-        'Salutation updated!' => '',
-        'Salutation added!' => '',
+        'Salutation updated!' => 'Saudação atualizada!',
+        'Salutation added!' => 'Saudação adicionada!',
 
         # Perl Module: Kernel/Modules/AdminSupportDataCollector.pm
-        'File %s could not be read!' => '',
+        'File %s could not be read!' => 'Arquivo %s não pode ser lido!',
 
         # Perl Module: Kernel/Modules/AdminSysConfig.pm
-        'Import not allowed!' => '',
-        'Need File!' => '',
-        'Can\'t write ConfigItem!' => '',
+        'Import not allowed!' => 'Importação não permitida!',
+        'Need File!' => 'Necessário arquivo!',
+        'Can\'t write ConfigItem!' => 'Não é possível escrever item de configuração!',
 
         # Perl Module: Kernel/Modules/AdminSystemMaintenance.pm
-        'Start date shouldn\'t be defined after Stop date!' => '',
-        'There was an error creating the System Maintenance' => '',
-        'Need SystemMaintenanceID!' => '',
-        'Could not get data for SystemMaintenanceID %s' => '',
+        'Start date shouldn\'t be defined after Stop date!' => 'Data inicial não deve ser definida após data final!',
+        'There was an error creating the System Maintenance' => 'Ocorreu um erro durante a criação da manutenção de sistema',
+        'Need SystemMaintenanceID!' => 'Necessário SystemMaintenanceID!',
+        'Could not get data for SystemMaintenanceID %s' => 'Não foi possível obter dados para SystemMaintenanceID %s',
         'System Maintenance was saved successfully!' => 'Manutenção do Sistema foi salva com sucesso!',
         'Session has been killed!' => 'Sessão foi eliminada!',
         'All sessions have been killed, except for your own.' => 'Todas sessões foram desconectadas, exceto por esta.',
-        'There was an error updating the System Maintenance' => '',
-        'Was not possible to delete the SystemMaintenance entry: %s!' => '',
+        'There was an error updating the System Maintenance' => 'Ocorreu um erro durante a atualização da manutenção de sistema',
+        'Was not possible to delete the SystemMaintenance entry: %s!' => 'Não foi possível excluir a entrada de manutenção de sistema: %s!',
 
         # Perl Module: Kernel/Modules/AdminTemplate.pm
         'Template updated!' => 'Modelo Atualizado!',
-        'Template added!' => '',
+        'Template added!' => 'Modelo adicionado!',
 
         # Perl Module: Kernel/Modules/AdminType.pm
         'Need Type!' => 'Tipo é necessário!',
 
         # Perl Module: Kernel/Modules/AgentDashboardCommon.pm
-        'No such config for %s' => '',
+        'No such config for %s' => 'Nenhuma configuração para %s',
         'Statistic' => 'Estatística',
-        'No preferences for %s!' => '',
-        'Can\'t get element data of %s!' => '',
-        'Can\'t get filter content data of %s!' => '',
-        'Customer Company Name' => '',
-        'Customer User ID' => '',
+        'No preferences for %s!' => 'Nenhuma preferência para %s!',
+        'Can\'t get element data of %s!' => 'Não foi possível obter dados do elemento %s!',
+        'Can\'t get filter content data of %s!' => 'Não foi possível obter dados do conteúdo do filtro %s!',
+        'Customer Company Name' => 'Nome da empresa cliente',
+        'Customer User ID' => 'ID de usuário cliente',
 
         # Perl Module: Kernel/Modules/AgentLinkObject.pm
-        'Need SourceObject and SourceKey!' => '',
+        'Need SourceObject and SourceKey!' => 'Necessário SourceObject e SourceKey!',
         'Please contact the administrator.' => 'Por favor, entre em contato com o administrador.',
-        'You need ro permission!' => '',
-        'Can not delete link with %s!' => '',
-        'Can not create link with %s! Object already linked as %s.' => '',
-        'Can not create link with %s!' => '',
+        'You need ro permission!' => 'Você precisa de permissões de ro (apenas leitura)',
+        'Can not delete link with %s!' => 'Não é possível excluir associação com %s!',
+        'Can not create link with %s! Object already linked as %s.' => 'Não é possível criar associação com %s! Objeto já associado como %s.',
+        'Can not create link with %s!' => 'Não é possível criar associação com %s!',
         'The object %s cannot link with other object!' => '',
 
         # Perl Module: Kernel/Modules/AgentPreferences.pm
@@ -3835,8 +3851,8 @@ sub Data {
         'Could not store ActivityDialog, invalid TicketID: %s!' => '',
         'Invalid TicketID: %s!' => '',
         'Missing ActivityEntityID in Ticket %s!' => '',
-        'This step does not belong anymore the current activity in process for ticket \'%s%s%s\'! Another user changed this ticket in the meantime.' =>
-            'Este passo não pertence mais à atividade atual para o chamado \'%s%s%s\'! Outro usuário alterou este chamado durante a execução.',
+        'This step does not belong anymore to the current activity in process for ticket \'%s%s%s\'! Another user changed this ticket in the meantime. Please close this window and reload the ticket.' =>
+            '',
         'Missing ProcessEntityID in Ticket %s!' => '',
         'Could not set DynamicField value for %s of Ticket with ID "%s" in ActivityDialog "%s"!' =>
             '',
@@ -3948,6 +3964,9 @@ sub Data {
         'Create a new ticket!' => '',
 
         # Perl Module: Kernel/Modules/Installer.pm
+        'SecureMode active!' => '',
+        'If you want to re-run the Installer, disable the SecureMode in the SysConfig.' =>
+            '',
         'Directory "%s" doesn\'t exist!' => '',
         'Configure "Home" in Kernel/Config.pm first!' => '',
         'File "%s/Kernel/Config.pm" not found!' => '',
@@ -4495,9 +4514,6 @@ sub Data {
         'Can\'t send account info!' => '',
 
         # Perl Module: Kernel/System/Web/InterfaceInstaller.pm
-        'SecureMode active!' => '',
-        'If you want to re-run the Installer, disable the SecureMode in the SysConfig.' =>
-            '',
         'Action "%s" not found!' => '',
 
         # Database XML Definition: scripts/database/otrs-initial_insert.xml
@@ -4529,7 +4545,7 @@ sub Data {
         'Follow-ups for closed tickets are not possible. No new ticket will be created.' =>
             '',
         'new ticket' => 'novo chamado',
-        'Follow-ups for closed tickets are not possible. A new ticket will be created..' =>
+        'Follow-ups for closed tickets are not possible. A new ticket will be created.' =>
             '',
         'Postmaster queue.' => '',
         'All default incoming tickets.' => '',
@@ -5841,7 +5857,7 @@ Thanks for your help!
         'French stop words for fulltext index. These words will be removed from the search index.' =>
             '',
         'Frontend' => '',
-        'Frontend module registration (disable AgentTicketService link if Ticket Serivice feature is not used).' =>
+        'Frontend module registration (disable AgentTicketService link if Ticket Service feature is not used).' =>
             '',
         'Frontend module registration (disable company link if no company feature is used).' =>
             '',
@@ -5852,6 +5868,7 @@ Thanks for your help!
         'Frontend module registration for the agent interface.' => '',
         'Frontend module registration for the customer interface.' => '',
         'Frontend theme' => 'Tema da interface',
+        'Frontend theme.' => '',
         'Full value' => '',
         'Fulltext index regex filters to remove parts of the text.' => '',
         'Fulltext search' => 'Busca em todo o texto',
@@ -5996,7 +6013,7 @@ Thanks for your help!
             '',
         'If set, this address is used as envelope sender in outgoing messages (not notifications - see below). If no address is specified, the envelope sender is equal to queue e-mail address.' =>
             '',
-        'If this option is enabled, then the decrypted data will be stored in the database if they are displayed in AgentTicketZoom.' =>
+        'If this option is disabled, articles will not automatically be decrypted and stored in the database. Please note that this also means no decryption will take place and the articles will be shown in ticket zoom in their original (encrypted) form.' =>
             '',
         'If this option is set to \'Yes\', tickets created via the web interface, via Customers or Agents, will receive an autoresponse if configured. If this option is set to \'No\', no autoresponses will be sent.' =>
             '',
@@ -6125,7 +6142,7 @@ Thanks for your help!
             '',
         'Maximum size (in characters) of the customer information table in the ticket zoom view.' =>
             '',
-        'Merge this ticket and all articles into a another ticket' => 'Agrupar este chamado e todos os artigos com outro chamado',
+        'Merge this ticket and all articles into another ticket' => '',
         'Merged Ticket <OTRS_TICKET> to <OTRS_MERGE_TO_TICKET>.' => 'Chamado <OTRS_TICKET> agrupado com <OTRS_MERGE_TO_TICKET>.',
         'Miscellaneous' => 'Outros',
         'Module for To-selection in new ticket screen in the customer interface.' =>
@@ -6220,7 +6237,6 @@ Thanks for your help!
         'Overview of all open tickets.' => 'Revisão de todos os chamados abertos.',
         'Overview of customer tickets.' => 'Revisão de chamados de clientes.',
         'PGP Key Management' => '',
-        'PGP Key Upload' => 'Upload de Chave PGP',
         'Package event module file a scheduler task for update registration.' =>
             '',
         'Parameters for the CreateNextMask object in the preference view of the agent interface.' =>
@@ -6233,7 +6249,7 @@ Thanks for your help!
             '',
         'Parameters for the column filters of the small ticket overview.' =>
             '',
-        'Parameters for the dashboard backend of the customer company information of the agent interface . "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
+        'Parameters for the dashboard backend of the customer company information of the agent interface. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
             '',
         'Parameters for the dashboard backend of the customer id status widget of the agent interface . "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
             '',
@@ -6355,7 +6371,7 @@ Thanks for your help!
             '',
         'Right' => 'Direita',
         'Roles <-> Groups' => 'Papéis <-> Grupos',
-        'Run file based generic agent jobs (Note: module name need needs to be specified in -configuration-module param e.g. "Kernel::System::GenericAgent").' =>
+        'Run file based generic agent jobs (Note: module name needs to be specified in -configuration-module param e.g. "Kernel::System::GenericAgent").' =>
             '',
         'Running Process Tickets' => 'Chamados de Processo Executando',
         'Runs an initial wildcard search of the existing customer company when accessing the AdminCustomerCompany module.' =>
@@ -6365,7 +6381,6 @@ Thanks for your help!
         'Runs the system in "Demo" mode. If set to "Yes", agents can change preferences, such as selection of language and theme via the agent web interface. These changes are only valid for the current session. It will not be possible for agents to change their passwords.' =>
             '',
         'Russian' => '',
-        'S/MIME Certificate Upload' => 'Upload de certificado S/MIME',
         'SMS' => '',
         'SMS (Short Message Service)' => '',
         'Sample command output' => '',
@@ -6386,8 +6401,9 @@ Thanks for your help!
         'Select how many tickets should be shown in overviews by default.' =>
             '',
         'Select the main interface language.' => '',
-        'Select your frontend Theme.' => 'Selecione seu tema de interface.',
+        'Select your default spelling dictionary.' => '',
         'Select your preferred layout for OTRS.' => '',
+        'Select your preferred theme for OTRS.' => '',
         'Selects the cache backend to use.' => '',
         'Selects the module to handle uploads via the web interface. "DB" stores all uploads in the database, "FS" uses the file system.' =>
             '',
@@ -7037,16 +7053,18 @@ Thanks for your help!
         'Updated: %s' => 'Atualizado: %s.',
         'Updated: %s=%s;%s=%s;%s=%s;' => 'Atualizado: %s=%s;%s=%s;%s=%s;.',
         'Updates the ticket escalation index after a ticket attribute got updated.' =>
-            '',
+            'Atualiza o índice da escalação de chamado depois que um atributo do chamado foi atualizado.',
         'Updates the ticket index accelerator.' => 'Atualizar o indexador Acelerador de Chamados.',
+        'Upload your PGP key.' => '',
+        'Upload your S/MIME certificate.' => '',
         'Use new type of select and autocomplete fields in agent interface, where applicable (InputFields).' =>
-            '',
+            'Usa novos tipos de campos de seleção e com autocompletar na interface de agente (atendente) quando aplicável (InputFields).',
         'Use new type of select and autocomplete fields in customer interface, where applicable (InputFields).' =>
-            '',
+            'Usa novos tipos de campos de seleção e com autocompletar na interface de cliente quando aplicável (InputFields).',
         'UserFirstname' => 'PrimeiroNome',
         'UserLastname' => 'ÚltimoNome',
         'Uses Cc recipients in reply Cc list on compose an email answer in the ticket compose screen of the agent interface.' =>
-            '',
+            'Usa destinatários Cc na lista de resposta Cc ao compor uma resposta de email na tela de composição de chamado da interface de agente.',
         'Uses richtext for viewing and editing ticket notification.' => 'Usar richtext para visualizar e editar notificações de chamados.',
         'Uses richtext for viewing and editing: articles, salutations, signatures, standard templates, auto responses and notifications.' =>
             'Usar texto rico quando visualizar e editar: artigos, saudações, assinaturas, modelos, auto respostas e notificações.',
@@ -7076,17 +7094,17 @@ Thanks for your help!
         'Your service selection of your preferred services. You also get notified about those services via email if enabled.' =>
             '',
         'attachment' => 'anexo',
-        'bounce' => '',
-        'compose' => '',
+        'bounce' => 'devolver',
+        'compose' => 'elaborar',
         'debug' => 'debug',
         'error' => 'erro',
-        'forward' => '',
+        'forward' => 'encaminhar',
         'info' => 'informação',
         'inline' => 'inline',
         'notice' => 'aviso',
-        'pending' => '',
-        'responsible' => '',
-        'stats' => '',
+        'pending' => 'pendente',
+        'responsible' => 'responsável',
+        'stats' => 'status',
 
     };
     # $$STOP$$
