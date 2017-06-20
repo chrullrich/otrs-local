@@ -88,6 +88,16 @@ sub Run {
             $Errors{ErrorType}   = $CheckItemObject->CheckErrorType();
         }
 
+        # check if a system address exist with this name
+        my $NameExists = $SystemAddressObject->NameExistsCheck(
+            Name => $GetParam{Name},
+            ID   => $GetParam{ID}
+        );
+        if ($NameExists) {
+            $Errors{NameInvalid} = 'ServerError';
+            $Errors{ErrorType}   = 'AlreadyUsed';
+        }
+
         # if no errors occurred
         if ( !%Errors ) {
 
@@ -182,6 +192,15 @@ sub Run {
             $Errors{ErrorType}   = $CheckItemObject->CheckErrorType();
         }
 
+        # check if a system address exist with this name
+        my $NameExists = $SystemAddressObject->NameExistsCheck(
+            Name => $GetParam{Name},
+        );
+        if ($NameExists) {
+            $Errors{NameInvalid} = 'ServerError';
+            $Errors{ErrorType}   = 'AlreadyUsed';
+        }
+
         # if no errors occurred
         if ( !%Errors ) {
 
@@ -254,8 +273,22 @@ sub _Edit {
     $LayoutObject->Block( Name => 'ActionList' );
     $LayoutObject->Block( Name => 'ActionOverview' );
 
-    # get valid list
-    my %ValidList        = $Kernel::OM->Get('Kernel::System::Valid')->ValidList();
+    # Get valid list.
+    my $ValidObject = $Kernel::OM->Get('Kernel::System::Valid');
+    my %ValidList   = $ValidObject->ValidList();
+
+    # If there is queue using this system address, disable invalid selection on edit screen.
+    my $SystemAddressObject = $Kernel::OM->Get('Kernel::System::SystemAddress');
+    if ( $Param{Action} eq 'Change' && $SystemAddressObject->can('SystemAddressIsUsed') ) {
+        $Param{SystemAddressIsUsed} = $SystemAddressObject->SystemAddressIsUsed(
+            SystemAddressID => $Param{ID},
+        );
+        if ( $Param{SystemAddressIsUsed} ) {
+            my @ValidIDsList = $ValidObject->ValidIDsGet();
+            %ValidList = map { $_ => $ValidList{$_} } @ValidIDsList;
+        }
+    }
+
     my %ValidListReverse = reverse %ValidList;
 
     $Param{ValidOption} = $LayoutObject->BuildSelection(
@@ -280,7 +313,7 @@ sub _Edit {
         },
     );
 
-    # shows header
+    # Shows header.
     if ( $Param{Action} eq 'Change' ) {
         $LayoutObject->Block( Name => 'HeaderEdit' );
     }
@@ -288,7 +321,7 @@ sub _Edit {
         $LayoutObject->Block( Name => 'HeaderAdd' );
     }
 
-    # add the correct server error msg for the system email address
+    # Add the correct server error msg for the system email address.
     if ( $Param{Name} && $Param{Errors}->{ErrorType} ) {
         $LayoutObject->Block(
             Name => 'Email' . $Param{Errors}->{ErrorType} . 'ServerErrorMsg',

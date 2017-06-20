@@ -35,12 +35,12 @@ use Kernel::GenericInterface::Provider;
 use Kernel::System::ObjectManager;
 
 # response loop
-while ( our $WebRequest = new CGI::Fast ) {
+while ( my $WebRequest = new CGI::Fast ) {
 
     local $Kernel::OM = Kernel::System::ObjectManager->new(
-        'Kernel::System::Log' => {
-            LogPrefix => 'GenericInterfaceProvider',
-        },
+        'Kernel::System::Web::Request' => {
+            WebRequest => $WebRequest,
+            }
     );
     my $Provider = Kernel::GenericInterface::Provider->new();
 

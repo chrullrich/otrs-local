@@ -13,6 +13,7 @@ use warnings;
 
 use Encode;
 use HTTP::Status;
+use MIME::Base64;
 use PerlIO;
 use SOAP::Lite;
 
@@ -194,6 +195,16 @@ sub ProviderProcessRequest {
     # if no chunked transfer encoding was used, read request directly
     if ( !$Chunked ) {
         read STDIN, $Content, $Length;
+
+        # If there is no STDIN data it might be caused by fastcgi already having read the request.
+        # In this case we need to get the data from CGI.
+        my $RequestMethod = $ENV{'REQUEST_METHOD'} || 'GET';
+        if ( !IsStringWithData($Content) && $RequestMethod ne 'GET' ) {
+            my $ParamName = $RequestMethod . 'DATA';
+            $Content = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam(
+                Param => $ParamName,
+            );
+        }
     }
 
     # check if we have content
@@ -532,7 +543,7 @@ sub RequesterPerformRequest {
     }
 
     # add authentication if configured
-    my $URL = $Config->{Endpoint};
+    my %Headers;
     if ( IsHashRefWithData( $Config->{Authentication} ) ) {
 
         # basic authentication
@@ -541,10 +552,14 @@ sub RequesterPerformRequest {
             && $Config->{Authentication}->{Type} eq 'BasicAuth'
             )
         {
-            my $User     = $Config->{Authentication}->{User};
-            my $Password = $Config->{Authentication}->{Password};
-            if ( IsStringWithData($User) && IsStringWithData($Password) ) {
-                $URL =~ s{ ( http s? :// ) }{$1\Q$User\E:\Q$Password\E@}xmsi;
+            my $User = $Config->{Authentication}->{User};
+            my $Password = $Config->{Authentication}->{Password} || '';
+
+            # Prepare user credentials for inclusion as request header instead of adding it to the URL. This prevents
+            #   issues with escaping characters like dot and at-sign in URL. See bug#12855 for more information.
+            if ( IsStringWithData($User) ) {
+                my $EncodedCredentials = encode_base64("$User:$Password");
+                $Headers{Authorization} = 'Basic ' . $EncodedCredentials;
             }
         }
     }
@@ -593,7 +608,7 @@ sub RequesterPerformRequest {
     # prepare connect
     my $SOAPHandle = eval {
         SOAP::Lite->autotype(0)->default_ns( $Config->{NameSpace} )->proxy(
-            $URL,
+            $Config->{Endpoint},
             timeout => 60,
         );
     };
@@ -651,6 +666,12 @@ sub RequesterPerformRequest {
             push @CallData, $SOAPData->{Data};
         }
     }
+
+    # Add additional request headers if they have been defined.
+    if (%Headers) {
+        $SOAPHandle->transport()->http_request()->headers()->push_header(%Headers);
+    }
+
     my $SOAPResult = eval {
         $SOAPHandle->call(@CallData);
     };
@@ -1271,9 +1292,13 @@ sub _SOAPOutputProcessString {
 
     return '' if !defined $Param{Data};
 
-    # escape characters that are invalid in XML
+    # Escape characters that are invalid in XML (or might cause problems).
     $Param{Data} =~ s{ & }{&amp;}xmsg;
     $Param{Data} =~ s{ < }{&lt;}xmsg;
+    $Param{Data} =~ s{ > }{&gt;}xmsg;
+
+    # Remove restricted characters #x1-#x8, #xB-#xC, #xE-#x1F, #x7F-#x84 and #x86-#x9F.
+    $Param{Data} =~ s{ [\x01-\x08|\x0B-\x0C|\x0E-\x1F|\x7F-\x84|\x86-\x9F] }{}msxg;
 
     return $Param{Data};
 }
