@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.96987464617873;
+    $Self->{Completeness}        = 0.966902119071645;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -1742,19 +1742,25 @@ sub Data {
             'Möchten Sie dieses Paket wirklich erneut installieren? Alle manuellen Änderungen gehen verloren.',
         'Go to upgrading instructions' => 'Zur Upgrade-Anleitung gehen',
         'package information' => 'Paketinformation',
-        'Package upgrade requires patch level update of OTRS.' => 'Paketupdate benötigt ein Patchlevel-Update von OTRS.',
+        'Package installation requires a patch level update of OTRS.' => '',
+        'Package update requires a patch level update of OTRS.' => '',
         'If you are a OTRS Business Solution™ customer, please visit our customer portal and file a request.' =>
             'Wenn Sie ein OTRS Business Solution™ Kunde sind, erstellen Sie bitte eine Anfrage in unserem Kundenportal.',
         'Please note that your installed OTRS version is %s.' => 'Bitte beachten Sie, dass Ihre installierte OTRS-Version %s ist.',
+        'To install this package, you need to update OTRS to version %s or newer.' =>
+            '',
+        'This package can only be installed on OTRS version %s or older.' =>
+            '',
+        'This package can only be installed on OTRS version %s or newer.' =>
+            '',
+        'You will receive updates for all other relevant OTRS issues.' =>
+            '',
         'How can I do a patch level update if I don’t have a contract?' =>
             'Wie kann ich ein Patchlevel-Update durchführen, wenn ich keinen Vertrag habe?',
-        'Please find all relevant information within' => 'Bitte finden Sie alle relevanten Informationen in',
-        'the upgrading instructions' => 'der Upgrade-Anleitung',
+        'Please find all relevant information within the upgrading instructions at %s.' =>
+            '',
         'In case you would have further questions we would be glad to answer them.' =>
             'Sollten Sie weitere Fragen haben, freuen wir uns, diese zu beantworten.',
-        'Please visit our customer' => 'Bitte besuchen Sie unser Kunden',
-        'portal' => 'Portal,',
-        'and file a request.' => 'um eine Anfrage zu stellen.',
         'Continue' => 'Weiter',
         'Please make sure your database accepts packages over %s MB in size (it currently only accepts packages up to %s MB). Please adapt the max_allowed_packet setting of your database in order to avoid errors.' =>
             'Stellen Sie sicher, dass Ihre Datenbank Pakete über %s MB akzeptiert (Derzeit werden nur Pakete bis %s MB akzeptiert). Bitte passen Sie die Einstellung max_allowed_packet Ihrer Datenbank-Konfiguration an, um Fehler zu vermeiden.',
@@ -2135,6 +2141,8 @@ sub Data {
             'Ihr System sendet in regelmäßigen Abständen Updates an den Registrierungsserver.',
         'Typically this would be around once every three days.' => 'In der Regel findet eine Übertragung an jedem dritten Tag statt.',
         'Please visit our' => 'Besuchen Sie einfach unser',
+        'portal' => 'Portal,',
+        'and file a request.' => 'um eine Anfrage zu stellen.',
         'If you deregister your system, you will lose these benefits:' =>
             'Wenn Sie ihre Systemregistrierung löschen, verlieren Sie folgende Vorteile:',
         'You need to log in with your OTRS-ID to deregister your system.' =>
@@ -2288,6 +2296,8 @@ sub Data {
         'Add service' => 'Service hinzufügen',
         'Add Service' => 'Service hinzufügen',
         'Edit Service' => 'Service bearbeiten',
+        'Service name maximum length is 200 characters (with Sub-service).' =>
+            '',
         'Sub-service of' => 'Unterservice von',
 
         # Template: AdminSession
@@ -2415,8 +2425,11 @@ sub Data {
         'Display name' => 'Anzeigename',
         'Add System Email Address' => 'System-E-Mail-Adresse hinzufügen',
         'Edit System Email Address' => 'System-E-Mail-Adresse bearbeiten',
+        'This email address is already used as system email address.' => '',
         'The display name and email address will be shown on mail you send.' =>
             'Der Anzeigename und die E-Mail-Adresse werden für die gesendeten Mail verwendet.',
+        'This system address cannot be set to invalid, because it is used in one or more queue(s).' =>
+            '',
 
         # Template: AdminSystemMaintenance
         'System Maintenance Management' => 'Systemwartungs-Verwaltung',
@@ -2855,6 +2868,7 @@ sub Data {
         'Watcher' => 'Beobachter',
         'Article Create Time (before/after)' => 'Artikel-Erstellzeit (vor/nach)',
         'Article Create Time (between)' => 'Artikel-Erstellzeit (zwischen)',
+        'Invalid date' => '',
         'Ticket Create Time (before/after)' => 'Ticket-Erstellzeit (vor/nach)',
         'Ticket Create Time (between)' => 'Ticket-Erstellzeit (zwischen)',
         'Ticket Change Time (before/after)' => 'Ticket-Änderungszeit (vor/nach)',
@@ -2915,11 +2929,6 @@ sub Data {
         'Close this message' => 'Diese Nachricht schließen',
         'Article could not be opened! Perhaps it is on another article page?' =>
             'Artikel konnte nicht geöffnet werden. Befindet er sich vielleicht auf einer anderen Artikelseite?',
-        'Scale preview content' => 'Vorschauinhalt skalieren',
-        'Open URL in new tab' => 'URL in neuem Tab öffnen',
-        'Close preview' => 'Vorschau schließen',
-        'A preview of this website can\'t be provided because it didn\'t allow to be embedded.' =>
-            'Diese Webseite kann nicht als Vorschau angezeigt werden, weil sie keine Einbettung erlaubt.',
 
         # Template: AttachmentBlocker
         'To protect your privacy, remote content was blocked.' => 'Zum Schutz Ihrer Privatsphäre wurden entfernte Inhalte blockiert.',
@@ -2973,7 +2982,7 @@ sub Data {
         'Connection error' => 'Verbindungsfehler',
         'Reload page' => 'Seite aktualisieren',
         'Your browser was not able to communicate with OTRS properly, there seems to be something wrong with your network connection. You could either try reloading this page manually or wait until your browser has re-established the connection on its own.' =>
-            'Ihr Browser konnte keine Verbunding mit OTRS herstellen, es scheint an ihrere Netzwerk Verbindung zu liegen. Sie könnten versuchen die Seite manuell neu zu Laden oder warten bis ihr Browser die Verbindung wieder herstellt.',
+            'Ihr Browser konnte keine Verbindung mit OTRS herstellen, es scheint ein Problem mit Ihrer Netzwerkverbindung vorzuliegen. Sie könnten versuchen die Seite manuell neu zu Laden oder warten bis ihr Browser die Verbindung wieder herstellt.',
         'The connection has been re-established after a temporary connection loss. Due to this, elements on this page could have stopped to work correctly. In order to be able to use all elements correctly again, it is strongly recommended to reload this page.' =>
             'Die Verbindungen wurde nach einer kurzen Unterbrechung wiederhergestellt. Aus diesem Grund könnte es sein das einige Elemente der Seite nicht korrekt funktionieren. Um alle Elemente erneut korrekt nutzen zu können sollten Sie ihre Seite neue laden.',
 
@@ -3227,6 +3236,13 @@ sub Data {
         'Lost your password?' => 'Passwort verloren?',
         'Request New Password' => 'Neues Passwort anfordern',
         'Back to login' => 'Zurück zur Anmeldung',
+
+        # Template: MetaFloater
+        'Scale preview content' => 'Vorschauinhalt skalieren',
+        'Open URL in new tab' => 'URL in neuem Tab öffnen',
+        'Close preview' => 'Vorschau schließen',
+        'A preview of this website can\'t be provided because it didn\'t allow to be embedded.' =>
+            'Diese Webseite kann nicht als Vorschau angezeigt werden, weil sie keine Einbettung erlaubt.',
 
         # Template: MobileNotAvailableWidget
         'Feature not available' => 'Funktion nicht verfügbar',
@@ -3830,8 +3846,8 @@ sub Data {
         'Could not store ActivityDialog, invalid TicketID: %s!' => 'Konnte Aktivitätsdialog nicht speichern, ungültige TicketID: %s!',
         'Invalid TicketID: %s!' => 'Ungültige TicketID: %s!',
         'Missing ActivityEntityID in Ticket %s!' => 'ActivityEntityID fehlt für Ticket %s!',
-        'This step does not belong anymore the current activity in process for ticket \'%s%s%s\'! Another user changed this ticket in the meantime.' =>
-            'Dieser Schritte gehört nicht mehr der aktuellen Prozess-Aktivität von Ticket \'%s%s%s\'! Ein anderer Anwender hat das Ticket inzwischen verändert.',
+        'This step does not belong anymore to the current activity in process for ticket \'%s%s%s\'! Another user changed this ticket in the meantime. Please close this window and reload the ticket.' =>
+            '',
         'Missing ProcessEntityID in Ticket %s!' => 'ProcessEntityID fehlt für Ticket %s!',
         'Could not set DynamicField value for %s of Ticket with ID "%s" in ActivityDialog "%s"!' =>
             'Konnte Wert des dynamischen Feldes %s für TicketID %s im Aktivitätsdialog "%s" nicht speichern!',
@@ -3943,6 +3959,9 @@ sub Data {
         'Create a new ticket!' => 'Neues Ticket erstellen!',
 
         # Perl Module: Kernel/Modules/Installer.pm
+        'SecureMode active!' => 'SecureMode ist aktiv!',
+        'If you want to re-run the Installer, disable the SecureMode in the SysConfig.' =>
+            'Wenn Sie den Installer erneut ausführen wollen, schalten Sie "SecureMode" in der SysConfig ab.',
         'Directory "%s" doesn\'t exist!' => 'Verzeichnis "%s" existiert nicht!',
         'Configure "Home" in Kernel/Config.pm first!' => 'Konfigurieren Sie zuerst "Home" in Kernel/Config.pm!',
         'File "%s/Kernel/Config.pm" not found!' => 'Datei "%s/Kernel/Config.pm" wurde nicht gefunden!',
@@ -4490,9 +4509,6 @@ sub Data {
         'Can\'t send account info!' => 'Kann Zugangsinformation nicht senden!',
 
         # Perl Module: Kernel/System/Web/InterfaceInstaller.pm
-        'SecureMode active!' => 'SecureMode ist aktiv!',
-        'If you want to re-run the Installer, disable the SecureMode in the SysConfig.' =>
-            'Wenn Sie den Installer erneut ausführen wollen, schalten Sie "SecureMode" in der SysConfig ab.',
         'Action "%s" not found!' => 'Aktion "%s" nicht gefunden!',
 
         # Database XML Definition: scripts/database/otrs-initial_insert.xml
@@ -4524,8 +4540,8 @@ sub Data {
         'Follow-ups for closed tickets are not possible. No new ticket will be created.' =>
             'Rückfragen für geschlossene Tickets sind nicht möglich. Neue Tickets werden nicht erstellt.',
         'new ticket' => 'neues Ticket',
-        'Follow-ups for closed tickets are not possible. A new ticket will be created..' =>
-            'Rückfragen für geschlossene Tickets sind nicht möglich. Ein neues Ticket wird erstellt.',
+        'Follow-ups for closed tickets are not possible. A new ticket will be created.' =>
+            '',
         'Postmaster queue.' => 'Postmaster-Queue.',
         'All default incoming tickets.' => 'Alle eingehenden Tickets.',
         'All junk tickets.' => 'Alle Junk-Tickets.',
@@ -4644,7 +4660,7 @@ Ihr Helpdesk-Team
         'Added subscription for user "%s".' => 'Abo für Benutzer "%s" eingetragen.',
         'Address book of CustomerUser sources.' => 'Adressbuch für Kundenbenutzer-Quellen.',
         'Adds a suffix with the actual year and month to the OTRS log file. A logfile for every month will be created.' =>
-            'Fügt einen Suffix mit dem aktuellen Jahr und Monat in die OTRS-Protokolldatei hinzu. Für jeden Monat wir eine eigen Log-Datei erstellt.',
+            'Fügt einen Suffix mit dem aktuellen Jahr und Monat in die OTRS-Protokolldatei hinzu. Für jeden Monat wird eine eigene Log-Datei erstellt.',
         'Adds customers email addresses to recipients in the ticket compose screen of the agent interface. The customers email address won\'t be added if the article type is email-internal.' =>
             'Fügt die Kunden E-Mailadresse zu den Empfängern hinzu in der "TicketCompose"-Oberfläche des Agenten-Interface hinzu. Die Kunden E-Mailadresse wird nicht hinzugefügt, wenn der Artikel-Typ \'email an intern\' ist.',
         'Adds the one time vacation days for the indicated calendar. Please use single digit pattern for numbers from 1 to 9 (instead of 01 - 09).' =>
@@ -5565,7 +5581,7 @@ Legen Sie die Mindestlänge für Passwörter mit \'PasswordMinSize\' fest. Legen
         'Defines the ticket fields that are going to be displayed calendar events. The "Key" defines the field or ticket attribute and the "Content" defines the display name.' =>
             '',
         'Defines the time zone of the indicated calendar, which can be assigned later to a specific queue.' =>
-            '',
+            'Spezifiziert die Zeitzone des angezeigten Kalenders, welcher später einer bestimmten Queue zugewiesen werden kann.',
         'Defines the timeout (in seconds, minimum is 20 seconds) for the support data collection with the public module \'PublicSupportDataCollector\' (e.g. used from the OTRS Daemon).' =>
             '',
         'Defines the two-factor module to authenticate agents.' => 'Definiert das Modul für die Zwei-Faktor-Authentifizierung von Agenten.',
@@ -5642,13 +5658,13 @@ Legen Sie die Mindestlänge für Passwörter mit \'PasswordMinSize\' fest. Legen
             '',
         'Development' => 'Entwicklung',
         'Disable HTTP header "Content-Security-Policy" to allow loading of external script contents. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
-            '',
+            'Wenn HTTP-Header "Content-Security-Policy" ausgeschaltet ist, können externe Scripts geladen werden. Dies stellt eine Sicherheitslücke dar! Daher sollte diese Einstellung nur deaktivieren werden, wenn Sie sich über die Konsequenzen im Klaren sind. ',
         'Disable HTTP header "X-Frame-Options: SAMEORIGIN" to allow OTRS to be included as an IFrame in other websites. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             '',
         'Disable restricted security for IFrames in IE. May be required for SSO to work in IE.' =>
             '',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be activated).' =>
-            '',
+            'Verhindert das Versenden von Erinnerungen an den zuständiigen Bearbeiter eines Tickets. (Ticket::Responsibility muss aktiviert sein)',
         'Disables the communication between this system and OTRS Group servers that provides cloud services. If active, some functionality will be lost such as system registration, support data sending, upgrading to and use of OTRS Business Solution™, OTRS Verify™, OTRS News and product News dashboard widgets, among others.' =>
             '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If set to "No", the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If not active, it also disables the GenericAgent, PackageManager and SQL Box.' =>
@@ -5850,8 +5866,8 @@ Legen Sie die Mindestlänge für Passwörter mit \'PasswordMinSize\' fest. Legen
         'French stop words for fulltext index. These words will be removed from the search index.' =>
             'Französische Stoppwörter für den Volltext-Index. Diese Wörter werden vom Suchindex entfernt.',
         'Frontend' => 'Oberfläche',
-        'Frontend module registration (disable AgentTicketService link if Ticket Serivice feature is not used).' =>
-            'Frontend-Modulregistrierung (AgentTicketService-Link entfernen wenn das Service-Feature nicht aktiv ist).',
+        'Frontend module registration (disable AgentTicketService link if Ticket Service feature is not used).' =>
+            '',
         'Frontend module registration (disable company link if no company feature is used).' =>
             'Frontend-Modulregistrierung (Firmen-Link entfernen wenn das Firmen-Feature nicht aktiv ist).',
         'Frontend module registration (disable ticket processes screen if no process available) for Customer.' =>
@@ -5861,6 +5877,7 @@ Legen Sie die Mindestlänge für Passwörter mit \'PasswordMinSize\' fest. Legen
         'Frontend module registration for the agent interface.' => 'Frontend-Modulregistrierung im Agent-Interface.',
         'Frontend module registration for the customer interface.' => 'Frontend-Modulregistrierung für den Kundenbereich.',
         'Frontend theme' => 'Oberflächenachema',
+        'Frontend theme.' => '',
         'Full value' => 'Vollständiger Wert',
         'Fulltext index regex filters to remove parts of the text.' => 'Volltextindex-Regex-Filter, um Textteile zu entfernen.',
         'Fulltext search' => 'Volltextsuche',
@@ -6005,8 +6022,8 @@ Legen Sie die Mindestlänge für Passwörter mit \'PasswordMinSize\' fest. Legen
             '',
         'If set, this address is used as envelope sender in outgoing messages (not notifications - see below). If no address is specified, the envelope sender is equal to queue e-mail address.' =>
             'Wenn gesetzt, wird diese Adresse als Envelope-Sender-Header in ausgehenden Nachrichten (nicht Benachrichtigungen, siehe unten) genutzt. Ist keine Adresse angegeben, entspricht der Envelope-Sender der an der Queue hinterlegten E-Mail-Adresse.',
-        'If this option is enabled, then the decrypted data will be stored in the database if they are displayed in AgentTicketZoom.' =>
-            'Wenn diese Option aktiviert ist, werden die entschlüsselten Daten in der Datenbank gespeichert, wenn Sie beim ersten Aufruf des Artikels in AgentTicketZoom angezeigt werden.',
+        'If this option is disabled, articles will not automatically be decrypted and stored in the database. Please note that this also means no decryption will take place and the articles will be shown in ticket zoom in their original (encrypted) form.' =>
+            '',
         'If this option is set to \'Yes\', tickets created via the web interface, via Customers or Agents, will receive an autoresponse if configured. If this option is set to \'No\', no autoresponses will be sent.' =>
             'Wenn für diese Einstellungen "Ja" gesetzt ist, werden für Tickets, die von Agenten oder Kunden über die Web-Oberfläche erstellt werden, automatische Antworten versandt (wenn vorhanden).',
         'If this regex matches, no message will be send by the autoresponder.' =>
@@ -6014,7 +6031,7 @@ Legen Sie die Mindestlänge für Passwörter mit \'PasswordMinSize\' fest. Legen
         'If this setting is active, local modifications will not be highlighted as errors in the package manager and support data collector.' =>
             'Wenn die Einstellung aktiv ist, werden lokale Änderungen nicht als Fehler in der Supportdaten-Analyse angezeigt.',
         'If you\'re going to be out of office, you may wish to let other users know by setting the exact dates of your absence.' =>
-            '',
+            'Informiert andere Benutzer über den genauen Zeitraum ihrer Abwesenheit.',
         'Ignore system sender article types (e. g. auto responses or email notifications) to be flagged as \'Unread Article\' in AgentTicketZoom or expanded automatically in Large view screens.' =>
             '',
         'Include tickets of subqueues per default when selecting a queue.' =>
@@ -6028,7 +6045,7 @@ Legen Sie die Mindestlänge für Passwörter mit \'PasswordMinSize\' fest. Legen
         'Indonesian' => 'Indonesisch',
         'Input' => 'Eingabe',
         'Install ispell or aspell on the system, if you want to use a spell checker. Please specify the path to the aspell or ispell binary on your operating system.' =>
-            '',
+            'Wenn Sie eine Rechtschreibprüfung verwenden wollen, installieren Sie aspell oder ispell auf ihrem System. Geben sie das Installationsverzeichnis  dieses Programms ein.',
         'Interface language' => 'Sprache Benutzeroberfläche',
         'It is possible to configure different skins, for example to distinguish between diferent agents, to be used on a per-domain basis within the application. Using a regular expression (regex), you can configure a Key/Content pair to match a domain. The value in "Key" should match the domain, and the value in "Content" should be a valid skin on your system. Please see the example entries for the proper form of the regex.' =>
             'Es ist möglich, verschiedene Skins zu konfigurieren, zum Beispiel um zwischen verschiedenen Agenten auf Basis der jeweiligen Domain zu unterscheiden. Sie können durch Nutzung von regulären Ausdrücken mithilfe von Schlüssel-/Wert-Paaren auf Domains prüfen. Der Inhalt von "Schlüssel" sollte die Prüfung auf die Domain beinhalten, der Inhalt von "Wert" den Namen des zu selektierenden Skins für diese Domain. Bitte beachten Sie die Einträge mit Beispielen für korrekte reguläre Ausdrücke.',
@@ -6134,7 +6151,7 @@ Legen Sie die Mindestlänge für Passwörter mit \'PasswordMinSize\' fest. Legen
             'Maximale Anzahl von Tickets, die als Ergebnis dieser Aktion angezeigt werden sollen. ',
         'Maximum size (in characters) of the customer information table in the ticket zoom view.' =>
             'Maximale Zeichenanzahl für die Tabelle mit Kundeninformationen in der TicketZoom-Ansicht.',
-        'Merge this ticket and all articles into a another ticket' => 'Dieses Ticket und alle Artikel in ein anderes Ticket zusammenfassen.',
+        'Merge this ticket and all articles into another ticket' => '',
         'Merged Ticket <OTRS_TICKET> to <OTRS_MERGE_TO_TICKET>.' => 'Ticket <OTRS_TICKET> wurde mit <OTRS_MERGE_TO_TICKET> zusammengefasst.',
         'Miscellaneous' => 'Verschiedenes',
         'Module for To-selection in new ticket screen in the customer interface.' =>
@@ -6229,7 +6246,6 @@ Legen Sie die Mindestlänge für Passwörter mit \'PasswordMinSize\' fest. Legen
         'Overview of all open tickets.' => 'Übersicht aller offenen Tickets.',
         'Overview of customer tickets.' => 'Übersicht von Kunden-Tickets.',
         'PGP Key Management' => 'PGP-Schlüssel-Verwaltung',
-        'PGP Key Upload' => 'PGP Schlüssel hochladen',
         'Package event module file a scheduler task for update registration.' =>
             '',
         'Parameters for the CreateNextMask object in the preference view of the agent interface.' =>
@@ -6242,8 +6258,8 @@ Legen Sie die Mindestlänge für Passwörter mit \'PasswordMinSize\' fest. Legen
             'Parameter für das RefreshTime-Objekt in der Einstellungen-Ansicht des Agentenbereichs.',
         'Parameters for the column filters of the small ticket overview.' =>
             'Parameter für die Spaltenfilter der "S"-Variante in Ticketübersichten.',
-        'Parameters for the dashboard backend of the customer company information of the agent interface . "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
-            'Parameter für das Dashboard-Backend des Kunden-Informations-Widgets im Agentenbereich. Über "Group" kann der Zugriff auf das Plugin beschränkt werden (z. B. Group: admin;group1;group2;). "Default" gibt an, ob das Plugin standardmäßig aktiviert sein soll oder ob der Nutzer es manuell aktivieren muss. "CacheTTLLocal" bestimmt die Laufzeit des Plugin-Caches in Minuten.',
+        'Parameters for the dashboard backend of the customer company information of the agent interface. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
+            '',
         'Parameters for the dashboard backend of the customer id status widget of the agent interface . "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
             'Parameter für das Dashboard-Backend des Kundennummer-Status-Widgets im Agentenbereich. Über "Group" kann der Zugriff auf das Plugin beschränkt werden (z. B. Group: admin;group1;group2;). "Default" gibt an, ob das Plugin standardmäßig aktiviert sein soll oder ob der Nutzer es manuell aktivieren muss. "CacheTTLLocal" bestimmt die Laufzeit des Plugin-Caches in Minuten.',
         'Parameters for the dashboard backend of the customer user list overview of the agent interface . "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
@@ -6364,8 +6380,8 @@ Legen Sie die Mindestlänge für Passwörter mit \'PasswordMinSize\' fest. Legen
             'Behält alle Services in Auflistungen bei, auch, wenn sie Kind-Services von ungültigen Elementen sind.',
         'Right' => 'Rechts',
         'Roles <-> Groups' => 'Rollen <-> Gruppen',
-        'Run file based generic agent jobs (Note: module name need needs to be specified in -configuration-module param e.g. "Kernel::System::GenericAgent").' =>
-            'Dateibasierte Generic-Agent-Jobs ausführen (Hinweis: Der Modulname muss im Parameter -configuration-module angegeben sein, z. B. "Kernel::System::GenericAgent").',
+        'Run file based generic agent jobs (Note: module name needs to be specified in -configuration-module param e.g. "Kernel::System::GenericAgent").' =>
+            '',
         'Running Process Tickets' => 'Aktive Prozesstickets',
         'Runs an initial wildcard search of the existing customer company when accessing the AdminCustomerCompany module.' =>
             'Führt eine initiale Wildcard-Suche für bestehende Kundenfirmen aus, wenn auf AdminCustomerCompany zugegriffen wird.',
@@ -6374,7 +6390,6 @@ Legen Sie die Mindestlänge für Passwörter mit \'PasswordMinSize\' fest. Legen
         'Runs the system in "Demo" mode. If set to "Yes", agents can change preferences, such as selection of language and theme via the agent web interface. These changes are only valid for the current session. It will not be possible for agents to change their passwords.' =>
             'Führt das System im "Demo" Modus aus. Wenn die Einstellung auf "Ja" gesetzt ist, können Agenten Einstellungen, wie die Sprachauswahl oder das Design über die Agenten Weboberfläche ändern. Diese Einstellungen sind nur für die aktuelle Session gültig. Agenten können ihr Passwort nicht ändern.',
         'Russian' => 'Russisch',
-        'S/MIME Certificate Upload' => 'S/MIME Zertifikat hochladen',
         'SMS' => 'SMS',
         'SMS (Short Message Service)' => 'SMS (Short Message Service)',
         'Sample command output' => 'Beispielhafte Kommando-Ausgabe',
@@ -6391,12 +6406,13 @@ Legen Sie die Mindestlänge für Passwörter mit \'PasswordMinSize\' fest. Legen
         'Search.' => 'Suche.',
         'Second Queue' => 'Zweite Queue',
         'Select after which period ticket overviews should refresh automatically.' =>
-            '',
+            'Definiert, in welchen Zeitabständen die Ticket-Zusammenfassung automatisch aktualisiert wird.',
         'Select how many tickets should be shown in overviews by default.' =>
-            '',
+            'Definiert, wieviele Tickets in der Übersicht standardmäßig angezeigt werden.',
         'Select the main interface language.' => '',
-        'Select your frontend Theme.' => 'Wählen Sie Ihr Anzeigeschema aus.',
+        'Select your default spelling dictionary.' => '',
         'Select your preferred layout for OTRS.' => '',
+        'Select your preferred theme for OTRS.' => '',
         'Selects the cache backend to use.' => 'Gibt das zu verwendende Cache Backend an.',
         'Selects the module to handle uploads via the web interface. "DB" stores all uploads in the database, "FS" uses the file system.' =>
             'Auswahl wie Uploads über die Web-Oberfläche gehandhabt werden sollen. "DB" speichert alle Uploads in der Datenbank, "FS" nutzt das Dateisystem.',
@@ -6893,7 +6909,7 @@ Legen Sie die Mindestlänge für Passwörter mit \'PasswordMinSize\' fest. Legen
         'Specify the username to authenticate for the first mirror database.' =>
             'Geben Sie den Benutzernamen für die Authentifikation mit der ersten Spiegeldatenbank an.',
         'Spell checker.' => 'Rechtschreibprüfung.',
-        'Stable' => '',
+        'Stable' => 'Stabil',
         'Standard available permissions for agents within the application. If more permissions are needed, they can be entered here. Permissions must be defined to be effective. Some other good permissions have also been provided built-in: note, close, pending, customer, freetext, move, compose, responsible, forward, and bounce. Make sure that "rw" is always the last registered permission.' =>
             '',
         'Start number for statistics counting. Every new stat increments this number.' =>
@@ -7048,6 +7064,8 @@ Legen Sie die Mindestlänge für Passwörter mit \'PasswordMinSize\' fest. Legen
         'Updates the ticket escalation index after a ticket attribute got updated.' =>
             'Aktualisiert den Ticket-Eskalations-Index nachdem ein Ticket-Attribut aktualisiert wurde.',
         'Updates the ticket index accelerator.' => 'Aktualisiert den Ticket-Index-Beschleuniger.',
+        'Upload your PGP key.' => '',
+        'Upload your S/MIME certificate.' => '',
         'Use new type of select and autocomplete fields in agent interface, where applicable (InputFields).' =>
             'Nutzen Sie einen neuen Typ von Auswahl- und Autovervollständigen-Feldern in der Agenten-Schnittstelle, wo sie anwendbar sind (InputFields = Eingabefelder).',
         'Use new type of select and autocomplete fields in customer interface, where applicable (InputFields).' =>
