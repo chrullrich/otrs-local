@@ -1428,32 +1428,27 @@ sub Run {
             UserID    => $Self->{UserID},
         );
 
-        my $ResponseFormat = $ConfigObject->Get('Ticket::Frontend::ResponseFormat')
-            || '[% Data.Salutation | html %]
-[% Data.StdResponse | html %]
-[% Data.Signature | html %]
-
-[% Data.Created | Localize("TimeShort") %] - [% Data.OrigFromName | html %] [% Translate("wrote") | html %]:
-[% Data.Body | html %]
-';
+        my $ResponseFormat = $ConfigObject->Get('Ticket::Frontend::ResponseFormat');
 
         # make sure body is rich text
         my %DataHTML = %Data;
         if ( $LayoutObject->{BrowserRichText} ) {
-            $ResponseFormat = $LayoutObject->Ascii2RichText(
-                String => $ResponseFormat,
-            );
+            if ($ResponseFormat) {
+                $ResponseFormat = $LayoutObject->Ascii2RichText(
+                    String => $ResponseFormat,
+                );
 
-            # restore qdata formatting for Output replacement
-            $ResponseFormat =~ s/&quot;/"/gi;
+                # restore qdata formatting for Output replacement
+                $ResponseFormat =~ s/&quot;/"/gi;
 
-            # html quote to have it correct in edit area
-            $ResponseFormat = $LayoutObject->Ascii2Html(
-                Text => $ResponseFormat,
-            );
+                # html quote to have it correct in edit area
+                $ResponseFormat = $LayoutObject->Ascii2Html(
+                    Text => $ResponseFormat,
+                );
 
-            # restore qdata formatting for Output replacement
-            $ResponseFormat =~ s/&quot;/"/gi;
+                # restore qdata formatting for Output replacement
+                $ResponseFormat =~ s/&quot;/"/gi;
+            }
 
             # quote all non html content to have it correct in edit area
             KEY:
@@ -1872,12 +1867,18 @@ sub _Mask {
             Name => 'PreFilledCc',
         );
 
-        # split To values
+        # split Cc values
         for my $Email ( Mail::Address->parse( $Param{Cc} ) ) {
+
+            my $DataEmail = $Email->address();
+            if ( $Email->phrase() ) {
+                $DataEmail = $Email->phrase() . ' <' . $Email->address() . '>';
+            }
+
             $LayoutObject->Block(
                 Name => 'PreFilledCcRow',
                 Data => {
-                    Email => $Email->address(),
+                    Email => $DataEmail,
                 },
             );
         }
@@ -1892,10 +1893,16 @@ sub _Mask {
 
         # split To values
         for my $Email ( Mail::Address->parse( $Param{To} ) ) {
+
+            my $DataEmail = $Email->address();
+            if ( $Email->phrase() ) {
+                $DataEmail = $Email->phrase() . ' <' . $Email->address() . '>';
+            }
+
             $LayoutObject->Block(
                 Name => 'PreFilledToRow',
                 Data => {
-                    Email => $Email->address(),
+                    Email => $DataEmail,
                 },
             );
         }
