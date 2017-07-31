@@ -419,9 +419,14 @@ sub Run {
                 $CustomerKey = $Article{CustomerUserID};
             }
 
+            my $CustomerElement = $EmailAddress;
+            if ( $Email->phrase() ) {
+                $CustomerElement = $Email->phrase() . " <$EmailAddress>";
+            }
+
             push @MultipleCustomer, {
                 Count            => $CountAux,
-                CustomerElement  => $Email->address(),
+                CustomerElement  => $CustomerElement,
                 CustomerSelected => $CustomerSelected,
                 CustomerKey      => $CustomerKey,
                 CustomerError    => $CustomerError,
@@ -965,7 +970,8 @@ sub Run {
             # search customer
             my %CustomerUserList;
             %CustomerUserList = $CustomerUserObject->CustomerSearch(
-                Search => $GetParam{From},
+                Search           => $GetParam{From},
+                CustomerUserOnly => 1,
             );
 
             # check if just one customer user exists
@@ -1037,7 +1043,8 @@ sub Run {
                 my %ExternalCustomerUserData = $CustomerUserObject->CustomerUserDataGet(
                     User => $FromExternalCustomer{Customer},
                 );
-                $FromExternalCustomer{Email} = $ExternalCustomerUserData{UserEmail};
+                $FromExternalCustomer{Email}
+                    = "\"$ExternalCustomerUserData{UserFirstname} $ExternalCustomerUserData{UserLastname}\" <$ExternalCustomerUserData{UserEmail}>";
             }
             $Error{ExpandCustomerName} = 1;
         }
