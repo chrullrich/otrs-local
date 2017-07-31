@@ -79,6 +79,9 @@ Core.Agent.CustomerSearch = (function (TargetNS) {
                 // Update signature if needed.
                 if ($('#Dest').val() !== '') {
                     SignatureURL = Core.Config.Get('Baselink') + 'Action=' + Core.Config.Get('Action') + ';Subaction=Signature;Dest=' + $('#Dest').val() + ';SelectedCustomerUser=' + $('#SelectedCustomerUser').val();
+                    if (!Core.Config.Get('SessionIDCookie')) {
+                        SignatureURL += ';' + Core.Config.Get('SessionName') + '=' + Core.Config.Get('SessionID');
+                    }
                     $('#Signature').attr('src', SignatureURL);
                 }
             }
@@ -431,7 +434,10 @@ Core.Agent.CustomerSearch = (function (TargetNS) {
     };
 
     function htmlDecode(Text){
-        return Text.replace(/&amp;/g, '&');
+        return Text.replace(/&amp;/g, '&')
+            .replace(/&quot;/g, '"')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>');
     }
 
     /**
@@ -460,6 +466,9 @@ Core.Agent.CustomerSearch = (function (TargetNS) {
 
         if (CustomerValue === '') {
             return false;
+        }
+        else {
+            CustomerValue = htmlDecode(CustomerValue);
         }
 
         // check for duplicated entries
