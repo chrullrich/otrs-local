@@ -450,19 +450,14 @@ $Selenium->RunTest(
         # input required fields and submit compose
         my $AutoCompleteString = "\"$TestCustomer $TestCustomer\" <$TestCustomer\@localhost.com> ($TestCustomer)";
 
-        # add TO recipient
-        $Selenium->find_element( "#ToCustomer", 'css' )->send_keys($TestCustomer);
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("li.ui-menu-item:visible").length' );
-        $Selenium->find_element("//*[text()='$AutoCompleteString']")->click();
-
         # add test text to body
         my $ComposeText = "Selenium Compose Text";
         $Selenium->find_element( "#RichText", 'css' )->send_keys($ComposeText);
 
-        # try to add customer again, expecting server error for duplicated entry, see bug #9731
+        # Try to add the same customer user, expecting server error for duplicated entry, see bug #9731.
         $Selenium->find_element( "#ToCustomer", 'css' )->send_keys($TestCustomer);
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("li.ui-menu-item:visible").length' );
-        $Selenium->find_element("//*[text()='$AutoCompleteString']")->click();
+        $Selenium->execute_script("\$('li.ui-menu-item:contains($TestCustomer)').click()");
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".Dialog.Modal").length' );
 
         $Self->Is(
@@ -505,6 +500,15 @@ $Selenium->RunTest(
             TicketID => $TicketID,
             UserID   => 1,
         );
+
+        # Ticket deletion could fail if apache still writes to ticket history. Try again in this case.
+        if ( !$Success ) {
+            sleep 3;
+            $Success = $TicketObject->TicketDelete(
+                TicketID => $TicketID,
+                UserID   => 1,
+            );
+        }
         $Self->True(
             $Success,
             "Ticket with ticket ID $TicketID is deleted"
