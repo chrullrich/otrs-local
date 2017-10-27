@@ -7,6 +7,7 @@
 # --
 
 package Kernel::System::TemplateGenerator;
+## nofilter(TidyAll::Plugin::OTRS::Perl::LayoutObject)
 ## nofilter(TidyAll::Plugin::OTRS::Perl::Time)
 
 use strict;
@@ -660,10 +661,9 @@ sub AutoResponse {
             From => $Param{OrigHeader}->{To},
             To   => $Param{OrigHeader}->{From},
         },
-        TicketID     => $Param{TicketID},
-        UserID       => $Param{UserID},
-        Language     => $Language,
-        AutoResponse => 1,
+        TicketID => $Param{TicketID},
+        UserID   => $Param{UserID},
+        Language => $Language,
     );
     $AutoResponse{Subject} = $Self->_Replace(
         RichText => 0,
@@ -673,10 +673,9 @@ sub AutoResponse {
             From => $Param{OrigHeader}->{To},
             To   => $Param{OrigHeader}->{From},
         },
-        TicketID     => $Param{TicketID},
-        UserID       => $Param{UserID},
-        Language     => $Language,
-        AutoResponse => 1,
+        TicketID => $Param{TicketID},
+        UserID   => $Param{UserID},
+        Language => $Language,
     );
 
     $AutoResponse{Subject} = $TicketObject->TicketSubjectBuild(
@@ -1489,30 +1488,9 @@ sub _Replace {
 
                 if ( $Ticket{CustomerUserID} ) {
 
-                    my %CustomerUserData = $Kernel::OM->Get('Kernel::System::CustomerUser')
-                        ->CustomerUserDataGet( User => $Ticket{CustomerUserID} );
-
-                    if (
-
-                        # Check if Customer 'UserEmail' match article data 'From'.
-                        # Or check if this is auto response replacement.
-                        # Take ticket customer as 'From'.
-                        (
-                            $CustomerUserData{UserEmail}
-                            && $Data{From}
-                            && $CustomerUserData{UserEmail} =~ /$Data{From}/
-                        )
-                        || $Param{AutoResponse}
-                        )
-                    {
-                        $From = $Kernel::OM->Get('Kernel::System::CustomerUser')->CustomerName(
-                            UserLogin => $Ticket{CustomerUserID}
-                        );
-                    }
-                    else {
-                        $From = $Data{From};
-                    }
-
+                    $From = $Kernel::OM->Get('Kernel::System::CustomerUser')->CustomerName(
+                        UserLogin => $Ticket{CustomerUserID}
+                    );
                 }
 
                 # try to get the real name directly from the data
