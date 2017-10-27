@@ -316,10 +316,10 @@ sub Run {
             # show need user data error message
             $LayoutObject->Print(
                 Output => \$LayoutObject->Login(
-                    Title => 'Panic!',
+                    Title => 'Error',
                     Message =>
                         Translatable(
-                        'Panic, user authenticated but no user data can be found in OTRS DB!! Perhaps the user is invalid.'
+                        'Authentication succeeded, but no user data record is found in the database. Please contact the administrator.'
                         ),
                     %Param,
                     MessageType => 'Error',
@@ -352,6 +352,7 @@ sub Run {
             %UserData,
             UserLastRequest => $Kernel::OM->Get('Kernel::System::Time')->SystemTime(),
             UserType        => 'User',
+            SessionSource   => 'AgentInterface',
         );
 
         # show error message if no session id has been created
@@ -887,8 +888,8 @@ sub Run {
             # show login screen
             $LayoutObject->Print(
                 Output => \$LayoutObject->Login(
-                    Title       => 'Panic!',
-                    Message     => Translatable('Panic! Invalid Session!!!'),
+                    Title       => 'Error',
+                    Message     => Translatable('Error: invalid session.'),
                     MessageType => 'Error',
                     %Param,
                 ),
