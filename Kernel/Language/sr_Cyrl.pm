@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.992734611503532;
+    $Self->{Completeness}        = 0.995774647887324;
 
     # csv separator
     $Self->{Separator} = ';';
@@ -1593,6 +1593,8 @@ sub Data {
             'Овај језик није присутан или укључен на систему. Ово обавештење може бити избрисано уколико више није неопходно.',
         'Remove Notification Language' => 'Уклони језик обавештења',
         'Message body' => 'Садржај поруке',
+        'This field is required and must have less than 4000 characters.' =>
+            '',
         'Add new notification language' => 'Уклони нови језик обавештења',
         'Do you really want to delete this notification language?' => 'Да ли заиста желите да избришете овај језик за обавештења?',
         'Tag Reference' => 'Референца ознаке',
@@ -1654,14 +1656,14 @@ sub Data {
         '%s Not Yet Available' => '%s није још доступно',
         '%s will be available soon.' => '%s ће бити ускоро доступно',
         '%s Update Available' => '%s доступно ажурирање',
-        'Package installation requires patch level update of OTRS.' => '',
-        'Please visit our customer portal and file a request.' => '',
+        'Package installation requires patch level update of OTRS.' => 'Инсталација пакета захтева ажурирану верзију OTRS.',
+        'Please visit our customer portal and file a request.' => 'Молимо посетите наш кориснички портал и поднесите захтев.',
         'Everything else will be done as part of your contract.' => 'Све остало ће бити урађено под вашим постојећим уговором.',
-        'Your installed OTRS version is %s.' => '',
+        'Your installed OTRS version is %s.' => 'Инсталирана OTRS верзија код вас је %s.',
         'To install the current version of OTRS Business Solution™, you need to update to OTRS %s or higher.' =>
-            '',
+            'Да бисте инсталирали актуелну верзију „OTRS Business Solution™”, неопходно је да ажурирате ваш OTRS на верзију %s или вишу.',
         'To install the current version of OTRS Business Solution™, the Maximum OTRS Version is %s.' =>
-            '',
+            'Да бисте инсталирали актуелну верзију „OTRS Business Solution™”, највиша верзија OTRS је %s.',
         'To install this package, the required Framework version is %s.' =>
             'За инсталацију овог пакета, неопходна верзија OTRS је %s.',
         'Why should I keep OTRS up to date?' => 'Зашто би требало да OTRS увек буде ажуриран?',
@@ -1742,23 +1744,23 @@ sub Data {
             'Да ли стварно желите да поново инсталирате овај пакет? Све ручне промене ће бити изгубљене.',
         'Go to upgrading instructions' => 'Иди на упутство за ажурирање',
         'package information' => 'Информације о пакету',
-        'Package installation requires a patch level update of OTRS.' => '',
-        'Package update requires a patch level update of OTRS.' => '',
+        'Package installation requires a patch level update of OTRS.' => 'Инсталација пакета захтева ажурирану верзију OTRS.',
+        'Package update requires a patch level update of OTRS.' => 'Ажурирање пакета захтева ажурирану верзију OTRS.',
         'If you are a OTRS Business Solution™ customer, please visit our customer portal and file a request.' =>
             'Уколико сте корисник OTRS Business Solution™, молимо посетите наш кориснички портал и поднесите захтев.',
         'Please note that your installed OTRS version is %s.' => 'Тренутно инсталирана OTRS верзија је %s.',
         'To install this package, you need to update OTRS to version %s or newer.' =>
-            '',
+            'Да бисте инсталирали овај пакет, неопходно је да ажурирате ваш OTRS на верзију %s или новију.',
         'This package can only be installed on OTRS version %s or older.' =>
-            '',
+            'Овај пакет се може инсталирати само на OTRS верзију%s или старију.',
         'This package can only be installed on OTRS version %s or newer.' =>
-            '',
+            'Овај пакет се може инсталирати само на OTRS верзију%s или новију.',
         'You will receive updates for all other relevant OTRS issues.' =>
-            '',
+            'Добићете ажурирања свих других релевантних OTRS издања.',
         'How can I do a patch level update if I don’t have a contract?' =>
             'Како могу да ажурирам верзију OTRS уколико немам уговор?',
         'Please find all relevant information within the upgrading instructions at %s.' =>
-            '',
+            'Молимо пронађите све релевантне информације у оквиру инструкција за ажурирање на %s.',
         'In case you would have further questions we would be glad to answer them.' =>
             'У случају да имате додтана питања, биће нам задовољство да одговоримо на њих.',
         'Continue' => 'Настави',
@@ -2425,11 +2427,11 @@ sub Data {
         'Display name' => 'Прикажи име',
         'Add System Email Address' => 'Додај системску имејл адресу',
         'Edit System Email Address' => 'Уреди системску имејл адресу',
-        'This email address is already used as system email address.' => '',
+        'This email address is already used as system email address.' => 'Ова имејл адреса је већ употребљена као системска имејл адреса.',
         'The display name and email address will be shown on mail you send.' =>
             'Приказано име и имејл адреса ће бити приказани на поруци коју сте послали.',
         'This system address cannot be set to invalid, because it is used in one or more queue(s).' =>
-            '',
+            'Ова системска адреса се не може означити као неважећа јер се користи у једном или више редова.',
 
         # Template: AdminSystemMaintenance
         'System Maintenance Management' => 'Управљање системом одржавања',
@@ -2868,7 +2870,7 @@ sub Data {
         'Watcher' => 'Праћење',
         'Article Create Time (before/after)' => 'Време креирања чланка (пре/после)',
         'Article Create Time (between)' => 'Време креирања чланка (између)',
-        'Invalid date' => '',
+        'Invalid date' => 'Неважећи датум',
         'Ticket Create Time (before/after)' => 'Време отварања тикета (пре/после)',
         'Ticket Create Time (between)' => 'Време отварања тикета (између)',
         'Ticket Change Time (before/after)' => 'Време промене тикета (пре/после)',
@@ -2941,6 +2943,12 @@ sub Data {
         'This feature requires cloud services.' => 'Ова функција захтева сервисе у облаку!',
         'You can' => 'Ви можете',
         'go back to the previous page' => 'иди на претходну страну',
+
+        # Template: CustomerAccept
+        'Information' => 'Информација',
+        'Dear Customer,' => '',
+        'thank you for using our services.' => '',
+        'Yes, I accepted your license.' => '',
 
         # Template: CustomerError
         'An Error Occurred' => 'Догодила се грешка',
@@ -3059,7 +3067,6 @@ sub Data {
         # Template: CustomerTicketZoom
         'Start a chat from this ticket' => 'Почни ћаскање из овог тикета',
         'Expand article' => 'Рашири чланак',
-        'Information' => 'Информација',
         'Next Steps' => 'Следећи кораци',
         'Reply' => 'Одговори',
         'Chat Protocol' => 'Протокол ћаскања',
@@ -3498,6 +3505,8 @@ sub Data {
             'Увезена датотека нема исправан „YAML” садржај! Молимо проверите „OTRS” дневник за детаље',
         'Web service "%s" deleted!' => 'Веб сервис „%s” је обрисан!',
         'New Web service' => 'Нови веб сервис',
+        'Operations' => 'Операције',
+        'Invokers' => '',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceWebserviceHistory.pm
         'Got no WebserviceHistoryID!' => 'Нема WebserviceHistoryID!',
@@ -3652,6 +3661,12 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminQueueAutoResponse.pm
         'Queues ( without auto responses )' => 'Редови (без аутоматских одговора)',
+
+        # Perl Module: Kernel/Modules/AdminRegistration.pm
+        'Production' => 'Продукција',
+        'Test' => '',
+        'Training' => 'Тренинг',
+        'Development' => 'Развој',
 
         # Perl Module: Kernel/Modules/AdminSMIME.pm
         'S/MIME environment is not working. Please check log for more info!' =>
@@ -3848,7 +3863,7 @@ sub Data {
         'Invalid TicketID: %s!' => 'Неважећи ИД тикета: %s!',
         'Missing ActivityEntityID in Ticket %s!' => 'Недостаје ИД ентитета активности на тикету %s!',
         'This step does not belong anymore to the current activity in process for ticket \'%s%s%s\'! Another user changed this ticket in the meantime. Please close this window and reload the ticket.' =>
-            '',
+            'Овај корак не припада више тренутној активности процеса за тикет \'%s%s%s\'! Други корисник је у међувремену променио овај тикет. Молимо да затворите овај прозор и поново учитате тикет.',
         'Missing ProcessEntityID in Ticket %s!' => 'Недостаје ИД ентитета процеса на тикету %s!',
         'Could not set DynamicField value for %s of Ticket with ID "%s" in ActivityDialog "%s"!' =>
             'Не могу поставити вредност динамичког поља за %s за ИД тикета „%s” у дијалогу активности „%s”!',
@@ -4122,6 +4137,8 @@ sub Data {
         # Perl Module: Kernel/System/NotificationEvent.pm
         'Couldn\'t read Notification configuration file. Please make sure the file is valid.' =>
             'Учитавање конфигурације обавештења није било могуће. Молимо проверите да ли је фајл исправан.',
+        'Imported notification has body text with more than 4000 characters.' =>
+            '',
 
         # Perl Module: Kernel/System/Package.pm
         'not installed' => 'није инсталирано',
@@ -4493,11 +4510,11 @@ sub Data {
         'Send unencrypted notification' => 'Пошаљи нешифовано обавештење',
 
         # Perl Module: Kernel/System/Web/InterfaceAgent.pm
-        'Panic, user authenticated but no user data can be found in OTRS DB!! Perhaps the user is invalid.' =>
-            'Пажња, корисник је ',
+        'Authentication succeeded, but no user data record is found in the database. Please contact the administrator.' =>
+            '',
         'Can`t remove SessionID.' => 'SessionID се не може уклонити.',
         'Logout successful.' => 'Успешна одјава.',
-        'Panic! Invalid Session!!!' => 'Пажња! Неважећа сесија!!!',
+        'Error: invalid session.' => '',
         'No Permission to use this frontend module!' => 'Немате дозволу за  употребу овог корисничког модула!',
 
         # Perl Module: Kernel/System/Web/InterfaceCustomer.pm
@@ -4542,7 +4559,7 @@ sub Data {
             'Настављање на затворене тикете није могуће. Нови тикет неће бити креиран.',
         'new ticket' => 'нови тикет',
         'Follow-ups for closed tickets are not possible. A new ticket will be created.' =>
-            '',
+            'Настављање на затворене тикете није могуће. Нови тикет ће бити креиран.',
         'Postmaster queue.' => '„Postmaster” ред.',
         'All default incoming tickets.' => ' Сви подразумевани долазни тикети.',
         'All junk tickets.' => 'Сви бесмислени тикети „junk”.',
@@ -4654,6 +4671,8 @@ Thanks for your help!
             'Активира архивски систем ради убрзања рада, тако што ћете неке тикете уклонити ван дневног праћења. Да бисте пронашли ове тикете, маркер архиве мора бити омогућен за претрагу тикета.',
         'Activates time accounting.' => 'Активира мерење времена.',
         'ActivityID' => 'ИД активности',
+        'Add a comment.' => '',
+        'Add a default name for Dynamic Field.' => '',
         'Add an inbound phone call to this ticket' => 'Додај долазни телефонски позив овом тикету.',
         'Add an outbound phone call to this ticket' => 'Додај одлазни телефонски позив овом тикету.',
         'Added email. %s' => 'Додат имејл. %s',
@@ -5656,7 +5675,6 @@ Thanks for your help!
             'Одређује које опције ће бити важеће за примаоца (телефонски тикет) и пошиљаоца (имејл тикет) у интерфејсу оператера.',
         'Determines which queues will be valid for ticket\'s recepients in the customer interface.' =>
             'Одређује који ће редови бити важећи за тикете примаоца у интерфејсу клијента.',
-        'Development' => 'Развој',
         'Disable HTTP header "Content-Security-Policy" to allow loading of external script contents. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             'Онемогућава HTTP заглавље „Content-Security-Policy” ради учитавања екстерних скриптова. Онемогућавање овог HTTP заглавља сноси сигурносни ризик! Искључите га само ако знате шта радите!',
         'Disable HTTP header "X-Frame-Options: SAMEORIGIN" to allow OTRS to be included as an IFrame in other websites. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
@@ -5867,7 +5885,7 @@ Thanks for your help!
             'Француске зауставне речи за индекс претраге комплетног текста. Ове речи ће бити уклоњене из индекса претраге.',
         'Frontend' => 'Интерфејс',
         'Frontend module registration (disable AgentTicketService link if Ticket Service feature is not used).' =>
-            '',
+            'Регистрација модула приступа (онемогућите везу „AgentTicketService” ако се не користи Тикет сервис).',
         'Frontend module registration (disable company link if no company feature is used).' =>
             'Регистрација модула приступа (онемогућите везу „предузеће” ако се не користи својство предузеће).',
         'Frontend module registration (disable ticket processes screen if no process available) for Customer.' =>
@@ -5943,7 +5961,7 @@ Thanks for your help!
         'If "HTTPBasicAuth" was selected for Customer::AuthModule, you can specify (by using a RegExp) to strip parts of REMOTE_USER (e. g. for to remove trailing domains). RegExp-Note, $1 will be the new Login.' =>
             'Уколико је подешен HTTPBasicAuth за Customer::AuthModule, можете подесити (путем RegExp) уклањање делова REMOTE_USER вредности (нпр. ради уклањања додатних домена). Напомена: $1 ће бити нови Login.',
         'If "HTTPBasicAuth" was selected for Customer::AuthModule, you can specify to strip leading parts of user names (e. g. for domains like example_domain\user to user).' =>
-            'Уколико је „HTTPBasicAuth„ изабран за „Customer::AuthModule”, можете подесити уклањање почетних делова корисничких имена (нпр. за домене као example_domain\\user у user).',
+            'Уколико је „HTTPBasicAuth„ изабран за „Customer::AuthModule”, можете подесити уклањање почетних делова корисничких имена (нпр. за домене као example_domain\user у user).',
         'If "LDAP" was selected for Customer::AuthModule and if you want to add a suffix to every customer login name, specifiy it here, e. g. you just want to write the username user but in your LDAP directory exists user@domain.' =>
             'Уколико је подешен LDAP за Customer::AuthModule и желите да додате суфикс сваком корисничком имену, дефинишите га овде, нпр. желите само user за корисничко име, али у вашем LDAP директоријуму постоји user@domain.',
         'If "LDAP" was selected for Customer::AuthModule and special paramaters are needed for the Net::LDAP perl module, you can specify them here. See "perldoc Net::LDAP" for more information about the parameters.' =>
@@ -6002,6 +6020,8 @@ Thanks for your help!
             'Ако је активирано сервис ће преусмерити стандардни ток грешке у датотеку дневника.',
         'If enabled the daemon will redirect the standard output stream to a log file.' =>
             'Ако је активирано сервис ће преусмерити стандардни излазни ток у датотеку дневника.',
+        'If enabled the daemon will use this directory to create its PID files. Note: Please stop the daemon before any change and use this setting only if <$OTRSHome>/var/run/ can not be used.' =>
+            '',
         'If enabled, OTRS will deliver all CSS files in minified form. WARNING: If you turn this off, there will likely be problems in IE 7, because it cannot load more than 32 CSS files.' =>
             'Ако је активирано, „OTRS” ће испоручити све CSS датотеке у смањеној форми. УПОЗОРЕЊЕ: Уколико искључите ову опцију, највероватније ћете имати проблеме у IE 7, зато што није у стању да учита више од 32 CSS датотеке.',
         'If enabled, OTRS will deliver all JavaScript files in minified form.' =>
@@ -6107,7 +6127,7 @@ Thanks for your help!
         'Locked Tickets.' => 'Закључани тикети.',
         'Locked ticket.' => 'Закључан тикет.',
         'Log file for the ticket counter.' => 'Датотека дневника за бројач тикета.',
-        'Logged-In Users' => '',
+        'Logged-In Users' => 'Пријављени корисници',
         'Logout of customer panel.' => 'Одјава са клијентског панела.',
         'Loop-Protection! No auto-response sent to "%s".' => 'Заштита од петље! Аутоматски одговор није послат на „%s”.',
         'Mail Accounts' => 'Имејл налози',
@@ -6152,7 +6172,7 @@ Thanks for your help!
             'Максимални број тикета који ће бити приказани у резултату ове операције.',
         'Maximum size (in characters) of the customer information table in the ticket zoom view.' =>
             'Максимална дужина (у знацима) клијентске инфо табеле на детаљном прегледу тикета.',
-        'Merge this ticket and all articles into another ticket' => '',
+        'Merge this ticket and all articles into another ticket' => 'Споји овај тикет и све чланке у други тикет',
         'Merged Ticket <OTRS_TICKET> to <OTRS_MERGE_TO_TICKET>.' => 'Тикет <OTRS_TICKET> спојен у <OTRS_MERGE_TO_TICKET>.',
         'Miscellaneous' => 'Разно',
         'Module for To-selection in new ticket screen in the customer interface.' =>
@@ -6381,7 +6401,7 @@ Thanks for your help!
         'Right' => 'Десно',
         'Roles <-> Groups' => 'Улоге <-> Групе',
         'Run file based generic agent jobs (Note: module name needs to be specified in -configuration-module param e.g. "Kernel::System::GenericAgent").' =>
-            '',
+            'Покреће послове генеричког оператера базиране на датотекама (Напомена: назив модула мора бити дефинисан у конфигурацији параметара модула, нпр. „Kernel::System::GenericAgent”).',
         'Running Process Tickets' => 'Активни процес тикети',
         'Runs an initial wildcard search of the existing customer company when accessing the AdminCustomerCompany module.' =>
             'Покреће иницијалну џокер претрагу постојећих фирми клијената при приступу модулу AdminCustomerCompany.',
@@ -6410,9 +6430,10 @@ Thanks for your help!
         'Select how many tickets should be shown in overviews by default.' =>
             'Изаберите који број тикета ће бити подразумевано приказан у прегледима.',
         'Select the main interface language.' => 'Изаберите главни језик интерфејса.',
-        'Select your default spelling dictionary.' => '',
+        'Select your default spelling dictionary.' => 'Изаберите ваш подразумевани правописни речник.',
         'Select your preferred layout for OTRS.' => 'Изаберите ваш подразумевани изглед OTRS.',
-        'Select your preferred theme for OTRS.' => '',
+        'Select your preferred theme for OTRS.' => 'Изаберите вашу подразумевану тему за OTRS.',
+        'Select your time zone.' => '',
         'Selects the cache backend to use.' => 'Избор кеша који ће користити систем у позадини.',
         'Selects the module to handle uploads via the web interface. "DB" stores all uploads in the database, "FS" uses the file system.' =>
             'Бира модул за руковање пренешеним датотекама преко веб интерфејса. „DB” складишти све пренешене датотеке у базу података, „FS” користи систем датотека.',
@@ -6530,15 +6551,15 @@ Thanks for your help!
         'Sets the inactivity time (in seconds) to pass before a session is killed and a user is logged out.' =>
             'Одређује време без активности (у секундама) пре него што сесија буде угашена а корисник одјављен.',
         'Sets the maximum number of active agents within the timespan defined in SessionMaxIdleTime before a prior warning will be visible for the logged in agents.' =>
-            '',
+            'Поставља максимални број активних оператера у временском распону дефинисаном у „SessionMaxIdleTime” пре него што обавештење буде видљиво за пријављене оператере.',
         'Sets the maximum number of active agents within the timespan defined in SessionMaxIdleTime.' =>
-            '',
+            'Поставља максимални број активних оператера у временском распону дефинисаном у „SessionMaxIdleTime”.',
         'Sets the maximum number of active customers within the timespan defined in SessionMaxIdleTime.' =>
-            '',
+            'Поставља максимални број активних клијента у временском распону дефинисаном у „SessionMaxIdleTime”.',
         'Sets the maximum number of active sessions per agent within the timespan defined in SessionMaxIdleTime.' =>
-            '',
+            'Поставља максимални број активних сесија по оператеру у временском распону дефинисаном у „SessionMaxIdleTime”.',
         'Sets the maximum number of active sessions per customers within the timespan defined in SessionMaxIdleTime.' =>
-            '',
+            'Поставља максимални број активних сесија по кориснику у временском распону дефинисаном у „SessionMaxIdleTime”.',
         'Sets the minimal ticket counter size if "AutoIncrement" was selected as TicketNumberGenerator. Default is 5, this means the counter starts from 10000.' =>
             'Дефинише минималну величину бројача тикета уколико је изабран „AutoIncrement” као TicketNumberGenerator. Подразумевано је 5, што значи да бројач почиње од 10000.',
         'Sets the minutes a notification is shown for notice about upcoming system maintenance period.' =>
@@ -6975,6 +6996,7 @@ Thanks for your help!
             'Текст на почетку предмета када се имејл прослеђује, нпр „FW”, „Fwd”, или „Про”.',
         'This event module stores attributes from CustomerUser as DynamicFields tickets. Please see the setting above for how to configure the mapping.' =>
             'Овај модул догађаја чува атрибуте корисника као динамичка поља тикета. Погледајте опцију изнад за подешавање мапирања.',
+        'This is a description for TimeZone on Customer side.' => '',
         'This is the default orange - black skin for the customer interface.' =>
             'Ово је подразумевани наранџасто-црни изглед клијентског интерфејса.',
         'This is the default orange - black skin.' => 'Ово је подразумевани наранџасто-црни изглед.',
@@ -7063,7 +7085,7 @@ Thanks for your help!
             'Ажурирај индекс ескалације тикета после ажурирања атрибута тикета.',
         'Updates the ticket index accelerator.' => 'Ажурирај акцелератор индекса тикета.',
         'Upload your PGP key.' => '',
-        'Upload your S/MIME certificate.' => '',
+        'Upload your S/MIME certificate.' => 'Пошаљите ваш S/MIME сертификат.',
         'Use new type of select and autocomplete fields in agent interface, where applicable (InputFields).' =>
             'Користите нови тип поља за избор и аутоматско довршавање у интерфејсу оператера где је то могуће (поља за унос).',
         'Use new type of select and autocomplete fields in customer interface, where applicable (InputFields).' =>

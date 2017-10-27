@@ -1,4 +1,39 @@
-#5.0.22 2017-??-??
+#5.0.24 2017-??-??
+
+#5.0.23 2017-09-19
+ - 2017-09-11 Updated translations, thanks to all translators.
+ - 2017-09-07 Improved validation in statistic import and export.
+ - 2017-09-07 Fixed bug#[7307](https://bugs.otrs.org/show_bug.cgi?id=7307) - mixed html/plain e-mail.
+ - 2017-09-06 Fixed bug#[12569](https://bugs.otrs.org/show_bug.cgi?id=12569) - Missing explanation users (with visual impairments) in the 'Preferences' page.
+ - 2017-09-05 Fixed bug#[12843](https://bugs.otrs.org/show_bug.cgi?id=12843) - Ticket Notifications over 4.000 characters are being removed from db.
+ - 2017-09-05 Fixed bug#[13019](https://bugs.otrs.org/show_bug.cgi?id=13019) - Service translated in AdminSLA overview screen.
+ - 2017-09-05 Fixed bug#[13053](https://bugs.otrs.org/show_bug.cgi?id=13053) - There are no dialogs available at this point in the process is not shown.
+ - 2017-09-01 Fixed bug#[13081](https://bugs.otrs.org/show_bug.cgi?id=13081) - Article field not mandatory if attachment is added.
+ - 2017-09-01 Fixed bug#[13075](https://bugs.otrs.org/show_bug.cgi?id=13075) - Short description for "pending time" not shown in D.
+ - 2017-08-29 Fixed bug#[13083](https://bugs.otrs.org/show_bug.cgi?id=13083) - OTRS Business Solution Logout Logo is OTRSFree.
+ - 2017-08-18 Fixed bug#[13060](https://bugs.otrs.org/show_bug.cgi?id=13060) - Customer User input field is refocused on click away.
+ - 2017-08-15 Fixed bug#[13052](https://bugs.otrs.org/show_bug.cgi?id=13052) - Explaining text is missing from the New ticket view on the customer interface in case of mandatory texts.
+ - 2017-08-15 Fixed bug#[12990](https://bugs.otrs.org/show_bug.cgi?id=12990) - Ticket Menu Module is overlapping.
+ - 2017-08-14 Added possibility to specify a different directory where the OTRS Daemon creates its PID files by using the new SysConfig setting: 'Daemon::PID::Path'.
+ - 2017-08-14 Fixed bug#[13054](https://bugs.otrs.org/show_bug.cgi?id=13054) - Daemon reports that is already running when it can't get the lock of the PID file.
+ - 2017-08-10 Fixed bug#[12971](https://bugs.otrs.org/show_bug.cgi?id=12971) - AgentTicketMove - Queue list on AJAX update does not honor ListType setting.
+ - 2017-08-09 Fixed bug#[12981](https://bugs.otrs.org/show_bug.cgi?id=12981) - Out of office not shown in dashboard.
+ - 2017-08-09 Fixed bug#[13011](https://bugs.otrs.org/show_bug.cgi?id=13011) - Bad expires value in cookie.
+ - 2017-08-08 Fixed bug#[11512](https://bugs.otrs.org/show_bug.cgi?id=11512) - ACL Type field restriction on DynamicField change in AgentTicketProcess does not work.
+ - 2017-08-08 Fixed bug#[12965](https://bugs.otrs.org/show_bug.cgi?id=12965) - Process management: Article type field - Attachment delete button.
+ - 2017-08-07 Fixed bug#[13003](https://bugs.otrs.org/show_bug.cgi?id=13003) - Statistic shows Out of Office info in agent name.
+ - 2017-08-02 Fixed bug#[12871](https://bugs.otrs.org/show_bug.cgi?id=12871) - TicketACL->_GetChecks fills Param with Ticket values and form ones are lost.
+ - 2017-07-28 Fixed bug#[12933](https://bugs.otrs.org/show_bug.cgi?id=12933) - Change value for Order by column in report doesn't store.
+
+#5.0.22 2017-08-01
+ - 2017-07-27 Updated translations, thanks to all translators.
+ - 2017-07-27 Decreased the default value for the 'SessionMaxIdleTime' to two hours and fixed session counting to ignore sessions originating from the GenericInterface.
+ - 2017-07-26 Reverted fix for bug#[11843](https://bugs.otrs.org/show_bug.cgi?id=11843) - Notifications tag CUSTOMER_FROM gets replaced by CUSTOMER_REALNAME.
+ - 2017-07-20 Fixed bug#[12962](https://bugs.otrs.org/show_bug.cgi?id=12962) - Dynamic fields list values are not update when state is changed in AgentTicketActionCommon.
+ - 2017-07-20 Fixed bug#[12932](https://bugs.otrs.org/show_bug.cgi?id=12932) - Timeline view collides with Ticket::Frontend::ZoomExpand.
+ - 2017-07-14 Fixed bug#[12912](https://bugs.otrs.org/show_bug.cgi?id=12912) - Solution Time shows 33 Minutes - even though nothing is configured.
+ - 2017-07-14 Fixed bug#[12913](https://bugs.otrs.org/show_bug.cgi?id=12913) - Articles do not load in IFRAME.
+ - 2017-07-13 Fixed bug#[12734](https://bugs.otrs.org/show_bug.cgi?id=12734) - Dropdown not considered into TicketSolutionResponseTime Statistic.
 
 #5.0.21 2017-07-18
  - 2017-07-10 Updated translations, thanks to all translators.

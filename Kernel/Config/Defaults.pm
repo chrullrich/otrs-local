@@ -771,7 +771,7 @@ sub LoadDefaults {
     # SessionMaxIdleTime
     # (After this time (in seconds) without new http request, then
     # the user get logged off)
-    $Self->{SessionMaxIdleTime} = 6 * 60 * 60;
+    $Self->{SessionMaxIdleTime} = 2 * 60 * 60;
 
     # SessionDeleteIfTimeToOld
     # (Delete session's witch are requested and to old?) [0|1]
@@ -1166,6 +1166,7 @@ sub LoadDefaults {
         'Block' => 'Input',
         'Column' => 'Other Settings',
         'Data' => '[% Env("UserComment") %]',
+        'Desc' => 'Add a comment.',
         'Key' => 'Comment',
         'Label' => 'Comment',
         'Module' => 'Kernel::Output::HTML::Preferences::Generic',
