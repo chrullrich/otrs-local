@@ -380,6 +380,11 @@ $Selenium->RunTest(
 
         $Selenium->switch_to_frame($FrameName);
 
+        $Selenium->WaitFor(
+            JavaScript =>
+                'return typeof(Core) == "object" && typeof(Core.App) == "object" && Core.App.PageLoadComplete'
+        ) || die "OTRS API verification failed after page load.";
+
         # expand the article widget
         $Selenium->find_element( "#WidgetArticle .Toggle a", 'css' )->click();
 
@@ -430,6 +435,15 @@ $Selenium->RunTest(
             TicketID => $TicketID,
             UserID   => $TestUserID,
         );
+
+        # Ticket deletion could fail if apache still writes to ticket history. Try again in this case.
+        if ( !$Success ) {
+            sleep 3;
+            $Success = $TicketObject->TicketDelete(
+                TicketID => $TicketID,
+                UserID   => $TestUserID,
+            );
+        }
         $Self->True(
             $Success,
             "Ticket is deleted - ID $TicketID",

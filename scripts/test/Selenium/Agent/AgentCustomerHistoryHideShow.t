@@ -134,7 +134,7 @@ $Selenium->RunTest(
                 $Selenium->WaitFor(
                     JavaScript => 'return typeof($) === "function" && $("li.ui-menu-item:visible").length'
                 );
-                $Selenium->find_element("//*[text()='$AutoCompleteString']")->VerifiedClick();
+                $Selenium->execute_script("\$('li.ui-menu-item:contains($CustomerUserLogin)').click()");
                 $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".OverviewBox").length' );
 
                 # we wait a second to make sure the content has been set correctly
@@ -222,6 +222,15 @@ $Selenium->RunTest(
                 TicketID => $TicketID,
                 UserID   => 1,
             );
+
+            # Ticket deletion could fail if apache still writes to ticket history. Try again in this case.
+            if ( !$Success ) {
+                sleep 3;
+                $Success = $TicketObject->TicketDelete(
+                    TicketID => $TicketID,
+                    UserID   => 1,
+                );
+            }
             $Self->True(
                 $Success,
                 "Ticket $TicketID is deleted"
