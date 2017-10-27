@@ -47,7 +47,7 @@ $Selenium->RunTest(
         $Selenium->find_element( "table tbody tr td", 'css' );
 
         # create test standard attachments
-        for my $File (qw(xls txt doc png pdf)) {
+        for my $File (qw(xls )) {
 
             # click 'add new attachment' link
             $Selenium->find_element("//a[contains(\@href, \'Action=AdminAttachment;Subaction=Add' )]")->VerifiedClick();
@@ -59,7 +59,7 @@ $Selenium->RunTest(
             $Selenium->find_element( "#Name", 'css' )->send_keys($RandomID);
             $Selenium->execute_script("\$('#ValidID').val('1').trigger('redraw.InputField').trigger('change');");
             $Selenium->find_element( "#FileUpload", 'css' )->send_keys($Location);
-            $Selenium->find_element( "#Name",       'css' )->VerifiedSubmit();
+            $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
 
             # check if standard attachment show on AdminAttacnment screen
             $Self->True(
@@ -75,7 +75,7 @@ $Selenium->RunTest(
 
             $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
             $Selenium->find_element( "#Comment", 'css' )->send_keys('Selenium test attachment');
-            $Selenium->find_element( "#Name",    'css' )->VerifiedSubmit();
+            $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
 
             # check overview page
             $Self->True(
@@ -112,9 +112,14 @@ $Selenium->RunTest(
                 StdAttachment => $RandomID,
             );
             $Selenium->find_element("//a[contains(\@href, \'Subaction=Delete;ID=$ID' )]")->click();
+            $Selenium->WaitFor( AlertPresent => 1 );
 
             # Accept delete confirmation dialog
             $Selenium->accept_alert();
+
+            $Selenium->WaitFor(
+                JavaScript => "return typeof(\$) === 'function' &&  \$('tbody tr:contains($RandomID)').length === 0;"
+            );
 
             # check overview page
             $Self->True(
