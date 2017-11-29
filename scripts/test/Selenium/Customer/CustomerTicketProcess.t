@@ -12,23 +12,198 @@ use utf8;
 
 use vars (qw($Self));
 
-# get selenium object
 my $Selenium = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
 $Selenium->RunTest(
     sub {
 
-        # get helper object
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
-        # do not check RichText
+        # Do not check RichText.
         $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'Frontend::RichText',
             Value => 0
         );
 
-        # create test user and login
+        # Enable Type feature.
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'Ticket::Type',
+            Value => 1
+        );
+
+        my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
+
+        my @DynamicFields = (
+            {
+                Name       => 'TestDropdownACLProcess',
+                Label      => 'TestDropdownACLProcess',
+                FieldOrder => 9990,
+                FieldType  => 'Dropdown',
+                ObjectType => 'Ticket',
+                Config     => {
+                    DefaultValue   => '',
+                    Link           => '',
+                    PossibleNone   => 0,
+                    PossibleValues => {
+                        a => 1,
+                        b => 2,
+                        c => 3,
+                        d => 4,
+                        e => 5,
+                    },
+                    TranslatableValues => 1,
+                },
+                Reorder => 1,
+                ValidID => 1,
+                UserID  => 1,
+            },
+        );
+
+        my @DynamicFieldIDs;
+
+        # Create test DynamicFields.
+        for my $DynamicField (@DynamicFields) {
+
+            my $DynamicFieldID = $DynamicFieldObject->DynamicFieldAdd(
+                %{$DynamicField},
+            );
+
+            $Self->True(
+                $DynamicFieldID,
+                "Dynamic field $DynamicField->{Name} - ID $DynamicFieldID - created",
+            );
+
+            push @DynamicFieldIDs, $DynamicFieldID;
+        }
+
+        my $RandomID = $Helper->GetRandomID();
+
+        # Create Ticket types.
+        my $TypeObject = $Kernel::OM->Get('Kernel::System::Type');
+        my @Types;
+        for my $Count ( 1 .. 2 ) {
+            my $TypeName = 'TicketType' . $Count . $RandomID;
+            my $TypeID   = $TypeObject->TypeAdd(
+                Name    => $TypeName,
+                ValidID => 1,
+                UserID  => 1,
+            );
+            $Self->True(
+                $TypeID,
+                "TypeID $TypeID is created"
+            );
+            push @Types, {
+                ID   => $TypeID,
+                Name => $TypeName,
+                }
+        }
+
+        my $ACLObject = $Kernel::OM->Get('Kernel::System::ACL::DB::ACL');
+
+        my @ACLs = (
+            {
+                Name           => '1-ACL' . $Helper->GetRandomID(),
+                Comment        => 'Selenium Process ACL',
+                Description    => 'Description',
+                StopAfterMatch => 1,
+                ConfigMatch    => {
+                    Properties => {
+                        'Frontend' => {
+                            'Action' => [
+                                'CustomerTicketProcess',
+                            ],
+                        },
+                        'Ticket' => {
+                            'Queue' => [
+                                '[Not]Misc',
+                            ],
+                        },
+                    },
+                },
+                ConfigChange => {
+                    Possible => {
+                        'Ticket' => {
+                            'DynamicField_TestDropdownACLProcess' => [ 'a', 'b', 'c' ],
+                        },
+                    },
+                },
+                ValidID => 1,
+                UserID  => 1,
+            },
+            {
+                Name           => '2-ACL' . $Helper->GetRandomID(),
+                Comment        => 'Selenium Process ACL',
+                Description    => 'Description',
+                StopAfterMatch => 1,
+                ConfigMatch    => {
+                    Properties => {
+                        'Frontend' => {
+                            'Action' => [
+                                'CustomerTicketProcess',
+                            ],
+                        },
+                        'Ticket' => {
+                            'Queue' => [
+                                'Misc',
+                            ],
+                        },
+                    },
+                },
+                ConfigChange => {
+                    Possible => {
+                        'Ticket' => {
+                            'DynamicField_TestDropdownACLProcess' => ['d'],
+                        },
+                    },
+                },
+                ValidID => 1,
+                UserID  => 1,
+            },
+            {
+                Name           => '3-ACL' . $RandomID,
+                Comment        => 'Selenium Process ACL',
+                Description    => 'Description',
+                StopAfterMatch => 1,
+                ConfigMatch    => {
+                    Properties => {
+                        'Ticket' => {
+                            'DynamicField_TestDropdownACLProcess' => [
+                                'c',
+                            ],
+                        },
+                    },
+                },
+                ConfigChange => {
+                    Possible => {
+                        'Ticket' => {
+                            'Type' => [ $Types[1]->{Name} ],
+                        },
+                    },
+                },
+                ValidID => 1,
+                UserID  => 1,
+            },
+        );
+
+        my @ACLIDs;
+
+        for my $ACL (@ACLs) {
+
+            my $ACLID = $ACLObject->ACLAdd(
+                %{$ACL},
+            );
+
+            $Self->True(
+                $ACLID,
+                "ACLID $ACLID is created",
+            );
+
+            push @ACLIDs, $ACLID;
+        }
+
+        # Create test user and login.
         my $TestUserLogin = $Helper->TestUserCreate(
             Groups => ['admin'],
         ) || die "Did not get test user";
@@ -39,41 +214,41 @@ $Selenium->RunTest(
             Password => $TestUserLogin,
         );
 
-        # get config object
         my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+        my $ScriptAlias  = $ConfigObject->Get('ScriptAlias');
 
-        # get script alias
-        my $ScriptAlias = $ConfigObject->Get('ScriptAlias');
+        # Navigate to AdminACL and synchronize the created ACL's.
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminACL");
+        $Selenium->find_element("//a[contains(\@href, 'Action=AdminACL;Subaction=ACLDeploy')]")->VerifiedClick();
 
-        # navigate to AdminProcessmanagement screen
+        # Navigate to AdminProcessmanagement screen.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminProcessManagement");
 
-        # import test selenium scenario
-        my $Location = $ConfigObject->Get('Home')
-            . "/scripts/test/sample/ProcessManagement/TestProcess.yml";
+        # Import test Selenium Process.
+        my $Location = $ConfigObject->Get('Home') . "/scripts/test/sample/ProcessManagement/CustomerTicketProcess.yml";
         $Selenium->find_element( "#FileUpload",                      'css' )->send_keys($Location);
         $Selenium->find_element( "#OverwriteExistingEntitiesImport", 'css' )->VerifiedClick();
         $Selenium->find_element("//button[\@value='Upload process configuration'][\@type='submit']")->VerifiedClick();
         $Selenium->find_element("//a[contains(\@href, \'Subaction=ProcessSync' )]")->VerifiedClick();
 
-        # we have to allow a 1 second delay for Apache2::Reload to pick up the changed process cache
+        # We have to allow a 1 second delay for Apache2::Reload to pick up the changed Process cache.
         sleep 1;
 
-        # get test user ID
+        # Get test user ID.
         my $TestUserID = $Kernel::OM->Get('Kernel::System::User')->UserLookup(
             UserLogin => $TestUserLogin,
         );
 
-        # get process object
-        my $ProcessObject = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::Process');
+        my @DeleteTicketIDs;
 
-        # get process list
-        my $List = $ProcessObject->ProcessList(
+        # Get Process list.
+        my $ProcessObject = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::Process');
+        my $List          = $ProcessObject->ProcessList(
             UseEntities => 1,
             UserID      => $TestUserID,
         );
 
-        # get process entity
+        # Get Process entity.
         my %ListReverse = reverse %{$List};
         my $ProcessName = "TestProcess";
 
@@ -86,7 +261,7 @@ $Selenium->RunTest(
             "Found TestProcess",
         );
 
-        # create test customer user and login
+        # Create test customer user and login.
         my $TestCustomerUserLogin = $Helper->TestCustomerUserCreate(
         ) || die "Did not get test customer user";
 
@@ -96,23 +271,85 @@ $Selenium->RunTest(
             Password => $TestCustomerUserLogin,
         );
 
-        # navigate to CustomerTicketProcess screen
+        # Navigate to CustomerTicketProcess screen.
         $Selenium->VerifiedGet("${ScriptAlias}customer.pl?Action=CustomerTicketProcess");
 
-        # create first scenario for test customer ticket process
+        # Create first scenario for test CustomerTicketProcess.
         $Selenium->execute_script(
             "\$('#ProcessEntityID').val('$ListReverse{$ProcessName}').trigger('redraw.InputField').trigger('change');"
         );
         $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#Subject').length" );
 
-        my $SubjectRandom = 'Subject' . $Helper->GetRandomID();
-        my $ContentRandom = 'Content' . $Helper->GetRandomID();
+        # Check on DynamicField change - ACL restriction on Type field.
+        # See bug#11512 (https://bugs.otrs.org/show_bug.cgi?id=11512).
+        $Self->True(
+            $Selenium->execute_script("return \$('#TypeID option:contains(\"$Types[0]->{Name}\")').length;"),
+            "All Types are visible before ACL"
+        );
+
+        $Selenium->execute_script(
+            "\$('#DynamicField_TestDropdownACLProcess').val('c').trigger('redraw.InputField').trigger('change');"
+        );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
+
+        $Self->False(
+            $Selenium->execute_script("return \$('#TypeID option:contains(\"$Types[0]->{Name}\")').length;"),
+            "DynamicField change - ACL restricted Types"
+        );
+        $Selenium->execute_script(
+            "\$('#TypeID').val('$Types[1]->{ID}').trigger('redraw.InputField').trigger('change');"
+        );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
+
+        # Check further ACLs before the normal Process tests.
+        $Self->Is(
+            $Selenium->execute_script("return \$('#DynamicField_TestDropdownACLProcess > option').length;"),
+            3,
+            "DynamicField filtered options count",
+        );
+
+        $Selenium->execute_script("\$('#QueueID').val('4').trigger('redraw.InputField').trigger('change');");
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
+
+        $Self->Is(
+            $Selenium->execute_script("return \$('#DynamicField_TestDropdownACLProcess > option').length;"),
+            1,
+            "DynamicField filtered options count",
+        );
+
+        my $SubjectRandom  = 'Subject' . $Helper->GetRandomID();
+        my $ContentRandom  = 'Content' . $Helper->GetRandomID();
+        my $AttachmentName = "StdAttachment-Test1.txt";
+        my $AttachmentLocation
+            = $Kernel::OM->Get('Kernel::Config')->Get('Home') . "/scripts/test/sample/StdAttachment/$AttachmentName";
+
         $Selenium->find_element( "#Subject",  'css' )->send_keys($SubjectRandom);
         $Selenium->find_element( "#RichText", 'css' )->send_keys($ContentRandom);
         $Selenium->execute_script("\$('#QueueID').val('2').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element( "#Subject", 'css' )->VerifiedSubmit();
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
+        $Selenium->execute_script(
+            "\$('#TypeID').val('$Types[1]->{ID}').trigger('redraw.InputField').trigger('change');"
+        );
 
-        # check for inputed values for first step in test process ticket
+        $Selenium->find_element( "#FileUpload", 'css' )->send_keys($AttachmentLocation);
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("[id^=\'AttachmentDelete\']").length' );
+
+        # Check if the header is visible on the page (bug#12543).
+        my $Element = $Selenium->find_element(
+            "//a[contains(\@href, \'Action=CustomerTicketOverview;Subaction=MyTickets' )]"
+        );
+        $Element->is_enabled();
+        $Element->is_displayed();
+
+        my $FooterMessage = 'Powered by ' . $ConfigObject->Get('Product');
+        $Self->True(
+            index( $Selenium->get_page_source(), $FooterMessage ) > -1,
+            "$FooterMessage found in footer on page (after attachment upload)",
+        );
+
+        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+
+        # Check for inputed values for first step in test Process ticket.
         $Self->True(
             index( $Selenium->get_page_source(), $SubjectRandom ) > -1,
             "$SubjectRandom found on page",
@@ -126,7 +363,11 @@ $Selenium->RunTest(
             "Ticket open state found on page",
         ) || die;
 
-        # click on next step in process ticket
+        # Remember created ticket, to delete the ticket at the end of the test.
+        my @TicketID = split( 'TicketID=', $Selenium->get_current_url() );
+        push @DeleteTicketIDs, $TicketID[1];
+
+        # Click on next step in Process ticket.
         $Selenium->find_element("//a[contains(\@href, \'ProcessEntityID=$ListReverse{$ProcessName}' )]")
             ->VerifiedClick();
 
@@ -135,15 +376,15 @@ $Selenium->RunTest(
         $Selenium->switch_to_window( $Handles->[1] );
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#Subject").length;' );
 
-        # for test scenario to complete, in next step we set ticket priority to 5 very high
+        # For test scenario to complete, in next step we set ticket priority to 5 very high.
         $Selenium->execute_script("\$('#PriorityID').val('5').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element( "#Subject", 'css' )->submit();
+        $Selenium->execute_script('$("button[type=submit]").click();');
 
         $Selenium->WaitFor( WindowCount => 1 );
         $Selenium->switch_to_window( $Handles->[0] );
         $Selenium->VerifiedRefresh();
 
-        # check for inputed values as final step in first scenario
+        # Check for inputed values as final step in first scenario.
         $Self->True(
             index( $Selenium->get_page_source(), 'closed successful' ) > -1,
             "Ticket closed successful state found on page",
@@ -160,20 +401,24 @@ $Selenium->RunTest(
             "$EndProcessMessage message found on page",
         );
 
-        # navigate to CustomerTicketProcess screen
+        # Navigate to CustomerTicketProcess screen.
         $Selenium->VerifiedGet("${ScriptAlias}customer.pl?Action=CustomerTicketProcess");
 
-        # create second scenario for test customer ticket process
+        # Create second scenario for test CustomerTicketProcess.
         $Selenium->execute_script(
             "\$('#ProcessEntityID').val('$ListReverse{$ProcessName}').trigger('redraw.InputField').trigger('change');"
         );
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#Subject").length;' );
 
-        # in this scenario we just set ticket queue to junk to finish test
+        # In this scenario we just set ticket queue to junk to finish test.
         $Selenium->execute_script("\$('#QueueID').val('3').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element( "#Subject", 'css' )->VerifiedSubmit();
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
+        $Selenium->execute_script(
+            "\$('#TypeID').val('$Types[1]->{ID}').trigger('redraw.InputField').trigger('change');"
+        );
+        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
 
-        # check if we are at the end of test process ticket
+        # Check if we are at the end of test Process ticket.
         $Self->True(
             index( $Selenium->get_page_source(), 'Junk' ) > -1,
             "Queue Junk found on page",
@@ -183,24 +428,36 @@ $Selenium->RunTest(
             "$EndProcessMessage message found on page",
         );
 
-        # clean up test data
-        my @TicketID = split( 'TicketID=', $Selenium->get_current_url() );
+        # Remember created ticket, to delete the ticket at the end of the test.
+        @TicketID = split( 'TicketID=', $Selenium->get_current_url() );
+        push @DeleteTicketIDs, $TicketID[1];
 
-        # delete test process ticket
-        my $Success = $Kernel::OM->Get('Kernel::System::Ticket')->TicketDelete(
-            TicketID => $TicketID[1],
-            UserID   => $TestUserID,
-        );
-        $Self->True(
-            $Success,
-            "Process ticket is deleted - $TicketID[1]",
-        );
+        my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
-        # get needed objects
+        for my $TicketID (@DeleteTicketIDs) {
+
+            my $Success = $TicketObject->TicketDelete(
+                TicketID => $TicketID,
+                UserID   => $TestUserID,
+            );
+
+            # Ticket deletion could fail if apache still writes to ticket history. Try again in this case.
+            if ( !$Success ) {
+                sleep 3;
+                $Success = $TicketObject->TicketDelete(
+                    TicketID => $TicketID,
+                    UserID   => 1,
+                );
+            }
+            $Self->True(
+                $Success,
+                "TicketID $TicketID is deleted",
+            );
+        }
+
+        # Clean up activities.
         my $ActivityObject       = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::Activity');
         my $ActivityDialogObject = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::ActivityDialog');
-
-        # clean up activities
         for my $Item ( @{ $Process->{Activities} } ) {
             my $Activity = $ActivityObject->ActivityGet(
                 EntityID            => $Item,
@@ -208,101 +465,145 @@ $Selenium->RunTest(
                 ActivityDialogNames => 0,
             );
 
-            # clean up activity dialogs
+            # Clean up activity dialogs.
             for my $ActivityDialogItem ( @{ $Activity->{ActivityDialogs} } ) {
                 my $ActivityDialog = $ActivityDialogObject->ActivityDialogGet(
                     EntityID => $ActivityDialogItem,
                     UserID   => $TestUserID,
                 );
 
-                # delete test activity dialog
-                $Success = $ActivityDialogObject->ActivityDialogDelete(
+                # Delete test activity dialog.
+                my $Success = $ActivityDialogObject->ActivityDialogDelete(
                     ID     => $ActivityDialog->{ID},
                     UserID => $TestUserID,
                 );
                 $Self->True(
                     $Success,
-                    "ActivityDialog deleted - $ActivityDialog->{Name},",
+                    "ActivityDialog $ActivityDialog->{Name} is deleted",
                 );
             }
 
-            # delete test activity
-            $Success = $ActivityObject->ActivityDelete(
+            # Delete test activity.
+            my $Success = $ActivityObject->ActivityDelete(
                 ID     => $Activity->{ID},
                 UserID => $TestUserID,
             );
             $Self->True(
                 $Success,
-                "Activity deleted - $Activity->{Name},",
+                "Activity $Activity->{Name} is deleted",
             );
         }
 
-        # get transition action object
+        # Clean up transition actions.
         my $TransitionActionObject = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::TransitionAction');
-
-        # clean up transition actions
         for my $Item ( @{ $Process->{TransitionActions} } ) {
             my $TransitionAction = $TransitionActionObject->TransitionActionGet(
                 EntityID => $Item,
                 UserID   => $TestUserID,
             );
 
-            # delete test transition action
-            $Success = $TransitionActionObject->TransitionActionDelete(
+            # Delete test transition action.
+            my $Success = $TransitionActionObject->TransitionActionDelete(
                 ID     => $TransitionAction->{ID},
                 UserID => $TestUserID,
             );
             $Self->True(
                 $Success,
-                "TransitionAction deleted - $TransitionAction->{Name},",
+                "TransitionAction $TransitionAction->{Name} is deleted",
             );
         }
 
-        # get transition object
+        # Clean up transition.
         my $TransitionObject = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::Transition');
-
-        # clean up transition
         for my $Item ( @{ $Process->{Transitions} } ) {
             my $Transition = $TransitionObject->TransitionGet(
                 EntityID => $Item,
                 UserID   => $TestUserID,
             );
 
-            # delete test transition
-            $Success = $TransitionObject->TransitionDelete(
+            # Delete test transition.
+            my $Success = $TransitionObject->TransitionDelete(
                 ID     => $Transition->{ID},
                 UserID => $TestUserID,
             );
             $Self->True(
                 $Success,
-                "Transition deleted - $Transition->{Name},",
+                "Transition $Transition->{Name} is deleted",
             );
         }
 
-        # delete test process
-        $Success = $ProcessObject->ProcessDelete(
+        # Delete test Process.
+        my $Success = $ProcessObject->ProcessDelete(
             ID     => $Process->{ID},
             UserID => $TestUserID,
         );
         $Self->True(
             $Success,
-            "Process deleted - $Process->{Name},",
+            "Process $Process->{Name} is deleted",
         );
 
-        # synchronize process after deleting test process
+        # Dynchronize Process after deleting test Process.
         $Selenium->Login(
             Type     => 'Agent',
             User     => $TestUserLogin,
             Password => $TestUserLogin,
         );
 
-        # navigate to AdminProcessManagement screen
+        # Navigate to AdminProcessManagement screen.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminProcessManagement");
 
-        # synchronize process after deleting test process
+        # Synchronize Process after deleting test Process.
         $Selenium->find_element("//a[contains(\@href, \'Subaction=ProcessSync' )]")->VerifiedClick();
 
-        # make sure cache is correct
+        # Cleanup ACL.
+        for my $ACLID (@ACLIDs) {
+
+            # Delete test ACL.
+            $Success = $ACLObject->ACLDelete(
+                ID     => $ACLID,
+                UserID => 1,
+            );
+            $Self->True(
+                $Success,
+                "ACLID $ACLID is deleted",
+            );
+        }
+
+        # Navigate to AdminACL to synchronize after test ACL cleanup.
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminACL");
+
+        # Click 'Deploy ACLs'.
+        $Selenium->find_element("//a[contains(\@href, 'Action=AdminACL;Subaction=ACLDeploy')]")->VerifiedClick();
+
+        # Delete test Types.
+        my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+        for my $Type (@Types) {
+            $Type->{Name} = $DBObject->Quote( $Type->{Name} );
+            $Success = $DBObject->Do(
+                SQL  => "DELETE FROM ticket_type WHERE name = ?",
+                Bind => [ \$Type->{Name} ],
+            );
+            $Self->True(
+                $Success,
+                "TypeID $Type->{ID} is deleted",
+            );
+        }
+
+        # Cleanup DynamicField.
+        for my $DynamicFieldID (@DynamicFieldIDs) {
+
+            # Delete created test dynamic field
+            $Success = $DynamicFieldObject->DynamicFieldDelete(
+                ID     => $DynamicFieldID,
+                UserID => 1,
+            );
+            $Self->True(
+                $Success,
+                "DynamicFieldID $DynamicFieldID is deleted",
+            );
+        }
+
+        # Make sure cache is correct.
         for my $Cache (
             qw(ProcessManagement_Activity ProcessManagement_ActivityDialog ProcessManagement_Process ProcessManagement_Transition ProcessManagement_TransitionAction )
             )

@@ -11,6 +11,7 @@ package Kernel::System::Ticket::Article;
 use strict;
 use warnings;
 
+use Mail::Address;
 use POSIX qw(ceil);
 
 use Kernel::System::EmailParser;
@@ -1307,7 +1308,7 @@ only requested article types
 
 returns articles in array / hash by given ticket id but
 only requested article sender types (could be useful when
-trying to exclude autoreplies sent by system sender from
+trying to exclude auto replies sent by system sender from
 certain views)
 
     my @ArticleIndex = $TicketObject->ArticleGet(
@@ -2146,9 +2147,10 @@ send article via email and create article with attachments
         TicketID    => 123,
         ArticleType => 'note-internal',                                        # email-external|email-internal|phone|fax|...
         SenderType  => 'agent',                                                # agent|system|customer
-        From        => 'Some Agent <email@example.com>',                       # not required but useful
-        To          => 'Some Customer A <customer-a@example.com>',             # not required but useful
-        Cc          => 'Some Customer B <customer-b@example.com>',             # not required but useful
+        From        => 'Some Agent <email@example.com>',                       # required
+        To          => 'Some Customer A <customer-a@example.com>',             # required if both Cc and Bcc are not present
+        Cc          => 'Some Customer B <customer-b@example.com>',             # required if both To and Bcc are not present
+        Bcc         => 'Some Customer C <customer-c@example.com>',             # required if both To and Cc are not present
         ReplyTo     => 'Some Customer B <customer-b@example.com>',             # not required, is possible to use 'Reply-To' instead
         Subject     => 'some short description',                               # required
         Body        => 'the message text',                                     # required
@@ -2612,6 +2614,9 @@ sub SendAutoResponse {
         return;
     }
 
+    # Format sender because it maybe contains comma or other special symbols (see bug#13130).
+    my $From = Mail::Address->new( $AutoResponse{SenderRealname} // '', $AutoResponse{SenderAddress} );
+
     # send email
     my $ArticleID = $Self->ArticleSend(
         ArticleType    => 'email-external',
@@ -2619,7 +2624,7 @@ sub SendAutoResponse {
         TicketID       => $Param{TicketID},
         HistoryType    => $HistoryType,
         HistoryComment => "\%\%$AutoReplyAddresses",
-        From           => "$AutoResponse{SenderRealname} <$AutoResponse{SenderAddress}>",
+        From           => $From->format(),
         To             => $AutoReplyAddresses,
         Cc             => $Cc,
         Charset        => 'utf-8',
@@ -2987,8 +2992,6 @@ sub ArticleAccountedTimeDelete {
     return 1;
 }
 
-1;
-
 # the following is the pod for Kernel/System/Ticket/ArticleStorage*.pm
 
 =item ArticleDelete()
@@ -3174,6 +3177,7 @@ sub ArticleAttachmentIndex {
                 &&
                 $File{Filename} eq 'file-1'
                 && $File{ContentType} =~ /text\/plain/i
+                && $File{Disposition} eq 'inline'
                 )
             {
                 $AttachmentIDPlain = $AttachmentID;
@@ -3187,6 +3191,7 @@ sub ArticleAttachmentIndex {
                 &&
                 ( $File{Filename} =~ /^file-[12]$/ || $File{Filename} eq 'file-1.html' )
                 && $File{ContentType} =~ /text\/html/i
+                && $File{Disposition} eq 'inline'
                 )
             {
                 $AttachmentIDHTML = $AttachmentID;

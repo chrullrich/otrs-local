@@ -267,13 +267,13 @@
 [% RenderBlockEnd("PendingUntil") %]
 [% RenderBlockStart("Owner") %]
                         <label>[% Translate("Owner") | html %]:</label>
-                        <p class="Value" title="[% Data.UserFullname | html %] [% Data.OutOfOfficeMessage | html %] ([% Data.UserLogin | html %])">
+                        <p class="Value" title="[% Data.UserFullname | html %] ([% Data.UserLogin | html %])">
                             [% IF Data.EnableChat %]
                             <span class="UserStatusIcon [% Data.UserState | html %]">
                                 <i class="fa fa-circle" title="[% Data.UserStateDescription | html %]"></i>
                             </span>
                             [% END %]
-                            [% Data.UserFullname | html %] [% Data.OutOfOfficeMessage | html %]
+                            [% Data.UserFullname | html %]
                             [% IF Data.AgentEnableChat && Data.UserID != Env('UserID') %]
                             <span class="UserChatIcons Block Hidden">
                                 <a href="#" title="[% Translate("Start chat") | html %]" type="button" class="UserChatStart" data-user-id="[% Data.UserID | html %]" data-user-type="User" data-user-fullname="[% Data.UserFullname | html %]" data-ticket-id="[% Data.TicketID | html %]">
@@ -295,13 +295,13 @@
 [% RenderBlockEnd("Owner") %]
 [% RenderBlockStart("Responsible") %]
                         <label>[% Translate("Responsible") | html %]:</label>
-                        <p class="Value" title="[% Data.UserFullname | html %] [% Data.OutOfOfficeMessage | html %] ([% Data.UserLogin | html %])">
+                        <p class="Value" title="[% Data.UserFullname | html %] ([% Data.UserLogin | html %])">
                             [% IF Data.EnableChat %]
                             <span class="UserStatusIcon [% Data.UserState | html %]">
                                 <i class="fa fa-circle" title="[% Data.UserStateDescription | html %]"></i>
                             </span>
                             [% END %]
-                            [% Data.UserFullname | html %] [% Data.OutOfOfficeMessage | html %]
+                            [% Data.UserFullname | html %]
                             [% IF Data.AgentEnableChat && Data.UserID != Env('UserID') %]
                             <span class="UserChatIcons Block Hidden">
                                 <a href="#" title="[% Translate("Start chat") | html %]" type="button" class="UserChatStart" data-user-id="[% Data.UserID | html %]" data-user-type="User" data-user-fullname="[% Data.UserFullname | html %]" data-ticket-id="[% Data.TicketID | html %]">
@@ -470,7 +470,9 @@ $('#[% Data.FormID | html %] select[name=[% Data.PhoneElementID | html %]]').bin
 [% WRAPPER JSOnDocumentComplete %]
 <script type="text/javascript">//<![CDATA[
     $('#DestQueueID').bind('change', function (Event) {
-        $(this).closest('form').submit();
+        if ($('#DestQueueID option:selected').val()) {
+            $(this).closest('form').submit();
+        }
     });
 //]]></script>
 [% END %]
@@ -886,6 +888,7 @@ $('.ShowFieldInfoOverlay').bind('click', function() {
 [% IF Config("TimelineViewEnabled") == 1 %]
 var TicketID    = [% Data.TicketID | JSON %],
     ArticleID   = [% Data.ArticleID | JSON %],
+    NoTimelineViewAutoArticle = [% Data.NoTimelineViewAutoArticle | JSON %],
     ListObjects = [
 [% FOREACH Item IN Data.Items %]
     {
@@ -920,7 +923,7 @@ var TicketID    = [% Data.TicketID | JSON %],
 [% END %]
 ];
 
-Core.Agent.TicketZoom.TimelineView.Init(TicketID, ListObjects, ArticleID);
+Core.Agent.TicketZoom.TimelineView.Init(TicketID, ListObjects, ArticleID, NoTimelineViewAutoArticle);
 
 [% END %]
 //]]></script>
@@ -972,7 +975,7 @@ Core.Agent.TicketZoom.TimelineView.Init(TicketID, ListObjects, ArticleID);
 [% RenderBlockStart("ArticleDynamicField") %]
                     <label>[% Translate(Data.Label) | html %]:</label>
 [% RenderBlockStart("ArticleDynamicFieldLink") %]
-                    <p class="Value" title="[% Data.Title %]"><a href="[% Data.Link | Interpolate %]" target="_blank" class="DynamicFieldLink">[% Data.Value %]</a></p>
+                    <p class="Value" title="[% Data.Title %]"><a href="[% Data.Link | Interpolate %]" [% IF Data.LinkPreview %] data-trigger="floater" data-floater-url="[% Data.LinkPreview | Interpolate %]"[% END %] target="_blank" class="DynamicFieldLink">[% Data.Value %]</a></p>
 [% RenderBlockEnd("ArticleDynamicFieldLink") %]
 [% RenderBlockStart("ArticleDynamicFieldPlain") %]
                     <p class="Value" title="[% Data.Title %]">[% Data.Value %]</p>
@@ -1139,24 +1142,5 @@ function CheckIFrameHeight(IFrameID) {
 
 //]]></script>
 [% END %]
+[% INCLUDE "MetaFloater.tt" %]
 [% RenderBlockEnd("TicketZoomInit") %]
-
-<div class="MetaFloater Hidden">
-    <a href="#" class="Scale" title="[% Translate('Scale preview content') | html %]" style="display: none;">
-        <i class="fa fa-search-plus"></i>
-    </a>
-    <a href="#" class="Open" target="_blank" title="[% Translate('Open URL in new tab') | html %]" style="display: none;">
-        <i class="fa fa-external-link"></i>
-    </a>
-    <a href="#" class="Close" title="[% Translate('Close preview') | html %]">
-        <i class="fa fa-times"></i>
-    </a>
-    <i class="fa fa-spinner fa-spin"></i>
-    <div class="NoPreview">
-        <i class="fa fa-warning"></i>
-        [% Translate("A preview of this website can't be provided because it didn't allow to be embedded.") | html %]
-    </div>
-    <div class="Content" style="display: none;">
-        <iframe sandbox="allow-scripts allow-forms"></iframe>
-    </div>
-</div>

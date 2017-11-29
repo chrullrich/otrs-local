@@ -282,9 +282,12 @@ EOF
 
         my $FieldNameUsed0 = $FieldNameUsed . '0';
         my $FieldNameUsed1 = $FieldNameUsed . '1';
+        my $TranslatedDesc = $Param{LayoutObject}->{LanguageObject}->Translate(
+            'Ignore this field.',
+        );
         $HTMLString = <<"EOF";
 <input type="radio" id="$FieldNameUsed0" name="$FieldNameUsed" value="" $FieldUsedChecked0 />
-Ignore this field.
+$TranslatedDesc
 <div class="clear"></div>
 <input type="radio" id="$FieldNameUsed1" name="$FieldNameUsed" value="1" $FieldUsedChecked1 />
 EOF
@@ -326,6 +329,26 @@ EOF
         $ErrorMessage
     </p>
 </div>
+EOF
+    }
+
+    if ( $Param{AJAXUpdate} ) {
+
+        my $FieldsToUpdate = '';
+        if ( IsArrayRefWithData( $Param{UpdatableFields} ) ) {
+
+            # Remove current field from updatable fields list.
+            my @FieldsToUpdate = grep { $_ ne $FieldName } @{ $Param{UpdatableFields} };
+
+            # Quote all fields, put commas between them.
+            $FieldsToUpdate = join( ', ', map {"'$_'"} @FieldsToUpdate );
+        }
+
+        # Add JS to call FormUpdate() on change event.
+        $Param{LayoutObject}->AddJSOnDocumentComplete( Code => <<"EOF");
+\$('#$FieldName').on('change', function () {
+    Core.AJAX.FormUpdate(\$(this).parents('form'), 'AJAXUpdate', '$FieldName', [ $FieldsToUpdate ]);
+});
 EOF
     }
 

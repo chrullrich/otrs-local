@@ -114,19 +114,21 @@ sub Run {
                 Lock     => 'lock',
                 UserID   => $Self->{UserID},
             );
-            if (
-                $TicketObject->TicketOwnerSet(
-                    TicketID  => $Self->{TicketID},
-                    UserID    => $Self->{UserID},
-                    NewUserID => $Self->{UserID},
-                )
-                )
-            {
 
-                # show lock state
-                $OutputNotify = $LayoutObject->Notify(
-                    Data => "$Ticket{TicketNumber}: "
-                        . $LayoutObject->{LanguageObject}->Translate("Ticket locked."),
+            my $Success = $TicketObject->TicketOwnerSet(
+                TicketID  => $Self->{TicketID},
+                UserID    => $Self->{UserID},
+                NewUserID => $Self->{UserID},
+            );
+
+            # show lock state
+            if ($Success) {
+                $LayoutObject->Block(
+                    Name => 'PropertiesLock',
+                    Data => {
+                        %Param,
+                        TicketID => $Self->{TicketID},
+                    },
                 );
             }
         }
@@ -1112,8 +1114,11 @@ sub _MaskPhone {
     # customer info string
     if ( $ConfigObject->Get('Ticket::Frontend::CustomerInfoCompose') ) {
         $Param{CustomerTable} = $LayoutObject->AgentCustomerViewTable(
-            Data => $Param{CustomerData},
-            Max  => $ConfigObject->Get('Ticket::Frontend::CustomerInfoComposeMaxSize'),
+            Data => {
+                %{ $Param{CustomerData} },
+                TicketID => $Self->{TicketID},
+            },
+            Max => $ConfigObject->Get('Ticket::Frontend::CustomerInfoComposeMaxSize'),
         );
         $LayoutObject->Block(
             Name => 'CustomerTable',

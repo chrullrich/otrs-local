@@ -32,7 +32,7 @@ Kernel::GenericInterface::Operation::Ticket::Common - Base class for all Ticket 
 
 =item Init()
 
-initialize the operation by checking the webservice configuration and gather of the dynamic fields
+initialize the operation by checking the web service configuration and gather of the dynamic fields
 
     my $Return = $CommonObject->Init(
         WebserviceID => 1,
@@ -56,7 +56,7 @@ sub Init {
         };
     }
 
-    # get webservice configuration
+    # get web service configuration
     my $Webservice = $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice')->WebserviceGet(
         ID => $Param{WebserviceID},
     );
@@ -1000,9 +1000,8 @@ sub ValidateCharset {
     # check needed stuff
     return if !$Param{Charset};
 
-    my $CharsetList = $Self->_CharsetList();
-
-    return if !$CharsetList->{ $Param{Charset} };
+    use Encode;
+    return if !Encode::resolve_alias( $Param{Charset} );
 
     return 1;
 }
@@ -1281,7 +1280,7 @@ sub SetDynamicFieldValue {
 
 =item CreateAttachment()
 
-cretes a new attachment for the given article.
+creates a new attachment for the given article.
 
     my $Result = $CommonObject->CreateAttachment(
         Content     => $Data,                   # file content (Base64 encoded)
@@ -1482,6 +1481,8 @@ sub _ValidateUser {
 }
 
 =item _CharsetList()
+
+DEPRECATED: This function will be removed in further versions of OTRS.
 
 returns a list of all available charsets.
 

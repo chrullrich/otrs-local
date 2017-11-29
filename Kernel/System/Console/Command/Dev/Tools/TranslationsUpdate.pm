@@ -151,7 +151,7 @@ sub HandleLanguage {
     # We need to map internal codes to the official ones used by Transifex
     my %TransifexLanguagesMap = (
         sr_Cyrl => 'sr',
-        sr_Latn => 'sr@latin',
+        sr_Latn => 'sr',
     );
 
     my $TransifexLanguage = $TransifexLanguagesMap{$Language} // $Language;
@@ -270,6 +270,7 @@ sub HandleLanguage {
             Recursive => 1,
         );
 
+        # include Custom folder for modules
         my $CustomKernelDir = "$ModuleDirectory/Custom/Kernel";
         if ( $IsSubTranslation && -d $CustomKernelDir ) {
             my @CustomPerlModuleList = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
@@ -278,6 +279,16 @@ sub HandleLanguage {
                 Recursive => 1,
             );
             push @PerlModuleList, @CustomPerlModuleList;
+        }
+
+        # include var/packagesetup folder for modules
+        if ($IsSubTranslation) {
+            my @PackageSetupModuleList = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
+                Directory => "$ModuleDirectory/var/packagesetup",
+                Filter    => '*.pm',
+                Recursive => 1,
+            );
+            push @PerlModuleList, @PackageSetupModuleList;
         }
 
         FILE:
@@ -296,6 +307,7 @@ sub HandleLanguage {
             }
 
             $File =~ s{^.*/(Kernel/)}{$1}smx;
+            $File =~ s{^.*/(var/packagesetup/)}{$1}smx;
 
             my $Content = ${$ContentRef};
 
@@ -341,7 +353,7 @@ sub HandleLanguage {
             }egx;
         }
 
-        # add translatable strings from XB XML
+        # add translatable strings from DB XML
         my @DBXMLFiles = "$Home/scripts/database/otrs-initial_insert.xml";
         if ($IsSubTranslation) {
             @DBXMLFiles = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
@@ -374,6 +386,10 @@ sub HandleLanguage {
                 my $Word = $1 // '';
 
                 if ($Word && !$UsedWords{$Word}++) {
+
+                    if ($IsSubTranslation) {
+                        $File =~ s{^.*/(.+\.sopm)}{$1}smx;
+                    }
 
                     push @OriginalTranslationStrings, {
                         Location => "Database XML Definition: $File",

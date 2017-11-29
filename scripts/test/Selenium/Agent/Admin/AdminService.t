@@ -48,7 +48,8 @@ $Selenium->RunTest(
 
         # check client side validation
         $Selenium->find_element( "#Name", 'css' )->clear();
-        $Selenium->find_element( "#Name", 'css' )->VerifiedSubmit();
+        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+
         $Self->Is(
             $Selenium->execute_script(
                 "return \$('#Name').hasClass('Error')"
@@ -79,7 +80,7 @@ $Selenium->RunTest(
 
         $Selenium->find_element( "#Name",    'css' )->send_keys($ServiceRandomID);
         $Selenium->find_element( "#Comment", 'css' )->send_keys($ServiceComment);
-        $Selenium->find_element( "#Name",    'css' )->VerifiedSubmit();
+        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
 
         # create second test Service
         $Selenium->find_element("//a[contains(\@href, \'ServiceEdit;ServiceID=NEW' )]")->VerifiedClick();
@@ -88,7 +89,7 @@ $Selenium->RunTest(
 
         $Selenium->find_element( "#Name",    'css' )->send_keys($ServiceRandomID2);
         $Selenium->find_element( "#Comment", 'css' )->send_keys($ServiceComment);
-        $Selenium->find_element( "#Name",    'css' )->VerifiedSubmit();
+        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
 
         # check for created test Services on AdminService screen
         $Self->True(
@@ -137,7 +138,7 @@ $Selenium->RunTest(
         $Selenium->execute_script("\$('#ParentID').val('$ServiceID').trigger('redraw.InputField').trigger('change');");
         $Selenium->find_element( "#Comment", 'css' )->clear();
         $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element( "#Name", 'css' )->VerifiedSubmit();
+        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
 
         # check class of invalid Service in the overview table
         $Self->True(
@@ -167,10 +168,44 @@ $Selenium->RunTest(
             "#ValidID updated value",
         );
         $Selenium->execute_script("\$('#ParentID').val('').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element( "#Name", 'css' )->VerifiedSubmit();
+        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
 
-        # since there are no tickets that rely on our test Services we can remove
-        # them from DB
+        # create third test Service
+        $Selenium->find_element("//a[contains(\@href, \'ServiceEdit;ServiceID=NEW' )]")->VerifiedClick();
+
+        my $ServiceRandomID3 = "Long service" . $Helper->GetRandomID();
+        $ServiceRandomID3
+            .= $ServiceRandomID3
+            . $ServiceRandomID3
+            . $ServiceRandomID3
+            . $ServiceRandomID3
+            . $ServiceRandomID3
+            . $ServiceRandomID3;
+
+        $Selenium->find_element( "#Name", 'css' )->send_keys($ServiceRandomID3);
+        $Selenium->execute_script("\$('#ParentID').val('$ServiceID2').trigger('redraw.InputField').trigger('change');");
+
+        $Selenium->find_element( "#Comment", 'css' )->send_keys($ServiceComment);
+        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+
+        # Check for created test Services on AdminService screen.
+        $Self->False(
+            index( $Selenium->get_page_source(), $ServiceRandomID3 ) > -1,
+            "$ServiceRandomID3 Service found on page",
+        );
+        $Selenium->WaitFor(
+            JavaScript => 'return $(".Dialog:visible button.Close").length',
+        );
+
+        $Selenium->find_element( ".Dialog button.Close", "css" )->VerifiedClick();
+
+        # Check if tooltip error message is there.
+        $Self->True(
+            index( $Selenium->get_page_source(), "Service name maximum length is 200 characters" ) > -1,
+            "Check tooltip error message",
+        );
+
+        # Since there are no tickets that rely on our test Services we can remove them from DB.
         my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
         for my $ServiceID (@ServiceIDs) {
             my $Success = $DBObject->Do(

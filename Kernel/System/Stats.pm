@@ -18,6 +18,7 @@ use Date::Pcalc
 use POSIX qw(ceil);
 use Storable qw();
 
+use Kernel::Language qw(Translatable);
 use Kernel::System::VariableCheck qw(:all);
 use Kernel::Output::HTML::Statistics::View;
 
@@ -846,7 +847,7 @@ sub SumBuild {
     # add sum y
     if ( $Param{SumCol} ) {
 
-        push @{ $Data[1] }, 'Sum';
+        push @{ $Data[1] }, Translatable('Sum');
 
         for my $Index1 ( 2 .. $#Data ) {
 
@@ -907,7 +908,7 @@ sub SumBuild {
 
         push @Data, \@SumRow;
     }
-    return \@Data;
+    return @Data;
 }
 
 =item GetStatsObjectAttributes()
@@ -940,6 +941,7 @@ sub GetStatsObjectAttributes {
     return if !$Kernel::OM->Get('Kernel::System::Main')->Require($ObjectModule);
     my $StatObject = $ObjectModule->new( %{$Self} );
     return if !$StatObject;
+    return if !$StatObject->can('GetObjectAttributes');
 
     # load attributes
     my @ObjectAttributesRaw = $StatObject->GetObjectAttributes();
@@ -1061,7 +1063,7 @@ sub GetDynamicFiles {
             next OBJECT;
         }
         $Filelist{$Object} = $Self->GetObjectName(
-            ObjectModule => $Filelist{$Object}{Module},
+            ObjectModule => $Filelist{$Object}->{Module},
         );
     }
     return if !%Filelist;
@@ -1093,6 +1095,8 @@ sub GetObjectName {
     # get name
     my $StatObject = $Module->new( %{$Self} );
     return if !$StatObject;
+    return if !$StatObject->can('GetObjectName');
+
     my $Name = $StatObject->GetObjectName();
 
     # cache the result
@@ -1133,8 +1137,8 @@ sub GetObjectBehaviours {
 
     my $StatObject = $Module->new( %{$Self} );
     return if !$StatObject;
-
     return if !$StatObject->can('GetObjectBehaviours');
+
     my %ObjectBehaviours = $StatObject->GetObjectBehaviours();
 
     # cache the result
@@ -1144,6 +1148,8 @@ sub GetObjectBehaviours {
 }
 
 =item ObjectFileCheck()
+
+AT THE MOMENT NOT USED
 
 check readable object file
 
@@ -1170,6 +1176,93 @@ sub ObjectFileCheck {
 
     return 1 if -r $Directory;
     return;
+}
+
+=item ObjectModuleCheck()
+
+Check the object module.
+
+    my $ObjectModuleCheck = $StatsObject->ObjectModuleCheck(
+        StatType                     => 'static',
+        ObjectModule                 => 'Kernel::System::Stats::Static::StateAction',
+        CheckAlreadyUsedStaticObject => 1,                                             # optional
+    );
+
+Returns true on success and false on error.
+
+=cut
+
+sub ObjectModuleCheck {
+    my ( $Self, %Param ) = @_;
+
+    return if !$Param{StatType} || !$Param{ObjectModule};
+    return if $Param{StatType} ne 'static' && $Param{StatType} ne 'dynamic';
+
+    my $CheckFileLocation = 'Kernel::System::Stats::' . ucfirst $Param{StatType};
+    my $CheckPackageName  = '[A-Z_a-z][0-9A-Z_a-z]*';
+    return if $Param{ObjectModule} !~ m{ \A $CheckFileLocation (?: ::$CheckPackageName)+ \z }xms;
+
+    my $ObjectName = [ split( m{::}, $Param{ObjectModule} ) ]->[-1];
+    return if !$ObjectName;
+
+    my @RequiredObjectFunctions;
+
+    if ( $Param{StatType} eq 'static' ) {
+
+        @RequiredObjectFunctions = (
+            'Param',
+            'Run',
+        );
+
+        my $StaticFiles = $Self->GetStaticFiles(
+            OnlyUnusedFiles => $Param{CheckAlreadyUsedStaticObject},
+            UserID          => 1,
+        );
+
+        if ( $ObjectName && !$StaticFiles->{$ObjectName} ) {
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Static object $ObjectName doesn't exist or static object already in use!",
+            );
+            return;
+        }
+    }
+    else {
+
+        @RequiredObjectFunctions = (
+            'GetObjectName',
+            'GetObjectAttributes',
+        );
+
+        # Check if the given Object exists in the statistic object registartion.
+        my $DynamicFiles = $Self->GetDynamicFiles();
+
+        if ( !$DynamicFiles->{$ObjectName} ) {
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Object $ObjectName doesn't exist!"
+            );
+            return;
+        }
+    }
+
+    my $ObjectModule = $Param{ObjectModule};
+    return if !$Kernel::OM->Get('Kernel::System::Main')->Require($ObjectModule);
+
+    my $StatObject = $ObjectModule->new( %{$Self} );
+    return if !$StatObject;
+
+    # Check for the required object functions.
+    for my $RequiredObjectFunction (@RequiredObjectFunctions) {
+        return if !$StatObject->can($RequiredObjectFunction);
+    }
+
+    # Special check for some fucntions in the dynamic statistic object.
+    if ( $Param{StatType} eq 'dynamic' ) {
+        return if !$StatObject->can('GetStatTable') && !$StatObject->can('GetStatElement');
+    }
+
+    return 1;
 }
 
 =item Export()
@@ -1199,9 +1292,7 @@ sub Export {
 
     my @XMLHash = $XMLObject->XMLHashGet(
         Type => 'Stats',
-
-        #Cache => 0,
-        Key => $Param{StatID}
+        Key  => $Param{StatID},
     );
     my $StatsXML = $XMLHash[0]->{otrs_stats}->[1];
 
@@ -1211,36 +1302,7 @@ sub Export {
     );
     $File{Filename} .= '.xml';
 
-    # settings for static files
-    if (
-        $StatsXML->{StatType}->[1]->{Content}
-        && $StatsXML->{StatType}->[1]->{Content} eq 'static'
-        )
-    {
-        my $FileLocation = $StatsXML->{ObjectModule}->[1]->{Content};
-        $FileLocation =~ s{::}{\/}xg;
-        $FileLocation .= '.pm';
-        my $File        = $Kernel::OM->Get('Kernel::Config')->Get('Home') . "/$FileLocation";
-        my $FileContent = '';
-
-        open my $Filehandle, '<', $File || die "Can't open: $File: $!";    ## no critic
-
-        # set bin mode
-        binmode $Filehandle;
-        while (<$Filehandle>) {
-            $FileContent .= $_;
-        }
-        close $Filehandle;
-
-        $Kernel::OM->Get('Kernel::System::Encode')->EncodeInput( \$FileContent );
-        $StatsXML->{File}->[1]->{File}       = $StatsXML->{File}->[1]->{Content};
-        $StatsXML->{File}->[1]->{Content}    = encode_base64( $FileContent, '' );
-        $StatsXML->{File}->[1]->{Location}   = $FileLocation;
-        $StatsXML->{File}->[1]->{Permission} = '644';
-        $StatsXML->{File}->[1]->{Encode}     = 'Base64';
-    }
-
-    # delete create and change data
+    # Delete not needed and useful keys from the stats xml.
     for my $Key (qw(Changed ChangedBy Created CreatedBy StatID)) {
         delete $StatsXML->{$Key};
     }
@@ -1267,10 +1329,11 @@ sub Export {
         my $StatObject = $ObjectModule->new( %{$Self} );
         return if !$StatObject;
 
-        # load attributes
-        $StatsXML = $StatObject->ExportWrapper(
-            %{$StatsXML},
-        );
+        if ( $StatObject->can('ExportWrapper') ) {
+            $StatsXML = $StatObject->ExportWrapper(
+                %{$StatsXML},
+            );
+        }
     }
 
     # convert hash to string
@@ -1326,34 +1389,49 @@ sub Import {
     );
 
     # check if the required elements are available
-    for my $Element (
-        qw( Description Format Object ObjectModule Permission StatType SumCol SumRow Title Valid)
-        )
-    {
+    for my $Element (qw( Description Format Object ObjectModule Permission StatType SumCol SumRow Title Valid)) {
         if ( !defined $StatsXML->{$Element}->[1]->{Content} ) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
-                Message =>
-                    "Can't import Stat, because the required element $Element is not available!"
+                Message  => "Can't import Stat, because the required element $Element is not available!"
             );
             return;
         }
     }
 
-    # get config object
+    my $ObjectModuleCheck = $Self->ObjectModuleCheck(
+        StatType                     => $StatsXML->{StatType}->[1]->{Content},
+        ObjectModule                 => $StatsXML->{ObjectModule}->[1]->{Content},
+        CheckAlreadyUsedStaticObject => 1,
+    );
+
+    return if !$ObjectModuleCheck;
+
+    my $ObjectModule = $StatsXML->{ObjectModule}->[1]->{Content};
+    return if !$Kernel::OM->Get('Kernel::System::Main')->Require($ObjectModule);
+
+    my $StatObject = $ObjectModule->new( %{$Self} );
+    return if !$StatObject;
+
+    my $ObjectName = [ split( m{::}, $StatsXML->{ObjectModule}->[1]->{Content} ) ]->[-1];
+    if ( $StatsXML->{StatType}->[1]->{Content} eq 'static' ) {
+        $StatsXML->{File}->[1]->{Content} = $ObjectName;
+    }
+    else {
+        $StatsXML->{Object}->[1]->{Content} = $ObjectName;
+    }
+
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
     # if-clause if a stat-xml includes a StatNumber
     my $StatID = 1;
     if ( $StatsXML->{StatNumber} ) {
-        my $XMLStatsID = $StatsXML->{StatNumber}->[1]->{Content}
-            - $ConfigObject->Get('Stats::StatsStartNumber');
+        my $XMLStatsID = $StatsXML->{StatNumber}->[1]->{Content} - $ConfigObject->Get('Stats::StatsStartNumber');
         for my $Key (@Keys) {
             if ( $Key eq $XMLStatsID ) {
                 $Kernel::OM->Get('Kernel::System::Log')->Log(
                     Priority => 'error',
-                    Message =>
-                        "Can't import StatNumber $Key, because this StatNumber is already used!"
+                    Message  => "Can't import StatNumber $Key, because this StatNumber is already used!"
                 );
                 return;
             }
@@ -1384,83 +1462,6 @@ sub Import {
     $StatsXML->{ChangedBy}->[1]->{Content}  = $Param{UserID};
     $StatsXML->{StatNumber}->[1]->{Content} = $StatID + $ConfigObject->Get('Stats::StatsStartNumber');
 
-    my $DynamicFiles = $Self->GetDynamicFiles();
-
-    # Because some xml-parser insert \n instead of <example><example>
-    if ( $StatsXML->{Object}->[1]->{Content} ) {
-        $StatsXML->{Object}->[1]->{Content} =~ s{\n}{}x;
-    }
-
-    if (
-        $StatsXML->{Object}->[1]->{Content}
-        && !$DynamicFiles->{ $StatsXML->{Object}->[1]->{Content} }
-        )
-    {
-        $Kernel::OM->Get('Kernel::System::Log')->Log(
-            Priority => 'error',
-            Message  => "Object $StatsXML->{Object}->[1]->{Content} doesn't exist!"
-        );
-        return;
-    }
-
-    # static statistic
-    if (
-        $StatsXML->{StatType}->[1]->{Content}
-        && $StatsXML->{StatType}->[1]->{Content} eq 'static'
-        )
-    {
-        my $FileLocation = $StatsXML->{ObjectModule}[1]{Content};
-        $FileLocation =~ s{::}{\/}gx;
-        $FileLocation = $ConfigObject->Get('Home') . '/' . $FileLocation . '.pm';
-
-        # if no inline file is given in the stats definition
-        if ( !$StatsXML->{File}->[1]->{Content} ) {
-
-            # get the file name
-            $FileLocation =~ s{ \A .*? ( [^/]+ ) \. pm  \z }{$1}xms;
-
-            # set the file name
-            $StatsXML->{File}->[1]->{Content} = $FileLocation;
-        }
-
-        # write file if it is included in the stats definition
-        ## no critic
-        elsif ( open my $Filehandle, '>', $FileLocation ) {
-            ## use critic
-
-            print STDERR "Notice: Install $FileLocation ($StatsXML->{File}[1]{Permission})!\n";
-            if ( $StatsXML->{File}->[1]->{Encode} && $StatsXML->{File}->[1]->{Encode} eq 'Base64' )
-            {
-                $StatsXML->{File}->[1]->{Content} = decode_base64( $StatsXML->{File}->[1]->{Content} );
-                $Kernel::OM->Get('Kernel::System::Encode')->EncodeOutput(
-                    \$StatsXML->{File}->[1]->{Content}
-                );
-            }
-
-            # set utf8 or bin mode
-            if ( $StatsXML->{File}->[1]->{Content} =~ /use\sutf8;/ ) {
-                open $Filehandle, '>:utf8', $FileLocation;    ## no critic
-            }
-            else {
-                binmode $Filehandle;
-            }
-            print $Filehandle $StatsXML->{File}->[1]->{Content};
-            close $Filehandle;
-
-            # set permission
-            if ( length( $StatsXML->{File}->[1]->{Permission} ) == 3 ) {
-                $StatsXML->{File}->[1]->{Permission} = "0$StatsXML->{File}->[1]->{Permission}";
-            }
-            chmod( oct( $StatsXML->{File}->[1]->{Permission} ), $FileLocation );
-            $StatsXML->{File}->[1]->{Content} = $StatsXML->{File}->[1]->{File};
-
-            delete $StatsXML->{File}->[1]->{File};
-            delete $StatsXML->{File}->[1]->{Location};
-            delete $StatsXML->{File}->[1]->{Permission};
-            delete $StatsXML->{File}->[1]->{Encode};
-        }
-    }
-
     # wrapper to change used spelling in ids
     # wrap permissions
     my %Groups = $Kernel::OM->Get('Kernel::System::Group')->GroupList( Valid => 1 );
@@ -1488,19 +1489,10 @@ sub Import {
     }
 
     # wrap object dependend ids
-    if ( $StatsXML->{Object}->[1]->{Content} ) {
-
-        # load module
-        my $ObjectModule = $StatsXML->{ObjectModule}->[1]->{Content};
-        return if !$Kernel::OM->Get('Kernel::System::Main')->Require($ObjectModule);
-        my $StatObject = $ObjectModule->new( %{$Self} );
-        return if !$StatObject;
-
-        # load attributes
+    if ( $StatObject->can('ImportWrapper') ) {
         $StatsXML = $StatObject->ImportWrapper( %{$StatsXML} );
     }
 
-    # new
     return if !$XMLObject->XMLHashAdd(
         Type    => 'Stats',
         Key     => $StatID,
@@ -1552,6 +1544,7 @@ sub GetParams {
         return if !$Kernel::OM->Get('Kernel::System::Main')->Require($ObjectModule);
         my $StatObject = $ObjectModule->new( %{$Self} );
         return if !$StatObject;
+        return if !$StatObject->can('Param');
 
         # get params
         @Params = $StatObject->Param();
@@ -1626,14 +1619,37 @@ sub StatsRun {
         );
     }
 
-    # build sum in row or col
+    # Build sum in row or col.
     if ( @Result && ( $Stat->{SumRow} || $Stat->{SumCol} ) && $Stat->{Format} !~ m{^GD::Graph\.*}x ) {
-        return $Self->SumBuild(
+        @Result = $Self->SumBuild(
             Array  => \@Result,
             SumRow => $Stat->{SumRow},
             SumCol => $Stat->{SumCol},
         );
     }
+
+    # Exchange axis if selected.
+    if ( $GetParam{ExchangeAxis} ) {
+        my @NewStatArray;
+        my $Title = $Result[0]->[0];
+
+        shift(@Result);
+        for my $Key1 ( 0 .. $#Result ) {
+            for my $Key2 ( 0 .. $#{ $Result[0] } ) {
+                $NewStatArray[$Key2]->[$Key1] = $Result[$Key1]->[$Key2];
+            }
+        }
+        $NewStatArray[0]->[0] = '';
+        unshift( @NewStatArray, [$Title] );
+        @Result = @NewStatArray;
+    }
+
+    # Translate the column and row description.
+    $Self->_ColumnAndRowTranslation(
+        StatArrayRef => \@Result,
+        StatRef      => $Stat,
+        ExchangeAxis => $GetParam{ExchangeAxis},
+    );
 
     return \@Result;
 }
@@ -2123,6 +2139,7 @@ sub _GenerateStaticStats {
     return if !$Kernel::OM->Get('Kernel::System::Main')->Require($ObjectModule);
     my $StatObject = $ObjectModule->new( %{$Self} );
     return if !$StatObject;
+    return if !$StatObject->can('Run');
 
     my @Result;
     my %GetParam = %{ $Param{GetParam} };
@@ -2218,6 +2235,7 @@ sub _GenerateDynamicStats {
     return if !$Kernel::OM->Get('Kernel::System::Main')->Require($ObjectModule);
     my $StatObject = $ObjectModule->new( %{$Self} );
     return if !$StatObject;
+    return if !$StatObject->can('GetStatTable') && !$StatObject->can('GetStatElement');
 
     # get time object
     my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
@@ -2758,6 +2776,11 @@ sub _GenerateDynamicStats {
 
             # Do not translate the values, please see bug#12384 for more information.
             push @HeaderLine, $Xvalue->{Values}{$Valuename};
+        }
+
+        # Prevent randomization of x-axis in preview, sort it alphabetically see bug#12714.
+        if ($Preview) {
+            @HeaderLine = sort { lc($a) cmp lc($b) } @HeaderLine;
         }
     }
 
@@ -3317,7 +3340,8 @@ sub _GenerateDynamicStats {
     # so you don't need this function
     if ( $StatObject->can('GetHeaderLine') ) {
         my $HeaderRef = $StatObject->GetHeaderLine(
-            XValue => $Xvalue,
+            XValue       => $Xvalue,
+            Restrictions => \%RestrictionAttribute,
         );
 
         if ($HeaderRef) {
@@ -3360,6 +3384,178 @@ sub _GenerateDynamicStats {
         Result   => \@StatArray,
     );
     return @StatArray;
+}
+
+=item _ColumnAndRowTranslation()
+
+Translate the column and row name if needed.
+
+    $StatsObject->_ColumnAndRowTranslation(
+        StatArrayRef => $StatArrayRef,
+        StatRef      => $StatRef,
+        ExchangeAxis => 1 | 0,
+    );
+
+=cut
+
+sub _ColumnAndRowTranslation {
+    my ( $Self, %Param ) = @_;
+
+    # check if need params are available
+    for my $NeededParam (qw(StatArrayRef StatRef)) {
+        if ( !$Param{$NeededParam} ) {
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => "error",
+                Message  => "_ColumnAndRowTranslation: Need $NeededParam!"
+            );
+        }
+    }
+
+    # Cut the statistic array in the three pieces, to handle the diffrent values for the translation.
+    my $TitleArrayRef = shift @{ $Param{StatArrayRef} };
+    my $HeadArrayRef  = shift @{ $Param{StatArrayRef} };
+    my $StatArrayRef  = $Param{StatArrayRef};
+
+    my $LanguageObject = $Kernel::OM->Get('Kernel::Language');
+
+    # Find out, if the column or row names should be translated.
+    my %Translation;
+    my %Sort;
+
+    for my $Use (qw( UseAsXvalue UseAsValueSeries )) {
+        if (
+            $Param{StatRef}->{StatType} eq 'dynamic'
+            && $Param{StatRef}->{$Use}
+            && ref( $Param{StatRef}->{$Use} ) eq 'ARRAY'
+            )
+        {
+
+            my @Array = @{ $Param{StatRef}->{$Use} };
+
+            ELEMENT:
+            for my $Element (@Array) {
+                next ELEMENT if !$Element->{Selected};
+
+                if ( $Element->{Translation} && $Element->{Block} eq 'Time' ) {
+                    $Translation{$Use} = 'Time';
+                }
+                elsif ( $Element->{Translation} ) {
+                    $Translation{$Use} = 'Common';
+                }
+                else {
+                    $Translation{$Use} = '';
+                }
+
+                if ( $Element->{Translation} && $Element->{Block} ne 'Time' && !$Element->{SortIndividual} ) {
+                    $Sort{$Use} = 1;
+                }
+
+                last ELEMENT;
+            }
+        }
+    }
+
+    # Check if the axis are changed.
+    if ( $Param{ExchangeAxis} ) {
+        my $UseAsXvalueOld = $Translation{UseAsXvalue};
+        $Translation{UseAsXvalue}      = $Translation{UseAsValueSeries};
+        $Translation{UseAsValueSeries} = $UseAsXvalueOld;
+
+        my $SortUseAsXvalueOld = $Sort{UseAsXvalue};
+        $Sort{UseAsXvalue}      = $Sort{UseAsValueSeries};
+        $Sort{UseAsValueSeries} = $SortUseAsXvalueOld;
+    }
+
+    # Translate the headline array, if all values must be translated and
+    #   otherwise translate only the first value of the header.
+    if ( $Translation{UseAsXvalue} && $Translation{UseAsXvalue} ne 'Time' ) {
+        for my $Word ( @{$HeadArrayRef} ) {
+            $Word = $LanguageObject->Translate($Word);
+        }
+    }
+    else {
+        $HeadArrayRef->[0] = $LanguageObject->Translate( $HeadArrayRef->[0] );
+    }
+
+    # Sort the headline array after translation.
+    if ( $Sort{UseAsXvalue} ) {
+        my @HeadOld = @{$HeadArrayRef};
+
+        # Because the first value is no sortable column name
+        shift @HeadOld;
+
+        # Special handling if the sumfunction is used.
+        my $SumColRef;
+        if ( $Param{StatRef}->{SumRow} ) {
+            $SumColRef = pop @HeadOld;
+        }
+
+        my @SortedHead = sort { $a cmp $b } @HeadOld;
+
+        # Special handling if the sumfunction is used.
+        if ( $Param{StatRef}->{SumCol} ) {
+            push @SortedHead, $SumColRef;
+            push @HeadOld,    $SumColRef;
+        }
+
+        # Add the row names to the new StatArray.
+        my @StatArrayNew;
+        for my $Row ( @{$StatArrayRef} ) {
+            push @StatArrayNew, [ $Row->[0] ];
+        }
+
+        for my $ColumnName (@SortedHead) {
+            my $Counter = 0;
+            COLUMNNAMEOLD:
+            for my $ColumnNameOld (@HeadOld) {
+                $Counter++;
+                next COLUMNNAMEOLD if $ColumnNameOld ne $ColumnName;
+
+                for my $RowLine ( 0 .. $#StatArrayNew ) {
+                    push @{ $StatArrayNew[$RowLine] }, $StatArrayRef->[$RowLine]->[$Counter];
+                }
+                last COLUMNNAMEOLD;
+            }
+        }
+
+        # Bring the data back to the diffrent references.
+        unshift @SortedHead, $HeadArrayRef->[0];
+        @{$HeadArrayRef} = @SortedHead;
+        @{$StatArrayRef} = @StatArrayNew;
+    }
+
+    # Translate the row description.
+    if ( $Translation{UseAsValueSeries} && $Translation{UseAsValueSeries} ne 'Time' ) {
+        for my $Word ( @{$StatArrayRef} ) {
+            $Word->[0] = $LanguageObject->Translate( $Word->[0] );
+        }
+    }
+
+    # Sort the row description.
+    if ( $Sort{UseAsValueSeries} ) {
+
+        # Special handling if the sumfunction is used.
+        my $SumRowArrayRef;
+        if ( $Param{StatRef}->{SumRow} ) {
+            $SumRowArrayRef = pop @{$StatArrayRef};
+        }
+
+        my $DisableDefaultResultSort = grep { $_->{DisableDefaultResultSort} && $_->{DisableDefaultResultSort} == 1 }
+            @{ $Param{StatRef}->{UseAsXvalue} };
+
+        if ( !$DisableDefaultResultSort ) {
+            @{$StatArrayRef} = sort { $a->[0] cmp $b->[0] } @{$StatArrayRef};
+        }
+
+        # Special handling if the sumfunction is used.
+        if ( $Param{StatRef}->{SumRow} ) {
+            push @{$StatArrayRef}, $SumRowArrayRef;
+        }
+    }
+
+    unshift( @{$StatArrayRef}, $TitleArrayRef, $HeadArrayRef );
+
+    return 1;
 }
 
 sub _WriteResultCache {
@@ -3562,6 +3758,10 @@ sub _MonthArray {
 
 sub _AutomaticSampleImport {
     my ( $Self, %Param ) = @_;
+
+    # Prevent deep recursions.
+    local $Self->{InAutomaticSampleImport} = $Self->{InAutomaticSampleImport};
+    return if $Self->{InAutomaticSampleImport}++;
 
     for my $Needed (qw(UserID)) {
         if ( !$Param{$Needed} ) {

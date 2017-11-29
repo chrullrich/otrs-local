@@ -40,6 +40,7 @@ ActivityDialogs:
       FieldOrder:
       - Priority
       - Article
+      - DynamicField_TestTextZeroProcess
       Fields:
         Article:
           Config:
@@ -53,6 +54,11 @@ ActivityDialogs:
           DescriptionLong: ''
           DescriptionShort: ''
           Display: '2'
+        DynamicField_TestTextZeroProcess:
+          DefaultValue: '0'
+          DescriptionLong: ''
+          DescriptionShort: ''
+          Display: '0'
       Interface:
       - AgentInterface
       - CustomerInterface
@@ -72,6 +78,8 @@ ActivityDialogs:
       FieldOrder:
       - Queue
       - Article
+      - DynamicField_TestDropdownACLProcess
+      - Type
       Fields:
         Article:
           Config:
@@ -81,6 +89,16 @@ ActivityDialogs:
           DescriptionShort: ''
           Display: '1'
         Queue:
+          DefaultValue: ''
+          DescriptionLong: ''
+          DescriptionShort: ''
+          Display: '2'
+        DynamicField_TestDropdownACLProcess:
+          DefaultValue: ''
+          DescriptionLong: ''
+          DescriptionShort: ''
+          Display: '1'
+        Type:
           DefaultValue: ''
           DescriptionLong: ''
           DescriptionShort: ''

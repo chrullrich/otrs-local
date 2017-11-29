@@ -37,7 +37,7 @@ Kernel::System::Web::InterfaceCustomer - the customer web interface
 
 =head1 SYNOPSIS
 
-the global customer web interface (incl. auth, session, ...)
+the global customer web interface (authentication, session handling, ...)
 
 =head1 PUBLIC INTERFACE
 
@@ -314,7 +314,7 @@ sub Run {
             # show need user data error message
             $LayoutObject->Print(
                 Output => \$LayoutObject->CustomerLogin(
-                    Title   => 'Panic!',
+                    Title   => 'Error',
                     Message => Translatable(
                         'Authentication succeeded, but no customer record is found in the customer backend. Please contact the administrator.'
                     ),
@@ -346,6 +346,7 @@ sub Run {
             %UserData,
             UserLastRequest => $Kernel::OM->Get('Kernel::System::Time')->SystemTime(),
             UserType        => 'Customer',
+            SessionSource   => 'CustomerInterface',
         );
 
         # show error message if no session id has been created
@@ -1037,8 +1038,8 @@ sub Run {
             # show login screen
             $LayoutObject->Print(
                 Output => \$LayoutObject->CustomerLogin(
-                    Title   => 'Panic!',
-                    Message => Translatable('Panic! Invalid Session!!!'),
+                    Title   => 'Error',
+                    Message => Translatable('Error: invalid session.'),
                     %Param,
                 ),
             );
@@ -1235,7 +1236,7 @@ sub Run {
                     . "::$UserData{UserLogin}::$QueryString\n";
                 close $Out;
                 $Kernel::OM->Get('Kernel::System::Log')->Log(
-                    Priority => 'notice',
+                    Priority => 'debug',
                     Message  => 'Response::Customer: '
                         . ( time() - $Self->{PerformanceLogStart} )
                         . "s taken (URL:$QueryString:$UserData{UserLogin})",

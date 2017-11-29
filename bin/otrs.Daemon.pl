@@ -46,7 +46,7 @@ local $Kernel::OM = Kernel::System::ObjectManager->new(
 # Don't allow to run these scripts as root.
 if ( $> == 0 ) {    # $EFFECTIVE_USER_ID
     print STDERR
-        "Error: You cannot run otrs.Damon.pl as root. Please run it as the 'otrs' user or with the help of su:\n";
+        "Error: You cannot run otrs.Daemon.pl as root. Please run it as the 'otrs' user or with the help of su:\n";
     print STDERR "  su -c \"bin/otrs.Daemon.pl ...\" -s /bin/bash otrs\n";
     exit 1;
 }
@@ -64,7 +64,7 @@ if ( $NodeID !~ m{ \A \d+ \z }xms && $NodeID > 0 && $NodeID < 1000 ) {
 }
 
 # get pid directory
-my $PIDDir  = $ConfigObject->Get('Home') . '/var/run/';
+my $PIDDir = $ConfigObject->Get('Daemon::PID::Path') || $ConfigObject->Get('Home') . '/var/run/';
 my $PIDFile = $PIDDir . "Daemon-NodeID-$NodeID.pid";
 my $PIDFH;
 
@@ -515,13 +515,13 @@ sub _PIDLock {
 
     # create new PID file (set exclusive lock while writing the PIDFile)
     open my $FH, '>', $PIDFile || die "Can not create PID file: $PIDFile\n";    ## no critic
-    return if !flock( $FH, LOCK_EX | LOCK_NB );
+    flock( $FH, LOCK_EX | LOCK_NB ) || die "Can not get exclusive lock for writing PID file: $PIDFile\n";
     print $FH $$;
     close $FH;
 
     # keep PIDFile shared locked forever
-    open $PIDFH, '<', $PIDFile || die "Can not create PID file: $PIDFile\n";    ## no critic
-    return if !flock( $PIDFH, LOCK_SH | LOCK_NB );
+    open $PIDFH, '<', $PIDFile || die "Can not read PID file: $PIDFile\n";      ## no critic
+    flock( $PIDFH, LOCK_SH | LOCK_NB ) || die "Can not get shared lock for reading PID file: $PIDFile\n";
 
     return 1;
 }

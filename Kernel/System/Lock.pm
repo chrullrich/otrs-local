@@ -27,8 +27,8 @@ Kernel::System::Lock - lock lib
 
 All lock functions.
 
-The whole lock API is just for "reading" lock states. Per default you have "unlock", "lock" and "lock-tmp".
-Usually you will not modify those lock states, because there is not usecase for this.
+The whole lock API is just for "reading" lock states. By default, there is "unlock", "lock" and "lock-tmp".
+Usually you would not modify those lock states, because there is no use case for this.
 
 =head1 PUBLIC INTERFACE
 
@@ -64,7 +64,7 @@ sub new {
 
 =item LockViewableLock()
 
-get list of viewable lock types (used to show available tickets)
+get list of view-able lock types (used to show available tickets)
 
     my @List = $LockObject->LockViewableLock(
         Type => 'Name', # ID|Name
@@ -199,7 +199,7 @@ Returns:
     %List = (
         1 => 'unlock',
         2 => 'lock',
-        3 => 'lock-tmp',
+        3 => 'tmp_lock',
     );
 
 =cut

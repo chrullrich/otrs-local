@@ -19,6 +19,7 @@ our @ObjectDependencies = (
     'Kernel::Config',
     'Kernel::Language',
     'Kernel::Output::HTML::Layout',
+    'Kernel::System::CustomerCompany',
     'Kernel::System::CustomerUser',
     'Kernel::System::DynamicField',
     'Kernel::System::DynamicField::Backend',
@@ -301,8 +302,37 @@ sub TableCreateComplex {
     # Define Headline columns
 
     # Sort
+    my @AllColumns;
     COLUMN:
     for my $Column ( sort { $SortOrder{$a} <=> $SortOrder{$b} } keys %UserColumns ) {
+
+        my $ColumnTranslate = $Column;
+        if ( $Column eq 'EscalationTime' ) {
+            $ColumnTranslate = Translatable('Service Time');
+        }
+        elsif ( $Column eq 'EscalationResponseTime' ) {
+            $ColumnTranslate = Translatable('First Response Time');
+        }
+        elsif ( $Column eq 'EscalationSolutionTime' ) {
+            $ColumnTranslate = Translatable('Solution Time');
+        }
+        elsif ( $Column eq 'EscalationUpdateTime' ) {
+            $ColumnTranslate = Translatable('Update Time');
+        }
+        elsif ( $Column eq 'PendingTime' ) {
+            $ColumnTranslate = Translatable('Pending till');
+        }
+        elsif ( $Column eq 'CustomerCompanyName' ) {
+            $ColumnTranslate = Translatable('Customer Company Name');
+        }
+        elsif ( $Column eq 'CustomerUserID' ) {
+            $ColumnTranslate = Translatable('Customer User ID');
+        }
+
+        push @AllColumns, {
+            ColumnName      => $Column,
+            ColumnTranslate => $ColumnTranslate,
+        };
 
         # if enabled by default
         if ( $UserColumns{$Column} == 2 ) {
@@ -310,7 +340,7 @@ sub TableCreateComplex {
 
             # Ticket fields
             if ( $Column !~ m{\A DynamicField_}xms ) {
-                $ColumnName = $Column eq 'TicketNumber' ? $TicketHook : $Column;
+                $ColumnName = $Column eq 'TicketNumber' ? $TicketHook : $ColumnTranslate;
             }
 
             # Dynamic fields
@@ -458,6 +488,12 @@ sub TableCreateComplex {
                         }
                         $Hash{'Content'} = $CustomerName;
                     }
+                    elsif ( $Column eq 'CustomerCompanyName' ) {
+                        my %CustomerCompany = $Kernel::OM->Get('Kernel::System::CustomerCompany')->CustomerCompanyGet(
+                            CustomerID => $Ticket->{CustomerID},
+                        );
+                        $Hash{'Content'} = $CustomerCompany{CustomerCompanyName};
+                    }
                     elsif ( $Column eq 'State' || $Column eq 'Priority' || $Column eq 'Lock' ) {
                         $Hash{'Content'} = $LanguageObject->Translate( $Ticket->{$Column} );
                     }
@@ -514,6 +550,7 @@ sub TableCreateComplex {
         ObjectID   => $Param{ObjectID},
         Headline   => \@Headline,
         ItemList   => \@ItemList,
+        AllColumns => \@AllColumns,
     );
 
     return ( \%Block );
@@ -644,7 +681,7 @@ sub ContentStringCreate {
 
 =item SelectableObjectList()
 
-return an array hash with selectable objects
+return an array hash with select-able objects
 
 Return
 

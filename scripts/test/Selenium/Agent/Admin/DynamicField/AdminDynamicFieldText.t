@@ -76,7 +76,7 @@ $Selenium->RunTest(
             # check client side validation
             my $Element = $Selenium->find_element( "#Name", 'css' );
             $Element->send_keys("");
-            $Element->VerifiedSubmit();
+            $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
 
             $Self->Is(
                 $Selenium->execute_script(
@@ -96,7 +96,7 @@ $Selenium->RunTest(
             $Selenium->find_element( "#AddRegEx",                    'css' )->VerifiedClick();
             $Selenium->find_element( "#RegEx_1",                     'css' )->send_keys($RegEx);
             $Selenium->find_element( "#CustomerRegExErrorMessage_1", 'css' )->send_keys($RegExErrorTxt);
-            $Selenium->find_element( "#Name",                        'css' )->VerifiedSubmit();
+            $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
 
             # check for test DynamicFieldText on AdminDynamicField screen
             $Self->True(
@@ -109,7 +109,7 @@ $Selenium->RunTest(
 
             $Selenium->find_element( "#DefaultValue", 'css' )->send_keys("Default");
             $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
-            $Selenium->find_element( "#Name", 'css' )->VerifiedSubmit();
+            $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
 
             # check new and edited DynamicFieldText values
             $Selenium->find_element( $RandomID, 'link_text' )->VerifiedClick();
@@ -145,9 +145,6 @@ $Selenium->RunTest(
                 "#ValidID updated value",
             );
 
-            # go back to AdminDynamicField screen
-            $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminDynamicField");
-
             # delete DynamicFields
             my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
             my $DynamicField       = $DynamicFieldObject->DynamicFieldGet(
@@ -163,6 +160,9 @@ $Selenium->RunTest(
                 $Success,
                 "DynamicFieldDelete() - $RandomID"
             );
+
+            # Go back to AdminDynamicField screen.
+            $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminDynamicField");
 
         }
 

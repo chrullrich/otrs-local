@@ -226,7 +226,7 @@ sub Run {
         Message => Translatable(
             'We are sorry, you do not have permissions anymore to access this ticket in its current state.'
         ),
-        WithHeader => 'yes',
+        WithHeader => $Self->{Subaction} && $Self->{Subaction} eq 'ArticleUpdate' ? 'no' : 'yes',
     ) if !$Access;
 
     # get ticket attributes
@@ -700,6 +700,22 @@ sub MaskAgentZoom {
     # get article page
     my $ArticlePage = $ParamObject->GetParam( Param => 'ArticlePage' );
 
+    # Get all articles.
+    my @ArticleContentArgsAll = (
+        TicketID                   => $Self->{TicketID},
+        StripPlainBodyAsAttachment => $Self->{StripPlainBodyAsAttachment},
+        UserID                     => $Self->{UserID},
+        Order                      => $Order,
+        DynamicFields => 0,    # fetch later only for the article(s) to display
+    );
+    my @ArticleBoxAll = $TicketObject->ArticleContentIndex(@ArticleContentArgsAll);
+
+    my %ArticleFlags = $TicketObject->ArticleFlagsOfTicketGet(
+        TicketID => $Ticket{TicketID},
+        UserID   => $Self->{UserID},
+    );
+    my $ArticleID;
+
     if ( $Self->{ArticleID} ) {
         $Page = $TicketObject->ArticlePage(
             TicketID    => $Self->{TicketID},
@@ -713,7 +729,36 @@ sub MaskAgentZoom {
         $Page = $ArticlePage;
     }
     else {
-        $Page = 1;
+
+        # Find latest not seen article.
+        ARTICLE:
+        for my $Article (@ArticleBoxAll) {
+
+            # Ignore system sender type.
+            if (
+                $ConfigObject->Get('Ticket::NewArticleIgnoreSystemSender')
+                && $Article->{SenderType} eq 'system'
+                )
+            {
+                next ARTICLE;
+            }
+
+            next ARTICLE if $ArticleFlags{ $Article->{ArticleID} }->{Seen};
+            $ArticleID = $Article->{ArticleID};
+
+            $Page = $TicketObject->ArticlePage(
+                TicketID    => $Self->{TicketID},
+                ArticleID   => $ArticleID,
+                RowsPerPage => $Limit,
+                Order       => $Order,
+                %{ $Self->{ArticleFilter} // {} },
+            );
+            last ARTICLE;
+        }
+
+        if ( !$ArticleID ) {
+            $Page = 1;
+        }
     }
 
     # We need to find out whether pagination is actually necessary.
@@ -795,16 +840,6 @@ sub MaskAgentZoom {
         $Count = 0;
     }
 
-    # get all articles
-    my @ArticleContentArgsAll = (
-        TicketID                   => $Self->{TicketID},
-        StripPlainBodyAsAttachment => $Self->{StripPlainBodyAsAttachment},
-        UserID                     => $Self->{UserID},
-        Order                      => $Order,
-        DynamicFields => 0,    # fetch later only for the article(s) to display
-    );
-    my @ArticleBoxAll = $TicketObject->ArticleContentIndex(@ArticleContentArgsAll);
-
     if ( scalar @ArticleBox != scalar @ArticleBoxAll ) {
 
         if ( $ConfigObject->Get('Ticket::Frontend::ZoomExpandSort') eq 'reverse' ) {
@@ -847,46 +882,24 @@ sub MaskAgentZoom {
         $ArticleIDFound = 1;
     }
 
-    my %ArticleFlags = $TicketObject->ArticleFlagsOfTicketGet(
-        TicketID => $Ticket{TicketID},
-        UserID   => $Self->{UserID},
-    );
-
     # get selected or last customer article
-    my $ArticleID;
     if ($ArticleIDFound) {
         $ArticleID = $Self->{ArticleID};
     }
     else {
-
-        # find latest not seen article
-        ARTICLE:
-        for my $Article (@ArticleBox) {
-
-            # ignore system sender type
-            next ARTICLE
-                if $ConfigObject->Get('Ticket::NewArticleIgnoreSystemSender')
-                && $Article->{SenderType} eq 'system';
-
-            next ARTICLE if $ArticleFlags{ $Article->{ArticleID} }->{Seen};
-            $ArticleID = $Article->{ArticleID};
-            last ARTICLE;
-        }
-
-        # set selected article
         if ( !$ArticleID ) {
             if (@ArticleBox) {
 
                 # set first listed article as fallback
                 $ArticleID = $ArticleBox[0]->{ArticleID};
-            }
 
-            # set last customer article as selected article replacing last set
-            ARTICLETMP:
-            for my $ArticleTmp (@ArticleBox) {
-                if ( $ArticleTmp->{SenderType} eq 'customer' ) {
-                    $ArticleID = $ArticleTmp->{ArticleID};
-                    last ARTICLETMP if $Self->{ZoomExpandSort} eq 'reverse';
+                # set last customer article as selected article replacing last set
+                ARTICLETMP:
+                for my $ArticleTmp (@ArticleBox) {
+                    if ( $ArticleTmp->{SenderType} eq 'customer' ) {
+                        $ArticleID = $ArticleTmp->{ArticleID};
+                        last ARTICLETMP if $Self->{ZoomExpandSort} eq 'reverse';
+                    }
                 }
             }
         }
@@ -1052,7 +1065,8 @@ sub MaskAgentZoom {
 
                 # check the configured priority for this item. The lowest ClusterPriority
                 # within the same cluster wins.
-                my $Priority = $MenuClusters{ $Menus{$Menu}->{ClusterName} }->{Priority};
+                my $Priority = $MenuClusters{ $Menus{$Menu}->{ClusterName} }->{Priority} || 0;
+                $Menus{$Menu}->{ClusterPriority} ||= 0;
                 if ( !$Priority || $Priority !~ /^\d{3}$/ || $Priority > $Menus{$Menu}->{ClusterPriority} ) {
                     $Priority = $Menus{$Menu}->{ClusterPriority};
                 }
@@ -1433,7 +1447,7 @@ sub MaskAgentZoom {
         # get next activity dialogs
         my $NextActivityDialogs;
         if ( $Ticket{$ActivityEntityIDField} ) {
-            $NextActivityDialogs = ${ActivityData}->{ActivityDialog} // {};
+            $NextActivityDialogs = ${ActivityData}->{ActivityDialog} || {};
         }
         my $ActivityName = $ActivityData->{Name};
 
@@ -2009,23 +2023,11 @@ sub _ArticleTree {
         );
     }
 
-    # check if expand/collapse view is usable (not available for too many
-    # articles)
-    if ( $Self->{ZoomExpand} && $#ArticleBox < $ArticleMaxLimit ) {
-        $LayoutObject->Block(
-            Name => 'Collapse',
-            Data => {
-                %Ticket,
-                ArticleID      => $ArticleID,
-                ZoomExpand     => $Self->{ZoomExpand},
-                ZoomExpandSort => $Self->{ZoomExpandSort},
-                Page           => $Param{Page},
-            },
-        );
-    }
-    elsif ( $Self->{ZoomTimeline} ) {
+    # Check which view is usable.
+    # If expand/collapse view is usable, check number of articles (not available for too many articles).
+    if ( $Self->{ZoomTimeline} ) {
 
-        # show trigger for timeline view
+        # Show trigger for timeline view.
         $LayoutObject->Block(
             Name => 'Timeline',
             Data => {
@@ -2038,8 +2040,10 @@ sub _ArticleTree {
         );
     }
     elsif ( $#ArticleBox < $ArticleMaxLimit ) {
+        my $BlockName = $Self->{ZoomExpand} ? 'Collapse' : 'Expand';
+
         $LayoutObject->Block(
-            Name => 'Expand',
+            Name => $BlockName,
             Data => {
                 %Ticket,
                 ArticleID      => $ArticleID,
@@ -2673,12 +2677,18 @@ sub _ArticleTree {
             }
         }
 
+        # Get NoTimelineViewAutoArticle config value for usage in JS.
+        $Param{NoTimelineViewAutoArticle} = $ConfigObject->Get('NoTimelineViewAutoArticle') || '0';
+
         # set TicketID for usage in JS
         $Param{TicketID} = $Self->{TicketID};
 
         $LayoutObject->Block(
             Name => 'TimelineView',
-            Data => \%Param,
+            Data => {
+                %Param,
+                ArticleID => $Self->{ArticleID},
+            },
         );
 
         # jump to selected article

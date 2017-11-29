@@ -40,28 +40,15 @@ my $RandomID = $Helper->GetRandomID();
 $Helper->ConfigSettingChange(
     Valid => 1,
     Key   => 'Ticket::Type',
-    Value => '1',
-);
-$Helper->ConfigSettingChange(
-    Valid => 1,
-    Key   => 'Ticket::Type',
     Value => 1,
 );
-$Helper->ConfigSettingChange(
-    Valid => 1,
-    Key   => 'Ticket::Frontend::AccountTime',
-    Value => '1',
-);
+
 $Helper->ConfigSettingChange(
     Valid => 1,
     Key   => 'Ticket::Frontend::AccountTime',
     Value => 1,
 );
-$Helper->ConfigSettingChange(
-    Valid => 1,
-    Key   => 'Ticket::Frontend::NeedAccountedTime',
-    Value => '1',
-);
+
 $Helper->ConfigSettingChange(
     Valid => 1,
     Key   => 'Ticket::Frontend::NeedAccountedTime',
@@ -72,18 +59,9 @@ $Helper->ConfigSettingChange(
 $Helper->ConfigSettingChange(
     Valid => 1,
     Key   => 'CheckMXRecord',
-    Value => '0',
-);
-$Helper->ConfigSettingChange(
-    Valid => 1,
-    Key   => 'CheckMXRecord',
     Value => 0,
 );
-$Helper->ConfigSettingChange(
-    Valid => 1,
-    Key   => 'CheckEmailAddresses',
-    Value => '1',
-);
+
 $Helper->ConfigSettingChange(
     Valid => 1,
     Key   => 'CheckEmailAddresses',
@@ -115,8 +93,21 @@ my $TestOwnerLogin        = $Helper->TestUserCreate();
 my $TestResponsibleLogin  = $Helper->TestUserCreate();
 my $TestCustomerUserLogin = $Helper->TestCustomerUserCreate();
 
-# create user object
+# Make UserID 1 valid.
 my $UserObject = $Kernel::OM->Get('Kernel::System::User');
+my %RootUser   = $UserObject->GetUserData(
+    UserID => 1,
+);
+my $Success = $UserObject->UserUpdate(
+    %RootUser,
+    UserID       => 1,
+    ValidID      => 1,
+    ChangeUserID => 1,
+);
+$Self->True(
+    $Success,
+    "Force root user to be valid",
+);
 
 my $OwnerID = $UserObject->UserLookup(
     UserLogin => $TestOwnerLogin,
@@ -423,7 +414,7 @@ $DynamicFieldMultiselectConfig{ID} = $FieldMultiselectID;
 # add date-time dynamic field
 my %DynamicFieldDateTimeConfig = (
     Name       => "Unittest4$RandomID",
-    FieldOrder => 9991,
+    FieldOrder => 9994,
     FieldType  => 'DateTime',
     ObjectType => 'Ticket',
     Label      => 'Description',
@@ -447,6 +438,34 @@ $Self->True(
 
 # add ID
 $DynamicFieldDateTimeConfig{ID} = $FieldDateTimeID;
+
+# add date-time dynamic field
+my %DynamicFieldDateConfig = (
+    Name       => "Unittest5$RandomID",
+    FieldOrder => 9995,
+    FieldType  => 'Date',
+    ObjectType => 'Ticket',
+    Label      => 'Description',
+    Config     => {
+        DefaultValue  => 0,
+        YearsInFuture => 0,
+        YearsInPast   => 0,
+        YearsPeriod   => 0,
+    },
+    ValidID => 1,
+);
+my $FieldDateID = $DynamicFieldObject->DynamicFieldAdd(
+    %DynamicFieldDateConfig,
+    UserID  => 1,
+    Reorder => 0,
+);
+$Self->True(
+    $FieldDateID,
+    "Dynamic Field $FieldDateID",
+);
+
+# add ID
+$DynamicFieldDateConfig{ID} = $FieldDateID;
 
 # create webservice object
 my $WebserviceObject = $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice');
@@ -3322,7 +3341,61 @@ my @Tests        = (
         },
         Operation => 'TicketCreate',
     },
-
+    {
+        Name           => 'Ticket with CDATA tags',
+        SuccessRequest => 1,
+        SuccessCreate  => 1,
+        RequestData    => {
+            Ticket => {
+                Title         => 'Ticket Title',
+                CustomerUser  => $TestCustomerUserLogin,
+                QueueID       => $Queues[0]->{QueueID},
+                TypeID        => $TypeID,
+                ServiceID     => $ServiceID,
+                SLAID         => $SLAID,
+                StateID       => $StateID,
+                PriorityID    => $PriorityID,
+                OwnerID       => $OwnerID,
+                ResponsibleID => $ResponsibleID,
+                PendingTime   => {
+                    Year   => 2012,
+                    Month  => 12,
+                    Day    => 16,
+                    Hour   => 20,
+                    Minute => 48,
+                },
+            },
+            Article => {
+                Subject                         => 'Article subject',
+                Body                            => 'Test content <[[https://example.com/]]>',
+                AutoResponseType                => 'auto reply',
+                ArticleTypeID                   => 1,
+                SenderTypeID                    => 1,
+                From                            => 'enjoy@otrs.com',
+                ContentType                     => 'text/plain; charset=UTF8',
+                HistoryType                     => 'NewTicket',
+                HistoryComment                  => '% % ',
+                TimeUnit                        => 25,
+                ForceNotificationToUserID       => [1],
+                ExcludeNotificationToUserID     => [1],
+                ExcludeMuteNotificationToUserID => [1],
+            },
+            DynamicField => {
+                Name  => $DynamicFieldDateTimeConfig{Name},
+                Value => '2012-01-17 12:40:00',
+            },
+            Attachment => {
+                Content     => 'VGhpcyBpcyBhIHRlc3QgdGV4dC4=',
+                ContentType => 'text/plain; charset=UTF8',
+                Disposition => 'attachment',
+                Filename    => 'Test.txt',
+            },
+        },
+        Auth => {
+            SessionID => $NewSessionID,
+        },
+        Operation => 'TicketCreate',
+    },
     {
         Name           => 'Ticket with Names',
         SuccessRequest => 1,
@@ -3348,8 +3421,8 @@ my @Tests        = (
                 },
             },
             Article => {
-                Subject                         => 'Article subject äöüßÄÖÜ€ис',
-                Body                            => 'Article body !"Â§$%&/()=?Ã*ÃÃL:L@,.-',
+                Subject => 'Article subject äöüßÄÖÜ€ис',
+                Body    => 'Article body ɟ ɠ ɡ ɢ ɣ ɤ ɥ ɦ ɧ ʀ ʁ ʂ ʃ ʄ ʅ ʆ ʇ ʈ ʉ ʊ ʋ ʌ ʍ ʎ',
                 AutoResponseType                => 'auto reply',
                 ArticleType                     => 'email-external',
                 SenderType                      => 'agent',
@@ -3399,8 +3472,8 @@ my @Tests        = (
                 },
             },
             Article => {
-                Subject                         => 'Article subject äöüßÄÖÜ€ис',
-                Body                            => 'Article body !"Â§$%&/()=?Ã*ÃÃL:L@,.-',
+                Subject => 'Article subject äöüßÄÖÜ€ис',
+                Body    => 'Article body ɟ ɠ ɡ ɢ ɣ ɤ ɥ ɦ ɧ ʀ ʁ ʂ ʃ ʄ ʅ ʆ ʇ ʈ ʉ ʊ ʋ ʌ ʍ ʎ',
                 AutoResponseType                => 'auto reply',
                 ArticleType                     => 'email-external',
                 SenderType                      => 'agent',
@@ -3905,6 +3978,111 @@ my @Tests        = (
         },
         Operation => 'TicketCreate',
     },
+    {
+        Name           => 'Ticket with Alias Charsets attachment',
+        SuccessRequest => 1,
+        SuccessCreate  => 1,
+        RequestData    => {
+            Ticket => {
+                Title         => 'Ticket Title',
+                CustomerUser  => $TestCustomerUserLogin,
+                QueueID       => $Queues[0]->{QueueID},
+                TypeID        => $TypeID,
+                ServiceID     => $ServiceID,
+                SLAID         => $SLAID,
+                StateID       => $StateID,
+                PriorityID    => $PriorityID,
+                OwnerID       => $OwnerID,
+                ResponsibleID => $ResponsibleID,
+                PendingTime   => {
+                    Year   => 2012,
+                    Month  => 12,
+                    Day    => 16,
+                    Hour   => 20,
+                    Minute => 48,
+                },
+            },
+            Article => {
+                Subject                         => 'Article subject',
+                Body                            => 'Article body',
+                AutoResponseType                => 'auto reply',
+                ArticleTypeID                   => 1,
+                SenderTypeID                    => 1,
+                From                            => 'enjoy@otrs.com',
+                ContentType                     => 'text/plain; charset=US-ASCII',
+                HistoryType                     => 'NewTicket',
+                HistoryComment                  => '% % ',
+                TimeUnit                        => 25,
+                ForceNotificationToUserID       => [1],
+                ExcludeNotificationToUserID     => [1],
+                ExcludeMuteNotificationToUserID => [1],
+            },
+            DynamicField => {
+                Name  => $DynamicFieldDateTimeConfig{Name},
+                Value => '2012-01-17 12:40:00',
+            },
+            Attachment => {
+                Content     => 'VGhpcyBpcyBhIHRlc3QgdGV4dC4=',
+                ContentType => 'text/plain; charset=US-ASCII',
+                Filename    => 'Test.txt',
+                Disposition => 'attachment',
+            },
+        },
+        Operation => 'TicketCreate',
+    },
+    {
+        Name           => 'Ticket with the date dynamic field without a time',
+        SuccessRequest => 1,
+        SuccessCreate  => 1,
+        RequestData    => {
+            Ticket => {
+                Title        => 'Ticket Title',
+                CustomerUser => $TestCustomerUserLogin,
+                Queue        => $Queues[0]->{Name},
+                Type         => $TypeData{Name},
+                Service      => $ServiceData{Name},
+                SLA          => $SLAData{Name},
+                State        => $StateData{Name},
+                Priority     => $PriorityData{Name},
+                Owner        => $TestOwnerLogin,
+                Responsible  => $TestResponsibleLogin,
+                PendingTime  => {
+                    Year   => 2012,
+                    Month  => 12,
+                    Day    => 16,
+                    Hour   => 20,
+                    Minute => 48,
+                },
+            },
+            Article => {
+                Subject                         => 'Article subject äöüßÄÖÜ€ис',
+                Body                            => 'Article body',
+                AutoResponseType                => 'auto reply',
+                ArticleType                     => 'email-external',
+                SenderType                      => 'agent',
+                From                            => 'enjoy@otrs.com',
+                ContentType                     => 'text/plain; charset=UTF8',
+                HistoryType                     => 'NewTicket',
+                HistoryComment                  => '% % ',
+                TimeUnit                        => 25,
+                ForceNotificationToUserID       => [1],
+                ExcludeNotificationToUserID     => [1],
+                ExcludeMuteNotificationToUserID => [1],
+            },
+            DynamicField => {
+                Name      => $DynamicFieldDateConfig{Name},
+                Value     => '2012-01-17',
+                FieldType => 'Date',
+            },
+            Attachment => {
+                Content     => 'VGhpcyBpcyBhIHRlc3QgdGV4dC4=',
+                ContentType => 'text/plain; charset=UTF8',
+                Filename    => 'Test.txt',
+                Disposition => 'attachment',
+            },
+        },
+        Operation => 'TicketCreate',
+    },
 );
 
 # debugger object
@@ -4152,6 +4330,11 @@ for my $Test (@Tests) {
             @RequestedDynamicFields = @{ $Test->{RequestData}->{DynamicField} };
         }
         for my $DynamicField (@RequestedDynamicFields) {
+
+            if ( $DynamicField->{FieldType} eq 'Date' && $DynamicField->{Value} =~ m{ \A \d{4}-\d{2}-\d{2} \z }xms ) {
+                $DynamicField->{Value} .= ' 00:00:00';
+            }
+
             $Self->IsDeeply(
                 $LocalTicketData{ 'DynamicField_' . $DynamicField->{Name} } // '',
                 $DynamicField->{Value},
@@ -4331,7 +4514,6 @@ $Self->True(
 
 # get DB object
 my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
-my $Success;
 
 # delete queues
 for my $QueueData (@Queues) {
@@ -4438,6 +4620,17 @@ for my $DynamicFieldID ( sort keys %{$DeleteFieldList} ) {
         "DynamicFieldDelete() for $DeleteFieldList->{$DynamicFieldID} with true",
     );
 }
+
+# Restore UserID 1 previous validity.
+$Success = $UserObject->UserUpdate(
+    %RootUser,
+    UserID       => 1,
+    ChangeUserID => 1,
+);
+$Self->True(
+    $Success,
+    "Restored root user validity",
+);
 
 # cleanup cache
 $Kernel::OM->Get('Kernel::System::Cache')->CleanUp();

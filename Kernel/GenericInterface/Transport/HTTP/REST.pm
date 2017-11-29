@@ -62,7 +62,7 @@ from from the web server process.
 
 Based on the request the Operation to be used is determined.
 
-No outbound communication is done here, except from continue requests.
+No out-bound communication is done here, except from continue requests.
 
 In case of an error, the resulting http error code and message are remembered for the response.
 
@@ -133,7 +133,7 @@ sub ProviderProcessRequest {
         #       UserLogin => 'user',
         #       Password  => 'secret',
         #    );
-        for my $QueryParam ( split '&', $QueryParamsStr ) {
+        for my $QueryParam ( split /[;&]/, $QueryParamsStr ) {
             my ( $Key, $Value ) = split '=', $QueryParam;
 
             # Convert + characters to its encoded representation, see bug#11917
@@ -249,6 +249,15 @@ sub ProviderProcessRequest {
     my $Content;
     read STDIN, $Content, $Length;
 
+    # If there is no STDIN data it might be caused by fastcgi already having read the request.
+    # In this case we need to get the data from CGI.
+    if ( !IsStringWithData($Content) && $RequestMethod ne 'GET' ) {
+        my $ParamName = $RequestMethod . 'DATA';
+        $Content = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam(
+            Param => $ParamName,
+        );
+    }
+
     # check if we have content
     if ( !IsStringWithData($Content) ) {
         return $Self->_Error(
@@ -330,9 +339,9 @@ In case of an error, error code and message are taken from environment
 (previously set on request processing).
 
 The HTTP code is set accordingly
-- 200 for (syntactically) correct messages
-- 4xx for http errors
-- 500 for content syntax errors
+- C<200> for (syntactically) correct messages
+- C<4xx> for http errors
+- C<500> for content syntax errors
 
     my $Result = $TransportObject->ProviderGenerateResponse(
         Success => 1
@@ -712,29 +721,37 @@ sub RequesterPerformRequest {
 
     if ( $ResponseCode !~ m{ \A 20 \d \z }xms ) {
         $ResponseError = $ErrorMessage . " Response code '$ResponseCode'.";
-    }
-
-    if ($ResponseError) {
 
         # log to debugger
         $Self->{DebuggerObject}->Error(
             Summary => $ResponseError,
         );
-        return {
-            Success      => 0,
-            ErrorMessage => $ResponseError,
-        };
     }
 
     my $ResponseContent = $RestClient->responseContent();
     if ( !IsStringWithData($ResponseContent) ) {
 
-        my $ResponseError = $ErrorMessage . ' No content provided.';
+        $ResponseError = $ErrorMessage . ' No content provided.';
 
         # log to debugger
         $Self->{DebuggerObject}->Error(
             Summary => $ResponseError,
         );
+    }
+
+    # else {
+
+    # Send processed data to debugger.
+    $Self->{DebuggerObject}->Debug(
+        Summary => 'JSON data received from remote system',
+        Data    => $ResponseContent,
+    );
+
+    # }
+
+    # Return early in case an error on response.
+    if ($ResponseError) {
+
         return {
             Success      => 0,
             ErrorMessage => $ResponseError,
@@ -765,12 +782,6 @@ sub RequesterPerformRequest {
             );
         }
     }
-
-    # send processed data to debugger
-    $Self->{DebuggerObject}->Debug(
-        Summary => 'JSON data received from remote system',
-        Data    => $ResponseContent,
-    );
 
     $ResponseContent = $EncodeObject->Convert2CharsetInternal(
         Text => $ResponseContent,

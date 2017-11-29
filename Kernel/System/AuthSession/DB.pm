@@ -32,15 +32,7 @@ sub new {
     my $Self = {};
     bless( $Self, $Type );
 
-    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
-
-    # get more common params
-    $Self->{SessionTable}      = $ConfigObject->Get('SessionTable')      || 'sessions';
-    $Self->{SessionActiveTime} = $ConfigObject->Get('SessionActiveTime') || 60 * 10;
-
-    if ( $Self->{SessionActiveTime} < 300 ) {
-        $Self->{SessionActiveTime} = 300;
-    }
+    $Self->{SessionTable} = $Kernel::OM->Get('Kernel::Config')->Get('SessionTable') || 'sessions';
 
     # get database type
     $Self->{DBType} = $Kernel::OM->Get('Kernel::System::DB')->{'DB::Type'} || '';
@@ -387,6 +379,8 @@ sub GetAllSessionIDs {
 sub GetActiveSessions {
     my ( $Self, %Param ) = @_;
 
+    my $MaxSessionIdleTime = $Kernel::OM->Get('Kernel::Config')->Get('SessionMaxIdleTime');
+
     # get system time
     my $TimeNow = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
 
@@ -399,6 +393,7 @@ sub GetActiveSessions {
             WHERE data_key = 'UserType'
                 OR data_key = 'UserLastRequest'
                 OR data_key = 'UserLogin'
+                OR data_key = 'SessionSource'
             ORDER BY id ASC",
     );
 
@@ -420,6 +415,11 @@ sub GetActiveSessions {
         next SESSIONID if !$SessionID;
         next SESSIONID if !$SessionData{$SessionID};
 
+        # Don't count session from source 'GenericInterface'
+        my $SessionSource = $SessionData{$SessionID}->{SessionSource} || '';
+
+        next SESSIONID if $SessionSource eq 'GenericInterface';
+
         # get needed data
         my $UserType        = $SessionData{$SessionID}->{UserType}        || '';
         my $UserLastRequest = $SessionData{$SessionID}->{UserLastRequest} || $TimeNow;
@@ -427,7 +427,7 @@ sub GetActiveSessions {
 
         next SESSIONID if $UserType ne $Param{UserType};
 
-        next SESSIONID if ( $UserLastRequest + $Self->{SessionActiveTime} ) < $TimeNow;
+        next SESSIONID if ( $UserLastRequest + $MaxSessionIdleTime ) < $TimeNow;
 
         $ActiveSessionCount++;
 

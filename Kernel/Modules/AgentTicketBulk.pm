@@ -98,7 +98,8 @@ sub Run {
             Valid => 1
         );
 
-        # Put only possible rw agents to owner list.
+        # Put only possible 'owner' and 'rw' agents to owner list.
+        my %OwnerGroupsMembers;
         if ( !$ConfigObject->Get('Ticket::ChangeOwnerToEveryone') ) {
             my %AllGroupsMembersNew;
             my @QueueIDs;
@@ -124,21 +125,24 @@ sub Run {
                 my $GroupID = $QueueObject->GetQueueGroupID( QueueID => $QueueID );
                 my %GroupMember = $GroupObject->PermissionGroupGet(
                     GroupID => $GroupID,
-                    Type    => 'rw',
+                    Type    => 'owner',
                 );
                 USER_ID:
                 for my $UserID ( sort keys %GroupMember ) {
                     next USER_ID if !$AllGroupsMembers{$UserID};
                     $AllGroupsMembersNew{$UserID} = $AllGroupsMembers{$UserID};
                 }
-                %AllGroupsMembers = %AllGroupsMembersNew;
+                %OwnerGroupsMembers = %AllGroupsMembersNew;
             }
+        }
+        else {
+            %OwnerGroupsMembers = %AllGroupsMembers;
         }
 
         my @JSONData = (
             {
                 Name         => 'OwnerID',
-                Data         => \%AllGroupsMembers,
+                Data         => \%OwnerGroupsMembers,
                 PossibleNone => 1,
             }
         );
@@ -148,9 +152,51 @@ sub Run {
             && $ConfigObject->Get("Ticket::Frontend::$Self->{Action}")->{Responsible}
             )
         {
+
+            my %ResponsibleGroupsMembers;
+            if ( !$ConfigObject->Get('Ticket::ChangeOwnerToEveryone') ) {
+                my %AllGroupsMembersNew;
+                my @QueueIDs;
+
+                if ($QueueID) {
+                    push @QueueIDs, $QueueID;
+                }
+                else {
+                    my @TicketIDs = grep {$_} $ParamObject->GetArray( Param => 'TicketID' );
+                    for my $TicketID (@TicketIDs) {
+                        my %Ticket = $TicketObject->TicketGet(
+                            TicketID      => $TicketID,
+                            DynamicFields => 0,
+                        );
+                        push @QueueIDs, $Ticket{QueueID};
+                    }
+                }
+
+                my $QueueObject = $Kernel::OM->Get('Kernel::System::Queue');
+                my $GroupObject = $Kernel::OM->Get('Kernel::System::Group');
+
+                # Put only possible 'responsible' and 'rw' agents to responsible list.
+                for my $QueueID (@QueueIDs) {
+                    my $GroupID = $QueueObject->GetQueueGroupID( QueueID => $QueueID );
+                    my %GroupMember = $GroupObject->PermissionGroupGet(
+                        GroupID => $GroupID,
+                        Type    => 'responsible',
+                    );
+                    USER_ID:
+                    for my $UserID ( sort keys %GroupMember ) {
+                        next USER_ID if !$AllGroupsMembers{$UserID};
+                        $AllGroupsMembersNew{$UserID} = $AllGroupsMembers{$UserID};
+                    }
+                    %ResponsibleGroupsMembers = %AllGroupsMembersNew;
+                }
+            }
+            else {
+                %ResponsibleGroupsMembers = %AllGroupsMembers;
+            }
+
             push @JSONData, {
                 Name         => 'ResponsibleID',
-                Data         => \%AllGroupsMembers,
+                Data         => \%ResponsibleGroupsMembers,
                 PossibleNone => 1,
             };
         }
@@ -175,7 +221,7 @@ sub Run {
     # get involved tickets, filtering empty TicketIDs
     my @ValidTicketIDs;
     my @IgnoreLockedTicketIDs;
-    my @TicketIDs = grep {$_}
+    my @TicketIDs = sort grep {$_}
         $ParamObject->GetArray( Param => 'TicketID' );
 
     my $Config = $ConfigObject->Get("Ticket::Frontend::$Self->{Action}");
@@ -471,6 +517,9 @@ sub Run {
         }
     }
 
+    my @TicketsWithError;
+    my @TicketsWithLockNotice;
+
     TICKET_ID:
     for my $TicketID (@TicketIDs) {
         my %Ticket = $TicketObject->TicketGet(
@@ -487,30 +536,14 @@ sub Run {
         if ( !$Access ) {
 
             # error screen, don't show ticket
-            $Output .= $LayoutObject->Notify(
-                Data => "$Ticket{TicketNumber}: "
-                    . $LayoutObject->{LanguageObject}->Translate("You don't have write access to this ticket."),
-            );
+            push @TicketsWithError, $Ticket{TicketNumber};
             next TICKET_ID;
         }
 
         # check if it's already locked by somebody else
-        if ( !$Config->{RequiredLock} ) {
-            $Output .= $LayoutObject->Notify(
-                Priority => 'Info',
-                Data     => "$Ticket{TicketNumber}: "
-                    . $LayoutObject->{LanguageObject}->Translate("Ticket selected."),
-            );
-        }
-        else {
+        if ( $Config->{RequiredLock} ) {
             if ( grep ( { $_ eq $TicketID } @IgnoreLockedTicketIDs ) ) {
-                $Output .= $LayoutObject->Notify(
-                    Priority => 'Error',
-                    Data     => "$Ticket{TicketNumber}: "
-                        . $LayoutObject->{LanguageObject}->Translate(
-                        "Ticket is locked by another agent and will be ignored!"
-                        ),
-                );
+                push @TicketsWithError, $Ticket{TicketNumber};
                 next TICKET_ID;
             }
             elsif ( $Ticket{Lock} eq 'unlock' ) {
@@ -530,19 +563,9 @@ sub Run {
                     UserID    => $Self->{UserID},
                     NewUserID => $Self->{UserID},
                 );
-                $Output .= $LayoutObject->Notify(
-                    Data => "$Ticket{TicketNumber}: "
-                        . $LayoutObject->{LanguageObject}->Translate("Ticket locked."),
-                );
-            }
-            else {
-                $Output .= $LayoutObject->Notify(
-                    Priority => 'Info',
-                    Data     => "$Ticket{TicketNumber}: "
-                        . $LayoutObject->{LanguageObject}->Translate("Ticket selected."),
-                );
-            }
 
+                push @TicketsWithLockNotice, $Ticket{TicketNumber};
+            }
         }
 
         # remember selected ticket ids
@@ -553,6 +576,16 @@ sub Run {
 
             # challenge token check for write action
             $LayoutObject->ChallengeTokenCheck();
+
+            # set queue
+            if ( $GetParam{'QueueID'} || $GetParam{'Queue'} ) {
+                $TicketObject->TicketQueueSet(
+                    QueueID  => $GetParam{'QueueID'},
+                    Queue    => $GetParam{'Queue'},
+                    TicketID => $TicketID,
+                    UserID   => $Self->{UserID},
+                );
+            }
 
             # set owner
             if ( $Config->{Owner} && ( $GetParam{'OwnerID'} || $GetParam{'Owner'} ) ) {
@@ -609,16 +642,6 @@ sub Run {
                         UserID   => $Self->{UserID},
                     );
                 }
-            }
-
-            # set queue
-            if ( $GetParam{'QueueID'} || $GetParam{'Queue'} ) {
-                $TicketObject->TicketQueueSet(
-                    QueueID  => $GetParam{'QueueID'},
-                    Queue    => $GetParam{'Queue'},
-                    TicketID => $TicketID,
-                    UserID   => $Self->{UserID},
-                );
             }
 
             # send email
@@ -906,6 +929,32 @@ sub Run {
         $Counter++;
     }
 
+    # notify user about actions (errors)
+    if (@TicketsWithError) {
+        my $NotificationError = $LayoutObject->{LanguageObject}->Translate(
+            "The following tickets were ignored because they are locked by another agent or you don't have write access to these tickets: %s.",
+            join( ", ", @TicketsWithError ),
+        );
+
+        $Output .= $LayoutObject->Notify(
+            Priority => 'Error',
+            Data     => $NotificationError,
+        );
+    }
+
+    # notify user about actions (notices)
+    if (@TicketsWithLockNotice) {
+        my $NotificationNotice = $LayoutObject->{LanguageObject}->Translate(
+            "The following tickets were locked: %s.",
+            join( ", ", @TicketsWithLockNotice ),
+        );
+
+        $Output .= $LayoutObject->Notify(
+            Priority => 'Notice',
+            Data     => $NotificationNotice,
+        );
+    }
+
     # redirect
     if ($ActionFlag) {
         my $DestURL = defined $MainTicketID
@@ -1086,7 +1135,7 @@ sub _Mask {
             Valid => 1
         );
 
-        # only put possible rw agents to possible owner list
+        # Put only possible 'owner' and 'rw' agents to owner list.
         if ( !$ConfigObject->Get('Ticket::ChangeOwnerToEveryone') ) {
             my %AllGroupsMembersNew;
             for my $TicketID ( @{ $Param{TicketIDs} } ) {
@@ -1097,7 +1146,7 @@ sub _Mask {
                 my $GroupID = $QueueObject->GetQueueGroupID( QueueID => $Ticket{QueueID} );
                 my %GroupMember = $GroupObject->PermissionGroupGet(
                     GroupID => $GroupID,
-                    Type    => 'rw',
+                    Type    => 'owner',
                 );
                 USER_ID:
                 for my $UserID ( sort keys %GroupMember ) {
@@ -1128,7 +1177,7 @@ sub _Mask {
             Valid => 1
         );
 
-        # only put possible rw agents to possible owner list
+        # Put only possible 'responsible' and 'rw' agents to responsible list.
         if ( !$ConfigObject->Get('Ticket::ChangeOwnerToEveryone') ) {
             my %AllGroupsMembersNew;
             for my $TicketID ( @{ $Param{TicketIDs} } ) {
@@ -1139,7 +1188,7 @@ sub _Mask {
                 my $GroupID = $QueueObject->GetQueueGroupID( QueueID => $Ticket{QueueID} );
                 my %GroupMember = $GroupObject->PermissionGroupGet(
                     GroupID => $GroupID,
-                    Type    => 'rw',
+                    Type    => 'responsible',
                 );
                 USER_ID:
                 for my $UserID ( sort keys %GroupMember ) {

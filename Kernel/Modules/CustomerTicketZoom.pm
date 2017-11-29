@@ -360,6 +360,12 @@ sub Run {
                     ChatID => $GetParam{FromChatID},
                 );
                 if (@ChatMessages) {
+                    for my $Message (@ChatMessages) {
+                        $Message->{MessageText} = $LayoutObject->Ascii2Html(
+                            Text        => $Message->{MessageText},
+                            LinkFeature => 1,
+                        );
+                    }
                     $GetParam{ChatMessages} = \@ChatMessages;
                 }
             }
@@ -715,6 +721,13 @@ sub Run {
             my $ChatArticleID;
 
             if (@ChatMessageList) {
+                for my $Message (@ChatMessageList) {
+                    $Message->{MessageText} = $LayoutObject->Ascii2Html(
+                        Text        => $Message->{MessageText},
+                        LinkFeature => 1,
+                    );
+                }
+
                 my $JSONBody = $Kernel::OM->Get('Kernel::System::JSON')->Encode(
                     Data => \@ChatMessageList,
                 );
@@ -1286,10 +1299,30 @@ sub _Mask {
             Name => 'TicketDynamicField',
             Data => {
                 Label => $Label,
-                Value => $ValueStrg->{Value},
-                Title => $ValueStrg->{Title},
             },
         );
+
+        if ( $DynamicFieldConfig->{Config}->{Link} ) {
+            $LayoutObject->Block(
+                Name => 'TicketDynamicFieldLink',
+                Data => {
+                    Value                       => $ValueStrg->{Value},
+                    Title                       => $ValueStrg->{Title},
+                    Link                        => $DynamicFieldConfig->{Config}->{Link},
+                    LinkPreview                 => $DynamicFieldConfig->{Config}->{LinkPreview},
+                    $DynamicFieldConfig->{Name} => $ValueStrg->{Value},
+                },
+            );
+        }
+        else {
+            $LayoutObject->Block(
+                Name => 'TicketDynamicFieldPlain',
+                Data => {
+                    Value => $ValueStrg->{Value},
+                    Title => $ValueStrg->{Title},
+                },
+            );
+        }
 
         # example of dynamic fields order customization
         $LayoutObject->Block(
@@ -1310,7 +1343,9 @@ sub _Mask {
         )
     {
         # get all queues to tickets relations
-        my %QueueChatChannelRelations = $Kernel::OM->Get('Kernel::System::ChatChannel')->ChatChannelQueuesGet();
+        my %QueueChatChannelRelations = $Kernel::OM->Get('Kernel::System::ChatChannel')->ChatChannelQueuesGet(
+            CustomerInterface => 1,
+        );
 
         # if a support chat channel is set for this queue
         if ( $QueueChatChannelRelations{ $Param{QueueID} } ) {
@@ -1518,10 +1553,30 @@ sub _Mask {
                 Name => 'ArticleDynamicField',
                 Data => {
                     Label => $Label,
-                    Value => $ValueStrg->{Value},
-                    Title => $ValueStrg->{Title},
                 },
             );
+
+            if ( $DynamicFieldConfig->{Config}->{Link} ) {
+                $LayoutObject->Block(
+                    Name => 'ArticleDynamicFieldLink',
+                    Data => {
+                        Value                       => $ValueStrg->{Value},
+                        Title                       => $ValueStrg->{Title},
+                        Link                        => $DynamicFieldConfig->{Config}->{Link},
+                        LinkPreview                 => $DynamicFieldConfig->{Config}->{LinkPreview},
+                        $DynamicFieldConfig->{Name} => $ValueStrg->{Value},
+                    },
+                );
+            }
+            else {
+                $LayoutObject->Block(
+                    Name => 'ArticleDynamicFieldPlain',
+                    Data => {
+                        Value => $ValueStrg->{Value},
+                        Title => $ValueStrg->{Title},
+                    },
+                );
+            }
 
             # example of dynamic fields order customization
             $LayoutObject->Block(

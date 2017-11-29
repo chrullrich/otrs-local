@@ -127,10 +127,18 @@ Core.Form.Validate = (function (TargetNS) {
         InputErrorMessageText = $('#' + Core.App.EscapeSelector($Element.attr('id')) + ErrorType).text();
 
         if (InputErrorMessageHTML && InputErrorMessageHTML.length) {
-            // if error field is a RTE, it is a little bit more difficult
+            // If error field is a RTE, it is a little bit more difficult.
             if ($('#cke_' + Core.App.EscapeSelector(Element.id)).length) {
                 Core.Form.ErrorTooltips.InitRTETooltip($Element, InputErrorMessageHTML);
-            } else {
+            }
+            // If server error field is RTE, action must be subscribed and loaded when event is finished because RTE is not loaded yet.
+            else if ($Element.hasClass('RichText') && parseInt(Core.Config.Get('RichTextSet'), 10) === 1)
+            {
+                Core.App.Subscribe('Event.UI.RichTextEditor.InstanceReady', function () {
+                    Core.Form.ErrorTooltips.InitRTETooltip($Element, InputErrorMessageHTML);
+                });
+            }
+            else {
                 Core.Form.ErrorTooltips.InitTooltip($Element, InputErrorMessageHTML);
             }
         }
@@ -358,15 +366,15 @@ Core.Form.Validate = (function (TargetNS) {
                 MinuteElement = ClassValue.replace(DateMinuteClassPrefix, '');
             }
         });
-        if (YearElement.length && MonthElement.length && $('#' + YearElement).length && $('#' + MonthElement).length) {
-            DateObject = new Date($('#' + YearElement).val(), $('#' + MonthElement).val() - 1, Value);
-            if (DateObject.getFullYear() === parseInt($('#' + YearElement).val(), 10) &&
-                DateObject.getMonth() + 1 === parseInt($('#' + MonthElement).val(), 10) &&
+        if (YearElement.length && MonthElement.length && $('#' + Core.App.EscapeSelector(YearElement)).length && $('#' + Core.App.EscapeSelector(MonthElement)).length) {
+            DateObject = new Date($('#' + Core.App.EscapeSelector(YearElement)).val(), $('#' + Core.App.EscapeSelector(MonthElement)).val() - 1, Value);
+            if (DateObject.getFullYear() === parseInt($('#' + Core.App.EscapeSelector(YearElement)).val(), 10) &&
+                DateObject.getMonth() + 1 === parseInt($('#' + Core.App.EscapeSelector(MonthElement)).val(), 10) &&
                 DateObject.getDate() === parseInt(Value, 10)) {
 
                 DateCheck = new Date();
                 if (MinuteElement.length && HourElement.length) {
-                    DateObject.setHours($('#' + HourElement).val(), $('#' + MinuteElement).val(), 0, 0);
+                    DateObject.setHours($('#' + Core.App.EscapeSelector(HourElement)).val(), $('#' + Core.App.EscapeSelector(MinuteElement)).val(), 0, 0);
                 }
                 else {
                     DateCheck.setHours(0, 0, 0, 0);

@@ -277,7 +277,7 @@ sub Run {
     DYNAMICFIELD:
     for my $DynamicFieldItem ( sort keys %DynamicFieldValues ) {
         next DYNAMICFIELD if !$DynamicFieldItem;
-        next DYNAMICFIELD if !$DynamicFieldValues{$DynamicFieldItem};
+        next DYNAMICFIELD if !defined $DynamicFieldValues{$DynamicFieldItem};
 
         $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicFieldItem } = $DynamicFieldValues{$DynamicFieldItem};
     }
@@ -650,6 +650,36 @@ sub Run {
 
         my $UnlockOnAway = 1;
 
+        # move ticket to a new queue, but only if the queue was changed
+        if (
+            $Config->{Queue}
+            && $GetParam{NewQueueID}
+            && $GetParam{NewQueueID} ne $Ticket{QueueID}
+            )
+        {
+
+            # move ticket (send notification if no new owner is selected)
+            my $BodyAsText = '';
+            if ( $LayoutObject->{BrowserRichText} ) {
+                $BodyAsText = $LayoutObject->RichText2Ascii(
+                    String => $GetParam{Body} || 0,
+                );
+            }
+            else {
+                $BodyAsText = $GetParam{Body} || 0;
+            }
+            my $Move = $TicketObject->TicketQueueSet(
+                QueueID            => $GetParam{NewQueueID},
+                UserID             => $Self->{UserID},
+                TicketID           => $Self->{TicketID},
+                SendNoNotification => $GetParam{NewUserID},
+                Comment            => $BodyAsText,
+            );
+            if ( !$Move ) {
+                return $LayoutObject->ErrorScreen();
+            }
+        }
+
         # set new owner
         my @NotifyDone;
         if ( $Config->{Owner} ) {
@@ -697,36 +727,6 @@ sub Run {
             }
         }
 
-        # move ticket to a new queue, but only if the queue was changed
-        if (
-            $Config->{Queue}
-            && $GetParam{NewQueueID}
-            && $GetParam{NewQueueID} ne $Ticket{QueueID}
-            )
-        {
-
-            # move ticket (send notification if no new owner is selected)
-            my $BodyAsText = '';
-            if ( $LayoutObject->{BrowserRichText} ) {
-                $BodyAsText = $LayoutObject->RichText2Ascii(
-                    String => $GetParam{Body} || 0,
-                );
-            }
-            else {
-                $BodyAsText = $GetParam{Body} || 0;
-            }
-            my $Move = $TicketObject->TicketQueueSet(
-                QueueID            => $GetParam{NewQueueID},
-                UserID             => $Self->{UserID},
-                TicketID           => $Self->{TicketID},
-                SendNoNotification => $GetParam{NewUserID},
-                Comment            => $BodyAsText,
-            );
-            if ( !$Move ) {
-                return $LayoutObject->ErrorScreen();
-            }
-        }
-
         # add note
         my $ArticleID = '';
         my $ReturnURL;
@@ -743,9 +743,10 @@ sub Run {
         # set state
         if ( $Config->{State} && $GetParam{NewStateID} ) {
             $TicketObject->TicketStateSet(
-                TicketID => $Self->{TicketID},
-                StateID  => $GetParam{NewStateID},
-                UserID   => $Self->{UserID},
+                TicketID     => $Self->{TicketID},
+                StateID      => $GetParam{NewStateID},
+                UserID       => $Self->{UserID},
+                DynamicField => $GetParam{DynamicField},
             );
 
             # unlock the ticket after close
@@ -957,16 +958,6 @@ sub Run {
         my $QueueID = $GetParam{NewQueueID} || $Ticket{QueueID};
         my $StateID = $GetParam{NewStateID} || $Ticket{StateID};
 
-        # convert dynamic field values into a structure for ACLs
-        my %DynamicFieldACLParameters;
-        DYNAMICFIELD:
-        for my $DynamicFieldItem ( sort keys %DynamicFieldValues ) {
-            next DYNAMICFIELD if !$DynamicFieldItem;
-            next DYNAMICFIELD if !$DynamicFieldValues{$DynamicFieldItem};
-
-            $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicFieldItem } = $DynamicFieldValues{$DynamicFieldItem};
-        }
-
         # get list type
         my $TreeView = 0;
         if ( $ConfigObject->Get('Ticket::Frontend::ListType') eq 'tree' ) {
@@ -1005,6 +996,9 @@ sub Run {
             CustomerUserID => $CustomerUser,
             QueueID        => $QueueID,
             StateID        => $StateID,
+        );
+        my $NewQueues = $Self->_GetQueues(
+            %GetParam,
         );
 
         # reset previous ServiceID to reset SLA-List if no service is selected
@@ -1250,6 +1244,15 @@ sub Run {
                     SelectedID   => $GetParam{TypeID},
                     PossibleNone => 1,
                     Translation  => 0,
+                    Max          => 100,
+                },
+                {
+                    Name         => 'NewQueueID',
+                    Data         => $NewQueues,
+                    SelectedID   => $GetParam{NewQueueID},
+                    PossibleNone => 1,
+                    Translation  => 0,
+                    TreeView     => $TreeView,
                     Max          => 100,
                 },
                 @DynamicFieldAJAX,
@@ -2540,6 +2543,7 @@ sub _GetSLAs {
         %SLA = $Kernel::OM->Get('Kernel::System::Ticket')->TicketSLAList(
             %Param,
             Action => $Self->{Action},
+            UserID => $Self->{UserID},
         );
     }
     return \%SLA;
@@ -2766,6 +2770,20 @@ sub _GetTypes {
         );
     }
     return \%Type;
+}
+
+sub _GetQueues {
+    my ( $Self, %Param ) = @_;
+
+    # Get Queues.
+    my %Queues = $Kernel::OM->Get('Kernel::System::Ticket')->TicketMoveList(
+        %Param,
+        TicketID => $Self->{TicketID},
+        UserID   => $Self->{UserID},
+        Action   => $Self->{Action},
+        Type     => 'move_into',
+    );
+    return \%Queues;
 }
 
 1;

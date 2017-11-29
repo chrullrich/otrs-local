@@ -12,7 +12,7 @@ use utf8;
 
 use vars (qw($Self));
 
-# get selenium object
+# Get selenium object.
 my $Selenium = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
 $Selenium->RunTest(
@@ -22,20 +22,39 @@ $Selenium->RunTest(
         my $Helper       = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
         my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
-        # do not check email addresses
+        # Overload CustomerUser => Map setting defined in the Defaults.pm - use external url.
+        my $DefaultCustomerUser = $ConfigObject->Get("CustomerUser");
+        $DefaultCustomerUser->{Map}->[5] = [
+            'UserEmail',
+            'Email',
+            'email',
+            1,
+            1,
+            'var',
+            'http://www.otrs.com',
+            0,
+            '',
+            'AsPopup OTRSPopup_TicketAction',
+        ];
+        $Helper->ConfigSettingChange(
+            Key   => 'CustomerUser',
+            Value => $DefaultCustomerUser,
+        );
+
+        # Do not check email addresses.
         $Helper->ConfigSettingChange(
             Key   => 'CheckEmailAddresses',
             Value => 0,
         );
 
-        # do not check RichText
+        # Do not check RichText.
         $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'Frontend::RichText',
             Value => 0,
         );
 
-        # do not check service and type
+        # Do not check service and type.
         $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'Ticket::Service',
@@ -47,7 +66,7 @@ $Selenium->RunTest(
             Value => 0,
         );
 
-        # create test user and login
+        # Create test user and login.
         my $TestUserLogin = $Helper->TestUserCreate(
             Groups => [ 'admin', 'users' ],
         ) || die "Did not get test user";
@@ -58,13 +77,15 @@ $Selenium->RunTest(
             Password => $TestUserLogin,
         );
 
-        # get test user ID
+        # Get test user ID.
         my $TestUserID = $Kernel::OM->Get('Kernel::System::User')->UserLookup(
             UserLogin => $TestUserLogin,
         );
 
-        # add test customer for testing
-        my $TestCustomer       = 'Customer' . $Helper->GetRandomID();
+        my $RandomID = $Helper->GetRandomID();
+
+        # Add test customer for testing.
+        my $TestCustomer       = 'Customer' . $RandomID;
         my $TestCustomerUserID = $Kernel::OM->Get('Kernel::System::CustomerUser')->CustomerUserAdd(
             Source         => 'CustomerUser',
             UserFirstname  => $TestCustomer,
@@ -80,13 +101,13 @@ $Selenium->RunTest(
             "CustomerUserAdd - ID $TestCustomerUserID"
         );
 
-        # get script alias
+        # Get script alias.
         my $ScriptAlias = $ConfigObject->Get('ScriptAlias');
 
-        # navigate to AgentTicketPhone screen
+        # Navigate to AgentTicketPhone screen.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketPhone");
 
-        # check page
+        # Check page.
         for my $ID (
             qw(FromCustomer CustomerID Dest Subject RichText FileUpload
             NextStateID PriorityID submitRichText)
@@ -97,10 +118,10 @@ $Selenium->RunTest(
             $Element->is_displayed();
         }
 
-        # check client side validation
+        # Check client side validation.
         my $Element = $Selenium->find_element( "#Subject", 'css' );
         $Element->send_keys("");
-        $Element->VerifiedSubmit();
+        $Selenium->find_element( "#submitRichText", 'css' )->VerifiedClick();
 
         $Self->Is(
             $Selenium->execute_script(
@@ -110,26 +131,75 @@ $Selenium->RunTest(
             'Client side validation correctly detected missing input value',
         );
 
-        # navigate to AgentTicketPhone screen again
+        # Navigate to AgentTicketPhone screen again.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketPhone");
 
-        # create test phone ticket
-        my $AutoCompleteString = "\"$TestCustomer $TestCustomer\" <$TestCustomer\@localhost.com> ($TestCustomer)";
-        my $TicketSubject      = "Selenium Ticket";
-        my $TicketBody         = "Selenium body test";
+        # Create test phone ticket.
+        my $TicketSubject = "Selenium Ticket";
+        my $TicketBody    = "Selenium body test";
         $Selenium->find_element( "#FromCustomer", 'css' )->send_keys($TestCustomer);
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("li.ui-menu-item:visible").length' );
-        $Selenium->find_element("//*[text()='$AutoCompleteString']")->VerifiedClick();
+        $Selenium->execute_script("\$('li.ui-menu-item:contains($TestCustomer)').click()");
         $Selenium->execute_script("\$('#Dest').val('2||Raw').trigger('redraw.InputField').trigger('change');");
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
+
         $Selenium->find_element( "#Subject",  'css' )->send_keys($TicketSubject);
         $Selenium->find_element( "#RichText", 'css' )->send_keys($TicketBody);
-        $Selenium->find_element( "#Subject",  'css' )->VerifiedSubmit();
 
-        # get ticket object
+        # Wait for "Customer Information".
+        $Selenium->WaitFor(
+            JavaScript => 'return typeof($) === "function" && $(".SidebarColumn fieldset .Value").length'
+        );
+
+        # Make sure that Customer email is link.
+        my $LinkVisible = $Selenium->WaitFor(
+            JavaScript => 'return typeof($) === "function" && $(".SidebarColumn fieldset a.AsPopup:visible").length'
+        );
+        $Self->True(
+            $LinkVisible,
+            "Customer email is a link with class AsPopup."
+        );
+
+        # Overload CustomerUser => Map setting defined in the Defaults.pm - use internal url.
+        $DefaultCustomerUser->{Map}->[5] = [
+            'UserEmail',
+            'Email',
+            'email',
+            1,
+            1,
+            'var',
+            '[% Env("CGIHandle") %]?Action=AgentTicketCompose;ResponseID=1;TicketID=[% Data.TicketID | uri %];ArticleID=[% Data.ArticleID | uri %]',
+            0,
+            '',
+            'AsPopup OTRSPopup_TicketAction',
+        ];
+        $Helper->ConfigSettingChange(
+            Key   => 'CustomerUser',
+            Value => $DefaultCustomerUser,
+        );
+
+        # remove customer
+        $Selenium->find_element( "#TicketCustomerContentFromCustomer a.CustomerTicketRemove", "css" )->click();
+
+        # add customer again
+        $Selenium->find_element( "#FromCustomer", 'css' )->send_keys($TestCustomer);
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("li.ui-menu-item:visible").length' );
+        $Selenium->execute_script("\$('li.ui-menu-item:contains($TestCustomer)').click()");
+
+        # Make sure that Customer email is not a link.
+        $LinkVisible = $Selenium->execute_script("return \$('.SidebarColumn fieldset a.AsPopup').length;");
+        $Self->False(
+            $LinkVisible,
+            "Customer email is not a link with class AsPopup."
+        );
+
+        $Selenium->find_element( "#submitRichText", 'css' )->VerifiedClick();
+
         my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
-        # get created test ticket ID and number
+        # Get created test ticket ID and number.
         my @Ticket = split( 'TicketID=', $Selenium->get_current_url() );
+
         my $TicketID = $Ticket[1];
 
         my $TicketNumber = $TicketObject->TicketNumberLookup(
@@ -147,10 +217,10 @@ $Selenium->RunTest(
             "Ticket with ticket number $TicketNumber is created",
         );
 
-        # go to ticket zoom page of created test ticket
+        # Go to ticket zoom page of created test ticket.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketID");
 
-        # check if test ticket values are genuine
+        # Check if test ticket values are genuine.
         $Self->True(
             index( $Selenium->get_page_source(), $TicketSubject ) > -1,
             "$TicketSubject found on page",
@@ -166,7 +236,7 @@ $Selenium->RunTest(
 
         # Test bug #12229
         my $QueueID1 = $Kernel::OM->Get('Kernel::System::Queue')->QueueAdd(
-            Name            => '<Queue>',
+            Name            => "<Queue>$RandomID",
             ValidID         => 1,
             GroupID         => 1,
             SystemAddressID => 1,
@@ -176,7 +246,7 @@ $Selenium->RunTest(
             UserID          => 1,
         );
         my $QueueID2 = $Kernel::OM->Get('Kernel::System::Queue')->QueueAdd(
-            Name            => 'Junk::SubQueue',
+            Name            => "Junk::SubQueue $RandomID  $RandomID",
             ValidID         => 1,
             GroupID         => 1,
             SystemAddressID => 1,
@@ -195,34 +265,48 @@ $Selenium->RunTest(
             "Queue #2 created."
         );
 
-        # navigate to AgentTicketPhone screen
+        # Navigate to AgentTicketPhone screen.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketPhone");
 
         # select <Queue>
         $Selenium->execute_script(
-            "\$('#Dest option').filter(function () { return this.text == '<Queue>'; }).attr('selected',true);"
+            "\$('#Dest option').filter(function () { return this.text == '<Queue>$RandomID'; }).attr('selected',true);"
                 . " \$('#Dest').trigger('redraw.InputField').trigger('change');"
         );
 
-        # wait for loader (AJAX used to create mess)
+        # Wait for loader.
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
 
-        # check <Queue> is displayed as selected
+        # Check Queue #1 is displayed as selected.
         $Self->True(
             $Selenium->WaitFor(
                 JavaScript =>
-                    "return typeof(\$) === \"function\" && \$('div.Text').filter(function () { return this.textContent == '<Queue>'; }).length;"
+                    "return typeof(\$) === \"function\" && \$('div.Text').filter(function () { return this.textContent == '<Queue>$RandomID'; }).length;"
             ),
-            'Make sure that <Queue> is displayed.',
+            'Make sure that Queue #1 is displayed.',
         );
 
-        # check SubQueue is displayed properly
-        $Self->True(
-            $Selenium->WaitFor(
-                JavaScript =>
-                    "return typeof(\$) === \"function\" && \$('option').filter(function () { return this.textContent == '\\u00A0\\u00A0SubQueue'; }).length;"
-            ),
-            'Make sure that <Queue> is displayed.',
+        # Check Queue #1 is displayed properly.
+        $Self->Is(
+            $Selenium->find_element( '#Dest', 'css' )->get_value(),
+            $QueueID1 . "||<Queue>$RandomID",
+            'Queue #1 is selected.',
+        );
+
+        # Select SubQueue on loading screen.
+        # bug#12819 ( https://bugs.otrs.org/show_bug.cgi?id=12819 ) - queue contains spaces in the name.
+        # Navigate to AgentTicketPhone screen again to check selecting a queue after loading screen.
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketPhone");
+        $Selenium->execute_script(
+            "\$('#Dest option').filter(function () { return this.textContent == '\\u00A0\\u00A0SubQueue $RandomID  $RandomID'; }).attr('selected',true);"
+                . " \$('#Dest').trigger('redraw.InputField').trigger('change');"
+        );
+
+        # Check SubQueue is displayed properly.
+        $Self->Is(
+            $Selenium->find_element( '#Dest', 'css' )->get_value(),
+            $QueueID2 . "||Junk::SubQueue $RandomID  $RandomID",
+            'Queue #2 is selected.',
         );
 
         # delete Queues
@@ -240,12 +324,21 @@ $Selenium->RunTest(
             TicketID => $TicketID,
             UserID   => 1,
         );
+
+        # Ticket deletion could fail if apache still writes to ticket history. Try again in this case.
+        if ( !$Success ) {
+            sleep 3;
+            $Success = $TicketObject->TicketDelete(
+                TicketID => $TicketID,
+                UserID   => 1,
+            );
+        }
         $Self->True(
             $Success,
             "Ticket with ticket ID $TicketID is deleted",
         );
 
-        # delete created test customer user
+        # Delete created test customer user.
         my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
         $TestCustomer = $DBObject->Quote($TestCustomer);
         $Success      = $DBObject->Do(
@@ -257,7 +350,7 @@ $Selenium->RunTest(
             "Delete customer user - $TestCustomer",
         );
 
-        # make sure the cache is correct
+        # Make sure the cache is correct.
         for my $Cache (
             qw (Ticket CustomerUser)
             )
@@ -266,7 +359,6 @@ $Selenium->RunTest(
                 Type => $Cache,
             );
         }
-
     }
 );
 

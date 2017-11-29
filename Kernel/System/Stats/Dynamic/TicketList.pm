@@ -309,22 +309,6 @@ sub GetObjectAttributes {
             Block            => 'InputField',
         },
         {
-            Name             => Translatable('CustomerUserLogin (complex search)'),
-            UseAsXvalue      => 0,
-            UseAsValueSeries => 0,
-            UseAsRestriction => 1,
-            Element          => 'CustomerUserLogin',
-            Block            => 'InputField',
-        },
-        {
-            Name             => Translatable('CustomerUserLogin (exact match)'),
-            UseAsXvalue      => 0,
-            UseAsValueSeries => 0,
-            UseAsRestriction => 1,
-            Element          => 'CustomerUserLoginRaw',
-            Block            => 'InputField',
-        },
-        {
             Name             => Translatable('From'),
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
@@ -636,6 +620,57 @@ sub GetObjectAttributes {
         push @ObjectAttributes, @CustomerIDAttributes;
     }
 
+    if ( $ConfigObject->Get('Stats::CustomerUserLoginsAsMultiSelect') ) {
+
+        # Get all CustomerUserLogins which are related to a tiket.
+        $DBObject->Prepare(
+            SQL => "SELECT DISTINCT customer_user_id FROM ticket",
+        );
+
+        # fetch the result
+        my %CustomerUserIDs;
+        while ( my @Row = $DBObject->FetchrowArray() ) {
+            if ( $Row[0] ) {
+                $CustomerUserIDs{ $Row[0] } = $Row[0];
+            }
+        }
+
+        my %ObjectAttribute = (
+            Name             => Translatable('CustomerUserLogin'),
+            UseAsXvalue      => 0,
+            UseAsValueSeries => 0,
+            UseAsRestriction => 1,
+            Element          => 'CustomerUserLoginRaw',
+            Block            => 'MultiSelectField',
+            Values           => \%CustomerUserIDs,
+        );
+
+        push @ObjectAttributes, \%ObjectAttribute;
+    }
+    else {
+
+        my @CustomerIDAttributes = (
+            {
+                Name             => Translatable('CustomerUserLogin (complex search)'),
+                UseAsXvalue      => 0,
+                UseAsValueSeries => 0,
+                UseAsRestriction => 1,
+                Element          => 'CustomerUserLogin',
+                Block            => 'InputField',
+            },
+            {
+                Name             => Translatable('CustomerUserLogin (exact match)'),
+                UseAsXvalue      => 0,
+                UseAsValueSeries => 0,
+                UseAsRestriction => 1,
+                Element          => 'CustomerUserLoginRaw',
+                Block            => 'InputField',
+            },
+        );
+
+        push @ObjectAttributes, @CustomerIDAttributes;
+    }
+
     if ( $ConfigObject->Get('Ticket::ArchiveSystem') ) {
 
         my %ObjectAttribute = (
@@ -756,7 +791,7 @@ sub GetObjectAttributes {
                     Element          => $DynamicFieldStatsParameter->{Element},
                     Block            => $DynamicFieldStatsParameter->{Block},
                     Values           => $DynamicFieldStatsParameter->{Values},
-                    Translation      => 0,
+                    Translation      => $DynamicFieldStatsParameter->{TranslatableValues} || 0,
                     IsDynamicField   => 1,
                     ShowAsTree       => $DynamicFieldConfig->{Config}->{TreeView} || 0,
                 );
@@ -822,6 +857,12 @@ sub GetStatTable {
         'CustomerID' => 1,
         'Title'      => 1,
     );
+
+    # Map the CustomerID search parameter to CustomerIDRaw search parameter for the
+    #   exact search match, if the 'Stats::CustomerIDAsMultiSelect' is active.
+    if ( $Kernel::OM->Get('Kernel::Config')->Get('Stats::CustomerIDAsMultiSelect') ) {
+        $Param{Restrictions}->{CustomerIDRaw} = $Param{Restrictions}->{CustomerID};
+    }
 
     ATTRIBUTE:
     for my $Key ( sort keys %{ $Param{Restrictions} } ) {
@@ -988,12 +1029,6 @@ sub GetStatTable {
         );
     }
 
-    # Map the CustomerID search parameter to CustomerIDRaw search parameter for the
-    #   exact search match, if the 'Stats::CustomerIDAsMultiSelect' is active.
-    if ( $Kernel::OM->Get('Kernel::Config')->Get('Stats::CustomerIDAsMultiSelect') ) {
-        $Param{Restrictions}->{CustomerIDRaw} = $Param{Restrictions}->{CustomerID};
-    }
-
     # get the involved tickets
     my @TicketIDs;
 
@@ -1044,14 +1079,18 @@ sub GetStatTable {
         )
     {
 
+        my $SQLTicketIDInCondition = $Self->_QueryInCondition(
+            Key       => 'ticket_id',
+            Values    => \@TicketIDs,
+            QuoteType => 'Integer',
+            BindMode  => 0,
+        );
+
         # start building the SQL query from back to front
         # what's fixed is the history_type_id we have to search for
         # 1 is ticketcreate
         # 27 is state update
-        my $SQL = 'history_type_id IN (1,27) ORDER BY ticket_id ASC';
-
-        $SQL = 'ticket_id IN ('
-            . ( join ', ', @TicketIDs ) . ') AND ' . $SQL;
+        my $SQL = $SQLTicketIDInCondition . ' AND history_type_id IN (1,27) ORDER BY ticket_id ASC';
 
         my %StateIDs;
 
@@ -1312,6 +1351,14 @@ sub GetStatTable {
                 );
                 $Ticket{$Attribute} .= " ($Param{TimeZone})";
             }
+
+            if ( $Attribute eq 'Owner' || $Attribute eq 'Responsible' ) {
+                $Ticket{$Attribute} = $Kernel::OM->Get('Kernel::System::User')->UserName(
+                    User          => $Ticket{$Attribute},
+                    NoOutOfOffice => 1,
+                );
+            }
+
             push @ResultRow, $Ticket{$Attribute};
         }
         push @StatArray, \@ResultRow;
@@ -1547,12 +1594,12 @@ sub _TicketAttributes {
 
         #PriorityID     => 'PriorityID',
         CustomerID => 'CustomerID',
-        Changed    => 'Changed',
+        Changed    => 'Last Changed',
         Created    => 'Created',
 
         #CreateTimeUnix => 'CreateTimeUnix',
         CustomerUserID => 'Customer User',
-        Lock           => 'lock',
+        Lock           => 'Lock',
 
         #LockID         => 'LockID',
         UnlockTimeout       => 'UnlockTimeout',
@@ -1886,6 +1933,164 @@ sub _IndividualResultOrder {
     }
 
     return @Sorted;
+}
+
+=item _QueryInCondition()
+
+DEPRECATED: This function will be in the DB.pm in further versions of OTRS.
+
+Generate a SQL IN condition query based on the given table key and values.
+
+    my $SQL = $DBObject->QueryInCondition(
+        Key       => 'table.column',
+        Values    => [ 1, 2, 3, 4, 5, 6 ],
+        QuoteType => '(undef|Integer|Number)',
+        BindMode  => (0|1),
+        Negate    => (0|1),
+    );
+
+Returns the SQL string:
+
+    my $SQL = "ticket_id IN (1, 2, 3, 4, 5, 6)"
+
+Return a separated IN condition for more then C<MaxParamCountForInCondition> values:
+
+    my $SQL = "( ticket_id IN ( 1, 2, 3, 4, 5, 6 ... ) OR ticket_id IN ( ... ) )"
+
+Return the SQL String with ?-values and a array with values references in bind mode:
+
+    $BindModeResult = (
+        'SQL'    => 'ticket_id IN (?, ?, ?, ?, ?, ?)',
+        'Values' => [1, 2, 3, 4, 5, 6],
+    );
+
+    or
+
+    $BindModeResult = (
+        'SQL'    => '( ticket_id IN (?, ?, ?, ?, ?, ?) OR ticket_id IN ( ?, ... ) )',
+        'Values' => [1, 2, 3, 4, 5, 6, ... ],
+    );
+
+Returns the SQL string for a negated in condition:
+
+    my $SQL = "ticket_id NOT IN (1, 2, 3, 4, 5, 6)"
+
+    or
+
+    my $SQL = "( ticket_id NOT IN ( 1, 2, 3, 4, 5, 6 ... ) AND ticket_id NOT IN ( ... ) )"
+
+=cut
+
+sub _QueryInCondition {
+    my ( $Self, %Param ) = @_;
+
+    if ( !$Param{Key} ) {
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => "Need Key!",
+        );
+        return;
+    }
+
+    if ( !IsArrayRefWithData( $Param{Values} ) ) {
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => "Need Values!",
+        );
+        return;
+    }
+
+    if ( $Param{QuoteType} && $Param{QuoteType} eq 'Like' ) {
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => "QuoteType 'Like' is not allowed for 'IN' conditions!",
+        );
+        return;
+    }
+
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
+    $Param{Negate}   //= 0;
+    $Param{BindMode} //= 0;
+
+    # Set the flag for string because of the other handling in the sql statement with strings.
+    my $IsString;
+    if ( !$Param{QuoteType} ) {
+        $IsString = 1;
+    }
+
+    my @Values = @{ $Param{Values} };
+
+    # Perform quoting depending on given quote type (only if not in bind mode)
+    if ( !$Param{BindMode} ) {
+
+        # Sort the values to cache the SQL query.
+        if ($IsString) {
+            @Values = sort { $a cmp $b } @Values;
+        }
+        else {
+            @Values = sort { $a <=> $b } @Values;
+        }
+
+        @Values = map { $DBObject->Quote( $_, $Param{QuoteType} ) } @Values;
+
+        # Something went wrong during the quoting, if the count is not equal.
+        return if scalar @Values != scalar @{ $Param{Values} };
+    }
+
+    # Set the correct operator and connector (only needed for splitted conditions).
+    my $Operator  = 'IN';
+    my $Connector = 'OR';
+
+    if ( $Param{Negate} ) {
+        $Operator  = 'NOT IN';
+        $Connector = 'AND';
+    }
+
+    my @SQLStrings;
+    my @BindValues;
+
+    # Split IN statement with more than 1000 elements in more statements combined with OR
+    # because Oracle doesn't support more than 1000 elements for one IN statement.
+    while ( scalar @Values ) {
+
+        my @ValuesPart;
+        if ( $DBObject->GetDatabaseFunction('Type') eq 'oracle' ) {
+            @ValuesPart = splice @Values, 0, 1000;
+        }
+        else {
+            @ValuesPart = splice @Values;
+        }
+
+        my $ValueString;
+        if ( $Param{BindMode} ) {
+            $ValueString = join ', ', ('?') x scalar @ValuesPart;
+            push @BindValues, @ValuesPart;
+        }
+        elsif ($IsString) {
+            $ValueString = join ', ', map {"'$_'"} @ValuesPart;
+        }
+        else {
+            $ValueString = join ', ', @ValuesPart;
+        }
+
+        push @SQLStrings, "$Param{Key} $Operator ($ValueString)";
+    }
+
+    my $SQL = join " $Connector ", @SQLStrings;
+
+    if ( scalar @SQLStrings > 1 ) {
+        $SQL = '( ' . $SQL . ' )';
+    }
+
+    if ( $Param{BindMode} ) {
+        my $BindRefList = [ map { \$_ } @BindValues ];
+        return (
+            'SQL'    => $SQL,
+            'Values' => $BindRefList,
+        );
+    }
+    return $SQL;
 }
 
 1;

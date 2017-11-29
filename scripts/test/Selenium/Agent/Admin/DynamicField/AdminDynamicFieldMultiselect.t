@@ -78,7 +78,7 @@ $Selenium->RunTest(
             # check client side validation
             my $Element2 = $Selenium->find_element( "#Name", 'css' );
             $Element2->send_keys("");
-            $Element2->VerifiedSubmit();
+            $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
 
             $Self->Is(
                 $Selenium->execute_script(
@@ -155,7 +155,7 @@ $Selenium->RunTest(
             );
 
             # submit form
-            $Selenium->find_element( "#Name", 'css' )->VerifiedSubmit();
+            $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
 
             # check for test DynamicFieldMultiselect on AdminDynamicField screen
             $Self->True(
@@ -179,7 +179,7 @@ $Selenium->RunTest(
             $Selenium->execute_script("\$('#PossibleNone').val('1').trigger('redraw.InputField').trigger('change');");
             $Selenium->execute_script("\$('#TreeView').val('1').trigger('redraw.InputField').trigger('change');");
             $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
-            $Selenium->find_element( "#Name", 'css' )->VerifiedSubmit();
+            $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
 
             # check new and edited DynamicFieldMultiselect values
             $Selenium->find_element( $RandomID, 'link_text' )->VerifiedClick();
@@ -230,9 +230,6 @@ $Selenium->RunTest(
                 "#ValidID updated value",
             );
 
-            # go back to AdminDynamicField screen
-            $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminDynamicField");
-
             # delete DynamicFields
             my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
             my $DynamicField       = $DynamicFieldObject->DynamicFieldGet(
@@ -248,6 +245,9 @@ $Selenium->RunTest(
                 $Success,
                 "DynamicFieldDelete() - $RandomID"
             );
+
+            # Go back to AdminDynamicField screen.
+            $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminDynamicField");
 
         }
 

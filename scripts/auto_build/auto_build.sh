@@ -1,7 +1,7 @@
 #!/bin/sh
 # --
 # auto_build.sh - build automatically OTRS tar, rpm and src-rpm
-# Copyright (C) 2001-2013 OTRS AG, http://otrs.org/
+# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -20,7 +20,7 @@
 # --
 
 echo "auto_build.sh - build OTRS release files"
-echo "Copyright (C) 2001-2015 OTRS AG, http://otrs.com/";
+echo "Copyright (C) 2001-2017 OTRS AG, http://otrs.com/";
 
 PATH_TO_CVS_SRC=$1
 PRODUCT=OTRS
@@ -189,7 +189,7 @@ else
     echo "No md5sum found in \$PATH!"
 fi
 echo "--------------------------------------------------------------------------";
-echo "Note: You may have to tag your git tree: git tag rel-3_x_x -a -m \"3.x.x\"";
+echo "Note: You may have to tag your git tree: git tag rel-5_x_x -a -m \"5.x.x\"";
 echo "--------------------------------------------------------------------------";
 
 # --

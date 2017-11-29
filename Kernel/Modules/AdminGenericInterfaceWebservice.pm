@@ -758,7 +758,7 @@ sub _ShowOverview {
     $LayoutObject->Block(
         Name => 'WebservicePathElement',
         Data => {
-            Name => 'Web Services',
+            Name => Translatable('Web Services'),
             Link => 'Action=AdminGenericInterfaceWebservice',
             Nav  => '',
         },
@@ -887,7 +887,7 @@ sub _ShowEdit {
     $LayoutObject->Block(
         Name => 'WebservicePathElement',
         Data => {
-            Name => 'Web Services',
+            Name => Translatable('Web Services'),
             Link => 'Action=AdminGenericInterfaceWebservice',
             Nav  => '',
         },
@@ -945,7 +945,7 @@ sub _ShowEdit {
         $LayoutObject->Block(
             Name => 'WebservicePathElementNoLink',
             Data => {
-                Name => 'New Web service',
+                Name => Translatable('New Web service'),
                 Link => 'Action=AdminGenericInterfaceWebservice;Subaction=' . $Param{Action},
                 Nav  => '',
             },
@@ -1088,18 +1088,18 @@ sub _ShowEdit {
     # meta configuration for output blocks
     my %CommTypeConfig = (
         Provider => {
-            Title             => $LayoutObject->{LanguageObject}->Translate('OTRS as provider'),
+            Title             => Translatable('OTRS as provider'),
             SelectedTransport => $ProviderData->{Transport}->{Type},
             ActionType        => 'Operation',
-            ActionsTitle      => 'Operations',
+            ActionsTitle      => Translatable('Operations'),
             ActionsConfig     => $ProviderData->{Operation},
             ControllerData    => \%GIOperations,
         },
         Requester => {
-            Title             => $LayoutObject->{LanguageObject}->Translate('OTRS as requester'),
+            Title             => Translatable('OTRS as requester'),
             SelectedTransport => $RequesterData->{Transport}->{Type},
             ActionType        => 'Invoker',
-            ActionsTitle      => 'Invokers',
+            ActionsTitle      => Translatable('Invokers'),
             ActionsConfig     => $RequesterData->{Invoker},
             ControllerData    => \%GIInvokers,
         },
