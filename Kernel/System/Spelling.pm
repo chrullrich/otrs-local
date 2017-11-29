@@ -26,7 +26,7 @@ Kernel::System::Spelling - spelling lib
 =head1 SYNOPSIS
 
 This module is the spellchecker backend wrapper of OTRS.
-Currently, ispell and aspell are supported as spellchecker backends.
+Currently, C<ispell> and C<aspell> are supported as spellchecker backends.
 
 =head1 PUBLIC INTERFACE
 
@@ -141,6 +141,9 @@ sub Check {
 
     # set dict
     if ( $Param{SpellLanguage} ) {
+
+        # Sanitize to avoid tampering - whitelist allowed characters.
+        $Param{SpellLanguage} =~ s{[^a-zA-Z0-9_-]}{}smxg;
         $SpellChecker .= " -d $Param{SpellLanguage}";
     }
 

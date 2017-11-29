@@ -771,7 +771,7 @@ sub LoadDefaults {
     # SessionMaxIdleTime
     # (After this time (in seconds) without new http request, then
     # the user get logged off)
-    $Self->{SessionMaxIdleTime} = 6 * 60 * 60;
+    $Self->{SessionMaxIdleTime} = 2 * 60 * 60;
 
     # SessionDeleteIfTimeToOld
     # (Delete session's witch are requested and to old?) [0|1]
@@ -988,6 +988,7 @@ sub LoadDefaults {
         'Core.UI.InputFields.js',
         'Core.UI.Accessibility.js',
         'Core.UI.Dialog.js',
+        'Core.UI.Floater.js',
         'Core.UI.RichTextEditor.js',
         'Core.UI.Datepicker.js',
         'Core.UI.Popup.js',
@@ -1129,6 +1130,7 @@ sub LoadDefaults {
         'Active' => '1',
         'Area' => 'Agent',
         'Column' => 'User Profile',
+        'Desc' => 'Set a new password by filling in your current password and a new one.',
         'Label' => 'Change password',
         'Module' => 'Kernel::Output::HTML::Preferences::Password',
         'PasswordMaxLoginFailed' => '0',
@@ -1164,6 +1166,7 @@ sub LoadDefaults {
         'Block' => 'Input',
         'Column' => 'Other Settings',
         'Data' => '[% Env("UserComment") %]',
+        'Desc' => 'Add a comment.',
         'Key' => 'Comment',
         'Label' => 'Comment',
         'Module' => 'Kernel::Output::HTML::Preferences::Generic',
@@ -1176,6 +1179,7 @@ sub LoadDefaults {
         'Column' => 'User Profile',
         'Key' => 'Language',
         'Label' => 'Language',
+        'Desc' => 'Select the main interface language.',
         'Module' => 'Kernel::Output::HTML::Preferences::Language',
         'PrefKey' => 'UserLanguage',
         'Prio' => '1000'
@@ -1183,6 +1187,7 @@ sub LoadDefaults {
     $Self->{PreferencesGroups}->{Theme} = {
         'Active' => '1',
         'Column' => 'User Profile',
+        'Desc' => 'Select your preferred theme for OTRS.',
         'Key' => 'Frontend theme',
         'Label' => 'Theme',
         'Module' => 'Kernel::Output::HTML::Preferences::Theme',
@@ -1432,7 +1437,7 @@ via the Preferences button after logging in.
     # CustomerUser
     # (customer user database backend and settings)
     $Self->{CustomerUser} = {
-        Name   => 'Database Backend',
+        Name   => Translatable('Database Backend'),
         Module => 'Kernel::System::CustomerUser::DB',
         Params => {
             # if you want to use an external database, add the
@@ -1579,7 +1584,7 @@ via the Preferences button after logging in.
 #        CacheTTL => 0,
 #        Map => [
 #            # note: Login, Email and CustomerID needed!
-#            # var, frontend, storage, shown (1=always,2=lite), required, storage-type, http-link, readonly
+#            # var, frontend, storage, shown (1=always,2=lite), required, storage-type, http-link, readonly, http-link-target, link class(es)
 #            [ 'UserTitle',      'Title',      'title',           1, 0, 'var', '', 0 ],
 #            [ 'UserFirstname',  'Firstname',  'givenname',       1, 1, 'var', '', 0 ],
 #            [ 'UserLastname',   'Lastname',   'sn',              1, 1, 'var', '', 0 ],
@@ -1596,7 +1601,7 @@ via the Preferences button after logging in.
 #    };
 
     $Self->{CustomerCompany} = {
-        Name   => 'Database Backend',
+        Name   => Translatable('Database Backend'),
         Module => 'Kernel::System::CustomerCompany::DB',
         Params => {
             # if you want to use an external database, add the
@@ -1806,7 +1811,7 @@ via the Preferences button after logging in.
         },
     };
 
-    return;
+    return 1;
 }
 
 #

@@ -31,6 +31,7 @@ $Kernel::OM->ObjectParamAdd(
     'Kernel::System::UnitTest::Helper' => {
         RestoreDatabase  => 1,
         UseTmpArticleDir => 1,
+        UseTmpArticleDir => 1,
     },
 );
 my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
@@ -333,7 +334,9 @@ for my $Test (@Tests) {
             Limit => 2,
         );
 
-        @FoundTicketIDs = sort @FoundTicketIDs;
+        @FoundTicketIDs = sort { $a <=> $b } @FoundTicketIDs;
+        @{ $Test->{"ExpectedResults$StorageBackend"} }
+            = sort { $a <=> $b } @{ $Test->{"ExpectedResults$StorageBackend"} };
 
         $Self->IsDeeply(
             \@FoundTicketIDs,

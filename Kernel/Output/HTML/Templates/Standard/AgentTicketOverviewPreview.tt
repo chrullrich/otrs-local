@@ -137,7 +137,7 @@
 [% RenderBlockEnd("Service") %]
                         <tr>
                             <td>
-                                <label>[% Translate("Owner") | html %]</label><div title="[% Data.UserFirstname | html %] [% Data.UserLastname | html %] ([% Data.Owner | html %])">[% Data.UserFirstname | truncate(15) | html %] [% Data.UserLastname | truncate(15) | html %]</div>
+                                <label>[% Translate("Owner") | html %]</label><div title="[% Data.UserFirstname | html %] [% Data.UserLastname | html %] ([% Data.Owner | html %])">[% Data.UserFullname | truncate(30) | html %]</div>
                             </td>
                             <td>
                                 <label>[% Translate("Lock") | html %]</label><div title="[% Translate(Data.Lock) | html %]">[% Translate(Data.Lock) | html %]</div>
@@ -370,6 +370,11 @@
             return true;
         }
 
+        // Prevent MasterAction on Modernize input fields.
+        if ($(Event.target).hasClass('InputField_Search')) {
+            return true;
+        }
+
         // only act if the link was not clicked directly
         if (Event.target !== $MasterActionLink.get(0)) {
             if (Event.ctrlKey || Event.metaKey) {
@@ -392,22 +397,28 @@
         return false;
     });
 
-    $('.OverviewLarge li').on('mouseenter', function() {
+    $('.OverviewMedium > li, .OverviewLarge > li').on('mouseenter', function() {
         $(this).find('ul.InlineActions').css('top', '0px');
-    });
-    $('.OverviewLarge li').on('mouseleave', function(Event) {
 
-        // Workaround for bug#12403: The inlineActions would hide if hovering
-        // over the queue selection due to a bug in IE. As this is working fine
-        // in MS Edge with the former pure css solution, this whole function
-        // TargetNS.InitInlineActions could be dropped as soon as IE11 support is
-        // ceased for OTRS. Remember to re-add the needed css in this case:
-        //      .OverviewLarge > li:hover ul.InlineActions { top: 0px; }    (Core.OverviewLarge.css)
-        //      .OverviewPreview > li:hover ul.InlineActions { top: 0px; }  (Core.OverviewMedium.css)
-        if (Event.target.tagName.toLowerCase() === 'select') {
+        Core.App.Publish('Event.Agent.TicketOverview.InlineActions.Shown');
+    });
+    $('.OverviewMedium > li, .OverviewLarge > li').on('mouseleave', function(Event) {
+
+            // The inline actions would hide if hovering over the queue selection due to a bug in IE.
+            //   See bug#12403 for more information.
+            // The exception has to be added also for modernized dropdowns.
+            //   See bug#13100 for more information.
+            if (
+                Event.target.tagName.toLowerCase() === 'select'
+                || $(Event.target).hasClass('InputField_Search')
+                )
+            {
             return false;
         }
-        $(this).find('ul.InlineActions').css('top', '-30px');
+
+        $(this).find('ul.InlineActions').css('top', '-35px');
+
+        Core.App.Publish('Event.Agent.TicketOverview.InlineActions.Hidden', [$(this).find('ul.InlineActions')]);
     });
 
 //]]></script>

@@ -238,19 +238,17 @@ $Self->True(
 );
 
 # check the sumbuild function
-my @StatArray = @{
-    $StatsObject->SumBuild(
-        Array => [
-            ['Title'],
-            [ 'SomeText', 'Column1', 'Column2', 'Column3', 'Column4', 'Column5', 'Column6', ],
-            [ 'Row1',     1,         1,         1,         0,         1,         undef, ],
-            [ 'Row2',     2,         2,         2,         0,         2,         undef, ],
-            [ 'Row3',     3,         undef,     3,         0,         3,         undef, ],
-        ],
-        SumRow => 1,
-        SumCol => 1,
-    ),
-};
+my @StatArray = $StatsObject->SumBuild(
+    Array => [
+        ['Title'],
+        [ 'SomeText', 'Column1', 'Column2', 'Column3', 'Column4', 'Column5', 'Column6', ],
+        [ 'Row1',     1,         1,         1,         0,         1,         undef, ],
+        [ 'Row2',     2,         2,         2,         0,         2,         undef, ],
+        [ 'Row3',     3,         undef,     3,         0,         3,         undef, ],
+    ],
+    SumRow => 1,
+    SumCol => 1,
+);
 
 my @SubStatArray = @{ $StatArray[-1] };
 $Counter = $SubStatArray[-1];
@@ -443,6 +441,32 @@ $Self->Is(
     $ImportContent,
     $ExportContent->{Content},
     "Export-Importcheck - check if import file content equal export file content.\n Be careful, if it gives errors if you run OTRS with default charset utf-8,\n because the examplefile is iso-8859-1, but at my test there a no problems to compare a utf-8 string with an iso string?!\n",
+);
+
+# Import a static statistic with not exsting object module
+
+# load example file
+my $PathNotExistingStatistic = $ConfigObject->Get('Home') . '/scripts/test/sample/Stats/Stats.Static.NotExisting.xml';
+my $FilehandleNotExistingStatistic;
+if ( !open $FilehandleNotExistingStatistic, '<', $PathNotExistingStatistic ) {    ## no critic
+    $Self->True(
+        0,
+        'Get the file which should be imported',
+    );
+}
+
+@Lines = <$FilehandleNotExistingStatistic>;
+my $ImportContentNotExistingStatistic = join '', @Lines;
+
+close $Filehandle;
+
+my $NotExistingStatID = $StatsObject->Import(
+    Content => $ImportContentNotExistingStatistic,
+    UserID  => 1,
+);
+$Self->False(
+    $NotExistingStatID,
+    'Import() statistic with not existing object module must fail',
 );
 
 # try to use otrs.Console.pl Maint::Stats::Generate

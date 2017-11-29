@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%M/%D/%Y';
     $Self->{DateInputFormat}     = '%M/%D/%Y';
     $Self->{DateInputFormatLong} = '%M/%D/%Y - %T';
-    $Self->{Completeness}        = 0.298321048321048;
+    $Self->{Completeness}        = 0.655747588424437;
 
     # csv separator
     $Self->{Separator} = ',';
@@ -821,8 +821,8 @@ sub Data {
         'Edit ACL information' => 'Редагувати інформацію ACL',
         'Stop after match' => 'Припинити перевірку після збігу',
         'Edit ACL structure' => 'Редагувати структуру ACL',
-        'Save settings' => '',
-        'Save ACL' => '',
+        'Save settings' => 'Зберегти налаштування',
+        'Save ACL' => 'Зберегти ACL',
         'Save' => 'Зберегти',
         'or' => 'або',
         'Save and finish' => 'Зберегти та завершити',
@@ -843,7 +843,7 @@ sub Data {
         'List' => 'Список',
         'Download file' => 'Завантажити файл',
         'Delete this attachment' => 'Вилучити це вкладення',
-        'Do you really want to delete this attachment?' => '',
+        'Do you really want to delete this attachment?' => 'Ви насправді хочете вилучити це долучення?',
         'Add Attachment' => 'Додати вкладення',
         'Edit Attachment' => 'Редагувати вкладення',
 
@@ -858,7 +858,7 @@ sub Data {
         'You can use the following tags' => 'Ви можете використовувати наступні теги',
         'To get the first 20 character of the subject.' => 'Щоб бачити перші 20 символів теми',
         'To get the first 5 lines of the email.' => 'Щоб бачити перші 5 рядків email',
-        'To get the name of the ticket\'s customer user (if given).' => '',
+        'To get the name of the ticket\'s customer user (if given).' => 'Для того, щоб отримати ім\'я користувача клієнтського квитка (якщо воно є).',
         'To get the article attribute' => 'Отримати атрибути статті',
         ' e. g.' => ' наприклад,',
         'Options of the current customer user data' => 'Персональні опції клієнта',
@@ -907,7 +907,7 @@ sub Data {
         'Wildcards like \'*\' are allowed.' => 'Підстановочні символи як-то «*» є дозволеними.',
         'Add customer' => 'Додати клієнта',
         'Select' => 'Вибір',
-        'List (only %s shown - more available)' => '',
+        'List (only %s shown - more available)' => 'тільки %s показано - більше варіантів',
         'List (%s total)' => 'Список (%s всього)',
         'Please enter a search term to look for customers.' => ' Будь ласка, уведіть пошукове вираження для пошуку клієнтів.',
         'Add Customer' => 'Додати Клієнта',
@@ -952,12 +952,12 @@ sub Data {
         'Customers' => 'Клієнти',
         'No matches found.' => 'Збігів не знайдено.',
         'Groups' => 'Групи',
-        'Change Group Relations for Customer' => '',
-        'Change Customer Relations for Group' => '',
-        'Toggle %s Permission for all' => '',
-        'Toggle %s permission for %s' => '',
+        'Change Group Relations for Customer' => 'Зміна привязки групи до Клієнта',
+        'Change Customer Relations for Group' => 'Зміна привязки Клієнта до групи ',
+        'Toggle %s Permission for all' => 'Застосувати %s для всіх',
+        'Toggle %s permission for %s' => 'Застосувати %s повноваження для %s',
         'Customer Default Groups:' => 'Клієнтська група по-умовчанню:',
-        'No changes can be made to these groups.' => '',
+        'No changes can be made to these groups.' => 'Не можливо зробити зміни для цих груп',
         'ro' => 'Тільки читання',
         'Read only access to the ticket in this group/queue.' => 'Права тільки на читання заявки в даній групі/черги',
         'rw' => 'Читання/запис',
@@ -965,79 +965,79 @@ sub Data {
             'Повні права на заявки в даній групі/черги',
 
         # Template: AdminCustomerUserService
-        'Manage Customer-Services Relations' => '',
-        'Edit default services' => '',
-        'Filter for Services' => '',
-        'Allocate Services to Customer' => '',
-        'Allocate Customers to Service' => '',
-        'Toggle active state for all' => '',
+        'Manage Customer-Services Relations' => 'Керувати звязками Клієнт-Сервіс',
+        'Edit default services' => 'Редагувати сервіси по замовчуванню',
+        'Filter for Services' => 'Фільтр для сервісів',
+        'Allocate Services to Customer' => 'Привязати сервіси  до клієнта',
+        'Allocate Customers to Service' => 'Привязати Клієнта до сервісу',
+        'Toggle active state for all' => 'Встановити активний стан для всіх',
         'Active' => 'Активний',
-        'Toggle active state for %s' => '',
+        'Toggle active state for %s' => 'Встановити активний стан для %s',
 
         # Template: AdminDynamicField
-        'Dynamic Fields Management' => '',
-        'Add new field for object' => '',
+        'Dynamic Fields Management' => 'Керування динамічними полями',
+        'Add new field for object' => 'Додати нове полк для обєкту',
         'To add a new field, select the field type from one of the object\'s list, the object defines the boundary of the field and it can\'t be changed after the field creation.' =>
-            '',
-        'Dynamic Fields List' => '',
-        'Dynamic fields per page' => '',
-        'Label' => '',
+            'Для того, щоб додати нове поле, виберіть тип поля з наступного переліку об\'єктів, об\'єкт визначає зв\'язки поля та не може бути змінений після його створення.',
+        'Dynamic Fields List' => 'Список динамічних полів',
+        'Dynamic fields per page' => 'Кількість динамічних полів на сторінку',
+        'Label' => 'Мітка',
         'Order' => 'Порядок',
         'Object' => 'Об\'єкт',
-        'Delete this field' => '',
+        'Delete this field' => 'Видалити це поле',
         'Do you really want to delete this dynamic field? ALL associated data will be LOST!' =>
-            '',
-        'Delete field' => '',
-        'Deleting the field and its data. This may take a while...' => '',
+            'Ви насправді хочете видалити це динамічне поле? ВСІ асоційовані з ним дані буде ВТРАЧЕНО!',
+        'Delete field' => 'Видалити поле',
+        'Deleting the field and its data. This may take a while...' => 'Вилучення поля та його даних. Це може зайняти деякий час...',
 
         # Template: AdminDynamicFieldCheckbox
-        'Dynamic Fields' => '',
-        'Field' => '',
-        'Go back to overview' => '',
-        'General' => '',
+        'Dynamic Fields' => 'Динамічні поля',
+        'Field' => 'Поле',
+        'Go back to overview' => 'Повернутись до перегляду',
+        'General' => 'Загалом',
         'This field is required, and the value should be alphabetic and numeric characters only.' =>
-            '',
+            'Це поле є обовязкове, значення повинні бути лише літери чи цифри',
         'Must be unique and only accept alphabetic and numeric characters.' =>
-            '',
+            'Повинне бути ункальним, значення повинні бути лише літери чи цифри',
         'Changing this value will require manual changes in the system.' =>
-            '',
+            'Зміна цього значення вимагає ручних змін в системі',
         'This is the name to be shown on the screens where the field is active.' =>
-            '',
-        'Field order' => '',
-        'This field is required and must be numeric.' => '',
+            'Імя, що буде відображатись на екрані, коли поле активне',
+        'Field order' => 'Порядок поля',
+        'This field is required and must be numeric.' => 'Це поле є обовязковим і повинне складатись з цифр',
         'This is the order in which this field will be shown on the screens where is active.' =>
-            '',
-        'Field type' => '',
-        'Object type' => '',
-        'Internal field' => '',
-        'This field is protected and can\'t be deleted.' => '',
-        'Field Settings' => '',
-        'Default value' => '',
-        'This is the default value for this field.' => '',
+            'Порядок в якому поля будуть відображатись на екрані коли активні',
+        'Field type' => 'Тип поля',
+        'Object type' => 'Тип обєкту',
+        'Internal field' => 'Внутрішнє поле',
+        'This field is protected and can\'t be deleted.' => 'Це поле захищене та не може бути вилучене.',
+        'Field Settings' => 'Налаштування поля',
+        'Default value' => 'Значення за замовчуванням',
+        'This is the default value for this field.' => 'Це значення за замовчуванням для цього поля',
 
         # Template: AdminDynamicFieldDateTime
-        'Default date difference' => '',
-        'This field must be numeric.' => '',
+        'Default date difference' => 'Різниця дати за замовчуванням',
+        'This field must be numeric.' => 'Це поле повинно бути цифровим',
         'The difference from NOW (in seconds) to calculate the field default value (e.g. 3600 or -60).' =>
-            '',
-        'Define years period' => '',
+            'Час для прорахунку (від зараз) значення поля за замовчуванням (приклад 3600 або -60)',
+        'Define years period' => 'Визначіть рік',
         'Activate this feature to define a fixed range of years (in the future and in the past) to be displayed on the year part of the field.' =>
-            '',
-        'Years in the past' => '',
-        'Years in the past to display (default: 5 years).' => '',
-        'Years in the future' => '',
-        'Years in the future to display (default: 5 years).' => '',
-        'Show link' => '',
+            'Активація цієї опції визначає сталий перелік років (в майбутньому і минулому) для відображення в полі рік',
+        'Years in the past' => 'Років тому',
+        'Years in the past to display (default: 5 years).' => 'показувати років назад (за замовчуванням: 5 років)',
+        'Years in the future' => 'Років в майбутньому',
+        'Years in the future to display (default: 5 years).' => 'показувати років в майбутньому (за замовчуванням: 5 років)',
+        'Show link' => 'Показати посилання',
         'Here you can specify an optional HTTP link for the field value in Overviews and Zoom screens.' =>
-            '',
-        'Link for preview' => '',
+            'Тут Ви можете визначити додатковий HTTP лінк для значення поля перегляд і розширений перегляд',
+        'Link for preview' => 'Посилання для перегляду',
         'If filled in, this URL will be used for a preview which is shown when this link is hovered in ticket zoom. Please note that for this to work, the regular URL field above needs to be filled in, too.' =>
-            '',
-        'Restrict entering of dates' => '',
-        'Here you can restrict the entering of dates of tickets.' => '',
+            'Якщо заповнені, це посилання буде використовуватися для попереднього перегляду у розширеному перегляді тікету.Зверніть увагу, що для цієї дії, регулярне поле посилання вище повинно бути заповнене також',
+        'Restrict entering of dates' => 'Обмежеити введення дати',
+        'Here you can restrict the entering of dates of tickets.' => 'Тут Ви можете обмежити введення дати тікету',
 
         # Template: AdminDynamicFieldDropdown
-        'Possible values' => '',
+        'Possible values' => 'Можливі значення',
         'Key' => 'Ключ',
         'Value' => 'Значення',
         'Remove value' => 'Вилучити значення',
@@ -1090,7 +1090,7 @@ sub Data {
         'Run Now!' => 'Виконати зараз!',
         'Delete this task' => 'Вилучити завдання',
         'Run this task' => 'Запустити завдання',
-        'Do you really want to delete this task?' => '',
+        'Do you really want to delete this task?' => 'Ви справді хочете видалити це завдання',
         'Job Settings' => 'Настроювання завдання',
         'Job name' => 'Ім\'я завдання',
         'The name you entered already exists.' => 'Ім\'я, що Ви ввели, вже існує.',
@@ -1134,11 +1134,11 @@ sub Data {
         'No create time settings.' => ' Без обліку часу створення',
         'Ticket created' => 'Заявка створена',
         'Ticket created between' => 'Заявка створена між ',
-        'Last changed times' => '',
-        'No last changed time settings.' => '',
-        'Ticket last changed' => '',
-        'Ticket last changed between' => '',
-        'Change times' => '',
+        'Last changed times' => 'Час останньої зміни',
+        'No last changed time settings.' => 'Не має часу змін налаштувань',
+        'Ticket last changed' => 'Заявка змінена',
+        'Ticket last changed between' => 'Заявка змінена між',
+        'Change times' => 'Час зміни',
         'No change time settings.' => 'Не змінювати параметри часу',
         'Ticket changed' => 'Заявка змінена',
         'Ticket changed between' => 'Заявка змінена в період',
@@ -1150,7 +1150,7 @@ sub Data {
         'No pending time settings.' => ' Без обліку часу, коли запит був відкладений',
         'Ticket pending time reached' => 'Заявка була відкладена',
         'Ticket pending time reached between' => 'Заявка була відкладена між',
-        'Escalation times' => '',
+        'Escalation times' => 'час ротермінування',
         'No escalation time settings.' => ' Без обліку часу ескалації',
         'Ticket escalation time reached' => 'Заявка була ескальована',
         'Ticket escalation time reached between' => 'Заявка була ескальована між',
@@ -1175,7 +1175,7 @@ sub Data {
         'new owner' => 'новий власник',
         'new responsible' => 'нова відповідь',
         'Set new ticket lock' => 'Встановити нове блокування заявки',
-        'New customer user' => '',
+        'New customer user' => 'Новий користувас клієнта',
         'New customer ID' => 'ID нового клієнта',
         'New title' => 'Новий заголовок',
         'New type' => 'Новий тип',
@@ -1191,30 +1191,30 @@ sub Data {
         'Delete tickets' => 'Вилучити заявки',
         'Warning: All affected tickets will be removed from the database and cannot be restored!' =>
             'Попередження: Усі обрані заявки будуть вилучені з бази даних без можливості відновлення!',
-        'Execute Custom Module' => '',
+        'Execute Custom Module' => 'Виконати модуль користувача',
         'Param %s key' => 'Ключ параметра ',
         'Param %s value' => 'Значення параметра ',
         'Save Changes' => 'Зберегти зміни',
         'Results' => 'Результат',
-        '%s Tickets affected! What do you want to do?' => '',
+        '%s Tickets affected! What do you want to do?' => 'Квитки %s ушкоджені. Що ви хочете робити далі?',
         'Warning: You used the DELETE option. All deleted tickets will be lost!' =>
-            '',
+            'Увага: Ви використали опцію ВИЛУЧИТИ. Всі вилучені квитки буде втрачено!',
         'Warning: There are %s tickets affected but only %s may be modified during one job execution!' =>
-            '',
+            'Увага: є ушкоджені квитки %s але тільки %s можна змінити впродовж виконання одного завдання.',
         'Edit job' => 'Редагувати завдання',
         'Run job' => 'Запустити завдання',
         'Affected Tickets' => 'Обрані завдання',
 
         # Template: AdminGenericInterfaceDebugger
-        'GenericInterface Debugger for Web Service %s' => '',
-        'You are here' => '',
-        'Web Services' => '',
-        'Debugger' => '',
-        'Go back to web service' => '',
-        'Clear' => '',
+        'GenericInterface Debugger for Web Service %s' => 'ЗагальноІнтерфейсний зневадник для веб-служб %s',
+        'You are here' => 'Ви тут',
+        'Web Services' => 'Веб сервіси',
+        'Debugger' => 'Відладчик',
+        'Go back to web service' => 'Повернутись до веб серівісів',
+        'Clear' => 'Очистити',
         'Do you really want to clear the debug log of this web service?' =>
-            '',
-        'Request List' => '',
+            'Ви дійсно бажаєте очистити лог відладки цього веб сервісу?',
+        'Request List' => 'Необхідний перелік',
         'Time' => 'Час',
         'Remote IP' => 'Віддалений IP',
         'Loading' => 'Завантаження',
@@ -1225,289 +1225,290 @@ sub Data {
         'Filter by remote IP' => 'Фільтрувати за віддаленим IP',
         'Limit' => 'Обмеження',
         'Refresh' => 'Обновити',
-        'Request Details' => '',
-        'An error occurred during communication.' => '',
-        'Show or hide the content.' => '',
-        'Clear debug log' => '',
+        'Request Details' => 'Деталі запиту',
+        'An error occurred during communication.' => 'Виникла помилка під час звязку',
+        'Show or hide the content.' => 'Відобразити чи приховати контент',
+        'Clear debug log' => 'Очистити лог відладки',
 
         # Template: AdminGenericInterfaceInvokerDefault
-        'Add new Invoker to Web Service %s' => '',
-        'Change Invoker %s of Web Service %s' => '',
-        'Add new invoker' => '',
-        'Change invoker %s' => '',
-        'Do you really want to delete this invoker?' => '',
-        'All configuration data will be lost.' => '',
-        'Invoker Details' => '',
+        'Add new Invoker to Web Service %s' => 'Додати нового активатора до веб-служби %s',
+        'Change Invoker %s of Web Service %s' => 'Змінити активатор %s веб-служби %s',
+        'Add new invoker' => 'Додати новий активатор',
+        'Change invoker %s' => 'Змінити активатор %s',
+        'Do you really want to delete this invoker?' => 'Ви справді бажаєте вилучити цей активатор?',
+        'All configuration data will be lost.' => 'Всі конфігураційні дані будуть втрачені.',
+        'Invoker Details' => 'Деталі активатора',
         'The name is typically used to call up an operation of a remote web service.' =>
-            '',
-        'Please provide a unique name for this web service invoker.' => '',
-        'Invoker backend' => '',
+            'Ім\'я, що типово використовується для виклику операцій віддаленої веб-служби.',
+        'Please provide a unique name for this web service invoker.' => 'Будь ласка, задайте унікальне ім\'я для цього активатора веб-служби',
+        'Invoker backend' => 'Нутрощі активатора',
         'This OTRS invoker backend module will be called to prepare the data to be sent to the remote system, and to process its response data.' =>
-            '',
-        'Mapping for outgoing request data' => '',
-        'Configure' => '',
+            'Цей внутрішній модуль OTRS активатора буде викликаний щоб підготувати дані для відправки до віддаленої системи та обробляти дані її відповіді.',
+        'Mapping for outgoing request data' => 'Відображення для даних вихідного запиту',
+        'Configure' => 'Налаштувати',
         'The data from the invoker of OTRS will be processed by this mapping, to transform it to the kind of data the remote system expects.' =>
-            '',
-        'Mapping for incoming response data' => '',
+            'Дані з активатора OTRS будуть оброблені цим відображенням, щоб перетворити їх до того вигляду даних, який очікує віддалена система.',
+        'Mapping for incoming response data' => 'Відображення для вхідних даних відгуку',
         'The response data will be processed by this mapping, to transform it to the kind of data the invoker of OTRS expects.' =>
-            '',
-        'Asynchronous' => '',
-        'This invoker will be triggered by the configured events.' => '',
+            'Дані відповіді будуть оброблені цим відображенням так, щоб перетворити їх до того виду, що очікує активатор OTRS.',
+        'Asynchronous' => 'Асинхронний',
+        'This invoker will be triggered by the configured events.' => 'Цей активатор буде викликаний сконфігурованою подією.',
         'Asynchronous event triggers are handled by the OTRS Scheduler Daemon in background (recommended).' =>
-            '',
+            'Асинхронні тригери подій будуть оброблятись Службою Планувальника OTRS у фоновому режимі (рекомендовано).',
         'Synchronous event triggers would be processed directly during the web request.' =>
-            '',
-        'Save and continue' => '',
-        'Delete this Invoker' => '',
+            'Синхронні тригери подій будуть обробляться безпосередньо під час веб-запиту.',
+        'Save and continue' => 'Зберегти та продовжити',
+        'Delete this Invoker' => 'Вилучити цей активатор.',
 
         # Template: AdminGenericInterfaceMappingSimple
-        'GenericInterface Mapping Simple for Web Service %s' => '',
-        'Go back to' => '',
-        'Mapping Simple' => '',
-        'Default rule for unmapped keys' => '',
-        'This rule will apply for all keys with no mapping rule.' => '',
-        'Default rule for unmapped values' => '',
-        'This rule will apply for all values with no mapping rule.' => '',
-        'New key map' => '',
-        'Add key mapping' => '',
-        'Mapping for Key ' => '',
-        'Remove key mapping' => '',
-        'Key mapping' => '',
-        'Map key' => '',
-        'matching the' => '',
-        'to new key' => '',
-        'Value mapping' => '',
-        'Map value' => '',
-        'to new value' => '',
-        'Remove value mapping' => '',
-        'New value map' => '',
-        'Add value mapping' => '',
-        'Do you really want to delete this key mapping?' => '',
-        'Delete this Key Mapping' => '',
+        'GenericInterface Mapping Simple for Web Service %s' => 'Загальноінтерфейсне Просте Відображення для веб-служби %s',
+        'Go back to' => 'Повернутися до',
+        'Mapping Simple' => 'Просте відображення',
+        'Default rule for unmapped keys' => 'Типове правило для ключів без відображення',
+        'This rule will apply for all keys with no mapping rule.' => 'Це правило буде застосовуватися для всіх ключів, що не мають правил відображення.',
+        'Default rule for unmapped values' => 'Типове правило для значень без відображення',
+        'This rule will apply for all values with no mapping rule.' => 'Це правило буде застосовуватись для всіх значень, що не мають правил відображення.',
+        'New key map' => 'Новий ключ відображення',
+        'Add key mapping' => 'Додати ключ відображення',
+        'Mapping for Key ' => 'Відображення для Ключа',
+        'Remove key mapping' => 'Вилучити ключ відображення',
+        'Key mapping' => 'Ключ відображення',
+        'Map key' => 'Ключ відображення',
+        'matching the' => 'відповідність',
+        'to new key' => 'для нового ключа',
+        'Value mapping' => 'Перетворення значень',
+        'Map value' => 'Значення відображення',
+        'to new value' => 'на нове значення',
+        'Remove value mapping' => 'Вилучити відображення значення',
+        'New value map' => 'Нове значення відображення',
+        'Add value mapping' => 'Додати значення відображення',
+        'Do you really want to delete this key mapping?' => 'Ви дійсно бажаєте вилучити цей ключ відображення?',
+        'Delete this Key Mapping' => 'Видалити цей Ключ Відображення',
 
         # Template: AdminGenericInterfaceMappingXSLT
-        'GenericInterface Mapping XSLT for Web Service %s' => '',
-        'Mapping XML' => '',
-        'Template' => '',
-        'The entered data is not a valid XSLT stylesheet.' => '',
-        'Insert XSLT stylesheet.' => '',
+        'GenericInterface Mapping XSLT for Web Service %s' => 'ЗагальноІнтерфейсне XSLT Відображення для веб-служби %s',
+        'Mapping XML' => 'XML відображення',
+        'Template' => 'Зразок',
+        'The entered data is not a valid XSLT stylesheet.' => 'Введені дані не є допустимою таблицею стилів XSLT.',
+        'Insert XSLT stylesheet.' => 'Додати таблицю стилів XSLT.',
 
         # Template: AdminGenericInterfaceOperationDefault
-        'Add new Operation to Web Service %s' => '',
-        'Change Operation %s of Web Service %s' => '',
-        'Add new operation' => '',
-        'Change operation %s' => '',
-        'Do you really want to delete this operation?' => '',
-        'Operation Details' => '',
+        'Add new Operation to Web Service %s' => 'Додати нову Операцію до Веб-служби %s',
+        'Change Operation %s of Web Service %s' => 'Змінити Операцію %s Веб-служби %s',
+        'Add new operation' => 'Додати нову операцію',
+        'Change operation %s' => 'Змінити операцію %s',
+        'Do you really want to delete this operation?' => 'Ви дійсно бажаєте видалити цю операцію?',
+        'Operation Details' => 'Деталі операції.',
         'The name is typically used to call up this web service operation from a remote system.' =>
-            '',
-        'Please provide a unique name for this web service.' => '',
-        'Mapping for incoming request data' => '',
+            'Ім\'я, що типово використовується для виклику операції цієї веб-служби віддаленої системи.',
+        'Please provide a unique name for this web service.' => 'Вкажіть будь ласка унікальне ім\'я для цієї веб-служби.',
+        'Mapping for incoming request data' => 'Відображенні вхідних даних запиту',
         'The request data will be processed by this mapping, to transform it to the kind of data OTRS expects.' =>
-            '',
-        'Operation backend' => '',
+            'Дані запиту будуть оброблені цим відображенням, щоб перетворити його до виду даних, що очікує OTRS.',
+        'Operation backend' => 'Внутрішня операція',
         'This OTRS operation backend module will be called internally to process the request, generating data for the response.' =>
-            '',
-        'Mapping for outgoing response data' => '',
+            'Цей внутрішній операційний модуль OTRS буде викликаний внутрішньо щоб обробити запит та згенерувати дані для відповіді.',
+        'Mapping for outgoing response data' => 'Відображення для вихідних даних відповіді',
         'The response data will be processed by this mapping, to transform it to the kind of data the remote system expects.' =>
-            '',
-        'Delete this Operation' => '',
+            'Дані відповіді будуть оброблені цим відображенням, щоб перетворити їх до того виду, який очікує віддалена система.',
+        'Delete this Operation' => 'Вилучити цю операцію',
 
         # Template: AdminGenericInterfaceTransportHTTPREST
-        'GenericInterface Transport HTTP::REST for Web Service %s' => '',
-        'Network transport' => '',
-        'Properties' => '',
-        'Route mapping for Operation' => '',
+        'GenericInterface Transport HTTP::REST for Web Service %s' => 'ЗагальноІнтерфейсний Транспорт HTTP::REST для веб-служби %s',
+        'Network transport' => 'Мережевий транспорт',
+        'Properties' => 'Властивості',
+        'Route mapping for Operation' => 'Відображення маршруту для Операції',
         'Define the route that should get mapped to this operation. Variables marked by a \':\' will get mapped to the entered name and passed along with the others to the mapping. (e.g. /Ticket/:TicketID).' =>
-            '',
-        'Valid request methods for Operation' => '',
+            'Визначення маршруту що дасть відображення для цієї операції. Змінні, що помічаються \':\' будуть відображені з вказаним ім\'ям та передається з іншими до відображення. (Наприклад /Ticket/:TicketID)',
+        'Valid request methods for Operation' => 'Правильні методи запиту для Операції',
         'Limit this Operation to specific request methods. If no method is selected all requests will be accepted.' =>
-            '',
-        'Maximum message length' => '',
-        'This field should be an integer number.' => '',
+            'Обмежити цю Операцію до певних методів запиту. Якщо ви не вкажете жодного методу, всі запити будуть прийняті.',
+        'Maximum message length' => 'Максимальна довжина повідомлення',
+        'This field should be an integer number.' => 'Це поле має містити ціле число.',
         'Here you can specify the maximum size (in bytes) of REST messages that OTRS will process.' =>
-            '',
-        'Send Keep-Alive' => '',
+            'Тут ви можете визначити максимальний розмір (в байтах) REST повідомлення, що буде оброблено OTRS.',
+        'Send Keep-Alive' => 'Надіслати Keep-аlive',
         'This configuration defines if incoming connections should get closed or kept alive.' =>
-            '',
+            'Ця конфігурація визначає які вхідні з\'єднання мають бути зачинені або збережені.',
         'Host' => 'Сервер',
-        'Remote host URL for the REST requests.' => '',
+        'Remote host URL for the REST requests.' => 'Віддалений вузол URL для REST запитів.',
         'e.g https://www.otrs.com:10745/api/v1.0 (without trailing backslash)' =>
-            '',
-        'Controller mapping for Invoker' => '',
+            'наприклад https://www.otrs.com:10745/api/v1.0 (без оберненої косої межі)',
+        'Controller mapping for Invoker' => 'Відображення контролера для активатора.',
         'The controller that the invoker should send requests to. Variables marked by a \':\' will get replaced by the data value and passed along with the request. (e.g. /Ticket/:TicketID?UserLogin=:UserLogin&Password=:Password).' =>
-            '',
-        'Valid request command for Invoker' => '',
+            'Контролер, якому активатор має посилати запити. Змінні, позначені як \':\' будуть замінені на значення даних та передаватись разом із запитом. (наприклад /Ticket/:TicketID?UserLogin=:UserLogin&Password=:Password).',
+        'Valid request command for Invoker' => 'Чинна команда запиту для активатора',
         'A specific HTTP command to use for the requests with this Invoker (optional).' =>
-            '',
-        'Default command' => '',
-        'The default HTTP command to use for the requests.' => '',
-        'Authentication' => '',
-        'The authentication mechanism to access the remote system.' => '',
-        'A "-" value means no authentication.' => '',
-        'The user name to be used to access the remote system.' => '',
-        'The password for the privileged user.' => '',
-        'Use SSL Options' => '',
-        'Show or hide SSL options to connect to the remote system.' => '',
-        'Certificate File' => '',
-        'The full path and name of the SSL certificate file.' => '',
-        'e.g. /opt/otrs/var/certificates/REST/ssl.crt' => '',
-        'Certificate Password File' => '',
-        'The full path and name of the SSL key file.' => '',
-        'e.g. /opt/otrs/var/certificates/REST/ssl.key' => '',
-        'Certification Authority (CA) File' => '',
+            'Конкретна HTTP команда  що буде використовуватись для запитів з цим активатором (необов\'язково).',
+        'Default command' => 'Типова команда',
+        'The default HTTP command to use for the requests.' => 'Типова HTTP команда для використання у запитах.',
+        'Authentication' => 'Автентифікація',
+        'The authentication mechanism to access the remote system.' => 'Механізм автентифікації для доступу до віддаленої системи.',
+        'A "-" value means no authentication.' => 'Значення "-" значить немає автентифікації.',
+        'The user name to be used to access the remote system.' => 'Ім\'я користувача для доступу до віддаленої системи.',
+        'The password for the privileged user.' => 'Пароль для привілейованого користувача.',
+        'Use SSL Options' => 'Використовувати SSL опції',
+        'Show or hide SSL options to connect to the remote system.' => 'Показати або приховати SSL опції для під\'єднання до віддаленої системи.',
+        'Certificate File' => 'Файл сертифікату',
+        'The full path and name of the SSL certificate file.' => 'Повний шлях та ім\'я файлу SSL сертифікату.',
+        'e.g. /opt/otrs/var/certificates/REST/ssl.crt' => 'наприклад: /opt/otrs/var/certificates/REST/ssl.crt',
+        'Certificate Password File' => 'Файл сертифікату паролю',
+        'The full path and name of the SSL key file.' => 'Повний шлях та ім\'я ключового SSL файлу.',
+        'e.g. /opt/otrs/var/certificates/REST/ssl.key' => 'наприклад /opt/otrs/var/certificates/REST/ssl.key',
+        'Certification Authority (CA) File' => 'Файл сертифікованої автентифікації (СА)',
         'The full path and name of the certification authority certificate file that validates the SSL certificate.' =>
-            '',
-        'e.g. /opt/otrs/var/certificates/REST/CA/ca.file' => '',
+            'Повний шлях та ім\'я файлу-сертифікату сертифіційної автентифікації, що підтверджує SSL сертифікат.',
+        'e.g. /opt/otrs/var/certificates/REST/CA/ca.file' => 'наприклад /opt/otrs/var/certificates/REST/CA/ca.file',
 
         # Template: AdminGenericInterfaceTransportHTTPSOAP
-        'GenericInterface Transport HTTP::SOAP for Web Service %s' => '',
-        'Endpoint' => '',
+        'GenericInterface Transport HTTP::SOAP for Web Service %s' => 'ЗагальноІнтерфейсний Транспорт HTTP::SOAP для веб-служби %s',
+        'Endpoint' => 'Кінцева точка',
         'URI to indicate a specific location for accessing a service.' =>
-            '',
-        'e.g. http://local.otrs.com:8000/Webservice/Example' => '',
-        'Namespace' => '',
-        'URI to give SOAP methods a context, reducing ambiguities.' => '',
+            'URI, щоб вказати конкретне місце для доступу до служби.',
+        'e.g. http://local.otrs.com:8000/Webservice/Example' => 'наприклад http://local.otrs.com:8000/Webservice/Example',
+        'Namespace' => 'Простір Імен',
+        'URI to give SOAP methods a context, reducing ambiguities.' => 'URI, щоб дати контекст методів SOAP, зменшуючи двозначність.',
         'e.g urn:otrs-com:soap:functions or http://www.otrs.com/GenericInterface/actions' =>
-            '',
-        'Request name scheme' => '',
+            'наприклад urn:otrs-com:soap:functions or http://www.otrs.com/GenericInterface/actions',
+        'Request name scheme' => 'Схема імені запиту',
         'Select how SOAP request function wrapper should be constructed.' =>
-            '',
+            'Виберіть як має бути побудована функція обгортка SOAP запиту.',
         '\'FunctionName\' is used as example for actual invoker/operation name.' =>
-            '',
+            '\'FunctionName\' використовується в якості прикладу для фактичного імені активатора/операції.',
         '\'FreeText\' is used as example for actual configured value.' =>
-            '',
-        'Response name free text' => '',
+            '\'FreeText\' використовується у якості прикладу для фактичного налаштованого значення.',
+        'Request name free text' => 'ім\'я запиту вільним текстом',
         'Text to be used to as function wrapper name suffix or replacement.' =>
-            '',
+            'Текст що буде використовуватись як суфікс імені функції обгортки або заміна імені.',
         'Please consider XML element naming restrictions (e.g. don\'t use \'<\' and \'&\').' =>
-            '',
-        'Response name scheme' => '',
+            'Будь ласка зверніть увагу на обмеження іменування XML-елементу (наприклад - не використовувати \'<\' та \'&\')',
+        'Response name scheme' => 'Схема імені відгуку',
         'Select how SOAP response function wrapper should be constructed.' =>
-            '',
+            'Виберіть як має бути побудована функція-обгортка SOAP відповіді.',
+        'Response name free text' => 'Ім\'я відповіді вільним текстом.',
         'Here you can specify the maximum size (in bytes) of SOAP messages that OTRS will process.' =>
-            '',
-        'Encoding' => '',
-        'The character encoding for the SOAP message contents.' => '',
-        'e.g utf-8, latin1, iso-8859-1, cp1250, Etc.' => '',
-        'SOAPAction' => '',
-        'Set to "Yes" to send a filled SOAPAction header.' => '',
-        'Set to "No" to send an empty SOAPAction header.' => '',
-        'SOAPAction separator' => '',
+            'Тут ви можете визначити максимальний обсяг (в байтах) SOAP повідомлення, що буде обробляти OTRS.',
+        'Encoding' => 'Кодування',
+        'The character encoding for the SOAP message contents.' => 'Кодування символів для вмісту SOAP повідомлень.',
+        'e.g utf-8, latin1, iso-8859-1, cp1250, Etc.' => 'наприклад utf-8, latin1, iso-8859-1, cp1250 тощо.',
+        'SOAPAction' => 'SOAPДія',
+        'Set to "Yes" to send a filled SOAPAction header.' => 'Вкажіть "Yes" щоб надіслати заповнений заголовок SOAPДії',
+        'Set to "No" to send an empty SOAPAction header.' => 'Встановіть "No" щоб надіслати порожній заголовок SOAPДії.',
+        'SOAPAction separator' => 'Відокремлювач SOAPДії',
         'Character to use as separator between name space and SOAP method.' =>
-            '',
-        'Usually .Net web services uses a "/" as separator.' => '',
-        'Proxy Server' => '',
-        'URI of a proxy server to be used (if needed).' => '',
-        'e.g. http://proxy_hostname:8080' => '',
-        'Proxy User' => '',
-        'The user name to be used to access the proxy server.' => '',
-        'Proxy Password' => '',
-        'The password for the proxy user.' => '',
+            'Символ що буде використаний як відокремлювач між ділянкою імені та SOAР методом.',
+        'Usually .Net web services uses a "/" as separator.' => 'Зазвичай .Net веб-служба використовує "/" у якості відокремлювача.',
+        'Proxy Server' => 'Проксі-сервер',
+        'URI of a proxy server to be used (if needed).' => 'URI проксі-сервера, що використовується (якщо треба).',
+        'e.g. http://proxy_hostname:8080' => 'наприклад http://proxy_hostname:8080',
+        'Proxy User' => 'Користувач проксі-сервера',
+        'The user name to be used to access the proxy server.' => 'Ім\'я користувача для доступу до проксі-сервера.',
+        'Proxy Password' => 'Пароль проксі-сервера',
+        'The password for the proxy user.' => 'Пароль користувача проксі-сервера.',
         'The full path and name of the SSL certificate file (must be in .p12 format).' =>
-            '',
-        'e.g. /opt/otrs/var/certificates/SOAP/certificate.p12' => '',
-        'The password to open the SSL certificate.' => '',
+            'Повний шлях та ім\'я SSL файлу-сертифіката (має бути .p12 формату)',
+        'e.g. /opt/otrs/var/certificates/SOAP/certificate.p12' => 'наприклад /opt/otrs/var/certificates/SOAP/certificate.p12',
+        'The password to open the SSL certificate.' => 'Пароль для відімкнення SSL сертифікату.',
         'The full path and name of the certification authority certificate file that validates SSL certificate.' =>
-            '',
-        'e.g. /opt/otrs/var/certificates/SOAP/CA/ca.pem' => '',
-        'Certification Authority (CA) Directory' => '',
+            'Повний шлях та ім\'я файлу сертифікату сертифікаційної автентифікації що підтверджує SSL сертифікат',
+        'e.g. /opt/otrs/var/certificates/SOAP/CA/ca.pem' => 'наприклад /opt/otrs/var/certificates/SOAP/CA/ca.pem',
+        'Certification Authority (CA) Directory' => 'Директорія сертифікаційної авторизації (СА)',
         'The full path of the certification authority directory where the CA certificates are stored in the file system.' =>
-            '',
-        'e.g. /opt/otrs/var/certificates/SOAP/CA' => '',
-        'Sort options' => '',
-        'Add new first level element' => '',
-        'Element' => '',
+            'Повний шлях у файловій системі до директорії сертифікаційної авторизації де зберігаються СА сертифікати.',
+        'e.g. /opt/otrs/var/certificates/SOAP/CA' => 'наприклад /opt/otrs/var/certificates/SOAP/CA',
+        'Sort options' => 'Параметри сортування',
+        'Add new first level element' => 'Додати новий елемент першого рівня',
+        'Element' => 'Елемент',
         'Outbound sort order for xml fields (structure starting below function name wrapper) - see documentation for SOAP transport.' =>
-            '',
+            'Вихідний порядок сортування для xml полів (структура що починається нижче імені функції обгортки) - дивись документацію на транспорт SOAP',
 
         # Template: AdminGenericInterfaceWebservice
-        'GenericInterface Web Service Management' => '',
-        'Add web service' => '',
-        'Clone web service' => '',
-        'The name must be unique.' => '',
-        'Clone' => '',
-        'Export web service' => '',
-        'Import web service' => '',
-        'Configuration File' => '',
+        'GenericInterface Web Service Management' => 'ЗагальноІнтерфейсне Керування веб-службою',
+        'Add web service' => 'Додати веб-службу',
+        'Clone web service' => 'Клонувати веб-службу',
+        'The name must be unique.' => 'ім\'я повинно бути унікальним.',
+        'Clone' => 'Клонувати',
+        'Export web service' => 'Експортувати веб-службу',
+        'Import web service' => 'Імпортувати веб-службу',
+        'Configuration File' => 'Файл конфігурації',
         'The file must be a valid web service configuration YAML file.' =>
-            '',
+            'Файл повинен бути чинним YAML конфігураційним файлом веб-служби.',
         'Import' => 'Імпорт',
-        'Configuration history' => '',
-        'Delete web service' => '',
-        'Do you really want to delete this web service?' => '',
-        'Ready-to-run Web Services' => '',
+        'Configuration history' => 'Історія конфігурації',
+        'Delete web service' => 'Вилучити веб-службу',
+        'Do you really want to delete this web service?' => 'Ви насправді хочете вилучити цю веб-службу?',
+        'Ready-to-run Web Services' => 'Готова-до-запуску Веб-служба',
         'Here you can activate ready-to-run web services showcasing our best practices that are a part of %s.' =>
-            '',
+            'Тут ви можете активувати готові-до-запуску веб-служби що демонструють наші кращі практики, які є частиною %s.',
         'Please note that these web services may depend on other modules only available with certain %s contract levels (there will be a notification with further details when importing).' =>
-            '',
-        'Import ready-to-run web service' => '',
+            'Зверніть увагу, що ці веб-служби можуть залежати від інших модулів, доступних тільки з певним %s рівнем контракту (буде повідомлення з більш докладними поясненнями при імпорті).',
+        'Import ready-to-run web service' => 'Імпортування готової-до-запуску веб-служби.',
         'Would you like to benefit from web services created by experts? Upgrade to %s to import some sophisticated ready-to-run web services.' =>
-            '',
+            'Ви хочете отримати переваги веб-служб, створених фахівцями? Оновіться  до %s щоб імпортувати деякі готові-до-запуску веб-служби.',
         'After you save the configuration you will be redirected again to the edit screen.' =>
-            '',
+            'Після збереження конфігурації вас буде перенаправлено знову до екрану редагування.',
         'If you want to return to overview please click the "Go to overview" button.' =>
-            '',
-        'Web Service List' => '',
-        'Remote system' => '',
-        'Provider transport' => '',
-        'Requester transport' => '',
-        'Debug threshold' => '',
+            'Якщо ви хочете повернутись до огляду, будь ласка, натисніть кнопку "Перейти до огляду".',
+        'Web Service List' => 'Перелік веб-служб',
+        'Remote system' => 'Віддалена система',
+        'Provider transport' => 'Транспорт провайдера',
+        'Requester transport' => 'Транспорт замовника',
+        'Debug threshold' => 'Поріг зневадження',
         'In provider mode, OTRS offers web services which are used by remote systems.' =>
-            '',
+            'В режимі постачальника, OTRS пропонує веб-служби, які використовуються віддаленими системами.',
         'In requester mode, OTRS uses web services of remote systems.' =>
-            '',
+            'В режимі запитувача, OTRS використовую веб-служби віддалених систем.',
         'Operations are individual system functions which remote systems can request.' =>
-            '',
+            'Операції - це окремі системні функції, які можуть запросити віддалені системи.',
         'Invokers prepare data for a request to a remote web service, and process its response data.' =>
-            '',
-        'Controller' => '',
-        'Inbound mapping' => '',
-        'Outbound mapping' => '',
-        'Delete this action' => '',
+            'Активатори готують дані для запиту до віддаленої веб-служби та обробляють дані їх відповіді.',
+        'Controller' => 'Контролер',
+        'Inbound mapping' => 'Вхідне відображення',
+        'Outbound mapping' => 'Вихідне відображення',
+        'Delete this action' => 'Вилучити цю дію',
         'At least one %s has a controller that is either not active or not present, please check the controller registration or delete the %s' =>
-            '',
-        'Delete webservice' => '',
-        'Delete operation' => '',
-        'Delete invoker' => '',
-        'Clone webservice' => '',
-        'Import webservice' => '',
+            'Принаймні один %s має контролер, який або не активний або не присутній, будь ласка перевірте реєстрацію контролера або вилучіть %s',
+        'Delete webservice' => 'Вилучити веб-службу',
+        'Delete operation' => 'Вилучити операцію',
+        'Delete invoker' => 'Вилучити активатор',
+        'Clone webservice' => 'Клонувати веб-службу',
+        'Import webservice' => 'Імпортувати веб-службу',
 
         # Template: AdminGenericInterfaceWebserviceHistory
-        'GenericInterface Configuration History for Web Service %s' => '',
-        'Go back to Web Service' => '',
+        'GenericInterface Configuration History for Web Service %s' => 'ЗагальноІнтерфейсна Конфігурація історії для веб-служби ',
+        'Go back to Web Service' => 'Повернутись до веб-служби',
         'Here you can view older versions of the current web service\'s configuration, export or even restore them.' =>
-            '',
-        'Configuration History List' => '',
+            'Тут ви можете переглянути старі версії поточної конфігурації веб-служб, експортувати або навіть відновити їх.',
+        'Configuration History List' => 'Перелік історії конфігурації.',
         'Version' => 'Версія',
-        'Create time' => '',
-        'Select a single configuration version to see its details.' => '',
-        'Export web service configuration' => '',
-        'Restore web service configuration' => '',
+        'Create time' => 'Створити час',
+        'Select a single configuration version to see its details.' => 'Вибрати один варіант конфігурації щоб переглянути  його деталі.',
+        'Export web service configuration' => 'Експорт конфігурації веб-служби',
+        'Restore web service configuration' => 'Відновлення конфігурації веб-служби',
         'Do you really want to restore this version of the web service configuration?' =>
-            '',
-        'Your current web service configuration will be overwritten.' => '',
-        'Restore' => '',
+            'Ви дійсно бажаєте відновити цю версію конфігурації веб-служби?',
+        'Your current web service configuration will be overwritten.' => 'Ваша поточна конфігурація веб-служби буде перезаписана.',
+        'Restore' => 'Відновлення',
 
         # Template: AdminGroup
         'WARNING: When you change the name of the group \'admin\', before making the appropriate changes in the SysConfig, you will be locked out of the administrations panel! If this happens, please rename the group back to admin per SQL statement.' =>
-            '',
+            'УВАГА: При зміні назви групи \'admin\', перш ніж зробити відповідні зміни в  SysConfig, ви будете відключені від адміністративної панелі! Якщо це станеться, будь ласка, змініть ім\'я групи назад до admin за допомогою SQL ствердження.',
         'Group Management' => 'Керування групами',
         'Add group' => 'Додати групу',
         'The admin group is to get in the admin area and the stats group to get stats area.' =>
             'Група admin може здійснювати адміністрування, а група stats — переглядати статистику',
         'Create new groups to handle access permissions for different groups of agent (e. g. purchasing department, support department, sales department, ...). ' =>
-            '',
+            'Створення нових груп для обробки прав доступу до різних груп агентів (наприклад відділ закупівель, відділ підтримки, відділ продаж,...).',
         'It\'s useful for ASP solutions. ' => 'Корисно для сервісів-провайдерів.',
-        'total' => '',
+        'total' => 'загально',
         'Add Group' => 'Додати групу',
         'Edit Group' => 'Редагувати групу',
 
         # Template: AdminLog
         'System Log' => 'Системний журнал',
-        'Here you will find log information about your system.' => '',
-        'Hide this message' => '',
-        'Recent Log Entries' => '',
+        'Here you will find log information about your system.' => 'Тут ви знайдете журнальну інформацію вашої системи.',
+        'Hide this message' => 'Приховати це повідомлення',
+        'Recent Log Entries' => 'Останні Записи Журналу',
 
         # Template: AdminMailAccount
         'Mail Account Management' => 'Керування поштовими обліковими записами',
@@ -1515,14 +1516,14 @@ sub Data {
         'All incoming emails with one account will be dispatched in the selected queue!' =>
             'Усі вхідні листи із зазначеного облікового запису будуть перенесені в обрану чергу!',
         'If your account is trusted, the already existing X-OTRS header at arrival time (for priority, ...) will be used! PostMaster filter will be used anyway.' =>
-            '',
+            'Якщо ваш обліковий запис є довіреним, буде використаний X-OTRS заголовок, що вже їснує, під час прибуття (для пріоритету, ...)! Фільтр PostMaster буде використовуватися у будь-якому випадку.',
         'Delete account' => 'Вилучити обліковий запис',
         'Fetch mail' => 'Забрати лист',
         'Add Mail Account' => 'Додати поштовий обліковий запис',
-        'Example: mail.example.com' => '',
-        'IMAP Folder' => '',
+        'Example: mail.example.com' => 'Приклад: mail.example.com',
+        'IMAP Folder' => 'Тека IMAP',
         'Only modify this if you need to fetch mail from a different folder than INBOX.' =>
-            '',
+            'Змініть це, якщо вам потрібно отримати пошту з іншої теки, ніж INBOX. ',
         'Trusted' => 'Безпечна',
         'Dispatching' => 'Перенапрямок',
         'Edit Mail Account' => 'Змінити поштовий обліковий запис',
@@ -1533,68 +1534,70 @@ sub Data {
         'Queue Settings' => 'Настроювання черг',
         'Ticket Settings' => 'Настроювання заявок',
         'System Administration' => 'Настроювання системи',
-        'Online Admin Manual' => '',
+        'Online Admin Manual' => 'Тільки Керівництво Адміністратора',
 
         # Template: AdminNotificationEvent
-        'Ticket Notification Management' => '',
-        'Add notification' => '',
-        'Export Notifications' => '',
-        'Configuration Import' => '',
+        'Ticket Notification Management' => 'Керування Сповіщеннями про Квитки',
+        'Add notification' => 'Додати сповіщення',
+        'Export Notifications' => 'Експортувати Сповіщень',
+        'Configuration Import' => 'Імпорт Конфігурації',
         'Here you can upload a configuration file to import Ticket Notifications to your system. The file needs to be in .yml format as exported by the Ticket Notification module.' =>
-            '',
-        'Overwrite existing notifications?' => '',
-        'Upload Notification configuration' => '',
-        'Import Notification configuration' => '',
-        'Delete this notification' => '',
-        'Do you really want to delete this notification?' => '',
+            'Тут ви можете вивантажити файл конфігурації для імпорту Сповіщень о Квитках до вашої системи. Файл повинен бути у .yml форматі такий як експортується модулем Сповіщення о Квитках.',
+        'Overwrite existing notifications?' => 'Перезаписати наявні сповіщення?',
+        'Upload Notification configuration' => 'Вивантажити конфігурацію Сповіщень',
+        'Import Notification configuration' => 'Імпортувати конфігурацію Сповіщень',
+        'Delete this notification' => 'Видалити це сповіщення',
+        'Do you really want to delete this notification?' => 'Ви дійсно хочете вилучити це сповіщення?',
         'Add Notification' => 'Додати повідомлення',
         'Edit Notification' => 'Редагувати повідомлення',
-        'Show in agent preferences' => '',
-        'Agent preferences tooltip' => '',
+        'Show in agent preferences' => 'Показати в налаштуваннях агента',
+        'Agent preferences tooltip' => 'Підказка налаштувань агента',
         'This message will be shown on the agent preferences screen as a tooltip for this notification.' =>
-            '',
+            'Це повідомлення буде відображатись на екрані налаштувань агента у вигляді підказок для цього сповіщення.',
         'Here you can choose which events will trigger this notification. An additional ticket filter can be applied below to only send for ticket with certain criteria.' =>
-            '',
+            'Тут ви можете вибрати події, що будуть вмикати це сповіщення. Додатковий фільтр квитків може бути доданий нижче, щоб відправити сповіщення для квитка з певними критеріями.',
         'Ticket Filter' => 'Фільтр заявок',
-        'Article Filter' => '',
-        'Only for ArticleCreate and ArticleSend event' => '',
+        'Article Filter' => 'Фільтр Статей',
+        'Only for ArticleCreate and ArticleSend event' => 'Тільки для подій ArticleCreate та ArticleSend ',
         'Article type' => 'Тип повідомлення',
         'If ArticleCreate or ArticleSend is used as a trigger event, you need to specify an article filter as well. Please select at least one of the article filter fields.' =>
-            '',
-        'Article sender type' => '',
+            'Якщо ArticleCreate або ArticleSend використовуються як ініціюючи події, вам необхідно також вказати фільтр статті. Будь ласка виберіть принаймні одне поле фільтру статті.',
+        'Article sender type' => 'Тип статті відправника',
         'Subject match' => 'Відповідність темі',
         'Body match' => 'Відповідність тілу листа',
         'Include attachments to notification' => 'Додати вкладення в повідомлення',
-        'Recipients' => '',
-        'Send to' => '',
-        'Send to these agents' => '',
-        'Send to all group members' => '',
-        'Send to all role members' => '',
+        'Recipients' => 'Одержувачі',
+        'Send to' => 'Відправити',
+        'Send to these agents' => 'Надіслати цим агентам',
+        'Send to all group members' => 'Надіслати всім членам групи',
+        'Send to all role members' => 'Надіслати всім членам ролі',
         'Send on out of office' => 'Надіслано з «Не при справах»',
         'Also send if the user is currently out of office.' => 'Також надіслати, якщо користувач зараз не при справах.',
-        'Once per day' => '',
+        'Once per day' => 'Один раз на день',
         'Notify user just once per day about a single ticket using a selected transport.' =>
-            '',
-        'Notification Methods' => '',
+            'Повідомляти користувача тільки один раз на день про один квиток використовуючи вибраний транспорт.',
+        'Notification Methods' => 'Методи Сповіщення',
         'These are the possible methods that can be used to send this notification to each of the recipients. Please select at least one method below.' =>
-            '',
-        'Enable this notification method' => '',
-        'Transport' => '',
-        'At least one method is needed per notification.' => '',
-        'Active by default in agent preferences' => '',
+            'Це можливі методи, що можуть бути використані для відправлення цього сповіщення кожному з одержувачів. Будь ласка, виберіть нижче принаймні один метод.',
+        'Enable this notification method' => 'Дозволити цей метод сповіщення',
+        'Transport' => 'Транспорт',
+        'At least one method is needed per notification.' => 'Принаймні один метод необхідний для кожного сповіщення.',
+        'Active by default in agent preferences' => 'Типово активний в налаштуваннях агента.',
         'This is the default value for assigned recipient agents who didn\'t make a choice for this notification in their preferences yet. If the box is enabled, the notification will be sent to such agents.' =>
-            '',
-        'This feature is currently not available.' => '',
-        'No data found' => '',
-        'No notification method found.' => '',
-        'Notification Text' => '',
+            'Це типове значення для призначених агентів-одержувачів, які ще не зробили вибір для цього сповіщення в їх налаштуваннях. Якщо прапорець увімкнений, сповіщення буде відправлено для таких агентів.',
+        'This feature is currently not available.' => 'Ця функція наразі недоступна.',
+        'No data found' => 'Даних не знайдено',
+        'No notification method found.' => 'Жодного метода сповіщення не знайдено.',
+        'Notification Text' => 'Текст сповіщення',
         'This language is not present or enabled on the system. This notification text could be deleted if it is not needed anymore.' =>
+            'Цієї мови немає або вона не доступна в системі. Цей текст сповіщення може бути вилучений якщо він більше не потрібний.',
+        'Remove Notification Language' => 'Видалити мову сповіщення',
+        'Message body' => 'Тіло повідомлення',
+        'This field is required and must have less than 4000 characters.' =>
             '',
-        'Remove Notification Language' => '',
-        'Message body' => '',
-        'Add new notification language' => '',
-        'Do you really want to delete this notification language?' => '',
-        'Tag Reference' => '',
+        'Add new notification language' => 'Додати нову мову сповіщення',
+        'Do you really want to delete this notification language?' => 'Ви дійсно хочете вилучити цю мову сповіщення?',
+        'Tag Reference' => 'Тег посилання',
         'Notifications are sent to an agent or a customer.' => 'Повідомлення відправлені агентові або клієнтові',
         'To get the first 20 character of the subject (of the latest agent article).' =>
             'Перші 20 символів теми з останнього повідомлення агента',
@@ -1604,106 +1607,125 @@ sub Data {
             'Перші 20 символів теми з останнього повідомлення клієнта',
         'To get the first 5 lines of the body (of the latest customer article).' =>
             'Перші 5 рядків останнього повідомлення клієнта',
-        'Attributes of the current customer user data' => '',
-        'Attributes of the current ticket owner user data' => '',
-        'Attributes of the current ticket responsible user data' => '',
+        'Attributes of the current customer user data' => 'Атрибути поточних даних клієнта користувача.',
+        'Attributes of the current ticket owner user data' => 'Атрибути поточних даних користувача власника квитка.',
+        'Attributes of the current ticket responsible user data' => 'Атрибути поточних даних користувача відповідального за квиток',
         'Attributes of the current agent user who requested this action' =>
-            '',
-        'Attributes of the recipient user for the notification' => '',
-        'Attributes of the ticket data' => '',
-        'Ticket dynamic fields internal key values' => '',
+            'Атрибути поточного користувача-агента, який запросив цю дію',
+        'Attributes of the recipient user for the notification' => 'Атрибути користувача-одержувача для сповіщення',
+        'Attributes of the ticket data' => 'Атрибути даних квитка.',
+        'Ticket dynamic fields internal key values' => 'Значення внутрішніх ключів динамічних полів квитка.',
         'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
-            '',
-        'Example notification' => '',
+            'Динамічні поля квитка відображають значення, корисні для полів що Розкриваються та з Множинним вибором',
+        'Example notification' => 'Приклад сповіщення',
 
         # Template: AdminNotificationEventTransportEmailSettings
-        'Additional recipient email addresses' => '',
-        'Notification article type' => '',
+        'Additional recipient email addresses' => 'Додаткові адреси електронної пошти одержувача',
+        'You can use OTRS-tags like <OTRS_TICKET_DynamicField_...> to insert values from the current ticket.' =>
+            'Ви можете використовувати OTRS-теги, такі як  <OTRS_TICKET_DynamicField_...>  щоб вставити значення з поточного квитка.',
+        'Notification article type' => 'Тип сповіщень статті',
         'An article will be created if the notification is sent to the customer or an additional email address.' =>
-            '',
-        'Email template' => '',
+            'Статтю буде створено, якщо сповіщення буде відправлено замовнику або на альтернативну електронну адресу.',
+        'Email template' => 'Шаблон повідомлення електронної пошти',
         'Use this template to generate the complete email (only for HTML emails).' =>
-            '',
-        'Enable email security' => '',
-        'Email security level' => '',
-        'If signing key/certificate is missing' => '',
-        'If encryption key/certificate is missing' => '',
+            'Використовуйте цей шаблон для створення повного повідомлення електронної пошти (тільки для HTML-листів)',
+        'Enable email security' => 'Включити захист електронної пошти',
+        'Email security level' => 'Рівень безпеки електронної пошти',
+        'If signing key/certificate is missing' => 'Якщо ключ підпису або сертифікат відсутні',
+        'If encryption key/certificate is missing' => 'Якщо ключ шифрування або сертифікат відсутні',
 
         # Template: AdminOTRSBusinessInstalled
-        'Manage %s' => '',
-        'Downgrade to OTRS Free' => '',
-        'Read documentation' => '',
+        'Manage %s' => 'Керування %s',
+        'Go to the OTRS customer portal' => 'Перейти до порталу клієнтів OTRS',
+        'Downgrade to OTRS Free' => 'Знизити версію до безкоштовного OTRS',
+        'Read documentation' => 'Читайте документацію',
         '%s makes contact regularly with cloud.otrs.com to check on available updates and the validity of the underlying contract.' =>
-            '',
-        'Unauthorized Usage Detected' => '',
+            '%s регулярно контактує з  cloud.otrs.com, щоб перевірити наявність оновлень і терміну дії основної угоди.',
+        'Unauthorized Usage Detected' => 'Виявлено несанкційоване використання',
         'This system uses the %s without a proper license! Please make contact with %s to renew or activate your contract!' =>
-            '',
-        '%s not Correctly Installed' => '',
+            'Ця система використовує %s без належної ліцензії! Будь ласка зв\'яжіться з %s для поновлення або активації своєї угоди!',
+        '%s not Correctly Installed' => '%s встановлений неправильно',
         'Your %s is not correctly installed. Please reinstall it with the button below.' =>
-            '',
-        'Reinstall %s' => '',
+            'Ваш %s встановлений неправильно. Будь ласка, перевстановіть його за допомогою кнопки нижче.',
+        'Reinstall %s' => 'Перевстановлення %s',
         'Your %s is not correctly installed, and there is also an update available.' =>
-            '',
+            'Ваш %s встановлений неправильно, і є також оновлення.',
         'You can either reinstall your current version or perform an update with the buttons below (update recommended).' =>
-            '',
-        'Update %s' => '',
-        '%s Not Yet Available' => '',
-        '%s will be available soon.' => '',
-        '%s Update Available' => '',
+            'Ви можете або перевстановити поточну версію або оновити за допомогою кнопок нижче (оновлення рекомендується)',
+        'Update %s' => 'Оновлення $s',
+        '%s Not Yet Available' => '$s ще не доступний',
+        '%s will be available soon.' => '%s буде доступний найближчим часом.',
+        '%s Update Available' => 'Доступні оновлення %s',
+        'Package installation requires patch level update of OTRS.' => 'Встановлення пакунка потребує оновлення рівня виправлень OTRS.',
+        'Please visit our customer portal and file a request.' => 'Будь ласка, відвідайте наш портал клієнта та подайте заявку.',
+        'Everything else will be done as part of your contract.' => 'Все інше буде зроблено в рамках угоди.',
+        'Your installed OTRS version is %s.' => 'Версія вашого встановленого OTRS %s.',
+        'To install the current version of OTRS Business Solution™, you need to update to OTRS %s or higher.' =>
+            'Для того, щоб встановити поточну версію OTRS Business Solution ™, ви маєте оновитись до OTRS %s або вище.',
+        'To install the current version of OTRS Business Solution™, the Maximum OTRS Version is %s.' =>
+            'Для того, щоб встановити поточну версію OTRS Business Solution™, максимальна версія OTRS це %s.',
+        'To install this package, the required Framework version is %s.' =>
+            'Щоб встановити цей пакунок, необхідний Фреймворк версії %s.',
+        'Why should I keep OTRS up to date?' => 'Чому я маю тримати OTRS в актуальному стані?',
+        'You will receive updates about relevant security issues.' => 'Ви будете отримувати нову інформацію з відповідних питань безпеки.',
+        'You will receive updates for all other relevant OTRS issues' => 'Ви будете отримувати оновлення для всіх інших відповідних питань OTRS',
         'An update for your %s is available! Please update at your earliest!' =>
-            '',
-        '%s Correctly Deployed' => '',
+            'Оновлення для вашого %s доступне! Будь ласка, поновіть найближчим часом!',
+        '%s Correctly Deployed' => '%s розгорнуто правильно',
         'Congratulations, your %s is correctly installed and up to date!' =>
-            '',
+            'Вітаємо, ваш %s встановлено правильно та має актуальну версію!',
 
         # Template: AdminOTRSBusinessNotInstalled
         '%s will be available soon. Please check again in a few days.' =>
-            '',
-        'Please have a look at %s for more information.' => '',
+            '%s незабаром буде доступний. Будь ласка, перевірте ще раз через кілька днів.',
+        'Please have a look at %s for more information.' => 'Будь ласка, зверніть увагу на %s для отримання додаткової інформації.',
         'Your OTRS Free is the base for all future actions. Please register first before you continue with the upgrade process of %s!' =>
-            '',
+            'Ваш безоплатний  OTRS є основою для всіх подальших дій. Будь ласка, зареєструйтесь, перше ніж ви продовжите процес оновлення %s!',
         'Before you can benefit from %s, please contact %s to get your %s contract.' =>
-            '',
+            'Перш ніж скористатися %s, зв\'яжіться із %s щоб отримати вашу %s угоду.',
         'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.' =>
-            '',
+            'Неможливо встановити з\'єднання із cloud.otrs.com за допомогою HTTPS. Будь ласка, переконайтеся в тому, що ваш OTRS може під\'єднатися до cloud.otrs.com використовуючи порт 443.',
+        'To install this package, you need to update to OTRS %s or higher.' =>
+            'Щоб встановити цей пакунок, вам необхідно оновитись до OTRS %s або вище.',
+        'To install this package, the Maximum OTRS Version is %s.' => 'Максимальна версія OTRS для встановлення цього пакунку, це %s.',
         'With your existing contract you can only use a small part of the %s.' =>
-            '',
+            'З вашою чинною угодою ви можете використовувати лише невелику частку %s.',
         'If you would like to take full advantage of the %s get your contract upgraded now! Contact %s.' =>
-            '',
+            'Якщо ви маєте бажання скористатися всіма перевагами %s, покращить вашу угоду зараз! Зв\'яжіться з %s.',
 
         # Template: AdminOTRSBusinessUninstall
-        'Cancel downgrade and go back' => '',
-        'Go to OTRS Package Manager' => '',
+        'Cancel downgrade and go back' => 'Скасувати погіршення та повернутися',
+        'Go to OTRS Package Manager' => 'Перейти до менеджера пакунків OTRS',
         'Sorry, but currently you can\'t downgrade due to the following packages which depend on %s:' =>
-            '',
+            'Вибачте, але зараз ви не можете погіршити угоду за рахунок наступних пакунків, що залежать від %s:',
         'Vendor' => 'Виготовлювач',
         'Please uninstall the packages first using the package manager and try again.' =>
-            '',
+            'Будь ласка, спершу вилучіть  пакунки з використанням менеджера пакунків та спробуйте ще раз.',
         'You are about to downgrade to OTRS Free and will lose the following features and all data related to these:' =>
-            '',
-        'Chat' => '',
-        'Report Generator' => '',
-        'Timeline view in ticket zoom' => '',
-        'DynamicField ContactWithData' => '',
-        'DynamicField Database' => '',
-        'SLA Selection Dialog' => '',
-        'Ticket Attachment View' => '',
-        'The %s skin' => '',
+            'Ви збираєтесь спростити угоду до безоплатного OTRS та втратите наступні функції та дані, що пов\'язані із ними:',
+        'Chat' => 'Чат',
+        'Report Generator' => 'Генератор звітів',
+        'Timeline view in ticket zoom' => 'Вигляд лінії часу в збільшенні квитка',
+        'DynamicField ContactWithData' => 'ДинамічнеПоле Зв\'язокЗДаними',
+        'DynamicField Database' => 'Динамічне поле БазаДаних',
+        'SLA Selection Dialog' => 'Діалог вибору SLA',
+        'Ticket Attachment View' => 'Перегляд долучення квитка',
+        'The %s skin' => 'Зовнішній вигляд %s',
 
         # Template: AdminPGP
         'PGP Management' => 'Керування підписами PGP',
-        'PGP support is disabled' => '',
-        'To be able to use PGP in OTRS, you have to enable it first.' => '',
-        'Enable PGP support' => '',
-        'Faulty PGP configuration' => '',
+        'PGP support is disabled' => 'Підтримку PGP скасовано.',
+        'To be able to use PGP in OTRS, you have to enable it first.' => 'Щоб мати змогу використовувати PGP в OTRS ви повинні спочатку увімкнути його.',
+        'Enable PGP support' => 'Дозволити підтримку PGP',
+        'Faulty PGP configuration' => 'Невірні налаштування PGP',
         'PGP support is enabled, but the relevant configuration contains errors. Please check the configuration using the button below.' =>
-            '',
-        'Configure it here!' => '',
-        'Check PGP configuration' => '',
+            'Підтримка PGP увімкнена, але відповідна конфігурація містить помилки. Будь ласка перевірте конфігурацію за допомогою кнопки нижче.',
+        'Configure it here!' => 'Налаштуйте це тут!',
+        'Check PGP configuration' => 'Перевірте конфігурацію PGP',
         'Add PGP key' => 'Додати PGP ключ',
         'In this way you can directly edit the keyring configured in SysConfig.' =>
-            '',
-        'Introduction to PGP' => '',
+            'Таким чином, Ви можете безпосередньо редагувати кільце налаштоване в SysConfig.',
+        'Introduction to PGP' => 'Введення до PGP',
         'Result' => 'Результат',
         'Identifier' => 'Ідентифікатор',
         'Bit' => 'Біт',
@@ -1711,7 +1733,7 @@ sub Data {
         'Expires' => 'Минає',
         'Delete this key' => 'Вилучити ключ',
         'Add PGP Key' => 'Додати PGP ключ',
-        'PGP key' => '',
+        'PGP key' => 'PGP ключ',
 
         # Template: AdminPackageManager
         'Package Manager' => 'Керування пакетами',
@@ -1719,38 +1741,59 @@ sub Data {
         'Do you really want to uninstall this package?' => 'Вилучити цей пакет?',
         'Reinstall package' => 'Переустановити пакет',
         'Do you really want to reinstall this package? Any manual changes will be lost.' =>
-            '',
+            'Ви дійсно хочете перевстановити цей пакунок? Аби-які ручні зміни буде втрачено!',
+        'Go to upgrading instructions' => 'Перейти до інструкцій з модернізації',
+        'package information' => 'інформація про пакет',
+        'Package installation requires a patch level update of OTRS.' => 'Установка пакунку потребує оновлення рівня виправлень OTRS.',
+        'Package update requires a patch level update of OTRS.' => 'Оновлення пакунку потребує оновлення рівня оновлень OTRS.',
+        'If you are a OTRS Business Solution™ customer, please visit our customer portal and file a request.' =>
+            'Якщо ви є клієнтом OTRS Business Solution™, будь ласка, відвідайте наш портал клієнтів та подайте заявку.',
+        'Please note that your installed OTRS version is %s.' => 'Зверніть увагу, що версія встановленого OTRS %s.',
+        'To install this package, you need to update OTRS to version %s or newer.' =>
+            'Щоб встановити цей пакунок, ви маєте оновити OTRS до версії %s або новіше.',
+        'This package can only be installed on OTRS version %s or older.' =>
+            'Цей пакунок можна встановити на OTRS версії %s або старше.',
+        'This package can only be installed on OTRS version %s or newer.' =>
+            'Цей пакунок можна встановити на OTRS версії %s або новіше.',
+        'You will receive updates for all other relevant OTRS issues.' =>
+            'Ви будете отримувати оновлення для всіх інших питань стосовно OTRS.',
+        'How can I do a patch level update if I don’t have a contract?' =>
+            'Як я можу оновити рівень виправлень якщо у мене немає угоди?',
+        'Please find all relevant information within the upgrading instructions at %s.' =>
+            'Будь ласка, знайдіть відповідну інформацію в інструкції по оновленню в %s.',
+        'In case you would have further questions we would be glad to answer them.' =>
+            'У разі, якщо ви маєте додаткові запитання, ми будемо раді відповісти на них.',
         'Continue' => 'Продовжити',
         'Please make sure your database accepts packages over %s MB in size (it currently only accepts packages up to %s MB). Please adapt the max_allowed_packet setting of your database in order to avoid errors.' =>
-            '',
+            'Будь ласка, переконайтеся в тому, що ваша база даних приймає пакунки за розміром більше ніж %s МБ (в даний час приймаються пакунки за розміром до %s МБ). Будь ласка адаптуйте установку max_allowed_packet  вашої бази даних, щоб уникнути помилок.',
         'Install' => 'Установити',
         'Install Package' => 'Установити пакет',
         'Update repository information' => 'Обновити інформацію репозитарія',
-        'Cloud services are currently disabled.' => '',
-        'OTRS Verify™ can not continue!' => '',
-        'Enable cloud services' => '',
+        'Cloud services are currently disabled.' => 'Хмарні служби наразі вимкнуті.',
+        'OTRS Verify™ can not continue!' => 'OTRS Verify™ не може тривати!',
+        'Enable cloud services' => 'Дозволити хмарні служби',
         'Online Repository' => 'Онлайновий репозитарій',
         'Module documentation' => 'Документація модуля',
         'Upgrade' => 'Обновити',
         'Local Repository' => 'Локальний репозитарій',
-        'This package is verified by OTRSverify (tm)' => '',
+        'This package is verified by OTRSverify (tm)' => 'Цей пакунок перевірений OTRSverify (tm)',
         'Uninstall' => 'Вилучити',
         'Reinstall' => 'Переустановити',
-        'Features for %s customers only' => '',
+        'Features for %s customers only' => 'Функція тільки для клієнтів %s',
         'With %s, you can benefit from the following optional features. Please make contact with %s if you need more information.' =>
-            '',
+            'З %s ви можете скористатися наступними додатковими функціями. Будь ласка зв\'яжіться із %s, якщо вам потрібна додаткова інформація.',
         'Download package' => 'Скачати пакет',
         'Rebuild package' => 'Перезібрати пакет',
         'Metadata' => 'Метадані',
-        'Change Log' => '',
+        'Change Log' => 'Журнал змін',
         'Date' => 'Дата',
         'List of Files' => 'Список файлів',
         'Permission' => 'Права доступу',
         'Download' => 'Завантажити',
         'Download file from package!' => 'Завантажити файл із пакета!',
         'Required' => ' Потрібно',
-        'Primary Key' => '',
-        'Auto Increment' => '',
+        'Primary Key' => 'Первинний ключ',
+        'Auto Increment' => 'Автоматичний приріст',
         'SQL' => 'SQL',
         'File differences for file %s' => 'Файл відмінностей для файлу %s',
 
@@ -1777,30 +1820,30 @@ sub Data {
         'Average' => 'Середнє',
 
         # Template: AdminPostMasterFilter
-        'PostMaster Filter Management' => '',
+        'PostMaster Filter Management' => 'Керування фільтром PostMaster ',
         'Add filter' => 'Додати фільтр',
         'To dispatch or filter incoming emails based on email headers. Matching using Regular Expressions is also possible.' =>
-            '',
+            'Для відправки або фільтрації вхідних повідомлень електронної пошти на основі заголовків повідомлень. Також можливе зіставлення з використанням регулярних висловів.',
         'If you want to match only the email address, use EMAILADDRESS:info@example.com in From, To or Cc.' =>
             'Якщо ви прагнете отфильтровать тільки по адресах електронної пошти, використовуйте EMAILADDRESS:info@example.com у полях From, To або Cc.',
         'If you use Regular Expressions, you also can use the matched value in () as [***] in the \'Set\' action.' =>
-            '',
+            'При використанні регулярних висловів, ви також можете використовувати значення зіставлення в () як [***] в дії \'Set\'.',
         'Delete this filter' => 'Вилучити цей фільтр',
-        'Do you really want to delete this filter?' => '',
-        'Add PostMaster Filter' => '',
-        'Edit PostMaster Filter' => '',
-        'The name is required.' => '',
-        'Filter Condition' => '',
-        'AND Condition' => '',
-        'Check email header' => '',
-        'Negate' => '',
-        'Look for value' => '',
+        'Do you really want to delete this filter?' => 'Ви дійсно хочете видалити цей фільтр?',
+        'Add PostMaster Filter' => 'Додати PostMaster фільтр',
+        'Edit PostMaster Filter' => 'Редагувати PostMaster фільтр',
+        'A postmaster filter with this name already exists!' => 'Postmaster фільтр з таким ім\'ям вже існує!',
+        'Filter Condition' => 'Умова фільтру',
+        'AND Condition' => 'Умова ТА',
+        'Check email header' => 'Перевірити заголовок поштового повідомлення.',
+        'Negate' => 'Заперечення (НІ)',
+        'Look for value' => 'Пошук значення',
         'The field needs to be a valid regular expression or a literal word.' =>
-            '',
-        'Set Email Headers' => '',
-        'Set email header' => '',
-        'Set value' => '',
-        'The field needs to be a literal word.' => '',
+            'Поле має бути регулярним висловом або літеральним словом.',
+        'Set Email Headers' => 'Встановити Заголовки електронної пошти',
+        'Set email header' => 'Встановити заголовок електронної пошти',
+        'Set value' => 'Задати значення',
+        'The field needs to be a literal word.' => 'Поле має бути літеральним словом.',
 
         # Template: AdminPriority
         'Priority Management' => 'Керування пріоритетами',
@@ -1809,332 +1852,330 @@ sub Data {
         'Edit Priority' => 'Змінити пріоритет',
 
         # Template: AdminProcessManagement
-        'Process Management' => '',
-        'Filter for Processes' => '',
-        'Create New Process' => '',
-        'Deploy All Processes' => '',
+        'Process Management' => 'Керування процессом',
+        'Filter for Processes' => 'Фільтр для процесів',
+        'Create New Process' => 'Створити новий процес',
+        'Deploy All Processes' => 'Розгорнути всі процеси',
         'Here you can upload a configuration file to import a process to your system. The file needs to be in .yml format as exported by process management module.' =>
-            '',
-        'Overwrite existing entities' => '',
-        'Upload process configuration' => '',
-        'Import process configuration' => '',
-        'Ready-to-run Processes' => '',
+            'Тут ви можете вивантажити файл конфігурації для імпорту процесу до вашої системи. Файл має бути в форматі .yml, таким як експортується модулем керування процесом.',
+        'Overwrite existing entities' => 'Перезапис об\'єктів що існують',
+        'Upload process configuration' => 'Вивантажити конфігурацію процесу',
+        'Import process configuration' => 'Імпортувати конфігурацію процесу',
+        'Ready-to-run Processes' => 'Готові-до-запуску процеси',
         'Here you can activate ready-to-run processes showcasing our best practices. Please note that some additional configuration may be required.' =>
-            '',
+            'Тут ви можете активувати готові-до-запуску процеси, демонструючи наші кращі практики. Будь ласка, зверніть увагу, що можуть знадобитись деякі додаткові налаштування.',
         'Would you like to benefit from processes created by experts? Upgrade to %s to import some sophisticated ready-to-run processes.' =>
-            '',
-        'Import ready-to-run process' => '',
+            'Ви хочете отримати переваги від процесів, що створені експертами? Покращить до %s щоб імпортувати деякі складні готові-до-запуску процеси.',
+        'Import ready-to-run process' => 'Імпортування готового-до-запуску процесу.',
         'To create a new Process you can either import a Process that was exported from another system or create a complete new one.' =>
-            '',
+            'Щоб створити новий процес Ви можете або імпортувати Процес, що був експортований з іншої системи, або створити цілком новий.',
         'Changes to the Processes here only affect the behavior of the system, if you synchronize the Process data. By synchronizing the Processes, the newly made changes will be written to the Configuration.' =>
-            '',
-        'Processes' => '',
-        'Process name' => '',
+            'Зміни в процесах тут вплинуть на поведінку системи тільки після синхронізації даних процесу. При синхронізації процесів, нещодавно зроблені зміни будуть записані до конфігурації.',
+        'Processes' => 'Процеси',
+        'Process name' => 'Ім\'я процесу',
         'Print' => 'Друк',
-        'Export Process Configuration' => '',
-        'Copy Process' => '',
+        'Export Process Configuration' => 'Експорт конфігурації процесу',
+        'Copy Process' => 'Копіювання процесу',
 
         # Template: AdminProcessManagementActivity
         'Cancel & close' => 'Скасувати & закрити',
-        'Go Back' => '',
+        'Go Back' => 'Повернутись',
         'Please note, that changing this activity will affect the following processes' =>
-            '',
-        'Activity' => '',
-        'Activity Name' => '',
-        'Activity Dialogs' => '',
+            'Зверніть увагу. що зміна цієї активності буде впливати на наступні процеси',
+        'Activity' => 'Активність',
+        'Activity Name' => 'Ім\'я активності',
+        'Activity Dialogs' => 'Діалоги активності',
         'You can assign Activity Dialogs to this Activity by dragging the elements with the mouse from the left list to the right list.' =>
-            '',
+            'Ви можете призначити Діалоги Активності на цю Активність шляхом перетягування елементів за допомогою миші зі списку ліворуч у список праворуч.',
         'Ordering the elements within the list is also possible by drag \'n\' drop.' =>
-            '',
-        'Filter available Activity Dialogs' => '',
-        'Available Activity Dialogs' => '',
-        'Name: %s, EntityID: %s' => '',
-        'Create New Activity Dialog' => '',
-        'Assigned Activity Dialogs' => '',
+            'Впорядковування елементів в списку також можна робити за допомогою "тягни-й-пусти" (drag \'n\' drop).',
+        'Filter available Activity Dialogs' => 'Фільтр доступних Діалогів Активності.',
+        'Available Activity Dialogs' => 'Доступні Діалоги Активності',
+        'Name: %s, EntityID: %s' => 'Ім\'я: %s, EntityID: %s',
+        'Create New Activity Dialog' => 'Створити новий Діалог Активності',
+        'Assigned Activity Dialogs' => 'Призначені Діалоги Активності',
         'As soon as you use this button or link, you will leave this screen and its current state will be saved automatically. Do you want to continue?' =>
-            '',
+            'Як тільки ви використаєте цю кнопку або посилання, ви залишите цей екран та його поточний стан буде збережений автоматично. Ви хочете продовжити?',
 
         # Template: AdminProcessManagementActivityDialog
         'Please note that changing this activity dialog will affect the following activities' =>
-            '',
+            'Зверніть увагу, будь ласка, що змінення цього діалогу активності змінить наступні активності',
         'Please note that customer users will not be able to see or use the following fields: Owner, Responsible, Lock, PendingTime and CustomerID.' =>
-            '',
+            'Зверніть увагу, будь ласка, що клієнт-користувач не буде мати змогу бачити або використовувати наступні поля: Owner (Власник), Responsible (Відповідач), Lock (Блокування), PendingTime (ЧасЗатримки) та CustomerID (ІдентифікаторКлієнта).',
         'The Queue field can only be used by customers when creating a new ticket.' =>
-            '',
-        'Activity Dialog' => '',
-        'Activity dialog Name' => '',
-        'Available in' => '',
-        'Description (short)' => '',
-        'Description (long)' => '',
-        'The selected permission does not exist.' => '',
-        'Required Lock' => '',
-        'The selected required lock does not exist.' => '',
-        'Submit Advice Text' => '',
-        'Submit Button Text' => '',
-        'Fields' => '',
+            'Поле Queue (Черга) може бути використана клієнтом тільки під час створення нового квитка.',
+        'Activity Dialog' => 'Діалог активності',
+        'Activity dialog Name' => 'Ім\'я діалогу активності',
+        'Available in' => 'Доступне в',
+        'Description (short)' => 'Опис (стисло)',
+        'Description (long)' => 'Опис (докладно)',
+        'The selected permission does not exist.' => 'Вибрані дозволи не існують.',
+        'Required Lock' => 'Обов\'язкове блокування',
+        'The selected required lock does not exist.' => 'Вибране обов\'язкове блокування не існує.',
+        'Submit Advice Text' => 'Надіслати текст поради',
+        'Submit Button Text' => 'Надіслати текст кнопки',
+        'Fields' => 'Поля',
         'You can assign Fields to this Activity Dialog by dragging the elements with the mouse from the left list to the right list.' =>
-            '',
-        'Filter available fields' => '',
-        'Available Fields' => '',
-        'Name: %s' => '',
-        'Assigned Fields' => '',
-        'ArticleType' => '',
-        'Display' => '',
-        'Edit Field Details' => '',
-        'Customer interface does not support internal article types.' => '',
+            'Ви можете призначити Поля для цього Діалогу активності шляхом перетягування елементів за допомогою миші з лівого списку до правого. ',
+        'Filter available fields' => 'Фільтрувати доступні поля',
+        'Available Fields' => 'Доступні поля',
+        'Name: %s' => 'Ім\'я: %s',
+        'Assigned Fields' => 'Призначені поля',
+        'ArticleType' => 'ТипСтатті',
+        'Display' => 'Відображення',
+        'Edit Field Details' => 'Редагувати деталі полів',
+        'Customer interface does not support internal article types.' => 'Інтерфейс клієнта не підтримує внутрішні типи статей.',
 
         # Template: AdminProcessManagementPath
-        'Path' => '',
-        'Edit this transition' => '',
-        'Transition Actions' => '',
+        'Path' => 'Шлях',
+        'Edit this transition' => 'Редагувати цей перехід',
+        'Transition Actions' => 'Дії переходу',
         'You can assign Transition Actions to this Transition by dragging the elements with the mouse from the left list to the right list.' =>
-            '',
-        'Filter available Transition Actions' => '',
-        'Available Transition Actions' => '',
-        'Create New Transition Action' => '',
-        'Assigned Transition Actions' => '',
+            'Ви можете призначити Дії Переходу до цього Переходу шляхом перетягування елементів за допомогою миші зі списку ліворуч до списку праворуч.',
+        'Filter available Transition Actions' => 'Фільтрувати доступні Дії Переходу',
+        'Available Transition Actions' => 'Доступні Дії Переходу',
+        'Create New Transition Action' => 'Створити Нову Дію Переходу',
+        'Assigned Transition Actions' => 'Призначити Перехідні Дії',
 
         # Template: AdminProcessManagementProcessAccordion
-        'Activities' => '',
-        'Filter Activities...' => '',
-        'Create New Activity' => '',
-        'Filter Activity Dialogs...' => '',
-        'Transitions' => '',
-        'Filter Transitions...' => '',
-        'Create New Transition' => '',
-        'Filter Transition Actions...' => '',
+        'Activities' => 'Активності',
+        'Filter Activities...' => 'Фільтрувати Активності...',
+        'Create New Activity' => 'Створити Нову Активність',
+        'Filter Activity Dialogs...' => 'Фільтрувати Діалоги Активності...',
+        'Transitions' => 'Переходи',
+        'Filter Transitions...' => 'Фільтрувати Переходи...',
+        'Create New Transition' => 'Створити Новий Перехід',
+        'Filter Transition Actions...' => 'Фільтрувати Дії Переходу...',
 
         # Template: AdminProcessManagementProcessEdit
-        'Edit Process' => '',
-        'Print process information' => '',
-        'Delete Process' => '',
-        'Delete Inactive Process' => '',
-        'Available Process Elements' => '',
+        'Edit Process' => 'Редагувати Процес',
+        'Print process information' => 'Друкувати інформацію про процес',
+        'Delete Process' => 'Вилучити Процес',
+        'Delete Inactive Process' => 'Вилучити неактивний процес',
+        'Available Process Elements' => 'Доступні Елементи Процесу',
         'The Elements listed above in this sidebar can be moved to the canvas area on the right by using drag\'n\'drop.' =>
-            '',
+            'Елементи, що перераховані вище в цій бічній панелі, можуть бути переміщені в область полотна праворуч використовуючи "тягни-й-пусти".',
         'You can place Activities on the canvas area to assign this Activity to the Process.' =>
-            '',
+            'Ви можете розмістити Активності на площі полотна, щоб призначити Активність Процесу.',
         'To assign an Activity Dialog to an Activity drop the Activity Dialog element from this sidebar over the Activity placed in the canvas area.' =>
-            '',
+            'Щоб призначити Діалог Активності до Активності, перетягніть елемент Діалогу Активності з цієї бічної панелі на Активність, що розташована в області полотна.',
         'You can start a connection between two Activities by dropping the Transition element over the Start Activity of the connection. After that you can move the loose end of the arrow to the End Activity.' =>
-            '',
+            'Ви можете створити зв\'язок між двома Активностями перетягуючи елемент Перетворення на Початкову  Активність з\'єднання. Після цього ви можете переміщати вільний кінець стрілки до Кінцевої Активності.',
         'Actions can be assigned to a Transition by dropping the Action Element onto the label of a Transition.' =>
-            '',
-        'Edit Process Information' => '',
-        'Process Name' => '',
-        'The selected state does not exist.' => '',
-        'Add and Edit Activities, Activity Dialogs and Transitions' => '',
-        'Show EntityIDs' => '',
-        'Extend the width of the Canvas' => '',
-        'Extend the height of the Canvas' => '',
-        'Remove the Activity from this Process' => '',
-        'Edit this Activity' => '',
-        'Save Activities, Activity Dialogs and Transitions' => '',
-        'Do you really want to delete this Process?' => '',
-        'Do you really want to delete this Activity?' => '',
-        'Do you really want to delete this Activity Dialog?' => '',
-        'Do you really want to delete this Transition?' => '',
-        'Do you really want to delete this Transition Action?' => '',
+            'Дії можуть бути віднесені до Переходу перетягуючи Елемент Дії на позначку Переходу.',
+        'Edit Process Information' => 'Редагувати Інформацію про Процес',
+        'Process Name' => 'Ім\'я Процесу',
+        'The selected state does not exist.' => 'Вибраного стану не існує.',
+        'Add and Edit Activities, Activity Dialogs and Transitions' => 'Додати та Редагувати Активності, Діалоги Активності та Переходи',
+        'Show EntityIDs' => 'Показати EntityIDs',
+        'Extend the width of the Canvas' => 'Розсунути довжину Полотна',
+        'Extend the height of the Canvas' => 'Розсунути висоту Полотна',
+        'Remove the Activity from this Process' => 'Вилучити Активність з цього Процесу',
+        'Edit this Activity' => 'Редагувати Активність',
+        'Save Activities, Activity Dialogs and Transitions' => 'Переглянути Активності, Діалоги Активності та Переходи',
+        'Do you really want to delete this Process?' => 'Ви насправді хочете вилучити цей Процес?',
+        'Do you really want to delete this Activity?' => 'Ви насправді хочете вилучити цю Активність?',
+        'Do you really want to delete this Activity Dialog?' => 'Ви насправді хочете вилучити цей Діалог Активності?',
+        'Do you really want to delete this Transition?' => 'Ви насправді хочете вилучити цей Перехід?',
+        'Do you really want to delete this Transition Action?' => 'Ви насправді хочете вилучити цю Дію Переходу?',
         'Do you really want to remove this activity from the canvas? This can only be undone by leaving this screen without saving.' =>
-            '',
+            'Ви дійсно хочете вилучити цю активність з цього полотна? Це може бути скасовано лише шляхом виходу з цього екрану без збереження. ',
         'Do you really want to remove this transition from the canvas? This can only be undone by leaving this screen without saving.' =>
-            '',
-        'Hide EntityIDs' => '',
-        'Delete Entity' => '',
-        'Remove Entity from canvas' => '',
+            'Ви дійсно хочете вилучити цей перехід з полотна? Це може бути скасовано лише шляхом виходу з цього екрану без збереження.',
+        'Hide EntityIDs' => 'Приховати EntityIDs',
+        'Delete Entity' => 'Вилучити Об\'єкт',
+        'Remove Entity from canvas' => 'Вилучити Об\'єкт з полотна',
         'This Activity is already used in the Process. You cannot add it twice!' =>
-            '',
+            'Ця Активність вже використовується в Процесі. Ви не можете додати її двічі!',
         'This Activity cannot be deleted because it is the Start Activity.' =>
-            '',
+            'Ця Активність не може бути вилучена тому що вона є Початковою Активністю',
         'This Transition is already used for this Activity. You cannot use it twice!' =>
-            '',
+            'Цей Перехід вже використовується для цієї Активності. Ви не можете використати його двічі!',
         'This TransitionAction is already used in this Path. You cannot use it twice!' =>
-            '',
-        'Remove the Transition from this Process' => '',
-        'No TransitionActions assigned.' => '',
-        'The Start Event cannot loose the Start Transition!' => '',
+            'Ця Дія Переходу вже використовується в цьому Шляху. Ви не можете використовувати її двічі!',
+        'Remove the Transition from this Process' => 'Вилучити Перехід з цього Процесу',
+        'No TransitionActions assigned.' => 'Не призначено Переходових Дій (TransitionActions)',
+        'The Start Event cannot loose the Start Transition!' => 'Початкова Подія не може втратити Початковий Перехід!',
         'No dialogs assigned yet. Just pick an activity dialog from the list on the left and drag it here.' =>
-            '',
+            'Жодного Діалогу ще не призначено. Просто виберіть діалог активності зі списку ліворуч та перетягніть його сюди.',
         'An unconnected transition is already placed on the canvas. Please connect this transition first before placing another transition.' =>
-            '',
+            'Непов\'язаний перехід вже розміщений на полотні. Будь ласка, спочатку з\'єднайте цей перехід перед встановленням іншого.',
 
         # Template: AdminProcessManagementProcessNew
         'In this screen, you can create a new process. In order to make the new process available to users, please make sure to set its state to \'Active\' and synchronize after completing your work.' =>
-            '',
+            'На цьому екрані ви маєте змогу створити новий процес. Для того щоб створити новий процес доступним для користувачів, будь ласка, переконайтеся що його встановлено в стан "Активний" та проведено синхронізацію після завершення вашої роботи.',
 
         # Template: AdminProcessManagementProcessPrint
         'cancel & close' => 'скасувати & закрити',
-        'Start Activity' => '',
-        'Contains %s dialog(s)' => '',
-        'Assigned dialogs' => '',
-        'Activities are not being used in this process.' => '',
-        'Assigned fields' => '',
-        'Activity dialogs are not being used in this process.' => '',
-        'Condition linking' => '',
-        'Conditions' => '',
-        'Condition' => '',
-        'Transitions are not being used in this process.' => '',
-        'Module name' => '',
-        'Transition actions are not being used in this process.' => '',
+        'Start Activity' => 'Початкова Активність',
+        'Contains %s dialog(s)' => 'Містить %s діалог(и)',
+        'Assigned dialogs' => 'Призначені діалоги',
+        'Activities are not being used in this process.' => 'Активності не використовуються у цьому процесі.',
+        'Assigned fields' => 'Призначені поля',
+        'Activity dialogs are not being used in this process.' => 'Діалоги активності не використовуються у цьому процесі.',
+        'Condition linking' => 'Умова з\'єднання',
+        'Conditions' => 'Умови',
+        'Condition' => 'Умова',
+        'Transitions are not being used in this process.' => 'Переходи не використовуються у цьому процесі.',
+        'Module name' => 'Ім\'я модуля',
+        'Transition actions are not being used in this process.' => 'Переходові дії не використовуються у цьому процесі.',
 
         # Template: AdminProcessManagementTransition
         'Please note that changing this transition will affect the following processes' =>
-            '',
-        'Transition' => '',
-        'Transition Name' => '',
-        'Conditions can only operate on non-empty fields.' => '',
-        'Type of Linking between Conditions' => '',
-        'Remove this Condition' => '',
-        'Type of Linking' => '',
-        'Add a new Field' => '',
-        'Remove this Field' => '',
-        'And can\'t be repeated on the same condition.' => '',
-        'Add New Condition' => '',
+            'Зверніть увагу, що зміна цього переходу буде впливати на наступні процеси.',
+        'Transition' => 'Перехід',
+        'Transition Name' => 'Ім\'я Переходу',
+        'Conditions can only operate on non-empty fields.' => 'Умови можуть діяти тільки з непорожніми полями.',
+        'Type of Linking between Conditions' => 'Тип Зв\'язку між Умовами',
+        'Remove this Condition' => 'Видалити цю Умову',
+        'Type of Linking' => 'Тип Зв\'язку',
+        'Add a new Field' => 'Додати нове Поле',
+        'Remove this Field' => 'Вилучити це Поле',
+        'And can\'t be repeated on the same condition.' => 'Та не може бути повторений при тих самих умовах.',
+        'Add New Condition' => 'Додати Нову Умову',
 
         # Template: AdminProcessManagementTransitionAction
         'Please note that changing this transition action will affect the following processes' =>
-            '',
-        'Transition Action' => '',
-        'Transition Action Name' => '',
-        'Transition Action Module' => '',
-        'Config Parameters' => '',
-        'Add a new Parameter' => '',
-        'Remove this Parameter' => '',
+            'Зверніть увагу, що зміна цієї переходової дії вплине на наступні процеси',
+        'Transition Action' => 'Переходова Дія',
+        'Transition Action Name' => 'Ім\'я Переходової Дії',
+        'Transition Action Module' => 'Модуль Переходової Дії',
+        'Config Parameters' => 'Параметри Конфігурації',
+        'Add a new Parameter' => 'Додати новий Параметр',
+        'Remove this Parameter' => 'Вилучити цей Параметр',
 
         # Template: AdminQueue
         'Manage Queues' => 'Керування чергами',
         'Add queue' => 'Додати черга',
         'Add Queue' => 'Додати Черга',
         'Edit Queue' => 'Змінити черга',
-        'A queue with this name already exists!' => '',
+        'A queue with this name already exists!' => 'Черга з таким ім\'ям вже існує!',
         'Sub-queue of' => 'Підчерга черги',
         'Unlock timeout' => 'Строк блокування',
         '0 = no unlock' => '0 — без блокування',
         'Only business hours are counted.' => 'З обліком тільки робочого часу.',
         'If an agent locks a ticket and does not close it before the unlock timeout has passed, the ticket will unlock and will become available for other agents.' =>
-            '',
+            'Якщо агент блокує квиток та не закриває його до того, як  буде вичерпаний період розблокування, квиток буде розблокований та доступний для інших агентів.',
         'Notify by' => 'Повідомлення від',
         '0 = no escalation' => '0 — без ескалації',
         'If there is not added a customer contact, either email-external or phone, to a new ticket before the time defined here expires, the ticket is escalated.' =>
-            '',
+            'Якщо не буде додано контакт клієнта, або зовнішня електронна адреса чи телефон до нового квитка перед тим як зазначений тут час буде вичерпано, квиток буде підвищено.',
         'If there is an article added, such as a follow-up via email or the customer portal, the escalation update time is reset. If there is no customer contact, either email-external or phone, added to a ticket before the time defined here expires, the ticket is escalated.' =>
-            '',
+            'Якщо додається стаття, наприклад, спостерігання за допомогою електронної скриньки або порталу клієнта, час поновлення підвищення (ескалації) буде скинуто. Якщо немає контакту клієнта або адреси зовнішньої скриньки чи номеру телефону, доданих до квитка до вичерпання зазначеного тут часу, квиток буде підвищено (ескаловано).',
         'If the ticket is not set to closed before the time defined here expires, the ticket is escalated.' =>
             'Якщо заявка не закрита до зазначеного тут часу завершення, вона ескалюється.',
         'Follow up Option' => 'Параметри автовідповіді',
         'Specifies if follow up to closed tickets would re-open the ticket, be rejected or lead to a new ticket.' =>
-            '',
+            'Вказує, якщо слідувати до закритих квитків то це може призвести до їх повторного відкриття, тому буде відхилено або направлено до створення нового квитка.',
         'Ticket lock after a follow up' => 'Блокувати заявку після одержання відповіді',
         'If a ticket is closed and the customer sends a follow up the ticket will be locked to the old owner.' =>
-            '',
+            'Якщо квиток закритий та клієнт намагається встановити стеження, квиток буде заблокований для старого власника.',
         'System address' => 'Адреса системи',
         'Will be the sender address of this queue for email answers.' => 'Установка адреси відправника для відповідей у цій черзі.',
-        'Default sign key' => '',
+        'Default sign key' => 'Типовий ключ підпису',
         'The salutation for email answers.' => 'Вітання для листів',
         'The signature for email answers.' => 'Підпис для листів',
 
         # Template: AdminQueueAutoResponse
-        'Manage Queue-Auto Response Relations' => '',
-        'This filter allow you to show queues without auto responses' => '',
-        'Queues without auto responses' => '',
-        'This filter allow you to show all queues' => '',
-        'Show all queues' => '',
-        'Filter for Queues' => '',
-        'Filter for Auto Responses' => '',
+        'Manage Queue-Auto Response Relations' => 'Керування Залежностями Авто-Відповідей Черги',
+        'This filter allow you to show queues without auto responses' => 'Цей фільтр дозволяє вам побачити черги без авто-відповідей',
+        'Queues without auto responses' => 'Черги без авто-відповідей',
+        'This filter allow you to show all queues' => 'Цей фільтр дозволяє вам побачити всі черги',
+        'Show all queues' => 'Показати всі черги',
+        'Filter for Queues' => 'Фільтр для Черг',
+        'Filter for Auto Responses' => 'Фільтр для Авто-Відповідей',
         'Auto Responses' => 'Автовідповіді',
-        'Change Auto Response Relations for Queue' => '',
+        'Change Auto Response Relations for Queue' => 'Змінити Залежності Авто-Відповідей для Черги',
 
         # Template: AdminQueueTemplates
-        'Manage Template-Queue Relations' => '',
+        'Manage Template-Queue Relations' => 'Керувати Залежностями Черг-Шаблонів',
         'Filter for Templates' => 'Фільтр по шаблонам',
         'Templates' => 'Шаблони',
-        'Change Queue Relations for Template' => '',
-        'Change Template Relations for Queue' => '',
+        'Change Queue Relations for Template' => 'Змінити Залежності Черг для Шаблона',
+        'Change Template Relations for Queue' => 'Змінити Залежності Шаблонів для Черги',
 
         # Template: AdminRegistration
-        'System Registration Management' => '',
-        'Edit details' => '',
-        'Show transmitted data' => '',
-        'Deregister system' => '',
-        'Overview of registered systems' => '',
-        'This system is registered with OTRS Group.' => '',
-        'System type' => '',
-        'Unique ID' => '',
-        'Last communication with registration server' => '',
-        'System registration not possible' => '',
+        'System Registration Management' => 'Керування Регистрацією Системи',
+        'Edit details' => 'Редагувати деталі',
+        'Show transmitted data' => 'Показати передані дані',
+        'Deregister system' => 'Скасувати реєстрацію системи',
+        'Overview of registered systems' => 'Огляд зареєстрованих систем',
+        'This system is registered with OTRS Group.' => 'Ця система реєстрована OTRS Group.',
+        'System type' => 'Тип системи',
+        'Unique ID' => 'Унікальний ID',
+        'Last communication with registration server' => 'Останній зв\'язок із сервером реєстрації',
+        'System registration not possible' => 'Реєстрація системи неможлива',
         'Please note that you can\'t register your system if OTRS Daemon is not running correctly!' =>
-            '',
-        'Instructions' => '',
-        'System deregistration not possible' => '',
+            'Будь ласка зверніть увагу, що ви не можете зареєструвати вашу систему якщо фонова програма OTRS не працює правильно!',
+        'Instructions' => 'Інструкції',
+        'System deregistration not possible' => 'Неможливо скасувати реєстрацію системи',
         'Please note that you can\'t deregister your system if you\'re using the %s or having a valid service contract.' =>
-            '',
-        'OTRS-ID Login' => '',
-        'Read more' => '',
+            'Зверніть увагу, що ви не можете скасувати реєстрацію вашої системи якщо ви використовуєте %s або маєте чинну угоду на обслуговування.',
+        'OTRS-ID Login' => 'OTRS-ID Ім\'я',
+        'Read more' => 'Докладніше',
         'You need to log in with your OTRS-ID to register your system.' =>
-            '',
+            'Ви маєте увійти з вашим ім\'ям OTRS-ID, щоб зареєструвати вашу систему.',
         'Your OTRS-ID is the email address you used to sign up on the OTRS.com webpage.' =>
-            '',
-        'Data Protection' => '',
-        'What are the advantages of system registration?' => '',
-        'You will receive updates about relevant security releases.' => '',
+            'Ваш OTRS-ID це адреса поштової скриньки, якою ви скористалися для реєстрації на сайті OTRS.com',
+        'Data Protection' => 'Захист Даних',
+        'What are the advantages of system registration?' => 'Які переваги реєстрації системи?',
+        'You will receive updates about relevant security releases.' => 'Ви будете отримувати нову інформацію про відповідні оновлення безпеки.',
         'With your system registration we can improve our services for you, because we have all relevant information available.' =>
-            '',
-        'This is only the beginning!' => '',
+            'З вашою реєстрацією ви можемо поліпшити наші послуги для вас, тому що в нас є вся необхідна інформація.',
+        'This is only the beginning!' => 'Це тільки початок!',
         'We will inform you about our new services and offerings soon.' =>
-            '',
-        'Can I use OTRS without being registered?' => '',
-        'System registration is optional.' => '',
-        'You can download and use OTRS without being registered.' => '',
-        'Is it possible to deregister?' => '',
-        'You can deregister at any time.' => '',
-        'Which data is transfered when registering?' => '',
-        'A registered system sends the following data to OTRS Group:' => '',
+            'Ми будемо інформувати вас про наші нові послуги та найновіші пропозиції.',
+        'Can I use OTRS without being registered?' => 'Чи можу я використовувати OTRS без реєстрації?',
+        'System registration is optional.' => 'Реєстрація системи не є обов\'язковою.',
+        'You can download and use OTRS without being registered.' => 'Ви можете завантажити та використовувати OTRS без реєстрації.',
+        'Is it possible to deregister?' => 'Чи можна скасувати реєстрацію?',
+        'You can deregister at any time.' => 'Ви можете скасувати реєстрацію у будь-який час.',
+        'Which data is transfered when registering?' => 'Які дані передаються під час реєстрації?',
+        'A registered system sends the following data to OTRS Group:' => 'Зареєстрована система надсилає наступні дані до OTRS Group:',
         'Fully Qualified Domain Name (FQDN), OTRS version, Database, Operating System and Perl version.' =>
-            '',
-        'Why do I have to provide a description for my system?' => '',
-        'The description of the system is optional.' => '',
+            'Повне доменне ім\'я (FQDN), версія OTRS, База даних, Операційна система та версія Perl.',
+        'Why do I have to provide a description for my system?' => 'Чому я маю надати опис для моєї системи?',
+        'The description of the system is optional.' => 'Опис системи не є обов\'язковим.',
         'The description and system type you specify help you to identify and manage the details of your registered systems.' =>
-            '',
-        'How often does my OTRS system send updates?' => '',
+            'Надані вами опис та тип системи допоможе нам визначати та керувати подробицями ваших зареєстрованих систем.',
+        'How often does my OTRS system send updates?' => 'Як часто моя OTRS система відправляє оновлення?',
         'Your system will send updates to the registration server at regular intervals.' =>
-            '',
-        'Typically this would be around once every three days.' => '',
-        'In case you would have further questions we would be glad to answer them.' =>
-            '',
-        'Please visit our' => '',
-        'portal' => '',
-        'and file a request.' => '',
+            'Ваша система буде відправляти оновлення на реєстраційний сервер через регулярні проміжки часу.',
+        'Typically this would be around once every three days.' => 'Типово, це буде приблизно один раз в три дні.',
+        'Please visit our' => 'Будь ласка, відвідайте наш',
+        'portal' => 'портал',
+        'and file a request.' => 'та подайте заявку.',
         'If you deregister your system, you will lose these benefits:' =>
-            '',
+            'Якщо скасувати реєстрацію вашої системи, ви втратите ці переваги:',
         'You need to log in with your OTRS-ID to deregister your system.' =>
-            '',
-        'OTRS-ID' => '',
-        'You don\'t have an OTRS-ID yet?' => '',
+            'Ви маєте увійти під своїм OTRS-ID щоб скасувати реєстрацію вашої системи.',
+        'OTRS-ID' => 'OTRS-ID',
+        'You don\'t have an OTRS-ID yet?' => 'У вас ще немає OTRS-ID?',
         'Sign up now' => 'Увійти',
-        'Forgot your password?' => '',
-        'Retrieve a new one' => '',
+        'Forgot your password?' => 'Забули свій пароль?',
+        'Retrieve a new one' => 'Отримати новий',
         'This data will be frequently transferred to OTRS Group when you register this system.' =>
-            '',
-        'Attribute' => '',
-        'FQDN' => '',
-        'OTRS Version' => '',
-        'Operating System' => '',
-        'Perl Version' => '',
-        'Optional description of this system.' => '',
-        'Register' => '',
-        'Deregister System' => '',
+            'Ці дані найчастіше передаються до OTRS Group під час реєстрації системи.',
+        'Attribute' => 'Атрибут',
+        'FQDN' => 'FQDN',
+        'OTRS Version' => 'Версій OTRS',
+        'Operating System' => 'Операційна Система',
+        'Perl Version' => 'Версія Perl',
+        'Optional description of this system.' => 'Додатковий опис цієї системи.',
+        'Register' => 'Реєстрація',
+        'Deregister System' => 'Скасувати реєстрацію Системи',
         'Continuing with this step will deregister the system from OTRS Group.' =>
-            '',
-        'Deregister' => '',
-        'You can modify registration settings here.' => '',
-        'Overview of transmitted data' => '',
-        'There is no data regularly sent from your system to %s.' => '',
+            'Продовжуючи далі, ви скасуєте реєстрацію системи від OTRS Group. ',
+        'Deregister' => 'Скасувати реєстрацію',
+        'You can modify registration settings here.' => 'Тут ви можете змінити налаштування реєстрації.',
+        'Overview of transmitted data' => 'Огляд переданих даних',
+        'There is no data regularly sent from your system to %s.' => 'Немає даних, що регулярно відправляються з вашої системи до %s.',
         'The following data is sent at minimum every 3 days from your system to %s.' =>
-            '',
+            'Наступні дані надсилаються мінімум раз на 3 дні з вашої системи до %s.',
         'The data will be transferred in JSON format via a secure https connection.' =>
-            '',
-        'System Registration Data' => '',
-        'Support Data' => '',
+            'Дані будуть надіслані в формати JSON крізь захищене з\'єднання https.',
+        'System Registration Data' => 'Система реєстрації даних',
+        'Support Data' => 'Дані підтримки',
 
         # Template: AdminRole
         'Role Management' => 'Керування ролями',
@@ -2147,84 +2188,84 @@ sub Data {
         'Edit Role' => 'Змінити роль',
 
         # Template: AdminRoleGroup
-        'Manage Role-Group Relations' => '',
-        'Filter for Roles' => '',
+        'Manage Role-Group Relations' => 'Керувати Role-Group відносинами',
+        'Filter for Roles' => 'Фільтр для ролей',
         'Roles' => 'Ролі',
-        'Select the role:group permissions.' => '',
+        'Select the role:group permissions.' => 'Виберіть дозволи role:group',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the role).' =>
-            '',
-        'Change Role Relations for Group' => '',
-        'Change Group Relations for Role' => '',
-        'Toggle %s permission for all' => '',
+            'Якщо нічого не вибрано, для цієї групи немає жодного дозволу (квитки не будуть доступні для цієї ролі).',
+        'Change Role Relations for Group' => 'Змінити Залежності Ролі для Групи',
+        'Change Group Relations for Role' => 'Змінити Залежності Групи для Ролі',
+        'Toggle %s permission for all' => 'Перемикнути %s дозвіл для всіх',
         'move_into' => 'перемістити',
         'Permissions to move tickets into this group/queue.' => 'Права на переміщення заявок у цю групу/черга',
         'create' => 'створення',
         'Permissions to create tickets in this group/queue.' => 'Права на створення заявок у цій групі/черги',
         'note' => 'Замітка',
-        'Permissions to add notes to tickets in this group/queue.' => '',
+        'Permissions to add notes to tickets in this group/queue.' => 'Дозвіл додавати замітки до квитків в цій групі/черзі.',
         'owner' => 'власник',
         'Permissions to change the owner of tickets in this group/queue.' =>
-            '',
+            'Дозволи змінювати власника квитків в цій групі/черзі.',
         'priority' => 'пріоритет',
         'Permissions to change the ticket priority in this group/queue.' =>
             'Права на зміну пріоритету заявок у цій групі/черги',
 
         # Template: AdminRoleUser
-        'Manage Agent-Role Relations' => '',
-        'Add agent' => '',
-        'Filter for Agents' => '',
+        'Manage Agent-Role Relations' => 'Керування Залежностями Агент-Роль',
+        'Add agent' => 'Додати агента',
+        'Filter for Agents' => 'Фільтри для Агентів',
         'Agents' => 'Агенти',
-        'Manage Role-Agent Relations' => '',
-        'Change Role Relations for Agent' => '',
-        'Change Agent Relations for Role' => '',
+        'Manage Role-Agent Relations' => 'Керування Залежностями Роль-Агент',
+        'Change Role Relations for Agent' => 'Змінити Залежності Ролі для Агента',
+        'Change Agent Relations for Role' => 'Змінити Залежності Агента для Ролі',
 
         # Template: AdminSLA
         'SLA Management' => 'Керування SLA',
         'Add SLA' => 'Додати SLA',
         'Edit SLA' => 'Змінити SLA',
-        'Please write only numbers!' => '',
+        'Please write only numbers!' => 'Будь ласка, пишіть тільки цифри!',
 
         # Template: AdminSMIME
         'S/MIME Management' => 'Керування S/MIME',
-        'SMIME support is disabled' => '',
+        'SMIME support is disabled' => 'Підтримка SMIME відключена',
         'To be able to use SMIME in OTRS, you have to enable it first.' =>
-            '',
-        'Enable SMIME support' => '',
-        'Faulty SMIME configuration' => '',
+            'Для того, щоб мати можливість використовувати SMIME в OTRS, ви повинні спочатку його дозволити.',
+        'Enable SMIME support' => 'Дозволити підтримку ',
+        'Faulty SMIME configuration' => 'Неправильне налаштування SMIME ',
         'SMIME support is enabled, but the relevant configuration contains errors. Please check the configuration using the button below.' =>
-            '',
-        'Check SMIME configuration' => '',
+            'Підтримку SMIME увімкнено, але відповідні налаштування містять помилки. Будь ласка, перевірте налаштування за допомогою кнопки, що розташована нижче.',
+        'Check SMIME configuration' => 'Перевірка налаштувань SMIME',
         'Add certificate' => 'Додати сертифікат',
         'Add private key' => 'Додати закритий ключ',
-        'Filter for certificates' => '',
-        'Filter for S/MIME certs' => '',
-        'To show certificate details click on a certificate icon.' => '',
+        'Filter for certificates' => 'Фільтр сертифікатів',
+        'Filter for S/MIME certs' => 'Фільтр S/MIME сертифікатів',
+        'To show certificate details click on a certificate icon.' => 'Щоб показати деталі сертифікату, натисніть на його значок.',
         'To manage private certificate relations click on a private key icon.' =>
-            '',
+            'За для керування залежностями приватного сертифікату натисніть на значок приватного ключа.',
         'Here you can add relations to your private certificate, these will be embedded to the S/MIME signature every time you use this certificate to sign an email.' =>
-            '',
+            'Тут ви можете додати залежності до вашого приватного сертифікату, вони будуть вбудовані в підпис S/MIME щоразу, коли ви використовуєте цей сертифікат, щоб підписати лист.',
         'See also' => 'Див. також',
         'In this way you can directly edit the certification and private keys in file system.' =>
             'Ви можете редагувати сертифікати й закриті ключі прямо на файловій системі',
         'Hash' => 'Хеш',
-        'Handle related certificates' => '',
-        'Read certificate' => '',
+        'Handle related certificates' => 'Обробляти залежні сертифікати',
+        'Read certificate' => 'Прочитати сертифікат',
         'Delete this certificate' => 'Вилучити сертифікат',
         'Add Certificate' => 'Додати сертифікат',
         'Add Private Key' => 'Додати закритий ключ',
         'Secret' => 'Пароль',
-        'Related Certificates for' => '',
-        'Delete this relation' => '',
-        'Available Certificates' => '',
-        'Relate this certificate' => '',
+        'Related Certificates for' => 'Пов\'язаний сертифікат із',
+        'Delete this relation' => 'Вилучити цю залежність',
+        'Available Certificates' => 'Доступні Сертифікати',
+        'Relate this certificate' => 'Зіставити цей сертифікат',
 
         # Template: AdminSMIMECertRead
         'Close dialog' => 'Закрити діалог',
-        'Certificate details' => '',
+        'Certificate details' => 'Деталі сертифікату',
 
         # Template: AdminSalutation
         'Salutation Management' => 'Керування вітаннями',
-        'Add salutation' => '',
+        'Add salutation' => 'Додати привітання',
         'Add Salutation' => 'Додати вітання',
         'Edit Salutation' => 'Редагувати вітання',
         'e. g.' => 'наприклад,',
@@ -2235,28 +2276,30 @@ sub Data {
         'Secure mode will (normally) be set after the initial installation is completed.' =>
             'Після установки системи звичайно відразу ж включають безпечний режим.',
         'If secure mode is not activated, activate it via SysConfig because your application is already running.' =>
-            '',
+            'Якщо безпечний режим не активований, активуйте його за допомогою SysConfig, тому що ваш додаток вже запущений.',
 
         # Template: AdminSelectBox
         'SQL Box' => 'Запит SQL',
         'Here you can enter SQL to send it directly to the application database. It is not possible to change the content of the tables, only select queries are allowed.' =>
-            '',
+            'Тут ви можете ввести SQL, щоб надіслати його безпосередньо до бази даних програми. Цим неможливо змінити вміст таблиць - дозволені тільки select запити.',
         'Here you can enter SQL to send it directly to the application database.' =>
-            '',
-        'Only select queries are allowed.' => '',
+            'Тут ви можете ввести SQL щоб надіслати його безпосередньо до бази даних програми.',
+        'Only select queries are allowed.' => 'Дозволені тільки select запити.',
         'The syntax of your SQL query has a mistake. Please check it.' =>
-            '',
+            'Синтаксис вашого SQL запиту містить помилку. Будь ласка, перевірте його.',
         'There is at least one parameter missing for the binding. Please check it.' =>
-            '',
+            'Існує принаймні, один пропущений параметр за прив\'язки. Будь ласка, перевірте його.',
         'Result format' => 'Формат результату',
         'Run Query' => 'Запустити чергу',
-        'Query is executed.' => '',
+        'Query is executed.' => 'Запит виконується.',
 
         # Template: AdminService
         'Service Management' => 'Керування сервісами',
         'Add service' => 'Додати сервіс',
         'Add Service' => 'Додати Сервіс',
         'Edit Service' => 'Змінити Сервіс',
+        'Service name maximum length is 200 characters (with Sub-service).' =>
+            'Максимальна довжина імені служби 200 символів (з під-службами).',
         'Sub-service of' => 'Підсервіс сервісу',
 
         # Template: AdminSession
@@ -2269,8 +2312,8 @@ sub Data {
         'Kill all sessions' => 'Завершити всі сеанси',
         'Kill this session' => 'Завершити сеанс',
         'Session' => 'Сеанс',
-        'Kill' => '',
-        'Detail View for SessionID' => '',
+        'Kill' => 'Завершити',
+        'Detail View for SessionID' => 'Детальний Вид для SessionID',
 
         # Template: AdminSignature
         'Signature Management' => 'Керування підписами',
@@ -2282,55 +2325,55 @@ sub Data {
         # Template: AdminState
         'State Management' => 'Керування станами',
         'Add state' => 'Додати стан',
-        'Please also update the states in SysConfig where needed.' => '',
+        'Please also update the states in SysConfig where needed.' => 'Прохання також оновити стан в SysConfig де це необхідно.',
         'Add State' => 'Додати стан',
         'Edit State' => 'Змінити стан',
         'State type' => 'Тип стану',
 
         # Template: AdminSupportDataCollector
-        'Sending support data to OTRS Group is not possible!' => '',
-        'Enable Cloud Services' => '',
+        'Sending support data to OTRS Group is not possible!' => 'Передача даних по підтримці до OTRS Group не представляється можливим!',
+        'Enable Cloud Services' => 'Дозволити Хмарні Служби',
         'This data is sent to OTRS Group on a regular basis. To stop sending this data please update your system registration.' =>
-            '',
+            'Ці дані надсилаються до OTRS Group на регулярній основі. Щоб припинити передачу цієї інформації, будь ласка, поновіть реєстрацію системи.',
         'You can manually trigger the Support Data sending by pressing this button:' =>
-            '',
-        'Send Update' => '',
-        'Sending Update...' => '',
-        'Support Data information was successfully sent.' => '',
-        'Was not possible to send Support Data information.' => '',
-        'Update Result' => '',
-        'Currently this data is only shown in this system.' => '',
+            'Ви можете вручну викликати передачу Даних Підтримки натиснувши на цю кнопку:',
+        'Send Update' => 'Надіслати Оновлення',
+        'Sending Update...' => 'Надсилання оновлення...',
+        'Support Data information was successfully sent.' => 'Інформація Даних Підтримки була успішно відправлена.',
+        'Was not possible to send Support Data information.' => 'Не було можливості передати Інформацію Даних Підтримки.',
+        'Update Result' => 'Оновити Результат',
+        'Currently this data is only shown in this system.' => 'Наразі ці дані показані тільки в цій системі.',
         'A support bundle (including: system registration information, support data, a list of installed packages and all locally modified source code files) can be generated by pressing this button:' =>
-            '',
-        'Generate Support Bundle' => '',
-        'Generating...' => '',
-        'It was not possible to generate the Support Bundle.' => '',
-        'Generate Result' => '',
-        'Support Bundle' => '',
-        'The mail could not be sent' => '',
-        'The support bundle has been generated.' => '',
-        'Please choose one of the following options.' => '',
-        'Send by Email' => '',
+            'В\'язка підтримки (що містить: відомості про реєстрацію системи, дані підтримки, перелік встановлених пакунків та всі локально змінені файли вихідного коду) може бути згенерована шляхом натискання на цю кнопку:',
+        'Generate Support Bundle' => 'Створити В\'язку Підтримки',
+        'Generating...' => 'Створення...',
+        'It was not possible to generate the Support Bundle.' => 'Не було можливості для створення В\'язки Підтримки.',
+        'Generate Result' => 'Сформувати Результат',
+        'Support Bundle' => 'В\'язка підтримки',
+        'The mail could not be sent' => 'Пошта не може бути відправлена',
+        'The support bundle has been generated.' => 'В\'язку підтримки було створено.',
+        'Please choose one of the following options.' => 'Будь ласка, виберіть один з наступних варіантів.',
+        'Send by Email' => 'Надіслати електронною поштою',
         'The support bundle is too large to send it by email, this option has been disabled.' =>
-            '',
+            'В\'язка підтримки занадто велика, щоб відправити її електронною поштою, ця опція буде вимкнена.',
         'The email address for this user is invalid, this option has been disabled.' =>
-            '',
+            'Адреса електронної пошти для цього користувача не є чинною, цю опцію буде скасовано.',
         'Sending' => 'Відправник',
         'The support bundle will be sent to OTRS Group via email automatically.' =>
-            '',
-        'Download File' => '',
+            'В\'язку підтримки буде надіслано до OTRS Group електронною поштою автоматично.',
+        'Download File' => 'Завантаження файлу',
         'A file containing the support bundle will be downloaded to the local system. Please save the file and send it to the OTRS Group, using an alternate method.' =>
-            '',
-        'Error: Support data could not be collected (%s).' => '',
-        'Details' => '',
+            'Файл, що містить в\'язку підтримки, буде завантажено до локальної системи. Будь ласка, збережіть файл та надішліть його до OTRS Group іншим шляхом.',
+        'Error: Support data could not be collected (%s).' => 'Помилка: дані підтримки не можуть бути зібрані (%s).',
+        'Details' => 'Подробиці',
 
         # Template: AdminSysConfig
-        'SysConfig' => '',
-        'Navigate by searching in %s settings' => '',
-        'Navigate by selecting config groups' => '',
-        'Download all system config changes' => '',
+        'SysConfig' => 'SysConfig',
+        'Navigate by searching in %s settings' => 'Переміщатися пошуком в налаштуваннях %s',
+        'Navigate by selecting config groups' => 'Переміщатися шляхом вибору конфігурації груп',
+        'Download all system config changes' => 'Завантажити всі зміни конфігурації системи',
         'Export settings' => 'Експортувати настроювання',
-        'Load SysConfig settings from file' => '',
+        'Load SysConfig settings from file' => 'Завантаження налаштувань SysConfig з файлу',
         'Import settings' => 'Імпортувати настроювання',
         'Import Settings' => 'Імпортувати Настроювання',
         'Please enter a search term to look for settings.' => ' Будь ласка, уведіть пошуковий запит для пошуку настроювань.',
@@ -2338,169 +2381,172 @@ sub Data {
         'Elements' => 'Елементи',
 
         # Template: AdminSysConfigEdit
-        'Edit Config Settings in %s → %s' => '',
-        'This setting is read only.' => '',
+        'Edit Config Settings in %s → %s' => 'Редагування налаштувань конфігурації в %s → %s',
+        'This setting is read only.' => 'Ці налаштування тільки для читання.',
         'This config item is only available in a higher config level!' =>
-            '',
-        'Reset this setting' => '',
-        'Error: this file could not be found.' => '',
-        'Error: this directory could not be found.' => '',
-        'Error: an invalid value was entered.' => '',
+            'Цей елемент конфігурації доступний тільки на більш високому рівні конфігурації!',
+        'Reset this setting' => 'Скидання цього параметра',
+        'Error: this file could not be found.' => 'Помилка: цей файл не може бути знайдений.',
+        'Error: this directory could not be found.' => 'Помилка: ця директорія не може бути знайдена.',
+        'Error: an invalid value was entered.' => 'Помилка: було введене неприпустиме значення.',
         'Content' => 'Зміст',
-        'Remove this entry' => '',
-        'Add entry' => '',
-        'Remove entry' => '',
-        'Add new entry' => '',
-        'Delete this entry' => '',
-        'Create new entry' => '',
-        'New group' => '',
-        'Group ro' => '',
-        'Readonly group' => '',
-        'New group ro' => '',
-        'Loader' => '',
-        'File to load for this frontend module' => '',
-        'New Loader File' => '',
-        'NavBarName' => '',
-        'NavBar' => '',
+        'Remove this entry' => 'Вилучити цей запис',
+        'Add entry' => 'Додати запис',
+        'Remove entry' => 'Вилучити запис',
+        'Add new entry' => 'Додати новий запис',
+        'Delete this entry' => 'Вилучити цей запис',
+        'Create new entry' => 'Додати новий запис',
+        'New group' => 'Нова група',
+        'Group ro' => 'Групувати до',
+        'Readonly group' => 'Група тільки для читання',
+        'New group ro' => 'Нова група',
+        'Loader' => 'Завантажувач',
+        'File to load for this frontend module' => 'Файл для завантаження для цього зовнішньо-інтерфейсного модуля',
+        'New Loader File' => 'Новий Завантажувач файлу',
+        'NavBarName' => 'NavBarName',
+        'NavBar' => 'NavBar',
         'LinkOption' => 'Посиланя',
         'Block' => 'Розділ',
-        'AccessKey' => '',
-        'Add NavBar entry' => '',
-        'NavBar module' => '',
-        'Year' => '',
-        'Month' => '',
-        'Day' => '',
-        'Invalid year' => '',
-        'Invalid month' => '',
-        'Invalid day' => '',
-        'Show more' => '',
+        'AccessKey' => 'AccessKey',
+        'Add NavBar entry' => 'Додати запис NavBar',
+        'NavBar module' => 'NavBar модуль',
+        'Year' => 'Рік',
+        'Month' => 'Місяць',
+        'Day' => 'День',
+        'Invalid year' => 'Неприпустимий рік',
+        'Invalid month' => 'Неприпустимий місяць',
+        'Invalid day' => 'Неприпустимий день',
+        'Show more' => 'Показати більше',
 
         # Template: AdminSystemAddress
         'System Email Addresses Management' => 'Керування системними адресами електронної пошти',
-        'Add system address' => '',
+        'Add system address' => 'Додати адресу системи',
         'All incoming email with this address in To or Cc will be dispatched to the selected queue.' =>
-            '',
+            'Усі вхідні повідомлення з цією адресою в полі Кому або Копія буде перенаправлена до вибраної черги.',
         'Email address' => 'Email адреса',
         'Display name' => 'Відображуване ім\'я',
         'Add System Email Address' => 'Додати системну Email адресу',
         'Edit System Email Address' => 'Коригувати системну Email адресу',
+        'This email address is already used as system email address.' => 'Ця поштова скринька вже використовується як системна.',
         'The display name and email address will be shown on mail you send.' =>
             'Це ім\'я та email адреса будуть показані у ваших відправлених лістах',
+        'This system address cannot be set to invalid, because it is used in one or more queue(s).' =>
+            'Цю адресу системи не можна зробити нечинною, тому що вона вже використовується, принаймні, в одній з черг.',
 
         # Template: AdminSystemMaintenance
-        'System Maintenance Management' => '',
-        'Schedule New System Maintenance' => '',
+        'System Maintenance Management' => 'Керування Обслуговуванням Системи',
+        'Schedule New System Maintenance' => 'Запланувати Нове Обслуговування Системи',
         'Schedule a system maintenance period for announcing the Agents and Customers the system is down for a time period.' =>
-            '',
+            'Запланувати період обслуговування системи для оголошення попередження Агентам та Клієнтам, що система не буде працювати впродовж визначеного часу.',
         'Some time before this system maintenance starts the users will receive a notification on each screen announcing about this fact.' =>
-            '',
-        'Start date' => '',
-        'Stop date' => '',
-        'Delete System Maintenance' => '',
+            'За деякий час до цього обслуговування системи, користувачі будуть отримувати сповіщення на кожному екрані, оголошуючи про цей факт.',
+        'Start date' => 'Дата початку',
+        'Stop date' => 'Дата закінчення',
+        'Delete System Maintenance' => 'Вилучити Обслуговування Системи',
         'Do you really want to delete this scheduled system maintenance?' =>
-            '',
+            'Ви дійсно хочете вилучити це заплановане обслуговування системи?',
 
         # Template: AdminSystemMaintenanceEdit
-        'Edit System Maintenance %s' => '',
-        'Edit System Maintenance information' => '',
-        'Date invalid!' => '',
-        'Login message' => '',
-        'Show login message' => '',
-        'Notify message' => '',
-        'Manage Sessions' => '',
-        'All Sessions' => '',
-        'Agent Sessions' => '',
-        'Customer Sessions' => '',
-        'Kill all Sessions, except for your own' => '',
+        'Edit System Maintenance %s' => 'Редагувати Обслуговування Системи %s',
+        'Edit System Maintenance Information' => 'Редагувати Інформацію Обслуговування Системи',
+        'Date invalid!' => 'Неприпустима дата!',
+        'Login message' => 'Повідомлення входу',
+        'Show login message' => 'Показати повідомлення входу',
+        'Notify message' => 'Повідомлення сповіщення',
+        'Manage Sessions' => 'Керування сесіями',
+        'All Sessions' => 'Всі сесії',
+        'Agent Sessions' => 'Сесії Агента',
+        'Customer Sessions' => 'Сесії Клієнта',
+        'Kill all Sessions, except for your own' => 'Припинити всі Сесії за винятком вашої',
 
         # Template: AdminTemplate
         'Manage Templates' => 'Керування шаблонами',
-        'Add template' => '',
+        'Add template' => 'Додати шаблон',
         'A template is a default text which helps your agents to write faster tickets, answers or forwards.' =>
-            '',
-        'Don\'t forget to add new templates to queues.' => '',
-        'Do you really want to delete this template?' => '',
-        'Add Template' => '',
-        'Edit Template' => '',
-        'A standard template with this name already exists!' => '',
-        'Create type templates only supports this smart tags' => '',
-        'Example template' => '',
+            'Шаблон являє собою типовий текст, який допомагає вашим агентам швидше писати квитки, відповідати на них або пересилати.',
+        'Don\'t forget to add new templates to queues.' => 'Не забувайте додавати нові шаблони до черг.',
+        'Do you really want to delete this template?' => 'Ви дійсно бажаєте вилучити цей шаблон?',
+        'Add Template' => 'Додати шаблон',
+        'Edit Template' => 'Редагувати шаблон',
+        'A standard template with this name already exists!' => 'Стандартний шаблон з таким ім\'ям вже існує!',
+        'Create type templates only supports this smart tags' => 'Створення типу шаблонів підтримує тільки ці смарт-теги',
+        'Example template' => 'Приклад шаблону',
         'The current ticket state is' => 'Поточний стан заявки',
         'Your email address is' => 'Ваш email адреса ',
 
         # Template: AdminTemplateAttachment
-        'Manage Templates <-> Attachments Relations' => '',
-        'Filter for Attachments' => '',
-        'Change Template Relations for Attachment' => '',
-        'Change Attachment Relations for Template' => '',
-        'Toggle active for all' => '',
-        'Link %s to selected %s' => '',
+        'Manage Templates <-> Attachments Relations' => 'Керування шаблонами <-> Залежності прикріплень',
+        'Filter for Attachments' => 'Фільтр для Прикріплень',
+        'Change Template Relations for Attachment' => 'Змінити залежності шаблону для прикріплення',
+        'Change Attachment Relations for Template' => 'Змінити залежності прикріплення для шаблону',
+        'Toggle active for all' => 'Увімкнути активність для всіх',
+        'Link %s to selected %s' => 'Поєднати %s до вибраного %s',
 
         # Template: AdminType
         'Type Management' => 'Керування типами заявок',
         'Add ticket type' => 'Додати тип заявки',
         'Add Type' => 'Додати тип',
         'Edit Type' => 'Редагувати тип',
-        'A type with this name already exists!' => '',
+        'A type with this name already exists!' => 'Тип з таким ім\'ям вже існує!',
 
         # Template: AdminUser
-        'Agents will be needed to handle tickets.' => '',
-        'Don\'t forget to add a new agent to groups and/or roles!' => '',
-        'Please enter a search term to look for agents.' => '',
-        'Last login' => '',
-        'Switch to agent' => '',
-        'Add Agent' => '',
-        'Edit Agent' => '',
-        'Title or salutation' => '',
+        'Agents will be needed to handle tickets.' => 'Для обробки квитків будуть необхідні агенти.',
+        'Don\'t forget to add a new agent to groups and/or roles!' => 'Не забудьте додати нового агента до груп та/або ролей!',
+        'Please enter a search term to look for agents.' => 'Будь ласка, введіть слово для пошуку, щоб знайти агентів.',
+        'Last login' => 'Останній вхід',
+        'Switch to agent' => 'Переключитись до агента',
+        'Add Agent' => 'Додати Агента',
+        'Edit Agent' => 'Редагувати Агента',
+        'Title or salutation' => 'Назва або привітання',
         'Firstname' => 'Ім\'я',
         'Lastname' => 'Прізвище',
-        'A user with this username already exists!' => '',
-        'Will be auto-generated if left empty.' => '',
+        'A user with this username already exists!' => 'Користувач з таким ім\'ям вже існує!',
+        'Will be auto-generated if left empty.' => 'Буде автоматично створено, якщо залишити порожнім.',
         'Start' => 'Початок',
         'End' => 'Закінчення',
 
         # Template: AdminUserGroup
-        'Manage Agent-Group Relations' => '',
-        'Change Group Relations for Agent' => '',
-        'Change Agent Relations for Group' => '',
+        'Manage Agent-Group Relations' => 'Керувати залежностями Агент-Група',
+        'Change Group Relations for Agent' => 'Змінити залежності Групи для Агента',
+        'Change Agent Relations for Group' => 'Змінити залежності Агента для Групи',
 
         # Template: AgentBook
         'Address Book' => 'Адресна книга',
-        'Search for a customer' => '',
-        'Add email address %s to the To field' => '',
-        'Add email address %s to the Cc field' => '',
-        'Add email address %s to the Bcc field' => '',
-        'Apply' => '',
+        'Search for a customer' => 'Пошук клієнта',
+        'Add email address %s to the To field' => 'Додати адресу електронної пошти %s до поля Кому',
+        'Add email address %s to the Cc field' => 'Додати адресу електронної пошти до поля Копія',
+        'Add email address %s to the Bcc field' => 'Додати адресу електронної пошти до поля Прихована копія',
+        'Apply' => 'Застосувати',
 
         # Template: AgentCustomerInformationCenter
-        'Customer Information Center' => '',
+        'Customer Information Center' => 'Інформаційний центр Клієнта',
 
         # Template: AgentCustomerInformationCenterSearch
         'Customer User' => 'Користувач клієнта',
 
         # Template: AgentCustomerSearch
-        'Duplicated entry' => '',
-        'This address already exists on the address list.' => '',
-        'It is going to be deleted from the field, please try again.' => '',
+        'Duplicated entry' => 'Дублювати запис',
+        'This address already exists on the address list.' => 'Ця адреса вже є в списку адрес',
+        'It is going to be deleted from the field, please try again.' => 'Він буде вилучений з поля, будь ласка, спробуйте ще раз.',
 
         # Template: AgentCustomerTableView
-        'Note: Customer is invalid!' => '',
-        'Start chat' => '',
-        'Video call' => '',
-        'Audio call' => '',
+        'Note: Customer is invalid!' => 'Примітка: Клієнт не є чинним!',
+        'Start chat' => 'Почати спілкування',
+        'Video call' => 'Відео виклик',
+        'Audio call' => 'Аудіо виклик',
 
         # Template: AgentDaemonInfo
         'The OTRS Daemon is a daemon process that performs asynchronous tasks, e.g. ticket escalation triggering, email sending, etc.' =>
-            '',
+            'OTRS демон це фоновий процес, що виконує асинхронні завдання, на кшталт ввімкнення підвищення квитка, надсилання пошти тощо.',
         'A running OTRS Daemon is mandatory for correct system operation.' =>
-            '',
-        'Starting the OTRS Daemon' => '',
+            'Демон OTRS, що працює, є обов\'язковою умовою для коректної роботи системи.',
+        'Starting the OTRS Daemon' => 'Запуск OTRS демона.',
         'Make sure that the file \'%s\' exists (without .dist extension). This cron job will check every 5 minutes if the OTRS Daemon is running and start it if needed.' =>
-            '',
+            'Переконайтесь в тому, що файл \'%s\' існує (без розширення .dist). Це заплановане завдання буде перевіряти кожні 5 хвилин чи запущений демон OTRS та запустить його за потреби.',
         'Execute \'%s start\' to make sure the cron jobs of the \'otrs\' user are active.' =>
-            '',
+            'Виконайте \'%s start\' щоб впевнитись в тому, заплановані завдання користувача \'otrs\' активні.',
         'After 5 minutes, check that the OTRS Daemon is running in the system (\'bin/otrs.Daemon.pl status\').' =>
-            '',
+            'Після 5 хвилин, переконайтеся, що OTRS демон працює в системі (\'bin/otrs.Daemon.pl status\').',
 
         # Template: AgentDashboard
         'Dashboard' => 'Панель',
@@ -2509,22 +2555,22 @@ sub Data {
         'in' => 'в',
 
         # Template: AgentDashboardCommon
-        'Close this widget' => '',
-        'Available Columns' => '',
-        'Visible Columns (order by drag & drop)' => '',
+        'Close this widget' => 'Закрити цей віджет',
+        'Available Columns' => 'Доступні колонки',
+        'Visible Columns (order by drag & drop)' => 'Видимі стовпці (упорядковуйте шляхом тягни-й-пусти)',
 
         # Template: AgentDashboardCustomerIDStatus
-        'Escalated tickets' => '',
+        'Escalated tickets' => 'Підвищені квитки',
 
         # Template: AgentDashboardCustomerUserList
         'Customer login' => 'Логін клієнта',
-        'Customer information' => '',
-        'Phone ticket' => '',
-        'Email ticket' => '',
-        '%s open ticket(s) of %s' => '',
-        '%s closed ticket(s) of %s' => '',
-        'New phone ticket from %s' => '',
-        'New email ticket to %s' => '',
+        'Customer information' => 'Інформація споживача',
+        'Phone ticket' => 'Телефонний квиток',
+        'Email ticket' => 'Поштовий квиток',
+        '%s open ticket(s) of %s' => '%s відкритий квиток(-ки) %s',
+        '%s closed ticket(s) of %s' => '%s закритий квиток(-ки) %s',
+        'New phone ticket from %s' => 'Новий телефонний квиток від %s',
+        'New email ticket to %s' => 'Новий поштовий квиток від %s',
 
         # Template: AgentDashboardProductNotify
         '%s %s is available!' => '%s %s доступний',
@@ -2537,64 +2583,65 @@ sub Data {
 
         # Template: AgentDashboardStats
         'The configuration for this statistic widget contains errors, please review your settings.' =>
-            '',
-        'Download as SVG file' => '',
-        'Download as PNG file' => '',
-        'Download as CSV file' => '',
-        'Download as Excel file' => '',
-        'Download as PDF file' => '',
-        'Grouped' => '',
-        'Stacked' => '',
-        'Expanded' => '',
-        'Stream' => '',
+            'Конфігурація цього статистичного віджета містить помилки, будь ласка, перевірте параметри.',
+        'Download as SVG file' => 'Завантажити як SVG-файл',
+        'Download as PNG file' => 'Завантажити як PNG-файл',
+        'Download as CSV file' => 'Завантажити як CSV-файл',
+        'Download as Excel file' => 'Завантажити як файл Екселю',
+        'Download as PDF file' => 'Завантажити як PDF-файл',
+        'Grouped' => 'Згруповані',
+        'Stacked' => 'У стеку',
+        'Expanded' => 'Розгорнуто',
+        'Stream' => 'Потік',
+        'No Data Available.' => 'Немає доступних даних.',
         'Please select a valid graph output format in the configuration of this widget.' =>
-            '',
+            'Будь ласка, виберіть правильний графічний вихідний формат в конфігурації цього віджета.',
         'The content of this statistic is being prepared for you, please be patient.' =>
-            '',
+            'Зміст цієї статистики буде приготовлена для вас, будь ласка, зачекайте.',
         'This statistic can currently not be used because its configuration needs to be corrected by the statistics administrator.' =>
-            '',
+            'Ця статистика наразі не може бути використана тому що її конфігурація має бути виправлена адміністратором статистики.',
 
         # Template: AgentDashboardTicketGeneric
         'My locked tickets' => 'Мої заблоковані заявки',
-        'My watched tickets' => '',
-        'My responsibilities' => '',
+        'My watched tickets' => 'Квитки за якими я спостерігаю',
+        'My responsibilities' => 'Мої обов\'язки',
         'Tickets in My Queues' => 'Заявки в моїй черзі',
         'Tickets in My Services' => 'Заявки в Моїх Сервісах',
         'Service Time' => 'Час обслуговування',
-        'Remove active filters for this widget.' => '',
+        'Remove active filters for this widget.' => 'Скасувати активні фільтри для цього віджету.',
 
         # Template: AgentDashboardTicketQueueOverview
-        'Totals' => '',
+        'Totals' => 'Загалом',
 
         # Template: AgentDashboardUserOnline
         'out of office' => 'не при справах',
 
         # Template: AgentDashboardUserOutOfOffice
-        'until' => '',
+        'until' => 'до',
 
         # Template: AgentHTMLReferencePageLayout
         'The ticket has been locked' => 'Заявка заблокована',
-        'Undo & close' => '',
+        'Undo & close' => 'Скасувати та закрити',
 
         # Template: AgentInfo
         'Info' => 'Інформація',
-        'To accept some news, a license or some changes.' => '',
+        'To accept some news, a license or some changes.' => 'Для того, щоб прийняти якісь новини, ліцензії або деякі зміни.',
 
         # Template: AgentLinkObject
         'Link Object: %s' => 'Зв\'язати об\'єкт: %s',
-        'go to link delete screen' => '',
-        'Select Target Object' => '',
-        'Link object %s with' => '',
+        'go to link delete screen' => 'перейдіть за посиланням видалення екрану',
+        'Select Target Object' => 'Виберіть Цільовий Об\'єкт',
+        'Link object %s with' => 'Поєднання об\'єкту %s з',
         'Unlink Object: %s' => 'Скасувати прив\'язку об\'єкта: %s',
-        'go to link add screen' => '',
+        'go to link add screen' => 'перейдіть за посиланням додавання екрану',
 
         # Template: AgentOTRSBusinessBlockScreen
-        'Unauthorized usage of %s detected' => '',
+        'Unauthorized usage of %s detected' => 'Виявлено несанкційоване використання %s ',
         'If you decide to downgrade to OTRS Free, you will lose all database tables and data related to %s.' =>
-            '',
+            'Якщо ви вирішили повернутися до використання OTRS Free, ви втратите всі таблиці бази даних і дані, що пов\'язані із %s.',
 
         # Template: AgentPreferences
-        'Edit your preferences' => '',
+        'Edit your preferences' => 'Змінити налаштування',
         'Did you know? You can help translating OTRS at %s.' => 'Ви можете допомогти перекласти OTRD в %s.',
 
         # Template: AgentSpelling
@@ -2603,84 +2650,84 @@ sub Data {
         'Apply these changes' => 'Застосувати зміни',
 
         # Template: AgentStatisticsAdd
-        'Statistics » Add' => '',
-        'Add New Statistic' => '',
-        'Dynamic Matrix' => '',
+        'Statistics » Add' => 'Статистика » Додати',
+        'Add New Statistic' => 'Додати Нову Статистику',
+        'Dynamic Matrix' => 'Динамічна Матриця',
         'Tabular reporting data where each cell contains a singular data point (e. g. the number of tickets).' =>
-            '',
-        'Dynamic List' => '',
+            'Табличне представлення даних де кожна комірка містить особливу точку даних (наприклад кількість квитків)',
+        'Dynamic List' => 'Динамічний список',
         'Tabular reporting data where each row contains data of one entity (e. g. a ticket).' =>
-            '',
-        'Static' => '',
+            'Табличне представлення даних, де кожний рядок містить дані  одного запису (наприклад, квитка).',
+        'Static' => 'Статика',
         'Complex statistics that cannot be configured and may return non-tabular data.' =>
-            '',
-        'General Specification' => '',
-        'Create Statistic' => '',
+            'Складні статистичні дані не можуть бути налаштовані та можуть повернути нетабличні дані',
+        'General Specification' => 'Загальні Характеристики',
+        'Create Statistic' => 'Створити Статистику',
 
         # Template: AgentStatisticsEdit
-        'Statistics » Edit %s%s — %s' => '',
-        'Run now' => '',
-        'Statistics Preview' => '',
-        'Save statistic' => '',
+        'Statistics » Edit %s%s — %s' => 'Статистика » Редагувати %s%s — %s',
+        'Run now' => 'Запустити зараз',
+        'Statistics Preview' => 'Перегляд статистики',
+        'Save statistic' => 'Зберегти статистики',
 
         # Template: AgentStatisticsImport
-        'Statistics » Import' => '',
-        'Import Statistic Configuration' => '',
+        'Statistics » Import' => 'Статистика » Імпорт',
+        'Import Statistic Configuration' => 'Імпорт Налаштування Статистики',
 
         # Template: AgentStatisticsOverview
-        'Statistics » Overview' => '',
+        'Statistics » Overview' => 'Статистика » Перегляд',
         'Statistics' => 'Статистика',
-        'Run' => '',
-        'Edit statistic "%s".' => '',
-        'Export statistic "%s"' => '',
-        'Export statistic %s' => '',
-        'Delete statistic "%s"' => '',
-        'Delete statistic %s' => '',
-        'Do you really want to delete this statistic?' => '',
+        'Run' => 'Запустити',
+        'Edit statistic "%s".' => 'Редагувати статистику "%s".',
+        'Export statistic "%s"' => 'Експортувати статистику "%s"',
+        'Export statistic %s' => 'Експортувати статистику %s',
+        'Delete statistic "%s"' => 'Вилучити статистику "%s"',
+        'Delete statistic %s' => 'Вилучити статистику %s',
+        'Do you really want to delete this statistic?' => 'Ви справді бажаєте вилучити цю статистику?',
 
         # Template: AgentStatisticsView
-        'Statistics » View %s%s — %s' => '',
-        'Statistic Information' => '',
+        'Statistics » View %s%s — %s' => 'Статистика » Вигляд %s%s — %s',
+        'Statistic Information' => 'Статистична Інформація',
         'Sum rows' => 'Сума рядків',
         'Sum columns' => 'Сума стовпців',
-        'Show as dashboard widget' => '',
+        'Show as dashboard widget' => 'Відобразити як віджет панелі',
         'Cache' => 'Кеш',
         'This statistic contains configuration errors and can currently not be used.' =>
-            '',
+            'Ця статистика містить помилки налаштування та наразі не може використовуватись.',
 
         # Template: AgentTicketActionCommon
-        'Change Free Text of %s%s%s' => '',
+        'Change Free Text of %s%s%s' => 'Змінити Вільний Текст ',
         'Change Owner of %s%s%s' => 'Зміна Власника: %s%s%s',
         'Close %s%s%s' => 'Закрити %s%s%s',
         'Add Note to %s%s%s' => 'Додати замітку до %s%s%s',
-        'Set Pending Time for %s%s%s' => '',
-        'Change Priority of %s%s%s' => '',
-        'Change Responsible of %s%s%s' => '',
+        'Set Pending Time for %s%s%s' => 'Встановити Відкладений Час для ',
+        'Change Priority of %s%s%s' => 'Змінити Пріоритет ',
+        'Change Responsible of %s%s%s' => 'Змінити Відповідального',
         'All fields marked with an asterisk (*) are mandatory.' => 'Всі поля, позначені (*) є обов\'язковими.',
-        'Service invalid.' => '',
+        'Service invalid.' => 'Служба недійсна.',
         'New Owner' => 'Новий власник',
-        'Please set a new owner!' => '',
-        'New Responsible' => '',
+        'Please set a new owner!' => 'Будь ласка вкажіть нового власника!',
+        'New Responsible' => 'Новий Відповідальний',
         'Next state' => 'Наступний стан',
-        'For all pending* states.' => '',
+        'For all pending* states.' => 'Для всіх станів, що очкують*.',
         'Add Article' => 'Додати замітку',
-        'Create an Article' => '',
-        'Inform agents' => '',
-        'Inform involved agents' => '',
+        'Create an Article' => 'Створити Статтю',
+        'Inform agents' => 'Інформувати агентів',
+        'Inform involved agents' => 'Інформувати залучених агентів',
         'Here you can select additional agents which should receive a notification regarding the new article.' =>
-            '',
-        'Text will also be received by' => '',
-        'Spell check' => '',
-        'Text Template' => '',
-        'Setting a template will overwrite any text or attachment.' => '',
+            'Тут ви можете вибрати додаткових агентів, що мають отримувати повідомлення стосовно нової статті.',
+        'Text will also be received by' => 'Текст буде також отриманий',
+        'Spell check' => 'Перевірка орфографії',
+        'Text Template' => 'Шаблон тексту',
+        'Setting a template will overwrite any text or attachment.' => 'Налаштування шаблону перепише будь-який текст або вкладення.',
         'Note type' => 'Тип замітки',
 
         # Template: AgentTicketBounce
-        'Bounce %s%s%s' => '',
-        'Bounce to' => 'Переслати для',
-        'You need a email address.' => '',
+        'Bounce %s%s%s' => 'Повернути %s%s%s',
+        'Bounce to' => 'Повернути до',
+        'You need a email address.' => 'Вам потрібна адреса електронної пошти.',
         'Need a valid email address or don\'t use a local email address.' =>
-            '',
+            'Потрібна дійсна адреса електронної пошти або не використовуйте локальну адресу електронної пошти.',
         'Next ticket state' => 'Наступний стан заявки',
         'Inform sender' => 'Інформувати відправника',
         'Send mail' => 'Відправити лист',
@@ -2689,23 +2736,23 @@ sub Data {
         'Ticket Bulk Action' => 'Масова дія',
         'Send Email' => 'Відправити лист',
         'Merge to' => 'Об\'єднати с',
-        'Invalid ticket identifier!' => '',
+        'Invalid ticket identifier!' => 'Недійсний ідентифікатор квитка!',
         'Merge to oldest' => 'Об\'єднати із самим старим',
         'Link together' => 'Зв\'язати',
-        'Link to parent' => '',
-        'Unlock tickets' => '',
-        'Execute Bulk Action' => '',
+        'Link to parent' => 'Зв\'язати з батьком',
+        'Unlock tickets' => 'Розблокувати квитки',
+        'Execute Bulk Action' => 'Виконати Масову Дію',
 
         # Template: AgentTicketCompose
-        'Compose Answer for %s%s%s' => '',
+        'Compose Answer for %s%s%s' => 'Написати відповідь для %s%s%s',
         'This address is registered as system address and cannot be used: %s' =>
-            '',
-        'Please include at least one recipient' => '',
-        'Remove Ticket Customer' => '',
+            'Ця адреса зареєстрована як системна та не може бути використана: %s',
+        'Please include at least one recipient' => 'Будь ласка, додайте хоч одного одержувача',
+        'Remove Ticket Customer' => 'Вилучити Квиток Клієнта',
         'Please remove this entry and enter a new one with the correct value.' =>
-            '',
-        'Remove Cc' => '',
-        'Remove Bcc' => '',
+            'Будь ласка, вилучіть цей запис та додайте новий з правильним значенням.',
+        'Remove Cc' => 'Вилучити Копія',
+        'Remove Bcc' => 'Вилучити Прихована Копія',
         'Address book' => 'Адресна книга',
         'Date Invalid!' => 'Невірна дата!',
 
@@ -2714,49 +2761,49 @@ sub Data {
 
         # Template: AgentTicketEmail
         'Create New Email Ticket' => 'Заявка по e-mail',
-        'Example Template' => '',
+        'Example Template' => 'Приклад шаблону',
         'From queue' => ' Із черги',
         'To customer user' => 'Для користувача',
-        'Please include at least one customer user for the ticket.' => '',
-        'Select this customer as the main customer.' => '',
-        'Remove Ticket Customer User' => '',
-        'Get all' => '',
+        'Please include at least one customer user for the ticket.' => 'Будь ласка, додайте хоча б одного користувача-клієнта для квитка.',
+        'Select this customer as the main customer.' => 'Виберіть клієнта у якості основного.',
+        'Remove Ticket Customer User' => 'Вилучити Користувача-Клієнта',
+        'Get all' => 'Отримати всі',
 
         # Template: AgentTicketEmailOutbound
-        'Outbound Email for %s%s%s' => '',
+        'Outbound Email for %s%s%s' => 'Вихідна адреса електронної пошти для %s%s%s',
 
         # Template: AgentTicketEscalation
-        'Ticket %s: first response time is over (%s/%s)!' => '',
-        'Ticket %s: first response time will be over in %s/%s!' => '',
-        'Ticket %s: update time is over (%s/%s)!' => '',
-        'Ticket %s: update time will be over in %s/%s!' => '',
-        'Ticket %s: solution time is over (%s/%s)!' => '',
-        'Ticket %s: solution time will be over in %s/%s!' => '',
+        'Ticket %s: first response time is over (%s/%s)!' => 'Квиток %s: час першого відгуку складає більше (%s/%s)!',
+        'Ticket %s: first response time will be over in %s/%s!' => 'Квиток %s: час першої відповіді буде більшою на %s/%s!',
+        'Ticket %s: update time is over (%s/%s)!' => 'Квиток %s: час оновлення складає більше (',
+        'Ticket %s: update time will be over in %s/%s!' => 'Квиток %s: час оновлення буде більше ніж %s/%s!',
+        'Ticket %s: solution time is over (%s/%s)!' => 'Квиток %s: час розв\'язання більше ніж (%s/%s)!',
+        'Ticket %s: solution time will be over in %s/%s!' => 'Квиток %s: час розв\'язання буде більше ніж %s/%s!',
 
         # Template: AgentTicketForward
-        'Forward %s%s%s' => '',
+        'Forward %s%s%s' => 'Перенаправити %s%s%s',
 
         # Template: AgentTicketHistory
         'History of %s%s%s' => 'Історія: %s%s%s',
         'History Content' => 'Історія',
-        'Zoom view' => '',
+        'Zoom view' => 'Збільшений вид',
 
         # Template: AgentTicketMerge
-        'Merge %s%s%s' => '',
-        'Merge Settings' => '',
+        'Merge %s%s%s' => 'Об\'єднати %s%s%s',
+        'Merge Settings' => 'Об\'єднати Налаштування',
         'You need to use a ticket number!' => 'Вам необхідно використовувати номер заявки!',
-        'A valid ticket number is required.' => '',
+        'A valid ticket number is required.' => 'Треба вказати чинний номер квитка.',
         'Need a valid email address.' => ' Потрібно вірну поштову адресу.',
 
         # Template: AgentTicketMove
-        'Move %s%s%s' => '',
+        'Move %s%s%s' => 'Перемістити %s%s%s',
         'New Queue' => 'Нова черга',
 
         # Template: AgentTicketOverviewMedium
-        'Select all' => '',
-        'No ticket data found.' => '',
-        'Open / Close ticket action menu' => '',
-        'Select this ticket' => '',
+        'Select all' => 'Вибрати всі',
+        'No ticket data found.' => 'Не знайдено даних про квитки',
+        'Open / Close ticket action menu' => 'Відкрити/Закрити меню дій з квитком',
+        'Select this ticket' => 'Вибрати цей квиток',
         'First Response Time' => 'Час до першої відповіді',
         'Update Time' => 'Час до зміни заявки',
         'Solution Time' => 'Час розв\'язку заявки',
@@ -2765,95 +2812,98 @@ sub Data {
 
         # Template: AgentTicketOverviewNavBar
         'Change search options' => 'Змінити параметри пошуку',
-        'Remove active filters for this screen.' => '',
-        'Tickets per page' => '',
+        'Remove active filters for this screen.' => 'Скасувати чинні фільтри на цьому екрані.',
+        'Tickets per page' => 'Квитків на сторінку.',
 
         # Template: AgentTicketOverviewSmall
-        'Reset overview' => '',
-        'Column Filters Form' => '',
+        'Reset overview' => 'Скинути огляд',
+        'Column Filters Form' => 'Фільтри Стовпчиків Форми',
 
         # Template: AgentTicketPhone
-        'Split Into New Phone Ticket' => '',
-        'Save Chat Into New Phone Ticket' => '',
+        'Split Into New Phone Ticket' => 'Розділити на Нові Телефонні Квитки',
+        'Save Chat Into New Phone Ticket' => 'Зберегти Чат у Новому Телефонному Квитку',
         'Create New Phone Ticket' => 'Заявка по телефону',
-        'Please include at least one customer for the ticket.' => '',
+        'Please include at least one customer for the ticket.' => 'Будь ласка, вкажіть хоча б одного клієнта для квитка.',
         'To queue' => 'У чергу',
-        'Chat protocol' => '',
-        'The chat will be appended as a separate article.' => '',
+        'Chat protocol' => 'Протокол чату',
+        'The chat will be appended as a separate article.' => 'Чат буде додано у якості окремої статті.',
 
         # Template: AgentTicketPhoneCommon
-        'Phone Call for %s%s%s' => '',
+        'Phone Call for %s%s%s' => 'Телефонний виклик для %s%s%s',
 
         # Template: AgentTicketPlain
-        'View Email Plain Text for %s%s%s' => '',
+        'View Email Plain Text for %s%s%s' => 'Переглянути простий текст електронного повідомлення для %s%s%s',
         'Plain' => 'Звичайний',
-        'Download this email' => '',
+        'Download this email' => 'Завантажити це повідомлення',
 
         # Template: AgentTicketProcess
-        'Create New Process Ticket' => '',
-        'Process' => '',
+        'Create New Process Ticket' => 'Створити Новий  Квиток Процесу',
+        'Process' => 'Процес',
 
         # Template: AgentTicketProcessSmall
-        'Enroll Ticket into a Process' => '',
+        'Enroll Ticket into a Process' => 'Залучити Квиток в Процес',
 
         # Template: AgentTicketSearch
         'Search template' => 'Шаблон пошуку',
         'Create Template' => 'Створити шаблон',
         'Create New' => 'Створити новий',
-        'Profile link' => '',
-        'Save changes in template' => '',
-        'Filters in use' => '',
-        'Additional filters' => '',
+        'Profile link' => 'Посилання на профіль',
+        'Save changes in template' => 'Зберегти зміни в шаблоні',
+        'Filters in use' => 'Фільтри що використовуються',
+        'Additional filters' => 'Додаткові фільтри',
         'Add another attribute' => 'Додати ще атрибут',
         'Output' => 'Вивід результатів',
         'Fulltext' => 'Повнотекстовий',
         'Remove' => 'Вилучити',
         'Searches in the attributes From, To, Cc, Subject and the article body, overriding other attributes with the same name.' =>
-            '',
-        'CustomerID (complex search)' => '',
-        'CustomerID (exact match)' => '',
-        'Customer User Login (complex search)' => '',
-        'Customer User Login (exact match)' => '',
-        'Attachment Name' => '',
-        '(e. g. m*file or myfi*)' => '',
+            'Пошуки в атрибутах Від, Кому, Копія, Тема та тілі статті, перекриваючи інші атрибути з таким же ім\'ям.',
+        'CustomerID (complex search)' => 'CustomerID (комплексний пошук)',
+        '(e. g. 234*)' => '(наприклад 234*)',
+        'CustomerID (exact match)' => 'CustomerID (точний збіг)',
+        'Customer User Login (complex search)' => 'Ім\'я користувача-клієнта (комплексний пошук)',
+        '(e. g. U51*)' => '(наприклад U51*)',
+        'Customer User Login (exact match)' => 'Ім\'я користувача-клієнта (точний збіг)',
+        'Attachment Name' => 'Назва Додатка',
+        '(e. g. m*file or myfi*)' => '(наприклад m*file або myfi*)',
         'Created in Queue' => 'Створена в черзі',
-        'Lock state' => '',
-        'Watcher' => '',
-        'Article Create Time (before/after)' => '',
-        'Article Create Time (between)' => '',
-        'Ticket Create Time (before/after)' => '',
-        'Ticket Create Time (between)' => '',
-        'Ticket Change Time (before/after)' => '',
-        'Ticket Change Time (between)' => '',
-        'Ticket Last Change Time (before/after)' => '',
-        'Ticket Last Change Time (between)' => '',
-        'Ticket Close Time (before/after)' => '',
-        'Ticket Close Time (between)' => '',
-        'Ticket Escalation Time (before/after)' => '',
-        'Ticket Escalation Time (between)' => '',
+        'Lock state' => 'Заблокувати стан',
+        'Watcher' => 'Спостерігач',
+        'Article Create Time (before/after)' => 'Час Створення Статті (до/після)',
+        'Article Create Time (between)' => 'Час Створення Статті (поміж)',
+        'Invalid date' => 'Нечинна дата',
+        'Ticket Create Time (before/after)' => 'Час Створення Квитка (до/після)',
+        'Ticket Create Time (between)' => 'Час Створення Квитка (поміж)',
+        'Ticket Change Time (before/after)' => 'Час Змінення Квитка (до/після)',
+        'Ticket Change Time (between)' => 'Час Змінення Квитка (поміж)',
+        'Ticket Last Change Time (before/after)' => 'Час Останнього Змінення Квитка (до/після)',
+        'Ticket Last Change Time (between)' => 'Час Останнього Змінення Квитка (поміж)',
+        'Ticket Close Time (before/after)' => 'Час Закриття Квитка (до/після)',
+        'Ticket Close Time (between)' => 'Час Закриття Квитка (поміж)',
+        'Ticket Escalation Time (before/after)' => 'Час Підвищення Квитка (до/після)',
+        'Ticket Escalation Time (between)' => 'Час Підвищення Квитка (поміж)',
         'Archive Search' => 'Пошук в архіві',
-        'Run search' => '',
+        'Run search' => 'Запустити пошук',
 
         # Template: AgentTicketZoom
-        'Article filter' => '',
+        'Article filter' => 'Фільтр статті',
         'Article Type' => 'Тип повідомлення',
-        'Sender Type' => '',
+        'Sender Type' => 'Тип відправника',
         'Save filter settings as default' => 'Зберегти умови фільтра для показу за замовчуванням',
-        'Event Type Filter' => '',
-        'Event Type' => '',
-        'Save as default' => '',
-        'Archive' => '',
-        'This ticket is archived.' => '',
-        'Note: Type is invalid!' => '',
+        'Event Type Filter' => 'Фільтр Типу Події',
+        'Event Type' => 'Тип Події',
+        'Save as default' => 'Зберегти як типовий',
+        'Archive' => 'Архів',
+        'This ticket is archived.' => 'Цей квиток архивований',
+        'Note: Type is invalid!' => 'Примітка: Тип недійсний!',
         'Locked' => 'Блокування',
         'Accounted time' => 'Витрачене на заявку час',
         'Linked Objects' => 'Зв\'язані Об\'єкти',
         'Change Queue' => 'Перемінити черга',
         'There are no dialogs available at this point in the process.' =>
-            '',
-        'This item has no articles yet.' => '',
-        'Ticket Timeline View' => '',
-        'Article Overview' => '',
+            'На даний момент в цьому процесі немає ніяких діалогових вікон.',
+        'This item has no articles yet.' => 'У цього елемента ще немає статей.',
+        'Ticket Timeline View' => 'Вигляд Лінії часу Квитка',
+        'Article Overview' => 'Огляд Статті',
         'Article(s)' => 'Заявка(и)',
         'Page' => 'Сторінка',
         'Add Filter' => 'Додати фільтр',
@@ -2861,46 +2911,47 @@ sub Data {
         'Reset Filter' => 'Скинути фільтр',
         'Show one article' => 'Відобразити одну заявку',
         'Show all articles' => 'Відобразити всі заявки',
-        'Show Ticket Timeline View' => '',
+        'Show Ticket Timeline View' => 'Показати Вид Лінії Часу Квитка',
         'Unread articles' => 'Непрочитані заявки',
         'No.' => 'Номер',
-        'Important' => '',
+        'Important' => 'Важливо',
         'Unread Article!' => 'Непрочитані заявки!',
         'Incoming message' => 'Вхідне повідомлення',
-        'Outgoing message' => '',
-        'Internal message' => '',
-        'Resize' => '',
-        'Mark this article as read' => '',
-        'Show Full Text' => '',
-        'Full Article Text' => '',
+        'Outgoing message' => 'Вихідні повідомлення',
+        'Internal message' => 'Внутрішні повідомлення',
+        'Resize' => 'Змінити розмір',
+        'Mark this article as read' => 'Позначити цю статтю як прочитану',
+        'Show Full Text' => 'Показати увесь текст',
+        'Full Article Text' => 'Весь Текст Статті',
         'No more events found. Please try changing the filter settings.' =>
-            '',
+            'Не знайдено більше подій. Будь ласка, спробуйте змінити налаштування фільтрів.',
         'by' => 'ні',
         'To open links in the following article, you might need to press Ctrl or Cmd or Shift key while clicking the link (depending on your browser and OS).' =>
-            '',
+            'Для відкриття посилання в наступній статті, ви маєте натиснути кнопки Ctrl, Cmd або Shift при натисканні на посилання (залежить від вашого браузера та операційної системи).',
         'Close this message' => 'Закрити це повідомлення',
         'Article could not be opened! Perhaps it is on another article page?' =>
-            '',
-        'Scale preview content' => '',
-        'Open URL in new tab' => '',
-        'Close preview' => 'Закрити попередній перегляд',
-        'A preview of this website can\'t be provided because it didn\'t allow to be embedded.' =>
-            '',
+            'Статтю не можливо відкрити! Може вона на іншій сторінці статті?',
 
         # Template: AttachmentBlocker
-        'To protect your privacy, remote content was blocked.' => '',
-        'Load blocked content.' => '',
+        'To protect your privacy, remote content was blocked.' => 'Щоб захистити вашу приватність, видалений вміст буде заблоковано.',
+        'Load blocked content.' => 'Завантажити заблокований вміст.',
 
         # Template: ChatStartForm
-        'First message' => '',
+        'First message' => 'Перше повідомлення',
 
         # Template: CloudServicesDisabled
-        'This feature requires cloud services.' => '',
-        'You can' => '',
-        'go back to the previous page' => '',
+        'This feature requires cloud services.' => 'Ця функція потребує хмарні служби.',
+        'You can' => 'Ви можете',
+        'go back to the previous page' => 'повернутися до попередньої сторінки',
+
+        # Template: CustomerAccept
+        'Information' => 'Інформація',
+        'Dear Customer,' => '',
+        'thank you for using our services.' => '',
+        'Yes, I accepted your license.' => '',
 
         # Template: CustomerError
-        'An Error Occurred' => '',
+        'An Error Occurred' => 'Виникла Помилка',
         'Error Details' => 'Деталі помилки',
         'Traceback' => 'Відстеження',
 
@@ -2908,82 +2959,84 @@ sub Data {
         'Powered by' => 'Використовується',
 
         # Template: CustomerFooterJS
-        'One or more errors occurred!' => '',
+        'One or more errors occurred!' => 'Виникла одна чи більше помилок!',
         'Close this dialog' => 'Закрити цей діалог',
         'Could not open popup window. Please disable any popup blockers for this application.' =>
-            '',
+            'Не вдалося відкрити спливаюче вікно. Будь ласка, вимкніть всі блокувальники спливаючих вікон для цього додатка.',
         'If you now leave this page, all open popup windows will be closed, too!' =>
-            '',
+            'Якщо ви залишите цю сторінку, всі спливні вікна будуть також зачинені!',
         'A popup of this screen is already open. Do you want to close it and load this one instead?' =>
-            '',
-        'There are currently no elements available to select from.' => '',
-        'Please turn off Compatibility Mode in Internet Explorer!' => '',
-        'The browser you are using is too old.' => '',
+            'Спливні цього екрану вже відкриті. Ви бажаєте закрити їх та натомість завантажити тільки його?',
+        'There are currently no elements available to select from.' => 'Наразі немає доступних для вибору елементів на формі.',
+        'Please turn off Compatibility Mode in Internet Explorer!' => 'Будь ласка вимкніть Режим Сумісності в Internet Explorer!',
+        'The browser you are using is too old.' => 'Ви використовуєте застарий браузер!',
         'OTRS runs with a huge lists of browsers, please upgrade to one of these.' =>
-            '',
+            'OTRS працює з величезною кількістю браузерів, будь ласка, поновіться до одного з них.',
         'Please see the documentation or ask your admin for further information.' =>
-            '',
-        'Switch to mobile mode' => '',
-        'Switch to desktop mode' => '',
-        'Not available' => '',
-        'Clear all' => '',
-        'Clear search' => '',
-        '%s selection(s)...' => '',
-        'and %s more...' => '',
-        'Filters' => '',
-        'Confirm' => '',
-        'You have unanswered chat requests' => '',
-        'Accept' => '',
-        'Decline' => '',
-        'An internal error occurred.' => '',
-        'Connection error' => '',
-        'Reload page' => '',
+            'Будь ласка, зверніться до документації або до адміністратора для отримання додаткової інформації.',
+        'Switch to mobile mode' => 'Перемкнути до мобільного режиму',
+        'Switch to desktop mode' => 'Перемкнути до режиму робочого столу',
+        'Not available' => 'Не доступно',
+        'Clear all' => 'Очистити всі',
+        'Clear search' => 'Очистити пошук',
+        '%s selection(s)...' => '%s вибір(-ори)...',
+        'and %s more...' => 'та %s більше...',
+        'Filters' => 'Фільтри',
+        'Confirm' => 'Підтвердити',
+        'You have unanswered chat requests' => 'У вас є запити з чату без відповіді',
+        'Accept' => 'Погодитись',
+        'Decline' => 'Відмовитись',
+        'An internal error occurred.' => 'Виникла внутрішня помилка',
+        'Connection error' => 'Помилка з\'єднання',
+        'Reload page' => 'Перезавантажити сторінку',
         'Your browser was not able to communicate with OTRS properly, there seems to be something wrong with your network connection. You could either try reloading this page manually or wait until your browser has re-established the connection on its own.' =>
+            'Ваш браузер не може правильно спілкуватись з OTRS, схоже щось не так з мережевим підключенням. Ви можете або вручну перезавантажити цю сторінку, або почекати, поки браузер відновить зв\'язок самостійно.',
+        'There was an error in communication with the server. Server might be experiencing some temporary problems, please reload this page to check if they have been resolved.' =>
             '',
         'The connection has been re-established after a temporary connection loss. Due to this, elements on this page could have stopped to work correctly. In order to be able to use all elements correctly again, it is strongly recommended to reload this page.' =>
-            '',
+            'Зв\'язок був відновлений після тимчасової втрати. Через це, деякі елементи на цій сторінці можуть бути зупинені, щоб працювати правильно. Для того, щоб мати змогу використовувати всі елементи правильно знову, настійно рекомендується перезавантажити цю сторінку.',
 
         # Template: CustomerLogin
-        'JavaScript Not Available' => '',
+        'JavaScript Not Available' => 'JavaScript не доступне',
         'In order to experience OTRS, you\'ll need to enable JavaScript in your browser.' =>
-            '',
-        'Browser Warning' => '',
-        'One moment please, you are being redirected...' => '',
+            'Для того, щоб випробувати OTRS, вам необхідно включити JavaScript у вашому браузері.',
+        'Browser Warning' => 'Попередження Браузера',
+        'One moment please, you are being redirected...' => 'Хвилинку, будь ласка, вас буде перенаправлено...',
         'Login' => 'Вхід',
-        'User name' => '',
-        'Your user name' => '',
-        'Your password' => '',
+        'User name' => 'Ім\'я користувача',
+        'Your user name' => 'Ваше ім\'я користувача',
+        'Your password' => 'Ваш пароль',
         'Forgot password?' => 'Забули пароль?',
-        '2 Factor Token' => '',
-        'Your 2 Factor Token' => '',
+        '2 Factor Token' => '2-факторний Токен',
+        'Your 2 Factor Token' => 'Ваш 2-факторний Токен',
         'Log In' => 'Увійти',
         'Not yet registered?' => 'Прагнете зареєструватися?',
         'Request new password' => 'Надіслати новий пароль',
         'Your User Name' => 'Логін',
-        'A new password will be sent to your email address.' => '',
+        'A new password will be sent to your email address.' => 'Новий пароль буде надісланий до вашої електронної скриньки.',
         'Create Account' => 'Створити обліковий запис',
-        'Please fill out this form to receive login credentials.' => '',
-        'How we should address you' => '',
+        'Please fill out this form to receive login credentials.' => 'Будь ласка, заповніть поля цієї форми щоб отримати реєстраційні дані.',
+        'How we should address you' => 'Як ми можемо звертатися до Вас',
         'Your First Name' => 'Ваше Ім\'я',
         'Your Last Name' => 'Ваше Прізвище',
-        'Your email address (this will become your username)' => '',
+        'Your email address (this will become your username)' => 'Адреса вашої поштової скриньки (це стане вашим ім\'ям користувача)',
 
         # Template: CustomerNavigationBar
-        'Incoming Chat Requests' => '',
-        'Edit personal preferences' => '',
-        'Logout %s %s' => '',
+        'Incoming Chat Requests' => 'Вхідні Запити Чату',
+        'Edit personal preferences' => 'Редагувати особисті налаштування',
+        'Logout %s %s' => 'Вийти %s %s',
 
         # Template: CustomerRichTextEditor
-        'Split Quote' => '',
-        'Open link' => '',
+        'Split Quote' => 'Разділити Цитату',
+        'Open link' => 'Відкрити посилання',
 
         # Template: CustomerTicketMessage
         'Service level agreement' => 'Рівень обслуговування',
 
         # Template: CustomerTicketOverview
-        'Welcome!' => '',
-        'Please click the button below to create your first ticket.' => '',
-        'Create your first ticket' => '',
+        'Welcome!' => 'Ласкаво просимо!',
+        'Please click the button below to create your first ticket.' => 'Будь ласка, натисніть на кнопку нижче, щоб створити ваш перший квиток.',
+        'Create your first ticket' => 'Створення вашого першого квитка',
 
         # Template: CustomerTicketSearch
         'Profile' => 'Параметри',
@@ -2992,131 +3045,131 @@ sub Data {
         'Fulltext search in tickets (e. g. "John*n" or "Will*")' => 'Повнотекстовий пошук у заявці (наприклад, "Іван*в" або "Петро*")',
         'Recipient' => 'Одержувач',
         'Carbon Copy' => 'Копія',
-        'e. g. m*file or myfi*' => '',
+        'e. g. m*file or myfi*' => 'наприклад m*file або myfi*',
         'Types' => 'Типи',
         'Time restrictions' => 'Тимчасові рамки',
-        'No time settings' => '',
-        'Specific date' => '',
+        'No time settings' => 'Немає налаштувань часу',
+        'Specific date' => 'Вкажіть дату',
         'Only tickets created' => 'Заявки створені',
-        'Date range' => '',
+        'Date range' => 'Проміжок часу',
         'Only tickets created between' => 'Заявки створені проміжку',
-        'Ticket archive system' => '',
-        'Save search as template?' => '',
+        'Ticket archive system' => 'Система архивації квитків',
+        'Save search as template?' => 'Зберегти пошук у якості шаблону?',
         'Save as Template?' => 'Зберегти як шаблон',
-        'Save as Template' => '',
+        'Save as Template' => 'Зберегти у якості шаблону',
         'Template Name' => 'Ім\'я шаблону',
-        'Pick a profile name' => '',
+        'Pick a profile name' => 'Виберіть ім\'я профілю',
         'Output to' => 'Вивести як',
 
         # Template: CustomerTicketSearchResultShort
         'of' => ' з',
-        'Search Results for' => '',
-        'Remove this Search Term.' => '',
+        'Search Results for' => 'Результати пошуку для',
+        'Remove this Search Term.' => 'Вилучити цей елемент пошуку',
 
         # Template: CustomerTicketZoom
-        'Start a chat from this ticket' => '',
-        'Expand article' => '',
-        'Information' => '',
-        'Next Steps' => '',
+        'Start a chat from this ticket' => 'Почати чат з цього квитка',
+        'Expand article' => 'Розгорнути статтю',
+        'Next Steps' => 'Наступний крок',
         'Reply' => 'Відповісти',
-        'Chat Protocol' => '',
+        'Chat Protocol' => 'Протокол Чату',
 
         # Template: DashboardEventsTicketCalendar
-        'All-day' => '',
-        'Sunday' => '',
-        'Monday' => '',
-        'Tuesday' => '',
-        'Wednesday' => '',
-        'Thursday' => '',
-        'Friday' => '',
-        'Saturday' => '',
-        'Su' => '',
-        'Mo' => '',
+        'All-day' => 'Всі дні',
+        'Sunday' => 'Неділя',
+        'Monday' => 'Понеділок',
+        'Tuesday' => 'Вівторок',
+        'Wednesday' => 'Середа',
+        'Thursday' => 'Четвер',
+        'Friday' => 'П\'ятниця',
+        'Saturday' => 'Субота',
+        'Su' => 'Нд',
+        'Mo' => 'Пн',
         'Tu' => 'Бер.',
         'We' => 'ввімкнено',
         'Th' => 'по',
-        'Fr' => '',
-        'Sa' => '',
-        'Event Information' => '',
-        'Ticket fields' => '',
-        'Dynamic fields' => '',
+        'Fr' => 'Вт',
+        'Sa' => 'Ср',
+        'Event Information' => 'Інформація про подію',
+        'Ticket fields' => 'Поля квитка',
+        'Dynamic fields' => 'Динамічні поля',
 
         # Template: Datepicker
-        'Invalid date (need a future date)!' => '',
-        'Invalid date (need a past date)!' => '',
-        'Previous' => '',
-        'Open date selection' => '',
+        'Invalid date (need a future date)!' => 'Неправильна дата (треба вказати дату у майбутньому)!',
+        'Invalid date (need a past date)!' => 'Неправильна дата (треба вказати дату у минулому)!',
+        'Previous' => 'Попередній',
+        'Open date selection' => 'Відкрити вибір дати',
 
         # Template: Error
-        'An error occurred.' => '',
+        'An error occurred.' => 'Виникла помилка.',
         'Really a bug? 5 out of 10 bug reports result from a wrong or incomplete installation of OTRS.' =>
-            '',
+            'Справді помилка? 5 з 10 повідомлень про помилку пов\'язани з неправильним або неповним встановленням OTRS.',
         'With %s, our experts take care of correct installation and cover your back with support and periodic security updates.' =>
-            '',
-        'Contact our service team now.' => '',
+            'З %s, наші фахівці дбають про правильне встановлення та прикривають вас підтримкою та періодичними оновленнями безпеки.',
+        'Contact our service team now.' => 'Негайно зверніться до нашої сервісної служби.',
         'Send a bugreport' => 'Відправити повідомлення про помилку',
 
         # Template: FooterJS
         'Please enter at least one search value or * to find anything.' =>
-            '',
+            'Будь ласка введіть будь-яке пошукове значення або * щоб знайти все.',
         'Please remove the following words from your search as they cannot be searched for:' =>
-            '',
-        'Please check the fields marked as red for valid inputs.' => '',
-        'Please perform a spell check on the the text first.' => '',
-        'Slide the navigation bar' => '',
-        'Unavailable for chat' => '',
-        'Available for internal chats only' => '',
-        'Available for chats' => '',
-        'Please visit the chat manager' => '',
-        'New personal chat request' => '',
-        'New customer chat request' => '',
-        'New public chat request' => '',
-        'Selected user is not available for chat.' => '',
-        'New activity' => '',
-        'New activity on one of your monitored chats.' => '',
-        'Your browser does not support video and audio calling.' => '',
-        'Selected user is not available for video and audio call.' => '',
+            'Будь ласка вилучіть наступні слова з вашого пошуку оскільки їх не можна знайти:',
+        'Please check the fields marked as red for valid inputs.' => 'Будь ласка, перевірте поля, що відмічені червоним, щодо коректного введення.',
+        'Please perform a spell check on the the text first.' => 'Будь ласка, спочатку виконайте перевірку правопису тексту.',
+        'Slide the navigation bar' => 'Посунути панель навігації',
+        'Unavailable for chat' => 'Недоступно для чату',
+        'Available for internal chats only' => 'Доступно тільки для внутрішніх чатів',
+        'Available for chats' => 'Доступно для чатів',
+        'Please visit the chat manager' => 'Будь ласка, завітайте до керування чатами',
+        'New personal chat request' => 'Новий запит особистого чату',
+        'New customer chat request' => 'Новий запит клієнтського чату',
+        'New public chat request' => 'Новий запит публічного чату',
+        'Selected user is not available for chat.' => 'Вибраний користувач не доступний для чату.',
+        'New activity' => 'Нова активність',
+        'New activity on one of your monitored chats.' => 'Нова активність в одному з чатів за якими ви спостерігаєте.',
+        'Your browser does not support video and audio calling.' => 'Ваш браузер не підтримує відео та аудіо виклики.',
+        'Selected user is not available for video and audio call.' => 'Вибраний користувач не доступний для відео та аудіо викликів.',
         'Target user\'s browser does not support video and audio calling.' =>
-            '',
-        'Do you really want to continue?' => '',
-        'Information about the OTRS Daemon' => '',
+            'Браузер вибраного користувача не підтримує відео та аудіо виклики.',
+        'Do you really want to continue?' => 'Ви справді маєте намір продовжити?',
+        'Information about the OTRS Daemon' => 'Інформація про демон OTRS',
+        'Communication error' => '',
         'This feature is part of the %s.  Please contact us at %s for an upgrade.' =>
-            '',
-        'Find out more about the %s' => '',
+            'Ця функція є частиною %s. Будь ласка, зв\'яжіться з нами за адресою %s для покращення.',
+        'Find out more about the %s' => 'Дізнайтесь більше за %s',
 
         # Template: Header
         'You are logged in as' => 'Ви ввійшли як',
 
         # Template: Installer
-        'JavaScript not available' => '',
-        'Step %s' => '',
-        'Database Settings' => '',
-        'General Specifications and Mail Settings' => '',
+        'JavaScript not available' => 'JavaScript не доступний',
+        'Step %s' => 'Крок %s',
+        'Database Settings' => 'Налаштування бази даних',
+        'General Specifications and Mail Settings' => 'Загальні характеристики та налаштування пошти',
         'Finish' => 'Закінчити',
-        'Welcome to %s' => '',
-        'Web site' => '',
-        'Mail check successful.' => '',
-        'Error in the mail settings. Please correct and try again.' => '',
+        'Welcome to %s' => 'Ласкаво просимо до %s',
+        'Web site' => 'Веб-сторінка',
+        'Mail check successful.' => 'Пошту успішно перевірено.',
+        'Error in the mail settings. Please correct and try again.' => 'Помилка в налаштування пошти. Будь ласка виправте та спробуйте знову.',
 
         # Template: InstallerConfigureMail
-        'Configure Outbound Mail' => '',
+        'Configure Outbound Mail' => 'Налаштування Вихідної пошти',
         'Outbound mail type' => 'Тип',
-        'Select outbound mail type.' => '',
-        'Outbound mail port' => '',
-        'Select outbound mail port.' => '',
+        'Select outbound mail type.' => 'Вибір типу вихідної пошти.',
+        'Outbound mail port' => 'Порт вихідної пошти',
+        'Select outbound mail port.' => 'Виберіть порт вихідної пошти.',
         'SMTP host' => 'SMTP сервер',
         'SMTP host.' => 'SMTP сервер.',
         'SMTP authentication' => 'SMTP аутентифікація',
         'Does your SMTP host need authentication?' => 'SMTP сервер вимагає аутентифікацію?',
-        'SMTP auth user' => '',
-        'Username for SMTP auth.' => '',
-        'SMTP auth password' => '',
-        'Password for SMTP auth.' => '',
-        'Configure Inbound Mail' => '',
+        'SMTP auth user' => 'Користувач SMTP автентифікації',
+        'Username for SMTP auth.' => 'Ім\'я користувача для автентифікації в SMTP.',
+        'SMTP auth password' => 'Пароль SMTP автентифікації',
+        'Password for SMTP auth.' => 'Пароль для SMTP автентифікації',
+        'Configure Inbound Mail' => 'Налаштування вхідної пошти',
         'Inbound mail type' => 'Тип',
-        'Select inbound mail type.' => '',
+        'Select inbound mail type.' => 'Виберіть тип вхідної пошти.',
         'Inbound mail host' => 'Поштовий сервер для вхідної пошти',
-        'Inbound mail host.' => '',
+        'Inbound mail host.' => 'Хост вхідної пошти.',
         'Inbound mail user' => 'Ім\'я користувача для вхідної пошти',
         'User for inbound mail.' => 'Ім\'я користувача для вхідної пошти.',
         'Inbound mail password' => 'Пароль для вхідної пошти',
@@ -3126,31 +3179,31 @@ sub Data {
         'Skip this step' => 'Пропустити цей крок',
 
         # Template: InstallerDBResult
-        'Database setup successful!' => '',
+        'Database setup successful!' => 'Базу даних успішно налаштовано!',
 
         # Template: InstallerDBStart
-        'Install Type' => '',
-        'Create a new database for OTRS' => '',
-        'Use an existing database for OTRS' => '',
+        'Install Type' => 'Тип установки',
+        'Create a new database for OTRS' => 'Створити нову базу даних OTRS',
+        'Use an existing database for OTRS' => 'Використати наявну базу даних OTRS',
 
         # Template: InstallerDBmssql
-        'Database name' => '',
-        'Check database settings' => '',
-        'Result of database check' => '',
-        'Database check successful.' => '',
-        'Database User' => '',
+        'Database name' => 'Ім\'я бази даних',
+        'Check database settings' => 'Перевірити налаштування бази даних',
+        'Result of database check' => 'Результат перевірки бази даних',
+        'Database check successful.' => 'Базу даних перевірено успішно.',
+        'Database User' => 'Користувач бази даних',
         'New' => 'Новий',
         'A new database user with limited permissions will be created for this OTRS system.' =>
-            '',
-        'Repeat Password' => '',
-        'Generated password' => '',
+            'Для цієї системи OTRS буде створено нового користувача бази даних з обмеженими правами.',
+        'Repeat Password' => 'Повторити Пароль',
+        'Generated password' => 'Створений пароль',
 
         # Template: InstallerDBmysql
-        'Passwords do not match' => '',
+        'Passwords do not match' => 'Паролі не збігаються',
 
         # Template: InstallerDBoracle
-        'SID' => '',
-        'Port' => '',
+        'SID' => 'SID',
+        'Port' => 'Порт',
 
         # Template: InstallerFinish
         'To be able to use OTRS you have to enter the following line in your command line (Terminal/Shell) as root.' =>
@@ -3162,137 +3215,144 @@ sub Data {
 
         # Template: InstallerLicense
         'Don\'t accept license' => 'Не ухвалюю умови ліцензії',
-        'Accept license and continue' => '',
+        'Accept license and continue' => 'Погодитися з ліцензією та продовжити далі',
 
         # Template: InstallerSystem
-        'SystemID' => '',
+        'SystemID' => 'SystemID',
         'The identifier of the system. Each ticket number and each HTTP session ID contain this number.' =>
-            '',
+            'Ідентифікатор системи. Кожний номер квитка та кожна ID HTTP-сесії містять цей номер.',
         'System FQDN' => 'Системне FQDN',
-        'Fully qualified domain name of your system.' => '',
-        'AdminEmail' => '',
-        'Email address of the system administrator.' => '',
+        'Fully qualified domain name of your system.' => 'Повне доменне ім\'я вашої системи.',
+        'AdminEmail' => 'Поштова скринька Адміністратора',
+        'Email address of the system administrator.' => 'Адреса поштової скриньки системного адміністратора.',
         'Organization' => 'Організація',
         'Log' => 'Журнал',
-        'LogModule' => '',
-        'Log backend to use.' => '',
-        'LogFile' => '',
+        'LogModule' => 'Модуль Журналювання',
+        'Log backend to use.' => 'Механізм журналювання що буде використовуватись',
+        'LogFile' => 'Файл журналу',
         'Webfrontend' => 'Веб-інтерфейс',
-        'Default language' => '',
-        'Default language.' => '',
-        'CheckMXRecord' => '',
+        'Default language' => 'Типова мова',
+        'Default language.' => 'Типова мова.',
+        'CheckMXRecord' => 'Перевірити МХ запис',
         'Email addresses that are manually entered are checked against the MX records found in DNS. Don\'t use this option if your DNS is slow or does not resolve public addresses.' =>
-            '',
+            'Адреси електронної пошти, що введено вручну, перевіряються з МХ записами, що знайдено в DNS. Не використовуйте цю опцію якщо у вас повільний DNS або він не дозволяє розв\'язувати публічні адреси.',
 
         # Template: LinkObject
-        'Object#' => '',
-        'Add links' => '',
-        'Delete links' => '',
+        'Object#' => 'Об\'єкт#',
+        'Add links' => 'Додати посилання',
+        'Delete links' => 'Вилучити посилання',
 
         # Template: Login
         'Lost your password?' => 'Забули свій пароль',
         'Request New Password' => 'Вислати новий пароль',
         'Back to login' => 'Повернутися',
 
+        # Template: MetaFloater
+        'Scale preview content' => 'Масштабувати перегляд вмісту',
+        'Open URL in new tab' => 'Відкрити посилання в новій вкладинці',
+        'Close preview' => 'Закрити попередній перегляд',
+        'A preview of this website can\'t be provided because it didn\'t allow to be embedded.' =>
+            'Попередній перегляд цього сайту неможливий, тому що він не дозволяє бути вбудованим.',
+
         # Template: MobileNotAvailableWidget
-        'Feature not available' => '',
+        'Feature not available' => 'Функція недоступна',
         'Sorry, but this feature of OTRS is currently not available for mobile devices. If you\'d like to use it, you can either switch to desktop mode or use your regular desktop device.' =>
-            '',
+            'Вибачте, але ця функція OTRS наразі не доступна для мобільних пристроїв. Якщо ви бажаєте скористатися нею, ви можете увімкнути стільничний режим або використати стаціонарний комп\'ютер.',
 
         # Template: Motd
-        'Message of the Day' => '',
-        'This is the message of the day. You can edit this in %s.' => '',
+        'Message of the Day' => 'Повідомлення Дня',
+        'This is the message of the day. You can edit this in %s.' => 'Це повідомлення дня. Ви можете змінити його в %s.',
 
         # Template: NoPermission
-        'Insufficient Rights' => '',
-        'Back to the previous page' => '',
+        'Insufficient Rights' => 'Недостатньо прав.',
+        'Back to the previous page' => 'Повернутися до попередньої сторінки',
 
         # Template: Pagination
-        'Show first page' => '',
-        'Show previous pages' => '',
-        'Show page %s' => '',
-        'Show next pages' => '',
-        'Show last page' => '',
+        'Show first page' => 'Показати першу сторінку',
+        'Show previous pages' => 'Показати попередню сторінку',
+        'Show page %s' => 'Показати сторінку %s',
+        'Show next pages' => 'Показати наступну сторінку',
+        'Show last page' => 'Показати останню сторінку',
 
         # Template: PictureUpload
-        'Need FormID!' => '',
-        'No file found!' => '',
-        'The file is not an image that can be shown inline!' => '',
+        'Need FormID!' => 'Треба FormID!',
+        'No file found!' => 'Файла не знайдено!',
+        'The file is not an image that can be shown inline!' => 'Це не файл зображення що можна вбудувати!',
 
         # Template: PreferencesNotificationEvent
         'Notification' => 'Повідомлення',
-        'No user configurable notifications found.' => '',
+        'No user configurable notifications found.' => 'Немає налаштованих користувачами сповіщень.',
         'Receive messages for notification \'%s\' by transport method \'%s\'.' =>
-            '',
+            'Прийом повідомлень для сповіщення \'%s\' за допомогою транспортного метода \'%s\'.',
         'Please note that you can\'t completely disable notifications marked as mandatory.' =>
-            '',
+            'Будь ласка, зверніть увагу, що ви не можете повністю вимкнути сповіщення, позначені як обов\'язкові.',
         'Sorry, but you can\'t disable all methods for notifications marked as mandatory.' =>
-            '',
+            'Вибачте, але ви не можете вимкнути всі методи для сповіщень, що позначені як обов\'язкові.',
         'Sorry, but you can\'t disable all methods for this notification.' =>
-            '',
+            'Вибачте, але ви не можете вимкнути всі методи для цих сповіщень.',
 
         # Template: ActivityDialogHeader
-        'Process Information' => '',
-        'Dialog' => '',
+        'Process Information' => 'Інформація про процес',
+        'Dialog' => 'Діалог',
 
         # Template: Article
         'Inform Agent' => 'Повідомити агента',
 
         # Template: PublicDefault
-        'Welcome' => '',
+        'Welcome' => 'Ласкаво просимо',
         'This is the default public interface of OTRS! There was no action parameter given.' =>
-            '',
+            'Це типовий публічний інтерфейс OTRS! Не задано жодного дійового параметра.',
         'You could install a custom public module (via the package manager), for example the FAQ module, which has a public interface.' =>
-            '',
+            'Ви можете встановити спеціальний загальнодоступний модуль (через менеджер пакунків), наприклад модуль ЧАП-ів, який має відкритий інтерфейс.',
 
         # Template: RichTextEditor
-        'Remove Quote' => '',
+        'Remove Quote' => 'Вилучити лапки',
 
         # Template: GeneralSpecificationsWidget
         'Permissions' => 'Права',
         'You can select one or more groups to define access for different agents.' =>
-            '',
-        'Result formats' => '',
+            'Ви можете вибрати одну чи більше груп для визначення доступу для різних агентів.',
+        'Result formats' => 'Формати результату',
         'The selected time periods in the statistic are time zone neutral.' =>
-            '',
-        'Create summation row' => '',
+            'Вибрані періоди часу в статистиці є нейтральним часовим поясом.',
+        'Create summation row' => 'Створення підсумкового рядка',
         'Generate an additional row containing sums for all data rows.' =>
-            '',
-        'Create summation column' => '',
+            'Створити додатковий рядок, що містить суми для всіх рядків з даними.',
+        'Create summation column' => 'Створення підсумкового стовпчика',
         'Generate an additional column containing sums for all data columns.' =>
-            '',
-        'Cache results' => '',
+            'Створення додаткового стовпчика, що містить підсумки всіх стовпчиків з даними.',
+        'Cache results' => 'Кешувати результати',
         'Stores statistics result data in a cache to be used in subsequent views with the same configuration (requires at least one selected time field).' =>
-            '',
+            'Зберігання даних результатів статистики в кеші для використання в наступних переглядах з тією ж самою конфігурацією (потрібно вибрати принаймні одне поле з часом).',
         'Provide the statistic as a widget that agents can activate in their dashboard.' =>
-            '',
+            'Забезпечує статистику у вигляді віджету, який можуть активувати агенти на своїх панелях.',
         'Please note that enabling the dashboard widget will activate caching for this statistic in the dashboard.' =>
-            '',
-        'If set to invalid end users can not generate the stat.' => '',
+            'Зверніть увагу, що включення до панелі приладів віджета активує кешування для цієї статистики.',
+        'If set to invalid end users can not generate the stat.' => 'Статистику не буде створено, якщо вказати недійсних кінцевих користувачів.',
 
         # Template: PreviewWidget
-        'There are problems in the configuration of this statistic:' => '',
-        'You may now configure the X-axis of your statistic.' => '',
-        'This statistic does not provide preview data.' => '',
-        'Preview format:' => '',
+        'There are problems in the configuration of this statistic:' => 'В налаштуваннях цієї статистики наступні проблеми:',
+        'You may now configure the X-axis of your statistic.' => 'Зараз ви маєте налаштувати вісь Х вашої статистики.',
+        'This statistic does not provide preview data.' => 'Ця статистика не надає попереднього перегляду.',
+        'Preview format:' => 'Формат перегляду:',
         'Please note that the preview uses random data and does not consider data filters.' =>
-            '',
-        'Configure X-Axis' => '',
+            'Зверніть увагу, що попередній перегляд використовує випадкові дані, що не враховує використання фільтрів.',
+        'Configure X-Axis' => 'Налаштування осі Х',
         'X-axis' => 'Вісь X',
-        'Configure Y-Axis' => '',
-        'Y-axis' => '',
-        'Configure Filter' => '',
+        'Configure Y-Axis' => 'Налаштування осі Y',
+        'Y-axis' => 'Вісь Y',
+        'Configure Filter' => 'Налаштування Фільтру',
 
         # Template: RestrictionsWidget
         'Please select only one element or turn off the button \'Fixed\'.' =>
             'Виберіть тільки один пункт або заберіть прапорець «Фіксоване».',
-        'Absolute period' => '',
+        'Absolute period' => 'Абсолютний Період',
         'Between' => ' Між',
-        'Relative period' => '',
+        'Relative period' => 'Відносний період',
         'The past complete %s and the current+upcoming complete %s %s' =>
-            '',
+            'Минулий повний %s та поточний+майбутній повний %s %s',
         'Do not allow changes to this element when the statistic is generated.' =>
-            '',
+            'Не погоджуйтесь на зміни цього елемента коли створюється статистика.',
 
         # Template: StatsParamsWidget
         'Format' => 'Формат',
@@ -3300,769 +3360,826 @@ sub Data {
         'Configurable params of static stat' => 'Налаштовувані параметри статичного звіту',
         'No element selected.' => 'Елементи не обрані',
         'Scale' => 'Масштаб',
-        'show more' => '',
-        'show less' => '',
+        'show more' => 'показати більше',
+        'show less' => 'показати менше',
 
         # Template: D3
-        'Download SVG' => '',
-        'Download PNG' => '',
+        'Download SVG' => 'Завантажити SVG',
+        'Download PNG' => 'Завантажити PNG',
 
         # Template: XAxisWidget
         'The selected time period defines the default time frame for this statistic to collect data from.' =>
-            '',
+            'Вибраний період визначає типові межі часу в яких будуть збиратися дані для статистики.',
         'Defines the time unit that will be used to split the selected time period into reporting data points.' =>
-            '',
+            'Визначає одиницю часу, що буде використовуватись для поділу вибраного періоду в даних звітності.',
 
         # Template: YAxisWidget
         'Please remember that the scale for the Y-axis has to be larger than the scale for the X-axis (e.g. X-axis => Month, Y-Axis => Year).' =>
-            '',
+            'Запам\'ятайте будь ласка, що шкала осі Y має бути більшою ніж шкала осі X (наприклад, вісь Х => Місяць, вісь Y => Рік).',
 
         # Template: Test
         'OTRS Test Page' => 'Тестова сторінка OTRS',
-        'Welcome %s %s' => '',
+        'Welcome %s %s' => 'Ласкаво просимо %s %s',
         'Counter' => 'Лічильник',
 
         # Template: Warning
-        'Go back to the previous page' => '',
+        'Go back to the previous page' => 'Повернутись до попередньої сторінки',
 
         # Perl Module: Kernel/Config/Defaults.pm
+        'Database Backend' => '',
         'View system log messages.' => 'Перегляд системних повідомлень.',
         'Update and extend your system with software packages.' => 'Відновлення й розширення системи за допомогою програмних пакетів.',
 
         # Perl Module: Kernel/Modules/AdminACL.pm
         'ACLs could not be Imported due to a unknown error, please check OTRS logs for more information' =>
-            '',
-        'The following ACLs have been added successfully: %s' => '',
-        'The following ACLs have been updated successfully: %s' => '',
+            'Списки АСL не можуть бути імпортовані через невідому помилку, будь ласка, перевірте журнал OTRS для отримання додаткової інформації.',
+        'The following ACLs have been added successfully: %s' => 'Вдало додано наступні списки ACL: %s',
+        'The following ACLs have been updated successfully: %s' => 'Вдало поновлено наступні списки ACL: %s',
         'There where errors adding/updating the following ACLs: %s. Please check the log file for more information.' =>
-            '',
-        'This field is required' => '',
-        'There was an error creating the ACL' => '',
-        'Need ACLID!' => '',
-        'Could not get data for ACLID %s' => '',
-        'There was an error updating the ACL' => '',
-        'There was an error setting the entity sync status.' => '',
-        'There was an error synchronizing the ACLs.' => '',
-        'ACL %s could not be deleted' => '',
-        'There was an error getting data for ACL with ID %s' => '',
-        'Exact match' => '',
-        'Negated exact match' => '',
-        'Regular expression' => '',
-        'Regular expression (ignore case)' => '',
-        'Negated regular expression' => '',
-        'Negated regular expression (ignore case)' => '',
+            'Виникли помилки при додаванні/оновленні наступних списків ACL: %s. Будь ласка, перевірте файл журналу для отримання додаткової інформації.',
+        'This field is required' => 'Це поле є обов\'язковим',
+        'There was an error creating the ACL' => 'При створенні списку ACL виникла помилка',
+        'Need ACLID!' => 'Потрібний ACLID!',
+        'Could not get data for ACLID %s' => 'Не можу отримати дані для ACLID %s',
+        'There was an error updating the ACL' => 'При оновленні списку ACL виникла помилка',
+        'There was an error setting the entity sync status.' => 'Під час встановлення статусу синхронізації об\'єкту виникла помилка.',
+        'There was an error synchronizing the ACLs.' => 'Під час синхронізації списків ACL виникла помилка.',
+        'ACL %s could not be deleted' => 'ACL список %s не може бути видалений',
+        'There was an error getting data for ACL with ID %s' => 'При отримані даних для ACL з ID %s виникла помилка.',
+        'Exact match' => 'Точний збіг',
+        'Negated exact match' => 'Точний збіг заперечується',
+        'Regular expression' => 'Регулярний вислів',
+        'Regular expression (ignore case)' => 'Регулярний вислів (ігнорувати регістр)',
+        'Negated regular expression' => 'Регулярний вислів заперечується',
+        'Negated regular expression (ignore case)' => 'Регулярний вислів заперечується (ігнорувати регістр)',
 
         # Perl Module: Kernel/Modules/AdminCustomerCompany.pm
-        'Customer Company %s already exists!' => '',
+        'Customer Company %s already exists!' => 'Компанія Клієнта %s вже їснує!',
 
         # Perl Module: Kernel/Modules/AdminCustomerUser.pm
         'New phone ticket' => 'Нова телефонна заявка',
         'New email ticket' => 'Нова e-mail заявка',
 
         # Perl Module: Kernel/Modules/AdminDynamicField.pm
-        'Fields configuration is not valid' => '',
-        'Objects configuration is not valid' => '',
+        'Fields configuration is not valid' => 'Неправильне налаштування полів',
+        'Objects configuration is not valid' => 'Неправильне налаштування об\'єктів',
         'Could not reset Dynamic Field order properly, please check the error log for more details.' =>
-            '',
+            'Не можу правильно скинути  порядок Динамічного Поля, будь ласка перевірте журнал помилок для отримання більш докладної інформації.',
 
         # Perl Module: Kernel/Modules/AdminDynamicFieldCheckbox.pm
-        'Undefined subaction.' => '',
-        'Need %s' => '',
-        'The field does not contain only ASCII letters and numbers.' => '',
-        'There is another field with the same name.' => '',
-        'The field must be numeric.' => '',
-        'Need ValidID' => '',
-        'Could not create the new field' => '',
-        'Need ID' => '',
-        'Could not get data for dynamic field %s' => '',
-        'The name for this field should not change.' => '',
-        'Could not update the field %s' => '',
-        'Currently' => '',
-        'Unchecked' => '',
-        'Checked' => '',
+        'Undefined subaction.' => 'Невизначена субдія.',
+        'Need %s' => 'Потрібний %s',
+        'The field does not contain only ASCII letters and numbers.' => 'Поле не містить жодної ASCII літери або числа.',
+        'There is another field with the same name.' => 'Тут вже є інше поле з таким самим ім\'ям.',
+        'The field must be numeric.' => 'Поле має бути числовим.',
+        'Need ValidID' => 'Потрібний ValidID',
+        'Could not create the new field' => 'Не вдалося створити нове поле',
+        'Need ID' => 'Потрібний ID',
+        'Could not get data for dynamic field %s' => 'Не можу отримати дані для динамічного поля %s',
+        'The name for this field should not change.' => 'ім\'я цього поля не повинно змінюватися.',
+        'Could not update the field %s' => 'Не можу оновити поле %s',
+        'Currently' => 'Наразі',
+        'Unchecked' => 'Непозначено',
+        'Checked' => 'Позначено',
 
         # Perl Module: Kernel/Modules/AdminDynamicFieldDateTime.pm
-        'Prevent entry of dates in the future' => '',
-        'Prevent entry of dates in the past' => '',
+        'Prevent entry of dates in the future' => 'Попередити уведення дати в майбутньому',
+        'Prevent entry of dates in the past' => 'Попередити уведення дат в минулому',
 
         # Perl Module: Kernel/Modules/AdminDynamicFieldDropdown.pm
-        'This field value is duplicated.' => '',
+        'This field value is duplicated.' => 'Значення цього поля дублюється.',
 
         # Perl Module: Kernel/Modules/AdminEmail.pm
-        'Select at least one recipient.' => '',
+        'Select at least one recipient.' => 'Виберіть принаймні, одного одержувача.',
 
         # Perl Module: Kernel/Modules/AdminGenericAgent.pm
-        'archive tickets' => '',
-        'restore tickets from archive' => '',
-        'Need Profile!' => '',
-        'Got no values to check.' => '',
+        'archive tickets' => 'архівувати квитки',
+        'restore tickets from archive' => 'відновити квитки з архіву',
+        'Need Profile!' => 'Потрібний Профіль!',
+        'Got no values to check.' => 'Немає значень для перевірки.',
         'Please remove the following words because they cannot be used for the ticket selection:' =>
-            '',
+            'Будь ласка, вилучіть наступні слова, тому що їх не можна використати для вибору квитка:',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceDebugger.pm
-        'Need WebserviceID!' => '',
-        'Could not get data for WebserviceID %s' => '',
+        'Need WebserviceID!' => 'Потрібний WebserviceID!',
+        'Could not get data for WebserviceID %s' => 'Неможливо отримати дані для WebserviceID %s',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceInvokerDefault.pm
-        'Need InvokerType' => '',
-        'Invoker %s is not registered' => '',
-        'InvokerType %s is not registered' => '',
-        'Need Invoker' => '',
-        'Could not determine config for invoker %s' => '',
+        'Need InvokerType' => 'Потрібний Тип Активатора',
+        'Invoker %s is not registered' => 'Активатор %s не зареєстрований',
+        'InvokerType %s is not registered' => 'Тип Активатора %s не зареєстрований',
+        'Need Invoker' => 'Потрібний активатор',
+        'Could not determine config for invoker %s' => 'Не можу визначити налаштування для активатора %s',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceMappingSimple.pm
-        'Could not get registered configuration for action type %s' => '',
-        'Could not get backend for %s %s' => '',
-        'Could not update configuration data for WebserviceID %s' => '',
-        'Keep (leave unchanged)' => '',
-        'Ignore (drop key/value pair)' => '',
-        'Map to (use provided value as default)' => '',
-        'Exact value(s)' => '',
-        'Ignore (drop Value/value pair)' => '',
+        'Could not get registered configuration for action type %s' => 'Не можу отримати зареєстровані налаштування для типу дій %s',
+        'Could not get backend for %s %s' => 'Не можу визначити механізм для %s %s',
+        'Could not update configuration data for WebserviceID %s' => 'Не можу оновити дані налаштування WebserviceID %s',
+        'Keep (leave unchanged)' => 'Полишити (залишити без змін)',
+        'Ignore (drop key/value pair)' => 'Ігнорувати (відкинути пари ключ/значення)',
+        'Map to (use provided value as default)' => 'Відобразити до (використовувати надане значення як типове)',
+        'Exact value(s)' => 'Точне(-і) значення',
+        'Ignore (drop Value/value pair)' => 'Ігнорувати (відкинути пари Значення/значення)',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceMappingXSLT.pm
-        'Could not find required library %s' => '',
+        'Could not find required library %s' => 'Не вдалося знайти необхідну бібліотеку %s',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceOperationDefault.pm
-        'Need OperationType' => '',
-        'Operation %s is not registered' => '',
-        'OperationType %s is not registered' => '',
-        'Need Operation' => '',
-        'Could not determine config for operation %s' => '',
+        'Need OperationType' => 'Потрібний Тип Операції',
+        'Operation %s is not registered' => 'Операцію %s не зареєстровано',
+        'OperationType %s is not registered' => 'Тип операції %s не зареєстровано',
+        'Need Operation' => 'Потрібна Операція',
+        'Could not determine config for operation %s' => 'Не можу визначити налаштування для операції %s',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceTransportHTTPREST.pm
-        'Need Subaction!' => '',
+        'Need Subaction!' => 'Потрібна Субдія',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
-        'There is another web service with the same name.' => '',
-        'There was an error updating the web service.' => '',
-        'Web service "%s" updated!' => '',
-        'There was an error creating the web service.' => '',
-        'Web service "%s" created!' => '',
-        'Need Name!' => '',
-        'Need ExampleWebService!' => '',
-        'Could not read %s!' => '',
-        'Need a file to import!' => '',
+        'There is another web service with the same name.' => 'Тут вже є інша веб-служба з таким самим ім\'ям.',
+        'There was an error updating the web service.' => 'Під час оновлення веб-служби виникла помилка.',
+        'Web service "%s" updated!' => 'Веб-службу "%s" оновлено!',
+        'There was an error creating the web service.' => 'Під час створення веб-служби виникла помилка.',
+        'Web service "%s" created!' => 'Веб-службу "%s" створено!',
+        'Need Name!' => 'Потрібно Ім\'я!',
+        'Need ExampleWebService!' => 'Потрібний Взірець Веб-служби!',
+        'Could not read %s!' => 'Неможливо прочитати %s!',
+        'Need a file to import!' => 'Потрібний файл для імпорту!',
         'The imported file has not valid YAML content! Please check OTRS log for details' =>
-            '',
-        'Web service "%s" deleted!' => '',
+            'Файл, що імпортується, не має правильного YAML вмісту! Будь ласка, перегляньте OTRS журнал для отримання детальної інформації.',
+        'Web service "%s" deleted!' => 'Веб-службу "%s" вилучено!',
+        'New Web service' => 'Нова Веб-служба',
+        'Operations' => '',
+        'Invokers' => '',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceWebserviceHistory.pm
-        'Got no WebserviceHistoryID!' => '',
-        'Could not get history data for WebserviceHistoryID %s' => '',
+        'Got no WebserviceHistoryID!' => 'WebserviceHistoryID не отримано!',
+        'Could not get history data for WebserviceHistoryID %s' => 'Неможливо отримати дані історії для WebserviceHistoryID  %s',
 
         # Perl Module: Kernel/Modules/AdminNotificationEvent.pm
-        'Notification updated!' => '',
-        'Notification added!' => '',
+        'Notification updated!' => 'Сповіщення оновлено!',
+        'Notification added!' => 'Сповіщення додано!',
         'There was an error getting data for Notification with ID:%s!' =>
-            '',
-        'Unknown Notification %s!' => '',
-        'There was an error creating the Notification' => '',
+            'Під час отримання даних для Сповіщення з ID:%s виникла помилка!',
+        'Unknown Notification %s!' => 'Невідоме Сповіщення %s!',
+        'There was an error creating the Notification' => 'Під час створення Сповіщення виникла помилка',
         'Notifications could not be Imported due to a unknown error, please check OTRS logs for more information' =>
-            '',
+            'Через невідому помилку Сповіщення не вдалося імпортувати, будь ласка, перегляньте OTRS-журнали для отримання додаткової інформації.',
         'The following Notifications have been added successfully: %s' =>
-            '',
+            'Вдало додано наступні Сповіщення: %s',
         'The following Notifications have been updated successfully: %s' =>
-            '',
+            'Вдало оновлено наступні Сповіщення: %s',
         'There where errors adding/updating the following Notifications: %s. Please check the log file for more information.' =>
-            '',
-        'Agent who owns the ticket' => '',
-        'Agent who is responsible for the ticket' => '',
-        'All agents watching the ticket' => '',
-        'All agents with write permission for the ticket' => '',
-        'All agents subscribed to the ticket\'s queue' => '',
-        'All agents subscribed to the ticket\'s service' => '',
+            'Під час додавання/оновлення наступних Сповіщень виникли помилки: %s. Будь ласка, перегляньте файл журналу для отримання більш детальної інформації.',
+        'Agent who owns the ticket' => 'Агент, якому належить квиток',
+        'Agent who is responsible for the ticket' => 'Агент, який несе відповідальність за квиток',
+        'All agents watching the ticket' => 'Всі агенти стежать за квитком',
+        'All agents with write permission for the ticket' => 'Всі агенти, що мають дозвіл на запис для квитка',
+        'All agents subscribed to the ticket\'s queue' => 'Всі агенти, що підписалися на чергу квитка',
+        'All agents subscribed to the ticket\'s service' => 'Всі агенти, що підписалися на службу квитка',
         'All agents subscribed to both the ticket\'s queue and service' =>
-            '',
-        'Customer of the ticket' => '',
-        'Yes, but require at least one active notification method' => '',
+            'Всі агенти, що підписалися на чергу та службу квитка',
+        'Customer of the ticket' => 'Клієнт, якому належить квиток',
+        'Yes, but require at least one active notification method.' => '',
 
         # Perl Module: Kernel/Modules/AdminPGP.pm
         'PGP environment is not working. Please check log for more info!' =>
-            '',
-        'Need param Key to delete!' => '',
-        'Key %s deleted!' => '',
-        'Need param Key to download!' => '',
+            'PGP оточення не працює. Будь ласка перегляньте журнал для отримання додаткової інформації.',
+        'Need param Key to delete!' => 'Потрібний Ключ, щоб вилучити.',
+        'Key %s deleted!' => 'Ключ %s вилучено!',
+        'Need param Key to download!' => 'Потрібний Ключ щоб завантажити!',
 
         # Perl Module: Kernel/Modules/AdminPackageManager.pm
         'Sorry, Apache::Reload is needed as PerlModule and PerlInitHandler in Apache config file. See also scripts/apache2-httpd.include.conf. Alternatively, you can use the command line tool bin/otrs.Console.pl to install packages!' =>
-            '',
-        'No such package!' => '',
-        'No such file %s in package!' => '',
-        'No such file %s in local file system!' => '',
-        'Can\'t read %s!' => '',
-        'File is OK' => '',
-        'Package has locally modified files.' => '',
+            'На жаль, потрібно вказати Perl-модуль та PerlInitHandler Apache::Reload в файлі налаштувань Apache. Дивись також scripts/apache2-httpd.include.conf. Крім того, ви можете скористатися знаряддям командного рядка bin/otrs.Console.pl для встановлення пакунків!',
+        'No such package!' => 'Немає такого пакунка!',
+        'No such file %s in package!' => 'Немає файлу %s в пакунку!',
+        'No such file %s in local file system!' => 'Немає файлу %s в локальній файловій системі!',
+        'Can\'t read %s!' => 'Неможливо прочитати %s!',
+        'File is OK' => 'Файл в нормі',
+        'Package has locally modified files.' => 'Пакунок має локально змінені файли.',
         'No packages or no new packages found in selected repository.' =>
-            '',
+            'Жодного пакунку або нового пакунку в вибраному сховищі не знайдено.',
         'Package not verified due a communication issue with verification server!' =>
-            '',
-        'Can\'t connect to OTRS Feature Add-on list server!' => '',
-        'Can\'t get OTRS Feature Add-on list from server!' => '',
-        'Can\'t get OTRS Feature Add-on from server!' => '',
+            'Пакунок не перевірено через проблеми зі зв\'язком з сервером перевірки!',
+        'Can\'t connect to OTRS Feature Add-on list server!' => 'Неможливо встановити зв\'язок із сервером списку Додаткових функцій OTRS!',
+        'Can\'t get OTRS Feature Add-on list from server!' => 'Неможливо отримати список Додаткових функцій OTRS з серверу!',
+        'Can\'t get OTRS Feature Add-on from server!' => 'Неможливо отримати Додаткові функції OTRS з серверу!',
 
         # Perl Module: Kernel/Modules/AdminPostMasterFilter.pm
-        'No such filter: %s' => '',
+        'No such filter: %s' => 'Немає такого фільтру: %s',
 
         # Perl Module: Kernel/Modules/AdminProcessManagement.pm
-        'Need ExampleProcesses!' => '',
-        'Need ProcessID!' => '',
-        'Yes (mandatory)' => '',
-        'Unknown Process %s!' => '',
+        'Need ExampleProcesses!' => 'Потрібний Зразок Процесів!',
+        'Need ProcessID!' => 'Потрібний ProcessID!',
+        'Yes (mandatory)' => 'Так (обов\'язково)',
+        'Unknown Process %s!' => 'Незнайомий Процес %s!',
         'There was an error generating a new EntityID for this Process' =>
-            '',
-        'The StateEntityID for state Inactive does not exists' => '',
-        'There was an error creating the Process' => '',
+            'Під час обчислення нового EntityID для цього Процесу виникла помилка',
+        'The StateEntityID for state Inactive does not exists' => 'Не існує StateEntityID для неактивного стану',
+        'There was an error creating the Process' => 'Виникла помилка під час створення Процесу',
         'There was an error setting the entity sync status for Process entity: %s' =>
-            '',
-        'Could not get data for ProcessID %s' => '',
-        'There was an error updating the Process' => '',
-        'Process: %s could not be deleted' => '',
-        'There was an error synchronizing the processes.' => '',
-        'The %s:%s is still in use' => '',
-        'The %s:%s has a different EntityID' => '',
-        'Could not delete %s:%s' => '',
+            'Виникла помилка під час встановлення статусу об\'єктної синхронізації об\'єкта Процесу: %s',
+        'Could not get data for ProcessID %s' => 'Не можу отримати дані для ProcessID %s',
+        'There was an error updating the Process' => 'Під час оновлення Процесу виникла помилка',
+        'Process: %s could not be deleted' => 'Процес %s не може бути вилучений',
+        'There was an error synchronizing the processes.' => 'Під час синхронізації процесів виникла помилка.',
+        'The %s:%s is still in use' => '%s:%s ще досі використовується',
+        'The %s:%s has a different EntityID' => '%s:%s має інший EntityID',
+        'Could not delete %s:%s' => 'Неможливо видалити %s:%s',
         'There was an error setting the entity sync status for %s entity: %s' =>
-            '',
-        'Could not get %s' => '',
-        'Need %s!' => '',
-        'Process: %s is not Inactive' => '',
+            'Виникла помилка під час встановлення статусу об\'єктної синхронізації об\'єкта для %s об\'єкту: %s',
+        'Could not get %s' => 'Неможливо отримати %s',
+        'Need %s!' => 'Потрібний %s!',
+        'Process: %s is not Inactive' => 'Процес: %s не є активним',
 
         # Perl Module: Kernel/Modules/AdminProcessManagementActivity.pm
         'There was an error generating a new EntityID for this Activity' =>
-            '',
-        'There was an error creating the Activity' => '',
+            'Під час створення нового EntityID для цієї Активності виникла помилка',
+        'There was an error creating the Activity' => 'Під час створення Активності виникла помилка',
         'There was an error setting the entity sync status for Activity entity: %s' =>
-            '',
-        'Need ActivityID!' => '',
-        'Could not get data for ActivityID %s' => '',
-        'There was an error updating the Activity' => '',
-        'Missing Parameter: Need Activity and ActivityDialog!' => '',
-        'Activity not found!' => '',
-        'ActivityDialog not found!' => '',
+            'Виникла помилка під час встановлення статусу об\'єктної синхронізації для об\'єкта Активності: %s',
+        'Need ActivityID!' => 'Потрібний ActivityID!',
+        'Could not get data for ActivityID %s' => 'Не можу отримати дані для ActivityID %s',
+        'There was an error updating the Activity' => 'Під час оновлення Активності виникла помилка',
+        'Missing Parameter: Need Activity and ActivityDialog!' => 'Відсутній параметр: потрібна Активність та Діалог Активності!',
+        'Activity not found!' => 'Активність не знайдена!',
+        'ActivityDialog not found!' => 'Діалога Активності не знайдено!',
         'ActivityDialog already assigned to Activity. You cannot add an ActivityDialog twice!' =>
-            '',
-        'Error while saving the Activity to the database!' => '',
-        'This subaction is not valid' => '',
-        'Edit Activity "%s"' => '',
+            'Діалог Активності вже призначений для Активності. Ви не можете додати Діалог Активності двічі!',
+        'Error while saving the Activity to the database!' => 'Під час збереження Активності до бази даних виникла помилка!',
+        'This subaction is not valid' => 'Ця піддія неправильна',
+        'Edit Activity "%s"' => 'Редагувати Активність "%s"',
 
         # Perl Module: Kernel/Modules/AdminProcessManagementActivityDialog.pm
         'There was an error generating a new EntityID for this ActivityDialog' =>
-            '',
-        'There was an error creating the ActivityDialog' => '',
+            'Під час створення нового EntityID для цього Діалогу Активності виникла помилка',
+        'There was an error creating the ActivityDialog' => 'Під час створення Діалогу Активності виникла помилка',
         'There was an error setting the entity sync status for ActivityDialog entity: %s' =>
-            '',
-        'Need ActivityDialogID!' => '',
-        'Could not get data for ActivityDialogID %s' => '',
-        'There was an error updating the ActivityDialog' => '',
-        'Edit Activity Dialog "%s"' => '',
-        'Agent Interface' => '',
-        'Customer Interface' => '',
-        'Agent and Customer Interface' => '',
-        'Do not show Field' => '',
-        'Show Field' => '',
-        'Show Field As Mandatory' => '',
-        'fax' => '',
+            'Виникла помилка під час встановлення статусу об\'єктної синхронізації для об\'єкту Діалогу Активності: %s',
+        'Need ActivityDialogID!' => 'Потрібний ActivityDialogID!',
+        'Could not get data for ActivityDialogID %s' => 'Не можу отримати дані для ActivityDialogID %s',
+        'There was an error updating the ActivityDialog' => 'Під час оновлення Діалогу Активності виникла помилка',
+        'Edit Activity Dialog "%s"' => 'Редагувати Діалог Активності "%s"',
+        'Agent Interface' => 'Інтерфейс агента',
+        'Customer Interface' => 'Інтерфейс клієнта',
+        'Agent and Customer Interface' => 'Інтерфейс Агента та Клієнта',
+        'Do not show Field' => 'Не показувати поле',
+        'Show Field' => 'Показувати поле',
+        'Show Field As Mandatory' => 'Показувати поле як обов\'язкове',
+        'fax' => 'факс',
 
         # Perl Module: Kernel/Modules/AdminProcessManagementPath.pm
-        'Edit Path' => '',
+        'Edit Path' => 'Змінити Шлях',
 
         # Perl Module: Kernel/Modules/AdminProcessManagementTransition.pm
         'There was an error generating a new EntityID for this Transition' =>
-            '',
-        'There was an error creating the Transition' => '',
+            'Під час створення нового EntityID для цього Переходу виникла помилка',
+        'There was an error creating the Transition' => 'Під час створення Переходу виникла помилка',
         'There was an error setting the entity sync status for Transition entity: %s' =>
-            '',
-        'Need TransitionID!' => '',
-        'Could not get data for TransitionID %s' => '',
-        'There was an error updating the Transition' => '',
-        'Edit Transition "%s"' => '',
-        'xor' => '',
-        'String' => '',
-        'Transition validation module' => '',
+            'Виникла помилка під час встановлення статусу об\'єктної синхронізації для об\'єкту Переходу: %s',
+        'Need TransitionID!' => 'Потрібний TransitionID!',
+        'Could not get data for TransitionID %s' => 'Не можу отримати дані для TransitionID %s',
+        'There was an error updating the Transition' => 'Під час оновлення Переходу виникла помилка',
+        'Edit Transition "%s"' => 'Редагувати Перехід "%s"',
+        'xor' => 'xor',
+        'String' => 'Рядок',
+        'Transition validation module' => 'Модуль перевірки Переходу',
 
         # Perl Module: Kernel/Modules/AdminProcessManagementTransitionAction.pm
-        'At least one valid config parameter is required.' => '',
+        'At least one valid config parameter is required.' => 'Потрібен принаймні один дійсний параметр налаштування.',
         'There was an error generating a new EntityID for this TransitionAction' =>
-            '',
-        'There was an error creating the TransitionAction' => '',
+            'Під час створення нового EntityID для цієї Дії Переходу виникла помилка',
+        'There was an error creating the TransitionAction' => 'Під час створення Дії Переходу виникла помилка',
         'There was an error setting the entity sync status for TransitionAction entity: %s' =>
-            '',
-        'Need TransitionActionID!' => '',
-        'Could not get data for TransitionActionID %s' => '',
-        'There was an error updating the TransitionAction' => '',
-        'Edit Transition Action "%s"' => '',
-        'Error: Not all keys seem to have values or vice versa.' => '',
+            'Виникла помилка під час встановлення статусу об\'єктної синхронізації для об\'єкту Дії Переходу: %s',
+        'Need TransitionActionID!' => 'Потрібна TransitionActionID!',
+        'Could not get data for TransitionActionID %s' => 'Не можу отримати дані для TransitionActionID %s',
+        'There was an error updating the TransitionAction' => 'Під час оновлення Дії Переходу виникла помилка',
+        'Edit Transition Action "%s"' => 'Редагувати Дію Переходу "%s"',
+        'Error: Not all keys seem to have values or vice versa.' => 'Помилка: здається не всі ключі мають значення, або навпаки.',
 
         # Perl Module: Kernel/Modules/AdminQueue.pm
-        'Don\'t use :: in queue name!' => '',
-        'Click back and change it!' => '',
+        'Don\'t use :: in queue name!' => 'Не використовуйте :: в імені черги!',
+        'Click back and change it!' => 'Натисніть назад та змініть це!',
 
         # Perl Module: Kernel/Modules/AdminQueueAutoResponse.pm
-        'Queues ( without auto responses )' => '',
+        'Queues ( without auto responses )' => 'Черги (без автовідповідей)',
+
+        # Perl Module: Kernel/Modules/AdminRegistration.pm
+        'Production' => '',
+        'Test' => '',
+        'Training' => '',
+        'Development' => '',
+
+        # Perl Module: Kernel/Modules/AdminRoleUser.pm
+        'Role' => '',
 
         # Perl Module: Kernel/Modules/AdminSMIME.pm
         'S/MIME environment is not working. Please check log for more info!' =>
-            '',
-        'Need param Filename to delete!' => '',
-        'Need param Filename to download!' => '',
-        'Needed CertFingerprint and CAFingerprint!' => '',
-        'CAFingerprint must be different than CertFingerprint' => '',
-        'Relation exists!' => '',
-        'Relation added!' => '',
-        'Impossible to add relation!' => '',
-        'Relation doesn\'t exists' => '',
-        'Relation deleted!' => '',
-        'Impossible to delete relation!' => '',
-        'Certificate %s could not be read!' => '',
-        'Needed Fingerprint' => '',
+            'S/MIME оточення не працює. Будь ласка перевірте журнал для більше детальної інформації!',
+        'Need param Filename to delete!' => 'Потрібний параметр Ім\'я файлу для вилучення!',
+        'Need param Filename to download!' => 'Потрібний параметр Ім\'я файлу для завантаження!',
+        'Needed CertFingerprint and CAFingerprint!' => 'Потрібні CertFingerprint та CAFingerprint!',
+        'CAFingerprint must be different than CertFingerprint' => 'CAFingerprint має відрізнятись від CertFingerprint',
+        'Relation exists!' => 'Стосунок існує!',
+        'Relation added!' => 'Стосунок додано!',
+        'Impossible to add relation!' => 'Неможливо додати стосунок!',
+        'Relation doesn\'t exists' => 'Стосунку не існує',
+        'Relation deleted!' => 'Стосунок вилучено!',
+        'Impossible to delete relation!' => 'Неможливо видалити стосунок!',
+        'Certificate %s could not be read!' => 'Неможливо прочитати сертифікат %s!',
+        'Needed Fingerprint' => 'Потрібний цифровий відбиток',
 
         # Perl Module: Kernel/Modules/AdminSalutation.pm
-        'Salutation updated!' => '',
-        'Salutation added!' => '',
+        'Salutation updated!' => 'Привітання оновлено!',
+        'Salutation added!' => 'Привітання додано!',
 
         # Perl Module: Kernel/Modules/AdminSupportDataCollector.pm
-        'File %s could not be read!' => '',
+        'File %s could not be read!' => 'Неможливо прочитати файл %s!',
 
         # Perl Module: Kernel/Modules/AdminSysConfig.pm
-        'Import not allowed!' => '',
-        'Need File!' => '',
-        'Can\'t write ConfigItem!' => '',
+        'Import not allowed!' => 'Імпорт не допускається!',
+        'Need File!' => 'Потрібний файл!',
+        'Can\'t write ConfigItem!' => 'Не можу записати ConfigItem!',
 
         # Perl Module: Kernel/Modules/AdminSystemMaintenance.pm
-        'Start date shouldn\'t be defined after Stop date!' => '',
-        'There was an error creating the System Maintenance' => '',
-        'Need SystemMaintenanceID!' => '',
-        'Could not get data for SystemMaintenanceID %s' => '',
-        'System Maintenance was saved successfully!' => '',
-        'Session has been killed!' => '',
-        'All sessions have been killed, except for your own.' => '',
-        'There was an error updating the System Maintenance' => '',
-        'Was not possible to delete the SystemMaintenance entry: %s!' => '',
+        'Start date shouldn\'t be defined after Stop date!' => 'Початкова дата не може бути визначена після кінцевої!',
+        'There was an error creating the System Maintenance' => 'Під час створення технічного обслуговування системи виникла помилка',
+        'Need SystemMaintenanceID!' => 'Потрібний SystemMaintenanceID!',
+        'Could not get data for SystemMaintenanceID %s' => 'Не можу отримати дані для SystemMaintenanceID %s',
+        'System Maintenance was saved successfully!' => 'Вдало збережено технічне обслуговування системи!',
+        'Session has been killed!' => 'Сесію було завершено!',
+        'All sessions have been killed, except for your own.' => 'За винятком вашої особистої сесії, всі інші було завершено.',
+        'There was an error updating the System Maintenance' => 'Під час оновлення Технічного обслуговування системи виникла помілка',
+        'Was not possible to delete the SystemMaintenance entry: %s!' => 'Не можливо було видалити запис технічного обслуговування системи: %s!',
 
         # Perl Module: Kernel/Modules/AdminTemplate.pm
-        'Template updated!' => '',
-        'Template added!' => '',
+        'Template updated!' => 'Шаблон оновлений!',
+        'Template added!' => 'Шаблон додано!',
 
         # Perl Module: Kernel/Modules/AdminType.pm
-        'Need Type!' => '',
+        'Need Type!' => 'Потрібний Тип!',
 
         # Perl Module: Kernel/Modules/AgentDashboardCommon.pm
-        'No such config for %s' => '',
-        'Statistic' => '',
-        'No preferences for %s!' => '',
-        'Can\'t get element data of %s!' => '',
-        'Can\'t get filter content data of %s!' => '',
+        'No such config for %s' => 'Немає налаштувань для %s',
+        'Statistic' => 'Статистика',
+        'No preferences for %s!' => 'Немає уподобань для %s!',
+        'Can\'t get element data of %s!' => 'Не можу отримати елемент даних %s!',
+        'Can\'t get filter content data of %s!' => 'Неможливо отримати дані вмісту фільтру для %s!',
+        'Customer Company Name' => 'Найменування Компанії Клієнта',
+        'Customer User ID' => 'ID користувача клієнта',
 
         # Perl Module: Kernel/Modules/AgentLinkObject.pm
-        'Need SourceObject and SourceKey!' => '',
-        'Please contact the administrator.' => '',
-        'You need ro permission!' => '',
-        'Can not delete link with %s!' => '',
-        'Can not create link with %s! Object already linked as %s.' => '',
-        'Can not create link with %s!' => '',
-        'The object %s cannot link with other object!' => '',
+        'Need SourceObject and SourceKey!' => 'Потрібні SourceObject та SourceKey!',
+        'Please contact the administrator.' => 'Будь ласка, зверніться до адміністратора.',
+        'You need ro permission!' => 'Вам потрібен дозвіл на читання (ro)!',
+        'Can not delete link with %s!' => 'Не можу вилучити зв\'язок з %s!',
+        'Can not create link with %s! Object already linked as %s.' => 'Не можу створити посилання до %s! Об\'єкт вже пов\'язаний із %s.',
+        'Can not create link with %s!' => 'Не можу створити зв\'язок з %s!',
+        'The object %s cannot link with other object!' => 'Об\'єкт %s не може бути пов\'язаний з іншим об\'єктом!',
 
         # Perl Module: Kernel/Modules/AgentPreferences.pm
-        'Param Group is required!' => '',
+        'Param Group is required!' => 'Необхідний параметр Група!',
 
         # Perl Module: Kernel/Modules/AgentStatistics.pm
-        'Parameter %s is missing.' => '',
-        'Invalid Subaction.' => '',
-        'Statistic could not be imported.' => '',
-        'Please upload a valid statistic file.' => '',
-        'Export: Need StatID!' => '',
-        'Delete: Get no StatID!' => '',
-        'Need StatID!' => '',
-        'Could not load stat.' => '',
-        'Could not create statistic.' => '',
-        'Run: Get no %s!' => '',
+        'Parameter %s is missing.' => 'Параметр %s відсутній.',
+        'Invalid Subaction.' => 'Нечинна Піддія.',
+        'Statistic could not be imported.' => 'Неможливо імпортувати статистику.',
+        'Please upload a valid statistic file.' => 'Будь ласка вивантажте чинний файл статистики.',
+        'Export: Need StatID!' => 'Експорт: потрібний StatID!',
+        'Delete: Get no StatID!' => 'Вилучення: не можу отримати StatID!',
+        'Need StatID!' => 'Потрібний StatID!',
+        'Could not load stat.' => 'Не вдалося завантажити статистику.',
+        'Could not create statistic.' => 'Не можу створити статистику.',
+        'Run: Get no %s!' => 'Виконання: не можу отримати %s!',
 
         # Perl Module: Kernel/Modules/AgentTicketActionCommon.pm
-        'No TicketID is given!' => '',
-        'You need %s permissions!' => '',
-        'Could not perform validation on field %s!' => '',
-        'No subject' => '',
+        'No TicketID is given!' => 'Не надано TicketID!',
+        'You need %s permissions!' => 'Вам потрібні дозволи %s!',
+        'Could not perform validation on field %s!' => 'Не вдалось виконати перевірку на полі %s!',
+        'No subject' => 'Без теми',
         'Previous Owner' => 'Попередній власник',
 
         # Perl Module: Kernel/Modules/AgentTicketBounce.pm
-        '%s is needed!' => '',
-        'Plain article not found for article %s!' => '',
-        'Article does not belong to ticket %s!' => '',
-        'Can\'t bounce email!' => '',
-        'Can\'t send email!' => '',
-        'Wrong Subaction!' => '',
+        '%s is needed!' => 'Потрібний %s!',
+        'Plain article not found for article %s!' => 'Для статті %s не знайдено статті зі звичайного тексту!',
+        'Article does not belong to ticket %s!' => 'Стаття не відноситься до квитка %s!',
+        'Can\'t bounce email!' => 'Не можу повернути лист!',
+        'Can\'t send email!' => 'Не можу надіслати листа!',
+        'Wrong Subaction!' => 'Помилкова Піддія!',
 
         # Perl Module: Kernel/Modules/AgentTicketBulk.pm
-        'Can\'t lock Tickets, no TicketIDs are given!' => '',
-        'Ticket (%s) is not unlocked!' => '',
-        'Bulk feature is not enabled!' => '',
-        'No selectable TicketID is given!' => '',
+        'Can\'t lock Tickets, no TicketIDs are given!' => 'Не можу заблокувати квиток, не надано TicketID!',
+        'Ticket (%s) is not unlocked!' => 'Квиток (%s) не разблоковано!',
+        'Bulk feature is not enabled!' => 'Масову функцію не увімкнено!',
+        'No selectable TicketID is given!' => 'Не надано TicketID, який можна вибрати!',
         'You either selected no ticket or only tickets which are locked by other agents.' =>
-            '',
-        'You need to select at least one ticket.' => '',
-        'Ticket is locked by another agent and will be ignored!' => '',
+            'Ви або не вибрали квитка, або вибрали квиток, що заблокований іншим агентом.',
+        'You need to select at least one ticket.' => 'Ви маєте вибрати принаймні один квиток.',
+        'The following tickets were ignored because they are locked by another agent or you don\'t have write access to these tickets: %s.' =>
+            'Наступні квитки було знехтувано тому що їх або заблоковано іншим агентом або ви не маєте дозволу на запис до цих квитків: %s',
+        'The following tickets were locked: %s.' => 'Наступні квитки були заблоковані: %s.',
 
         # Perl Module: Kernel/Modules/AgentTicketCompose.pm
-        'Can not determine the ArticleType!' => '',
+        'Can not determine the ArticleType!' => 'Не можу визначити Тип Статті!',
 
         # Perl Module: Kernel/Modules/AgentTicketEmail.pm
-        'No Subaction!' => '',
+        'No Subaction!' => 'Немає Піддії!',
 
         # Perl Module: Kernel/Modules/AgentTicketEmailOutbound.pm
-        'Got no TicketID!' => '',
-        'System Error!' => '',
+        'Got no TicketID!' => 'Не отримав TicketID!',
+        'System Error!' => 'Системна помилка!',
 
         # Perl Module: Kernel/Modules/AgentTicketEscalationView.pm
-        'Invalid Filter: %s!' => '',
+        'Invalid Filter: %s!' => 'Нечинний фільтр: %s!',
 
         # Perl Module: Kernel/Modules/AgentTicketHistory.pm
-        'Can\'t show history, no TicketID is given!' => '',
+        'Can\'t show history, no TicketID is given!' => 'Не можу показати історію - не наданий TicketID!',
 
         # Perl Module: Kernel/Modules/AgentTicketLock.pm
-        'Can\'t lock Ticket, no TicketID is given!' => '',
-        'Sorry, the current owner is %s!' => '',
-        'Please become the owner first.' => '',
-        'Ticket (ID=%s) is locked by %s!' => '',
-        'Change the owner!' => '',
+        'Can\'t lock Ticket, no TicketID is given!' => 'Не можу заблокувати Квиток - не наданий TicketID!',
+        'Sorry, the current owner is %s!' => 'Вибачте, але зараз власником є %s!',
+        'Please become the owner first.' => 'Спочатку станьте власником, будь ласка.',
+        'Ticket (ID=%s) is locked by %s!' => 'Квиток (ID = %s) заблокований %s!',
+        'Change the owner!' => 'Зміна власника!',
 
         # Perl Module: Kernel/Modules/AgentTicketMerge.pm
-        'Can\'t merge ticket with itself!' => '',
+        'Can\'t merge ticket with itself!' => 'Неможливо об\'єднати квиток із собою!',
 
         # Perl Module: Kernel/Modules/AgentTicketMove.pm
-        'You need move permissions!' => '',
+        'You need move permissions!' => 'Вам потрібно перемістити дозволи!',
 
         # Perl Module: Kernel/Modules/AgentTicketPhone.pm
-        'Chat is not active.' => '',
-        'No permission.' => '',
-        '%s has left the chat.' => '',
-        'This chat has been closed and will be removed in %s hours.' => '',
+        'Chat is not active.' => 'Чат не активний.',
+        'No permission.' => 'Немає дозволу.',
+        '%s has left the chat.' => '%s залишив чат.',
+        'This chat has been closed and will be removed in %s hours.' => 'Цей чат закрито та буде вилучена за %s годин.',
 
         # Perl Module: Kernel/Modules/AgentTicketPlain.pm
-        'No ArticleID!' => '',
+        'No ArticleID!' => 'Немає ArticleID!',
         'Can\'t read plain article! Maybe there is no plain email in backend! Read backend message.' =>
-            '',
+            'Неможливо прочитати просту статтю. Можливо немає простого поштового листа в сервері! Читайте повідомлення від сервера.',
 
         # Perl Module: Kernel/Modules/AgentTicketPrint.pm
-        'Need TicketID!' => '',
+        'Need TicketID!' => 'Потрібний TicketID!',
         'printed by' => 'надруковане',
-        'Ticket Dynamic Fields' => '',
+        'Ticket Dynamic Fields' => 'Динамічні Поля Квитка',
 
         # Perl Module: Kernel/Modules/AgentTicketProcess.pm
-        'Couldn\'t get ActivityDialogEntityID "%s"!' => '',
-        'No Process configured!' => '',
-        'Process %s is invalid!' => '',
-        'Subaction is invalid!' => '',
-        'Parameter %s is missing in %s.' => '',
-        'No ActivityDialog configured for %s in _RenderAjax!' => '',
+        'Couldn\'t get ActivityDialogEntityID "%s"!' => 'Неможливо отримати ActivityDialogEntityID "%s"!',
+        'No Process configured!' => 'Не налаштовано Процес!',
+        'Process %s is invalid!' => 'Процес %s не є чинним!',
+        'Subaction is invalid!' => 'Піддія не є чинною!',
+        'Parameter %s is missing in %s.' => 'Параметр %s пропущений в %s.',
+        'No ActivityDialog configured for %s in _RenderAjax!' => 'Не налаштовано Діалога Активності для %s в _RenderAjax!',
         'Got no Start ActivityEntityID or Start ActivityDialogEntityID for Process: %s in _GetParam!' =>
-            '',
-        'Couldn\'t get Ticket for TicketID: %s in _GetParam!' => '',
+            'Не отримано Початкову ActivityEntityID  або Початкову ActivityDialogEntityID для процеса: %s в ',
+        'Couldn\'t get Ticket for TicketID: %s in _GetParam!' => 'Неможливо визначити квиток за TicketID: %s в ',
         'Couldn\'t determine ActivityEntityID. DynamicField or Config isn\'t set properly!' =>
-            '',
-        'Process::Default%s Config Value missing!' => '',
+            'Не можу визначити ActivityEntityID. Динамічне поле або Налаштування не встановлене належним чином!',
+        'Process::Default%s Config Value missing!' => 'Process::Default%s Config Value пропущено!',
         'Got no ProcessEntityID or TicketID and ActivityDialogEntityID!' =>
-            '',
+            'Неможливо визначити ProcessEntityID або TicketID та ActivityDialogEntityID!',
         'Can\'t get StartActivityDialog and StartActivityDialog for the ProcessEntityID "%s"!' =>
-            '',
-        'Can\'t get Ticket "%s"!' => '',
+            'Неможливо отримати StartActivityDialog та StartActivityDialog для ',
+        'Can\'t get Ticket "%s"!' => 'Неможливо отримати Квиток "%s"!',
         'Can\'t get ProcessEntityID or ActivityEntityID for Ticket "%s"!' =>
-            '',
+            'Неможливо отримати ProcessEntityID або ActivityEntityID для Квитка "%s"!',
         'Can\'t get Activity configuration for ActivityEntityID "%s"!' =>
-            '',
+            'Неможливо отримати налаштування Активності для ActivityEntityID "%s"!',
         'Can\'t get ActivityDialog configuration for ActivityDialogEntityID "%s"!' =>
-            '',
-        'Can\'t get data for Field "%s" of ActivityDialog "%s"!' => '',
+            'Неможливо отримати налаштування Діалогу Активності для ActivityDialogEntityID "%s"!',
+        'Can\'t get data for Field "%s" of ActivityDialog "%s"!' => 'Не можу отримати дані для поля "%s" Діалогу Активності "%s"!',
         'PendingTime can just be used if State or StateID is configured for the same ActivityDialog. ActivityDialog: %s!' =>
-            '',
+            'Час очікування може бути використаний якщо Стан, або StateID налаштовані на такий самий Діалог Активності. Діалог Активності: %s!',
         'Pending Date' => 'Наступна дата',
         'for pending* states' => ' для наступних станів* ',
-        'ActivityDialogEntityID missing!' => '',
-        'Couldn\'t get Config for ActivityDialogEntityID "%s"!' => '',
-        'Couldn\'t use CustomerID as an invisible field.' => '',
+        'ActivityDialogEntityID missing!' => 'Пропущено ActivityDialogEntityID!',
+        'Couldn\'t get Config for ActivityDialogEntityID "%s"!' => 'Неможливо отримати налаштування для ',
+        'Couldn\'t use CustomerID as an invisible field.' => 'Неможливо використати CustomerID у якості невидимого поля.',
         'Missing ProcessEntityID, check your ActivityDialogHeader.tt!' =>
-            '',
+            'Пропущено ProcessEntityID, перевірте ',
         'No StartActivityDialog or StartActivityDialog for Process "%s" configured!' =>
-            '',
+            'Не налаштований Початковий Діалог Активності або Початковий Діалог Активності для Процесу "%s"!',
         'Couldn\'t create ticket for Process with ProcessEntityID "%s"!' =>
-            '',
-        'Couldn\'t set ProcessEntityID "%s" on TicketID "%s"!' => '',
-        'Couldn\'t set ActivityEntityID "%s" on TicketID "%s"!' => '',
-        'Could not store ActivityDialog, invalid TicketID: %s!' => '',
-        'Invalid TicketID: %s!' => '',
-        'Missing ActivityEntityID in Ticket %s!' => '',
-        'Missing ProcessEntityID in Ticket %s!' => '',
+            'Неможливо створити квиток для Процесу з ProcessEntityID "%s"!',
+        'Couldn\'t set ProcessEntityID "%s" on TicketID "%s"!' => 'Неможливо встановити ProcessEntityID "%s" в TicketID "%s"!',
+        'Couldn\'t set ActivityEntityID "%s" on TicketID "%s"!' => 'Неможливо встановити ActivityEntityID "%s" в TicketID "%s"!',
+        'Could not store ActivityDialog, invalid TicketID: %s!' => 'Неможливо зберегти Діалог Активності, нечинний TicketID: %s!',
+        'Invalid TicketID: %s!' => 'Нечинний ',
+        'Missing ActivityEntityID in Ticket %s!' => 'Пропущено ActivityEntityID у Квитку %s!',
+        'This step does not belong anymore to the current activity in process for ticket \'%s%s%s\'! Another user changed this ticket in the meantime. Please close this window and reload the ticket.' =>
+            'Цей крок більше не належить до поточної активності в процесі для цього квитка \'%s%s%s\'! Інший користувач тим часом змінив цей квиток. Будь ласка закрийте це вікно та перезавантажте квиток.',
+        'Missing ProcessEntityID in Ticket %s!' => 'Пропущено ProcessEntityID в Квитку %s!',
         'Could not set DynamicField value for %s of Ticket with ID "%s" in ActivityDialog "%s"!' =>
-            '',
+            'Неможливо встановити Динамічне Поле для %s Квитка з ID "%s" в Діалозі Активності "%s"!',
         'Could not set PendingTime for Ticket with ID "%s" in ActivityDialog "%s"!' =>
-            '',
+            'Неможливо встановити Час Очікування для Квитка з ID "%s" в Діалозі Активності "%s"!',
         'Wrong ActivityDialog Field config: %s can\'t be Display => 1 / Show field (Please change its configuration to be Display => 0 / Do not show field or Display => 2 / Show field as mandatory)!' =>
-            '',
+            'Неправильне налаштування поля Діалогу Активності: %s не може бути Display => 1 / Показати поле (Будь ласка змініть налаштування так, щоб Display => 0 / Не показувати поле або Display => 2 /  Показати поле як обов\'язкове)!',
         'Could not set %s for Ticket with ID "%s" in ActivityDialog "%s"!' =>
-            '',
-        'Default Config for Process::Default%s missing!' => '',
-        'Default Config for Process::Default%s invalid!' => '',
+            'Не можу встановити %s для Квитка з ID "%s" в Діалозі Активності "%s"!',
+        'Default Config for Process::Default%s missing!' => 'Пропущено типове налаштування для Process::Default%s!',
+        'Default Config for Process::Default%s invalid!' => 'Нечинне типове налаштування для  Process::Default%s!',
 
         # Perl Module: Kernel/Modules/AgentTicketSearch.pm
-        'Untitled' => '',
-        'Customer Name' => '',
-        'Invalid Users' => '',
-        'CSV' => '',
-        'Excel' => '',
+        'Untitled' => 'Без назви',
+        'Customer Name' => 'Ім\'я Клієнта',
+        'Invalid Users' => 'Нечинний Користувач',
+        'CSV' => 'CSV',
+        'Excel' => 'Excel',
 
         # Perl Module: Kernel/Modules/AgentTicketService.pm
-        'Feature not enabled!' => '',
+        'Feature not enabled!' => 'Функцію не увімкнено!',
 
         # Perl Module: Kernel/Modules/AgentTicketWatcher.pm
-        'Feature is not active' => '',
+        'Feature is not active' => 'Функція не активна',
 
         # Perl Module: Kernel/Modules/AgentTicketZoom.pm
-        'Link Deleted' => '',
-        'Ticket Locked' => '',
-        'Pending Time Set' => '',
-        'Dynamic Field Updated' => '',
-        'Outgoing Email (internal)' => '',
+        'Link Deleted' => 'Зв\'язок Вилучений',
+        'Ticket Locked' => 'Квиток Заблоковано',
+        'Pending Time Set' => 'Встановлення часу очікування',
+        'Dynamic Field Updated' => 'Динамічне поле оновлено',
+        'Outgoing Email (internal)' => 'Вихідна Пошта (внутрішня)',
         'Ticket Created' => 'Заявка створена',
-        'Type Updated' => '',
-        'Escalation Update Time In Effect' => '',
-        'Escalation Update Time Stopped' => '',
-        'Escalation First Response Time Stopped' => '',
-        'Customer Updated' => '',
-        'Internal Chat' => '',
-        'Automatic Follow-Up Sent' => '',
+        'Type Updated' => 'Тип оновлено',
+        'Escalation Update Time In Effect' => 'Час Оновлення Підвищення задіяно',
+        'Escalation Update Time Stopped' => 'Час Оновлення Підвищення Зупинено',
+        'Escalation First Response Time Stopped' => 'Час Першої Відповіді Підвищення зупинено',
+        'Customer Updated' => 'Клієнта оновлено',
+        'Internal Chat' => 'Внутрішній Чат',
+        'Automatic Follow-Up Sent' => 'Автоматичне Відстеження відправлене',
         'Note Added' => 'Нотатку додано',
         'Note Added (Customer)' => 'Нотатку додано (клієнт)',
-        'State Updated' => '',
-        'Outgoing Answer' => '',
-        'Service Updated' => '',
-        'Link Added' => '',
-        'Incoming Customer Email' => '',
-        'Incoming Web Request' => '',
-        'Priority Updated' => '',
-        'Ticket Unlocked' => '',
-        'Outgoing Email' => '',
-        'Title Updated' => '',
-        'Ticket Merged' => '',
-        'Outgoing Phone Call' => '',
-        'Forwarded Message' => '',
-        'Removed User Subscription' => '',
-        'Time Accounted' => '',
-        'Incoming Phone Call' => '',
-        'System Request.' => '',
-        'Incoming Follow-Up' => '',
-        'Automatic Reply Sent' => '',
-        'Automatic Reject Sent' => '',
-        'Escalation Solution Time In Effect' => '',
-        'Escalation Solution Time Stopped' => '',
-        'Escalation Response Time In Effect' => '',
-        'Escalation Response Time Stopped' => '',
-        'SLA Updated' => '',
-        'Queue Updated' => '',
-        'External Chat' => '',
-        'Queue Changed' => '',
-        'Notification Was Sent' => '',
+        'State Updated' => 'Стан оновлений',
+        'Outgoing Answer' => 'Вихідна Відповідь',
+        'Service Updated' => 'Служба Оновлена',
+        'Link Added' => 'Зв\'язок доданий',
+        'Incoming Customer Email' => 'Вхідний електронний лист від клієнта',
+        'Incoming Web Request' => 'Вхідний Веб-запит',
+        'Priority Updated' => 'Приоритет поновлено',
+        'Ticket Unlocked' => 'Квиток разблоковано',
+        'Outgoing Email' => 'Вихідне Поштове Повідомлення',
+        'Title Updated' => 'Заголовок поновлено',
+        'Ticket Merged' => 'Квиток Поєднано',
+        'Outgoing Phone Call' => 'Вихідний Телефонний Виклик',
+        'Forwarded Message' => 'Перенаправлене повідомлення',
+        'Removed User Subscription' => 'Вилучений Опис Користувача',
+        'Time Accounted' => 'Час Враховано',
+        'Incoming Phone Call' => 'Вхідний Телефонний Виклик',
+        'System Request.' => 'Системний Запит.',
+        'Incoming Follow-Up' => 'Вхідне Відстеження',
+        'Automatic Reply Sent' => 'Автоматичну Відповідь Відправлено',
+        'Automatic Reject Sent' => 'Автоматичну Відмову Відправлено',
+        'Escalation Solution Time In Effect' => 'Час Розв\'язання Підвищення задіяно',
+        'Escalation Solution Time Stopped' => 'Час Розв\'язання Підвищення зупинено',
+        'Escalation Response Time In Effect' => 'Час Відповіді Підвищення задіяно',
+        'Escalation Response Time Stopped' => 'Час Відповіді на Підвищення зупинено',
+        'SLA Updated' => 'SLA оновлено',
+        'Queue Updated' => 'Чергу оновлено',
+        'External Chat' => 'Зовнішній чат',
+        'Queue Changed' => 'Чергу змінено',
+        'Notification Was Sent' => 'Сповіщення надіслано',
         'We are sorry, you do not have permissions anymore to access this ticket in its current state.' =>
-            '',
-        'Can\'t get for ArticleID %s!' => '',
-        'Article filter settings were saved.' => '',
-        'Event type filter settings were saved.' => '',
-        'Need ArticleID!' => '',
-        'Invalid ArticleID!' => '',
-        'Offline' => '',
-        'User is currently offline.' => '',
-        'User is currently active.' => '',
-        'Away' => '',
-        'User was inactive for a while.' => '',
-        'Unavailable' => '',
-        'User set their status to unavailable.' => '',
-        'Fields with no group' => '',
-        'View the source for this Article' => '',
+            'На жаль, у вас більше немає прав доступу до цього квитка в його поточному стані.',
+        'Can\'t get for ArticleID %s!' => 'Неможливо отримати для ArticleID %s!',
+        'Article filter settings were saved.' => 'Налаштування фільтра статей було збережено.',
+        'Event type filter settings were saved.' => 'Налаштування фільтру типів подій було збережено.',
+        'Need ArticleID!' => 'Потрібний ArticleID!',
+        'Invalid ArticleID!' => 'Нечинний ArticleID!',
+        'Offline' => 'Офлайн',
+        'User is currently offline.' => 'Наразі користувач не в мережі.',
+        'User is currently active.' => 'Наразі користувач активний.',
+        'Away' => 'Відсутній',
+        'User was inactive for a while.' => 'Користувач деякий час неактивний.',
+        'Unavailable' => 'Недоступний',
+        'User set their status to unavailable.' => 'Користувач встановив свій статус як недосяжний.',
+        'Fields with no group' => 'Поля, що не мають груп',
+        'View the source for this Article' => 'Переглянути джерело цієї Статті',
 
         # Perl Module: Kernel/Modules/CustomerTicketAttachment.pm
-        'FileID and ArticleID are needed!' => '',
-        'No TicketID for ArticleID (%s)!' => '',
-        'No such attachment (%s)!' => '',
+        'FileID and ArticleID are needed!' => 'Потрібні FileID та ArticleID!',
+        'No TicketID for ArticleID (%s)!' => 'Немає TicketID та ArticleID (%s)!',
+        'No such attachment (%s)!' => 'Немає такого долучення (%s)!',
 
         # Perl Module: Kernel/Modules/CustomerTicketMessage.pm
-        'Check SysConfig setting for %s::QueueDefault.' => '',
-        'Check SysConfig setting for %s::TicketTypeDefault.' => '',
+        'Check SysConfig setting for %s::QueueDefault.' => 'Перевірте налаштування SysConfig для %s::QueueDefault.',
+        'Check SysConfig setting for %s::TicketTypeDefault.' => 'Перевірте налаштування SysConfig для %s::TicketTypeDefault.',
 
         # Perl Module: Kernel/Modules/CustomerTicketOverview.pm
-        'Need CustomerID!' => '',
+        'Need CustomerID!' => 'Потрібний CustomerID!',
         'My Tickets' => 'Мої заявки',
         'Company Tickets' => 'Заявки компанії',
-        'Untitled!' => '',
+        'Untitled!' => 'Без назви!',
 
         # Perl Module: Kernel/Modules/CustomerTicketSearch.pm
         'Please remove the following words because they cannot be used for the search:' =>
-            '',
+            'Будь ласка, вилучіть наступні слова, тому що їх не можна використовувати для пошуку:',
 
         # Perl Module: Kernel/Modules/CustomerTicketZoom.pm
-        'Can\'t reopen ticket, not possible in this queue!' => '',
-        'Create a new ticket!' => '',
+        'Can\'t reopen ticket, not possible in this queue!' => 'Неможливо перевідкрити квиток, неможливо для цієї черги!',
+        'Create a new ticket!' => 'Створіть новий квиток!',
 
         # Perl Module: Kernel/Modules/Installer.pm
-        'Directory "%s" doesn\'t exist!' => '',
-        'Configure "Home" in Kernel/Config.pm first!' => '',
-        'File "%s/Kernel/Config.pm" not found!' => '',
-        'Directory "%s" not found!' => '',
-        'Kernel/Config.pm isn\'t writable!' => '',
+        'SecureMode active!' => 'SecureMode активований!',
+        'If you want to re-run the Installer, disable the SecureMode in the SysConfig.' =>
+            'Якщо вам треба перезапустити інсталятор, вимкніть SecureMode в SysConfig.',
+        'Directory "%s" doesn\'t exist!' => 'Тека "%s" не існує!',
+        'Configure "Home" in Kernel/Config.pm first!' => 'Спочатку налаштуйте "Home" в Kernel/Config.pm!',
+        'File "%s/Kernel/Config.pm" not found!' => 'Файл "%s/Kernel/Config.pm" не знайдено!',
+        'Directory "%s" not found!' => 'Теку "%s" не знайдено!',
+        'Kernel/Config.pm isn\'t writable!' => 'Kernel/Config.pm не записний!',
         'If you want to use the installer, set the Kernel/Config.pm writable for the webserver user!' =>
-            '',
-        'Unknown Check!' => '',
-        'The check "%s" doesn\'t exist!' => '',
-        'Database %s' => '',
-        'Unknown database type "%s".' => '',
-        'Please go back.' => '',
-        'Install OTRS - Error' => '',
-        'File "%s/%s.xml" not found!' => '',
-        'Contact your Admin!' => '',
-        'Can\'t write Config file!' => '',
-        'Unknown Subaction %s!' => '',
+            'Якщо ви бажаєте використати інсталятор, встановіть Kernel/Config.pm записним для користувача webserver!',
+        'Unknown Check!' => 'Невідома Перевірка!',
+        'The check "%s" doesn\'t exist!' => 'Перевірка "%s" не існує!',
+        'Database %s' => 'База даний %s',
+        'Configure MySQL' => 'Налаштувати MySQL',
+        'Configure PostgreSQL' => 'Налаштувати PostgreSQL',
+        'Configure Oracle' => 'Налаштувати Oracle',
+        'Unknown database type "%s".' => 'Невідомий тип бази даний "%s".',
+        'Please go back.' => 'Будь ласка, поверніться.',
+        'Install OTRS - Error' => 'Встановлення OTRS - Помилка',
+        'File "%s/%s.xml" not found!' => 'Файлу "%s/%s.xml" не знайдено!',
+        'Contact your Admin!' => 'Зв\'яжіться з вашим Адміністратором!',
+        'Syslog' => 'Системний журнал',
+        'Can\'t write Config file!' => 'Не можу записати до файлу Налаштування!',
+        'Unknown Subaction %s!' => 'Невідома Піддія %s!',
         'Can\'t connect to database, Perl module DBD::%s not installed!' =>
-            '',
-        'Can\'t connect to database, read comment!' => '',
+            'Неможливо під\'єднатися до бази даних, не встановлено Perl-модуль DBD::%s!',
+        'Can\'t connect to database, read comment!' => 'Неможливо під\'єднатися до бази даних, читай коментар!',
         'Error: Please make sure your database accepts packages over %s MB in size (it currently only accepts packages up to %s MB). Please adapt the max_allowed_packet setting of your database in order to avoid errors.' =>
-            '',
+            'Помилка: Будь ласка, переконайтеся в тому. що ваша база даних приймає пакунки розміром завбільшки %s МБ (в даний час приймаються пакунки за розміром до %s МБ). Будь ласка адаптуйте установку max_allowed_packet вашої бази даних, щоб уникнути помилок.',
         'Error: Please set the value for innodb_log_file_size on your database to at least %s MB (current: %s MB, recommended: %s MB). For more information, please have a look at %s.' =>
-            '',
+            'Помилка: Будь ласка, встановіть значення для innodb_log_file_size вашої бази даних, принаймні %s МБ (зараз: %s МБ, рекомендовано: %s МБ). Для отримання додаткової інформації, будь ласка, перегляньте %s.',
 
         # Perl Module: Kernel/Modules/PublicRepository.pm
-        'Need config Package::RepositoryAccessRegExp' => '',
-        'Authentication failed from %s!' => '',
+        'Need config Package::RepositoryAccessRegExp' => 'Потрібне налаштування ',
+        'Authentication failed from %s!' => 'Невдала автентифікація з %s!',
 
         # Perl Module: Kernel/Output/HTML/ArticleCheck/PGP.pm
-        'Sent message crypted to recipient!' => '',
-        '"PGP SIGNED MESSAGE" header found, but invalid!' => '',
+        'Sent message crypted to recipient!' => 'Відправлене шифроване повідомлення до отримувача!',
+        '"PGP SIGNED MESSAGE" header found, but invalid!' => '"PGP SIGNED MESSAGE" заголово знайдено, але він нечинний!',
 
         # Perl Module: Kernel/Output/HTML/ArticleCheck/SMIME.pm
-        '"S/MIME SIGNED MESSAGE" header found, but invalid!' => '',
-        'Ticket decrypted before' => '',
-        'Impossible to decrypt: private key for email was not found!' => '',
-        'Successful decryption' => '',
+        '"S/MIME SIGNED MESSAGE" header found, but invalid!' => '"S/MIME SIGNED MESSAGE" заголовок знайдено, але він нечинний!',
+        'Ticket decrypted before' => 'Попереднє розшифрування квитка',
+        'Impossible to decrypt: private key for email was not found!' => 'Неможливо дешифрувати: не знайдено приватного ключа для адреси електронної пошти!',
+        'Successful decryption' => 'Вдале дешифрування',
 
         # Perl Module: Kernel/Output/HTML/Dashboard/EventsTicketCalendar.pm
-        'The start time of a ticket has been set after the end time!' => '',
+        'The start time of a ticket has been set after the end time!' => 'Початковий час квитка було встановлено після кінцевого!',
 
         # Perl Module: Kernel/Output/HTML/Dashboard/News.pm
-        'Can\'t connect to OTRS News server!' => '',
-        'Can\'t get OTRS News from server!' => '',
+        'Can\'t connect to OTRS News server!' => 'Не можу з\'єднатись з сервером новин OTRS!',
+        'Can\'t get OTRS News from server!' => 'Неможливо отримати новини OTRS від сервера!',
 
         # Perl Module: Kernel/Output/HTML/Dashboard/ProductNotify.pm
-        'Can\'t connect to Product News server!' => '',
-        'Can\'t get Product News from server!' => '',
+        'Can\'t connect to Product News server!' => 'Неможливо з\'єднатись з сервером новин продукту!',
+        'Can\'t get Product News from server!' => 'Неможливо отримати новини продукту з серверу!',
 
         # Perl Module: Kernel/Output/HTML/Dashboard/RSS.pm
-        'Can\'t connect to %s!' => '',
+        'Can\'t connect to %s!' => 'Неможливо з\'єднатись із %s!',
 
         # Perl Module: Kernel/Output/HTML/Dashboard/TicketGeneric.pm
-        'sorted ascending' => '',
-        'sorted descending' => '',
-        'filter not active' => '',
-        'filter active' => '',
-        'This ticket has no title or subject' => '',
+        'sorted ascending' => 'відсортоване за зростанням',
+        'sorted descending' => 'відсортований за спаданням',
+        'filter not active' => 'фільтр не активний',
+        'filter active' => 'фільтр активний',
+        'This ticket has no title or subject' => 'Цей квиток не має заголовка або теми',
 
         # Perl Module: Kernel/Output/HTML/Layout.pm
         'We are sorry, you do not have permissions anymore to access this ticket in its current state. You can take one of the following actions:' =>
-            '',
-        'No Permission' => '',
+            'На жаль, у вас більше немає прав доступу до цього квитка в його поточному стані. Ви можете вжити наступні дії:',
+        'No Permission' => 'Немає прав доступу',
 
         # Perl Module: Kernel/Output/HTML/Layout/LinkObject.pm
-        'Linked as' => '',
-        'Search Result' => '',
+        'Linked as' => 'Пов\'язаний, як',
+        'Search Result' => 'Результат Пошуку',
 
         # Perl Module: Kernel/Output/HTML/LinkObject/Ticket.pm
-        'Archive search' => '',
+        'Archive search' => 'Пошук в архіві',
 
         # Perl Module: Kernel/Output/HTML/Notification/AgentOTRSBusiness.pm
-        '%s Upgrade to %s now! %s' => '',
+        '%s Upgrade to %s now! %s' => '%s Оновіться до %s зараз! %s',
 
         # Perl Module: Kernel/Output/HTML/Notification/CustomerSystemMaintenanceCheck.pm
-        'A system maintenance period will start at: ' => '',
+        'A system maintenance period will start at: ' => 'Період обслуговування системи почнеться:',
 
         # Perl Module: Kernel/Output/HTML/Preferences/Language.pm
-        '(in process)' => '',
+        '(in process)' => '(В процесі)',
 
         # Perl Module: Kernel/Output/HTML/Preferences/NotificationEvent.pm
         'Please make sure you\'ve chosen at least one transport method for mandatory notifications.' =>
-            '',
+            'Будь ласка, переконайтеся в тому, що ви вибрали принаймні один транспортний метод для обов\'язкових сповіщень.',
 
         # Perl Module: Kernel/Output/HTML/Preferences/OutOfOffice.pm
-        'Please specify an end date that is after the start date.' => '',
+        'Please specify an end date that is after the start date.' => 'Будь ласка виберіть кінцеву дату, що йде після початкової.',
 
         # Perl Module: Kernel/Output/HTML/Preferences/Password.pm
-        'Please supply your new password!' => '',
+        'Please supply your new password!' => 'Будь ласка вкажіть ваш новий пароль!',
 
         # Perl Module: Kernel/Output/HTML/Statistics/View.pm
-        'No (not supported)' => '',
+        'No (not supported)' => 'Ні (не підтримується)',
         'No past complete or the current+upcoming complete relative time value selected.' =>
-            '',
+            'Не вибрано величину завершеного минулого або поточного + відносного майбутнього часу.',
         'The selected time period is larger than the allowed time period.' =>
-            '',
+            'Вибраний період часу триваліший ніж це дозволено.',
         'No time scale value available for the current selected time scale value on the X axis.' =>
-            '',
-        'The selected date is not valid.' => '',
-        'The selected end time is before the start time.' => '',
-        'There is something wrong with your time selection.' => '',
+            'Немає значення масштабу часу для поточного обраного значення шкали часу на осі Х.',
+        'The selected date is not valid.' => 'Вибрана дата нечинна.',
+        'The selected end time is before the start time.' => 'Вибрана кінцева дата передує початковій.',
+        'There is something wrong with your time selection.' => 'Щось не так із вашим вибором часу.',
         'Please select only one element or allow modification at stat generation time.' =>
-            '',
+            'Будь ласка виберіть тільки один елемент або дозвольте зміну часу формування статистики.',
         'Please select at least one value of this field or allow modification at stat generation time.' =>
-            '',
-        'Please select one element for the X-axis.' => '',
-        'You can only use one time element for the Y axis.' => '',
-        'You can only use one or two elements for the Y axis.' => '',
-        'Please select at least one value of this field.' => '',
+            'Будь ласка виберіть, принаймні, одне значення цього поля або дозвольте зміну часу формування статистики.',
+        'Please select one element for the X-axis.' => 'Будь ласка, виберіть один елемент для Х-осі.',
+        'You can only use one time element for the Y axis.' => 'Ви можете використати тільки один елемент для осі Y.',
+        'You can only use one or two elements for the Y axis.' => 'Ви можете використати один або два елементи для осі Y.',
+        'Please select at least one value of this field.' => 'Будь ласка оберіть, принаймні, одне значення для цього поля.',
         'Please provide a value or allow modification at stat generation time.' =>
-            '',
-        'Please select a time scale.' => '',
+            'Будь ласка, вкажіть значення або дозвольте зміну часу формування статистики.',
+        'Please select a time scale.' => 'Будь ласка, виберіть масштаб часу.',
         'Your reporting time interval is too small, please use a larger time scale.' =>
-            '',
+            'Період звітності занадто малий, будь ласка, вкажіть більший масштаб.',
         'Please remove the following words because they cannot be used for the ticket restrictions: %s.' =>
-            '',
+            'Будь ласка. вилучіть наступні слова, тому що їх не можна використовувати для обмежень доступу квитків: %s',
 
         # Perl Module: Kernel/Output/HTML/TicketOverviewMenu/Sort.pm
         'Order by' => 'Сортування',
 
+        # Perl Module: Kernel/System/ACL/DB/ACL.pm
+        'Couldn\'t read ACL configuration file. Please make sure the file is valid.' =>
+            'Не можу прочитати файл налаштувань ACL. Будь ласка, переконайтеся в чинності файлу.',
+
         # Perl Module: Kernel/System/AuthSession.pm
         'You have exceeded the number of concurrent agents - contact sales@otrs.com.' =>
-            '',
-        'Please note that the session limit is almost reached.' => '',
+            'Ви перевищили кількість одночасних агентів - зверніться за адресою sales@otrs.com',
+        'Please note that the session limit is almost reached.' => 'Зверніть увагу будь ласка, що обмеження сеансу майже досягнуто.',
         'Login rejected! You have exceeded the maximum number of concurrent Agents! Contact sales@otrs.com immediately!' =>
-            '',
-        'Session per user limit reached!' => '',
+            'У вході відмовлено! Ви перевищили максимальну кількість одночасно підключених Агентів! Негайно зверніться за адресою sales@otrs.com!',
+        'Session per user limit reached!' => 'Досягнуто максимальну кількість користувачів сесії!',
 
         # Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
-        'Configuration Options Reference' => '',
-        'This setting can not be changed.' => '',
-        'This setting is not active by default.' => '',
-        'This setting can not be deactivated.' => '',
+        'Configuration Options Reference' => 'Посилання на параметри налаштування',
+        'This setting can not be changed.' => 'Це налаштування не може бути змінено.',
+        'This setting is not active by default.' => 'Це налаштування типово не активне.',
+        'This setting can not be deactivated.' => 'Це налаштування не може бути деактивоване.',
+
+        # Perl Module: Kernel/System/CustomerUser.pm
+        'Customer user "%s" already exists.' => 'Клієнт "%s" вже існує.',
+
+        # Perl Module: Kernel/System/CustomerUser/DB.pm
+        'This email address is already in use for another customer user.' =>
+            'Ця адреса поштової скриньки вже використана іншим клієнтом.',
+
+        # Perl Module: Kernel/System/DynamicField/Driver/BaseText.pm
+        'e.g. Text or Te*t' => 'наприклад Text або Te*t',
+
+        # Perl Module: Kernel/System/DynamicField/Driver/Checkbox.pm
+        'Ignore this field.' => 'Пропустити це поле.',
+
+        # Perl Module: Kernel/System/NotificationEvent.pm
+        'Couldn\'t read Notification configuration file. Please make sure the file is valid.' =>
+            'Не можу прочитати файл налаштування Сповіщень. Будь ласка, переконайтесь у чинності файлу.',
+        'Imported notification has body text with more than 4000 characters.' =>
+            '',
 
         # Perl Module: Kernel/System/Package.pm
-        'not installed' => '',
-        'File is not installed!' => '',
-        'File is different!' => '',
-        'Can\'t read file!' => '',
+        'not installed' => 'не встановлено',
+        'File is not installed!' => 'Файл не встановлено!',
+        'File is different!' => 'Файл інакший!',
+        'Can\'t read file!' => 'Не можу прочитати файла!',
+
+        # Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
+        'The process "%s" and all of its data has been imported successfully.' =>
+            'Процес "%s" та всі його дані вдало імпортовано!',
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
-        'Inactive' => '',
-        'FadeAway' => '',
+        'Inactive' => 'Неактивний',
+        'FadeAway' => 'Заникання',
 
         # Perl Module: Kernel/System/Registration.pm
-        'Can\'t get Token from sever' => '',
+        'Can\'t get Token from sever' => 'Неможливо отримати Токен від сервера',
+
+        # Perl Module: Kernel/System/Stats.pm
+        'Sum' => 'Сума',
 
         # Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
-        'State Type' => '',
+        'State Type' => 'Тип Стану',
         'Created Priority' => 'Пріоритет',
         'Created State' => 'Стан',
-        'CustomerUserLogin (complex search)' => '',
-        'CustomerUserLogin (exact match)' => '',
         'Create Time' => 'Час створення',
         'Close Time' => 'Час закриття',
-        'Escalation - First Response Time' => '',
-        'Escalation - Update Time' => '',
-        'Escalation - Solution Time' => '',
+        'Escalation - First Response Time' => 'Підвищення - Час Першої Відповіді',
+        'Escalation - Update Time' => 'Підвищення - Час оновлення',
+        'Escalation - Solution Time' => 'Підвищення - Час Розв\'язання',
         'Agent/Owner' => 'Агент (власник)',
         'Created by Agent/Owner' => 'Створене агентом (власником)',
+        'CustomerUserLogin' => 'ім\'я користувача-клієнта',
+        'CustomerUserLogin (complex search)' => 'Ім\'я користувача-клієнта (комплексний пошук)',
+        'CustomerUserLogin (exact match)' => 'Ім\'я користувача-клієнта (точний збіг)',
 
         # Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
         'Evaluation by' => 'Заблоковане',
@@ -4081,82 +4198,85 @@ sub Data {
         'Number of Articles' => 'Кількість повідомлень',
 
         # Perl Module: Kernel/System/Stats/Dynamic/TicketList.pm
-        'unlimited' => '',
+        'unlimited' => 'необмежений',
         'ascending' => ' По зростанню',
         'descending' => ' По убуванню',
         'Attributes to be printed' => 'Атрибути для печатки',
         'Sort sequence' => 'Порядок сортування',
-        'State Historic' => '',
-        'State Type Historic' => '',
-        'Historic Time Range' => '',
+        'State Historic' => 'Історія Стану',
+        'State Type Historic' => 'Історія Типу Стану',
+        'Historic Time Range' => 'Межі часу історії',
 
         # Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-        'Solution Average' => '',
-        'Solution Min Time' => '',
-        'Solution Max Time' => '',
-        'Solution Average (affected by escalation configuration)' => '',
-        'Solution Min Time (affected by escalation configuration)' => '',
-        'Solution Max Time (affected by escalation configuration)' => '',
+        'Solution Average' => 'Середній час розв\'язання',
+        'Solution Min Time' => 'Мінімальний час розв\'язання',
+        'Solution Max Time' => 'Максимальний час розв\'язання',
+        'Solution Average (affected by escalation configuration)' => 'Середній час розв\'язання (залежить від налаштування підвищення)',
+        'Solution Min Time (affected by escalation configuration)' => 'Мінімальний час розв\'язання (залежить від налаштування підвищення)',
+        'Solution Max Time (affected by escalation configuration)' => 'Максимальний час розв\'язання (залежить від налаштування підвищення)',
         'Solution Working Time Average (affected by escalation configuration)' =>
-            '',
+            'Середній час роботи над розв\'язанням (залежить від налаштувань підвищення)',
         'Solution Min Working Time (affected by escalation configuration)' =>
-            '',
+            'Мінімальний час роботи над розв\'язанням (залежить від налаштування підвищення)',
         'Solution Max Working Time (affected by escalation configuration)' =>
-            '',
-        'Response Average (affected by escalation configuration)' => '',
-        'Response Min Time (affected by escalation configuration)' => '',
-        'Response Max Time (affected by escalation configuration)' => '',
-        'Response Working Time Average (affected by escalation configuration)' =>
-            '',
-        'Response Min Working Time (affected by escalation configuration)' =>
-            '',
-        'Response Max Working Time (affected by escalation configuration)' =>
-            '',
-        'Number of Tickets (affected by escalation configuration)' => '',
+            'Максимальний час роботи над розв\'язанням (залежить від налаштування підвищення)',
+        'First Response Average (affected by escalation configuration)' =>
+            'Середній час першої відповіді (залежить від налаштування підвищення)',
+        'First Response Min Time (affected by escalation configuration)' =>
+            'Мінімальний час першої відповіді (залежить від налаштування підвищення)',
+        'First Response Max Time (affected by escalation configuration)' =>
+            'Максимальний час першої відповіді (залежить від налаштування підвищення)',
+        'First Response Working Time Average (affected by escalation configuration)' =>
+            'Середній час роботи над першою відповіддю (залежить від налаштування підвищення)',
+        'First Response Min Working Time (affected by escalation configuration)' =>
+            'Мінімальний час роботи над першою відповіддю (залежить від налаштування підвищення)',
+        'First Response Max Working Time (affected by escalation configuration)' =>
+            'Максимальний час роботи над першою відповіддю (залежить від налаштування підвищення)',
+        'Number of Tickets (affected by escalation configuration)' => 'Кількість квитків (залежить від налаштування підвищення)',
 
         # Perl Module: Kernel/System/Stats/Static/StateAction.pm
-        'Days' => '',
+        'Days' => 'Дні',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/TablePresence.pm
-        'Table Presence' => '',
-        'Internal Error: Could not open file.' => '',
-        'Table Check' => '',
-        'Internal Error: Could not read file.' => '',
-        'Tables found which are not present in the database.' => '',
+        'Table Presence' => 'Таблиця наявності',
+        'Internal Error: Could not open file.' => 'Внутрішня помилка: неможливо відкрити файл',
+        'Table Check' => 'Таблиця перевірки',
+        'Internal Error: Could not read file.' => 'Внутрішня помилка: неможливо прочитати файл.',
+        'Tables found which are not present in the database.' => 'Знайдено таблицю, якої немає в базі даних.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mssql/Size.pm
-        'Database Size' => '',
-        'Could not determine database size.' => '',
+        'Database Size' => 'Розмір бази даних',
+        'Could not determine database size.' => 'Не можу визначити розмір бази даних.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mssql/Version.pm
-        'Database Version' => '',
-        'Could not determine database version.' => '',
+        'Database Version' => 'Версія бази даних',
+        'Could not determine database version.' => 'Не можу визначити версію бази даних.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Charset.pm
-        'Client Connection Charset' => '',
-        'Setting character_set_client needs to be utf8.' => '',
-        'Server Database Charset' => '',
-        'Setting character_set_database needs to be UNICODE or UTF8.' => '',
-        'Table Charset' => '',
-        'There were tables found which do not have utf8 as charset.' => '',
+        'Client Connection Charset' => 'Набір символів клієнтського зв\'язку',
+        'Setting character_set_client needs to be utf8.' => 'Налаштування character_set_client має бути utf8.',
+        'Server Database Charset' => 'Набір символів бази даних сервера',
+        'Setting character_set_database needs to be UNICODE or UTF8.' => 'Налаштування character_set_database має бути UNICODE або UTF8.',
+        'Table Charset' => 'Таблиця набору символів',
+        'There were tables found which do not have utf8 as charset.' => 'Знайдено таблицю з набором символів не utfi8.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/InnoDBLogFileSize.pm
-        'InnoDB Log File Size' => '',
-        'The setting innodb_log_file_size must be at least 256 MB.' => '',
+        'InnoDB Log File Size' => 'Розмір файлу журналу InnoDB',
+        'The setting innodb_log_file_size must be at least 256 MB.' => 'Налаштування innodb_log_file_size має бути, принаймні, 256 МБ.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/MaxAllowedPacket.pm
-        'Maximum Query Size' => '',
+        'Maximum Query Size' => 'Максимальний розмір вибірки',
         'The setting \'max_allowed_packet\' must be higher than 20 MB.' =>
-            '',
+            'Пункт max_allowed_packet має бути більше 20 МБ.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Performance.pm
-        'Query Cache Size' => '',
+        'Query Cache Size' => 'Розмір кешу запиту',
         'The setting \'query_cache_size\' should be used (higher than 10 MB but not more than 512 MB).' =>
-            '',
+            'Параметр \'query_cache_size\' повинен використовуватися (вище 10 МБ, але не більше 512 МБ).',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/StorageEngine.pm
-        'Default Storage Engine' => '',
-        'Table Storage Engine' => '',
+        'Default Storage Engine' => 'Типове знаряддя зберігання даних',
+        'Table Storage Engine' => 'Знараддя для зберігання таблиць',
         'Tables with a different storage engine than the default engine were found.' =>
             '',
 
@@ -4280,6 +4400,9 @@ sub Data {
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageList.pm
         'Package List' => '',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SessionConfigSettings.pm
+        'Session Config Settings' => '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
         'Spooled Emails' => '',
         'There are emails in var/spool that OTRS could not process.' => '',
@@ -4330,6 +4453,12 @@ sub Data {
         'TimeZoneUser may only be activated for systems running in UTC that don\'t have an OTRS TimeZone set.' =>
             '',
         'OTRS TimeZone setting for calendar ' => '',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/UI/AgentSkinUsage.pm
+        'UI - Agent Skin Usage' => '',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/UI/AgentThemeUsage.pm
+        'UI - Agent Theme Usage' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/LoadedModules.pm
         'Webserver' => '',
@@ -4393,11 +4522,11 @@ sub Data {
         'Send unencrypted notification' => '',
 
         # Perl Module: Kernel/System/Web/InterfaceAgent.pm
-        'Panic, user authenticated but no user data can be found in OTRS DB!! Perhaps the user is invalid.' =>
+        'Authentication succeeded, but no user data record is found in the database. Please contact the administrator.' =>
             '',
         'Can`t remove SessionID.' => '',
         'Logout successful.' => '',
-        'Panic! Invalid Session!!!' => '',
+        'Error: invalid session.' => '',
         'No Permission to use this frontend module!' => '',
 
         # Perl Module: Kernel/System/Web/InterfaceCustomer.pm
@@ -4410,9 +4539,6 @@ sub Data {
         'Can\'t send account info!' => '',
 
         # Perl Module: Kernel/System/Web/InterfaceInstaller.pm
-        'SecureMode active!' => '',
-        'If you want to re-run the Installer, disable the SecureMode in the SysConfig.' =>
-            '',
         'Action "%s" not found!' => '',
 
         # Database XML Definition: scripts/database/otrs-initial_insert.xml
@@ -4444,7 +4570,7 @@ sub Data {
         'Follow-ups for closed tickets are not possible. No new ticket will be created.' =>
             '',
         'new ticket' => '',
-        'Follow-ups for closed tickets are not possible. A new ticket will be created..' =>
+        'Follow-ups for closed tickets are not possible. A new ticket will be created.' =>
             '',
         'Postmaster queue.' => '',
         'All default incoming tickets.' => '',
@@ -4546,6 +4672,8 @@ Thanks for your help!
             '',
         'Activates time accounting.' => '',
         'ActivityID' => '',
+        'Add a comment.' => '',
+        'Add a default name for Dynamic Field.' => '',
         'Add an inbound phone call to this ticket' => '',
         'Add an outbound phone call to this ticket' => '',
         'Added email. %s' => '',
@@ -4636,9 +4764,9 @@ Thanks for your help!
             '',
         'Allows defining services and SLAs for tickets (e. g. email, desktop, network, ...), and escalation attributes for SLAs (if ticket service/SLA feature is enabled).' =>
             '',
-        'Allows extended search conditions in ticket search of the agent interface. With this feature you can search e. g. with this kind of conditions like "(key1&&key2)" or "(key1||key2)".' =>
+        'Allows extended search conditions in ticket search of the agent interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".' =>
             '',
-        'Allows extended search conditions in ticket search of the customer interface. With this feature you can search e. g. with this kind of conditions like "(key1&&key2)" or "(key1||key2)".' =>
+        'Allows extended search conditions in ticket search of the customer interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".' =>
             '',
         'Allows extended search conditions in ticket search of the generic agent interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".' =>
             '',
@@ -4762,8 +4890,9 @@ Thanks for your help!
             '',
         'Controls how to display the ticket history entries as readable values.' =>
             '',
-        'Controls if CustomerID is editable in the agent interface.' => '',
-        'Controls if CutomerID is editable in the agent interface.' => '',
+        'Controls if CustomerID is automatically copied from the sender address for unknown customers.' =>
+            '',
+        'Controls if CustomerID is read-only in the agent interface.' => '',
         'Controls if customers have the ability to sort their tickets.' =>
             '',
         'Controls if more than one from entry can be set in the new phone ticket in the agent interface.' =>
@@ -4832,6 +4961,8 @@ Thanks for your help!
         'Customizable stop words for fulltext index. These words will be removed from the search index.' =>
             '',
         'Czech' => '',
+        'DEPRECATED: This config setting will be removed in further versions of OTRS. Sets the time (in seconds) a user is marked as active (minimum active time is 300 seconds).' =>
+            '',
         'Danish' => '',
         'Data used to export the search result in CSV format.' => '',
         'Date / Time' => '',
@@ -5471,6 +5602,8 @@ Thanks for your help!
             '',
         'Defines the time zone of the indicated calendar, which can be assigned later to a specific queue.' =>
             '',
+        'Defines the timeout (in seconds, minimum is 20 seconds) for the support data collection with the public module \'PublicSupportDataCollector\' (e.g. used from the OTRS Daemon).' =>
+            '',
         'Defines the two-factor module to authenticate agents.' => '',
         'Defines the two-factor module to authenticate customers.' => '',
         'Defines the type of protocol, used by the web server, to serve the application. If https protocol will be used instead of plain http, it must be specified here. Since this has no affect on the web server\'s settings or behavior, it will not change the method of access to the application and, if it is wrong, it will not prevent you from logging into the application. This setting is only used as a variable, OTRS_CONFIG_HttpType which is found in all forms of messaging used by the application, to build links to the tickets within your system.' =>
@@ -5752,7 +5885,7 @@ Thanks for your help!
         'French stop words for fulltext index. These words will be removed from the search index.' =>
             '',
         'Frontend' => '',
-        'Frontend module registration (disable AgentTicketService link if Ticket Serivice feature is not used).' =>
+        'Frontend module registration (disable AgentTicketService link if Ticket Service feature is not used).' =>
             '',
         'Frontend module registration (disable company link if no company feature is used).' =>
             '',
@@ -5763,6 +5896,7 @@ Thanks for your help!
         'Frontend module registration for the agent interface.' => '',
         'Frontend module registration for the customer interface.' => '',
         'Frontend theme' => '',
+        'Frontend theme.' => '',
         'Full value' => '',
         'Fulltext index regex filters to remove parts of the text.' => '',
         'Fulltext search' => '',
@@ -5869,22 +6003,6 @@ Thanks for your help!
             '',
         'If "file" was selected for LogModule, a logfile must be specified. If the file doesn\'t exist, it will be created by the system.' =>
             '',
-        'If a note is added by an agent, sets the state of a ticket in the close ticket screen of the agent interface.' =>
-            '',
-        'If a note is added by an agent, sets the state of a ticket in the ticket bulk screen of the agent interface.' =>
-            '',
-        'If a note is added by an agent, sets the state of a ticket in the ticket free text screen of the agent interface.' =>
-            '',
-        'If a note is added by an agent, sets the state of a ticket in the ticket note screen of the agent interface.' =>
-            '',
-        'If a note is added by an agent, sets the state of a ticket in the ticket responsible screen of the agent interface.' =>
-            '',
-        'If a note is added by an agent, sets the state of the ticket in the ticket owner screen of a zoomed ticket in the agent interface.' =>
-            '',
-        'If a note is added by an agent, sets the state of the ticket in the ticket pending screen of a zoomed ticket in the agent interface.' =>
-            '',
-        'If a note is added by an agent, sets the state of the ticket in the ticket priority screen of a zoomed ticket in the agent interface.' =>
-            '',
         'If active, none of the regular expressions may match the user\'s email address to allow registration.' =>
             '',
         'If active, one of the regular expressions has to match the user\'s email address to allow registration.' =>
@@ -5902,6 +6020,8 @@ Thanks for your help!
         'If enabled the daemon will redirect the standard error stream to a log file.' =>
             '',
         'If enabled the daemon will redirect the standard output stream to a log file.' =>
+            '',
+        'If enabled the daemon will use this directory to create its PID files. Note: Please stop the daemon before any change and use this setting only if <$OTRSHome>/var/run/ can not be used.' =>
             '',
         'If enabled, OTRS will deliver all CSS files in minified form. WARNING: If you turn this off, there will likely be problems in IE 7, because it cannot load more than 32 CSS files.' =>
             '',
@@ -5923,7 +6043,7 @@ Thanks for your help!
             '',
         'If set, this address is used as envelope sender in outgoing messages (not notifications - see below). If no address is specified, the envelope sender is equal to queue e-mail address.' =>
             '',
-        'If this option is enabled, then the decrypted data will be stored in the database if they are displayed in AgentTicketZoom.' =>
+        'If this option is disabled, articles will not automatically be decrypted and stored in the database. Please note that this also means no decryption will take place and the articles will be shown in ticket zoom in their original (encrypted) form.' =>
             '',
         'If this option is set to \'Yes\', tickets created via the web interface, via Customers or Agents, will receive an autoresponse if configured. If this option is set to \'No\', no autoresponses will be sent.' =>
             '',
@@ -5931,7 +6051,9 @@ Thanks for your help!
             '',
         'If this setting is active, local modifications will not be highlighted as errors in the package manager and support data collector.' =>
             '',
-        'Ignore article with system sender type for new article feature (e. g. auto responses or email notifications).' =>
+        'If you\'re going to be out of office, you may wish to let other users know by setting the exact dates of your absence.' =>
+            '',
+        'Ignore system sender article types (e. g. auto responses or email notifications) to be flagged as \'Unread Article\' in AgentTicketZoom or expanded automatically in Large view screens.' =>
             '',
         'Include tickets of subqueues per default when selecting a queue.' =>
             '',
@@ -6006,6 +6128,7 @@ Thanks for your help!
         'Locked Tickets.' => '',
         'Locked ticket.' => 'Заблокована заявка.',
         'Log file for the ticket counter.' => '',
+        'Logged-In Users' => '',
         'Logout of customer panel.' => '',
         'Loop-Protection! No auto-response sent to "%s".' => '',
         'Mail Accounts' => '',
@@ -6050,7 +6173,7 @@ Thanks for your help!
             '',
         'Maximum size (in characters) of the customer information table in the ticket zoom view.' =>
             '',
-        'Merge this ticket and all articles into a another ticket' => '',
+        'Merge this ticket and all articles into another ticket' => '',
         'Merged Ticket <OTRS_TICKET> to <OTRS_MERGE_TO_TICKET>.' => '',
         'Miscellaneous' => '',
         'Module for To-selection in new ticket screen in the customer interface.' =>
@@ -6123,7 +6246,6 @@ Thanks for your help!
         'OTRS can use one or more readonly mirror databases for expensive operations like fulltext search or statistics generation. Here you can specify the DSN for the first mirror database.' =>
             '',
         'Old: "%s" New: "%s"' => '',
-        'Online' => '',
         'Open tickets (customer user)' => '',
         'Open tickets (customer)' => '',
         'Option' => '',
@@ -6145,7 +6267,6 @@ Thanks for your help!
         'Overview of all open tickets.' => '',
         'Overview of customer tickets.' => '',
         'PGP Key Management' => '',
-        'PGP Key Upload' => 'Завантажити PGP ключ',
         'Package event module file a scheduler task for update registration.' =>
             '',
         'Parameters for the CreateNextMask object in the preference view of the agent interface.' =>
@@ -6158,7 +6279,7 @@ Thanks for your help!
             '',
         'Parameters for the column filters of the small ticket overview.' =>
             '',
-        'Parameters for the dashboard backend of the customer company information of the agent interface . "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
+        'Parameters for the dashboard backend of the customer company information of the agent interface. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
             '',
         'Parameters for the dashboard backend of the customer id status widget of the agent interface . "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.' =>
             '',
@@ -6280,7 +6401,7 @@ Thanks for your help!
             '',
         'Right' => '',
         'Roles <-> Groups' => 'Ролі <-> Групи',
-        'Run file based generic agent jobs (Note: module name need needs to be specified in -configuration-module param e.g. "Kernel::System::GenericAgent").' =>
+        'Run file based generic agent jobs (Note: module name needs to be specified in -configuration-module param e.g. "Kernel::System::GenericAgent").' =>
             '',
         'Running Process Tickets' => '',
         'Runs an initial wildcard search of the existing customer company when accessing the AdminCustomerCompany module.' =>
@@ -6290,7 +6411,6 @@ Thanks for your help!
         'Runs the system in "Demo" mode. If set to "Yes", agents can change preferences, such as selection of language and theme via the agent web interface. These changes are only valid for the current session. It will not be possible for agents to change their passwords.' =>
             '',
         'Russian' => '',
-        'S/MIME Certificate Upload' => '',
         'SMS' => '',
         'SMS (Short Message Service)' => '',
         'Sample command output' => '',
@@ -6306,7 +6426,15 @@ Thanks for your help!
         'Search backend router.' => '',
         'Search.' => '',
         'Second Queue' => '',
-        'Select your frontend Theme.' => 'Тема інтерфейсу',
+        'Select after which period ticket overviews should refresh automatically.' =>
+            '',
+        'Select how many tickets should be shown in overviews by default.' =>
+            '',
+        'Select the main interface language.' => '',
+        'Select your default spelling dictionary.' => '',
+        'Select your preferred layout for OTRS.' => '',
+        'Select your preferred theme for OTRS.' => '',
+        'Select your time zone.' => '',
         'Selects the cache backend to use.' => '',
         'Selects the module to handle uploads via the web interface. "DB" stores all uploads in the database, "FS" uses the file system.' =>
             '',
@@ -6329,7 +6457,7 @@ Thanks for your help!
         'Serbian Latin' => '',
         'Service view' => '',
         'ServiceView' => '',
-        'Set minimum loglevel. If you select \'error\', just errors are logged. With \'debug\' you get all logging messages.' =>
+        'Set a new password by filling in your current password and a new one.' =>
             '',
         'Set sender email addresses for this system.' => 'Задати адреса відправника для цієї системи.',
         'Set the default height (in pixels) of inline HTML articles in AgentTicketZoom.' =>
@@ -6337,6 +6465,8 @@ Thanks for your help!
         'Set the limit of tickets that will be executed on a single genericagent job execution.' =>
             '',
         'Set the maximum height (in pixels) of inline HTML articles in AgentTicketZoom.' =>
+            '',
+        'Set the minimum log level. If you select \'error\', just errors are logged. With \'debug\' you get all logging messages. The order of log levels is: \'debug\', \'info\', \'notice\' and \'error\'.' =>
             '',
         'Set this to yes if you trust in all your public and private pgp keys, even if they are not certified with a trusted signature.' =>
             '',
@@ -6421,15 +6551,15 @@ Thanks for your help!
             '',
         'Sets the inactivity time (in seconds) to pass before a session is killed and a user is logged out.' =>
             '',
-        'Sets the maximum number of active agents within the timespan defined in SessionActiveTime before a prior warning will be visible for the logged in agents.' =>
+        'Sets the maximum number of active agents within the timespan defined in SessionMaxIdleTime before a prior warning will be visible for the logged in agents.' =>
             '',
-        'Sets the maximum number of active agents within the timespan defined in SessionActiveTime.' =>
+        'Sets the maximum number of active agents within the timespan defined in SessionMaxIdleTime.' =>
             '',
-        'Sets the maximum number of active customers within the timespan defined in SessionActiveTime.' =>
+        'Sets the maximum number of active customers within the timespan defined in SessionMaxIdleTime.' =>
             '',
-        'Sets the maximum number of active sessions per agent within the timespan defined in SessionActiveTime.' =>
+        'Sets the maximum number of active sessions per agent within the timespan defined in SessionMaxIdleTime.' =>
             '',
-        'Sets the maximum number of active sessions per customers within the timespan defined in SessionActiveTime.' =>
+        'Sets the maximum number of active sessions per customers within the timespan defined in SessionMaxIdleTime.' =>
             '',
         'Sets the minimal ticket counter size if "AutoIncrement" was selected as TicketNumberGenerator. Default is 5, this means the counter starts from 10000.' =>
             '',
@@ -6489,6 +6619,22 @@ Thanks for your help!
             '',
         'Sets the service in the ticket responsible screen of the agent interface (Ticket::Service needs to be activated).' =>
             '',
+        'Sets the state of a ticket in the close ticket screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the ticket bulk screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the ticket free text screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the ticket note screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the ticket responsible screen of the agent interface.' =>
+            '',
+        'Sets the state of the ticket in the ticket owner screen of a zoomed ticket in the agent interface.' =>
+            '',
+        'Sets the state of the ticket in the ticket pending screen of a zoomed ticket in the agent interface.' =>
+            '',
+        'Sets the state of the ticket in the ticket priority screen of a zoomed ticket in the agent interface.' =>
+            '',
         'Sets the stats hook.' => '',
         'Sets the system time zone (required a system with UTC as system time). Otherwise this is a diff time to the local time.' =>
             '',
@@ -6523,8 +6669,6 @@ Thanks for your help!
         'Sets the ticket type in the ticket priority screen of a zoomed ticket in the agent interface (Ticket::Type needs to be activated).' =>
             '',
         'Sets the ticket type in the ticket responsible screen of the agent interface (Ticket::Type needs to be activated).' =>
-            '',
-        'Sets the time (in seconds) a user is marked as active (minimum active time is 300 seconds).' =>
             '',
         'Sets the timeout (in seconds) for http/ftp downloads.' => '',
         'Sets the timeout (in seconds) for package downloads. Overwrites "WebUserAgent::Timeout".' =>
@@ -6649,6 +6793,8 @@ Thanks for your help!
         'Shows all the articles of the ticket (expanded) in the zoom view.' =>
             '',
         'Shows all the customer identifiers in a multi-select field (not useful if you have a lot of customer identifiers).' =>
+            '',
+        'Shows all the customer user identifiers in a multi-select field (not useful if you have a lot of customer user identifiers).' =>
             '',
         'Shows an owner selection in phone and email tickets in the agent interface.' =>
             '',
@@ -6783,6 +6929,7 @@ Thanks for your help!
         'Specify the username to authenticate for the first mirror database.' =>
             '',
         'Spell checker.' => '',
+        'Stable' => '',
         'Standard available permissions for agents within the application. If more permissions are needed, they can be entered here. Permissions must be defined to be effective. Some other good permissions have also been provided built-in: note, close, pending, customer, freetext, move, compose, responsible, forward, and bounce. Make sure that "rw" is always the last registered permission.' =>
             '',
         'Start number for statistics counting. Every new stat increments this number.' =>
@@ -6850,6 +6997,7 @@ Thanks for your help!
             '',
         'This event module stores attributes from CustomerUser as DynamicFields tickets. Please see the setting above for how to configure the mapping.' =>
             '',
+        'This is a description for TimeZone on Customer side.' => '',
         'This is the default orange - black skin for the customer interface.' =>
             '',
         'This is the default orange - black skin.' => '',
@@ -6937,6 +7085,8 @@ Thanks for your help!
         'Updates the ticket escalation index after a ticket attribute got updated.' =>
             '',
         'Updates the ticket index accelerator.' => '',
+        'Upload your PGP key.' => '',
+        'Upload your S/MIME certificate.' => '',
         'Use new type of select and autocomplete fields in agent interface, where applicable (InputFields).' =>
             '',
         'Use new type of select and autocomplete fields in customer interface, where applicable (InputFields).' =>
@@ -6974,11 +7124,17 @@ Thanks for your help!
         'Your service selection of your preferred services. You also get notified about those services via email if enabled.' =>
             '',
         'attachment' => '',
+        'bounce' => '',
+        'compose' => '',
         'debug' => '',
         'error' => '',
+        'forward' => '',
         'info' => '',
         'inline' => '',
         'notice' => '',
+        'pending' => '',
+        'responsible' => '',
+        'stats' => '',
 
     };
     # $$STOP$$

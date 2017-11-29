@@ -2,19 +2,22 @@
 # Translators:
 # Cristiano Boncompagni <cristiano.boncompagni@intersail.it>, 2016
 # Emil Pandocchi <emil.pandocchi@gmail.com>, 2016
+# Fabio Bucci <fabietto82@gmail.com>, 2017
+# Fabrizio Scaletta <fabrizio.scaletta@pharmaidea.com>, 2017
 # Luca Maranzano <liuk@linux.it>, 2014
 # Luca Maranzano <liuk@linux.it>, 2014
 # Luca Maranzano <liuk@linux.it>, 2014
 # Marthe Ngo Temb <ngotemb@gmail.com>, 2015
+# Paolo Cravero, 2017
 # Ricardo Marinucci <marinucci.ricardo@gmail.com>, 2015
 # Stefano Finetti <sfinetti@lynx-international.com>, 2016
 # Vincenzo Reale <smart2128@baslug.org>, 2015
-# Vincenzo Reale <vinx.reale@gmail.com>, 2015-2016
+# Vincenzo Reale <vinx.reale@gmail.com>, 2015-2017
 msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
-"POT-Creation-Date: 2017-01-16 17:40+0000\n"
-"PO-Revision-Date: 2017-01-16 23:41+0000\n"
+"POT-Creation-Date: 2017-09-24 23:14+0000\n"
+"PO-Revision-Date: 2017-09-25 04:16+0000\n"
 "Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
 "Language-Team: Italian (http://www.transifex.com/otrs/OTRS/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -2406,7 +2409,7 @@ msgstr "Invia un'email e crea un nuovo ticket"
 
 #. Template: AAATicket
 msgid "Create new Email Ticket and send this out (Outbound)"
-msgstr "Crea un nuovo ticket via email e invialo (outbound)"
+msgstr "Crea un nuovo ticket via email e invialo (in uscita)"
 
 #. Template: AAATicket
 msgid "Create new Phone Ticket (Inbound)"
@@ -2614,7 +2617,7 @@ msgstr "Notifica di follow-up del ticket"
 msgid ""
 "Send me a notification if a customer sends a follow up and I'm the owner of "
 "the ticket or the ticket is unlocked and is in one of my subscribed queues."
-msgstr "Inviami una notifica se il cliente manda una risposta e io sono il responsabile del ticket, o il ticket è rilasciato ed è in una coda a cui sono iscritto."
+msgstr "Inviami una notifica se il cliente spedisce una risposta e io sono il responsabile del ticket, o il ticket è rilasciato ed è in una coda a cui sono iscritto."
 
 #. Template: AAATicket
 msgid "Send ticket follow up notifications"
@@ -3006,7 +3009,7 @@ msgstr "Salva impostazioni"
 
 #. Template: AdminACLEdit
 msgid "Save ACL"
-msgstr ""
+msgstr "Salva ACL"
 
 #. Template: AdminACLEdit
 msgid "Save"
@@ -3070,7 +3073,7 @@ msgstr "Elimina questo allegato"
 
 #. Template: AdminAttachment
 msgid "Do you really want to delete this attachment?"
-msgstr ""
+msgstr "Vuoi veramente cancellare questo allegato?"
 
 #. Template: AdminAttachment
 msgid "Add Attachment"
@@ -3279,11 +3282,11 @@ msgstr "Seleziona"
 
 #. Template: AdminCustomerCompany
 msgid "List (only %s shown - more available)"
-msgstr ""
+msgstr "Elenco (%s visualizzati - altri disponibili)"
 
 #. Template: AdminCustomerCompany
 msgid "List (%s total)"
-msgstr ""
+msgstr "Elenco (% totale)"
 
 #. Template: AdminCustomerCompany
 msgid "Please enter a search term to look for customers."
@@ -3673,7 +3676,7 @@ msgstr "Qui puoi specificare un collegamento http per il campo nelle schermate v
 
 #. Template: AdminDynamicFieldDateTime
 msgid "Link for preview"
-msgstr ""
+msgstr "Link per l'anteprima"
 
 #. Template: AdminDynamicFieldDateTime
 msgid ""
@@ -3864,7 +3867,7 @@ msgstr "Esegui questo task"
 
 #. Template: AdminGenericAgent
 msgid "Do you really want to delete this task?"
-msgstr ""
+msgstr "Sei sicuro di voler cancellare questo task?"
 
 #. Template: AdminGenericAgent
 msgid "Job Settings"
@@ -3932,7 +3935,7 @@ msgstr "Elimina questo evento"
 msgid ""
 "Additionally or alternatively to a periodic execution, you can define ticket"
 " events that will trigger this job."
-msgstr ""
+msgstr "Questo job può essere lanciato sulla base di eventi legati al ticket, in aggiunta o in alternativa all'esecuzione periodica."
 
 #. Template: AdminGenericAgent
 msgid ""
@@ -4188,7 +4191,7 @@ msgstr "Imposta nuova presa in carico del ticket"
 
 #. Template: AdminGenericAgent
 msgid "New customer user"
-msgstr ""
+msgstr "Nuovo Utente Cliente"
 
 #. Template: AdminGenericAgent
 msgid "New customer ID"
@@ -4718,7 +4721,7 @@ msgstr ""
 
 #. Template: AdminGenericInterfaceTransportHTTPREST
 msgid "Host"
-msgstr "Fidato"
+msgstr "Server"
 
 #. Template: AdminGenericInterfaceTransportHTTPREST
 msgid "Remote host URL for the REST requests."
@@ -4867,11 +4870,11 @@ msgstr ""
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid "'FreeText' is used as example for actual configured value."
-msgstr ""
+msgstr "'FreeText' è un esempio di valore realmente configurato."
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
-msgid "Response name free text"
-msgstr "Testo del nome di risposta"
+msgid "Request name free text"
+msgstr ""
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid "Text to be used to as function wrapper name suffix or replacement."
@@ -4892,6 +4895,10 @@ msgid "Select how SOAP response function wrapper should be constructed."
 msgstr ""
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
+msgid "Response name free text"
+msgstr "Testo del nome di risposta"
+
+#. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid ""
 "Here you can specify the maximum size (in bytes) of SOAP messages that OTRS "
 "will process."
@@ -4903,7 +4910,7 @@ msgstr "Codifica"
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid "The character encoding for the SOAP message contents."
-msgstr "L'encoding del contenuto del messaggio"
+msgstr "La codifica di caratteri del contenuto del messaggio SOAP."
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid "e.g utf-8, latin1, iso-8859-1, cp1250, Etc."
@@ -5556,7 +5563,7 @@ msgstr ""
 
 #. Template: AdminNotificationEvent
 msgid "Active by default in agent preferences"
-msgstr ""
+msgstr "Attivo di default nelle preferenze dell'agente"
 
 #. Template: AdminNotificationEvent
 msgid ""
@@ -5594,6 +5601,10 @@ msgstr "Rimuovi lingua delle notifiche"
 #. Template: AdminNotificationEvent
 msgid "Message body"
 msgstr "Corpo del messaggio"
+
+#. Template: AdminNotificationEvent
+msgid "This field is required and must have less than 4000 characters."
+msgstr ""
 
 #. Template: AdminNotificationEvent
 msgid "Add new notification language"
@@ -5673,6 +5684,12 @@ msgid "Additional recipient email addresses"
 msgstr "Indirizzi email di destinazione aggiuntivi"
 
 #. Template: AdminNotificationEventTransportEmailSettings
+msgid ""
+"You can use OTRS-tags like <OTRS_TICKET_DynamicField_...> to insert values "
+"from the current ticket."
+msgstr ""
+
+#. Template: AdminNotificationEventTransportEmailSettings
 msgid "Notification article type"
 msgstr "Tipo di articolo di notifica"
 
@@ -5710,6 +5727,10 @@ msgstr ""
 #. Template: AdminOTRSBusinessInstalled
 msgid "Manage %s"
 msgstr "Gestisci %s"
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "Go to the OTRS customer portal"
+msgstr "Val al portale utenti di OTRS"
 
 #. Template: AdminOTRSBusinessInstalled
 msgid "Downgrade to OTRS Free"
@@ -5777,6 +5798,50 @@ msgid "%s Update Available"
 msgstr "Aggiornamento %s disponibile"
 
 #. Template: AdminOTRSBusinessInstalled
+msgid "Package installation requires patch level update of OTRS."
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "Please visit our customer portal and file a request."
+msgstr "Per cortesia visita il nostro portale utenti e inoltra una richiesta."
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "Everything else will be done as part of your contract."
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "Your installed OTRS version is %s."
+msgstr "La versione installata di OTRS è %s."
+
+#. Template: AdminOTRSBusinessInstalled
+msgid ""
+"To install the current version of OTRS Business Solution™, you need to "
+"update to OTRS %s or higher."
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
+msgid ""
+"To install the current version of OTRS Business Solution™, the Maximum OTRS "
+"Version is %s."
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "To install this package, the required Framework version is %s."
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "Why should I keep OTRS up to date?"
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "You will receive updates about relevant security issues."
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "You will receive updates for all other relevant OTRS issues"
+msgstr ""
+
+#. Template: AdminOTRSBusinessInstalled
 msgid "An update for your %s is available! Please update at your earliest!"
 msgstr "È disponibile un aggiornamento per il tuo %s! Aggiorna appena puoi!"
 
@@ -5812,6 +5877,14 @@ msgid ""
 "Connection to cloud.otrs.com via HTTPS couldn't be established. Please make "
 "sure that your OTRS can connect to cloud.otrs.com via port 443."
 msgstr "La connessione a cloud.otrs.com tramite HTTPS non può essere stabilita. Assicurati che il tuo OTRS possa connettersi a cloud.otrs.com tramite la porta 443."
+
+#. Template: AdminOTRSBusinessNotInstalled
+msgid "To install this package, you need to update to OTRS %s or higher."
+msgstr ""
+
+#. Template: AdminOTRSBusinessNotInstalled
+msgid "To install this package, the Maximum OTRS Version is %s."
+msgstr ""
 
 #. Template: AdminOTRSBusinessNotInstalled
 msgid "With your existing contract you can only use a small part of the %s."
@@ -5985,6 +6058,64 @@ msgid ""
 msgstr "Vuoi davvero reinstallare questo pacchetto? Ogni modifica manuale sarà persa."
 
 #. Template: AdminPackageManager
+msgid "Go to upgrading instructions"
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "package information"
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "Package installation requires a patch level update of OTRS."
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "Package update requires a patch level update of OTRS."
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid ""
+"If you are a OTRS Business Solution™ customer, please visit our customer "
+"portal and file a request."
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "Please note that your installed OTRS version is %s."
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid ""
+"To install this package, you need to update OTRS to version %s or newer."
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "This package can only be installed on OTRS version %s or older."
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "This package can only be installed on OTRS version %s or newer."
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "You will receive updates for all other relevant OTRS issues."
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid "How can I do a patch level update if I don’t have a contract?"
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid ""
+"Please find all relevant information within the upgrading instructions at "
+"%s."
+msgstr ""
+
+#. Template: AdminPackageManager
+msgid ""
+"In case you would have further questions we would be glad to answer them."
+msgstr "Nel caso dovessi avere altre domande, saremo felici di risponderti."
+
+#. Template: AdminPackageManager
 msgid "Continue"
 msgstr "Continua"
 
@@ -6041,7 +6172,7 @@ msgstr "Questo pacchetto è verificato da OTRSverify (tm)"
 
 #. Template: AdminPackageManager
 msgid "Uninstall"
-msgstr "rimuovi pacchetto"
+msgstr "Disinstalla"
 
 #. Template: AdminPackageManager
 msgid "Reinstall"
@@ -6232,8 +6363,8 @@ msgid "Edit PostMaster Filter"
 msgstr "Modifica filtro PostMaster"
 
 #. Template: AdminPostMasterFilter
-msgid "The name is required."
-msgstr "Il nome è obbligatorio"
+msgid "A postmaster filter with this name already exists!"
+msgstr ""
 
 #. Template: AdminPostMasterFilter
 msgid "Filter Condition"
@@ -6526,7 +6657,7 @@ msgstr "Campi assegnati"
 
 #. Template: AdminProcessManagementActivityDialog
 msgid "ArticleType"
-msgstr "Tipologia Articolo"
+msgstr "Tipologia articolo"
 
 #. Template: AdminProcessManagementActivityDialog
 msgid "Display"
@@ -6687,7 +6818,7 @@ msgstr "Aumenta l'altezza del riquadro"
 
 #. Template: AdminProcessManagementProcessEdit
 msgid "Remove the Activity from this Process"
-msgstr "Rimuovi l'attività dal Processo"
+msgstr "Rimuovi l'attività dal processo"
 
 #. Template: AdminProcessManagementProcessEdit
 msgid "Edit this Activity"
@@ -6866,7 +6997,7 @@ msgstr "Tipo del collegamento tra le Condizioni"
 
 #. Template: AdminProcessManagementTransition
 msgid "Remove this Condition"
-msgstr "Rimuovi questa Condizione"
+msgstr "Rimuovi questa condizione"
 
 #. Template: AdminProcessManagementTransition
 msgid "Type of Linking"
@@ -7007,7 +7138,7 @@ msgstr "Blocco del ticket dopo una prosecuzione"
 msgid ""
 "If a ticket is closed and the customer sends a follow up the ticket will be "
 "locked to the old owner."
-msgstr "Se un ticket viene chiuso e il cliente manda un follow-up, il ticket sarà preso in carica dal vecchio proprietario."
+msgstr "Se un ticket viene chiuso e il cliente invia un follow-up, il ticket sarà preso in carica dal vecchio proprietario."
 
 #. Template: AdminQueue
 msgid "System address"
@@ -7252,11 +7383,6 @@ msgid "Typically this would be around once every three days."
 msgstr "Normalmente dovrebbe avvenire una volta ogni tre giorni."
 
 #. Template: AdminRegistration
-msgid ""
-"In case you would have further questions we would be glad to answer them."
-msgstr "Nel caso dovessi avere altre domande, saremo felici di risponderti."
-
-#. Template: AdminRegistration
 msgid "Please visit our"
 msgstr "Visita il nostro"
 
@@ -7434,7 +7560,7 @@ msgstr "Imposta il permesso %s per tutti"
 
 #. Template: AdminRoleGroup
 msgid "move_into"
-msgstr "muovi_in"
+msgstr "sposta_in"
 
 #. Template: AdminRoleGroup
 msgid "Permissions to move tickets into this group/queue."
@@ -7737,6 +7863,10 @@ msgid "Edit Service"
 msgstr "Modifica servizio"
 
 #. Template: AdminService
+msgid "Service name maximum length is 200 characters (with Sub-service)."
+msgstr ""
+
+#. Template: AdminService
 msgid "Sub-service of"
 msgstr "Sotto-servizio di"
 
@@ -8030,7 +8160,7 @@ msgstr "Contenuto"
 
 #. Template: AdminSysConfigEdit
 msgid "Remove this entry"
-msgstr "Rimuovi questa entry"
+msgstr "Rimuovi questa voce"
 
 #. Template: AdminSysConfigEdit
 msgid "Add entry"
@@ -8038,7 +8168,7 @@ msgstr "Aggiungi entry"
 
 #. Template: AdminSysConfigEdit
 msgid "Remove entry"
-msgstr "Rimuovi entry"
+msgstr "Rimuovi voce"
 
 #. Template: AdminSysConfigEdit
 msgid "Add new entry"
@@ -8167,8 +8297,18 @@ msgid "Edit System Email Address"
 msgstr "Modifica indirizzo email di sistema"
 
 #. Template: AdminSystemAddress
+msgid "This email address is already used as system email address."
+msgstr ""
+
+#. Template: AdminSystemAddress
 msgid "The display name and email address will be shown on mail you send."
 msgstr "Il nome visualizzato e l'indirizzo email verranno visualizzati sulle email inviate da qui."
+
+#. Template: AdminSystemAddress
+msgid ""
+"This system address cannot be set to invalid, because it is used in one or "
+"more queue(s)."
+msgstr ""
 
 #. Template: AdminSystemMaintenance
 msgid "System Maintenance Management"
@@ -8211,8 +8351,8 @@ msgid "Edit System Maintenance %s"
 msgstr "Modifica manutenzione di sistema %s"
 
 #. Template: AdminSystemMaintenanceEdit
-msgid "Edit System Maintenance information"
-msgstr "Modifica informazioni di manutenzione del sistema"
+msgid "Edit System Maintenance Information"
+msgstr ""
 
 #. Template: AdminSystemMaintenanceEdit
 msgid "Date invalid!"
@@ -8430,7 +8570,7 @@ msgstr "Aggiungi indirizzo email %s al campo Cc:"
 
 #. Template: AgentBook
 msgid "Add email address %s to the Bcc field"
-msgstr "Aggiungi indirizzo email %s al campo Bcc:"
+msgstr "Aggiungi indirizzo email %s al campo Ccn"
 
 #. Template: AgentBook
 msgid "Apply"
@@ -8623,6 +8763,10 @@ msgid "Stream"
 msgstr "Flusso"
 
 #. Template: AgentDashboardStats
+msgid "No Data Available."
+msgstr ""
+
+#. Template: AgentDashboardStats
 msgid ""
 "Please select a valid graph output format in the configuration of this "
 "widget."
@@ -8681,7 +8825,7 @@ msgstr "Fino a"
 
 #. Template: AgentHTMLReferencePageLayout
 msgid "The ticket has been locked"
-msgstr "Il Ticket è stato assegnato"
+msgstr "Il ticket è stato assegnato"
 
 #. Template: AgentHTMLReferencePageLayout
 msgid "Undo & close"
@@ -8946,7 +9090,7 @@ msgstr "Aggiungi articolo"
 
 #. Template: AgentTicketActionCommon
 msgid "Create an Article"
-msgstr "Crea un'articolo"
+msgstr "Crea un articolo"
 
 #. Template: AgentTicketActionCommon
 msgid "Inform agents"
@@ -9060,7 +9204,7 @@ msgstr "Includere almeno un destinatario"
 
 #. Template: AgentTicketCompose
 msgid "Remove Ticket Customer"
-msgstr "Rimuovi il Ticket del cliente"
+msgstr "Rimuovi ticket del cliente"
 
 #. Template: AgentTicketCompose
 msgid "Please remove this entry and enter a new one with the correct value."
@@ -9068,11 +9212,11 @@ msgstr "Rimuovere i valori ed immetterne di validi"
 
 #. Template: AgentTicketCompose
 msgid "Remove Cc"
-msgstr "Rimuovi persone in copia"
+msgstr "Rimuovi Cc"
 
 #. Template: AgentTicketCompose
 msgid "Remove Bcc"
-msgstr "Rimuovi persone in copia nascosta"
+msgstr "Rimuovi Ccn"
 
 #. Template: AgentTicketCompose
 msgid "Address book"
@@ -9120,7 +9264,7 @@ msgstr "Prendi tutto"
 
 #. Template: AgentTicketEmailOutbound
 msgid "Outbound Email for %s%s%s"
-msgstr ""
+msgstr "Messaggio di posta in uscita per %s%s%s"
 
 #. Template: AgentTicketEscalation
 msgid "Ticket %s: first response time is over (%s/%s)!"
@@ -9357,11 +9501,19 @@ msgid "CustomerID (complex search)"
 msgstr ""
 
 #. Template: AgentTicketSearch
+msgid "(e. g. 234*)"
+msgstr ""
+
+#. Template: AgentTicketSearch
 msgid "CustomerID (exact match)"
 msgstr ""
 
 #. Template: AgentTicketSearch
 msgid "Customer User Login (complex search)"
+msgstr ""
+
+#. Template: AgentTicketSearch
+msgid "(e. g. U51*)"
 msgstr ""
 
 #. Template: AgentTicketSearch
@@ -9395,6 +9547,10 @@ msgstr "Tempo di creazione articolo (prima/dopo)"
 #. Template: AgentTicketSearch
 msgid "Article Create Time (between)"
 msgstr "Tempo di creazione articolo (in mezzo)"
+
+#. Template: AgentTicketSearch
+msgid "Invalid date"
+msgstr ""
 
 #. Template: AgentTicketSearch
 msgid "Ticket Create Time (before/after)"
@@ -9614,24 +9770,6 @@ msgstr "Chiudi questo messaggio"
 msgid "Article could not be opened! Perhaps it is on another article page?"
 msgstr ""
 
-#. Template: AgentTicketZoom
-msgid "Scale preview content"
-msgstr ""
-
-#. Template: AgentTicketZoom
-msgid "Open URL in new tab"
-msgstr ""
-
-#. Template: AgentTicketZoom
-msgid "Close preview"
-msgstr ""
-
-#. Template: AgentTicketZoom
-msgid ""
-"A preview of this website can't be provided because it didn't allow to be "
-"embedded."
-msgstr ""
-
 #. Template: AttachmentBlocker
 msgid "To protect your privacy, remote content was blocked."
 msgstr "Per proteggere la tua privacy, il contenuto remoto è stato bloccato."
@@ -9655,6 +9793,22 @@ msgstr "Si può"
 #. Template: CloudServicesDisabled
 msgid "go back to the previous page"
 msgstr "torna alla pagina precedente"
+
+#. Template: CustomerAccept
+msgid "Information"
+msgstr "Informazione"
+
+#. Template: CustomerAccept
+msgid "Dear Customer,"
+msgstr ""
+
+#. Template: CustomerAccept
+msgid "thank you for using our services."
+msgstr ""
+
+#. Template: CustomerAccept
+msgid "Yes, I accepted your license."
+msgstr ""
 
 #. Template: CustomerError
 msgid "An Error Occurred"
@@ -9785,6 +9939,13 @@ msgid ""
 "be something wrong with your network connection. You could either try "
 "reloading this page manually or wait until your browser has re-established "
 "the connection on its own."
+msgstr ""
+
+#. Template: CustomerFooterJS
+msgid ""
+"There was an error in communication with the server. Server might be "
+"experiencing some temporary problems, please reload this page to check if "
+"they have been resolved."
 msgstr ""
 
 #. Template: CustomerFooterJS
@@ -10026,10 +10187,6 @@ msgid "Expand article"
 msgstr "Espandi l'articolo"
 
 #. Template: CustomerTicketZoom
-msgid "Information"
-msgstr "Informazione"
-
-#. Template: CustomerTicketZoom
 msgid "Next Steps"
 msgstr "Prossime attività"
 
@@ -10236,6 +10393,10 @@ msgid "Information about the OTRS Daemon"
 msgstr "Informazioni su OTRS Daemon"
 
 #. Template: FooterJS
+msgid "Communication error"
+msgstr ""
+
+#. Template: FooterJS
 msgid ""
 "This feature is part of the %s.  Please contact us at %s for an upgrade."
 msgstr "Questa funzionalità è parte di %s. Contattaci su %s per un aggiornamento."
@@ -10246,7 +10407,7 @@ msgstr "Scopri altre informazioni su %s"
 
 #. Template: Header
 msgid "You are logged in as"
-msgstr "Si è effettuato l'accesso come"
+msgstr "Hai effettuato l'accesso come"
 
 #. Template: Installer
 msgid "JavaScript not available"
@@ -10298,11 +10459,11 @@ msgstr "Seleziona il tipo di posta in uscita."
 
 #. Template: InstallerConfigureMail
 msgid "Outbound mail port"
-msgstr "Porta del server di posta"
+msgstr "Porta del server di posta in uscita"
 
 #. Template: InstallerConfigureMail
 msgid "Select outbound mail port."
-msgstr "Seleziona la porta del server di posta."
+msgstr "Seleziona la porta del server di posta in uscita."
 
 #. Template: InstallerConfigureMail
 msgid "SMTP host"
@@ -10573,6 +10734,24 @@ msgstr "Richiedi nuova password"
 msgid "Back to login"
 msgstr "Torna all'accesso"
 
+#. Template: MetaFloater
+msgid "Scale preview content"
+msgstr ""
+
+#. Template: MetaFloater
+msgid "Open URL in new tab"
+msgstr ""
+
+#. Template: MetaFloater
+msgid "Close preview"
+msgstr ""
+
+#. Template: MetaFloater
+msgid ""
+"A preview of this website can't be provided because it didn't allow to be "
+"embedded."
+msgstr ""
+
 #. Template: MobileNotAvailableWidget
 msgid "Feature not available"
 msgstr "Funzionalità non disponibile"
@@ -10648,7 +10827,7 @@ msgstr ""
 msgid ""
 "Please note that you can't completely disable notifications marked as "
 "mandatory."
-msgstr ""
+msgstr "Non è possibile disabilitare le notifiche contrassegnate come obbligatorie."
 
 #. Template: PreferencesNotificationEvent
 msgid ""
@@ -10886,6 +11065,10 @@ msgstr "Contatore"
 #. Template: Warning
 msgid "Go back to the previous page"
 msgstr "Torna alla pagina precedente"
+
+#. Perl Module: Kernel/Config/Defaults.pm
+msgid "Database Backend"
+msgstr ""
 
 #. Perl Module: Kernel/Config/Defaults.pm
 msgid "View system log messages."
@@ -11229,6 +11412,18 @@ msgstr ""
 msgid "Web service \"%s\" deleted!"
 msgstr "Web service \"%s\" eliminato!"
 
+#. Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
+msgid "New Web service"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
+msgid "Operations"
+msgstr "Operazioni"
+
+#. Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
+msgid "Invokers"
+msgstr ""
+
 #. Perl Module: Kernel/Modules/AdminGenericInterfaceWebserviceHistory.pm
 msgid "Got no WebserviceHistoryID!"
 msgstr ""
@@ -11310,7 +11505,7 @@ msgid "Customer of the ticket"
 msgstr "Cliente del ticket"
 
 #. Perl Module: Kernel/Modules/AdminNotificationEvent.pm
-msgid "Yes, but require at least one active notification method"
+msgid "Yes, but require at least one active notification method."
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AdminPGP.pm
@@ -11670,6 +11865,26 @@ msgstr ""
 msgid "Queues ( without auto responses )"
 msgstr "Code ( senza risposte automatiche )"
 
+#. Perl Module: Kernel/Modules/AdminRegistration.pm
+msgid "Production"
+msgstr "Produzione"
+
+#. Perl Module: Kernel/Modules/AdminRegistration.pm
+msgid "Test"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AdminRegistration.pm
+msgid "Training"
+msgstr "Formazione"
+
+#. Perl Module: Kernel/Modules/AdminRegistration.pm
+msgid "Development"
+msgstr "Sviluppo"
+
+#. Perl Module: Kernel/Modules/AdminRoleUser.pm
+msgid "Role"
+msgstr ""
+
 #. Perl Module: Kernel/Modules/AdminSMIME.pm
 msgid "S/MIME environment is not working. Please check log for more info!"
 msgstr ""
@@ -11812,6 +12027,14 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentDashboardCommon.pm
 msgid "Can't get filter content data of %s!"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentDashboardCommon.pm
+msgid "Customer Company Name"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentDashboardCommon.pm
+msgid "Customer User ID"
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentLinkObject.pm
@@ -11957,8 +12180,14 @@ msgid "You need to select at least one ticket."
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketBulk.pm
-msgid "Ticket is locked by another agent and will be ignored!"
-msgstr "Il ticket è bloccato da un altro operatore e sarà ignorato!"
+msgid ""
+"The following tickets were ignored because they are locked by another agent "
+"or you don't have write access to these tickets: %s."
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketBulk.pm
+msgid "The following tickets were locked: %s."
+msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketCompose.pm
 msgid "Can not determine the ArticleType!"
@@ -12184,6 +12413,13 @@ msgid "Missing ActivityEntityID in Ticket %s!"
 msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
+msgid ""
+"This step does not belong anymore to the current activity in process for "
+"ticket '%s%s%s'! Another user changed this ticket in the meantime. Please "
+"close this window and reload the ticket."
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AgentTicketProcess.pm
 msgid "Missing ProcessEntityID in Ticket %s!"
 msgstr ""
 
@@ -12250,7 +12486,7 @@ msgstr "Collegamento eliminato"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "Ticket Locked"
-msgstr "Ticket bloccato."
+msgstr "Ticket bloccato"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "Pending Time Set"
@@ -12334,7 +12570,7 @@ msgstr "Priorità aggiornata"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "Ticket Unlocked"
-msgstr "Ticket sbloccato."
+msgstr "Ticket sbloccato"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "Outgoing Email"
@@ -12533,6 +12769,16 @@ msgid "Create a new ticket!"
 msgstr "Creare un nuovo ticket!"
 
 #. Perl Module: Kernel/Modules/Installer.pm
+msgid "SecureMode active!"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid ""
+"If you want to re-run the Installer, disable the SecureMode in the "
+"SysConfig."
+msgstr ""
+
+#. Perl Module: Kernel/Modules/Installer.pm
 msgid "Directory \"%s\" doesn't exist!"
 msgstr ""
 
@@ -12571,6 +12817,18 @@ msgid "Database %s"
 msgstr "Database %s"
 
 #. Perl Module: Kernel/Modules/Installer.pm
+msgid "Configure MySQL"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid "Configure PostgreSQL"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid "Configure Oracle"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/Installer.pm
 msgid "Unknown database type \"%s\"."
 msgstr ""
 
@@ -12589,6 +12847,10 @@ msgstr "File \"%s/%s.xml\" non trovato!"
 #. Perl Module: Kernel/Modules/Installer.pm
 msgid "Contact your Admin!"
 msgstr "Contatta il tuo amministratore!"
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid "Syslog"
+msgstr ""
 
 #. Perl Module: Kernel/Modules/Installer.pm
 msgid "Can't write Config file!"
@@ -12828,6 +13090,11 @@ msgstr ""
 msgid "Order by"
 msgstr "Ordina per "
 
+#. Perl Module: Kernel/System/ACL/DB/ACL.pm
+msgid ""
+"Couldn't read ACL configuration file. Please make sure the file is valid."
+msgstr ""
+
 #. Perl Module: Kernel/System/AuthSession.pm
 msgid ""
 "You have exceeded the number of concurrent agents - contact sales@otrs.com."
@@ -12863,6 +13130,32 @@ msgstr "Questa impostazione non è attiva in modo predefinito."
 msgid "This setting can not be deactivated."
 msgstr "Questa impostazione non può essere disattivata."
 
+#. Perl Module: Kernel/System/CustomerUser.pm
+msgid "Customer user \"%s\" already exists."
+msgstr ""
+
+#. Perl Module: Kernel/System/CustomerUser/DB.pm
+msgid "This email address is already in use for another customer user."
+msgstr ""
+
+#. Perl Module: Kernel/System/DynamicField/Driver/BaseText.pm
+msgid "e.g. Text or Te*t"
+msgstr ""
+
+#. Perl Module: Kernel/System/DynamicField/Driver/Checkbox.pm
+msgid "Ignore this field."
+msgstr ""
+
+#. Perl Module: Kernel/System/NotificationEvent.pm
+msgid ""
+"Couldn't read Notification configuration file. Please make sure the file is "
+"valid."
+msgstr ""
+
+#. Perl Module: Kernel/System/NotificationEvent.pm
+msgid "Imported notification has body text with more than 4000 characters."
+msgstr ""
+
 #. Perl Module: Kernel/System/Package.pm
 msgid "not installed"
 msgstr "non installato"
@@ -12879,6 +13172,10 @@ msgstr ""
 msgid "Can't read file!"
 msgstr ""
 
+#. Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
+msgid "The process \"%s\" and all of its data has been imported successfully."
+msgstr ""
+
 #. Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
 msgid "Inactive"
 msgstr "Inattivo"
@@ -12891,6 +13188,10 @@ msgstr ""
 msgid "Can't get Token from sever"
 msgstr ""
 
+#. Perl Module: Kernel/System/Stats.pm
+msgid "Sum"
+msgstr "Somma"
+
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "State Type"
 msgstr "Tipo di stato"
@@ -12902,14 +13203,6 @@ msgstr "Priorità creata"
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Created State"
 msgstr "Stato ticket"
-
-#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
-msgid "CustomerUserLogin (complex search)"
-msgstr ""
-
-#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
-msgid "CustomerUserLogin (exact match)"
-msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Create Time"
@@ -12938,6 +13231,18 @@ msgstr "Operatore/Proprietario"
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Created by Agent/Owner"
 msgstr "Creato da Operatore/Proprietario"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin"
+msgstr "Login Utente Cliente"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin (complex search)"
+msgstr ""
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin (exact match)"
+msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
 msgid "Evaluation by"
@@ -13064,27 +13369,28 @@ msgid "Solution Max Working Time (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Average (affected by escalation configuration)"
+msgid "First Response Average (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Min Time (affected by escalation configuration)"
+msgid "First Response Min Time (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Max Time (affected by escalation configuration)"
+msgid "First Response Max Time (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Working Time Average (affected by escalation configuration)"
+msgid ""
+"First Response Working Time Average (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Min Working Time (affected by escalation configuration)"
+msgid "First Response Min Working Time (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Max Working Time (affected by escalation configuration)"
+msgid "First Response Max Working Time (affected by escalation configuration)"
 msgstr ""
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
@@ -13537,6 +13843,11 @@ msgstr ""
 msgid "Package List"
 msgstr "Lista pacchetti"
 
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/SessionConfigSettings.pm
+msgid "Session Config Settings"
+msgstr ""
+
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
 msgid "Spooled Emails"
 msgstr ""
@@ -13662,6 +13973,16 @@ msgstr ""
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/TimeSettings.pm
 msgid "OTRS TimeZone setting for calendar "
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/UI/AgentSkinUsage.pm
+msgid "UI - Agent Skin Usage"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/UI/AgentThemeUsage.pm
+msgid "UI - Agent Theme Usage"
 msgstr ""
 
 #. Perl Module:
@@ -13850,8 +14171,8 @@ msgstr ""
 
 #. Perl Module: Kernel/System/Web/InterfaceAgent.pm
 msgid ""
-"Panic, user authenticated but no user data can be found in OTRS DB!! Perhaps"
-" the user is invalid."
+"Authentication succeeded, but no user data record is found in the database. "
+"Please contact the administrator."
 msgstr ""
 
 #. Perl Module: Kernel/System/Web/InterfaceAgent.pm
@@ -13860,11 +14181,11 @@ msgstr ""
 
 #. Perl Module: Kernel/System/Web/InterfaceAgent.pm
 msgid "Logout successful."
-msgstr ""
+msgstr "Disconnessione avvenuta."
 
 #. Perl Module: Kernel/System/Web/InterfaceAgent.pm
-msgid "Panic! Invalid Session!!!"
-msgstr "Errore! Sessione non valida!!!"
+msgid "Error: invalid session."
+msgstr ""
 
 #. Perl Module: Kernel/System/Web/InterfaceAgent.pm
 msgid "No Permission to use this frontend module!"
@@ -13890,16 +14211,6 @@ msgstr ""
 
 #. Perl Module: Kernel/System/Web/InterfaceCustomer.pm
 msgid "Can't send account info!"
-msgstr ""
-
-#. Perl Module: Kernel/System/Web/InterfaceInstaller.pm
-msgid "SecureMode active!"
-msgstr ""
-
-#. Perl Module: Kernel/System/Web/InterfaceInstaller.pm
-msgid ""
-"If you want to re-run the Installer, disable the SecureMode in the "
-"SysConfig."
 msgstr ""
 
 #. Perl Module: Kernel/System/Web/InterfaceInstaller.pm
@@ -14015,7 +14326,7 @@ msgstr "nuovo ticket"
 #. Database XML Definition: scripts/database/otrs-initial_insert.xml
 msgid ""
 "Follow-ups for closed tickets are not possible. A new ticket will be "
-"created.."
+"created."
 msgstr ""
 
 #. Database XML Definition: scripts/database/otrs-initial_insert.xml
@@ -14229,7 +14540,7 @@ msgstr "(Nome utente) Cognome, Nome"
 
 #. SysConfig
 msgid "*** out of office until %s (%s d left) ***"
-msgstr ""
+msgstr "*** fuori ufficio fino al %s ($s giorni rimanenti) ***"
 
 #. SysConfig
 msgid "100 (Expert)"
@@ -14326,12 +14637,20 @@ msgid "ActivityID"
 msgstr ""
 
 #. SysConfig
+msgid "Add a comment."
+msgstr ""
+
+#. SysConfig
+msgid "Add a default name for Dynamic Field."
+msgstr ""
+
+#. SysConfig
 msgid "Add an inbound phone call to this ticket"
 msgstr ""
 
 #. SysConfig
 msgid "Add an outbound phone call to this ticket"
-msgstr ""
+msgstr "Aggiungi una chiamata in uscita a questo ticket"
 
 #. SysConfig
 msgid "Added email. %s"
@@ -14617,15 +14936,15 @@ msgstr "Permette di definire servizi e SLA per i ticket (e.g. email, desktop, ne
 #. SysConfig
 msgid ""
 "Allows extended search conditions in ticket search of the agent interface. "
-"With this feature you can search e. g. with this kind of conditions like "
-"\"(key1&&key2)\" or \"(key1||key2)\"."
-msgstr "Permette l'utilizzo di criteri di ricerca estesi nell'interfaccia operatore."
+"With this feature you can search e. g. ticket title with this kind of "
+"conditions like \"(*key1*&&*key2*)\" or \"(*key1*||*key2*)\"."
+msgstr ""
 
 #. SysConfig
 msgid ""
 "Allows extended search conditions in ticket search of the customer "
-"interface. With this feature you can search e. g. with this kind of "
-"conditions like \"(key1&&key2)\" or \"(key1||key2)\"."
+"interface. With this feature you can search e. g. ticket title with this "
+"kind of conditions like \"(*key1*&&*key2*)\" or \"(*key1*||*key2*)\"."
 msgstr ""
 
 #. SysConfig
@@ -14881,7 +15200,7 @@ msgstr "Cinese (tradizionale)"
 #. SysConfig
 msgid ""
 "Choose for which kind of ticket changes you want to receive notifications."
-msgstr ""
+msgstr "Seleziona  le modifiche ai ticket, per i quali vuoi essere notificato."
 
 #. SysConfig
 msgid "Closed tickets (customer user)"
@@ -15031,7 +15350,7 @@ msgstr ""
 #. SysConfig
 msgid ""
 "Configure which screen should be shown after a new ticket has been created."
-msgstr ""
+msgstr "Seleziona quale schermata mostrare dopo la creazione di un ticket."
 
 #. SysConfig
 msgid "Configure your own log text for PGP."
@@ -15050,11 +15369,13 @@ msgid "Controls how to display the ticket history entries as readable values."
 msgstr ""
 
 #. SysConfig
-msgid "Controls if CustomerID is editable in the agent interface."
+msgid ""
+"Controls if CustomerID is automatically copied from the sender address for "
+"unknown customers."
 msgstr ""
 
 #. SysConfig
-msgid "Controls if CutomerID is editable in the agent interface."
+msgid "Controls if CustomerID is read-only in the agent interface."
 msgstr ""
 
 #. SysConfig
@@ -15175,7 +15496,7 @@ msgstr "Crea nuovo ticket."
 
 #. SysConfig
 msgid "Create new email ticket and send this out (outbound)."
-msgstr ""
+msgstr "Crea un nuovo ticket via email e invialo (in uscita)."
 
 #. SysConfig
 msgid "Create new email ticket."
@@ -15310,6 +15631,13 @@ msgstr ""
 #. SysConfig
 msgid "Czech"
 msgstr "Ceco"
+
+#. SysConfig
+msgid ""
+"DEPRECATED: This config setting will be removed in further versions of OTRS."
+" Sets the time (in seconds) a user is marked as active (minimum active time "
+"is 300 seconds)."
+msgstr ""
 
 #. SysConfig
 msgid "Danish"
@@ -15853,7 +16181,7 @@ msgstr "Definisce se la rendicontazione del tempo è necessaria per le azioni mu
 msgid ""
 "Defines out of office message template. Two string parameters (%s) "
 "available: end date and number of days left."
-msgstr ""
+msgstr "Definisce il template dei messaggio di cortesia \"out-of-office\". Sono disponibili due parametri (%s): data finale e numero di giorni rimanenti."
 
 #. SysConfig
 msgid ""
@@ -16865,7 +17193,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Defines the maximum number of pages per PDF file."
-msgstr "Definisce il nomero massimo di pagine per file PDF."
+msgstr "Definisce il numero massimo di pagine per file PDF."
 
 #. SysConfig
 msgid "Defines the maximum number of quoted lines to be added to responses."
@@ -16873,11 +17201,11 @@ msgstr ""
 
 #. SysConfig
 msgid "Defines the maximum number of tasks to be executed as the same time."
-msgstr "Definisce il nomero massimo di operazioni da eseguire allo stesso tempo."
+msgstr "Definisce il numero massimo di operazioni da eseguire contemporaneamente."
 
 #. SysConfig
 msgid "Defines the maximum size (in MB) of the log file."
-msgstr "Definisce la dimenzione massima (in MB) del file di log."
+msgstr "Definisce la dimensione massima (in MB) del file di log."
 
 #. SysConfig
 msgid ""
@@ -17369,6 +17697,13 @@ msgstr ""
 msgid ""
 "Defines the time zone of the indicated calendar, which can be assigned later"
 " to a specific queue."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Defines the timeout (in seconds, minimum is 20 seconds) for the support data"
+" collection with the public module 'PublicSupportDataCollector' (e.g. used "
+"from the OTRS Daemon)."
 msgstr ""
 
 #. SysConfig
@@ -17912,7 +18247,7 @@ msgstr ""
 
 #. SysConfig
 msgid "E-Mail Outbound"
-msgstr ""
+msgstr "Posta in uscita"
 
 #. SysConfig
 msgid "Edit Customer Companies."
@@ -17932,7 +18267,7 @@ msgstr "Indirizzi Email"
 
 #. SysConfig
 msgid "Email Outbound"
-msgstr ""
+msgstr "Posta in uscita"
 
 #. SysConfig
 msgid "Email sent to \"%s\"."
@@ -18265,7 +18600,7 @@ msgstr "Prosecuzione per [%s]. %s"
 #. SysConfig
 msgid ""
 "Forces encoding of outgoing emails (7bit|8bit|quoted-printable|base64)."
-msgstr ""
+msgstr "Forza la codifica dei messaggi di posta in uscita (7bit|8bit|quoted-printable|base64)."
 
 #. SysConfig
 msgid ""
@@ -18303,7 +18638,7 @@ msgstr ""
 #. SysConfig
 msgid ""
 "Frontend module registration (disable AgentTicketService link if Ticket "
-"Serivice feature is not used)."
+"Service feature is not used)."
 msgstr ""
 
 #. SysConfig
@@ -18335,6 +18670,10 @@ msgstr ""
 #. SysConfig
 msgid "Frontend theme"
 msgstr "Tema per l'interfaccia"
+
+#. SysConfig
+msgid "Frontend theme."
+msgstr ""
 
 #. SysConfig
 msgid "Full value"
@@ -18700,54 +19039,6 @@ msgstr ""
 
 #. SysConfig
 msgid ""
-"If a note is added by an agent, sets the state of a ticket in the close "
-"ticket screen of the agent interface."
-msgstr ""
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"bulk screen of the agent interface."
-msgstr ""
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"free text screen of the agent interface."
-msgstr ""
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"note screen of the agent interface."
-msgstr ""
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"responsible screen of the agent interface."
-msgstr ""
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of the ticket in the ticket "
-"owner screen of a zoomed ticket in the agent interface."
-msgstr ""
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of the ticket in the ticket "
-"pending screen of a zoomed ticket in the agent interface."
-msgstr ""
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of the ticket in the ticket "
-"priority screen of a zoomed ticket in the agent interface."
-msgstr ""
-
-#. SysConfig
-msgid ""
 "If active, none of the regular expressions may match the user's email "
 "address to allow registration."
 msgstr ""
@@ -18800,6 +19091,13 @@ msgstr ""
 msgid ""
 "If enabled the daemon will redirect the standard output stream to a log "
 "file."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"If enabled the daemon will use this directory to create its PID files. Note:"
+" Please stop the daemon before any change and use this setting only if "
+"<$OTRSHome>/var/run/ can not be used."
 msgstr ""
 
 #. SysConfig
@@ -18865,8 +19163,10 @@ msgstr ""
 
 #. SysConfig
 msgid ""
-"If this option is enabled, then the decrypted data will be stored in the "
-"database if they are displayed in AgentTicketZoom."
+"If this option is disabled, articles will not automatically be decrypted and"
+" stored in the database. Please note that this also means no decryption will"
+" take place and the articles will be shown in ticket zoom in their original "
+"(encrypted) form."
 msgstr ""
 
 #. SysConfig
@@ -18888,8 +19188,15 @@ msgstr ""
 
 #. SysConfig
 msgid ""
-"Ignore article with system sender type for new article feature (e. g. auto "
-"responses or email notifications)."
+"If you're going to be out of office, you may wish to let other users know by"
+" setting the exact dates of your absence."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Ignore system sender article types (e. g. auto responses or email "
+"notifications) to be flagged as 'Unread Article' in AgentTicketZoom or "
+"expanded automatically in Large view screens."
 msgstr ""
 
 #. SysConfig
@@ -19146,7 +19453,7 @@ msgstr "Blocca/ sblocca questo ticket"
 
 #. SysConfig
 msgid "Locked Tickets."
-msgstr "Ticket bloccate."
+msgstr "Ticket bloccati."
 
 #. SysConfig
 msgid "Locked ticket."
@@ -19154,6 +19461,10 @@ msgstr "Ticket bloccato."
 
 #. SysConfig
 msgid "Log file for the ticket counter."
+msgstr ""
+
+#. SysConfig
+msgid "Logged-In Users"
 msgstr ""
 
 #. SysConfig
@@ -19299,7 +19610,7 @@ msgid ""
 msgstr ""
 
 #. SysConfig
-msgid "Merge this ticket and all articles into a another ticket"
+msgid "Merge this ticket and all articles into another ticket"
 msgstr ""
 
 #. SysConfig
@@ -19445,7 +19756,7 @@ msgstr "I miei ticket."
 msgid ""
 "Name of custom queue. The custom queue is a queue selection of your "
 "preferred queues and can be selected in the preferences settings."
-msgstr ""
+msgstr "Nome della coda personalizzata. La coda personalizzata raccoglie le tue code preferite e può essere selezionata tra le proprie impostazioni."
 
 #. SysConfig
 msgid ""
@@ -19539,10 +19850,6 @@ msgid "Old: \"%s\" New: \"%s\""
 msgstr "Vecchio: \"%s\" Nuovo: \"%s\""
 
 #. SysConfig
-msgid "Online"
-msgstr "In linea"
-
-#. SysConfig
 msgid "Open tickets (customer user)"
 msgstr "Ticket aperti (utente cliente)"
 
@@ -19617,10 +19924,6 @@ msgid "PGP Key Management"
 msgstr "Gestione chiavi PGP"
 
 #. SysConfig
-msgid "PGP Key Upload"
-msgstr "Caricamento chiavi PGP"
-
-#. SysConfig
 msgid "Package event module file a scheduler task for update registration."
 msgstr ""
 
@@ -19655,9 +19958,9 @@ msgstr ""
 #. SysConfig
 msgid ""
 "Parameters for the dashboard backend of the customer company information of "
-"the agent interface . \"Group\" is used to restrict the access to the plugin"
-" (e. g. Group: admin;group1;group2;). \"Default\" determines if the plugin "
-"is enabled by default or if the user needs to enable it manually. "
+"the agent interface. \"Group\" is used to restrict the access to the plugin "
+"(e. g. Group: admin;group1;group2;). \"Default\" determines if the plugin is"
+" enabled by default or if the user needs to enable it manually. "
 "\"CacheTTLLocal\" is the cache time in minutes for the plugin."
 msgstr ""
 
@@ -19999,7 +20302,7 @@ msgstr ""
 msgid ""
 "Required permissions to use the email outbound screen in the agent "
 "interface."
-msgstr ""
+msgstr "Permessi richiesti per utilizzare la schermata della posta in uscita nell'interfaccia agente."
 
 #. SysConfig
 msgid ""
@@ -20106,9 +20409,8 @@ msgstr "Ruoli <-> Gruppi"
 
 #. SysConfig
 msgid ""
-"Run file based generic agent jobs (Note: module name need needs to be "
-"specified in -configuration-module param e.g. "
-"\"Kernel::System::GenericAgent\")."
+"Run file based generic agent jobs (Note: module name needs to be specified "
+"in -configuration-module param e.g. \"Kernel::System::GenericAgent\")."
 msgstr ""
 
 #. SysConfig
@@ -20138,10 +20440,6 @@ msgstr ""
 #. SysConfig
 msgid "Russian"
 msgstr "Russo"
-
-#. SysConfig
-msgid "S/MIME Certificate Upload"
-msgstr "Caricamento certificato S/MIME"
 
 #. SysConfig
 msgid "SMS"
@@ -20206,8 +20504,33 @@ msgid "Second Queue"
 msgstr "Seconda coda"
 
 #. SysConfig
-msgid "Select your frontend Theme."
-msgstr "Scegli il tema per la tua interfaccia."
+msgid ""
+"Select after which period ticket overviews should refresh automatically."
+msgstr ""
+
+#. SysConfig
+msgid "Select how many tickets should be shown in overviews by default."
+msgstr ""
+
+#. SysConfig
+msgid "Select the main interface language."
+msgstr "Scegli la lingua preferita."
+
+#. SysConfig
+msgid "Select your default spelling dictionary."
+msgstr ""
+
+#. SysConfig
+msgid "Select your preferred layout for OTRS."
+msgstr ""
+
+#. SysConfig
+msgid "Select your preferred theme for OTRS."
+msgstr ""
+
+#. SysConfig
+msgid "Select your time zone."
+msgstr ""
 
 #. SysConfig
 msgid "Selects the cache backend to use."
@@ -20295,10 +20618,8 @@ msgid "ServiceView"
 msgstr ""
 
 #. SysConfig
-msgid ""
-"Set minimum loglevel. If you select 'error', just errors are logged. With "
-"'debug' you get all logging messages."
-msgstr ""
+msgid "Set a new password by filling in your current password and a new one."
+msgstr "Imposta una nuova password inserendo prima quella attuale."
 
 #. SysConfig
 msgid "Set sender email addresses for this system."
@@ -20320,6 +20641,13 @@ msgstr ""
 msgid ""
 "Set the maximum height (in pixels) of inline HTML articles in "
 "AgentTicketZoom."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Set the minimum log level. If you select 'error', just errors are logged. "
+"With 'debug' you get all logging messages. The order of log levels is: "
+"'debug', 'info', 'notice' and 'error'."
 msgstr ""
 
 #. SysConfig
@@ -20568,32 +20896,32 @@ msgstr ""
 #. SysConfig
 msgid ""
 "Sets the maximum number of active agents within the timespan defined in "
-"SessionActiveTime before a prior warning will be visible for the logged in "
+"SessionMaxIdleTime before a prior warning will be visible for the logged in "
 "agents."
 msgstr ""
 
 #. SysConfig
 msgid ""
 "Sets the maximum number of active agents within the timespan defined in "
-"SessionActiveTime."
+"SessionMaxIdleTime."
 msgstr ""
 
 #. SysConfig
 msgid ""
 "Sets the maximum number of active customers within the timespan defined in "
-"SessionActiveTime."
+"SessionMaxIdleTime."
 msgstr ""
 
 #. SysConfig
 msgid ""
 "Sets the maximum number of active sessions per agent within the timespan "
-"defined in SessionActiveTime."
+"defined in SessionMaxIdleTime."
 msgstr ""
 
 #. SysConfig
 msgid ""
 "Sets the maximum number of active sessions per customers within the timespan"
-" defined in SessionActiveTime."
+" defined in SessionMaxIdleTime."
 msgstr ""
 
 #. SysConfig
@@ -20773,6 +21101,52 @@ msgid ""
 msgstr ""
 
 #. SysConfig
+msgid ""
+"Sets the state of a ticket in the close ticket screen of the agent "
+"interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket bulk screen of the agent interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket free text screen of the agent "
+"interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket note screen of the agent interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket responsible screen of the agent "
+"interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of the ticket in the ticket owner screen of a zoomed ticket "
+"in the agent interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of the ticket in the ticket pending screen of a zoomed ticket"
+" in the agent interface."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"Sets the state of the ticket in the ticket priority screen of a zoomed "
+"ticket in the agent interface."
+msgstr ""
+
+#. SysConfig
 msgid "Sets the stats hook."
 msgstr ""
 
@@ -20870,12 +21244,6 @@ msgstr ""
 msgid ""
 "Sets the ticket type in the ticket responsible screen of the agent interface"
 " (Ticket::Type needs to be activated)."
-msgstr ""
-
-#. SysConfig
-msgid ""
-"Sets the time (in seconds) a user is marked as active (minimum active time "
-"is 300 seconds)."
 msgstr ""
 
 #. SysConfig
@@ -21355,6 +21723,12 @@ msgstr ""
 
 #. SysConfig
 msgid ""
+"Shows all the customer user identifiers in a multi-select field (not useful "
+"if you have a lot of customer user identifiers)."
+msgstr ""
+
+#. SysConfig
+msgid ""
 "Shows an owner selection in phone and email tickets in the agent interface."
 msgstr ""
 
@@ -21763,6 +22137,10 @@ msgid "Spell checker."
 msgstr "Controllo ortografico."
 
 #. SysConfig
+msgid "Stable"
+msgstr ""
+
+#. SysConfig
 msgid ""
 "Standard available permissions for agents within the application. If more "
 "permissions are needed, they can be entered here. Permissions must be "
@@ -21972,6 +22350,10 @@ msgstr ""
 msgid ""
 "This event module stores attributes from CustomerUser as DynamicFields "
 "tickets. Please see the setting above for how to configure the mapping."
+msgstr ""
+
+#. SysConfig
+msgid "This is a description for TimeZone on Customer side."
 msgstr ""
 
 #. SysConfig
@@ -22284,6 +22666,14 @@ msgid "Updates the ticket index accelerator."
 msgstr ""
 
 #. SysConfig
+msgid "Upload your PGP key."
+msgstr ""
+
+#. SysConfig
+msgid "Upload your S/MIME certificate."
+msgstr ""
+
+#. SysConfig
 msgid ""
 "Use new type of select and autocomplete fields in agent interface, where "
 "applicable (InputFields)."
@@ -22394,17 +22784,25 @@ msgstr ""
 msgid ""
 "Your queue selection of your preferred queues. You also get notified about "
 "those queues via email if enabled."
-msgstr ""
+msgstr "La selezione delle tue code preferite. Vengono inoltre abilitate le notifiche via email, se abilitate, di queste ultime."
 
 #. SysConfig
 msgid ""
 "Your service selection of your preferred services. You also get notified "
 "about those services via email if enabled."
-msgstr ""
+msgstr "La selezione dei tuoi servizi preferiti. Vengono inoltre abilitate le notifiche via email, se abilitate, di questi ultimi."
 
 #. SysConfig
 msgid "attachment"
 msgstr "allegato"
+
+#. SysConfig
+msgid "bounce"
+msgstr ""
+
+#. SysConfig
+msgid "compose"
+msgstr ""
 
 #. SysConfig
 msgid "debug"
@@ -22413,6 +22811,10 @@ msgstr "debug"
 #. SysConfig
 msgid "error"
 msgstr "errore"
+
+#. SysConfig
+msgid "forward"
+msgstr ""
 
 #. SysConfig
 msgid "info"
@@ -22424,4 +22826,16 @@ msgstr ""
 
 #. SysConfig
 msgid "notice"
+msgstr ""
+
+#. SysConfig
+msgid "pending"
+msgstr ""
+
+#. SysConfig
+msgid "responsible"
+msgstr ""
+
+#. SysConfig
+msgid "stats"
 msgstr ""

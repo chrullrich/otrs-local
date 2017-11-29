@@ -132,6 +132,8 @@ if ( $ENV{nocolors} || $Options =~ m{\A nocolors}msxi ) {
     $NoColors = 1;
 }
 
+my $ExitCode = 0;    # success
+
 # config
 my @NeededModules = (
     {
@@ -340,6 +342,26 @@ my @NeededModules = (
                     aptget => 'libio-socket-ssl-perl',
                     emerge => 'dev-perl/IO-Socket-SSL',
                     zypper => 'perl-IO-Socket-SSL',
+                },
+            },
+            {
+                Module    => 'Authen::SASL',
+                Required  => 0,
+                Comment   => 'Required for MD5 authentication mechanisms in IMAP connections.',
+                InstTypes => {
+                    aptget => 'libauthen-sasl-perl',
+                    emerge => 'dev-perl/Authen-SASL',
+                    zypper => 'perl-Authen-SASL',
+                },
+            },
+            {
+                Module    => 'Authen::NTLM',
+                Required  => 0,
+                Comment   => 'Required for NTLM authentication mechanism in IMAP connections.',
+                InstTypes => {
+                    aptget => 'libauthen-ntlm-perl',
+                    emerge => 'dev-perl/Authen-NTLM',
+                    zypper => 'perl-Authen-NTLM',
                 },
             },
         ],
@@ -585,6 +607,7 @@ sub _Check {
             else {
                 print color('red') . 'FAILED!' . color('reset') . " $ErrorMessage\n";
             }
+            $ExitCode = 1;    # error
         }
         else {
             my $OutputVersion = $Version;
@@ -623,6 +646,7 @@ sub _Check {
         if ($Required) {
             $Required = 'required';
             $Color    = 'red';
+            $ExitCode = 1;            # error
         }
         else {
             $Required = 'optional';
@@ -769,4 +793,4 @@ sub _GetInstallCommand {
     );
 }
 
-exit 0;
+exit $ExitCode;

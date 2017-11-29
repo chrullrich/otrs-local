@@ -84,7 +84,7 @@
                     </th>
 [% RenderBlockEnd("BulkNavBar") %]
 [% RenderBlockStart("OverviewNavBarPageFlag") %]
-                    <th class="OverviewHeader [% Data.CSS | html %]">
+                    <th class="OverviewHeader [% Data.CSS | html %]" title="[% Translate(Data.Title) | html %]">
 [% RenderBlockStart("OverviewNavBarPageFlagLink") %]
                         <a name="OverviewControl" href="[% Env("Baselink") %]Action=[% Env("Action") %];[% Data.LinkSort %];SortBy=[% Data.Name | uri %];OrderBy=[% Data.OrderBy | uri %]" title="[% Translate(Data.Title) | html %]">
                             <em class="PrintOnly">[% Translate(Data.Title) %]</em>
@@ -198,7 +198,7 @@ Core.Agent.TableFilters.InitUserAutocomplete( $(".UserAutoComplete") );
                                 [% Data.ColumnFilterStrg %]
                             </div>
                         </div>
-                        <a name="OverviewControl" href="[% Env("Baselink") %]Action=[% Env("Action") %];[% Data.LinkSort %];SortBy=DynamicField_[% Data.DynamicFieldName | uri %];OrderBy=[% Data.OrderBy | uri %]" title="[% Translate(Data.Title) | html %]">[% Data.Label | html %]</a>
+                        <a name="OverviewControl" href="[% Env("Baselink") %]Action=[% Env("Action") %];[% Data.LinkSort %];SortBy=DynamicField_[% Data.DynamicFieldName | uri %];OrderBy=[% Data.OrderBy | uri %]" title="[% Translate(Data.Title) | html %]">[% Translate(Data.Label) | html %]</a>
 [% RenderBlockEnd("OverviewNavBarPageDynamicFieldFiltrableSortable") %]
 
 [% RenderBlockStart("OverviewNavBarPageDynamicFieldFiltrableNotSortable") %]
@@ -421,9 +421,14 @@ $('.OverviewHeader').off('click').on('click', '.ColumnSettingsTrigger', function
 [% RenderBlockEnd("RecordEscalationTime") %]
 [% RenderBlockStart("RecordOwner") %]
                     <td>
-                        <div title="[% Data.UserFirstname | html %] [% Data.UserLastname | html %] ([% Data.Owner | html %])">[% Data.UserFirstname _ " " _ Data.UserLastname | truncate(30) | html %]</div>
+                        <div title="[% Data.UserFullname | html %] ([% Data.Owner | html %])">[% Data.UserFullname | truncate(30) | html %]</div>
                     </td>
 [% RenderBlockEnd("RecordOwner") %]
+[% RenderBlockStart("RecordResponsible") %]
+                    <td>
+                        <div title="[% Data.ResponsibleInfo.UserFullname | html %] ([% Data.Responsible | html %])">[% Data.ResponsibleInfo.UserFullname | truncate(30) | html %]</div>
+                    </td>
+[% RenderBlockEnd("RecordResponsible") %]
 [% RenderBlockStart("RecordCustomerID") %]
                     <td>
                         <a href="[% Env("Baselink") %]Action=AgentTicketCustomer;TicketID=[% Data.TicketID | uri %]" class="AsPopup">
@@ -443,6 +448,11 @@ $('.OverviewHeader').off('click').on('click', '.ColumnSettingsTrigger', function
                         <div title="[% Data.Title | html %]">[% Data.Title | html %]</div>
                     </td>
 [% RenderBlockEnd("RecordTicketTitle") %]
+[% RenderBlockStart("RecordTicketCreatedBy") %]
+                    <td>
+                        <div title="[% Data.UserFirstname | html %] [% Data.UserLastname | html %] ([% Data.UserLogin | html %])">[% Data.UserFullname | truncate(30) | html %]</div>
+                    </td>
+[% RenderBlockEnd("RecordTicketCreatedBy") %]
 [% RenderBlockStart("RecordTicketColumn") %]
                     <td>
                         <div title="[% Data.GenericValue | html %]">[% Data.GenericValue | truncate(30) | html %]</div>

@@ -1,15 +1,16 @@
 # 
 # Translators:
 # Carlos Rodríguez <carlos.rodriguez@otrs.com>, 2015
-# Dusan Vuckovic, 2016
+# Dusan Vuckovic, 2015
+# Dusan Vuckovic, 2016-2017
 # Dusan Vuckovic, 2015
 # S7 Design d.o.o. <otrs@s7designcreative.com>, 2015
 # Милорад Јовановић <j.milorad@gmail.com>, 2014-2017
 msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
-"POT-Creation-Date: 2017-01-16 17:40+0000\n"
-"PO-Revision-Date: 2017-01-16 23:41+0000\n"
+"POT-Creation-Date: 2017-09-24 23:14+0000\n"
+"PO-Revision-Date: 2017-09-25 04:16+0000\n"
 "Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
 "Language-Team: Serbian (http://www.transifex.com/otrs/OTRS/language/sr/)\n"
 "MIME-Version: 1.0\n"
@@ -4865,8 +4866,8 @@ msgid "'FreeText' is used as example for actual configured value."
 msgstr "„Слободан текст” се користи као пример за стварну подешену вредност."
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
-msgid "Response name free text"
-msgstr "Слободан текст имена одговора"
+msgid "Request name free text"
+msgstr "Слободан текст имена захтева"
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid "Text to be used to as function wrapper name suffix or replacement."
@@ -4885,6 +4886,10 @@ msgstr "Шема имена одговора"
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid "Select how SOAP response function wrapper should be constructed."
 msgstr "Изаберите како ће бити конструисан омотач функције „SOAP” одговора."
+
+#. Template: AdminGenericInterfaceTransportHTTPSOAP
+msgid "Response name free text"
+msgstr "Слободан текст имена одговора"
 
 #. Template: AdminGenericInterfaceTransportHTTPSOAP
 msgid ""
@@ -5591,6 +5596,10 @@ msgid "Message body"
 msgstr "Садржај поруке"
 
 #. Template: AdminNotificationEvent
+msgid "This field is required and must have less than 4000 characters."
+msgstr "Ово поље је обавезно и не сме бити дуже од 4000 карактера."
+
+#. Template: AdminNotificationEvent
 msgid "Add new notification language"
 msgstr "Уклони нови језик обавештења"
 
@@ -5668,6 +5677,12 @@ msgid "Additional recipient email addresses"
 msgstr "Имејл адреса додатног примаоца"
 
 #. Template: AdminNotificationEventTransportEmailSettings
+msgid ""
+"You can use OTRS-tags like <OTRS_TICKET_DynamicField_...> to insert values "
+"from the current ticket."
+msgstr "Можете користити OTRS тагове као <OTRS_TICKET_DynamicField_...> за уметање вредности из тренутног тикета."
+
+#. Template: AdminNotificationEventTransportEmailSettings
 msgid "Notification article type"
 msgstr "Тип чланка обавештења"
 
@@ -5705,6 +5720,10 @@ msgstr "Ако кључа/сертификат за шифрирање недо�
 #. Template: AdminOTRSBusinessInstalled
 msgid "Manage %s"
 msgstr "Управљај са %s"
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "Go to the OTRS customer portal"
+msgstr "Иди на OTRS кориснички портал"
 
 #. Template: AdminOTRSBusinessInstalled
 msgid "Downgrade to OTRS Free"
@@ -5772,6 +5791,50 @@ msgid "%s Update Available"
 msgstr "%s доступно ажурирање"
 
 #. Template: AdminOTRSBusinessInstalled
+msgid "Package installation requires patch level update of OTRS."
+msgstr "Инсталација пакета захтева ажурирану верзију OTRS."
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "Please visit our customer portal and file a request."
+msgstr "Молимо посетите наш кориснички портал и поднесите захтев."
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "Everything else will be done as part of your contract."
+msgstr "Све остало ће бити урађено под вашим постојећим уговором."
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "Your installed OTRS version is %s."
+msgstr "Инсталирана OTRS верзија код вас је %s."
+
+#. Template: AdminOTRSBusinessInstalled
+msgid ""
+"To install the current version of OTRS Business Solution™, you need to "
+"update to OTRS %s or higher."
+msgstr "Да бисте инсталирали актуелну верзију „OTRS Business Solution™”, неопходно је да ажурирате ваш OTRS на верзију %s или вишу."
+
+#. Template: AdminOTRSBusinessInstalled
+msgid ""
+"To install the current version of OTRS Business Solution™, the Maximum OTRS "
+"Version is %s."
+msgstr "Да бисте инсталирали актуелну верзију „OTRS Business Solution™”, највиша верзија OTRS је %s."
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "To install this package, the required Framework version is %s."
+msgstr "За инсталацију овог пакета, неопходна верзија OTRS је %s."
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "Why should I keep OTRS up to date?"
+msgstr "Зашто би требало да OTRS увек буде ажуриран?"
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "You will receive updates about relevant security issues."
+msgstr "Добићете ажурирања одговарајућих безбедносних издања."
+
+#. Template: AdminOTRSBusinessInstalled
+msgid "You will receive updates for all other relevant OTRS issues"
+msgstr "Добићете ажурирања свих релевантних OTRS издања."
+
+#. Template: AdminOTRSBusinessInstalled
 msgid "An update for your %s is available! Please update at your earliest!"
 msgstr "Ажурирање за ваш %s је доступно! Молимо вас да ажурирате што пре!"
 
@@ -5807,6 +5870,14 @@ msgid ""
 "Connection to cloud.otrs.com via HTTPS couldn't be established. Please make "
 "sure that your OTRS can connect to cloud.otrs.com via port 443."
 msgstr "Конекција према cloud.otrs.com преко HTTPS није могла бити успостављена. Молимо осигурајте да ваш „OTRS” може да се повеже са cloud.otrs.com преко порта 443."
+
+#. Template: AdminOTRSBusinessNotInstalled
+msgid "To install this package, you need to update to OTRS %s or higher."
+msgstr "Да бисте инсталирали овај пакет, неопходно је да ажурирате ваш OTRS на верзију %s или више."
+
+#. Template: AdminOTRSBusinessNotInstalled
+msgid "To install this package, the Maximum OTRS Version is %s."
+msgstr "За инсталацију овог пакета, највиша подржана верзија OTRS је %s."
 
 #. Template: AdminOTRSBusinessNotInstalled
 msgid "With your existing contract you can only use a small part of the %s."
@@ -5978,6 +6049,64 @@ msgid ""
 "Do you really want to reinstall this package? Any manual changes will be "
 "lost."
 msgstr "Да ли стварно желите да поново инсталирате овај пакет? Све ручне промене ће бити изгубљене."
+
+#. Template: AdminPackageManager
+msgid "Go to upgrading instructions"
+msgstr "Иди на упутство за ажурирање"
+
+#. Template: AdminPackageManager
+msgid "package information"
+msgstr "Информације о пакету"
+
+#. Template: AdminPackageManager
+msgid "Package installation requires a patch level update of OTRS."
+msgstr "Инсталација пакета захтева ажурирану верзију OTRS."
+
+#. Template: AdminPackageManager
+msgid "Package update requires a patch level update of OTRS."
+msgstr "Ажурирање пакета захтева ажурирану верзију OTRS."
+
+#. Template: AdminPackageManager
+msgid ""
+"If you are a OTRS Business Solution™ customer, please visit our customer "
+"portal and file a request."
+msgstr "Уколико сте корисник OTRS Business Solution™, молимо посетите наш кориснички портал и поднесите захтев."
+
+#. Template: AdminPackageManager
+msgid "Please note that your installed OTRS version is %s."
+msgstr "Тренутно инсталирана OTRS верзија је %s."
+
+#. Template: AdminPackageManager
+msgid ""
+"To install this package, you need to update OTRS to version %s or newer."
+msgstr "Да бисте инсталирали овај пакет, неопходно је да ажурирате ваш OTRS на верзију %s или новију."
+
+#. Template: AdminPackageManager
+msgid "This package can only be installed on OTRS version %s or older."
+msgstr "Овај пакет се може инсталирати само на OTRS верзију%s или старију."
+
+#. Template: AdminPackageManager
+msgid "This package can only be installed on OTRS version %s or newer."
+msgstr "Овај пакет се може инсталирати само на OTRS верзију%s или новију."
+
+#. Template: AdminPackageManager
+msgid "You will receive updates for all other relevant OTRS issues."
+msgstr "Добићете ажурирања свих других релевантних OTRS издања."
+
+#. Template: AdminPackageManager
+msgid "How can I do a patch level update if I don’t have a contract?"
+msgstr "Како могу да ажурирам верзију OTRS уколико немам уговор?"
+
+#. Template: AdminPackageManager
+msgid ""
+"Please find all relevant information within the upgrading instructions at "
+"%s."
+msgstr "Молимо пронађите све релевантне информације у оквиру инструкција за ажурирање на %s."
+
+#. Template: AdminPackageManager
+msgid ""
+"In case you would have further questions we would be glad to answer them."
+msgstr "У случају да имате додтана питања, биће нам задовољство да одговоримо на њих."
 
 #. Template: AdminPackageManager
 msgid "Continue"
@@ -6227,8 +6356,8 @@ msgid "Edit PostMaster Filter"
 msgstr "Уреди PostMaster филтер"
 
 #. Template: AdminPostMasterFilter
-msgid "The name is required."
-msgstr "Име је обавезно."
+msgid "A postmaster filter with this name already exists!"
+msgstr "PostMaster филтер са овим називом већ постоји!"
 
 #. Template: AdminPostMasterFilter
 msgid "Filter Condition"
@@ -7247,11 +7376,6 @@ msgid "Typically this would be around once every three days."
 msgstr "Обично је то једном у свака три дана."
 
 #. Template: AdminRegistration
-msgid ""
-"In case you would have further questions we would be glad to answer them."
-msgstr "У случају да имате додтана питања, биће нам задовољство да одговоримо на њих."
-
-#. Template: AdminRegistration
 msgid "Please visit our"
 msgstr "Молимо посетите наш"
 
@@ -7732,6 +7856,10 @@ msgid "Edit Service"
 msgstr "Уреди услугу"
 
 #. Template: AdminService
+msgid "Service name maximum length is 200 characters (with Sub-service)."
+msgstr "Максимална дужина назива услуге је 200 карактера (са под-услугом)."
+
+#. Template: AdminService
 msgid "Sub-service of"
 msgstr "Под-услуга од"
 
@@ -8162,8 +8290,18 @@ msgid "Edit System Email Address"
 msgstr "Уреди системску имејл адресу"
 
 #. Template: AdminSystemAddress
+msgid "This email address is already used as system email address."
+msgstr "Ова имејл адреса је већ употребљена као системска имејл адреса."
+
+#. Template: AdminSystemAddress
 msgid "The display name and email address will be shown on mail you send."
 msgstr "Приказано име и имејл адреса ће бити приказани на поруци коју сте послали."
+
+#. Template: AdminSystemAddress
+msgid ""
+"This system address cannot be set to invalid, because it is used in one or "
+"more queue(s)."
+msgstr "Ова системска адреса се не може означити као неважећа јер се користи у једном или више редова."
 
 #. Template: AdminSystemMaintenance
 msgid "System Maintenance Management"
@@ -8206,8 +8344,8 @@ msgid "Edit System Maintenance %s"
 msgstr "Уреди одржавање система %s"
 
 #. Template: AdminSystemMaintenanceEdit
-msgid "Edit System Maintenance information"
-msgstr "Уреди информације о одржавању система"
+msgid "Edit System Maintenance Information"
+msgstr "Уреди одржавање система"
 
 #. Template: AdminSystemMaintenanceEdit
 msgid "Date invalid!"
@@ -8616,6 +8754,10 @@ msgstr "Проширено"
 #. Template: AgentDashboardStats
 msgid "Stream"
 msgstr "Проток"
+
+#. Template: AgentDashboardStats
+msgid "No Data Available."
+msgstr "Нема информација."
 
 #. Template: AgentDashboardStats
 msgid ""
@@ -9352,12 +9494,20 @@ msgid "CustomerID (complex search)"
 msgstr "ИД клијента (сложена претрага)"
 
 #. Template: AgentTicketSearch
+msgid "(e. g. 234*)"
+msgstr "(нпр. 234*)"
+
+#. Template: AgentTicketSearch
 msgid "CustomerID (exact match)"
 msgstr "ИД клијента (тачно поклапање)"
 
 #. Template: AgentTicketSearch
 msgid "Customer User Login (complex search)"
 msgstr "Пријава клијента корисника (сложена претрага)"
+
+#. Template: AgentTicketSearch
+msgid "(e. g. U51*)"
+msgstr "(нпр.  U51*)"
 
 #. Template: AgentTicketSearch
 msgid "Customer User Login (exact match)"
@@ -9390,6 +9540,10 @@ msgstr "Време креирања чланка (пре/после)"
 #. Template: AgentTicketSearch
 msgid "Article Create Time (between)"
 msgstr "Време креирања чланка (између)"
+
+#. Template: AgentTicketSearch
+msgid "Invalid date"
+msgstr "Неважећи датум"
 
 #. Template: AgentTicketSearch
 msgid "Ticket Create Time (before/after)"
@@ -9609,24 +9763,6 @@ msgstr "Затвори ову поруку"
 msgid "Article could not be opened! Perhaps it is on another article page?"
 msgstr "Чланак се не може отворити! Могуће је да је на другој страници?"
 
-#. Template: AgentTicketZoom
-msgid "Scale preview content"
-msgstr "Скалирај садржај за приказ"
-
-#. Template: AgentTicketZoom
-msgid "Open URL in new tab"
-msgstr "Отвори УРЛ у новом листу"
-
-#. Template: AgentTicketZoom
-msgid "Close preview"
-msgstr "Затвори преглед"
-
-#. Template: AgentTicketZoom
-msgid ""
-"A preview of this website can't be provided because it didn't allow to be "
-"embedded."
-msgstr "Преглед ове веб странице није могућ јер она не дозвољава да буде уграђена."
-
 #. Template: AttachmentBlocker
 msgid "To protect your privacy, remote content was blocked."
 msgstr "Да бисте заштитили своју приватност, удаљени садржај је блокиран."
@@ -9650,6 +9786,22 @@ msgstr "Ви можете"
 #. Template: CloudServicesDisabled
 msgid "go back to the previous page"
 msgstr "иди на претходну страну"
+
+#. Template: CustomerAccept
+msgid "Information"
+msgstr "Информација"
+
+#. Template: CustomerAccept
+msgid "Dear Customer,"
+msgstr "Драги клијенте,"
+
+#. Template: CustomerAccept
+msgid "thank you for using our services."
+msgstr "хвала вам на коришћењу наших услуга."
+
+#. Template: CustomerAccept
+msgid "Yes, I accepted your license."
+msgstr "Да, прихватам вашу лиценцу."
 
 #. Template: CustomerError
 msgid "An Error Occurred"
@@ -9781,6 +9933,13 @@ msgid ""
 "reloading this page manually or wait until your browser has re-established "
 "the connection on its own."
 msgstr "Ваш интернет прегледач није у могућности да коректно комуницира са „OTRS”, па изгледа на нешто није у реду са вашом мрежном везом. Можете да покушате да ручно освежите ову страницу или да сачекате да ваш прегледач сам поново успостави везу."
+
+#. Template: CustomerFooterJS
+msgid ""
+"There was an error in communication with the server. Server might be "
+"experiencing some temporary problems, please reload this page to check if "
+"they have been resolved."
+msgstr ""
 
 #. Template: CustomerFooterJS
 msgid ""
@@ -10021,10 +10180,6 @@ msgid "Expand article"
 msgstr "Рашири чланак"
 
 #. Template: CustomerTicketZoom
-msgid "Information"
-msgstr "Информација"
-
-#. Template: CustomerTicketZoom
 msgid "Next Steps"
 msgstr "Следећи кораци"
 
@@ -10229,6 +10384,10 @@ msgstr "Да ли заиста желите да наставите?"
 #. Template: FooterJS
 msgid "Information about the OTRS Daemon"
 msgstr "Информације о „OTRS” сервису"
+
+#. Template: FooterJS
+msgid "Communication error"
+msgstr ""
 
 #. Template: FooterJS
 msgid ""
@@ -10568,6 +10727,24 @@ msgstr "Захтев за нову лозинку"
 msgid "Back to login"
 msgstr "Назад на пријављивање"
 
+#. Template: MetaFloater
+msgid "Scale preview content"
+msgstr "Скалирај садржај за приказ"
+
+#. Template: MetaFloater
+msgid "Open URL in new tab"
+msgstr "Отвори УРЛ у новом листу"
+
+#. Template: MetaFloater
+msgid "Close preview"
+msgstr "Затвори преглед"
+
+#. Template: MetaFloater
+msgid ""
+"A preview of this website can't be provided because it didn't allow to be "
+"embedded."
+msgstr "Преглед ове веб странице није могућ јер она не дозвољава да буде уграђена."
+
 #. Template: MobileNotAvailableWidget
 msgid "Feature not available"
 msgstr "Својство није доступно"
@@ -10728,7 +10905,7 @@ msgstr "Кеширај резултате"
 msgid ""
 "Stores statistics result data in a cache to be used in subsequent views with"
 " the same configuration (requires at least one selected time field)."
-msgstr ""
+msgstr "Чува резултате статистика у кешу за коришћење у следећим прегледима са истим подешавањима (захтева изабрано бар једно временско поље)."
 
 #. Template: GeneralSpecificationsWidget
 msgid ""
@@ -10881,6 +11058,10 @@ msgstr "Бројач"
 #. Template: Warning
 msgid "Go back to the previous page"
 msgstr "Вратите се на претходну страну"
+
+#. Perl Module: Kernel/Config/Defaults.pm
+msgid "Database Backend"
+msgstr ""
 
 #. Perl Module: Kernel/Config/Defaults.pm
 msgid "View system log messages."
@@ -11224,6 +11405,18 @@ msgstr "Увезена датотека нема исправан „YAML” с�
 msgid "Web service \"%s\" deleted!"
 msgstr "Веб сервис „%s” је обрисан!"
 
+#. Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
+msgid "New Web service"
+msgstr "Нови веб сервис"
+
+#. Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
+msgid "Operations"
+msgstr "Операције"
+
+#. Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
+msgid "Invokers"
+msgstr "Позиваоци"
+
 #. Perl Module: Kernel/Modules/AdminGenericInterfaceWebserviceHistory.pm
 msgid "Got no WebserviceHistoryID!"
 msgstr "Нема WebserviceHistoryID!"
@@ -11305,8 +11498,8 @@ msgid "Customer of the ticket"
 msgstr "Клијент за тикет"
 
 #. Perl Module: Kernel/Modules/AdminNotificationEvent.pm
-msgid "Yes, but require at least one active notification method"
-msgstr "Да, али је неопходан бар један активни метод обавештавања."
+msgid "Yes, but require at least one active notification method."
+msgstr ""
 
 #. Perl Module: Kernel/Modules/AdminPGP.pm
 msgid "PGP environment is not working. Please check log for more info!"
@@ -11665,6 +11858,26 @@ msgstr "Кликните на назад и промените то!"
 msgid "Queues ( without auto responses )"
 msgstr "Редови (без аутоматских одговора)"
 
+#. Perl Module: Kernel/Modules/AdminRegistration.pm
+msgid "Production"
+msgstr "Продукција"
+
+#. Perl Module: Kernel/Modules/AdminRegistration.pm
+msgid "Test"
+msgstr "Тест"
+
+#. Perl Module: Kernel/Modules/AdminRegistration.pm
+msgid "Training"
+msgstr "Тренинг"
+
+#. Perl Module: Kernel/Modules/AdminRegistration.pm
+msgid "Development"
+msgstr "Развој"
+
+#. Perl Module: Kernel/Modules/AdminRoleUser.pm
+msgid "Role"
+msgstr ""
+
 #. Perl Module: Kernel/Modules/AdminSMIME.pm
 msgid "S/MIME environment is not working. Please check log for more info!"
 msgstr "„S/MIME” окружење не функционише. За више информација проверите дневник."
@@ -11809,6 +12022,14 @@ msgstr "Не могу прибавити податке елемента за �
 msgid "Can't get filter content data of %s!"
 msgstr "Не могу прибавити податке сарджаја филтера за „%s”!"
 
+#. Perl Module: Kernel/Modules/AgentDashboardCommon.pm
+msgid "Customer Company Name"
+msgstr "Назив фирме клијента"
+
+#. Perl Module: Kernel/Modules/AgentDashboardCommon.pm
+msgid "Customer User ID"
+msgstr "ИД клијента корисника"
+
 #. Perl Module: Kernel/Modules/AgentLinkObject.pm
 msgid "Need SourceObject and SourceKey!"
 msgstr "Неопходан изворни објект и изворни кључ!"
@@ -11952,8 +12173,14 @@ msgid "You need to select at least one ticket."
 msgstr "Неопходно је да изаберете бар један тикет."
 
 #. Perl Module: Kernel/Modules/AgentTicketBulk.pm
-msgid "Ticket is locked by another agent and will be ignored!"
-msgstr "Тикет је закључан од стране другог оператера и биће игнорисан!"
+msgid ""
+"The following tickets were ignored because they are locked by another agent "
+"or you don't have write access to these tickets: %s."
+msgstr "Следећи тикети су били игнорисани зато што су закључани од стране другог оператера или зато што немате право уписа у њих: %s."
+
+#. Perl Module: Kernel/Modules/AgentTicketBulk.pm
+msgid "The following tickets were locked: %s."
+msgstr "Следећи тикети су били закључани: %s."
 
 #. Perl Module: Kernel/Modules/AgentTicketCompose.pm
 msgid "Can not determine the ArticleType!"
@@ -12177,6 +12404,13 @@ msgstr "Неважећи ИД тикета: %s!"
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
 msgid "Missing ActivityEntityID in Ticket %s!"
 msgstr "Недостаје ИД ентитета активности на тикету %s!"
+
+#. Perl Module: Kernel/Modules/AgentTicketProcess.pm
+msgid ""
+"This step does not belong anymore to the current activity in process for "
+"ticket '%s%s%s'! Another user changed this ticket in the meantime. Please "
+"close this window and reload the ticket."
+msgstr "Овај корак не припада више тренутној активности процеса за тикет '%s%s%s'! Други корисник је у међувремену променио овај тикет. Молимо да затворите овај прозор и поново учитате тикет."
 
 #. Perl Module: Kernel/Modules/AgentTicketProcess.pm
 msgid "Missing ProcessEntityID in Ticket %s!"
@@ -12528,6 +12762,16 @@ msgid "Create a new ticket!"
 msgstr "Направи нови тикет!"
 
 #. Perl Module: Kernel/Modules/Installer.pm
+msgid "SecureMode active!"
+msgstr "Сигуран режим је активан!"
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid ""
+"If you want to re-run the Installer, disable the SecureMode in the "
+"SysConfig."
+msgstr "Уколико желите да поново покренете инсталацију, онемогућите SecureMode у подешавањима."
+
+#. Perl Module: Kernel/Modules/Installer.pm
 msgid "Directory \"%s\" doesn't exist!"
 msgstr "Директоријум „%s” не постоји!"
 
@@ -12566,6 +12810,18 @@ msgid "Database %s"
 msgstr "База података %s"
 
 #. Perl Module: Kernel/Modules/Installer.pm
+msgid "Configure MySQL"
+msgstr "Подеси MySQL"
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid "Configure PostgreSQL"
+msgstr "Подеси PostgreSQL"
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid "Configure Oracle"
+msgstr "Подеси Oracle"
+
+#. Perl Module: Kernel/Modules/Installer.pm
 msgid "Unknown database type \"%s\"."
 msgstr "Непознат тип базе података „%s”."
 
@@ -12584,6 +12840,10 @@ msgstr "Датотека „%s/%s.xml” није пронађена!"
 #. Perl Module: Kernel/Modules/Installer.pm
 msgid "Contact your Admin!"
 msgstr "Контактирајте вашег администратора!"
+
+#. Perl Module: Kernel/Modules/Installer.pm
+msgid "Syslog"
+msgstr "Системски лог"
 
 #. Perl Module: Kernel/Modules/Installer.pm
 msgid "Can't write Config file!"
@@ -12823,6 +13083,11 @@ msgstr "Молимо да уклоните следеће речи јер се �
 msgid "Order by"
 msgstr "Сортирај по"
 
+#. Perl Module: Kernel/System/ACL/DB/ACL.pm
+msgid ""
+"Couldn't read ACL configuration file. Please make sure the file is valid."
+msgstr "Учитавање ACL конфигурације није било могуће. Молимо проверите да ли је фајл исправан."
+
 #. Perl Module: Kernel/System/AuthSession.pm
 msgid ""
 "You have exceeded the number of concurrent agents - contact sales@otrs.com."
@@ -12858,6 +13123,32 @@ msgstr "Ово подешавање није подразумевано акти
 msgid "This setting can not be deactivated."
 msgstr "Ово подешавање се не може деактивирати."
 
+#. Perl Module: Kernel/System/CustomerUser.pm
+msgid "Customer user \"%s\" already exists."
+msgstr "Клијент корисник \"%s\" већ постоји."
+
+#. Perl Module: Kernel/System/CustomerUser/DB.pm
+msgid "This email address is already in use for another customer user."
+msgstr "Ова адреса електронске поште је већ искоришћена за другог клијент корисника."
+
+#. Perl Module: Kernel/System/DynamicField/Driver/BaseText.pm
+msgid "e.g. Text or Te*t"
+msgstr "нпр. Text или Te*t"
+
+#. Perl Module: Kernel/System/DynamicField/Driver/Checkbox.pm
+msgid "Ignore this field."
+msgstr "Игнориши ово поље."
+
+#. Perl Module: Kernel/System/NotificationEvent.pm
+msgid ""
+"Couldn't read Notification configuration file. Please make sure the file is "
+"valid."
+msgstr "Учитавање конфигурације обавештења није било могуће. Молимо проверите да ли је фајл исправан."
+
+#. Perl Module: Kernel/System/NotificationEvent.pm
+msgid "Imported notification has body text with more than 4000 characters."
+msgstr "Текст садржаја увезеног обавештења има више од 4000 карактера."
+
 #. Perl Module: Kernel/System/Package.pm
 msgid "not installed"
 msgstr "није инсталирано"
@@ -12874,6 +13165,10 @@ msgstr "Датотека је различита!"
 msgid "Can't read file!"
 msgstr "Немогуће читање датотеке!"
 
+#. Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
+msgid "The process \"%s\" and all of its data has been imported successfully."
+msgstr "Процес \"%s\" и све информације везане за њега су успешно увезени."
+
 #. Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
 msgid "Inactive"
 msgstr "Неактивно"
@@ -12886,6 +13181,10 @@ msgstr "У гашењу"
 msgid "Can't get Token from sever"
 msgstr "Не могу прибавити токен од сервера"
 
+#. Perl Module: Kernel/System/Stats.pm
+msgid "Sum"
+msgstr "Збир"
+
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "State Type"
 msgstr "Тип статуса"
@@ -12897,14 +13196,6 @@ msgstr "Направљени приоритети"
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Created State"
 msgstr "Креирани статус"
-
-#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
-msgid "CustomerUserLogin (complex search)"
-msgstr "Пријава клијента корисника (сложена претрага)"
-
-#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
-msgid "CustomerUserLogin (exact match)"
-msgstr "Пријава клијента корисника (тачно поклапање)"
 
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Create Time"
@@ -12933,6 +13224,18 @@ msgstr "Оператер/Власник"
 #. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
 msgid "Created by Agent/Owner"
 msgstr "Креирао Оператер/Власник"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin"
+msgstr "Корисничко име клијента"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin (complex search)"
+msgstr "Корисничко име клијента (сложена претрага)"
+
+#. Perl Module: Kernel/System/Stats/Dynamic/Ticket.pm
+msgid "CustomerUserLogin (exact match)"
+msgstr "Корисничко име клијента (тачно поклапање)"
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketAccountedTime.pm
 msgid "Evaluation by"
@@ -13059,28 +13362,29 @@ msgid "Solution Max Working Time (affected by escalation configuration)"
 msgstr "Максимално радно време решења (под утицајем поставки ескалације)"
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Average (affected by escalation configuration)"
-msgstr "Просечно време одговора (под утицајем поставки ескалације)"
+msgid "First Response Average (affected by escalation configuration)"
+msgstr "Просечно време првог одговора (под утицајем поставки ескалације)"
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Min Time (affected by escalation configuration)"
-msgstr "Минимално време одговора (под утицајем поставки ескалације)"
+msgid "First Response Min Time (affected by escalation configuration)"
+msgstr "Минимално време првог одговора (под утицајем поставки ескалације)"
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Max Time (affected by escalation configuration)"
-msgstr "Максимално време одговора (под утицајем поставки ескалације)"
+msgid "First Response Max Time (affected by escalation configuration)"
+msgstr "Максимално време првог одговора (под утицајем поставки ескалације)"
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Working Time Average (affected by escalation configuration)"
-msgstr "Просечно радно време одговора (под утицајем поставки ескалације)"
+msgid ""
+"First Response Working Time Average (affected by escalation configuration)"
+msgstr "Просечно радно време првог одговора (под утицајем поставки ескалације)"
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Min Working Time (affected by escalation configuration)"
-msgstr "Минимално радно време одговора (под утицајем поставки ескалације)"
+msgid "First Response Min Working Time (affected by escalation configuration)"
+msgstr "Минимално радно време првог одговора (под утицајем поставки ескалације)"
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
-msgid "Response Max Working Time (affected by escalation configuration)"
-msgstr "Максимално радно време одговора (под утицајем поставки ескалације)"
+msgid "First Response Max Working Time (affected by escalation configuration)"
+msgstr "Максимално радно време првог одговора (под утицајем поставки ескалације)"
 
 #. Perl Module: Kernel/System/Stats/Dynamic/TicketSolutionResponseTime.pm
 msgid "Number of Tickets (affected by escalation configuration)"
@@ -13532,6 +13836,11 @@ msgstr "Неки пакети нису дозвољени за верзију в
 msgid "Package List"
 msgstr "Листа пакета"
 
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/SessionConfigSettings.pm
+msgid "Session Config Settings"
+msgstr "Подешавања сесија"
+
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/SpoolMails.pm
 msgid "Spooled Emails"
 msgstr "Имејлови у реду чекања"
@@ -13631,7 +13940,7 @@ msgstr "Подешавања времена"
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/TimeSettings.pm
 msgid "Server time zone"
-msgstr "Вренеска зона сервера"
+msgstr "Временска зона сервера"
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/TimeSettings.pm
 msgid "Computed server time offset"
@@ -13658,6 +13967,16 @@ msgstr "Подешавање TimeZoneUser може бити активирано
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/TimeSettings.pm
 msgid "OTRS TimeZone setting for calendar "
 msgstr "„OTRS” подешавање временске зоне за календар"
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/UI/AgentSkinUsage.pm
+msgid "UI - Agent Skin Usage"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/OTRS/UI/AgentThemeUsage.pm
+msgid "UI - Agent Theme Usage"
+msgstr ""
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/LoadedModules.pm
@@ -13845,9 +14164,9 @@ msgstr "Пошаљи нешифовано обавештење"
 
 #. Perl Module: Kernel/System/Web/InterfaceAgent.pm
 msgid ""
-"Panic, user authenticated but no user data can be found in OTRS DB!! Perhaps"
-" the user is invalid."
-msgstr "Пажња, корисник је "
+"Authentication succeeded, but no user data record is found in the database. "
+"Please contact the administrator."
+msgstr "Аутентификација је успела, али подаци о клијенту нису пронађени у бази. Молимо контактирајте администратора."
 
 #. Perl Module: Kernel/System/Web/InterfaceAgent.pm
 msgid "Can`t remove SessionID."
@@ -13858,8 +14177,8 @@ msgid "Logout successful."
 msgstr "Успешна одјава."
 
 #. Perl Module: Kernel/System/Web/InterfaceAgent.pm
-msgid "Panic! Invalid Session!!!"
-msgstr "Пажња! Неважећа сесија!!!"
+msgid "Error: invalid session."
+msgstr "Грешка: неважећа сесија."
 
 #. Perl Module: Kernel/System/Web/InterfaceAgent.pm
 msgid "No Permission to use this frontend module!"
@@ -13886,16 +14205,6 @@ msgstr "Не може се додати клијент корисник!"
 #. Perl Module: Kernel/System/Web/InterfaceCustomer.pm
 msgid "Can't send account info!"
 msgstr "Не могу послати инфо о налогу!"
-
-#. Perl Module: Kernel/System/Web/InterfaceInstaller.pm
-msgid "SecureMode active!"
-msgstr "Сигуран режим је активан!"
-
-#. Perl Module: Kernel/System/Web/InterfaceInstaller.pm
-msgid ""
-"If you want to re-run the Installer, disable the SecureMode in the "
-"SysConfig."
-msgstr "Уколико желите да поново покренете инсталацију, онемогућите SecureMode у подешавањима."
 
 #. Perl Module: Kernel/System/Web/InterfaceInstaller.pm
 msgid "Action \"%s\" not found!"
@@ -14010,7 +14319,7 @@ msgstr "нови тикет"
 #. Database XML Definition: scripts/database/otrs-initial_insert.xml
 msgid ""
 "Follow-ups for closed tickets are not possible. A new ticket will be "
-"created.."
+"created."
 msgstr "Настављање на затворене тикете није могуће. Нови тикет ће бити креиран."
 
 #. Database XML Definition: scripts/database/otrs-initial_insert.xml
@@ -14321,6 +14630,14 @@ msgid "ActivityID"
 msgstr "ИД активности"
 
 #. SysConfig
+msgid "Add a comment."
+msgstr "Додај коментар."
+
+#. SysConfig
+msgid "Add a default name for Dynamic Field."
+msgstr "Додај подразумевани назив за динамичко поље."
+
+#. SysConfig
 msgid "Add an inbound phone call to this ticket"
 msgstr "Додај долазни телефонски позив овом тикету."
 
@@ -14612,16 +14929,16 @@ msgstr "Дозвољава дефинисање услуге и СЛА за ти
 #. SysConfig
 msgid ""
 "Allows extended search conditions in ticket search of the agent interface. "
-"With this feature you can search e. g. with this kind of conditions like "
-"\"(key1&&key2)\" or \"(key1||key2)\"."
-msgstr "Дозвољава проширене услове претраге у тикету на интерфејсу оператера. Помоћу ове функције можете вршити претраге нпр. са врстом услова као што су: „(key1&&key2)” или „(key1||key2)”."
+"With this feature you can search e. g. ticket title with this kind of "
+"conditions like \"(*key1*&&*key2*)\" or \"(*key1*||*key2*)\"."
+msgstr "Омогућава напредне услове претраге тикета у интерфејсу оператера. Са овом опцијом моћете претраживати нпр. наслов тикета са условима као \"(*key1*&&*key2*)\" или \"(*key1*||*key2*)\"."
 
 #. SysConfig
 msgid ""
 "Allows extended search conditions in ticket search of the customer "
-"interface. With this feature you can search e. g. with this kind of "
-"conditions like \"(key1&&key2)\" or \"(key1||key2)\"."
-msgstr "Дозвољава проширене услове претраге у претрази тикета на клијентском интерфејсу. Помоћу ове функције можете вршити претраге нпр. са врстом услова као што су: „(key1&&key2)” или „(key1||key2)”."
+"interface. With this feature you can search e. g. ticket title with this "
+"kind of conditions like \"(*key1*&&*key2*)\" or \"(*key1*||*key2*)\"."
+msgstr "Омогућава напредне услове претраге тикета у интерфејсу корисника. Са овом опцијом моћете претраживати нпр. наслов тикета са условима као \"(*key1*&&*key2*)\" или \"(*key1*||*key2*)\"."
 
 #. SysConfig
 msgid ""
@@ -15045,12 +15362,14 @@ msgid "Controls how to display the ticket history entries as readable values."
 msgstr "Контролише начин приказа историјских уноса тикета као читљивих вредности. "
 
 #. SysConfig
-msgid "Controls if CustomerID is editable in the agent interface."
-msgstr "Контролише да ли је ИД клијента изменљив у интерфејсу оператера."
+msgid ""
+"Controls if CustomerID is automatically copied from the sender address for "
+"unknown customers."
+msgstr "Контролише да ли се ИД клијента аутоматски поставља на адресу пошиљаоца за непознате кориснике."
 
 #. SysConfig
-msgid "Controls if CutomerID is editable in the agent interface."
-msgstr "Контролише да ли је ИД клијента у интерфејсу оператера изменљив."
+msgid "Controls if CustomerID is read-only in the agent interface."
+msgstr "Контролише да ли се ИД клијента може само прегледати у интерфејсу оператера."
 
 #. SysConfig
 msgid "Controls if customers have the ability to sort their tickets."
@@ -15247,14 +15566,14 @@ msgid ""
 "Customer item (icon) which shows the closed tickets of this customer as info"
 " block. Setting CustomerUserLogin to 1 searches for tickets based on login "
 "name rather than CustomerID."
-msgstr "Клијентска ставка (икона) која показује затворене тикете овог клијента као инфо блок. Подешавање Пријаве клијента корисника “CustomerUserLogin“ на 1 претрагу тикета заснива више на пријави имена него на ИД клијента."
+msgstr "Клијент иконица која показује затворене тикете овог клијента као инфо блок. Подешавање CustomerUserLogin на 1 претражује тикете на основу корисничког назива уместо CustomerID."
 
 #. SysConfig
 msgid ""
 "Customer item (icon) which shows the open tickets of this customer as info "
 "block. Setting CustomerUserLogin to 1 searches for tickets based on login "
 "name rather than CustomerID."
-msgstr "Клијентска ставка (икона) која показује отворене тикете овог клијента као инфо блок. Подешавање Пријаве клијента корисника “CustomerUserLogin“ на 1 претрагу тикета заснива више на пријави имена него на ИД клијента."
+msgstr "Клијент иконица која показује отворене тикете овог клијента као инфо блок. Подешавање CustomerUserLogin на 1 претражује тикете на основу корисничког назива уместо CustomerID."
 
 #. SysConfig
 msgid "Customer preferences."
@@ -15305,6 +15624,13 @@ msgstr "Подесиве зауставне речи за индекс комп�
 #. SysConfig
 msgid "Czech"
 msgstr "Чешки"
+
+#. SysConfig
+msgid ""
+"DEPRECATED: This config setting will be removed in further versions of OTRS."
+" Sets the time (in seconds) a user is marked as active (minimum active time "
+"is 300 seconds)."
+msgstr "Ово подешавање је превазиђено и биће уклоњено у следећим верзијама OTRS. Поставља време (у секундама) за означавање корисника као активног (минимално активно време је 300 секунди)."
 
 #. SysConfig
 msgid "Danish"
@@ -16924,7 +17250,7 @@ msgstr "Дефинише модул за приказивање обавеште
 msgid ""
 "Defines the module to display a notification in different interfaces on "
 "different occasions for OTRS Business Solution™."
-msgstr "Одређује модул за приказ обавештења у разним интерфејсима у различитим приликама за „OTRS пословно решење”."
+msgstr "Одређује модул за приказ обавештења у разним интерфејсима у различитим приликама за OTRS Business Solution™."
 
 #. SysConfig
 msgid ""
@@ -17367,6 +17693,13 @@ msgid ""
 msgstr "Дефинише временску зону назначеног календара, која касније може бити додељена одређеном реду."
 
 #. SysConfig
+msgid ""
+"Defines the timeout (in seconds, minimum is 20 seconds) for the support data"
+" collection with the public module 'PublicSupportDataCollector' (e.g. used "
+"from the OTRS Daemon)."
+msgstr "Дефинише предвиђено време (у секундама, минимум је 20 секунди) за прикупљање података подршке путем модула јавог интерфејса 'PublicSupportDataCollector' (нпр. кад се користи путем OTRS системског сервиса)."
+
+#. SysConfig
 msgid "Defines the two-factor module to authenticate agents."
 msgstr "Одређује двофакторски модул за идентификацију оператера."
 
@@ -17503,7 +17836,7 @@ msgstr "Омогућава прибављање додатних информа�
 
 #. SysConfig
 msgid "Deploy and manage OTRS Business Solution™."
-msgstr "Примени и управљај „OTRS пословно решење™”."
+msgstr "Примени и управљај OTRS Business Solution™."
 
 #. SysConfig
 msgid ""
@@ -17631,7 +17964,7 @@ msgid ""
 "system registration, support data sending, upgrading to and use of OTRS "
 "Business Solution™, OTRS Verify™, OTRS News and product News dashboard "
 "widgets, among others."
-msgstr "Онемогућава комуникацију између овог система и „OTRS” групних сервера који обезбеђују сервисе у облаку. Ако је активирано, неке функционалности неће радити, а то су регистрација система, слање података подршке, унапређење на „OTRS” Пословно решење, „OTRS” Верификација, „OTRS” Новости и новости о производу у додацима на контролној табли, између осталих"
+msgstr "Онемогућава комуникацију између овог система и сервера OTRS групе који обезбеђују сервисе у облаку. Ако је активирано, неке функционалности неће радити, а то су регистрација система, слање података подршке, унапређење на OTRS Business Solution™, OTRS верификација, OTRS новости и новости о производу у додацима на контролној табли, између осталих."
 
 #. SysConfig
 msgid ""
@@ -18298,7 +18631,7 @@ msgstr "Интерфејс"
 #. SysConfig
 msgid ""
 "Frontend module registration (disable AgentTicketService link if Ticket "
-"Serivice feature is not used)."
+"Service feature is not used)."
 msgstr "Регистрација модула приступа (онемогућите везу „AgentTicketService” ако се не користи Тикет сервис)."
 
 #. SysConfig
@@ -18330,6 +18663,10 @@ msgstr "Регистрација модула приступа за интерф
 #. SysConfig
 msgid "Frontend theme"
 msgstr "Изглед приступног система"
+
+#. SysConfig
+msgid "Frontend theme."
+msgstr "Изглед приступног система."
 
 #. SysConfig
 msgid "Full value"
@@ -18695,54 +19032,6 @@ msgstr "Уколико је подешен File за LogModule, мора бит�
 
 #. SysConfig
 msgid ""
-"If a note is added by an agent, sets the state of a ticket in the close "
-"ticket screen of the agent interface."
-msgstr "Ако је оператер додао напомену, подешава статус тикета у приказу екрана затварања тикета интерфејса оператера."
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"bulk screen of the agent interface."
-msgstr "Ако је оператер додао напомену, подешава статус тикета на екрану масовне акције тикета интерфејса оператера."
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"free text screen of the agent interface."
-msgstr "Ако је оператер додао напомену, подешава статус тикета на екрану слободног текста тикета интерфејса оператера."
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"note screen of the agent interface."
-msgstr "Ако је оператер додао напомену, подешава статус тикета на екрану напомене тикета интерфејса оператера."
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of a ticket in the ticket "
-"responsible screen of the agent interface."
-msgstr "Ако је оператер додао напомену, подешава статус тикета на екрану одговорног за тикет интерфејса оператера."
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of the ticket in the ticket "
-"owner screen of a zoomed ticket in the agent interface."
-msgstr "Ако је оператер додао напомену, подешава статус тикета на екрану власника тикета у детаљном приказу тикета интерфејса оператера."
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of the ticket in the ticket "
-"pending screen of a zoomed ticket in the agent interface."
-msgstr "Ако је оператер додао напомену, подешава статус тикета на екрану тикета на чекању у детаљном приказу тикета интерфејса оператера."
-
-#. SysConfig
-msgid ""
-"If a note is added by an agent, sets the state of the ticket in the ticket "
-"priority screen of a zoomed ticket in the agent interface."
-msgstr "Ако је оператер додао напомену, подешава статус тикета на екрану приоритета тикета у детаљном приказу тикета интерфејса оператера."
-
-#. SysConfig
-msgid ""
 "If active, none of the regular expressions may match the user's email "
 "address to allow registration."
 msgstr "Ако је активно, ни један регуларни израз se не може поклопити са корисниковом имејл адресом да би дозволио регистрацију."
@@ -18796,6 +19085,13 @@ msgid ""
 "If enabled the daemon will redirect the standard output stream to a log "
 "file."
 msgstr "Ако је активирано сервис ће преусмерити стандардни излазни ток у датотеку дневника."
+
+#. SysConfig
+msgid ""
+"If enabled the daemon will use this directory to create its PID files. Note:"
+" Please stop the daemon before any change and use this setting only if "
+"<$OTRSHome>/var/run/ can not be used."
+msgstr "Уколико је омогућено, системски сервис ће користити овај директоријум за снимање процесних (PID) датотека. Напомена: молимо стопирајте системски сервис пре измене овог подешавања и користите га само у случају кад је <$OTRSHome>/var/run/ недоступан."
 
 #. SysConfig
 msgid ""
@@ -18860,9 +19156,11 @@ msgstr "Ако је подешено ова адреса се користи к�
 
 #. SysConfig
 msgid ""
-"If this option is enabled, then the decrypted data will be stored in the "
-"database if they are displayed in AgentTicketZoom."
-msgstr "Ако је ова опција активирана, онда ће дешифровани подаци бити смештени у базу података ако су приказани на детаљном приказу тикета у интерфејсу оператера."
+"If this option is disabled, articles will not automatically be decrypted and"
+" stored in the database. Please note that this also means no decryption will"
+" take place and the articles will be shown in ticket zoom in their original "
+"(encrypted) form."
+msgstr "Уколико је ова опција искључена, чланци неће бити аутоматски дешифровани и снимљени у базу. Молимо обратите пажњу да ово подразумева да дешифровање чланака неће бити могуће ни у детаљима тикета и биће приказани у свом изворном (шифрованом) облику."
 
 #. SysConfig
 msgid ""
@@ -18883,9 +19181,16 @@ msgstr "Ако је ова поставка активна, локалне из�
 
 #. SysConfig
 msgid ""
-"Ignore article with system sender type for new article feature (e. g. auto "
-"responses or email notifications)."
-msgstr "Игнориши чланак са системским типом пошиљаоца за својство новог чланка (нпр аутоматски одговори или имејл обавештења)."
+"If you're going to be out of office, you may wish to let other users know by"
+" setting the exact dates of your absence."
+msgstr "Уколико ћете бити ван канцеларије, можда ћете желети да обавестите друге кориснике постављањем тачних датума вашег изостанка."
+
+#. SysConfig
+msgid ""
+"Ignore system sender article types (e. g. auto responses or email "
+"notifications) to be flagged as 'Unread Article' in AgentTicketZoom or "
+"expanded automatically in Large view screens."
+msgstr "Игнорише врсту пошиљаоца чланака (нпр. аутоматски одговори или имејл обавештења) приликом приказа непрочитаних чланака у детаљном прегледу тикета или аутоматског проширивања у великом екрану прегледа."
 
 #. SysConfig
 msgid "Include tickets of subqueues per default when selecting a queue."
@@ -19152,6 +19457,10 @@ msgid "Log file for the ticket counter."
 msgstr "Датотека дневника за бројач тикета."
 
 #. SysConfig
+msgid "Logged-In Users"
+msgstr "Пријављени корисници"
+
+#. SysConfig
 msgid "Logout of customer panel."
 msgstr "Одјава са клијентског панела."
 
@@ -19294,7 +19603,7 @@ msgid ""
 msgstr "Максимална дужина (у знацима) клијентске инфо табеле на детаљном прегледу тикета."
 
 #. SysConfig
-msgid "Merge this ticket and all articles into a another ticket"
+msgid "Merge this ticket and all articles into another ticket"
 msgstr "Споји овај тикет и све чланке у други тикет"
 
 #. SysConfig
@@ -19534,10 +19843,6 @@ msgid "Old: \"%s\" New: \"%s\""
 msgstr "Старо: „%s” Ново: „%s”"
 
 #. SysConfig
-msgid "Online"
-msgstr "На мрежи"
-
-#. SysConfig
 msgid "Open tickets (customer user)"
 msgstr "Отворени тикети (клијент корисник)"
 
@@ -19612,10 +19917,6 @@ msgid "PGP Key Management"
 msgstr "Управљање „PGP” кључем"
 
 #. SysConfig
-msgid "PGP Key Upload"
-msgstr "Слање „PGP” кључа"
-
-#. SysConfig
 msgid "Package event module file a scheduler task for update registration."
 msgstr "Датотека пакета модула догађаја за задатак планера за ажурирање регистрације."
 
@@ -19650,11 +19951,11 @@ msgstr "Параметри за филтер колона у прегледу т
 #. SysConfig
 msgid ""
 "Parameters for the dashboard backend of the customer company information of "
-"the agent interface . \"Group\" is used to restrict the access to the plugin"
-" (e. g. Group: admin;group1;group2;). \"Default\" determines if the plugin "
-"is enabled by default or if the user needs to enable it manually. "
+"the agent interface. \"Group\" is used to restrict the access to the plugin "
+"(e. g. Group: admin;group1;group2;). \"Default\" determines if the plugin is"
+" enabled by default or if the user needs to enable it manually. "
 "\"CacheTTLLocal\" is the cache time in minutes for the plugin."
-msgstr "Параметри за позадински приказ контролне табле фирме клијента у интерфејсу оператера. „Group” се користи да ограничи приступ додатку (нпр. Group: admin;group1;group2;). „Default” одређује да ли је подразумевано активиран или да је потребно да га корисник мануелно активира. „CacheTTLLocal” је време у минутима за кеш додатка."
+msgstr "Параметри за позадински приказ контролне табле фирме клијента у интефејсу оператера. „Group” се користи да ограничи приступ додатку (нпр. Group: admin;group1;group2;). „Default” одређује да ли је подразумевано активиран или да је потребно да га корисник мануелно активира. „CacheTTLLocal” је време у минутима за кеш додатка. "
 
 #. SysConfig
 msgid ""
@@ -19971,7 +20272,7 @@ msgstr "Извештаји"
 
 #. SysConfig
 msgid "Reports (OTRS Business Solution™)"
-msgstr "Извештаји („OTRS” Пословно Решење™)"
+msgstr "Извештаји (OTRS Business Solution™)"
 
 #. SysConfig
 msgid ""
@@ -20101,10 +20402,9 @@ msgstr "Улоге <-> Групе"
 
 #. SysConfig
 msgid ""
-"Run file based generic agent jobs (Note: module name need needs to be "
-"specified in -configuration-module param e.g. "
-"\"Kernel::System::GenericAgent\")."
-msgstr "Покреће послове генеричког оператера у модулима (Напомена: назив модула мора бити дефинисан у Module конфигурацији, нпр. „Kernel::System::GenericAgent”)."
+"Run file based generic agent jobs (Note: module name needs to be specified "
+"in -configuration-module param e.g. \"Kernel::System::GenericAgent\")."
+msgstr "Покреће послове генеричког оператера базиране на датотекама (Напомена: назив модула мора бити дефинисан у конфигурацији параметара модула, нпр. „Kernel::System::GenericAgent”)."
 
 #. SysConfig
 msgid "Running Process Tickets"
@@ -20133,10 +20433,6 @@ msgstr "Покреће систем у „Demo” моду. Уколико је 
 #. SysConfig
 msgid "Russian"
 msgstr "Руски"
-
-#. SysConfig
-msgid "S/MIME Certificate Upload"
-msgstr "Слање S/MIME сертификата"
 
 #. SysConfig
 msgid "SMS"
@@ -20201,8 +20497,33 @@ msgid "Second Queue"
 msgstr "Други Ред"
 
 #. SysConfig
-msgid "Select your frontend Theme."
-msgstr "Изаберите тему интерфејса."
+msgid ""
+"Select after which period ticket overviews should refresh automatically."
+msgstr "Изаберите после ког периода ће прегледи тикета бити аутоматски освежени."
+
+#. SysConfig
+msgid "Select how many tickets should be shown in overviews by default."
+msgstr "Изаберите који број тикета ће бити подразумевано приказан у прегледима."
+
+#. SysConfig
+msgid "Select the main interface language."
+msgstr "Изаберите главни језик интерфејса."
+
+#. SysConfig
+msgid "Select your default spelling dictionary."
+msgstr "Изаберите ваш подразумевани правописни речник."
+
+#. SysConfig
+msgid "Select your preferred layout for OTRS."
+msgstr "Изаберите ваш подразумевани изглед OTRS."
+
+#. SysConfig
+msgid "Select your preferred theme for OTRS."
+msgstr "Изаберите вашу подразумевану тему за OTRS."
+
+#. SysConfig
+msgid "Select your time zone."
+msgstr "Изаберите своју временску зону."
 
 #. SysConfig
 msgid "Selects the cache backend to use."
@@ -20290,10 +20611,8 @@ msgid "ServiceView"
 msgstr "ServiceView"
 
 #. SysConfig
-msgid ""
-"Set minimum loglevel. If you select 'error', just errors are logged. With "
-"'debug' you get all logging messages."
-msgstr "Одредите најнижи ниво логовања. Уколико изаберете 'error', биће логоване само грешке. Са 'debug' добићете све поруке у логовима."
+msgid "Set a new password by filling in your current password and a new one."
+msgstr "Подесите нову лозинку укуцавањем ваше тренутне и нове."
 
 #. SysConfig
 msgid "Set sender email addresses for this system."
@@ -20316,6 +20635,13 @@ msgid ""
 "Set the maximum height (in pixels) of inline HTML articles in "
 "AgentTicketZoom."
 msgstr "Подеси максималну висину (у пикселима) инлине HTML чланака у AgentTicketZoom."
+
+#. SysConfig
+msgid ""
+"Set the minimum log level. If you select 'error', just errors are logged. "
+"With 'debug' you get all logging messages. The order of log levels is: "
+"'debug', 'info', 'notice' and 'error'."
+msgstr "Одредите најнижи ниво логовања. Уколико изаберете 'error', биће логоване само грешке. Са 'debug' добићете све поруке у логовима. Редослед нивоа логовања је: 'debug', 'info', 'notice' и 'error'."
 
 #. SysConfig
 msgid ""
@@ -20563,33 +20889,33 @@ msgstr "Одређује време без активности (у секунд
 #. SysConfig
 msgid ""
 "Sets the maximum number of active agents within the timespan defined in "
-"SessionActiveTime before a prior warning will be visible for the logged in "
+"SessionMaxIdleTime before a prior warning will be visible for the logged in "
 "agents."
-msgstr "Поставља максимални број активних оператера у временском распону дефинисаном у SessionActiveTime пре него што обавештење буде видљиво за пријављене оператере."
+msgstr "Поставља максимални број активних оператера у временском распону дефинисаном у „SessionMaxIdleTime” пре него што обавештење буде видљиво за пријављене оператере."
 
 #. SysConfig
 msgid ""
 "Sets the maximum number of active agents within the timespan defined in "
-"SessionActiveTime."
-msgstr "Поставља максимални број активних оператера у временском распону дефинисаном у „SessionActiveTime”."
+"SessionMaxIdleTime."
+msgstr "Поставља максимални број активних оператера у временском распону дефинисаном у „SessionMaxIdleTime”."
 
 #. SysConfig
 msgid ""
 "Sets the maximum number of active customers within the timespan defined in "
-"SessionActiveTime."
-msgstr "Поставља максимални број активних клијента у временском распону дефинисаном у „SessionActiveTime”."
+"SessionMaxIdleTime."
+msgstr "Поставља максимални број активних клијента у временском распону дефинисаном у „SessionMaxIdleTime”."
 
 #. SysConfig
 msgid ""
 "Sets the maximum number of active sessions per agent within the timespan "
-"defined in SessionActiveTime."
-msgstr "Поставља максимални број активних сесија по оператеру у временском распону дефинисаном у „SessionActiveTime”."
+"defined in SessionMaxIdleTime."
+msgstr "Поставља максимални број активних сесија по оператеру у временском распону дефинисаном у „SessionMaxIdleTime”."
 
 #. SysConfig
 msgid ""
 "Sets the maximum number of active sessions per customers within the timespan"
-" defined in SessionActiveTime."
-msgstr "Поставља максимални број активних сесија по кориснику у временском распону дефинисаном у „SessionActiveTime”."
+" defined in SessionMaxIdleTime."
+msgstr "Поставља максимални број активних сесија по кориснику у временском распону дефинисаном у „SessionMaxIdleTime”."
 
 #. SysConfig
 msgid ""
@@ -20768,6 +21094,52 @@ msgid ""
 msgstr "Подешава сервис на екрану одговорног за тикет у интерфејсу оператера (неопходно је активирати Ticket::Service)."
 
 #. SysConfig
+msgid ""
+"Sets the state of a ticket in the close ticket screen of the agent "
+"interface."
+msgstr "Поставља статус тикета у екрану затварања тикета у интерфејсу оператера."
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket bulk screen of the agent interface."
+msgstr "Поставља статус тикета у екрану масовних акција у интерфејсу оператера."
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket free text screen of the agent "
+"interface."
+msgstr "Поставља статус тикета у екрану слободног текста у интерфејсу оператера."
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket note screen of the agent interface."
+msgstr "Поставља статус тикета у екрану напомене у интерфејсу оператера."
+
+#. SysConfig
+msgid ""
+"Sets the state of a ticket in the ticket responsible screen of the agent "
+"interface."
+msgstr "Поставља статус тикета у екрану одговорног у интерфејсу оператера."
+
+#. SysConfig
+msgid ""
+"Sets the state of the ticket in the ticket owner screen of a zoomed ticket "
+"in the agent interface."
+msgstr "Поставља статус тикета у екрану власника у интерфејсу оператера."
+
+#. SysConfig
+msgid ""
+"Sets the state of the ticket in the ticket pending screen of a zoomed ticket"
+" in the agent interface."
+msgstr "Поставља статус тикета у екрану чекања у интерфејсу оператера."
+
+#. SysConfig
+msgid ""
+"Sets the state of the ticket in the ticket priority screen of a zoomed "
+"ticket in the agent interface."
+msgstr "Поставља статус тикета у екрану приоритета у интерфејсу оператера."
+
+#. SysConfig
 msgid "Sets the stats hook."
 msgstr "Дефинише ознаку за статистике."
 
@@ -20866,12 +21238,6 @@ msgid ""
 "Sets the ticket type in the ticket responsible screen of the agent interface"
 " (Ticket::Type needs to be activated)."
 msgstr "Одређује тип тикета на екрану одговорности за тикет у интерфејсу оператера (Тикет::Тип треба да буде активирано)."
-
-#. SysConfig
-msgid ""
-"Sets the time (in seconds) a user is marked as active (minimum active time "
-"is 300 seconds)."
-msgstr "Поставља време (у секундама) за означавање корисника као активног (минимално активно време је 300 секунди)."
 
 #. SysConfig
 msgid "Sets the timeout (in seconds) for http/ftp downloads."
@@ -21350,6 +21716,12 @@ msgstr "Приказује све клијентске идентификато�
 
 #. SysConfig
 msgid ""
+"Shows all the customer user identifiers in a multi-select field (not useful "
+"if you have a lot of customer user identifiers)."
+msgstr "Приказује све клијентске идентификаторе у пољу вишеструког избора (није корисно ако имате много клијентских идентификатора)."
+
+#. SysConfig
+msgid ""
 "Shows an owner selection in phone and email tickets in the agent interface."
 msgstr "Приказује избор власника за телефонске и имејл тикете у интерфејсу оператера."
 
@@ -21758,6 +22130,10 @@ msgid "Spell checker."
 msgstr "Провера правописа."
 
 #. SysConfig
+msgid "Stable"
+msgstr " Стабилно"
+
+#. SysConfig
 msgid ""
 "Standard available permissions for agents within the application. If more "
 "permissions are needed, they can be entered here. Permissions must be "
@@ -21968,6 +22344,10 @@ msgid ""
 "This event module stores attributes from CustomerUser as DynamicFields "
 "tickets. Please see the setting above for how to configure the mapping."
 msgstr "Овај модул догађаја чува атрибуте корисника као динамичка поља тикета. Погледајте опцију изнад за подешавање мапирања."
+
+#. SysConfig
+msgid "This is a description for TimeZone on Customer side."
+msgstr "Ово је опис за TimeZone у интефејску клијента."
 
 #. SysConfig
 msgid "This is the default orange - black skin for the customer interface."
@@ -22279,6 +22659,14 @@ msgid "Updates the ticket index accelerator."
 msgstr "Ажурирај акцелератор индекса тикета."
 
 #. SysConfig
+msgid "Upload your PGP key."
+msgstr "Пошаљите свој PGP кључ."
+
+#. SysConfig
+msgid "Upload your S/MIME certificate."
+msgstr "Пошаљите ваш S/MIME сертификат."
+
+#. SysConfig
 msgid ""
 "Use new type of select and autocomplete fields in agent interface, where "
 "applicable (InputFields)."
@@ -22402,12 +22790,24 @@ msgid "attachment"
 msgstr "прилог"
 
 #. SysConfig
+msgid "bounce"
+msgstr "преусмери"
+
+#. SysConfig
+msgid "compose"
+msgstr "састави"
+
+#. SysConfig
 msgid "debug"
 msgstr "отклањање неисправности"
 
 #. SysConfig
 msgid "error"
 msgstr "грешка"
+
+#. SysConfig
+msgid "forward"
+msgstr "проследи"
 
 #. SysConfig
 msgid "info"
@@ -22420,3 +22820,15 @@ msgstr "у истом реду"
 #. SysConfig
 msgid "notice"
 msgstr "напомена"
+
+#. SysConfig
+msgid "pending"
+msgstr "на чекању"
+
+#. SysConfig
+msgid "responsible"
+msgstr "одговорност"
+
+#. SysConfig
+msgid "stats"
+msgstr "статистика"

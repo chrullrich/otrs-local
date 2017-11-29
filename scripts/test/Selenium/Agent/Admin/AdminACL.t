@@ -61,7 +61,7 @@ $Selenium->RunTest(
         # check client side validation
         my $Element = $Selenium->find_element( "#Name", 'css' );
         $Element->send_keys("");
-        $Element->VerifiedSubmit();
+        $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
         $Self->Is(
             $Selenium->execute_script(
@@ -80,7 +80,7 @@ $Selenium->RunTest(
         $Selenium->find_element( "#Description",    'css' )->send_keys('Selenium Test ACL');
         $Selenium->find_element( "#StopAfterMatch", 'css' )->VerifiedClick();
         $Selenium->execute_script("\$('#ValidID').val('1').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element( "#Name", 'css' )->VerifiedSubmit();
+        $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
         # the next screen should be the edit screen for this ACL
         # which means that there should be dropdowns present for Match/Change settings
@@ -171,8 +171,19 @@ JAVASCRIPT
         );
 
         # type in some text & confirm by pressing 'enter', which should produce a new field
-        $Selenium->find_element( '#ACLMatch .DataItem .NewDataKey', 'css' )->send_keys('Test');
-        $Selenium->find_element( '#ACLMatch .DataItem .NewDataKey', 'css' )->send_keys("\N{U+E007}");
+        $Selenium->find_element( '#ACLMatch .DataItem .NewDataKey', 'css' )->send_keys( '<Test>', "\N{U+E007}" );
+
+        # check if the text was escaped correctly
+        $Self->Is(
+            $Selenium->execute_script("return \$('.DataItem .DataItem.Editable').data('content');"),
+            '<Test>',
+            'Check for correctly unescaped item content',
+        );
+        $Self->Is(
+            $Selenium->execute_script("return \$('.DataItem .DataItem.Editable').find('span:not(.Icon)').html();"),
+            '&lt;Test&gt;',
+            'Check for correctly escaped item text',
+        );
 
         # now there should be a two new elements: .ItemPrefix and .NewDataItem
         $Self->Is(
@@ -201,6 +212,22 @@ JAVASCRIPT
             'Check for .AddAll element',
         );
 
+        # Add all possible prefix values to check for inputed values see bug#12854
+        # ( https://bugs.otrs.org/show_bug.cgi?id=12854 ).
+        my $Count = 1;
+        for my $Prefix ( '[Not]', '[RegExp]', '[regexp]', '[NotRegExp]', '[Notregexp]' ) {
+            $Selenium->find_element( "#Prefixes option[Value='$Prefix']", 'css' )->click();
+            $Selenium->find_element( ".NewDataItem",                      'css' )->send_keys('Test');
+            $Selenium->find_element( ".AddDataItem",                      'css' )->click();
+            $Self->Is(
+                $Selenium->execute_script("return \$('ul li.Editable:eq($Count) span').text();"),
+                $Prefix . 'Test',
+                "Value with prefix $Prefix is correct"
+            );
+            $Selenium->find_element( ".AddDataItem", 'css' )->click();
+            $Count++;
+        }
+
         # set ACL to invalid
         $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
         $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
@@ -217,25 +244,46 @@ JAVASCRIPT
             "There is a class 'Invalid' for test ACL",
         );
 
-        # delete test ACL from the database
         my $ACLObject = $Kernel::OM->Get('Kernel::System::ACL::DB::ACL');
-        my $UserID    = $Kernel::OM->Get('Kernel::System::User')->UserLookup(
-            UserLogin => $TestUserLogin,
-        );
-        my $ACLID = $ACLObject->ACLGet(
+        my $ACLID     = $ACLObject->ACLGet(
             Name   => $RandomID,
-            UserID => $UserID,
+            UserID => 1,
         )->{ID};
 
-        my $Success = $ACLObject->ACLDelete(
-            ID     => $ACLID,
-            UserID => $UserID,
-        );
+        # Create a copy of an ACL.
+        $Selenium->find_element("//a[contains(\@href, 'Action=AdminACL;Subaction=ACLCopy;ID=$ACLID;' )]")
+            ->VerifiedClick();
+
+        # Create another copy of the same ACL, see bug#13204 (https://bugs.otrs.org/show_bug.cgi?id=13204).
+        $Selenium->find_element("//a[contains(\@href, 'Action=AdminACL;Subaction=ACLCopy;ID=$ACLID;' )]")
+            ->VerifiedClick();
+
+        # Verify there are both copied ACL's.
+        my $Copy         = $LanguageObject->Translate('Copy');
+        my $ACLCopyName1 = "$RandomID ($Copy) 1";
+        my $ACLCopyName2 = "$RandomID ($Copy) 2";
 
         $Self->True(
-            $Success,
-            "Deleted $RandomID ACL",
+            index( $Selenium->get_page_source(), $ACLCopyName1 ) > -1,
+            "First copied ACL '$ACLCopyName1' found on screen",
         );
+        $Self->True(
+            index( $Selenium->get_page_source(), $ACLCopyName2 ) > -1,
+            "Second copied ACL '$ACLCopyName2' found on screen",
+        );
+
+        # Delete created test ACL's from the database.
+        for my $Count ( 1 .. 3 ) {
+            my $Success = $ACLObject->ACLDelete(
+                ID     => $ACLID,
+                UserID => 1,
+            );
+            $Self->True(
+                $Success,
+                "Deleted ACL ID $ACLID",
+            );
+            $ACLID++;
+        }
 
         # sync ACL information from database with the system configuration
         $Selenium->find_element("//a[contains(\@href, 'Action=AdminACL;Subaction=ACLDeploy' )]")->VerifiedClick();

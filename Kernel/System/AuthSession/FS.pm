@@ -33,12 +33,16 @@ sub new {
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
     # get more common params
-    $Self->{SessionSpool}      = $ConfigObject->Get('SessionDir');
-    $Self->{SystemID}          = $ConfigObject->Get('SystemID');
-    $Self->{SessionActiveTime} = $ConfigObject->Get('SessionActiveTime') || 60 * 10;
+    $Self->{SessionSpool} = $ConfigObject->Get('SessionDir');
+    $Self->{SystemID}     = $ConfigObject->Get('SystemID');
 
-    if ( $Self->{SessionActiveTime} < 300 ) {
-        $Self->{SessionActiveTime} = 300;
+    if ( !-e $Self->{SessionSpool} ) {
+        if ( !mkdir( $Self->{SessionSpool}, 0770 ) ) {    ## no critic
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Can't create directory '$Self->{SessionSpool}': $!",
+            );
+        }
     }
 
     return $Self;
@@ -253,8 +257,13 @@ sub CreateSessionID {
     my $UserLogin        = $Self->{Cache}->{$SessionID}->{UserLogin}        || '';
     my $UserSessionStart = $Self->{Cache}->{$SessionID}->{UserSessionStart} || '';
     my $UserLastRequest  = $Self->{Cache}->{$SessionID}->{UserLastRequest}  || '';
+    my $SessionSource    = $Self->{Cache}->{$SessionID}->{SessionSource}    || '';
 
     my $StateContent = $UserType . '####' . $UserLogin . '####' . $UserSessionStart . '####' . $UserLastRequest;
+
+    if ($SessionSource) {
+        $StateContent .= '####' . $SessionSource;
+    }
 
     # write state file
     $MainObject->FileWrite(
@@ -360,6 +369,8 @@ sub GetAllSessionIDs {
 sub GetActiveSessions {
     my ( $Self, %Param ) = @_;
 
+    my $MaxSessionIdleTime = $Kernel::OM->Get('Kernel::Config')->Get('SessionMaxIdleTime');
+
     my $TimeNow = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
 
     my $MainObject = $Kernel::OM->Get('Kernel::System::Main');
@@ -397,10 +408,14 @@ sub GetActiveSessions {
         my $UserType        = $SessionData[0] || '';
         my $UserLogin       = $SessionData[1] || '';
         my $UserLastRequest = $SessionData[3] || $TimeNow;
+        my $SessionSource   = $SessionData[4] || '';
+
+        # Don't count sessions from source 'GenericInterface'.
+        next SESSIONID if $SessionSource eq 'GenericInterface';
 
         next SESSIONID if $UserType ne $Param{UserType};
 
-        next SESSIONID if ( $UserLastRequest + $Self->{SessionActiveTime} ) < $TimeNow;
+        next SESSIONID if ( $UserLastRequest + $MaxSessionIdleTime ) < $TimeNow;
 
         $ActiveSessionCount++;
 
@@ -544,11 +559,16 @@ sub DESTROY {
         my $UserLogin        = $Self->{Cache}->{$SessionID}->{UserLogin}        || '';
         my $UserSessionStart = $Self->{Cache}->{$SessionID}->{UserSessionStart} || '';
         my $UserLastRequest  = $Self->{Cache}->{$SessionID}->{UserLastRequest}  || '';
+        my $SessionSource    = $Self->{Cache}->{$SessionID}->{SessionSource}    || '';
 
         my $StateContent = $UserType . '####'
             . $UserLogin . '####'
             . $UserSessionStart . '####'
             . $UserLastRequest;
+
+        if ($SessionSource) {
+            $StateContent .= '####' . $SessionSource;
+        }
 
         # write state file
         $MainObject->FileWrite(

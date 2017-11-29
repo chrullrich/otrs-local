@@ -99,6 +99,14 @@
             <String Regex=""></String>
         </Setting>
     </ConfigItem>
+    <ConfigItem Name="SupportDataCollector::WebUserAgent::Timeout" Required="0" Valid="0" ConfigLevel="200">
+        <Description Translatable="1">Defines the timeout (in seconds, minimum is 20 seconds) for the support data collection with the public module 'PublicSupportDataCollector' (e.g. used from the OTRS Daemon).</Description>
+        <Group>Framework</Group>
+        <SubGroup>Core</SubGroup>
+        <Setting>
+            <String Regex="^[2-9][0-9]{1,}|[1-9][0-9]{2,}$">20</String>
+        </Setting>
+    </ConfigItem>
     <ConfigItem Name="NodeID" Required="0" Valid="0" ConfigLevel="200">
         <Description Translatable="1">Defines the cluster node identifier. This is only used in cluster configurations where there is more than one OTRS frontend system. Note: only values from 1 to 99 are allowed.</Description>
         <Group>Framework</Group>
@@ -731,7 +739,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="MinimumLogLevel" Required="1" Valid="1">
-        <Description Translatable="1">Set minimum loglevel. If you select 'error', just errors are logged. With 'debug' you get all logging messages.</Description>
+        <Description Translatable="1">Set the minimum log level. If you select 'error', just errors are logged. With 'debug' you get all logging messages. The order of log levels is: 'debug', 'info', 'notice' and 'error'.</Description>
         <Group>Framework</Group>
         <SubGroup>Core::Log</SubGroup>
         <Setting>
@@ -933,7 +941,6 @@
             <Hash>
                 <Item Key="Module">Kernel::Output::HTML::Notification::AgentOnline</Item>
                 <Item Key="ShowEmail">1</Item>
-                <Item Key="IdleMinutes">60</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -945,7 +952,6 @@
             <Hash>
                 <Item Key="Module">Kernel::Output::HTML::Notification::CustomerOnline</Item>
                 <Item Key="ShowEmail">1</Item>
-                <Item Key="IdleMinutes">60</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -1042,11 +1048,11 @@
         <Group>Framework</Group>
         <SubGroup>Core::Session</SubGroup>
         <Setting>
-            <String Regex="^[0-9]{1,8}$">21600</String>
+            <String Regex="^[6-9][0-9]{1,8}|[1-9][0-9]{2,8}$">7200</String>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="SessionActiveTime" Required="1" Valid="1">
-        <Description Translatable="1">Sets the time (in seconds) a user is marked as active (minimum active time is 300 seconds).</Description>
+        <Description Translatable="1">DEPRECATED: This config setting will be removed in further versions of OTRS. Sets the time (in seconds) a user is marked as active (minimum active time is 300 seconds).</Description>
         <Group>Framework</Group>
         <SubGroup>Core::Session</SubGroup>
         <Setting>
@@ -1098,7 +1104,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="AgentSessionLimitPriorWarning" Required="0" Valid="0">
-        <Description Translatable="1">Sets the maximum number of active agents within the timespan defined in SessionActiveTime before a prior warning will be visible for the logged in agents.</Description>
+        <Description Translatable="1">Sets the maximum number of active agents within the timespan defined in SessionMaxIdleTime before a prior warning will be visible for the logged in agents.</Description>
         <Group>Framework</Group>
         <SubGroup>Core::Session</SubGroup>
         <Setting>
@@ -1106,7 +1112,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="AgentSessionLimit" Required="0" Valid="1">
-        <Description Translatable="1">Sets the maximum number of active agents within the timespan defined in SessionActiveTime.</Description>
+        <Description Translatable="1">Sets the maximum number of active agents within the timespan defined in SessionMaxIdleTime.</Description>
         <Group>Framework</Group>
         <SubGroup>Core::Session</SubGroup>
         <Setting>
@@ -1114,7 +1120,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="AgentSessionPerUserLimit" Required="0" Valid="1">
-        <Description Translatable="1">Sets the maximum number of active sessions per agent within the timespan defined in SessionActiveTime.</Description>
+        <Description Translatable="1">Sets the maximum number of active sessions per agent within the timespan defined in SessionMaxIdleTime.</Description>
         <Group>Framework</Group>
         <SubGroup>Core::Session</SubGroup>
         <Setting>
@@ -1122,7 +1128,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="CustomerSessionLimit" Required="0" Valid="1">
-        <Description Translatable="1">Sets the maximum number of active customers within the timespan defined in SessionActiveTime.</Description>
+        <Description Translatable="1">Sets the maximum number of active customers within the timespan defined in SessionMaxIdleTime.</Description>
         <Group>Framework</Group>
         <SubGroup>Core::Session</SubGroup>
         <Setting>
@@ -1130,7 +1136,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="CustomerSessionPerUserLimit" Required="0" Valid="1">
-        <Description Translatable="1">Sets the maximum number of active sessions per customers within the timespan defined in SessionActiveTime.</Description>
+        <Description Translatable="1">Sets the maximum number of active sessions per customers within the timespan defined in SessionMaxIdleTime.</Description>
         <Group>Framework</Group>
         <SubGroup>Core::Session</SubGroup>
         <Setting>
@@ -3420,7 +3426,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="PGP::StoreDecryptedData" Required="1" Valid="1">
-        <Description Translatable="1">If this option is enabled, then the decrypted data will be stored in the database if they are displayed in AgentTicketZoom.</Description>
+        <Description Translatable="1">If this option is disabled, articles will not automatically be decrypted and stored in the database. Please note that this also means no decryption will take place and the articles will be shown in ticket zoom in their original (encrypted) form.</Description>
         <Group>Framework</Group>
         <SubGroup>Crypt::PGP</SubGroup>
         <Setting>
@@ -3474,7 +3480,7 @@
         </Setting>
     </ConfigItem>
     <ConfigItem Name="SMIME::StoreDecryptedData" Required="1" Valid="1">
-        <Description Translatable="1">If this option is enabled, then the decrypted data will be stored in the database if they are displayed in AgentTicketZoom.</Description>
+        <Description Translatable="1">If this option is disabled, articles will not automatically be decrypted and stored in the database. Please note that this also means no decryption will take place and the articles will be shown in ticket zoom in their original (encrypted) form.</Description>
         <Group>Framework</Group>
         <SubGroup>Crypt::SMIME</SubGroup>
         <Setting>
@@ -3715,6 +3721,7 @@ You can log in via the following URL:
                 <Item Key="Module">Kernel::Output::HTML::Preferences::Password</Item>
                 <Item Key="Column">User Profile</Item>
                 <Item Key="Label" Translatable="1">Change password</Item>
+                <Item Key="Desc" Translatable="1">Set a new password by filling in your current password and a new one.</Item>
                 <Item Key="Prio">0500</Item>
                 <Item Key="Area">Agent</Item>
                 <!-- <Item Key="PasswordRegExp">[a-z]|[A-z]|[0-9]|\.|;|,|:|-|\+|#|!|\$|&|\?</Item> -->
@@ -3755,6 +3762,7 @@ You can log in via the following URL:
                 <Item Key="Module">Kernel::Output::HTML::Preferences::Generic</Item>
                 <Item Key="Column">User Profile</Item>
                 <Item Key="Label" Translatable="1">Spelling Dictionary</Item>
+                <Item Key="Desc" Translatable="1">Select your default spelling dictionary.</Item>
                 <Item Key="Key" Translatable="1">Default spelling dictionary</Item>
                 <Item Key="Data">
                     <Hash>
@@ -3778,6 +3786,7 @@ You can log in via the following URL:
                 <Item Key="Module">Kernel::Output::HTML::Preferences::Generic</Item>
                 <Item Key="Column">Other Settings</Item>
                 <Item Key="Label" Translatable="1">Comment</Item>
+                <Item Key="Desc" Translatable="1">Add a comment.</Item>
                 <Item Key="Key" Translatable="1">Comment</Item>
                 <Item Key="Block">Input</Item>
                 <Item Key="Data">[% Env("UserComment") %]</Item>
@@ -3796,6 +3805,7 @@ You can log in via the following URL:
                 <Item Key="Module">Kernel::Output::HTML::Preferences::Generic</Item>
                 <Item Key="Column">Other Settings</Item>
                 <Item Key="Label" Translatable="1">NameX</Item>
+                <Item Key="Desc" Translatable="1">Add a default name for Dynamic Field.</Item>
                 <Item Key="Key" Translatable="1">Default value for NameX</Item>
                 <Item Key="Block">Input</Item>
                 <Item Key="Data">[% Env("UserDynamicField_NameX") %]</Item>
@@ -3814,6 +3824,7 @@ You can log in via the following URL:
                 <Item Key="Module">Kernel::Output::HTML::Preferences::Language</Item>
                 <Item Key="Column">User Profile</Item>
                 <Item Key="Label" Translatable="1">Language</Item>
+                <Item Key="Desc" Translatable="1">Select the main interface language.</Item>
                 <Item Key="Key" Translatable="1">Language</Item>
                 <Item Key="PrefKey">UserLanguage</Item>
                 <Item Key="Prio">1000</Item>
@@ -3830,6 +3841,7 @@ You can log in via the following URL:
                 <Item Key="Module">Kernel::Output::HTML::Preferences::Skin</Item>
                 <Item Key="Column">Other Settings</Item>
                 <Item Key="Label" Translatable="1">Skin</Item>
+                <Item Key="Desc" Translatable="1">Select your preferred layout for OTRS.</Item>
                 <Item Key="Key" Translatable="1">Skin</Item>
                 <Item Key="PrefKey">UserSkin</Item>
                 <Item Key="Prio">100</Item>
@@ -3846,6 +3858,7 @@ You can log in via the following URL:
                 <Item Key="Module">Kernel::Output::HTML::Preferences::Theme</Item>
                 <Item Key="Column">User Profile</Item>
                 <Item Key="Label" Translatable="1">Theme</Item>
+                <Item Key="Desc" Translatable="1">Select your preferred theme for OTRS.</Item>
                 <Item Key="Key" Translatable="1">Frontend theme</Item>
                 <Item Key="PrefKey">UserTheme</Item>
                 <Item Key="Prio">3000</Item>
@@ -3863,6 +3876,7 @@ You can log in via the following URL:
                 <Item Key="Column">User Profile</Item>
                 <Item Key="Block">OutOfOffice</Item>
                 <Item Key="Label" Translatable="1">Out Of Office Time</Item>
+                <Item Key="Desc" Translatable="1">If you're going to be out of office, you may wish to let other users know by setting the exact dates of your absence.</Item>
                 <Item Key="Key" Translatable="1"></Item>
                 <Item Key="PrefKey">UserOutOfOffice</Item>
                 <Item Key="Prio">4000</Item>
@@ -3879,6 +3893,7 @@ You can log in via the following URL:
                 <Item Key="Module">Kernel::Output::HTML::Preferences::TimeZone</Item>
                 <Item Key="Column">User Profile</Item>
                 <Item Key="Label" Translatable="1">Time Zone</Item>
+                <Item Key="Desc" Translatable="1">Select your time zone.</Item>
                 <Item Key="Key" Translatable="1">Time Zone</Item>
                 <Item Key="PrefKey">UserTimeZone</Item>
                 <Item Key="Prio">5000</Item>
@@ -3960,7 +3975,6 @@ You can log in via the following URL:
             <Hash>
                 <Item Key="Module">Kernel::Output::HTML::Notification::AgentOnline</Item>
                 <Item Key="ShowEmail">1</Item>
-                <Item Key="IdleMinutes">60</Item>
             </Hash>
         </Setting>
     </ConfigItem>
@@ -4524,6 +4538,7 @@ via the Preferences button after logging in.
                 <Item Key="Label" Translatable="1">Change password</Item>
                 <Item Key="Prio">1000</Item>
                 <Item Key="Area">Customer</Item>
+                <Item Key="Desc" Translatable="1">Set a new password by filling in your current password and a new one.</Item>
                 <!-- <Item Key="PasswordRegExp">[a-z]|[A-z]|[0-9]|\.|;|,|:|-|\+|#|!|\$|&|\?</Item> -->
                 <Item Key="PasswordRegExp"></Item>
                 <Item Key="PasswordMinSize">0</Item>
@@ -4544,6 +4559,7 @@ via the Preferences button after logging in.
                 <Item Key="Column">Other Settings</Item>
                 <Item Key="Label" Translatable="1">Google Authenticator</Item>
                 <Item Key="Key" Translatable="1">Shared Secret</Item>
+                <Item Key="Desc" Translatable="1">Enter your shared secret to enable two factor authentication.</Item>
                 <Item Key="Block">Input</Item>
                 <Item Key="PrefKey">UserGoogleAuthenticatorSecretKey</Item>
                 <Item Key="Prio">1100</Item>
@@ -4560,6 +4576,7 @@ via the Preferences button after logging in.
                 <Item Key="Module">Kernel::Output::HTML::Preferences::Language</Item>
                 <Item Key="Column">User Profile</Item>
                 <Item Key="Label" Translatable="1">Interface language</Item>
+                <Item Key="Desc" Translatable="1">Select the main interface language.</Item>
                 <Item Key="Key" Translatable="1">Language</Item>
                 <Item Key="PrefKey">UserLanguage</Item>
                 <Item Key="Prio">2000</Item>
@@ -4576,7 +4593,8 @@ via the Preferences button after logging in.
                 <Item Key="Module">Kernel::Output::HTML::Preferences::Theme</Item>
                 <Item Key="Column">User Profile</Item>
                 <Item Key="Label" Translatable="1">Theme</Item>
-                <Item Key="Key" Translatable="1">Select your frontend Theme.</Item>
+                <Item Key="Desc" Translatable="1">Select your preferred theme for OTRS.</Item>
+                <Item Key="Key" Translatable="1">Frontend theme.</Item>
                 <Item Key="PrefKey">UserTheme</Item>
                 <Item Key="Prio">1000</Item>
                 <Item Key="Active">0</Item>
@@ -4592,6 +4610,7 @@ via the Preferences button after logging in.
                 <Item Key="Module">Kernel::Output::HTML::Preferences::TimeZone</Item>
                 <Item Key="Column">User Profile</Item>
                 <Item Key="Label" Translatable="1">Time Zone</Item>
+                <Item Key="Desc" Translatable="1">This is a description for TimeZone on Customer side.</Item>
                 <Item Key="Key" Translatable="1">Time Zone</Item>
                 <Item Key="PrefKey">UserTimeZone</Item>
                 <Item Key="Prio">5000</Item>
@@ -4608,7 +4627,8 @@ via the Preferences button after logging in.
                 <Item Key="Module">Kernel::Output::HTML::Preferences::PGP</Item>
                 <Item Key="Column">Other Settings</Item>
                 <Item Key="Label" Translatable="1">PGP Key</Item>
-                <Item Key="Key" Translatable="1">PGP Key Upload</Item>
+                <Item Key="Desc" Translatable="1">Upload your PGP key.</Item>
+                <Item Key="Key" Translatable="1">PGP Key</Item>
                 <Item Key="PrefKey">UserPGPKey</Item>
                 <Item Key="Prio">10000</Item>
                 <Item Key="Active">1</Item>
@@ -4624,7 +4644,8 @@ via the Preferences button after logging in.
                 <Item Key="Module">Kernel::Output::HTML::Preferences::SMIME</Item>
                 <Item Key="Column">Other Settings</Item>
                 <Item Key="Label" Translatable="1">S/MIME Certificate</Item>
-                <Item Key="Key" Translatable="1">S/MIME Certificate Upload</Item>
+                <Item Key="Desc" Translatable="1">Upload your S/MIME certificate.</Item>
+                <Item Key="Key" Translatable="1">S/MIME Certificate</Item>
                 <Item Key="PrefKey">UserSMIMEKey</Item>
                 <Item Key="Prio">11000</Item>
                 <Item Key="Active">1</Item>
@@ -4770,7 +4791,7 @@ via the Preferences button after logging in.
         </Setting>
     </ConfigItem>
     <ConfigItem Name="AgentCustomerInformationCenter::Backend###0600-CIC-CustomerCompanyInformation" Required="0" Valid="1">
-        <Description Translatable="1">Parameters for the dashboard backend of the customer company information of the agent interface . "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.</Description>
+        <Description Translatable="1">Parameters for the dashboard backend of the customer company information of the agent interface. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin.</Description>
         <Group>Framework</Group>
         <SubGroup>Frontend::Agent::Dashboard</SubGroup>
         <Setting>
@@ -5754,7 +5775,7 @@ via the Preferences button after logging in.
         <SubGroup>Frontend::Agent::Stats</SubGroup>
         <Setting>
             <Array>
-                <Item>stats</Item>
+                <Item Translatable="1">stats</Item>
             </Array>
         </Setting>
     </ConfigItem>
@@ -5835,6 +5856,17 @@ via the Preferences button after logging in.
         <SubGroup>Frontend::Agent::Stats</SubGroup>
         <Setting>
             <Option SelectedID="1">
+                <Item Key="0" Translatable="1">No</Item>
+                <Item Key="1" Translatable="1">Yes</Item>
+            </Option>
+        </Setting>
+    </ConfigItem>
+    <ConfigItem Name="Stats::CustomerUserLoginsAsMultiSelect" Required="1" Valid="1">
+        <Description Translatable="1">Shows all the customer user identifiers in a multi-select field (not useful if you have a lot of customer user identifiers).</Description>
+        <Group>Framework</Group>
+        <SubGroup>Frontend::Agent::Stats</SubGroup>
+        <Setting>
+            <Option SelectedID="0">
                 <Item Key="0" Translatable="1">No</Item>
                 <Item Key="1" Translatable="1">Yes</Item>
             </Option>
@@ -5968,7 +6000,6 @@ via the Preferences button after logging in.
                 <Item Key="Module">Kernel::Output::HTML::Dashboard::UserOutOfOffice</Item>
                 <Item Key="Title" Translatable="1">Out Of Office</Item>
                 <Item Key="Description"></Item>
-                <Item Key="IdleMinutes">60</Item>
                 <Item Key="SortBy">UserFullname</Item>
                 <Item Key="Block">ContentSmall</Item>
                 <Item Key="Limit">10</Item>
@@ -5985,10 +6016,9 @@ via the Preferences button after logging in.
         <Setting>
             <Hash>
                 <Item Key="Module">Kernel::Output::HTML::Dashboard::UserOnline</Item>
-                <Item Key="Title" Translatable="1">Online</Item>
+                <Item Key="Title" Translatable="1">Logged-In Users</Item>
                 <Item Key="Description"></Item>
                 <Item Key="ShowEmail">0</Item>
-                <Item Key="IdleMinutes">60</Item>
                 <Item Key="SortBy">UserFullname</Item>
                 <Item Key="Filter">Agent</Item>
                 <Item Key="Block">ContentSmall</Item>
@@ -6530,6 +6560,7 @@ via the Preferences button after logging in.
                 <Item>Core.UI.InputFields.js</Item>
                 <Item>Core.UI.Accessibility.js</Item>
                 <Item>Core.UI.Dialog.js</Item>
+                <Item>Core.UI.Floater.js</Item>
                 <Item>Core.UI.RichTextEditor.js</Item>
                 <Item>Core.UI.Datepicker.js</Item>
                 <Item>Core.UI.Popup.js</Item>
@@ -6939,8 +6970,8 @@ via the Preferences button after logging in.
         <SubGroup>Core::OTRSBusiness</SubGroup>
         <Setting>
             <Option SelectedID="1">
-                <Item Key="0">Development</Item>
-                <Item Key="1">Stable</Item>
+                <Item Key="0" Translatable="1">Development</Item>
+                <Item Key="1" Translatable="1">Stable</Item>
             </Option>
         </Setting>
     </ConfigItem>

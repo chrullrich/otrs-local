@@ -68,8 +68,8 @@ sub new {
 
 =item Generate()
 
-Generates a support bundle tar or tar.gz with the following contents: Registration Information,
-Support Data, Installed Packages, and another tar or tar.gz with all changed or new files in the
+Generates a support bundle C<.tar> or C<.tar.gz> with the following contents: Registration Information,
+Support Data, Installed Packages, and another C<.tar> or C<.tar.gz> with all changed or new files in the
 OTRS installation directory.
 
     my $Result = $SupportBundleGeneratorObject->Generate();
@@ -274,12 +274,12 @@ sub Generate {
 
 =item GenerateCustomFilesArchive()
 
-Generates a .tar or tar.gz file with all eligible changed or added files taking the ARCHIVE file as
-a reference
+Generates a C<.tar> or C<.tar.gz> file with all eligible changed or added files taking the ARCHIVE file as a reference
 
     my ( $Content, $Filename ) = $SupportBundleGeneratorObject->GenerateCustomFilesArchive();
 
 Returns:
+
     $Content  = $FileContentsRef;
     $Filename = 'application.tar';      # or 'application.tar.gz'
 
@@ -329,28 +329,38 @@ sub GenerateCustomFilesArchive {
     my $HomeWithoutSlash = $Self->{Home};
     $HomeWithoutSlash =~ s{\A\/}{};
 
-    # Mask Passwords in Config.pm
-    my $Config = $TarObject->get_content( $HomeWithoutSlash . '/Kernel/Config.pm' );
+    # Mask passwords in Config files.
+    CONFIGFILE:
+    for my $ConfigFile ( $TarObject->list_files() ) {
 
-    if ( !$Config ) {
-        $Kernel::OM->Get('Kernel::System::Log')->Log(
-            Priority => 'error',
-            Message  => "Kernel/Config.pm was not found in the modified files!",
-        );
-        return;
+        my $File = $ConfigFile;
+        $File =~ s{$HomeWithoutSlash/}{}g;
+        my $FullFilePath = $HomeWithoutSlash . '/' . $File;
+
+        next CONFIGFILE if ( $File !~ 'Kernel/Config.pm' && $File !~ 'Kernel/Config/Files' );
+
+        my $Content = $TarObject->get_content($FullFilePath);
+
+        if ( !$Content ) {
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "$File was not found in the modified files!",
+            );
+            next CONFIGFILE;
+        }
+
+        # Trim any passswords.
+        # Simple settings like $Self->{'DatabasePw'} or $Self->{'AuthModule::LDAP::SearchUserPw1'}.
+        $Content =~ s/(\$Self->\{'*[^']+(?:Password|Pw)\d*'*\}\s*=\s*)\'.*?\'/$1\'xxx\'/mg;
+
+        # Complex settings like:
+        #     $Self->{CustomerUser1} = {
+        #         Params => {
+        #             UserPw => 'xxx',
+        $Content =~ s/((?:Password|Pw)\d*\s*=>\s*)\'.*?\'/$1\'xxx\'/mg;
+
+        $TarObject->replace_content( $FullFilePath, $Content );
     }
-
-    # Trim any passswords from Config.pm.
-    # Simple settings like $Self->{'DatabasePw'} or $Self->{'AuthModule::LDAP::SearchUserPw1'}
-    $Config =~ s/(\$Self->\{'[^']+(?:Password|Pw)\d*'\}\s*=\s*)\'.*?\'/$1\'xxx\'/mg;
-
-    # Complex settings like:
-    #     $Self->{CustomerUser1} = {
-    #         Params => {
-    #             UserPw => 'xxx',
-    $Config =~ s/((?:Password|Pw)\d*\s*=>\s*)\'.*?\'/$1\'xxx\'/mg;
-
-    $TarObject->replace_content( $HomeWithoutSlash . '/Kernel/Config.pm', $Config );
 
     my $Write = $TarObject->write( $CustomFilesArchive, 0 );
     if ( !$Write ) {
@@ -443,11 +453,12 @@ sub GeneratePackageList {
 
 =item GenerateRegistrationInfo()
 
-Generates a .json file with the otrs system registration information
+Generates a C<.json> file with the otrs system registration information
 
     my ( $Content, $Filename ) = $SupportBundleGeneratorObject->GenerateRegistrationInfo();
 
 Returns:
+
     $Content  = $FileContentsRef;
     $Filename = 'RegistrationInfo.json';
 
@@ -492,11 +503,12 @@ sub GenerateRegistrationInfo {
 
 =item GenerateSupportData()
 
-Generates a .json file with the support data
+Generates a C<.json> file with the support data
 
     my ( $Content, $Filename ) = $SupportBundleGeneratorObject->GenerateSupportData();
 
 Returns:
+
     $Content  = $FileContentsRef;
     $Filename = 'GenerateSupportData.json';
 
@@ -505,7 +517,12 @@ Returns:
 sub GenerateSupportData {
     my ( $Self, %Param ) = @_;
 
-    my %SupportData = $Kernel::OM->Get('Kernel::System::SupportDataCollector')->Collect();
+    my $SupportDataCollectorWebTimeout
+        = $Kernel::OM->Get('Kernel::Config')->Get('SupportDataCollector::WebUserAgent::Timeout');
+
+    my %SupportData = $Kernel::OM->Get('Kernel::System::SupportDataCollector')->Collect(
+        WebTimeout => $SupportDataCollectorWebTimeout,
+    );
 
     my $JSONContent = $Kernel::OM->Get('Kernel::System::JSON')->Encode(
         Data => \%SupportData,

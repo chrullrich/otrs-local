@@ -86,6 +86,12 @@
     position: relative;
 }
 
+#TimeLineOverflow {
+    overflow-y: hidden;
+    max-height: 1173px;
+    padding: 10px;
+}
+
 .RTL .Dialog > .Content > .InnerContent {
     padding: 10px 10px 10px 25px;
 }
@@ -150,6 +156,13 @@
 
 .Dialog .Field.LayoutGrid .Tablelike {
     width: 98%;
+}
+
+.Dialog .Field .FocusField {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    z-index: -1;
 }
 
 .Dialog .Buttons {

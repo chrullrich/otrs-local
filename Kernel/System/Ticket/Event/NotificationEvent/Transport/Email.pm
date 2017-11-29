@@ -32,6 +32,8 @@ our @ObjectDependencies = (
     'Kernel::System::Web::Request',
     'Kernel::System::Crypt::PGP',
     'Kernel::System::Crypt::SMIME',
+    'Kernel::System::DynamicField',
+    'Kernel::System::DynamicField::Backend',
 );
 
 =head1 NAME
@@ -76,7 +78,7 @@ sub SendNotification {
         if ( !$Param{$Needed} ) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
-                Message  => 'Need $Needed!',
+                Message  => "Need $Needed!",
             );
             return;
         }
@@ -324,10 +326,18 @@ sub GetTransportRecipients {
     # get recipients by RecipientEmail
     if ( $Param{Notification}->{Data}->{RecipientEmail} ) {
         if ( $Param{Notification}->{Data}->{RecipientEmail}->[0] ) {
+            my $RecipientEmail = $Param{Notification}->{Data}->{RecipientEmail}->[0];
+
+            # replace OTRSish attributes in recipient email
+            $RecipientEmail = $Self->_ReplaceTicketAttributes(
+                Ticket => $Param{Ticket},
+                Field  => $RecipientEmail,
+            );
+
             my %Recipient;
             $Recipient{Realname}  = '';
             $Recipient{Type}      = 'Customer';
-            $Recipient{UserEmail} = $Param{Notification}->{Data}->{RecipientEmail}->[0];
+            $Recipient{UserEmail} = $RecipientEmail;
 
             # check if we have a specified article type
             if ( $Param{Notification}->{Data}->{NotificationArticleTypeID} ) {
@@ -576,13 +586,16 @@ sub SecurityOptionsGet {
             Search => $NotificationSenderEmail,
         );
 
-        # take just valid keys
+        # Take just valid keys.
         @SignKeys = grep { $_->{Status} eq 'good' } @SignKeys;
 
         # get public keys
         @EncryptKeys = $Kernel::OM->Get('Kernel::System::Crypt::PGP')->PublicKeySearch(
             Search => $Param{Recipient}->{UserEmail},
         );
+
+        # Take just valid keys.
+        @EncryptKeys = grep { $_->{Status} eq 'good' } @EncryptKeys;
 
         # Get PGP method (Detached or In-line).
         if ( !$Kernel::OM->Get('Kernel::Output::HTML::Layout')->{BrowserRichText} ) {
@@ -726,6 +739,67 @@ sub SecurityOptionsGet {
 
     return \%SecurityOptions;
 
+}
+
+sub _ReplaceTicketAttributes {
+    my ( $Self, %Param ) = @_;
+
+    return if !$Param{Field};
+
+    # get needed objects
+    my $DynamicFieldObject        = $Kernel::OM->Get('Kernel::System::DynamicField');
+    my $DynamicFieldBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
+
+    # replace ticket attributes such as <OTRS_Ticket_DynamicField_Name1> or
+    # <OTRS_TICKET_DynamicField_Name1>
+    # <OTRS_Ticket_*> is deprecated and should be removed in further versions of OTRS
+    my $Count = 0;
+    REPLACEMENT:
+    while (
+        $Param{Field}
+        && $Param{Field} =~ m{<OTRS_TICKET_([A-Za-z0-9_]+)>}msxi
+        && $Count++ < 1000
+        )
+    {
+        my $TicketAttribute = $1;
+
+        if ( $TicketAttribute =~ m{DynamicField_(\S+?)_Value} ) {
+            my $DynamicFieldName = $1;
+
+            my $DynamicFieldConfig = $DynamicFieldObject->DynamicFieldGet(
+                Name => $DynamicFieldName,
+            );
+            next REPLACEMENT if !$DynamicFieldConfig;
+
+            # get the display value for each dynamic field
+            my $DisplayValue = $DynamicFieldBackendObject->ValueLookup(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                Key                => $Param{Ticket}->{"DynamicField_$DynamicFieldName"},
+            );
+
+            my $DisplayValueStrg = $DynamicFieldBackendObject->ReadableValueRender(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                Value              => $DisplayValue,
+            );
+
+            $Param{Field} =~ s{<OTRS_TICKET_$TicketAttribute>}{$DisplayValueStrg->{Value} // ''}ige;
+
+            next REPLACEMENT;
+        }
+
+        # if ticket value is scalar substitute all instances (as strings)
+        # this will allow replacements for "<OTRS_TICKET_Title> <OTRS_TICKET_Queue"
+        if ( !ref $Param{Ticket}->{$TicketAttribute} ) {
+            $Param{Field} =~ s{<OTRS_TICKET_$TicketAttribute>}{$Param{Ticket}->{$TicketAttribute} // ''}ige;
+        }
+        else {
+            # if the value is an array (e.g. a multiselect dynamic field) set the value directly
+            # this unfortunately will not let a combination of values to be replaced
+            $Param{Field} = $Param{Ticket}->{$TicketAttribute};
+        }
+    }
+
+    return $Param{Field};
 }
 
 1;

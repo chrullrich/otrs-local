@@ -57,18 +57,20 @@ sub LinkObjectTableCreate {
     if ( $Param{ViewMode} =~ m{ \A Simple }xms ) {
 
         return $Self->LinkObjectTableCreateSimple(
-            LinkListWithData => $Param{LinkListWithData},
-            ViewMode         => $Param{ViewMode},
+            LinkListWithData               => $Param{LinkListWithData},
+            ViewMode                       => $Param{ViewMode},
+            AdditionalLinkListWithDataJSON => $Param{AdditionalLinkListWithDataJSON},
         );
     }
     else {
 
         return $Self->LinkObjectTableCreateComplex(
-            LinkListWithData => $Param{LinkListWithData},
-            ViewMode         => $Param{ViewMode},
-            AJAX             => $Param{AJAX},
-            SourceObject     => $Param{Object},
-            ObjectID         => $Param{Key},
+            LinkListWithData               => $Param{LinkListWithData},
+            ViewMode                       => $Param{ViewMode},
+            AJAX                           => $Param{AJAX},
+            SourceObject                   => $Param{Object},
+            ObjectID                       => $Param{Key},
+            AdditionalLinkListWithDataJSON => $Param{AdditionalLinkListWithDataJSON},
         );
     }
 }
@@ -357,6 +359,20 @@ sub LinkObjectTableCreateComplex {
                 PrefKey => "LinkObject::ComplexTable-" . $Block->{Blockname},
             );
 
+            # Add translations for the allocation lists for regular columns.
+            for my $Column ( @{ $Block->{AllColumns} } ) {
+                $LayoutObject->Block(
+                    Name => 'ColumnTranslation',
+                    Data => {
+                        ColumnName      => $Column->{ColumnName},
+                        ColumnTranslate => $Column->{ColumnTranslate},
+                    },
+                );
+                $LayoutObject->Block(
+                    Name => 'ColumnTranslationSeparator',
+                );
+            }
+
             $LayoutObject->Block(
                 Name => 'ContentLargePreferencesForm',
                 Data => {
@@ -369,13 +385,14 @@ sub LinkObjectTableCreateComplex {
                 Name => $Preferences{Name} . 'PreferencesItem' . $Preferences{Block},
                 Data => {
                     %Preferences,
-                    NameForm          => $Block->{Blockname},
-                    NamePref          => $Preferences{Name},
-                    Name              => $Block->{Blockname},
-                    SourceObject      => $Param{SourceObject},
-                    DestinationObject => $Block->{Blockname},
-                    OriginalAction    => $OriginalAction,
-                    SourceObjectData  => $SourceObjectData,
+                    NameForm                       => $Block->{Blockname},
+                    NamePref                       => $Preferences{Name},
+                    Name                           => $Block->{Blockname},
+                    SourceObject                   => $Param{SourceObject},
+                    DestinationObject              => $Block->{Blockname},
+                    OriginalAction                 => $OriginalAction,
+                    SourceObjectData               => $SourceObjectData,
+                    AdditionalLinkListWithDataJSON => $Param{AdditionalLinkListWithDataJSON},
                 },
             );
         }
@@ -604,7 +621,7 @@ sub LinkObjectTableCreateSimple {
 
 =item LinkObjectSelectableObjectList()
 
-return a selection list of linkable objects
+return a selection list of link-able objects
 
     my $String = $LayoutObject->LinkObjectSelectableObjectList(
         Object   => 'Ticket',
@@ -808,6 +825,8 @@ sub ComplexTablePreferencesGet {
         }
     }
 
+    my @AllColumns = ( @ColumnsAvailable, @ColumnsEnabled );
+
     # check if the user has filter preferences for this widget
     my %Preferences = $Kernel::OM->Get('Kernel::System::User')->GetPreferences(
         UserID => $Self->{UserID},
@@ -862,6 +881,7 @@ sub ComplexTablePreferencesGet {
         ColumnsEnabled   => $JSONObject->Encode( Data => \@ColumnsEnabled ),
         ColumnsAvailable => $JSONObject->Encode( Data => \@ColumnsAvailableNotEnabled ),
         Translation      => 1,
+        AllColumns       => \@AllColumns,
     );
 
     return %Params;

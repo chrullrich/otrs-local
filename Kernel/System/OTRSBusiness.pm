@@ -125,7 +125,7 @@ sub OTRSBusinessIsInstalled {
 
 =item OTRSBusinessIsAvailable()
 
-checks with cloud.otrs.com if OTRSBusiness is available for the current framework.
+checks with C<cloud.otrs.com> if OTRSBusiness is available for the current framework.
 
 =cut
 
@@ -253,7 +253,7 @@ sub OTRSBusinessIsReinstallable {
 
 =item OTRSBusinessIsUpdateable()
 
-checks with cloud.otrs.com if the OTRSBusiness package is available in a newer version
+checks with C<cloud.otrs.com> if the OTRSBusiness package is available in a newer version
 than the one currently installed. The result of this check will be stored in the
 system_data table for offline usage.
 
@@ -388,7 +388,7 @@ sub OTRSBusinessGetDependencies {
 
 =item OTRSBusinessEntitlementCheck()
 
-determines the OTRSBusiness entitlement status of this system as reported by cloud.otrs.com
+determines the OTRSBusiness entitlement status of this system as reported by C<cloud.otrs.com>
 and stores it in the system_data cache.
 
 Returns 1 if the cloud call was successful.
@@ -575,8 +575,8 @@ sub HandleBusinessPermissionCloudServiceResult {
         LastUpdateTime     => $Kernel::OM->Get('Kernel::System::Time')->SystemTime2TimeStamp(
             SystemTime => $Kernel::OM->Get('Kernel::System::Time')->SystemTime()
         ),
-        AgentSessionLimit             => $OperationResult->{Data}->{AgentSessionLimit},
-        AgentSessionLimitPriorWarning => $OperationResult->{Data}->{AgentSessionLimitPriorWarning},
+        AgentSessionLimit             => $OperationResult->{Data}->{AgentSessionLimit}             // 0,
+        AgentSessionLimitPriorWarning => $OperationResult->{Data}->{AgentSessionLimitPriorWarning} // 0,
     );
 
     my $SystemDataObject = $Kernel::OM->Get('Kernel::System::SystemData');
@@ -686,15 +686,43 @@ downloads and installs OTRSBusiness.
 sub OTRSBusinessInstall {
     my ( $Self, %Param ) = @_;
 
+    my %Response = (
+        Success => 0,
+    );
+
     my $PackageString = $Self->_OTRSBusinessFileGet();
-    return if !$PackageString;
+    return %Response if !$PackageString;
+
+    my $PackageObject = $Kernel::OM->Get('Kernel::System::Package');
+
+    # Parse package structure.
+    my %Structure = $PackageObject->PackageParse(
+        String    => $PackageString,
+        FromCloud => 1,
+    );
+
+    my $FrameworkCheck = $PackageObject->_CheckFramework(
+        Framework  => $Structure{Framework},
+        NoLog      => 1,
+        ResultType => 'HASH',
+    );
+
+    # Check result type of _CheckFramework() for compatibility reasons.
+    if (
+        ref $FrameworkCheck eq 'HASH'
+        && !$FrameworkCheck->{Success}
+        )
+    {
+        $FrameworkCheck->{ShowBlock} = 'IncompatibleInfo';
+        return %{$FrameworkCheck};
+    }
 
     my $Install = $Kernel::OM->Get('Kernel::System::Package')->PackageInstall(
         String    => $PackageString,
         FromCloud => 1,
     );
 
-    return $Install if !$Install;
+    return %Response if !$Install;
 
     # now that we know that OTRSBusiness has been installed,
     # we can just preset the cache instead of just swiping it.
@@ -705,12 +733,14 @@ sub OTRSBusinessInstall {
         Value => 1,
     );
 
-    return $Install;
+    $Response{Success} = 1;
+
+    return %Response;
 }
 
 =item OTRSBusinessReinstall()
 
-reinstalls OTRSBusiness from local repository.
+re-installs OTRSBusiness from local repository.
 
 =cut
 
@@ -741,13 +771,46 @@ downloads and updates OTRSBusiness.
 sub OTRSBusinessUpdate {
     my ( $Self, %Param ) = @_;
 
+    my %Response = (
+        Success => 0,
+    );
+
     my $PackageString = $Self->_OTRSBusinessFileGet();
     return if !$PackageString;
 
-    return $Kernel::OM->Get('Kernel::System::Package')->PackageUpgrade(
+    my $PackageObject = $Kernel::OM->Get('Kernel::System::Package');
+
+    # Parse package structure.
+    my %Structure = $PackageObject->PackageParse(
         String    => $PackageString,
         FromCloud => 1,
     );
+
+    my $FrameworkCheck = $PackageObject->_CheckFramework(
+        Framework  => $Structure{Framework},
+        NoLog      => 1,
+        ResultType => 'HASH',
+    );
+
+    # Check result type of _CheckFramework() for compatibility reasons.
+    if (
+        ref $FrameworkCheck eq 'HASH'
+        && !$FrameworkCheck->{Success}
+        )
+    {
+        $FrameworkCheck->{ShowBlock} = 'IncompatibleInfo';
+        return %{$FrameworkCheck};
+    }
+
+    my $Upgrade = $Kernel::OM->Get('Kernel::System::Package')->PackageUpgrade(
+        String    => $PackageString,
+        FromCloud => 1,
+    );
+
+    return %Response if !$Upgrade;
+
+    $Response{Success} = 1;
+    return %Response;
 }
 
 =item OTRSBusinessUninstall()

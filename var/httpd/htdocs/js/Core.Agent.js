@@ -186,6 +186,10 @@ Core.Agent = (function (TargetNS) {
                     // Set Timeout for closing nav
                     CreateSubnavCloseTimeout($Element, function () {
                         $Element.removeClass('Active').attr('aria-expanded', false);
+
+                        // Remove z-index=5500;
+                        $Element.parent().parent().removeClass('NavContainerZIndex');
+
                         if (!$('#Navigation > li.Active').length) {
                             $('#NavigationContainer').css('height', InitialNavigationContainerHeight);
                         }
@@ -227,6 +231,9 @@ Core.Agent = (function (TargetNS) {
                 if ($Element.hasClass('Active')) {
                     $Element.removeClass('Active').attr('aria-expanded', false);
 
+                    // Remove z-index=5500;
+                    $Element.parent().parent().removeClass('NavContainerZIndex');
+
                     if ($('body').hasClass('Visible-ScreenXL')) {
                         // restore initial container height
                         $('#NavigationContainer').css('height', InitialNavigationContainerHeight);
@@ -243,6 +250,9 @@ Core.Agent = (function (TargetNS) {
 
                         // If Timeout is set for this nav element, clear it
                         ClearSubnavCloseTimeout($Element);
+
+                        // Add z-index= 5500
+                        $Element.parent().parent().addClass('NavContainerZIndex');
                     }
                 }
 
@@ -554,10 +564,23 @@ Core.Agent = (function (TargetNS) {
                 .addClass('IsResized');
         }
 
+        // we have to do an exact calculation here (with floating point numbers),
+        // otherwise the results will be different across browsers.
         $('#Navigation > li').each(function() {
-            NavigationBarWidth += parseInt($(this).outerWidth(true), 10);
+            NavigationBarWidth += $(this)[0].getBoundingClientRect().width
+                + parseInt($(this).css('margin-left'), 10)
+                + parseInt($(this).css('margin-right'), 10)
+                + parseInt($(this).css('border-left-width'), 10)
+                + parseInt($(this).css('border-right-width'), 10);
         });
-        $('#Navigation').css('width', (NavigationBarWidth + 3) + 'px');
+
+        // Add additional pixel to calculated width, in order to prevent rounding problems in IE.
+        //   Please see bug#12742 for more information.
+        if ($.browser.msie || $.browser.trident) {
+            NavigationBarWidth += 1;
+        }
+
+        $('#Navigation').css('width', Math.ceil(NavigationBarWidth));
 
         if (NavigationBarWidth > $('#NavigationContainer').outerWidth()) {
             NavigationBarShowSlideButton('Right', parseInt($('#NavigationContainer').outerWidth(true) - NavigationBarWidth, 10));

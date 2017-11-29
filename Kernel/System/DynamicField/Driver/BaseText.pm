@@ -12,6 +12,7 @@ use strict;
 use warnings;
 
 use Kernel::System::VariableCheck qw(:all);
+use Kernel::Language qw(Translatable);
 
 use base qw(Kernel::System::DynamicField::Driver::Base);
 
@@ -79,9 +80,15 @@ sub ValueValidate {
         UserID => $Param{UserID}
     );
 
+    my $CheckRegex = 1;
+    if ( defined $Param{NoValidateRegex} && $Param{NoValidateRegex} ) {
+        $CheckRegex = 0;
+    }
+
     if (
         IsArrayRefWithData( $Param{DynamicFieldConfig}->{Config}->{RegExList} )
         && IsStringWithData( $Param{Value} )
+        && $CheckRegex
         )
     {
         # check regular expressions
@@ -121,8 +128,14 @@ sub SearchSQLGet {
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
     if ( $Operators{ $Param{Operator} } ) {
-        my $SQL = " $Param{TableAlias}.value_text $Operators{$Param{Operator}} '";
-        $SQL .= $DBObject->Quote( $Param{SearchTerm} ) . "' ";
+        my $Lower = '';
+        if ( $DBObject->GetDatabaseFunction('CaseSensitive') ) {
+            $Lower = 'LOWER';
+        }
+
+        my $SQL = " $Lower($Param{TableAlias}.value_text) $Operators{ $Param{Operator} } ";
+        $SQL .= "$Lower('" . $DBObject->Quote( $Param{SearchTerm} ) . "') ";
+
         return $SQL;
     }
 
@@ -418,7 +431,7 @@ EOF
 
     my $AdditionalText;
     if ( $Param{UseLabelHints} ) {
-        $AdditionalText = 'e.g. Text or Te*t';
+        $AdditionalText = Translatable('e.g. Text or Te*t');
     }
 
     # call EditLabelRender on the common Driver
@@ -474,8 +487,10 @@ sub SearchFieldParameterBuild {
     # set operator
     my $Operator = 'Equals';
 
-    # search for a wild card in the value
-    if ( $Value && $Value =~ m{\*} ) {
+    # Search for a wild card in the value (also for '%').
+    # The '%' is needed for the compatibility with the old removed textarea function (bug#12783) and
+    #   can be removed with OTRS 6.
+    if ( $Value && ( $Value =~ m{\*} || $Value =~ m{\%} || $Value =~ m{\|\|} ) ) {
 
         # change operator
         $Operator = 'Like';
@@ -508,8 +523,10 @@ sub StatsSearchFieldParameterBuild {
     # set operator
     my $Operator = 'Equals';
 
-    # search for a wild card in the value
-    if ( $Value && $Value =~ m{\*} ) {
+    # Search for a wild card in the value (also for '%').
+    # The '%' is needed for the compatibility with the old removed textarea function (bug#12783) and
+    #   can be removed with OTRS 6.
+    if ( $Value && ( $Value =~ m{\*} || $Value =~ m{\%} ) ) {
 
         # change operator
         $Operator = 'Like';

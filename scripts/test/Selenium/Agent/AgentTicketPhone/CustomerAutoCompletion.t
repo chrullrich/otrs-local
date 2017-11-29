@@ -161,7 +161,8 @@ $Selenium->RunTest(
 
                 # wait for autocomplete to load
                 $Selenium->WaitFor(
-                    JavaScript => 'return typeof($) === "function" && $("li.ui-menu-item:visible").length'
+                    JavaScript =>
+                        "return typeof(\$) === 'function' && \$('li.ui-menu-item:visible').length === $AutoCompleteExpected{$AutocompleteInput}->{Expected}"
                 );
             }
 
@@ -178,8 +179,9 @@ $Selenium->RunTest(
             if ( $AutoCompleteExpected{$AutocompleteInput}{Expected} ) {
 
                 # select customer user
-                $Selenium->find_element("//*[text()='$AutoCompleteExpected{$AutocompleteInput}{AutocompleteInput}']")
-                    ->VerifiedClick();
+                $Selenium->execute_script(
+                    "\$('li.ui-menu-item:contains($AutoCompleteExpected{$AutocompleteInput}{AutocompleteInput})').click()"
+                );
 
                 # check if customer is selected
                 $Self->Is(

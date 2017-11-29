@@ -358,7 +358,16 @@ Core.Agent.Search = (function (TargetNS) {
                     return;
                 }
 
-                Core.UI.Dialog.ShowContentDialog(HTML, Core.Config.Get('SearchMsg'), '10px', 'Center', true, undefined, true);
+                Core.UI.Dialog.ShowDialog({
+                    HTML: HTML,
+                    Title: Core.Config.Get('SearchMsg'),
+                    Modal: true,
+                    CloseOnClickOutside: false,
+                    CloseOnEscape: true,
+                    PositionTop: '10px',
+                    PositionLeft: 'Center',
+                    AllowAutoGrow: true
+                });
 
                 // hide add template block
                 $('#SearchProfileAddBlock').hide();
@@ -438,7 +447,7 @@ Core.Agent.Search = (function (TargetNS) {
                         else {
                             CheckSearchStringsForStopWords(function () {
                                 $('#SearchForm').submit();
-                                ShowWaitingDialog();
+                                return false;
                            });
                         }
                     }
@@ -455,6 +464,17 @@ Core.Agent.Search = (function (TargetNS) {
                         }
                     }
                     return false;
+                });
+
+                Core.Form.Validate.Init();
+                Core.Form.Validate.SetSubmitFunction($('#SearchForm'), function (Form) {
+                    Form.submit();
+
+                    // Show only a waiting dialog for Normal results mode, because this result
+                    //  will return the HTML in the same window.
+                    if ($('#SearchForm #ResultForm').val() === 'Normal') {
+                        ShowWaitingDialog();
+                    }
                 });
 
                 // load profile

@@ -37,6 +37,15 @@ sub Run {
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
+    if ( $Kernel::OM->Get('Kernel::Config')->Get('SecureMode') ) {
+        $LayoutObject->FatalError(
+            Message => Translatable('SecureMode active!'),
+            Comment => Translatable(
+                'If you want to re-run the Installer, disable the SecureMode in the SysConfig.'
+            ),
+        );
+    }
+
     # check env directories
     $Self->{Path} = $ConfigObject->Get('Home');
     if ( !-d $Self->{Path} ) {
@@ -179,7 +188,7 @@ sub Run {
         $LayoutObject->Block(
             Name => 'License',
             Data => {
-                Item => 'License',
+                Item => Translatable('License'),
                 Step => $StepCounter,
             },
         );
@@ -229,6 +238,7 @@ sub Run {
         $Param{SelectDBType} = $LayoutObject->BuildSelection(
             Data       => \%Databases,
             Name       => 'DBType',
+            Class      => 'Modernize',
             Size       => scalar keys %Databases,
             SelectedID => 'mysql',
         );
@@ -241,7 +251,7 @@ sub Run {
         $LayoutObject->Block(
             Name => 'DatabaseStart',
             Data => {
-                Item         => 'Database Selection',
+                Item         => Translatable('Database Selection'),
                 Step         => $StepCounter,
                 SelectDBType => $Param{SelectDBType},
                 }
@@ -322,7 +332,7 @@ sub Run {
             $LayoutObject->Block(
                 Name => 'DatabaseMySQL',
                 Data => {
-                    Item                => 'Configure MySQL',
+                    Item                => Translatable('Configure MySQL'),
                     Step                => $StepCounter,
                     InstallType         => $DBInstallType,
                     DefaultDBUser       => $DBInstallType eq 'CreateDB' ? 'root' : 'otrs',
@@ -346,7 +356,7 @@ sub Run {
             $Output .= $LayoutObject->Output(
                 TemplateFile => 'Installer',
                 Data         => {
-                    Item => 'Configure MySQL',
+                    Item => Translatable('Configure MySQL'),
                     Step => $StepCounter,
                     }
             );
@@ -409,7 +419,7 @@ sub Run {
             $LayoutObject->Block(
                 Name => 'DatabasePostgreSQL',
                 Data => {
-                    Item          => 'Database',
+                    Item          => Translatable('Database'),
                     Step          => $StepCounter,
                     InstallType   => $DBInstallType,
                     DefaultDBUser => $DBInstallType eq 'CreateDB' ? 'postgres' : 'otrs',
@@ -432,7 +442,7 @@ sub Run {
             $Output .= $LayoutObject->Output(
                 TemplateFile => 'Installer',
                 Data         => {
-                    Item => 'Configure PostgreSQL',
+                    Item => Translatable('Configure PostgreSQL'),
                     Step => $StepCounter,
                     }
             );
@@ -449,7 +459,7 @@ sub Run {
             $LayoutObject->Block(
                 Name => 'DatabaseOracle',
                 Data => {
-                    Item => 'Database',
+                    Item => Translatable('Database'),
                     Step => $StepCounter,
                 },
             );
@@ -457,7 +467,7 @@ sub Run {
             $Output .= $LayoutObject->Output(
                 TemplateFile => 'Installer',
                 Data         => {
-                    Item => 'Configure Oracle',
+                    Item => Translatable('Configure Oracle'),
                     Step => $StepCounter,
                     }
             );
@@ -511,7 +521,7 @@ sub Run {
         $LayoutObject->Block(
             Name => 'DatabaseResult',
             Data => {
-                Item => 'Create Database',
+                Item => Translatable('Create Database'),
                 Step => $StepCounter,
             },
         );
@@ -792,11 +802,13 @@ sub Run {
         $Param{SystemIDString} = $LayoutObject->BuildSelection(
             Data       => \@SystemIDs,
             Name       => 'SystemID',
+            Class      => 'Modernize',
             SelectedID => $SystemIDs[ int( rand(100) ) ],    # random system ID
         );
         $Param{LanguageString} = $LayoutObject->BuildSelection(
             Data       => $ConfigObject->Get('DefaultUsedLanguages'),
             Name       => 'DefaultLanguage',
+            Class      => 'Modernize',
             HTMLQuote  => 0,
             SelectedID => $LayoutObject->{UserLanguage},
         );
@@ -808,6 +820,7 @@ sub Run {
                 0 => Translatable('No'),
             },
             Name       => 'CheckMXRecord',
+            Class      => 'Modernize',
             SelectedID => '1',
         );
 
@@ -823,7 +836,7 @@ sub Run {
         $LayoutObject->Block(
             Name => 'System',
             Data => {
-                Item => 'System Settings',
+                Item => Translatable('System Settings'),
                 Step => $StepCounter,
                 %Param,
             },
@@ -832,10 +845,11 @@ sub Run {
         if ( !$Self->{Options}->{SkipLog} ) {
             $Param{LogModuleString} = $LayoutObject->BuildSelection(
                 Data => {
-                    'Kernel::System::Log::SysLog' => 'Syslog',
-                    'Kernel::System::Log::File'   => 'File',
+                    'Kernel::System::Log::SysLog' => Translatable('Syslog'),
+                    'Kernel::System::Log::File'   => Translatable('File'),
                 },
                 Name       => 'LogModule',
+                Class      => 'Modernize',
                 HTMLQuote  => 0,
                 SelectedID => $ConfigObject->Get('LogModule'),
             );
@@ -891,7 +905,8 @@ sub Run {
                 smtps    => 'SMTPS',
                 smtptls  => 'SMTPTLS',
             },
-            Name => 'OutboundMailType',
+            Name  => 'OutboundMailType',
+            Class => 'Modernize',
         );
         my $OutboundMailDefaultPorts = $LayoutObject->BuildSelection(
             Class => 'Hidden',
@@ -905,8 +920,9 @@ sub Run {
         );
 
         my $InboundMailTypeSelection = $LayoutObject->BuildSelection(
-            Data => \%MailBackends,
-            Name => 'InboundMailType',
+            Data  => \%MailBackends,
+            Name  => 'InboundMailType',
+            Class => 'Modernize',
         );
 
         my $Output =
@@ -1013,7 +1029,7 @@ sub Run {
         $LayoutObject->Block(
             Name => 'Finish',
             Data => {
-                Item       => 'Finished',
+                Item       => Translatable('Finished'),
                 Step       => $StepCounter,
                 Host       => $ENV{HTTP_HOST} || $ConfigObject->Get('FQDN'),
                 OTRSHandle => $OTRSHandle,
@@ -1081,11 +1097,11 @@ sub ReConfigure {
                 # same goes for database hosts which can be like 'myserver\instance name' for MS SQL
                 if ( $Key eq 'DatabasePw' || $Key eq 'DatabaseHost' ) {
                     $NewConfig =~
-                        s/(\$Self->{("|'|)$Key("|'|)} =.+?('|"));/\$Self->{'$Key'} = '$Param{$Key}';/g;
+                        s/(\$Self->\{("|'|)$Key("|'|)} =.+?('|"));/\$Self->{'$Key'} = '$Param{$Key}';/g;
                 }
                 else {
                     $NewConfig =~
-                        s/(\$Self->{("|'|)$Key("|'|)} =.+?('|"));/\$Self->{'$Key'} = "$Param{$Key}";/g;
+                        s/(\$Self->\{("|'|)$Key("|'|)} =.+?('|"));/\$Self->{'$Key'} = "$Param{$Key}";/g;
                 }
             }
             $Config .= $NewConfig;
@@ -1252,18 +1268,29 @@ sub CheckDBRequirements {
         my $MySQLInnoDBLogFileSizeMinimum     = 256;
         my $MySQLInnoDBLogFileSizeRecommended = 512;
 
-        my $Data = $Result{DBH}->selectall_arrayref("SHOW variables WHERE Variable_name = 'innodb_log_file_size'");
-        $MySQLInnoDBLogFileSize = $Data->[0]->[1] / 1024 / 1024;
+        # Default storage engine variable has changed its name in MySQL 5.5.3, we need to support both of them for now.
+        #   <= 5.5.2 storage_engine
+        #   >= 5.5.3 default_storage_engine
+        my $DataOld = $Result{DBH}->selectall_arrayref("SHOW variables WHERE Variable_name = 'storage_engine'");
+        my $DataNew = $Result{DBH}->selectall_arrayref("SHOW variables WHERE Variable_name = 'default_storage_engine'");
+        my $DefaultStorageEngine = ( $DataOld->[0] && $DataOld->[0]->[1] ? $DataOld->[0]->[1] : undef )
+            // ( $DataNew->[0] && $DataNew->[0]->[1] ? $DataNew->[0]->[1] : '' );
 
-        if ( $MySQLInnoDBLogFileSize < $MySQLInnoDBLogFileSizeMinimum ) {
-            $Result{Successful} = 0;
-            $Result{Message}    = $LayoutObject->{LanguageObject}->Translate(
-                "Error: Please set the value for innodb_log_file_size on your database to at least %s MB (current: %s MB, recommended: %s MB). For more information, please have a look at %s.",
-                $MySQLInnoDBLogFileSizeMinimum,
-                $MySQLInnoDBLogFileSize,
-                $MySQLInnoDBLogFileSizeRecommended,
-                'http://dev.mysql.com/doc/refman/5.6/en/innodb-data-log-reconfiguration.html',
-            );
+        if ( lc $DefaultStorageEngine eq 'innodb' ) {
+
+            my $Data = $Result{DBH}->selectall_arrayref("SHOW variables WHERE Variable_name = 'innodb_log_file_size'");
+            $MySQLInnoDBLogFileSize = $Data->[0]->[1] / 1024 / 1024;
+
+            if ( $MySQLInnoDBLogFileSize < $MySQLInnoDBLogFileSizeMinimum ) {
+                $Result{Successful} = 0;
+                $Result{Message}    = $LayoutObject->{LanguageObject}->Translate(
+                    "Error: Please set the value for innodb_log_file_size on your database to at least %s MB (current: %s MB, recommended: %s MB). For more information, please have a look at %s.",
+                    $MySQLInnoDBLogFileSizeMinimum,
+                    $MySQLInnoDBLogFileSize,
+                    $MySQLInnoDBLogFileSizeRecommended,
+                    'http://dev.mysql.com/doc/refman/5.6/en/innodb-data-log-reconfiguration.html',
+                );
+            }
         }
     }
 

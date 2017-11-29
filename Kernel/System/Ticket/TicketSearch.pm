@@ -445,7 +445,8 @@ sub TicketSearch {
     }
 
     # check sort/order by options
-    my @SortByArray  = ( ref $SortBy eq 'ARRAY'  ? @{$SortBy}  : ($SortBy) );
+    my @SortByArray = ( ref $SortBy eq 'ARRAY' ? @{$SortBy} : ($SortBy) );
+    my %LookupSortByArray = map { $_ => 1 } @SortByArray;
     my @OrderByArray = ( ref $OrderBy eq 'ARRAY' ? @{$OrderBy} : ($OrderBy) );
 
     for my $Count ( 0 .. $#SortByArray ) {
@@ -478,7 +479,7 @@ sub TicketSearch {
         $SQLSelect = 'SELECT DISTINCT st.id, st.tn';
     }
 
-    my $SQLFrom = ' FROM ticket st INNER JOIN queue sq ON sq.id = st.queue_id ';
+    my $SQLFrom = ' FROM ticket st ';
 
     my $ArticleJoinSQL = $Self->_ArticleIndexQuerySQL( Data => \%Param ) || '';
 
@@ -1312,6 +1313,7 @@ sub TicketSearch {
                 my $ValidateSuccess = $DynamicFieldBackendObject->ValueValidate(
                     DynamicFieldConfig => $DynamicField,
                     Value              => $Text,
+                    NoValidateRegex    => 1,
                     UserID             => $Param{UserID} || 1,
                 );
                 if ( !$ValidateSuccess ) {
@@ -2135,19 +2137,38 @@ sub TicketSearch {
                 || $SortByArray[$Count] eq 'Responsible'
                 )
             {
-                # include first and last name in select
+                # Include first name, last name and login in select.
                 $SQLSelect
                     .= ', ' . $SortOptions{ $SortByArray[$Count] }
-                    . ", u.first_name, u.last_name ";
+                    . ', u.first_name, u.last_name, u.login ';
 
-                # join the users table on user's id
+                # Join the users table on user's ID.
                 $SQLFrom
                     .= ' JOIN users u '
                     . ' ON ' . $SortOptions{ $SortByArray[$Count] } . ' = u.id ';
 
-                # sort by first and last name
+                my $FirstnameLastNameOrder = $Kernel::OM->Get('Kernel::Config')->Get('FirstnameLastnameOrder') || 0;
                 my $OrderBySuffix = $OrderByArray[$Count] eq 'Up' ? 'ASC' : 'DESC';
-                $SQLExt .= " u.first_name $OrderBySuffix, u.last_name ";
+
+                # Sort by configured first and last name order.
+                if ( $FirstnameLastNameOrder eq '1' || $FirstnameLastNameOrder eq '6' ) {
+                    $SQLExt .= " u.last_name $OrderBySuffix, u.first_name ";
+                }
+                elsif ( $FirstnameLastNameOrder eq '2' ) {
+                    $SQLExt .= " u.first_name $OrderBySuffix, u.last_name $OrderBySuffix, u.login ";
+                }
+                elsif ( $FirstnameLastNameOrder eq '3' || $FirstnameLastNameOrder eq '7' ) {
+                    $SQLExt .= " u.last_name $OrderBySuffix, u.first_name $OrderBySuffix, u.login ";
+                }
+                elsif ( $FirstnameLastNameOrder eq '4' ) {
+                    $SQLExt .= " u.login $OrderBySuffix, u.first_name $OrderBySuffix, u.last_name ";
+                }
+                elsif ( $FirstnameLastNameOrder eq '5' || $FirstnameLastNameOrder eq '8' ) {
+                    $SQLExt .= " u.login $OrderBySuffix, u.last_name $OrderBySuffix, u.first_name ";
+                }
+                else {
+                    $SQLExt .= " u.first_name $OrderBySuffix, u.last_name ";
+                }
             }
             else {
 
@@ -2163,6 +2184,11 @@ sub TicketSearch {
                 $SQLExt .= ' DESC';
             }
         }
+    }
+
+    # Add only the sql join for the queue table, if columns from the queue table exists in the sql statement.
+    if ( %GroupList || $LookupSortByArray{Queue} ) {
+        $SQLFrom .= ' INNER JOIN queue sq ON sq.id = st.queue_id ';
     }
 
     # check cache

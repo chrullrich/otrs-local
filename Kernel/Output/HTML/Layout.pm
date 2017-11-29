@@ -699,7 +699,7 @@ sub Login {
         $Self->{SetCookies}->{OTRSBrowserHasCookie} = $Kernel::OM->Get('Kernel::System::Web::Request')->SetCookie(
             Key      => 'OTRSBrowserHasCookie',
             Value    => 1,
-            Expires  => '1y',
+            Expires  => '+1y',
             Path     => $ConfigObject->Get('ScriptAlias'),
             Secure   => $CookieSecureAttribute,
             HttpOnly => 1,
@@ -729,6 +729,18 @@ sub Login {
     if ( defined $ConfigObject->Get('AgentLogo') ) {
         my %AgentLogo = %{ $ConfigObject->Get('AgentLogo') };
         my %Data;
+
+        # check if we need to display a custom logo for the selected skin
+        my $AgentLogoCustom = $ConfigObject->Get('AgentLogoCustom');
+        if (
+            $Self->{SkinSelected}
+            && $AgentLogoCustom
+            && IsHashRefWithData($AgentLogoCustom)
+            && $AgentLogoCustom->{ $Self->{SkinSelected} }
+            )
+        {
+            %AgentLogo = %{ $AgentLogoCustom->{ $Self->{SkinSelected} } };
+        }
 
         for my $CSSStatement ( sort keys %AgentLogo ) {
             if ( $CSSStatement eq 'URL' ) {
@@ -1815,7 +1827,7 @@ sub Ascii2Html {
 
 =item LinkQuote()
 
-so some URL link detections
+detect links in text
 
     my $HTMLWithLinks = $LayoutObject->LinkQuote(
         Text => $HTMLWithOutLinks,
@@ -1924,7 +1936,7 @@ sub LinkQuote {
 
 =item HTMLLinkQuote()
 
-so some URL link detections in HTML code
+detect links in HTML code
 
     my $HTMLWithLinks = $LayoutObject->HTMLLinkQuote(
         String => $HTMLString,
@@ -2519,7 +2531,7 @@ sub Attachment {
 
 =item PageNavBar()
 
-generates a page nav bar
+generates a page navigation bar
 
     my %PageNavBar = $LayoutObject->PageNavBar(
         Limit       => 100,         # marks result of TotalHits red if Limit is gerater then AllHits
@@ -3391,7 +3403,7 @@ sub CustomerLogin {
         $Self->{SetCookies}->{OTRSBrowserHasCookie} = $Kernel::OM->Get('Kernel::System::Web::Request')->SetCookie(
             Key      => 'OTRSBrowserHasCookie',
             Value    => 1,
-            Expires  => '1y',
+            Expires  => '+1y',
             Path     => $ConfigObject->Get('ScriptAlias'),
             Secure   => $CookieSecureAttribute,
             HttpOnly => 1,
@@ -4297,10 +4309,10 @@ sub _RichTextReplaceLinkOfInlineContent {
 
 =item RichTextDocumentServe()
 
-serve a rich text (HTML) document for local view inside of an iframe in correct charset and with correct
+serve a rich text (HTML) document for local view inside of an C<iframe> in correct charset and with correct
 links for inline documents.
 
-By default, all inline/active content (such as script, object, applet or embed tags)
+By default, all inline/active content (such as C<script>, C<object>, C<applet> or C<embed> tags)
 will be stripped. If there are external images, they will be stripped too,
 but a message will be shown allowing the user to reload the page showing the external images.
 
@@ -4743,7 +4755,7 @@ sub _BuildSelectionDataRefCreate {
 
         # get missing parents and mark them for disable later
         if ( $OptionRef->{Sort} eq 'TreeView' ) {
-            my %List = reverse %{$DataLocal};
+            my %List = reverse %{ $DataLocal || {} };
 
             # get each data value
             for my $Key ( sort keys %List ) {
@@ -4806,8 +4818,10 @@ sub _BuildSelectionDataRefCreate {
 
             # add suffix for correct sorting
             my %SortHash;
-            for ( sort keys %{$DataLocal} ) {
-                $SortHash{$_} = $DataLocal->{$_} . '::';
+            KEY:
+            for my $Key ( sort keys %{$DataLocal} ) {
+                next KEY if !defined $DataLocal->{$Key};
+                $SortHash{$Key} = $DataLocal->{$Key} . '::';
             }
             @SortKeys = sort { lc $SortHash{$a} cmp lc $SortHash{$b} } ( keys %SortHash );
         }
@@ -5014,7 +5028,7 @@ sub _BuildSelectionDataRefCreate {
         )
     {
         for my $Row ( @{$DataRef} ) {
-            if ( $DisabledElements{ $Row->{Value} } ) {
+            if ( defined $Row->{Value} && $DisabledElements{ $Row->{Value} } ) {
                 $Row->{Key}      = '-';
                 $Row->{Disabled} = 1;
             }
@@ -5037,10 +5051,21 @@ sub _BuildSelectionDataRefCreate {
         for my $Row ( @{$DataRef} ) {
             if (
                 (
-                    $OptionRef->{SelectedID}->{ $Row->{Key} }
-                    || $OptionRef->{SelectedValue}->{ $Row->{Value} }
+                    (
+                        defined $Row->{Key}
+                        && $OptionRef->{SelectedID}->{ $Row->{Key} }
+                    )
+                    ||
+                    (
+                        defined $Row->{Value}
+                        && $OptionRef->{SelectedValue}->{ $Row->{Value} }
+                    )
                 )
-                && !$DisabledElements{ $Row->{Value} }
+                &&
+                (
+                    defined $Row->{Value}
+                    && !$DisabledElements{ $Row->{Value} }
+                )
                 )
             {
                 $Row->{Selected} = 1;
@@ -5072,6 +5097,11 @@ sub _BuildSelectionDataRefCreate {
 
             my @Fragment = split '::', $Row->{Value};
             $Row->{Value} = pop @Fragment;
+
+            # translate the individual tree options
+            if ( $OptionRef->{Translation} ) {
+                $Row->{Value} = $Self->{LanguageObject}->Translate( $Row->{Value} );
+            }
 
             # TODO: Here we are combining Max with HTMLQuote, check below for the REMARK:
             # Max and HTMLQuote needs to be done before spaces insert but after the split of the

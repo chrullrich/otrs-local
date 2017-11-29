@@ -661,6 +661,7 @@ sub Run {
                     # get ticket data instead
                     %Data = $TicketObject->TicketGet(
                         TicketID      => $TicketID,
+                        Extended      => 1,
                         DynamicFields => 1,
                     );
 
@@ -725,6 +726,17 @@ sub Run {
                     %UserInfo,
                     AccountedTime =>
                         $TicketObject->TicketAccountedTimeGet( TicketID => $TicketID ),
+                );
+
+                # Transform EscalationTime and EscalationTimeWorkingTime to a human readable format.
+                # See bug#13088 (https://bugs.otrs.org/show_bug.cgi?id=13088).
+                $Info{EscalationTime} = $LayoutObject->CustomerAgeInHours(
+                    Age   => $Info{EscalationTime},
+                    Space => ' ',
+                );
+                $Info{EscalationTimeWorkingTime} = $LayoutObject->CustomerAgeInHours(
+                    Age   => $Info{EscalationTimeWorkingTime},
+                    Space => ' ',
                 );
 
                 my @Data;
@@ -1788,21 +1800,13 @@ sub Run {
             Base      => 'TicketSearch',
             UserLogin => $Self->{UserLogin},
         );
-        delete $Profiles{''};
-        delete $Profiles{'last-search'};
-        if ($EmptySearch) {
-            $Profiles{''} = '-';
-        }
-        else {
-            $Profiles{'last-search'} = '-';
-        }
         $Param{ProfilesStrg} = $LayoutObject->BuildSelection(
-            Data       => \%Profiles,
-            Name       => 'Profile',
-            ID         => 'SearchProfile',
-            SelectedID => $Profile,
-
-            # Do not modernize this field as this causes problems with the automatic focusing of the first element.
+            Data         => \%Profiles,
+            Name         => 'Profile',
+            ID           => 'SearchProfile',
+            SelectedID   => $Profile,
+            Class        => 'Modernize',
+            PossibleNone => 1,
         );
 
         $Param{StatesStrg} = $LayoutObject->BuildSelection(
@@ -1899,11 +1903,13 @@ sub Run {
             Prefix   => 'ArticleCreateTimeStart',
             Format   => 'DateInputFormat',
             DiffTime => -( ( 60 * 60 * 24 ) * 30 ),
+            Validate => 1,
         );
         $Param{ArticleCreateTimeStop} = $LayoutObject->BuildDateSelection(
             %GetParam,
-            Prefix => 'ArticleCreateTimeStop',
-            Format => 'DateInputFormat',
+            Prefix   => 'ArticleCreateTimeStop',
+            Format   => 'DateInputFormat',
+            Validate => 1,
         );
         $Param{TicketCreateTimePoint} = $LayoutObject->BuildSelection(
             Data       => [ 1 .. 59 ],
@@ -1935,11 +1941,13 @@ sub Run {
             Prefix   => 'TicketCreateTimeStart',
             Format   => 'DateInputFormat',
             DiffTime => -( ( 60 * 60 * 24 ) * 30 ),
+            Validate => 1,
         );
         $Param{TicketCreateTimeStop} = $LayoutObject->BuildDateSelection(
             %GetParam,
-            Prefix => 'TicketCreateTimeStop',
-            Format => 'DateInputFormat',
+            Prefix   => 'TicketCreateTimeStop',
+            Format   => 'DateInputFormat',
+            Validate => 1,
         );
 
         $Param{TicketChangeTimePoint} = $LayoutObject->BuildSelection(
@@ -1972,11 +1980,13 @@ sub Run {
             Prefix   => 'TicketChangeTimeStart',
             Format   => 'DateInputFormat',
             DiffTime => -( ( 60 * 60 * 24 ) * 30 ),
+            Validate => 1,
         );
         $Param{TicketChangeTimeStop} = $LayoutObject->BuildDateSelection(
             %GetParam,
-            Prefix => 'TicketChangeTimeStop',
-            Format => 'DateInputFormat',
+            Prefix   => 'TicketChangeTimeStop',
+            Format   => 'DateInputFormat',
+            Validate => 1,
         );
 
         $Param{TicketCloseTimePoint} = $LayoutObject->BuildSelection(
@@ -2009,11 +2019,13 @@ sub Run {
             Prefix   => 'TicketCloseTimeStart',
             Format   => 'DateInputFormat',
             DiffTime => -( ( 60 * 60 * 24 ) * 30 ),
+            Validate => 1,
         );
         $Param{TicketCloseTimeStop} = $LayoutObject->BuildDateSelection(
             %GetParam,
-            Prefix => 'TicketCloseTimeStop',
-            Format => 'DateInputFormat',
+            Prefix   => 'TicketCloseTimeStop',
+            Format   => 'DateInputFormat',
+            Validate => 1,
         );
 
         $Param{TicketLastChangeTimePoint} = $LayoutObject->BuildSelection(
@@ -2046,11 +2058,13 @@ sub Run {
             Prefix   => 'TicketLastChangeTimeStart',
             Format   => 'DateInputFormat',
             DiffTime => -( ( 60 * 60 * 24 ) * 30 ),
+            Validate => 1,
         );
         $Param{TicketLastChangeTimeStop} = $LayoutObject->BuildDateSelection(
             %GetParam,
-            Prefix => 'TicketLastChangeTimeStop',
-            Format => 'DateInputFormat',
+            Prefix   => 'TicketLastChangeTimeStop',
+            Format   => 'DateInputFormat',
+            Validate => 1,
         );
 
         $Param{TicketEscalationTimePoint} = $LayoutObject->BuildSelection(
@@ -2084,11 +2098,13 @@ sub Run {
             Prefix   => 'TicketEscalationTimeStart',
             Format   => 'DateInputFormat',
             DiffTime => -( ( 60 * 60 * 24 ) * 30 ),
+            Validate => 1,
         );
         $Param{TicketEscalationTimeStop} = $LayoutObject->BuildDateSelection(
             %GetParam,
-            Prefix => 'TicketEscalationTimeStop',
-            Format => 'DateInputFormat',
+            Prefix   => 'TicketEscalationTimeStop',
+            Format   => 'DateInputFormat',
+            Validate => 1,
         );
 
         my %GetParamBackup = %GetParam;

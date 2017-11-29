@@ -195,7 +195,7 @@ sub Run {
     DYNAMICFIELD:
     for my $DynamicFieldItem ( sort keys %DynamicFieldValues ) {
         next DYNAMICFIELD if !$DynamicFieldItem;
-        next DYNAMICFIELD if !$DynamicFieldValues{$DynamicFieldItem};
+        next DYNAMICFIELD if !defined $DynamicFieldValues{$DynamicFieldItem};
 
         $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicFieldItem } = $DynamicFieldValues{$DynamicFieldItem};
     }
@@ -256,6 +256,12 @@ sub Run {
     # get upload cache object
     my $UploadCacheObject = $Kernel::OM->Get('Kernel::System::Web::UploadCache');
 
+    # Check if TreeView list type is activated.
+    my $TreeView = 0;
+    if ( $ConfigObject->Get('Ticket::Frontend::ListType') eq 'tree' ) {
+        $TreeView = 1;
+    }
+
     # Ajax update
     if ( $Self->{Subaction} eq 'AJAXUpdate' ) {
         my $ElementChanged = $ParamObject->GetParam( Param => 'ElementChanged' ) || '';
@@ -277,6 +283,11 @@ sub Run {
             %ACLCompatGetParam,
             TicketID => $Self->{TicketID},
             QueueID  => $GetParam{DestQueueID} || 1,
+        );
+        my $DestQueues = $Self->_GetQueues(
+            %GetParam,
+            %ACLCompatGetParam,
+            TicketID => $Self->{TicketID},
         );
 
         # update Dynamc Fields Possible Values via AJAX
@@ -446,6 +457,15 @@ sub Run {
                     SelectedID   => $GetParam{StandardTemplateID},
                     PossibleNone => 1,
                     Translation  => 1,
+                    Max          => 100,
+                },
+                {
+                    Name         => 'DestQueueID',
+                    Data         => $DestQueues,
+                    SelectedID   => $GetParam{DestQueueID},
+                    PossibleNone => 1,
+                    Translation  => 0,
+                    TreeView     => $TreeView,
                     Max          => 100,
                 },
                 @DynamicFieldAJAX,
@@ -1723,6 +1743,20 @@ sub _GetStandardTemplates {
 
     # return just the templates for this screen
     return $StandardTemplates{Note};
+}
+
+sub _GetQueues {
+    my ( $Self, %Param ) = @_;
+
+    # Get Queues.
+    my %Queues = $Kernel::OM->Get('Kernel::System::Ticket')->TicketMoveList(
+        %Param,
+        TicketID => $Self->{TicketID},
+        UserID   => $Self->{UserID},
+        Action   => $Self->{Action},
+        Type     => 'move_into',
+    );
+    return \%Queues;
 }
 
 1;

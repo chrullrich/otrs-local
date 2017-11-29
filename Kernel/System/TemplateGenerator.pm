@@ -7,6 +7,7 @@
 # --
 
 package Kernel::System::TemplateGenerator;
+## nofilter(TidyAll::Plugin::OTRS::Perl::LayoutObject)
 ## nofilter(TidyAll::Plugin::OTRS::Perl::Time)
 
 use strict;
@@ -134,7 +135,7 @@ sub Salutation {
     }
 
     # get list unsupported tags for standard template
-    my @ListOfUnSupportedTag = qw/OTRS_AGENT_SUBJECT OTRS_AGENT_BODY OTRS_CUSTOMER_BODY OTRS_CUSTOMER_SUBJECT/;
+    my @ListOfUnSupportedTag = qw(OTRS_AGENT_SUBJECT OTRS_AGENT_BODY OTRS_CUSTOMER_BODY OTRS_CUSTOMER_SUBJECT);
 
     my $SalutationText = $Self->_RemoveUnSupportedTag(
         Text => $Salutation{Text} || '',
@@ -253,7 +254,7 @@ sub Signature {
     }
 
     # get list unsupported tags for standard template
-    my @ListOfUnSupportedTag = qw/OTRS_AGENT_SUBJECT OTRS_AGENT_BODY OTRS_CUSTOMER_BODY OTRS_CUSTOMER_SUBJECT/;
+    my @ListOfUnSupportedTag = qw(OTRS_AGENT_SUBJECT OTRS_AGENT_BODY OTRS_CUSTOMER_BODY OTRS_CUSTOMER_SUBJECT);
 
     my $SignatureText = $Self->_RemoveUnSupportedTag(
         Text => $Signature{Text} || '',
@@ -448,7 +449,7 @@ sub Template {
     $Language //= $Kernel::OM->Get('Kernel::Config')->Get('DefaultLanguage') || 'en';
 
     # get list unsupported tags for standard template
-    my @ListOfUnSupportedTag = qw/OTRS_AGENT_SUBJECT OTRS_AGENT_BODY OTRS_CUSTOMER_BODY OTRS_CUSTOMER_SUBJECT/;
+    my @ListOfUnSupportedTag = qw(OTRS_AGENT_SUBJECT OTRS_AGENT_BODY OTRS_CUSTOMER_BODY OTRS_CUSTOMER_SUBJECT);
 
     my $TemplateText = $Self->_RemoveUnSupportedTag(
         Text => $Template{Template} || '',
@@ -1029,11 +1030,29 @@ sub _Replace {
 
     # translate ticket values if needed
     if ( $Param{Language} ) {
+
         my $LanguageObject = Kernel::Language->new(
             UserLanguage => $Param{Language},
         );
+
+        # Translate the diffrent values.
         for my $Field (qw(Type State StateType Lock Priority)) {
             $Ticket{$Field} = $LanguageObject->Translate( $Ticket{$Field} );
+        }
+
+        # Transform the date values from the ticket data (but not the dynamic field values).
+        ATTRIBUTE:
+        for my $Attribute ( sort keys %Ticket ) {
+            next ATTRIBUTE if $Attribute =~ m{ \A DynamicField_ }xms;
+            next ATTRIBUTE if !$Ticket{$Attribute};
+
+            if ( $Ticket{$Attribute} =~ m{\A(\d\d\d\d)-(\d\d)-(\d\d)\s(\d\d):(\d\d):(\d\d)\z}xi ) {
+                $Ticket{$Attribute} = $LanguageObject->FormatTimeString(
+                    $Ticket{$Attribute},
+                    'DateFormat',
+                    'NoSeconds',
+                );
+            }
         }
     }
 
@@ -1479,12 +1498,19 @@ sub _Replace {
 
                 # get real name based on reply-to
                 if ( $Data{ReplyTo} ) {
-                    $From = $Data{ReplyTo} || '';
+                    $From = $Data{ReplyTo};
+
+                    # remove email addresses
+                    $From =~ s/&lt;.*&gt;|<.*>|\(.*\)|\"|&quot;|;|,//g;
+
+                    # remove leading/trailing spaces
+                    $From =~ s/^\s+//g;
+                    $From =~ s/\s+$//g;
                 }
 
                 # generate real name based on sender line
                 if ( !$From ) {
-                    $From = $Data{From} || '';
+                    $From = $Data{To} || '';
 
                     # remove email addresses
                     $From =~ s/&lt;.*&gt;|<.*>|\(.*\)|\"|&quot;|;|,//g;
@@ -1554,11 +1580,11 @@ sub _RemoveUnSupportedTag {
     my ( $Self, %Param ) = @_;
 
     # check needed stuff
-    for (qw(Text ListOfUnSupportedTag)) {
-        if ( !defined $Param{$_} ) {
+    for my $Item (qw(Text ListOfUnSupportedTag)) {
+        if ( !defined $Param{$Item} ) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
-                Message  => "Need $_!"
+                Message  => "Need $Item!"
             );
             return;
         }

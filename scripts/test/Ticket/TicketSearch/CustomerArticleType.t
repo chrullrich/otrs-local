@@ -20,7 +20,8 @@ my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 # get helper object
 $Kernel::OM->ObjectParamAdd(
     'Kernel::System::UnitTest::Helper' => {
-        RestoreDatabase => 1,
+        RestoreDatabase  => 1,
+        UseTmpArticleDir => 1,
     },
 );
 my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
@@ -166,7 +167,8 @@ for my $Module ( 'RuntimeDB', 'StaticDB' ) {
             %{ $Test->{Config} },
         );
 
-        @FoundTicketIDs = sort @FoundTicketIDs;
+        @FoundTicketIDs = sort { $a <=> $b } @FoundTicketIDs;
+        @{ $Test->{ExpectedResults} } = sort { $a <=> $b } @{ $Test->{ExpectedResults} };
 
         $Self->IsDeeply(
             \@FoundTicketIDs,

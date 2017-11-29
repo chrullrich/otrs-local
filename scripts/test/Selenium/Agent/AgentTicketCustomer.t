@@ -21,6 +21,25 @@ $Selenium->RunTest(
         # get helper object
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
+        # Overload CustomerUser => Map setting defined in the Defaults.pm.
+        my $DefaultCustomerUser = $Kernel::OM->Get('Kernel::Config')->Get("CustomerUser");
+        $DefaultCustomerUser->{Map}->[5] = [
+            'UserEmail',
+            'Email',
+            'email',
+            1,
+            1,
+            'var',
+            '[% Env("CGIHandle") %]?Action=AgentTicketCompose;ResponseID=1;TicketID=[% Data.TicketID | uri %];ArticleID=[% Data.ArticleID | uri %]',
+            0,
+            '',
+            'AsPopup OTRSPopup_TicketAction',
+        ];
+        $Helper->ConfigSettingChange(
+            Key   => 'CustomerUser',
+            Value => $DefaultCustomerUser,
+        );
+
         $Helper->ConfigSettingChange(
             Key   => 'CheckEmailAddresses',
             Value => 0,
@@ -110,14 +129,11 @@ $Selenium->RunTest(
         my $ScriptAlias = $Kernel::OM->Get('Kernel::Config')->Get('ScriptAlias');
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketID");
 
-        # wait for displaying submenu items for 'People' ticket menu item
-        $Selenium->WaitFor(
-            JavaScript =>
-                'return typeof($) === "function" && $("#nav-People ul").css({ "height": "auto", "opacity": "100" });'
-        );
+        # force sub menus to be visible in order to be able to click one of the links
+        $Selenium->execute_script("\$('.Cluster ul ul').addClass('ForceVisible');");
 
         # go to AgentTicketCustomer, it causes open popup screen, wait will be done by WaitFor
-        $Selenium->find_element("//a[contains(\@href, \'Action=AgentTicketCustomer' )]")->VerifiedClick();
+        $Selenium->find_element("//a[contains(\@href, \'Action=AgentTicketCustomer' )]")->click();
 
         # switch to another window
         $Selenium->WaitFor( WindowCount => 2 );
@@ -126,6 +142,17 @@ $Selenium->RunTest(
 
         # set size for small screens, because of sidebar with customer info overflow form for customer data
         $Selenium->set_window_size( 1000, 700 );
+        $Selenium->WaitFor(
+            JavaScript =>
+                'return typeof($) === "function" && $("#CustomerInfo a.AsPopup").attr("target") === "_blank"'
+        );
+
+        # Check if user email is a link in the Customer Information widget and has target property.
+        $Self->Is(
+            $Selenium->execute_script("return \$('#CustomerInfo a.AsPopup').attr('target');"),
+            '_blank',
+            "Check if user email is a link in the Customer Information widget and has target property."
+        );
 
         # check AgentTicketCustomer screen
         for my $ID (
@@ -137,18 +164,17 @@ $Selenium->RunTest(
             $Element->is_displayed();
         }
 
-        my $AutoCompleteString
-            = "\"$TestCustomers[1] $TestCustomers[1]\" <$TestCustomers[1]\@localhost.com> ($TestCustomers[1])";
         $Selenium->find_element( "#CustomerAutoComplete", 'css' )->clear();
         $Selenium->find_element( "#CustomerAutoComplete", 'css' )->send_keys( $TestCustomers[1] );
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("li.ui-menu-item:visible").length' );
-        $Selenium->find_element("//*[text()='$AutoCompleteString']")->VerifiedClick();
+        $Selenium->execute_script("\$('li.ui-menu-item:contains($TestCustomers[1])').click()");
 
         # wait until customer data is loading (CustomerID is filled after CustomerAutoComplete)
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#CustomerID").val().length' );
 
         # submit customer data, it causes close popup screen, wait will be done by WaitFor
-        $Selenium->find_element( "#CustomerAutoComplete", 'css' )->submit();
+        $Selenium->execute_script("\$('#submitRichText').click();");
+        $Selenium->close();
 
         # wait for update
         $Selenium->WaitFor( WindowCount => 1 );
@@ -163,12 +189,22 @@ $Selenium->RunTest(
             index( $Selenium->get_page_source(), 'CustomerUpdate' ) > -1,
             "Action AgentTicketCustomer executed correctly",
         );
+        $Selenium->close();
 
         # delete created test ticket
         my $Success = $TicketObject->TicketDelete(
             TicketID => $TicketID,
             UserID   => 1,
         );
+
+        # Ticket deletion could fail if apache still writes to ticket history. Try again in this case.
+        if ( !$Success ) {
+            sleep 3;
+            $Success = $TicketObject->TicketDelete(
+                TicketID => $TicketID,
+                UserID   => 1,
+            );
+        }
         $Self->True(
             $Success,
             "Ticket with ticket id $TicketID is deleted"
