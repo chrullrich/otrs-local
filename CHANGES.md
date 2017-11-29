@@ -1,4 +1,44 @@
-#5.0.24 2017-??-??
+#5.0.25 ????-??-??
+
+#5.0.24 2017-11-21
+ - 2017-11-13 Fixed bug#[13108](https://bugs.otrs.org/show_bug.cgi?id=13108) - Debugger only shows information if HTTP response was 20x.
+ - 2017-11-10 Fixed bug#[13281](https://bugs.otrs.org/show_bug.cgi?id=13281) - Not possible to add more than 4000 character in ticket notification texts.
+ - 2017-11-10 Fixed bug#[12392](https://bugs.otrs.org/show_bug.cgi?id=12392) - [thirdparty] gnupg 2.1 not working.
+ - 2017-11-08 Improved handling of spell checker.
+ - 2017-11-06 Fixed bug#[13206](https://bugs.otrs.org/show_bug.cgi?id=13206) - Dashboard does not detect expired sessions.
+ - 2017-11-03 Fixed bug#[11165](https://bugs.otrs.org/show_bug.cgi?id=11165) - Agent list for Owner and Responsible fields in bulk screen is different.
+ - 2017-11-03 Fixed bug#[13130](https://bugs.otrs.org/show_bug.cgi?id=13130) - Broken From-Header in auto response.
+ - 2017-10-27 Fixed bug#[13241](https://bugs.otrs.org/show_bug.cgi?id=13241) - Index for fulltext search not created when body empty or contains only stopwords.
+ - 2017-10-27 Fixed bug#[13142](https://bugs.otrs.org/show_bug.cgi?id=13142) - Error The given param 'QueueIDs' is invalid or an empty array reference!.
+ - 2017-10-27 Fixed bug#[13061](https://bugs.otrs.org/show_bug.cgi?id=13061) - PGP Agent Notification with expired certificate results in unencrypted message.
+ - 2017-10-27 Fixed bug#[13162](https://bugs.otrs.org/show_bug.cgi?id=13162) - In the settings of Agent's personal profile drop down field of "Screen after new ticket" view is in English.
+ - 2017-10-27 Fixed bug#[13167](https://bugs.otrs.org/show_bug.cgi?id=13167) - Unnecessary error message for invalid month in SysConfig.
+ - 2017-10-27 Fixed bug#[13222](https://bugs.otrs.org/show_bug.cgi?id=13222) - Missing QueueID in AgentTicketPhone causes ACL error during the creation of a ticket.
+ - 2017-10-26 Fixed bug#[13212](https://bugs.otrs.org/show_bug.cgi?id=13212) - Queue filter in dashboard not working for "Tickets in My Queues".
+ - 2017-10-26 Fixed bug#[13244](https://bugs.otrs.org/show_bug.cgi?id=13244) - Visibility issues when hovering over "No data found." row.
+ - 2017-10-24 Fixed bug#[12832](https://bugs.otrs.org/show_bug.cgi?id=12832) - Sort options for SOAP will not be saved.
+ - 2017-10-20 Fixed bug#[11208](https://bugs.otrs.org/show_bug.cgi?id=11208) - OTRS installer.pl does not allow installing on MyISAM MySQL.
+ - 2017-10-17 Fixed bug#[13200](https://bugs.otrs.org/show_bug.cgi?id=13200) - URL is incorrectly quoted in package manager message.
+ - 2017-10-16 Fixed bug#[13032](https://bugs.otrs.org/show_bug.cgi?id=13032) - Search window closes on outside click.
+ - 2017-10-13 Fixed bug#[13092](https://bugs.otrs.org/show_bug.cgi?id=13092) - ChangeTime of target ticket not updated on ticket merge.
+ - 2017-10-13 Fixed bug#[13204](https://bugs.otrs.org/show_bug.cgi?id=13204) - Error when copying ACL.
+ - 2017-10-12 Fixed bug#[13178](https://bugs.otrs.org/show_bug.cgi?id=13178) - Freely selectable feature package list does not honor user language.
+ - 2017-10-11 Fixed bug#[12957](https://bugs.otrs.org/show_bug.cgi?id=12957) - SMTPS and SMTPTLS sending mail doesn't work on Ubuntu Server 16.04.2 LTS.
+ - 2017-10-09 Fixed bug#[13205](https://bugs.otrs.org/show_bug.cgi?id=13205)(PR#1849) - No TreeView Queue selection in AgentTicketActionCommon after AjaxUpdate, thanks to Thorsten Eckel.
+ - 2017-09-28 Fixed bug#[13100](https://bugs.otrs.org/show_bug.cgi?id=13100) - Ticket move action in ticket overview screens is not modernized.
+ - 2017-09-26 Fixed bug#[13010](https://bugs.otrs.org/show_bug.cgi?id=13010) - ACL does not trigger on a change of a dynamic field checkbox.
+ - 2017-09-25 Fixed bug#[13152](https://bugs.otrs.org/show_bug.cgi?id=13152) - TicketCreate log entry if Service is used for unknown customer.
+ - 2017-09-24 Updated translations, thanks to all translators.
+ - 2017-09-21 Fixed bug#[12858](https://bugs.otrs.org/show_bug.cgi?id=12858) - Daemon duplicate task identifiers.
+ - 2017-09-20 Fixed translatable strings, thanks to Balazs Ur (PR#1834).
+ - 2017-09-20 Fixed bug#[13173](https://bugs.otrs.org/show_bug.cgi?id=13173) - Not needed mandatory stats object module function in 'ObjectModuleCheck'.
+ - 2017-09-20 Follow-up for bug#[13083](https://bugs.otrs.org/show_bug.cgi?id=13083) - OTRS Business Solution Logout Logo is OTRSFree.
+ - 2017-09-19 Fixed bug#[13151](https://bugs.otrs.org/show_bug.cgi?id=13151) - Can't switch between mobil and desktop mode when Secure::DisableBanner.
+ - 2017-09-18 Fixed bug#[13164](https://bugs.otrs.org/show_bug.cgi?id=13164) - Certain AJAX Error Types are still unprocessed.
+ - 2017-09-14 Fixed bug#[13086](https://bugs.otrs.org/show_bug.cgi?id=13086) - Owner is resetted in AgentTicketFreeText if moved to another queue.
+ - 2017-09-14 Added new support data plugins for additional UI stats.
+ - 2017-09-13 Fixed bug#[13088](https://bugs.otrs.org/show_bug.cgi?id=13088) - EscalationTime shows in seconds in CSV export.
+ - 2017-09-13 Fixed bug#[13035](https://bugs.otrs.org/show_bug.cgi?id=13035) - OTRS notification option for OTRS Business Solution™ Feature are shown in the free.
 
 #5.0.23 2017-09-19
  - 2017-09-11 Updated translations, thanks to all translators.

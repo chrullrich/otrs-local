@@ -129,12 +129,17 @@ sub Run {
                 ContentType => $ContentType,
             };
 
+            my $Check = $NotificationEventObject->NotificationBodyCheck(
+                Content => $Body,
+                UserID  => $Self->{UserID},
+            );
+
             # set server error flag if field is empty
             if ( !$Subject ) {
                 $GetParam{ $LanguageID . '_SubjectServerError' } = "ServerError";
                 $Error = 1;
             }
-            if ( !$Body || length $Body > 4000 ) {
+            if ( !$Body || !$Check ) {
                 $GetParam{ $LanguageID . '_BodyServerError' } = "ServerError";
                 $Error = 1;
             }
@@ -344,12 +349,17 @@ sub Run {
                 ContentType => $ContentType,
             };
 
+            my $Check = $NotificationEventObject->NotificationBodyCheck(
+                Content => $Body,
+                UserID  => $Self->{UserID},
+            );
+
             # set server error flag if field is empty
             if ( !$Subject ) {
                 $GetParam{ $LanguageID . '_SubjectServerError' } = "ServerError";
                 $Error = 1;
             }
-            if ( !$Body || length $Body > 4000 ) {
+            if ( !$Body || !$Check ) {
                 $GetParam{ $LanguageID . '_BodyServerError' } = "ServerError";
                 $Error = 1;
             }
@@ -1222,12 +1232,26 @@ sub _Edit {
     # set once per day checked value
     $Param{OncePerDayChecked} = ( $Param{Data}->{OncePerDay} ? 'checked="checked"' : '' );
 
+    my $OTRSBusinessObject      = $Kernel::OM->Get('Kernel::System::OTRSBusiness');
+    my $OTRSBusinessIsInstalled = $OTRSBusinessObject->OTRSBusinessIsInstalled();
+
+    # Third option is enabled only when OTRSBusiness is installed in the system.
     $Param{VisibleForAgentStrg} = $LayoutObject->BuildSelection(
-        Data => {
-            0 => Translatable('No'),
-            1 => Translatable('Yes'),
-            2 => Translatable('Yes, but require at least one active notification method'),
-        },
+        Data => [
+            {
+                Key   => '0',
+                Value => Translatable('No'),
+            },
+            {
+                Key   => '1',
+                Value => Translatable('Yes'),
+            },
+            {
+                Key      => '2',
+                Value    => Translatable('Yes, but require at least one active notification method.'),
+                Disabled => $OTRSBusinessIsInstalled ? 0 : 1,
+            }
+        ],
         Name       => 'VisibleForAgent',
         Sort       => 'NumericKey',
         Size       => 1,
@@ -1245,8 +1269,7 @@ sub _Edit {
 
     if ( IsHashRefWithData( \%RegisteredTransports ) ) {
 
-        my $MainObject         = $Kernel::OM->Get('Kernel::System::Main');
-        my $OTRSBusinessObject = $Kernel::OM->Get('Kernel::System::OTRSBusiness');
+        my $MainObject = $Kernel::OM->Get('Kernel::System::Main');
 
         TRANSPORT:
         for my $Transport (
@@ -1282,7 +1305,7 @@ sub _Edit {
                 if (
                     defined $RegisteredTransports{$Transport}->{IsOTRSBusinessTransport}
                     && $RegisteredTransports{$Transport}->{IsOTRSBusinessTransport} eq '1'
-                    && !$OTRSBusinessObject->OTRSBusinessIsInstalled()
+                    && !$OTRSBusinessIsInstalled
                     )
                 {
 
