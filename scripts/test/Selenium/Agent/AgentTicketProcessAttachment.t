@@ -22,6 +22,13 @@ $Selenium->RunTest(
         my $ConfigObject  = $Kernel::OM->Get('Kernel::Config');
         my $ProcessObject = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::Process');
 
+        # Do not check RichText.
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'Frontend::RichText',
+            Value => 0,
+        );
+
         # Create test user.
         my $TestUserLogin = $Helper->TestUserCreate(
             Groups => [ 'admin', 'users' ],
@@ -154,26 +161,26 @@ $Selenium->RunTest(
             "Validation is executed",
         );
 
-        # Delete the attachment.
-        $Selenium->find_element( "#AttachmentDeleteButton1", 'css' )->VerifiedClick();
-
-        # Check if there is no attachment.
-        $Self->False(
-            $Selenium->execute_script("return \$('#AttachmentDeleteButton1').length"),
-            "There is no attachment"
-        );
+        $Selenium->find_element( "#Subject",  'css' )->send_keys('Test');
+        $Selenium->find_element( "#RichText", 'css' )->send_keys('Test');
 
         # Submit.
         $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+        $Selenium->WaitFor(
+            JavaScript =>
+                'return typeof($) === "function" && $(".TicketZoom").length;'
+        );
+
+        my $Url = $Selenium->get_current_url();
 
         # Check if ticket is created (sent to AgentTicketZoom screen).
         $Self->True(
-            $Selenium->get_current_url() =~ /Action=AgentTicketZoom;TicketID=/,
+            index( $Url, 'Action=AgentTicketZoom;TicketID=' ) > -1,
             "Current URL is correct - AgentTicketZoom",
         );
 
         # Get test ticket ID.
-        my @TicketZoomUrl = split( 'Action=AgentTicketZoom;TicketID=', $Selenium->get_current_url() );
+        my @TicketZoomUrl = split( 'Action=AgentTicketZoom;TicketID=', $Url );
         my $TicketID = $TicketZoomUrl[1];
 
         my $TransitionObject        = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::Transition');
@@ -264,11 +271,20 @@ $Selenium->RunTest(
             "Process deleted - $Process->{Name},",
         );
 
+        my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+
         # Delete test ticket.
-        $Success = $Kernel::OM->Get('Kernel::System::Ticket')->TicketDelete(
+        $Success = $TicketObject->TicketDelete(
             TicketID => $TicketID,
             UserID   => $TestUserID,
         );
+        if ( !$Success ) {
+            sleep 3;
+            $Success = $TicketObject->TicketDelete(
+                TicketID => $TicketID,
+                UserID   => $TestUserID,
+            );
+        }
         $Self->True(
             $Success,
             "Delete ticket - $TicketID"
