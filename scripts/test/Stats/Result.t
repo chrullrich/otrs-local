@@ -3766,6 +3766,13 @@ for my $Test (@Tests) {
                 UserLanguage => $Test->{Language},
             },
         );
+
+        my $LanguageObject = $Kernel::OM->Get('Kernel::Language');
+
+        $Self->True(
+            1,
+            "Test $TestCount: Set the language to '$Test->{Language}'.",
+        );
     }
 
     # check ContractAdd attribute

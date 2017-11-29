@@ -52,6 +52,7 @@ body {
     background: #f92;
     color: #fff;
     transition: background 2s ease;
+    float: none;
 }
 
 #AjaxErrorDialogInner .Icon + p {
@@ -62,6 +63,11 @@ body {
 #AjaxErrorDialogInner .Icon i {
     font-size: 18px;
     vertical-align: middle;
+    margin-top: -3px;
+}
+
+#AjaxErrorDialogInner .CommunicationError .Icon {
+    background: #b8384e;
 }
 
 #AjaxErrorDialogInner .Icon.Green {
@@ -933,7 +939,7 @@ iframe.TextOption.Customer {
  */
 #SearchForm,
 #AgentCustomerInformationCenterSearchForm {
-    width: 560px;
+    width: 760px;
     padding-right: 20px;
 }
 
