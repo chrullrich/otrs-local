@@ -1589,15 +1589,18 @@ sub MaskAgentZoom {
             );
 
             push @FieldsWidget, {
-                Name  => $DynamicFieldConfig->{Name},
-                Title => $ValueStrg->{Title},
-                Value => $ValueStrg->{Value},
-                ValueKey
-                    => $Ticket{ 'DynamicField_' . $DynamicFieldConfig->{Name} },
+                $DynamicFieldConfig->{Name} => $ValueStrg->{Title},
+                Name                        => $DynamicFieldConfig->{Name},
+                Title                       => $ValueStrg->{Title},
+                Value                       => $ValueStrg->{Value},
+                ValueKey                    => $Ticket{ 'DynamicField_' . $DynamicFieldConfig->{Name} },
                 Label                       => $Label,
                 Link                        => $ValueStrg->{Link},
                 LinkPreview                 => $ValueStrg->{LinkPreview},
-                $DynamicFieldConfig->{Name} => $ValueStrg->{Title},
+
+                # Include unique parameter with dynamic field name in case of collision with others.
+                #   Please see bug#13362 for more information.
+                "DynamicField_$DynamicFieldConfig->{Name}" => $ValueStrg->{Title},
             };
         }
 
@@ -1615,13 +1618,17 @@ sub MaskAgentZoom {
             )
         {
             push @FieldsSidebar, {
+                $DynamicFieldConfig->{Name} => $ValueStrg->{Title},
                 Name                        => $DynamicFieldConfig->{Name},
                 Title                       => $ValueStrg->{Title},
                 Value                       => $ValueStrg->{Value},
                 Label                       => $Label,
                 Link                        => $ValueStrg->{Link},
                 LinkPreview                 => $ValueStrg->{LinkPreview},
-                $DynamicFieldConfig->{Name} => $ValueStrg->{Title},
+
+                # Include unique parameter with dynamic field name in case of collision with others.
+                #   Please see bug#13362 for more information.
+                "DynamicField_$DynamicFieldConfig->{Name}" => $ValueStrg->{Title},
             };
         }
 
@@ -1684,15 +1691,19 @@ sub MaskAgentZoom {
                             $LayoutObject->Block(
                                 Name => 'ProcessWidgetDynamicFieldLink',
                                 Data => {
+                                    $Field->{Name} => $Field->{Title},
                                     %Ticket,
 
                                     # alias for ticket title, Title will be overwritten
-                                    TicketTitle    => $Ticket{Title},
-                                    Value          => $Field->{Value},
-                                    Title          => $Field->{Title},
-                                    Link           => $Field->{Link},
-                                    LinkPreview    => $Field->{LinkPreview},
-                                    $Field->{Name} => $Field->{Title},
+                                    TicketTitle => $Ticket{Title},
+                                    Value       => $Field->{Value},
+                                    Title       => $Field->{Title},
+                                    Link        => $Field->{Link},
+                                    LinkPreview => $Field->{LinkPreview},
+
+                                    # Include unique parameter with dynamic field name in case of collision with others.
+                                    #   Please see bug#13362 for more information.
+                                    "DynamicField_$Field->{Name}" => $Field->{Title},
                                 },
                             );
                         }
@@ -1761,15 +1772,19 @@ sub MaskAgentZoom {
                 $LayoutObject->Block(
                     Name => 'ProcessWidgetDynamicFieldLink',
                     Data => {
+                        $Field->{Name} => $Field->{Title},
                         %Ticket,
 
                         # alias for ticket title, Title will be overwritten
-                        TicketTitle    => $Ticket{Title},
-                        Value          => $Field->{Value},
-                        Title          => $Field->{Title},
-                        Link           => $Field->{Link},
-                        LinkPreview    => $Field->{LinkPreview},
-                        $Field->{Name} => $Field->{Title},
+                        TicketTitle => $Ticket{Title},
+                        Value       => $Field->{Value},
+                        Title       => $Field->{Title},
+                        Link        => $Field->{Link},
+                        LinkPreview => $Field->{LinkPreview},
+
+                        # Include unique parameter with dynamic field name in case of collision with others.
+                        #   Please see bug#13362 for more information.
+                        "DynamicField_$Field->{Name}" => $Field->{Title},
                     },
                 );
             }
@@ -1799,15 +1814,19 @@ sub MaskAgentZoom {
             $LayoutObject->Block(
                 Name => 'TicketDynamicFieldLink',
                 Data => {
+                    $Field->{Name} => $Field->{Title},
                     %Ticket,
 
                     # alias for ticket title, Title will be overwritten
-                    TicketTitle    => $Ticket{Title},
-                    Value          => $Field->{Value},
-                    Title          => $Field->{Title},
-                    Link           => $Field->{Link},
-                    LinkPreview    => $Field->{LinkPreview},
-                    $Field->{Name} => $Field->{Title},
+                    TicketTitle => $Ticket{Title},
+                    Value       => $Field->{Value},
+                    Title       => $Field->{Title},
+                    Link        => $Field->{Link},
+                    LinkPreview => $Field->{LinkPreview},
+
+                    # Include unique parameter with dynamic field name in case of collision with others.
+                    #   Please see bug#13362 for more information.
+                    "DynamicField_$Field->{Name}" => $Field->{Title},
                 },
             );
         }
