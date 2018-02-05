@@ -1,3 +1,14 @@
+#5.0.27 ????-??-??
+
+#5.0.26 2017-12-19
+ - 2017-12-07 Improved parameter appending.
+ - 2017-12-04 Fixed bug#[13097](https://bugs.otrs.org/show_bug.cgi?id=13097) - Button "Add Customer" in Customer Information Center is missing.
+ - 2017-12-01 Fixed bug#[13312](https://bugs.otrs.org/show_bug.cgi?id=13312) - ACLs not working as expected in AgentTicketFreeText.
+ - 2017-12-01 Fixed bug#[13170](https://bugs.otrs.org/show_bug.cgi?id=13170) - Frontend::RichTextWidth setting is not honored.
+ - 2017-12-01 Fixed bug#[13350](https://bugs.otrs.org/show_bug.cgi?id=13350) - CheckMXRecord should not act when setting email address to invalid.
+ - 2017-11-30 Fixed bug#[13299](https://bugs.otrs.org/show_bug.cgi?id=13299) - Dashboard widgets can't be rearranged in Chrome and Internet Explorer on touchscreen devices.
+ - 2017-11-30 Fixed bug#[13379](https://bugs.otrs.org/show_bug.cgi?id=13379) - PendingTimeDiff is not updated, if no state update was done in a transition action.
+
 #5.0.25 2017-12-05
  - 2017-11-30 Fixed bug#[13362](https://bugs.otrs.org/show_bug.cgi?id=13362) - Issue with dynamic fields in ticket information widget in ticket zoom.
  - 2017-11-27 Fixed bug#[13366](https://bugs.otrs.org/show_bug.cgi?id=13366) - Maintenance Message cannot exceed 250 characters, that is not reflected in the GUI.
