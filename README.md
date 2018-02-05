@@ -1,3 +1,5 @@
+Released OTRS (https://www.otrs.com/) versions with few tweaks to fix particular annoyances, like the constant advertising for the commercial version.
+
 [![Build Status](https://travis-ci.org/OTRS/otrs.svg?branch=rel-5_0)](https://travis-ci.org/OTRS/otrs)
 
 What is OTRS?
