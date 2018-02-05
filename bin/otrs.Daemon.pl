@@ -1,4 +1,4 @@
-#!/usr/bin/env perl -X
+#!/usr/bin/env -S perl -X
 # --
 # Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
