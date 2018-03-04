@@ -14,35 +14,29 @@ use utf8;
 
 use Kernel::System::VariableCheck qw(:all);
 
-use base qw(Kernel::System::ProcessManagement::TransitionAction::Base);
+use parent qw(Kernel::System::ProcessManagement::TransitionAction::Base);
 
 our @ObjectDependencies = (
     'Kernel::System::Log',
     'Kernel::System::State',
     'Kernel::System::Ticket',
-    'Kernel::System::Time',
+    'Kernel::System::DateTime',
 );
 
 =head1 NAME
 
 Kernel::System::ProcessManagement::TransitionAction::TicketStateSet - A module to set the ticket state
 
-=head1 SYNOPSIS
+=head1 DESCRIPTION
 
 All TicketStateSet functions.
 
 =head1 PUBLIC INTERFACE
 
-=over 4
+=head2 new()
 
-=cut
+Don't use the constructor directly, use the ObjectManager instead:
 
-=item new()
-
-create an object. Do not use it directly, instead use:
-
-    use Kernel::System::ObjectManager;
-    local $Kernel::OM = Kernel::System::ObjectManager->new();
     my $TicketStateSetObject = $Kernel::OM->Get('Kernel::System::ProcessManagement::TransitionAction::TicketStateSet');
 
 =cut
@@ -57,7 +51,7 @@ sub new {
     return $Self;
 }
 
-=item Run()
+=head2 Run()
 
     Run Data
 
@@ -120,57 +114,79 @@ sub Run {
     $Success = 0;
     my %StateData;
 
-    if ( defined $Param{Config}->{StateID} ) {
+    # If Ticket's StateID is already the same as the Value we
+    # should set it to, we got nothing to do and return success
+    if (
+        defined $Param{Config}->{StateID}
+        && $Param{Config}->{StateID} eq $Param{Ticket}->{StateID}
+        )
+    {
+        return 1;
+    }
 
+    # If Ticket's StateID is not the same as the Value we
+    # should set it to, set the StateID
+    elsif (
+        defined $Param{Config}->{StateID}
+        && $Param{Config}->{StateID} ne $Param{Ticket}->{StateID}
+        )
+    {
         %StateData = $Kernel::OM->Get('Kernel::System::State')->StateGet(
             ID => $Param{Config}->{StateID},
         );
+        $Success = $Kernel::OM->Get('Kernel::System::Ticket')->TicketStateSet(
+            TicketID => $Param{Ticket}->{TicketID},
+            StateID  => $Param{Config}->{StateID},
+            UserID   => $Param{UserID},
+        );
 
-        if ( $Param{Config}->{StateID} ne $Param{Ticket}->{StateID} ) {
-
-            $Success = $Kernel::OM->Get('Kernel::System::Ticket')->TicketStateSet(
-                TicketID => $Param{Ticket}->{TicketID},
-                StateID  => $Param{Config}->{StateID},
-                UserID   => $Param{UserID},
+        if ( !$Success ) {
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => $CommonMessage
+                    . 'Ticket StateID '
+                    . $Param{Config}->{StateID}
+                    . ' could not be updated for Ticket: '
+                    . $Param{Ticket}->{TicketID} . '!',
             );
-
-            if ( !$Success ) {
-                $Kernel::OM->Get('Kernel::System::Log')->Log(
-                    Priority => 'error',
-                    Message  => $CommonMessage
-                        . 'Ticket StateID '
-                        . $Param{Config}->{StateID}
-                        . ' could not be updated for Ticket: '
-                        . $Param{Ticket}->{TicketID} . '!',
-                );
-            }
         }
-
     }
-    elsif ( defined $Param{Config}->{State} ) {
 
+    # If Ticket's State is already the same as the Value we
+    # should set it to, we got nothing to do and return success
+    elsif (
+        defined $Param{Config}->{State}
+        && $Param{Config}->{State} eq $Param{Ticket}->{State}
+        )
+    {
+        return 1;
+    }
+
+    # If Ticket's State is not the same as the Value we
+    # should set it to, set the State
+    elsif (
+        defined $Param{Config}->{State}
+        && $Param{Config}->{State} ne $Param{Ticket}->{State}
+        )
+    {
         %StateData = $Kernel::OM->Get('Kernel::System::State')->StateGet(
             Name => $Param{Config}->{State},
         );
+        $Success = $Kernel::OM->Get('Kernel::System::Ticket')->TicketStateSet(
+            TicketID => $Param{Ticket}->{TicketID},
+            State    => $Param{Config}->{State},
+            UserID   => $Param{UserID},
+        );
 
-        if ( $Param{Config}->{State} ne $Param{Ticket}->{State} ) {
-
-            $Success = $Kernel::OM->Get('Kernel::System::Ticket')->TicketStateSet(
-                TicketID => $Param{Ticket}->{TicketID},
-                State    => $Param{Config}->{State},
-                UserID   => $Param{UserID},
+        if ( !$Success ) {
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => $CommonMessage
+                    . 'Ticket State '
+                    . $Param{Config}->{State}
+                    . ' could not be updated for Ticket: '
+                    . $Param{Ticket}->{TicketID} . '!',
             );
-
-            if ( !$Success ) {
-                $Kernel::OM->Get('Kernel::System::Log')->Log(
-                    Priority => 'error',
-                    Message  => $CommonMessage
-                        . 'Ticket State '
-                        . $Param{Config}->{State}
-                        . ' could not be updated for Ticket: '
-                        . $Param{Ticket}->{TicketID} . '!',
-                );
-            }
         }
     }
     else {
@@ -184,31 +200,22 @@ sub Run {
 
     # set pending time
     if (
-        IsHashRefWithData( \%StateData )
+        $Success
+        && IsHashRefWithData( \%StateData )
         && $StateData{TypeName} =~ m{\A pending}msxi
         && IsNumber( $Param{Config}->{PendingTimeDiff} )
         )
     {
 
-        # get time object
-        my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
-
-        # get current time
-        my $PendingTime = $TimeObject->SystemTime();
-
-        # add PendingTimeDiff
-        $PendingTime += $Param{Config}->{PendingTimeDiff};
-
-        # convert pending time to time stamp
-        my $PendingTimeString = $TimeObject->SystemTime2TimeStamp(
-            SystemTime => $PendingTime,
-        );
+        # get datetime object
+        my $DateTimeObject = $Kernel::OM->Create('Kernel::System::DateTime');
+        $DateTimeObject->Add( Seconds => $Param{Config}->{PendingTimeDiff} );
 
         # set pending time
         $Kernel::OM->Get('Kernel::System::Ticket')->TicketPendingTimeSet(
             UserID   => $Param{UserID},
             TicketID => $Param{Ticket}->{TicketID},
-            String   => $PendingTimeString,
+            String   => $DateTimeObject->ToString(),
         );
     }
 
@@ -216,8 +223,6 @@ sub Run {
 }
 
 1;
-
-=back
 
 =head1 TERMS AND CONDITIONS
 

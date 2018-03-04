@@ -15,6 +15,8 @@ use warnings;
 use Kernel::System::VariableCheck qw(:all);
 use Kernel::Language qw(Translatable);
 
+use parent('Kernel::System::AsynchronousExecutor');
+
 our $ObjectManagerDisabled = 1;
 
 sub new {
@@ -407,20 +409,12 @@ sub Run {
                     elsif ( $Hash->{Tag} =~ /^(File)$/ ) {
 
                         # add human readable file size
-                        if ( $Hash->{Size} ) {
-
-                            # remove meta data in files
-                            if ( $Hash->{Size} > ( 1024 * 1024 ) ) {
-                                $Hash->{Size} = sprintf "%.1f MBytes",
-                                    ( $Hash->{Size} / ( 1024 * 1024 ) );
-                            }
-                            elsif ( $Hash->{Size} > 1024 ) {
-                                $Hash->{Size} = sprintf "%.1f KBytes", ( ( $Hash->{Size} / 1024 ) );
-                            }
-                            else {
-                                $Hash->{Size} = $Hash->{Size} . ' Bytes';
-                            }
+                        if ( defined $Hash->{Size} ) {
+                            $Hash->{Size} = $LayoutObject->HumanReadableDataSize(
+                                Size => $Hash->{Size},
+                            );
                         }
+
                         $LayoutObject->Block(
                             Name => "PackageItemFilelistFile",
                             Data => {
@@ -555,7 +549,9 @@ sub Run {
         );
 
         if ( !$Package ) {
-            return $LayoutObject->ErrorScreen( Message => 'No such package!' );
+            return $LayoutObject->ErrorScreen(
+                Message => Translatable('No such package!'),
+            );
         }
         elsif ( substr( $Package, 0, length('ErrorMessage:') ) eq 'ErrorMessage:' ) {
 
@@ -563,6 +559,9 @@ sub Run {
             return $LayoutObject->ErrorScreen( Message => $Package );
         }
         my %Structure = $PackageObject->PackageParse( String => $Package );
+
+        $Frontend{Name} = $Structure{Name}->{Content};
+
         $LayoutObject->Block(
             Name => 'Package',
             Data => { %Param, %Frontend, },
@@ -710,20 +709,12 @@ sub Run {
                     elsif ( $Hash->{Tag} =~ /^(File)$/ ) {
 
                         # add human readable file size
-                        if ( $Hash->{Size} ) {
-
-                            # remove meta data in files
-                            if ( $Hash->{Size} > ( 1024 * 1024 ) ) {
-                                $Hash->{Size} = sprintf "%.1f MBytes",
-                                    ( $Hash->{Size} / ( 1024 * 1024 ) );
-                            }
-                            elsif ( $Hash->{Size} > 1024 ) {
-                                $Hash->{Size} = sprintf "%.1f KBytes", ( ( $Hash->{Size} / 1024 ) );
-                            }
-                            else {
-                                $Hash->{Size} = $Hash->{Size} . ' Bytes';
-                            }
+                        if ( defined $Hash->{Size} ) {
+                            $Hash->{Size} = $LayoutObject->HumanReadableDataSize(
+                                Size => $Hash->{Size},
+                            );
                         }
+
                         $LayoutObject->Block(
                             Name => 'PackageItemFilelistFile',
                             Data => {
@@ -1300,6 +1291,170 @@ sub Run {
     }
 
     # ------------------------------------------------------------ #
+    # Create a PackageUpgradeAll task for daemon
+    # ------------------------------------------------------------ #
+    elsif ( $Self->{Subaction} eq 'AJAXPackageUpgradeAll' ) {
+
+        my $Success = $Self->AsyncCall(
+            ObjectName               => 'Kernel::System::Package',
+            FunctionName             => 'PackageUpgradeAll',
+            FunctionParams           => [],
+            Attempts                 => 3,
+            MaximumParallelInstances => 1,
+        );
+
+        my $JSON = $LayoutObject->JSONEncode(
+            Data => {
+                Success => $Success,
+            },
+        );
+
+        return $LayoutObject->Attachment(
+            ContentType => 'application/json; charset=' . $LayoutObject->{Charset},
+            Content     => $JSON || '',
+            Type        => 'inline',
+            NoCache     => 1,
+        );
+    }
+
+    # ------------------------------------------------------------ #
+    # Check if is safe to start a new Package Upgrade all process
+    # ------------------------------------------------------------ #
+    elsif ( $Self->{Subaction} eq 'AJAXGetPackageUpgradeRunStatus' ) {
+
+        my %Result = $PackageObject->PackageUpgradeAllIsRunning();
+
+        my $JSON = $LayoutObject->JSONEncode(
+            Data => {
+                Success => 1,
+                %Result,
+            },
+        );
+
+        return $LayoutObject->Attachment(
+            ContentType => 'application/json; charset=' . $LayoutObject->{Charset},
+            Content     => $JSON,
+            Type        => 'inline',
+            NoCache     => 1,
+        );
+    }
+
+    # ------------------------------------------------------------ #
+    # Check current Package Upgrade all results (partial or full)
+    # ------------------------------------------------------------ #
+    elsif ( $Self->{Subaction} eq 'AJAXGetPackageUpgradeResult' ) {
+
+        my $SystemDataObject = $Kernel::OM->Get('Kernel::System::SystemData');
+        my %SystemData       = $SystemDataObject->SystemDataGroupGet(
+            Group => 'Package_UpgradeAll',
+        );
+
+        my $JSONObject        = $Kernel::OM->Get('Kernel::System::JSON');
+        my $InstalledPackages = $JSONObject->Decode(
+            Data => $SystemData{InstalledPackages} || {},
+        );
+
+        my $UpgradeResult = $JSONObject->Decode(
+            Data => $SystemData{UpgradeResult} || {},
+        );
+
+        my %PackageList;
+        if ( IsArrayRefWithData($InstalledPackages) ) {
+            my $DefaultStatus        = Translatable('Not Started');
+            my $DefaultStatusDisplay = $LayoutObject->{LanguageObject}->Translate($DefaultStatus);
+            for my $Package ( @{$InstalledPackages} ) {
+                $PackageList{ $Package->{Name} } = {
+                    Name          => $Package->{Name},
+                    Status        => $DefaultStatus,
+                    StatusDisplay => $DefaultStatusDisplay,
+                };
+            }
+            my %StatusStings = (
+                Updated        => $LayoutObject->{LanguageObject}->Translate('Updated'),
+                AlreadyUpdated => $LayoutObject->{LanguageObject}->Translate('Already up-to-date'),
+                Installed      => $LayoutObject->{LanguageObject}->Translate('Installed'),
+                Failed         => $LayoutObject->{LanguageObject}->Translate('Failed'),
+            );
+            my %StatusMessages = (
+                Updated        => $LayoutObject->{LanguageObject}->Translate('Package updated correctly'),
+                AlreadyUpdated => $LayoutObject->{LanguageObject}->Translate('Package was already updated'),
+                Installed      => $LayoutObject->{LanguageObject}->Translate('Dependency installed correctly'),
+                Cyclic       => $LayoutObject->{LanguageObject}->Translate('The package contains cyclic dependencies'),
+                NotFound     => $LayoutObject->{LanguageObject}->Translate('Not found in on-line repositories'),
+                WrongVersion => $LayoutObject->{LanguageObject}->Translate('Required version is higher than available'),
+                DependencyFail => $LayoutObject->{LanguageObject}->Translate('Dependencies fail to upgrade or install'),
+                InstallError   => $LayoutObject->{LanguageObject}->Translate('Package could not be installed'),
+                UpdateError    => $LayoutObject->{LanguageObject}->Translate('Package could not be upgraded'),
+            );
+
+            if ( IsHashRefWithData($UpgradeResult) ) {
+                for my $StatusType (qw(Updated Installed AlreadyUpdated)) {
+                    for my $PackageName ( sort keys %{ $UpgradeResult->{$StatusType} } ) {
+                        $PackageList{$PackageName} = {
+                            Name          => $PackageName,
+                            Status        => $StatusType,
+                            StatusDisplay => $StatusStings{$StatusType},
+                            StatusMessage => $StatusMessages{$StatusType},
+                            Class         => $StatusType eq 'Installed' ? 'Warning' : 'Success',
+                        };
+                    }
+                }
+                for my $FailType ( sort keys %{ $UpgradeResult->{Failed} } ) {
+                    for my $PackageName ( sort keys %{ $UpgradeResult->{Failed}->{$FailType} } ) {
+                        $PackageList{$PackageName} = {
+                            Name          => $PackageName,
+                            Status        => 'Failed',
+                            StatusDisplay => $StatusStings{Failed},
+                            StatusMessage => $StatusMessages{$FailType},
+                            Class         => 'Fail',
+                        };
+                    }
+                }
+            }
+        }
+
+        # Convert it into an array for easy and persistent sorting.
+        my @PackageList = map { $PackageList{$_} } sort keys %PackageList;
+
+        my $JSON = $LayoutObject->JSONEncode(
+            Data => {
+                Success        => 1,
+                UpgradeStatus  => $SystemData{Status} || '',
+                UpgradeSuccess => $SystemData{Success} || '',
+                PackageList    => \@PackageList,
+            },
+        );
+
+        return $LayoutObject->Attachment(
+            ContentType => 'application/json; charset=' . $LayoutObject->{Charset},
+            Content     => $JSON || '',
+            Type        => 'inline',
+            NoCache     => 1,
+        );
+    }
+
+    # ------------------------------------------------------------ #
+    # Removes any Package Upgrade data from the database
+    # ------------------------------------------------------------ #
+    elsif ( $Self->{Subaction} eq 'AJAXDeletePackageUpgradeData' ) {
+
+        my $Success = $Kernel::OM->Get('Kernel::System::Package')->PackageUpgradeAllDataDelete();
+
+        my $JSON = $LayoutObject->JSONEncode(
+            Data => {
+                Success => $Success,
+            },
+        );
+
+        return $LayoutObject->Attachment(
+            ContentType => 'application/json; charset=' . $LayoutObject->{Charset},
+            Content     => $JSON || '',
+            Type        => 'inline',
+            NoCache     => 1,
+        );
+    }
+
+    # ------------------------------------------------------------ #
     # overview
     # ------------------------------------------------------------ #
     my %Frontend;
@@ -1325,15 +1480,19 @@ sub Run {
             $PackageObject->RepositoryCloudList( NoCache => 1 );
     }
 
-    # in case Source is present on repository cloud list
-    # the call for retrieving data about it, should be performed
-    # using the CloudService backend
+    # In case Source is present on repository cloud list
+    #   the call for retrieving data about it, should be performed
+    #   using the CloudService backend.
     my $FromCloud = ( $RepositoryCloudList->{$Source} ? 1 : 0 );
+
+    # Get the list of the installed packages early to be able to show or not the Upgrade All button
+    #   in the layout block.
+    my @RepositoryList = $PackageObject->RepositoryList();
 
     $Frontend{SourceList} = $LayoutObject->BuildSelection(
         Data        => { %List, %RepositoryRoot, %{$RepositoryCloudList}, },
         Name        => 'Source',
-        Title       => 'Repository List',
+        Title       => Translatable('Repository List'),
         Max         => 40,
         Translation => 0,
         SelectedID  => $Source,
@@ -1341,7 +1500,11 @@ sub Run {
     );
     $LayoutObject->Block(
         Name => 'Overview',
-        Data => { %Param, %Frontend, },
+        Data => {
+            %Param,
+            %Frontend,
+            InstalledPackages => @RepositoryList ? 1 : 0,
+        },
     );
     if ($Source) {
 
@@ -1418,8 +1581,6 @@ sub Run {
             Data => {},
         );
     }
-
-    my @RepositoryList = $PackageObject->RepositoryList();
 
     # remove not visible packages
     @RepositoryList = map {
@@ -1580,7 +1741,7 @@ sub Run {
             );
 
             my $MaxAllowedPacket            = 0;
-            my $MaxAllowedPacketRecommended = 20;
+            my $MaxAllowedPacketRecommended = 64;
             while ( my @Data = $DBObject->FetchrowArray() ) {
                 if ( $Data[1] ) {
                     $MaxAllowedPacket = $Data[1] / 1024 / 1024;
@@ -1625,6 +1786,25 @@ sub Run {
         $LayoutObject->Block(
             Name => 'CloudServicesWarning',
         );
+    }
+
+    # Remove old package upgrade all data.
+    my $SystemDataObject = $Kernel::OM->Get('Kernel::System::SystemData');
+    my %SystemData       = $SystemDataObject->SystemDataGroupGet(
+        Group => 'Package_UpgradeAll',
+    );
+    if ( %SystemData && $SystemData{UpdateTime} ) {
+        my $CurrentDateTimeObject = $Kernel::OM->Create('Kernel::System::DateTime');
+        my $TargetDateTimeObject  = $Kernel::OM->Create(
+            'Kernel::System::DateTime',
+            ObjectParams => {
+                String => $SystemData{UpdateTime},
+                }
+        );
+        $TargetDateTimeObject->Add( Days => 1 );
+        if ( $CurrentDateTimeObject > $TargetDateTimeObject ) {
+            $PackageObject->PackageUpgradeAllDataDelete()
+        }
     }
 
     my $Output = $LayoutObject->Header();
@@ -1897,18 +2077,12 @@ sub _InstallHandling {
         $FromCloud = 1;
     }
 
-    my $Response = $PackageObject->_CheckFramework(
-        Framework  => $Structure{Framework},
-        NoLog      => 1,
-        ResultType => 'HASH',
+    my %Response = $PackageObject->AnalyzePackageFrameworkRequirements(
+        Framework => $Structure{Framework},
+        NoLog     => 1,
     );
 
-    # Check result type of _CheckFramework() for compatibility reasons.
-    if (
-        ref $Response eq 'HASH'
-        && !$Response->{Success}
-        )
-    {
+    if ( !$Response{Success} ) {
         $LayoutObject->Block(
             Name => 'IncompatibleInfo',
             Data => {
@@ -1918,9 +2092,9 @@ sub _InstallHandling {
                 Type                   => 'InstallIncompatible',
                 Name                   => $Structure{Name}->{Content},
                 Version                => $Structure{Version}->{Content},
-                RequiredMinimumVersion => $Response->{RequiredFrameworkMinimum},
-                RequiredMaximumVersion => $Response->{RequiredFrameworkMaximum},
-                RequiredFramework      => $Response->{RequiredFramework},
+                RequiredMinimumVersion => $Response{RequiredFrameworkMinimum},
+                RequiredMaximumVersion => $Response{RequiredFrameworkMaximum},
+                RequiredFramework      => $Response{RequiredFramework},
             },
         );
 
@@ -2057,18 +2231,12 @@ sub _UpgradeHandling {
         );
     }
 
-    my $Response = $PackageObject->_CheckFramework(
-        Framework  => $Structure{Framework},
-        NoLog      => 1,
-        ResultType => 'HASH',
+    my %Response = $PackageObject->AnalyzePackageFrameworkRequirements(
+        Framework => $Structure{Framework},
+        NoLog     => 1,
     );
 
-    # Check result type of _CheckFramework() for compatibility reasons.
-    if (
-        ref $Response eq 'HASH'
-        && !$Response->{Success}
-        )
-    {
+    if ( !$Response{Success} ) {
         $LayoutObject->Block(
             Name => 'IncompatibleInfo',
             Data => {
@@ -2078,9 +2246,9 @@ sub _UpgradeHandling {
                 Type                   => 'UpgradeIncompatible',
                 Name                   => $Structure{Name}->{Content},
                 Version                => $Structure{Version}->{Content},
-                RequiredMinimumVersion => $Response->{RequiredFrameworkMinimum},
-                RequiredMaximumVersion => $Response->{RequiredFrameworkMaximum},
-                RequiredFramework      => $Response->{RequiredFramework},
+                RequiredMinimumVersion => $Response{RequiredFrameworkMinimum},
+                RequiredMaximumVersion => $Response{RequiredFrameworkMaximum},
+                RequiredFramework      => $Response{RequiredFramework},
             },
         );
 

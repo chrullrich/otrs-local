@@ -94,7 +94,6 @@ $Selenium->RunTest(
         $Selenium->execute_script(
             "\$('#Attribute').val('TicketNumber').trigger('redraw.InputField').trigger('change');"
         );
-        $Selenium->find_element( ".AddButton", 'css' )->click();
         $Selenium->WaitFor(
             JavaScript =>
                 "return typeof(\$) === 'function' && \$('#SearchInsert input[name=\"TicketNumber\"]').length"
@@ -134,11 +133,11 @@ $Selenium->RunTest(
             "Found on screen using search profile, Ticket Number - $TicketNumber",
         );
 
-        # Check for search profile option.
-        my $SearchText = "Change search options";
+        # Check for search profile name.
+        my $SearchText = "Change search options ($SearchProfileName)";
         $Self->True(
             index( $Selenium->get_page_source(), $SearchText ) > -1,
-            "Found search profile option on screen",
+            "Found search profile name on screen - $SearchProfileName",
         );
 
         # Delete search profile from DB.

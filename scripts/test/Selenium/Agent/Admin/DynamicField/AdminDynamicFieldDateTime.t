@@ -21,19 +21,16 @@ $Selenium->RunTest(
         # get helper object
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
-        my %DynamicFieldsOverviewPageShownSysConfig = $Kernel::OM->Get('Kernel::System::SysConfig')->ConfigItemGet(
+        my %DynamicFieldsOverviewPageShownSysConfig = $Kernel::OM->Get('Kernel::System::SysConfig')->SettingGet(
             Name => 'PreferencesGroups###DynamicFieldsOverviewPageShown',
         );
-
-        %DynamicFieldsOverviewPageShownSysConfig = map { $_->{Key} => $_->{Content} }
-            grep { defined $_->{Key} } @{ $DynamicFieldsOverviewPageShownSysConfig{Setting}->[1]->{Hash}->[1]->{Item} };
 
         # show more dynamic fields per page as the default value
         $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'PreferencesGroups###DynamicFieldsOverviewPageShown',
             Value => {
-                %DynamicFieldsOverviewPageShownSysConfig,
+                %{ $DynamicFieldsOverviewPageShownSysConfig{EffectiveValue} },
                 DataSelected => 999,
             },
         );
@@ -76,7 +73,7 @@ $Selenium->RunTest(
             # check client side validation
             my $Element = $Selenium->find_element( "#Name", 'css' );
             $Element->send_keys("");
-            $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+            $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
             $Self->Is(
                 $Selenium->execute_script(
@@ -108,13 +105,9 @@ $Selenium->RunTest(
             # create real text DynamicFieldDate
             my $RandomID = $Helper->GetRandomID();
 
-            $Selenium->find_element( "#Name",  'css' )->send_keys($RandomID);
-            $Selenium->find_element( "#Label", 'css' )->send_keys($RandomID);
-            $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
-
-            $Selenium->WaitFor(
-                JavaScript => "return typeof(\$) === 'function' &&  \$('tbody tr:contains($RandomID)').length;"
-            );
+            $Selenium->find_element( "#Name",   'css' )->send_keys($RandomID);
+            $Selenium->find_element( "#Label",  'css' )->send_keys($RandomID);
+            $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
             # check for test DynamicFieldCheckbox on AdminDynamicField screen
             $Self->True(
@@ -132,11 +125,7 @@ $Selenium->RunTest(
             $Selenium->find_element( "#YearsInFuture", 'css' )->clear();
             $Selenium->find_element( "#YearsInFuture", 'css' )->send_keys("8");
             $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
-            $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
-
-            $Selenium->WaitFor(
-                JavaScript => "return typeof(\$) === 'function' &&  \$('tbody tr:contains($RandomID)').length;"
-            );
+            $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
             # check new and edited DynamicFieldDateTime values
             $Selenium->find_element( $RandomID, 'link_text' )->VerifiedClick();

@@ -41,6 +41,12 @@ $Selenium->RunTest(
         $Selenium->find_element( "table thead tr th", 'css' );
         $Selenium->find_element( "table tbody tr td", 'css' );
 
+        # check breadcrumb on Overview screen
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
+
         # click "Add SLA"
         $Selenium->find_element("//a[contains(\@href, \'Subaction=SLAEdit' )]")->VerifiedClick();
 
@@ -65,6 +71,18 @@ $Selenium->RunTest(
             '1',
             'Client side validation correctly detected missing input value',
         );
+
+        # check breadcrumb on Add screen
+        my $Count = 1;
+        for my $BreadcrumbText ( 'SLA Management', 'Add SLA' ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
 
         # create test SLA
         my $SLARandomID = "SLA" . $Helper->GetRandomID();
@@ -98,6 +116,18 @@ $Selenium->RunTest(
             1,
             "#ValidID stored value",
         );
+
+        # check breadcrumb on Edit screen
+        $Count = 1;
+        for my $BreadcrumbText ( 'SLA Management', 'Edit SLA: ' . $SLARandomID ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
 
         # remove test SLA comment and set it to invalid
         $Selenium->find_element( "#Comment", 'css' )->clear();

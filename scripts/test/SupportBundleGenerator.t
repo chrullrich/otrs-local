@@ -48,9 +48,10 @@ $Helper->ConfigSettingChange(
 my $Home = $ConfigObject->Get('Home');
 $Home =~ s{\/\z}{};
 
-my $IsDevelopmentSystem;
+my $ArchiveExists;
+my $Success;
+my $RandomNumber = $Helper->GetRandomNumber();
 if ( !-e $Home . '/ARCHIVE' ) {
-    $IsDevelopmentSystem = 1;
 
     # perfect time to test the missing ARCHVIVE
     my $Result = $SupportBundleGeneratorObject->Generate();
@@ -60,59 +61,64 @@ if ( !-e $Home . '/ARCHIVE' ) {
         "Generate() - for a system without ARCHIVE file with false",
     );
 }
+else {
+    $ArchiveExists = 1;
+    $Success = rename( "ARCHIVE", "ARCHIVE" . $RandomNumber );
+    $Self->True(
+        $Success,
+        "Found ARCHIVE file in a system, creating copy to restore it on the end of unit test."
+    );
+}
 
 # create an ARCHIVE file on developer systems to continue working
-if ($IsDevelopmentSystem) {
-    my $ArchiveGeneratorTool = $Home . '/bin/otrs.CheckSum.pl';
+my $ArchiveGeneratorTool = $Home . '/bin/otrs.CheckSum.pl';
 
-    # if tool is not present we can't continue
-    if ( !-e $ArchiveGeneratorTool ) {
-        $Self->True(
-            0,
-            "$ArchiveGeneratorTool does not exist, we can't continue",
-        );
-        return;
-    }
+# if tool is not present we can't continue
+if ( !-e $ArchiveGeneratorTool ) {
+    $Self->True(
+        0,
+        "$ArchiveGeneratorTool does not exist, we can't continue",
+    );
+    return;
+}
 
-    # execute ARCHIVE generator tool
-    my $Result = `$ArchiveGeneratorTool -a create`;
+# execute ARCHIVE generator tool
+my $Result = `$ArchiveGeneratorTool -a create`;
 
-    if ( !-e $Home . '/ARCHIVE' || -z $Home . '/ARCHIVE' ) {
+if ( !-e $Home . '/ARCHIVE' || -z $Home . '/ARCHIVE' ) {
 
-        # if ARCHIVE file is not present we can't continue
-        $Self->True(
-            0,
-            "ARCHIVE file was not generated, we can't continue",
-        );
-        return;
-    }
-    else {
-        $Self->True(
-            1,
-            "ARCHIVE file was generated for a developer system",
-        );
+    # if ARCHIVE file is not present we can't continue
+    $Self->True(
+        0,
+        "ARCHIVE file is not generated, we can't continue",
+    );
+    return;
+}
+else {
+    $Self->True(
+        1,
+        "ARCHIVE file is generated for UnitTest purpose",
+    );
 
-        # delete Kernel/Config.pm file from archive file
-        my $ArchiveContent = $MainObject->FileRead(
-            Location => $Home . '/ARCHIVE',
-            Result   => 'ARRAY',
-        );
-        my $Output;
-        my $File = 'Kernel/Config.pm';
-        LINE:
-        for my $Line ( @{$ArchiveContent} ) {
-            if ( $Line =~ m(\A\w+::$File\n\z) ) {
-                next LINE;
-            }
-            $Output .= $Line;
+    # delete Kernel/Config.pm file from archive file
+    my $ArchiveContent = $MainObject->FileRead(
+        Location => $Home . '/ARCHIVE',
+        Result   => 'ARRAY',
+    );
+    my $Output;
+    my $File = 'Kernel/Config.pm';
+    LINE:
+    for my $Line ( @{$ArchiveContent} ) {
+        if ( $Line =~ m(\A\w+::$File\n\z) ) {
+            next LINE;
         }
-
-        my $FileLocation = $MainObject->FileWrite(
-            Location => $Home . '/ARCHIVE',
-            Content  => \$Output,
-        );
+        $Output .= $Line;
     }
 
+    my $FileLocation = $MainObject->FileWrite(
+        Location => $Home . '/ARCHIVE',
+        Content  => \$Output,
+    );
 }
 
 # get OTRS Version
@@ -137,8 +143,8 @@ my $TestPackage = '<?xml version="1.0" encoding="utf-8" ?>
   <BuildDate>2005-11-10 21:17:16</BuildDate>
   <BuildHost>yourhost.example.com</BuildHost>
   <Filelist>
-    <File Location="Test" Permission="644" Encode="Base64">aGVsbG8K</File>
-    <File Location="var/Test" Permission="644" Encode="Base64">aGVsbG8K</File>
+    <File Location="TestSBG" Permission="644" Encode="Base64">aGVsbG8K</File>
+    <File Location="var/TestSBG" Permission="644" Encode="Base64">aGVsbG8K</File>
   </Filelist>
 </otrs_package>
 ';
@@ -153,8 +159,8 @@ my @Tests = (
         Name          => 'Package - Only Config',
         RequiredFiles => ["$Home/Kernel/Config.pm"],
         ProhibitFiles => [
-            "$Home/Test",
-            "$Home/var/Test",
+            "$Home/TestSBG",
+            "$Home/var/TestSBG",
         ],
         InstallPackages => {
             Test => $TestPackage,
@@ -164,13 +170,13 @@ my @Tests = (
         Name          => 'Package - Modified File',
         RequiredFiles => [
             "$Home/Kernel/Config.pm",
-            "$Home/var/Test",
+            "$Home/var/TestSBG",
         ],
         ProhibitFiles => [
-            "$Home/Test",
+            "$Home/TestSBG",
         ],
         ModifyFiles => [
-            "$Home/var/Test",
+            "$Home/var/TestSBG",
         ],
         UninstallPackages => {
             Test => $TestPackage,
@@ -186,7 +192,7 @@ for my $Test (@Tests) {
     if ( IsHashRefWithData( $Test->{InstallPackages} ) ) {
 
         for my $Package ( sort keys %{ $Test->{InstallPackages} } ) {
-            my $Success =
+            $Success =
                 $PackageObject->PackageInstall( String => $Test->{InstallPackages}->{$Package} );
             $Self->True(
                 $Success,
@@ -283,7 +289,7 @@ for my $Test (@Tests) {
     if ( IsHashRefWithData( $Test->{UninstallPackages} ) ) {
 
         for my $Package ( sort keys %{ $Test->{UninstallPackages} } ) {
-            my $Success =
+            $Success =
                 $PackageObject->PackageUninstall(
                 String => $Test->{UninstallPackages}->{$Package}
                 );
@@ -325,7 +331,7 @@ for my $Test (@Tests) {
     if ( IsHashRefWithData( $Test->{InstallPackages} ) ) {
 
         for my $Package ( sort keys %{ $Test->{InstallPackages} } ) {
-            my $Success =
+            $Success =
                 $PackageObject->PackageInstall( String => $Test->{InstallPackages}->{$Package} );
             $Self->True(
                 $Success,
@@ -388,7 +394,7 @@ for my $Test (@Tests) {
     if ( IsHashRefWithData( $Test->{UninstallPackages} ) ) {
 
         for my $Package ( sort keys %{ $Test->{UninstallPackages} } ) {
-            my $Success =
+            $Success =
                 $PackageObject->PackageUninstall(
                 String => $Test->{UninstallPackages}->{$Package}
                 );
@@ -629,7 +635,7 @@ my $MaskPasswordFileLocation = $MainObject->FileWrite(
 );
 
 # Generate tests
-my $Result = $SupportBundleGeneratorObject->Generate();
+$Result = $SupportBundleGeneratorObject->Generate();
 
 $Self->True(
     $Result->{Success},
@@ -664,7 +670,7 @@ my $TarObject = Archive::Tar->new();
 my $FileCount = $TarObject->read($TmpFilename);
 $Self->Is(
     $FileCount,
-    4,
+    5,
     "Generate() - The number of files",
 );
 my @FileList = $TarObject->get_files();
@@ -729,11 +735,17 @@ for my $TarFile (@FileList) {
 }
 
 # cleanup
-if ($IsDevelopmentSystem) {
-    my $Success = unlink $Home . '/ARCHIVE';
+$Success = unlink $Home . '/ARCHIVE';
+$Self->True(
+    $Success,
+    "UnitTest ARCHIVE file is deleted"
+);
+
+if ($ArchiveExists) {
+    $Success = rename( "ARCHIVE" . $RandomNumber, "ARCHIVE" );
     $Self->True(
         $Success,
-        "ARCHIVE was deleted form a developer system"
+        "Original ARCHIVE file is restored"
     );
 }
 

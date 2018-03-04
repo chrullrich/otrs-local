@@ -11,6 +11,8 @@ package Kernel::System::PostMaster::Filter::CMD;
 use strict;
 use warnings;
 
+use Kernel::System::VariableCheck qw(:all);
+
 our @ObjectDependencies = (
     'Kernel::Config',
     'Kernel::System::Log',
@@ -26,6 +28,9 @@ sub new {
     # get parser object
     $Self->{ParserObject} = $Param{ParserObject} || die "Got no ParserObject!";
 
+    # Get communication log object.
+    $Self->{CommunicationLogObject} = $Param{CommunicationLogObject} || die "Got no CommunicationLogObject!";
+
     return $Self;
 }
 
@@ -34,19 +39,31 @@ sub Run {
 
     # get config options
     my %Config;
-    my %Set;
+    my @Set;
     if ( $Param{JobConfig} && ref( $Param{JobConfig} ) eq 'HASH' ) {
         %Config = %{ $Param{JobConfig} };
-        if ( $Config{Set} ) {
-            %Set = %{ $Config{Set} };
+
+        if ( IsArrayRefWithData( $Config{Set} ) ) {
+            @Set = @{ $Config{Set} };
+        }
+        elsif ( IsHashRefWithData( $Config{Set} ) ) {
+
+            for my $Key ( sort keys %{ $Config{Set} } ) {
+                push @Set, {
+                    Key   => $Key,
+                    Value => $Config{Set}->{$Key},
+                };
+            }
         }
     }
 
     # check CMD config param
     if ( !$Config{CMD} ) {
-        $Kernel::OM->Get('Kernel::System::Log')->Log(
-            Priority => 'error',
-            Message  => 'Need CMD config option in PostMaster::PreFilterModule job!',
+        $Self->{CommunicationLogObject}->ObjectLog(
+            ObjectLogType => 'Message',
+            Priority      => 'Error',
+            Key           => 'Kernel::System::PostMaster::Filter::CMD',
+            Value         => "Need CMD config option in PostMaster::PreFilterModule job!",
         );
         return;
     }
@@ -67,12 +84,18 @@ sub Run {
         close $In;
 
         # set new params
-        for ( sort keys %Set ) {
-            $Param{GetParam}->{$_} = $Set{$_};
-            $Kernel::OM->Get('Kernel::System::Log')->Log(
-                Priority => 'notice',
-                Message =>
-                    "Set param '$_' to '$Set{$_}' because of '$Ret' (Message-ID: $Param{GetParam}->{'Message-ID'}) ",
+        for my $SetItem (@Set) {
+            my $Key   = $SetItem->{Key};
+            my $Value = $SetItem->{Value};
+
+            $Param{GetParam}->{$Key} = $Value;
+
+            $Self->{CommunicationLogObject}->ObjectLog(
+                ObjectLogType => 'Message',
+                Priority      => 'Notice',
+                Key           => 'Kernel::System::PostMaster::Filter::CMD',
+                Value =>
+                    "Set param '$Key' to '$Value' because of '$Ret' (Message-ID: $Param{GetParam}->{'Message-ID'})",
             );
         }
     }

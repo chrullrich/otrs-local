@@ -38,6 +38,20 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
     var KeysWithoutSubkeys = [ 'ActivityDialog', 'Action', 'Process' ];
 
     /**
+     * @name Init
+     * @memberof Core.Agent.Admin.ACL
+     * @function
+     * @description
+     *      This function initialize the module.
+     */
+    TargetNS.Init = function() {
+        Core.UI.Table.InitTableFilter($('#FilterACLs'), $('#ACLs'), 0);
+        if (Core.Config.Get('Subaction') === 'ACLEdit') {
+            TargetNS.InitACLEdit();
+        }
+    };
+
+    /**
      * @private
      * @name ShowDeleteACLConfirmationDialog
      * @memberof Core.Agent.Admin.ACL
@@ -59,14 +73,14 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
             true,
             [
                {
-                   Label: TargetNS.Localization.CancelMsg,
+                   Label: Core.Language.Translate('Cancel'),
                    Class: 'Primary',
                    Function: function () {
                        Core.UI.Dialog.CloseDialog($('.Dialog'));
                    }
                },
                {
-                   Label: TargetNS.Localization.DeleteMsg,
+                   Label: Core.Language.Translate('Delete'),
                    Function: function () {
                        var Data = {
                                Action: 'AdminACL',
@@ -165,7 +179,7 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
 
                             if (Level2Key === 'DynamicField') {
                                 SelectHTML = $('#' + Level2Key).parent().html();
-                                SelectHTML += '<span class="AddAll">' + Core.Agent.Admin.ACL.Localization.AddAll + '</span>';
+                                SelectHTML += '<span class="AddAll">' + Core.Language.Translate('Add all') + '</span>';
 
                                 $ItemObjLevel2
                                     .find('input')
@@ -324,7 +338,7 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
                 $Target.append($LevelObj);
             }
             else {
-                alert(Core.Agent.Admin.ACL.Localization.AlreadyAdded);
+                alert(Core.Language.Translate('An item with this name is already present.'));
             }
             $Object.blur().val('');
         }
@@ -359,7 +373,7 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
 
                 if (Value === 'DynamicField') {
                     SelectHTML = $('#' + Value).parent().html();
-                    SelectHTML += '<span class="AddAll">' + Core.Agent.Admin.ACL.Localization.AddAll + '</span>';
+                    SelectHTML += '<span class="AddAll">' + Core.Language.Translate('Add all') + '</span>';
 
                     $LevelObj
                         .find('input')
@@ -379,7 +393,7 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
                 }
             }
             else {
-                alert(Core.Agent.Admin.ACL.Localization.AlreadyAdded);
+                alert(Core.Language.Translate('An item with this name is already present.'));
             }
             $Object.blur().val('');
         }
@@ -520,7 +534,7 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
      */
     TargetNS.InitACLEdit = function () {
 
-        $('#ACLDelete').bind('click.ACLDelete', function (Event) {
+        $('#ACLDelete').on('click.ACLDelete', function (Event) {
             ShowDeleteACLConfirmationDialog($(Event.target).closest('a'));
             Event.stopPropagation();
             return false;
@@ -599,6 +613,7 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
         $('.ACLStructure').on('blur keydown', '.NewDataKey', function(Event) {
             if ((Event.type === 'keydown' && Event.which === 13) || Event.type !== 'keydown') {
                 TargetNS.AddItem($(this));
+                Core.UI.InputFields.Activate();
                 return false;
             }
         });
@@ -648,7 +663,7 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
 
             if (LastLevel) {
 
-                // get contents of the 'prefixes' selectbox to decide wether or not we
+                // get contents of the 'prefixes' selectbox to decide whether or not we
                 // are dealing with a special type of string
                 $SelectObj.find('option').each(function() {
 
@@ -790,7 +805,7 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
         $('.ACLStructure').on('click', '.Icon.RemoveButton', function() {
             var Remove = false;
             if ($(this).nextAll('ul').find('li').length > 1) {
-                if (confirm(Core.Agent.Admin.ACL.Localization.ConfirmRemoval)) {
+                if (confirm(Core.Language.Translate('This item still contains sub items. Are you sure you want to remove this item including its sub items?'))) {
                     Remove = true;
                 }
             }
@@ -807,14 +822,15 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
 
         $('.ACLStructure').on('change', '.ItemAdd', function() {
             TargetNS.AddItem($(this));
+            Core.UI.InputFields.Activate();
         });
 
-        $('#SubmitAndContinue').bind('click', function() {
+        $('#SubmitAndContinue').on('click', function() {
             $('#ContinueAfterSave').val(1);
             $('#Submit').click();
         });
 
-        $('#Submit, #SubmitAndContinue').bind('click', function() {
+        $('#Submit, #SubmitAndContinue').on('click', function() {
 
             // collect data from the input areas
             TargetNS.ConfigMatch = TargetNS.CollectACLData($('#ACLMatch'));
@@ -850,13 +866,14 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
                         $(this),
                         function(Request, Response) {
                             var Data = [],
-                                ItemLC = '';
+                                ItemLC = '',
+                                PossibleActionsList = Core.Config.Get('PossibleActionsList');
 
                             if (Request.term === '**') {
-                                Data = Core.Agent.Admin.ACL.Autocomplete.Action;
+                                Data = PossibleActionsList;
                             }
                             else {
-                                $.each(Core.Agent.Admin.ACL.Autocomplete.Action, function(Index, Item) {
+                                $.each(PossibleActionsList, function(Index, Item) {
                                     ItemLC = Item.value.toLowerCase();
                                     if (ItemLC.indexOf(Request.term.toLowerCase()) !== -1) {
                                         Data.push(Item);
@@ -876,6 +893,8 @@ Core.Agent.Admin.ACL = (function (TargetNS) {
 
         });
     };
+
+    Core.Init.RegisterNamespace(TargetNS, 'APP_MODULE');
 
     return TargetNS;
 }(Core.Agent.Admin.ACL || {}));

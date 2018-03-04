@@ -8,6 +8,8 @@
 
 package Kernel::Output::HTML::TicketMenu::Responsible;
 
+use parent 'Kernel::Output::HTML::Base';
+
 use strict;
 use warnings;
 
@@ -17,19 +19,6 @@ our @ObjectDependencies = (
     'Kernel::System::Ticket',
     'Kernel::System::Group',
 );
-
-sub new {
-    my ( $Type, %Param ) = @_;
-
-    # allocate new hash for object
-    my $Self = {};
-    bless( $Self, $Type );
-
-    # get UserID param
-    $Self->{UserID} = $Param{UserID} || die "Got no UserID!";
-
-    return $Self;
-}
 
 sub Run {
     my ( $Self, %Param ) = @_;

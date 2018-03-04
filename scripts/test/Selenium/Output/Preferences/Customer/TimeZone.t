@@ -6,6 +6,7 @@
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
+## no critic (Modules::RequireExplicitPackage)
 use strict;
 use warnings;
 use utf8;
@@ -20,20 +21,6 @@ $Selenium->RunTest(
 
         # get helper object
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
-
-        # enable TimeZoneUser
-        $Helper->ConfigSettingChange(
-            Valid => 1,
-            Key   => 'TimeZoneUser',
-            Value => 1,
-        );
-
-        # disable TimeZoneUserBrowserAutoOffset
-        $Helper->ConfigSettingChange(
-            Valid => 1,
-            Key   => 'TimeZoneUserBrowserAutoOffset',
-            Value => 0,
-        );
 
         # create test user and login
         my $TestUserLogin = $Helper->TestCustomerUserCreate(
@@ -51,12 +38,14 @@ $Selenium->RunTest(
         # go to customer preferences
         $Selenium->VerifiedGet("${ScriptAlias}customer.pl?Action=CustomerPreferences");
 
-        # change test customer user time zone preference to +6 hours
-        $Selenium->execute_script("\$('#UserTimeZone').val('+6').trigger('redraw.InputField').trigger('change');");
+        # change test customer user time zone preference to Europe/Berlin
+        $Selenium->execute_script(
+            "\$('#UserTimeZone').val('Europe/Berlin').trigger('redraw.InputField').trigger('change');"
+        );
         $Selenium->find_element( "#UserTimeZoneUpdate", 'css' )->VerifiedClick();
 
         # check for update preference message on screen
-        my $UpdateMessage = "Preferences updated successfully!";
+        my $UpdateMessage = "Time zone updated successfully!";
         $Self->True(
             index( $Selenium->get_page_source(), $UpdateMessage ) > -1,
             'Customer preference time zone - updated'

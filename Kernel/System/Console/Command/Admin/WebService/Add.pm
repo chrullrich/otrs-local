@@ -11,7 +11,7 @@ package Kernel::System::Console::Command::Admin::WebService::Add;
 use strict;
 use warnings;
 
-use base qw(Kernel::System::Console::BaseCommand);
+use parent qw(Kernel::System::Console::BaseCommand);
 
 our @ObjectDependencies = (
     'Kernel::System::GenericInterface::Webservice',
@@ -32,7 +32,7 @@ sub Configure {
     );
     $Self->AddOption(
         Name        => 'source-path',
-        Description => "Specify the location of the web service YAML configuration file",
+        Description => "Specify the location of the web service YAML configuration file.",
         Required    => 1,
         HasValue    => 1,
         ValueRegex  => qr/.*/smx,

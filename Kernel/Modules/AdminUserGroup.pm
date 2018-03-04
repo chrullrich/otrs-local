@@ -65,7 +65,7 @@ sub Run {
             %Types,
             Data => \%GroupData,
             ID   => $UserData{UserID},
-            Name => "$UserData{UserFirstname} $UserData{UserLastname} ($UserData{UserLogin})",
+            Name => "$UserData{UserFullname}",
             Type => 'User',
         );
         $Output .= $LayoutObject->Footer();
@@ -164,9 +164,19 @@ sub Run {
                 UserID     => $Self->{UserID},
             );
         }
-        return $LayoutObject->Redirect(
-            OP => "Action=$Self->{Action}",
-        );
+
+        # if the user would like to continue editing the group-user relation just redirect to the edit screen
+        # otherwise return to relations overview
+        if (
+            defined $ParamObject->GetParam( Param => 'ContinueAfterSave' )
+            && ( $ParamObject->GetParam( Param => 'ContinueAfterSave' ) eq '1' )
+            )
+        {
+            return $LayoutObject->Redirect( OP => "Action=$Self->{Action};Subaction=Group;ID=$ID" );
+        }
+        else {
+            return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" );
+        }
     }
 
     # ------------------------------------------------------------ #
@@ -210,9 +220,19 @@ sub Run {
                 UserID     => $Self->{UserID},
             );
         }
-        return $LayoutObject->Redirect(
-            OP => "Action=$Self->{Action}",
-        );
+
+        # if the user would like to continue editing the group-user relation just redirect to the edit screen
+        # otherwise return to relations overview
+        if (
+            defined $ParamObject->GetParam( Param => 'ContinueAfterSave' )
+            && ( $ParamObject->GetParam( Param => 'ContinueAfterSave' ) eq '1' )
+            )
+        {
+            return $LayoutObject->Redirect( OP => "Action=$Self->{Action};Subaction=User;ID=$ID" );
+        }
+        else {
+            return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" );
+        }
     }
 
     # ------------------------------------------------------------ #
@@ -240,6 +260,12 @@ sub _Change {
     # get layout object
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
+    $Param{BreadcrumbTitle} = $LayoutObject->{LanguageObject}->Translate("Change Group Relations for Agent");
+
+    if ( $VisibleType{$Type} eq 'Group' ) {
+        $Param{BreadcrumbTitle} = $LayoutObject->{LanguageObject}->Translate("Change Agent Relations for Group");
+    }
+
     $LayoutObject->Block(
         Name => 'ActionList',
     );
@@ -260,10 +286,6 @@ sub _Change {
         },
     );
 
-    $LayoutObject->Block(
-        Name => "ChangeHeader$VisibleType{$NeType}",
-    );
-
     # check if there are groups
     if ( $NeType eq 'Group' ) {
         if ( !%Data ) {
@@ -279,6 +301,8 @@ sub _Change {
     # get config object
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
+    my @Permissions;
+
     TYPE:
     for my $Type ( @{ $ConfigObject->Get('System::Permission') } ) {
         next TYPE if !$Type;
@@ -291,7 +315,15 @@ sub _Change {
                 Type => $Type,
             },
         );
+
+        push @Permissions, $Type;
     }
+
+    # set permissions
+    $LayoutObject->AddJSData(
+        Key   => 'RelationItems',
+        Value => \@Permissions,
+    );
 
     for my $ID ( sort { uc( $Data{$a} ) cmp uc( $Data{$b} ) } keys %Data ) {
 

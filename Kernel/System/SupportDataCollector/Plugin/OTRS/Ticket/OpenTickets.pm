@@ -11,7 +11,7 @@ package Kernel::System::SupportDataCollector::Plugin::OTRS::Ticket::OpenTickets;
 use strict;
 use warnings;
 
-use base qw(Kernel::System::SupportDataCollector::PluginBase);
+use parent qw(Kernel::System::SupportDataCollector::PluginBase);
 
 use Kernel::Language qw(Translatable);
 
@@ -31,7 +31,7 @@ sub Run {
         StateType  => 'Open',
         UserID     => 1,
         Permission => 'ro',
-    );
+    ) || 0;
 
     if ( $OpenTickets > 8000 ) {
         $Self->AddResultWarning(

@@ -21,19 +21,16 @@ $Selenium->RunTest(
         # get helper object
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
-        my %DynamicFieldsOverviewPageShownSysConfig = $Kernel::OM->Get('Kernel::System::SysConfig')->ConfigItemGet(
+        my %DynamicFieldsOverviewPageShownSysConfig = $Kernel::OM->Get('Kernel::System::SysConfig')->SettingGet(
             Name => 'PreferencesGroups###DynamicFieldsOverviewPageShown',
         );
-
-        %DynamicFieldsOverviewPageShownSysConfig = map { $_->{Key} => $_->{Content} }
-            grep { defined $_->{Key} } @{ $DynamicFieldsOverviewPageShownSysConfig{Setting}->[1]->{Hash}->[1]->{Item} };
 
         # show more dynamic fields per page as the default value
         $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'PreferencesGroups###DynamicFieldsOverviewPageShown',
             Value => {
-                %DynamicFieldsOverviewPageShownSysConfig,
+                %{ $DynamicFieldsOverviewPageShownSysConfig{EffectiveValue} },,
                 DataSelected => 999,
             },
         );
@@ -78,7 +75,7 @@ $Selenium->RunTest(
             # check client side validation
             my $Element2 = $Selenium->find_element( "#Name", 'css' );
             $Element2->send_keys("");
-            $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+            $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
             $Self->Is(
                 $Selenium->execute_script(
@@ -155,7 +152,7 @@ $Selenium->RunTest(
             );
 
             # submit form
-            $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+            $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
             # check for test DynamicFieldMultiselect on AdminDynamicField screen
             $Self->True(
@@ -179,7 +176,7 @@ $Selenium->RunTest(
             $Selenium->execute_script("\$('#PossibleNone').val('1').trigger('redraw.InputField').trigger('change');");
             $Selenium->execute_script("\$('#TreeView').val('1').trigger('redraw.InputField').trigger('change');");
             $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
-            $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+            $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
             # check new and edited DynamicFieldMultiselect values
             $Selenium->find_element( $RandomID, 'link_text' )->VerifiedClick();

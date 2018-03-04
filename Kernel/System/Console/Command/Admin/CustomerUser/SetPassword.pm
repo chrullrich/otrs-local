@@ -11,7 +11,7 @@ package Kernel::System::Console::Command::Admin::CustomerUser::SetPassword;
 use strict;
 use warnings;
 
-use base qw(Kernel::System::Console::BaseCommand);
+use parent qw(Kernel::System::Console::BaseCommand);
 
 our @ObjectDependencies = (
     'Kernel::Config',
@@ -21,7 +21,7 @@ our @ObjectDependencies = (
 sub Configure {
     my ( $Self, %Param ) = @_;
 
-    $Self->Description('Updates the password for a customer user.');
+    $Self->Description('Update the password for a customer user.');
     $Self->AddArgument(
         Name        => 'user',
         Description => "Specify the user login of the agent/customer to be updated.",
@@ -34,6 +34,8 @@ sub Configure {
         Required    => 0,
         ValueRegex  => qr/.*/smx,
     );
+
+    return;
 }
 
 sub Run {

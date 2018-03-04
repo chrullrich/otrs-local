@@ -47,8 +47,8 @@ $Selenium->RunTest(
             Value => 0
         );
 
-        # get ticket object
-        my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+        my $TicketObject  = $Kernel::OM->Get('Kernel::System::Ticket');
+        my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
 
         # create test ticket
         my $TicketID = $TicketObject->TicketCreate(
@@ -67,28 +67,40 @@ $Selenium->RunTest(
             "TicketCreate - ID $TicketID",
         );
 
+        my $ArticleBackendObject = $ArticleObject->BackendForChannel( ChannelName => 'Email' );
+
         # create test email article
-        my $ArticleID = $TicketObject->ArticleCreate(
-            TicketID       => $TicketID,
-            ArticleType    => 'email-external',
-            SenderType     => 'customer',
-            Subject        => 'some short description',
-            Body           => 'the message text',
-            Charset        => 'ISO-8859-15',
-            MimeType       => 'text/plain',
-            HistoryType    => 'EmailCustomer',
-            HistoryComment => 'Some free text!',
-            UserID         => 1,
+        my $ArticleID = $ArticleBackendObject->ArticleCreate(
+            TicketID             => $TicketID,
+            SenderType           => 'customer',
+            IsVisibleForCustomer => 1,
+            Subject              => 'some short description',
+            Body                 => 'the message text',
+            Charset              => 'ISO-8859-15',
+            MimeType             => 'text/plain',
+            HistoryType          => 'EmailCustomer',
+            HistoryComment       => 'Some free text!',
+            UserID               => 1,
         );
         $Self->True(
             $ArticleID,
             "ArticleCreate - ID $ArticleID",
         );
 
-        my $Success = $TicketObject->ArticleWritePlain(
+        my $Success = $ArticleBackendObject->ArticleWritePlain(
             ArticleID => $ArticleID,
-            Email     => 'Test Email string',
-            UserID    => 1,
+            Email     => <<'EMAIL'
+From: otrs@localhost
+Content-Type: text/plain
+Mime-Version: 1.0
+Subject: Test
+Message-Id: <07731835-A22B-4FF3-AB4D-F1CF5A139F65>
+To: test@localhost
+
+Test Email string
+EMAIL
+            ,
+            UserID => 1,
         );
         $Self->True(
             $Success,
@@ -130,6 +142,35 @@ $Selenium->RunTest(
             $Element->is_enabled();
             $Element->is_displayed();
         }
+
+        # check JS functionality
+        # click on checkbox - unchecked state
+        $Selenium->execute_script("\$('#InformSender').prop('checked', true)");
+        $Selenium->find_element( "#InformSender", 'css' )->VerifiedClick();
+
+        # check up if labels does not have class Mandatory
+        for my $Label (qw(To Subject RichText)) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('label[for=$Label]').hasClass('Mandatory')"),
+                0,
+                "Label '$Label' has not class 'Mandatory'",
+            );
+        }
+
+        # click on checkbox - checked state
+        $Selenium->find_element( "#InformSender", 'css' )->VerifiedClick();
+
+        # check up if labels have class Mandatory
+        for my $Label (qw(To Subject RichText)) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('label[for=$Label]').hasClass('Mandatory')"),
+                1,
+                "Label '$Label' has class 'Mandatory'",
+            );
+        }
+
+        # set on initial unchecked state of checkbox
+        $Selenium->find_element( "#InformSender", 'css' )->VerifiedClick();
 
         # bounce ticket to another test email
         $Selenium->find_element( "#BounceTo", 'css' )->send_keys("test\@localhost.com");

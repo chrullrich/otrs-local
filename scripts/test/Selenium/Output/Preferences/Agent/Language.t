@@ -6,6 +6,7 @@
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
+## no critic (Modules::RequireExplicitPackage)
 use strict;
 use warnings;
 use utf8;
@@ -33,30 +34,30 @@ $Selenium->RunTest(
         my $ScriptAlias = $Kernel::OM->Get('Kernel::Config')->Get('ScriptAlias');
 
         # go to agent preferences
-        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentPreferences");
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentPreferences;Subaction=Group;Group=UserProfile");
 
-        # wait until form has loaded, if neccessary
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("body").length' );
-
-        # change test user language preference to German
+        # change test user language preference to Deutsch
+        $Selenium->execute_script("\$('#UserLanguage').val('de').trigger('redraw.InputField').trigger('change');");
         $Selenium->execute_script(
-            "\$('#UserLanguage').val('de').trigger('redraw.InputField').trigger('change');"
+            "\$('#UserLanguage').closest('.WidgetSimple').find('.SettingUpdateBox').find('button').trigger('click');"
+        );
+        $Selenium->WaitFor(
+            JavaScript =>
+                "return \$('#UserLanguage').closest('.WidgetSimple').hasClass('HasOverlay')"
+        );
+        $Selenium->WaitFor(
+            JavaScript =>
+                "return \$('#UserLanguage').closest('.WidgetSimple').find('.fa-check').length"
+        );
+        $Selenium->WaitFor(
+            JavaScript =>
+                "return !\$('#UserLanguage').closest('.WidgetSimple').hasClass('HasOverlay')"
         );
 
-        # TODO; It should be improved. There is a problem with redraw InputField
-        sleep 3;
-        $Selenium->execute_script('$("#UserLanguageUpdate").click()');
-        sleep 2;
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentPreferences;Subaction=Group;Group=UserProfile");
 
-        # wait until form has loaded, if neccessary
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("body").length' );
+        $Selenium->find_element("//*[text()='Sprache']");
 
-        # check for update preference message on screen
-        my $UpdateMessage = "Benutzereinstellungen erfolgreich aktualisiert!";
-        $Self->True(
-            index( $Selenium->get_page_source(), $UpdateMessage ) > -1,
-            'Agent preference language - updated'
-        );
     }
 );
 

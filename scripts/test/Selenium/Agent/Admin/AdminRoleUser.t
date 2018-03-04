@@ -72,6 +72,12 @@ $Selenium->RunTest(
             "$RoleName role found on page",
         );
 
+        # check breadcrumb on Overview screen
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
+
         # test filter for Users
         $Selenium->find_element( "#FilterUsers", 'css' )->send_keys($TestUserLogin);
         sleep 1;
@@ -94,10 +100,26 @@ $Selenium->RunTest(
         $Selenium->find_element( $FullUserID, 'link_text' )->VerifiedClick();
 
         $Selenium->find_element("//input[\@value='$RoleID']")->VerifiedClick();
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element("//button[\@value='Save'][\@type='submit']")->VerifiedClick();
 
         #check and edit test user relation for test role
         $Selenium->find_element( $RoleName, 'link_text' )->VerifiedClick();
+
+        # check breadcrumb on change screen
+        my $Count = 1;
+        for my $BreadcrumbText (
+            'Manage Role-Agent Relations',
+            'Change Agent Relations for Role \'' . $RoleName . '\''
+            )
+        {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
 
         $Self->Is(
             $Selenium->find_element("//input[\@value='$UserID']")->is_selected(),
@@ -129,7 +151,7 @@ $Selenium->RunTest(
 
         # remove test relation
         $Selenium->find_element("//input[\@value='$UserID']")->VerifiedClick();
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element("//button[\@value='Save'][\@type='submit']")->VerifiedClick();
 
         # check if relation is clear
         $Selenium->find_element( $RoleName, 'link_text' )->VerifiedClick();

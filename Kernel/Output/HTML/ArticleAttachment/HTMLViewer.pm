@@ -8,6 +8,8 @@
 
 package Kernel::Output::HTML::ArticleAttachment::HTMLViewer;
 
+use parent 'Kernel::Output::HTML::Base';
+
 use strict;
 use warnings;
 
@@ -16,16 +18,6 @@ our @ObjectDependencies = (
     'Kernel::Config',
     'Kernel::Output::HTML::Layout',
 );
-
-sub new {
-    my ( $Type, %Param ) = @_;
-
-    # allocate new hash for object
-    my $Self = {};
-    bless( $Self, $Type );
-
-    return $Self;
-}
 
 sub Run {
     my ( $Self, %Param ) = @_;
@@ -52,7 +44,7 @@ sub Run {
                     %{ $Param{File} },
                     Action => 'Viewer',
                     Link   => $Kernel::OM->Get('Kernel::Output::HTML::Layout')->{Baselink} .
-                        "Action=AgentTicketAttachment;ArticleID=$Param{Article}->{ArticleID};FileID=$Param{File}->{FileID};Viewer=1",
+                        "Action=AgentTicketAttachment;TicketID=$Param{Article}->{TicketID};ArticleID=$Param{Article}->{ArticleID};FileID=$Param{File}->{FileID};Viewer=1",
                     Target => 'target="attachment"',
                     Class  => 'ViewAttachment',
                 );

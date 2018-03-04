@@ -8,6 +8,8 @@
 
 package Kernel::Output::HTML::Notification::AgentCloudServicesDisabled;
 
+use parent 'Kernel::Output::HTML::Base';
+
 use strict;
 use warnings;
 use utf8;
@@ -15,17 +17,8 @@ use utf8;
 our @ObjectDependencies = (
     'Kernel::Config',
     'Kernel::Output::HTML::Layout',
+    'Kernel::System::Group',
 );
-
-sub new {
-    my ( $Type, %Param ) = @_;
-
-    # allocate new hash for object
-    my $Self = {};
-    bless( $Self, $Type );
-
-    return $Self;
-}
 
 sub Run {
     my ( $Self, %Param ) = @_;
@@ -43,19 +36,21 @@ sub Run {
     # get layout object
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
+    my $HasPermission = $Kernel::OM->Get('Kernel::System::Group')->PermissionCheck(
+        UserID    => $Self->{UserID},
+        GroupName => $Group,
+        Type      => 'rw',
+    );
+
     # notification should only be visible for administrators
-    if (
-        !defined $LayoutObject->{"UserIsGroup[$Group]"}
-        || $LayoutObject->{"UserIsGroup[$Group]"} ne 'Yes'
-        )
-    {
+    if ( !$HasPermission ) {
         return '';
     }
 
     my $Text = '<a href="'
         . $LayoutObject->{Baselink}
-        . 'Action=AdminSysConfig;Subaction=Edit;SysConfigSubGroup=Core;SysConfigGroup=CloudService'
-        . '" class="Button"><i class="fa fa-cloud"></i> ';
+        . 'Action=AdminSystemConfiguration;Subaction=Edit;SysConfigSubGroup=Core;SysConfigGroup=CloudService'
+        . '">';
     $Text .= $LayoutObject->{LanguageObject}->Translate('Enable cloud services to unleash all OTRS features!');
     $Text .= '</a>';
 

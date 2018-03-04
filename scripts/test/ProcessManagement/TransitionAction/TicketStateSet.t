@@ -220,7 +220,7 @@ my @Tests = (
         Success => 1,
     },
     {
-        Name   => 'Wrong Ticket->NotExisting',
+        Name   => 'Correct Ticket->NotExisting',
         Config => {
             UserID => $UserID,
             Ticket => \%Ticket,
@@ -236,7 +236,7 @@ my @Tests = (
             UserID => $UserID,
             Ticket => \%Ticket,
             Config => {
-                State  => 'new',
+                State  => 'open',
                 UserID => $TestUserID,
             },
         },

@@ -111,21 +111,6 @@ sub Run {
                         $BackendName,
                     );
 
-                    my %DependencyCheck = $BackendPre->DependencyCheck();
-
-                    if ( !$DependencyCheck{Success} && $DependencyCheck{ErrorMessage} ) {
-
-                        return $Self->_ShowOverview(
-                            NotifyData => [
-                                {
-                                    Priority => 'Notice',
-                                    Data     => $DependencyCheck{ErrorMessage},
-                                },
-                            ],
-                            %Param,
-                        );
-                    }
-
                     my %Status = $BackendPre->Run();
                     if ( !$Status{Success} ) {
 
@@ -1082,7 +1067,11 @@ sub Run {
             );
         }
 
-        if ( $ParamObject->GetParam( Param => 'ContinueAfterSave' ) eq '1' ) {
+        if (
+            defined $ParamObject->GetParam( Param => 'ContinueAfterSave' )
+            && ( $ParamObject->GetParam( Param => 'ContinueAfterSave' ) eq '1' )
+            )
+        {
 
             # if the user would like to continue editing the process, just redirect to the edit screen
             return $LayoutObject->Redirect(
@@ -1825,36 +1814,21 @@ sub _ShowEdit {
         ResultType => 'HASH',
         UserID     => $Self->{UserID},
     );
-    my $ProcessConfigJSON = $LayoutObject->JSONEncode(
-        Data => $ProcessDump->{Process},
-    );
-    my $ActivityConfigJSON = $LayoutObject->JSONEncode(
-        Data => $ProcessDump->{Activity},
-    );
-    my $ActivityDialogConfigJSON = $LayoutObject->JSONEncode(
-        Data => $ProcessDump->{ActivityDialog},
-    );
-    my $TransitionConfigJSON = $LayoutObject->JSONEncode(
-        Data => $ProcessDump->{Transition},
-    );
-    my $TransitionActionConfigJSON = $LayoutObject->JSONEncode(
-        Data => $ProcessDump->{TransitionAction},
-    );
 
-    my $ProcessLayoutJSON = $LayoutObject->JSONEncode(
-        Data => $ProcessData->{Layout},
-    );
-
-    $LayoutObject->Block(
-        Name => 'ConfigSet',
-        Data => {
-            ProcessConfig          => $ProcessConfigJSON,
-            ProcessLayout          => $ProcessLayoutJSON,
-            ActivityConfig         => $ActivityConfigJSON,
-            ActivityDialogConfig   => $ActivityDialogConfigJSON,
-            TransitionConfig       => $TransitionConfigJSON,
-            TransitionActionConfig => $TransitionActionConfigJSON,
-        },
+    # send data to JS
+    $LayoutObject->AddJSData(
+        Key   => 'ConfigProcess',
+        Value => {
+            Process           => $ProcessDump->{Process},
+            ProcessLayout     => $ProcessData->{Layout},
+            Activity          => $ProcessDump->{Activity},
+            ActivityDialog    => $ProcessDump->{ActivityDialog},
+            Transition        => $ProcessDump->{Transition},
+            TransitionAction  => $ProcessDump->{TransitionAction},
+            PopupPathActivity => $LayoutObject->{Baselink}
+                . 'Action=AdminProcessManagementActivity;Subaction=ActivityEdit;',
+            PopupPathPath => $LayoutObject->{Baselink} . 'Action=AdminProcessManagementPath;Subaction=PathEdit;',
+            }
     );
 
     $Output .= $LayoutObject->Output(
@@ -1905,6 +1879,7 @@ sub _GetParams {
 sub _CheckProcessDelete {
     my ( $Self, %Param ) = @_;
 
+    # get needed objects
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
     # get Process data
@@ -2082,18 +2057,14 @@ sub _PushSessionScreen {
     return 1;
 }
 
-sub _GetFullProcessConfig {
-    my ( $Self, %Param )
-
-}
-
 sub _GetProcessData {
 
     my ( $Self, %Param ) = @_;
 
-    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
-
     my %ProcessData;
+
+    # get needed objects
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
     # get process data
     my $Process = $Kernel::OM->Get('Kernel::System::ProcessManagement::DB::Process')->ProcessGet(

@@ -12,7 +12,7 @@ use strict;
 use warnings;
 use utf8;
 
-use base qw(Kernel::System::Console::BaseCommand);
+use parent qw(Kernel::System::Console::BaseCommand);
 
 our @ObjectDependencies = (
     'Kernel::System::GenericInterface::DebugLog',
@@ -59,14 +59,14 @@ sub Configure {
     );
     $Self->AddOption(
         Name        => 'webservice-id',
-        Description => "Restriction on entries of a given webservice id.",
+        Description => "Restriction on entries of a given web service id.",
         Required    => 0,
         HasValue    => 1,
         ValueRegex  => qr/^\d+$/smx,
     );
     $Self->AddOption(
         Name        => 'with-data',
-        Description => "Restriction on entries of a given webservice id.",
+        Description => "Restriction on entries of a given web service id.",
         Required    => 0,
         HasValue    => 0,
     );

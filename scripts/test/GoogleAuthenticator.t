@@ -26,23 +26,12 @@ my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
 $ConfigObject->Set(
-    Key   => 'TimeZone',
-    Value => 0,
-);
-$ConfigObject->Set(
-    Key   => 'TimeZoneUser',
-    Value => 0,
-);
-$ConfigObject->Set(
-    Key   => 'TimeZoneUserBrowserAutoOffset',
-    Value => 0,
+    Key   => 'OTRSTimeZone',
+    Value => 'UTC',
 );
 
 # set fixed time to have predetermined verifiable results
 $Helper->FixedTimeSet(0);
-
-# get time object
-my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
 
 # configure auth backend to db
 $ConfigObject->Set(
@@ -98,7 +87,7 @@ my %CurrentConfig = (
     'SecretPreferencesKey' => 'UnitTestUserGoogleAuthenticatorSecretKey',
     'AllowEmptySecret'     => 0,
     'AllowPreviousToken'   => 0,
-    'TimeZone'             => 0,
+    'TimeZone'             => 'UTC',
     'Secret'               => '',
     'Time'                 => 0,
 );
@@ -188,12 +177,12 @@ my @Tests = (
         FixedTimeSet       => 60,
     },
     {
-        Name               => 'Valid token for different time zone',
+        Name               => 'Valid token for different time zone (time zone actually must not matter)',
         ExpectedAuthResult => 1,
         Secret             => 'UNITTESTUNITTEST',
-        TwoFactorToken     => '281099',
+        TwoFactorToken     => '761321',
         FixedTimeSet       => 0,
-        TimeZone           => 1,
+        TimeZone           => 'Europe/Berlin',
     },
 );
 
@@ -215,16 +204,11 @@ for my $Test (@Tests) {
     }
 
     # update time zone if necessary
-    if ( ( $Test->{TimeZone} || '0' ) ne $CurrentConfig{TimeZone} ) {
-        $CurrentConfig{TimeZone} = $Test->{TimeZone} || '0';
+    if ( ( $Test->{TimeZone} || 'UTC' ) ne $CurrentConfig{TimeZone} ) {
+        $CurrentConfig{TimeZone} = $Test->{TimeZone} || 'UTC';
         $ConfigObject->Set(
-            Key   => 'TimeZone',
+            Key   => 'OTRSTimeZone',
             Value => $CurrentConfig{TimeZone},
-        );
-
-        # a different timezone config requires a new time object
-        $Kernel::OM->ObjectsDiscard(
-            Objects => ['Kernel::System::Time'],
         );
     }
 

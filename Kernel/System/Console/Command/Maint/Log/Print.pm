@@ -11,7 +11,7 @@ package Kernel::System::Console::Command::Maint::Log::Print;
 use strict;
 use warnings;
 
-use base qw(Kernel::System::Console::BaseCommand);
+use parent qw(Kernel::System::Console::BaseCommand);
 
 our @ObjectDependencies = (
     'Kernel::System::Log',
@@ -20,7 +20,7 @@ our @ObjectDependencies = (
 sub Configure {
     my ( $Self, %Param ) = @_;
 
-    $Self->Description('Prints the OTRS log.');
+    $Self->Description('Print the OTRS log.');
 
     return;
 }

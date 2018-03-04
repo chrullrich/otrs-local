@@ -100,13 +100,13 @@ sub Run {
 
         # get single params
         for my $Parameter (
-            qw(TicketNumber Title From To Cc Subject Body CustomerID
+            qw(TicketNumber Title MIMEBase_From MIMEBase_To MIMEBase_Cc MIMEBase_Subject MIMEBase_Body CustomerID
             CustomerUserLogin Agent SearchInArchive
             NewTitle
             NewCustomerID NewPendingTime NewPendingTimeType NewCustomerUserLogin
             NewStateID NewQueueID NewPriorityID NewOwnerID NewResponsibleID
             NewTypeID NewServiceID NewSLAID
-            NewNoteFrom NewNoteSubject NewNoteBody NewNoteTimeUnits NewModule
+            NewNoteFrom NewNoteSubject NewNoteBody NewNoteIsVisibleForCustomer NewNoteTimeUnits NewModule
             NewParamKey1 NewParamKey2 NewParamKey3 NewParamKey4
             NewParamValue1 NewParamValue2 NewParamValue3 NewParamValue4
             NewParamKey5 NewParamKey6 NewParamKey7 NewParamKey8
@@ -180,7 +180,7 @@ sub Run {
         for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
-            # extract the dynamic field value form the web request
+            # extract the dynamic field value from the web request
             my $DynamicFieldValue = $DynamicFieldBackendObject->EditFieldValueGet(
                 DynamicFieldConfig      => $DynamicFieldConfig,
                 ParamObject             => $ParamObject,
@@ -250,11 +250,11 @@ sub Run {
 
         # Check if ticket selection contains stop words
         my %StopWordsServerErrors = $Self->_StopWordsServerErrorsGet(
-            From    => $GetParam{From},
-            To      => $GetParam{To},
-            Cc      => $GetParam{Cc},
-            Subject => $GetParam{Subject},
-            Body    => $GetParam{Body},
+            MIMEBase_From    => $GetParam{MIMEBase_From},
+            MIMEBase_To      => $GetParam{MIMEBase_To},
+            MIMEBase_Cc      => $GetParam{MIMEBase_Cc},
+            MIMEBase_Subject => $GetParam{MIMEBase_Subject},
+            MIMEBase_Body    => $GetParam{MIMEBase_Body},
         );
         %Errors = ( %Errors, %StopWordsServerErrors );
 
@@ -281,9 +281,22 @@ sub Run {
             );
 
             if ($JobAddResult) {
-                return $LayoutObject->Redirect(
-                    OP => "Action=$Self->{Action}",
-                );
+
+                # if the user would like to continue editing the generic agent job, just redirect to the edit screen
+                if (
+                    defined $ParamObject->GetParam( Param => 'ContinueAfterSave' )
+                    && ( $ParamObject->GetParam( Param => 'ContinueAfterSave' ) eq '1' )
+                    )
+                {
+                    my $Profile = $Self->{Profile} || '';
+                    return $LayoutObject->Redirect( OP => "Action=$Self->{Action};Subaction=Update;Profile=$Profile" );
+                }
+                else {
+
+                    # otherwise return to overview
+                    return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" );
+                }
+
             }
             else {
                 $Errors{ProfileInvalid}    = 'ServerError';
@@ -357,8 +370,12 @@ sub Run {
         Name => 'ActionAdd',
     );
     $LayoutObject->Block(
+        Name => 'Filter',
+    );
+    $LayoutObject->Block(
         Name => 'Overview',
     );
+
     my %Jobs = $GenericAgentObject->JobList();
 
     # if there are any data, it is shown
@@ -409,7 +426,8 @@ sub _MaskUpdate {
             Name => $Self->{Profile},
         );
     }
-    $JobData{Profile} = $Self->{Profile};
+    $JobData{Profile}   = $Self->{Profile};
+    $JobData{Subaction} = $Self->{Subaction};
 
     # get config object
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
@@ -734,11 +752,11 @@ sub _MaskUpdate {
     my %StopWordsServerErrors;
     if ( !$Param{StopWordsAlreadyChecked} ) {
         %StopWordsServerErrors = $Self->_StopWordsServerErrorsGet(
-            From    => $JobData{From},
-            To      => $JobData{To},
-            Cc      => $JobData{Cc},
-            Subject => $JobData{Subject},
-            Body    => $JobData{Body},
+            MIMEBase_From    => $JobData{MIMEBase_From},
+            MIMEBase_To      => $JobData{MIMEBase_To},
+            MIMEBase_Cc      => $JobData{MIMEBase_Cc},
+            MIMEBase_Subject => $JobData{MIMEBase_Subject},
+            MIMEBase_Body    => $JobData{MIMEBase_Body},
         );
     }
 
@@ -1136,19 +1154,13 @@ sub _MaskUpdate {
 
         # refresh event list for each event type
 
-        # hide inactive event lists
-        my $EventListHidden = '';
-        if ( $Type ne $SelectedEventType ) {
-            $EventListHidden = 'Hidden';
-        }
-
         # paint each selector
         my $EventStrg = $LayoutObject->BuildSelection(
             Data => $RegisteredEvents{$Type} || [],
             Name => $Type . 'Event',
             Sort => 'AlphanumericValue',
             PossibleNone => 0,
-            Class        => 'EventList GenericInterfaceSpacing ' . $EventListHidden,
+            Class        => 'Modernize EventList GenericInterfaceSpacing',
             Title        => $LayoutObject->{LanguageObject}->Translate('Event'),
         );
 
@@ -1169,7 +1181,7 @@ sub _MaskUpdate {
         Sort          => 'AlphanumericValue',
         SelectedValue => $SelectedEventType,
         PossibleNone  => 0,
-        Class         => '',
+        Class         => 'Modernize',
         Title         => $LayoutObject->{LanguageObject}->Translate('Type'),
     );
     $LayoutObject->Block(
@@ -1205,6 +1217,8 @@ sub _MaskRun {
         );
     }
     $JobData{Profile} = $Self->{Profile};
+    $Param{Subaction} = $Self->{Subaction};
+    $Param{Profile}   = $Self->{Profile};
 
     # dynamic fields search parameters for ticket search
     my %DynamicFieldSearchParameters;
@@ -1254,9 +1268,18 @@ sub _MaskRun {
         }
     }
 
+    # remove residual dynamic field data from job definition
+    # they are passed through dedicated variable anyway
+    PARAM_NAME:
+    for my $ParamName ( sort keys %JobData ) {
+        next PARAM_NAME if !( $ParamName =~ /^DynamicField_/ );
+        delete $JobData{$ParamName};
+    }
+
     # get needed objects
-    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
-    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+    my $TicketObject  = $Kernel::OM->Get('Kernel::System::Ticket');
+    my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+    my $ConfigObject  = $Kernel::OM->Get('Kernel::Config');
 
     # perform ticket search
     my $GenericAgentTicketSearch = $ConfigObject->Get("Ticket::GenericAgentTicketSearch") || {};
@@ -1314,22 +1337,26 @@ sub _MaskRun {
         );
         for my $TicketID (@TicketIDs) {
 
-            # get first article data
-            my %Data = $TicketObject->ArticleFirstArticle(
+            # Get ticket data.
+            my %Ticket = $TicketObject->TicketGet(
                 TicketID      => $TicketID,
                 DynamicFields => 0,
             );
 
-            # Fall-back for tickets without articles
-            if ( !%Data ) {
+            # Get article data.
+            my @Articles = $ArticleObject->ArticleList(
+                TicketID  => $TicketID,
+                OnlyFirst => 1,
+            );
+            my %Article;
+            for my $Article (@Articles) {
+                %Article = $ArticleObject->BackendForArticle( %{$Article} )->ArticleGet( %{$Article} );
+            }
 
-                # get ticket data instead
-                %Data = $TicketObject->TicketGet(
-                    TicketID      => $TicketID,
-                    DynamicFields => 0,
-                );
+            my %Data = ( %Ticket, %Article );
 
-                # set missing information
+            # Set missing information for tickets without articles.
+            if ( !%Article ) {
                 $Data{Subject} = $Data{Title};
             }
 
@@ -1345,7 +1372,7 @@ sub _MaskRun {
             );
             $Data{UserLastname}  = $UserInfo{UserLastname};
             $Data{UserFirstname} = $UserInfo{UserFirstname};
-
+            $Data{UserFullname}  = $UserInfo{UserFullname};
             $LayoutObject->Block(
                 Name => 'Ticket',
                 Data => \%Data,
@@ -1383,8 +1410,10 @@ sub _StopWordsServerErrorsGet {
         );
     }
 
+    my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+
     my %StopWordsServerErrors;
-    if ( !$Kernel::OM->Get('Kernel::System::Ticket')->SearchStringStopWordsUsageWarningActive() ) {
+    if ( !$ArticleObject->SearchStringStopWordsUsageWarningActive() ) {
         return %StopWordsServerErrors;
     }
 
@@ -1400,8 +1429,8 @@ sub _StopWordsServerErrorsGet {
 
     if (%SearchStrings) {
 
-        my $StopWords = $Kernel::OM->Get('Kernel::System::Ticket')->SearchStringStopWordsFind(
-            SearchStrings => \%SearchStrings
+        my $StopWords = $ArticleObject->SearchStringStopWordsFind(
+            SearchStrings => \%SearchStrings,
         );
 
         FIELD:

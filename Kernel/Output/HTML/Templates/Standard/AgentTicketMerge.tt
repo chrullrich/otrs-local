@@ -7,9 +7,9 @@
 # --
 
 <form action="[% Env("CGIHandle") %]" method="post" enctype="multipart/form-data" name="compose" class="Validate PreventMultipleSubmits">
-    <input type="hidden" name="Action"    value="AgentTicketMerge"/>
+    <input type="hidden" name="Action" value="AgentTicketMerge"/>
     <input type="hidden" name="Subaction" value="Merge"/>
-    <input type="hidden" name="TicketID"  value="[% Data.TicketID | html %]"/>
+    <input type="hidden" name="TicketID" value="[% Data.TicketID | html %]"/>
 
     <div class="LayoutPopup ARIARoleMain">
         <div class="Header">
@@ -42,11 +42,18 @@
                 </div>
                 <div class="Content">
                     <fieldset class="TableLike FixedLabel">
-                        <label class="Mandatory" for="MainTicketNumber"><span class="Marker">*</span>[% Translate("Merge to") | html %] [% Config("Ticket::Hook") %]:</label>
+                        <label class="Mandatory" for="MainTicketNumber"><span class="Marker">*</span>[% Translate("Merge to") | html %] [% Config("Ticket::Hook") | html %]:</label>
                         <div class="Field">
-                            <input type="text" id="MainTicketNumber" name="MainTicketNumber" value="[% Data.MainTicketNumber | html %]" class="Validate_Required [% Data.MainTicketNumberInvalid %] W33pc" />
+                            <input type="text" id="MainTicketNumber" name="MainTicketNumber" value="[% Data.MainTicketNumber | html %]" class="Validate_Required [% Data.MainTicketNumberInvalid %] W50pc" />
                             <div id="MainTicketNumberError" class="TooltipErrorMessage"><p>[% Translate("You need to use a ticket number!") | html %]</p></div>
                             <div id="MainTicketNumberServerError" class="TooltipErrorMessage"><p>[% Translate("A valid ticket number is required.") | html %]</p></div>
+                            <div class="FieldExplanation">
+                                [% Translate("Try typing part of the ticket number or title in order to search by it.") | html %]
+                            </div>
+                        [% IF Data.CustomerID %]
+                            <input type="checkbox" id="TicketSearchFilter" checked="checked" data-ticket-search-filter="CustomerIDRaw" value="[% Data.CustomerID | html %]" />
+                            <label for="TicketSearchFilter">[% Translate("Limit the search to tickets with same Customer ID (%s).", Data.CustomerID) | html %]</label>
+                        [% END %]
                         </div>
                         <div class="Clear"></div>
                     </fieldset>
@@ -58,7 +65,7 @@
                     <div class="WidgetAction Toggle">
                         <a href="#" title="[% Translate("Toggle this widget") | html %]"><i class="fa fa-caret-right"></i><i class="fa fa-caret-down"></i></a>
                     </div>
-                    <h2>[% Translate("Inform sender") | html %]</h2>
+                    <h2>[% Translate("Inform Sender") | html %]</h2>
                 </div>
                 <div class="Content">
                     <fieldset class="TableLike FixedLabel">
@@ -109,11 +116,6 @@
 
                         <label for="RichText"><span class="Marker Hidden">*</span>[% Translate("Text") | html %]:</label>
                         <div class="RichTextField">
-
-[% RenderBlockStart("RichText") %]
-[% InsertTemplate("RichTextEditor.tt") %]
-[% RenderBlockEnd("RichText") %]
-
                             <textarea id="RichText" class="RichText Validate_DependingRequiredAND Validate_Depending_InformSender [% Data.RichTextInvalid %]" name="Body" rows="15" cols="[% Config("Ticket::Frontend::TextAreaNote") %]" >[% Data.Body | html %]</textarea>
                             <div id="RichTextError" class="TooltipErrorMessage"><p>[% Translate("This field is required.") | html %]</p></div>
                             <div id="RichTextServerError" class="TooltipErrorMessage"><p>[% Translate("This field is required.") | html %]</p></div>
@@ -128,8 +130,3 @@
         </div>
     </div>
 </form>
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-    Core.Agent.TicketMerge.Init();
-//]]></script>
-[% END %]

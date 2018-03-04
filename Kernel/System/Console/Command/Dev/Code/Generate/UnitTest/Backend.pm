@@ -15,7 +15,7 @@ use warnings;
 use File::Path     ();
 use File::Basename ();
 
-use base qw(Kernel::System::Console::BaseCommand);
+use parent qw(Kernel::System::Console::BaseCommand);
 
 our @ObjectDependencies = (
     'Kernel::Config',
@@ -41,6 +41,7 @@ sub Configure {
         Required    => 1,
         ValueRegex  => qr/.*/smx,
     );
+    return;
 }
 
 sub PreRun {

@@ -45,6 +45,12 @@ $Selenium->RunTest(
         $Selenium->find_element( "table thead tr th", 'css' );
         $Selenium->find_element( "table tbody tr td", 'css' );
 
+        # check breadcrumb on Overview screen
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
+
         # Click 'add new priority' link.
         $Selenium->find_element("//a[contains(\@href, \'Action=AdminPriority;Subaction=Add' )]")->VerifiedClick();
         $Selenium->WaitFor(
@@ -56,6 +62,18 @@ $Selenium->RunTest(
         $Element->is_displayed();
         $Element->is_enabled();
         $Selenium->find_element( "#ValidID", 'css' );
+
+        # check breadcrumb on Add screen
+        my $Count = 1;
+        for my $BreadcrumbText ( 'Priority Management', 'Add Priority' ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
 
         # Check client side validation.
         $Selenium->find_element( "#Name", 'css' )->clear();
@@ -104,6 +122,18 @@ $Selenium->RunTest(
             1,
             "#ValidID stored value",
         );
+
+        # check breadcrumb on Edit screen
+        $Count = 1;
+        for my $BreadcrumbText ( 'Priority Management', 'Edit Priority: ' . $RandomID ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
 
         # Set test priority to invalid.
         $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");

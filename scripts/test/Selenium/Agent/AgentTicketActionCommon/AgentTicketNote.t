@@ -45,8 +45,8 @@ $Selenium->RunTest(
             UserLogin => $TestUserLogin,
         );
 
-        # get ticket object
-        my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+        my $TicketObject         = $Kernel::OM->Get('Kernel::System::Ticket');
+        my $ArticleBackendObject = $Kernel::OM->Get('Kernel::System::Ticket::Article::Backend::Internal');
 
         # create test ticket
         my $TicketID = $TicketObject->TicketCreate(
@@ -103,7 +103,7 @@ $Selenium->RunTest(
 
         # check page
         for my $ID (
-            qw(Subject RichText FileUpload ArticleTypeID submitRichText)
+            qw(Subject RichText FileUpload IsVisibleForCustomer submitRichText)
             )
         {
             my $Element = $Selenium->find_element( "#$ID", 'css' );
@@ -188,8 +188,8 @@ $Selenium->RunTest(
             "Reply-To note #Subject pre-loaded value",
         );
 
-        # close note window
-        $Selenium->find_element( ".CancelClosePopup", 'css' )->click();
+        # close note pop-up window
+        $Selenium->close();
 
         # switch window back to agent ticket zoom view of created test ticket
         $Selenium->WaitFor( WindowCount => 1 );
@@ -214,17 +214,17 @@ $Selenium->RunTest(
         my $ContentID = 'inline173020.131906379.1472199795.695365.264540139@localhost';
 
         # create test note with inline attachment
-        my $ArticleID = $TicketObject->ArticleCreate(
-            TicketID       => $TicketID,
-            ArticleType    => 'note-internal',
-            SenderType     => 'agent',
-            Subject        => 'Selenium subject test',
-            Body           => '<!DOCTYPE html><html><body><img src="cid:' . $ContentID . '" /></body></html>',
-            ContentType    => 'text/html; charset="utf8"',
-            HistoryType    => 'AddNote',
-            HistoryComment => 'Added note (Note)',
-            UserID         => 1,
-            Attachment     => [
+        my $ArticleID = $ArticleBackendObject->ArticleCreate(
+            TicketID             => $TicketID,
+            IsVisibleForCustomer => 0,
+            SenderType           => 'agent',
+            Subject              => 'Selenium subject test',
+            Body                 => '<!DOCTYPE html><html><body><img src="cid:' . $ContentID . '" /></body></html>',
+            ContentType          => 'text/html; charset="utf8"',
+            HistoryType          => 'AddNote',
+            HistoryComment       => 'Added note (Note)',
+            UserID               => 1,
+            Attachment           => [
                 {
                     Content     => $Content,
                     ContentID   => $ContentID,
@@ -275,24 +275,23 @@ $Selenium->RunTest(
         );
 
         # get last article id
-        my @ArticleIDs = $TicketObject->ArticleIndex(
+        my @Articles = $Kernel::OM->Get('Kernel::System::Ticket::Article')->ArticleList(
             TicketID => $TicketID,
+            OnlyLast => 1,
         );
-        my $LastArticleID = pop @ArticleIDs;
+        my $LastArticleID = $Articles[0]->{ArticleID};
 
         # get article attachments
         my $HTMLContent     = '';
-        my %AttachmentIndex = $TicketObject->ArticleAttachmentIndex(
+        my %AttachmentIndex = $ArticleBackendObject->ArticleAttachmentIndex(
             ArticleID => $LastArticleID,
-            UserID    => 1,
         );
 
         # go through all attachments
         for my $FileID ( sort keys %AttachmentIndex ) {
-            my %Attachment = $TicketObject->ArticleAttachment(
+            my %Attachment = $ArticleBackendObject->ArticleAttachment(
                 ArticleID => $LastArticleID,
                 FileID    => $FileID,
-                UserID    => 1,
             );
 
             # image attachment
@@ -385,13 +384,6 @@ $Selenium->RunTest(
                 'return typeof(Core) == "object" && typeof(Core.App) == "object" && Core.App.PageLoadComplete'
         ) || die "OTRS API verification failed after page load.";
 
-        # expand the article widget
-        $Selenium->find_element( "#WidgetArticle .Toggle a", 'css' )->click();
-
-        $Selenium->execute_script(
-            "\$('#WidgetArticle .Toggle a', \$('.PopupIframe').contents()).trigger('click')"
-        );
-
         # check if the richtext is empty
         $Self->Is(
             $Selenium->find_element( '#RichText', 'css' )->get_value(),
@@ -453,7 +445,6 @@ $Selenium->RunTest(
         $Kernel::OM->Get('Kernel::System::Cache')->CleanUp(
             Type => 'Ticket',
         );
-
     },
 );
 

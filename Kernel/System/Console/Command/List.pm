@@ -13,7 +13,7 @@ use warnings;
 
 use Kernel::System::Console::InterfaceConsole;
 
-use base qw(Kernel::System::Console::BaseCommand);
+use parent qw(Kernel::System::Console::BaseCommand);
 
 our @ObjectDependencies = (
     'Kernel::Config',
@@ -23,7 +23,9 @@ our @ObjectDependencies = (
 sub Configure {
     my ( $Self, %Param ) = @_;
 
-    $Self->Description('Lists available commands.');
+    $Self->Description('List available commands.');
+
+    return;
 }
 
 sub Run {

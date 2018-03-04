@@ -76,7 +76,12 @@ sub Run {
         if ( !$Delete ) {
             return $LayoutObject->ErrorScreen();
         }
-        return $LayoutObject->Redirect( OP => 'Action=AdminMailAccount' );
+        return $LayoutObject->Attachment(
+            ContentType => 'text/html',
+            Content     => $Delete,
+            Type        => 'inline',
+            NoCache     => 1,
+        );
     }
 
     # ------------------------------------------------------------ #
@@ -217,16 +222,23 @@ sub Run {
                 UserID => $Self->{UserID},
             );
             if ($Update) {
-                $Self->_Overview();
-                my $Output = $LayoutObject->Header();
-                $Output .= $LayoutObject->NavigationBar();
-                $Output .= $LayoutObject->Notify( Info => Translatable('Mail account updated!') );
-                $Output .= $LayoutObject->Output(
-                    TemplateFile => 'AdminMailAccount',
-                    Data         => \%Param,
-                );
-                $Output .= $LayoutObject->Footer();
-                return $Output;
+
+                # if the user would like to continue editing the mail account just redirect to the edit screen
+                if (
+                    defined $ParamObject->GetParam( Param => 'ContinueAfterSave' )
+                    && ( $ParamObject->GetParam( Param => 'ContinueAfterSave' ) eq '1' )
+                    )
+                {
+                    my $ID = $ParamObject->GetParam( Param => 'ID' ) || '';
+                    return $LayoutObject->Redirect(
+                        OP => "Action=$Self->{Action};Subaction=Update;ID=$ID"
+                    );
+                }
+                else {
+
+                    # otherwise return to overview
+                    return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" );
+                }
             }
         }
 
@@ -283,6 +295,7 @@ sub _Overview {
 
     $LayoutObject->Block( Name => 'ActionList' );
     $LayoutObject->Block( Name => 'ActionAdd' );
+    $LayoutObject->Block( Name => 'Filter' );
 
     $LayoutObject->Block(
         Name => 'OverviewResult',

@@ -28,6 +28,36 @@ $Selenium->RunTest(
             Value => 'link'
         );
 
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'Ticket::Frontend::AgentTicketMove###Note',
+            Value => '1'
+        );
+
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'Ticket::Frontend::AgentTicketMove###NoteMandatory',
+            Value => '1'
+        );
+
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'Ticket::Frontend::AgentTicketMove###Subject',
+            Value => 'test subject'
+        );
+
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'Ticket::Frontend::AgentTicketMove###Body',
+            Value => 'test body'
+        );
+
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'Frontend::RichText',
+            Value => '0'
+        );
+
         # create two test queues to use as 'Junk' and 'Delete' queue
         my @QueueNames;
         my @QueueIDs;
@@ -36,7 +66,7 @@ $Selenium->RunTest(
             my $QueueID   = $Kernel::OM->Get('Kernel::System::Queue')->QueueAdd(
                 Name            => $QueueName,
                 ValidID         => 1,
-                GroupID         => 1,
+                GroupID         => 1,                       # users
                 SystemAddressID => 1,
                 SalutationID    => 1,
                 SignatureID     => 1,
@@ -68,13 +98,12 @@ $Selenium->RunTest(
         for my $SysConfigUpdate (@SysConfigData) {
 
             # enable menu module and modify destination link
-            my %MenuModuleConfig = $Kernel::OM->Get('Kernel::System::SysConfig')->ConfigItemGet(
+            my %MenuModuleConfig = $Kernel::OM->Get('Kernel::System::SysConfig')->SettingGet(
                 Name    => $SysConfigUpdate->{MenuModule},
                 Default => 1,
             );
-            my %MenuModuleConfigUpdate = map { $_->{Key} => $_->{Content} }
-                grep { defined $_->{Key} } @{ $MenuModuleConfig{Setting}->[1]->{Hash}->[1]->{Item} };
 
+            my %MenuModuleConfigUpdate = %{ $MenuModuleConfig{EffectiveValue} };
             $MenuModuleConfigUpdate{Link} =~ s/$SysConfigUpdate->{OrgQueueLink}/$SysConfigUpdate->{TestQueueLink}/g;
 
             $Helper->ConfigSettingChange(
@@ -89,7 +118,7 @@ $Selenium->RunTest(
 
         # create test ACL with possible not selection of test queues
         my $ACLID = $ACLObject->ACLAdd(
-            Name           => 'ACL' . $Helper->GetRandomID(),
+            Name           => 'AACL' . $Helper->GetRandomID(),
             Comment        => 'Selenium ACL',
             Description    => 'Description',
             StopAfterMatch => 1,
@@ -202,10 +231,10 @@ $Selenium->RunTest(
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".CancelClosePopup").length' );
 
         # confirm ticket move action
-        my $MoveMsg = "Ticket moved into Queue \"Misc\" (4) from Queue \"Raw\" (2).";
+        my $MoveMsg = "Changed queue to \"Misc\" (4) from \"Raw\" (2).";
         $Self->True(
             index( $Selenium->get_page_source(), $MoveMsg ) > -1,
-            "Ticket move action completed",
+            'Ticket move action completed'
         );
 
         # click on close window and switch back screen
@@ -218,7 +247,7 @@ $Selenium->RunTest(
         # ACL restriction on queue which is destination queue for 'Spam' menu in AgentTicketZoom
         # get error message
         my $ErrorMessage
-            = 'We are sorry, you do not have permissions anymore to access this ticket in its current state';
+            = "This ticket does not exist, or you don't have permissions to access it in its current state.";
 
         # click on 'Delete' and check for ACL error message
         $Selenium->find_element("//a[contains(\@title, 'Delete this ticket')]")->VerifiedClick();
@@ -228,7 +257,7 @@ $Selenium->RunTest(
         );
 
         # click to return back to AgentTicketZoom screen
-        $Selenium->find_element( "#GoBack", 'css' )->VerifiedClick();
+        $Selenium->find_element( ".ReturnToPreviousPage", 'css' )->VerifiedClick();
 
         # click on 'Spam' and check for ACL error message
         $Selenium->find_element("//a[contains(\@title, 'Mark this ticket as junk!')]")->VerifiedClick();
@@ -242,6 +271,18 @@ $Selenium->RunTest(
             Valid => 1,
             Key   => 'Ticket::Frontend::MoveType',
             Value => 'form'
+        );
+
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'Ticket::Frontend::AgentTicketMove###Note',
+            Value => '0'
+        );
+
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'Ticket::Frontend::AgentTicketMove###NoteMandatory',
+            Value => '0'
         );
 
         # Reload the page, to get the new sys config option.

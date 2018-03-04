@@ -61,6 +61,12 @@ $Selenium->RunTest(
         # navigate to AdminSession screen
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminSession");
 
+        # check breadcrumb on Overview screen
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
+
         $Self->True(
             index( $Selenium->get_page_source(), $CurrentSessionID ) > -1,
             'SessionID found on page',
@@ -79,16 +85,21 @@ $Selenium->RunTest(
             index( $Selenium->get_page_source(), $TestUserLogin ) > -1,
             'UserLogin found on page',
         );
-        $Self->True(
-            index( $Selenium->get_page_source(), 'UserIsGroup[admin]' ) > -1,
-            'UserIsGroup[admin] found on page',
-        );
-        $Self->True(
-            index( $Selenium->get_page_source(), 'UserIsGroupRo[admin]' ) > -1,
-            'UserIsGroupRo[admin] found on page',
-        );
 
         $Selenium->find_element( "table", 'css' );
+
+        # check breadcrumb on detail view screen
+        my $Count                    = 1;
+        my $DetailViewBreadcrumbText = "Detail Session View for User: $TestUserLogin $TestUserLogin";
+        for my $BreadcrumbText ( 'Session Management', $DetailViewBreadcrumbText ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
 
         # kill current session, this means a logout effectively
         $Selenium->find_element( "a#KillThisSession", 'css' )->VerifiedClick();

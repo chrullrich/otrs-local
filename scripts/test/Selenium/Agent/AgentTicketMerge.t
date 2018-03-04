@@ -225,6 +225,21 @@ $Selenium->RunTest(
         # Try to merge with second test ticket.
         $Selenium->find_element( '#MainTicketNumber', 'css' )->clear();
         $Selenium->find_element( '#MainTicketNumber', 'css' )->send_keys( $TicketNumbers[1] );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader").length' );
+
+        $Self->False(
+            $Selenium->execute_script("return \$('li.ui-menu-item:visible').length;"),
+            'Ticket with undefined CustomerID correctly filtered'
+        );
+
+        # Clear the Customer ID filter.
+        $Selenium->find_element( '#TicketSearchFilter', 'css' )->click();
+
+        # Try again to merge with second test ticket.
+        $Selenium->find_element( '#MainTicketNumber', 'css' )->clear();
+        $Selenium->find_element( '#MainTicketNumber', 'css' )->send_keys( $TicketNumbers[1] );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("li.ui-menu-item:visible").length' );
+        $Selenium->execute_script("\$('li.ui-menu-item:contains($TicketNumbers[1])').click()");
         $Selenium->execute_script("\$('#submitRichText').click();");
 
         # Return back to zoom view and click on history and switch to its view.

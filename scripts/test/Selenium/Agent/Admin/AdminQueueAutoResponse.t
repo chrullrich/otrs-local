@@ -155,6 +155,12 @@ $Selenium->RunTest(
             $Element->is_displayed();
         }
 
+        # check breadcrumb on Overview screen
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
+
         # check for created test Queue and AutoResponses on screen
         $Self->True(
             index( $Selenium->get_page_source(), $QueueRandomID ) > -1,
@@ -224,10 +230,25 @@ $Selenium->RunTest(
             $Index++;
         }
 
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element("//button[\@value='Save'][\@type='submit']")->VerifiedClick();
 
         # check new QueueAutoResponse relations
         $Selenium->find_element( $QueueRandomID, 'link_text' )->VerifiedClick();
+
+        $Index = 1;
+        for my $BreadcrumbText (
+            'Manage Queue-Auto Response Relations',
+            'Change Auto Response Relations for Queue ' . $QueueRandomID
+            )
+        {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Index)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Index++;
+        }
 
         $Index = 0;
         for my $Test (@Tests)
@@ -252,6 +273,12 @@ $Selenium->RunTest(
         $Self->True(
             index( $Selenium->get_page_source(), $QueueRandomID ) == -1,
             "$QueueRandomID not found on screen with QueuesWithoutAutoResponses filter on"
+        );
+
+        $Self->Is(
+            $Selenium->execute_script("return \$('.BreadCrumb li:eq(2)').text().trim()"),
+            'Queues without Auto Responses',
+            "Breadcrumb text 'Queues without Auto Responses' is found on screen"
         );
 
         # get DB object
