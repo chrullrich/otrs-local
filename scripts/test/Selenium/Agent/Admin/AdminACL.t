@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,13 +15,11 @@ use vars (qw($Self));
 use Selenium::Remote::WDKeys;
 use Kernel::Language;
 
-# get selenium object
 my $Selenium = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
 $Selenium->RunTest(
     sub {
 
-        # get helper object
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
         # defined user language for testing if message is being translated correctly
@@ -39,11 +37,20 @@ $Selenium->RunTest(
             Password => $TestUserLogin,
         );
 
-        # get script alias
+        my $LanguageObject = Kernel::Language->new(
+            UserLanguage => $Language,
+        );
+
         my $ScriptAlias = $Kernel::OM->Get('Kernel::Config')->Get('ScriptAlias');
 
         # navigate to AdminACL screen
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminACL");
+
+        # check breadcrumb on Overview screen
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
 
         # click 'Create new ACL' link
         $Selenium->find_element( "a.Create", 'css' )->VerifiedClick();
@@ -58,10 +65,27 @@ $Selenium->RunTest(
             $Element->is_displayed();
         }
 
+        # check breadcrumb on Create New screen
+        my $Count = 1;
+        my $IsLinkedBreadcrumbText;
+        my $SecondBreadcrumbText = $LanguageObject->Translate('ACL Management');
+        my $ThirdBreadcrumbText  = $LanguageObject->Translate('Create New ACL');
+        for my $BreadcrumbText ( $SecondBreadcrumbText, $ThirdBreadcrumbText ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
+
         # check client side validation
         my $Element = $Selenium->find_element( "#Name", 'css' );
         $Element->send_keys("");
-        $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
+
+        $Selenium->find_element( "#Submit", 'css' )->click();
+        $Selenium->WaitFor( JavaScript => "return \$('#Name.Error').length" );
 
         $Self->Is(
             $Selenium->execute_script(
@@ -71,29 +95,55 @@ $Selenium->RunTest(
             'Client side validation correctly detected missing input value',
         );
 
-        # create a real test queue
-        my $RandomID = 'ACL' . $Helper->GetRandomID() . ' $ @';
+        my @TestACLNames;
+
+        # create test ACL names
+        for my $Name (qw(ACL NewACL)) {
+            my $TestACLName = $Name . $Helper->GetRandomNumber() . ' $ @';
+            push @TestACLNames, $TestACLName;
+        }
 
         # fill in test data
-        $Selenium->find_element( "#Name",           'css' )->send_keys($RandomID);
+        $Selenium->find_element( "#Name",           'css' )->send_keys( $TestACLNames[0] );
         $Selenium->find_element( "#Comment",        'css' )->send_keys('Selenium Test ACL');
         $Selenium->find_element( "#Description",    'css' )->send_keys('Selenium Test ACL');
-        $Selenium->find_element( "#StopAfterMatch", 'css' )->VerifiedClick();
+        $Selenium->find_element( "#StopAfterMatch", 'css' )->click();
         $Selenium->execute_script("\$('#ValidID').val('1').trigger('redraw.InputField').trigger('change');");
         $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
+        # check breadcrumb on Edit screen
+        $Count = 1;
+        for my $BreadcrumbText (
+            $SecondBreadcrumbText,
+            $LanguageObject->Translate('Edit ACL') . ': ' . $TestACLNames[0]
+            )
+        {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
+
         # the next screen should be the edit screen for this ACL
-        # which means that there should be dropdowns present for Match/Change settings
+        # which means that there should be modernize fields present for Match/Change settings
         $Self->Is(
-            $Selenium->find_element( '.ItemAddLevel1', 'css' )->is_displayed(),
+            $Selenium->find_element( '#ItemAddLevel1Match_Search', 'css' )->is_displayed(),
             '1',
-            'Check if dropdown elements are present as expected',
+            'Check if modernize Match element is present as expected',
+        );
+        $Self->Is(
+            $Selenium->find_element( '#ItemAddLevel1Change_Search', 'css' )->is_displayed(),
+            '1',
+            'Check if modernize Change element is present as expected',
         );
 
         # lets check for the correct values
         $Self->Is(
             $Selenium->find_element( '#Name', 'css' )->get_value(),
-            $RandomID,
+            $TestACLNames[0],
             "#Name stored value",
         );
         $Self->Is(
@@ -119,14 +169,14 @@ $Selenium->RunTest(
 
         # now lets play around with the match & change settings
         $Selenium->execute_script(
-            "\$('.ItemAddLevel1').val('Properties').trigger('redraw.InputField').trigger('change');"
+            "\$('#ACLMatch').siblings('.ItemAddLevel1').val('Properties').trigger('redraw.InputField').trigger('change');"
         );
 
         # after clicking an ItemAddLevel1 element, there should be now a new .ItemAdd element
         $Self->Is(
-            $Selenium->find_element( '#ACLMatch .ItemAdd', 'css' )->is_displayed(),
+            $Selenium->find_element( '#ACLMatch #Properties_Search', 'css' )->is_displayed(),
             '1',
-            'Check for .ItemAdd element',
+            'Check for .ItemAdd element - modernize element #Properties_Search is visible',
         );
 
         my $CheckAlertJS = <<"JAVASCRIPT";
@@ -147,11 +197,7 @@ JAVASCRIPT
 
         # now we should not be able to add the same element again, an alert box should appear
         $Selenium->execute_script(
-            "\$('.ItemAddLevel1').val('Properties').trigger('redraw.InputField').trigger('change');"
-        );
-
-        my $LanguageObject = Kernel::Language->new(
-            UserLanguage => $Language,
+            "\$('#ACLMatch').siblings('.ItemAddLevel1').val('Properties').trigger('redraw.InputField').trigger('change');"
         );
 
         $Self->Is(
@@ -161,7 +207,9 @@ JAVASCRIPT
         );
 
         # now lets add the CustomerUser element on level 2
-        $Selenium->find_element( "#ACLMatch .ItemAdd option[value='CustomerUser']", 'css' )->VerifiedClick();
+        $Selenium->execute_script(
+            "\$('#ACLMatch .ItemAdd').val('CustomerUser').trigger('redraw.InputField').trigger('change');"
+        );
 
         # now there should be a new .DataItem element with an input element
         $Self->Is(
@@ -197,12 +245,14 @@ JAVASCRIPT
             'Check for .NewDataItem element',
         );
 
-        # now lets add the DynamicField element on level 2, which should create a new dropdown
+        # now lets add the DynamicField element on level 2, which should create a new modernize
         # element containing dynamic fields and an 'Add all' button
-        $Selenium->find_element( "#ACLMatch .ItemAdd option[value='DynamicField']", 'css' )->VerifiedClick();
+        $Selenium->execute_script(
+            "\$('#ACLMatch .ItemAdd').val('DynamicField').trigger('redraw.InputField').trigger('change');"
+        );
 
         $Self->Is(
-            $Selenium->find_element( '#ACLMatch .DataItem .NewDataKeyDropdown', 'css' )->is_displayed(),
+            $Selenium->execute_script("return \$('#ACLMatch .DataItem .NewDataKeyDropdown').length;"),
             '1',
             'Check for .NewDataKeyDropdown element',
         );
@@ -214,7 +264,7 @@ JAVASCRIPT
 
         # Add all possible prefix values to check for inputed values see bug#12854
         # ( https://bugs.otrs.org/show_bug.cgi?id=12854 ).
-        my $Count = 1;
+        $Count = 1;
         for my $Prefix ( '[Not]', '[RegExp]', '[regexp]', '[NotRegExp]', '[Notregexp]' ) {
             $Selenium->find_element( "#Prefixes option[Value='$Prefix']", 'css' )->click();
             $Selenium->find_element( ".NewDataItem",                      'css' )->send_keys('Test');
@@ -229,28 +279,74 @@ JAVASCRIPT
         }
 
         # set ACL to invalid
-        $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
+        $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change')");
         $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
-        # test search filter
-        $Selenium->find_element( "#Filter", 'css' )->clear();
-        $Selenium->find_element( "#Filter", 'css' )->send_keys($RandomID);
+        # navigate to 'Create new ACL' screen
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminACL;Subaction=ACLNew");
 
-        # check class of invalid ACL in the overview table
-        $Self->True(
-            $Selenium->execute_script(
-                "return \$('tr.Invalid td a:contains($RandomID)').length"
-            ),
-            "There is a class 'Invalid' for test ACL",
+        # add new ACL
+        $Selenium->execute_script("\$('#Name').val('$TestACLNames[1]')");
+        $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change')");
+        $Selenium->find_element( '#Name', 'css' )->send_keys("\N{U+E007}");
+
+        # wait until the new for has been loaded and the "normal" Save button shows up
+        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#SubmitAndContinue').length" );
+        $Selenium->WaitFor(
+            JavaScript =>
+                'return typeof(Core) == "object" && typeof(Core.App) == "object" && Core.App.PageLoadComplete'
         );
 
+        # click 'Save and Finish'
+        $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
+
+        # check if both ACL exist in the table
+        $Self->IsNot(
+            $Selenium->execute_script(
+                "return \$('tr.Invalid td a:contains($TestACLNames[0])').parent().parent().css('display')"
+            ),
+            'none',
+            "ACL $TestACLNames[0] is found",
+        );
+        $Self->IsNot(
+            $Selenium->execute_script(
+                "return \$('tr.Invalid td a:contains($TestACLNames[1])').parent().parent().css('display')"
+            ),
+            'none',
+            "ACL $TestACLNames[1] is found",
+        );
+
+        # insert name of second ACL into filter field
+        $Selenium->find_element( "#FilterACLs", 'css' )->clear();
+        $Selenium->find_element( "#FilterACLs", 'css' )->send_keys( $TestACLNames[1] );
+
+        sleep 1;
+
+        # check if the first ACL does not exist and second does in the table
+        $Self->Is(
+            $Selenium->execute_script(
+                "return \$('tr.Invalid td a:contains($TestACLNames[0])').parent().parent().css('display')"
+            ),
+            'none',
+            "ACL $TestACLNames[0] is not found",
+        );
+        $Self->IsNot(
+            $Selenium->execute_script(
+                "return \$('tr.Invalid td a:contains($TestACLNames[1])').parent().parent().css('display')"
+            ),
+            'none',
+            "ACL $TestACLNames[1] is found",
+        );
+
+        # Refresh screen.
+        $Selenium->VerifiedRefresh();
+
+        # Create copy of the first ACL.
         my $ACLObject = $Kernel::OM->Get('Kernel::System::ACL::DB::ACL');
         my $ACLID     = $ACLObject->ACLGet(
-            Name   => $RandomID,
+            Name   => $TestACLNames[0],
             UserID => 1,
         )->{ID};
-
-        # Create a copy of an ACL.
         $Selenium->find_element("//a[contains(\@href, 'Action=AdminACL;Subaction=ACLCopy;ID=$ACLID;' )]")
             ->VerifiedClick();
 
@@ -259,30 +355,34 @@ JAVASCRIPT
             ->VerifiedClick();
 
         # Verify there are both copied ACL's.
-        my $Copy         = $LanguageObject->Translate('Copy');
-        my $ACLCopyName1 = "$RandomID ($Copy) 1";
-        my $ACLCopyName2 = "$RandomID ($Copy) 2";
+        my $Copy = $LanguageObject->Translate('Copy');
+        push @TestACLNames, "$TestACLNames[0] ($Copy) 1", "$TestACLNames[0] ($Copy) 2";
 
         $Self->True(
-            index( $Selenium->get_page_source(), $ACLCopyName1 ) > -1,
-            "First copied ACL '$ACLCopyName1' found on screen",
+            index( $Selenium->get_page_source(), $TestACLNames[2] ) > -1,
+            "First copied ACL '$TestACLNames[2]' found on screen",
         );
         $Self->True(
-            index( $Selenium->get_page_source(), $ACLCopyName2 ) > -1,
-            "Second copied ACL '$ACLCopyName2' found on screen",
+            index( $Selenium->get_page_source(), $TestACLNames[3] ) > -1,
+            "Second copied ACL '$TestACLNames[3]' found on screen",
         );
 
-        # Delete created test ACL's from the database.
-        for my $Count ( 1 .. 3 ) {
+        # delete test ACLs from the database
+        for my $TestACLName (@TestACLNames) {
+
+            $ACLID = $ACLObject->ACLGet(
+                Name   => $TestACLName,
+                UserID => 1,
+            )->{ID};
+
             my $Success = $ACLObject->ACLDelete(
                 ID     => $ACLID,
                 UserID => 1,
             );
             $Self->True(
                 $Success,
-                "Deleted ACL ID $ACLID",
+                "ACL $TestACLName is deleted",
             );
-            $ACLID++;
         }
 
         # sync ACL information from database with the system configuration
@@ -292,7 +392,6 @@ JAVASCRIPT
         $Kernel::OM->Get('Kernel::System::Cache')->CleanUp(
             Type => 'ACLEditor_ACL',
         );
-
     }
 );
 

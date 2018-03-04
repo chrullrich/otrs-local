@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -115,12 +115,14 @@ $Selenium->RunTest(
         );
 
         # Check dynamic field text.
+        my $ValueTextShortened = substr $ValueText, 0, 20;
+        $ValueTextShortened .= '[...]';
         $Self->Is(
             $Selenium->execute_script(
                 "return \$('#ZoomSidebar li span.Key:contains($DynamicFieldName)').siblings('span').find('a.DynamicFieldLink').text();"
             ),
-            $ValueText,
-            "Dynamic field text '$ValueText' is correct",
+            $ValueTextShortened,
+            "Dynamic field text '$ValueTextShortened' is correct",
         );
 
         # Check dynamic field link.

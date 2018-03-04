@@ -1,5 +1,5 @@
 // --
-// Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+// Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
 // the enclosed file COPYING for license information (AGPL). If you
@@ -21,16 +21,7 @@ Core.UI.InputFields = (function (Namespace) {
         QUnit.module('Core.UI.InputFields');
 
         Core.Config.AddConfig({
-            InputFieldsActivated: 1,
-            InputFieldsNotAvailable: 'Not available',
-            InputFieldsNoMatchMsg: 'No matches found',
-            InputFieldsSelectAll: 'Select all',
-            InputFieldsClearAll: 'Clear all',
-            InputFieldsClearSearch: 'Clear search',
-            InputFieldsRemoveSelection: 'Remove selection',
-            InputFieldsMore: 'and %s more...',
-            InputFieldsFilters: 'Filters',
-            InputFieldsConfirm: 'Confirm'
+            InputFieldsActivated: 1
         });
 
         /*
@@ -204,7 +195,7 @@ Core.UI.InputFields = (function (Namespace) {
                     // Wait for everything to be closed and resettet
                     window.setTimeout(function () {
                         $InputContainerObj.find('.InputField_Selection .Remove a').click();
-                        Assert.equal($SelectObj.val(), '', 'Check if empty selection matches');
+                        Assert.equal($SelectObj.val(), [], 'Check if empty selection matches');
                         Done2();
                     }, 100);
                 });
@@ -273,7 +264,7 @@ Core.UI.InputFields = (function (Namespace) {
                 // Wait for everything to be closed and resettet
                 window.setTimeout(function () {
                     $InputContainerObj.find('.InputField_Selection .Remove a').click();
-                    Assert.equal($SelectObj.val(), '', 'Check if empty selection matches');
+                    Assert.equal($SelectObj.val(), [], 'Check if empty selection matches');
                     Done2();
                 }, 100);
             });
@@ -299,7 +290,7 @@ Core.UI.InputFields = (function (Namespace) {
             Assert.expect(2);
 
             Assert.equal($SearchObj.attr('readonly'), 'readonly', 'Check if field is readonly');
-            Assert.equal($SearchObj.attr('title'), Core.Config.Get('InputFieldsNotAvailable'), 'Check if field has appropriate title');
+            Assert.equal($SearchObj.attr('title'), Core.Language.Translate('Not available'), 'Check if field has appropriate title');
         });
 
         $TestForm.append('<div class="Field"><select class="Validate_Required Modernize" id="SingleSelectClear" name="SingleSelectClear"><option value="">-</option><option value="1" selected>Entry 1</option><option value="2">Entry 2</option><option value="-" disabled="disabled">Entry 3</option><option value="4">Entry 4</option><option value="-" disabled="disabled">Entry 5</option><option value="6">Entry 6</option></select></div>');

@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -86,8 +86,8 @@ if ( !$CryptObject ) {
 
 # get current configuration settings
 my $OpenSSLBin = $ConfigObject->Get('SMIME::Bin');
-my $CertDir    = $ConfigObject->Get('SMIME::CertPath');
-my $PrivateDir = $ConfigObject->Get('SMIME::PrivatePath');
+my $CertDir    = $ConfigObject->Get('SMIME::CertPath') || '/etc/ssl/certs';
+my $PrivateDir = $ConfigObject->Get('SMIME::PrivatePath') || '/etc/ssl/private';
 
 # helper function to create a directory
 my $CreateDir = sub {

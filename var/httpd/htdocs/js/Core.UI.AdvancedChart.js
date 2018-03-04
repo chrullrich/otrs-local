@@ -1,5 +1,5 @@
 // --
-// Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+// Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
 // the enclosed file COPYING for license information (AGPL). If you
@@ -124,7 +124,7 @@ Core.UI.AdvancedChart = (function (TargetNS) {
                     return;
                 }
                 // Ignore sum col
-                if (HeadingElement === 'Sum') {
+                if (typeof HeadingElement === 'undefined' ||  HeadingElement === 'Sum') {
                     return;
                 }
 
@@ -358,10 +358,6 @@ Core.UI.AdvancedChart = (function (TargetNS) {
             PreferencesData = Options.PreferencesData,
             Counter = 0;
 
-        // First RawData element is not needed
-        RawData.shift();
-        Headings = RawData.shift();
-
         if (PreferencesData && typeof PreferencesData.Bar !== 'undefined') {
             PreferencesData = PreferencesData.Bar;
         }
@@ -369,60 +365,66 @@ Core.UI.AdvancedChart = (function (TargetNS) {
             PreferencesData = {};
         }
 
-        $.each(RawData, function(DataIndex, DataElement) {
-            var InnerCounter = 0,
-                ResultLine;
+        if (RawData !== null) {
+            // First RawData element is not needed
+            RawData.shift();
+            Headings = RawData.shift();
 
-            // Ignore sum row
-            if (DataElement[0] === 'Sum') {
-                return;
-            }
+            $.each(RawData, function(DataIndex, DataElement) {
+                var InnerCounter = 0,
+                    ResultLine;
 
-            ResultLine = {
-                key: DataElement[0],
-                color: Colors[Counter % Colors.length],
-                disabled: (PreferencesData && PreferencesData.Filter && $.inArray(DataElement[0], PreferencesData.Filter) === -1) ? true : false,
-                values: []
-            };
-
-            $.each(Headings, function(HeadingIndex, HeadingElement){
-                var Value;
-
-                InnerCounter++;
-
-                // First element is x axis label
-                if (HeadingIndex === 0){
-                    return;
-                }
-                // Ignore sum col
-                if (HeadingElement === 'Sum') {
+                // Ignore sum row
+                if (DataElement[0] === 'Sum') {
                     return;
                 }
 
-                Value = parseFloat(DataElement[HeadingIndex]);
+                ResultLine = {
+                    key: DataElement[0],
+                    color: Colors[Counter % Colors.length],
+                    disabled: (PreferencesData && PreferencesData.Filter && $.inArray(DataElement[0], PreferencesData.Filter) === -1) ? true : false,
+                    values: []
+                };
 
-                if (isNaN(Value)) {
-                    return;
-                }
+                $.each(Headings, function(HeadingIndex, HeadingElement){
+                    var Value;
 
-                // Check if value is a floating point number and not an integer
-                if (Value % 1) {
-                    ValueFormat = ',1f'; // Set y axis format to float
-                }
+                    InnerCounter++;
 
-                // nv d3 does not work correcly with non numeric values
-                // because it could happen that x axis headings occur multiple
-                // times (such as Thu 18 for two different months), we
-                // add a custom label for uniquity of the headings which is being
-                // removed later (see OTRSmultiBarChart.js)
-                ResultLine.values.push({
-                    x: '__LABEL_START__' + InnerCounter + '__LABEL_END__' + HeadingElement + ' ',
-                    y: Value
+                    // First element is x axis label
+                    if (HeadingIndex === 0){
+                        return;
+                    }
+                    // Ignore sum col
+                    if (typeof HeadingElement === 'undefined' ||  HeadingElement === 'Sum') {
+                        return;
+                    }
+
+                    Value = parseFloat(DataElement[HeadingIndex]);
+
+                    if (isNaN(Value)) {
+                        return;
+                    }
+
+                    // Check if value is a floating point number and not an integer
+                    if (Value % 1) {
+                        ValueFormat = ',1f'; // Set y axis format to float
+                    }
+
+                    // nv d3 does not work correcly with non numeric values
+                    // because it could happen that x axis headings occur multiple
+                    // times (such as Thu 18 for two different months), we
+                    // add a custom label for uniquity of the headings which is being
+                    // removed later (see OTRSmultiBarChart.js)
+                    ResultLine.values.push({
+                        x: '__LABEL_START__' + InnerCounter + '__LABEL_END__' + HeadingElement + ' ',
+                        y: Value
+                    });
                 });
+                ResultData.push(ResultLine);
+                Counter++;
             });
-            ResultData.push(ResultLine);
-            Counter++;
-        });
+        }
 
         // production mode
         nv.dev = false;
@@ -463,13 +465,19 @@ Core.UI.AdvancedChart = (function (TargetNS) {
                         return Control;
                     }
 
+                    PreferencesData = {
+                        'Bar' : {}
+                    };
+
                     if (typeof state.stacked !== 'undefined') {
-                        TargetNS.UpdatePreferences(PreferencesKey, { 'Bar': { 'State': { 'Style': (state.stacked) ? 'stacked' : '' } } });
+                        PreferencesData.Bar.State = {};
+                        PreferencesData.Bar.State.Style = (state.stacked) ? 'stacked' : '';
                     }
                     if (typeof state.disabled !== 'undefined') {
-                        TargetNS.UpdatePreferences(PreferencesKey, { 'Bar': { 'Filter': getControlSelection(ResultData)}});
+                        PreferencesData.Bar.Filter = getControlSelection(ResultData);
                     }
 
+                    TargetNS.UpdatePreferences(PreferencesKey, PreferencesData);
                 });
 
                 // set stacked/grouped state
@@ -552,7 +560,7 @@ Core.UI.AdvancedChart = (function (TargetNS) {
                     return;
                 }
                 // Ignore sum col
-                if (HeadingElement === 'Sum') {
+                if (typeof HeadingElement === 'undefined' ||  HeadingElement === 'Sum') {
                     return;
                 }
 
@@ -609,10 +617,19 @@ Core.UI.AdvancedChart = (function (TargetNS) {
                         return Control;
                     }
 
-                    if (typeof state.style !== 'undefined' || typeof state.disabled !== 'undefined') {
-                        TargetNS.UpdatePreferences(PreferencesKey, { 'StackedArea': { 'State': { 'Style': state.style }, 'Filter': getControlSelection(ResultData)}});
+                    PreferencesData = {
+                        'StackedArea' : {}
+                    };
+
+                    if (typeof state.style !== 'undefined') {
+                        PreferencesData.StackedArea.State = {};
+                        PreferencesData.StackedArea.State.Style = state.style;
+                    }
+                    if (typeof state.disabled !== 'undefined') {
+                        PreferencesData.StackedArea.Filter = getControlSelection(ResultData);
                     }
 
+                    TargetNS.UpdatePreferences(PreferencesKey, PreferencesData);
                 });
 
                 Chart.x(function(d) { return d[0]; })
@@ -686,6 +703,14 @@ Core.UI.AdvancedChart = (function (TargetNS) {
                 DrawLineChart(RawData, Element, Options);
                 break;
         }
+
+        $('#download-svg').on('click', function() {
+            // window.btoa() does not work because it does not support Unicode DOM strings.
+            this.href = TargetNS.ConvertSVGtoBase64($('#svg-container'));
+        });
+        $('#download-png').on('click', function() {
+            this.href = TargetNS.ConvertSVGtoPNG($('#svg-container'));
+        });
     };
 
     /**

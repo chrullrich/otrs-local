@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -80,7 +80,8 @@ $Selenium->RunTest(
 
         # check overview screen
         for my $ID (
-            qw(Profile TicketNumber CustomerID From To Cc Subject Body ServiceIDs TypeIDs PriorityIDs StateIDs
+            qw(Profile TicketNumber CustomerID MIMEBase_From MIMEBase_To MIMEBase_Cc MIMEBase_Subject MIMEBase_Body
+            ServiceIDs TypeIDs PriorityIDs StateIDs
             NoTimeSet Date DateRange TicketCreateTimePointStart TicketCreateTimePoint TicketCreateTimePointFormat
             TicketCreateTimeStartMonth TicketCreateTimeStartDay TicketCreateTimeStartYear TicketCreateTimeStartDayDatepickerIcon
             TicketCreateTimeStopMonth TicketCreateTimeStopDay TicketCreateTimeStopYear TicketCreateTimeStopDayDatepickerIcon
@@ -112,19 +113,24 @@ $Selenium->RunTest(
             "Ticket ID $TicketID - created",
         );
 
+        my $ArticleBackendObject = $Kernel::OM->Get('Kernel::System::Ticket::Article')->BackendForChannel(
+            ChannelName => 'Email',
+        );
+
         # Add test article to the ticket.
-        #   Make it email-internal, with sender type customer, in order to check if it's filtered out correctly.
+        #   Make it not visible for the customer, but with the sender type of customer, in order to check if it's
+        #   filtered out correctly.
         my $InternalArticleMessage = 'not for the customer';
-        my $ArticleID              = $TicketObject->ArticleCreate(
-            TicketID       => $TicketID,
-            ArticleType    => 'email-internal',
-            SenderType     => 'customer',
-            Subject        => $TitleRandom,
-            Body           => $InternalArticleMessage,
-            ContentType    => 'text/plain; charset=ISO-8859-15',
-            HistoryType    => 'EmailCustomer',
-            HistoryComment => 'Some free text!',
-            UserID         => 1,
+        my $ArticleID              = $ArticleBackendObject->ArticleCreate(
+            TicketID             => $TicketID,
+            IsVisibleForCustomer => 0,
+            SenderType           => 'customer',
+            Subject              => $TitleRandom,
+            Body                 => $InternalArticleMessage,
+            ContentType          => 'text/plain; charset=ISO-8859-15',
+            HistoryType          => 'EmailCustomer',
+            HistoryComment       => 'Some free text!',
+            UserID               => 1,
         );
         $Self->True(
             $ArticleID,
@@ -152,8 +158,15 @@ $Selenium->RunTest(
             'Internal article not found on page'
         );
 
+        # Check for search profile name.
+        my $SearchText = '← Change search options (last-search)';
+        $Self->True(
+            index( $Selenium->get_page_source(), $SearchText ) > -1,
+            "Search profile name 'last-search' found on page",
+        );
+
         # click on '← Change search options'
-        $Selenium->find_element( "← Change search options", 'link_text' )->VerifiedClick();
+        $Selenium->find_element( $SearchText, 'link_text' )->VerifiedClick();
 
         # input more search filters, result should be 'No data found'
         $Selenium->find_element( "#TicketNumber", 'css' )->clear();

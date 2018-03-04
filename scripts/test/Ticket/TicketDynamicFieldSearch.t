@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -141,6 +141,43 @@ for ( 1 .. 2 ) {
         }
 }
 
+# Run initial tests for Empty before assigning values
+for my $DynamicField ( @FieldConfig[ 0, 2 ] ) {
+    my %TicketIDsSearch = $TicketObject->TicketSearch(
+        Result                               => 'HASH',
+        Limit                                => 100,
+        TicketID                             => $TicketData[0]{TicketID},
+        "DynamicField_$DynamicField->{Name}" => {
+            Empty => 0,
+        },
+        UserID     => 1,
+        Permission => 'r0',
+    );
+
+    $Self->IsDeeply(
+        \%TicketIDsSearch,
+        {},
+        "Search with Empty => 0, dynamic field absent, type $DynamicField->{FieldType}",
+    );
+
+    %TicketIDsSearch = $TicketObject->TicketSearch(
+        Result                               => 'HASH',
+        Limit                                => 100,
+        TicketID                             => $TicketData[0]{TicketID},
+        "DynamicField_$DynamicField->{Name}" => {
+            Empty => 1,
+        },
+        UserID     => 1,
+        Permission => 'r0',
+    );
+
+    $Self->IsDeeply(
+        \%TicketIDsSearch,
+        { $TicketData[0]{TicketID} => $TicketData[0]{TicketNumber} },
+        "Search with Empty => 1, dynamic field absent, type $DynamicField->{FieldType}",
+    );
+}
+
 my @Values = (
     {
         DynamicFieldConfig => $FieldConfig[0],
@@ -207,6 +244,43 @@ for my $Value (@Values) {
         ObjectID           => $Value->{ObjectID},
         Value              => $Value->{Value},
         UserID             => 1,
+    );
+}
+
+# More tests for Empty
+for my $DynamicField ( @FieldConfig[ 0, 2 ] ) {
+    my %TicketIDsSearch = $TicketObject->TicketSearch(
+        Result                               => 'HASH',
+        Limit                                => 100,
+        TicketID                             => $TicketData[0]{TicketID},
+        "DynamicField_$DynamicField->{Name}" => {
+            Empty => 1,
+        },
+        UserID     => 1,
+        Permission => 'r0',
+    );
+
+    $Self->IsDeeply(
+        \%TicketIDsSearch,
+        {},
+        "Search with Empty => 1, dynamic field present, type $DynamicField->{FieldType}",
+    );
+
+    %TicketIDsSearch = $TicketObject->TicketSearch(
+        Result                               => 'HASH',
+        Limit                                => 100,
+        TicketID                             => $TicketData[0]{TicketID},
+        "DynamicField_$DynamicField->{Name}" => {
+            Empty => 0,
+        },
+        UserID     => 1,
+        Permission => 'r0',
+    );
+
+    $Self->IsDeeply(
+        \%TicketIDsSearch,
+        { $TicketData[0]{TicketID} => $TicketData[0]{TicketNumber} },
+        "Search with Empty => 0, dynamic field present, type $DynamicField->{FieldType}",
     );
 }
 
@@ -762,7 +836,7 @@ $Self->IsDeeply(
 $Self->IsDeeply(
     \@TicketResultSearch,
     [ $TicketData[1]{TicketID}, $TicketData[0]{TicketID}, ],
-    'Search for one value, match two ticket',
+    'Search for one value, match two tickets',
 );
 
 @TicketResultSearch = $TicketObject->TicketSearch(
@@ -802,6 +876,43 @@ $Self->IsDeeply(
     \@TicketResultSearch,
     [ $TicketData[1]{TicketID}, ],
     'Search for two values in a same field, match one ticket using an array ',
+);
+
+# Check that searching for non-existing dynamic fields is an error
+my $Result = $TicketObject->TicketSearch(
+    Result                                    => 'COUNT',
+    UserID                                    => 1,
+    "DynamicField_DFT5_NOSUCHTHING_$RandomID" => {
+        Like => [ 'ticket2_field5', 'ticket4_field5' ],
+    },
+    Permission => 'rw',
+);
+
+$Self->IsDeeply(
+    $Result,
+    undef,
+    'Searching for a non-existing dynamic field is an error',
+);
+
+# Check that values that only look like a DF search query but are none, are accepted
+@TicketResultSearch = $TicketObject->TicketSearch(
+    Result                       => 'ARRAY',
+    Limit                        => 100,
+    Title                        => "Ticket$RandomID",
+    "DynamicField_DFT5$RandomID" => {
+        Like => 'ticket1_field5',
+    },
+    "DynamicField_DFT5_NOSUCHTHING_$RandomID" => 'some_statistic_param',
+    UserID                                    => 1,
+    Permission                                => 'rw',
+    SortBy                                    => "DynamicField_DFT1$RandomID",
+    OrderBy                                   => 'Down',
+);
+
+$Self->IsDeeply(
+    \@TicketResultSearch,
+    [ $TicketData[1]{TicketID}, $TicketData[0]{TicketID}, ],
+    'Searching allows custom unknown fields to be present',
 );
 
 # cleanup is done by RestoreDatabase.

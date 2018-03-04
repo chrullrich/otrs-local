@@ -1,48 +1,48 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
+## no critic (Modules::RequireExplicitPackage)
 use strict;
 use warnings;
 use utf8;
 
 use vars (qw($Self));
 
-# get selenium object
 my $Selenium = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
 $Selenium->RunTest(
     sub {
 
-        # get helper object
-        my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+        my $Helper       = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+        my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+        my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
-        # set fixed time for test purposes
+        # Set fixed time for test purposes.
         $Helper->FixedTimeSet(
-            $Kernel::OM->Get('Kernel::System::Time')->TimeStamp2SystemTime( String => '2014-12-12 00:00:00' ),
+            $Kernel::OM->Create(
+                'Kernel::System::DateTime',
+                ObjectParams => {
+                    String => '2014-12-12 00:00:00'
+                    }
+                )->ToEpoch(),
         );
 
-        # create test user and login
+        # Create test user.
         my $TestUserLogin = $Helper->TestUserCreate(
             Groups => ['users'],
         ) || die "Did not get test user";
 
-        $Selenium->Login(
-            Type     => 'Agent',
-            User     => $TestUserLogin,
-            Password => $TestUserLogin,
-        );
-
-        # get test user ID
+        # Get test user ID.
         my $TestUserID = $Kernel::OM->Get('Kernel::System::User')->UserLookup(
             UserLogin => $TestUserLogin,
         );
 
-        # create test queue
+        # Create test queue.
         my $QueueName = "Queue" . $Helper->GetRandomID();
         my $QueueID   = $Kernel::OM->Get('Kernel::System::Queue')->QueueAdd(
             Name            => $QueueName,
@@ -60,26 +60,44 @@ $Selenium->RunTest(
             "Queue is created - ID $QueueID",
         );
 
-        # get config object
-        my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+        # Login as test user.
+        $Selenium->Login(
+            Type     => 'Agent',
+            User     => $TestUserLogin,
+            Password => $TestUserLogin,
+        );
 
-        # get script alias
         my $ScriptAlias = $ConfigObject->Get('ScriptAlias');
 
-        # navigate to AgentPreferences screen
-        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentPreferences");
+        # Navigate to AgentPreferences screen.
+        $Selenium->VerifiedGet(
+            "${ScriptAlias}index.pl?Action=AgentPreferences;Subaction=Group;Group=NotificationSettings"
+        );
 
-        # set MyQueue preferences
+        # Set MyQueue preferences.
         $Selenium->execute_script("\$('#QueueID').val('$QueueID').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element( "#QueueIDUpdate", 'css' )->VerifiedClick();
 
-        # navigate to AgentDashboard screen
+        # Save the setting, wait for the ajax call to finish and check if success sign is shown.
+        $Selenium->execute_script(
+            "\$('#QueueID').closest('.WidgetSimple').find('.SettingUpdateBox').find('button').trigger('click');"
+        );
+        $Selenium->WaitFor(
+            JavaScript =>
+                "return \$('#QueueID').closest('.WidgetSimple').hasClass('HasOverlay')"
+        );
+        $Selenium->WaitFor(
+            JavaScript =>
+                "return \$('#QueueID').closest('.WidgetSimple').find('.fa-check').length"
+        );
+        $Selenium->WaitFor(
+            JavaScript =>
+                "return !\$('#QueueID').closest('.WidgetSimple').hasClass('HasOverlay')"
+        );
+
+        # Navigate to AgentDashboard screen.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentDashboard");
 
-        # get ticket object
-        my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
-
-        # create test ticket
+        # Create test ticket.
         my $TicketID = $TicketObject->TicketCreate(
             Title        => 'Selenium Test Ticket',
             QueueID      => $QueueID,
@@ -101,7 +119,7 @@ $Selenium->RunTest(
             Objects => ['Kernel::System::Ticket']
         );
 
-        # wait 5 minutes to have escalation trigger
+        # Wait 5 minutes to have escalation trigger.
         $Helper->FixedTimeAddSeconds(300);
 
         my %Configs = (
@@ -185,7 +203,7 @@ $Selenium->RunTest(
                 'Title'       => 'Escalated Tickets'
             },
             '0120-TicketNew' => {
-                'Attributes'     => 'StateType=new;',
+                'Attributes'     => 'StateType=new',
                 'Block'          => 'ContentLarge',
                 'CacheTTLLocal'  => '0.5',
                 'Default'        => '1',
@@ -224,7 +242,7 @@ $Selenium->RunTest(
                 'Title'       => 'New Tickets'
             },
             '0130-TicketOpen' => {
-                'Attributes'     => 'StateType=open;',
+                'Attributes'     => 'StateType=open',
                 'Block'          => 'ContentLarge',
                 'CacheTTLLocal'  => '0.5',
                 'Default'        => '1',
@@ -265,15 +283,15 @@ $Selenium->RunTest(
 
         );
 
-        # create test params
+        # Create test params.
         my @Test = ( "0100-TicketPendingReminder", "0110-TicketEscalation", "0120-TicketNew", "0130-TicketOpen" );
 
-        # test if ticket is shown in each dashboard ticket generic plugin
+        # Test if ticket is shown in each dashboard ticket generic plugin.
         for my $DashboardName (@Test) {
 
             $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
-            # set ticket state depending on the stage in test
+            # Set ticket state depending on the stage in test.
             if ( $DashboardName eq '0120-TicketNew' ) {
                 my $Success = $TicketObject->TicketStateSet(
                     State    => 'new',
@@ -302,7 +320,7 @@ $Selenium->RunTest(
                 Objects => ['Kernel::System::Ticket']
             );
 
-            # disable all dashboard plugins
+            # Disable all dashboard plugins.
             my $Config = $ConfigObject->Get('DashboardBackend');
             $Helper->ConfigSettingChange(
                 Valid => 0,
@@ -310,34 +328,32 @@ $Selenium->RunTest(
                 Value => \%$Config,
             );
 
-            # enable current needed dashboard plugin sysconfig
+            # Enable current needed dashboard plugin sysconfig.
             $Helper->ConfigSettingChange(
                 Valid => 1,
                 Key   => "DashboardBackend###" . $DashboardName,
                 Value => $Configs{$DashboardName},
             );
 
-            # refresh dashboard screen and clean it's cache
+            # Refresh dashboard screen and clean it's cache.
             $Kernel::OM->Get('Kernel::System::Cache')->CleanUp(
                 Type => 'Dashboard',
             );
 
             $Selenium->VerifiedRefresh();
 
-            # click settings wheel
+            # Click settings wheel.
             $Selenium->execute_script("\$('#Dashboard$DashboardName-toggle').trigger('click');");
 
-            # set Priority on visible
+            # Set Priority on visible.
             $Selenium->execute_script(
                 "\$('.ColumnsJSON').val('{\"Columns\":{\"Priority\":1},\"Order\":[\"Priority\"]}');"
             );
 
-            # submit
+            # Submit.
             $Selenium->execute_script( "\$('#Dashboard$DashboardName" . "_submit').trigger('click');" );
 
-            sleep 2;
-
-            # wait until block shows
+            # Wait until block shows.
             $Self->True(
                 $Selenium->WaitFor(
                     JavaScript =>
@@ -347,31 +363,31 @@ $Selenium->RunTest(
                 "#PriorityOverviewControl$DashboardName is visible."
             );
 
-            # sort by Priority
+            # Sort by Priority.
             $Selenium->execute_script("\$('th.Priority #PriorityOverviewControl$DashboardName').trigger('click');");
 
             sleep 2;
 
-            # wait for AJAX to finish
+            # Wait for AJAX to finish.
             $Self->True(
                 $Selenium->WaitFor(
                     JavaScript =>
-                        'return typeof($) === "function" && $(".DashboardHeader.Priority.SortAscendingLarge:visible").length'
+                        'return typeof($) === "function" && $(".DashboardHeader.Priority.SortDescendingLarge:visible").length'
                     )
                     || '',
-                ".DashboardHeader.Priority.SortAscendingLarge is visible."
+                ".DashboardHeader.Priority.SortDescendingLarge is visible."
             );
 
-            # validate that Priority sort is working
+            # Validate that Priority sort is working.
             $Self->True(
-                $Selenium->find_element( ".DashboardHeader.Priority.SortAscendingLarge", 'css' ),
+                $Selenium->find_element( ".DashboardHeader.Priority.SortDescendingLarge", 'css' ),
                 "Priority sort is working",
             );
 
-            # set filter by MyQueue
+            # Set filter by MyQueue.
             my $Filter = "#Dashboard$DashboardName" . "MyQueues";
             $Selenium->WaitFor( JavaScript => "return \$('$Filter:visible').length" );
-            $Selenium->find_element( $Filter, 'css' )->VerifiedClick();
+            $Selenium->find_element( $Filter, 'css' )->click();
 
             my $TicketFound;
 
@@ -382,11 +398,11 @@ $Selenium->RunTest(
 
                 last TICKET_WAIT if $TicketFound;
 
-                # Wait 1 second
+                # Wait 1 second.
                 sleep 1;
             }
 
-            # check for test ticket on current dashboard plugin
+            # Check for test ticket on current dashboard plugin.
             $Self->True(
                 $TicketFound,
                 "$DashboardName dashboard plugin test ticket link - found",
@@ -395,7 +411,7 @@ $Selenium->RunTest(
 
         $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
-        # delete test tickets
+        # Delete test tickets.
         my $Success = $TicketObject->TicketDelete(
             TicketID => $TicketID,
             UserID   => $TestUserID,
@@ -414,10 +430,9 @@ $Selenium->RunTest(
             "Ticket is deleted - ID $TicketID"
         );
 
-        # get DB object
         my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
-        # delete MyQueue from personal_queues
+        # Delete MyQueue from personal_queues.
         $Success = $DBObject->Do(
             SQL => "DELETE FROM personal_queues WHERE queue_id = $QueueID",
         );
@@ -426,7 +441,7 @@ $Selenium->RunTest(
             "Delete MyQueue from personal_queues - ID $QueueID",
         );
 
-        # delete test queue
+        # Delete test queue.
         $Success = $DBObject->Do(
             SQL => "DELETE FROM queue WHERE id = $QueueID",
         );
@@ -435,11 +450,11 @@ $Selenium->RunTest(
             "Queue is deleted - ID $QueueID",
         );
 
-        # make sure cache is correct
+        my $CacheObject = $Kernel::OM->Get('Kernel::System::Cache');
+
+        # Make sure cache is correct.
         for my $Cache (qw(Ticket Queue Dashboard DashboardQueueOverview )) {
-            $Kernel::OM->Get('Kernel::System::Cache')->CleanUp(
-                Type => $Cache,
-            );
+            $CacheObject->CleanUp( Type => $Cache );
         }
     }
 );

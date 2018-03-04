@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -35,7 +35,7 @@ use Kernel::GenericInterface::Provider;
 use Kernel::System::ObjectManager;
 
 # response loop
-while ( my $WebRequest = new CGI::Fast ) {
+while ( my $WebRequest = CGI::Fast->new() ) {
 
     local $Kernel::OM = Kernel::System::ObjectManager->new(
         'Kernel::System::Web::Request' => {

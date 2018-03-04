@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -11,10 +11,10 @@ package Kernel::Modules::AgentTicketLockedView;
 use strict;
 use warnings;
 
-our $ObjectManagerDisabled = 1;
-
-use Kernel::Language qw(Translatable);
 use Kernel::System::VariableCheck qw(:all);
+use Kernel::Language qw(Translatable);
+
+our $ObjectManagerDisabled = 1;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -330,7 +330,7 @@ sub Run {
             %{ $Filters{$Filter}->{Search} },
             %ColumnFilter,
             Result => 'COUNT',
-        );
+        ) || 0;
 
         $NavBarFilter{ $Filters{$Filter}->{Prio} } = {
             Count  => $Count,

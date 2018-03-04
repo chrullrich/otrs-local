@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -663,17 +663,14 @@ for my $Test (@Tests) {
     },
 );
 
-# get time object
-my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
-
-my $OriginalTimeStamp = $TimeObject->CurrentTimestamp();
+my $OriginalTimeStamp = $Kernel::OM->Create('Kernel::System::DateTime')->ToString();
 
 for my $Test (@Tests) {
     if ( $Test->{AddSeconds} ) {
         $Helper->FixedTimeAddSeconds( $Test->{AddSeconds} );
     }
 
-    my $CurrentTimeStamp = $TimeObject->CurrentTimestamp();
+    my $CurrentTimeStamp = $Kernel::OM->Create('Kernel::System::DateTime')->ToString();
 
     my $Success = $SchedulerDBObject->TaskLockUpdate(
         TaskIDs => $Test->{TaskIDs},

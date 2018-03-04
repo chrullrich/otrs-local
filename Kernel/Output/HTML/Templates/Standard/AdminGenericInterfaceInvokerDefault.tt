@@ -1,37 +1,38 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 <div class="MainBox ARIARoleMain LayoutFixedSidebar SidebarFirst AdminGenericInterfaceInvokerDefault">
-[% RenderBlockStart("TitleAdd") %]
-    <h1>[% Translate("Add new Invoker to Web Service %s", Data.WebserviceName) | html %]</h1>
-[% RenderBlockEnd("TitleAdd") %]
-[% RenderBlockStart("TitleChange") %]
-    <h1>[% Translate("Change Invoker %s of Web Service %s", Data.Invoker, Data.WebserviceName) | html %]</h1>
-[% RenderBlockEnd("TitleChange") %]
-<!-- breadcrumb -->
+    <h1 class="InvisibleText">[% Translate("GenericInterface Web Service Management") | html %]</h1>
 
-    <ul class="BreadCrumb">
-        <li>[% Translate("You are here") | html %]:</li>
-        <li>
-            <a href="[% Env("Baselink") %]Action=AdminGenericInterfaceWebservice">[% Translate("Web Services") | html %]</a>
-        </li>
-        <li>
-            <a href="[% Env("Baselink") %]Action=AdminGenericInterfaceWebservice;Subaction=Change;WebserviceID=[% Data.WebserviceID | uri %]">[% Data.WebserviceName | html %]</a>
-        </li>
-        <li>
-[% RenderBlockStart("NavigationAdd") %]
-            [% Translate("Add new invoker") | html %]
-[% RenderBlockEnd("NavigationAdd") %]
-[% RenderBlockStart("NavigationChange") %]
-            [% Translate("Change invoker %s", Data.Invoker) | html %]
-[% RenderBlockEnd("NavigationChange") %]
-        </li>
-    </ul>
+    [% USE WebserviceLink = String("AdminGenericInterfaceWebservice;Subaction=Change;WebserviceID=") %]
 
+    [% BreadcrumbPath = [
+            {
+                Name => Translate( 'Web Service Management' ),
+                Link => 'AdminGenericInterfaceWebservice',
+            },
+            {
+                Name => Data.WebserviceName,
+                Link => WebserviceLink.append( Data.WebserviceID ),
+            },
+        ]
+    %]
+
+    [% SWITCH Data.Action %]
+        [% CASE 'Add' %]
+            [% BreadcrumbPath.push({ Name => Translate("Add Invoker"),}) %]
+        [% CASE 'Change' %]
+            [% USE EditTitle = String(Translate("Edit Invoker")) %]
+            [% BreadcrumbPath.push({ Name => EditTitle.append( ': ', Data.Invoker ), }) %]
+    [% END %]
+
+    [% INCLUDE "Breadcrumb.tt" Path = BreadcrumbPath %]
+
+    <div class="Clear"></div>
     <div class="SidebarColumn">
         <div class="WidgetSimple">
             <div class="Header">
@@ -70,9 +71,12 @@
             <div class="Content">
                 <form action="[% Env("CGIHandle") %]" class="Validate" method="post">
                     <input type="hidden" name="Action" value="AdminGenericInterfaceInvokerDefault" />
-                    <input type="hidden" name="Subaction" value="[% Data.Mode | html %]Action" />
+                    <input type="hidden" name="Subaction" value="[% Data.Action | html %]Action" />
                     <input type="hidden" name="WebserviceID" value="[% Data.WebserviceID | html %]" id="WebserviceID" />
                     <input type="hidden" name="InvokerType" value="[% Data.InvokerType | html %]" />
+                    [% IF Data.Action == 'Change' %]
+                        <input type="hidden" name="ContinueAfterSave" id="ContinueAfterSave" value=""/>
+                    [% END %]
 
                     <fieldset class="TableLike">
                         <label for="Invoker" class="Mandatory">
@@ -116,7 +120,7 @@
                             [% Data.MappingOutboundStrg %]
                             <input type="hidden" id="MappingOutboundConfigDialog" value="[% Data.MappingOutboundConfigDialog | html %]" />
 [% RenderBlockStart("MappingOutboundConfigureButton") %]
-                            <button type="button" class="HideOnChange" id="MappingOutboundConfigureButton" value="[% Translate("Configure") | html %]">[% Translate("Configure") | html %]</button>
+                            <button type="button" class="HideOnChange CallForAction InLine" id="MappingOutboundConfigureButton" value="[% Translate("Configure") | html %]"><span>[% Translate("Configure") | html %]</span></button>
 [% RenderBlockEnd("MappingOutboundConfigureButton") %]
                             <p class="FieldExplanation">
                                 [% Translate("The data from the invoker of OTRS will be processed by this mapping, to transform it to the kind of data the remote system expects.") | html %]
@@ -129,7 +133,7 @@
                             [% Data.MappingInboundStrg %]
                             <input type="hidden" id="MappingInboundConfigDialog" value="[% Data.MappingInboundConfigDialog | html %]" />
 [% RenderBlockStart("MappingInboundConfigureButton") %]
-                            <button type="button" class="HideOnChange" id="MappingInboundConfigureButton" value="[% Translate("Configure") | html %]">[% Translate("Configure") | html %]</button>
+                            <button type="button" class="HideOnChange CallForAction InLine" id="MappingInboundConfigureButton" value="[% Translate("Configure") | html %]"><span>[% Translate("Configure") | html %]</span></button>
 [% RenderBlockEnd("MappingInboundConfigureButton") %]
                             <p class="FieldExplanation">
                                 [% Translate("The response data will be processed by this mapping, to transform it to the kind of data the invoker of OTRS expects.") | html %]
@@ -142,15 +146,17 @@
                             <table class="DataTable W50pc" id="EventsTable" summary="List of all configured events">
                                 <thead>
                                     <tr>
-                                        <th>[% Translate("Event") | html %]</th>
-                                        <th>[% Translate("Asynchronous") | html %]</th>
-                                        <th>[% Translate("Delete") | html %]</th>
+                                        <th class="Center">[% Translate("Event") | html %]</th>
+                                        <th class="Center">[% Translate("Asynchronous") | html %]</th>
+                                        <th class="Center">[% Translate("Condition") | html %]</th>
+                                        <th class="Center">[% Translate("Edit") | html %]</th>
+                                        <th class="Center">[% Translate("Delete") | html %]</th>
                                     </tr>
                                 </thead>
                                 <tbody>
 [% RenderBlockStart("NoDataFoundMsg") %]
                                     <tr>
-                                        <td colspan="4">
+                                        <td colspan="5">
                                             [% Translate("No data found.") | html %]
                                         </td>
                                     </tr>
@@ -159,23 +165,20 @@
 [% RenderBlockStart("EventRow") %]
                                     <tr>
                                         <td class="AsBlock">[% Data.Event | html %]</td>
-                                        <td>[% Data.Asynchronous | html %]</td>
+                                        <td class="Center">[% Data.Asynchronous | html %]</td>
+                                        <td class="Center">[% Data.Condition | html %]</td>
                                         <td class="Center">
-                                            <a id="DeleteEvent[% Data.Event | html %]" class="TrashCan DeleteEvent" href="#" title="[% Translate("Delete this event") | html %]">
+                                            <a class="Pencil EditEvent HideOnChange" href="[% Env("Baselink") %]Action=AdminGenericInterfaceInvokerEvent;Subaction=Change;WebserviceID=[% Data.WebserviceID | html %];Invoker=[% Data.Invoker | html %];Event=[% Data.Event | html %]" title="[% Translate("Edit this event") | html %]">
+                                                [% Translate("Edit this event") | html %]
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        <td class="Center">
+                                            <a id="DeleteEvent[% Data.Event | html %]" class="TrashCan DeleteEvent HideOnChange" href="#" title="[% Translate("Delete this event") | html %]">
                                                 [% Translate("Delete this event") | html %]
                                                 <i class="fa fa-trash-o"></i>
                                             </a>
                                         </td>
                                     </tr>
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-    Core.Agent.Admin.GenericInterfaceInvoker.BindDeleteEventDialog({
-        ElementID:                  'DeleteEvent[% Data.Event | html %]',
-        EventName:                  "[% Data.Event | html %]",
-        ElementSelector:            '#DeleteEvent[% Data.Event | html %]'
-    });
-//]]></script>
-[% END %]
 [% RenderBlockEnd("EventRow") %]
                                 </tbody>
                             </table>
@@ -193,14 +196,14 @@
                         </div>
 
                         <div class="SpacingTop"></div>
-                        <label class="HideOnChange" for="EventType">[% Translate("Add Event Trigger") | html %]:</label>
-                        <div class="Field HideOnChange">
+                        <label for="EventType">[% Translate("Add Event Trigger") | html %]:</label>
+                        <div class="Field">
                             [% Data.EventTypeStrg %]
 [% RenderBlockStart("EventAdd") %]
                             [% Data.EventStrg %]
 [% RenderBlockEnd("EventAdd") %]
                             <input type="checkbox" id="Asynchronous" checked="checked" class="GenericInterfaceSpacing" name="Asynchronous"/><label for="Asynchronous">Asynchronous</label>
-                            <button type="button" id="AddEvent" class="Add GenericInterfaceSpacing" name="AddEvent" value="Add Event">Add Event</button>
+                            <button type="button" id="AddEvent" class="Add GenericInterfaceSpacing HideOnChange" name="AddEvent" value="Add Event">Add Event</button>
                             <p class="FieldExplanation">
                                 [% Translate("To add a new event select the event object and event name and click on the \"+\" button") | html %].
                             </p>
@@ -213,21 +216,15 @@
                         <div class="Clear"></div>
 
                         <div class="Field SpacingTop">
-                            <button type="submit" class="Primary CallForAction" value="[% Translate("Save and continue") | html %]"><span>[% Translate("Save") | html %]</span></button>
-[% RenderBlockStart("SaveAndFinishButton") %]
+                            [% IF Data.Action == 'Change' %]
+                                <button class="CallForAction Primary" id="SubmitAndContinue" type="button" value="[% Translate("Save") | html %]"><span>[% Translate("Save") | html %]</span></button>
+                                [% Translate("or") | html %]
+                                <button class="CallForAction Primary" id="Submit" type="submit" value="[% Translate("Save") | html %]"><span>[% Translate("Save and finish") | html %]</span></button>
+                            [% ELSE %]
+                                <button class="CallForAction Primary" id="Submit" type="submit" value="[% Translate("Save") | html %]"><span>[% Translate("Save") | html %]</span></button>
+                            [% END %]
                             [% Translate("or") | html %]
-                            <button type="submit" id="SaveAndFinishButton" class="CallForAction" value="[% Translate("Save and finish") | html %]"><span>[% Translate("Save and finish") | html %]</span></button>
-                            <input type="hidden" name="ReturnToWebservice" id="ReturnToWebservice" value="" autocomplete="off" />
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-$('#SaveAndFinishButton').bind('click', function(){
-    $('#ReturnToWebservice').val(1);
-});
-//]]></script>
-[% END %]
-[% RenderBlockEnd("SaveAndFinishButton") %]
-                            [% Translate("or") | html %]
-                            <a href="[% Env("Baselink") %]Action=AdminGenericInterfaceWebservice;Subaction=Change;WebserviceID=[% Data.WebserviceID | uri %]">[% Translate("Cancel") | html %]</a>
+                            <a href="[% Env("Baselink") %]Action=AdminGenericInterfaceWebservice;Subaction=Change;WebserviceID=[% Data.WebserviceID | uri %]"><span>[% Translate("Cancel") | html %]</span></a>
                         </div>
                         <div class="Clear"></div>
                     </fieldset>
@@ -237,39 +234,3 @@ $('#SaveAndFinishButton').bind('click', function(){
     </div>
     <div class="Clear"></div>
 </div>
-
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-Core.Agent.Admin.GenericInterfaceInvoker.Init({
-    WebserviceID: [% Data.WebserviceID | html %],
-    Invoker: "[% Data.Invoker | html %]",
-    Action: 'AdminGenericInterfaceInvokerDefault',
-    EventTypeSelected: $('#EventType').val(),
-    Localization: {
-        CommunicationErrorMsg: [% Translate("An error occurred during communication.") | JSON %],
-        DeleteInvokerMsg: [% Translate("Delete this Invoker") | JSON %],
-        DeleteEventMsg: [% Translate("Delete this Event Trigger") | JSON %],
-        DeleteMsg: [% Translate("Delete") | JSON %],
-        CancelMsg: [% Translate("Cancel") | JSON %]
-    }
-});
-
-$('.RegisterChange').bind('change.RegisterChange keyup.RegisterChange', function (Event) {
-    $('.HideOnChange').hide();
-    $('.ShowOnChange').show();
-});
-
-$('#DeleteButton').bind('click', Core.Agent.Admin.GenericInterfaceInvoker.ShowDeleteDialog);
-
-$('#EventType').bind('change', function (){
-    Core.Agent.Admin.GenericInterfaceInvoker.ToogleEventSelect($(this).val());
-});
-
-$('#AddEvent').bind('click', function (){
-    Core.Agent.Admin.GenericInterfaceInvoker.AddEvent( $('#EventType').val() );
-});
-
-//]]></script>
-
-
-[% END %]

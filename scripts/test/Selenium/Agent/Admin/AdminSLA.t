@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -12,7 +12,6 @@ use utf8;
 
 use vars (qw($Self));
 
-# get needed objects
 my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 my $DBObject     = $Kernel::OM->Get('Kernel::System::DB');
 my $Selenium     = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
@@ -36,15 +35,21 @@ $Selenium->RunTest(
 
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminSLA");
 
-        # check overview screen
+        # Check overview screen.
         $Selenium->find_element( "table",             'css' );
         $Selenium->find_element( "table thead tr th", 'css' );
         $Selenium->find_element( "table tbody tr td", 'css' );
 
-        # click "Add SLA"
+        # Check breadcrumb on Overview screen.
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
+
+        # Click "Add SLA".
         $Selenium->find_element("//a[contains(\@href, \'Subaction=SLAEdit' )]")->VerifiedClick();
 
-        # check add SLA screen
+        # Check add SLA screen.
         for my $ID (
             qw(Name ServiceIDs Calendar FirstResponseTime FirstResponseNotify UpdateTime
             UpdateNotify SolutionTime SolutionNotify ValidID Comment)
@@ -55,9 +60,13 @@ $Selenium->RunTest(
             $Element->is_displayed();
         }
 
-        # check client side validation
+        # Check client side validation.
         $Selenium->find_element( "#Name", 'css' )->clear();
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+        $Selenium->find_element("//button[\@type='submit']")->click();
+        $Selenium->WaitFor(
+            JavaScript => "return typeof(\$) === 'function' && \$('#Name.Error').length"
+        );
+
         $Self->Is(
             $Selenium->execute_script(
                 "return \$('#Name').hasClass('Error')"
@@ -66,7 +75,19 @@ $Selenium->RunTest(
             'Client side validation correctly detected missing input value',
         );
 
-        # create test SLA
+        # Check breadcrumb on Add screen.
+        my $Count = 1;
+        for my $BreadcrumbText ( 'SLA Management', 'Add SLA' ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
+
+        # Create test SLA.
         my $SLARandomID = "SLA" . $Helper->GetRandomID();
         my $SLAComment  = "Selenium SLA test";
 
@@ -74,13 +95,13 @@ $Selenium->RunTest(
         $Selenium->find_element( "#Comment", 'css' )->send_keys($SLAComment);
         $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
 
-        # check if test SLA show on AdminSLA screen
+        # Check if test SLA show on AdminSLA screen.
         $Self->True(
             index( $Selenium->get_page_source(), $SLARandomID ) > -1,
             "$SLARandomID SLA found on page",
         );
 
-        # check test SLA values
+        # Check test SLA values.
         $Selenium->find_element( $SLARandomID, 'link_text' )->VerifiedClick();
 
         $Self->Is(
@@ -99,12 +120,24 @@ $Selenium->RunTest(
             "#ValidID stored value",
         );
 
-        # remove test SLA comment and set it to invalid
+        # Check breadcrumb on Edit screen.
+        $Count = 1;
+        for my $BreadcrumbText ( 'SLA Management', 'Edit SLA: ' . $SLARandomID ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
+
+        # Remove test SLA comment and set it to invalid.
         $Selenium->find_element( "#Comment", 'css' )->clear();
         $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
         $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
 
-        # check class of invalid SLA in the overview table
+        # Check class of invalid SLA in the overview table.
         $Self->True(
             $Selenium->execute_script(
                 "return \$('tr.Invalid td a:contains($SLARandomID)').length"
@@ -112,7 +145,7 @@ $Selenium->RunTest(
             "There is a class 'Invalid' for test SLA",
         );
 
-        # check edited SLA values
+        # Check edited SLA values.
         $Selenium->find_element( $SLARandomID, 'link_text' )->VerifiedClick();
 
         $Self->Is(
@@ -126,7 +159,7 @@ $Selenium->RunTest(
             "#ValidID stored value",
         );
 
-        # since there are no tickets that rely on our test SLA we can remove it from DB
+        # Since there are no tickets that rely on our test SLA we can remove it from DB.
         my $SLAID = $Kernel::OM->Get('Kernel::System::SLA')->SLALookup(
             Name => $SLARandomID,
         );

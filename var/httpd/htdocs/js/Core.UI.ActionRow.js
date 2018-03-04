@@ -1,5 +1,5 @@
 // --
-// Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+// Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
 // the enclosed file COPYING for license information (AGPL). If you
@@ -139,7 +139,7 @@ Core.UI.ActionRow = (function (TargetNS) {
                             ActionRowElement.attr('href', Value.Link);
                         }
                         if (Value.PopupType) {
-                            ActionRowElement.bind('click.Popup', function () {
+                            ActionRowElement.on('click.Popup', function () {
                                 Core.UI.Popup.OpenPopup(Value.Link, Value.PopupType);
                                 return false;
                             });
@@ -187,13 +187,13 @@ Core.UI.ActionRow = (function (TargetNS) {
             $(TicketElementSelectors[TicketView]).prop('checked', Status).triggerHandler('click');
         });
 
-        $(TicketElementSelectors[TicketView]).bind('click', function (Event) {
+        $(TicketElementSelectors[TicketView]).on('click', function (Event) {
             Event.stopPropagation();
             Core.UI.ActionRow.UpdateActionRow($(this), $(TicketElementSelectors[TicketView]), $('div.OverviewActions ul.Actions'));
             Core.Form.SelectAllCheckboxes($(this), $('#SelectAllTickets'));
         });
 
-        $('#BulkAction a').bind('click', function () {
+        $('#BulkAction a').on('click', function () {
             var $Element = $(this),
                 $SelectedTickets,
                 TicketIDParameter = "TicketID=",
@@ -214,6 +214,8 @@ Core.UI.ActionRow = (function (TargetNS) {
             return false;
         });
     };
+
+    Core.Init.RegisterNamespace(TargetNS, 'APP_MODULE');
 
     return TargetNS;
 }(Core.UI.ActionRow || {}));

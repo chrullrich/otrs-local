@@ -28,7 +28,12 @@ nv.models.OTRSmultiBarChart = function() {
         , tooltips = true
         , tooltip = function(key, x, y, e, graph) {
             return '<h3>' + key + '</h3>' +
-                '<p>' +  y + ' on ' + x + '</p>'
+// ---
+// OTRS
+// ---
+//                '<p>' +  y + ' on ' + x + '</p>'
+                '<p>' +  y + ' - ' + x + '</p>'
+// ---
         }
         , x //can be accessed via chart.xScale()
         , y //can be accessed via chart.yScale()
@@ -37,8 +42,8 @@ nv.models.OTRSmultiBarChart = function() {
 // ---
 // OTRS
 // ---
-//        , noData = "No Data Available."
-        , noData = Core.Config.Get('NoDataAvailable')
+//        , noData = 'No Data Available.'
+        , noData = Core.Language.Translate('No Data Available.')
 // ---
         , dispatch = d3.dispatch('tooltipShow', 'tooltipHide', 'stateChange', 'changeState', 'renderEnd')
 // ---
@@ -226,8 +231,8 @@ nv.models.OTRSmultiBarChart = function() {
 // ---
 //                    { key: controlLabels.grouped || 'Grouped', disabled: multibar.stacked() },
 //                    { key: controlLabels.stacked || 'Stacked', disabled: !multibar.stacked() }
-                    { key: controlLabels.grouped || Core.Config.Get('Grouped') || 'Grouped', disabled: multibar.stacked() },
-                    { key: controlLabels.stacked || Core.Config.Get('Stacked') || 'Stacked', disabled: !multibar.stacked() }
+                    { key: controlLabels.grouped || Core.Language.Translate('Grouped'), disabled: multibar.stacked() },
+                    { key: controlLabels.stacked || Core.Language.Translate('Stacked'), disabled: !multibar.stacked() }
 // ---
                 ];
 
@@ -349,7 +354,7 @@ nv.models.OTRSmultiBarChart = function() {
 // OTRS
 // ---
 //                    case 'Grouped':
-                    case Core.Config.Get('Grouped') || 'Grouped':
+                    case Core.Language.Translate('Grouped'):
 // ---
                         multibar.stacked(false);
                         break;
@@ -357,7 +362,7 @@ nv.models.OTRSmultiBarChart = function() {
 // OTRS
 // ---
 //                    case 'Stacked':
-                    case Core.Config.Get('Stacked') || 'Stacked':
+                    case Core.Language.Translate('Stacked'):
 // ---
                         multibar.stacked(true);
                         break;

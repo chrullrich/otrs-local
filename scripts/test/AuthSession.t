@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -12,13 +12,12 @@ use utf8;
 
 use vars (qw($Self));
 
-use Storable;
-
 use Kernel::System::AuthSession;
 
 # get needed objects
-my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
-my $MainObject   = $Kernel::OM->Get('Kernel::System::Main');
+my $ConfigObject   = $Kernel::OM->Get('Kernel::Config');
+my $MainObject     = $Kernel::OM->Get('Kernel::System::Main');
+my $StorableObject = $Kernel::OM->Get('Kernel::System::Storable');
 
 # get helper object
 $Kernel::OM->ObjectParamAdd(
@@ -60,7 +59,7 @@ for my $SessionFile (@SampleSessionFiles) {
     next SESSIONFILE if ref $Content ne 'SCALAR';
 
     # read data structure back from file dump, use block eval for safety reasons
-    my $Session = eval { Storable::thaw( ${$Content} ) };
+    my $Session = eval { $StorableObject->Deserialize( Data => ${$Content} ) };
     delete $Session->{UserLastRequest};
 
     push @SampleSessionData, $Session;
@@ -105,13 +104,13 @@ for my $ModuleFile (@BackendModuleFiles) {
         my $Length = length($LongString);
         my $Size   = $Length;
         if ( $Size > ( 1024 * 1024 ) ) {
-            $Size = sprintf "%.1f MBytes", ( $Size / ( 1024 * 1024 ) );
+            $Size = sprintf "%.1f MB", ( $Size / ( 1024 * 1024 ) );
         }
         elsif ( $Size > 1024 ) {
-            $Size = sprintf "%.1f KBytes", ( ( $Size / 1024 ) );
+            $Size = sprintf "%.1f KB", ( ( $Size / 1024 ) );
         }
         else {
-            $Size = $Size . ' Bytes';
+            $Size = $Size . ' B';
         }
 
         my %NewSessionData = (
@@ -132,6 +131,11 @@ for my $ModuleFile (@BackendModuleFiles) {
         $Self->True(
             $SessionID,
             "#$Module - CreateSessionID()",
+        );
+
+        $Self->False(
+            scalar $SessionObject->CheckSessionID( SessionID => $SessionID ),
+            "CheckSessionID on empty session"
         );
 
         my %NewSessionDataCheck = $SessionObject->GetSessionIDData( SessionID => $SessionID );
@@ -559,7 +563,7 @@ for my $ModuleFile (@BackendModuleFiles) {
     );
     $SessionObject = Kernel::System::AuthSession->new();
 
-# Create also some GenericInterface sessions, to check that the sessions are not influence the active session and limit check.
+# Create also some webservice sessions, to check that the sessions are not influence the active session and limit check.
     for my $Count ( 1 .. 2 ) {
 
         my %NewSessionData = (
@@ -691,6 +695,17 @@ for my $ModuleFile (@BackendModuleFiles) {
         "#$Module - CreateSessionID() - Config - AgentSessionLimit reached (after change of the config session limit)",
     );
 
+    $SessionID = $SessionObject->CreateSessionID(
+        UserLogin     => 'root-GenericInterface',
+        UserType      => 'User',
+        SessionSource => 'GenericInterface',
+    );
+
+    $Self->True(
+        $SessionID,
+        "#$Module - CreateSessionID() - GenericInterface - No limit for the GenericInterface sessions.",
+    );
+
     $CleanUp = $SessionObject->CleanUp();
 
     $Self->True(
@@ -769,7 +784,7 @@ for my $ModuleFile (@BackendModuleFiles) {
         my %NewSessionData = (
             UserLogin       => 'root' . $Count,
             UserType        => 'User',
-            UserLastRequest => $Kernel::OM->Get('Kernel::System::Time')->SystemTime(),
+            UserLastRequest => $Kernel::OM->Create('Kernel::System::DateTime')->ToEpoch(),
         );
 
         my $SessionID = $SessionObject->CreateSessionID(%NewSessionData);
@@ -780,13 +795,13 @@ for my $ModuleFile (@BackendModuleFiles) {
         );
     }
 
-# Create also some GenericInterface sessions, to check that the sessions are not influence the active session and limit check.
+# Create also some webservice sessions, to check that the sessions are not influence the active session and limit check.
     for my $Count ( 1 .. 2 ) {
 
         my %NewSessionData = (
             UserLogin       => 'root' . $Count,
             UserType        => 'User',
-            UserLastRequest => $Kernel::OM->Get('Kernel::System::Time')->SystemTime(),
+            UserLastRequest => $Kernel::OM->Create('Kernel::System::DateTime')->ToEpoch(),
             SessionSource   => 'GenericInterface',
         );
 

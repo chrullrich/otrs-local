@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -15,25 +15,23 @@ use Kernel::System::VariableCheck qw(:all);
 
 our @ObjectDependencies = (
     'Kernel::Config',
+    'Kernel::System::DateTime',
+    'Kernel::System::CheckItem',
     'Kernel::System::Encode',
     'Kernel::System::FileTemp',
-    'Kernel::System::CheckItem',
     'Kernel::System::Log',
     'Kernel::System::Main',
-    'Kernel::System::Time',
 );
 
 =head1 NAME
 
 Kernel::System::Crypt::PGP - pgp crypt backend lib
 
-=head1 SYNOPSIS
+=head1 DESCRIPTION
 
 This is a sub module of Kernel::System::Crypt and contains all pgp functions.
 
 =head1 PUBLIC INTERFACE
-
-=over 4
 
 =cut
 
@@ -58,7 +56,7 @@ sub new {
     return $Self;
 }
 
-=item Check()
+=head2 Check()
 
 check if environment is working
 
@@ -88,9 +86,18 @@ sub Check {
     return;
 }
 
-=item Crypt()
+=head2 Crypt()
 
 crypt a message
+
+    my $Message = $CryptObject->Crypt(
+        Message => $Message,
+        Key     => [
+            $PGPPublicKeyID,
+            $PGPPublicKeyID2,
+            # ...
+        ],
+    );
 
     my $Message = $CryptObject->Crypt(
         Message => $Message,
@@ -102,18 +109,37 @@ crypt a message
 sub Crypt {
     my ( $Self, %Param ) = @_;
 
-    for my $ParamName (qw( Message Key )) {
-        if ( !$Param{$ParamName} ) {
+    for my $Needed (qw( Message Key )) {
+        if ( !$Param{$Needed} ) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
-                Message  => "Need $ParamName!"
+                Message  => "Need $Needed!"
             );
             return;
         }
     }
 
-    # Quote the key parameter before passing it to the shell.
-    my $QuotedKey = $Self->_QuoteShellArgument( $Param{Key} );
+    my @PublicKeys;
+    if ( ref $Param{Key} eq 'ARRAY' ) {
+        for my $Key ( @{ $Param{Key} } ) {
+            my $QuotedKey = $Self->_QuoteShellArgument($Key);
+            push @PublicKeys, $QuotedKey;
+        }
+    }
+    elsif ( ref $Param{Key} eq '' ) {
+        my $QuotedKey = $Self->_QuoteShellArgument( $Param{Key} );
+        push @PublicKeys, $QuotedKey;
+    }
+
+    if ( !@PublicKeys ) {
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Message  => "Got no keys!",
+            Priority => 'error',
+        );
+        return;
+    }
+
+    my $KeyStr = join ' ', map {"-r $_"} @PublicKeys;
 
     $Kernel::OM->Get('Kernel::System::Encode')->EncodeOutput( \$Param{Message} );
 
@@ -126,7 +152,7 @@ sub Crypt {
 
     my ( $FHCrypt, $FilenameCrypt ) = $FileTempObject->TempFile();
     close $FHCrypt;
-    my $GPGOptions = "--always-trust --yes --encrypt --armor -o $FilenameCrypt -r $QuotedKey $Filename";
+    my $GPGOptions = "--always-trust --yes --encrypt --armor -o $FilenameCrypt $KeyStr $Filename";
     my $LogMessage = qx{$Self->{GPGBin} $GPGOptions 2>&1};
 
     # get crypted content
@@ -135,7 +161,7 @@ sub Crypt {
     return $$CryptedDataRef;
 }
 
-=item Decrypt()
+=head2 Decrypt()
 
 Decrypt a message and returns a hash (Successful, Message, Data)
 
@@ -193,7 +219,7 @@ sub Decrypt {
     return %Return;
 }
 
-=item Sign()
+=head2 Sign()
 
 sign a message
 
@@ -222,6 +248,10 @@ sub Sign {
     my $SigType      = $Param{Type} && $Param{Type} eq 'Detached'
         ? '--detach-sign --armor'
         : '--clearsign';
+    my $DigestAlgorithm = $Kernel::OM->Get('Kernel::Config')->Get('PGP::Options::DigestPreference') || '';
+    if ($DigestAlgorithm) {
+        $DigestAlgorithm = '--personal-digest-preferences ' . uc $DigestAlgorithm;
+    }
 
     # get temp file object
     my $FileTempObject = $Kernel::OM->Get('Kernel::System::FileTemp');
@@ -259,7 +289,8 @@ sub Sign {
         $Quiet = '--quiet --batch --pinentry-mode=loopback';
     }
 
-    my $GPGOptions = qq{$Quiet --passphrase-fd 0 -o $FileSign --default-key $QuotedKey $SigType $Filename};
+    my $GPGOptions
+        = qq{$Quiet --passphrase-fd 0 -o $FileSign --default-key $QuotedKey $SigType $DigestAlgorithm $Filename};
     my $LogMessage = qx{$Self->{GPGBin} $GPGOptions < $FilePhrase 2>&1};
 
     # error
@@ -279,7 +310,7 @@ sub Sign {
     return $$SignedDataRef;
 }
 
-=item Verify()
+=head2 Verify()
 
 verify a message signature and returns a hash (Successful, Message, Data)
 
@@ -622,7 +653,7 @@ sub Verify {
     return %Return;
 }
 
-=item KeySearch()
+=head2 KeySearch()
 
 returns a array with search result (private and public keys)
 
@@ -642,7 +673,7 @@ sub KeySearch {
     return @Result;
 }
 
-=item PrivateKeySearch()
+=head2 PrivateKeySearch()
 
 returns an array with search result (private keys)
 
@@ -662,7 +693,7 @@ sub PrivateKeySearch {
     return $Self->_ParseGPGKeyList( GPGOutputLines => \@GPGOutputLines );
 }
 
-=item PublicKeySearch()
+=head2 PublicKeySearch()
 
 returns an array with search result (public keys)
 
@@ -682,7 +713,7 @@ sub PublicKeySearch {
     return $Self->_ParseGPGKeyList( GPGOutputLines => \@GPGOutputLines );
 }
 
-=item PublicKeyGet()
+=head2 PublicKeyGet()
 
 returns public key in ascii
 
@@ -723,7 +754,7 @@ sub PublicKeyGet {
     return $LogMessage;
 }
 
-=item SecretKeyGet()
+=head2 SecretKeyGet()
 
 returns secret key in ascii
 
@@ -788,7 +819,7 @@ sub SecretKeyGet {
     return $LogMessage;
 }
 
-=item PublicKeyDelete()
+=head2 PublicKeyDelete()
 
 remove public key from key ring
 
@@ -827,7 +858,7 @@ sub PublicKeyDelete {
     return 1;
 }
 
-=item SecretKeyDelete()
+=head2 SecretKeyDelete()
 
 remove secret key from key ring
 
@@ -882,7 +913,7 @@ sub SecretKeyDelete {
     return 1;
 }
 
-=item KeyAdd()
+=head2 KeyAdd()
 
 add key to key ring
 
@@ -1031,7 +1062,7 @@ sub _DecryptPart {
     }
 }
 
-=item _HandleLog()
+=head2 _HandleLog()
 
 Clean and build the log
 
@@ -1091,7 +1122,7 @@ sub _HandleLog {
     return %ComputableLog;
 }
 
-=item _ParseGPGKeyList()
+=head2 _ParseGPGKeyList()
 
 parses given key list (as received from gpg) and returns an array with key infos
 
@@ -1099,9 +1130,6 @@ parses given key list (as received from gpg) and returns an array with key infos
 
 sub _ParseGPGKeyList {
     my ( $Self, %Param ) = @_;
-
-    # get time object
-    my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
 
     my %Key;
     my $InKey;
@@ -1151,12 +1179,31 @@ sub _ParseGPGKeyList {
             }
 
             # Status is good, but let's make sure the key isn't expired.
-            my $CurrentSystemTime = $TimeObject->SystemTime();
-            my $ExpiresKeyTime    = $TimeObject->TimeStamp2SystemTime(
+            my $CurSysDTObject = $Kernel::OM->Create('Kernel::System::DateTime');
+
+            # GnuPG 2.0 (and higher) Key Expires date is in epoch format. Appropriately modify DateTime params.
+            my %DateTimeParams = (
                 String => $Key{Expires} . ' 23:59:59',
             );
 
-            if ( $CurrentSystemTime >= $ExpiresKeyTime ) {
+            if (
+                IsHashRefWithData( $Self->{Version} )
+                && sprintf( "%.3d%.3d", $Self->{Version}->{Major}, $Self->{Version}->{Minor} ) >= 2_000
+                )
+            {
+                %DateTimeParams = (
+                    Epoch => $Key{Expires},
+                );
+            }
+
+            my $ExpiresKeyDTObject = $Kernel::OM->Create(
+                'Kernel::System::DateTime',
+                ObjectParams => {
+                    %DateTimeParams,
+                },
+            );
+
+            if ( $CurSysDTObject >= $ExpiresKeyDTObject ) {
                 $Key{Status} = 'expired';
             }
         }
@@ -1205,19 +1252,22 @@ sub _ParseGPGKeyList {
         }
 
         # convert system time to timestamp
+        my $Epoch2YMD = sub {
+            return $Kernel::OM->Create(
+                'Kernel::System::DateTime',
+                ObjectParams => {
+                    Epoch => shift,
+                },
+            )->Format( Format => '%Y-%m-%d' );
+        };
+
         if ( $Key{Created} !~ /-/ ) {
-            my ( $Sec, $Min, $Hour, $Day, $Month, $Year, $WeekDay ) = $TimeObject->SystemTime2Date(
-                SystemTime => $Key{Created},
-            );
-            $Key{Created} = "$Year-$Month-$Day";
+            $Key{Created} = $Epoch2YMD->( $Key{Created} );
         }
 
         # expires
         if ( $Key{Expires} =~ /^\d*$/ ) {
-            my ( $Sec, $Min, $Hour, $Day, $Month, $Year, $WeekDay ) = $TimeObject->SystemTime2Date(
-                SystemTime => $Key{Expires},
-            );
-            $Key{Expires} = "$Year-$Month-$Day";
+            $Key{Expires} = $Epoch2YMD->( $Key{Expires} );
         }
     }
 
@@ -1267,7 +1317,7 @@ sub _CryptedWithKey {
     return @Keys;
 }
 
-=item _QuoteShellArgument()
+=head2 _QuoteShellArgument()
 
 Quote passed string to be safe to use as a shell argument.
 
@@ -1303,8 +1353,6 @@ sub _QuoteShellArgument {
 1;
 
 =end Internal:
-
-=back
 
 =head1 TERMS AND CONDITIONS
 

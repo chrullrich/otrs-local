@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -11,15 +11,35 @@ use utf8;
 
 use vars (qw($Self));
 
+# get helper object
+$Kernel::OM->ObjectParamAdd(
+    'Kernel::System::UnitTest::Helper' => {
+        RestoreDatabase => 1,
+    },
+);
+my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+
+# Disable email addresses checking.
+$Helper->ConfigSettingChange(
+    Key   => 'CheckEmailAddresses',
+    Value => 0,
+);
+
+$Kernel::OM->Get('Kernel::Config')->Set(
+    Key   => 'OTRSTimeZone',
+    Value => 'UTC',
+);
+
 $Kernel::OM->Get('Kernel::Config')->Set(
     Key   => 'SendmailModule',
     Value => 'Kernel::System::Email::DoNotSendEmail',
 );
 
-local $ENV{TZ} = 'UTC';
-my $Helper     = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
-my $SystemTime = $Kernel::OM->Get('Kernel::System::Time')->TimeStamp2SystemTime(
-    String => '2014-01-01 12:00:00',
+my $SystemTime = $Kernel::OM->Create(
+    'Kernel::System::DateTime',
+    ObjectParams => {
+        String => '2014-01-01 12:00:00',
+    },
 );
 $Helper->FixedTimeSet($SystemTime);
 
@@ -56,12 +76,30 @@ EOF
     },
 );
 
+my $CommunicationLogObject = $Kernel::OM->Create(
+    'Kernel::System::CommunicationLog',
+    ObjectParams => {
+        Transport => 'Email',
+        Direction => 'Outgoing',
+    },
+);
+
 for my $Test (@Tests) {
-    my ( $Header, $Body ) = $EmailObject->Bounce(
-        %{ $Test->{Params} }
+    $CommunicationLogObject->ObjectLogStart(
+        ObjectLogType => 'Message'
     );
+    my $SentResult = $EmailObject->Bounce(
+        %{ $Test->{Params} },
+        CommunicationLogObject => $CommunicationLogObject,
+    );
+
+    $Self->True(
+        $SentResult->{Success},
+        sprintf( 'Bounce %s queued.', $Test->{Name}, ),
+    );
+
     $Self->Is(
-        $$Header . "\n" . $$Body,
+        $SentResult->{Data}->{Header} . "\n" . $SentResult->{Data}->{Body},
         $Test->{Result},
         "$Test->{Name} Bounce()",
     );

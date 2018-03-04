@@ -1,5 +1,5 @@
 // --
-// Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+// Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
 // the enclosed file COPYING for license information (AGPL). If you
@@ -97,8 +97,7 @@ Core.Agent.SortedTree = (function (TargetNS) {
 
             // elements which have children can't be removed
             if ($(this).parent().next('ul').length) {
-                alert("This element has children elements and can currently not be removed.");
-//                alert([% Translate("This element has children elements and can currently not be removed.") | JSON %]);
+                alert(Core.Language.Translate('This element has children elements and can currently not be removed.'));
                 return false;
             }
 

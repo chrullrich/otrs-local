@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -159,113 +159,95 @@ sub CustomerPreferencesForm {
     );
 
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
-    my @Groups       = @{ $ConfigObject->Get('CustomerPreferencesView') };
+    my %Data;
+    my %Preferences = %{ $ConfigObject->Get('CustomerPreferencesGroups') };
 
-    COLUMN:
-    for my $Column (@Groups) {
+    GROUP:
+    for my $Group ( sort keys %Preferences ) {
 
-        next COLUMN if !$Column;
+        next GROUP if !$Group;
 
-        my %Data;
-        my %Preferences = %{ $ConfigObject->Get('CustomerPreferencesGroups') };
+        my $PreferencesGroup = $Preferences{$Group};
 
-        GROUP:
-        for my $Group ( sort keys %Preferences ) {
+        next GROUP if !$PreferencesGroup;
+        next GROUP if ref $PreferencesGroup ne 'HASH';
 
-            next GROUP if !$Group;
+        $PreferencesGroup->{Prio} ||= 9999;
 
-            my $PreferencesGroup = $Preferences{$Group};
+        if ( $Data{ $PreferencesGroup->{Prio} } ) {
 
-            next GROUP if !$PreferencesGroup;
-            next GROUP if ref $PreferencesGroup ne 'HASH';
+            COUNT:
+            for ( 1 .. 151 ) {
 
-            $PreferencesGroup->{Column} ||= '';
-            $PreferencesGroup->{Prio}   ||= 9999;
+                $PreferencesGroup->{Prio}++;
 
-            next GROUP if $PreferencesGroup->{Column} ne $Column;
-
-            if ( $Data{ $PreferencesGroup->{Prio} } ) {
-
-                COUNT:
-                for ( 1 .. 151 ) {
-
-                    $PreferencesGroup->{Prio}++;
-
-                    if ( !$Data{ $PreferencesGroup->{Prio} } ) {
-                        $Data{ $PreferencesGroup->{Prio} } = $Group;
-                        last COUNT;
-                    }
+                if ( !$Data{ $PreferencesGroup->{Prio} } ) {
+                    $Data{ $PreferencesGroup->{Prio} } = $Group;
+                    last COUNT;
                 }
             }
-
-            $Data{ $PreferencesGroup->{Prio} } = $Group;
         }
 
+        $Data{ $PreferencesGroup->{Prio} } = $Group;
+    }
+
+    # sort
+    for my $Key ( sort keys %Data ) {
+        $Data{ sprintf( "%07d", $Key ) } = $Data{$Key};
+        delete $Data{$Key};
+    }
+
+    # show each preferences setting
+    PRIO:
+    for my $Prio ( sort keys %Data ) {
+        my $Group = $Data{$Prio};
+        next PRIO if !$ConfigObject->{CustomerPreferencesGroups}->{$Group};
+
+        my %Preference = %{ $ConfigObject->{CustomerPreferencesGroups}->{$Group} };
+        next PRIO if !$Preference{Active};
+
+        # load module
+        my $Module = $Preference{Module} || 'Kernel::Output::HTML::CustomerPreferencesGeneric';
+        if ( !$Kernel::OM->Get('Kernel::System::Main')->Require($Module) ) {
+            return $LayoutObject->FatalError();
+        }
+        my $Object = $Module->new(
+            %{$Self},
+            UserObject => $Kernel::OM->Get('Kernel::System::CustomerUser'),
+            ConfigItem => $Preferences{$Group},
+            Debug      => $Self->{Debug},
+        );
+        my @Params = $Object->Param( UserData => $Param{UserData} );
+        next PRIO if !@Params;
+
+        # show item
         $LayoutObject->Block(
-            Name => 'Head',
+            Name => 'Item',
             Data => {
-                Header => $Column,
+                Group => $Group,
+                %Preference,
             },
         );
-
-        # sort
-        for my $Key ( sort keys %Data ) {
-            $Data{ sprintf( "%07d", $Key ) } = $Data{$Key};
-            delete $Data{$Key};
-        }
-
-        # show each preferences setting
-        PRIO:
-        for my $Prio ( sort keys %Data ) {
-            my $Group = $Data{$Prio};
-            next PRIO if !$ConfigObject->{CustomerPreferencesGroups}->{$Group};
-
-            my %Preference = %{ $ConfigObject->{CustomerPreferencesGroups}->{$Group} };
-            next PRIO if !$Preference{Active};
-
-            # load module
-            my $Module = $Preference{Module} || 'Kernel::Output::HTML::CustomerPreferencesGeneric';
-            if ( !$Kernel::OM->Get('Kernel::System::Main')->Require($Module) ) {
-                return $LayoutObject->FatalError();
-            }
-            my $Object = $Module->new(
-                %{$Self},
-                UserObject => $Kernel::OM->Get('Kernel::System::CustomerUser'),
-                ConfigItem => $Preferences{$Group},
-                Debug      => $Self->{Debug},
+        for my $ParamItem (@Params) {
+            my %BuildSelectionParams = (
+                %Preference,
+                %{$ParamItem},
             );
-            my @Params = $Object->Param( UserData => $Param{UserData} );
-            next PRIO if !@Params;
+            $BuildSelectionParams{Class} = join( ' ', $BuildSelectionParams{Class} // '', 'Modernize' );
 
-            # show item
+            if ( ref $ParamItem->{Data} eq 'HASH' || ref $Preference{Data} eq 'HASH' ) {
+                $ParamItem->{Option} = $LayoutObject->BuildSelection(
+                    %BuildSelectionParams
+                );
+            }
             $LayoutObject->Block(
-                Name => 'Item',
-                Data => {
-                    Group => $Group,
-                    %Preference,
-                },
+                Name => 'Block',
+                Data => { %Preference, %{$ParamItem}, },
             );
-            for my $ParamItem (@Params) {
-                my %BuildSelectionParams = (
-                    %Preference,
-                    %{$ParamItem},
-                );
-                $BuildSelectionParams{Class} = join( ' ', $BuildSelectionParams{Class} // '', 'Modernize' );
-
-                if ( ref $ParamItem->{Data} eq 'HASH' || ref $Preference{Data} eq 'HASH' ) {
-                    $ParamItem->{Option} = $LayoutObject->BuildSelection(
-                        %BuildSelectionParams
-                    );
-                }
-                $LayoutObject->Block(
-                    Name => 'Block',
-                    Data => { %Preference, %{$ParamItem}, },
-                );
-                $LayoutObject->Block(
-                    Name => $ParamItem->{Block} || $Preference{Block} || 'Option',
-                    Data => { %Preference, %{$ParamItem}, },
-                );
-            }
+            $LayoutObject->Block(
+                Name => $ParamItem->{Block} || $Preference{Block} || 'Option',
+                Data => { %Preference, %{$ParamItem}, },
+            );
         }
     }
 

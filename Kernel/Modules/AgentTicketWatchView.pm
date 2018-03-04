@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -13,8 +13,8 @@ use warnings;
 
 our $ObjectManagerDisabled = 1;
 
-use Kernel::Language qw(Translatable);
 use Kernel::System::VariableCheck qw(:all);
+use Kernel::Language qw(Translatable);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -186,10 +186,15 @@ sub Run {
             $Access = 1;
         }
         else {
+            my $GroupObject = $Kernel::OM->Get('Kernel::System::Group');
             GROUP:
             for my $Group (@Groups) {
-                next GROUP if !$LayoutObject->{"UserIsGroup[$Group]"};
-                if ( $LayoutObject->{"UserIsGroup[$Group]"} eq 'Yes' ) {
+                my $HasPermission = $GroupObject->PermissionCheck(
+                    UserID    => $Self->{UserID},
+                    GroupName => $Group,
+                    Type      => 'rw',
+                );
+                if ($HasPermission) {
                     $Access = 1;
                     last GROUP;
                 }
@@ -396,7 +401,7 @@ sub Run {
             %{ $Filters{$FilterColumn}->{Search} },
             %ColumnFilter,
             Result => 'COUNT',
-        );
+        ) || 0;
 
         # prepare count for new article tickets
         if ( $FilterColumn eq 'New' ) {
@@ -404,7 +409,7 @@ sub Run {
                 %{ $Filters{All}->{Search} },
                 %ColumnFilter,
                 Result => 'COUNT',
-            );
+            ) || 0;
             $Count = $CountAll - $Count;
         }
 

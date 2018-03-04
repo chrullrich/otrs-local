@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -13,11 +13,7 @@ use vars (qw($Self));
 
 use Kernel::System::ObjectManager;
 
-local $Kernel::OM = Kernel::System::ObjectManager->new(
-    'Kernel::System::PostMaster' => {
-        Email => [],
-    },
-);
+local $Kernel::OM = Kernel::System::ObjectManager->new();
 
 $Self->True( $Kernel::OM, 'Could build object manager' );
 

@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -11,9 +11,9 @@ package Kernel::Modules::AdminSystemAddress;
 use strict;
 use warnings;
 
-our $ObjectManagerDisabled = 1;
-
 use Kernel::Language qw(Translatable);
+
+our $ObjectManagerDisabled = 1;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -109,18 +109,20 @@ sub Run {
                 )
                 )
             {
-                $Self->_Overview();
-                my $Output = $LayoutObject->Header();
-                $Output .= $LayoutObject->NavigationBar();
-                $Output .= $LayoutObject->Notify(
-                    Info => Translatable('System e-mail address updated!'),
-                );
-                $Output .= $LayoutObject->Output(
-                    TemplateFile => 'AdminSystemAddress',
-                    Data         => \%Param,
-                );
-                $Output .= $LayoutObject->Footer();
-                return $Output;
+                # if the user would like to continue editing system e-mail address, just redirect to the edit screen
+                # otherwise return to overview
+                if (
+                    defined $ParamObject->GetParam( Param => 'ContinueAfterSave' )
+                    && ( $ParamObject->GetParam( Param => 'ContinueAfterSave' ) eq '1' )
+                    )
+                {
+                    return $LayoutObject->Redirect(
+                        OP => "Action=$Self->{Action};Subaction=Change;ID=$GetParam{ID}"
+                    );
+                }
+                else {
+                    return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" );
+                }
             }
         }
 
@@ -248,6 +250,7 @@ sub Run {
     # ------------------------------------------------------------
     else {
         $Self->_Overview();
+
         my $Output = $LayoutObject->Header();
         $Output .= $LayoutObject->NavigationBar();
         $Output .= $LayoutObject->Output(
@@ -278,9 +281,8 @@ sub _Edit {
     my %ValidList   = $ValidObject->ValidList();
 
     # If there is queue using this system address, disable invalid selection on edit screen.
-    my $SystemAddressObject = $Kernel::OM->Get('Kernel::System::SystemAddress');
-    if ( $Param{Action} eq 'Change' && $SystemAddressObject->can('SystemAddressIsUsed') ) {
-        $Param{SystemAddressIsUsed} = $SystemAddressObject->SystemAddressIsUsed(
+    if ( $Param{Action} eq 'Change' ) {
+        $Param{SystemAddressIsUsed} = $Kernel::OM->Get('Kernel::System::SystemAddress')->SystemAddressIsUsed(
             SystemAddressID => $Param{ID},
         );
         if ( $Param{SystemAddressIsUsed} ) {
@@ -313,14 +315,6 @@ sub _Edit {
         },
     );
 
-    # Shows header.
-    if ( $Param{Action} eq 'Change' ) {
-        $LayoutObject->Block( Name => 'HeaderEdit' );
-    }
-    else {
-        $LayoutObject->Block( Name => 'HeaderAdd' );
-    }
-
     # Add the correct server error msg for the system email address.
     if ( $Param{Name} && $Param{Errors}->{ErrorType} ) {
         $LayoutObject->Block(
@@ -351,6 +345,7 @@ sub _Overview {
 
     $LayoutObject->Block( Name => 'ActionList' );
     $LayoutObject->Block( Name => 'ActionAdd' );
+    $LayoutObject->Block( Name => 'Filter' );
 
     $LayoutObject->Block(
         Name => 'OverviewResult',

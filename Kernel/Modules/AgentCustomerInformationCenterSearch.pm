@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -142,7 +142,6 @@ sub Run {
                 Label => $CustomerList{$CustomerLogin},
                 Value => $CustomerData{UserCustomerID}
                 };
-
             last CUSTOMERLOGIN if scalar @Result >= $MaxResults;
 
         }
@@ -159,7 +158,7 @@ sub Run {
         );
     }
 
-    my $Output .= $LayoutObject->Output(
+    my $Output = $LayoutObject->Output(
         TemplateFile => 'AgentCustomerInformationCenterSearch',
         Data         => \%Param,
     );

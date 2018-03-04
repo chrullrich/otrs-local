@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -52,15 +52,29 @@ $Selenium->RunTest(
             Value => '::',
         );
 
+        # Enable NewArticleIgnoreSystemSender config.
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'Ticket::NewArticleIgnoreSystemSender',
+            Value => 1,
+        );
+
         # create and login test user
+        my $Language      = 'de';
         my $TestUserLogin = $Helper->TestUserCreate(
-            Groups => [ 'admin', 'users' ],
+            Groups   => [ 'admin', 'users' ],
+            Language => $Language,
         ) || die "Did not get test user";
 
         $Selenium->Login(
             Type     => 'Agent',
             User     => $TestUserLogin,
             Password => $TestUserLogin,
+        );
+
+        # Get language object.
+        my $LanguageObject = Kernel::Language->new(
+            UserLanguage => $Language,
         );
 
         # create test customer
@@ -72,7 +86,6 @@ $Selenium->RunTest(
             User => $TestCustomerUser,
         );
 
-        # get ticket object
         my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
         # create test ticket
@@ -95,22 +108,35 @@ $Selenium->RunTest(
             "Ticket is created - ID $TicketID",
         );
 
-        # add article
-        my $ArticleID = $TicketObject->ArticleCreate(
-            TicketID    => $TicketID,
-            ArticleType => 'email-external',                     # email-external|email-internal|phone|fax|...
-            SenderType  => 'customer',                           # agent|system|customer
-            Subject     => 'First article',                      # required
-            Body        => 'the message text',                   # required
-            ContentType => 'text/plain; charset=ISO-8859-15',    # or optional Charset & MimeType
-            HistoryType    => 'EmailCustomer',     # EmailCustomer|Move|AddNote|PriorityUpdate|WebRequestCustomer|...
-            HistoryComment => 'Some free text!',
-            UserID         => 1,
+        my $ArticleBackendObject = $Kernel::OM->Get('Kernel::System::Ticket::Article')->BackendForChannel(
+            ChannelName => 'Phone',
         );
-        $Self->True(
-            $ArticleID,
-            "Article is created - ID $ArticleID",
-        );
+
+        # create two ticket articles
+        my @ArticleIDs;
+        for my $ArticleCreate ( 1 .. 2 ) {
+            my $SenderType = 'agent';
+            if ( $ArticleCreate == 2 ) {
+                $SenderType = 'system';
+            }
+            my $ArticleID = $ArticleBackendObject->ArticleCreate(
+                TicketID             => $TicketID,
+                IsVisibleForCustomer => 1,
+                SenderType           => $SenderType,
+                Subject              => 'Selenium subject test',
+                Body                 => "Article $ArticleCreate",
+                ContentType          => 'text/plain; charset=ISO-8859-15',
+                HistoryType          => 'OwnerUpdate',
+                HistoryComment       => 'Some free text!',
+                UserID               => 1,
+                NoAgentNotify        => 1,
+            );
+            $Self->True(
+                $ArticleID,
+                "ArticleCreate - ID $ArticleID",
+            );
+            push @ArticleIDs, $ArticleID;
+        }
 
         # get script alias
         my $ScriptAlias = $Kernel::OM->Get('Kernel::Config')->Get('ScriptAlias');
@@ -141,16 +167,88 @@ $Selenium->RunTest(
             $Element->is_displayed();
         }
 
+        my $OTRSBusinessIsInstalled = $Kernel::OM->Get('Kernel::System::OTRSBusiness')->OTRSBusinessIsInstalled();
+        my $OBTeaser                = $LanguageObject->Translate('All attachments (OTRS Business Solution™)');
+        my $OBTeaserFound           = index( $Selenium->get_page_source(), $OBTeaser ) > -1;
+        if ( !$OTRSBusinessIsInstalled ) {
+            $Self->True(
+                $OBTeaserFound,
+                "OTRSBusiness teaser found on page",
+            );
+        }
+        else {
+            $Self->False(
+                $OBTeaserFound,
+                "OTRSBusiness teaser not found on page",
+            );
+        }
+
+        # verify article order in zoom screen
+        $Self->Is(
+            $Selenium->execute_script(
+                "return \$(\$('table tbody tr')[0]).attr('id')"
+            ),
+            'Row2',
+            "First Article in table is second created article",
+        );
+        $Self->Is(
+            $Selenium->execute_script(
+                "return \$(\$('table tbody tr')[1]).attr('id')"
+            ),
+            'Row1',
+            "Second Article in table is first created article",
+        );
+
+        # Verify selected article. Config 'NewArticleIgnoreSystemSender' is enable.
+        #   Non system sender type article should be selected ( first created article ).
+        $Self->True(
+            $Selenium->execute_script(
+                "return \$('#ArticleItems').find('[name=\"Article$ArticleIDs[0]\"]').length"
+            ),
+            "First 'agent' sender type article is selected"
+        );
+        $Self->False(
+            $Selenium->execute_script(
+                "return \$('#ArticleItems').find('[name=\"Article$ArticleIDs[1]\"]').length"
+            ),
+            "Second 'system' sender type article is not selected"
+        );
+
+        # click to sort by article number
+        $Selenium->find_element("//th[\@class='No Sortable tablesorter-header tablesorter-headerUnSorted']")->click();
+
+        # verify change in article order on column header click, test Core.UI.Table.Sort.js
+        $Self->Is(
+            $Selenium->execute_script(
+                "return \$(\$('table tbody tr')[0]).attr('id')"
+            ),
+            'Row1',
+            "First Article in table is first created article - JS success",
+        );
+        $Self->Is(
+            $Selenium->execute_script(
+                "return \$(\$('table tbody tr')[1]).attr('id')"
+            ),
+            'Row2',
+            "Second Article in table is second created article - JS success",
+        );
+
         # Try to click on the email (link) that should open a popup window.
-        $Selenium->find_element( ".SidebarColumn .WidgetSimple:nth-of-type(2) a.AsPopup", "css" )->click();
+        $Selenium->WaitFor(
+            JavaScript =>
+                'return typeof($) === "function" && $(".SidebarColumn div:nth-of-type(2) a.AsPopup").length'
+        );
+        $Selenium->find_element( ".SidebarColumn div:nth-of-type(2) a.AsPopup", "css" )->click();
 
         # Wait for popup and switch.
         $Selenium->WaitFor( WindowCount => 2 );
         my $Handles = $Selenium->get_window_handles();
         $Selenium->switch_to_window( $Handles->[1] );
 
-        # wait until page has loaded, if necessary
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("a.UndoClosePopup").length' );
+        # Wait until page has loaded, if necessary.
+        $Selenium->WaitFor(
+            JavaScript => 'return typeof(Core) == "object" && typeof(Core.App) == "object" && Core.App.PageLoadComplete'
+        );
 
         # close note pop-up window
         $Selenium->close();

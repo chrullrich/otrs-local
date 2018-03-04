@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -122,11 +122,10 @@ for my $Test (@Tests) {
 
     # update data
     my $Update = $PriorityObject->PriorityUpdate(
-        PriorityID     => $PriorityID,
-        Name           => $NewName,
-        ValidID        => $NewValidID,
-        CheckSysConfig => 0,             # (optional) default 1
-        UserID         => 1,
+        PriorityID => $PriorityID,
+        Name       => $NewName,
+        ValidID    => $NewValidID,
+        UserID     => 1,
     );
 
     $Self->Is(

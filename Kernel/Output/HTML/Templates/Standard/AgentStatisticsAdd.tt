@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -7,8 +7,9 @@
 # --
 
 <div class="MainBox AriaRoleMain LayoutFixedSidebar SidebarFirst">
-    <h1>[% Translate("Statistics » Add") | html %]</h1>
+    <h1>[% Translate("Statistics Overview") | html %]</h1>
 
+    <div class="Clear"></div>
     <div class="SidebarColumn">
         <div class="WidgetSimple">
             <div class="Header">
@@ -17,7 +18,10 @@
             <div class="Content">
                 <ul class="ActionList">
                     <li>
-                        <a href="[% Env("Baselink") %][% Env("LastStatsOverview") %]" class="CallForAction Fullsize Center"><span><i class="fa fa-caret-left"></i>[% Translate("Go to overview") | html %]</span></a>
+                        <a href="[% Env("Baselink") %]Action=[% Env("Action") %];Subaction=Overview" class="CallForAction Fullsize Center"><span><i class="fa fa-caret-left"></i>[% Translate("Go to overview") | html %]</span></a>
+                    </li>
+                    <li>
+                        <a href="http://otrs.github.io/doc/manual/admin/[% Data.ManualVersion | uri %].0/en/html/statistics-module.html" target="_blank" class="CallForAction Fullsize Center"><span><i class="fa fa-book"></i>[% Translate("Read more about statistics in OTRS") | html %]</span></a>
                     </li>
                 </ul>
             </div>
@@ -31,26 +35,50 @@
 
             <div class="WidgetSimple">
                 <div class="Header">
-                    <h2>[% Translate("Add New Statistic") | html %]</h2>
+                    <h2>[% Translate("Add Statistics") | html %]</h2>
                 </div>
-                <div class="Content BigButtonsContainer">
-                    <div class="BigButtons">
-                        <a href="#" data-statistic-preselection="DynamicMatrix" class="[% IF Data.StatisticPreselection == 'DynamicMatrix' %] Active[% END %][% IF !Data.ShowAddDynamicMatrixButton %] Disabled[% END %]">
-                            <i class="fa fa-table"></i>
-                            <strong>[% Translate('Dynamic Matrix') | html %]</strong>
-                            <span>[% Translate('Tabular reporting data where each cell contains a singular data point (e. g. the number of tickets).') | html %]</span>
-                        </a>
-                        <a href="#" data-statistic-preselection="DynamicList" class="[% IF Data.StatisticPreselection == 'DynamicList' %] Active[% END %][% IF !Data.ShowAddDynamicListButton %] Disabled[% END %]">
-                            <i class="fa fa-list"></i>
-                            <strong>[% Translate('Dynamic List') | html %]</strong>
-                            <span>[% Translate('Tabular reporting data where each row contains data of one entity (e. g. a ticket).') | html %]</span>
-                        </a>
-                        <a href="#" data-statistic-preselection="Static" class="[% IF Data.StatisticPreselection == 'Static' %] Active[% END %][% IF !Data.ShowAddStaticButton %] Disabled[% END %]">
-                            <i class="fa fa-code"></i>
-                            <strong>[% Translate('Static') | html %]</strong>
-                            <span>[% Translate('Complex statistics that cannot be configured and may return non-tabular data.') | html %]</span>
-                        </a>
-                    </div>
+                <div class="Content">
+                    <ul class="ItemListGrid WithIcons">
+                        <li>
+                            <a href="" data-statistic-preselection="DynamicMatrix" class="AsBlock [% IF Data.StatisticPreselection == 'DynamicMatrix' %] Active[% END %][% IF !Data.ShowAddDynamicMatrixButton %] Disabled[% END %]">
+                                <span class="Icons">
+                                    <i class="fa fa-table"></i>
+                                </span>
+                                <span class="Title">
+                                    [% Translate('Dynamic Matrix') | html %]
+                                </span>
+                                <span class="Description">
+                                    [% Translate('Each cell contains a singular data point.') | html %]
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" data-statistic-preselection="DynamicList" class="AsBlock [% IF Data.StatisticPreselection == 'DynamicList' %] Active[% END %][% IF !Data.ShowAddDynamicListButton %] Disabled[% END %]">
+                                <span class="Icons">
+                                    <i class="fa fa-list"></i>
+                                </span>
+                                <span class="Title">
+                                    [% Translate('Dynamic List') | html %]
+                                </span>
+                                <span class="Description">
+                                    [% Translate('Each row contains data of one entity.') | html %]
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" data-statistic-preselection="Static" class="AsBlock [% IF Data.StatisticPreselection == 'Static' %] Active[% END %][% IF !Data.ShowAddStaticButton %] Disabled[% END %]">
+                                <span class="Icons">
+                                    <i class="fa fa-table"></i>
+                                </span>
+                                <span class="Title">
+                                    [% Translate('Static') | html %]
+                                </span>
+                                <span class="Description">
+                                    [% Translate('Non-configurable complex statistics.') | html %]
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
 
@@ -74,7 +102,7 @@
                                 <span>[% Translate("Save") | html %]</span>
                             </button>
                             [% Translate('or') | html %]
-                            <a href="[% Env("Baselink") %][% Env('LastStatsOverview') %]">
+                            <a href="[% Env("Baselink") %]Action=[% Env("Action") %];Subaction=Overview">
                                 [% Translate('Cancel') | html %]
                             </a>
                         </div>
@@ -84,9 +112,3 @@
         </form>
     </div>
 </div>
-
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-Core.Agent.Statistics.InitAddScreen();
-//]]></script>
-[% END %]

@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -12,25 +12,25 @@ use utf8;
 
 use vars (qw($Self));
 
+# get needed objects
+my $GroupObject = $Kernel::OM->Get('Kernel::System::Group');
+
 # get helper object
 $Kernel::OM->ObjectParamAdd(
     'Kernel::System::UnitTest::Helper' => {
         RestoreDatabase => 1,
     },
 );
-my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
-
-# get group object
-my $GroupObject = $Kernel::OM->Get('Kernel::System::Group');
+my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
 #
 # Group tests
 #
-my $GroupNameRandom    = $Helper->GetRandomID();
-my %GroupIDByGroupName = (
-    'test-group-' . $GroupNameRandom . '-1' => undef,
-    'test-group-' . $GroupNameRandom . '-2' => undef,
-    'test-group-' . $GroupNameRandom . '-3' => undef,
+my $GroupNameRandomPartBase = $Kernel::OM->Create('Kernel::System::DateTime')->ToEpoch();
+my %GroupIDByGroupName      = (
+    'test-group-' . $GroupNameRandomPartBase . '-1' => undef,
+    'test-group-' . $GroupNameRandomPartBase . '-2' => undef,
+    'test-group-' . $GroupNameRandomPartBase . '-3' => undef,
 );
 
 # try to add groups
@@ -103,7 +103,7 @@ for my $GroupName ( sort keys %GroupIDByGroupName ) {
 
     $Self->True(
         exists $Groups{$GroupID} && $Groups{$GroupID} eq $GroupName,
-        'GroupList() contains group ' . $GroupName . ' with ID ' . $GroupID,
+        'GroupList() contains the group ' . $GroupName . ' with ID ' . $GroupID,
     );
 }
 
@@ -114,12 +114,12 @@ for my $GroupName ( sort keys %GroupIDByGroupName ) {
 
     $Self->True(
         exists $GroupDataList{$GroupID} && $GroupDataList{$GroupID}->{Name} eq $GroupName,
-        'GroupDataList() contains group ' . $GroupName . ' with ID ' . $GroupID,
+        'GroupDataList() contains the group ' . $GroupName . ' with ID ' . $GroupID,
     );
 }
 
 # change name of a single group
-my $GroupNameToChange = 'test-group-' . $GroupNameRandom . '-1';
+my $GroupNameToChange = 'test-group-' . $GroupNameRandomPartBase . '-1';
 my $ChangedGroupName  = $GroupNameToChange . '-changed';
 my $GroupIDToChange   = $GroupIDByGroupName{$GroupNameToChange};
 
@@ -139,58 +139,73 @@ $GroupIDByGroupName{$ChangedGroupName} = $GroupIDToChange;
 delete $GroupIDByGroupName{$GroupNameToChange};
 
 # try to add group with previous name
-my $GroupID1 = $GroupObject->GroupAdd(
+my $GroupID = $GroupObject->GroupAdd(
     Name    => $GroupNameToChange,
     ValidID => 1,
     UserID  => 1,
 );
 
 $Self->True(
-    $GroupID1,
-    'GroupAdd() add the first test group ' . $GroupNameToChange,
+    $GroupID,
+    'GroupAdd() for new group ' . $GroupNameToChange,
 );
 
-if ($GroupID1) {
-    $GroupIDByGroupName{$GroupNameToChange} = $GroupID1;
+if ($GroupID) {
+    $GroupIDByGroupName{$GroupNameToChange} = $GroupID;
 }
 
 # try to add group with changed name
-my $GroupWrong = $GroupObject->GroupAdd(
+$GroupID = $GroupObject->GroupAdd(
     Name    => $ChangedGroupName,
     ValidID => 1,
     UserID  => 1,
 );
 
 $Self->False(
-    $GroupWrong,
-    'GroupAdd() add group with existing name ' . $ChangedGroupName,
+    $GroupID,
+    'GroupAdd() for new group ' . $ChangedGroupName,
 );
 
-my $GroupName2 = $GroupNameToChange . 'update';
-my $GroupID2   = $GroupObject->GroupAdd(
-    Name    => $GroupName2,
-    ValidID => 1,
-    UserID  => 1,
-);
+# set created groups to invalid
+GROUPNAME:
+for my $GroupName ( sort keys %GroupIDByGroupName ) {
+    next GROUPNAME if !$GroupIDByGroupName{$GroupName};
 
-$Self->True(
-    $GroupID2,
-    'GroupAdd() add the second test group ' . $ChangedGroupName,
-);
+    my $GroupUpdate = $GroupObject->GroupUpdate(
+        ID      => $GroupIDByGroupName{$GroupName},
+        Name    => $GroupName,
+        ValidID => 2,
+        UserID  => 1,
+    );
 
-# try to update group with the name of existing group
-my $GroupUpdateWrong = $GroupObject->GroupUpdate(
-    ID      => $GroupID2,
-    Name    => $GroupNameToChange,
-    ValidID => 2,
-    UserID  => 1,
-);
+    $Self->True(
+        $GroupUpdate,
+        'GroupUpdate() to set group ' . $GroupName . ' to invalid',
+    );
+}
 
-$Self->False(
-    $GroupUpdateWrong,
-    'GroupUpdate() update group with existing name ' . $ChangedGroupName,
-);
+# list valid groups
+%Groups = $GroupObject->GroupList( Valid => 1 );
+for my $GroupName ( sort keys %GroupIDByGroupName ) {
+    my $GroupID = $GroupIDByGroupName{$GroupName};
 
-# cleanup is done by RestoreDatabase
+    $Self->False(
+        exists $Groups{$GroupID},
+        'GroupList() does not contain the group ' . $GroupName . ' with ID ' . $GroupID,
+    );
+}
+
+# list all groups
+%Groups = $GroupObject->GroupList( Valid => 0 );
+for my $GroupName ( sort keys %GroupIDByGroupName ) {
+    my $GroupID = $GroupIDByGroupName{$GroupName};
+
+    $Self->True(
+        exists $Groups{$GroupID} && $Groups{$GroupID} eq $GroupName,
+        'GroupList() contains the group ' . $GroupName . ' with ID ' . $GroupID,
+    );
+}
+
+# Cleanup is done by RestoreDatabase.
 
 1;

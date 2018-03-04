@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -8,6 +8,8 @@
 
 package Kernel::Output::HTML::ToolBar::TicketWatcher;
 
+use parent 'Kernel::Output::HTML::Base';
+
 use strict;
 use warnings;
 
@@ -15,23 +17,11 @@ use Kernel::Language qw(Translatable);
 
 our @ObjectDependencies = (
     'Kernel::Config',
-    'Kernel::System::Log',
     'Kernel::Output::HTML::Layout',
+    'Kernel::System::Group',
+    'Kernel::System::Log',
     'Kernel::System::Ticket',
 );
-
-sub new {
-    my ( $Type, %Param ) = @_;
-
-    # allocate new hash for object
-    my $Self = {};
-    bless( $Self, $Type );
-
-    # get UserID param
-    $Self->{UserID} = $Param{UserID} || die "Got no UserID!";
-
-    return $Self;
-}
 
 sub Run {
     my ( $Self, %Param ) = @_;
@@ -53,6 +43,8 @@ sub Run {
         }
     }
 
+    return if !$ConfigObject->Get('Frontend::Module')->{AgentTicketWatchView};
+
     # get layout object
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
@@ -62,11 +54,16 @@ sub Run {
         @Groups = @{ $ConfigObject->Get('Ticket::WatcherGroup') };
     }
     if (@Groups) {
-        my $Access = 0;
+        my $Access      = 0;
+        my $GroupObject = $Kernel::OM->Get('Kernel::System::Group');
         GROUP:
         for my $Group (@Groups) {
-            next GROUP if !$LayoutObject->{"UserIsGroup[$Group]"};
-            if ( $LayoutObject->{"UserIsGroup[$Group]"} eq 'Yes' ) {
+            my $HasPermission = $GroupObject->PermissionCheck(
+                UserID    => $Self->{UserID},
+                GroupName => $Group,
+                Type      => 'rw',
+            );
+            if ($HasPermission) {
                 $Access = 1;
                 last GROUP;
             }
@@ -85,7 +82,7 @@ sub Run {
         WatchUserIDs => [ $Self->{UserID} ],
         UserID       => 1,
         Permission   => 'ro',
-    );
+    ) || 0;
     my $CountNew = $TicketObject->TicketSearch(
         Result       => 'COUNT',
         WatchUserIDs => [ $Self->{UserID} ],
@@ -95,7 +92,7 @@ sub Run {
         TicketFlagUserID => $Self->{UserID},
         UserID           => 1,
         Permission       => 'ro',
-    );
+    ) || 0;
     $CountNew = $Count - $CountNew;
 
     my $CountReached = $TicketObject->TicketSearch(
@@ -105,7 +102,7 @@ sub Run {
         TicketPendingTimeOlderMinutes => 1,
         UserID                        => 1,
         Permission                    => 'ro',
-    );
+    ) || 0;
 
     my $Class        = $Param{Config}->{CssClass};
     my $ClassNew     = $Param{Config}->{CssClassNew};

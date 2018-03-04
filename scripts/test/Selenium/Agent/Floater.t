@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -30,10 +30,18 @@ $Selenium->RunTest(
             Value => 1
         );
 
-        # set a filter to valid which has floater preview enabled
-        $Kernel::OM->Get('Kernel::System::SysConfig')->ConfigItemValidityUpdate(
-            Name  => 'Ticket::Frontend::ZoomCollectMetaFilters###CVE-Mitre',
+        my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
+
+        my $SettingName = 'Ticket::Frontend::ZoomCollectMetaFilters###CVE-Mitre';
+
+        my %Setting = $SysConfigObject->SettingGet(
+            Name => $SettingName,
+        );
+
+        $Helper->ConfigSettingChange(
             Valid => 1,
+            Key   => $SettingName,
+            Value => $Setting{EffectiveValue},
         );
 
         my $Language      = 'de';
@@ -47,11 +55,8 @@ $Selenium->RunTest(
             UserLogin => $TestUserLogin,
         );
 
-        # get ticket object
-        my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
-
         # create test ticket
-        my $TicketID = $TicketObject->TicketCreate(
+        my $TicketID = $Kernel::OM->Get('Kernel::System::Ticket')->TicketCreate(
             Title        => 'Selenium Ticket',
             Queue        => 'Raw',
             Lock         => 'unlock',
@@ -69,11 +74,15 @@ $Selenium->RunTest(
 
         my @ArticleIDs;
 
-        my $ArticleIDPlain = $TicketObject->ArticleCreate(
-            TicketID    => $TicketID,
-            ArticleType => 'note-internal',
-            SenderType  => 'agent',
-            Subject     => 'Selenium subject test',
+        my $ArticleBackendObject = $Kernel::OM->Get('Kernel::System::Ticket::Article')->BackendForChannel(
+            ChannelName => 'Phone',
+        );
+
+        my $ArticleIDPlain = $ArticleBackendObject->ArticleCreate(
+            TicketID             => $TicketID,
+            IsVisibleForCustomer => 0,
+            SenderType           => 'agent',
+            Subject              => 'Selenium subject test',
             Body =>
                 'This is a test with some CVE numbers in it. They CVE-353-22 should be recognized correctly and displayed next to the article body: CVE-353-19, CVE-353-13',
             ContentType    => 'text/plain; charset=ISO-8859-15',
@@ -90,11 +99,11 @@ $Selenium->RunTest(
 
         push @ArticleIDs, $ArticleIDPlain;
 
-        my $ArticleIDHTML = $TicketObject->ArticleCreate(
-            TicketID    => $TicketID,
-            ArticleType => 'note-internal',
-            SenderType  => 'agent',
-            Subject     => 'some short description',
+        my $ArticleIDHTML = $ArticleBackendObject->ArticleCreate(
+            TicketID             => $TicketID,
+            IsVisibleForCustomer => 0,
+            SenderType           => 'agent',
+            Subject              => 'some short description',
             Body =>
                 '<p>This is an HTML article containing some CVE-Numbers like <ul><li>CVE-353-19</li><li>CVE-353-13</li></ul></p>',
             ContentType    => 'text/html; charset=ISO-8859-15',

@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -25,7 +25,7 @@ our @ObjectDependencies = (
     'Kernel::System::AuthSession',
     'Kernel::System::Log',
     'Kernel::System::Main',
-    'Kernel::System::Time',
+    'Kernel::System::DateTime',
     'Kernel::System::UnitTest::Driver',
     'Kernel::System::UnitTest::Helper',
 );
@@ -43,11 +43,7 @@ In case of an error, an exception will be thrown that you can catch in your
 unit test file and handle with C<HandleError()> in this class. It will output
 a failing test result and generate a screen shot for analysis.
 
-=over 4
-
-=cut
-
-=item new()
+=head2 new()
 
 create a selenium object to run front end tests.
 
@@ -130,12 +126,12 @@ sub new {
     $Self->{BaseURL} .= Kernel::System::UnitTest::Helper->GetTestHTTPHostname();
 
     # Remember the start system time for the selenium test run.
-    $Self->{TestStartSystemTime} = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
+    $Self->{TestStartSystemTime} = time;    ## no critic
 
     return $Self;
 }
 
-=item RunTest()
+=head2 RunTest()
 
 runs a selenium test if Selenium testing is configured and performs proper
 error handling (calls C<HandleError()> if needed).
@@ -160,12 +156,16 @@ sub RunTest {
     return 1;
 }
 
-=item _execute_command()
+=begin Internal:
+
+=head2 _execute_command()
 
 Override internal command of base class.
 
 We use it to output successful command runs to the UnitTest object.
 Errors will cause an exeption and be caught elsewhere.
+
+=end Internal:
 
 =cut
 
@@ -177,8 +177,8 @@ sub _execute_command {    ## no critic
     my $TestName = 'Selenium command success: ';
     $TestName .= $Kernel::OM->Get('Kernel::System::Main')->Dump(
         {
-            %{ $Res    || {} },
-            %{ $Params || {} },
+            %{ $Res    || {} },    ## no critic
+            %{ $Params || {} },    ## no critic
         }
     );
 
@@ -192,7 +192,7 @@ sub _execute_command {    ## no critic
     return $Result;
 }
 
-=item get()
+=head2 get()
 
 Override get method of base class to prepend the correct base URL.
 
@@ -214,7 +214,7 @@ sub get {    ## no critic
     return;
 }
 
-=item get_alert_text()
+=head2 get_alert_text()
 
 Override get_alert_text() method of base class to return alert text as string.
 
@@ -236,7 +236,7 @@ sub get_alert_text {    ## no critic
     return $AlertText;
 }
 
-=item VerifiedGet()
+=head2 VerifiedGet()
 
 perform a get() call, but wait for the page to be fully loaded (works only within OTRS).
 Will die() if the verification fails.
@@ -260,7 +260,7 @@ sub VerifiedGet {
     return;
 }
 
-=item VerifiedRefresh()
+=head2 VerifiedRefresh()
 
 perform a refresh() call, but wait for the page to be fully loaded (works only within OTRS).
 Will die() if the verification fails.
@@ -282,7 +282,7 @@ sub VerifiedRefresh {
     return;
 }
 
-=item Login()
+=head2 Login()
 
 login to agent or customer interface
 
@@ -359,7 +359,7 @@ sub Login {
     return 1;
 }
 
-=item WaitFor()
+=head2 WaitFor()
 
 wait with increasing sleep intervals until the given condition is true or the wait time is over.
 Exactly one condition (JavaScript or WindowCount) must be specified.
@@ -406,10 +406,51 @@ sub WaitFor {
         $WaitedSeconds += $Interval;
         $Interval += 0.1;
     }
-    return;
+
+    my $Argument = '';
+    for my $Key (qw(JavaScript WindowCount AlertPresent)) {
+        $Argument = "$Key => $Param{$Key}" if $Param{$Key};
+    }
+    $Argument = "Callback" if $Param{Callback};
+
+    die "WaitFor($Argument) failed.";
 }
 
-=item DragAndDrop()
+=head2 SwitchToFrame()
+
+Change focus to another frame on the page. If C<WaitForLoad> is passed, it will wait until the frame has loaded the
+page completely.
+
+    my $Success = $SeleniumObject->SwitchToFrame(
+        FrameSelector => '.Iframe',     # (required) CSS selector of the frame element
+        WaitForLoad   => 1,             # (optional) Wait until the frame has loaded, if necessary
+        Time          => 20,            # (optional) Wait time in seconds (default 20)
+    );
+
+=cut
+
+sub SwitchToFrame {
+    my ( $Self, %Param ) = @_;
+
+    if ( !$Param{FrameSelector} ) {
+        die 'Need FrameSelector.';
+    }
+
+    if ( $Param{WaitForLoad} ) {
+        $Self->WaitFor(
+            JavaScript => "return typeof(\$('$Param{FrameSelector}').get(0).contentWindow.Core) == 'object'
+                && typeof(\$('$Param{FrameSelector}').get(0).contentWindow.Core.App) == 'object'
+                && \$('$Param{FrameSelector}').get(0).contentWindow.Core.App.PageLoadComplete;",
+            Time => $Param{Time},
+        );
+    }
+
+    $Self->switch_to_frame( $Self->find_element( $Param{FrameSelector}, 'css' ) );
+
+    return 1;
+}
+
+=head2 DragAndDrop()
 
 Drag and drop an element.
 
@@ -473,7 +514,7 @@ sub DragAndDrop {
     return;
 }
 
-=item HandleError()
+=head2 HandleError()
 
 use this method to handle any Selenium exceptions.
 
@@ -500,7 +541,8 @@ sub HandleError {
     my $LocalScreenshotDir = $Kernel::OM->Get('Kernel::Config')->Get('Home') . '/var/httpd/htdocs/SeleniumScreenshots';
     mkdir $LocalScreenshotDir || return $Self->False( 1, "Could not create $LocalScreenshotDir." );
 
-    my $Filename = $Kernel::OM->Get('Kernel::System::Time')->CurrentTimestamp();
+    my $DateTimeObj = $Kernel::OM->Create('Kernel::System::DateTime');
+    my $Filename    = $DateTimeObj->ToString();
     $Filename .= '-' . ( int rand 100_000_000 ) . '.png';
     $Filename =~ s{[ :]}{-}smxg;
 
@@ -537,6 +579,8 @@ sub HandleError {
         Filename => $Filename,
         Content  => $Data
     );
+
+    return;
 }
 
 =head2 DEMOLISH()
@@ -586,11 +630,11 @@ sub DEMOLISH {
             $AuthSessionObject->RemoveSessionID( SessionID => $SessionID );
         }
     }
+
+    return;
 }
 
 1;
-
-=back
 
 =head1 TERMS AND CONDITIONS
 

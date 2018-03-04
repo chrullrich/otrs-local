@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -19,15 +19,9 @@ our $ObjectManagerDisabled = 1;
 
 Kernel::GenericInterface::Mapping::Simple - GenericInterface simple data mapping backend
 
-=head1 SYNOPSIS
-
 =head1 PUBLIC INTERFACE
 
-=over 4
-
-=cut
-
-=item new()
+=head2 new()
 
 usually, you want to create an instance of this
 by using Kernel::GenericInterface::Mapping->new();
@@ -77,7 +71,7 @@ sub new {
     return $Self;
 }
 
-=item Map()
+=head2 Map()
 
 provides 1:1 and regex mapping for keys and values
 also the use of a default for keys and values that were not mapped is possible
@@ -293,7 +287,7 @@ sub Map {
 
 =begin Internal:
 
-=item _ConfigCheck()
+=head2 _ConfigCheck()
 
 does checks to make sure the config is sane
 
@@ -469,8 +463,6 @@ sub _ConfigCheck {
 1;
 
 =end Internal:
-
-=back
 
 =head1 TERMS AND CONDITIONS
 

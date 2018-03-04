@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -13,18 +13,19 @@ use warnings;
 
 use Time::HiRes();
 
-use base qw(Kernel::System::Console::BaseCommand);
+use parent qw(Kernel::System::Console::BaseCommand);
 
 our @ObjectDependencies = (
     'Kernel::Config',
     'Kernel::System::DB',
     'Kernel::System::Ticket',
+    'Kernel::System::Ticket::Article',
 );
 
 sub Configure {
     my ( $Self, %Param ) = @_;
 
-    $Self->Description('Deletes ticket/article seen flags and ticket watcher entries for archived tickets.');
+    $Self->Description('Delete ticket/article seen flags and ticket watcher entries for archived tickets.');
     $Self->AddOption(
         Name        => 'micro-sleep',
         Description => "Specify microseconds to sleep after every ticket to reduce system load (e.g. 1000).",
@@ -108,9 +109,11 @@ sub Run {
             push @ArticleIDs, $Row[0];
         }
 
+        my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+
         $Count = 0;
         for my $ArticleID (@ArticleIDs) {
-            $TicketObject->ArticleFlagDelete(
+            $ArticleObject->ArticleFlagDelete(
                 ArticleID => $ArticleID,
                 Key       => 'Seen',
                 AllUsers  => 1,

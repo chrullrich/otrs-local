@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -11,15 +11,14 @@ package Kernel::System::AuthSession::FS;
 use strict;
 use warnings;
 
-use Storable qw();
-
 use Kernel::Language qw(Translatable);
 
 our @ObjectDependencies = (
     'Kernel::Config',
+    'Kernel::System::DateTime',
     'Kernel::System::Log',
     'Kernel::System::Main',
-    'Kernel::System::Time',
+    'Kernel::System::Storable',
 );
 
 sub new {
@@ -101,7 +100,7 @@ sub CheckSessionID {
     }
 
     # check session idle time
-    my $TimeNow            = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
+    my $TimeNow            = $Kernel::OM->Create('Kernel::System::DateTime')->ToEpoch();
     my $MaxSessionIdleTime = $ConfigObject->Get('SessionMaxIdleTime');
 
     if ( ( $TimeNow - $MaxSessionIdleTime ) >= $Data{UserLastRequest} ) {
@@ -184,7 +183,9 @@ sub GetSessionIDData {
     return if ref $Content ne 'SCALAR';
 
     # read data structure back from file dump, use block eval for safety reasons
-    my $Session = eval { Storable::thaw( ${$Content} ) };
+    my $Session = eval {
+        $Kernel::OM->Get('Kernel::System::Storable')->Deserialize( Data => ${$Content} )
+    };
 
     if ( !$Session || ref $Session ne 'HASH' ) {
         delete $Self->{Cache}->{ $Param{SessionID} };
@@ -201,7 +202,7 @@ sub CreateSessionID {
     my ( $Self, %Param ) = @_;
 
     # get system time
-    my $TimeNow = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
+    my $TimeNow = $Kernel::OM->Create('Kernel::System::DateTime')->ToEpoch();
 
     # get remote address and the http user agent
     my $RemoteAddr      = $ENV{REMOTE_ADDR}     || 'none';
@@ -234,7 +235,7 @@ sub CreateSessionID {
     $Data{UserChallengeToken}  = $ChallengeToken;
 
     # dump the data
-    my $DataContent = Storable::nfreeze( \%Data );
+    my $DataContent = $Kernel::OM->Get('Kernel::System::Storable')->Serialize( Data => \%Data );
 
     # write data file
     my $FileLocation = $MainObject->FileWrite(
@@ -371,7 +372,7 @@ sub GetActiveSessions {
 
     my $MaxSessionIdleTime = $Kernel::OM->Get('Kernel::Config')->Get('SessionMaxIdleTime');
 
-    my $TimeNow = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
+    my $TimeNow = $Kernel::OM->Create('Kernel::System::DateTime')->ToEpoch();
 
     my $MainObject = $Kernel::OM->Get('Kernel::System::Main');
 
@@ -442,7 +443,7 @@ sub GetExpiredSessionIDs {
     my $MaxSessionIdleTime = $ConfigObject->Get('SessionMaxIdleTime');
 
     # get current time
-    my $TimeNow = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
+    my $TimeNow = $Kernel::OM->Create('Kernel::System::DateTime')->ToEpoch();
 
     # get main object
     my $MainObject = $Kernel::OM->Get('Kernel::System::Main');
@@ -541,7 +542,9 @@ sub DESTROY {
         }
 
         # dump the data
-        my $DataContent = Storable::nfreeze( \%SessionData );
+        my $DataContent = $Kernel::OM->Get('Kernel::System::Storable')->Serialize(
+            Data => \%SessionData,
+        );
 
         # write data file
         $MainObject->FileWrite(

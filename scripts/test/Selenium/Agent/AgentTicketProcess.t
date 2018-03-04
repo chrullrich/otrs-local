@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -246,7 +246,10 @@ $Selenium->RunTest(
         # Import test Selenium Process.
         my $Location = $ConfigObject->Get('Home') . "/scripts/test/sample/ProcessManagement/AgentTicketProcess.yml";
         $Selenium->find_element( "#FileUpload",                      'css' )->send_keys($Location);
-        $Selenium->find_element( "#OverwriteExistingEntitiesImport", 'css' )->VerifiedClick();
+        $Selenium->find_element( "#OverwriteExistingEntitiesImport", 'css' )->click();
+        $Selenium->WaitFor(
+            JavaScript => "return typeof(\$) === 'function' && !\$('#OverwriteExistingEntitiesImport:checked').length"
+        );
         $Selenium->find_element("//button[\@value='Upload process configuration'][\@type='submit']")->VerifiedClick();
         $Selenium->find_element("//a[contains(\@href, \'Subaction=ProcessSync' )]")->VerifiedClick();
 
@@ -274,6 +277,19 @@ $Selenium->RunTest(
         my $Process = $ProcessObject->ProcessGet(
             EntityID => $ListReverse{$ProcessName},
             UserID   => $TestUserID,
+        );
+
+        # Navigate to agent ticket process directly via URL with pre-selected process and activity dialog
+        # see bug#12850 ( https://bugs.otrs.org/show_bug.cgi?id=12850 ).
+        $Selenium->VerifiedGet(
+            "${ScriptAlias}index.pl?Action=AgentTicketProcess;ID=$ListReverse{$ProcessName};ActivityDialogEntityID=$Process->{Activities}->[0]"
+        );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
+
+        # Check pre-selected process is loaded correctly, see bug#12850 ( https://bugs.otrs.org/show_bug.cgi?id=12850 ).
+        $Self->True(
+            $Selenium->find_element( "#Subject", 'css' ),
+            "Pre-selected process with activity dialog via URL is successful"
         );
 
         # Navigate to AgentTicketProcess screen.
@@ -353,8 +369,7 @@ $Selenium->RunTest(
         push @DeleteTicketIDs, $TicketID[1];
 
         # Click on next step in Process ticket.
-        $Selenium->find_element("//a[contains(\@href, \'ProcessEntityID=$ListReverse{$ProcessName}' )]")
-            ->VerifiedClick();
+        $Selenium->find_element("//a[contains(\@href, \'ProcessEntityID=$ListReverse{$ProcessName}' )]")->click();
         $Selenium->WaitFor( WindowCount => 2 );
         my $Handles = $Selenium->get_window_handles();
         $Selenium->switch_to_window( $Handles->[1] );
@@ -390,8 +405,8 @@ $Selenium->RunTest(
         #   previous process step.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketHistory;TicketID=$TicketID[1]");
         $Self->True(
-            index( $Selenium->get_page_source(), 'FieldName=TestTextZeroProcess;Value=0;' ) > -1,
-            'Dynamic field set to correct value by process',
+            index( $Selenium->get_page_source(), 'Changed dynamic field TestTextZeroProcess from "" to "0".' ) > -1,
+            'Dynamic field set to correct value by process'
         );
 
         # Create second scenario for test AgentTicketProcess.
@@ -593,14 +608,14 @@ $Selenium->RunTest(
             );
         }
 
+        my $CacheObject = $Kernel::OM->Get('Kernel::System::Cache');
+
         # Make sure the cache is correct.
         for my $Cache (
             qw (ProcessManagement_Activity ProcessManagement_ActivityDialog ProcessManagement_Transition ProcessManagement_TransitionAction )
             )
         {
-            $Kernel::OM->Get('Kernel::System::Cache')->CleanUp(
-                Type => $Cache,
-            );
+            $CacheObject->CleanUp( Type => $Cache );
         }
     },
 );

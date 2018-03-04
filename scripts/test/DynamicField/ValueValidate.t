@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -14,9 +14,20 @@ use vars (qw($Self));
 
 # get needed objects
 my $DFBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
-my $TimeObject      = $Kernel::OM->Get('Kernel::System::Time');
 
 my $UserID = 1;
+
+my $CurrentSystemTime2Timestamp = sub {
+    my %Param = @_;
+
+    my $DTObject = $Kernel::OM->Create('Kernel::System::DateTime');
+
+    if ( $Param{Yield} ) {
+        $Param{Yield}->($DTObject);
+    }
+
+    return $DTObject->ToString();
+};
 
 # theres is not really needed to add the dynamic fields for this test, we can define a static
 # set of configurations
@@ -568,8 +579,8 @@ my @Tests = (
             'Incorrect future date for datetime field which only allow old dates (search value)',
         Config => {
             DynamicFieldConfig => $DynamicFieldConfigs{DateTimeOnlyPast},
-            Value              => $TimeObject->SystemTime2TimeStamp(
-                SystemTime => $TimeObject->SystemTime() + 8000,
+            Value              => $CurrentSystemTime2Timestamp->(
+                Yield => sub { shift->Add( Seconds => 8000 ); },
             ),
             UserID => $UserID,
         },
@@ -579,8 +590,8 @@ my @Tests = (
         Name   => 'Correct old date for datetime field which only allow old dates (search value)',
         Config => {
             DynamicFieldConfig => $DynamicFieldConfigs{DateTimeOnlyPast},
-            Value              => $TimeObject->SystemTime2TimeStamp(
-                SystemTime => $TimeObject->SystemTime() - 8000,
+            Value              => $CurrentSystemTime2Timestamp->(
+                Yield => sub { shift->Subtract( Seconds => 8000 ); },
             ),
             UserID => $UserID,
         },
@@ -591,8 +602,8 @@ my @Tests = (
             'Correct future date for datetime field which only allow future dates (search value)',
         Config => {
             DynamicFieldConfig => $DynamicFieldConfigs{DateTimeOnlyFuture},
-            Value              => $TimeObject->SystemTime2TimeStamp(
-                SystemTime => $TimeObject->SystemTime() + 8000,
+            Value              => $CurrentSystemTime2Timestamp->(
+                Yield => sub { shift->Add( Seconds => 8000 ); },
             ),
             UserID => $UserID,
         },
@@ -603,8 +614,8 @@ my @Tests = (
             'Incorrect old date for datetime field which only allow future dates (search value)',
         Config => {
             DynamicFieldConfig => $DynamicFieldConfigs{DateTimeOnlyFuture},
-            Value              => $TimeObject->SystemTime2TimeStamp(
-                SystemTime => $TimeObject->SystemTime() - 8000,
+            Value              => $CurrentSystemTime2Timestamp->(
+                Yield => sub { shift->Subtract( Seconds => 8000 ); },
             ),
             UserID => $UserID,
         },
@@ -614,11 +625,12 @@ my @Tests = (
         Name   => 'Incorrect future date for date field which only allow old dates (search value)',
         Config => {
             DynamicFieldConfig => $DynamicFieldConfigs{DateOnlyPast},
-            Value              => (
+            Value =>
+                (
                 split(
                     /\s/,
-                    $TimeObject->SystemTime2TimeStamp(
-                        SystemTime => $TimeObject->SystemTime() + 259200,
+                    $CurrentSystemTime2Timestamp->(
+                        Yield => sub { shift->Add( Seconds => 259200 ); },
                         )
                     )
                 )[0]
@@ -631,11 +643,12 @@ my @Tests = (
         Name   => 'Correct old date for date field which only allow old dates (search value)',
         Config => {
             DynamicFieldConfig => $DynamicFieldConfigs{DateOnlyPast},
-            Value              => (
+            Value =>
+                (
                 split(
                     /\s/,
-                    $TimeObject->SystemTime2TimeStamp(
-                        SystemTime => $TimeObject->SystemTime() - 259200,
+                    $CurrentSystemTime2Timestamp->(
+                        Yield => sub { shift->Subtract( Seconds => 259200 ); },
                         )
                     )
                 )[0]
@@ -648,12 +661,11 @@ my @Tests = (
         Name   => 'Correct today date for date field which only allow old dates (search value)',
         Config => {
             DynamicFieldConfig => $DynamicFieldConfigs{DateOnlyPast},
-            Value              => (
+            Value =>
+                (
                 split(
                     /\s/,
-                    $TimeObject->SystemTime2TimeStamp(
-                        SystemTime => $TimeObject->SystemTime(),
-                        )
+                    $CurrentSystemTime2Timestamp->()
                     )
                 )[0]
                 . " 00:00:00",
@@ -665,11 +677,12 @@ my @Tests = (
         Name   => 'Correct future date for date field which only allow future dates (search value)',
         Config => {
             DynamicFieldConfig => $DynamicFieldConfigs{DateOnlyFuture},
-            Value              => (
+            Value =>
+                (
                 split(
                     /\s/,
-                    $TimeObject->SystemTime2TimeStamp(
-                        SystemTime => $TimeObject->SystemTime() + 259200,
+                    $CurrentSystemTime2Timestamp->(
+                        Yield => sub { shift->Add( Seconds => 259200 ); },
                         )
                     )
                 )[0]
@@ -682,12 +695,11 @@ my @Tests = (
         Name   => 'Correct today date for date field which only allow future dates (search value)',
         Config => {
             DynamicFieldConfig => $DynamicFieldConfigs{DateOnlyFuture},
-            Value              => (
+            Value =>
+                (
                 split(
                     /\s/,
-                    $TimeObject->SystemTime2TimeStamp(
-                        SystemTime => $TimeObject->SystemTime(),
-                        )
+                    $CurrentSystemTime2Timestamp->()
                     )
                 )[0]
                 . " 00:00:00",
@@ -699,11 +711,12 @@ my @Tests = (
         Name   => 'Incorrect old date for date field which only allow future dates (search value)',
         Config => {
             DynamicFieldConfig => $DynamicFieldConfigs{DateOnlyFuture},
-            Value              => (
+            Value =>
+                (
                 split(
                     /\s/,
-                    $TimeObject->SystemTime2TimeStamp(
-                        SystemTime => $TimeObject->SystemTime() - 259200,
+                    $CurrentSystemTime2Timestamp->(
+                        Yield => sub { shift->Subtract( Seconds => 259200 ); },
                         )
                     )
                 )[0]

@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -12,11 +12,14 @@ use strict;
 use warnings;
 
 our $ObjectManagerDisabled = 1;
+our @ObjectDependencies    = ();
 
 sub new {
     my ( $Class, %Param ) = @_;
 
     bless \%Param, $Class;
+
+    return $Class;
 }
 
 sub Data {

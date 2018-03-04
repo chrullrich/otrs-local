@@ -1,5 +1,5 @@
 // --
-// Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+// Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
 // the enclosed file COPYING for license information (AGPL). If you
@@ -32,7 +32,7 @@ Core.Customer.Responsive = (function (TargetNS) {
 
         // Add switch for Desktopmode
         if (!$('#ViewModeSwitch').length) {
-            $('#Footer').append('<div id="ViewModeSwitch"><a href="#">' + Core.Config.Get('ViewModeSwitchDesktop') + '</a></div>');
+            $('#Footer').append('<div id="ViewModeSwitch"><a href="#">' + Core.Language.Translate('Switch to desktop mode') + '</a></div>');
             $('#ViewModeSwitch a').on('click.Responsive', function() {
                 localStorage.setItem("DesktopMode", 1);
                 location.reload(true);

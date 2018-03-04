@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -11,8 +11,8 @@ package Kernel::Modules::AgentTicketResponsibleView;
 use strict;
 use warnings;
 
-use Kernel::Language qw(Translatable);
 use Kernel::System::VariableCheck qw(:all);
+use Kernel::Language qw(Translatable);
 
 our $ObjectManagerDisabled = 1;
 
@@ -362,7 +362,7 @@ sub Run {
             %{ $Filters{$FilterColumn}->{Search} },
             %ColumnFilter,
             Result => 'COUNT',
-        );
+        ) || 0;
 
         # prepare count for new article tickets
         if ( $FilterColumn eq 'New' ) {
@@ -370,7 +370,7 @@ sub Run {
                 %{ $Filters{All}->{Search} },
                 %ColumnFilter,
                 Result => 'COUNT',
-            );
+            ) || 0;
             $Count = $CountAll - $Count;
         }
 

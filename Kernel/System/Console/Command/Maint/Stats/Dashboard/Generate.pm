@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -11,7 +11,7 @@ package Kernel::System::Console::Command::Maint::Stats::Dashboard::Generate;
 use strict;
 use warnings;
 
-use base qw(Kernel::System::Console::BaseCommand);
+use parent qw(Kernel::System::Console::BaseCommand);
 
 our @ObjectDependencies = (
     'Kernel::Config',
@@ -28,7 +28,7 @@ sub Configure {
     $Self->Description('Generate statistics widgets for the dashboard.');
     $Self->AddOption(
         Name        => 'number',
-        Description => "Stats number (as shown on overview in AgentStats).",
+        Description => "Statistic number as shown in the overview of AgentStats.",
         Required    => 0,
         HasValue    => 1,
         ValueRegex  => qr/\d+/smx,

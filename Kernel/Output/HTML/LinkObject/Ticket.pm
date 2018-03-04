@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -10,6 +10,8 @@ package Kernel::Output::HTML::LinkObject::Ticket;
 
 use strict;
 use warnings;
+
+use List::Util qw(first);
 
 use Kernel::Output::HTML::Layout;
 use Kernel::System::VariableCheck qw(:all);
@@ -36,15 +38,12 @@ our @ObjectDependencies = (
 
 Kernel::Output::HTML::LinkObject::Ticket - layout backend module
 
-=head1 SYNOPSIS
+=head1 DESCRIPTION
 
 All layout functions of link object (ticket).
 
-=over 4
 
-=cut
-
-=item new()
+=head2 new()
 
 create an object
 
@@ -87,7 +86,7 @@ sub new {
     return $Self;
 }
 
-=item TableCreateComplex()
+=head2 TableCreateComplex()
 
 return an array with the block data
 
@@ -323,10 +322,31 @@ sub TableCreateComplex {
             $ColumnTranslate = Translatable('Pending till');
         }
         elsif ( $Column eq 'CustomerCompanyName' ) {
-            $ColumnTranslate = Translatable('Customer Company Name');
+            $ColumnTranslate = Translatable('Customer Name');
+        }
+        elsif ( $Column eq 'CustomerID' ) {
+            $ColumnTranslate = Translatable('Customer ID');
+        }
+        elsif ( $Column eq 'CustomerName' ) {
+            $ColumnTranslate = Translatable('Customer User Name');
         }
         elsif ( $Column eq 'CustomerUserID' ) {
             $ColumnTranslate = Translatable('Customer User ID');
+        }
+        elsif ( $Column =~ m{ \A DynamicField_ }xms ) {
+            my $DynamicFieldConfig;
+
+            DYNAMICFIELD:
+            for my $DFConfig ( @{ $Self->{DynamicField} } ) {
+                next DYNAMICFIELD if !IsHashRefWithData($DFConfig);
+                next DYNAMICFIELD if 'DynamicField_' . $DFConfig->{Name} ne $Column;
+
+                $DynamicFieldConfig = $DFConfig;
+                last DYNAMICFIELD;
+            }
+            next COLUMN if !IsHashRefWithData($DynamicFieldConfig);
+
+            $ColumnTranslate = $DynamicFieldConfig->{Label};
         }
 
         push @AllColumns, {
@@ -343,24 +363,11 @@ sub TableCreateComplex {
                 $ColumnName = $Column eq 'TicketNumber' ? $TicketHook : $ColumnTranslate;
             }
 
-            # Dynamic fields
+            # Dynamic fields (get label from the translated column).
             else {
-                my $DynamicFieldConfig;
-                my $DFColumn = $Column;
-                $DFColumn =~ s{DynamicField_}{}g;
-
-                DYNAMICFIELD:
-                for my $DFConfig ( @{ $Self->{DynamicField} } ) {
-                    next DYNAMICFIELD if !IsHashRefWithData($DFConfig);
-                    next DYNAMICFIELD if $DFConfig->{Name} ne $DFColumn;
-
-                    $DynamicFieldConfig = $DFConfig;
-                    last DYNAMICFIELD;
-                }
-                next COLUMN if !IsHashRefWithData($DynamicFieldConfig);
-
-                $ColumnName = $DynamicFieldConfig->{Label};
+                $ColumnName = $ColumnTranslate;
             }
+
             push @Headline, {
                 Content => $ColumnName,
             };
@@ -380,7 +387,8 @@ sub TableCreateComplex {
 
         # set css
         my $CssClass;
-        if ( $Ticket->{StateType} eq 'merged' ) {
+        my @StatesToStrike = @{ $ConfigObject->Get('LinkObject::StrikeThroughLinkedTicketStateTypes') || [] };
+        if ( first { $Ticket->{StateType} eq $_ } @StatesToStrike ) {
             $CssClass = 'StrikeThrough';
         }
 
@@ -436,22 +444,25 @@ sub TableCreateComplex {
                     }
                     elsif ( $Column eq 'EscalationSolutionTime' ) {
 
-                        $Hash{'Content'} = $Self->{LayoutObject}->CustomerAgeInHours(
+                        $Hash{'Content'} = $Self->{LayoutObject}->CustomerAge(
                             Age => $Ticket->{SolutionTime} || 0,
-                            Space => ' ',
+                            TimeShowAlwaysLong => 1,
+                            Space              => ' ',
                         );
                     }
                     elsif ( $Column eq 'EscalationResponseTime' ) {
 
-                        $Hash{'Content'} = $Self->{LayoutObject}->CustomerAgeInHours(
+                        $Hash{'Content'} = $Self->{LayoutObject}->CustomerAge(
                             Age => $Ticket->{FirstResponseTime} || 0,
-                            Space => ' ',
+                            TimeShowAlwaysLong => 1,
+                            Space              => ' ',
                         );
                     }
                     elsif ( $Column eq 'EscalationUpdateTime' ) {
-                        $Hash{'Content'} = $Self->{LayoutObject}->CustomerAgeInHours(
+                        $Hash{'Content'} = $Self->{LayoutObject}->CustomerAge(
                             Age => $Ticket->{UpdateTime} || 0,
-                            Space => ' ',
+                            TimeShowAlwaysLong => 1,
+                            Space              => ' ',
                         );
                     }
                     elsif ( $Column eq 'PendingTime' ) {
@@ -466,7 +477,7 @@ sub TableCreateComplex {
                         my %OwnerInfo = $Kernel::OM->Get('Kernel::System::User')->GetUserData(
                             UserID => $Ticket->{OwnerID},
                         );
-                        $Hash{'Content'} = $OwnerInfo{'UserFirstname'} . ' ' . $OwnerInfo{'UserLastname'};
+                        $Hash{'Content'} = $OwnerInfo{'UserFullname'};
                     }
                     elsif ( $Column eq 'Responsible' ) {
 
@@ -474,8 +485,7 @@ sub TableCreateComplex {
                         my %ResponsibleInfo = $Kernel::OM->Get('Kernel::System::User')->GetUserData(
                             UserID => $Ticket->{ResponsibleID},
                         );
-                        $Hash{'Content'} = $ResponsibleInfo{'UserFirstname'} . ' '
-                            . $ResponsibleInfo{'UserLastname'};
+                        $Hash{'Content'} = $ResponsibleInfo{'UserFullname'};
                     }
                     elsif ( $Column eq 'CustomerName' ) {
 
@@ -556,7 +566,7 @@ sub TableCreateComplex {
     return ( \%Block );
 }
 
-=item TableCreateSimple()
+=head2 TableCreateSimple()
 
 return a hash with the link output data
 
@@ -607,8 +617,10 @@ sub TableCreateSimple {
         return;
     }
 
-    my $TicketHook        = $Kernel::OM->Get('Kernel::Config')->Get('Ticket::Hook');
-    my $TicketHookDivider = $Kernel::OM->Get('Kernel::Config')->Get('Ticket::HookDivider');
+    my $ConfigObject      = $Kernel::OM->Get('Kernel::Config');
+    my $TicketHook        = $ConfigObject->Get('Ticket::Hook');
+    my $TicketHookDivider = $ConfigObject->Get('Ticket::HookDivider');
+
     my %LinkOutputData;
     for my $LinkType ( sort keys %{ $Param{ObjectLinkListWithData} } ) {
 
@@ -628,7 +640,9 @@ sub TableCreateSimple {
 
                 # set css
                 my $CssClass;
-                if ( $Ticket->{StateType} eq 'merged' ) {
+                my @StatesToStrike = @{ $ConfigObject->Get('LinkObject::StrikeThroughLinkedTicketStateTypes') || [] };
+
+                if ( first { $Ticket->{StateType} eq $_ } @StatesToStrike ) {
                     $CssClass = 'StrikeThrough';
                 }
 
@@ -654,7 +668,7 @@ sub TableCreateSimple {
     return %LinkOutputData;
 }
 
-=item ContentStringCreate()
+=head2 ContentStringCreate()
 
 return a output string
 
@@ -679,7 +693,7 @@ sub ContentStringCreate {
     return;
 }
 
-=item SelectableObjectList()
+=head2 SelectableObjectList()
 
 return an array hash with select-able objects
 
@@ -718,7 +732,7 @@ sub SelectableObjectList {
     return @ObjectSelectList;
 }
 
-=item SearchOptionList()
+=head2 SearchOptionList()
 
 return an array hash with search options
 
@@ -908,8 +922,6 @@ sub SearchOptionList {
 }
 
 1;
-
-=back
 
 =head1 TERMS AND CONDITIONS
 

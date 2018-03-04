@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -19,7 +19,7 @@ our @ObjectDependencies = (
     'Kernel::System::DB',
     'Kernel::System::Log',
     'Kernel::System::Main',
-    'Kernel::System::Time',
+    'Kernel::System::DateTime',
     'Kernel::System::Valid',
 );
 
@@ -27,22 +27,16 @@ our @ObjectDependencies = (
 
 Kernel::System::SystemMaintenance.pm
 
-=head1 SYNOPSIS
+=head1 DESCRIPTION
 
 SystemMaintenance backend
 
 =head1 PUBLIC INTERFACE
 
-=over 4
-
-=cut
-
-=item new()
+=head2 new()
 
 create a SystemMaintenance object. Do not use it directly, instead use:
 
-    use Kernel::System::ObjectManager;
-    local $Kernel::OM = Kernel::System::ObjectManager->new();
     my $SystemMaintenanceObject = $Kernel::OM->Get('Kernel::System::SystemMaintenance');
 
 =cut
@@ -57,7 +51,7 @@ sub new {
     return $Self;
 }
 
-=item SystemMaintenanceAdd()
+=head2 SystemMaintenanceAdd()
 
 add new SystemMaintenance
 
@@ -138,7 +132,7 @@ sub SystemMaintenanceAdd {
     return $ID;
 }
 
-=item SystemMaintenanceDelete()
+=head2 SystemMaintenanceDelete()
 
 delete a SystemMaintenance
 
@@ -185,7 +179,7 @@ sub SystemMaintenanceDelete {
     return 1;
 }
 
-=item SystemMaintenanceGet()
+=head2 SystemMaintenanceGet()
 
 get SystemMaintenance attributes
 
@@ -266,7 +260,7 @@ sub SystemMaintenanceGet {
     return \%Data;
 }
 
-=item SystemMaintenanceUpdate()
+=head2 SystemMaintenanceUpdate()
 
 update SystemMaintenance attributes
 
@@ -327,7 +321,7 @@ sub SystemMaintenanceUpdate {
     return 1;
 }
 
-=item SystemMaintenanceList()
+=head2 SystemMaintenanceList()
 
 get an SystemMaintenance list
 
@@ -392,7 +386,7 @@ sub SystemMaintenanceList {
     return \%Data;
 }
 
-=item SystemMaintenanceListGet()
+=head2 SystemMaintenanceListGet()
 
 get an SystemMaintenance list with all SystemMaintenance details
 
@@ -466,7 +460,7 @@ sub SystemMaintenanceListGet {
     return \@Data;
 }
 
-=item SystemMaintenanceIsActive()
+=head2 SystemMaintenanceIsActive()
 
 get a SystemMaintenance active flag
 
@@ -481,7 +475,8 @@ Returns:
 sub SystemMaintenanceIsActive {
     my ( $Self, %Param ) = @_;
 
-    my $SystemTime = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
+    my $DateTimeObject = $Kernel::OM->Create('Kernel::System::DateTime');
+    my $SystemTime     = $DateTimeObject->ToEpoch();
 
     # get database object
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
@@ -515,32 +510,38 @@ sub SystemMaintenanceIsActive {
     return $Result;
 }
 
-=item SystemMaintenanceIsComming()
+=head2 SystemMaintenanceIsComing()
 
-get a SystemMaintenance flag
+Get a upcoming SystemMaintenance start and stop date.
 
-    my $SystemMaintenanceIsComming = $SystemMaintenanceObject->SystemMaintenanceIsComming();
+    my %SystemMaintenanceIsComing = $SystemMaintenanceObject->SystemMaintenanceIsComing();
 
 Returns:
 
-    $SystemMaintenanceIsComming = 1 # 1 or 0
+    %SystemMaintenanceIsComing = {
+        StartDate => 1515614400,
+        StopDate  => 1515607200
+    };
 
 =cut
 
-sub SystemMaintenanceIsComming {
+sub SystemMaintenanceIsComing {
     my ( $Self, %Param ) = @_;
 
-    my $SystemTime = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
+    my $DateTimeObject = $Kernel::OM->Create('Kernel::System::DateTime');
+    my $SystemTime     = $DateTimeObject->ToEpoch();
+
     my $NotifiBeforeTime =
         $Kernel::OM->Get('Kernel::Config')->Get('SystemMaintenance::TimeNotifyUpcomingMaintenance')
         || 30;
-    my $TargetTime = $SystemTime + ( $NotifiBeforeTime * 60 );
+    $DateTimeObject->Add( Minutes => $NotifiBeforeTime * 60 );
+    my $TargetTime = $DateTimeObject->ToEpoch();
 
     # get database object
     my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
     my $SQL = "
-            SELECT start_date
+            SELECT start_date, stop_date
             FROM system_maintenance
             WHERE start_date > $SystemTime and start_date <= $TargetTime
     ";
@@ -556,21 +557,20 @@ sub SystemMaintenanceIsComming {
 
     return if !$DBObject->Prepare( SQL => $SQL );
 
-    my $Result;
+    my %Result;
     RESULT:
     while ( my @Row = $DBObject->FetchrowArray() ) {
-        $Result = $Row[0];
+        $Result{StartDate} = $Row[0];
+        $Result{StopDate}  = $Row[1];
         last RESULT;
     }
 
-    return if !$Result;
+    return if !%Result;
 
-    return $Result;
+    return %Result;
 }
 
 1;
-
-=back
 
 =head1 TERMS AND CONDITIONS
 

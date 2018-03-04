@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -41,8 +41,27 @@ $Helper->CustomCodeActivate(
 
 my $Selenium = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
+my $CheckBreadcrumb = sub {
+
+    my %Param = @_;
+
+    my $BreadcrumbText = $Param{BreadcrumbText} || '';
+    my $Count = 1;
+
+    for my $BreadcrumbText ( 'Package Manager', "$BreadcrumbText Test" ) {
+        $Self->Is(
+            $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+            $BreadcrumbText,
+            "Breadcrumb text '$BreadcrumbText' is found on screen"
+        );
+
+        $Count++;
+    }
+};
+
 $Selenium->RunTest(
     sub {
+
         my $Helper        = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
         my $PackageObject = $Kernel::OM->Get('Kernel::System::Package');
 
@@ -115,7 +134,6 @@ $Selenium->RunTest(
             Password => $TestUserLogin,
         );
 
-        # Get config object.
         my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
         # Get script alias.
@@ -124,17 +142,29 @@ $Selenium->RunTest(
         # Navigate to AdminPackageManager screen.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminPackageManager");
 
+        # Check breadcrumb on Overview screen.
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            'Breadcrumb is found on Overview screen'
+        );
+
         # Check overview AdminPackageManager.
         my $Element = $Selenium->find_element( '#FileUpload', 'css' );
         $Element->is_enabled();
         $Element->is_displayed();
 
         # Install test package.
-        my $Location = $ConfigObject->Get('Home') . "/scripts/test/sample/PackageManager/TestPackage.opm";
+        my $Location = $ConfigObject->Get('Home') . '/scripts/test/sample/PackageManager/TestPackage.opm';
 
         $Selenium->find_element( '#FileUpload', 'css' )->send_keys($Location);
 
         $Selenium->find_element("//button[\@value='Install'][\@type='submit']")->VerifiedClick();
+
+        # Check breadcrumb on Install screen.
+        $CheckBreadcrumb->(
+            BreadcrumbText => 'Install Package:',
+        );
+
         $Selenium->find_element("//button[\@value='Continue'][\@type='submit']")->VerifiedClick();
 
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".DataTable").length;' );
@@ -150,6 +180,11 @@ $Selenium->RunTest(
             "//a[contains(\@href, \'Subaction=View;Name=Test' )]"
         )->VerifiedClick();
 
+        # Check breadcrumb on Package metadata screen.
+        $CheckBreadcrumb->(
+            BreadcrumbText => 'Package Information:',
+        );
+
         $Selenium->find_element("//a[contains(\@href, \'Subaction=Download' )]");
         $Selenium->find_element("//a[contains(\@href, \'Subaction=RebuildPackage' )]");
         $Selenium->find_element("//a[contains(\@href, \'Subaction=Reinstall' )]");
@@ -161,6 +196,11 @@ $Selenium->RunTest(
         $Selenium->find_element(
             "//a[contains(\@href, \'Subaction=Uninstall;Name=Test' )]"
         )->VerifiedClick();
+
+        # Check breadcrumb on uninstall screen.
+        $CheckBreadcrumb->(
+            BreadcrumbText => 'Uninstall Package:',
+        );
 
         $Selenium->find_element("//button[\@value='Uninstall package'][\@type='submit']")->VerifiedClick();
 
@@ -180,7 +220,7 @@ $Selenium->RunTest(
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminPackageManager");
 
         # Try to install incompatible test package.
-        $Location = $ConfigObject->Get('Home') . "/scripts/test/sample/PackageManager/TestPackageIncompatible.opm";
+        $Location = $ConfigObject->Get('Home') . '/scripts/test/sample/PackageManager/TestPackageIncompatible.opm';
 
         $Selenium->find_element( '#FileUpload', 'css' )->send_keys($Location);
 
@@ -190,10 +230,11 @@ $Selenium->RunTest(
         # Check if info for incompatible package is shown.
         $Self->True(
             $Selenium->execute_script(
-                "return \$('.WidgetSimple .Content h2:contains(\"Package installation requires a patch level update of OTRS.\")').length;"
+                "return \$('.WidgetSimple .Content h2:contains(\"Package installation requires a patch level update of OTRS\")').length;"
             ),
             'Info for incompatible package is shown'
         );
+
     }
 );
 

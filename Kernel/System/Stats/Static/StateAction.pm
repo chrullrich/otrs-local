@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -12,12 +12,10 @@ package Kernel::System::Stats::Static::StateAction;
 use strict;
 use warnings;
 
-use Time::Piece;
-
 our @ObjectDependencies = (
     'Kernel::Language',
     'Kernel::System::DB',
-    'Kernel::System::Time',
+    'Kernel::System::DateTime',
 );
 
 sub new {
@@ -43,20 +41,14 @@ sub GetObjectBehaviours {
 sub Param {
     my $Self = shift;
 
-    # get time object
-    my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
-
-    # get current time
-    my ( $s, $m, $h, $D, $M, $Y ) = $TimeObject->SystemTime2Date(
-        SystemTime => $TimeObject->SystemTime(),
-    );
+    my $DateTimeObject = $Kernel::OM->Create('Kernel::System::DateTime');
 
     # get one month before
-    my $SelectedYear  = $M == 1 ? $Y - 1 : $Y;
-    my $SelectedMonth = $M == 1 ? 12     : $M - 1;
+    $DateTimeObject->Subtract( Months => 1 );
+    my $DateTimeSettings = $DateTimeObject->Get();
 
     # create possible time selections
-    my %Year = map { $_ => $_; } ( $Y - 10 .. $Y );
+    my %Year = map { $_ => $_; } ( $DateTimeSettings->{Year} - 10 .. $DateTimeSettings->{Year} );
     my %Month = map { $_ => sprintf( "%02d", $_ ); } ( 1 .. 12 );
 
     my @Params = (
@@ -65,7 +57,7 @@ sub Param {
             Name       => 'Year',
             Multiple   => 0,
             Size       => 0,
-            SelectedID => $SelectedYear,
+            SelectedID => $DateTimeSettings->{Year},
             Data       => \%Year,
         },
         {
@@ -73,7 +65,7 @@ sub Param {
             Name       => 'Month',
             Multiple   => 0,
             Size       => 0,
-            SelectedID => $SelectedMonth,
+            SelectedID => $DateTimeSettings->{Month},
             Data       => \%Month,
         },
     );
@@ -82,6 +74,8 @@ sub Param {
 
 sub Run {
     my ( $Self, %Param ) = @_;
+
+    return if !$Param{Year} || !$Param{Month};
 
     # get language object
     my $LanguageObject = $Kernel::OM->Get('Kernel::Language');
@@ -99,27 +93,28 @@ sub Run {
     # build x axis
 
     # first take epoch for 12:00 on the 1st of given month
-    # create Time::Piece object for this time
-    my $SystemTime = $Kernel::OM->Get('Kernel::System::Time')->Date2SystemTime(
-        Year   => $Param{Year},
-        Month  => $Param{Month},
-        Day    => 1,
-        Hour   => 12,
-        Minute => 0,
-        Second => 0,
+    my $DateTimeObject = $Kernel::OM->Create(
+        'Kernel::System::DateTime',
+        ObjectParams => {
+            Year   => $Param{Year},
+            Month  => $Param{Month},
+            Day    => 1,
+            Hour   => 12,
+            Minute => 0,
+            Second => 0,
+        },
     );
-
-    my $TimePiece = localtime($SystemTime);    ## no critic
+    my $DateTimeValues = $DateTimeObject->Get();
 
     my @Data;
     my @Days      = ();
     my %StateDate = ();
 
     # execute for all days of this month
-    while ( $TimePiece->mon() == $Param{Month} ) {
+    while ( $DateTimeValues->{Month} == int $Param{Month} ) {
 
         # x-label is of format 'Mon 1, Tue 2,' etc
-        my $Text = $LanguageObject->Translate( $TimePiece->wdayname() ) . ' ' . $TimePiece->mday();
+        my $Text = $LanguageObject->Translate( $DateTimeValues->{DayAbbr} ) . ' ' . $DateTimeValues->{Day};
 
         push @Days, $Text;
         my @Row = ();
@@ -127,7 +122,7 @@ sub Run {
             my $Count = $Self->_GetDBDataPerDay(
                 Year    => $Year,
                 Month   => $Month,
-                Day     => $TimePiece->mday(),
+                Day     => $DateTimeValues->{Day},
                 StateID => $StateID,
             );
             push @Row, $Count;
@@ -136,7 +131,8 @@ sub Run {
         }
 
         # move to next day
-        $TimePiece += ( 3600 * 24 );
+        $DateTimeObject->Add( Days => 1 );
+        $DateTimeValues = $DateTimeObject->Get();
     }
     for my $StateID ( sort { $States{$a} cmp $States{$b} } keys %States ) {
         my @Row = ( $States{$StateID} );

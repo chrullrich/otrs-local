@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -28,17 +28,13 @@ our @ObjectDependencies = (
 
 Kernel::System::WebUserAgent - a web user agent lib
 
-=head1 SYNOPSIS
+=head1 DESCRIPTION
 
 All web user agent functions.
 
 =head1 PUBLIC INTERFACE
 
-=over 4
-
-=cut
-
-=item new()
+=head2 new()
 
 create an object
 
@@ -67,7 +63,7 @@ sub new {
     return $Self;
 }
 
-=item Request()
+=head2 Request()
 
 return the content of requested URL.
 
@@ -252,8 +248,6 @@ sub Request {
 }
 
 1;
-
-=back
 
 =head1 TERMS AND CONDITIONS
 

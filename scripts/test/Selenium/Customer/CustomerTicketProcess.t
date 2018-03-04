@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -97,7 +97,7 @@ $Selenium->RunTest(
             push @Types, {
                 ID   => $TypeID,
                 Name => $TypeName,
-                }
+            };
         }
 
         my $ACLObject = $Kernel::OM->Get('Kernel::System::ACL::DB::ACL');
@@ -227,7 +227,10 @@ $Selenium->RunTest(
         # Import test Selenium Process.
         my $Location = $ConfigObject->Get('Home') . "/scripts/test/sample/ProcessManagement/CustomerTicketProcess.yml";
         $Selenium->find_element( "#FileUpload",                      'css' )->send_keys($Location);
-        $Selenium->find_element( "#OverwriteExistingEntitiesImport", 'css' )->VerifiedClick();
+        $Selenium->find_element( "#OverwriteExistingEntitiesImport", 'css' )->click();
+        $Selenium->WaitFor(
+            JavaScript => "return typeof(\$) === 'function' && !\$('#OverwriteExistingEntitiesImport:checked').length"
+        );
         $Selenium->find_element("//button[\@value='Upload process configuration'][\@type='submit']")->VerifiedClick();
         $Selenium->find_element("//a[contains(\@href, \'Subaction=ProcessSync' )]")->VerifiedClick();
 
@@ -269,6 +272,19 @@ $Selenium->RunTest(
             Type     => 'Customer',
             User     => $TestCustomerUserLogin,
             Password => $TestCustomerUserLogin,
+        );
+
+        # Navigate to customer ticket process directly via URL with pre-selected process and activity dialog
+        # see bug#12850 ( https://bugs.otrs.org/show_bug.cgi?id=12850 ).
+        $Selenium->VerifiedGet(
+            "${ScriptAlias}customer.pl?Action=CustomerTicketProcess;ID=$ListReverse{$ProcessName};ActivityDialogEntityID=$Process->{Activities}->[0]"
+        );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
+
+        # Check pre-selected process is loaded correctly.
+        $Self->True(
+            $Selenium->find_element( "#Subject", 'css' ),
+            "Pre-selected process with activity dialog via URL is successful"
         );
 
         # Navigate to CustomerTicketProcess screen.
@@ -327,12 +343,19 @@ $Selenium->RunTest(
         $Selenium->find_element( "#RichText", 'css' )->send_keys($ContentRandom);
         $Selenium->execute_script("\$('#QueueID').val('2').trigger('redraw.InputField').trigger('change');");
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
+
+        # Hide DnDUpload and show input field.
         $Selenium->execute_script(
-            "\$('#TypeID').val('$Types[1]->{ID}').trigger('redraw.InputField').trigger('change');"
+            "\$('.DnDUpload').css('display', 'none')"
+        );
+        $Selenium->execute_script(
+            "\$('#FileUpload').css('display', 'block')"
         );
 
         $Selenium->find_element( "#FileUpload", 'css' )->send_keys($AttachmentLocation);
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("[id^=\'AttachmentDelete\']").length' );
+        $Selenium->WaitFor(
+            JavaScript => 'return typeof($) === "function" && $("[class^=\'AttachmentDelete\']").length'
+        );
 
         # Check if the header is visible on the page (bug#12543).
         my $Element = $Selenium->find_element(
@@ -341,13 +364,29 @@ $Selenium->RunTest(
         $Element->is_enabled();
         $Element->is_displayed();
 
-        my $FooterMessage = 'Powered by ' . $ConfigObject->Get('Product');
+        my $OTRSBusinessIsInstalled = $Kernel::OM->Get('Kernel::System::OTRSBusiness')->OTRSBusinessIsInstalled();
+        my $OTRSSTORMIsInstalled    = $Kernel::OM->Get('Kernel::System::OTRSBusiness')->OTRSSTORMIsInstalled();
+
+        my $FooterMessage;
+        if ($OTRSSTORMIsInstalled) {
+            $FooterMessage = 'STORM powered by OTRS';
+        }
+        elsif ($OTRSBusinessIsInstalled) {
+            $FooterMessage = 'Powered by OTRS Business Solution';
+        }
+        else {
+            $FooterMessage = 'Powered by ' . $ConfigObject->Get('Product');
+        }
+
         $Self->True(
             index( $Selenium->get_page_source(), $FooterMessage ) > -1,
             "$FooterMessage found in footer on page (after attachment upload)",
         );
 
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->click();
+
+        sleep 1;
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("div#MainBox").length;' );
 
         # Check for inputed values for first step in test Process ticket.
         $Self->True(
@@ -368,8 +407,7 @@ $Selenium->RunTest(
         push @DeleteTicketIDs, $TicketID[1];
 
         # Click on next step in Process ticket.
-        $Selenium->find_element("//a[contains(\@href, \'ProcessEntityID=$ListReverse{$ProcessName}' )]")
-            ->VerifiedClick();
+        $Selenium->find_element("//a[contains(\@href, \'ProcessEntityID=$ListReverse{$ProcessName}' )]")->click();
 
         $Selenium->WaitFor( WindowCount => 2 );
         my $Handles = $Selenium->get_window_handles();
@@ -378,7 +416,7 @@ $Selenium->RunTest(
 
         # For test scenario to complete, in next step we set ticket priority to 5 very high.
         $Selenium->execute_script("\$('#PriorityID').val('5').trigger('redraw.InputField').trigger('change');");
-        $Selenium->execute_script('$("button[type=submit]").click();');
+        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->click();
 
         $Selenium->WaitFor( WindowCount => 1 );
         $Selenium->switch_to_window( $Handles->[0] );
@@ -603,14 +641,15 @@ $Selenium->RunTest(
             );
         }
 
+        my $CacheObject = $Kernel::OM->Get('Kernel::System::Cache');
+
         # Make sure cache is correct.
         for my $Cache (
             qw(ProcessManagement_Activity ProcessManagement_ActivityDialog ProcessManagement_Process ProcessManagement_Transition ProcessManagement_TransitionAction )
             )
         {
-            $Kernel::OM->Get('Kernel::System::Cache')->CleanUp( Type => $Cache );
+            $CacheObject->CleanUp( Type => $Cache );
         }
-
     }
 );
 

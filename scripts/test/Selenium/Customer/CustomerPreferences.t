@@ -1,11 +1,12 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
+## no critic (Modules::RequireExplicitPackage)
 use strict;
 use warnings;
 use utf8;
@@ -22,6 +23,16 @@ $Selenium->RunTest(
 
         # get helper object
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+
+        # enable google authenticator shared secret preference
+        my $SharedSecretConfig
+            = $Kernel::OM->Get('Kernel::Config')->Get('CustomerPreferencesGroups')->{'GoogleAuthenticatorSecretKey'};
+        $SharedSecretConfig->{Active} = 1;
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => "CustomerPreferencesGroups###GoogleAuthenticatorSecretKey",
+            Value => $SharedSecretConfig,
+        );
 
         # create test customer user and login
         my $TestCustomerUserLogin = $Helper->TestCustomerUserCreate(
@@ -41,7 +52,7 @@ $Selenium->RunTest(
 
         # check CustomerPreferences screen
         for my $ID (
-            qw(UserLanguage UserShowTickets UserRefreshTime CurPw NewPw NewPw1)
+            qw(UserLanguage UserShowTickets UserRefreshTime CurPw NewPw NewPw1 UserGoogleAuthenticatorSecretKey)
             )
         {
             my $Element = $Selenium->find_element( "#$ID", 'css' );
@@ -68,10 +79,10 @@ $Selenium->RunTest(
 
         # edit checked stored values
         $Selenium->execute_script("\$('#UserRefreshTime').val('2').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element( "#UserRefreshTimeUpdate", 'css' )->VerifiedClick();
+        $Selenium->find_element( '#UserRefreshTimeUpdate', 'css' )->VerifiedClick();
 
         $Selenium->execute_script("\$('#UserShowTickets').val('20').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element( "#UserShowTicketsUpdate", 'css' )->VerifiedClick();
+        $Selenium->find_element( '#UserShowTicketsUpdate', 'css' )->VerifiedClick();
 
         # check edited values
         $Self->Is(
@@ -94,11 +105,7 @@ $Selenium->RunTest(
             $Selenium->execute_script(
                 "\$('#UserLanguage').val('$Language').trigger('redraw.InputField').trigger('change');"
             );
-
-            # TODO; It should be improved. There is a problem with redraw InputField
-            sleep 3;
-            $Selenium->execute_script('$("#UserLanguageUpdate").click()');
-            sleep 2;
+            $Selenium->find_element( '#UserLanguageUpdate', 'css' )->VerifiedClick();
 
             # check edited language value
             $Self->Is(
@@ -126,6 +133,22 @@ $Selenium->RunTest(
                 "Test widget 'Ticket overview' found on screen"
             );
         }
+
+        # try updating the UserGoogleAuthenticatorSecret (which has a regex validation configured)
+        $Selenium->find_element( "#UserGoogleAuthenticatorSecretKey",       'css' )->send_keys('Invalid Key');
+        $Selenium->find_element( '#UserGoogleAuthenticatorSecretKeyUpdate', 'css' )->VerifiedClick();
+        $Self->True(
+            index( $Selenium->get_page_source(), $SharedSecretConfig->{'ValidateRegexMessage'} ) > -1,
+            "Error message for invalid shared secret found on screen"
+        );
+
+        # now use a valid secret
+        $Selenium->find_element( "#UserGoogleAuthenticatorSecretKey",       'css' )->send_keys('ABCABCABCABCABC2');
+        $Selenium->find_element( '#UserGoogleAuthenticatorSecretKeyUpdate', 'css' )->VerifiedClick();
+        $Self->True(
+            index( $Selenium->get_page_source(), 'Preferences updated successfully!' ) > -1,
+            "Success message found on screen"
+        );
 
         # Inject malicious code in user language variable.
         my $MaliciousCode = 'en\\\'});window.iShouldNotExist=true;Core.Config.AddConfig({a:\\\'';

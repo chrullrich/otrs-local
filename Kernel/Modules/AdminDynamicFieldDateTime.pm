@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -27,6 +27,13 @@ sub new {
 
 sub Run {
     my ( $Self, %Param ) = @_;
+
+    # Store last entity screen.
+    $Kernel::OM->Get('Kernel::System::AuthSession')->UpdateSessionID(
+        SessionID => $Self->{SessionID},
+        Key       => 'LastScreenEntity',
+        Value     => $Self->{RequestedURL},
+    );
 
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
@@ -79,15 +86,17 @@ sub _Add {
     }
 
     # get the object type and field type display name
-    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
-    my $ObjectTypeName
-        = $ConfigObject->Get('DynamicFields::ObjectType')->{ $GetParam{ObjectType} }->{DisplayName} || '';
+    my $ConfigObject   = $Kernel::OM->Get('Kernel::Config');
+    my $ObjectTypeName = $ConfigObject->Get('DynamicFields::ObjectType')->{ $GetParam{ObjectType} }->{DisplayName}
+        || '';
     my $FieldTypeName = $ConfigObject->Get('DynamicFields::Driver')->{ $GetParam{FieldType} }->{DisplayName} || '';
 
     return $Self->_ShowScreen(
         %Param,
         %GetParam,
         Mode           => 'Add',
+        BreadcrumbText => $LayoutObject->{LanguageObject}
+            ->Translate( 'Add %s field', $LayoutObject->{LanguageObject}->Translate($FieldTypeName) ),
         ObjectTypeName => $ObjectTypeName,
         FieldTypeName  => $FieldTypeName,
     );
@@ -240,9 +249,9 @@ sub _Change {
     }
 
     # get the object type and field type display name
-    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
-    my $ObjectTypeName
-        = $ConfigObject->Get('DynamicFields::ObjectType')->{ $GetParam{ObjectType} }->{DisplayName} || '';
+    my $ConfigObject   = $Kernel::OM->Get('Kernel::Config');
+    my $ObjectTypeName = $ConfigObject->Get('DynamicFields::ObjectType')->{ $GetParam{ObjectType} }->{DisplayName}
+        || '';
     my $FieldTypeName = $ConfigObject->Get('DynamicFields::Driver')->{ $GetParam{FieldType} }->{DisplayName} || '';
 
     my $FieldID = $ParamObject->GetParam( Param => 'ID' );
@@ -280,6 +289,8 @@ sub _Change {
         %Config,
         ID             => $FieldID,
         Mode           => 'Change',
+        BreadcrumbText => $LayoutObject->{LanguageObject}
+            ->Translate( 'Change %s field', $LayoutObject->{LanguageObject}->Translate($FieldTypeName) ),
         ObjectTypeName => $ObjectTypeName,
         FieldTypeName  => $FieldTypeName,
     );
@@ -421,6 +432,34 @@ sub _ChangeAction {
         );
     }
 
+    # Check if dynamic field is present in SysConfig setting
+    my $UpdateEntity        = $ParamObject->GetParam( Param => 'UpdateEntity' ) || '';
+    my $SysConfigObject     = $Kernel::OM->Get('Kernel::System::SysConfig');
+    my %DynamicFieldOldData = %{$DynamicFieldData};
+    my @IsDynamicFieldInSysConfig;
+    @IsDynamicFieldInSysConfig = $SysConfigObject->ConfigurationEntityCheck(
+        EntityType => 'DynamicField',
+        EntityName => $DynamicFieldData->{Name},
+    );
+    if (@IsDynamicFieldInSysConfig) {
+
+        # An entity present in SysConfig couldn't be invalidated.
+        if (
+            $Kernel::OM->Get('Kernel::System::Valid')->ValidLookup( ValidID => $GetParam{ValidID} )
+            ne 'valid'
+            )
+        {
+            $Errors{ValidIDInvalid}         = 'ServerError';
+            $Errors{ValidOptionServerError} = 'InSetting';
+        }
+
+        # In case changing name an authorization (UpdateEntity) should be send
+        elsif ( $DynamicFieldData->{Name} ne $GetParam{Name} && !$UpdateEntity ) {
+            $Errors{NameInvalid}              = 'ServerError';
+            $Errors{InSettingNameServerError} = 1;
+        }
+    }
+
     # return to change screen if errors occured
     if (%Errors) {
         return $Self->_ShowScreen(
@@ -462,9 +501,60 @@ sub _ChangeAction {
         );
     }
 
-    return $LayoutObject->Redirect(
-        OP => "Action=AdminDynamicField",
-    );
+    if (
+        @IsDynamicFieldInSysConfig
+        && $DynamicFieldOldData{Name} ne $GetParam{Name}
+        && $UpdateEntity
+        )
+    {
+        SETTING:
+        for my $SettingName (@IsDynamicFieldInSysConfig) {
+
+            my %Setting = $SysConfigObject->SettingGet(
+                Name => $SettingName,
+            );
+
+            next SETTING if !IsHashRefWithData( \%Setting );
+
+            $Setting{EffectiveValue} =~ s/$DynamicFieldOldData{Name}/$GetParam{Name}/g;
+
+            my $ExclusiveLockGUID = $SysConfigObject->SettingLock(
+                Name   => $Setting{Name},
+                Force  => 1,
+                UserID => $Self->{UserID}
+            );
+            $Setting{ExclusiveLockGUID} = $ExclusiveLockGUID;
+
+            my %UpdateSuccess = $SysConfigObject->SettingUpdate(
+                %Setting,
+                UserID => $Self->{UserID},
+            );
+        }
+
+        $SysConfigObject->ConfigurationDeploy(
+            Comments      => "DynamicField name change",
+            DirtySettings => \@IsDynamicFieldInSysConfig,
+            UserID        => $Self->{UserID},
+            Force         => 1,
+        );
+    }
+
+    # if the user would like to continue editing the dynamic field, just redirect to the change screen
+    if (
+        defined $ParamObject->GetParam( Param => 'ContinueAfterSave' )
+        && ( $ParamObject->GetParam( Param => 'ContinueAfterSave' ) eq '1' )
+        )
+    {
+        return $LayoutObject->Redirect(
+            OP =>
+                "Action=$Self->{Action};Subaction=Change;ObjectType=$DynamicFieldData->{ObjectType};FieldType=$DynamicFieldData->{FieldType};ID=$FieldID"
+        );
+    }
+    else {
+
+        # otherwise return to overview
+        return $LayoutObject->Redirect( OP => "Action=AdminDynamicField" );
+    }
 }
 
 sub _ShowScreen {
@@ -499,7 +589,7 @@ sub _ShowScreen {
     # when adding we need to create an extra order number for the new field
     if ( $Param{Mode} eq 'Add' ) {
 
-        # get the last element form the order list and add 1
+        # get the last element from the order list and add 1
         my $LastOrderNumber = $DynamicfieldOrderList[-1];
         $LastOrderNumber++;
 
@@ -611,6 +701,51 @@ sub _ShowScreen {
         $ReadonlyInternalField = 'readonly="readonly"';
     }
 
+    my $DynamicFieldName = $Param{Name};
+
+    # Add warning in case the DynamicField belongs a SysConfig setting.
+    my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
+
+    # In case dirty setting disable form
+    my $IsDirtyConfig = 0;
+    my @IsDirtyResult = $SysConfigObject->ConfigurationDirtySettingsList();
+    my %IsDirtyList   = map { $_ => 1 } @IsDirtyResult;
+
+    my @IsDynamicFieldInSysConfig = $SysConfigObject->ConfigurationEntityCheck(
+        EntityType => 'DynamicField',
+        EntityName => $DynamicFieldName // '',
+    );
+
+    if (@IsDynamicFieldInSysConfig) {
+        $LayoutObject->Block(
+            Name => 'DynamicFieldInSysConfig',
+            Data => {
+                OldName => $DynamicFieldName,
+            },
+        );
+        for my $SettingName (@IsDynamicFieldInSysConfig) {
+            $LayoutObject->Block(
+                Name => 'DynamicFieldInSysConfigRow',
+                Data => {
+                    SettingName => $SettingName,
+                },
+            );
+
+            # Verify if dirty setting
+            if ( $IsDirtyList{$SettingName} ) {
+                $IsDirtyConfig = 1;
+            }
+
+        }
+    }
+
+    if ($IsDirtyConfig) {
+        $LayoutObject->Block(
+            Name => 'DynamicFieldInSysConfigDirty',
+            ,
+        );
+    }
+
     # generate output
     $Output .= $LayoutObject->Output(
         TemplateFile => 'AdminDynamicFieldDateTime',
@@ -634,4 +769,5 @@ sub _ShowScreen {
 
     return $Output;
 }
+
 1;

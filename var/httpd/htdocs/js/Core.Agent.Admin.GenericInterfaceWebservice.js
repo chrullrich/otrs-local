@@ -1,5 +1,5 @@
 // --
-// Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+// Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
 // the enclosed file COPYING for license information (AGPL). If you
@@ -17,19 +17,9 @@ Core.Agent.Admin = Core.Agent.Admin || {};
  * @memberof Core.Agent.Admin
  * @author OTRS AG
  * @description
- *      This namespace contains the special module functions for the GenericInterface webservice module.
+ *      This namespace contains the special module functions for the GenericInterface web service module.
  */
 Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
-
-    /**
-     * @private
-     * @name DialogData
-     * @memberof Core.Agent.Admin.GenericInterfaceWebservice
-     * @member {Array}
-     * @description
-     *     This variable stores the parameters that are passed from the TT and contain all the data that the dialog needs.
-     */
-    var DialogData = [];
 
     /**
      * @name HideElements
@@ -48,41 +38,128 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
      * @name Init
      * @memberof Core.Agent.Admin.GenericInterfaceWebservice
      * @function
-     * @param {Object} Params - Initialization and internationalization parameters.
      * @description
-     *      This function initialize the module.
+     *      This function initialize the module functionality.
      */
-    TargetNS.Init = function (Params) {
-        TargetNS.WebserviceID = parseInt(Params.WebserviceID, 10);
-        TargetNS.Localization = Params.Localization;
-        if (Params.Action === "Add") {
+    TargetNS.Init = function () {
+        var Action = Core.Config.Get('Subaction'),
+            Webservice;
+
+        TargetNS.WebserviceID = parseInt($('#WebserviceID').val(), 10);
+
+        if (Action === "Add") {
             TargetNS.HideElements();
         }
 
-        $('#DeleteButton').bind('click', TargetNS.ShowDeleteDialog);
-        $('#CloneButton').bind('click', TargetNS.ShowCloneDialog);
-        $('#ImportButton').bind('click', TargetNS.ShowImportDialog);
+        $('#DeleteButton').on('click', TargetNS.ShowDeleteDialog);
+        $('#CloneButton').on('click', TargetNS.ShowCloneDialog);
+        $('#ImportButton').on('click', TargetNS.ShowImportDialog);
 
-        $('#ProviderTransportProperties').bind('click', function() {
-            TargetNS.Redirect('Webservice.Transport', 'ProviderTransportList', {CommunicationType: 'Provider'});
+        Webservice = Core.Config.Get('Webservice');
+
+        $('#ProviderTransportProperties').on('click', function() {
+            TargetNS.Redirect(Webservice.Transport, 'ProviderTransportList', {CommunicationType: 'Provider'});
         });
 
-        $('#RequesterTransportProperties').bind('click', function() {
-            TargetNS.Redirect('Webservice.Transport', 'RequesterTransportList', {CommunicationType: 'Requester'});
+        $('#RequesterTransportProperties').on('click', function() {
+            TargetNS.Redirect(Webservice.Transport, 'RequesterTransportList', {CommunicationType: 'Requester'});
         });
 
-        $('#OperationList').bind('change', function() {
-            TargetNS.Redirect('Webservice.Operation', 'OperationList', {OperationType: $(this).val()});
+        $('#OperationList').on('change', function() {
+            TargetNS.Redirect(Webservice.Operation, 'OperationList', {OperationType: $(this).val()});
         });
 
-        $('#InvokerList').bind('change', function() {
-            TargetNS.Redirect('Webservice.Invoker', 'InvokerList', {InvokerType: $(this).val()});
+        $('#InvokerList').on('change', function() {
+            TargetNS.Redirect(Webservice.Invoker, 'InvokerList', {InvokerType: $(this).val()});
         });
 
-        $('.HideTrigger').bind('change', function(){
+        $('.HideTrigger').on('change', function(){
             TargetNS.HideElements();
         });
 
+        $('#ProviderErrorHandling').on('change', function() {
+            TargetNS.Redirect(Webservice.ErrorHandling, 'ProviderErrorHandling', {
+                CommunicationType: 'Provider',
+                ErrorHandlingType: $(this).val()
+            });
+        });
+
+        $('#RequesterErrorHandling').on('change', function() {
+            TargetNS.Redirect(Webservice.ErrorHandling, 'RequesterErrorHandling', {
+                CommunicationType: 'Requester',
+                ErrorHandlingType: $(this).val()
+            });
+        });
+
+        // initialize the table sorting feature
+        $('.ErrorHandlingPriority tbody').sortable({
+            create: function () {
+
+                // enumerate rows on page load
+                var Count = 1;
+                $(this).find("tr td:first-child").each(function() {
+                    $(this).text(Count);
+                    Count++;
+                });
+            },
+            stop: function () {
+
+                var $Widget = $(this).closest('.WidgetSimple'),
+                    Count = 1,
+                    Priority = [];
+
+                // re-enumerate rows after sorting actions
+                $(this).find("tr td:first-child").each(function() {
+                    $(this).text(Count);
+                    Count++;
+                });
+
+                $(this).find("tr").each(function() {
+                    if ($(this).attr('id')) {
+                        Priority.push($(this).attr('id'));
+                    }
+                });
+
+                if (Priority.length > 1) {
+
+                    $Widget.addClass('Loading');
+
+                    Core.AJAX.FunctionCall(
+                        Core.Config.Get('Baselink'),
+                        $(this).closest('table').data('query-string') + ';Priority=' + JSON.stringify(Priority),
+                        function() {
+
+                            $Widget.removeClass('Loading');
+
+                            $Widget.find('h2')
+                                   .before('<i class="fa fa-check"></i>')
+                                   .prev('.fa-check')
+                                   .hide()
+                                   .css('float', 'right')
+                                   .css('margin-right', '5px')
+                                   .css('margin-top', '3px')
+                                   .css('color', '#666666')
+                                   .delay(200)
+                                   .fadeIn(function() {
+                                $(this).delay(1500).fadeOut();
+                            });
+                        }
+                    );
+                }
+            }
+        }).disableSelection();
+
+        $('#SaveAndFinishButton').on('click', function(){
+            $('#ReturnToWebservice').val(1);
+        });
+
+        // Initialize delete action dialog events
+        $('.DeleteOperation').each(function() {
+            $(this).on('click', TargetNS.ShowDeleteActionDialog);
+        });
+        $('.DeleteInvoker').each(function() {
+            $(this).on('click', TargetNS.ShowDeleteActionDialog);
+        });
     };
 
     /**
@@ -91,25 +168,25 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
      * @function
      * @param {Object} Event - The browser event object, e.g. of the clicked DOM element.
      * @description
-     *      Shows a confirmation dialog to delete the webservice.
+     *      Shows a confirmation dialog to delete the web service.
      */
     TargetNS.ShowDeleteDialog = function(Event){
         Core.UI.Dialog.ShowContentDialog(
             $('#DeleteDialogContainer'),
-            TargetNS.Localization.DeleteWebserviceMsg,
+            Core.Language.Translate('Delete web service'),
             '240px',
             'Center',
             true,
             [
                 {
-                     Label: TargetNS.Localization.CancelMsg,
+                     Label: Core.Language.Translate('Cancel'),
                      Function: function () {
                          Core.UI.Dialog.CloseDialog($('#DeleteDialog'));
                      }
                 },
 
                 {
-                     Label: TargetNS.Localization.DeleteMsg,
+                     Label: Core.Language.Translate('Delete'),
                      Function: function () {
                          var Data = {
                              Action: 'AdminGenericInterfaceWebservice',
@@ -119,7 +196,7 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
 
                          Core.AJAX.FunctionCall(Core.Config.Get('CGIHandle'), Data, function (Response) {
                              if (!Response || !Response.Success) {
-                                 alert(TargetNS.Localization.CommunicationErrorMsg);
+                                 alert(Core.Language.Translate('An error occurred during communication.'));
                                  return;
                              }
 
@@ -143,7 +220,7 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
      * @function
      * @param {Object} Event - The browser event object, e.g. of the clicked DOM element.
      * @description
-     *      Shows a dialog to clone a webservice.
+     *      Shows a dialog to clone a web service.
      */
     TargetNS.ShowCloneDialog = function(Event){
 
@@ -151,7 +228,7 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
 
         Core.UI.Dialog.ShowContentDialog(
             $('#CloneDialogContainer'),
-            TargetNS.Localization.CloneWebserviceMsg,
+            Core.Language.Translate('Clone web service'),
             '240px',
             'Center',
             true
@@ -161,7 +238,7 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
         // Currently we have not a function to initialize the validation on a single form
         Core.Form.Validate.Init();
 
-        // get current system time to define suggested the name of the cloned webservice
+        // get current system time to define suggested the name of the cloned web service
         CurrentDate = new Date();
         CloneName = $('#Name').val() + "-" + CurrentDate.getTime();
 
@@ -169,11 +246,11 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
         $('.CloneName').val(CloneName);
 
         // bind button actions
-        $('#CancelCloneButtonAction').bind('click', function() {
+        $('#CancelCloneButtonAction').on('click', function() {
             Core.UI.Dialog.CloseDialog($('#CloneDialog'));
         });
 
-        $('#CloneButtonAction').bind('click', function() {
+        $('#CloneButtonAction').on('click', function() {
             $('#CloneForm').submit();
         });
 
@@ -186,13 +263,13 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
      * @function
      * @param {Object} Event - The browser event object, e.g. of the clicked DOM element.
      * @description
-     *      Shows a dialog to import a webservice.
+     *      Shows a dialog to import a web service.
      */
     TargetNS.ShowImportDialog = function(Event){
 
         Core.UI.Dialog.ShowContentDialog(
             $('#ImportDialogContainer'),
-            TargetNS.Localization.ImportWebserviceMsg,
+            Core.Language.Translate('Import web service'),
             '240px',
             'Center',
             true
@@ -202,11 +279,11 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
         // Currently we have not a function to initialize the validation on a single form
         Core.Form.Validate.Init();
 
-        $('#CancelImportButtonAction').bind('click', function() {
+        $('#CancelImportButtonAction').on('click', function() {
             Core.UI.Dialog.CloseDialog($('#ImportDialog'));
         });
 
-        $('#ImportButtonAction').bind('click', function() {
+        $('#ImportButtonAction').on('click', function() {
             $('#ImportForm').submit();
         });
 
@@ -217,17 +294,25 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
      * @name Redirect
      * @memberof Core.Agent.Admin.GenericInterfaceWebservice
      * @function
-     * @param {String} ConfigKey
+     * @param {String} Config
      * @param {String} DataSource
      * @param {Object} Data
      * @description
      *      Redirects.
      */
-    TargetNS.Redirect = function(ConfigKey, DataSource, Data) {
+    TargetNS.Redirect = function(Config, DataSource, Data) {
         var WebserviceConfigPart, Action, ConfigElement;
 
         // get configuration
-        WebserviceConfigPart = Core.Config.Get(ConfigKey);
+        // after JS refactoring this is most probably already a config object
+        // and not a config key anymore
+        // keeping the old part for backwards compatibility (can be removed later)
+        if (typeof Config === 'object') {
+            WebserviceConfigPart = Config;
+        }
+        else {
+            WebserviceConfigPart = Core.Config.Get(Config);
+        }
 
         // get the Config Element name, if none it will have "null" value
         ConfigElement = $('#' + DataSource).val();
@@ -258,17 +343,25 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
      *      Shows a dialog to delete operation or invoker.
      */
     TargetNS.ShowDeleteActionDialog = function(Event){
-        var LocalDialogData, ActionType, DialogTitle;
+        var ActionType, ActionName, DialogTitle, Target;
 
-        // get global saved DialogData for this function
-        LocalDialogData = DialogData[$(Event.target).attr('id')];
-        if ($(Event.target).hasClass('DeleteOperation')) {
+        // If event target is trash can, change it to parent instead.
+        if ($(Event.target).hasClass('fa')) {
+            Target = $(Event.target).parent();
+        }
+        else {
+            Target = $(Event.target);
+        }
+
+        if (Target.hasClass('DeleteOperation')) {
             ActionType = 'Operation';
-            DialogTitle = TargetNS.Localization.DeleteOperationMsg;
+            ActionName = Target.attr('id').substring(15);
+            DialogTitle = Core.Language.Translate('Delete operation');
         }
         else {
             ActionType = 'Invoker';
-            DialogTitle = TargetNS.Localization.DeleteInvokerMsg;
+            ActionName = Target.attr('id').substring(13);
+            DialogTitle = Core.Language.Translate('Delete invoker');
         }
 
         Core.UI.Dialog.ShowContentDialog(
@@ -279,25 +372,25 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
             true,
             [
                {
-                   Label: TargetNS.Localization.CancelMsg,
+                   Label: Core.Language.Translate('Cancel'),
                    Class: 'Primary',
                    Function: function () {
                        Core.UI.Dialog.CloseDialog($('#Delete' + ActionType + 'Dialog'));
                    }
                },
                {
-                   Label: TargetNS.Localization.DeleteMsg,
+                   Label: Core.Language.Translate('Delete'),
                    Function: function () {
                        var Data = {
                             Action: 'AdminGenericInterfaceWebservice',
                             Subaction: 'DeleteAction',
                             WebserviceID: TargetNS.WebserviceID,
-                            ActionType: LocalDialogData.ActionType,
-                            ActionName: LocalDialogData.ActionName
+                            ActionType: ActionType,
+                            ActionName: ActionName
                         };
                         Core.AJAX.FunctionCall(Core.Config.Get('CGIHandle'), Data, function (Response) {
                             if (!Response || !Response.Success) {
-                                alert(TargetNS.Localization.CommunicationErrorMsg);
+                                alert(Core.Language.Translate('An error occurred during communication.'));
                                 return;
                             }
 
@@ -319,21 +412,7 @@ Core.Agent.Admin.GenericInterfaceWebservice = (function (TargetNS) {
         Event.preventDefault();
     };
 
-    /**
-     * @name BindDeleteActionDialog
-     * @memberof Core.Agent.Admin.GenericInterfaceWebservice
-     * @function
-     * @param {Object} Data - A control structure that contains the jQueryObjectID, jQueryObjectSelector the ActionType and the ActionName.
-     * @description
-     *      This function binds a "trash can" link from the action table to the
-     *      function that opens a dialog to delete the action
-     */
-    TargetNS.BindDeleteActionDialog = function (Data) {
-        DialogData[Data.ElementID] = Data;
-
-        // binding a click event to the defined element
-        $(DialogData[Data.ElementID].ElementSelector).bind('click', TargetNS.ShowDeleteActionDialog);
-    };
+    Core.Init.RegisterNamespace(TargetNS, 'APP_MODULE');
 
     return TargetNS;
 }(Core.Agent.Admin.GenericInterfaceWebservice || {}));

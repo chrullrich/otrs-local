@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -51,6 +51,11 @@ sub Run {
     my $NotificationEventObject = $Kernel::OM->Get('Kernel::System::NotificationEvent');
     my $BackendObject           = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
     my $MainObject              = $Kernel::OM->Get('Kernel::System::Main');
+    my $Notification            = $ParamObject->GetParam( Param => 'Notification' );
+
+    # get the search article fields to retrieve values for
+    my %ArticleSearchableFields = $Kernel::OM->Get('Kernel::System::Ticket::Article')->ArticleSearchableFieldsList();
+    my @ArticleSearchableFieldsKeys = sort keys %ArticleSearchableFields;
 
     # get registered transport layers
     my %RegisteredTransports = %{ $Kernel::OM->Get('Kernel::Config')->Get('Notification::Transport') || {} };
@@ -70,6 +75,8 @@ sub Run {
 
         my $Output = $LayoutObject->Header();
         $Output .= $LayoutObject->NavigationBar();
+        $Output .= $LayoutObject->Notify( Info => Translatable('Notification updated!') )
+            if ( $Notification && $Notification eq 'Update' );
         $Self->_Edit(
             %Data,
             Action             => 'Change',
@@ -93,21 +100,31 @@ sub Run {
         # challenge token check for write action
         $LayoutObject->ChallengeTokenCheck();
 
+        # TODO:
+        # Events, IsVisibleForCustomer, ArticleSenderTypeID, ArticleIsVisibleForCustomer,
+        # ArticleCommunicationChannelID, Transports are used twice! Why? See below.
+        # The same is done in the other subactions.
+        # Also check each transport (Email, SMS, Webview) template file for duplicate ids like IsVisibleForCustomer!
+
         my %GetParam;
         for my $Parameter (
-            qw(ID Name Comment ValidID Events ArticleSubjectMatch ArticleBodyMatch ArticleTypeID ArticleSenderTypeID Transports)
+            @ArticleSearchableFieldsKeys,
+            qw(ID Name Comment ValidID Events IsVisibleForCustomer
+            ArticleSenderTypeID ArticleIsVisibleForCustomer ArticleCommunicationChannelID
+            Transports)
             )
         {
             $GetParam{$Parameter} = $ParamObject->GetParam( Param => $Parameter ) || '';
         }
         PARAMETER:
         for my $Parameter (
+            @ArticleSearchableFieldsKeys,
             qw(Recipients RecipientAgents RecipientGroups RecipientRoles
             Events StateID QueueID PriorityID LockID TypeID ServiceID SLAID
-            CustomerID CustomerUserID
-            ArticleTypeID ArticleSubjectMatch ArticleBodyMatch ArticleAttachmentInclude
-            ArticleSenderTypeID Transports OncePerDay SendOnOutOfOffice
-            VisibleForAgent VisibleForAgentTooltip LanguageID AgentEnabledByDefault)
+            CustomerID CustomerUserID IsVisibleForCustomer ArticleAttachmentInclude
+            ArticleSenderTypeID ArticleIsVisibleForCustomer ArticleCommunicationChannelID
+            Transports OncePerDay SendOnOutOfOffice VisibleForAgent VisibleForAgentTooltip
+            LanguageID AgentEnabledByDefault)
             )
         {
             my @Data = $ParamObject->GetArray( Param => $Parameter );
@@ -154,7 +171,7 @@ sub Run {
         for my $DynamicFieldConfig ( @{$DynamicField} ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
-            # extract the dynamic field value form the web request
+            # extract the dynamic field value from the web request
             my $DynamicFieldValue = $BackendObject->SearchFieldValueGet(
                 DynamicFieldConfig     => $DynamicFieldConfig,
                 ParamObject            => $ParamObject,
@@ -204,23 +221,31 @@ sub Run {
         my $Ok;
         my $ArticleFilterMissing;
 
-        $GetParam{Data}->{NotificationType} = ['Ticket'];
-
         # checking if article filter exist if necessary
         if (
             grep { $_ eq 'ArticleCreate' || $_ eq 'ArticleSend' }
             @{ $GetParam{Data}->{Events} || [] }
             )
         {
-            if (
-                !$GetParam{ArticleTypeID}
-                && !$GetParam{ArticleSenderTypeID}
-                && $GetParam{ArticleSubjectMatch} eq ''
-                && $GetParam{ArticleBodyMatch} eq ''
-                )
-            {
-                $ArticleFilterMissing = 1;
+            my $ArticleFilterValueSet = 0;
+            for my $ArticleFilter (qw(ArticleSenderTypeID ArticleIsVisibleForCustomer ArticleCommunicationChannelID)) {
+                if ( $GetParam{$ArticleFilter} ) {
+                    $ArticleFilterValueSet = 1;
+                }
             }
+
+            ARTICLEFIELDKEY:
+            for my $ArticleFieldKey (@ArticleSearchableFieldsKeys) {
+
+                last ARTICLEFIELDKEY if $ArticleFilterValueSet;
+                next ARTICLEFIELDKEY if !$GetParam{$ArticleFieldKey};
+
+                $ArticleFilterValueSet = 1;
+
+                last ARTICLEFIELDKEY;
+            }
+
+            $ArticleFilterMissing = 1 if !$ArticleFilterValueSet;
         }
 
         # required Article filter only on ArticleCreate and ArticleSend event
@@ -234,17 +259,23 @@ sub Run {
         }
 
         if ($Ok) {
-            $Self->_Overview();
-            my $Output = $LayoutObject->Header();
-            $Output .= $LayoutObject->NavigationBar();
-            $Output .= $LayoutObject->Notify( Info => Translatable('Notification updated!') );
-            $Output .= $LayoutObject->Output(
-                TemplateFile => 'AdminNotificationEvent',
-                Data         => \%Param,
-            );
-            $Output .= $LayoutObject->Footer();
 
-            return $Output;
+            # if the user would like to continue editing the notification event, just redirect to the edit screen
+            if (
+                defined $ParamObject->GetParam( Param => 'ContinueAfterSave' )
+                && ( $ParamObject->GetParam( Param => 'ContinueAfterSave' ) eq '1' )
+                )
+            {
+                my $ID = $ParamObject->GetParam( Param => 'ID' ) || '';
+                return $LayoutObject->Redirect(
+                    OP => "Action=$Self->{Action};Subaction=Change;ID=$ID;Notification=Update",
+                );
+            }
+            else {
+
+                # otherwise return to overview
+                return $LayoutObject->Redirect( OP => "Action=$Self->{Action};Notification=Update" );
+            }
         }
         else {
             for my $Needed (qw(Name Events Transports)) {
@@ -255,16 +286,15 @@ sub Run {
             }
 
             # define ServerError Class attribute if necessary
-            $GetParam{ArticleTypeIDServerError}       = "";
             $GetParam{ArticleSenderTypeIDServerError} = "";
-            $GetParam{ArticleSubjectMatchServerError} = "";
-            $GetParam{ArticleBodyMatchServerError}    = "";
 
             if ($ArticleFilterMissing) {
-                $GetParam{ArticleTypeIDServerError}       = "ServerError";
+
                 $GetParam{ArticleSenderTypeIDServerError} = "ServerError";
-                $GetParam{ArticleSubjectMatchServerError} = "ServerError";
-                $GetParam{ArticleBodyMatchServerError}    = "ServerError";
+
+                for my $ArticleField (@ArticleSearchableFieldsKeys) {
+                    $GetParam{ $ArticleField . 'ServerError' } = "ServerError";
+                }
             }
 
             my $Output = $LayoutObject->Header();
@@ -316,18 +346,23 @@ sub Run {
 
         my %GetParam;
         for my $Parameter (
-            qw(Name Comment ValidID Events ArticleSubjectMatch ArticleBodyMatch ArticleTypeID ArticleSenderTypeID Transports)
+            @ArticleSearchableFieldsKeys,
+            qw(Name Comment ValidID Events IsVisibleForCustomer
+            ArticleSenderTypeID ArticleIsVisibleForCustomer ArticleCommunicationChannelID
+            Transports)
             )
         {
             $GetParam{$Parameter} = $ParamObject->GetParam( Param => $Parameter ) || '';
         }
         PARAMETER:
         for my $Parameter (
+            @ArticleSearchableFieldsKeys,
             qw(Recipients RecipientAgents RecipientRoles RecipientGroups Events StateID QueueID
             PriorityID LockID TypeID ServiceID SLAID CustomerID CustomerUserID
-            ArticleTypeID ArticleSubjectMatch ArticleBodyMatch ArticleAttachmentInclude
-            ArticleSenderTypeID Transports OncePerDay SendOnOutOfOffice
-            VisibleForAgent VisibleForAgentTooltip LanguageID AgentEnabledByDefault)
+            IsVisibleForCustomer ArticleAttachmentInclude
+            ArticleSenderTypeID ArticleIsVisibleForCustomer ArticleCommunicationChannelID
+            Transports OncePerDay SendOnOutOfOffice VisibleForAgent VisibleForAgentTooltip
+            LanguageID AgentEnabledByDefault)
             )
         {
             my @Data = $ParamObject->GetArray( Param => $Parameter );
@@ -374,7 +409,7 @@ sub Run {
         for my $DynamicFieldConfig ( @{$DynamicField} ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
-            # extract the dynamic field value form the web request
+            # extract the dynamic field value from the web request
             my $DynamicFieldValue = $BackendObject->SearchFieldValueGet(
                 DynamicFieldConfig     => $DynamicFieldConfig,
                 ParamObject            => $ParamObject,
@@ -424,23 +459,31 @@ sub Run {
         my $ID;
         my $ArticleFilterMissing;
 
-        $GetParam{Data}->{NotificationType} = ['Ticket'];
-
         # define ServerError Message if necessary
         if (
             grep { $_ eq 'ArticleCreate' || $_ eq 'ArticleSend' }
             @{ $GetParam{Data}->{Events} || [] }
             )
         {
-            if (
-                !$GetParam{ArticleTypeID}
-                && !$GetParam{ArticleSenderTypeID}
-                && $GetParam{ArticleSubjectMatch} eq ''
-                && $GetParam{ArticleBodyMatch} eq ''
-                )
-            {
-                $ArticleFilterMissing = 1;
+            my $ArticleFilterValueSet = 0;
+            for my $ArticleFilter (qw(ArticleSenderTypeID ArticleIsVisibleForCustomer ArticleCommunicationChannelID)) {
+                if ( $GetParam{$ArticleFilter} ) {
+                    $ArticleFilterValueSet = 1;
+                }
             }
+
+            ARTICLEFIELDKEY:
+            for my $ArticleFieldKey (@ArticleSearchableFieldsKeys) {
+
+                last ARTICLEFIELDKEY if $ArticleFilterValueSet;
+                next ARTICLEFIELDKEY if !$GetParam{$ArticleFieldKey};
+
+                $ArticleFilterValueSet = 1;
+
+                last ARTICLEFIELDKEY;
+            }
+
+            $ArticleFilterMissing = 1 if !$ArticleFilterValueSet;
         }
 
         # required Article filter only on ArticleCreate and Article Send event
@@ -478,16 +521,15 @@ sub Run {
             }
 
             # checking if article filter exist if necessary
-            $GetParam{ArticleTypeIDServerError}       = "";
             $GetParam{ArticleSenderTypeIDServerError} = "";
-            $GetParam{ArticleSubjectMatchServerError} = "";
-            $GetParam{ArticleBodyMatchServerError}    = "";
 
             if ($ArticleFilterMissing) {
-                $GetParam{ArticleTypeIDServerError}       = "ServerError";
+
                 $GetParam{ArticleSenderTypeIDServerError} = "ServerError";
-                $GetParam{ArticleSubjectMatchServerError} = "ServerError";
-                $GetParam{ArticleBodyMatchServerError}    = "ServerError";
+
+                for my $ArticleField (@ArticleSearchableFieldsKeys) {
+                    $GetParam{ $ArticleField . 'ServerError' } = "ServerError";
+                }
             }
 
             my $Output = $LayoutObject->Header();
@@ -712,6 +754,8 @@ sub Run {
             Data         => \%Param,
         );
         $Output .= $LayoutObject->Footer();
+
+        return $Output;
     }
 
     # ------------------------------------------------------------
@@ -721,6 +765,8 @@ sub Run {
         $Self->_Overview();
         my $Output = $LayoutObject->Header();
         $Output .= $LayoutObject->NavigationBar();
+        $Output .= $LayoutObject->Notify( Info => Translatable('Notification updated!') )
+            if ( $Notification && $Notification eq 'Update' );
         $Output .= $LayoutObject->Output(
             TemplateFile => 'AdminNotificationEvent',
             Data         => \%Param,
@@ -730,6 +776,7 @@ sub Run {
         return $Output;
     }
 
+    return;
 }
 
 sub _Edit {
@@ -755,14 +802,17 @@ sub _Edit {
 
     $Param{RecipientsStrg} = $LayoutObject->BuildSelection(
         Data => {
-            AgentOwner              => Translatable('Agent who owns the ticket'),
-            AgentResponsible        => Translatable('Agent who is responsible for the ticket'),
-            AgentWatcher            => Translatable('All agents watching the ticket'),
-            AgentWritePermissions   => Translatable('All agents with write permission for the ticket'),
-            AgentMyQueues           => Translatable('All agents subscribed to the ticket\'s queue'),
-            AgentMyServices         => Translatable('All agents subscribed to the ticket\'s service'),
-            AgentMyQueuesMyServices => Translatable('All agents subscribed to both the ticket\'s queue and service'),
-            Customer                => Translatable('Customer of the ticket'),
+            AgentCreateBy             => Translatable('Agent who created the ticket'),
+            AgentOwner                => Translatable('Agent who owns the ticket'),
+            AgentResponsible          => Translatable('Agent who is responsible for the ticket'),
+            AgentWatcher              => Translatable('All agents watching the ticket'),
+            AgentWritePermissions     => Translatable('All agents with write permission for the ticket'),
+            AgentMyQueues             => Translatable('All agents subscribed to the ticket\'s queue'),
+            AgentMyServices           => Translatable('All agents subscribed to the ticket\'s service'),
+            AgentMyQueuesMyServices   => Translatable('All agents subscribed to both the ticket\'s queue and service'),
+            Customer                  => Translatable('Customer user of the ticket'),
+            AllRecipientsFirstArticle => Translatable('All recipients of the first article'),
+            AllRecipientsLastArticle  => Translatable('All recipients of the last article'),
         },
         Name       => 'Recipients',
         Multiple   => 1,
@@ -807,12 +857,6 @@ sub _Edit {
     my $EventClass = 'Validate_Required';
     if ( $Param{EventsServerError} ) {
         $EventClass .= ' ' . $Param{EventsServerError};
-    }
-
-    # Set class name for article type...
-    my $ArticleTypeIDClass = '';
-    if ( $Param{ArticleTypeIDServerError} ) {
-        $ArticleTypeIDClass .= ' ' . $Param{ArticleTypeIDServerError};
     }
 
     # Set class name for article sender type...
@@ -915,14 +959,6 @@ sub _Edit {
         Name => 'OverviewUpdate',
         Data => \%Param,
     );
-
-    # shows header
-    if ( $Param{Action} eq 'Change' ) {
-        $LayoutObject->Block( Name => 'HeaderEdit' );
-    }
-    else {
-        $LayoutObject->Block( Name => 'HeaderAdd' );
-    }
 
     # build type string
     if ( $ConfigObject->Get('Ticket::Type') ) {
@@ -1042,8 +1078,8 @@ sub _Edit {
         $Param{RichTextHeight} = $Config->{RichTextHeight} || 0;
         $Param{RichTextWidth}  = $Config->{RichTextWidth}  || 0;
 
-        $LayoutObject->Block(
-            Name => 'RichText',
+        # set up rich text editor
+        $LayoutObject->SetRichTextParameters(
             Data => \%Param,
         );
     }
@@ -1179,21 +1215,10 @@ sub _Edit {
         HTMLQuote    => 0,
     );
 
-    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
-
-    $Param{ArticleTypesStrg} = $LayoutObject->BuildSelection(
-        Data        => { $TicketObject->ArticleTypeList( Result => 'HASH' ), },
-        Name        => 'ArticleTypeID',
-        SelectedID  => $Param{Data}->{ArticleTypeID},
-        Class       => $ArticleTypeIDClass . ' Modernize W75pc',
-        Size        => 5,
-        Multiple    => 1,
-        Translation => 1,
-        Max         => 200,
-    );
+    my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
 
     $Param{ArticleSenderTypesStrg} = $LayoutObject->BuildSelection(
-        Data        => { $TicketObject->ArticleSenderTypeList( Result => 'HASH' ), },
+        Data        => { $ArticleObject->ArticleSenderTypeList(), },
         Name        => 'ArticleSenderTypeID',
         SelectedID  => $Param{Data}->{ArticleSenderTypeID},
         Class       => $ArticleSenderTypeIDClass . ' Modernize W75pc',
@@ -1201,6 +1226,31 @@ sub _Edit {
         Multiple    => 1,
         Translation => 1,
         Max         => 200,
+    );
+
+    $Param{ArticleCustomerVisibilityStrg} = $LayoutObject->BuildSelection(
+        Data => {
+            0 => 'Invisible to customer',
+            1 => 'Visible to customer',
+        },
+        Name         => 'ArticleIsVisibleForCustomer',
+        SelectedID   => $Param{Data}->{ArticleIsVisibleForCustomer},
+        Class        => 'Modernize W75pc',
+        Translation  => 1,
+        PossibleNone => 1,
+    );
+
+    my @CommunicationChannelList = $Kernel::OM->Get('Kernel::System::CommunicationChannel')->ChannelList();
+    my %CommunicationChannels = map { $_->{ChannelID} => $_->{DisplayName} } @CommunicationChannelList;
+
+    $Param{ArticleCommunicationChannelStrg} = $LayoutObject->BuildSelection(
+        Data        => \%CommunicationChannels,
+        Name        => 'ArticleCommunicationChannelID',
+        SelectedID  => $Param{Data}->{ArticleCommunicationChannelID},
+        Class       => 'Modernize W75pc',
+        Multiple    => 1,
+        Size        => 5,
+        Translation => 1,
     );
 
     $Param{ArticleAttachmentIncludeStrg} = $LayoutObject->BuildSelection(
@@ -1215,10 +1265,31 @@ sub _Edit {
         Class       => 'Modernize W75pc',
     );
 
+    # get all searchable article field definitions
+    my %ArticleSearchableFields = $Kernel::OM->Get('Kernel::System::Ticket::Article')->ArticleSearchableFieldsList();
+
+    for my $ArticleFieldKey ( sort keys %ArticleSearchableFields ) {
+
+        my $Value = '';
+
+        if ( IsArrayRefWithData( $Param{Data}->{$ArticleFieldKey} ) ) {
+            $Value = $Param{Data}->{$ArticleFieldKey}->[0];
+        }
+
+        $LayoutObject->Block(
+            Name => 'BackendArticleField',
+            Data => {
+                Label => Translatable( $ArticleSearchableFields{$ArticleFieldKey}->{Label} ),
+                Key   => $ArticleSearchableFields{$ArticleFieldKey}->{Key},
+                Value => $Value,
+            },
+        );
+    }
+
     # take over data fields
     KEY:
     for my $Key (
-        qw(VisibleForAgent VisibleForAgentTooltip CustomerID CustomerUserID ArticleSubjectMatch ArticleBodyMatch)
+        qw(VisibleForAgent VisibleForAgentTooltip CustomerID CustomerUserID)
         )
     {
         next KEY if !$Param{Data}->{$Key};
@@ -1322,45 +1393,69 @@ sub _Edit {
                 next TRANSPORT;
             }
             else {
-                my $TransportChecked = '';
-                if ( grep { $_ eq $Transport } @{ $Param{Data}->{Transports} } ) {
-                    $TransportChecked = 'checked="checked"';
+
+                my $TransportObject = $Kernel::OM->Get( $RegisteredTransports{$Transport}->{Module} );
+
+                my $IsActive = 1;
+
+                # Check only if function is available due backwards compatibility.
+                if ( $TransportObject->can('IsActive') ) {
+                    $IsActive = $TransportObject->IsActive();
                 }
 
-                # set Email transport selected on add screen
-                if ( $Transport eq 'Email' && !$Param{ID} ) {
-                    $TransportChecked = 'checked="checked"'
-                }
+                if ($IsActive) {
 
-                # get transport settings string from transport object
-                my $TransportSettings =
-                    $Kernel::OM->Get( $RegisteredTransports{$Transport}->{Module} )->TransportSettingsDisplayGet(
-                    %Param,
+                    my $TransportChecked = '';
+                    if ( grep { $_ eq $Transport } @{ $Param{Data}->{Transports} } ) {
+                        $TransportChecked = 'checked="checked"';
+                    }
+
+                    # set Email transport selected on add screen
+                    if ( $Transport eq 'Email' && !$Param{ID} ) {
+                        $TransportChecked = 'checked="checked"'
+                    }
+
+                    # get transport settings string from transport object
+                    my $TransportSettings =
+                        $TransportObject->TransportSettingsDisplayGet(
+                        %Param,
+                        );
+
+                    # it should decide if the default value for the
+                    # notification on AgentPreferences is enabled or not
+                    my $AgentEnabledByDefault = 0;
+                    if ( grep { $_ eq $Transport } @{ $Param{Data}->{AgentEnabledByDefault} } ) {
+                        $AgentEnabledByDefault = 1;
+                    }
+                    elsif ( !$Param{ID} && defined $RegisteredTransports{$Transport}->{AgentEnabledByDefault} ) {
+                        $AgentEnabledByDefault = $RegisteredTransports{$Transport}->{AgentEnabledByDefault};
+                    }
+                    my $AgentEnabledByDefaultChecked = ( $AgentEnabledByDefault ? 'checked="checked"' : '' );
+
+                    # transport
+                    $LayoutObject->Block(
+                        Name => 'TransportRowEnabled',
+                        Data => {
+                            Transport                    => $Transport,
+                            TransportName                => $RegisteredTransports{$Transport}->{Name},
+                            TransportChecked             => $TransportChecked,
+                            SettingsString               => $TransportSettings,
+                            AgentEnabledByDefaultChecked => $AgentEnabledByDefaultChecked,
+                            TransportsServerError        => $Param{TransportsServerError},
+                        },
                     );
-
-                # it should decide if the default value for the
-                # notification on AgentPreferences is enabled or not
-                my $AgentEnabledByDefault = 0;
-                if ( grep { $_ eq $Transport } @{ $Param{Data}->{AgentEnabledByDefault} } ) {
-                    $AgentEnabledByDefault = 1;
                 }
-                elsif ( !$Param{ID} && defined $RegisteredTransports{$Transport}->{AgentEnabledByDefault} ) {
-                    $AgentEnabledByDefault = $RegisteredTransports{$Transport}->{AgentEnabledByDefault};
-                }
-                my $AgentEnabledByDefaultChecked = ( $AgentEnabledByDefault ? 'checked="checked"' : '' );
+                else {
 
-                # transport
-                $LayoutObject->Block(
-                    Name => 'TransportRowEnabled',
-                    Data => {
-                        Transport                    => $Transport,
-                        TransportName                => $RegisteredTransports{$Transport}->{Name},
-                        TransportChecked             => $TransportChecked,
-                        SettingsString               => $TransportSettings,
-                        AgentEnabledByDefaultChecked => $AgentEnabledByDefaultChecked,
-                        TransportsServerError        => $Param{TransportsServerError},
-                    },
-                );
+                    # This trasnport needs to be active before use it.
+                    $LayoutObject->Block(
+                        Name => 'TransportRowNotActive',
+                        Data => {
+                            Transport     => $Transport,
+                            TransportName => $RegisteredTransports{$Transport}->{Name},
+                        },
+                    );
+                }
 
             }
 
@@ -1390,6 +1485,7 @@ sub _Overview {
     $LayoutObject->Block( Name => 'ActionList' );
     $LayoutObject->Block( Name => 'ActionAdd' );
     $LayoutObject->Block( Name => 'ActionImport' );
+    $LayoutObject->Block( Name => 'Filter' );
 
     $LayoutObject->Block(
         Name => 'OverviewResult',
@@ -1405,10 +1501,10 @@ sub _Overview {
 
         # get valid list
         my %ValidList = $Kernel::OM->Get('Kernel::System::Valid')->ValidList();
-        for ( sort { $List{$a} cmp $List{$b} } keys %List ) {
+        for my $NotificationID ( sort { $List{$a} cmp $List{$b} } keys %List ) {
 
             my %Data = $NotificationEventObject->NotificationGet(
-                ID => $_,
+                ID => $NotificationID,
             );
             $LayoutObject->Block(
                 Name => 'OverviewResultRow',

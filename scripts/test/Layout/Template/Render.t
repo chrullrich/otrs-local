@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -23,6 +23,7 @@ my $LayoutObject = Kernel::Output::HTML::Layout->new(
     UserID => 1,
     Lang   => 'de',
 );
+my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
 my @Tests = (
     {
@@ -335,6 +336,45 @@ console.log(22);
         Result => '
 ',
     },
+
+    {
+        Name     => 'JSData 1',
+        Template => '
+[% PROCESS JSData
+    Key   = "Config.Test"
+    Value = 123
+%]
+[% PROCESS JSData
+    Key   = "Config.Test2"
+    Value = [1, 2, { test => "test"}]
+%]',
+        Result => '
+
+',
+    },
+    {
+        Name      => 'JSData 2 with AddJSData()',
+        Template  => '',
+        AddJSData => {
+            Key   => 'Perl.Code',
+            Value => { Perl => 'Data' }
+        },
+        Result => '',
+    },
+    {
+        Name     => 'JSDataInsert',
+        Template => '
+[% PROCESS "JSDataInsert" -%]',
+        Result => '
+Core.Config.AddConfig({"Config.Test":123,"Config.Test2":[1,2,{"test":"test"}],"Perl.Code":{"Perl":"Data"}});
+',
+    },
+    {
+        Name     => 'JSDataInsert, no data',
+        Template => '[% PROCESS "JSDataInsert" -%]',
+        Result   => '',
+    },
+
     {
         Name     => 'Form without ChallengeToken',
         Template => '
@@ -418,9 +458,47 @@ EOF
             HTML => '<h1 class="test">Test</h1><p>mytext</p><p>mytext2</p>'
         },
     },
+    {
+        Name     => 'HumanReadableDataSize',
+        Template => <<'EOF',
+[% 123 | Localize( 'Filesize' ) %] [% Localize( 456 * 1024, 'Filesize' ) %] [% Localize( 789.5 * 1024 * 1024, 'Filesize' ) %]
+EOF
+        Result => '123 B 456 KB 789,5 MB
+',
+        Data => {},
+    },
+    {
+        Name     => 'Replace',
+        Template => <<'EOF',
+[% "This is %s" | ReplacePlaceholders("<strong>bold text</strong>") %]
+[% ReplacePlaceholders("This is %s", "<em>italic text</em>") %]
+[% "This string has %s and %s placeholder" | ReplacePlaceholders("<strong>first</strong>", "<em>second</em>") %]
+[% ReplacePlaceholders("This string has neither %s or %s text", "bold", "italic") %]
+[% "This is an <unsafe> string with %s placeholder" | html | ReplacePlaceholders("<strong>safe</strong>") %]
+EOF
+        Result => 'This is <strong>bold text</strong>
+This is <em>italic text</em>
+This string has <strong>first</strong> and <em>second</em> placeholder
+This string has neither bold or italic text
+This is an &lt;unsafe&gt; string with <strong>safe</strong> placeholder
+',
+        Data => {},
+    },
 );
 
 for my $Test (@Tests) {
+    if ( $Test->{FixedTimeSet} ) {
+
+        # Set current time to the provided timestamp.
+        my $DateTimeObject = $Kernel::OM->Create(
+            'Kernel::System::DateTime',
+            ObjectParams => {
+                String => $Test->{FixedTimeSet},
+            },
+        );
+
+        $HelperObject->FixedTimeSet($DateTimeObject);
+    }
 
     # make sure EnvRef is populated every time
     delete $LayoutObject->{EnvRef};
@@ -438,6 +516,12 @@ for my $Test (@Tests) {
         );
     }
 
+    if ( $Test->{AddJSData} ) {
+        $LayoutObject->AddJSData(
+            %{ $Test->{AddJSData} },
+        );
+    }
+
     my $Result = $LayoutObject->Output(
         Template => $Test->{Template},
         Data     => $Test->{Data} // {},
@@ -448,6 +532,12 @@ for my $Test (@Tests) {
         $Test->{Result},
         $Test->{Name},
     );
+
+    if ( $Test->{FixedTimeSet} ) {
+
+        # Reset time to the current timestamp.
+        $HelperObject->FixedTimeSet();
+    }
 }
 
 # verify that the TemplateObject is correctly destroyed to make sure there

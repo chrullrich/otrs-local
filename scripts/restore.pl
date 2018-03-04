@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU AFFERO General Public License as published by
@@ -23,6 +23,7 @@ use warnings;
 
 # use ../ as lib location
 use File::Basename;
+use File::Spec qw(catfile);
 use FindBin qw($RealBin);
 use lib dirname($RealBin);
 use lib dirname($RealBin) . "/Kernel/cpan-lib";
@@ -33,13 +34,25 @@ use Kernel::System::ObjectManager;
 
 # get options
 my %Opts;
-my $DB     = '';
-my $DBDump = '';
+my $DB            = '';
+my $DBDump        = '';
+my $DecompressCMD = '';
+my $Installed     = 0;
 getopt( 'hbd', \%Opts );
 if ( exists $Opts{h} ) {
-    print "restore.pl - restore script\n";
-    print "Copyright (C) 2001-2017 OTRS AG, http://otrs.com/\n";
-    print "usage: restore.pl -b /data_backup/<TIME>/ -d /opt/otrs/\n";
+    print <<EOF;
+
+Restore an OTRS system from backup.
+
+Usage:
+ restore.pl -b /data_backup/<TIME>/ -d /opt/otrs/
+
+Options:
+ -b                     - Directory of the backup files.
+ -d                     - Target OTRS home directory.
+ [-h]                   - Display help for this command.
+
+EOF
     exit 1;
 }
 if ( !$Opts{b} ) {
@@ -59,11 +72,39 @@ elsif ( !-d $Opts{d} ) {
     exit 1;
 }
 
+if ( -e File::Spec->catfile( $Opts{b}, 'DatabaseBackup.sql.bz2' ) ) {
+    $DecompressCMD = 'bunzip2';
+}
+else {
+    $DecompressCMD = 'gunzip';
+}
+
+# check needed programs
+for my $CMD ( 'cp', 'tar', $DecompressCMD ) {
+    $Installed = 0;
+    open( my $Input, '-|', "which $CMD" );    ## no critic
+    while (<$Input>) {
+        $Installed = 1;
+    }
+    close $Input;
+    if ( !$Installed ) {
+        print STDERR "ERROR: Can't locate $CMD!\n";
+        exit 1;
+    }
+}
+
 # restore config
-print "Restore $Opts{b}/Config.tar.gz ...\n";
 chdir( $Opts{d} );
-if ( -e "$Opts{b}/Config.tar.gz" ) {
-    system("tar -xzf $Opts{b}/Config.tar.gz");
+
+my $ConfigBackupGz  = File::Spec->catfile( $Opts{b}, 'Config.tar.gz' );
+my $ConfigBackupBz2 = File::Spec->catfile( $Opts{b}, 'Config.tar.bz2' );
+if ( -e $ConfigBackupGz ) {
+    print "Restore $ConfigBackupGz ...\n";
+    system("tar -xzf $ConfigBackupGz");
+}
+elsif ( -e $ConfigBackupBz2 ) {
+    print "Restore $ConfigBackupBz2 ...\n";
+    system("tar -xjf $ConfigBackupBz2");
 }
 
 # create common objects
@@ -78,7 +119,7 @@ my $Database     = $Kernel::OM->Get('Kernel::Config')->Get('Database');
 my $DatabaseUser = $Kernel::OM->Get('Kernel::Config')->Get('DatabaseUser');
 my $DatabasePw   = $Kernel::OM->Get('Kernel::Config')->Get('DatabasePw');
 my $DatabaseDSN  = $Kernel::OM->Get('Kernel::Config')->Get('DatabaseDSN');
-my $ArticleDir   = $Kernel::OM->Get('Kernel::Config')->Get('ArticleDir');
+my $ArticleDir   = $Kernel::OM->Get('Kernel::Config')->Get('Ticket::Article::Backend::MIMEBase::ArticleDataDir');
 
 # decrypt pw (if needed)
 if ( $DatabasePw =~ m/^\{(.*)\}$/ ) {
@@ -89,6 +130,17 @@ if ( $DatabasePw =~ m/^\{(.*)\}$/ ) {
 if ( $DatabaseDSN =~ m/:mysql/i ) {
     $DB     = 'MySQL';
     $DBDump = 'mysql';
+
+    $Installed = 0;
+    open( my $Input, '-|', "which $DBDump" );    ## no critic
+    while (<$Input>) {
+        $Installed = 1;
+    }
+    close $Input;
+    if ( !$Installed ) {
+        print STDERR "ERROR: Can't locate $DBDump!\n";
+        exit 1;
+    }
 }
 elsif ( $DatabaseDSN =~ m/:pg/i ) {
     $DB     = 'PostgreSQL';
@@ -96,24 +148,21 @@ elsif ( $DatabaseDSN =~ m/:pg/i ) {
     if ( $DatabaseDSN !~ m/host=/i ) {
         $DatabaseHost = ''
     }
-}
-else {
-    print STDERR "ERROR: Can't backup, no database dump support!\n";
-    exit 1;
-}
 
-# check needed programs
-for my $CMD ( 'cp', 'tar', $DBDump ) {
-    my $Installed = 0;
-    open( my $Input, '-|', "which $CMD" );    ## no critic
+    $Installed = 0;
+    open( my $Input, '-|', "which $DBDump" );    ## no critic
     while (<$Input>) {
         $Installed = 1;
     }
     close $Input;
     if ( !$Installed ) {
-        print STDERR "ERROR: Can't locate $CMD!\n";
+        print STDERR "ERROR: Can't locate $DBDump!\n";
         exit 1;
     }
+}
+else {
+    print STDERR "ERROR: Can't backup, no database dump support!\n";
+    exit 1;
 }
 
 # check database env
@@ -150,48 +199,60 @@ my $Home = $Kernel::OM->Get('Kernel::Config')->Get('Home');
 chdir($Home);
 
 # extract application
-if ( -e "$Opts{b}/Application.tar.gz" ) {
-    print "Restore $Opts{b}/Application.tar.gz ...\n";
-    system("tar -xzf $Opts{b}/Application.tar.gz");
+my $ApplicationBackupGz  = File::Spec->catfile( $Opts{b}, 'Application.tar.gz' );
+my $ApplicationBackupBz2 = File::Spec->catfile( $Opts{b}, 'Application.tar.bz2' );
+if ( -e $ApplicationBackupGz ) {
+    print "Restore $ApplicationBackupGz ...\n";
+    system("tar -xzf $ApplicationBackupGz");
+}
+elsif ( -e $ApplicationBackupBz2 ) {
+    print "Restore $ApplicationBackupBz2 ...\n";
+    system("tar -xjf $ApplicationBackupBz2");
 }
 
 # extract vardir
-if ( -e "$Opts{b}/VarDir.tar.gz" ) {
-    print "Restore $Opts{b}/VarDir.tar.gz ...\n";
-    system("tar -xzf $Opts{b}/VarDir.tar.gz");
+my $VarDirBackupGz  = File::Spec->catfile( $Opts{b}, 'VarDir.tar.gz' );
+my $VarDirBackupBz2 = File::Spec->catfile( $Opts{b}, 'VarDir.tar.bz2' );
+if ( -e $VarDirBackupGz ) {
+    print "Restore $VarDirBackupGz ...\n";
+    system("tar -xzf $VarDirBackupGz");
+}
+elsif ( -e $VarDirBackupBz2 ) {
+    print "Restore $VarDirBackupBz2 ...\n";
+    system("tar -xjf $VarDirBackupBz2");
 }
 
 # extract datadir
-if ( -e "$Opts{b}/DataDir.tar.gz" ) {
-    print "Restore $Opts{b}/DataDir.tar.gz ...\n";
-    system("tar -xzf $Opts{b}/DataDir.tar.gz");
+my $DataDirBackupGz  = File::Spec->catfile( $Opts{b}, 'DataDir.tar.gz' );
+my $DataDirBackupBz2 = File::Spec->catfile( $Opts{b}, 'DataDir.tar.bz2' );
+if ( -e $DataDirBackupGz ) {
+    print "Restore $DataDirBackupGz ...\n";
+    system("tar -xzf $DataDirBackupGz");
+}
+if ( -e $DataDirBackupBz2 ) {
+    print "Restore $DataDirBackupBz2 ...\n";
+    system("tar -xjf $DataDirBackupBz2");
 }
 
 # import database
+my $DatabaseBackupGz  = File::Spec->catfile( $Opts{b}, 'DatabaseBackup.sql.gz' );
+my $DatabaseBackupBz2 = File::Spec->catfile( $Opts{b}, 'DatabaseBackup.sql.bz2' );
 if ( $DB =~ m/mysql/i ) {
     print "create $DB\n";
     if ($DatabasePw) {
         $DatabasePw = "-p'$DatabasePw'";
     }
-    if ( -e "$Opts{b}/DatabaseBackup.sql.gz" ) {
-        print "decompresses SQL-file ...\n";
-        system("gunzip $Opts{b}/DatabaseBackup.sql.gz");
-        print "cat SQL-file into $DB database\n";
+    if ( -e $DatabaseBackupGz ) {
+        print "Restore database into $DB ...\n";
         system(
-            "mysql -f -u$DatabaseUser $DatabasePw -h$DatabaseHost $Database < $Opts{b}/DatabaseBackup.sql"
+            "gunzip -c $DatabaseBackupGz | mysql -f -u$DatabaseUser $DatabasePw -h$DatabaseHost $Database"
         );
-        print "compress SQL-file...\n";
-        system("gzip $Opts{b}/DatabaseBackup.sql");
     }
-    elsif ( -e "$Opts{b}/DatabaseBackup.sql.bz2" ) {
-        print "decompresses SQL-file ...\n";
-        system("bunzip2 $Opts{b}/DatabaseBackup.sql.bz2");
-        print "cat SQL-file into $DB database\n";
+    elsif ( -e $DatabaseBackupBz2 ) {
+        print "Restore database into $DB ...\n";
         system(
-            "mysql -f -u$DatabaseUser $DatabasePw -h$DatabaseHost $Database < $Opts{b}/DatabaseBackup.sql"
+            "bunzip2 -c $DatabaseBackupBz2 | mysql -f -u$DatabaseUser $DatabasePw -h$DatabaseHost $Database"
         );
-        print "compress SQL-file...\n";
-        system("bzip2 $Opts{b}/DatabaseBackup.sql");
     }
 }
 else {
@@ -199,34 +260,26 @@ else {
         $DatabaseHost = "-h $DatabaseHost"
     }
 
-    if ( -e "$Opts{b}/DatabaseBackup.sql.gz" ) {
-        print "decompresses SQL-file ...\n";
-        system("gunzip $Opts{b}/DatabaseBackup.sql.gz");
+    if ( -e $DatabaseBackupGz ) {
 
         # set password via environment variable if there is one
         if ($DatabasePw) {
-            $ENV{'PGPASSWORD'} = $DatabasePw;
+            $ENV{'PGPASSWORD'} = $DatabasePw;    ## no critic
         }
-        print "cat SQL-file into $DB database\n";
+        print "Restore database into $DB ...\n";
         system(
-            "cat $Opts{b}/DatabaseBackup.sql | psql -U$DatabaseUser $DatabaseHost $Database"
+            "gunzip -c $DatabaseBackupGz | psql -U$DatabaseUser $DatabaseHost $Database"
         );
-        print "compress SQL-file...\n";
-        system("gzip $Opts{b}/DatabaseBackup.sql");
     }
-    elsif ( -e "$Opts{b}/DatabaseBackup.sql.bz2" ) {
-        print "decompresses SQL-file ...\n";
-        system("bunzip2 $Opts{b}/DatabaseBackup.sql.bz2");
+    elsif ( -e $DatabaseBackupBz2 ) {
 
         # set password via environment variable if there is one
         if ($DatabasePw) {
-            $ENV{'PGPASSWORD'} = $DatabasePw;
+            $ENV{'PGPASSWORD'} = $DatabasePw;    ## no critic
         }
-        print "cat SQL-file into $DB database\n";
+        print "Restore database into $DB ...\n";
         system(
-            "cat $Opts{b}/DatabaseBackup.sql | psql -U$DatabaseUser $DatabaseHost $Database"
+            "bunzip2 -c $DatabaseBackupBz2 | psql -U$DatabaseUser $DatabaseHost $Database"
         );
-        print "compress SQL-file...\n";
-        system("bzip2 $Opts{b}/DatabaseBackup.sql");
     }
 }

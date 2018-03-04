@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -104,14 +104,14 @@ sub Run {
         . $LayoutObject->LinkEncode( $Param{CustomerID} ) . ';';
 
     my %PageNav = $LayoutObject->PageNavBar(
-        StartHit       => $Self->{StartHit},
-        PageShown      => $Self->{PageShown},
-        AllHits        => $Total || 1,
-        Action         => 'Action=' . $LayoutObject->{Action},
-        Link           => $LinkPage,
-        AJAXReplace    => 'Dashboard' . $Self->{Name},
-        IDPrefix       => 'Dashboard' . $Self->{Name},
-        KeepScriptTags => $Param{AJAX},
+        StartHit    => $Self->{StartHit},
+        PageShown   => $Self->{PageShown},
+        AllHits     => $Total || 1,
+        Action      => 'Action=' . $LayoutObject->{Action},
+        Link        => $LinkPage,
+        AJAXReplace => 'Dashboard' . $Self->{Name},
+        IDPrefix    => 'Dashboard' . $Self->{Name},
+        AJAX        => $Param{AJAX},
     );
 
     $LayoutObject->Block(
@@ -180,6 +180,8 @@ sub Run {
                 CustomerID => $Self->{CustomerID},
             },
         );
+
+        $Self->{EditCustomerPermission} = 1;
     }
 
     # get the permission for the phone ticket creation
@@ -216,32 +218,11 @@ sub Run {
             Name => 'ContentLargeCustomerUserListRow',
             Data => {
                 %Param,
-                CustomerKey       => $CustomerKey,
-                CustomerListEntry => $CustomerIDs->{$CustomerKey},
+                EditCustomerPermission => $Self->{EditCustomerPermission},
+                CustomerKey            => $CustomerKey,
+                CustomerListEntry      => $CustomerIDs->{$CustomerKey},
             },
         );
-
-        # can edit?
-        if ( $AddAccess && scalar keys %CustomerSource ) {
-            $LayoutObject->Block(
-                Name => 'ContentLargeCustomerUserListRowCustomerKeyLink',
-                Data => {
-                    %Param,
-                    CustomerKey       => $CustomerKey,
-                    CustomerListEntry => $CustomerIDs->{$CustomerKey},
-                },
-            );
-        }
-        else {
-            $LayoutObject->Block(
-                Name => 'ContentLargeCustomerUserListRowCustomerKeyText',
-                Data => {
-                    %Param,
-                    CustomerKey       => $CustomerKey,
-                    CustomerListEntry => $CustomerIDs->{$CustomerKey},
-                },
-            );
-        }
 
         if ( $ConfigObject->Get('ChatEngine::Active') ) {
 
@@ -249,12 +230,13 @@ sub Run {
             my $EnableChat = 1;
             my $ChatStartingAgentsGroup
                 = $ConfigObject->Get('ChatEngine::PermissionGroup::ChatStartingAgents') || 'users';
+            my $ChatStartingAgentsGroupPermission = $Kernel::OM->Get('Kernel::System::Group')->PermissionCheck(
+                UserID    => $Self->{UserID},
+                GroupName => $ChatStartingAgentsGroup,
+                Type      => 'rw',
+            );
 
-            if (
-                !defined $LayoutObject->{"UserIsGroup[$ChatStartingAgentsGroup]"}
-                || $LayoutObject->{"UserIsGroup[$ChatStartingAgentsGroup]"} ne 'Yes'
-                )
-            {
+            if ( !$ChatStartingAgentsGroupPermission ) {
                 $EnableChat = 0;
             }
             if (
@@ -269,13 +251,14 @@ sub Run {
                 my $VideoChatEnabled = 0;
                 my $VideoChatAgentsGroup
                     = $ConfigObject->Get('ChatEngine::PermissionGroup::VideoChatAgents') || 'users';
+                my $VideoChatAgentsGroupPermission = $Kernel::OM->Get('Kernel::System::Group')->PermissionCheck(
+                    UserID    => $Self->{UserID},
+                    GroupName => $VideoChatAgentsGroup,
+                    Type      => 'rw',
+                );
 
                 # Enable the video chat feature if system is entitled and agent is a member of configured group.
-                if (
-                    defined $Self->{"UserIsGroup[$VideoChatAgentsGroup]"}
-                    && $Self->{"UserIsGroup[$VideoChatAgentsGroup]"} eq 'Yes'
-                    )
-                {
+                if ($VideoChatAgentsGroupPermission) {
                     if ( $Kernel::OM->Get('Kernel::System::Main')->Require( 'Kernel::System::VideoChat', Silent => 1 ) )
                     {
                         $VideoChatEnabled = $Kernel::OM->Get('Kernel::System::VideoChat')->IsEnabled();
@@ -355,7 +338,7 @@ sub Run {
             Permission           => $Self->{Config}->{Permission},
             UserID               => $Self->{UserID},
             CacheTTL             => $Self->{Config}->{CacheTTLLocal} * 60,
-        );
+        ) || 0;
 
         my $CustomerKeySQL = $Kernel::OM->Get('Kernel::System::DB')->QueryStringEscape( QueryString => $CustomerKey );
 
@@ -370,13 +353,13 @@ sub Run {
         );
 
         my $TicketCountClosed = $TicketObject->TicketSearch(
-            StateType            => 'closed',
+            StateType            => 'Closed',
             CustomerUserLoginRaw => $CustomerKey,
             Result               => 'COUNT',
             Permission           => $Self->{Config}->{Permission},
             UserID               => $Self->{UserID},
             CacheTTL             => $Self->{Config}->{CacheTTLLocal} * 60,
-        );
+        ) || 0;
 
         $LayoutObject->Block(
             Name => 'ContentLargeCustomerUserListRowCustomerUserTicketsClosed',
@@ -439,9 +422,11 @@ sub Run {
         $Refresh = 60 * $Self->{UserRefreshTime};
         my $NameHTML = $Self->{Name};
         $NameHTML =~ s{-}{_}xmsg;
-        $LayoutObject->Block(
-            Name => 'ContentLargeTicketGenericRefresh',
-            Data => {
+
+        # send data to JS
+        $LayoutObject->AddJSData(
+            Key   => 'CustomerUserListRefresh',
+            Value => {
                 %{ $Self->{Config} },
                 Name        => $Self->{Name},
                 NameHTML    => $NameHTML,
@@ -455,9 +440,10 @@ sub Run {
         TemplateFile => 'AgentDashboardCustomerUserList',
         Data         => {
             %{ $Self->{Config} },
-            Name => $Self->{Name},
+            EditCustomerPermission => $Self->{EditCustomerPermission},
+            Name                   => $Self->{Name},
         },
-        KeepScriptTags => $Param{AJAX},
+        AJAX => $Param{AJAX},
     );
 
     return $Content;

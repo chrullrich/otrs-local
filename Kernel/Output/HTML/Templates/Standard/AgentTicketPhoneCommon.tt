@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -11,6 +11,9 @@
     <input type="hidden" name="Subaction" value="Store"/>
     <input type="hidden" name="FormID"    value="[% Data.FormID | html %]"/>
     <input type="hidden" name="TicketID"  value="[% Data.TicketID | html %]"/>
+    <input type="hidden" name="FormDraftTitle" value="[% Data.FormDraftTitle | html %]"/>
+    <input type="hidden" name="FormDraftID" value="[% Data.FormDraftID | html %]"/>
+    <input type="hidden" name="FormDraftAction" id="FormDraftAction" />
     <div class="LayoutPopup ARIARoleMain">
 
         <div class="Header">
@@ -34,7 +37,7 @@
         </div>
 
         <div class="LayoutFixedSidebar SidebarLast Content">
-
+            [% INCLUDE "FormElements/DraftNotifications.tt" %]
             <div class="SidebarColumn">
 [% RenderBlockStart("CustomerTable") %]
                 <div id="CustomerInfo" class="WidgetSimple">
@@ -63,11 +66,6 @@
                     <div class="Field">
 
 <!-- OutputFilterHook_TicketOptionsBegin -->
-
-[% RenderBlockStart("SpellCheck") %]
-                        <a href="#" id="OptionSpellCheck">[ [% Translate("Spell check") | html %] ]</a>
-[% RenderBlockEnd("SpellCheck") %]
-
 <!-- OutputFilterHook_TicketOptionsEnd -->
 
                     </div>
@@ -80,69 +78,21 @@
                     <label for="StandardTemplateID">[% Translate("Text Template") | html %]:</label>
                     <div class="Field">
                         [% Data.StandardTemplateStrg %]
-                        <p class="FieldExplanation">[% Translate("Setting a template will overwrite any text or attachment.") %]</p>
+                        <p class="FieldExplanation">[% Translate("Setting a template will overwrite any text or attachment.") | html %]</p>
                     </div>
                     <div class="Clear"></div>
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-    $('#StandardTemplateID').bind('change', function (Event) {
-        var $TemplateSelect = $(this);
-        Core.Agent.TicketAction.ConfirmTemplateOverwrite('RichText', $TemplateSelect, function () {
-            Core.AJAX.FormUpdate($TemplateSelect.closest('form'), 'AJAXUpdate', 'StandardTemplateID', ['RichTextField']);
-        });
-        return false;
-    });
-//]]></script>
-[% END %]
 [% RenderBlockEnd("StandardTemplate") %]
                     <label class="Mandatory" for="RichText"><span class="Marker">*</span>[% Translate("Text") | html %]:</label>
                     <div id="RichTextField" class="RichTextField">
-[% RenderBlockStart("RichText") %]
-[% InsertTemplate("RichTextEditor.tt") %]
-[% RenderBlockEnd("RichText") %]
-
-                        <textarea id="RichText" name="Body" title="[% Translate("Message body") | html %]" rows="15" cols="[% Config("Ticket::Frontend::TextAreaNote") %]" class="RichText Validate_Required [% Data.BodyInvalid | html %]">[% Data.Body %]</textarea>
+                        <textarea id="RichText" name="Body" title="[% Translate("Message body") | html %]" rows="15" cols="[% Config("Ticket::Frontend::TextAreaNote") | html %]" class="RichText Validate_Required [% Data.BodyInvalid | html %]">[% Data.Body %]</textarea>
                         <div id="RichTextError" class="TooltipErrorMessage"><p>[% Translate("This field is required.") | html %]</p></div>
                         <div id="RichTextServerError" class="TooltipErrorMessage"><p>[% Translate("This field is required.") | html %]</p></div>
                     </div>
                     <div class="Clear"></div>
 
-                    <label>[% Translate("Attachment") | html %]:</label>
+                    <label>[% Translate("Attachments") | html %]:</label>
                     <div class="Field">
-                        <ul>
-
-[% RenderBlockStart("Attachment") %]
-                            <li>
-                                [% Data.Filename | html %] ([% Data.Filesize | html %])
-                                <button type="button" id="AttachmentDeleteButton[% Data.FileID | html %]" name="AttachmentDeleteButton[% Data.FileID | html %]" value="[% Translate("Delete") | html %]" class="CallForAction SpacingLeft"><span>[% Translate("Delete") | html %]</span></button>
-                                <input type="hidden" id="AttachmentDelete[% Data.FileID | html %]" name="AttachmentDelete[% Data.FileID | html %]" />
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-    $('#AttachmentDeleteButton[% Data.FileID | html %]').bind('click', function () {
-        var $Form = $('#AttachmentDeleteButton[% Data.FileID | html %]').closest('form');
-        $('#AttachmentDelete[% Data.FileID | html %]').val(1);
-        Core.Form.Validate.DisableValidation($Form);
-        $Form.trigger('submit');
-    });
-//]]></script>
-[% END %]
-                            </li>
-[% RenderBlockEnd("Attachment") %]
-
-                            <li>
-                                <input id="FileUpload" name="FileUpload" type="file" size="40" />
-                                <input type="hidden" id="AttachmentUpload" name="AttachmentUpload" value="0" />
-                            </li>
-                        </ul>
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-    $('#FileUpload').bind('change', function () {
-        var $Form = $('#FileUpload').closest('form');
-        Core.Form.Validate.DisableValidation($Form);
-        $Form.find('#AttachmentUpload').val('1').end().submit();
-    });
-//]]></script>
-[% END %]
+[% INCLUDE "FormElements/AttachmentList.tt" %]
                     </div>
                     <div class="Clear"></div>
 
@@ -151,13 +101,6 @@
                         [% Data.NextStatesStrg %]
                     </div>
                     <div class="Clear"></div>
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-    $('#NextStateID').bind('change', function (Event) {
-        Core.AJAX.FormUpdate( $(this).parents('form'), 'AJAXUpdate', 'NextStateID', ['StandardTemplateID' [% Data.DynamicFieldNamesStrg %]]);
-    });
-//]]></script>
-[% END %]
 
                     <label>[% Translate("Pending date") | html %]:</label>
                     <div class="Field">
@@ -217,17 +160,15 @@
 
                 </fieldset>
             </div>
+            <br/>
         </div>
         <div class="Footer">
-            <button class="CallForAction Primary" id="submitRichText" accesskey="g" title="[% Translate("Submit") | html %] (g)" type="submit" value="[% Translate("Submit") | html %]"><span><i class="fa fa-check-square-o"></i> [% Translate("Submit") | html %]</span></button>
+            <button class="CallForAction Primary" id="submitRichText" accesskey="g" title="[% Translate("Submit") | html %] (g)" type="submit" value="[% Translate("Submit") | html %]">
+                <span><i class="fa fa-check-square-o"></i> [% Translate("Submit") | html %]</span>
+            </button>
+            [% INCLUDE "FormElements/DraftButtons.tt" %]
         </div>
     </div>
 </form>
 
 #Layers
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-    Core.Agent.TicketAction.Init();
-    Core.Config.Set('Localization.Delete', [% Translate("Delete") | JSON %]);
-//]]></script>
-[% END %]

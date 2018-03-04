@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -70,21 +70,21 @@ $Selenium->RunTest(
             "Group is created - $GroupName",
         );
 
-        # disable frontend service module
+        # Disable frontend service module.
         my $FrontendCustomerTicketOverview
-            = $Kernel::OM->Get('Kernel::Config')->Get('CustomerFrontend::Module')->{CustomerTicketOverview};
+            = $Kernel::OM->Get('Kernel::Config')->Get('CustomerFrontend::Navigation')->{CustomerTicketOverview}
+            ->{'002-Ticket'};
 
-        # change the group for the CompanyTickets
-        for my $NavBarItem ( @{ $FrontendCustomerTicketOverview->{NavBar} } ) {
-
-            if ( $NavBarItem->{Name} eq 'Company Tickets' ) {
-                push @{ $NavBarItem->{Group} }, $GroupName;
+        # Change the group for the CompanyTickets.
+        for my $Item ( @{$FrontendCustomerTicketOverview} ) {
+            if ( $Item->{Name} eq 'Company Tickets' ) {
+                push @{ $Item->{Group} }, $GroupName;
             }
         }
 
         $Helper->ConfigSettingChange(
             Valid => 1,
-            Key   => 'CustomerFrontend::Module###CustomerTicketOverview',
+            Key   => 'CustomerFrontend::Navigation###CustomerTicketOverview###002-Ticket',
             Value => $FrontendCustomerTicketOverview,
         );
 
@@ -102,7 +102,7 @@ $Selenium->RunTest(
         $Selenium->VerifiedGet("${ScriptAlias}customer.pl?Action=CustomerTicketOverview;Subaction=CompanyTickets");
 
         # check for customer user fatal error
-        my $ExpectedMsg = 'Please contact the administrator';
+        my $ExpectedMsg = 'Please contact the administrator.';
         $Self->True(
             index( $Selenium->get_page_source(), $ExpectedMsg ) > -1,
             "Customer fatal error message - found",
@@ -121,13 +121,6 @@ $Selenium->RunTest(
         $Self->True(
             $Success,
             "CustomerUser $TestCustomerUserLogin added to test group $GroupName with ro and rw rights"
-        );
-
-        # login test customer user again
-        $Selenium->Login(
-            Type     => 'Customer',
-            User     => $TestCustomerUserLogin,
-            Password => $TestCustomerUserLogin,
         );
 
         # navigate to CompanyTickets subaction screen again

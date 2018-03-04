@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -53,7 +53,7 @@ my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 $Helper->FixedTimeSet();
 
 # get current time stamp
-my $TimeStamp = $Kernel::OM->Get('Kernel::System::Time')->CurrentTimestamp();
+my $TimeStamp = $Kernel::OM->Create('Kernel::System::DateTime')->ToString();
 
 # FutureTaskAdd()
 my @Tests = (

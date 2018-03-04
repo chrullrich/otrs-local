@@ -1,5 +1,5 @@
 // --
-// Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+// Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
 // the enclosed file COPYING for license information (AGPL). If you
@@ -57,7 +57,7 @@ Core.AJAX = (function (TargetNS) {
      *      Handles failing ajax request (only used as error callback in $.ajax calls)
      */
     function HandleAJAXError(XHRObject, Status, Error) {
-        var ErrorMessage = 'Error during AJAX communication. Status: ' + Status + ', Error: ' + Error;
+        var ErrorMessage = Core.Language.Translate('Error during AJAX communication. Status: %s, Error: %s', Status, Error);
 
         // Check for expired sessions.
         if (RedirectAfterSessionTimeOut(XHRObject)) {
@@ -202,38 +202,36 @@ Core.AJAX = (function (TargetNS) {
      * @name UpdateTicketAttachments
      * @memberof Core.AJAX
      * @function
-     * @param {Object} Value - Array of hashes, each hash have the needed attachment information.
+     * @param {Object} Attachments - Array of hashes, each hash have the needed attachment information.
      * @description
-     *      Removes all shown attachments on the screen and adds the ones that are sent in
-     *      the Value parmeter.
+     *      Removes all selected attachments and adds the ones passed in the Attachments object.
      */
-    function UpdateTicketAttachments(Value) {
-        var DeleteText = Core.Config.Get('Localization.Delete'),
-            FileID,
-            ButtonStrg,
-            InputStrg;
+    function UpdateTicketAttachments(Attachments) {
 
-        // sync the attachment list with the attachments in the UploadCache
-        // 1st: delete the current attachment list
-        $('#FileUpload').parent().siblings('li').remove();
+        // delete existing attachments
+        $('.AttachmentList tbody').empty();
 
-        // 2nd: add all files based on the metadata from Value
-        $(Value).each(function() {
-            FileID = this.FileID;
-            ButtonStrg = '<button type="button" id="AttachmentDeleteButton' + FileID + '" name="AttachmentDeleteButton' + FileID + '" value="Delete" class="CallForAction SpacingLeft"><span>' + DeleteText + '</span></button>';
-            InputStrg = '<input type="hidden" id="AttachmentDelete' + this.FileID + '" name="AttachmentDelete' + this.FileID + '" />';
-            $('#FileUpload').parent().before(
-                '<li>' + this.Filename + ' (' + this.Filesize + ')' + ButtonStrg + InputStrg + '</li>'
-            );
+        // go through all attachments and append them to the attachment table
+        $(Attachments).each(function() {
 
-            //3rd: set form submit and disable validation on attachment delete
-            $('#AttachmentDeleteButton' + FileID).bind('click', function () {
-                var $Form = $(this).closest('form');
-                $(this).next('input[type=hidden]').val(1);
-                Core.Form.Validate.DisableValidation($Form);
-                $Form.trigger('submit');
+            var AttachmentItem = Core.Template.Render('AjaxDnDUpload/AttachmentItem', {
+                'Filename' : this.Filename,
+                'Filetype' : this.ContentType,
+                'Filesize' : this.Filesize,
+                'FileID'   : this.FileID,
             });
+
+            $(AttachmentItem).prependTo($('.AttachmentList tbody')).fadeIn();
         });
+
+        // make sure to display the attachment table only if any attachments
+        // are actually in it.
+        if ($('.AttachmentList tbody tr').length) {
+            $('.AttachmentList').show();
+        }
+        else {
+            $('.AttachmentList').hide();
+        }
     }
 
     /**
@@ -312,7 +310,7 @@ Core.AJAX = (function (TargetNS) {
             }
         }
         else {
-            alert('$JSText{"This window must be called from compose window"}');
+            alert(Core.Language.Translate('This window must be called from compose window.'));
             return;
         }
     }

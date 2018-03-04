@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -9,6 +9,7 @@
 package Kernel::Output::HTML::ToolBar::TicketService;
 
 use Kernel::Language qw(Translatable);
+use parent 'Kernel::Output::HTML::Base';
 
 use strict;
 use warnings;
@@ -24,19 +25,6 @@ our @ObjectDependencies = (
     'Kernel::Output::HTML::Layout',
 );
 
-sub new {
-    my ( $Type, %Param ) = @_;
-
-    # allocate new hash for object
-    my $Self = {};
-    bless( $Self, $Type );
-
-    # get UserID param
-    $Self->{UserID} = $Param{UserID} || die "Got no UserID!";
-
-    return $Self;
-}
-
 sub Run {
     my ( $Self, %Param ) = @_;
 
@@ -51,6 +39,8 @@ sub Run {
     # Do nothing if ticket service feature is not enabled.
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
     return if !$ConfigObject->Get('Ticket::Service');
+
+    return if !$ConfigObject->Get('Frontend::Module')->{AgentTicketService};
 
     # Get viewable locks.
     my @ViewableLockIDs = $Kernel::OM->Get('Kernel::System::Lock')->LockViewableLock( Type => 'ID' );
@@ -95,7 +85,7 @@ sub Run {
         LockIDs    => \@ViewableLockIDs,
         UserID     => $Self->{UserID},
         Permission => $Permission,
-    );
+    ) || 0;
 
     my $Class = $Param{Config}->{CssClass};
     my $Icon  = $Param{Config}->{Icon};

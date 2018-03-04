@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -127,8 +127,6 @@ $Selenium->RunTest(
 
             # Choose both customer users.
             for my $CustomerUserLogin (@CustomerUserLogins) {
-                my $AutoCompleteString
-                    = "\"$CustomerUserLogin $CustomerUserLogin\" <$CustomerUserLogin\@example.com> ($CustomerUserLogin)";
                 $Selenium->find_element( "#" . $Test->{FieldID}, 'css' )->clear();
                 $Selenium->find_element( "#" . $Test->{FieldID}, 'css' )->send_keys($CustomerUserLogin);
                 $Selenium->WaitFor(

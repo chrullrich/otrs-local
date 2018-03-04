@@ -5,6 +5,7 @@ extends 'YAML::Loader::Base';
 
 use YAML::Loader::Base;
 use YAML::Types;
+use YAML::Node;
 
 # Context constants
 use constant LEAF       => 1;
@@ -225,7 +226,7 @@ sub _parse_qualifiers {
             $self->die('YAML_PARSE_ERR_MANY_IMPLICIT') if $implicit;
             $implicit = 1;
         }
-        elsif ($preface =~ s/^\&([^ ,:]+)\s*//) {
+        elsif ($preface =~ s/^\&([^ ,:]*)\s*//) {
             $token = $1;
             $self->die('YAML_PARSE_ERR_BAD_ANCHOR')
               unless $token =~ /^[a-zA-Z0-9]+$/;
@@ -233,7 +234,7 @@ sub _parse_qualifiers {
             $self->die('YAML_PARSE_ERR_ANCHOR_ALIAS') if $alias;
             $anchor = $token;
         }
-        elsif ($preface =~ s/^\*([^ ,:]+)\s*//) {
+        elsif ($preface =~ s/^\*([^ ,:]*)\s*//) {
             $token = $1;
             $self->die('YAML_PARSE_ERR_BAD_ALIAS')
               unless $token =~ /^[a-zA-Z0-9]+$/;
@@ -318,7 +319,7 @@ sub _parse_explicit {
 sub _parse_mapping {
     my $self = shift;
     my ($anchor) = @_;
-    my $mapping = {};
+    my $mapping = $self->preserve ? YAML::Node->new({}) : {};
     $self->anchor2node->{$anchor} = $mapping;
     my $key;
     while (not $self->done and $self->indent == $self->offset->[$self->level]) {
@@ -354,7 +355,7 @@ sub _parse_mapping {
         $self->_parse_next_line(COLLECTION);
         my $value = $self->_parse_node();
         if (exists $mapping->{$key}) {
-            $self->warn('YAML_LOAD_WARN_DUPLICATE_KEY');
+            $self->warn('YAML_LOAD_WARN_DUPLICATE_KEY', $key);
         }
         else {
             $mapping->{$key} = $value;
@@ -376,7 +377,16 @@ sub _parse_seq {
         else {
             $self->die('YAML_LOAD_ERR_BAD_SEQ_ELEMENT');
         }
-        if ($self->preface =~ /^(\s*)(\w.*\:(?: |$).*)$/) {
+
+        # Check whether the preface looks like a YAML mapping ("key: value").
+        # This is complicated because it has to account for the possibility
+        # that a key is a quoted string, which itself may contain escaped
+        # quotes.
+        my $preface = $self->preface;
+        if ( $preface =~ /^ (\s*) ( \w .*?               \: (?:\ |$).*) $/x  or
+             $preface =~ /^ (\s*) ((') (?:''|[^'])*? ' \s* \: (?:\ |$).*) $/x or
+             $preface =~ /^ (\s*) ((") (?:\\\\|[^"])*? " \s* \: (?:\ |$).*) $/x
+           ) {
             $self->indent($self->offset->[$self->level] + 2 + length($1));
             $self->content($2);
             $self->level($self->level + 1);
@@ -444,6 +454,11 @@ sub _parse_inline {
             $node = $self->_parse_inline_simple();
         }
         $node = $self->_parse_implicit($node) unless $explicit;
+
+        if ($self->numify and defined $node and not ref $node and length $node
+            and $node =~ m/\A-?(?:0|[1-9][0-9]*)?(?:\.[0-9]*)?(?:[eE][+-]?[0-9]+)?\z/) {
+            $node += 0;
+        }
     }
     if ($explicit) {
         $node = $self->_parse_explicit($node, $explicit);
@@ -470,13 +485,13 @@ sub _parse_inline_mapping {
 
     $self->die('YAML_PARSE_ERR_INLINE_MAP')
       unless $self->{inline} =~ s/^\{\s*//;
-    while (not $self->{inline} =~ s/^\s*\}//) {
+    while (not $self->{inline} =~ s/^\s*\}\s*//) {
         my $key = $self->_parse_inline();
         $self->die('YAML_PARSE_ERR_INLINE_MAP')
           unless $self->{inline} =~ s/^\: \s*//;
         my $value = $self->_parse_inline();
         if (exists $node->{$key}) {
-            $self->warn('YAML_LOAD_WARN_DUPLICATE_KEY');
+            $self->warn('YAML_LOAD_WARN_DUPLICATE_KEY', $key);
         }
         else {
             $node->{$key} = $value;
@@ -497,7 +512,7 @@ sub _parse_inline_seq {
 
     $self->die('YAML_PARSE_ERR_INLINE_SEQUENCE')
       unless $self->{inline} =~ s/^\[\s*//;
-    while (not $self->{inline} =~ s/^\s*\]//) {
+    while (not $self->{inline} =~ s/^\s*\]\s*//) {
         my $value = $self->_parse_inline();
         push @$node, $value;
         next if $self->inline =~ /^\s*\]/;
@@ -628,7 +643,10 @@ sub _parse_next_line {
     $self->die('YAML_EMIT_ERR_BAD_LEVEL') unless defined $offset;
     shift @{$self->lines};
     $self->eos($self->{done} = not @{$self->lines});
-    return if $self->eos;
+    if ($self->eos) {
+        $self->offset->[$level + 1] = $offset + 1;
+        return;
+    }
     $self->{line}++;
 
     # Determine the offset for a new leaf node

@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -8,7 +8,24 @@
 
 [% RenderBlockStart("Overview") %]
 <div class="MainBox ARIARoleMain LayoutFixedSidebar SidebarFirst">
-    <h1>[% Translate("S/MIME Management") | html %]: [% Translate(Data.Subtitle) | html %]</h1>
+    <h1 class="InvisibleText">[% Translate("S/MIME Management") | html %][% IF Data.Subtitle %]:[% END %] [% Translate(Data.Subtitle) | html %]</h1>
+
+    [% BreadcrumbPath = [
+            {
+                Name => Translate('S/MIME Management'),
+                Link => Env("Action"),
+            },
+        ]
+    %]
+
+    [% IF Data.Action == "ShowAddCertificate" %]
+        [% BreadcrumbPath.push({ Name => Translate("Add Certificate"),}) %]
+    [% ELSIF Data.Action == "ShowAddPrivate" %]
+        [% BreadcrumbPath.push({ Name => Translate("Add Private Key"),}) %]
+    [% END %]
+
+    [% INCLUDE "Breadcrumb.tt" Path = BreadcrumbPath %]
+
     <div class="SidebarColumn">
 [% RenderBlockStart("Notice") %]
         <div class="WidgetSimple">
@@ -17,10 +34,8 @@
             </div>
             <div class="Content ActionList">
                 <form action="[% Env("CGIHandle") %]" method="post">
-                    <input type="hidden" name="Action" value="AdminSysConfig"/>
-                    <input type="hidden" name="Subaction" value="Edit"/>
-                    <input type="hidden" name="SysConfigGroup" value="Framework"/>
-                    <input type="hidden" name="SysConfigSubGroup" value="Crypt::SMIME"/>
+                    <input type="hidden" name="Action" value="AdminSystemConfigurationGroup"/>
+                    <input type="hidden" name="RootNavigation" value="Core::Crypt::SMIME"/>
 [% RenderBlockStart("Disabled") %]
                     <h3><span class="Warning">[% Translate("SMIME support is disabled") | html %]<span></h3>
                     <fieldset>
@@ -80,7 +95,7 @@
 [% RenderBlockStart("SMIMEFilter") %]
         <div class="WidgetSimple">
             <div class="Header">
-                <h2><label for="FilterSMIME">[% Translate("Filter for certificates") | html %]</label></h2>
+                <h2><label for="FilterSMIME">[% Translate("Filter for Certificates") | html %]</label></h2>
             </div>
             <div class="Content">
                 <ul>
@@ -94,13 +109,6 @@
                 </ul>
             </div>
         </div>
-
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-    Core.UI.Table.InitTableFilter($('#FilterSMIME'), $('#SMIME'));
-//]]></script>
-[% END %]
-
 [% RenderBlockEnd("SMIMEFilter") %]
 
 [% RenderBlockStart("OverviewHint") %]
@@ -192,14 +200,6 @@
                                 <a class="CertificateRead" href="[% Env("Baselink") %]Action=[% Env("Action") %];Subaction=Read;Type=[% Data.Type | uri %];Filename=[% Data.Filename | uri %]" title="[% Translate("Read certificate") | html %]">
                                     [% Translate("Read certificate") | html %]
                                 </a>
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-    $('a.CertificateRead').unbind('click').bind('click', function (Event) {
-        Core.UI.Popup.OpenPopup($(this).attr('href'), 'CertificateRead');
-        return false;
-    });
-//]]></script>
-[% END %]
 [% RenderBlockEnd("CertificateRead") %]
 
                             </td>
@@ -246,7 +246,7 @@
                     <div class="Clear"></div>
 
                     <div class="Field SpacingTop">
-                        <button class="Primary CallForAction" type="submit"><span>[% Translate("Submit") | html %]</span></button>
+                        <button class="Primary CallForAction" type="submit" value="[% Translate("Add") | html %]"><span>[% Translate("Add") | html %]</span></button>
                         [% Translate("or") | html %]
                         <a href="[% Env("Baselink") %]Action=[% Env("Action") %]">[% Translate("Cancel") | html %]</a>
                     </div>
@@ -394,12 +394,6 @@
             </table>
         </div>
     </div>
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-    Core.UI.Table.InitTableFilter($('#FilterSMIMECerts'), $('#AvailableCerts'));
-//]]></script>
-[% END %]
-
 [% RenderBlockEnd("SignerCertificates") %]
 </div>
 <div class="Clear"></div>

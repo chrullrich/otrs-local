@@ -1,11 +1,12 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
+## no critic (Modules::RequireExplicitPackage)
 use strict;
 use warnings;
 use utf8;
@@ -137,12 +138,15 @@ my @Tests = (
 
 my @AddedTicketIDs;
 
+my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+my $ArticleBackendObject = $ArticleObject->BackendForChannel( ChannelName => 'Email' );
+
 for my $Test (@Tests) {
 
     for my $Backend (qw(DB FS)) {
 
         $ConfigObject->Set(
-            Key   => 'Ticket::StorageModule',
+            Key   => 'Ticket::Article::Backend::MIMEBase::ArticleStorage',
             Value => 'Kernel::System::Ticket::ArticleStorage' . $Backend,
         );
 
@@ -157,13 +161,31 @@ for my $Test (@Tests) {
 
         my $TicketID;
         {
+            my $CommunicationLogObject = $Kernel::OM->Create(
+                'Kernel::System::CommunicationLog',
+                ObjectParams => {
+                    Transport => 'Email',
+                    Direction => 'Incoming',
+                },
+            );
+            $CommunicationLogObject->ObjectLogStart( ObjectLogType => 'Message' );
+
             my $PostMasterObject = Kernel::System::PostMaster->new(
-                Email => $ContentRef,
+                CommunicationLogObject => $CommunicationLogObject,
+                Email                  => $ContentRef,
             );
 
             my @Return = $PostMasterObject->Run();
 
             $TicketID = $Return[1];
+
+            $CommunicationLogObject->ObjectLogStop(
+                ObjectLogType => 'Message',
+                Status        => 'Successful',
+            );
+            $CommunicationLogObject->CommunicationStop(
+                Status => 'Successful',
+            );
         }
 
         $Self->True(
@@ -174,15 +196,14 @@ for my $Test (@Tests) {
         # remember added tickets
         push @AddedTicketIDs, $TicketID;
 
-        my @ArticleIDs = $TicketObject->ArticleIndex( TicketID => $TicketID );
+        my @ArticleIDs = map { $_->{ArticleID} } $ArticleObject->ArticleList( TicketID => $TicketID );
         $Self->True(
             $ArticleIDs[0],
             "$Test->{Name} | $Backend - Article created",
         );
 
-        my %AttachmentIndex = $TicketObject->ArticleAttachmentIndex(
+        my %AttachmentIndex = $ArticleBackendObject->ArticleAttachmentIndex(
             ArticleID => $ArticleIDs[0],
-            UserID    => 1,
         );
 
         my %AttachmentsLookup = map { $AttachmentIndex{$_}->{Filename} => $_ } sort keys %AttachmentIndex;
@@ -191,7 +212,7 @@ for my $Test (@Tests) {
 
             my $AttachmentID = $AttachmentsLookup{$AttachmentFilename};
 
-            # delete zise attributes for easy compare
+            # delete size attributes for easy compare
             delete $AttachmentIndex{$AttachmentID}->{Filesize};
             delete $AttachmentIndex{$AttachmentID}->{FilesizeRaw};
 

@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -11,12 +11,11 @@ package Kernel::Modules::AgentTicketBounce;
 use strict;
 use warnings;
 
+use Kernel::System::VariableCheck qw(:all);
+use Kernel::Language qw(Translatable);
 use Mail::Address;
 
 our $ObjectManagerDisabled = 1;
-
-use Kernel::Language qw(Translatable);
-use Kernel::System::VariableCheck qw(:all);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -160,8 +159,15 @@ sub Run {
     # ------------------------------------------------------------ #
     if ( !$Self->{Subaction} ) {
 
+        my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+
+        my $ArticleBackendObject = $ArticleObject->BackendForArticle(
+            TicketID  => $Self->{TicketID},
+            ArticleID => $Self->{ArticleID},
+        );
+
         # check if plain article exists
-        if ( !$TicketObject->ArticlePlain( ArticleID => $Self->{ArticleID} ) ) {
+        if ( !$ArticleBackendObject->ArticlePlain( ArticleID => $Self->{ArticleID} ) ) {
             return $LayoutObject->ErrorScreen(
                 Message => $LayoutObject->{LanguageObject}->Translate(
                     'Plain article not found for article %s!',
@@ -171,7 +177,8 @@ sub Run {
         }
 
         # get article data
-        my %Article = $TicketObject->ArticleGet(
+        my %Article = $ArticleBackendObject->ArticleGet(
+            TicketID      => $Self->{TicketID},
             ArticleID     => $Self->{ArticleID},
             DynamicFields => 0,
         );
@@ -249,7 +256,7 @@ $Param{Signature}";
 
         # prepare sender of bounce email
         my %Address = $Kernel::OM->Get('Kernel::System::Queue')->GetSystemAddress(
-            QueueID => $Article{QueueID},
+            QueueID => $Ticket{QueueID},
         );
         $Article{From} = "$Address{RealName} <$Address{Email}>";
 
@@ -278,8 +285,8 @@ $Param{Signature}";
             $Param{RichTextHeight} = $Config->{RichTextHeight} || 0;
             $Param{RichTextWidth}  = $Config->{RichTextWidth}  || 0;
 
-            $LayoutObject->Block(
-                Name => 'RichText',
+            # set up rich text editor
+            $LayoutObject->SetRichTextParameters(
                 Data => \%Param,
             );
         }
@@ -316,8 +323,8 @@ $Param{Signature}";
 
         # get params
         for my $Parameter (qw(From BounceTo To Subject Body InformSender BounceStateID)) {
-            $Param{$Parameter}
-                = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => $Parameter ) || '';
+            $Param{$Parameter} = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => $Parameter )
+                || '';
         }
 
         my %Error;
@@ -406,8 +413,9 @@ $Param{Signature}";
                 $Param{RichTextHeight} = $Config->{RichTextHeight} || 0;
                 $Param{RichTextWidth}  = $Config->{RichTextWidth}  || 0;
 
-                $LayoutObject->Block(
-                    Name => 'RichText',
+                # set up rich text editor
+                $LayoutObject->SetRichTextParameters(
+                    Data => \%Param,
                 );
             }
 
@@ -442,7 +450,14 @@ $Param{Signature}";
             return $Output;
         }
 
-        my $Bounce = $TicketObject->ArticleBounce(
+        my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+
+        my $ArticleBackendObject = $ArticleObject->BackendForArticle(
+            TicketID  => $Self->{TicketID},
+            ArticleID => $Self->{ArticleID},
+        );
+
+        my $Bounce = $ArticleBackendObject->ArticleBounce(
             TicketID    => $Self->{TicketID},
             ArticleID   => $Self->{ArticleID},
             UserID      => $Self->{UserID},
@@ -478,20 +493,20 @@ $Param{Signature}";
             $Param{Body} =~ s/(&lt;|<)OTRS_BOUNCE_TO(&gt;|>)/$Param{BounceTo}/g;
 
             # send
-            my $ArticleID = $TicketObject->ArticleSend(
-                ArticleType    => 'email-external',
-                SenderType     => 'agent',
-                TicketID       => $Self->{TicketID},
-                HistoryType    => 'Bounce',
-                HistoryComment => "Bounced info to '$Param{To}'.",
-                From           => $Param{From},
-                Email          => $Param{Email},
-                To             => $Param{To},
-                Subject        => $Param{Subject},
-                UserID         => $Self->{UserID},
-                Body           => $Param{Body},
-                Charset        => $LayoutObject->{UserCharset},
-                MimeType       => $MimeType,
+            my $ArticleID = $ArticleBackendObject->ArticleSend(
+                TicketID             => $Self->{TicketID},
+                SenderType           => 'agent',
+                IsVisibleForCustomer => 1,
+                HistoryType          => 'Bounce',
+                HistoryComment       => "Bounced info to '$Param{To}'.",
+                From                 => $Param{From},
+                Email                => $Param{Email},
+                To                   => $Param{To},
+                Subject              => $Param{Subject},
+                UserID               => $Self->{UserID},
+                Body                 => $Param{Body},
+                Charset              => $LayoutObject->{UserCharset},
+                MimeType             => $MimeType,
             );
 
             # error page
@@ -527,7 +542,11 @@ $Param{Signature}";
             }
 
             # redirect
-            if ( $StateData{TypeName} =~ /^close/i ) {
+            if (
+                $StateData{TypeName} =~ /^close/i
+                && !$ConfigObject->Get('Ticket::Frontend::RedirectAfterCloseDisabled')
+                )
+            {
                 return $LayoutObject->PopupClose(
                     URL => ( $Self->{LastScreenOverview} || 'Action=AgentDashboard' ),
                 );

@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -8,24 +8,20 @@
 
 package Kernel::Output::HTML::Notification::AgentOTRSBusiness;
 
+use parent 'Kernel::Output::HTML::Base';
+
 use strict;
 use warnings;
 use utf8;
 
+use Kernel::Language qw(Translatable);
+
 our @ObjectDependencies = (
-    'Kernel::System::OTRSBusiness',
+    'Kernel::Config',
     'Kernel::Output::HTML::Layout',
+    'Kernel::System::Group',
+    'Kernel::System::OTRSBusiness',
 );
-
-sub new {
-    my ( $Type, %Param ) = @_;
-
-    # allocate new hash for object
-    my $Self = {};
-    bless( $Self, $Type );
-
-    return $Self;
-}
 
 sub Run {
     my ( $Self, %Param ) = @_;
@@ -38,7 +34,10 @@ sub Run {
     # get config options
     my $Group             = $Param{Config}->{Group} || 'admin';
     my $IsInstalled       = $OTRSBusinessObject->OTRSBusinessIsInstalled();
-    my $OTRSBusinessLabel = '<b>OTRS Business Solution</b>™';
+    my $OTRSBusinessLabel = $OTRSBusinessObject->OTRSSTORMIsInstalled()
+        ?
+        '<b>STORM powered by OTRS</b>™'
+        : '<b>OTRS Business Solution</b>™';
 
     # get layout object
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
@@ -52,7 +51,7 @@ sub Run {
             '<a href="'
                 . $LayoutObject->{Baselink}
                 . 'Action=AdminOTRSBusiness'
-                . '" class="Button"><i class="fa fa-angle-double-up"></i>',
+                . '">',
             $OTRSBusinessLabel,
             '</a>',
         );
@@ -99,18 +98,25 @@ if (!window.location.search.match(/^[?]Action=(AgentOTRSBusiness|Admin.*)/)) {
     elsif ( $EntitlementStatus eq 'warning' ) {
 
         $Output .= $LayoutObject->Notify(
-            Info =>
-                "Connection to cloud.otrs.com via HTTPS couldn't be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.",
+            Info => $OTRSBusinessObject->OTRSSTORMIsInstalled()
+            ?
+                Translatable('Please verify your license data!')
+            :
+                Translatable(
+                'Connection to cloud.otrs.com via HTTPS couldn\'t be established. Please make sure that your OTRS can connect to cloud.otrs.com via port 443.'
+                ),
             Priority => 'Error',
         );
     }
 
+    my $HasPermission = $Kernel::OM->Get('Kernel::System::Group')->PermissionCheck(
+        UserID    => $Self->{UserID},
+        GroupName => $Group,
+        Type      => 'rw',
+    );
+
     # all following notifications should only be visible for administrators
-    if (
-        !defined $LayoutObject->{"UserIsGroup[$Group]"}
-        || $LayoutObject->{"UserIsGroup[$Group]"} ne 'Yes'
-        )
-    {
+    if ( !$HasPermission ) {
         return '';
     }
 

@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -13,8 +13,8 @@ use warnings;
 
 our $ObjectManagerDisabled = 1;
 
-use Kernel::Language qw(Translatable);
 use Kernel::System::VariableCheck qw(:all);
+use Kernel::Language qw(Translatable);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -328,7 +328,11 @@ sub Run {
             );
         }
 
-        if ( $ParamObject->GetParam( Param => 'ContinueAfterSave' ) eq '1' ) {
+        if (
+            defined $ParamObject->GetParam( Param => 'ContinueAfterSave' )
+            && ( $ParamObject->GetParam( Param => 'ContinueAfterSave' ) eq '1' )
+            )
+        {
 
             # if the user would like to continue editing the ACL, just redirect to the edit screen
             return $LayoutObject->Redirect(
@@ -468,9 +472,14 @@ sub Run {
         }
         else {
 
+            # Get all IDs from valid table including invalid-temporarily status.
+            # See bug#13592 (https://bugs.otrs.org/show_bug.cgi?id=13592).
+            my %ValidList = $Kernel::OM->Get('Kernel::System::Valid')->ValidList();
+            my @ValidListIDs = grep { $ValidList{$_} } sort keys %ValidList;
+
             $ACLData = $ACLObject->ACLListGet(
                 UserID   => 1,
-                ValidIDs => [ '1', '2' ],
+                ValidIDs => \@ValidListIDs,
             );
         }
 
@@ -562,6 +571,16 @@ sub _ShowOverview {
     my $Output       = $LayoutObject->Header();
     $Output .= $LayoutObject->NavigationBar();
 
+    if ( $Self->{UserID} == 1 ) {
+
+        # show error notfy, don't work with user id 1
+        $Output .= $LayoutObject->Notify(
+            Priority => 'Error',
+            Info =>
+                Translatable('Please note that ACL restrictions will be ignored for the Superuser account (UserID 1).'),
+        );
+    }
+
     # show notifications if any
     if ( $Param{NotifyData} ) {
         for my $Notification ( @{ $Param{NotifyData} } ) {
@@ -627,7 +646,7 @@ sub _ShowEdit {
     # get ACL information
     my $ACLData = $Param{ACLData} || {};
 
-    # decide wether to show delete button
+    # decide whether to show delete button
     if ( $Param{Action} eq 'Edit' && $ACLData && $ACLData->{ValidID} ne '1' ) {
         $LayoutObject->Block(
             Name => 'ACLDeleteAction',
@@ -651,7 +670,7 @@ sub _ShowEdit {
     $Param{ACLKeysLevel1Match} = $LayoutObject->BuildSelection(
         Data         => $ACLKeysLevel1Match,
         Name         => 'ItemAdd',
-        Class        => 'ItemAdd ItemAddLevel1',
+        Class        => 'Modernize ItemAdd ItemAddLevel1',
         ID           => 'ItemAddLevel1Match',
         TreeView     => 1,
         PossibleNone => 1,
@@ -662,7 +681,7 @@ sub _ShowEdit {
     $Param{ACLKeysLevel1Change} = $LayoutObject->BuildSelection(
         Data         => $ACLKeysLevel1Change,
         Name         => 'ItemAdd',
-        Class        => 'ItemAdd ItemAddLevel1',
+        Class        => 'Modernize ItemAdd ItemAddLevel1',
         ID           => 'ItemAddLevel1Change',
         TreeView     => 1,
         PossibleNone => 1,
@@ -674,7 +693,7 @@ sub _ShowEdit {
         Data         => $ACLKeysLevel2Possible,
         Name         => 'ItemAdd',
         ID           => 'Possible',
-        Class        => 'ItemAdd LevelToBeAdded',
+        Class        => 'Modernize ItemAdd LevelToBeAdded',
         Translation  => 0,
         PossibleNone => 1,
     );
@@ -684,7 +703,7 @@ sub _ShowEdit {
         Data         => $ACLKeysLevel2PossibleAdd,
         Name         => 'ItemAdd',
         ID           => 'PossibleAdd',
-        Class        => 'ItemAdd LevelToBeAdded',
+        Class        => 'Modernize ItemAdd LevelToBeAdded',
         Translation  => 0,
         PossibleNone => 1,
     );
@@ -694,7 +713,7 @@ sub _ShowEdit {
         Data         => $ACLKeysLevel2PossibleNot,
         Name         => 'ItemAdd',
         ID           => 'PossibleNot',
-        Class        => 'ItemAdd LevelToBeAdded',
+        Class        => 'Modernize ItemAdd LevelToBeAdded',
         Translation  => 0,
         PossibleNone => 1,
     );
@@ -704,7 +723,7 @@ sub _ShowEdit {
         Data         => $ACLKeysLevel2Properties,
         Name         => 'ItemAdd',
         ID           => 'Properties',
-        Class        => 'ItemAdd LevelToBeAdded',
+        Class        => 'Modernize ItemAdd LevelToBeAdded',
         Translation  => 0,
         PossibleNone => 1,
     );
@@ -714,7 +733,7 @@ sub _ShowEdit {
         Data         => $ACLKeysLevel2PropertiesDatabase,
         Name         => 'ItemAdd',
         ID           => 'PropertiesDatabase',
-        Class        => 'ItemAdd LevelToBeAdded',
+        Class        => 'Modernize ItemAdd LevelToBeAdded',
         Translation  => 0,
         PossibleNone => 1,
     );
@@ -750,7 +769,7 @@ sub _ShowEdit {
     $Param{ACLKeysLevel3DynamicFields} = $LayoutObject->BuildSelection(
         Data         => \%DynamicFields,
         Name         => 'NewDataKeyDropdown',
-        Class        => 'NewDataKeyDropdown',
+        Class        => 'Modernize NewDataKeyDropdown',
         ID           => 'DynamicField',
         Translation  => 0,
         PossibleNone => 1,
@@ -767,7 +786,7 @@ sub _ShowEdit {
     $Param{ACLKeysLevel3Actions} = $LayoutObject->BuildSelection(
         Data         => \@PossibleActionsList,
         Name         => 'NewDataKeyDropdown',
-        Class        => 'NewDataKeyDropdown Boolean',
+        Class        => 'Modernize NewDataKeyDropdown Boolean',
         ID           => 'Action',
         Translation  => 0,
         PossibleNone => 1,
@@ -790,6 +809,22 @@ sub _ShowEdit {
             );
         }
     }
+
+    # create data for JS
+    my @ACLEditPossibleActionsList;
+    for my $Item (@PossibleActionsList) {
+        my %ACLEdit = (
+            label => $Item,
+            value => $Item
+        );
+        push @ACLEditPossibleActionsList, \%ACLEdit;
+    }
+
+    # set ACL data
+    $LayoutObject->AddJSData(
+        Key   => 'PossibleActionsList',
+        Value => \@ACLEditPossibleActionsList,
+    );
 
     $Output .= $LayoutObject->Output(
         TemplateFile => "AdminACL$Param{Action}",
@@ -815,8 +850,8 @@ sub _GetParams {
         qw( Name EntityID Comment Description StopAfterMatch ValidID ConfigMatch ConfigChange )
         )
     {
-        $GetParam->{$ParamName}
-            = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => $ParamName ) || '';
+        $GetParam->{$ParamName} = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => $ParamName )
+            || '';
     }
 
     if ( $GetParam->{ConfigMatch} ) {

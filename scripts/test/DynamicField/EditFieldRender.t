@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -20,16 +20,20 @@ use Kernel::System::VariableCheck qw(:all);
 my $Helper          = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 my $DFBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
 my $ParamObject     = $Kernel::OM->Get('Kernel::System::Web::Request');
-my $TimeObject      = $Kernel::OM->Get('Kernel::System::Time');
 
 # use a fixed year to compare the time selection results
 $Helper->FixedTimeSet(
-    $TimeObject->TimeStamp2SystemTime( String => '2013-12-12 00:00:00' ),
+    $Kernel::OM->Create(
+        'Kernel::System::DateTime',
+        ObjectParams => {
+            String => '2013-12-12 00:00:00',
+        },
+        )->ToEpoch()
 );
 
 my $LayoutObject = Kernel::Output::HTML::Layout->new(
     Lang         => 'en',
-    UserTimeZone => '+0',
+    UserTimeZone => 'UTC',
 );
 
 my $UserID = 1;

@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -59,11 +59,15 @@ $Selenium->RunTest(
             UserLogin => $TestUserLogin,
         );
 
-        my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+        my $TicketObject         = $Kernel::OM->Get('Kernel::System::Ticket');
+        my $ArticleObject        = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+        my $ArticleBackendObject = $ArticleObject->BackendForChannel( ChannelName => 'Internal' );
+
+        my $RandomID = $Kernel::OM->Get('Kernel::System::UnitTest::Helper')->GetRandomID();
 
         # create test ticket
         my $TicketID = $TicketObject->TicketCreate(
-            Title         => "ticket",
+            Title         => 'Selenium test ticket',
             Queue         => 'Raw',
             Lock          => 'unlock',
             Priority      => '3 normal',
@@ -79,25 +83,34 @@ $Selenium->RunTest(
             "Ticket is created - $TicketID"
         );
 
-        my $RandomID  = $Kernel::OM->Get('Kernel::System::UnitTest::Helper')->GetRandomID();
-        my $Subject   = "Test subject $RandomID";
-        my $ArticleID = $TicketObject->ArticleCreate(
-            TicketID       => $TicketID,
-            ArticleType    => 'email-internal',
-            SenderType     => 'agent',
-            From           => 'Some Agent <otrs@example.com>',
-            To             => 'Suplier<suplier@example.com>',
-            Subject        => $Subject,
-            Body           => 'the message text',
-            Charset        => 'utf8',
-            MimeType       => 'text/plain',
-            HistoryType    => 'OwnerUpdate',
-            HistoryComment => 'Some free text!',
-            UserID         => 1,
+        my $Subject   = "Selenium test ticket $RandomID";
+        my $ArticleID = $ArticleBackendObject->ArticleCreate(
+            TicketID             => $TicketID,
+            SenderType           => 'agent',
+            IsVisibleForCustomer => 1,
+            From                 => "Some Agent $RandomID <email\@example.com>",
+            To                   => "Some Customer $RandomID <customer\@example.com>",
+            Subject              => $Subject,
+            Body                 => "the message text",
+            ContentType          => 'text/plain; charset=ISO-8859-15',
+            HistoryType          => 'OwnerUpdate',
+            HistoryComment       => "Some free text $RandomID!",
+            UserID               => 1,
+            NoAgentNotify        => 1,
         );
         $Self->True(
             $ArticleID,
-            "Article is created - $ArticleID"
+            "Article is created - $ArticleID",
+        );
+
+        my $IndexBuiltSuccess = $ArticleObject->ArticleSearchIndexBuild(
+            TicketID  => $TicketID,
+            ArticleID => $ArticleID,
+            UserID    => 1,
+        );
+        $Self->True(
+            $IndexBuiltSuccess,
+            "Search index was created."
         );
 
         # input test user in search fulltext

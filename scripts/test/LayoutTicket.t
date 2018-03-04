@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -12,10 +12,12 @@ use utf8;
 
 use vars (qw($Self %Param));
 
-# get needed objects
-my $ConfigObject      = $Kernel::OM->Get('Kernel::Config');
-my $TicketObject      = $Kernel::OM->Get('Kernel::System::Ticket');
-my $UploadCacheObject = $Kernel::OM->Get('Kernel::System::Web::UploadCache');
+my $ConfigObject         = $Kernel::OM->Get('Kernel::Config');
+my $TicketObject         = $Kernel::OM->Get('Kernel::System::Ticket');
+my $UploadCacheObject    = $Kernel::OM->Get('Kernel::System::Web::UploadCache');
+my $ArticleBackendObject = $Kernel::OM->Get('Kernel::System::Ticket::Article')->BackendForChannel(
+    ChannelName => 'Internal',
+);
 
 # get helper object
 $Kernel::OM->ObjectParamAdd(
@@ -57,22 +59,22 @@ Special case from Lotus Notes:
 </body>
 </html>';
 
-my $ArticleID = $TicketObject->ArticleCreate(
-    TicketID       => $TicketID,
-    ArticleType    => 'note-internal',
-    SenderType     => 'agent',
-    From           => 'Some Agent <email@example.com>',
-    To             => 'Some Customer <customer@example.com>',
-    Subject        => 'Fax Agreement laalala',
-    Body           => $HTML,
-    ContentType    => 'text/html; charset=ISO-8859-15',
-    HistoryType    => 'OwnerUpdate',
-    HistoryComment => 'Some free text!',
-    UserID         => 1,
-    NoAgentNotify  => 1,                                        # if you don't want to send agent notifications
+my $ArticleID = $ArticleBackendObject->ArticleCreate(
+    TicketID             => $TicketID,
+    IsVisibleForCustomer => 0,
+    SenderType           => 'agent',
+    From                 => 'Some Agent <email@example.com>',
+    To                   => 'Some Customer <customer@example.com>',
+    Subject              => 'Fax Agreement laalala',
+    Body                 => $HTML,
+    ContentType          => 'text/html; charset=ISO-8859-15',
+    HistoryType          => 'OwnerUpdate',
+    HistoryComment       => 'Some free text!',
+    UserID               => 1,
+    NoAgentNotify        => 1,                                        # if you don't want to send agent notifications
 );
 
-$TicketObject->ArticleWriteAttachment(
+$ArticleBackendObject->ArticleWriteAttachment(
     Filename    => 'some.html',
     MimeType    => 'text/html',
     ContentType => 'text/html',
@@ -82,7 +84,7 @@ $TicketObject->ArticleWriteAttachment(
     UserID      => 1,
 );
 
-$TicketObject->ArticleWriteAttachment(
+$ArticleBackendObject->ArticleWriteAttachment(
     Filename    => 'image.png',
     MimeType    => 'image/png',
     ContentType => 'image/png',
@@ -92,7 +94,7 @@ $TicketObject->ArticleWriteAttachment(
     UserID      => 1,
 );
 
-$TicketObject->ArticleWriteAttachment(
+$ArticleBackendObject->ArticleWriteAttachment(
     Filename    => 'image2.png',
     MimeType    => 'image/png',
     ContentType => 'image/png',
@@ -100,7 +102,7 @@ $TicketObject->ArticleWriteAttachment(
     ArticleID   => $ArticleID,
     UserID      => 1,
 );
-$TicketObject->ArticleWriteAttachment(
+$ArticleBackendObject->ArticleWriteAttachment(
     Filename    => 'image3.png',
     MimeType    => 'image/png',
     ContentType => 'image/png',
@@ -108,7 +110,7 @@ $TicketObject->ArticleWriteAttachment(
     ArticleID   => $ArticleID,
     UserID      => 1,
 );
-$TicketObject->ArticleWriteAttachment(
+$ArticleBackendObject->ArticleWriteAttachment(
     Filename    => 'image4.png',
     MimeType    => 'image/png',
     ContentType => 'image/png',
@@ -117,7 +119,7 @@ $TicketObject->ArticleWriteAttachment(
     ArticleID   => $ArticleID,
     UserID      => 1,
 );
-$TicketObject->ArticleWriteAttachment(
+$ArticleBackendObject->ArticleWriteAttachment(
     Filename    => 'image.bmp',
     MimeType    => 'image/bmp',
     ContentType => 'image/bmp',

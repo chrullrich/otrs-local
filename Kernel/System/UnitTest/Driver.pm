@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -35,9 +35,12 @@ Kernel::System::UnitTest::Driver - unit test file execution wrapper
 
 create unit test driver object. Do not use it directly, instead use:
 
-    my $Driver = Kernel::System::UnitTest::Driver->new(
-        Verbose => $Self->{Verbose},
-        ANSI    => $Self->{ANSI},
+    my $Driver = $Kernel::OM->Create(
+        'Kernel::System::UnitTest::Driver',
+        ObjectParams => {
+            Verbose => $Self->{Verbose},
+            ANSI    => $Self->{ANSI},
+        },
     );
 
 =cut
@@ -123,7 +126,7 @@ sub Run {
         $Self->{OutputBuffer} = '';
         local *STDOUT = *STDOUT;
         local *STDERR = *STDERR;
-        if ( !$Param{Verbose} ) {
+        if ( !$Self->{Verbose} ) {
             undef *STDOUT;
             undef *STDERR;
             open STDOUT, '>:utf8', \$Self->{OutputBuffer};    ## no critic
