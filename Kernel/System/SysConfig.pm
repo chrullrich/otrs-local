@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -559,6 +559,14 @@ sub SettingUpdate {
         );
 
         $UserModificationActive = undef;    # prevent setting this value
+
+        my %GlobalSetting = $Self->SettingGet(
+            Name            => $Param{Name},
+            OverriddenInXML => 1,
+            UserID          => 1,
+        );
+
+        $Setting{EffectiveValue} = $GlobalSetting{EffectiveValue};
     }
 
     # Add new modified setting (if there wasn't).
@@ -2126,7 +2134,9 @@ sub ConfigurationTranslatedGet {
 
     return %{$Cache} if ref $Cache eq 'HASH';
 
-    my @SettingList = $Self->ConfigurationList();
+    my @SettingList = $Self->ConfigurationList(
+        IncludeInvisible => 1,
+    );
 
     my %Result;
 
@@ -2279,7 +2289,6 @@ sub ConfigurationEntitiesGet {
 
     my @EntitySettings = $SysConfigDBObject->DefaultSettingSearch(
         Search => 'ValueEntityType',
-        Valid  => 1,
     );
 
     SETTING:
@@ -2537,15 +2546,18 @@ sub ConfigurationXML2DB {
 
         @{ $SettingsByInit{$InitValue} } = ( @{ $SettingsByInit{$InitValue} }, @ParsedSettings );
 
-        $CacheObject->Set(
-            Key   => $CacheKey,
-            Type  => $CacheType,
-            Value => {
-                Init     => $InitValue,
-                Settings => \@ParsedSettings,
-            },
-            TTL => 60 * 60 * 24 * 20,
-        );
+        # There might be an error parsing file. If we cache the result, error message will not be present.
+        if (@ParsedSettings) {
+            $CacheObject->Set(
+                Key   => $CacheKey,
+                Type  => $CacheType,
+                Value => {
+                    Init     => $InitValue,
+                    Settings => \@ParsedSettings,
+                },
+                TTL => 60 * 60 * 24 * 20,
+            );
+        }
     }
 
     # Combine everything together in the correct order.
@@ -2578,7 +2590,9 @@ sub ConfigurationXML2DB {
         return;
     }
 
-    my @SettingList = $Self->ConfigurationList();
+    my @SettingList = $Self->ConfigurationList(
+        IncludeInvisible => 1,
+    );
 
     my $StorableObject = $Kernel::OM->Get('Kernel::System::Storable');
 
@@ -2820,6 +2834,48 @@ sub ConfigurationNavigationTree {
         UserModificationActive => $Param{UserModificationActive} || undef,
         IsValid => $Param{IsValid},
     );
+
+    # For AgentPreference take into account which settings are Forbidden to update by user or disabled when counting
+    #   settings. See bug#13488 (https://bugs.otrs.org/show_bug.cgi?id=13488).
+    if ( $Param{Action} && $Param{Action} eq 'AgentPreferences' ) {
+
+        # Get List of all modified settings which are valid and forbidden to update by user.
+        my @ForbiddenSettings = $SysConfigDBObject->ModifiedSettingListGet(
+            %CategoryOptions,
+            UserModificationActive => 0,
+            IsValid                => 1,
+        );
+
+        # Get List of all modified settings which are invalid and allowed to update by user.
+        my @InvalidSettings = $SysConfigDBObject->ModifiedSettingListGet(
+            %CategoryOptions,
+            UserModificationActive => 1,
+            IsValid                => 0,
+        );
+
+        my @ModifiedSettings;
+        for my $Setting (@SettingsRaw) {
+            push @ModifiedSettings, $Setting
+                if !grep { $_->{Name} eq $Setting->{Name} } ( @ForbiddenSettings, @InvalidSettings );
+        }
+        @SettingsRaw = @ModifiedSettings;
+
+        # Add settings which by default are not UserModifiedActive and are changed, to the navigation list
+        #   in preference screen. Please see bug#13489 for more information.
+        @ModifiedSettings = $SysConfigDBObject->ModifiedSettingListGet(
+            %CategoryOptions,
+            UserModificationActive => 1,
+            IsValid                => 1,
+        );
+        for my $Setting (@ModifiedSettings) {
+            my %DefaultSetting = $SysConfigDBObject->DefaultSettingGet(
+                Name => $Setting->{Name},
+            );
+            if ( !grep { $_->{Name} eq $DefaultSetting{Name} } @SettingsRaw ) {
+                push @SettingsRaw, \%DefaultSetting;
+            }
+        }
+    }
 
     my @Settings;
 
@@ -3119,7 +3175,7 @@ Returns:
 sub ConfigurationList {
     my ( $Self, %Param ) = @_;
 
-    return $Kernel::OM->Get('Kernel::System::SysConfig::DB')->DefaultSettingList();
+    return $Kernel::OM->Get('Kernel::System::SysConfig::DB')->DefaultSettingList(%Param);
 }
 
 =head2 ConfigurationInvalidList()
@@ -4115,7 +4171,7 @@ sub ConfigurationLoad {
 
             my %Result = $Self->SettingUpdate(
                 Name                   => $SettingName,
-                IsValid                => $CurrentSetting{IsValid},
+                IsValid                => $Configuration{$Section}->{$SettingName}->{IsValid},
                 EffectiveValue         => $Configuration{$Section}->{$SettingName}->{EffectiveValue},
                 UserModificationActive => $UserModificationActive,
                 TargetUserID           => $TargetUserID,
@@ -4252,7 +4308,9 @@ sub ConfigurationSearch {
 
     my $Search = lc $Param{Search};
 
-    my %Settings = $Self->ConfigurationTranslatedGet();
+    my %Settings = $Self->ConfigurationTranslatedGet(
+        IncludeInvisible => $Param{IncludeInvisible},
+    );
 
     my %Result;
 
@@ -4733,6 +4791,51 @@ sub OverriddenFileNameGet {
     }
 
     return $Result;
+}
+
+=head2 GlobalEffectiveValueGet()
+
+Returns global effective value for provided setting name.
+
+    my $EffectiveValue = $SysConfigObject->GlobalEffectiveValueGet(
+        SettingName    => 'Setting::Name',  # (required)
+    );
+
+Returns:
+
+    $EffectiveValue = 'test';
+
+=cut
+
+sub GlobalEffectiveValueGet {
+    my ( $Self, %Param ) = @_;
+
+    # Check needed stuff.
+    if ( !$Param{SettingName} ) {
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => "Need SettingName!",
+        );
+        return;
+    }
+
+    my $GlobalConfigObject = Kernel::Config->new();
+
+    my $LoadedEffectiveValue;
+
+    my @SettingStructure = split( '###', $Param{SettingName} );
+    for my $Key (@SettingStructure) {
+        if ( !defined $LoadedEffectiveValue ) {
+
+            # first iteration
+            $LoadedEffectiveValue = $GlobalConfigObject->Get($Key);
+        }
+        elsif ( ref $LoadedEffectiveValue eq 'HASH' ) {
+            $LoadedEffectiveValue = $LoadedEffectiveValue->{$Key};
+        }
+    }
+
+    return $LoadedEffectiveValue;
 }
 
 =head1 PRIVATE INTERFACE
@@ -6082,7 +6185,9 @@ sub _DefaultSettingAddBulk {
     }
 
     # Get again all settings.
-    @SettingList = $Self->ConfigurationList();
+    @SettingList = $Self->ConfigurationList(
+        IncludeInvisible => 1,
+    );
 
     $Success = $SysConfigDBObject->DefaultSettingVersionBulkAdd(
         Settings    => \%Settings,
