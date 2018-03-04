@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.987891368275385;
+    $Self->{Completeness}        = 0.985849870578085;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -2133,7 +2133,7 @@ sub Data {
         'Edit System Maintenance Information' => 'Systemwartungs-Information bearbeiten',
         'Date invalid!' => 'Ungültiges Datum',
         'Login message' => 'Anmeldungs-Nachricht',
-        'This field must have less then 250 characters.' => '',
+        'This field must have less then 250 characters.' => 'Dieses Feld muss weniger als 250 Zeichen lang sein.',
         'Show login message' => 'Anmeldungs-Nachricht anzeigen',
         'Notify message' => 'Hinweistext',
         'Manage Sessions' => 'Sitzungen verwalten',
@@ -2354,7 +2354,7 @@ sub Data {
         'Closed' => 'Geschlossen',
         '%s open ticket(s) of %s' => '%s offene Tickets von %s',
         '%s closed ticket(s) of %s' => '%s geschlossene Tickets von %s',
-        'Edit customer ID' => '',
+        'Edit customer ID' => 'Kundennummer bearbeiten',
 
         # Template: AgentDashboardCustomerIDStatus
         'Escalated tickets' => 'Eskalierte Tickets',
@@ -2438,8 +2438,8 @@ sub Data {
         'Edit your preferences' => 'Persönliche Einstellungen bearbeiten',
         'Personal preferences' => 'Persönliche Einstellungen',
         'Preferences' => 'Einstellungen',
-        'Warning! You\'re currently not editing your own preferences, but those of %s.' =>
-            'Achtung! Sie bearbeiten derzeit nicht Ihre eigenen Einstellungen, sondern die von %s.',
+        'Please note: you\'re currently editing the preferences of %s.' =>
+            '',
         'Go back to editing this agent' => 'Zurück zur Bearbeitung des Agenten',
         'Set up your personal preferences. Save each setting by clicking the checkmark on the right.' =>
             'Legen Sie Ihre persönlichen Einstellungen fest. Speichern Sie Einstellungen, indem Sie das Haken-Symbol auf der rechten Seite anklicken.',
@@ -2836,7 +2836,7 @@ sub Data {
         'There was an error in communication with the server. Server might be experiencing some temporary problems, please reload this page to check if they have been resolved.' =>
             'Es gab einen Fehler in der Server-Kommunikation. Der Server könnte kurzzeitige Störungen haben. Bitte laden Sie die Seite neu, um zu prüfen, ob die Probleme zwischenzeitlich behoben wurden.',
         'The connection has been re-established after a temporary connection loss. Due to this, elements on this page could have stopped to work correctly. In order to be able to use all elements correctly again, it is strongly recommended to reload this page.' =>
-            'Die Verbindungen wurde nach einer kurzen Unterbrechung wiederhergestellt. Aus diesem Grund könnte es sein das einige Elemente der Seite nicht korrekt funktionieren. Um alle Elemente erneut korrekt nutzen zu können sollten Sie ihre Seite neue laden.',
+            'Die Verbindung wurde nach einer temporären Unterbrechung wiederhergestellt. Möglicherweise funktionieren deshalb einige Elemente der aktuellen Seite nicht (mehr) korrekt. Um alle Elemente wieder wie gewünscht nutzen zu können, sollten Sie die aktuelle Seite neu laden.',
 
         # Template: CustomerLogin
         'JavaScript Not Available' => 'JavaScript nicht aktiviert oder nicht unterstützt.',
@@ -2932,6 +2932,9 @@ sub Data {
         'Contact our service team now.' => 'Kontaktieren Sie jetzt unser Service-Team.',
         'Send a bugreport' => 'einen Fehlerbericht senden',
         'Expand' => 'Ausklappen',
+
+        # Template: AttachmentList
+        'Click to delete this attachment.' => '',
 
         # Template: DraftButtons
         'Update draft' => 'Entwurf aktualisieren',
@@ -3286,6 +3289,7 @@ sub Data {
         'Loading, please wait...' => 'Lade, bitte warten...',
 
         # JS Template: UploadContainer
+        'Click to select a file for upload.' => '',
         'Click to select files or just drop them here.' => 'Klicken zum Auswählen oder Dateien einfach hier ablegen.',
         'Click to select a file or just drop it here.' => 'Klicken zum Auswählen oder Datei einfach hier ablegen.',
         'Uploading...' => 'Wird hochgeladen...',
@@ -3491,7 +3495,7 @@ sub Data {
         # Perl Module: Kernel/Modules/AdminDynamicFieldCheckbox.pm
         'Undefined subaction.' => 'Unbestimmte Subaktion.',
         'Need %s' => '%s benötigt',
-        'Add %s field' => '',
+        'Add %s field' => '%s Feld hinzufügen',
         'The field does not contain only ASCII letters and numbers.' => 'Dieses Feld enthält nicht nur ASCII-Zeichen.',
         'There is another field with the same name.' => 'Es existiert bereits ein Feld mit demselben Namen.',
         'The field must be numeric.' => 'Das Feld darf nur Zahlen beinhalten.',
@@ -3499,7 +3503,7 @@ sub Data {
         'Could not create the new field' => 'Konnte das neue Feld nicht anlegen',
         'Need ID' => 'Kennung benötigt',
         'Could not get data for dynamic field %s' => 'Konnte keine Daten für das dynamische Feld %s ermitteln.',
-        'Change %s field' => '',
+        'Change %s field' => '%s Feld ändern',
         'The name for this field should not change.' => 'Der Name dieses Feldes sollte sich nicht ändern.',
         'Could not update the field %s' => 'Das Feld %s konnte nicht aktualisiert werden',
         'Currently' => 'Aktuell',
@@ -3646,6 +3650,8 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminMailAccount.pm
         'Mail account added!' => 'E-Mail-Konto hinzugefügt!',
+        'Email account fetch already fetched by another process. Please try again later!' =>
+            '',
         'Dispatching by email To: field.' => 'Verteilung nach To: Feld.',
         'Dispatching by selected Queue.' => 'Verteilung nach ausgewählter Queue.',
 
@@ -3695,9 +3701,11 @@ sub Data {
         'Updated' => 'Aktualisiert',
         'Already up-to-date' => 'Bereits aktuell',
         'Installed' => 'Installiert',
+        'Not correctly deployed' => '',
         'Package updated correctly' => 'Paket korrekt aktualisiert',
         'Package was already updated' => 'Paket wurde bereits aktualisiert',
         'Dependency installed correctly' => 'Abhängigkeit korrekt installiert',
+        'The package needs to be reinstalled' => '',
         'The package contains cyclic dependencies' => 'Das Paket enthält zyklische Abhängigkeiten',
         'Not found in on-line repositories' => 'Nicht im Online-Verzeichnis gefunden',
         'Required version is higher than available' => 'Erforderliche Version höher als verfügbar',
@@ -4010,8 +4018,6 @@ sub Data {
         'Updated user preferences' => 'Benutzereinstellungen aktualisiert',
         'System was unable to deploy your changes.' => 'Das System konnte Ihre Einstellungen nicht in Betrieb nehmen.',
         'Setting not found!' => 'Einstellung nicht gefunden!',
-        'This feature is part of the %s Please contact us at %s for an upgrade.' =>
-            'Diese Funktion ist Teil der %s. Bitte kontaktieren Sie uns unter %s bezüglich eines Upgrades.',
         'System was unable to reset the setting!' => 'Einstellung konnte nicht zurückgesetzt werden!',
 
         # Perl Module: Kernel/Modules/AgentSplitSelection.pm
@@ -4577,7 +4583,8 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/Notification/CustomerSystemMaintenanceCheck.pm
         'System maintenance is active!' => 'System Wartung ist aktiv!',
-        'A system maintenance period will start at: ' => 'Eine Systemwartungsperiode beginnt um: ',
+        'A system maintenance period will start at: %s and is expected to stop at: %s' =>
+            '',
 
         # Perl Module: Kernel/Output/HTML/Notification/DaemonCheck.pm
         'OTRS Daemon is not running.' => 'Der OTRS Daemon läuft nicht.',
@@ -4915,6 +4922,11 @@ sub Data {
         'InnoDB Log File Size' => 'InnoDB Log Datei Größe',
         'The setting innodb_log_file_size must be at least 256 MB.' => 'Die Einstellung innodb_log_file_size muss mindestens 256 MB betragen.',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/InvalidDefaultValues.pm
+        'Invalid Default Values' => '',
+        'Tables with invalid default values were found. In order to fix it automatically, please run: bin/otrs.Console.pl Maint::Database::Check --repair' =>
+            '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/MaxAllowedPacket.pm
         'Maximum Query Size' => 'Maximale Anfragegröße',
         'The setting \'max_allowed_packet\' must be higher than 64 MB.' =>
@@ -4931,6 +4943,9 @@ sub Data {
         'Tables with a different storage engine than the default engine were found.' =>
             'Es wurden Tabellen gefunden, die nicht die Standard-Engine nutzen.',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/TableCheck.pm
+        'Table check found some problems.' => '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Version.pm
         'MySQL 5.x or higher is required.' => 'MySQL 5.x oder höher wird benötigt.',
 
@@ -4942,6 +4957,11 @@ sub Data {
         'NLS_DATE_FORMAT must be set to \'YYYY-MM-DD HH24:MI:SS\'.' => 'NLS_DATE_FORMAT muss auf \'YYYY-MM-DD HH24:MI:SS\' gesetzt sein.',
         'NLS_DATE_FORMAT Setting SQL Check' => 'SQL-Prüfung NLS_DATE_FORMAT',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/oracle/PrimaryKeySequencesAndTriggers.pm
+        'Primary Key Sequences and Triggers' => '',
+        'The following sequences and/or triggers with possible wrong names have been found. Please rename them manually.' =>
+            '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/Charset.pm
         'Setting client_encoding needs to be UNICODE or UTF8.' => 'Einstellung client_encoding muss UNICODE oder UTF8 sein.',
         'Setting server_encoding needs to be UNICODE or UTF8.' => 'Einstellung server_encoding muss UNICODE oder UTF8 sein.',
@@ -4949,6 +4969,11 @@ sub Data {
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/DateStyle.pm
         'Date Format' => 'Datumsformat',
         'Setting DateStyle needs to be ISO.' => 'Einstellung DateStyle muss ISO sein.',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/PrimaryKeySequences.pm
+        'Primary Key Sequences' => '',
+        'The following sequences with possible wrong names have been found. Please rename them manually.' =>
+            '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/Version.pm
         'PostgreSQL 9.2 or higher is required.' => 'PostgreSQL 9.2 oder höher wird benötigt.',
@@ -5196,6 +5221,9 @@ sub Data {
         'Could not update modified setting!' => 'Konnte geänderte Einstellung nicht aktualisieren!',
         'Setting could not be unlocked!' => 'Einstellung konnte nicht freigegeben werden!',
         'Missing key %s!' => 'Fehlender Schlüssel %s!',
+        'Invalid setting: %s' => '',
+        'Could not combine settings values into a perl hash.' => '',
+        'Can not lock the deployment for UserID \'%s\'!' => '',
         'All Settings' => 'Alle Einstellungen',
 
         # Perl Module: Kernel/System/SysConfig/BaseValueType.pm
@@ -5453,9 +5481,9 @@ sub Data {
             'Derzeit läuft ein Prozess zur Paketaktualisierung. Klicken Sie hier, um Statusinformationen zu erhalten.',
         'A package upgrade was recently finished. Click here to see the results.' =>
             'Eine Paketaktualisierung wurde kürzlich beendet. Klicken Sie hier, um die Ergebnisse zu betrachten.',
-        'Update all packages' => '',
+        'Update all packages' => 'Alle Pakete aktualisieren',
         'Dismiss' => 'Verwerfen',
-        'Update All Packages' => '',
+        'Update All Packages' => 'Alle Pakete aktualisieren',
         'Currently not possible' => 'Derzeit nicht möglich',
         'This is currently disabled because of an ongoing package upgrade.' =>
             'Dies ist derzeit nicht möglich, da eine Paketaktualisierung läuft.',
@@ -5651,8 +5679,6 @@ sub Data {
         # JS File: Core.Agent
         'Slide the navigation bar' => 'Verschieben Sie die Navigationsleiste',
         'Please turn off Compatibility Mode in Internet Explorer!' => 'Bitte schalten Sie den Kompatibilitätsmodus im Internet Explorer aus!',
-        'This feature is part of the %s.  Please contact us at %s for an upgrade.' =>
-            'Diese Funktion ist Teil von %s. Bitte kontaktieren Sie uns unter %s bezüglich eines Upgrades.',
         'Find out more' => 'Mehr erfahren',
 
         # JS File: Core.App.Responsive
@@ -7435,6 +7461,7 @@ Ihr Helpdesk-Team
         'JavaScript function for the search frontend.' => 'JavaScript-Funktion für das Suche-Frontend.',
         'Language' => 'Sprache',
         'Large' => 'Groß',
+        'Last Screen Overview' => '',
         'Last customer subject' => 'Letzter Kunden-Betreff',
         'Lastname Firstname' => 'Nachname Vorname',
         'Lastname Firstname (UserLogin)' => 'Nachname Vorname (BenutzerAnmeldung)',
@@ -8690,6 +8717,8 @@ Ihr Helpdesk-Team
         'Clear all',
         'Clear debug log',
         'Clear search',
+        'Click to delete this attachment.',
+        'Click to select a file for upload.',
         'Click to select a file or just drop it here.',
         'Click to select files or just drop them here.',
         'Clone web service',
@@ -8947,7 +8976,7 @@ Ihr Helpdesk-Team
         'This address already exists on the address list.',
         'This element has children elements and can currently not be removed.',
         'This event is already attached to the job, Please use a different one.',
-        'This feature is part of the %s.  Please contact us at %s for an upgrade.',
+        'This feature is part of the %s. Please contact us at %s for an upgrade.',
         'This field is required.',
         'This is %s',
         'This is a repeating appointment',
