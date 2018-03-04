@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -52,9 +52,8 @@ sub RebuildConfig {
     # Convert XML files to entries in the database
     if (
         !$SysConfigObject->ConfigurationXML2DB(
-            CleanUp => 1,
-            Force   => 1,
-            UserID  => 1,
+            Force  => 1,
+            UserID => 1,
         )
         )
     {
@@ -215,6 +214,21 @@ sub ExecuteXMLDBArray {
 
                 # skip dropping the column if the column does not exist
                 next XMLSTRING if !$ColumnExists;
+            }
+
+            # extract indexes that should be added
+            if ( $XMLString =~ m{<IndexCreate \s+ Name="([^"]+)" }xms ) {
+
+                my $IndexName = $1;
+                return if !$IndexName;
+
+                my $IndexExists = $Self->IndexExists(
+                    Table => $TableName,
+                    Index => $IndexName,
+                );
+
+                # skip the index creation if it already exits
+                next XMLSTRING if $IndexExists;
             }
         }
 
@@ -430,6 +444,79 @@ sub ColumnExists {
     my %ColumnNames = map { lc $_ => 1 } $DBObject->GetColumnNames();
 
     return if !$ColumnNames{ lc $Param{Column} };
+
+    return 1;
+}
+
+=head2 IndexExists()
+
+Checks if the given index exists in the given table.
+
+    my $Result = $DBUpdateTo6Object->IndexExists(
+        Table => 'ticket',
+        Index =>  'id',
+    );
+
+Returns true if the index exists, otherwise false.
+
+=cut
+
+sub IndexExists {
+    my ( $Self, %Param ) = @_;
+
+    for my $Argument (qw(Table Index)) {
+        if ( !$Param{$Argument} ) {
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Need $Argument!",
+            );
+            return;
+        }
+    }
+
+    my $DBType = $Kernel::OM->Get('Kernel::System::DB')->GetDatabaseFunction('Type');
+
+    my ( $SQL, @Bind );
+
+    if ( $DBType eq 'mysql' ) {
+        $SQL = '
+            SELECT COUNT(*)
+            FROM information_schema.statistics
+            WHERE table_schema = DATABASE() AND table_name = ? AND index_name = ?
+        ';
+        push @Bind, \$Param{Table}, \$Param{Index};
+    }
+    elsif ( $DBType eq 'postgresql' ) {
+        $SQL = '
+            SELECT COUNT(*)
+            FROM pg_indexes
+            WHERE indexname = ?
+        ';
+        push @Bind, \$Param{Index};
+    }
+    elsif ( $DBType eq 'oracle' ) {
+        $SQL = '
+            SELECT COUNT(*)
+            FROM user_indexes
+            WHERE index_name = ?
+        ';
+        push @Bind, \$Param{Index};
+    }
+    else {
+        return;
+    }
+
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
+    return if !$DBObject->Prepare(
+        SQL   => $SQL,
+        Bind  => \@Bind,
+        Limit => 1,
+    );
+
+    my @Result = $DBObject->FetchrowArray();
+
+    return if !$Result[0];
 
     return 1;
 }
