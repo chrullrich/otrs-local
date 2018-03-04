@@ -1,6 +1,7 @@
 // This code is taken from the jQuery migrate plugin,
 // see http://www.jquery4u.com/deprecated/fix-jquery-browser-function/.
 // We still need the browser detection at this point.
+// 2016-02-22 (mn): Added recognition for trident engine
 
 jQuery.uaMatch = function( ua ) {
     ua = ua.toLowerCase();

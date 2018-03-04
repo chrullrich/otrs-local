@@ -83,7 +83,7 @@ $Selenium->RunTest(
         );
 
         # logout again
-        $Selenium->find_element( '#LogoutButton', 'css' )->VerifiedClick();
+        $Element->VerifiedClick();
 
         # check login page
         $Element = $Selenium->find_element( 'input#User', 'css' );

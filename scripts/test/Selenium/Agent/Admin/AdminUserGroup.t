@@ -63,12 +63,34 @@ $Selenium->RunTest(
         $Selenium->find_element( "#Users",  'css' );
         $Selenium->find_element( "#Groups", 'css' );
 
+        # check breadcrumb on Overview screen
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
+
         # click on created test group
         $Selenium->find_element( $GroupName, 'link_text' )->VerifiedClick();
 
+        # check breadcrumb on change screen
+        my $Count = 1;
+        for my $BreadcrumbText (
+            'Manage Agent-Group Relations',
+            'Change Agent Relations for Group \'' . $GroupName . '\''
+            )
+        {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
+
         # give full read and write access to the tickets in test group for test user
         $Selenium->find_element("//input[\@value='$UserID'][\@name='rw']")->VerifiedClick();
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element("//button[\@value='Save'][\@type='submit']")->VerifiedClick();
 
         # test filter for Users
         my $FullTestUserLogin = "$TestUserLogin ($TestUserLogin $TestUserLogin)";
@@ -138,7 +160,7 @@ $Selenium->RunTest(
             $Selenium->find_element("//input[\@value='$UserID'][\@name='$Permission']")->VerifiedClick();
         }
 
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element("//button[\@value='Save'][\@type='submit']")->VerifiedClick();
 
         # check edited test group permissions
         $Selenium->find_element( $GroupName, 'link_text' )->VerifiedClick();
@@ -188,7 +210,7 @@ $Selenium->RunTest(
             $Selenium->find_element("//input[\@value='$GroupID'][\@name='$Permission']")->VerifiedClick();
         }
 
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element("//button[\@value='Save'][\@type='submit']")->VerifiedClick();
 
         # check edited test agent permissions
         $Selenium->find_element( $FullTestUserLogin, 'link_text' )->VerifiedClick();
@@ -201,6 +223,86 @@ $Selenium->RunTest(
                 "$Permission permission for user $TestUserLogin in group $GroupName is $Enabled",
             );
         }
+
+        # Check if top level inputs are enabled.
+        $Self->Is(
+            $Selenium->execute_script("return \$('table th:nth-child(2) input:not([name=\"rw\"])').prop('disabled')"),
+            0,
+            "Top row inputs are enabled.",
+        );
+
+        # Click on Master Switch.
+        $Selenium->find_element( "#SelectAllrw", 'css' )->VerifiedClick();
+
+        # Check if top level inputs are disabled.
+        $Self->Is(
+            $Selenium->execute_script("return \$('table th:nth-child(2) input:not([name=\"rw\"])').prop('disabled')"),
+            1,
+            "Top row inputs are disabled.",
+        );
+
+        # Check if bottom level inputs are disabled.
+        $Self->Is(
+            $Selenium->execute_script("return \$('table td:nth-child(2) input:not([name=\"rw\"])').prop('disabled')"),
+            1,
+            "Table inputs are disabled.",
+        );
+
+        # Check if test row is disabled and checked.
+        $Self->Is(
+            $Selenium->execute_script(
+                "return \$(\"a[href*='ID=$GroupID']\").parent().next().children('input').prop('disabled');"
+            ),
+            1,
+            "Selected row is disabled.",
+        );
+
+        $Self->Is(
+            $Selenium->execute_script(
+                "return \$(\"a[href*='ID=$GroupID']\").parent().next().children('input').prop('checked');"
+            ),
+            1,
+            "Selected row is checked.",
+        );
+
+        $Selenium->find_element( "#SelectAllrw", 'css' )->VerifiedClick();
+
+        # Find test group in the table and pass its value to filter.
+        $Selenium->find_element( "#Filter", 'css' )->send_keys($GroupName);
+
+        $Selenium->WaitFor(
+            JavaScript =>
+                'return typeof($) === "function" && $(\'input[name="rw"]:visible\').length !== $(\'input[name="rw"]\').length;'
+        );
+
+        # Click on Master check if not already checked.
+        if ( !$Selenium->execute_script("return \$('#SelectAllrw:checked').length") ) {
+            $Selenium->find_element( "#SelectAllrw", 'css' )->VerifiedClick();
+        }
+
+        $Selenium->WaitFor(
+            JavaScript => 'return typeof($) === "function" && $(".FilterRemove:visible").length === 1;'
+        );
+
+        # Remove selected filter.
+        $Selenium->find_element( ".FilterRemove", 'css' )->VerifiedClick();
+
+        # Check if test row is disabled and checked.
+        $Self->Is(
+            $Selenium->execute_script(
+                "return \$(\"a[href*='ID=$GroupID']\").parent().next().children('input').prop('disabled');"
+            ),
+            1,
+            "Selected row is disabled.",
+        );
+
+        $Self->Is(
+            $Selenium->execute_script(
+                "return \$(\"a[href*='ID=$GroupID']\").parent().next().children('input').prop('checked');"
+            ),
+            1,
+            "Selected row is checked.",
+        );
 
         # since there are no tickets that rely on our test group, we can remove them again
         # from the DB

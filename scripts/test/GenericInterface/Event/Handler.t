@@ -15,7 +15,7 @@ use vars (qw($Self));
 
 use URI::Escape();
 
-# get config object
+my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
 # unregister other ticket handlers
@@ -26,7 +26,7 @@ $ConfigObject->Set(
 
 # register the generic interface test handler only
 $ConfigObject->Set(
-    Key   => 'Ticket::EventModulePost###999-GenericInterface',
+    Key   => 'Ticket::EventModulePost###9900-GenericInterface',
     Value => {
         Module      => 'Kernel::GenericInterface::Event::Handler',
         Event       => '.*',
@@ -35,17 +35,12 @@ $ConfigObject->Set(
 );
 
 $Self->Is(
-    $ConfigObject->Get('Ticket::EventModulePost')->{'999-GenericInterface'}->{Module},
+    $ConfigObject->Get('Ticket::EventModulePost')->{'9900-GenericInterface'}->{Module},
     'Kernel::GenericInterface::Event::Handler',
     "Event handler added to config",
 );
 
-# helper object
-
-my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
-
-my $Home = $ConfigObject->Get('Home');
-
+my $Home   = $ConfigObject->Get('Home');
 my $Daemon = $Home . '/bin/otrs.Daemon.pl';
 
 # get daemon status (stop if necessary to reload configuration with planner daemon disabled)
@@ -159,6 +154,138 @@ my @Tests = (
                             {
                                 Event        => 'TicketCreate',
                                 Asynchronous => 1,
+                            },
+                        ],
+                    },
+                },
+            },
+        },
+        Asynchronous => 1,
+        ValidID      => 1,
+        Success      => 1,
+    },
+    {
+        Name             => 'Synchronous event call Filter Success',
+        WebserviceConfig => {
+            Debugger => {
+                DebugThreshold => 'debug',
+            },
+            Requester => {
+                Transport => {
+                    Type   => 'HTTP::Test',
+                    Config => {
+                        Fail => 0,
+                    },
+                },
+                Invoker => {
+                    test_operation => {
+                        Type   => 'Test::TestSimple',
+                        Events => [
+                            {
+                                Event        => 'TicketCreate',
+                                Asynchronous => 0,
+                                Condition    => {
+                                    Condition => {
+                                        ConditionLinking => 'and',
+                                        1                => {
+                                            Type   => 'and',
+                                            Fields => {
+                                                Queue => {
+                                                    Match => 'Raw',
+                                                    Type  => 'String',
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        },
+        Asynchronous => 0,
+        ValidID      => 1,
+        Success      => 1,
+    },
+    {
+        Name             => 'Synchronous event call Filter Fail',
+        WebserviceConfig => {
+            Debugger => {
+                DebugThreshold => 'debug',
+            },
+            Requester => {
+                Transport => {
+                    Type   => 'HTTP::Test',
+                    Config => {
+                        Fail => 0,
+                    },
+                },
+                Invoker => {
+                    test_operation => {
+                        Type   => 'Test::TestSimple',
+                        Events => [
+                            {
+                                Event        => 'TicketCreate',
+                                Asynchronous => 0,
+                                Condition    => {
+                                    Condition => {
+                                        ConditionLinking => 'and',
+                                        1                => {
+                                            Type   => 'and',
+                                            Fields => {
+                                                Queue => {
+                                                    Match => 'Postmaster',
+                                                    Type  => 'String',
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        },
+        Asynchronous => 0,
+        ValidID      => 1,
+        Success      => 0,
+    },
+    {
+        Name             => 'Asynchronous event call Filter Success',
+        WebserviceConfig => {
+            Debugger => {
+                DebugThreshold => 'debug',
+            },
+            Requester => {
+                Transport => {
+                    Type   => 'HTTP::Test',
+                    Config => {
+                        Fail => 0,
+                    },
+                },
+                Invoker => {
+                    test_operation => {
+                        Type   => 'Test::TestSimple',
+                        Events => [
+                            {
+                                Event        => 'TicketCreate',
+                                Asynchronous => 1,
+                                Condition    => {
+                                    Condition => {
+                                        ConditionLinking => 'and',
+                                        1                => {
+                                            Type   => 'and',
+                                            Fields => {
+                                                Queue => {
+                                                    Match => 'Raw',
+                                                    Type  => 'String',
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
                             },
                         ],
                     },

@@ -43,13 +43,18 @@ $Selenium->RunTest(
         $Selenium->find_element( "table thead tr th", 'css' );
         $Selenium->find_element( "table tbody tr td", 'css' );
 
+        # check breadcrumb on Overview screen
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
+
         # click 'Add Service'
         $Selenium->find_element("//a[contains(\@href, \'ServiceEdit;ServiceID=NEW' )]")->VerifiedClick();
 
         # check client side validation
-        $Selenium->find_element( "#Name", 'css' )->clear();
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
-
+        $Selenium->find_element( "#Name",   'css' )->clear();
+        $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
         $Self->Is(
             $Selenium->execute_script(
                 "return \$('#Name').hasClass('Error')"
@@ -74,13 +79,25 @@ $Selenium->RunTest(
             $Element->is_displayed();
         }
 
+        # check breadcrumb on Add screen
+        my $Count = 1;
+        for my $BreadcrumbText ( 'Service Management', 'Add Service' ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
+
         # create first test Service
         my $ServiceRandomID = "service" . $Helper->GetRandomID();
         my $ServiceComment  = "Selenium test Service";
 
         $Selenium->find_element( "#Name",    'css' )->send_keys($ServiceRandomID);
         $Selenium->find_element( "#Comment", 'css' )->send_keys($ServiceComment);
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element( "#Submit",  'css' )->VerifiedClick();
 
         # create second test Service
         $Selenium->find_element("//a[contains(\@href, \'ServiceEdit;ServiceID=NEW' )]")->VerifiedClick();
@@ -89,7 +106,7 @@ $Selenium->RunTest(
 
         $Selenium->find_element( "#Name",    'css' )->send_keys($ServiceRandomID2);
         $Selenium->find_element( "#Comment", 'css' )->send_keys($ServiceComment);
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element( "#Submit",  'css' )->VerifiedClick();
 
         # check for created test Services on AdminService screen
         $Self->True(
@@ -119,6 +136,18 @@ $Selenium->RunTest(
             "#ValidID stored value",
         );
 
+        # check breadcrumb on Edit screen
+        $Count = 1;
+        for my $BreadcrumbText ( 'Service Management', 'Edit Service: ' . $ServiceRandomID2 ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
+
         # get service object
         my $ServiceObject = $Kernel::OM->Get('Kernel::System::Service');
 
@@ -138,7 +167,7 @@ $Selenium->RunTest(
         $Selenium->execute_script("\$('#ParentID').val('$ServiceID').trigger('redraw.InputField').trigger('change');");
         $Selenium->find_element( "#Comment", 'css' )->clear();
         $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
         # check class of invalid Service in the overview table
         $Self->True(
@@ -168,25 +197,20 @@ $Selenium->RunTest(
             "#ValidID updated value",
         );
         $Selenium->execute_script("\$('#ParentID').val('').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
         # create third test Service
         $Selenium->find_element("//a[contains(\@href, \'ServiceEdit;ServiceID=NEW' )]")->VerifiedClick();
 
         my $ServiceRandomID3 = "Long service" . $Helper->GetRandomID();
         $ServiceRandomID3
-            .= $ServiceRandomID3
-            . $ServiceRandomID3
-            . $ServiceRandomID3
-            . $ServiceRandomID3
-            . $ServiceRandomID3
-            . $ServiceRandomID3;
+            .= $ServiceRandomID3 . $ServiceRandomID3 . $ServiceRandomID3 . $ServiceRandomID3 . $ServiceRandomID3;
 
         $Selenium->find_element( "#Name", 'css' )->send_keys($ServiceRandomID3);
-        $Selenium->execute_script("\$('#ParentID').val('$ServiceID2').trigger('redraw.InputField').trigger('change');");
+        $Selenium->execute_script("\$('#ParentID').val('$ServiceID').trigger('redraw.InputField').trigger('change');");
 
         $Selenium->find_element( "#Comment", 'css' )->send_keys($ServiceComment);
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element( "#Submit",  'css' )->VerifiedClick();
 
         # Check for created test Services on AdminService screen.
         $Self->False(

@@ -36,9 +36,15 @@ Core.Agent.TableFilters = (function (TargetNS) {
      *      Initialize autocompletion for CustomerID.
      */
     TargetNS.InitCustomerIDAutocomplete = function ($Input) {
+        var AutoCompleteConfig = Core.Config.Get('CustomerIDAutocomplete');
+
+        if (typeof AutoCompleteConfig === 'undefined') {
+            return;
+        }
+
         $Input.autocomplete({
-            minLength: Core.Config.Get('CustomerIDAutocomplete.MinQueryLength'),
-            delay: Core.Config.Get('CustomerIDAutocomplete.QueryDelay'),
+            minLength: AutoCompleteConfig.MinQueryLength,
+            delay: AutoCompleteConfig.QueryDelay,
             open: function() {
                 // force a higher z-index than the overlay/dialog
                 $(this).autocomplete('widget').addClass('ui-overlay-autocomplete');
@@ -46,11 +52,11 @@ Core.Agent.TableFilters = (function (TargetNS) {
             },
             source: function (Request, Response) {
                 var URL = Core.Config.Get('Baselink'), Data = {
-                    Action: 'AgentCustomerInformationCenterSearch',
+                    Action: 'AgentCustomerSearch',
                     Subaction: 'SearchCustomerID',
-                    IncludeUnknownTicketCustomers: Core.Config.Get('IncludeUnknownTicketCustomers'),
+                    IncludeUnknownTicketCustomers: parseInt(Core.Config.Get('IncludeUnknownTicketCustomers'), 10),
                     Term: Request.term,
-                    MaxResults: Core.Config.Get('CustomerIDAutocomplete.MaxResultsDisplayed')
+                    MaxResults: AutoCompleteConfig.MaxResultsDisplayed
                 };
 
                 // if an old ajax request is already running, stop the old request and start the new one
@@ -93,9 +99,15 @@ Core.Agent.TableFilters = (function (TargetNS) {
      *      Initialize autocompletion for Customer User.
      */
     TargetNS.InitCustomerUserAutocomplete = function ($Input) {
+        var AutoCompleteConfig = Core.Config.Get('CustomerUserAutocomplete');
+
+        if (typeof AutoCompleteConfig === 'undefined') {
+            return;
+        }
+
         $Input.autocomplete({
-            minLength: Core.Config.Get('CustomerUserAutocomplete.MinQueryLength'),
-            delay: Core.Config.Get('CustomerUserAutocomplete.QueryDelay'),
+            minLength: AutoCompleteConfig.MinQueryLength,
+            delay: AutoCompleteConfig.QueryDelay,
             open: function() {
                 // force a higher z-index than the overlay/dialog
                 $(this).autocomplete('widget').addClass('ui-overlay-autocomplete');
@@ -104,9 +116,9 @@ Core.Agent.TableFilters = (function (TargetNS) {
             source: function (Request, Response) {
                 var URL = Core.Config.Get('Baselink'), Data = {
                     Action: 'AgentCustomerSearch',
-                    IncludeUnknownTicketCustomers: Core.Config.Get('IncludeUnknownTicketCustomers'),
+                    IncludeUnknownTicketCustomers: parseInt(Core.Config.Get('IncludeUnknownTicketCustomers'), 10),
                     Term: Request.term,
-                    MaxResults: Core.Config.Get('CustomerUserAutocomplete.MaxResultsDisplayed')
+                    MaxResults: AutoCompleteConfig.MaxResultsDisplayed
                 };
 
                 // if an old ajax request is already running, stop the old request and start the new one
@@ -122,9 +134,9 @@ Core.Agent.TableFilters = (function (TargetNS) {
                     $Input.removeData('AutoCompleteXHR');
                     $.each(Result, function () {
                         ValueData.push({
-                            label: this.CustomerValue + " (" + this.CustomerKey + ")",
-                            value: this.CustomerValue,
-                            key: this.CustomerKey
+                            label: this.Label + " (" + this.Value + ")",
+                            value: this.Label,
+                            key: this.Value
                         });
                     });
                     Response(ValueData);
@@ -151,9 +163,15 @@ Core.Agent.TableFilters = (function (TargetNS) {
      *      Initialize autocompletion for User.
      */
     TargetNS.InitUserAutocomplete = function ($Input, Subaction) {
+        var AutoCompleteConfig = Core.Config.Get('UserAutocomplete');
+
+        if (typeof AutoCompleteConfig === 'undefined') {
+            return;
+        }
+
         $Input.autocomplete({
-            minLength: Core.Config.Get('UserAutocomplete.MinQueryLength'),
-            delay: Core.Config.Get('UserAutocomplete.QueryDelay'),
+            minLength: AutoCompleteConfig.MinQueryLength,
+            delay: AutoCompleteConfig.QueryDelay,
             open: function() {
                 // force a higher z-index than the overlay/dialog
                 $(this).autocomplete('widget').addClass('ui-overlay-autocomplete');
@@ -164,7 +182,7 @@ Core.Agent.TableFilters = (function (TargetNS) {
                     Action: 'AgentUserSearch',
                     Subaction: Subaction,
                     Term: Request.term,
-                    MaxResults: Core.Config.Get('UserAutocomplete.MaxResultsDisplayed')
+                    MaxResults: AutoCompleteConfig.MaxResultsDisplayed
                 };
 
                 // if an old ajax request is already running, stop the old request and start the new one
@@ -252,11 +270,10 @@ Core.Agent.TableFilters = (function (TargetNS) {
      * @name SetAllocationList
      * @memberof Core.Agent.TableFilters
      * @function
-     * @param {String} ElementID - The ID of the element whose content should be updated with the server answer.
      * @description
      *      Initialize allocation list.
      */
-    TargetNS.SetAllocationList = function (ElementID) {
+    TargetNS.SetAllocationList = function () {
         $('.AllocationListContainer').each(function() {
 
             var $ContainerObj = $(this),
@@ -266,17 +283,7 @@ Core.Agent.TableFilters = (function (TargetNS) {
                 DataAvailable,
                 Translation,
                 $FieldObj,
-                IDString = '#' + $ContainerObj.find('.AssignedFields').attr('id') + ', #' + $ContainerObj.find('.AvailableFields').attr('id'),
-                RegEx;
-
-            // Skip to the next container if content shouldn't be updated.
-            if (typeof ElementID !== 'undefined') {
-                RegEx = new RegExp(ElementID.replace('Widget','') + '$');
-
-                if (!IDString.match(RegEx)) {
-                    return true;
-                }
-            }
+                IDString = '#' + $ContainerObj.find('.AssignedFields').attr('id') + ', #' + $ContainerObj.find('.AvailableFields').attr('id');
 
             if (DataEnabledJSON) {
                 DataEnabled = Core.JSON.Parse(DataEnabledJSON);
@@ -328,7 +335,6 @@ Core.Agent.TableFilters = (function (TargetNS) {
             });
         }
     };
-
 
     return TargetNS;
 }(Core.Agent.TableFilters || {}));

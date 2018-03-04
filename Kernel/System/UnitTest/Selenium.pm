@@ -25,8 +25,8 @@ our @ObjectDependencies = (
     'Kernel::System::AuthSession',
     'Kernel::System::Log',
     'Kernel::System::Main',
-    'Kernel::System::Time',
-    'Kernel::System::UnitTest::Driver',
+    'Kernel::System::DateTime',
+    'Kernel::System::UnitTest',
     'Kernel::System::UnitTest::Helper',
 );
 
@@ -43,11 +43,7 @@ In case of an error, an exception will be thrown that you can catch in your
 unit test file and handle with C<HandleError()> in this class. It will output
 a failing test result and generate a screen shot for analysis.
 
-=over 4
-
-=cut
-
-=item new()
+=head2 new()
 
 create a selenium object to run front end tests.
 
@@ -87,15 +83,15 @@ Then you can use the full API of L<Selenium::Remote::Driver> on this object.
 sub new {
     my ( $Class, %Param ) = @_;
 
-    $Param{UnitTestDriverObject} ||= $Kernel::OM->Get('Kernel::System::UnitTest::Driver');
+    $Param{UnitTestObject} ||= $Kernel::OM->Get('Kernel::System::UnitTest');
 
-    $Param{UnitTestDriverObject}->True( 1, "Starting up Selenium scenario..." );
+    $Param{UnitTestObject}->True( 1, "Starting up Selenium scenario..." );
 
     my %SeleniumTestsConfig = %{ $Kernel::OM->Get('Kernel::Config')->Get('SeleniumTestsConfig') // {} };
 
     if ( !%SeleniumTestsConfig ) {
         my $Self = bless {}, $Class;
-        $Self->{UnitTestDriverObject} = $Param{UnitTestDriverObject};
+        $Self->{UnitTestObject} = $Param{UnitTestObject};
         return $Self;
     }
 
@@ -115,8 +111,8 @@ sub new {
         webelement_class => 'Kernel::System::UnitTest::Selenium::WebElement',
         %SeleniumTestsConfig
     );
-    $Self->{UnitTestDriverObject} = $Param{UnitTestDriverObject};
-    $Self->{SeleniumTestsActive}  = 1;
+    $Self->{UnitTestObject}      = $Param{UnitTestObject};
+    $Self->{SeleniumTestsActive} = 1;
 
     #$Self->debug_on();
 
@@ -130,12 +126,13 @@ sub new {
     $Self->{BaseURL} .= Kernel::System::UnitTest::Helper->GetTestHTTPHostname();
 
     # Remember the start system time for the selenium test run.
-    $Self->{TestStartSystemTime} = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
+    my $DateTimeObj = $Kernel::OM->Create('Kernel::System::DateTime');
+    $Self->{TestStartSystemTime} = $DateTimeObj->ToEpoch();
 
     return $Self;
 }
 
-=item RunTest()
+=head2 RunTest()
 
 runs a selenium test if Selenium testing is configured and performs proper
 error handling (calls C<HandleError()> if needed).
@@ -148,7 +145,7 @@ sub RunTest {
     my ( $Self, $Test ) = @_;
 
     if ( !$Self->{SeleniumTestsActive} ) {
-        $Self->{UnitTestDriverObject}->True( 1, 'Selenium testing is not active, skipping tests.' );
+        $Self->{UnitTestObject}->True( 1, 'Selenium testing is not active, skipping tests.' );
         return 1;
     }
 
@@ -160,12 +157,16 @@ sub RunTest {
     return 1;
 }
 
-=item _execute_command()
+=begin Internal:
+
+=head2 _execute_command()
 
 Override internal command of base class.
 
 We use it to output successful command runs to the UnitTest object.
 Errors will cause an exeption and be caught elsewhere.
+
+=end Internal:
 
 =cut
 
@@ -177,8 +178,8 @@ sub _execute_command {    ## no critic
     my $TestName = 'Selenium command success: ';
     $TestName .= $Kernel::OM->Get('Kernel::System::Main')->Dump(
         {
-            %{ $Res    || {} },
-            %{ $Params || {} },
+            %{ $Res    || {} },    ## no critic
+            %{ $Params || {} },    ## no critic
         }
     );
 
@@ -186,13 +187,13 @@ sub _execute_command {    ## no critic
         print $TestName;
     }
     else {
-        $Self->{UnitTestDriverObject}->True( 1, $TestName );
+        $Self->{UnitTestObject}->True( 1, $TestName );
     }
 
     return $Result;
 }
 
-=item get()
+=head2 get()
 
 Override get method of base class to prepend the correct base URL.
 
@@ -214,7 +215,7 @@ sub get {    ## no critic
     return;
 }
 
-=item get_alert_text()
+=head2 get_alert_text()
 
 Override get_alert_text() method of base class to return alert text as string.
 
@@ -236,7 +237,7 @@ sub get_alert_text {    ## no critic
     return $AlertText;
 }
 
-=item VerifiedGet()
+=head2 VerifiedGet()
 
 perform a get() call, but wait for the page to be fully loaded (works only within OTRS).
 Will die() if the verification fails.
@@ -260,7 +261,7 @@ sub VerifiedGet {
     return;
 }
 
-=item VerifiedRefresh()
+=head2 VerifiedRefresh()
 
 perform a refresh() call, but wait for the page to be fully loaded (works only within OTRS).
 Will die() if the verification fails.
@@ -282,7 +283,7 @@ sub VerifiedRefresh {
     return;
 }
 
-=item Login()
+=head2 Login()
 
 login to agent or customer interface
 
@@ -308,7 +309,7 @@ sub Login {
         }
     }
 
-    $Self->{UnitTestDriverObject}->True( 1, 'Initiating login...' );
+    $Self->{UnitTestObject}->True( 1, 'Initiating login...' );
 
     # we will try several times to log in
     my $MaxTries = 5;
@@ -334,13 +335,13 @@ sub Login {
             # login successful?
             $Self->find_element( 'a#LogoutButton', 'css' );    # dies if not found
 
-            $Self->{UnitTestDriverObject}->True( 1, 'Login sequence ended...' );
+            $Self->{UnitTestObject}->True( 1, 'Login sequence ended...' );
         };
 
         # an error happend
         if ($@) {
 
-            $Self->{UnitTestDriverObject}->True( 1, "Login attempt $Try of $MaxTries not successful." );
+            $Self->{UnitTestObject}->True( 1, "Login attempt $Try of $MaxTries not successful." );
 
             # try again
             next TRY if $Try < $MaxTries;
@@ -359,7 +360,7 @@ sub Login {
     return 1;
 }
 
-=item WaitFor()
+=head2 WaitFor()
 
 wait with increasing sleep intervals until the given condition is true or the wait time is over.
 Exactly one condition (JavaScript or WindowCount) must be specified.
@@ -406,10 +407,17 @@ sub WaitFor {
         $WaitedSeconds += $Interval;
         $Interval += 0.1;
     }
-    return;
+
+    my $Argument = '';
+    for my $Key (qw(JavaScript WindowCount AlertPresent)) {
+        $Argument = "$Key => $Param{$Key}" if $Param{$Key};
+    }
+    $Argument = "Callback" if $Param{Callback};
+
+    die "WaitFor($Argument) failed.";
 }
 
-=item DragAndDrop()
+=head2 DragAndDrop()
 
 Drag and drop an element.
 
@@ -473,7 +481,7 @@ sub DragAndDrop {
     return;
 }
 
-=item HandleError()
+=head2 HandleError()
 
 use this method to handle any Selenium exceptions.
 
@@ -487,7 +495,7 @@ for analysis (in folder /var/otrs-unittest if it exists, in $Home/var/httpd/htdo
 sub HandleError {
     my ( $Self, $Error ) = @_;
 
-    $Self->{UnitTestDriverObject}->False( 1, "Exception in Selenium': $Error" );
+    $Self->{UnitTestObject}->False( 1, "Exception in Selenium': $Error" );
 
     #eval {
     my $Data = $Self->screenshot();
@@ -500,7 +508,8 @@ sub HandleError {
     my $LocalScreenshotDir = $Kernel::OM->Get('Kernel::Config')->Get('Home') . '/var/httpd/htdocs/SeleniumScreenshots';
     mkdir $LocalScreenshotDir || return $Self->False( 1, "Could not create $LocalScreenshotDir." );
 
-    my $Filename = $Kernel::OM->Get('Kernel::System::Time')->CurrentTimestamp();
+    my $DateTimeObj = $Kernel::OM->Create('Kernel::System::DateTime');
+    my $Filename    = $DateTimeObj->ToString();
     $Filename .= '-' . ( int rand 100_000_000 ) . '.png';
     $Filename =~ s{[ :]}{-}smxg;
 
@@ -528,15 +537,16 @@ sub HandleError {
             Directory => $SharedScreenshotDir,
             Filename  => $Filename,
             Content   => \$Data,
-            )
-            || return $Self->{UnitTestDriverObject}->False( 1, "Could not write file $SharedScreenshotDir/$Filename" );
+        ) || return $Self->False( 1, "Could not write file $SharedScreenshotDir/$Filename" );
     }
 
-    $Self->{UnitTestDriverObject}->False( 1, "Saved screenshot in $URL" );
-    $Self->{UnitTestDriverObject}->AttachSeleniumScreenshot(
+    $Self->{UnitTestObject}->False( 1, "Saved screenshot in $URL" );
+    $Self->{UnitTestObject}->AttachSeleniumScreenshot(
         Filename => $Filename,
         Content  => $Data
     );
+
+    return;
 }
 
 =head2 DEMOLISH()
@@ -550,47 +560,46 @@ sub DEMOLISH {
     my $Self = shift;
 
     # Could be missing on early die.
-    if ( $Self->{UnitTestDriverObject} ) {
-        $Self->{UnitTestDriverObject}->True( 1, "Shutting down Selenium scenario." );
+    if ( $Self->{UnitTestObject} ) {
+        $Self->{UnitTestObject}->True( 1, "Shutting down Selenium scenario." );
     }
 
     if ( $Self->{SeleniumTestsActive} ) {
         $Self->SUPER::DEMOLISH(@_);
+    }
 
-        # Cleanup possibly leftover zombie firefox profiles.
-        my @LeftoverFirefoxProfiles = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
-            Directory => '/tmp/',
-            Filter    => 'anonymous*webdriver-profile',
-        );
+    # Cleanup possibly leftover zombie firefox profiles.
+    my @LeftoverFirefoxProfiles = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
+        Directory => '/tmp/',
+        Filter    => 'anonymous*webdriver-profile',
+    );
 
-        for my $LeftoverFirefoxProfile (@LeftoverFirefoxProfiles) {
-            if ( -d $LeftoverFirefoxProfile ) {
-                File::Path::remove_tree($LeftoverFirefoxProfile);
-            }
-        }
-
-        # Cleanup all sessions, which was created after the selenium test start time.
-        my $AuthSessionObject = $Kernel::OM->Get('Kernel::System::AuthSession');
-
-        my @Sessions = $AuthSessionObject->GetAllSessionIDs();
-
-        SESSION:
-        for my $SessionID (@Sessions) {
-
-            my %SessionData = $AuthSessionObject->GetSessionIDData( SessionID => $SessionID );
-
-            next SESSION if !%SessionData;
-            next SESSION
-                if $SessionData{UserSessionStart} && $SessionData{UserSessionStart} < $Self->{TestStartSystemTime};
-
-            $AuthSessionObject->RemoveSessionID( SessionID => $SessionID );
+    for my $LeftoverFirefoxProfile (@LeftoverFirefoxProfiles) {
+        if ( -d $LeftoverFirefoxProfile ) {
+            File::Path::remove_tree($LeftoverFirefoxProfile);
         }
     }
+
+    # Cleanup all sessions, which was created after the selenium test start time.
+    my $AuthSessionObject = $Kernel::OM->Get('Kernel::System::AuthSession');
+
+    my @Sessions = $AuthSessionObject->GetAllSessionIDs();
+
+    SESSION:
+    for my $SessionID (@Sessions) {
+
+        my %SessionData = $AuthSessionObject->GetSessionIDData( SessionID => $SessionID );
+
+        next SESSION if !%SessionData;
+        next SESSION if $SessionData{UserSessionStart} && $SessionData{UserSessionStart} < $Self->{TestStartSystemTime};
+
+        $AuthSessionObject->RemoveSessionID( SessionID => $SessionID );
+    }
+
+    return;
 }
 
 1;
-
-=back
 
 =head1 TERMS AND CONDITIONS
 

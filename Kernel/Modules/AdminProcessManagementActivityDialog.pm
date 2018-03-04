@@ -11,8 +11,8 @@ package Kernel::Modules::AdminProcessManagementActivityDialog;
 use strict;
 use warnings;
 
-use Kernel::Language qw(Translatable);
 use Kernel::System::VariableCheck qw(:all);
+use Kernel::Language qw(Translatable);
 
 our $ObjectManagerDisabled = 1;
 
@@ -276,8 +276,6 @@ sub Run {
             EntityID => $EntityID,
         );
 
-        my $ConfigJSON = $LayoutObject->JSONEncode( Data => $ActivityDialogConfig );
-
         # check if needed to open another window or if popup should go back
         if ( $Redirect && $Redirect eq '1' ) {
 
@@ -297,7 +295,7 @@ sub Run {
                     Subaction => 'FieldEdit',
                     Field     => $RedirectField,
                 },
-                ConfigJSON => $ConfigJSON,
+                ConfigJSON => $ActivityDialogConfig,
             );
         }
         else {
@@ -311,7 +309,7 @@ sub Run {
                 # close the popup
                 return $Self->_PopupResponse(
                     ClosePopup => 1,
-                    ConfigJSON => $ConfigJSON,
+                    ConfigJSON => $ActivityDialogConfig,
                 );
             }
             else {
@@ -320,7 +318,7 @@ sub Run {
                 return $Self->_PopupResponse(
                     Redirect   => 1,
                     Screen     => $LastScreen,
-                    ConfigJSON => $ConfigJSON,
+                    ConfigJSON => $ActivityDialogConfig,
                 );
             }
         }
@@ -530,8 +528,6 @@ sub Run {
             EntityID => $ActivityDialogData->{EntityID},
         );
 
-        my $ConfigJSON = $LayoutObject->JSONEncode( Data => $ActivityDialogConfig );
-
         # check if needed to open another window or if popup should go back
         if ( $Redirect && $Redirect eq '1' ) {
 
@@ -551,7 +547,7 @@ sub Run {
                     Subaction => 'FieldEdit',
                     Field     => $RedirectField,
                 },
-                ConfigJSON => $ConfigJSON,
+                ConfigJSON => $ActivityDialogConfig,
             );
         }
         else {
@@ -565,7 +561,7 @@ sub Run {
                 # close the popup
                 return $Self->_PopupResponse(
                     ClosePopup => 1,
-                    ConfigJSON => $ConfigJSON,
+                    ConfigJSON => $ActivityDialogConfig,
                 );
             }
             else {
@@ -574,7 +570,7 @@ sub Run {
                 return $Self->_PopupResponse(
                     Redirect   => 1,
                     Screen     => $LastScreen,
-                    ConfigJSON => $ConfigJSON,
+                    ConfigJSON => $ActivityDialogConfig,
                 );
             }
         }
@@ -588,6 +584,7 @@ sub Run {
         # close the popup
         return $Self->_PopupResponse(
             ClosePopup => 1,
+            ConfigJSON => '',
         );
     }
 
@@ -881,20 +878,19 @@ sub _ShowEdit {
         Class       => 'Modernize',
     );
 
-    # create ArticleType selection
-    $Param{ArticleTypeSelection} = $LayoutObject->BuildSelection(
-        Data => [
-            Translatable('note-internal'),
-            Translatable('note-external'),
-            Translatable('note-report'),
-            Translatable('phone'),
-            Translatable('fax'),
-            Translatable('sms'),
-            Translatable('webrequest'),
-        ],
-        SelectedValue => Translatable('note-internal'),
-        Name          => 'ArticleType',
-        ID            => 'ArticleType',
+    my @ChannelList = $Kernel::OM->Get('Kernel::System::CommunicationChannel')->ChannelList();
+
+    # Allow only Internal and Phone communication channels, this has to be hard coded at the moment.
+    my %Channels = map { $_->{ChannelName} => $_->{DisplayName} }
+        grep { $_->{ChannelName} eq 'Internal' || $_->{ChannelName} eq 'Phone' }
+        @ChannelList;
+
+    # create Communication Channel selection ()
+    $Param{CommunicationChannelSelection} = $LayoutObject->BuildSelection(
+        Data          => \%Channels,
+        SelectedValue => 'Internal',
+        Name          => 'CommunicationChannel',
+        ID            => 'CommunicationChannel',
         Sort          => 'Alphanumeric',
         Translation   => 1,
         Class         => 'Modernize',
@@ -1058,20 +1054,24 @@ sub _PopupResponse {
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
     if ( $Param{Redirect} && $Param{Redirect} eq 1 ) {
-        $LayoutObject->Block(
-            Name => 'Redirect',
-            Data => {
+
+        # send data to JS
+        $LayoutObject->AddJSData(
+            Key   => 'Redirect',
+            Value => {
                 ConfigJSON => $Param{ConfigJSON},
                 %{ $Param{Screen} },
-            },
+                }
         );
     }
     elsif ( $Param{ClosePopup} && $Param{ClosePopup} eq 1 ) {
-        $LayoutObject->Block(
-            Name => 'ClosePopup',
-            Data => {
+
+        # send data to JS
+        $LayoutObject->AddJSData(
+            Key   => 'ClosePopup',
+            Value => {
                 ConfigJSON => $Param{ConfigJSON},
-            },
+                }
         );
     }
 

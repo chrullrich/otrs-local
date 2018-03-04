@@ -15,6 +15,24 @@ use vars (qw($Self));
 # get selenium object
 my $Selenium = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
+my $CheckBreadcrumb = sub {
+
+    my %Param = @_;
+
+    my $BreadcrumbText = $Param{BreadcrumbText} || '';
+    my $Count = 1;
+
+    for my $BreadcrumbText ( 'System Email Addresses Management', $BreadcrumbText ) {
+        $Self->Is(
+            $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+            $BreadcrumbText,
+            "Breadcrumb text '$BreadcrumbText' is found on screen"
+        );
+
+        $Count++;
+    }
+};
+
 $Selenium->RunTest(
     sub {
 
@@ -73,6 +91,12 @@ $Selenium->RunTest(
         $Selenium->find_element( "table thead tr th", 'css' );
         $Selenium->find_element( "table tbody tr td", 'css' );
 
+        # check breadcrumb on Overview screen
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
+
         # click 'Add system address'
         $Selenium->find_element("//a[contains(\@href, \'Action=AdminSystemAddress;Subaction=Add')]")->VerifiedClick();
 
@@ -86,10 +110,12 @@ $Selenium->RunTest(
             $Element->is_displayed();
         }
 
-        # check client side validation
-        $Selenium->find_element( "#Name", 'css' )->clear();
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        # check breadcrumb on Add screen
+        $CheckBreadcrumb->( BreadcrumbText => 'Add System Email Address' );
 
+        # check client side validation
+        $Selenium->find_element( "#Name",   'css' )->clear();
+        $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
         $Self->Is(
             $Selenium->execute_script(
                 "return \$('#Name').hasClass('Error')"
@@ -106,7 +132,7 @@ $Selenium->RunTest(
         $Selenium->find_element( "#Realname", 'css' )->send_keys($SysAddRandom);
         $Selenium->execute_script("\$('#QueueID').val('$QueueID').trigger('redraw.InputField').trigger('change');");
         $Selenium->find_element( "#Comment", 'css' )->send_keys($SysAddComment);
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element( "#Submit",  'css' )->VerifiedClick();
 
         # check for created test SystemAddress
         $Self->True(
@@ -121,7 +147,7 @@ $Selenium->RunTest(
         $Selenium->find_element( "#Realname", 'css' )->send_keys($SysAddRandom);
         $Selenium->execute_script("\$('#QueueID').val('$QueueID').trigger('redraw.InputField').trigger('change');");
         $Selenium->find_element( "#Comment", 'css' )->send_keys($SysAddComment);
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element( "#Submit",  'css' )->VerifiedClick();
 
         # wait until page has finished loading
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#DialogButton1").length' );
@@ -229,6 +255,9 @@ $Selenium->RunTest(
             "QueueID $QueueID is updated with system address ID $SysAddList{$SysAddRandom}"
         );
 
+        # Check breadcrumb on Edit screen.
+        $CheckBreadcrumb->( BreadcrumbText => 'Edit System Email Address: ' . $SysAddRandom );
+
         # Refresh screen.
         $Selenium->VerifiedRefresh();
 
@@ -236,7 +265,7 @@ $Selenium->RunTest(
         $Selenium->find_element( "#Realname", 'css' )->send_keys(" Edited");
         $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
         $Selenium->find_element( "#Comment", 'css' )->clear();
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element( "#Submit",  'css' )->VerifiedClick();
 
         # check class of invalid SystemAddress in the overview table
         $Self->True(

@@ -17,7 +17,7 @@ use Kernel::System::VariableCheck qw(:all);
 # get needed objects
 my $ConfigObject            = $Kernel::OM->Get('Kernel::Config');
 my $SystemMaintenanceObject = $Kernel::OM->Get('Kernel::System::SystemMaintenance');
-my $TimeObject              = $Kernel::OM->Get('Kernel::System::Time');
+my $DateTimeObject          = $Kernel::OM->Create('Kernel::System::DateTime');
 
 # get helper object
 $Kernel::OM->ObjectParamAdd(
@@ -201,70 +201,23 @@ my @Tests = (
             UserID           => $UserID,
         },
     },
-    {
-        Name          => 'Test ' . $Index++ . '- LoginMessage equal 250 characters',
-        SuccessAdd    => 1,
-        SuccessUpdate => 0,
-        Add           => {
-            StartDate        => '2014-05-02 14:55:00',
-            StopDate         => '2014-05-02 16:01:00',
-            Comment          => 'Comment' . $RandomID,
-            LoginMessage     => 'a' x 250,
-            ShowLoginMessage => 1,
-            ValidID          => 1,
-            UserID           => $UserID,
-        },
-    },
-    {
-        Name          => 'Test ' . $Index++ . '- NotifyMessage equal 250 characters',
-        SuccessAdd    => 1,
-        SuccessUpdate => 0,
-        Add           => {
-            StartDate     => '2014-05-02 14:55:00',
-            StopDate      => '2014-05-02 16:01:00',
-            Comment       => 'Comment' . $RandomID,
-            NotifyMessage => 'a' x 250,
-            ValidID       => 1,
-            UserID        => $UserID,
-        },
-    },
-    {
-        Name          => 'Test ' . $Index++ . '- LoginMessage longer then 250 characters',
-        SuccessAdd    => 0,
-        SuccessUpdate => 0,
-        Add           => {
-            StartDate        => '2014-05-02 14:55:00',
-            StopDate         => '2014-05-02 16:01:00',
-            Comment          => 'Comment' . $RandomID,
-            LoginMessage     => 'a' x 251,
-            ShowLoginMessage => 1,
-            ValidID          => 1,
-            UserID           => $UserID,
-        },
-    },
-    {
-        Name          => 'Test ' . $Index++ . '- NotifyMessage longer then 250 characters',
-        SuccessAdd    => 0,
-        SuccessUpdate => 0,
-        Add           => {
-            StartDate     => '2014-05-02 14:55:00',
-            StopDate      => '2014-05-02 16:01:00',
-            Comment       => 'Comment' . $RandomID,
-            NotifyMessage => 'a' x 251,
-            ValidID       => 1,
-            UserID        => $UserID,
-        },
-    },
 );
-
+use Data::Dumper;
 my @SystemMaintenanceIDs;
 TEST:
 for my $Test (@Tests) {
 
     for my $Date (qw(StartDate StopDate)) {
-        my $ConvertionResult = $TimeObject->TimeStamp2SystemTime(
-            String => $Test->{Add}->{$Date},
+        my $ConvertionResult;
+        my $DateTimeObject = $Kernel::OM->Create(
+            'Kernel::System::DateTime',
+            ObjectParams => {
+                String => $Test->{Add}->{$Date},
+                }
         );
+        if ($DateTimeObject) {
+            $ConvertionResult = $DateTimeObject->ToEpoch();
+        }
         $Test->{Add}->{$Date} = $ConvertionResult || $Test->{Add}->{$Date};
     }
 
@@ -543,9 +496,12 @@ TEST:
 for my $Test (@Tests) {
 
     for my $Date (qw(StartDate StopDate)) {
-        my $ConvertionResult = $TimeObject->TimeStamp2SystemTime(
-            String => $Test->{$Date},
-        );
+        my $ConvertionResult = $Kernel::OM->Create(
+            'Kernel::System::DateTime',
+            ObjectParams => {
+                String => $Test->{$Date},
+                }
+        )->ToEpoch();
         $Test->{$Date} = $ConvertionResult || $Test->{$Date};
     }
 
@@ -558,10 +514,15 @@ for my $Test (@Tests) {
     );
 
     $Helper->FixedTimeSet(
-        $TimeObject->TimeStamp2SystemTime( String => $Test->{FixedTimeSet} ),
+        $Kernel::OM->Create(
+            'Kernel::System::DateTime',
+            ObjectParams => {
+                String => $Test->{FixedTimeSet}
+                }
+            )->ToEpoch(),
     );
 
-    my $IsComming = $Kernel::OM->Get('Kernel::System::SystemMaintenance')->SystemMaintenanceIsComming();
+    my $IsComming = $Kernel::OM->Get('Kernel::System::SystemMaintenance')->SystemMaintenanceIsComing();
 
     if ( $Test->{IsComming} ) {
 

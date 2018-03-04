@@ -8,26 +8,18 @@
 
 package Kernel::Output::HTML::NavBar::ModuleAdmin;
 
+use parent 'Kernel::Output::HTML::Base';
+
 use strict;
 use warnings;
 
 our @ObjectDependencies = (
     'Kernel::Config',
     'Kernel::Output::HTML::Layout',
+    'Kernel::System::Group',
+    'Kernel::System::JSON',
+    'Kernel::System::User',
 );
-
-sub new {
-    my ( $Type, %Param ) = @_;
-
-    # allocate new hash for object
-    my $Self = {};
-    bless( $Self, $Type );
-
-    # get UserID param
-    $Self->{UserID} = $Param{UserID} || die "Got no UserID!";
-
-    return $Self;
-}
 
 sub Run {
     my ( $Self, %Param ) = @_;
@@ -46,90 +38,145 @@ sub Run {
     $ManualVersion =~ m{^(\d{1,2}).+};
     $ManualVersion = $1;
 
+    # get all Frontend::Module
+    my %NavBarModule;
+
+    my $Config           = $ConfigObject->Get('Frontend::Module')           || {};
+    my $NavigationModule = $ConfigObject->Get('Frontend::NavigationModule') || {};
+
+    MODULE:
+    for my $Module ( sort keys %{$NavigationModule} ) {
+        my %Hash = %{ $NavigationModule->{$Module} };
+
+        next MODULE if !$Hash{Name};
+        next MODULE if !$Config->{$Module};    # If module is not registered, skip it.
+
+        if ( $Hash{Module} eq 'Kernel::Output::HTML::NavBar::ModuleAdmin' ) {
+
+            # check permissions (only show accessable modules)
+            my $Shown       = 0;
+            my $GroupObject = $Kernel::OM->Get('Kernel::System::Group');
+
+            for my $Permission (qw(GroupRo Group)) {
+
+                # no access restriction
+                if (
+                    ref $Hash{GroupRo} eq 'ARRAY'
+                    && !scalar @{ $Hash{GroupRo} }
+                    && ref $Hash{Group} eq 'ARRAY'
+                    && !scalar @{ $Hash{Group} }
+                    )
+                {
+                    $Shown = 1;
+                }
+
+                # array access restriction
+                elsif ( $Hash{$Permission} && ref $Hash{$Permission} eq 'ARRAY' ) {
+                    for my $Group ( @{ $Hash{$Permission} } ) {
+                        my $HasPermission = $GroupObject->PermissionCheck(
+                            UserID    => $Self->{UserID},
+                            GroupName => $Group,
+                            Type      => $Permission eq 'GroupRo' ? 'ro' : 'rw',
+                        );
+                        if ($HasPermission) {
+                            $Shown = 1;
+                        }
+                    }
+                }
+            }
+            next MODULE if !$Shown;
+
+            $NavBarModule{$Module} = {
+                'Frontend::Module' => $Module,
+                %Hash,
+            };
+        }
+    }
+
+    # get modules which were marked as favorite by the current user
+    my %UserPreferences = $Kernel::OM->Get('Kernel::System::User')->GetPreferences(
+        UserID => $Self->{UserID},
+    );
+    my @Favourites;
+    my @FavouriteModules;
+    my $PrefFavourites = $Kernel::OM->Get('Kernel::System::JSON')->Decode(
+        Data => $UserPreferences{AdminNavigationBarFavourites},
+    ) || [];
+
+    @Favourites = sort {
+        $LayoutObject->{LanguageObject}->Translate( $a->{Name} )
+            cmp $LayoutObject->{LanguageObject}->Translate( $b->{Name} )
+    } @Favourites;
+
+    my @ModuleGroups;
+    my $ModuleGroupsConfig = $ConfigObject->Get('Frontend::AdminModuleGroups');
+
+    # get all registered groups
+    for my $Group ( sort keys %{$ModuleGroupsConfig} ) {
+        for my $Key ( sort keys %{ $ModuleGroupsConfig->{$Group} } ) {
+            push @ModuleGroups, {
+                'Key'   => $Key,
+                'Order' => $ModuleGroupsConfig->{$Group}->{$Key}->{Order},
+                'Title' => $ModuleGroupsConfig->{$Group}->{$Key}->{Title},
+            };
+        }
+    }
+
+    # sort groups by order number
+    @ModuleGroups = sort { $a->{Order} <=> $b->{Order} } @ModuleGroups;
+
+    my %Modules;
+    ITEMS:
+    for my $Module ( sort keys %NavBarModule ) {
+
+        # dont show the admin overview as a tile
+        next ITEMS if ( $NavBarModule{$Module}->{'Link'} && $NavBarModule{$Module}->{'Link'} eq 'Action=Admin' );
+
+        if ( grep { $_ eq $Module } @{$PrefFavourites} ) {
+            push @Favourites, $NavBarModule{$Module};
+            $NavBarModule{$Module}->{IsFavourite} = 1;
+        }
+
+        # add the item to its Block
+        my $Block = $NavBarModule{$Module}->{'Block'} || 'Miscellaneous';
+        if ( !grep { $_->{Key} eq $Block } @ModuleGroups ) {
+            $Block = 'Miscellaneous';
+        }
+        push @{ $Modules{$Block} }, $NavBarModule{$Module};
+    }
+
+    @Favourites = sort {
+        $LayoutObject->{LanguageObject}->Translate( $a->{Name} )
+            cmp
+            $LayoutObject->{LanguageObject}->Translate( $b->{Name} )
+    } @Favourites;
+
+    for my $Favourite (@Favourites) {
+        push @FavouriteModules, $Favourite->{'Frontend::Module'};
+    }
+
+    # Sort the items within the groups.
+    for my $Block ( sort keys %Modules ) {
+        for my $Entry ( @{ $Modules{$Block} } ) {
+            $Entry->{NameTranslated} = $LayoutObject->{LanguageObject}->Translate( $Entry->{Name} );
+        }
+        @{ $Modules{$Block} } = sort { $a->{NameTranslated} cmp $b->{NameTranslated} } @{ $Modules{$Block} };
+    }
+
     $LayoutObject->Block(
         Name => 'AdminNavBar',
         Data => {
             ManualVersion => $ManualVersion,
+            Items         => \%Modules,
+            Groups        => \@ModuleGroups,
+            Favourites    => \@Favourites,
         },
     );
 
-    # get all Frontend::Module
-    my %NavBarModule;
-    my $FrontendModuleConfig = $ConfigObject->Get('Frontend::Module');
-    MODULE:
-    for my $Module ( sort keys %{$FrontendModuleConfig} ) {
-        my %Hash = %{ $FrontendModuleConfig->{$Module} };
-        if (
-            $Hash{NavBarModule}
-            && $Hash{NavBarModule}->{Module} eq 'Kernel::Output::HTML::NavBar::ModuleAdmin'
-            )
-        {
-
-            # check permissions (only show accessable modules)
-            my $Shown = 0;
-            for my $Permission (qw(GroupRo Group)) {
-
-                # array access restriction
-                if ( $Hash{$Permission} && ref $Hash{$Permission} eq 'ARRAY' ) {
-                    for ( @{ $Hash{$Permission} } ) {
-                        my $Key = 'UserIs' . $Permission . '[' . $_ . ']';
-                        if (
-                            $LayoutObject->{$Key}
-                            && $LayoutObject->{$Key} eq 'Yes'
-                            )
-                        {
-                            $Shown = 1;
-                        }
-
-                    }
-                }
-
-                # scalar access restriction
-                elsif ( $Hash{$Permission} ) {
-                    my $Key = 'UserIs' . $Permission . '[' . $Hash{$Permission} . ']';
-                    if ( $LayoutObject->{$Key} && $LayoutObject->{$Key} eq 'Yes' ) {
-                        $Shown = 1;
-                    }
-                }
-
-                # no access restriction
-                elsif ( !$Hash{GroupRo} && !$Hash{Group} ) {
-                    $Shown = 1;
-                }
-
-            }
-            next MODULE if !$Shown;
-
-            my $Key = sprintf( "%07d", $Hash{NavBarModule}->{Prio} || 0 );
-            COUNT:
-            for ( 1 .. 51 ) {
-                if ( $NavBarModule{$Key} ) {
-                    $Hash{NavBarModule}->{Prio}++;
-                    $Key = sprintf( "%07d", $Hash{NavBarModule}->{Prio} );
-                }
-                if ( !$NavBarModule{$Key} ) {
-                    last COUNT;
-                }
-            }
-            $NavBarModule{$Key} = {
-                'Frontend::Module' => $Module,
-                %Hash,
-                %{ $Hash{NavBarModule} },
-            };
-
-        }
-    }
-    my %Count;
-    for my $Module ( sort keys %NavBarModule ) {
-        my $BlockName = $NavBarModule{$Module}->{NavBarModule}->{Block} || 'Item';
-        $LayoutObject->Block(
-            Name => $BlockName,
-            Data => $NavBarModule{$Module},
-        );
-        if ( $Count{$BlockName}++ % 2 ) {
-            $LayoutObject->Block( Name => $BlockName . 'Clear' );
-        }
-    }
+    $LayoutObject->AddJSData(
+        Key   => 'Favourites',
+        Value => \@FavouriteModules,
+    );
 
     my $Output = $LayoutObject->Output(
         TemplateFile => 'AdminNavigationBar',

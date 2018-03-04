@@ -115,12 +115,14 @@ $Selenium->RunTest(
         );
 
         # Check dynamic field text.
+        my $ValueTextShortened = substr $ValueText, 0, 20;
+        $ValueTextShortened .= '[...]';
         $Self->Is(
             $Selenium->execute_script(
                 "return \$('#ZoomSidebar li span.Key:contains($DynamicFieldName)').siblings('span').find('a.DynamicFieldLink').text();"
             ),
-            $ValueText,
-            "Dynamic field text '$ValueText' is correct",
+            $ValueTextShortened,
+            "Dynamic field text '$ValueTextShortened' is correct",
         );
 
         # Check dynamic field link.

@@ -11,7 +11,7 @@ package Kernel::System::SupportDataCollector::Plugin::OTRS::PackageDeployment;
 use strict;
 use warnings;
 
-use base qw(Kernel::System::SupportDataCollector::PluginBase);
+use parent qw(Kernel::System::SupportDataCollector::PluginBase);
 
 use Kernel::Language qw(Translatable);
 
@@ -63,12 +63,12 @@ sub Run {
             String => $PackageContent,
         );
 
-        my $CheckFrameworkOk = $PackageObject->_CheckFramework(
+        my %CheckFramework = $PackageObject->AnalyzePackageFrameworkRequirements(
             Framework => $PackageStructure{Framework},
             NoLog     => 1,
         );
 
-        if ( !$CheckFrameworkOk ) {
+        if ( !$CheckFramework{Success} ) {
             push @WrongFrameworkVersion, "$Package->{Name}->{Content} $Package->{Version}->{Content}";
         }
     }

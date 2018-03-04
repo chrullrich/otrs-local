@@ -6,11 +6,17 @@
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
-[% RenderBlockStart("RichText") %]
-[% InsertTemplate("RichTextEditor.tt") %]
-[% RenderBlockEnd("RichText") %]
 <div class="MainBox ARIARoleMain LayoutFixedSidebar SidebarFirst">
-    <h1>[% Translate("Admin Notification") | html %]</h1>
+    <h1 class="InvisibleText">[% Translate("Admin Message") | html %]</h1>
+
+    [% BreadcrumbPath = [
+            {
+                Name => Translate('Admin Message'),
+            },
+        ]
+    %]
+
+    [% INCLUDE "Breadcrumb.tt" Path = BreadcrumbPath %]
 
     <div class="SidebarColumn">
         <div class="WidgetSimple">
@@ -39,7 +45,7 @@
 [% RenderBlockEnd("Sent") %]
 
 [% RenderBlockStart("Form") %]
-                <form action="[% Env("CGIHandle") %]" method="post" name="compose" class="Validate PreventMultipleSubmits">
+                <form action="[% Env("CGIHandle") %]" method="post" name="compose" class="Validate">
                     <input type="hidden" name="Action" value="[% Env("Action") %]"/>
                     <input type="hidden" name="Subaction" value="Send"/>
 

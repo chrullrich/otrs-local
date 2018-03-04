@@ -6,6 +6,7 @@
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
+## no critic (Modules::RequireExplicitPackage)
 use strict;
 use warnings;
 use utf8;
@@ -56,10 +57,8 @@ $Selenium->RunTest(
             }
         }
 
-        my $Home = $ConfigObject->Get('Home');
-
         # create test PGP path and set it in sysConfig
-        my $PGPPath = $Home . '/var/tmp/pgp' . $Helper->GetRandomID();
+        my $PGPPath = $ConfigObject->Get('Home') . "/var/tmp/pgp";
         mkpath( [$PGPPath], 0, 0770 );    ## no critic
 
         $Helper->ConfigSettingChange(
@@ -86,18 +85,24 @@ $Selenium->RunTest(
         $Selenium->VerifiedGet("${ScriptAlias}customer.pl?Action=CustomerPreferences");
 
         # change customer PGP key preference
-        my $Location = $Home . '/scripts/test/sample/Crypt/PGPPrivateKey-1.asc';
+        my $Location = $ConfigObject->Get('Home')
+            . "/scripts/test/sample/Crypt/PGPPrivateKey-1.asc";
         $Selenium->find_element( "#UserPGPKey",       'css' )->send_keys($Location);
         $Selenium->find_element( "#UserPGPKeyUpdate", 'css' )->VerifiedClick();
 
-        # Check if PGP key was uploaded correctly.
+        # check for update PGP preference key on screen
+        my $Success = 0;
+        if ( $Selenium->get_page_source() =~ /(1024-38677C3B\.pub)/xms ) {
+            $Success = 1 if $1;
+        }
+
         $Self->True(
-            index( $Selenium->get_page_source(), '38677C3B' ) > -1,
+            $Success,
             'Customer preference PGP key - updated'
-        );
+        ) || die "Imported string not found";
 
         # remove test PGP path
-        my $Success = rmtree( [$PGPPath] );
+        $Success = rmtree( [$PGPPath] );
         $Self->True(
             $Success,
             "Directory deleted - '$PGPPath'",

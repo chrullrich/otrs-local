@@ -13,7 +13,7 @@ package Kernel::System::Console::Command::Maint::PostMaster::MailAccountFetch;
 use strict;
 use warnings;
 
-use base qw(Kernel::System::Console::BaseCommand);
+use parent qw(Kernel::System::Console::BaseCommand);
 
 use POSIX ":sys_wait_h";
 use Time::HiRes qw(sleep);
@@ -50,7 +50,7 @@ sub Configure {
     $Self->AddOption(
         Name => 'timeout',
         Description =>
-            "Timeout in seconds to kill the child process, that does the mail fetching (Default: 600 seconds)",
+            "Timeout in seconds to kill the child process, that does the mail fetching (default: 600).",
         Required   => 0,
         HasValue   => 1,
         ValueRegex => qr{^\d+$}smx,

@@ -10,13 +10,13 @@ use strict;
 use warnings;
 use vars (qw($Self));
 
-use Kernel::System::Time;
+use Kernel::System::Valid;
 use Kernel::System::ObjectManager;
 
 $Self->Is(
-    $Kernel::OM->Get('Kernel::System::UnitTest::Driver'),
+    $Kernel::OM->Get('Kernel::System::UnitTest'),
     $Self,
-    "Global OM returns $Self as 'Kernel::System::UnitTest::Driver'",
+    "Global OM returns $Self as 'Kernel::System::UnitTest'",
 );
 
 local $Kernel::OM = Kernel::System::ObjectManager->new();
@@ -24,38 +24,38 @@ local $Kernel::OM = Kernel::System::ObjectManager->new();
 $Self->True( $Kernel::OM, 'Could build object manager' );
 
 $Self->False(
-    exists $Kernel::OM->{Objects}->{'Kernel::System::Time'},
-    'Kernel::System::Time was not loaded yet',
+    exists $Kernel::OM->{Objects}->{'Kernel::System::Valid'},
+    'Kernel::System::Valid was not loaded yet',
 );
 
-my $TimeObject = Kernel::System::Time->new();
+my $ValidObject = Kernel::System::Valid->new();
 
 $Self->True(
     $Kernel::OM->ObjectInstanceRegister(
-        Package      => 'Kernel::System::Time',
-        Object       => $TimeObject,
+        Package      => 'Kernel::System::Valid',
+        Object       => $ValidObject,
         Dependencies => [],
     ),
-    'Registered TimeObject',
+    'Registered ValidObject',
 );
 
 $Self->Is(
-    $Kernel::OM->Get('Kernel::System::Time'),
-    $TimeObject,
-    "OM returns the original TimeObject",
+    $Kernel::OM->Get('Kernel::System::Valid'),
+    $ValidObject,
+    "OM returns the original ValidObject",
 );
 
 $Kernel::OM->ObjectsDiscard();
 
 $Self->True(
-    $TimeObject,
-    "TimeObject is still alive after ObjectsDiscard()",
+    $ValidObject,
+    "ValidObject is still alive after ObjectsDiscard()",
 );
 
 $Self->IsNot(
-    $Kernel::OM->Get('Kernel::System::Time'),
-    $TimeObject,
-    "OM returns its own TimeObject",
+    $Kernel::OM->Get('Kernel::System::Valid'),
+    $ValidObject,
+    "OM returns its own ValidObject",
 );
 
 1;

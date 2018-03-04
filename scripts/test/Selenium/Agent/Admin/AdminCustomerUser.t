@@ -93,6 +93,12 @@ $Selenium->RunTest(
         $Selenium->find_element( "#Source",           'css' );
         $Selenium->find_element( "#Search",           'css' );
 
+        # check breadcrumb on Overview screen
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
+
         # click 'Add customer'
         $Selenium->find_element( "button.CallForAction", 'css' )->VerifiedClick();
 
@@ -106,10 +112,22 @@ $Selenium->RunTest(
             $Element->is_displayed();
         }
 
+        # check breadcrumb on Add screen
+        my $Count = 1;
+        my $IsLinkedBreadcrumbText;
+        for my $BreadcrumbText ( 'Customer User Management', 'Add Customer User' ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
+
         # check client side validation
         $Selenium->find_element( "#UserFirstname", 'css' )->clear();
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
-
+        $Selenium->find_element( "#Submit",        'css' )->VerifiedClick();
         $Self->Is(
             $Selenium->execute_script(
                 "return \$('#UserFirstname').hasClass('Error')"
@@ -132,7 +150,13 @@ $Selenium->RunTest(
         $Selenium->execute_script(
             "\$('#UserCustomerID').val('$RandomID').trigger('redraw.InputField').trigger('change');"
         );
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+
+        # Change one preference entry, to check if preferences fields exists on the page.
+        $Selenium->execute_script(
+            "\$('#UserTimeZone').val('Europe/Berlin').trigger('redraw.InputField').trigger('change');"
+        );
+
+        $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
         # check overview page
         $Self->True(
@@ -140,22 +164,56 @@ $Selenium->RunTest(
             "$RandomID found on page",
         );
 
-        # create another test customer user for filter search test
+        #check is there notification after customer user is added
+        my $Notification = "Customer $RandomID added ( New phone ticket - New email ticket )!";
+        $Self->True(
+            $Selenium->execute_script("return \$('.MessageBox.Notice p:contains($Notification)').length"),
+            "$Notification - notification is found."
+        );
+
+        # Create another test customer user for filter search test (with CustomerID as a auto complete field).
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'AdminCustomerUser::UseAutoComplete',
+            Value => 1,
+        );
+
         $Selenium->find_element( "button.CallForAction", 'css' )->VerifiedClick();
+
+        # Check add customer screen if auto complete is activated
+        my $AutoCompleteElement = $Selenium->find_element( '.CustomerAutoCompleteSimple', 'css' );
+        $AutoCompleteElement->is_enabled();
+        $AutoCompleteElement->is_displayed();
 
         $Selenium->find_element( "#UserFirstname", 'css' )->send_keys($RandomID2);
         $Selenium->find_element( "#UserLastname",  'css' )->send_keys($RandomID2);
         $Selenium->find_element( "#UserLogin",     'css' )->send_keys($RandomID2);
         $Selenium->find_element( "#UserEmail",     'css' )->send_keys( $RandomID2 . "\@localhost.com" );
-        $Selenium->execute_script(
-            "\$('#UserCustomerID').val('$RandomID2').trigger('redraw.InputField').trigger('change');"
+
+        # Try to add a not existing CustomerID
+        $Selenium->find_element( "#UserCustomerID", 'css' )->send_keys( $RandomID2 . '-wrong' );
+        $Selenium->find_element( "#Submit",         'css' )->VerifiedClick();
+
+        # Confirm JS error.
+        $Selenium->find_element( "#DialogButton1", 'css' )->click();
+
+        $Selenium->find_element( "#UserCustomerID", 'css' )->clear();
+        $Selenium->find_element( "#UserCustomerID", 'css' )->send_keys($RandomID2);
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("li.ui-menu-item:visible").length' );
+        $Selenium->execute_script("\$('li.ui-menu-item:contains($RandomID2)').click()");
+
+        $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
+
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'AdminCustomerUser::UseAutoComplete',
+            Value => 0,
         );
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
 
         # test search filter only for test Customer users
-        $Selenium->find_element( "#Search", 'css' )->clear();
-        $Selenium->find_element( "#Search", 'css' )->send_keys('TestCustomer');
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+        $Selenium->find_element( "#Search",           'css' )->clear();
+        $Selenium->find_element( "#Search",           'css' )->send_keys('TestCustomer');
+        $Selenium->find_element( ".SearchBox button", 'css' )->VerifiedClick();
 
         # check for another customer user
         $Self->True(
@@ -164,9 +222,9 @@ $Selenium->RunTest(
         );
 
         # test search filter by customer user $RandomID
-        $Selenium->find_element( "#Search", 'css' )->clear();
-        $Selenium->find_element( "#Search", 'css' )->send_keys($RandomID);
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+        $Selenium->find_element( "#Search",           'css' )->clear();
+        $Selenium->find_element( "#Search",           'css' )->send_keys($RandomID);
+        $Selenium->find_element( ".SearchBox button", 'css' )->VerifiedClick();
 
         $Self->True(
             index( $Selenium->get_page_source(), $RandomID ) > -1,
@@ -206,15 +264,39 @@ $Selenium->RunTest(
             $RandomID,
             "#UserCustomerID updated value",
         );
+        $Self->Is(
+            $Selenium->find_element( '#UserTimeZone', 'css' )->get_value(),
+            'Europe/Berlin',
+            "#UserTimeZone updated value",
+        );
+
+        # check breadcrumb on Edit screen
+        $Count = 1;
+        for my $BreadcrumbText ( 'Customer User Management', 'Edit Customer User: ' . $RandomID ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
 
         # set test customer user to invalid
         $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+        $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
+
+        # check is there notification after customer user is updated
+        $Notification = "Customer user updated!";
+        $Self->True(
+            $Selenium->execute_script("return \$('.MessageBox.Notice p:contains($Notification)').length"),
+            "$Notification - notification is found."
+        );
 
         # test search filter
-        $Selenium->find_element( "#Search", 'css' )->clear();
-        $Selenium->find_element( "#Search", 'css' )->send_keys($RandomID);
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+        $Selenium->find_element( "#Search",           'css' )->clear();
+        $Selenium->find_element( "#Search",           'css' )->send_keys($RandomID);
+        $Selenium->find_element( ".SearchBox button", 'css' )->VerifiedClick();
 
         # check class of invalid customer user in the overview table
         $Self->True(
@@ -222,37 +304,132 @@ $Selenium->RunTest(
             "There is a class 'Invalid' for test Customer User",
         );
 
+        # navigate to AgentTicketPhone
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketPhone");
+
+        # click on '[ Customer User ]' to test customer user creation from iframe
+        $Selenium->find_element( "#OptionCustomer", 'css' )->click();
+        $Selenium->switch_to_frame( $Selenium->find_element( '.TextOption', 'css' ) );
+
+        # click to 'Add customer user'
+        $Selenium->WaitFor(
+            JavaScript =>
+                'return typeof(Core) == "object" && typeof(Core.App) == "object" && Core.App.PageLoadComplete'
+        );
+        $Selenium->find_element("//button[\@class='CallForAction Fullsize Center']")->VerifiedClick();
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#UserFirstname").length' );
+
+        # create new test customer user
+        my $RandomID3 = 'TestCustomer' . $Helper->GetRandomID();
+        my $UserEmail = $RandomID3 . "\@localhost.com";
+        $Selenium->find_element( "#UserFirstname", 'css' )->send_keys($RandomID3);
+        $Selenium->find_element( "#UserLastname",  'css' )->send_keys($RandomID3);
+        $Selenium->find_element( "#UserLogin",     'css' )->send_keys($RandomID3);
+        $Selenium->find_element( "#UserEmail",     'css' )->send_keys( $RandomID3 . "\@localhost.com" );
+        $Selenium->execute_script(
+            "\$('#UserCustomerID').val('$RandomID').trigger('redraw.InputField').trigger('change');"
+        );
+        $Selenium->execute_script("\$('#Submit').click();");
+
+        # return focus back on AgentTicketPhone window
+        $Selenium->switch_to_frame();
+
+        # verify created customer user is added directly in AgentTicketPhone form
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#CustomerID").val().length' );
+        $Self->Is(
+            $Selenium->find_element( "#CustomerID", 'css' )->get_value(),
+            $RandomID,
+            "Test customer user $RandomID3 is successfully created from AgentTicketPhone screen"
+        );
+
+        # verify created customer user is added directly in AgentTicketPhone form
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#CustomerID").val().length' );
+        $Self->Is(
+            $Selenium->find_element( "#CustomerID", 'css' )->get_value(),
+            $RandomID,
+            "Test customer user $RandomID3 is successfully created from AgentTicketPhone screen"
+        );
+
+        # Change the CustomerID for one CustomerUser directly to non existing CustomerID,
+        #   to check if the CustomerUser can be changed.
+        my $CustomerUserObject = $Kernel::OM->Get('Kernel::System::CustomerUser');
+        my %CustomerUserData   = $CustomerUserObject->CustomerUserDataGet(
+            User => $RandomID2,
+        );
+
+        $CustomerUserObject->CustomerUserUpdate(
+            %CustomerUserData,
+            UserCustomerID => $RandomID2 . '-not-existing',
+            ID             => $RandomID2,
+            UserID         => 1,
+        );
+
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminCustomerUser;Subaction=Change;ID=$RandomID2");
+
+        $Self->Is(
+            $Selenium->find_element( '#UserCustomerID', 'css' )->get_value(),
+            $RandomID2 . '-not-existing',
+            "#UserCustomerID updated value",
+        );
+
+        $Selenium->find_element( "#UserFirstname", 'css' )->send_keys('-edit');
+        $Selenium->find_element( "#UserLastname",  'css' )->send_keys('-edit');
+        $Selenium->find_element( "#Submit",        'css' )->VerifiedClick();
+
+        # test search filter only for test Customer users
+        $Selenium->find_element( "#Search",           'css' )->clear();
+        $Selenium->find_element( "#Search",           'css' )->send_keys($RandomID2);
+        $Selenium->find_element( ".SearchBox button", 'css' )->VerifiedClick();
+
+        # check for another customer user
+        $Self->True(
+            index( $Selenium->get_page_source(), $RandomID2 ) > -1,
+            "$RandomID2 found on page",
+        );
+
+        $Selenium->find_element( $RandomID2, 'link_text' )->VerifiedClick();
+
+        $Self->Is(
+            $Selenium->find_element( '#UserFirstname', 'css' )->get_value(),
+            $RandomID2 . '-edit',
+            "#UserFirstname updated value",
+        );
+        $Self->Is(
+            $Selenium->find_element( '#UserLastname', 'css' )->get_value(),
+            $RandomID2 . '-edit',
+            "#UserLastname updated value",
+        );
+
         # get DB object
         my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
 
         # delete created test customer user and customer company
-        for my $CustomerID ( $RandomID, $RandomID2 ) {
+        for my $ID ( $RandomID, $RandomID2, $RandomID3 ) {
             my $Success = $DBObject->Do(
-                SQL  => "DELETE FROM customer_user WHERE customer_id = ?",
-                Bind => [ \$CustomerID ],
+                SQL  => "DELETE FROM customer_user WHERE login = ?",
+                Bind => [ \$ID ],
             );
             $Self->True(
                 $Success,
-                "Deleted Customers - $CustomerID",
+                "Deleted Customers - $ID",
             );
 
             $Success = $DBObject->Do(
                 SQL  => "DELETE FROM customer_company WHERE customer_id = ?",
-                Bind => [ \$CustomerID ],
+                Bind => [ \$ID ],
             );
             $Self->True(
                 $Success,
-                "Deleted CustomerUser - $CustomerID",
+                "Deleted CustomerUser - $ID",
             );
         }
 
         # make sure the cache is correct
-        for my $Cache (qw(CustomerCompany CustomerUser)) {
+        for my $Cache (qw(CustomerCompany CustomerUser CustomerUser_CustomerSearch)) {
             $Kernel::OM->Get('Kernel::System::Cache')->CleanUp(
                 Type => $Cache,
             );
         }
-
     }
 
 );

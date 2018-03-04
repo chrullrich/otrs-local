@@ -31,9 +31,11 @@ our @ObjectDependencies = (
     'Kernel::System::State',
     'Kernel::System::Stats',
     'Kernel::System::Ticket',
-    'Kernel::System::Time',
+    'Kernel::System::Ticket::Article',
+    'Kernel::System::DateTime',
     'Kernel::System::Type',
     'Kernel::System::User',
+    'Kernel::Output::HTML::Layout',
 );
 
 sub new {
@@ -170,7 +172,6 @@ sub GetObjectAttributes {
             Values           => \%TicketAttributes,
             Sort             => 'IndividualKey',
             SortIndividual   => $Self->_SortedAttributes(),
-
         },
         {
             Name             => Translatable('Order by'),
@@ -313,7 +314,7 @@ sub GetObjectAttributes {
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
-            Element          => 'From',
+            Element          => 'MIMEBase_From',
             Block            => 'InputField',
         },
         {
@@ -321,7 +322,7 @@ sub GetObjectAttributes {
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
-            Element          => 'To',
+            Element          => 'MIMEBase_To',
             Block            => 'InputField',
         },
         {
@@ -329,7 +330,7 @@ sub GetObjectAttributes {
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
-            Element          => 'Cc',
+            Element          => 'MIMEBase_Cc',
             Block            => 'InputField',
         },
         {
@@ -337,7 +338,7 @@ sub GetObjectAttributes {
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
-            Element          => 'Subject',
+            Element          => 'MIMEBase_Subject',
             Block            => 'InputField',
         },
         {
@@ -345,7 +346,7 @@ sub GetObjectAttributes {
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
-            Element          => 'Body',
+            Element          => 'MIMEBase_Body',
             Block            => 'InputField',
         },
         {
@@ -385,6 +386,19 @@ sub GetObjectAttributes {
             Values           => {
                 TimeStart => 'TicketChangeTimeNewerDate',
                 TimeStop  => 'TicketChangeTimeOlderDate',
+            },
+        },
+        {
+            Name             => Translatable('Pending until time'),
+            UseAsXvalue      => 0,
+            UseAsValueSeries => 0,
+            UseAsRestriction => 1,
+            Element          => 'PendingUntilTime',
+            TimePeriodFormat => 'DateInputFormat',                    # 'DateInputFormatLong',
+            Block            => 'Time',
+            Values           => {
+                TimeStart => 'TicketPendingTimeNewerDate',
+                TimeStop  => 'TicketPendingTimeOlderDate',
             },
         },
         {
@@ -585,7 +599,7 @@ sub GetObjectAttributes {
         }
 
         my %ObjectAttribute = (
-            Name             => Translatable('CustomerID'),
+            Name             => Translatable('Customer ID'),
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
@@ -636,7 +650,7 @@ sub GetObjectAttributes {
         }
 
         my %ObjectAttribute = (
-            Name             => Translatable('CustomerUserLogin'),
+            Name             => Translatable('Assigned to Customer User Login'),
             UseAsXvalue      => 0,
             UseAsValueSeries => 0,
             UseAsRestriction => 1,
@@ -649,9 +663,9 @@ sub GetObjectAttributes {
     }
     else {
 
-        my @CustomerIDAttributes = (
+        my @CustomerUserAttributes = (
             {
-                Name             => Translatable('CustomerUserLogin (complex search)'),
+                Name             => Translatable('Assigned to Customer User Login (complex search)'),
                 UseAsXvalue      => 0,
                 UseAsValueSeries => 0,
                 UseAsRestriction => 1,
@@ -659,17 +673,36 @@ sub GetObjectAttributes {
                 Block            => 'InputField',
             },
             {
-                Name             => Translatable('CustomerUserLogin (exact match)'),
-                UseAsXvalue      => 0,
-                UseAsValueSeries => 0,
-                UseAsRestriction => 1,
-                Element          => 'CustomerUserLoginRaw',
-                Block            => 'InputField',
+                Name               => Translatable('Assigned to Customer User Login (exact match)'),
+                UseAsXvalue        => 0,
+                UseAsValueSeries   => 0,
+                UseAsRestriction   => 1,
+                Element            => 'CustomerUserLoginRaw',
+                Block              => 'InputField',
+                CSSClass           => 'CustomerAutoCompleteSimple',
+                HTMLDataAttributes => {
+                    'customer-search-type' => 'CustomerUser',
+                },
             },
         );
 
-        push @ObjectAttributes, @CustomerIDAttributes;
+        push @ObjectAttributes, @CustomerUserAttributes;
     }
+
+    # Add always the field for the customer user login accessible tickets as auto complete field.
+    my %ObjectAttribute = (
+        Name               => Translatable('Accessible to Customer User Login (exact match)'),
+        UseAsXvalue        => 0,
+        UseAsValueSeries   => 0,
+        UseAsRestriction   => 1,
+        Element            => 'CustomerUserID',
+        Block              => 'InputField',
+        CSSClass           => 'CustomerAutoCompleteSimple',
+        HTMLDataAttributes => {
+            'customer-search-type' => 'CustomerUser',
+        },
+    );
+    push @ObjectAttributes, \%ObjectAttribute;
 
     if ( $ConfigObject->Get('Ticket::ArchiveSystem') ) {
 
@@ -965,14 +998,14 @@ sub GetStatTable {
     my %StateList = $StateObject->StateList( UserID => 1 );
 
     # get time object
-    my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
+    my $DateTimeObject = $Kernel::OM->Create('Kernel::System::DateTime');
 
     # UnixTimeStart & End:
     # The Time periode the historic search is executed
     # if no time periode has been selected we take
     # Unixtime 0 as StartTime and SystemTime as EndTime
     my $UnixTimeStart = 0;
-    my $UnixTimeEnd   = $TimeObject->SystemTime();
+    my $UnixTimeEnd   = $DateTimeObject->ToEpoch();
 
     if ( $Kernel::OM->Get('Kernel::Config')->Get('Ticket::ArchiveSystem') ) {
         $Param{Restrictions}->{SearchInArchive} ||= '';
@@ -1005,9 +1038,9 @@ sub GetStatTable {
             Limit                    => 100_000_000,
         );
         %OlderTicketsExclude = map { $_ => 1 } @OldToExclude;
-        $UnixTimeStart = $TimeObject->TimeStamp2SystemTime(
-            String => $Param{Restrictions}->{HistoricTimeRangeTimeNewerDate}
-        );
+
+        $DateTimeObject->Set( String => $Param{Restrictions}->{HistoricTimeRangeTimeNewerDate} );
+        $UnixTimeStart = $DateTimeObject->ToEpoch();
     }
     if ( !$Preview && $Param{Restrictions}->{HistoricTimeRangeTimeOlderDate} ) {
 
@@ -1024,9 +1057,9 @@ sub GetStatTable {
             Limit                     => 100_000_000,
         );
         %NewerTicketsExclude = map { $_ => 1 } @NewToExclude;
-        $UnixTimeEnd = $TimeObject->TimeStamp2SystemTime(
-            String => $Param{Restrictions}->{HistoricTimeRangeTimeOlderDate}
-        );
+
+        $DateTimeObject->Set( String => $Param{Restrictions}->{HistoricTimeRangeTimeOlderDate} );
+        $UnixTimeEnd = $DateTimeObject->ToEpoch();
     }
 
     # get the involved tickets
@@ -1079,7 +1112,7 @@ sub GetStatTable {
         )
     {
 
-        my $SQLTicketIDInCondition = $Self->_QueryInCondition(
+        my $SQLTicketIDInCondition = $DBObject->QueryInCondition(
             Key       => 'ticket_id',
             Values    => \@TicketIDs,
             QuoteType => 'Integer',
@@ -1170,12 +1203,10 @@ sub GetStatTable {
         # fetch the result
         while ( my @Row = $DBObject->FetchrowArray() ) {
             if ( $Row[0] ) {
-                my $TicketID    = $Row[0];
-                my $StateID     = $Row[1];
-                my $RowTime     = $Row[2];
-                my $RowTimeUnix = $TimeObject->TimeStamp2SystemTime(
-                    String => $Row[2],
-                );
+                my $TicketID = $Row[0];
+                my $StateID  = $Row[1];
+                $DateTimeObject->Set( String => $Row[2] );
+                my $RowTimeUnix = $DateTimeObject->ToEpoch();
 
                 # Entries before StartTime
                 if ( $RowTimeUnix < $UnixTimeStart ) {
@@ -1252,6 +1283,8 @@ sub GetStatTable {
         }
     }
 
+    my $StatsObject = $Kernel::OM->Get('Kernel::System::Stats');
+
     # generate the ticket list
     my @StatArray;
     for my $TicketID (@TicketIDs) {
@@ -1263,6 +1296,11 @@ sub GetStatTable {
             DynamicFields => $NeedDynamicFields,
         );
 
+        # Format Ticket 'Age' param into human readable format.
+        $Ticket{Age} = $StatsObject->_HumanReadableAgeGet(
+            Age => $Ticket{Age},
+        );
+
         # add the accounted time if needed
         if ( $TicketAttributes{AccountedTime} ) {
             $Ticket{AccountedTime} = $TicketObject->TicketAccountedTimeGet( TicketID => $TicketID );
@@ -1270,7 +1308,10 @@ sub GetStatTable {
 
         # add the number of articles if needed
         if ( $TicketAttributes{NumberOfArticles} ) {
-            $Ticket{NumberOfArticles} = $TicketObject->ArticleCount( TicketID => $TicketID );
+            $Ticket{NumberOfArticles} = $Kernel::OM->Get('Kernel::System::Ticket::Article')->ArticleList(
+                TicketID => $TicketID,
+                UserID   => 1
+            );
         }
 
         $Ticket{Closed}                      ||= '';
@@ -1329,6 +1370,19 @@ sub GetStatTable {
 
                         # change raw value from ticket to a plain text value
                         $Ticket{$ParameterName} = $ValueStrg->{Value};
+
+                        ## nofilter(TidyAll::Plugin::OTRS::Perl::LayoutObject)
+                        if ( $DynamicFieldConfig->{Name} =~ /ProcessManagementProcessID|ProcessManagementActivityID/ ) {
+                            my $DisplayValue = $DynamicFieldBackendObject->DisplayValueRender(
+                                DynamicFieldConfig => $DynamicFieldConfig,
+                                Value              => $ValueStrg->{Value},
+                                ValueMaxChars      => 20,
+                                LayoutObject       => $Kernel::OM->Get('Kernel::Output::HTML::Layout'),
+                                HTMLOutput         => 0,
+                            );
+                            $Ticket{$ParameterName} = $DisplayValue->{Value};
+                        }
+
                     }
                 }
             }
@@ -1338,16 +1392,17 @@ sub GetStatTable {
         for my $Attribute ( @{$SortedAttributesRef} ) {
             next ATTRIBUTE if !$TicketAttributes{$Attribute};
 
-            # add the given TimeZone for time values
+            # convert from OTRS time zone to given time zone
             if (
                 $Param{TimeZone}
                 && $Ticket{$Attribute}
-                && $Ticket{$Attribute} =~ /(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})/
+                && $Ticket{$Attribute} =~ /\A(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})\z/
                 )
             {
-                $Ticket{$Attribute} = $Kernel::OM->Get('Kernel::System::Stats')->_AddTimeZone(
-                    TimeStamp => $Ticket{$Attribute},
-                    TimeZone  => $Param{TimeZone},
+
+                $Ticket{$Attribute} = $StatsObject->_FromOTRSTimeZone(
+                    String   => $Ticket{$Attribute},
+                    TimeZone => $Param{TimeZone},
                 );
                 $Ticket{$Attribute} .= " ($Param{TimeZone})";
             }
@@ -1364,7 +1419,7 @@ sub GetStatTable {
         push @StatArray, \@ResultRow;
     }
 
-    # use a individual sort if the sort mechanismn of the TicketSearch is not useable
+    # use a individual sort if the sort mechanism of the TicketSearch is not usable
     if ( !$OrderByIsValueOfTicketSearchSort ) {
         @StatArray = $Self->_IndividualResultOrder(
             StatArray          => \@StatArray,
@@ -1578,7 +1633,7 @@ sub _TicketAttributes {
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
     my %TicketAttributes = (
-        Number       => 'Number',                             # only a counter for a better readability
+        Number       => Translatable('Number'),               # only a counter for a better readability
         TicketNumber => $ConfigObject->Get('Ticket::Hook'),
 
         #TicketID       => 'TicketID',
@@ -1593,11 +1648,10 @@ sub _TicketAttributes {
         Priority => 'Priority',
 
         #PriorityID     => 'PriorityID',
-        CustomerID => 'CustomerID',
-        Changed    => 'Last Changed',
+        CustomerID => 'Customer ID',
+        Changed    => Translatable('Last Changed'),
         Created    => 'Created',
 
-        #CreateTimeUnix => 'CreateTimeUnix',
         CustomerUserID => 'Customer User',
         Lock           => 'Lock',
 
@@ -1933,164 +1987,6 @@ sub _IndividualResultOrder {
     }
 
     return @Sorted;
-}
-
-=item _QueryInCondition()
-
-DEPRECATED: This function will be in the DB.pm in further versions of OTRS.
-
-Generate a SQL IN condition query based on the given table key and values.
-
-    my $SQL = $DBObject->QueryInCondition(
-        Key       => 'table.column',
-        Values    => [ 1, 2, 3, 4, 5, 6 ],
-        QuoteType => '(undef|Integer|Number)',
-        BindMode  => (0|1),
-        Negate    => (0|1),
-    );
-
-Returns the SQL string:
-
-    my $SQL = "ticket_id IN (1, 2, 3, 4, 5, 6)"
-
-Return a separated IN condition for more then C<MaxParamCountForInCondition> values:
-
-    my $SQL = "( ticket_id IN ( 1, 2, 3, 4, 5, 6 ... ) OR ticket_id IN ( ... ) )"
-
-Return the SQL String with ?-values and a array with values references in bind mode:
-
-    $BindModeResult = (
-        'SQL'    => 'ticket_id IN (?, ?, ?, ?, ?, ?)',
-        'Values' => [1, 2, 3, 4, 5, 6],
-    );
-
-    or
-
-    $BindModeResult = (
-        'SQL'    => '( ticket_id IN (?, ?, ?, ?, ?, ?) OR ticket_id IN ( ?, ... ) )',
-        'Values' => [1, 2, 3, 4, 5, 6, ... ],
-    );
-
-Returns the SQL string for a negated in condition:
-
-    my $SQL = "ticket_id NOT IN (1, 2, 3, 4, 5, 6)"
-
-    or
-
-    my $SQL = "( ticket_id NOT IN ( 1, 2, 3, 4, 5, 6 ... ) AND ticket_id NOT IN ( ... ) )"
-
-=cut
-
-sub _QueryInCondition {
-    my ( $Self, %Param ) = @_;
-
-    if ( !$Param{Key} ) {
-        $Kernel::OM->Get('Kernel::System::Log')->Log(
-            Priority => 'error',
-            Message  => "Need Key!",
-        );
-        return;
-    }
-
-    if ( !IsArrayRefWithData( $Param{Values} ) ) {
-        $Kernel::OM->Get('Kernel::System::Log')->Log(
-            Priority => 'error',
-            Message  => "Need Values!",
-        );
-        return;
-    }
-
-    if ( $Param{QuoteType} && $Param{QuoteType} eq 'Like' ) {
-        $Kernel::OM->Get('Kernel::System::Log')->Log(
-            Priority => 'error',
-            Message  => "QuoteType 'Like' is not allowed for 'IN' conditions!",
-        );
-        return;
-    }
-
-    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
-
-    $Param{Negate}   //= 0;
-    $Param{BindMode} //= 0;
-
-    # Set the flag for string because of the other handling in the sql statement with strings.
-    my $IsString;
-    if ( !$Param{QuoteType} ) {
-        $IsString = 1;
-    }
-
-    my @Values = @{ $Param{Values} };
-
-    # Perform quoting depending on given quote type (only if not in bind mode)
-    if ( !$Param{BindMode} ) {
-
-        # Sort the values to cache the SQL query.
-        if ($IsString) {
-            @Values = sort { $a cmp $b } @Values;
-        }
-        else {
-            @Values = sort { $a <=> $b } @Values;
-        }
-
-        @Values = map { $DBObject->Quote( $_, $Param{QuoteType} ) } @Values;
-
-        # Something went wrong during the quoting, if the count is not equal.
-        return if scalar @Values != scalar @{ $Param{Values} };
-    }
-
-    # Set the correct operator and connector (only needed for splitted conditions).
-    my $Operator  = 'IN';
-    my $Connector = 'OR';
-
-    if ( $Param{Negate} ) {
-        $Operator  = 'NOT IN';
-        $Connector = 'AND';
-    }
-
-    my @SQLStrings;
-    my @BindValues;
-
-    # Split IN statement with more than 1000 elements in more statements combined with OR
-    # because Oracle doesn't support more than 1000 elements for one IN statement.
-    while ( scalar @Values ) {
-
-        my @ValuesPart;
-        if ( $DBObject->GetDatabaseFunction('Type') eq 'oracle' ) {
-            @ValuesPart = splice @Values, 0, 1000;
-        }
-        else {
-            @ValuesPart = splice @Values;
-        }
-
-        my $ValueString;
-        if ( $Param{BindMode} ) {
-            $ValueString = join ', ', ('?') x scalar @ValuesPart;
-            push @BindValues, @ValuesPart;
-        }
-        elsif ($IsString) {
-            $ValueString = join ', ', map {"'$_'"} @ValuesPart;
-        }
-        else {
-            $ValueString = join ', ', @ValuesPart;
-        }
-
-        push @SQLStrings, "$Param{Key} $Operator ($ValueString)";
-    }
-
-    my $SQL = join " $Connector ", @SQLStrings;
-
-    if ( scalar @SQLStrings > 1 ) {
-        $SQL = '( ' . $SQL . ' )';
-    }
-
-    if ( $Param{BindMode} ) {
-        my $BindRefList = [ map { \$_ } @BindValues ];
-        return (
-            'SQL'    => $SQL,
-            'Values' => $BindRefList,
-        );
-    }
-    return $SQL;
 }
 
 1;

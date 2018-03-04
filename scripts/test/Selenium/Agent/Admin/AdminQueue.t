@@ -43,6 +43,12 @@ $Selenium->RunTest(
         $Selenium->find_element( "table thead tr th", 'css' );
         $Selenium->find_element( "table tbody tr td", 'css' );
 
+        # check breadcrumb on Overview screen
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
+
         # click 'add new queue' link
         $Selenium->find_element( "a.Create", 'css' )->VerifiedClick();
 
@@ -54,6 +60,18 @@ $Selenium->RunTest(
             my $Element = $Selenium->find_element( "#$ID", 'css' );
             $Element->is_enabled();
             $Element->is_displayed();
+        }
+
+        # check breadcrumb on Add screen
+        my $Count = 1;
+        for my $BreadcrumbText ( 'Manage Queues', 'Add Queue' ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
         }
 
         # check client side validation
@@ -151,12 +169,31 @@ $Selenium->RunTest(
             "#Comment stored value",
         );
 
+        # check breadcrumb on Edit screen
+        $Count = 1;
+        for my $BreadcrumbText ( 'Manage Queues', 'Edit Queue: ' . $RandomID ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
+
         # set test queue to invalid
         $Selenium->execute_script("\$('#GroupID').val('2').trigger('redraw.InputField').trigger('change');");
         $Selenium->execute_script("\$('#FollowUpLock').val('1').trigger('redraw.InputField').trigger('change');");
         $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
         $Selenium->find_element( "#Comment", 'css' )->clear();
         $Selenium->find_element( "#Submit",  'css' )->VerifiedClick();
+
+        #check is there notification after queue is updated
+        my $Notification = 'Queue updated!';
+        $Self->True(
+            $Selenium->execute_script("return \$('.MessageBox.Notice p:contains($Notification)').length"),
+            "$Notification - notification is found."
+        );
 
         # navigate to AdminQueue screen again
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminQueue");

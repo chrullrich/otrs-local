@@ -18,18 +18,15 @@ my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
 # Set some config options for the testing.
 $ConfigObject->Set(
-    Key   => 'TimeZone',
-    Value => '+0',
-);
-$ConfigObject->Set(
-    Key   => 'TimeZoneUser',
-    Value => 1,
+    Key   => 'OTRSTimeZone',
+    Value => 'UTC',
 );
 
-my $StatsObject  = $Kernel::OM->Get('Kernel::System::Stats');
-my $QueueObject  = $Kernel::OM->Get('Kernel::System::Queue');
-my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
-my $TimeObject   = $Kernel::OM->Get('Kernel::System::Time');
+my $ArticleObject  = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+my $StatsObject    = $Kernel::OM->Get('Kernel::System::Stats');
+my $QueueObject    = $Kernel::OM->Get('Kernel::System::Queue');
+my $TicketObject   = $Kernel::OM->Get('Kernel::System::Ticket');
+my $DateTimeObject = $Kernel::OM->Create('Kernel::System::DateTime');
 
 $Kernel::OM->ObjectParamAdd(
     'Kernel::System::UnitTest::Helper' => {
@@ -39,9 +36,6 @@ $Kernel::OM->ObjectParamAdd(
 my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
 my $RandomID = $Helper->GetRandomID();
-
-# UTC tests
-local $ENV{TZ} = 'UTC';
 
 my @QueueNames;
 my @QueueIDs;
@@ -165,9 +159,12 @@ for my $Ticket (@Tickets) {
         next TICKET;
     }
 
-    my $SystemTime = $TimeObject->TimeStamp2SystemTime(
-        String => $Ticket->{TimeStamp},
-    );
+    my $SystemTime = $Kernel::OM->Create(
+        'Kernel::System::DateTime',
+        ObjectParams => {
+            String => $Ticket->{TimeStamp},
+            }
+    )->ToEpoch();
 
     # set the fixed time
     $Helper->FixedTimeSet($SystemTime);
@@ -312,7 +309,7 @@ my @Tests = (
                 'Title for result tests',
             ],
             [
-                'Evaluation by',
+                'Queue',
                 $KindsOfReporting->{SolutionAverageAllOver},
                 $KindsOfReporting->{SolutionMinTimeAllOver},
                 $KindsOfReporting->{SolutionMaxTimeAllOver},
@@ -333,42 +330,42 @@ my @Tests = (
             ],
             [
                 $QueueNames[0],
-                '0h 17m',
-                '0h 6m',
-                '0h 30m',
+                '17 m',
+                '6 m',
+                '30 m',
                 3,
-                '0h 17m',
-                '0h 6m',
-                '0h 30m',
-                '0h 2m',
-                '0h 0m',
-                '0h 6m',
-                '0h 0m',
-                '0h 0m',
-                '0h 0m',
-                '0h 0m',
-                '0h 0m',
-                '0h 0m',
+                '17 m',
+                '6 m',
+                '30 m',
+                '2 m',
+                '0 m',
+                '6 m',
+                '0 m',
+                '0 m',
+                '0 m',
+                '0 m',
+                '0 m',
+                '0 m',
                 3,
             ],
             [
                 $QueueNames[1],
-                '0h 3m',
-                '0h 3m',
-                '0h 3m',
+                '3 m',
+                '3 m',
+                '3 m',
                 1,
-                '0h 3m',
-                '0h 3m',
-                '0h 3m',
-                '0h 3m',
-                '0h 3m',
-                '0h 3m',
-                '0h 0m',
-                '0h 0m',
-                '0h 0m',
-                '0h 0m',
-                '0h 0m',
-                '0h 0m',
+                '3 m',
+                '3 m',
+                '3 m',
+                '3 m',
+                '3 m',
+                '3 m',
+                '0 m',
+                '0 m',
+                '0 m',
+                '0 m',
+                '0 m',
+                '0 m',
                 1,
             ],
         ],
@@ -411,9 +408,12 @@ for my $Test (@Tests) {
     }
 
     # set the fixed time
-    my $SystemTime = $TimeObject->TimeStamp2SystemTime(
-        String => $Test->{TimeStamp},
-    );
+    my $SystemTime = $Kernel::OM->Create(
+        'Kernel::System::DateTime',
+        ObjectParams => {
+            String => $Test->{TimeStamp},
+            }
+    )->ToEpoch();
     $Helper->FixedTimeSet($SystemTime);
 
     # print test case description

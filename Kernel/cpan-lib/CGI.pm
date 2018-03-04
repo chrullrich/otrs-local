@@ -3,7 +3,12 @@ require 5.008001;
 use if $] >= 5.019, 'deprecate';
 use Carp 'croak';
 
-$CGI::VERSION='4.21';
+my $appease_cpants_kwalitee = q/
+use strict;
+use warnings;
+#/;
+
+$CGI::VERSION='4.36';
 
 use CGI::Util qw(rearrange rearrange_header make_attributes unescape escape expires ebcdic2ascii ascii2ebcdic);
 
@@ -23,6 +28,7 @@ $DISABLE_UPLOADS     = 0;
 $UNLINK_TMP_FILES    = 1;
 $LIST_CONTEXT_WARN   = 1;
 $ENCODE_ENTITIES     = q{&<>"'};
+$ALLOW_DELETE_CONTENT = 0;
 
 @SAVED_SYMBOLS = ();
 
@@ -90,6 +96,7 @@ sub initialize_globals {
     $BEEN_THERE = 0;
     $DTD_PUBLIC_IDENTIFIER = "";
     undef @QUERY_PARAM;
+    undef %QUERY_PARAM;
     undef %EXPORT;
     undef $QUERY_CHARSET;
     undef %QUERY_FIELDNAMES;
@@ -398,9 +405,10 @@ sub param {
 
 	# list context can be dangerous so warn:
 	# http://blog.gerv.net/2014.10/new-class-of-vulnerability-in-perl-web-applications
-	if ( wantarray && $LIST_CONTEXT_WARN ) {
+	if ( wantarray && $LIST_CONTEXT_WARN == 1 ) {
 		my ( $package, $filename, $line ) = caller;
 		if ( $package ne 'CGI' ) {
+			$LIST_CONTEXT_WARN++; # only warn once
 			warn "CGI::param called in list context from $filename line $line, this can lead to vulnerabilities. "
 				. 'See the warning in "Fetching the value or values of a single named parameter"';
 		}
@@ -434,7 +442,7 @@ sub param {
 
     my @result = @{$self->{param}{$name}};
 
-    if ($PARAM_UTF8 && $name ne 'PUTDATA' && $name ne 'POSTDATA') {
+    if ($PARAM_UTF8 && $name ne 'PUTDATA' && $name ne 'POSTDATA' && $name ne 'PATCHDATA') {
       eval "require Encode; 1;" unless Encode->can('decode'); # bring in these functions
       @result = map {ref $_ ? $_ : $self->_decode_utf8($_) } @result;
     }
@@ -630,9 +638,9 @@ sub init {
 	      last METHOD;
       }
 
-      if ($meth eq 'POST' || $meth eq 'PUT') {
+      if ($meth eq 'POST' || $meth eq 'PUT' || $meth eq 'PATCH') {
 	  if ( $content_length > 0 ) {
-        if ( ( $PUTDATA_UPLOAD || $self->{'.upload_hook'} ) && !$is_xforms && ($meth eq 'POST' || $meth eq 'PUT')
+        if ( ( $PUTDATA_UPLOAD || $self->{'.upload_hook'} ) && !$is_xforms && ($meth eq 'POST' || $meth eq 'PUT' || $meth eq 'PATCH')
             && defined($ENV{'CONTENT_TYPE'})
             && $ENV{'CONTENT_TYPE'} !~ m|^application/x-www-form-urlencoded|
         && $ENV{'CONTENT_TYPE'} !~ m|^multipart/form-data| ){
@@ -668,7 +676,7 @@ sub init {
   }
 
 # YL: Begin Change for XML handler 10/19/2001
-    if (!$is_xforms && ($meth eq 'POST' || $meth eq 'PUT')
+    if (!$is_xforms && ($meth eq 'POST' || $meth eq 'PUT' || $meth eq 'PATCH')
         && defined($ENV{'CONTENT_TYPE'})
         && $ENV{'CONTENT_TYPE'} !~ m|^application/x-www-form-urlencoded|
 	&& $ENV{'CONTENT_TYPE'} !~ m|^multipart/form-data| ) {
@@ -933,7 +941,7 @@ sub _setup_symbols {
 	$DEBUG=0,                next if /^[:-]no_?[Dd]ebug$/;
 	$DEBUG=2,                next if /^[:-][Dd]ebug$/;
 	$USE_PARAM_SEMICOLONS++, next if /^[:-]newstyle_urls$/;
-	$PUTDATA_UPLOAD++,       next if /^[:-](?:putdata_upload|postdata_upload)$/;
+	$PUTDATA_UPLOAD++,       next if /^[:-](?:putdata_upload|postdata_upload|patchdata_upload)$/;
 	$PARAM_UTF8++,           next if /^[:-]utf8$/;
 	$XHTML++,                next if /^[:-]xhtml$/;
 	$XHTML=0,                next if /^[:-]no_?xhtml$/;
@@ -1003,7 +1011,7 @@ sub read_postdata_putdata {
             
             #	      while (defined($data = $buffer->read)) { }
             my $buff;
-            my $unit = $MultipartBuffer::INITIAL_FILLUNIT;
+            my $unit = $CGI::MultipartBuffer::INITIAL_FILLUNIT;
             my $len  = $content_length;
             while ( $len > 0 ) {
                 my $read = $self->read_from_client( \$buf, $unit, 0 );
@@ -1032,7 +1040,7 @@ sub read_postdata_putdata {
         my ($data);
         local ($\) = '';
         my $totalbytes;
-        my $unit = $MultipartBuffer::INITIAL_FILLUNIT;
+        my $unit = $CGI::MultipartBuffer::INITIAL_FILLUNIT;
         my $len  = $content_length;
         $unit = $len;
         my $ZERO_LOOP_COUNTER =0;
@@ -1098,7 +1106,7 @@ sub SERVER_PUSH { 'multipart/x-mixed-replace;boundary="' . shift() . '"'; }
 # Create a new multipart buffer
 sub new_MultipartBuffer {
     my($self,$boundary,$length) = @_;
-    return MultipartBuffer->new($self,$boundary,$length);
+    return CGI::MultipartBuffer->new($self,$boundary,$length);
 }
 
 # Read data from a file handle
@@ -1219,6 +1227,10 @@ sub MethGet {
     return request_method() eq 'GET';
 }
 
+sub MethPatch {
+    return request_method() eq 'PATCH';
+}
+
 sub MethPost {
     return request_method() eq 'POST';
 }
@@ -1240,7 +1252,7 @@ sub STORE {
     my $self = shift;
     my $tag  = shift;
     my $vals = shift;
-    my @vals = index($vals,"\0")!=-1 ? split("\0",$vals) : $vals;
+    my @vals = defined($vals) && index($vals,"\0")!=-1 ? split("\0",$vals) : $vals;
     $self->param(-name=>$tag,-value=>\@vals);
 }
 
@@ -2743,8 +2755,8 @@ sub url {
 ####
 sub cookie {
     my($self,@p) = self_or_default(@_);
-    my($name,$value,$path,$domain,$secure,$expires,$httponly) =
-	rearrange([NAME,[VALUE,VALUES],PATH,DOMAIN,SECURE,EXPIRES,HTTPONLY],@p);
+    my($name,$value,$path,$domain,$secure,$expires,$httponly,$max_age,$samesite) =
+	rearrange([NAME,[VALUE,VALUES],PATH,DOMAIN,SECURE,EXPIRES,HTTPONLY,'MAX-AGE',SAMESITE],@p);
 
     require CGI::Cookie;
 
@@ -2772,6 +2784,8 @@ sub cookie {
     push(@param,'-expires'=>$expires) if $expires;
     push(@param,'-secure'=>$secure) if $secure;
     push(@param,'-httponly'=>$httponly) if $httponly;
+    push(@param,'-max_age'=>$max_age) if $max_age;
+    push(@param,'-samesite'=>$samesite) if $samesite;
 
     return CGI::Cookie->new(@param);
 }
@@ -2877,7 +2891,7 @@ sub _name_and_path_from_env {
 }
 
 #### Method: request_method
-# Returns 'POST', 'GET', 'PUT' or 'HEAD'
+# Returns 'POST', 'GET', 'PUT', 'PATCH' or 'HEAD'
 ####
 sub request_method {
     return (defined $ENV{'REQUEST_METHOD'}) ? $ENV{'REQUEST_METHOD'} : undef;
@@ -3600,18 +3614,23 @@ sub _set_attributes {
 # Globals and stubs for other packages that we use.
 #########################################################
 
-######################## MultipartBuffer ####################
+######################## CGI::MultipartBuffer ####################
 
-package MultipartBuffer;
+package CGI::MultipartBuffer;
 
 $_DEBUG = 0;
 
 # how many bytes to read at a time.  We use
 # a 4K buffer by default.
-$INITIAL_FILLUNIT = 1024 * 4;
-$TIMEOUT = 240*60;       # 4 hour timeout for big files
-$SPIN_LOOP_MAX = 2000;  # bug fix for some Netscape servers
-$CRLF=$CGI::CRLF;
+$MultipartBuffer::INITIAL_FILLUNIT ||= 1024 * 4;
+$MultipartBuffer::TIMEOUT          ||= 240*60; # 4 hour timeout for big files
+$MultipartBuffer::SPIN_LOOP_MAX    ||= 2000;   # bug fix for some Netscape servers
+$MultipartBuffer::CRLF             ||= $CGI::CRLF;
+
+$INITIAL_FILLUNIT = $MultipartBuffer::INITIAL_FILLUNIT;
+$TIMEOUT          = $MultipartBuffer::TIMEOUT;
+$SPIN_LOOP_MAX    = $MultipartBuffer::SPIN_LOOP_MAX;
+$CRLF             = $MultipartBuffer::CRLF;
 
 sub new {
     my($package,$interface,$boundary,$length) = @_;
@@ -3845,10 +3864,10 @@ if ($^W) {
     $CGI::CGI = '';
     $CGI::CGI=<<EOF;
     $CGI::VERSION;
-    $MultipartBuffer::SPIN_LOOP_MAX;
-    $MultipartBuffer::CRLF;
-    $MultipartBuffer::TIMEOUT;
-    $MultipartBuffer::INITIAL_FILLUNIT;
+    $CGI::MultipartBuffer::SPIN_LOOP_MAX;
+    $CGI::MultipartBuffer::CRLF;
+    $CGI::MultipartBuffer::TIMEOUT;
+    $CGI::MultipartBuffer::INITIAL_FILLUNIT;
 EOF
     ;
 }

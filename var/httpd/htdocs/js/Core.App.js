@@ -130,7 +130,7 @@ Core.App = (function (TargetNS) {
             });
             return AppropriateBrowser;
         }
-        alert('Error: Browser Check failed!');
+        alert(Core.Language.Translate('Error: Browser Check failed!'));
     };
 
     /**
@@ -181,13 +181,11 @@ Core.App = (function (TargetNS) {
     TargetNS.Ready = function (Callback) {
         if ($.isFunction(Callback)) {
             $(document).ready(function () {
-                var Trace;
                 try {
                     Callback();
                 }
                 catch (Error) {
-                    Trace = printStackTrace({e: Error, guess: true}).join('\n');
-                    Core.Exception.HandleFinalError(Error, Trace);
+                    Core.Exception.HandleFinalError(Error);
                 }
             });
         }
@@ -222,7 +220,7 @@ Core.App = (function (TargetNS) {
 
                 Core.UI.Dialog.ShowDialog({
                     HTML : $DialogObj,
-                    Title : Core.Config.Get('ConnectionErrorTitle'),
+                    Title : Core.Language.Translate("Connection error"),
                     Modal : true,
                     CloseOnClickOutside : false,
                     CloseOnEscape : false,
@@ -230,14 +228,14 @@ Core.App = (function (TargetNS) {
                     PositionLeft: 'Center',
                     Buttons: [
                         {
-                            Label: Core.Config.Get('ConnectionErrorReloadButton'),
+                            Label: Core.Language.Translate("Reload page"),
                             Class: 'Primary',
                             Function: function () {
                                 location.reload();
                             }
                         },
                         {
-                            Label: Core.Config.Get('DialogCloseMsg'),
+                            Label: Core.Language.Translate("Close this dialog"),
                             Function: function () {
                                 if ($('#AjaxErrorDialogInner').find('.NoConnection').is(':visible')) {
                                     $('body').addClass('ConnectionErrorDialogClosed');
@@ -296,7 +294,7 @@ Core.App = (function (TargetNS) {
 
             Core.UI.Dialog.ShowDialog({
                 HTML : $DialogObj,
-                Title : Core.Config.Get('ConnectionErrorTitle'),
+                Title : Core.Language.Translate("Connection error"),
                 Modal : true,
                 CloseOnClickOutside : false,
                 CloseOnEscape : false,
@@ -304,14 +302,14 @@ Core.App = (function (TargetNS) {
                 PositionLeft: 'Center',
                 Buttons: [
                     {
-                        Label: Core.Config.Get('ConnectionErrorReloadButton'),
+                        Label: Core.Language.Translate("Reload page"),
                         Class: 'Primary',
                         Function: function () {
                             location.reload();
                         }
                     },
                     {
-                        Label: Core.Config.Get('DialogCloseMsg'),
+                        Label: Core.Language.Translate("Close this dialog"),
                         Function: function () {
                             if ($('#AjaxErrorDialogInner').find('.NoConnection').is(':visible')) {
                                 $('body').addClass('ConnectionErrorDialogClosed');
@@ -354,7 +352,7 @@ Core.App = (function (TargetNS) {
 
             Core.UI.Dialog.ShowDialog({
                 HTML : $DialogObj,
-                Title : Core.Config.Get('CommunicationErrorTitle'),
+                Title : Core.Language.Translate("Communication error"),
                 Modal : true,
                 CloseOnClickOutside : false,
                 CloseOnEscape : false,
@@ -362,14 +360,14 @@ Core.App = (function (TargetNS) {
                 PositionLeft: 'Center',
                 Buttons: [
                     {
-                        Label: Core.Config.Get('ConnectionErrorReloadButton'),
+                        Label: Core.Language.Translate("Reload page"),
                         Class: 'Primary',
                         Function: function () {
                             location.reload();
                         }
                     },
                     {
-                        Label: Core.Config.Get('DialogCloseMsg'),
+                        Label: Core.Language.Translate("Close this dialog"),
                         Function: function () {
                             Core.UI.Dialog.CloseDialog($('#AjaxErrorDialogInner'));
                         }
@@ -425,7 +423,7 @@ Core.App = (function (TargetNS) {
      * @returns {String} The escaped string.
      * @param {String} StringToEscape - The string which is supposed to be escaped.
      * @description
-     *      Escapes the special HTML characters ( < > & ) in supplied string to their
+     *      Escapes the special HTML characters ( < > & ") in supplied string to their
      *      corresponding entities.
      */
     TargetNS.EscapeHTML = function (StringToEscape) {
@@ -444,6 +442,72 @@ Core.App = (function (TargetNS) {
             return HTMLEntities[Entity] || Entity;
         });
     };
+
+    /**
+     * @name HumanReadableDataSize
+     * @memberof Core.App
+     * @function
+     * @returns {String} Result string.
+     * @param {Number} Size - Bytes which needs to be formatted
+     * @description
+     *      Formats bytes as human readable text (like 45.6 MB).
+     */
+    TargetNS.HumanReadableDataSize = function (Size) {
+
+        var SizeStr,
+            ReadableSize;
+
+        var FormatSize = function(Size) {
+            var ReadableSize,
+                Integer,
+                Float,
+                Separator;
+
+            if (Number.isInteger(Size)) {
+                ReadableSize = Size.toString();
+            }
+            else {
+
+                // Get integer and decimal parts.
+                Integer = Math.floor(Size);
+                Float   = Math.round((Size - Integer) * 10);
+
+                Separator = Core.Language.DecimalSeparatorGet() || '.';
+
+                // Format size with provided decimal separator.
+                ReadableSize = Integer.toString() + Separator.toString() + Float.toString();
+            }
+
+            return ReadableSize;
+        }
+
+        // Use convention described on https://en.wikipedia.org/wiki/File_size
+        if (Size >= Math.pow(1024, 4)) {
+
+            ReadableSize = FormatSize(Size / Math.pow(1024, 4));
+            SizeStr = Core.Language.Translate('%s TB', ReadableSize);
+        }
+        else if (Size >= Math.pow(1024, 3)) {
+
+            ReadableSize = FormatSize(Size / Math.pow(1024, 3));
+            SizeStr = Core.Language.Translate('%s GB', ReadableSize);
+        }
+        else if (Size >= Math.pow(1024, 2)) {
+
+            ReadableSize = FormatSize(Size / Math.pow(1024, 2));
+            SizeStr = Core.Language.Translate('%s MB', ReadableSize);
+        }
+        else if (Size >= 1024) {
+
+            ReadableSize = FormatSize(Size / 1024);
+            SizeStr = Core.Language.Translate('%s KB', ReadableSize);
+        }
+        else {
+            SizeStr = Core.Language.Translate('%s B', Size);
+        }
+
+        return SizeStr;
+    }
 
     /**
      * @name Publish
@@ -483,6 +547,67 @@ Core.App = (function (TargetNS) {
     TargetNS.Unsubscribe = function (Handle) {
         $.unsubscribe(Handle);
     };
+
+    /**
+     * @name Init
+     * @memberof Core.App
+     * @function
+     * @description
+     *      This function initializes the special functions.
+     */
+    TargetNS.Init = function () {
+        var RefreshSeconds = parseInt(Core.Config.Get('Refresh'), 10) || 0;
+
+        if (RefreshSeconds !== 0) {
+            window.setInterval(function() {
+
+                // If there are any open overlay dialogs, don't refresh
+                if ($('.Dialog:visible').length) {
+                    return;
+                }
+
+                // If there are open child popup windows, don't refresh
+                if (Core && Core.UI && Core.UI.Popup && Core.UI.Popup.HasOpenPopups()) {
+                    return;
+                }
+                // Now we can reload
+                window.location.reload();
+            }, RefreshSeconds * 1000);
+        }
+
+        // Initialize return to previous page function.
+        TargetNS.ReturnToPreviousPage();
+    };
+
+    /**
+     * @name ReturnToPreviousPage
+     * @memberof Core.App
+     * @function
+     * @description
+     *      This function bind on click event to return on previous page.
+     */
+    TargetNS.ReturnToPreviousPage = function () {
+
+        $('.ReturnToPreviousPage').on('click', function () {
+
+            // Check if an older history entry is available
+            if (history.length > 1) {
+            history.back();
+            return false;
+            }
+
+            // If we're in a popup window, close it
+            if (Core.UI.Popup.CurrentIsPopupWindow()) {
+                Core.UI.Popup.ClosePopup();
+                return false;
+            }
+
+            // Normal window, no history: no action possible
+            return false;
+        });
+    };
+
+    Core.Init.RegisterNamespace(TargetNS, 'APP_MODULE');
 
     return TargetNS;
 }(Core.App || {}));

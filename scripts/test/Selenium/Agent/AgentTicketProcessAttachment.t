@@ -132,33 +132,23 @@ $Selenium->RunTest(
         # Add an attachment.
         $Location = $ConfigObject->Get('Home') . "/scripts/test/sample/Main/Main-Test1.txt";
         $Selenium->find_element( "#FileUpload", 'css' )->send_keys($Location);
+
+        # Wait until attachment is uploaded, i.e. until it appears in the attachment list table.
+        #   Additional check for opacity makes sure that animation has been completed.
         $Selenium->WaitFor(
             JavaScript =>
-                'return typeof($) === "function" && $("#AttachmentDeleteButton1").length === 1;'
+                'return typeof($) === "function" && $(".AttachmentListContainer tbody tr").filter(function() {
+                    return $(this).css("opacity") == 1;
+                }).length;'
         );
 
         # Check if uploaded.
-        $Self->True(
-            index(
-                $Selenium->execute_script("return \$('#AttachmentDeleteButton1').closest('li').text().trim()"),
-                'Main-Test1.txt'
-                ) > -1,
+        $Self->Is(
+            $Selenium->execute_script(
+                "return \$('.AttachmentList tbody tr td.Filename:contains(Main-Test1.txt)').length;"
+            ),
+            1,
             "'Main-Test1.txt' - uploaded"
-        );
-
-        # Submit.
-        $Selenium->find_element("//button[\@type='submit']")->click();
-
-        # Wait until 'Error' class appears in Subject element.
-        $Selenium->WaitFor(
-            JavaScript =>
-                'return typeof($) === "function" && $("#Subject.Error").length;'
-        );
-
-        # Check if validation error is on the screen.
-        $Self->True(
-            $Selenium->execute_script("return \$('#Subject.Error').length"),
-            "Validation is executed",
         );
 
         $Selenium->find_element( "#Subject",  'css' )->send_keys('Test');

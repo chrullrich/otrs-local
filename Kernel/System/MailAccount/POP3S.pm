@@ -13,7 +13,7 @@ use warnings;
 
 use Net::POP3;
 
-use base qw(Kernel::System::MailAccount::POP3);
+use parent qw(Kernel::System::MailAccount::POP3);
 
 our @ObjectDependencies = (
     'Kernel::System::Log',
@@ -34,11 +34,10 @@ sub Connect {
     # check needed stuff
     for (qw(Login Password Host Timeout Debug)) {
         if ( !defined $Param{$_} ) {
-            $Kernel::OM->Get('Kernel::System::Log')->Log(
-                Priority => 'error',
-                Message  => "Need $_!"
+            return (
+                Successful => 0,
+                Message    => "Need $_!",
             );
-            return;
         }
     }
 

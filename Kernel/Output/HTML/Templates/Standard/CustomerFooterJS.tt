@@ -5,95 +5,50 @@
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
+## nofilter(TidyAll::Plugin::OTRS::TT::ScriptUsage)
 
+<script type="text/javascript">//<![CDATA[
+    "use strict";
+
+    var CKEDITOR_BASEPATH = [% Config("Frontend::RichTextPath") | JSON %];
+//]]></script>
 [% RenderBlockStart("CommonJS") %]
-    <script type="text/javascript" src="[% Config("Frontend::JavaScriptPath") | html %][% Data.JSDirectory | html %][% Data.Filename | html %]"></script>
+<script type="text/javascript" src="[% Config("Frontend::JavaScriptPath") | html %][% Data.JSDirectory | html %][% Data.Filename | html %]"></script>
 [% RenderBlockEnd("CommonJS") %]
 
 [% RenderBlockStart("ModuleJS") %]
-    <script type="text/javascript" src="[% Config("Frontend::JavaScriptPath") | html %][% Data.JSDirectory | html %][% Data.Filename | html %]"></script>
+<script type="text/javascript" src="[% Config("Frontend::JavaScriptPath") | html %][% Data.JSDirectory | html %][% Data.Filename | html %]"></script>
 [% RenderBlockEnd("ModuleJS") %]
 
 <script type="text/javascript">//<![CDATA[
 "use strict";
 
+Core.Init.ExecuteInit('JS_LOADED');
+
 Core.Customer.Enhance();
 
 Core.App.Ready(function() {
 
-    Core.Config.AddConfig({
-        // config
-        Baselink: [% Env("Baselink") | JSON %],
-        CGIHandle: [% Env("CGIHandle") | JSON %],
-        WebPath: [% Config("Frontend::WebPath") | JSON %],
-        Action: [% Env("Action") | JSON %],
-        SessionIDCookie: [% Env("SessionIDCookie") | JSON %],
-        SessionName: [% Config("SessionName") | JSON %],
-        SessionID: [% Env("SessionID") | JSON %],
-        ChallengeToken: [% Env("UserChallengeToken") | JSON %],
-        CustomerPanelSessionName: [% Config("CustomerPanelSessionName") | JSON %],
-        Images: [% Config("Frontend::ImagePath") | JSON %],
-        UserLanguage: [% Env("UserLanguage") | JSON %],
-        CheckEmailAddresses: parseInt([% Config("CheckEmailAddresses") | JSON %], 10),
-        AnimationEnabled: parseInt([% Config("Frontend::AnimationEnabled") | JSON %], 10),
-[% RenderBlockStart("AutoCompleteConfig") %]
-        Autocomplete: [% Data.AutocompleteConfig %],
-[% RenderBlockEnd("AutoCompleteConfig") %]
-        // translation
-        ValidateServerErrorTitle: [% Translate("Error") | JSON %],
-        ValidateServerErrorMsg: [% Translate("One or more errors occurred!") | JSON %],
-        DialogCloseMsg: [% Translate("Close this dialog") | JSON %],
-        PopupBlockerMsg: [% Translate("Could not open popup window. Please disable any popup blockers for this application.") | JSON %],
-        PopupLeaveParentWindowMsg: [% Translate("If you now leave this page, all open popup windows will be closed, too!") | JSON %],
-        PopupAlreadyOpenMsg: [% Translate("A popup of this screen is already open. Do you want to close it and load this one instead?") | JSON %],
-        SearchMsg: [% Translate("Search") | JSON %],
-        ApplyButtonText: [% Translate("Apply") | JSON %],
-        NoElementsToSelectFromMsg: [% Translate("There are currently no elements available to select from.") | JSON %],
-        TurnOffCompatibilityModeMsg: [% Translate("Please turn off Compatibility Mode in Internet Explorer!") | JSON %],
-        BrowserTooOldMsg: [% Translate("The browser you are using is too old.") | JSON %],
-        BrowserListMsg: [% Translate("OTRS runs with a huge lists of browsers, please upgrade to one of these.") | JSON %],
-        BrowserDocumentationMsg: [% Translate("Please see the documentation or ask your admin for further information.") | JSON %],
-        ViewModeSwitchMobile:  [% Translate("Switch to mobile mode") | JSON %],
-        ViewModeSwitchDesktop: [% Translate("Switch to desktop mode") | JSON %],
-        InputFieldsActivated: parseInt([% Config("ModernizeCustomerFormFields") | JSON %], 10),
-        InputFieldsNotAvailable: [% Translate("Not available") | JSON %],
-        InputFieldsNoMatchMsg: [% Translate("No matches found.") | JSON %],
-        InputFieldsSelectAll: [% Translate("Select all") | JSON %],
-        InputFieldsClearAll: [% Translate("Clear all") | JSON %],
-        InputFieldsClearSearch: [% Translate("Clear search") | JSON %],
-        InputFieldsRemoveSelection: [% Translate("Remove selection") | JSON %],
-        InputFieldsSelection: [% Translate("%s selection(s)...") | JSON %],
-        InputFieldsMore: [% Translate("and %s more...") | JSON %],
-        InputFieldsFilters: [% Translate("Filters") | JSON %],
-        InputFieldsConfirm: [% Translate("Confirm") | JSON %],
-        VideoChatEnabled: parseInt([% ( Data.VideoChatEnabled || 0 ) | JSON %], 10),
-        VideoChatUnansweredRequests: [% Translate("You have unanswered chat requests") | JSON %],
-        VideoChatClose: [% Translate("Close") | JSON %],
-        VideoChatVideoCall: [% Translate("Video call") | JSON %],
-        VideoChatAudioCall: [% Translate("Audio call") | JSON %],
-        VideoChatInviteAccept: [% Translate("Accept") | JSON %],
-        VideoChatInviteDecline: [% Translate("Decline") | JSON %],
-        VideoChatInternalError: [% Translate("An internal error occurred.") | JSON %],
-        ConnectionErrorTitle: [% Translate('Connection error') | JSON %],
-        ConnectionErrorReloadButton: [% Translate('Reload page') | JSON %]
-    });
+    Core.Init.ExecuteInit('DOCUMENT_READY');
 
-    Core.Customer.Init();
+    [% PROCESS JSDataInsert %]
 
-[% InsertTemplate("Datepicker.tt") %]
-
+    Core.Init.ExecuteInit('CONFIG_LOADED');
+    Core.Init.ExecuteInit('APP_GLOBAL_EARLY');
+    Core.Init.ExecuteInit('APP_GLOBAL');
+    Core.Init.ExecuteInit('APP_GLOBAL_LATE');
 });
 //]]></script>
 
 <script type="text/javascript">//<![CDATA[
 "use strict";
 Core.App.Ready(function() {
+    Core.Init.ExecuteInit('APP_MODULE_EARLY');
 
-    [% PROCESS JSOnDocumentCompleteInsert %]
+[% PROCESS JSOnDocumentCompleteInsert %]
 
-    // responsive initialization must run as late as possible to include all event subscriptions
-    // at the initialization process
-    Core.App.Responsive.Init();
+    Core.Init.ExecuteInit('APP_MODULE');
+    Core.Init.ExecuteInit('APP_MODULE_LATE');
 });
 //]]></script>
 
@@ -102,6 +57,7 @@ Core.App.Ready(function() {
 <script type="text/javascript">//<![CDATA[
 "use strict";
 Core.App.Ready(function () {
+    Core.Init.ExecuteInit('FINISH');
     Core.App.UnblockEvents();
 });
 //]]></script>
@@ -113,7 +69,7 @@ Core.App.Ready(function () {
                 <i class="fa fa-bolt"></i>
             </span>
             <p>
-                [% Translate("Your browser was not able to communicate with OTRS properly, there seems to be something wrong with your network connection. You could either try reloading this page manually or wait until your browser has re-established the connection on its own.") %]
+                [% Translate("Your browser was not able to communicate with OTRS properly, there seems to be something wrong with your network connection. You could either try reloading this page manually or wait until your browser has re-established the connection on its own.") | html %]
             </p>
         </div>
         <div class="CommunicationError" style="display:none;">
@@ -121,7 +77,7 @@ Core.App.Ready(function () {
                 <i class="fa fa-times"></i>
             </span>
             <p>
-                [% Translate("There was an error in communication with the server. Server might be experiencing some temporary problems, please reload this page to check if they have been resolved.") %]
+                [% Translate("There was an error in communication with the server. Server might be experiencing some temporary problems, please reload this page to check if they have been resolved.") | html %]
             </p>
         </div>
         <div class="ConnectionReEstablished" style="display:none;">
@@ -129,7 +85,7 @@ Core.App.Ready(function () {
                 <i class="fa fa-check"></i>
             </span>
             <p>
-                [% Translate("The connection has been re-established after a temporary connection loss. Due to this, elements on this page could have stopped to work correctly. In order to be able to use all elements correctly again, it is strongly recommended to reload this page.") %]
+                [% Translate("The connection has been re-established after a temporary connection loss. Due to this, elements on this page could have stopped to work correctly. In order to be able to use all elements correctly again, it is strongly recommended to reload this page.") | html %]
             </p>
         </div>
     </div>

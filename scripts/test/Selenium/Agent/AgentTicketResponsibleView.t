@@ -155,7 +155,6 @@ $Selenium->RunTest(
                 # switch back to AgentTicketResponsibleView
                 $Selenium->WaitFor( WindowCount => 1 );
                 $Selenium->switch_to_window( $Handles->[0] );
-
             }
 
             # switch back to AgentTicketResponsibleView

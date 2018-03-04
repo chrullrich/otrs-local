@@ -11,8 +11,8 @@ package Kernel::Modules::AgentTicketQueue;
 use strict;
 use warnings;
 
-use Kernel::Language qw(Translatable);
 use Kernel::System::VariableCheck qw(:all);
+use Kernel::Language qw(Translatable);
 
 our $ObjectManagerDisabled = 1;
 
@@ -280,18 +280,6 @@ sub Run {
     # otherwise use Preview as default as in LayoutTicket
     $View ||= 'Preview';
 
-    # Check if selected view is available.
-    my $Backends = $ConfigObject->Get('Ticket::Frontend::Overview');
-    if ( !$Backends->{$View} ) {
-
-        # Try to find fallback, take first configured view mode.
-        KEY:
-        for my $Key ( sort keys %{$Backends} ) {
-            $View = $Key;
-            last KEY;
-        }
-    }
-
     # get personal page shown count
     my $PageShownPreferencesKey = 'UserTicketOverview' . $View . 'PageShown';
     my $PageShown = $Self->{$PageShownPreferencesKey} || 10;
@@ -393,7 +381,7 @@ sub Run {
                 %{ $Filters{$FilterColumn}->{Search} },
                 %ColumnFilter,
                 Result => 'COUNT',
-            );
+            ) || 0;
         }
 
         if ( $FilterColumn eq $Filter ) {
@@ -652,6 +640,7 @@ sub _MaskQueueView {
             && $Queue{QueueID} != 0
             )
         {
+            # TODO: check what 'Ticket::ViewableLocks' affects
             next QUEUE;
         }
 
@@ -668,16 +657,18 @@ sub _MaskQueueView {
         }
         $QueueStrg .= '" class="';
 
-        # should i highlight this queue
-        # the oldest queue
-        if ( $Queue{QueueID} == $QueueIDOfMaxAge && $Self->{Blink} ) {
-            $QueueStrg .= 'Oldest';
-        }
-        elsif ( $Queue{MaxAge} >= $Self->{HighlightAge2} ) {
-            $QueueStrg .= 'OlderLevel2';
-        }
-        elsif ( $Queue{MaxAge} >= $Self->{HighlightAge1} ) {
-            $QueueStrg .= 'OlderLevel1';
+        # Primary control is Visual Alarms and, if disabled, will turn off all highlights.
+        # Secondary control highlights individual queues depending on age.
+        if ( $Config->{VisualAlarms} ) {
+            if ( $Queue{QueueID} == $QueueIDOfMaxAge && $Self->{Blink} ) {
+                $QueueStrg .= 'Oldest';
+            }
+            elsif ( $Queue{MaxAge} >= $Self->{HighlightAge2} ) {
+                $QueueStrg .= 'OlderLevel2';
+            }
+            elsif ( $Queue{MaxAge} >= $Self->{HighlightAge1} ) {
+                $QueueStrg .= 'OlderLevel1';
+            }
         }
 
         # display the current and all its lower levels in bold

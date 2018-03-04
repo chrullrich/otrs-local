@@ -18,20 +18,27 @@ use Kernel::System::PostMaster;
 use Kernel::System::VariableCheck qw(:all);
 
 # get needed objects
-my $ConfigObject    = $Kernel::OM->Get('Kernel::Config');
-my $HTMLUtilsObject = $Kernel::OM->Get('Kernel::System::HTMLUtils');
-my $MainObject      = $Kernel::OM->Get('Kernel::System::Main');
-my $TicketObject    = $Kernel::OM->Get('Kernel::System::Ticket');
+my $ConfigObject         = $Kernel::OM->Get('Kernel::Config');
+my $HTMLUtilsObject      = $Kernel::OM->Get('Kernel::System::HTMLUtils');
+my $MainObject           = $Kernel::OM->Get('Kernel::System::Main');
+my $TicketObject         = $Kernel::OM->Get('Kernel::System::Ticket');
+my $ArticleObject        = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+my $ArticleBackendObject = $Kernel::OM->Get('Kernel::System::Ticket::Article::Backend::Email');
 
 # get helper object
 $Kernel::OM->ObjectParamAdd(
     'Kernel::System::UnitTest::Helper' => {
         RestoreDatabase  => 1,
         UseTmpArticleDir => 1,
-        UseTmpArticleDir => 1,
     },
 );
 my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+
+# Disable email addresses checking.
+$Helper->ConfigSettingChange(
+    Key   => 'CheckEmailAddresses',
+    Value => 0,
+);
 
 # set config
 $ConfigObject->Set(
@@ -53,8 +60,10 @@ $ConfigObject->Set(
     Value => 'Kernel::System::Email::DoNotSendEmail',
 );
 
+my $PGPBin = $ConfigObject->Get('PGP::Bin');
+
 # check if gpg is located there
-if ( !-e $ConfigObject->Get('PGP::Bin') ) {
+if ( !$PGPBin || !( -e $PGPBin ) ) {
 
     if ( -e '/usr/bin/gpg' ) {
         $ConfigObject->Set(
@@ -70,6 +79,19 @@ if ( !-e $ConfigObject->Get('PGP::Bin') ) {
             Value => '/opt/local/bin/gpg'
         );
     }
+
+    # Try to guess using system 'which'
+    else {    # try to guess
+        my $GPGBin = `which gpg`;
+        chomp $GPGBin;
+        if ($GPGBin) {
+            $ConfigObject->Set(
+                Key   => 'PGP::Bin',
+                Value => $GPGBin,
+            );
+        }
+    }
+
 }
 
 # create local crypt object
@@ -223,12 +245,30 @@ for my $Test (@Tests) {
         Result   => 'ARRAY',
     );
 
+    my $CommunicationLogObject = $Kernel::OM->Create(
+        'Kernel::System::CommunicationLog',
+        ObjectParams => {
+            Transport => 'Email',
+            Direction => 'Incoming',
+        },
+    );
+    $CommunicationLogObject->ObjectLogStart( ObjectLogType => 'Message' );
+
     # use post master to import mail into OTRS
     my $PostMasterObject = Kernel::System::PostMaster->new(
-        Email   => $Email,
-        Trusted => 1,
+        CommunicationLogObject => $CommunicationLogObject,
+        Email                  => $Email,
+        Trusted                => 1,
     );
     my @PostMasterResult = $PostMasterObject->Run( Queue => '' );
+
+    $CommunicationLogObject->ObjectLogStop(
+        ObjectLogType => 'Message',
+        Status        => 'Successful',
+    );
+    $CommunicationLogObject->CommunicationStop(
+        Status => 'Successful',
+    );
 
     # sanity check (if postmaster runs correctly)
     $Self->IsNot(
@@ -252,23 +292,29 @@ for my $Test (@Tests) {
         push @AddedTickets, $TicketID;
 
         # get ticket articles
-        my @ArticleIDs = $TicketObject->ArticleIndex(
-            TicketID => $TicketID,
+        my @Articles = $ArticleObject->ArticleList(
+            TicketID  => $TicketID,
+            OnlyFirst => 1,
         );
 
         # use the first result (it should be only 1)
-        my %RawArticle = $TicketObject->ArticleGet(
-            ArticleID     => $ArticleIDs[0],
-            DynamicFields => 0,
-            UserID        => 1,
-        );
+        my %RawArticle;
+        if ( scalar @Articles ) {
+            %RawArticle = %{ $Articles[0] };
+        }
 
         # use ArticleCheck::PGP to decrypt the article
         my $CheckObject = Kernel::Output::HTML::ArticleCheck::PGP->new(
-            ArticleID => $ArticleIDs[0],
+            ArticleID => $Articles[0]->{ArticleID},
             UserID    => 1,
         );
-        my @CheckResult = $CheckObject->Check( Article => \%RawArticle );
+
+        my %Article = $ArticleBackendObject->ArticleGet(
+            TicketID  => $RawArticle{TicketID},
+            ArticleID => $RawArticle{ArticleID},
+        );
+
+        my @CheckResult = $CheckObject->Check( Article => \%Article );
 
         # sanity destroy object
         $CheckObject = undef;
@@ -297,10 +343,9 @@ for my $Test (@Tests) {
         }
 
         # check actual contents (subject and body)
-        my %Article = $TicketObject->ArticleGet(
-            ArticleID     => $ArticleIDs[0],
-            DynamicFields => 0,
-            UserID        => 1,
+        %Article = $ArticleBackendObject->ArticleGet(
+            TicketID  => $RawArticle{TicketID},
+            ArticleID => $RawArticle{ArticleID},
         );
 
         $Self->Is(
@@ -316,11 +361,11 @@ for my $Test (@Tests) {
         );
 
         # get the list of attachments
-        my %AtmIndex = $TicketObject->ArticleAttachmentIndex(
-            ArticleID                  => $ArticleIDs[0],
-            Article                    => \%Article,
-            StripPlainBodyAsAttachment => 1,
-            UserID                     => 1,
+        my %AtmIndex = $ArticleBackendObject->ArticleAttachmentIndex(
+            ArticleID        => $Articles[0]->{ArticleID},
+            ExcludePlainText => 1,
+            ExcludeHTMLBody  => 1,
+            ExcludeInline    => 1,
         );
 
         FILEID:
@@ -330,10 +375,9 @@ for my $Test (@Tests) {
             next FILEID if $AtmIndex{$FileID}->{Filename} =~ m{\A file-\d+ \z}msx;
 
             # get the attachment from the article (it should be already decrypted)
-            my %Attachment = $TicketObject->ArticleAttachment(
-                ArticleID => $ArticleIDs[0],
+            my %Attachment = $ArticleBackendObject->ArticleAttachment(
+                ArticleID => $Articles[0]->{ArticleID},
                 FileID    => $FileID,
-                UserID    => 1,
             );
 
             # read the original file (from file system)
@@ -472,7 +516,7 @@ my @TestVariations;
 
 for my $Test (@Tests) {
     push @TestVariations, {
-        Name        => $Test->{Name} . " sign only (Detached)",
+        Name        => $Test->{Name} . " (old API) sign only (Detached)",
         ArticleData => {
             %{ $Test->{ArticleData} },
             From => 'unittest@example.org',
@@ -488,7 +532,7 @@ for my $Test (@Tests) {
     };
 
     push @TestVariations, {
-        Name        => $Test->{Name} . " crypt only (Detached)",
+        Name        => $Test->{Name} . " (old API) crypt only (Detached)",
         ArticleData => {
             %{ $Test->{ArticleData} },
             From  => 'unittest2@example.org',
@@ -504,7 +548,7 @@ for my $Test (@Tests) {
     };
 
     push @TestVariations, {
-        Name        => $Test->{Name} . " sign and crypt (Detached)",
+        Name        => $Test->{Name} . " (old API) sign and crypt (Detached)",
         ArticleData => {
             %{ $Test->{ArticleData} },
             From => 'unittest2@example.org',
@@ -527,6 +571,109 @@ for my $Test (@Tests) {
     # TODO: currently inline signatures tests does not work as OTRS does not save the signature
     #    in the Article{Body}, the body remains intact after sending the email, only the email has
     #    the signature
+
+    # here starts the tests for new API
+
+    push @TestVariations, {
+        Name        => $Test->{Name} . " sign only (Detached)",
+        ArticleData => {
+            %{ $Test->{ArticleData} },
+            From          => 'unittest@example.org',
+            To            => 'unittest@example.org',
+            EmailSecurity => {
+                Backend => 'PGP',
+                Method  => 'Detached',
+                SignKey => $Check{1}->{KeyPrivate},
+            },
+        },
+        VerifySignature  => 1,
+        VerifyDecryption => 0,
+    };
+
+    push @TestVariations, {
+        Name        => $Test->{Name} . " crypt only (Detached)",
+        ArticleData => {
+            %{ $Test->{ArticleData} },
+            From          => 'unittest2@example.org',
+            To            => 'unittest2@example.org',
+            EmailSecurity => {
+                Backend     => 'PGP',
+                Method      => 'Detached',
+                EncryptKeys => [ $Check{2}->{Key} ],
+            },
+        },
+        VerifySignature  => 0,
+        VerifyDecryption => 1,
+    };
+
+    push @TestVariations, {
+        Name        => $Test->{Name} . " sign and crypt (Detached)",
+        ArticleData => {
+            %{ $Test->{ArticleData} },
+            From          => 'unittest2@example.org',
+            To            => 'unittest2@example.org',
+            EmailSecurity => {
+                Backend     => 'PGP',
+                Method      => 'Detached',
+                SignKey     => $Check{2}->{KeyPrivate},
+                EncryptKeys => [ $Check{2}->{Key} ],
+            },
+        },
+        VerifySignature  => 1,
+        VerifyDecryption => 1,
+    };
+
+    # start tests with 2 recipients
+
+    push @TestVariations, {
+        Name        => $Test->{Name} . " sign only (Detached)",
+        ArticleData => {
+            %{ $Test->{ArticleData} },
+            From          => 'unittest@example.org',
+            To            => 'unittest@example.org, unittest2@example.org',
+            EmailSecurity => {
+                Backend => 'PGP',
+                Method  => 'Detached',
+                SignKey => $Check{1}->{KeyPrivate},
+            },
+        },
+        VerifySignature  => 1,
+        VerifyDecryption => 0,
+    };
+
+    push @TestVariations, {
+        Name        => $Test->{Name} . " crypt only (Detached)",
+        ArticleData => {
+            %{ $Test->{ArticleData} },
+            From          => 'unittest2@example.org',
+            To            => 'unittest@example.org, unittest2@example.org',
+            EmailSecurity => {
+                Backend     => 'PGP',
+                Method      => 'Detached',
+                EncryptKeys => [ $Check{1}->{Key}, $Check{2}->{Key} ],
+            },
+        },
+        VerifySignature  => 0,
+        VerifyDecryption => 1,
+    };
+
+    push @TestVariations, {
+        Name        => $Test->{Name} . " sign and crypt (Detached)",
+        ArticleData => {
+            %{ $Test->{ArticleData} },
+            From          => 'unittest2@example.org',
+            To            => 'unittest@example.org, unittest2@example.org',
+            EmailSecurity => {
+                Backend     => 'PGP',
+                Method      => 'Detached',
+                SignKey     => $Check{2}->{KeyPrivate},
+                EncryptKeys => [ $Check{1}->{Key}, $Check{2}->{Key} ],
+            },
+        },
+        VerifySignature  => 1,
+        VerifyDecryption => 1,
+    };
+
 }
 
 my $TicketID = $TicketObject->TicketCreate(
@@ -554,16 +701,16 @@ push @AddedTickets, $TicketID;
 
 for my $Test (@TestVariations) {
 
-    my $ArticleID = $TicketObject->ArticleSend(
+    my $ArticleID = $ArticleBackendObject->ArticleSend(
         %{ $Test->{ArticleData} },
-        TicketID       => $TicketID,
-        ArticleType    => 'email-external',
-        SenderType     => 'customer',
-        HistoryType    => 'AddNote',
-        HistoryComment => 'note',
-        Subject        => 'Unittest data',
-        Charset        => 'utf-8',
-        UserID         => 1,
+        TicketID             => $TicketID,
+        SenderType           => 'customer',
+        IsVisibleForCustomer => 1,
+        HistoryType          => 'AddNote',
+        HistoryComment       => 'note',
+        Subject              => 'Unittest data',
+        Charset              => 'utf-8',
+        UserID               => 1,
     );
 
     $Self->True(
@@ -574,7 +721,7 @@ for my $Test (@TestVariations) {
     # Read generated email and use it to create yet another article.
     # This is necessary because otherwise reading the existing article will result in using the internal body
     #   which doesn't contain signatures etc.
-    my $Email = $TicketObject->ArticlePlain(
+    my $Email = $ArticleBackendObject->ArticlePlain(
         ArticleID => $ArticleID,
         UserID    => 1,
     );
@@ -592,9 +739,20 @@ for my $Test (@TestVariations) {
     }
     my $NewEmail = join "\n", @FollowUp;
 
-    my $PostMasterObject = Kernel::System::PostMaster->new(
-        Email => \$NewEmail,
+    my $CommunicationLogObject = $Kernel::OM->Create(
+        'Kernel::System::CommunicationLog',
+        ObjectParams => {
+            Transport => 'Email',
+            Direction => 'Incoming',
+        },
     );
+    $CommunicationLogObject->ObjectLogStart( ObjectLogType => 'Message' );
+
+    my $PostMasterObject = Kernel::System::PostMaster->new(
+        Email                  => \$NewEmail,
+        CommunicationLogObject => $CommunicationLogObject,
+    );
+
     my @Return = $PostMasterObject->Run();
     $Self->IsDeeply(
         \@Return,
@@ -602,8 +760,13 @@ for my $Test (@TestVariations) {
         "$Test->{Name} - PostMaster()",
     );
 
-    my %Article = $TicketObject->ArticleLastCustomerArticle(
+    my @Articles = $ArticleObject->ArticleList(
         TicketID => $TicketID,
+        OnlyLast => 1,
+    );
+    my %Article = $ArticleBackendObject->ArticleGet(
+        TicketID  => $TicketID,
+        ArticleID => $Articles[0]->{ArticleID},
     );
 
     my $CheckObject = Kernel::Output::HTML::ArticleCheck::PGP->new(
@@ -635,7 +798,7 @@ for my $Test (@TestVariations) {
         );
     }
 
-    my %FinalArticleData = $TicketObject->ArticleGet(
+    my %FinalArticleData = $ArticleBackendObject->ArticleGet(
         TicketID  => $TicketID,
         ArticleID => $Article{ArticleID},
     );
@@ -657,11 +820,8 @@ for my $Test (@TestVariations) {
 
     if ( defined $Test->{ArticleData}->{Attachment} ) {
         my $Found;
-        my %Index = $TicketObject->ArticleAttachmentIndex(
-            ArticleID                  => $Article{ArticleID},
-            UserID                     => 1,
-            Article                    => \%FinalArticleData,
-            StripPlainBodyAsAttachment => 0,
+        my %Index = $ArticleBackendObject->ArticleAttachmentIndex(
+            ArticleID => $Article{ArticleID},
         );
 
         TESTATTACHMENT:

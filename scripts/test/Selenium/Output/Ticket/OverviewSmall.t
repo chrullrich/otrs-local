@@ -25,10 +25,6 @@ $Selenium->RunTest(
         # change settings in both runtime and disk configuration
         for my $Key (qw(CheckEmailAddresses CheckMXRecord)) {
             $Helper->ConfigSettingChange(
-                Key   => $Key,
-                Value => 0,
-            );
-            $Helper->ConfigSettingChange(
                 Valid => 1,
                 Key   => $Key,
                 Value => 0,

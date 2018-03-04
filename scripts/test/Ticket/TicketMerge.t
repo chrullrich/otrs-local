@@ -12,8 +12,9 @@ use utf8;
 
 use vars (qw($Self));
 
-# get ticket object
-my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+my $TicketObject         = $Kernel::OM->Get('Kernel::System::Ticket');
+my $ArticleObject        = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+my $ArticleBackendObject = $ArticleObject->BackendForChannel( ChannelName => 'Internal' );
 
 # get helper object
 $Kernel::OM->ObjectParamAdd(
@@ -45,23 +46,23 @@ for my $IDCount ( 0 .. $Limit ) {
     );
     push @TicketIDs, $TicketID;
 
-    if ($TicketID) {
+    if ( $TicketIDs[$IDCount] ) {
         $TicketCount++;
 
         # create the article
-        $TicketObject->ArticleCreate(
-            TicketID       => $TicketIDs[$IDCount],
-            ArticleType    => 'note-internal',
-            SenderType     => 'agent',
-            From           => 'Some Agent <email@example.com>',
-            To             => 'Some Customer A <customer-a@example.com>',
-            Subject        => 'some short description',
-            Body           => 'the message text',
-            Charset        => 'ISO-8859-15',
-            MimeType       => 'text/plain',
-            HistoryType    => 'AddNote',
-            HistoryComment => 'Some free text!',
-            UserID         => 1,
+        $ArticleBackendObject->ArticleCreate(
+            TicketID             => $TicketIDs[$IDCount],
+            SenderType           => 'agent',
+            IsVisibleForCustomer => 0,
+            From                 => 'Some Agent <email@example.com>',
+            To                   => 'Some Customer A <customer-a@example.com>',
+            Subject              => 'some short description',
+            Body                 => 'the message text',
+            Charset              => 'ISO-8859-15',
+            MimeType             => 'text/plain',
+            HistoryType          => 'AddNote',
+            HistoryComment       => 'Some free text!',
+            UserID               => 1,
         );
     }
 }
@@ -75,10 +76,10 @@ $Self->Is(
 # merge the tickets
 for my $IDCount ( 0 .. $Limit - 1 ) {
 
-    my $ArticleCountOrg = $TicketObject->ArticleCount(
+    my $ArticleCountOrg = scalar $ArticleObject->ArticleList(
         TicketID => $TicketIDs[$IDCount],
     );
-    my $ArticleCountMerge = $TicketObject->ArticleCount(
+    my $ArticleCountMerge = scalar $ArticleObject->ArticleList(
         TicketID => $TicketIDs[ $IDCount + 1 ],
     );
 
@@ -94,10 +95,10 @@ for my $IDCount ( 0 .. $Limit - 1 ) {
         $IDCount . ': Merged Ticket ID ' . $TicketIDs[$IDCount] . ' to ID ' . $TicketIDs[ $IDCount + 1 ],
     );
 
-    my $ArticleCountOrgMerged = $TicketObject->ArticleCount(
+    my $ArticleCountOrgMerged = scalar $ArticleObject->ArticleList(
         TicketID => $TicketIDs[$IDCount],
     );
-    my $ArticleCountMergeMerged = $TicketObject->ArticleCount(
+    my $ArticleCountMergeMerged = scalar $ArticleObject->ArticleList(
         TicketID => $TicketIDs[ $IDCount + 1 ],
     );
 
@@ -304,7 +305,12 @@ for my $TicketID (@MergeLinkObjectTicketIDs) {
 # Test change time and user ID of main ticket on merge action.
 #   See bug#13092 for more information.
 $Helper->FixedTimeSet(
-    $Kernel::OM->Get('Kernel::System::Time')->TimeStamp2SystemTime( String => '2017-09-27 10:00:00' ),
+    $Kernel::OM->Create(
+        'Kernel::System::DateTime',
+        ObjectParams => {
+            String => '2017-09-27 10:00:00',
+        },
+        )->ToEpoch()
 );
 
 # Create two more tickets.
@@ -328,7 +334,7 @@ for my $IDCount ( 1 .. 2 ) {
     push @TicketIDs, $TicketID;
 }
 
-# Verify MainTicket and MergeTicket ChangeTime and ChangeBy on creation.
+# Verify main ticket and merge ticket change time and user ID on creation.
 my %MainTicket = $TicketObject->TicketGet(
     TicketID => $TicketIDs[0],
     UserID   => 1,

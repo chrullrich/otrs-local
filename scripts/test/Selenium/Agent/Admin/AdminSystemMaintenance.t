@@ -15,14 +15,29 @@ use vars (qw($Self));
 # get selenium object
 my $Selenium = $Kernel::OM->Get('Kernel::System::UnitTest::Selenium');
 
+my $CheckBredcrumb = sub {
+
+    my %Param = @_;
+
+    my $BreadcrumbText = $Param{BreadcrumbText} || '';
+    my $Count = 1;
+
+    for my $BreadcrumbText ( 'System Maintenance Management', $BreadcrumbText ) {
+        $Self->Is(
+            $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+            $BreadcrumbText,
+            "Breadcrumb text '$BreadcrumbText' is found on screen"
+        );
+
+        $Count++;
+    }
+};
+
 $Selenium->RunTest(
     sub {
 
         # get helper object
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
-
-        # get time object
-        my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
 
         # get DB object
         my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
@@ -52,6 +67,12 @@ $Selenium->RunTest(
         $Selenium->find_element( "table thead tr th", 'css' );
         $Selenium->find_element( "table tbody tr td", 'css' );
 
+        # check breadcrumb on Overview screen
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
+
         # click "Schedule New System Maintenance"
         $Selenium->find_element("//a[contains(\@href, \'Subaction=SystemMaintenanceNew' )]")->VerifiedClick();
 
@@ -67,6 +88,9 @@ $Selenium->RunTest(
             $Element->is_displayed();
         }
 
+        # check breadcrumb on Add screen
+        $CheckBredcrumb->( BreadcrumbText => 'Schedule New System Maintenance' );
+
         # check client side validation
         $Selenium->find_element( "#Comment", 'css' )->clear();
         $Selenium->find_element( "#Submit",  'css' )->VerifiedClick();
@@ -78,11 +102,13 @@ $Selenium->RunTest(
             'Client side validation correctly detected missing input value',
         );
 
+        my $DTObj = $Kernel::OM->Create('Kernel::System::DateTime');
+
         # create error test SystemMaintenance scenario
         # get test end time - 1 hour of current time
-        my ( $SecWrong, $MinWrong, $HourWrong, $DayWrong, $MonthWrong, $YearWrong, ) = $TimeObject->SystemTime2Date(
-            SystemTime => $TimeObject->SystemTime() - 60 * 60,
-        );
+        my $DTWrongObj = $DTObj->Clone();
+        $DTWrongObj->Subtract( Hours => 1 );
+        my $DTWrong = $DTWrongObj->Get();
 
         my $SysMainComment = "sysmaintenance" . $Helper->GetRandomID();
         my $SysMainLogin   = "Selenium test SystemMaintance is progress, please log in later on";
@@ -90,13 +116,17 @@ $Selenium->RunTest(
 
         $Selenium->find_element( "#Comment", 'css' )->send_keys($SysMainComment);
 
-        $Selenium->find_element( "#StopDateDay option[value='" . int($DayWrong) . "']",     'css' )->VerifiedClick();
-        $Selenium->find_element( "#StopDateMonth option[value='" . int($MonthWrong) . "']", 'css' )->VerifiedClick();
+        $Selenium->find_element( "#StopDateDay option[value='" . int( $DTWrong->{Day} ) . "']", 'css' )
+            ->VerifiedClick();
+        $Selenium->find_element( "#StopDateMonth option[value='" . int( $DTWrong->{Month} ) . "']", 'css' )
+            ->VerifiedClick();
         $Selenium->execute_script(
-            "\$('#StopDateYear').val('$YearWrong').trigger('redraw.InputField').trigger('change');"
+            "\$('#StopDateYear').val('$DTWrong->{Year}').trigger('redraw.InputField').trigger('change');"
         );
-        $Selenium->find_element( "#StopDateHour option[value='" . int($HourWrong) . "']",  'css' )->VerifiedClick();
-        $Selenium->find_element( "#StopDateMinute option[value='" . int($MinWrong) . "']", 'css' )->VerifiedClick();
+        $Selenium->find_element( "#StopDateHour option[value='" . int( $DTWrong->{Hour} ) . "']", 'css' )
+            ->VerifiedClick();
+        $Selenium->find_element( "#StopDateMinute option[value='" . int( $DTWrong->{Minute} ) . "']", 'css' )
+            ->VerifiedClick();
 
         $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
         $Self->True(
@@ -105,70 +135,47 @@ $Selenium->RunTest(
         );
 
         # get test start time + 1 hour of system time
-        my ( $SecStart, $MinStart, $HourStart, $DayStart, $MonthStart, $YearStart, ) = $TimeObject->SystemTime2Date(
-            SystemTime => $TimeObject->SystemTime() + 60 * 60,
-        );
+        my $DTStartObj = $DTObj->Clone();
+        $DTStartObj->Add( Hours => 1 );
+        my $DTStart = $DTStartObj->Get();
 
         # get test end time + 2 hour of system time
-        my ( $SecEnd, $MinEnd, $HourEnd, $DayEnd, $MonthEnd, $YearEnd ) = $TimeObject->SystemTime2Date(
-            SystemTime => $TimeObject->SystemTime() + 2 * 60 * 60,
-        );
+        my $DTEndObj = $DTObj->Clone();
+        $DTEndObj->Add( Hours => 2 );
+        my $DTEnd = $DTEndObj->Get();
 
         # create real test SystemMaintenance
-        $Selenium->find_element( "#StartDateDay option[value='" . int($DayStart) . "']",     'css' )->VerifiedClick();
-        $Selenium->find_element( "#StartDateMonth option[value='" . int($MonthStart) . "']", 'css' )->VerifiedClick();
+        $Selenium->find_element( "#StartDateDay option[value='" . int( $DTStart->{Day} ) . "']", 'css' )
+            ->VerifiedClick();
+        $Selenium->find_element( "#StartDateMonth option[value='" . int( $DTStart->{Month} ) . "']", 'css' )
+            ->VerifiedClick();
         $Selenium->execute_script(
-            "\$('#StartDateYear').val('$YearStart').trigger('redraw.InputField').trigger('change');"
+            "\$('#StartDateYear').val('$DTStart->{Year}').trigger('redraw.InputField').trigger('change');"
         );
-        $Selenium->find_element( "#StartDateHour option[value='" . int($HourStart) . "']",  'css' )->VerifiedClick();
-        $Selenium->find_element( "#StartDateMinute option[value='" . int($MinStart) . "']", 'css' )->VerifiedClick();
-        $Selenium->find_element( "#StopDateDay option[value='" . int($DayEnd) . "']",       'css' )->VerifiedClick();
-        $Selenium->find_element( "#StopDateMonth option[value='" . int($MonthEnd) . "']",   'css' )->VerifiedClick();
+        $Selenium->find_element( "#StartDateHour option[value='" . int( $DTStart->{Hour} ) . "']", 'css' )
+            ->VerifiedClick();
+        $Selenium->find_element( "#StartDateMinute option[value='" . int( $DTStart->{Minute} ) . "']", 'css' )
+            ->VerifiedClick();
+        $Selenium->find_element( "#StopDateDay option[value='" . int( $DTEnd->{Day} ) . "']", 'css' )->VerifiedClick();
+        $Selenium->find_element( "#StopDateMonth option[value='" . int( $DTEnd->{Month} ) . "']", 'css' )
+            ->VerifiedClick();
         $Selenium->execute_script(
-            "\$('#StopDateYear').val('$YearEnd').trigger('redraw.InputField').trigger('change');"
+            "\$('#StopDateYear').val('$DTEnd->{Year}').trigger('redraw.InputField').trigger('change');"
         );
-
-        $Selenium->find_element( "#StopDateHour option[value='" . int($HourEnd) . "']",  'css' )->VerifiedClick();
-        $Selenium->find_element( "#StopDateMinute option[value='" . int($MinEnd) . "']", 'css' )->VerifiedClick();
-
-        # Try to create System Maintenance with Login and Notify message longer then 250 characters.
-        #   See bug#13366 (https://bugs.otrs.org/show_bug.cgi?id=13366).
-        #   Verify there is no Error class initially.
-        $Self->False(
-            $Selenium->execute_script("return \$('#LoginMessage').hasClass('Error')"),
-            "There is no error class in Login Message text area"
-        );
-        $Self->False(
-            $Selenium->execute_script("return \$('#NotifyMessage').hasClass('Error')"),
-            "There is no error class in Notify Message text area"
-        );
-
-        # Add 251 characters in the fields and verify Error class.
-        my $LongLoginMessage  = "a" x 251;
-        my $LongNotifyMessage = "b" x 251;
-
-        $Selenium->find_element( "#LoginMessage",  'css' )->send_keys($LongLoginMessage);
-        $Selenium->find_element( "#NotifyMessage", 'css' )->send_keys($LongNotifyMessage);
-
-        $Selenium->find_element( "#Submit", 'css' )->click();
-        $Self->True(
-            $Selenium->execute_script("return \$('#LoginMessage').hasClass('Error')"),
-            "There is error class in Login Message text area"
-        );
-        $Self->True(
-            $Selenium->execute_script("return \$('#NotifyMessage').hasClass('Error')"),
-            "There is error class in Notify Message text area"
-        );
-
-        # Create SystemMaintenance.
-        $Selenium->find_element( "#LoginMessage",  'css' )->clear();
-        $Selenium->find_element( "#NotifyMessage", 'css' )->clear();
+        $Selenium->find_element( "#StopDateHour option[value='" . int( $DTEnd->{Hour} ) . "']", 'css' )
+            ->VerifiedClick();
+        $Selenium->find_element( "#StopDateMinute option[value='" . int( $DTEnd->{Minute} ) . "']", 'css' )
+            ->VerifiedClick();
         $Selenium->find_element( "#LoginMessage",  'css' )->send_keys($SysMainLogin);
         $Selenium->find_element( "#NotifyMessage", 'css' )->send_keys($SysMainNotify);
         $Selenium->find_element( "#Submit",        'css' )->VerifiedClick();
 
-        # return to overview AdminSystemMaintenance
-        $Selenium->find_element("//a[contains(\@href, \'Action=AdminSystemMaintenance' )]")->VerifiedClick();
+        # check if notification exists after adding
+        my $Notification = 'System Maintenance was added successfully!';
+        $Self->True(
+            $Selenium->execute_script("return \$('.MessageBox.Notice p:contains($Notification)').length"),
+            "$Notification - notification is found."
+        );
 
         # check for created test SystemMaintenance
         $Self->True(
@@ -212,46 +219,21 @@ $Selenium->RunTest(
             "#ValidID stored value",
         );
 
-        # Try to edit System Maintenance with Login and Notify message longer then 250 characters.
-        #   See bug#13366 (https://bugs.otrs.org/show_bug.cgi?id=13366).
-        #   Verify there is no Error class initially.
-        $Self->False(
-            $Selenium->execute_script("return \$('#LoginMessage').hasClass('Error')"),
-            "There is no error class in Login Message text area"
-        );
-        $Self->False(
-            $Selenium->execute_script("return \$('#NotifyMessage').hasClass('Error')"),
-            "There is no error class in Notify Message text area"
-        );
-
-        # Add 251 characters in the fields and verify Error class.
-        $LongLoginMessage  = "a" x 251;
-        $LongNotifyMessage = "b" x 251;
-
-        $Selenium->find_element( "#LoginMessage",  'css' )->clear();
-        $Selenium->find_element( "#NotifyMessage", 'css' )->clear();
-        $Selenium->find_element( "#LoginMessage",  'css' )->send_keys($LongLoginMessage);
-        $Selenium->find_element( "#NotifyMessage", 'css' )->send_keys($LongNotifyMessage);
-
-        $Selenium->find_element( "#Submit", 'css' )->click();
-        $Self->True(
-            $Selenium->execute_script("return \$('#LoginMessage').hasClass('Error')"),
-            "There is error class in Login Message text area"
-        );
-        $Self->True(
-            $Selenium->execute_script("return \$('#NotifyMessage').hasClass('Error')"),
-            "There is error class in Notify Message text area"
-        );
-        $Selenium->find_element( "#LoginMessage",  'css' )->clear();
-        $Selenium->find_element( "#NotifyMessage", 'css' )->clear();
+        # check breadcrumb on Edit screen
+        $CheckBredcrumb->( BreadcrumbText => 'Edit System Maintenance' );
 
         # edit test SystemMaintenance and set it to invalid
-        $Selenium->find_element( "#LoginMessage",  'css' )->send_keys( $SysMainLogin,  "-update" );
-        $Selenium->find_element( "#NotifyMessage", 'css' )->send_keys( $SysMainNotify, "-update" );
+        $Selenium->find_element( "#LoginMessage",  'css' )->send_keys("-update");
+        $Selenium->find_element( "#NotifyMessage", 'css' )->send_keys("-update");
         $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
         $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
-        $Selenium->find_element("//a[contains(\@href, \'Action=AdminSystemMaintenance' )]")->VerifiedClick();
+        # check if notification exists after updating
+        $Notification = 'System Maintenance was updated successfully!';
+        $Self->True(
+            $Selenium->execute_script("return \$('.MessageBox.Notice p:contains($Notification)').length"),
+            "$Notification - notification is found."
+        );
 
         # check class of invalid SystemMaintenance in the overview table
         $Self->True(
@@ -301,84 +283,86 @@ $Selenium->RunTest(
             "Deleted - $SysMainComment"
         );
 
+        my $Epoch = $Kernel::OM->Create('Kernel::System::DateTime')->ToEpoch();
+
         # define test SystemMaintenance scenarios
         my @Tests = (
             {
                 # now, duration 2 hours
-                StartDate => $TimeObject->SystemTime(),
-                StopDate  => $TimeObject->SystemTime() + 2 * 60 * 60,
+                StartDate => $Epoch,
+                StopDate  => $Epoch + 2 * 60 * 60,
                 Comment   => $SysMainComment . ' maintenance period #1',
                 ValidID   => 1,
                 UserID    => 1,
             },
             {
                 # 1 day later, duration 2 hours
-                StartDate => $TimeObject->SystemTime() + 24 * 60 * 60,
-                StopDate  => $TimeObject->SystemTime() + 24 * 60 * 60 + 2 * 60 * 60,
+                StartDate => $Epoch + 24 * 60 * 60,
+                StopDate  => $Epoch + 24 * 60 * 60 + 2 * 60 * 60,
                 Comment   => $SysMainComment . ' maintenance period #2',
                 ValidID   => 1,
                 UserID    => 1,
             },
             {
                 # 2 days later, duration 2 hours
-                StartDate => $TimeObject->SystemTime() + 2 * 24 * 60 * 60,
-                StopDate  => $TimeObject->SystemTime() + 2 * 24 * 60 * 60 + 2 * 60 * 60,
+                StartDate => $Epoch + 2 * 24 * 60 * 60,
+                StopDate  => $Epoch + 2 * 24 * 60 * 60 + 2 * 60 * 60,
                 Comment   => $SysMainComment . ' maintenance period #3',
                 ValidID   => 1,
                 UserID    => 1,
             },
             {
                 # 3 days later, duration 2 hours
-                StartDate => $TimeObject->SystemTime() + 3 * 24 * 60 * 60,
-                StopDate  => $TimeObject->SystemTime() + 3 * 24 * 60 * 60 + 2 * 60 * 60,
+                StartDate => $Epoch + 3 * 24 * 60 * 60,
+                StopDate  => $Epoch + 3 * 24 * 60 * 60 + 2 * 60 * 60,
                 Comment   => $SysMainComment . ' maintenance period #4',
                 ValidID   => 1,
                 UserID    => 1,
             },
             {
                 # 4 days later, duration 2 hours
-                StartDate => $TimeObject->SystemTime() + 4 * 24 * 60 * 60,
-                StopDate  => $TimeObject->SystemTime() + 4 * 24 * 60 * 60 + 2 * 60 * 60,
+                StartDate => $Epoch + 4 * 24 * 60 * 60,
+                StopDate  => $Epoch + 4 * 24 * 60 * 60 + 2 * 60 * 60,
                 Comment   => $SysMainComment . ' maintenance period #5',
                 ValidID   => 1,
                 UserID    => 1,
             },
             {
                 # 5 days later, duration 2 hours
-                StartDate => $TimeObject->SystemTime() + 5 * 24 * 60 * 60,
-                StopDate  => $TimeObject->SystemTime() + 5 * 24 * 60 * 60 + 2 * 60 * 60,
+                StartDate => $Epoch + 5 * 24 * 60 * 60,
+                StopDate  => $Epoch + 5 * 24 * 60 * 60 + 2 * 60 * 60,
                 Comment   => $SysMainComment . ' maintenance period #6',
                 ValidID   => 1,
                 UserID    => 1,
             },
             {
                 # 6 days later, duration 2 hours
-                StartDate => $TimeObject->SystemTime() + 6 * 24 * 60 * 60,
-                StopDate  => $TimeObject->SystemTime() + 6 * 24 * 60 * 60 + 2 * 60 * 60,
+                StartDate => $Epoch + 6 * 24 * 60 * 60,
+                StopDate  => $Epoch + 6 * 24 * 60 * 60 + 2 * 60 * 60,
                 Comment   => $SysMainComment . ' maintenance period #7',
                 ValidID   => 1,
                 UserID    => 1,
             },
             {
                 # 7 days later, duration 2 hours
-                StartDate => $TimeObject->SystemTime() + 7 * 24 * 60 * 60,
-                StopDate  => $TimeObject->SystemTime() + 7 * 24 * 60 * 60 + 2 * 60 * 60,
+                StartDate => $Epoch + 7 * 24 * 60 * 60,
+                StopDate  => $Epoch + 7 * 24 * 60 * 60 + 2 * 60 * 60,
                 Comment   => $SysMainComment . ' maintenance period #8',
                 ValidID   => 1,
                 UserID    => 1,
             },
             {
                 # 8 days later, duration 2 hours
-                StartDate => $TimeObject->SystemTime() + 8 * 24 * 60 * 60,
-                StopDate  => $TimeObject->SystemTime() + 8 * 24 * 60 * 60 + 2 * 60 * 60,
+                StartDate => $Epoch + 8 * 24 * 60 * 60,
+                StopDate  => $Epoch + 8 * 24 * 60 * 60 + 2 * 60 * 60,
                 Comment   => $SysMainComment . ' maintenance period #9',
                 ValidID   => 1,
                 UserID    => 1,
             },
             {
                 # one week earlier, duration 2 hours
-                StartDate => $TimeObject->SystemTime() - 7 * 24 * 60 * 60,
-                StopDate  => $TimeObject->SystemTime() - 7 * 24 * 60 * 60 + 2 * 60 * 60,
+                StartDate => $Epoch - 7 * 24 * 60 * 60,
+                StopDate  => $Epoch - 7 * 24 * 60 * 60 + 2 * 60 * 60,
                 Comment   => $SysMainComment . ' maintenance period #10',
                 ValidID   => 1,
                 UserID    => 1,
@@ -401,6 +385,10 @@ $Selenium->RunTest(
 
         # navigate to AdminSystemMaintenance screen
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminSystemMaintenance");
+
+        # filter by test unique ID
+        $Selenium->find_element( "#FilterSystemMaintenances", 'css' )->send_keys( $SysMainComment . ' maintenance' );
+        sleep 1;
 
         # check created SystemMaintenances
         for my $Test (@Tests) {

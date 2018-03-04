@@ -54,6 +54,12 @@ $Selenium->RunTest(
         # navigate to AdminPGP screen
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminPGP");
 
+        # check breadcrumb on Overview screen
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
+
         # check widget sidebar when PGP sysconfig is disabled
         $Self->True(
             $Selenium->find_element( 'h3 span.Warning', 'css' ),
@@ -83,6 +89,18 @@ $Selenium->RunTest(
 
         # add first test PGP key
         $Selenium->find_element("//a[contains(\@href, \'Action=AdminPGP;Subaction=Add' )]")->VerifiedClick();
+
+        # check breadcrumb on Add screen
+        my $Count = 1;
+        for my $BreadcrumbText ( 'PGP Management', 'Add PGP Key' ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
 
         my $Location1 = $ConfigObject->Get('Home')
             . "/scripts/test/sample/Crypt/PGPPrivateKey-1.asc";

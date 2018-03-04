@@ -107,10 +107,7 @@ $Selenium->RunTest(
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketID");
 
         # force sub menus to be visible in order to be able to click one of the links
-        $Selenium->WaitFor(
-            JavaScript =>
-                'return typeof($) === "function" && $("#nav-People ul").css({ "height": "auto", "opacity": "100" });'
-        );
+        $Selenium->execute_script("\$('.Cluster ul ul').addClass('ForceVisible');");
 
         # click on 'Responsible' and switch window
         $Selenium->find_element("//a[contains(\@href, \'Action=AgentTicketResponsible;TicketID=$TicketID' )]")
@@ -128,7 +125,7 @@ $Selenium->RunTest(
 
         # check page
         for my $ID (
-            qw(Title NewResponsibleID Subject RichText FileUpload ArticleTypeID submitRichText)
+            qw(Title NewResponsibleID Subject RichText FileUpload IsVisibleForCustomer submitRichText)
             )
         {
             my $Element = $Selenium->find_element( "#$ID", 'css' );
@@ -136,14 +133,37 @@ $Selenium->RunTest(
             $Element->is_displayed();
         }
 
+        # check client side validation
+        $Selenium->find_element( "#Subject",  'css' )->send_keys('Test');
+        $Selenium->find_element( "#RichText", 'css' )->send_keys('Test');
+        $Selenium->execute_script(
+            "\$('#NewResponsibleID').val('').trigger('redraw.InputField').trigger('change');"
+        );
+        $Selenium->find_element( "#submitRichText", 'css' )->click();
+
+        $Self->Is(
+            $Selenium->execute_script(
+                "return \$('#NewResponsibleID').hasClass('Error')"
+            ),
+            '1',
+            'Client side validation correctly detected missing input value',
+        );
+
+        # reload screen to get a consistent state
+        $Selenium->VerifiedRefresh();
+
+        #$Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketResponsible;TicketID=$TicketID");
+
+        $Selenium->find_element( "#Subject",  'css' )->send_keys('Test');
+        $Selenium->find_element( "#RichText", 'css' )->send_keys('Test');
+
         # change ticket user responsible
         $Selenium->execute_script(
             "\$('#NewResponsibleID').val('$UserID[1]').trigger('redraw.InputField').trigger('change');"
         );
-        $Selenium->find_element( "#Subject",        'css' )->send_keys('Test');
-        $Selenium->find_element( "#RichText",       'css' )->send_keys('Test');
         $Selenium->find_element( "#submitRichText", 'css' )->click();
 
+        # switch window back
         $Selenium->WaitFor( WindowCount => 1 );
         $Selenium->switch_to_window( $Handles->[0] );
 
@@ -153,7 +173,7 @@ $Selenium->RunTest(
         # wait until page has loaded, if necessary
         $Selenium->WaitFor(
             JavaScript =>
-                'return typeof($) === "function" && $(".WidgetSimple").length;'
+                'return typeof($) === "function" && $(".WidgetSimple").length && $("div.TicketZoom").length;'
         );
 
         # make sure the cache is correct
@@ -171,7 +191,7 @@ $Selenium->RunTest(
             $Ticket{ResponsibleID},
             $UserID[1],
             'New responsible correctly set',
-        );
+        ) || die 'New responsible not correctly set';
 
         # delete created test tickets
         my $Success = $TicketObject->TicketDelete(

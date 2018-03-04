@@ -133,7 +133,6 @@ sub Run {
     my $Limit   = scalar keys %Tickets;
 
     # get needed objects
-    my $TimeObject            = $Kernel::OM->Get('Kernel::System::Time');
     my $LayoutObject          = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
     my $UserObject            = $Kernel::OM->Get('Kernel::System::User');
     my $CustomerUserObject    = $Kernel::OM->Get('Kernel::System::CustomerUser');
@@ -159,29 +158,32 @@ sub Run {
             {
 
                 # end time should be greater than start time
-                my $StartTime = $TimeObject->TimeStamp2SystemTime(
-                    String => $TicketDetail{ 'DynamicField_' . $StartTimeDynamicField },
+                my $StartTimeObject = $Kernel::OM->Create(
+                    'Kernel::System::DateTime',
+                    ObjectParams => {
+                        String => $TicketDetail{ 'DynamicField_' . $StartTimeDynamicField }
+                    },
                 );
-                my $EndTime = $TimeObject->TimeStamp2SystemTime(
-                    String => $TicketDetail{ 'DynamicField_' . $EndTimeDynamicField },
+
+                my $EndTimeObject = $Kernel::OM->Create(
+                    'Kernel::System::DateTime',
+                    ObjectParams => {
+                        String => $TicketDetail{ 'DynamicField_' . $EndTimeDynamicField }
+                    },
                 );
 
                 # check if start time is after end time
-                if ( $StartTime > $EndTime ) {
+                if ( $StartTimeObject > $EndTimeObject ) {
 
                     # turn start and end time around for the calendar view
-                    my $NewStartTime = $EndTime;
-                    my $NewEndTime   = $StartTime;
-                    $StartTime = $NewStartTime;
-                    $EndTime   = $NewEndTime;
+                    my $NewStartTimeObject = $EndTimeObject;
+                    my $NewEndTimeObject   = $StartTimeObject;
+                    $StartTimeObject = $NewStartTimeObject;
+                    $EndTimeObject   = $NewEndTimeObject;
 
                    # we also need to turn the time in the tooltip around, otherwiese the time bar display would be wrong
-                    $TicketDetail{ 'DynamicField_' . $StartTimeDynamicField } = $TimeObject->SystemTime2TimeStamp(
-                        SystemTime => $StartTime,
-                    );
-                    $TicketDetail{ 'DynamicField_' . $EndTimeDynamicField } = $TimeObject->SystemTime2TimeStamp(
-                        SystemTime => $EndTime,
-                    );
+                    $TicketDetail{ 'DynamicField_' . $StartTimeDynamicField } = $StartTimeObject->ToString();
+                    $TicketDetail{ 'DynamicField_' . $EndTimeDynamicField }   = $EndTimeObject->ToString();
 
                     # show a notification bar to indicate that the start and end time are set in a wrong way
                     $Content .= $LayoutObject->Notify(
@@ -192,24 +194,31 @@ sub Run {
                 }
 
                 my %Data;
-                $Data{ID}    = $TicketID;
-                $Data{Title} = $TicketDetail{Title};
-                $TicketDetail{ 'DynamicField_' . $StartTimeDynamicField }
-                    =~ /(\d+)\-(\d+)\-(\d+)\ (\d+)\:(\d+)\:(\d+)/;
-                $Data{SYear}   = $1;
-                $Data{SMonth}  = $2 - 1;
-                $Data{SDay}    = $3;
-                $Data{SHour}   = $4;
-                $Data{SMinute} = $5;
-                $Data{SSecond} = $6;
-                $TicketDetail{ 'DynamicField_' . $EndTimeDynamicField }
-                    =~ /(\d+)\-(\d+)\-(\d+)\ (\d+)\:(\d+)\:(\d+)/;
-                $Data{EYear}     = $1;
-                $Data{EMonth}    = $2 - 1;
-                $Data{EDay}      = $3;
-                $Data{EHour}     = $4;
-                $Data{EMinute}   = $5;
-                $Data{ESecond}   = $6;
+
+                # set start/end time individual units
+                # ex: SYear; EMinute
+                my $SetDataDateTimeUnits = sub {
+                    my ( $Type, $Details ) = @_;
+
+                    my $Prefix = substr( $Type, 0, 1 );
+                    for my $Unit (qw(Year Month Day Hour Minute Second)) {
+                        my $Value = $Details->{$Unit};
+                        if ( $Unit eq 'Month' ) {
+                            $Value -= 1;
+                        }
+
+                        $Data{"${Prefix}${Unit}"} = $Value;
+                    }
+
+                    return;
+                };
+
+                $SetDataDateTimeUnits->( Start => $StartTimeObject->Get() );
+                $SetDataDateTimeUnits->( End   => $EndTimeObject->Get() );
+                #
+
+                $Data{ID}        = $TicketID;
+                $Data{Title}     = $TicketDetail{Title};
                 $Data{Color}     = $Self->{TicketColors}->{$TicketID};
                 $Data{AllDay}    = 'false';
                 $Data{Url}       = "index.pl?Action=AgentTicketZoom;TicketID=$TicketID";
@@ -222,16 +231,7 @@ sub Run {
                 # dates are exactly the same (ESecond is 00 normally)
                 $Data{ESecond}++;
 
-                $LayoutObject->Block(
-                    Name => 'CalendarEvent',
-                    Data => \%Data,
-                );
-
-                if ( $Counter < $Limit ) {
-                    $LayoutObject->Block(
-                        Name => 'CalendarEventComma',
-                    );
-                }
+                push @{ $Self->{EventsTicketCalendar} }, \%Data;
 
                 # add ticket info container
                 $LayoutObject->Block(
@@ -345,11 +345,6 @@ sub Run {
             }
         }
     }
-    if ( $Counter < $Limit ) {
-        $LayoutObject->Block(
-            Name => 'CalendarEventComma',
-        );
-    }
 
     $LayoutObject->Block(
         Name => 'CalendarDiv',
@@ -359,12 +354,19 @@ sub Run {
             }
     );
 
+    # send data to JS
+    $LayoutObject->AddJSData(
+        Key   => 'EventsTicketCalendar',
+        Value => $Self->{EventsTicketCalendar},
+    );
+    $LayoutObject->AddJSData(
+        Key   => 'FirstDay',
+        Value => $ConfigObject->Get('CalendarWeekDayStart') || 0,
+    );
+
     $Content .= $LayoutObject->Output(
         TemplateFile => 'DashboardEventsTicketCalendar',
-        Data         => {
-            %{ $Self->{Config} },
-            FirstDay => $Kernel::OM->Get('Kernel::Config')->Get('CalendarWeekDayStart') || 0,
-        },
+        Data         => {},
     );
 
     return $Content;

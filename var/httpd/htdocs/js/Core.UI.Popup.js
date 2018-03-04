@@ -213,7 +213,7 @@ Core.UI.Popup = (function (TargetNS) {
      *      Register the pop-up event for a window.
      */
     TargetNS.RegisterPopupEvent = function () {
-        $(window).bind('Popup', function (Event, Type, Param) {
+        $(window).on('Popup', function (Event, Type, Param) {
             if (Type && typeof Type !== 'undefined') {
                 if (Type === 'Reload') {
                     window.location.reload();
@@ -242,7 +242,7 @@ Core.UI.Popup = (function (TargetNS) {
             return;
         }
 
-        $(window).unbind('beforeunload.Popup');
+        $(window).off('beforeunload.Popup');
         Core.App.UnbindWindowUnloadEvent('Popup');
         $(window).trigger('Popup', [Type, Param]);
     };
@@ -268,7 +268,7 @@ Core.UI.Popup = (function (TargetNS) {
             }
         });
         if (Size) {
-            return Core.Config.Get('PopupLeaveParentWindowMsg');
+            return Core.Language.Translate('If you now leave this page, all open popup windows will be closed, too!');
         }
     };
 
@@ -460,7 +460,7 @@ Core.UI.Popup = (function (TargetNS) {
             // perform only if popups are not unlinked
             if (!Unlinked) {
                 if (typeof PopupObject !== 'undefined') {
-                    ConfirmClosePopup = window.confirm(Core.Config.Get('PopupAlreadyOpenMsg'));
+                    ConfirmClosePopup = window.confirm(Core.Language.Translate('A popup of this screen is already open. Do you want to close it and load this one instead?'));
                     if (ConfirmClosePopup) {
                         TargetNS.ClosePopup(PopupObject);
                     }
@@ -517,7 +517,7 @@ Core.UI.Popup = (function (TargetNS) {
                     // currently, popup windows cannot easily be detected in chrome, because it will
                     //      load the entire content in an invisible window.
                     if (!NewWindow || NewWindow.closed || typeof NewWindow.closed === 'undefined') {
-                        window.alert(Core.Config.Get('PopupBlockerMsg'));
+                        window.alert(Core.Language.Translate('Could not open popup window. Please disable any popup blockers for this application.'));
                     }
                     else {
                         OpenPopups[Type] = NewWindow;
@@ -686,7 +686,29 @@ Core.UI.Popup = (function (TargetNS) {
      */
     TargetNS.Init = function () {
 
-        $(window).bind('beforeunload.Popup', function () {
+        var PopupURL,
+            PopupClose = Core.Config.Get('PopupClose');
+
+        if (PopupClose === 'LoadParentURLAndClose') {
+            PopupURL = Core.Config.Get('PopupURL');
+            if (TargetNS.CurrentIsPopupWindow()) {
+                TargetNS.ExecuteInParentWindow(function(WindowObject) {
+                    WindowObject.Core.UI.Popup.FirePopupEvent('URL', { URL: Core.Config.Get('Baselink') + PopupURL });
+                });
+                TargetNS.ClosePopup();
+            }
+            else {
+                window.location.href = Core.Config.Get('Baselink') + PopupURL;
+            }
+        }
+        else if (PopupClose === 'ReloadParentAndClose') {
+            TargetNS.ExecuteInParentWindow(function(WindowObject) {
+                WindowObject.Core.UI.Popup.FirePopupEvent('Reload');
+            });
+            TargetNS.ClosePopup();
+        }
+
+        $(window).on('beforeunload.Popup', function () {
             return Core.UI.Popup.CheckPopupsOnUnload();
         });
         Core.App.BindWindowUnloadEvent('Popup', Core.UI.Popup.ClosePopupsOnUnload);
@@ -695,10 +717,10 @@ Core.UI.Popup = (function (TargetNS) {
         // if this window is a popup itself, register another function
         if (CurrentIsPopupWindow()) {
             Core.UI.Popup.InitRegisterPopupAtParentWindow();
-            $('.CancelClosePopup').bind('click', function () {
+            $('.CancelClosePopup').on('click', function () {
                 TargetNS.ClosePopup();
             });
-            $('.UndoClosePopup').bind('click', function () {
+            $('.UndoClosePopup').on('click', function () {
                 var RedirectURL = $(this).attr('href'),
                     ParentWindow = GetWindowParentObject();
                 ParentWindow.Core.UI.Popup.FirePopupEvent('URL', { URL: RedirectURL });
@@ -711,6 +733,8 @@ Core.UI.Popup = (function (TargetNS) {
             }
         }
     };
+
+    Core.Init.RegisterNamespace(TargetNS, 'APP_GLOBAL');
 
     return TargetNS;
 }(Core.UI.Popup || {}));

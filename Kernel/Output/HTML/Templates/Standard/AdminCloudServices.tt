@@ -9,7 +9,17 @@
 [% SET OTRSBusinessLabel = '<strong>OTRS Business Solution</strong>™' %]
 
 <div class="MainBox ARIARoleMain LayoutFixedSidebar SidebarFirst">
-    <h1>[% Translate("Cloud Service Management") | html %]</h1>
+    <h1 class="InvisibleText">[% Translate("Cloud Service Management") | html %]</h1>
+
+    [% BreadcrumbPath = [
+            {
+                Name => Translate('Cloud Service Management'),
+                Link => Env("Action"),
+            },
+        ]
+    %]
+
+    [% INCLUDE "Breadcrumb.tt" Path = BreadcrumbPath %]
 
     <div class="SidebarColumn">
         <div class="WidgetSimple">
@@ -74,7 +84,7 @@
                                 [% Translate(Data.CloudService.Description) | html %]
                                 [% IF Data.CloudService.IsOTRSBusiness && !Data.OTRSBusinessIsInstalled %]
                                 <span class="Recomendation">
-                                    <a class="MasterActionLink Button" href="[% Env("Baselink") %]Action=AdminOTRSBusiness"><i class="fa fa-angle-double-up"></i> [% Translate("Upgrade to %s", OTRSBusinessLabel) %]</a>
+                                    <a class="MasterActionLink Button" href="[% Env("Baselink") %]Action=AdminOTRSBusiness"><i class="fa fa-angle-double-up"></i> [% Translate("Upgrade to %s") | html | ReplacePlaceholders(OTRSBusinessLabel) %]</a>
                                 </span>
                                 [% END %]
                             </td>
@@ -88,16 +98,3 @@
     </div>
     <div class="Clear"></div>
 </div>
-
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-$('.MasterAction').bind('click', function (Event) {
-    var $MasterActionLink = $(this).find('.MasterActionLink');
-    // only act if the link was not clicked directly
-    if (Event.target !== $MasterActionLink.get(0)) {
-        window.location = $MasterActionLink.attr('href');
-        return false;
-    }
-});
-//]]></script>
-[% END %]

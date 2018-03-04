@@ -16,8 +16,8 @@ use Digest::HMAC qw(hmac_hex);
 
 our @ObjectDependencies = (
     'Kernel::Config',
+    'Kernel::System::DateTime',
     'Kernel::System::Log',
-    'Kernel::System::Time',
     'Kernel::System::User',
 );
 
@@ -128,8 +128,11 @@ sub _GenerateOTP {
 
     # algorithm based on RfC 6238
 
+    #
     # get unix timestamp divided by 30
-    my $TimeStamp = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
+    #
+    my $DateTimeObject = $Kernel::OM->Create('Kernel::System::DateTime');
+    my $TimeStamp      = $DateTimeObject->ToEpoch();
     $TimeStamp = int( $TimeStamp / 30 );
 
     # on request use previous 30-second time period

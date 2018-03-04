@@ -56,7 +56,7 @@ sub Run {
             Selected => \%Member,
             Data     => \%RoleData,
             ID       => $UserData{UserID},
-            Name     => "$UserData{UserFirstname} $UserData{UserLastname} ($UserData{UserLogin})",
+            Name     => "$UserData{UserFullname}",
             Type     => 'User',
         );
         $Output .= $LayoutObject->Footer();
@@ -135,7 +135,18 @@ sub Run {
             );
         }
 
-        return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" );
+        # if the user would like to continue editing the role-user relation just redirect to the edit screen
+        # otherwise return to relations overview
+        if (
+            defined $ParamObject->GetParam( Param => 'ContinueAfterSave' )
+            && ( $ParamObject->GetParam( Param => 'ContinueAfterSave' ) eq '1' )
+            )
+        {
+            return $LayoutObject->Redirect( OP => "Action=$Self->{Action};Subaction=Role;ID=$ID" );
+        }
+        else {
+            return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" );
+        }
     }
 
     # ------------------------------------------------------------ #
@@ -172,7 +183,18 @@ sub Run {
             );
         }
 
-        return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" );
+        # if the user would like to continue editing the role-user relation just redirect to the edit screen
+        # otherwise return to relations overview
+        if (
+            defined $ParamObject->GetParam( Param => 'ContinueAfterSave' )
+            && ( $ParamObject->GetParam( Param => 'ContinueAfterSave' ) eq '1' )
+            )
+        {
+            return $LayoutObject->Redirect( OP => "Action=$Self->{Action};Subaction=User;ID=$ID" );
+        }
+        else {
+            return $LayoutObject->Redirect( OP => "Action=$Self->{Action}" );
+        }
     }
 
     # ------------------------------------------------------------ #
@@ -200,6 +222,12 @@ sub _Change {
 
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
+    $Param{BreadcrumbTitle} = $LayoutObject->{LanguageObject}->Translate("Change Role Relations for Agent");
+
+    if ( $Type eq 'Role' ) {
+        $Param{BreadcrumbTitle} = $LayoutObject->{LanguageObject}->Translate("Change Agent Relations for Role");
+    }
+
     $LayoutObject->Block(
         Name => 'Change',
         Data => {
@@ -211,8 +239,6 @@ sub _Change {
         },
     );
 
-    $LayoutObject->Block( Name => "ChangeHeader$VisibleType{$NeType}" );
-
     $LayoutObject->Block(
         Name => 'ChangeHeader',
         Data => {
@@ -220,6 +246,12 @@ sub _Change {
             Type   => $Type,
             NeType => $NeType,
         },
+    );
+
+    # set permissions
+    $LayoutObject->AddJSData(
+        Key   => 'RelationItems',
+        Value => [$Type],
     );
 
     # check if there are roles

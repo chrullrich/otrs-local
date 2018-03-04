@@ -39,9 +39,33 @@ my $DB          = '';
 my $DBDump      = '';
 getopt( 'hcrtd', \%Opts );
 if ( exists $Opts{h} ) {
-    print "backup.pl - backup script\n";
-    print "Copyright (C) 2001-2017 OTRS AG, http://otrs.com/\n";
-    print "usage: backup.pl -d /data_backup_dir/ [-c gzip|bzip2] [-r 30] [-t fullbackup|nofullbackup|dbonly]\n";
+    print <<EOF;
+
+Backup an OTRS system.
+
+Usage:
+ backup.pl -d /data_backup_dir/ [-c gzip|bzip2] [-r DAYS] [-t fullbackup|nofullbackup|dbonly]
+
+Options:
+ -d                     - Directory where the backup files should place to.
+ [-c]                   - Select the compression method (gzip|bzip2). Default: gzip.
+ [-r DAYS]              - Remove backups which are more than DAYS days old.
+ [-t]                   - Specify which data will be saved (fullbackup|nofullbackup|dbonly). Default: fullbackup.
+ [-h]                   - Display help for this command.
+
+Help:
+Using -t fullbackup saves the database and the whole OTRS home directory (except /var/tmp and cache directories).
+Using -t nofullbackup saves only the database, /Kernel/Config* and /var directories.
+With -t dbonly only the database will be saved.
+
+Output:
+ Config.tar.gz          - Backup of /Kernel/Config* configuration files.
+ Application.tar.gz     - Backup of application file system (in case of full backup).
+ VarDir.tar.gz          - Backup of /var directory (in case of no full backup).
+ DataDir.tar.gz         - Backup of article files.
+ DatabaseBackup.sql.gz  - Database dump.
+
+EOF
     exit 1;
 }
 
@@ -91,7 +115,7 @@ my $Database     = $Kernel::OM->Get('Kernel::Config')->Get('Database');
 my $DatabaseUser = $Kernel::OM->Get('Kernel::Config')->Get('DatabaseUser');
 my $DatabasePw   = $Kernel::OM->Get('Kernel::Config')->Get('DatabasePw');
 my $DatabaseDSN  = $Kernel::OM->Get('Kernel::Config')->Get('DatabaseDSN');
-my $ArticleDir   = $Kernel::OM->Get('Kernel::Config')->Get('ArticleDir');
+my $ArticleDir   = $Kernel::OM->Get('Kernel::Config')->Get('Ticket::Article::Backend::MIMEBase::ArticleDataDir');
 
 # decrypt pw (if needed)
 if ( $DatabasePw =~ m/^\{(.*)\}$/ ) {
@@ -139,12 +163,10 @@ if ( $Home !~ m{\/\z} ) {
 
 chdir($Home);
 
-my ( $Sec, $Min, $Hour, $Day, $Month, $Year, $WeekDay ) = $Kernel::OM->Get('Kernel::System::Time')->SystemTime2Date(
-    SystemTime => $Kernel::OM->Get('Kernel::System::Time')->SystemTime(),
-);
-
 # create directory name - this looks like 2013-09-09_22-19'
-my $Directory = sprintf( "$Opts{d}/%04d-%02d-%02d_%02d-%02d", $Year, $Month, $Day, $Hour, $Min );
+my $Directory = $Kernel::OM->Create('Kernel::System::DateTime')->Format(
+    Format => $Opts{d} . '/%Y-%m-%d_%H-%M',
+);
 
 if ( !mkdir($Directory) ) {
     die "ERROR: Can't create directory: $Directory: $!\n";
@@ -226,7 +248,7 @@ else {
 
     # set password via environment variable if there is one
     if ($DatabasePw) {
-        $ENV{'PGPASSWORD'} = $DatabasePw;
+        $ENV{'PGPASSWORD'} = $DatabasePw;    ## no critic
     }
 
     if ($DatabaseHost) {
@@ -257,35 +279,39 @@ else {
 # remove old backups only after everything worked well
 if ( defined $Opts{r} ) {
     my %LeaveBackups;
-    my $SystemTime = $Kernel::OM->Get('Kernel::System::Time')->SystemTime();
+    my $SystemDTObject = $Kernel::OM->Create('Kernel::System::DateTime');
 
     # we'll be substracting days to the current time
     # we don't want DST changes to affect our dates
     # if it is < 2:00 AM, add two hours so we're sure DST will not change our timestamp
     # to another day
-    my $TimeStamp = $Kernel::OM->Get('Kernel::System::Time')->SystemTime2TimeStamp(
-        SystemTime => $SystemTime,
-        Type       => 'Short',
-    );
-
-    if ( substr( $TimeStamp, 0, 2 ) < 2 ) {
-        $SystemTime += ( 3600 * 2 );
+    if ( $SystemDTObject->Get()->{Hour} < 2 ) {
+        $SystemDTObject->Add( Hours => 2 );
     }
 
     for ( 0 .. $Opts{r} ) {
-        my ( $Sec, $Min, $Hour, $Day, $Month, $Year, $WeekDay )
-            = $Kernel::OM->Get('Kernel::System::Time')->SystemTime2Date(
-            SystemTime => $SystemTime,
-            );
 
         # legacy, old directories could be in the format 2013-4-8
-        $LeaveBackups{ sprintf( "%04d-%01d-%01d", $Year, $Month, $Day ) } = 1;
-        $LeaveBackups{ sprintf( "%04d-%02d-%01d", $Year, $Month, $Day ) } = 1;
-        $LeaveBackups{ sprintf( "%04d-%01d-%02d", $Year, $Month, $Day ) } = 1;
-        $LeaveBackups{ sprintf( "%04d-%02d-%02d", $Year, $Month, $Day ) } = 1;
+        my @LegacyDirFormats = (
+            '%04d-%01d-%01d',
+            '%04d-%02d-%01d',
+            '%04d-%01d-%02d',
+            '%04d-%02d-%02d',
+        );
+
+        my $SystemDTDetails = $SystemDTObject->Get();
+        for my $LegacyFirFormat (@LegacyDirFormats) {
+            my $Dir = sprintf(
+                $LegacyFirFormat,
+                $SystemDTDetails->{Year},
+                $SystemDTDetails->{Month},
+                $SystemDTDetails->{Day},
+            );
+            $LeaveBackups{$Dir} = 1;
+        }
 
         # substract one day
-        $SystemTime -= ( 24 * 3600 );
+        $SystemDTObject->Subtract( Days => 1 );
     }
 
     my @Directories = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
@@ -351,4 +377,6 @@ sub RemoveIncompleteBackup {
     else {
         print STDERR "failed\n";
     }
+
+    return;
 }

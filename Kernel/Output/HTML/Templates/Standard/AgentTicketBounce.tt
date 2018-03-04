@@ -7,7 +7,7 @@
 # --
 
 <!-- start bounce form -->
-<form action="[% Env("CGIHandle") %]" method="post" name="bounce" class="Validate PreventMultipleSubmits">
+<form action="[% Env("CGIHandle") %]" method="post" name="bounce" class="Validate">
     <input type="hidden" name="Action"     value="[% Env("Action") %]"/>
     <input type="hidden" name="Subaction"  value="Store"/>
     <input type="hidden" name="QueueID"    value="[% Data.QueueID | html %]"/>
@@ -83,40 +83,6 @@
                 </div>
                 <div class="Clear"></div>
 
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-
-# initial setting for to/subject/body
-SwitchMandatoryFields();
-
-# watch for changes of inform sender field
-$('#InformSender').bind('click', function(){
-    SwitchMandatoryFields();
-});
-
-# function to switch between mandatory and optional
-function SwitchMandatoryFields() {
-    var InformSenderChecked = $('#InformSender').prop('checked'),
-        $ElementsLabelObj = $('#To,#Subject,#RichText').parent().prev('label');
-
-    if ( InformSenderChecked ) {
-        $ElementsLabelObj
-            .addClass('Mandatory')
-            .find('.Marker')
-            .removeClass('Hidden');
-    }
-    else if ( !InformSenderChecked ) {
-        $ElementsLabelObj
-            .removeClass('Mandatory')
-            .find('.Marker')
-            .addClass('Hidden');
-    }
-
-    return;
-}
-//]]></script>
-[% END %]
-
                 <label for="To"><span class="Marker Hidden">*</span>[% Translate("To") | html %]:</label>
                 <div class="Field">
                     <input type="text" name="To" id="To" value="[% Data.To | html %]" class="W50pc Validate_DependingRequiredAND Validate_Depending_InformSender [% Data.ToInvalid | html %]"/>
@@ -151,9 +117,6 @@ function SwitchMandatoryFields() {
 
                 <label for="RichText"><span class="Marker Hidden">*</span>[% Translate("Text") | html %]:</label>
                 <div class="RichTextField">
-[% RenderBlockStart("RichText") %]
-[% InsertTemplate("RichTextEditor.tt") %]
-[% RenderBlockEnd("RichText") %]
                     <textarea id="RichText" class="RichText Validate_DependingRequiredAND Validate_Depending_InformSender [% Data.BodyInvalid | html %]" name="Body" rows="15" cols="[% Config("Ticket::Frontend::TextAreaEmail") %]">[% Data.InformationFormat %]</textarea>
                     <div id="RichTextError" class="TooltipErrorMessage"><p>[% Translate("This field is required.") | html %]</p></div>
                     <div id="RichTextServerError" class="TooltipErrorMessage"><p>[% Translate("This field is required.") | html %]</p></div>
