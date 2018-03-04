@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.163466528282304;
+    $Self->{Completeness}        = 0.185849870578085;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -35,22 +35,22 @@ sub Data {
 
         # Template: AdminACL
         'ACL Management' => 'Správa ACL',
-        'Actions' => 'Akcia',
+        'Actions' => 'Akcie',
         'Create New ACL' => 'Vytvoriť nové ACL',
-        'Deploy ACLs' => '',
+        'Deploy ACLs' => 'Nasadenie ACLs',
         'Export ACLs' => 'Exportovať ACL',
         'Filter for ACLs' => 'Filter pre ACL',
-        'Just start typing to filter...' => '',
-        'Configuration Import' => '',
+        'Just start typing to filter...' => 'Začni písať pre filtrovanie...',
+        'Configuration Import' => 'Import konfigurácie',
         'Here you can upload a configuration file to import ACLs to your system. The file needs to be in .yml format as exported by the ACL editor module.' =>
-            '',
+            'Tu môžete nahrať konfiguračný súbor pre import ACLs do systému. Súbor musí byť v .yml fomáte, exportovaný z ACL editor modulu.',
         'This field is required.' => 'Toto pole je povinné.',
-        'Overwrite existing ACLs?' => '',
+        'Overwrite existing ACLs?' => 'Prepísať existujúce ACLs?',
         'Upload ACL configuration' => 'Nahrať ACL konfiguráciu',
         'Import ACL configuration(s)' => 'Importovať ACL konfiguráciu',
         'Description' => 'Popis ',
         'To create a new ACL you can either import ACLs which were exported from another system or create a complete new one.' =>
-            '',
+            'Na vytvorenie nových ACL môžete buď importovať ACLs exportované z iného systému alebo vytvoriť úplne nové.',
         'Changes to the ACLs here only affect the behavior of the system, if you deploy the ACL data afterwards. By deploying the ACL data, the newly made changes will be written to the configuration.' =>
             '',
         'ACLs' => 'ACL',
@@ -58,32 +58,32 @@ sub Data {
             '',
         'ACL name' => 'Názov ACL',
         'Comment' => 'poznámka',
-        'Validity' => '',
+        'Validity' => 'platnosť',
         'Export' => 'Export',
         'Copy' => 'Kopírovať',
         'No data found.' => 'Neboli nájdene žiadne dáta.',
-        'No matches found.' => 'Nebola nájdená zhoda',
+        'No matches found.' => 'Nebola nájdená zhoda.',
 
         # Template: AdminACLEdit
         'Edit ACL %s' => 'Upraviť ACL %',
-        'Edit ACL' => '',
+        'Edit ACL' => 'Upraviť ACL',
         'Go to overview' => 'Prejsť na prehľad',
         'Delete ACL' => 'Zmazať ACL',
         'Delete Invalid ACL' => 'Zmazať chybný ACL',
-        'Match settings' => '',
+        'Match settings' => 'Nastavenie zhody',
         'Set up matching criteria for this ACL. Use \'Properties\' to match the current screen or \'PropertiesDatabase\' to match attributes of the current ticket that are in the database.' =>
-            '',
+            'Nastav zodpovedajúce kritériá pre toto ACL. Použi "vlastnosti" pre zhodu s momentálnou obrazovkou alebo "vlastnosti databázy" pre zhodu atribútov aktuálneho tiketu, ktorý je v databáze.',
         'Change settings' => 'Zmena nastavenia',
         'Set up what you want to change if the criteria match. Keep in mind that \'Possible\' is a white list, \'PossibleNot\' a black list.' =>
-            '',
-        'Check the official' => '',
+            'Nastav, čo chceš zmeniť, ak kritériá pasujú. Mysli na to, že "možné" je "white list" a "nemožné" je "black list".',
+        'Check the official' => 'Skontoroluj oficiálne',
         'documentation' => 'dokumentácia',
-        'Show or hide the content' => '',
-        'Edit ACL Information' => '',
+        'Show or hide the content' => 'Zobraziť alebo skryť obsah',
+        'Edit ACL Information' => 'Edituj ACL informáciu',
         'Name' => 'Meno',
-        'Stop after match' => '',
-        'Edit ACL Structure' => '',
-        'Save ACL' => '',
+        'Stop after match' => 'Zastav po zhode',
+        'Edit ACL Structure' => 'Edituj ACL štruktúru',
+        'Save ACL' => 'Ulož ACL',
         'Save' => 'Uložiť',
         'or' => 'alebo',
         'Save and finish' => 'Uložiť a skončiť',
@@ -92,93 +92,93 @@ sub Data {
 
         # Template: AdminACLNew
         'Create a new ACL by submitting the form data. After creating the ACL, you will be able to add configuration items in edit mode.' =>
-            '',
+            'Vytvor nové ACL zaslaním dát z formuláru. Po vytvorení ACL, budete mať možnosť pridať configuračnú položku v editovacom móde.',
 
         # Template: AdminAppointmentCalendarManage
-        'Calendar Management' => '',
-        'Add Calendar' => '',
-        'Edit Calendar' => '',
-        'Go back' => '',
-        'Calendar Overview' => '',
-        'Add new Calendar' => '',
-        'Import Appointments' => '',
-        'Calendar Import' => '',
+        'Calendar Management' => 'Menežment kalendára',
+        'Add Calendar' => 'Pridaj kalendár',
+        'Edit Calendar' => 'Edituj kalendár',
+        'Go back' => 'Choď späť',
+        'Calendar Overview' => 'Celkový prehľad kalendára',
+        'Add new Calendar' => 'Pridaj nový kalendár',
+        'Import Appointments' => 'Import schôdzok',
+        'Calendar Import' => 'Import kalendára',
         'Here you can upload a configuration file to import a calendar to your system. The file needs to be in .yml format as exported by calendar management module.' =>
-            '',
-        'Overwrite existing entities' => '',
-        'Upload calendar configuration' => '',
-        'Import Calendar' => '',
-        'Filter for calendars' => '',
+            'Tu môžete nahrať konfiguračný súbor pre import kalendára do systému. Súbor musí byť v .yml fomáte, exportovaný z modulu menežmentu kalendára.',
+        'Overwrite existing entities' => 'Prepíš existujúce entity',
+        'Upload calendar configuration' => 'Nahraj konfiguráciu kalendára',
+        'Import Calendar' => 'Import kalendára',
+        'Filter for calendars' => 'Filter pre kalendáre',
         'Depending on the group field, the system will allow users the access to the calendar according to their permission level.' =>
-            '',
+            'V závislosti od skupinového poľa, systém umožní užívateľovi prístup do kalendára v závislosti od úrovne oprávnenia.',
         'Read only: users can see and export all appointments in the calendar.' =>
-            '',
+            'Iba na čítanie: užívateľ môže vidieť a exportovať všetky schôdzky v kalendári.',
         'Move into: users can modify appointments in the calendar, but without changing the calendar selection.' =>
-            '',
+            'Presuň do: užívateľ môže upraviť schôdzky v kalendári, ale bez zmeny výberu kalendára.',
         'Create: users can create and delete appointments in the calendar.' =>
-            '',
-        'Read/write: users can manage the calendar itself.' => '',
+            'Vytvor: užívatelia môžu vytvoriť a vymazať schôdzky v kalendári.',
+        'Read/write: users can manage the calendar itself.' => 'Čítať/Zapisovať: užívatelia môžu menežovať kalendár.',
         'Group' => 'Skupina',
         'Changed' => 'Zmenený',
         'Created' => 'Vytvorený',
-        'Download' => '',
-        'URL' => '',
-        'Export calendar' => '',
-        'Download calendar' => '',
-        'Copy public calendar URL' => '',
+        'Download' => 'Stiahnuť',
+        'URL' => 'URL',
+        'Export calendar' => 'Export kalendára',
+        'Download calendar' => 'Stiahni kalendár',
+        'Copy public calendar URL' => 'Kopíruj verejnú URL kalendára',
         'Calendar' => 'Kalendár',
-        'Calendar name' => '',
-        'Calendar with same name already exists.' => '',
-        'Color' => '',
-        'Permission group' => '',
-        'Ticket Appointments' => '',
-        'Rule' => '',
-        'Remove this entry' => '',
+        'Calendar name' => 'Názov kalendára',
+        'Calendar with same name already exists.' => 'Kalendár s rovnakým názvom už existuje.',
+        'Color' => 'Farba',
+        'Permission group' => 'Skupina oprávnení',
+        'Ticket Appointments' => 'Ticketové schôdzky',
+        'Rule' => 'Pravidlo',
+        'Remove this entry' => 'Odstrániť túto položku',
         'Remove' => 'Vymazať',
-        'Start date' => '',
-        'End date' => '',
+        'Start date' => 'Počiatočný dátum',
+        'End date' => 'Konečný dátum',
         'Use options below to narrow down for which tickets appointments will be automatically created.' =>
             '',
         'Queues' => 'Fronty',
-        'Please select a valid queue.' => '',
-        'Search attributes' => '',
-        'Add entry' => '',
+        'Please select a valid queue.' => 'Prosím zvoľte platnú frontu.',
+        'Search attributes' => 'Atribúty vyhľadávania',
+        'Add entry' => 'Pridať položku',
         'Add' => 'Pridať ',
         'Define rules for creating automatic appointments in this calendar based on ticket data.' =>
-            '',
-        'Add Rule' => '',
-        'Submit' => 'Predloženie',
+            'Definuj pravidlá pre automatické vytvorenie schôdzky v tomto kalendári na základe dát z tiketov.',
+        'Add Rule' => 'Pridaj pravidlo',
+        'Submit' => 'Odoslať',
 
         # Template: AdminAppointmentImport
-        'Appointment Import' => '',
-        'Uploaded file must be in valid iCal format (.ics).' => '',
+        'Appointment Import' => 'Import schôdzky',
+        'Uploaded file must be in valid iCal format (.ics).' => 'Nahrávaný súbor musí byť v platnom iCAL formáte (.ics).',
         'If desired Calendar is not listed here, please make sure that you have at least \'create\' permissions.' =>
-            '',
+            'Ak požadovaný kalendár tu nie je uvedený, uistite sa, že máte minimálne oprávnenie na jeho vytvorenie.',
         'Upload' => 'Nahrať',
-        'Update existing appointments?' => '',
+        'Update existing appointments?' => 'Aktualizovať existujúcu schôdzku?',
         'All existing appointments in the calendar with same UniqueID will be overwritten.' =>
-            '',
-        'Upload calendar' => '',
-        'Import appointments' => '',
+            'Všetky existujúce schôdzky v kalendári s rovnakým UniqueID budú prepísané.',
+        'Upload calendar' => 'Nahraj kalendár',
+        'Import appointments' => 'Import schôdzok',
 
         # Template: AdminAppointmentNotificationEvent
-        'Appointment Notification Management' => '',
-        'Add Notification' => '',
-        'Edit Notification' => '',
-        'Add notification' => '',
-        'Export Notifications' => '',
-        'Filter for Notifications' => '',
-        'Filter for notifications' => '',
+        'Appointment Notification Management' => 'Menežment notifikácií schôdzok',
+        'Add Notification' => 'Pridaj notifikáciu',
+        'Edit Notification' => 'Edituj notifikáciu',
+        'Add notification' => 'Pridaj notifikáciu',
+        'Export Notifications' => 'Export notifikácií',
+        'Filter for Notifications' => 'Filter pre notifikácie',
+        'Filter for notifications' => 'Filter pre notifikácie',
         'Here you can upload a configuration file to import appointment notifications to your system. The file needs to be in .yml format as exported by the appointment notification module.' =>
-            '',
-        'Overwrite existing notifications?' => '',
-        'Upload Notification configuration' => '',
-        'Import Notification configuration' => '',
+            'Tu môžete nahrať konfiguračný súbor na import notifikácií schôdzok do Vášho systému. Súbor musí byť v .yml formáte exportovaný z modulu notifikácií schôdzok.',
+        'Overwrite existing notifications?' => 'Prepísať existujúce notifikácie?',
+        'Upload Notification configuration' => 'Nahrať konfiguráciu notifikácie',
+        'Import Notification configuration' => 'Import konfigurácie notifikácie',
         'List' => 'Zoznam',
         'Delete' => 'Zmazať',
-        'Delete this notification' => '',
-        'Show in agent preferences' => '',
-        'Agent preferences tooltip' => '',
+        'Delete this notification' => 'Zmazať túto notifikáciu',
+        'Show in agent preferences' => 'Zobraz v nastaveniach agenta',
+        'Agent preferences tooltip' => 'Nástrojové tipy vlastností agenta ',
         'This message will be shown on the agent preferences screen as a tooltip for this notification.' =>
             '',
         'Toggle this widget' => '',
@@ -186,47 +186,47 @@ sub Data {
         'Event' => 'Udalosť',
         'Here you can choose which events will trigger this notification. An additional appointment filter can be applied below to only send for appointments with certain criteria.' =>
             '',
-        'Appointment Filter' => '',
+        'Appointment Filter' => 'Filter schôdzok',
         'Type' => 'Typ',
         'Title' => 'Názov',
         'Location' => 'Poloha',
-        'Team' => '',
-        'Resource' => '',
-        'Recipients' => '',
-        'Send to' => '',
-        'Send to these agents' => '',
-        'Send to all group members' => '',
-        'Send to all role members' => '',
+        'Team' => 'Team',
+        'Resource' => 'Zdroj',
+        'Recipients' => 'Príjemcovia',
+        'Send to' => 'Komu',
+        'Send to these agents' => 'Poslať týmto agentom',
+        'Send to all group members' => 'Poslať všetkým členom skupiny',
+        'Send to all role members' => 'Poslať všetkým členom role',
         'Send on out of office' => 'Pošli Neprítomnosť v kancelárii',
-        'Also send if the user is currently out of office.' => '',
-        'Once per day' => '',
+        'Also send if the user is currently out of office.' => 'Pošli aj v prípade, že užívateľ je mimo kanceláriu.',
+        'Once per day' => 'Jedenkrát za deň',
         'Notify user just once per day about a single appointment using a selected transport.' =>
             '',
-        'Notification Methods' => '',
+        'Notification Methods' => 'Spôsoby notifikácie',
         'These are the possible methods that can be used to send this notification to each of the recipients. Please select at least one method below.' =>
             '',
-        'Enable this notification method' => '',
+        'Enable this notification method' => 'Aktivuj túto notifikačnú metódu',
         'Transport' => '',
-        'At least one method is needed per notification.' => '',
-        'Active by default in agent preferences' => '',
+        'At least one method is needed per notification.' => 'Na notifikovanie je potrebná aspoň jedna metóda.',
+        'Active by default in agent preferences' => 'Štandartne aktívny v nastaveniach agenta',
         'This is the default value for assigned recipient agents who didn\'t make a choice for this notification in their preferences yet. If the box is enabled, the notification will be sent to such agents.' =>
             '',
-        'This feature is currently not available.' => '',
-        'Upgrade to %s' => '',
+        'This feature is currently not available.' => 'Táto funkcia momentálne nie je k dispozícii.',
+        'Upgrade to %s' => 'Aktualizované na %s',
         'Please activate this transport in order to use it.' => '',
-        'No data found' => '',
-        'No notification method found.' => '',
-        'Notification Text' => '',
+        'No data found' => 'Neboli nájdené žiadne dáta',
+        'No notification method found.' => 'Nebola nájdená notifikačná metóda.',
+        'Notification Text' => 'Text notifikácie',
         'This language is not present or enabled on the system. This notification text could be deleted if it is not needed anymore.' =>
             '',
-        'Remove Notification Language' => '',
+        'Remove Notification Language' => 'Vymaž jazyk notifikácie',
         'Subject' => 'Predmet',
         'Text' => 'Text',
-        'Message body' => '',
-        'Add new notification language' => '',
-        'Save Changes' => '',
+        'Message body' => 'Telo správy',
+        'Add new notification language' => 'Pridaj nový notifikačný jazyk',
+        'Save Changes' => 'Ulož zmeny',
         'Tag Reference' => '',
-        'Notifications are sent to an agent.' => '',
+        'Notifications are sent to an agent.' => 'Notifikácie boli poslané agentovi.',
         'You can use the following tags' => '',
         'To get the first 20 character of the appointment title.' => '',
         'To get the appointment attribute' => '',
@@ -238,14 +238,14 @@ sub Data {
 
         # Template: AdminAppointmentNotificationEventTransportEmailSettings
         'Additional recipient email addresses' => '',
-        'Article visible for customer' => '',
+        'Article visible for customer' => 'Článok viditeľný pre zákazníka',
         'An article will be created if the notification is sent to the customer or an additional email address.' =>
             '',
-        'Email template' => '',
+        'Email template' => 'Vzor emailu',
         'Use this template to generate the complete email (only for HTML emails).' =>
             '',
-        'Enable email security' => '',
-        'Email security level' => '',
+        'Enable email security' => 'Povoliť zabezpečenie e-mailu',
+        'Email security level' => 'Úroveň zabezpečenia e-mailu',
         'If signing key/certificate is missing' => '',
         'If encryption key/certificate is missing' => '',
 
@@ -253,12 +253,12 @@ sub Data {
         'Attachment Management' => 'riadenie príloh',
         'Add Attachment' => 'Pridať prílohu',
         'Edit Attachment' => 'Upraviť prílohu',
-        'Filter for Attachments' => '',
-        'Filter for attachments' => '',
+        'Filter for Attachments' => 'Filter pre prílohy',
+        'Filter for attachments' => 'Filter pre prílohy',
         'Filename' => 'Názov súboru',
         'Download file' => 'Stiahnúť prílohu',
         'Delete this attachment' => 'Vymazať túto prílohu',
-        'Do you really want to delete this attachment?' => '',
+        'Do you really want to delete this attachment?' => 'Chceš skutočne vymazať túto prílohu?',
         'Attachment' => 'Príloha',
 
         # Template: AdminAutoResponse
@@ -275,7 +275,7 @@ sub Data {
         'To get the name of the ticket\'s customer user (if given).' => '',
         'To get the article attribute' => '',
         'Options of the current customer user data' => '',
-        'Ticket owner options' => '',
+        'Ticket owner options' => 'Možnosti vlastníka tiketu',
         'Ticket responsible options' => '',
         'Options of the current user who requested this action' => '',
         'Options of the ticket data' => '',
@@ -315,8 +315,8 @@ sub Data {
         'Available Cloud Services' => '',
 
         # Template: AdminCommunicationLog
-        'Communication Log' => '',
-        'Time range' => '',
+        'Communication Log' => 'Komunikačný log',
+        'Time range' => 'Časové rozpätie',
         'Show only communication logs created in specific time range.' =>
             '',
         'Filter for communications' => '',
@@ -2438,7 +2438,7 @@ sub Data {
         'Edit your preferences' => 'Zmeniť nastavenia',
         'Personal preferences' => '',
         'Preferences' => 'Nastavenia',
-        'Warning! You\'re currently not editing your own preferences, but those of %s.' =>
+        'Please note: you\'re currently editing the preferences of %s.' =>
             '',
         'Go back to editing this agent' => '',
         'Set up your personal preferences. Save each setting by clicking the checkmark on the right.' =>
@@ -2933,6 +2933,9 @@ sub Data {
         'Send a bugreport' => 'Pošli report o chybách',
         'Expand' => 'Rozšíriť',
 
+        # Template: AttachmentList
+        'Click to delete this attachment.' => '',
+
         # Template: DraftButtons
         'Update draft' => '',
         'Save as new draft' => '',
@@ -3286,6 +3289,7 @@ sub Data {
         'Loading, please wait...' => '',
 
         # JS Template: UploadContainer
+        'Click to select a file for upload.' => '',
         'Click to select files or just drop them here.' => '',
         'Click to select a file or just drop it here.' => '',
         'Uploading...' => '',
@@ -3549,32 +3553,32 @@ sub Data {
         'Invoker deleted' => '',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceErrorHandlingRequestRetry.pm
-        '0 seconds' => '',
-        '15 seconds' => '',
-        '30 seconds' => '',
-        '45 seconds' => '',
-        '1 minute' => '',
-        '2 minutes' => '',
-        '3 minutes' => '',
-        '4 minutes' => '',
-        '5 minutes' => '',
+        '0 seconds' => '0 sekúnd',
+        '15 seconds' => '15 sekúnd',
+        '30 seconds' => '30 sekúnd',
+        '45 seconds' => '45 sekúnd',
+        '1 minute' => '1 minuta',
+        '2 minutes' => '2 minuty',
+        '3 minutes' => '3 minuty',
+        '4 minutes' => '4 minuty',
+        '5 minutes' => '5 minút',
         '10 minutes' => ' 10 minút',
         '15 minutes' => ' 15 minút',
-        '30 minutes' => '',
-        '1 hour' => '',
-        '2 hours' => '',
-        '3 hours' => '',
-        '4 hours' => '',
-        '5 hours' => '',
-        '6 hours' => '',
-        '12 hours' => '',
-        '18 hours' => '',
-        '1 day' => '',
-        '2 days' => '',
-        '3 days' => '',
-        '4 days' => '',
-        '6 days' => '',
-        '1 week' => '',
+        '30 minutes' => '30 minút',
+        '1 hour' => '1 hodina',
+        '2 hours' => '2 hodiny',
+        '3 hours' => '3 hodiny',
+        '4 hours' => '4 hodiny',
+        '5 hours' => '5 hodín',
+        '6 hours' => '6 hodín',
+        '12 hours' => '12 hodín',
+        '18 hours' => '18 hodín',
+        '1 day' => '1 deň',
+        '2 days' => '2 dni',
+        '3 days' => '3 dni',
+        '4 days' => '4 dni',
+        '6 days' => '6 dní',
+        '1 week' => '1 týždeň',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceInvokerDefault.pm
         'Need InvokerType' => '',
@@ -3646,6 +3650,8 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminMailAccount.pm
         'Mail account added!' => 'Mailové konto pridané!',
+        'Email account fetch already fetched by another process. Please try again later!' =>
+            '',
         'Dispatching by email To: field.' => 'Posielam emailom =>  prijemca: pole',
         'Dispatching by selected Queue.' => 'Posielam vybraným queue.',
 
@@ -3695,9 +3701,11 @@ sub Data {
         'Updated' => '',
         'Already up-to-date' => '',
         'Installed' => '',
+        'Not correctly deployed' => '',
         'Package updated correctly' => '',
         'Package was already updated' => '',
         'Dependency installed correctly' => '',
+        'The package needs to be reinstalled' => '',
         'The package contains cyclic dependencies' => '',
         'Not found in on-line repositories' => '',
         'Required version is higher than available' => '',
@@ -4010,8 +4018,6 @@ sub Data {
         'Updated user preferences' => '',
         'System was unable to deploy your changes.' => '',
         'Setting not found!' => '',
-        'This feature is part of the %s Please contact us at %s for an upgrade.' =>
-            '',
         'System was unable to reset the setting!' => '',
 
         # Perl Module: Kernel/Modules/AgentSplitSelection.pm
@@ -4577,7 +4583,8 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/Notification/CustomerSystemMaintenanceCheck.pm
         'System maintenance is active!' => '',
-        'A system maintenance period will start at: ' => 'Plánovaná systémová údržba začína o:',
+        'A system maintenance period will start at: %s and is expected to stop at: %s' =>
+            '',
 
         # Perl Module: Kernel/Output/HTML/Notification/DaemonCheck.pm
         'OTRS Daemon is not running.' => 'OTRS démon nebeží.',
@@ -4915,6 +4922,11 @@ sub Data {
         'InnoDB Log File Size' => '',
         'The setting innodb_log_file_size must be at least 256 MB.' => '',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/InvalidDefaultValues.pm
+        'Invalid Default Values' => '',
+        'Tables with invalid default values were found. In order to fix it automatically, please run: bin/otrs.Console.pl Maint::Database::Check --repair' =>
+            '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/MaxAllowedPacket.pm
         'Maximum Query Size' => '',
         'The setting \'max_allowed_packet\' must be higher than 64 MB.' =>
@@ -4931,6 +4943,9 @@ sub Data {
         'Tables with a different storage engine than the default engine were found.' =>
             '',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/TableCheck.pm
+        'Table check found some problems.' => '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Version.pm
         'MySQL 5.x or higher is required.' => '',
 
@@ -4942,6 +4957,11 @@ sub Data {
         'NLS_DATE_FORMAT must be set to \'YYYY-MM-DD HH24:MI:SS\'.' => '',
         'NLS_DATE_FORMAT Setting SQL Check' => '',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/oracle/PrimaryKeySequencesAndTriggers.pm
+        'Primary Key Sequences and Triggers' => '',
+        'The following sequences and/or triggers with possible wrong names have been found. Please rename them manually.' =>
+            '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/Charset.pm
         'Setting client_encoding needs to be UNICODE or UTF8.' => '',
         'Setting server_encoding needs to be UNICODE or UTF8.' => '',
@@ -4949,6 +4969,11 @@ sub Data {
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/DateStyle.pm
         'Date Format' => '',
         'Setting DateStyle needs to be ISO.' => '',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/PrimaryKeySequences.pm
+        'Primary Key Sequences' => '',
+        'The following sequences with possible wrong names have been found. Please rename them manually.' =>
+            '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/Version.pm
         'PostgreSQL 9.2 or higher is required.' => '',
@@ -5196,6 +5221,9 @@ sub Data {
         'Could not update modified setting!' => '',
         'Setting could not be unlocked!' => '',
         'Missing key %s!' => '',
+        'Invalid setting: %s' => '',
+        'Could not combine settings values into a perl hash.' => '',
+        'Can not lock the deployment for UserID \'%s\'!' => '',
         'All Settings' => '',
 
         # Perl Module: Kernel/System/SysConfig/BaseValueType.pm
@@ -5651,8 +5679,6 @@ sub Data {
         # JS File: Core.Agent
         'Slide the navigation bar' => 'Posuňte navigačný panel',
         'Please turn off Compatibility Mode in Internet Explorer!' => 'Prosím vypnite Compatibility Mode v Internet Exploreri',
-        'This feature is part of the %s.  Please contact us at %s for an upgrade.' =>
-            'Táto funkcionalita je častou %s. Prosím kontaktujte nás ak chcete vyššiu verziu %s',
         'Find out more' => '',
 
         # JS File: Core.App.Responsive
@@ -7425,6 +7451,7 @@ Thanks for your help!
         'JavaScript function for the search frontend.' => '',
         'Language' => 'Jazyk',
         'Large' => 'Veľký',
+        'Last Screen Overview' => '',
         'Last customer subject' => '',
         'Lastname Firstname' => '',
         'Lastname Firstname (UserLogin)' => '',
@@ -8680,6 +8707,8 @@ Thanks for your help!
         'Clear all',
         'Clear debug log',
         'Clear search',
+        'Click to delete this attachment.',
+        'Click to select a file for upload.',
         'Click to select a file or just drop it here.',
         'Click to select files or just drop them here.',
         'Clone web service',
@@ -8937,7 +8966,7 @@ Thanks for your help!
         'This address already exists on the address list.',
         'This element has children elements and can currently not be removed.',
         'This event is already attached to the job, Please use a different one.',
-        'This feature is part of the %s.  Please contact us at %s for an upgrade.',
+        'This feature is part of the %s. Please contact us at %s for an upgrade.',
         'This field is required.',
         'This is %s',
         'This is a repeating appointment',

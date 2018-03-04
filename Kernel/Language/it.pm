@@ -32,7 +32,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.476734129043418;
+    $Self->{Completeness}        = 0.475237273511648;
 
     # csv separator
     $Self->{Separator}         = '';
@@ -2446,7 +2446,7 @@ sub Data {
         'Edit your preferences' => 'Modifica preferenze',
         'Personal preferences' => '',
         'Preferences' => 'Preferenze',
-        'Warning! You\'re currently not editing your own preferences, but those of %s.' =>
+        'Please note: you\'re currently editing the preferences of %s.' =>
             '',
         'Go back to editing this agent' => '',
         'Set up your personal preferences. Save each setting by clicking the checkmark on the right.' =>
@@ -2941,6 +2941,9 @@ sub Data {
         'Send a bugreport' => 'Invia una segnalazione di bug',
         'Expand' => 'Espandi',
 
+        # Template: AttachmentList
+        'Click to delete this attachment.' => '',
+
         # Template: DraftButtons
         'Update draft' => '',
         'Save as new draft' => '',
@@ -3294,6 +3297,7 @@ sub Data {
         'Loading, please wait...' => '',
 
         # JS Template: UploadContainer
+        'Click to select a file for upload.' => '',
         'Click to select files or just drop them here.' => '',
         'Click to select a file or just drop it here.' => '',
         'Uploading...' => '',
@@ -3654,6 +3658,8 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminMailAccount.pm
         'Mail account added!' => 'Account di posta aggiunto!',
+        'Email account fetch already fetched by another process. Please try again later!' =>
+            '',
         'Dispatching by email To: field.' => 'Smistamento in base al campo A:.',
         'Dispatching by selected Queue.' => 'Smistamento in base alla coda selezionata.',
 
@@ -3703,9 +3709,11 @@ sub Data {
         'Updated' => '',
         'Already up-to-date' => '',
         'Installed' => '',
+        'Not correctly deployed' => '',
         'Package updated correctly' => '',
         'Package was already updated' => '',
         'Dependency installed correctly' => '',
+        'The package needs to be reinstalled' => '',
         'The package contains cyclic dependencies' => '',
         'Not found in on-line repositories' => '',
         'Required version is higher than available' => '',
@@ -4018,8 +4026,6 @@ sub Data {
         'Updated user preferences' => '',
         'System was unable to deploy your changes.' => '',
         'Setting not found!' => '',
-        'This feature is part of the %s Please contact us at %s for an upgrade.' =>
-            '',
         'System was unable to reset the setting!' => '',
 
         # Perl Module: Kernel/Modules/AgentSplitSelection.pm
@@ -4585,7 +4591,8 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/Notification/CustomerSystemMaintenanceCheck.pm
         'System maintenance is active!' => '',
-        'A system maintenance period will start at: ' => 'Un periodo di manutenzione del sistema inizierà alle:',
+        'A system maintenance period will start at: %s and is expected to stop at: %s' =>
+            '',
 
         # Perl Module: Kernel/Output/HTML/Notification/DaemonCheck.pm
         'OTRS Daemon is not running.' => 'Il demone OTRS non è in esecuzione.',
@@ -4923,6 +4930,11 @@ sub Data {
         'InnoDB Log File Size' => '',
         'The setting innodb_log_file_size must be at least 256 MB.' => '',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/InvalidDefaultValues.pm
+        'Invalid Default Values' => '',
+        'Tables with invalid default values were found. In order to fix it automatically, please run: bin/otrs.Console.pl Maint::Database::Check --repair' =>
+            '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/MaxAllowedPacket.pm
         'Maximum Query Size' => 'Dimensione Massima della Query',
         'The setting \'max_allowed_packet\' must be higher than 64 MB.' =>
@@ -4939,6 +4951,9 @@ sub Data {
         'Tables with a different storage engine than the default engine were found.' =>
             'Sono state trovate tabelle che hanno una storage engine diversa dal default del database.',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/TableCheck.pm
+        'Table check found some problems.' => '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Version.pm
         'MySQL 5.x or higher is required.' => 'È richiesto l\'uso di MySQL 5.x o versioni superiori.',
 
@@ -4950,6 +4965,11 @@ sub Data {
         'NLS_DATE_FORMAT must be set to \'YYYY-MM-DD HH24:MI:SS\'.' => 'Il parametro NLS_DATE_FORMAT deve essere impostato nel formato \'YYYY-MM-DD HH24:MI:SS\'.',
         'NLS_DATE_FORMAT Setting SQL Check' => 'Controllo impostazione SQL NLS_DATE_FORMAT',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/oracle/PrimaryKeySequencesAndTriggers.pm
+        'Primary Key Sequences and Triggers' => '',
+        'The following sequences and/or triggers with possible wrong names have been found. Please rename them manually.' =>
+            '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/Charset.pm
         'Setting client_encoding needs to be UNICODE or UTF8.' => 'Il parametro client_encoding deve essere UNICODE o UTF8.',
         'Setting server_encoding needs to be UNICODE or UTF8.' => 'Il parametro server_encoding deve essere UNICODE o UTF8.',
@@ -4957,6 +4977,11 @@ sub Data {
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/DateStyle.pm
         'Date Format' => 'Formato Data',
         'Setting DateStyle needs to be ISO.' => 'Il parametro DateStyle deve essere di tipo ISO.',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/PrimaryKeySequences.pm
+        'Primary Key Sequences' => '',
+        'The following sequences with possible wrong names have been found. Please rename them manually.' =>
+            '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/Version.pm
         'PostgreSQL 9.2 or higher is required.' => '',
@@ -5204,6 +5229,9 @@ sub Data {
         'Could not update modified setting!' => '',
         'Setting could not be unlocked!' => '',
         'Missing key %s!' => '',
+        'Invalid setting: %s' => '',
+        'Could not combine settings values into a perl hash.' => '',
+        'Can not lock the deployment for UserID \'%s\'!' => '',
         'All Settings' => '',
 
         # Perl Module: Kernel/System/SysConfig/BaseValueType.pm
@@ -5659,8 +5687,6 @@ sub Data {
         # JS File: Core.Agent
         'Slide the navigation bar' => '',
         'Please turn off Compatibility Mode in Internet Explorer!' => 'Disattiva la modalità di compatibilità in Internet Explorer!',
-        'This feature is part of the %s.  Please contact us at %s for an upgrade.' =>
-            'Questa funzionalità è parte di %s. Contattaci su %s per un aggiornamento.',
         'Find out more' => '',
 
         # JS File: Core.App.Responsive
@@ -7433,6 +7459,7 @@ Thanks for your help!
         'JavaScript function for the search frontend.' => 'Funzione JavaScript per l\'interfaccia di ricerca.',
         'Language' => 'Lingua',
         'Large' => 'Grande',
+        'Last Screen Overview' => '',
         'Last customer subject' => '',
         'Lastname Firstname' => 'Cognome Nome',
         'Lastname Firstname (UserLogin)' => 'Cognome Nome (Utente)',
@@ -8688,6 +8715,8 @@ Thanks for your help!
         'Clear all',
         'Clear debug log',
         'Clear search',
+        'Click to delete this attachment.',
+        'Click to select a file for upload.',
         'Click to select a file or just drop it here.',
         'Click to select files or just drop them here.',
         'Clone web service',
@@ -8945,7 +8974,7 @@ Thanks for your help!
         'This address already exists on the address list.',
         'This element has children elements and can currently not be removed.',
         'This event is already attached to the job, Please use a different one.',
-        'This feature is part of the %s.  Please contact us at %s for an upgrade.',
+        'This feature is part of the %s. Please contact us at %s for an upgrade.',
         'This field is required.',
         'This is %s',
         'This is a repeating appointment',

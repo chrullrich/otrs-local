@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OTRS\n"
-"POT-Creation-Date: 2018-01-08 18:29+0000\n"
-"PO-Revision-Date: 2018-01-08 18:33+0000\n"
+"POT-Creation-Date: 2018-02-05 18:26+0000\n"
+"PO-Revision-Date: 2018-02-05 18:27+0000\n"
 "Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
 "Language-Team: Japanese (http://www.transifex.com/otrs/OTRS/language/ja/)\n"
 "MIME-Version: 1.0\n"
@@ -7788,8 +7788,7 @@ msgid "Preferences"
 msgstr "個人設定"
 
 #. Template: AgentPreferences
-msgid ""
-"Warning! You're currently not editing your own preferences, but those of %s."
+msgid "Please note: you're currently editing the preferences of %s."
 msgstr ""
 
 #. Template: AgentPreferences
@@ -9239,6 +9238,10 @@ msgstr "バグ報告を送信"
 msgid "Expand"
 msgstr "展開"
 
+#. Template: AttachmentList
+msgid "Click to delete this attachment."
+msgstr ""
+
 #. Template: DraftButtons
 msgid "Update draft"
 msgstr "下書きを更新"
@@ -10190,6 +10193,10 @@ msgstr "確認"
 #. JS Template: WidgetLoading
 msgid "Loading, please wait..."
 msgstr "読み込み中です。お待ち下さい..."
+
+#. JS Template: UploadContainer
+msgid "Click to select a file for upload."
+msgstr ""
 
 #. JS Template: UploadContainer
 msgid "Click to select files or just drop them here."
@@ -11304,6 +11311,12 @@ msgid "Mail account added!"
 msgstr "メールアカウントを追加しました。"
 
 #. Perl Module: Kernel/Modules/AdminMailAccount.pm
+msgid ""
+"Email account fetch already fetched by another process. Please try again "
+"later!"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AdminMailAccount.pm
 msgid "Dispatching by email To: field."
 msgstr "メールの宛先で振り分け"
 
@@ -11457,6 +11470,10 @@ msgid "Installed"
 msgstr "インストールしました"
 
 #. Perl Module: Kernel/Modules/AdminPackageManager.pm
+msgid "Not correctly deployed"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AdminPackageManager.pm
 msgid "Package updated correctly"
 msgstr "パッケージの更新は正常に終了しました。"
 
@@ -11467,6 +11484,10 @@ msgstr "パッケージはすでに更新済みです。"
 #. Perl Module: Kernel/Modules/AdminPackageManager.pm
 msgid "Dependency installed correctly"
 msgstr "依存するモジュールは正常にインストールされました。"
+
+#. Perl Module: Kernel/Modules/AdminPackageManager.pm
+msgid "The package needs to be reinstalled"
+msgstr ""
 
 #. Perl Module: Kernel/Modules/AdminPackageManager.pm
 msgid "The package contains cyclic dependencies"
@@ -12337,10 +12358,6 @@ msgstr ""
 #. Perl Module: Kernel/Modules/AgentPreferences.pm
 msgid "Setting not found!"
 msgstr "設定が見つかりません！"
-
-#. Perl Module: Kernel/Modules/AgentPreferences.pm
-msgid "This feature is part of the %s Please contact us at %s for an upgrade."
-msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentPreferences.pm
 msgid "System was unable to reset the setting!"
@@ -13882,8 +13899,9 @@ msgstr ""
 
 #. Perl Module:
 #. Kernel/Output/HTML/Notification/CustomerSystemMaintenanceCheck.pm
-msgid "A system maintenance period will start at: "
-msgstr "次の時刻からシステムメンテナンスが行われます: "
+msgid ""
+"A system maintenance period will start at: %s and is expected to stop at: %s"
+msgstr ""
 
 #. Perl Module: Kernel/Output/HTML/Notification/DaemonCheck.pm
 msgid "OTRS Daemon is not running."
@@ -14729,6 +14747,19 @@ msgid "The setting innodb_log_file_size must be at least 256 MB."
 msgstr "innodb_log_file_size 設定は最低でも256MBにする必要があります。"
 
 #. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/Database/mysql/InvalidDefaultValues.pm
+msgid "Invalid Default Values"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/Database/mysql/InvalidDefaultValues.pm
+msgid ""
+"Tables with invalid default values were found. In order to fix it "
+"automatically, please run: bin/otrs.Console.pl Maint::Database::Check "
+"--repair"
+msgstr ""
+
+#. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/Database/mysql/MaxAllowedPacket.pm
 msgid "Maximum Query Size"
 msgstr "最大クエリサイズ"
@@ -14767,6 +14798,11 @@ msgid ""
 msgstr "デフォルトのストレージエンジンと違うストレージエンジン設定の Table が見つかりました"
 
 #. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/Database/mysql/TableCheck.pm
+msgid "Table check found some problems."
+msgstr ""
+
+#. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/Database/mysql/Version.pm
 msgid "MySQL 5.x or higher is required."
 msgstr "動作要件は MySQL 5.x 以上になっています "
@@ -14797,6 +14833,18 @@ msgid "NLS_DATE_FORMAT Setting SQL Check"
 msgstr "NLS_DATE_FORMAT 設定 SQL チェック"
 
 #. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/Database/oracle/PrimaryKeySequencesAndTriggers.pm
+msgid "Primary Key Sequences and Triggers"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/Database/oracle/PrimaryKeySequencesAndTriggers.pm
+msgid ""
+"The following sequences and/or triggers with possible wrong names have been "
+"found. Please rename them manually."
+msgstr ""
+
+#. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/Database/postgresql/Charset.pm
 msgid "Setting client_encoding needs to be UNICODE or UTF8."
 msgstr " client_encodingはユニコードまたはUTF8 に設定する必要があります"
@@ -14815,6 +14863,18 @@ msgstr "データーフォーマット"
 #. Kernel/System/SupportDataCollector/Plugin/Database/postgresql/DateStyle.pm
 msgid "Setting DateStyle needs to be ISO."
 msgstr "日付の設定はISOフォーマットに従ってください"
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/Database/postgresql/PrimaryKeySequences.pm
+msgid "Primary Key Sequences"
+msgstr ""
+
+#. Perl Module:
+#. Kernel/System/SupportDataCollector/Plugin/Database/postgresql/PrimaryKeySequences.pm
+msgid ""
+"The following sequences with possible wrong names have been found. Please "
+"rename them manually."
+msgstr ""
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/Database/postgresql/Version.pm
@@ -15472,6 +15532,18 @@ msgstr ""
 
 #. Perl Module: Kernel/System/SysConfig.pm
 msgid "Missing key %s!"
+msgstr ""
+
+#. Perl Module: Kernel/System/SysConfig.pm
+msgid "Invalid setting: %s"
+msgstr ""
+
+#. Perl Module: Kernel/System/SysConfig.pm
+msgid "Could not combine settings values into a perl hash."
+msgstr ""
+
+#. Perl Module: Kernel/System/SysConfig.pm
+msgid "Can not lock the deployment for UserID '%s'!"
 msgstr ""
 
 #. Perl Module: Kernel/System/SysConfig.pm
@@ -16674,11 +16746,6 @@ msgstr "ナビゲーションバーを操作してください"
 #. JS File: Core.Agent
 msgid "Please turn off Compatibility Mode in Internet Explorer!"
 msgstr "Internet Explorerの互換モードを無効にして下さい。"
-
-#. JS File: Core.Agent
-msgid ""
-"This feature is part of the %s.  Please contact us at %s for an upgrade."
-msgstr "この機能は %s の一部です。%s の更新についてサポートまでお問い合わせください。"
 
 #. JS File: Core.Agent
 msgid "Find out more"
@@ -22404,6 +22471,10 @@ msgstr "言語"
 #. SysConfig
 msgid "Large"
 msgstr "大"
+
+#. SysConfig
+msgid "Last Screen Overview"
+msgstr ""
 
 #. SysConfig
 msgid "Last customer subject"

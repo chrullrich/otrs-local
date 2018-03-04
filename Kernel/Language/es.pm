@@ -29,7 +29,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.657844663553019;
+    $Self->{Completeness}        = 0.666264020707506;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -255,14 +255,14 @@ sub Data {
         'If encryption key/certificate is missing' => 'Si la llave/certificado de cifrado no está',
 
         # Template: AdminAttachment
-        'Attachment Management' => 'Gestión de adjuntos',
-        'Add Attachment' => 'Añadir un adjunto',
-        'Edit Attachment' => 'Editar adjunto',
+        'Attachment Management' => 'Gestión de archivo adjunto',
+        'Add Attachment' => 'Añadir archivo adjunto',
+        'Edit Attachment' => 'Editar Archivo adjunto',
         'Filter for Attachments' => 'Filtro para Archivos adjuntos',
-        'Filter for attachments' => 'Filtrar por atajos',
+        'Filter for attachments' => 'Filtro para archivos adjuntos',
         'Filename' => 'Nombre del archivo',
         'Download file' => 'Descargar el archivo',
-        'Delete this attachment' => 'Borrar este adjunto',
+        'Delete this attachment' => 'Borrar este archivo adjunto',
         'Do you really want to delete this attachment?' => '¿Realmente desea eliminar este archivo adjunto?',
         'Attachment' => 'Archivo adjunto',
 
@@ -395,7 +395,7 @@ sub Data {
         'Search' => 'Buscar',
         'Wildcards like \'*\' are allowed.' => 'Se permiten caracteres comodín como \'*\'.',
         'Select' => 'Seleccionar',
-        'List (only %s shown - more available)' => 'Listar (solo %s se muestra - más disponibles)',
+        'List (only %s shown - more available)' => 'Lista (solo %s se muestra - más disponibles)',
         'total' => 'Total',
         'Please enter a search term to look for customers.' => 'Introduzca un término de búsqueda para buscar clientes.',
         'Customer ID' => 'ID del cliente',
@@ -439,7 +439,7 @@ sub Data {
         'Back to search results' => 'Volver a los resultados de la búsqueda',
         'Customer user are needed to have a customer history and to login via customer panel.' =>
             'Los usuarios cliente necesitan tener un historial de cliente e iniciar sesión por medio del panel de cliente.',
-        'List (%s total)' => 'Listar (%s total)',
+        'List (%s total)' => 'Lista (%s total)',
         'Username' => 'Nombre de usuario',
         'Email' => 'Correo',
         'Last Login' => 'Última sesión',
@@ -455,7 +455,7 @@ sub Data {
         'DNS problem, please check your configuration and the error log.' =>
             'Problema con el DNS. Por favor, verifique su configuración y el registro de errores.',
         'The syntax of this email address is incorrect.' => 'La sintaxis de esta dirección de correo es incorrecta',
-        'This CustomerID is invalid.' => 'Identificación del Cliente no es válido',
+        'This CustomerID is invalid.' => 'La ID del cliente no es valida',
         'Effective Permissions for Customer User' => 'Los Permisos Efectivos para el Cliente',
         'Group Permissions' => 'Permisos del Grupo',
         'This customer user has no group permissions.' => 'Éste Cliente no tiene permisos del grupo.',
@@ -1018,14 +1018,14 @@ sub Data {
         'Send Keep-Alive' => 'Enviar Mantener-Activo',
         'This configuration defines if incoming connections should get closed or kept alive.' =>
             'Esta configuración define si las conexiones entrantes deben quedar cerrados o mantenerse activas.',
-        'Additional response headers' => '',
-        'Add response header' => '',
+        'Additional response headers' => 'Encabezados de respuesta adicionales',
+        'Add response header' => 'Agregar encabezado de respuesta',
         'Endpoint' => 'Puntofinal',
         'URI to indicate specific location for accessing a web service.' =>
             '',
         'e.g https://www.otrs.com:10745/api/v1.0 (without trailing backslash)' =>
             'ej. https://www.otrs.com:10745/api/v1.0 (sin la barra invertida)',
-        'Timeout' => '',
+        'Timeout' => 'Se acabó el tiempo',
         'Timeout value for requests.' => '',
         'Authentication' => 'Autenticación',
         'An optional authentication mechanism to access the remote system.' =>
@@ -2326,7 +2326,7 @@ sub Data {
             'Un Daemon funcionando de OTRS es obligatorio para su correcta operación.',
         'Starting the OTRS Daemon' => 'Iniciando el Daemon de OTRS',
         'Make sure that the file \'%s\' exists (without .dist extension). This cron job will check every 5 minutes if the OTRS Daemon is running and start it if needed.' =>
-            'Asegúrese de que el archivo \'%s\' existe (sin la extensión .dist). Este trabajo programado verificará cada 5 minutos si el Daemon de OTRS está corriendo y lo iniciará de ser necesario.',
+            'Asegúrese de que el archivo \'%s\' existe (sin la extensión .dist). Este trabajo programado verificará cada 5 minutos si OTRS Daemon se esta ejecutando y se iniciará de ser necesario.',
         'Execute \'%s start\' to make sure the cron jobs of the \'otrs\' user are active.' =>
             'Ejecute \'%s start\' para asegurarse de que el trabajo programado del usuario \'otrs\' está activo.',
         'After 5 minutes, check that the OTRS Daemon is running in the system (\'bin/otrs.Daemon.pl status\').' =>
@@ -2443,7 +2443,7 @@ sub Data {
         'Edit your preferences' => 'Editar sus preferencias',
         'Personal preferences' => '',
         'Preferences' => 'Preferencias',
-        'Warning! You\'re currently not editing your own preferences, but those of %s.' =>
+        'Please note: you\'re currently editing the preferences of %s.' =>
             '',
         'Go back to editing this agent' => '',
         'Set up your personal preferences. Save each setting by clicking the checkmark on the right.' =>
@@ -2554,7 +2554,7 @@ sub Data {
             'Aquí puede seleccionar agentes adicionales que deben recibir una notificación sobre el nuevo artículo.',
         'Text will also be received by' => 'El texto también será recibido también por',
         'Text Template' => 'Plantilla de texto',
-        'Setting a template will overwrite any text or attachment.' => 'Establecer una plantilla sobreescribirá cualquier texto o adjunto.',
+        'Setting a template will overwrite any text or attachment.' => 'Establecer una plantilla sobrescribirá cualquier texto o archivo adjunto.',
         'Invalid time!' => '¡Hora no válida!',
 
         # Template: AgentTicketBounce
@@ -2678,7 +2678,7 @@ sub Data {
         'Save Chat Into New Phone Ticket' => 'Guardar Chat En Nuevo Ticket Telefónico',
         'Create New Phone Ticket' => 'Crear un nuevo ticket telefónico',
         'Please include at least one customer for the ticket.' => 'Incluya al menos un cliente para el ticket',
-        'To queue' => 'A la cola',
+        'To queue' => 'En la cola',
         'Chat protocol' => 'Protocolo chat',
         'The chat will be appended as a separate article.' => 'El chat se agregará como un artículo separado.',
 
@@ -2733,7 +2733,7 @@ sub Data {
         'Save filter settings as default' => 'Guardar los ajustes del filtro como predeterminados',
         'Event Type' => 'Tipo Evento',
         'Save as default' => 'Guardar como Por Defecto',
-        'Drafts' => '',
+        'Drafts' => 'Borradores',
         'by' => 'por',
         'Change Queue' => 'Cambiar de cola',
         'There are no dialogs available at this point in the process.' =>
@@ -2795,7 +2795,7 @@ sub Data {
         'Preview of this article is not possible because %s channel is missing in the system.' =>
             '',
         'This feature is part of the %s. Please contact us at %s for an upgrade.' =>
-            '',
+            'Esta característica es parte de %s. Por favor contacta con nosotros en %s para una actualización.',
         'Please re-install %s package in order to display this article.' =>
             '',
 
@@ -2900,7 +2900,7 @@ sub Data {
         'Date range' => 'Rango de fecha',
         'Only tickets created between' => 'Sólo los tickets creados entre',
         'Ticket Archive System' => '',
-        'Save Search as Template?' => '',
+        'Save Search as Template?' => '¿Guardar la búsqueda como una plantilla?',
         'Save as Template?' => '¿Guardar como plantilla?',
         'Save as Template' => 'Guardar como plantilla',
         'Template Name' => 'Nombre de la plantilla',
@@ -2938,15 +2938,18 @@ sub Data {
         'Send a bugreport' => 'Enviar un informe de error',
         'Expand' => 'Expandir',
 
+        # Template: AttachmentList
+        'Click to delete this attachment.' => '',
+
         # Template: DraftButtons
-        'Update draft' => '',
-        'Save as new draft' => '',
+        'Update draft' => 'Actualizar borrador',
+        'Save as new draft' => 'Guardar como nuevo borrador',
 
         # Template: DraftNotifications
-        'You have loaded the draft "%s".' => '',
-        'You have loaded the draft "%s". You last changed it %s.' => '',
+        'You have loaded the draft "%s".' => 'Ha cargado el borrador "%s".',
+        'You have loaded the draft "%s". You last changed it %s.' => 'Ha cargado el borrador "%s". La ultima vez que lo cambiaste %s.',
         'You have loaded the draft "%s". It was last changed %s by %s.' =>
-            '',
+            'Ha cargado el borrador "%s". Fue cambiado por última vez %s por %s.',
         'Please note that this draft is outdated because the ticket was modified since this draft was created.' =>
             '',
 
@@ -3278,7 +3281,7 @@ sub Data {
         'Show' => 'Mostrar',
 
         # JS Template: FormDraftAddDialog
-        'Draft title' => '',
+        'Draft title' => 'Título del borrador',
 
         # JS Template: ArticleViewSettingsDialog
         'Article display' => '',
@@ -3291,6 +3294,7 @@ sub Data {
         'Loading, please wait...' => '',
 
         # JS Template: UploadContainer
+        'Click to select a file for upload.' => '',
         'Click to select files or just drop them here.' => '',
         'Click to select a file or just drop it here.' => '',
         'Uploading...' => '',
@@ -3558,28 +3562,28 @@ sub Data {
         '15 seconds' => '',
         '30 seconds' => '',
         '45 seconds' => '',
-        '1 minute' => '',
-        '2 minutes' => '',
-        '3 minutes' => '',
-        '4 minutes' => '',
-        '5 minutes' => '',
+        '1 minute' => '1 minuto',
+        '2 minutes' => '2 minutos',
+        '3 minutes' => '3 minutos',
+        '4 minutes' => '4 minutos',
+        '5 minutes' => '5 minutos',
         '10 minutes' => '10 minutos',
         '15 minutes' => '15 minutos',
-        '30 minutes' => '',
-        '1 hour' => '',
-        '2 hours' => '',
-        '3 hours' => '',
-        '4 hours' => '',
-        '5 hours' => '',
-        '6 hours' => '',
-        '12 hours' => '',
-        '18 hours' => '',
-        '1 day' => '',
-        '2 days' => '',
-        '3 days' => '',
-        '4 days' => '',
-        '6 days' => '',
-        '1 week' => '',
+        '30 minutes' => '30 minutos',
+        '1 hour' => '1 hora',
+        '2 hours' => '2 horas',
+        '3 hours' => '3 horas',
+        '4 hours' => '4 horas',
+        '5 hours' => '5 horas',
+        '6 hours' => '6 horas',
+        '12 hours' => '12 horas',
+        '18 hours' => '18 horas',
+        '1 day' => '1 día',
+        '2 days' => '2 días',
+        '3 days' => '3 días',
+        '4 days' => '4 días',
+        '6 days' => '6 días',
+        '1 week' => '1 semana',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceInvokerDefault.pm
         'Need InvokerType' => 'Requiere el Tipo de Invocador',
@@ -3651,6 +3655,8 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminMailAccount.pm
         'Mail account added!' => '¡Cuenta de correo añadida!',
+        'Email account fetch already fetched by another process. Please try again later!' =>
+            '',
         'Dispatching by email To: field.' => 'Despachar por el campo Para: del correo electrónico',
         'Dispatching by selected Queue.' => 'Despachar por la cola seleccionada',
 
@@ -3700,9 +3706,11 @@ sub Data {
         'Updated' => '',
         'Already up-to-date' => '',
         'Installed' => '',
+        'Not correctly deployed' => '',
         'Package updated correctly' => '',
         'Package was already updated' => '',
         'Dependency installed correctly' => '',
+        'The package needs to be reinstalled' => '',
         'The package contains cyclic dependencies' => '',
         'Not found in on-line repositories' => '',
         'Required version is higher than available' => '',
@@ -3843,7 +3851,7 @@ sub Data {
         'Change Role Relations for Group' => 'Cambiar las relaciones de Rol del Grupo',
 
         # Perl Module: Kernel/Modules/AdminRoleUser.pm
-        'Role' => '',
+        'Role' => 'Rol',
         'Change Role Relations for Agent' => 'Cambiar las relaciones de Rol del Agente',
         'Change Agent Relations for Role' => 'Cambiar las relaciones de Agente del Rol',
 
@@ -3887,7 +3895,7 @@ sub Data {
         'Invalid Settings' => '',
         'There are no invalid settings active at this time.' => '',
         'You currently don\'t have any favourite settings.' => '',
-        'The following settings could not be found: %s' => '',
+        'The following settings could not be found: %s' => 'La siguiente configuración no se pudo encontrar: %s',
         'Import not allowed!' => 'No se permite Importar!',
         'System Configuration could not be imported due to an unknown error, please check OTRS logs for more information.' =>
             '',
@@ -3928,8 +3936,8 @@ sub Data {
         'Template added!' => '¡Plantilla añadida!',
 
         # Perl Module: Kernel/Modules/AdminTemplateAttachment.pm
-        'Change Attachment Relations for Template' => 'Cambiar las relaciones de Adjuntos de la Plantilla',
-        'Change Template Relations for Attachment' => 'Cambiar las relaciones de Plantillas del Adunto',
+        'Change Attachment Relations for Template' => 'Cambiar las relaciones de Archivos adjuntos para Plantilla',
+        'Change Template Relations for Attachment' => 'Cambiar las relaciones de Plantilla para Archivos adjuntos',
 
         # Perl Module: Kernel/Modules/AdminType.pm
         'Need Type!' => '¡Se requiere el Tipo!',
@@ -3983,7 +3991,7 @@ sub Data {
         'No permissions!' => '¡No tiene permisos!',
 
         # Perl Module: Kernel/Modules/AgentAppointmentList.pm
-        '+%s more' => '',
+        '+%s more' => '+%smás',
 
         # Perl Module: Kernel/Modules/AgentCustomerSearch.pm
         'Customer History' => 'Historial del Cliente',
@@ -4011,12 +4019,10 @@ sub Data {
         'The object %s cannot link with other object!' => 'El objeto %s no puede vincularse con otro objeto!',
 
         # Perl Module: Kernel/Modules/AgentPreferences.pm
-        'Param Group is required!' => 'Se requiere Grupo de parámetros!',
-        'Updated user preferences' => '',
+        'Param Group is required!' => '¡Se requiere Grupo de parámetros!',
+        'Updated user preferences' => 'Preferencias de usuario actualizadas',
         'System was unable to deploy your changes.' => '',
         'Setting not found!' => '',
-        'This feature is part of the %s Please contact us at %s for an upgrade.' =>
-            '',
         'System was unable to reset the setting!' => '',
 
         # Perl Module: Kernel/Modules/AgentSplitSelection.pm
@@ -4038,12 +4044,12 @@ sub Data {
         # Perl Module: Kernel/Modules/AgentTicketActionCommon.pm
         'No TicketID is given!' => 'Ningún TicketID está dado!',
         'You need %s permissions!' => 'Necesita permisos %s!',
-        'Loading draft failed!' => '',
+        'Loading draft failed!' => '¡Error al cargar el borrador!',
         'Sorry, you need to be the ticket owner to perform this action.' =>
             'Disculpe, necesita ser el propietario del ticket para realizar esta acción.',
         'Please change the owner first.' => 'Por favor, cambie antes el propietario.',
         'FormDraft functionality disabled!' => '',
-        'Draft name is required!' => '',
+        'Draft name is required!' => '¡Se requiere el nombre del borrador!',
         'FormDraft name %s is already in use!' => '',
         'Could not perform validation on field %s!' => 'No se pudo realizar validación en campo %s!',
         'No subject' => 'Sin asunto',
@@ -4210,8 +4216,8 @@ sub Data {
         'Ticket Number' => 'Número de Ticket',
         'Ticket' => 'Ticket',
         'printed by' => 'impreso por',
-        'CustomerID (complex search)' => 'Identificación del cliente (búsqueda compleja)',
-        'CustomerID (exact match)' => 'Identificación del cliente (coincidencia exacta)',
+        'CustomerID (complex search)' => 'ID del cliente (búsqueda compleja)',
+        'CustomerID (exact match)' => 'ID del cliente (coincidencia exacta)',
         'Invalid Users' => 'Usuarios no válidos',
         'Normal' => 'Normal',
         'CSV' => 'CSV',
@@ -4246,9 +4252,9 @@ sub Data {
         'Internal Chat' => 'Chat interno',
         'Automatic Follow-Up Sent' => 'Seguimiento Automático Enviado',
         'Note Added' => 'Nota añadida',
-        'Note Added (Customer)' => 'Nota añadida (cliente)',
-        'SMS Added' => '',
-        'SMS Added (Customer)' => '',
+        'Note Added (Customer)' => 'Nota añadida (Cliente)',
+        'SMS Added' => 'SMS Añadido',
+        'SMS Added (Customer)' => 'SMS añadido (Cliente)',
         'State Updated' => 'Estado actualizado',
         'Outgoing Answer' => 'Respuesta Saliente',
         'Service Updated' => 'Servicio actualizado',
@@ -4317,7 +4323,7 @@ sub Data {
         'Check SysConfig setting for %s::TicketTypeDefault.' => 'Revise los ajustes de la Configuración del Sistema para %s::TipodeTicketPredeterminado.',
 
         # Perl Module: Kernel/Modules/CustomerTicketOverview.pm
-        'Need CustomerID!' => '¡Se necesita la Identificación del cliente!',
+        'Need CustomerID!' => '¡Se necesita la ID del cliente!',
         'My Tickets' => 'Mis Tickets',
         'Company Tickets' => 'Tickets de Empresa',
         'Untitled!' => '¡Sin título!',
@@ -4418,7 +4424,7 @@ sub Data {
         'Print this article' => 'Imprimir este artículo',
 
         # Perl Module: Kernel/Output/HTML/ArticleAction/GetHelpLink.pm
-        'Contact us at sales@otrs.com' => '',
+        'Contact us at sales@otrs.com' => 'Contactamos en sales@otrs.com',
         'Get Help' => '',
 
         # Perl Module: Kernel/Output/HTML/ArticleAction/MarkAsImportant.pm
@@ -4582,7 +4588,8 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/Notification/CustomerSystemMaintenanceCheck.pm
         'System maintenance is active!' => '',
-        'A system maintenance period will start at: ' => 'El periodo de mantenimiento de sistema comenzará a las:',
+        'A system maintenance period will start at: %s and is expected to stop at: %s' =>
+            '',
 
         # Perl Module: Kernel/Output/HTML/Notification/DaemonCheck.pm
         'OTRS Daemon is not running.' => 'Daemon OTRS no se está ejecutando.',
@@ -4921,6 +4928,11 @@ sub Data {
         'InnoDB Log File Size' => 'Tamaño del Archivo Log InnoDB',
         'The setting innodb_log_file_size must be at least 256 MB.' => 'El ajuste innodb_log_file_size debe ser de al menos 256 MB.',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/InvalidDefaultValues.pm
+        'Invalid Default Values' => '',
+        'Tables with invalid default values were found. In order to fix it automatically, please run: bin/otrs.Console.pl Maint::Database::Check --repair' =>
+            '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/MaxAllowedPacket.pm
         'Maximum Query Size' => 'Tamaño Máximo de la Consulta',
         'The setting \'max_allowed_packet\' must be higher than 64 MB.' =>
@@ -4937,6 +4949,9 @@ sub Data {
         'Tables with a different storage engine than the default engine were found.' =>
             'Tablas con diferente motor de almacenamiento que la de por defecto fueron encontradas.',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/TableCheck.pm
+        'Table check found some problems.' => '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Version.pm
         'MySQL 5.x or higher is required.' => 'MySQL 5.x o mayor es requerida.',
 
@@ -4948,6 +4963,11 @@ sub Data {
         'NLS_DATE_FORMAT must be set to \'YYYY-MM-DD HH24:MI:SS\'.' => 'NLS_DATE_FORMAT debe ser configurado a \'YYYY-MM-DD HH24:MI:SS\'.',
         'NLS_DATE_FORMAT Setting SQL Check' => 'El ajuste NLS_DATE_FORMAT Comprobar SQL',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/oracle/PrimaryKeySequencesAndTriggers.pm
+        'Primary Key Sequences and Triggers' => '',
+        'The following sequences and/or triggers with possible wrong names have been found. Please rename them manually.' =>
+            '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/Charset.pm
         'Setting client_encoding needs to be UNICODE or UTF8.' => 'El ajuste client_encoding necesita ser UNICODE o UTF8.',
         'Setting server_encoding needs to be UNICODE or UTF8.' => 'El ajuste server_encoding necesita ser UNICODE o UTF8.',
@@ -4955,6 +4975,11 @@ sub Data {
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/DateStyle.pm
         'Date Format' => 'Formato de Fecha',
         'Setting DateStyle needs to be ISO.' => 'El ajuste DateStyle necesita ser ISO.',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/PrimaryKeySequences.pm
+        'Primary Key Sequences' => '',
+        'The following sequences with possible wrong names have been found. Please rename them manually.' =>
+            '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/Version.pm
         'PostgreSQL 9.2 or higher is required.' => '',
@@ -5202,6 +5227,9 @@ sub Data {
         'Could not update modified setting!' => '',
         'Setting could not be unlocked!' => '',
         'Missing key %s!' => '',
+        'Invalid setting: %s' => '',
+        'Could not combine settings values into a perl hash.' => '',
+        'Can not lock the deployment for UserID \'%s\'!' => '',
         'All Settings' => '',
 
         # Perl Module: Kernel/System/SysConfig/BaseValueType.pm
@@ -5229,7 +5257,7 @@ sub Data {
             '',
 
         # Perl Module: Kernel/System/Ticket.pm
-        'Reset of unlock time.' => 'Reajuste del tiempo desbloqueado.',
+        'Reset of unlock time.' => 'Reajuste del tiempo de desbloqueo.',
 
         # Perl Module: Kernel/System/Web/InterfaceAgent.pm
         'Login failed! Your user name or password was entered incorrectly.' =>
@@ -5359,7 +5387,7 @@ sub Data {
             'Recibirá una notificación tan pronto como un ticket del cual seas propietario sea automáticamente desbloqueado.',
         'Ticket owner update notification' => 'Notificación de actualización de propietario de Ticket',
         'Ticket responsible update notification' => 'Notificación de actualización de responsable de Ticket',
-        'Ticket new note notification' => 'Notificación de nueva nota de ticket',
+        'Ticket new note notification' => 'Notificación de nueva nota en ticket',
         'Ticket queue update notification' => 'Notificación de actualización de cola de Ticket',
         'You will receive a notification if a ticket is moved into one of your "My Queues".' =>
             'Recibirá una notificación si un ticket es movido a "Mis colas".',
@@ -5391,8 +5419,8 @@ sub Data {
         'Press Ctrl+C (Cmd+C) to copy to clipboard' => '',
 
         # JS File: Core.Agent.Admin.Attachment
-        'Delete this Attachment' => '',
-        'Deleting attachment...' => '',
+        'Delete this Attachment' => 'Borrar este Archivo adjunto',
+        'Deleting attachment...' => 'Borrando archivo adjunto...',
         'There was an error deleting the attachment. Please check the logs for more information.' =>
             '',
         'Attachment was deleted successfully.' => '',
@@ -5539,7 +5567,7 @@ sub Data {
         'Deployment successful. You\'re being redirected...' => '',
         'There was an error. Please save all settings you are editing and check the logs for more information.' =>
             '',
-        'Reset option is required!' => '',
+        'Reset option is required!' => '¡Se requiere la opción de reinicio!',
         'By restoring this deployment all settings will be reverted to the value they had at the time of the deployment. Do you really want to continue?' =>
             '',
         'Keys with values can\'t be renamed. Please remove this key/value pair instead and re-add it afterwards.' =>
@@ -5644,10 +5672,10 @@ sub Data {
         ' ...show less' => '',
 
         # JS File: Core.Agent.TicketFormDraft
-        'Add new draft' => '',
-        'Delete draft' => '',
-        'There are no more drafts available.' => '',
-        'It was not possible to delete this draft.' => '',
+        'Add new draft' => 'Añadir nuevo borrador',
+        'Delete draft' => 'Borrar borrador',
+        'There are no more drafts available.' => 'No hay más borradores disponibles.',
+        'It was not possible to delete this draft.' => 'No fue posible eliminar este borrador.',
 
         # JS File: Core.Agent.TicketZoom
         'Article filter' => 'Filtro de artículos',
@@ -5657,8 +5685,6 @@ sub Data {
         # JS File: Core.Agent
         'Slide the navigation bar' => 'Deslice la barra de navegación',
         'Please turn off Compatibility Mode in Internet Explorer!' => 'Por favor apague el Modo Compatibilidad en Internet Explorer!',
-        'This feature is part of the %s.  Please contact us at %s for an upgrade.' =>
-            'Esta función es parte de %s. Por favor contacte con nosotros en %s para una mejora.',
         'Find out more' => '',
 
         # JS File: Core.App.Responsive
@@ -5801,7 +5827,7 @@ Tu Equipo de Soporte
         '0 - Disabled' => '',
         '1 - Available' => '',
         '1 - Enabled' => '',
-        '10 Minutes' => '',
+        '10 Minutes' => '10 Minutos',
         '100 (Expert)' => '100 (Experto)',
         '15 Minutes' => '',
         '2 - Enabled and required' => '',
@@ -5906,7 +5932,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'Agents ↔ Groups' => '',
         'Agents ↔ Roles' => '',
         'All CustomerIDs of a customer user.' => '',
-        'All attachments (OTRS Business Solution™)' => '',
+        'All attachments (OTRS Business Solution™)' => 'Todos los archivos adjuntos (OTRS Business Solution™)',
         'All customer users of a CustomerID' => 'Todos los clientes de un IDCliente',
         'All escalated tickets' => 'Todos los Tickets escalados',
         'All new tickets, these tickets have not been worked on yet' => 'Todos los Tickets nuevos, todavía no se ha trabajado en estos tickets',
@@ -6012,7 +6038,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'Arabic (Saudi Arabia)' => 'Árabe (Arabia Saudita)',
         'ArticleTree' => 'Árbol de Artículos',
         'Attachment Name' => 'Nombre del archivo adjunto',
-        'Attachments ↔ Templates' => '',
+        'Attachments ↔ Templates' => 'Archivos adjuntos ↔ Plantillas',
         'Auto Responses ↔ Queues' => '',
         'Automated line break in text messages after x number of chars.' =>
             'Salto de linea automático en mensajes de texto después de x número de caracteres.',
@@ -6072,7 +6098,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'Changed responsible to "%s" (%s).' => '',
         'Changed service to "%s" (%s).' => '',
         'Changed state from "%s" to "%s".' => '',
-        'Changed title from "%s" to "%s".' => '',
+        'Changed title from "%s" to "%s".' => 'Se cambió el título de "%s" a "%s".',
         'Changed type from "%s" (%s) to "%s" (%s).' => '',
         'Changes the owner of tickets to everyone (useful for ASP). Normally only agent with rw permissions in the queue of the ticket will be shown.' =>
             'Cambia el propietario de tickets a todos (útil para ASP). Normalmente se mostrará un único agente con permisos rw en la cola de ticket.',
@@ -6172,7 +6198,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'Create and manage Service Level Agreements (SLAs).' => 'Crea y gestiona Acuerdos de Nivel de Servicio (SLAs).',
         'Create and manage agents.' => 'Crea y gestiona agentes.',
         'Create and manage appointment notifications.' => 'Crea y gestiona las notificaciones de citas.',
-        'Create and manage attachments.' => 'Crea y gestiona Archivos adjuntos.',
+        'Create and manage attachments.' => 'Crear y gestionar archivos adjuntos.',
         'Create and manage calendars.' => '',
         'Create and manage customer users.' => 'Crea y gestiona usuarios clientes.',
         'Create and manage customers.' => 'Crea y gestiona clientes.',
@@ -6229,7 +6255,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'CustomerID search' => 'Búsqueda de ClienteID',
         'CustomerName' => 'Nombre del cliente',
         'CustomerUser' => 'Usuario del cliente',
-        'Customers ↔ Groups' => '',
+        'Customers ↔ Groups' => 'Clientes ↔ Grupos',
         'Customizable stop words for fulltext index. These words will be removed from the search index.' =>
             'Palabras vacías personalizables para el índice de texto completo. Estas palabras serán eliminadas del índice de búsqueda.',
         'Czech' => 'Checo',
@@ -7156,7 +7182,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
             'Palabras vacías en ingles para el índice de texto completo. Estas palabras serán eliminadas del índice de búsqueda.',
         'Enroll process for this ticket' => '',
         'Enter your shared secret to enable two factor authentication.' =>
-            '',
+            'Ingrese su secreto compartido para habilitar la autenticación de dos factores.',
         'Escalated Tickets' => 'Tickets Escalados',
         'Escalation view' => 'Vista de escaladas',
         'EscalationTime' => 'Tiempo para escalada',
@@ -7448,6 +7474,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'JavaScript function for the search frontend.' => '',
         'Language' => 'Idioma',
         'Large' => 'Grande',
+        'Last Screen Overview' => '',
         'Last customer subject' => 'Último asunto del cliente',
         'Lastname Firstname' => 'Apellidos Nombre',
         'Lastname Firstname (UserLogin)' => 'Apellidos Nombre (LoginUsuario) ',
@@ -7460,7 +7487,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'Link Object.' => 'Enlazar objeto.',
         'Link agents to groups.' => 'Crea enlace de Agentes a Grupos',
         'Link agents to roles.' => 'Crea enlace de Agentes a Roles',
-        'Link attachments to templates.' => 'Crea enlace de Adjuntos a Plantillas',
+        'Link attachments to templates.' => 'Crea enlace de Archivo adjuntos a Plantillas.',
         'Link customer users to customers.' => '',
         'Link customer users to groups.' => '',
         'Link customer users to services.' => '',
@@ -7506,7 +7533,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'Locked Tickets' => 'Tickets Bloqueados',
         'Locked Tickets.' => 'Tickets bloqueados.',
         'Locked ticket.' => 'Ticket bloqueado.',
-        'Logged-In Users' => '',
+        'Logged-In Users' => 'Usuarios conectados',
         'Logout of customer panel.' => 'Salir del panel de cliente.',
         'Look into a ticket!' => '¡Revisar un ticket!',
         'Loop protection: no auto-response sent to "%s".' => '',
@@ -7566,7 +7593,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'Medium' => 'Mediano',
         'Merge this ticket and all articles into another ticket' => '',
         'Merged Ticket (%s/%s) to (%s/%s).' => '',
-        'Merged Ticket <OTRS_TICKET> to <OTRS_MERGE_TO_TICKET>.' => 'Combinar Ticket  <OTRS_TICKET> con <OTRS_MERGE_TO_TICKET>.',
+        'Merged Ticket <OTRS_TICKET> to <OTRS_MERGE_TO_TICKET>.' => 'Fusionar Ticket  <OTRS_TICKET> con <OTRS_MERGE_TO_TICKET>.',
         'Minute' => '',
         'Miscellaneous' => 'Misceláneo',
         'Module for To-selection in new ticket screen in the customer interface.' =>
@@ -7655,7 +7682,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'OTRS doesn\'t support recurring Appointments without end date or number of iterations. During import process, it might happen that ICS file contains such Appointments. Instead, system creates all Appointments in the past, plus Appointments for the next N months (120 months/10 years by default).' =>
             '',
         'Open Tickets / Need to be answered' => 'Tickets Abiertos / Que necesitan de una respuesta',
-        'Open an external link!' => '',
+        'Open an external link!' => '¡Abrir un enlace externo!',
         'Open tickets (customer user)' => 'Tickets abiertos (usuario cliente)',
         'Open tickets (customer)' => 'Tickets abiertos (cliente)',
         'Option' => 'Opción',
@@ -7675,7 +7702,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'Overview Escalated Tickets.' => '',
         'Overview Refresh Time' => 'Tiempo de actualización de la vista general',
         'Overview of all appointments.' => 'Resumen de todas las citas',
-        'Overview of all escalated tickets.' => '',
+        'Overview of all escalated tickets.' => 'Vista general de todos los tickets escalados.',
         'Overview of all open Tickets.' => 'Vista general de todos los Tickets abiertos.',
         'Overview of all open tickets.' => 'Vista general de todos los tickets abiertos.',
         'Overview of customer tickets.' => 'Visión general de los tickets del cliente.',
@@ -7867,7 +7894,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'Roles ↔ Groups' => '',
         'Run file based generic agent jobs (Note: module name needs to be specified in -configuration-module param e.g. "Kernel::System::GenericAgent").' =>
             '',
-        'Running Process Tickets' => 'Corriendo Tickets de Proceso',
+        'Running Process Tickets' => 'Tickets de Proceso en ejecución',
         'Runs an initial wildcard search of the existing customer company when accessing the AdminCustomerCompany module.' =>
             '',
         'Runs an initial wildcard search of the existing customer users when accessing the AdminCustomerUser module.' =>
@@ -7897,13 +7924,13 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
             '',
         'Select how many tickets should be shown in overviews by default.' =>
             '',
-        'Select the main interface language.' => '',
+        'Select the main interface language.' => 'Selecciona el idioma principal de la interfaz.',
         'Select the separator character used in CSV files (stats and searches). If you don\'t select a separator here, the default separator for your language will be used.' =>
             'Seleccione el carácter separador a usar en los archivos CSV (estadísticas y búsquedas). Si no selecciona ningún separador aquí, se usará el separador predeterminado para su idioma.',
         'Select your frontend Theme.' => 'Seleccione su tema',
         'Select your personal time zone. All times will be displayed relative to this time zone.' =>
             '',
-        'Select your preferred layout for the software.' => '',
+        'Select your preferred layout for the software.' => 'Seleccione su diseño preferido para el software.',
         'Select your preferred theme for OTRS.' => 'Seleccione su tema preferido para OTRS.',
         'Selects the cache backend to use.' => '',
         'Selects the module to handle uploads via the web interface. "DB" stores all uploads in the database, "FS" uses the file system.' =>
@@ -8598,7 +8625,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'Uses richtext for viewing and editing: articles, salutations, signatures, standard templates, auto responses and notifications.' =>
             '',
         'Vietnam' => 'Vietnamita',
-        'View all attachments of the current ticket' => '',
+        'View all attachments of the current ticket' => 'Ver todos los archivos adjuntos del ticket actual',
         'View performance benchmark results.' => 'Ver resultados de la prueba de desempeño.',
         'Watch this ticket' => 'Vigilar este ticket',
         'Watched Tickets' => 'Tickets Vistos',
@@ -8703,6 +8730,8 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'Clear all',
         'Clear debug log',
         'Clear search',
+        'Click to delete this attachment.',
+        'Click to select a file for upload.',
         'Click to select a file or just drop it here.',
         'Click to select files or just drop them here.',
         'Clone web service',
@@ -8960,7 +8989,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'This address already exists on the address list.',
         'This element has children elements and can currently not be removed.',
         'This event is already attached to the job, Please use a different one.',
-        'This feature is part of the %s.  Please contact us at %s for an upgrade.',
+        'This feature is part of the %s. Please contact us at %s for an upgrade.',
         'This field is required.',
         'This is %s',
         'This is a repeating appointment',

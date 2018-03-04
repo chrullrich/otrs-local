@@ -1,4 +1,51 @@
-#6.0.5 2018-??-??
+#6.0.6 2018-??-??
+
+#6.0.5 2018-02-13
+ - 2018-02-05 Updated translations, thanks to all translators.
+ - 2018-02-05 Fixed bug#[13590](https://bugs.otrs.org/show_bug.cgi?id=13590) - Notification triggers not correct if a dynamic field with key value 0 is chosen in ticket selection and Additional recipient is set.
+ - 2018-02-05 Fixed bug#[13594](https://bugs.otrs.org/show_bug.cgi?id=13594) - Menu point of article setting window is hardly available on mobile view.
+ - 2018-02-03 Fixed bug#[13624](https://bugs.otrs.org/show_bug.cgi?id=13624) - Uninitialized value error in generic interface event handler.
+ - 2018-02-01 Implemented database integrity check and added automatic repair option for certain situations.
+ - 2018-01-31 Fixed bug#[13555](https://bugs.otrs.org/show_bug.cgi?id=13555) - Setting ZoomExpand in AgentTicketZoom also affects customer frontend.
+ - 2018-01-31 Fixed bug#[13452](https://bugs.otrs.org/show_bug.cgi?id=13452) - Security options does not preselect Signing, honoring Queue default signature.
+ - 2018-01-31 Fixed bug#[13595](https://bugs.otrs.org/show_bug.cgi?id=13595) - Setting of ticket number is old-style on the ticket overview screen.
+ - 2018-01-31 Fixed bug#[13596](https://bugs.otrs.org/show_bug.cgi?id=13596) - "S" view in mobile browser cannot be rolled horizontally.
+ - 2018-01-31 Fixed bug#[13557](https://bugs.otrs.org/show_bug.cgi?id=13557) - Incoming mails are not being processed.
+ - 2018-01-31 Fixed bug#[13561](https://bugs.otrs.org/show_bug.cgi?id=13561) - Empty strings not handled correctly in HTMLUtils::Safety(). Thanks to Paweł Bogusławski.
+ - 2018-01-31 Fixed bug#[13589](https://bugs.otrs.org/show_bug.cgi?id=13589) - Dynamic field choices missing for Customer User Information Center settings.
+ - 2018-01-31 Fixed bug#[13570](https://bugs.otrs.org/show_bug.cgi?id=13570) - Queue view display incorrect if you move a queue to be a sub-queue.
+ - 2018-01-31 Fixed bug#[13598](https://bugs.otrs.org/show_bug.cgi?id=13598) - Hiding AgentTicketMove menu with ACL makes draft function unusable.
+ - 2018-01-31 Fixed bug#[13562](https://bugs.otrs.org/show_bug.cgi?id=13562) - Drag and drop of a BMP image into the editor causes an error message.
+ - 2018-01-31 Fixed bug#[13284](https://bugs.otrs.org/show_bug.cgi?id=13284) - Ticket title is not included in fulltext search.
+ - 2018-01-31 Fixed bug#[13500](https://bugs.otrs.org/show_bug.cgi?id=13500) - Sticky footer overlaps with elements on the login screen.
+ - 2018-01-31 Fixed bug#[13399](https://bugs.otrs.org/show_bug.cgi?id=13399) - Agent preferences granular permission support not working correctly.
+ - 2018-01-31 Fixed bug#[13548](https://bugs.otrs.org/show_bug.cgi?id=13548) - Package::UpgradeAll does not warn about already updated but not correctly deployed packages.
+ - 2018-01-31 Fixed bug#[13604](https://bugs.otrs.org/show_bug.cgi?id=13604) - Dynamic Field Contact with Data is displayed doubled in AgentTicketZoom views.
+ - 2018-01-31 Fixed bug#[13519](https://bugs.otrs.org/show_bug.cgi?id=13519) - Multi file upload dialog not usable with keyboard navigation.
+ - 2018-01-30 Fixed bug#[13556](https://bugs.otrs.org/show_bug.cgi?id=13556) - Save draft without a title, opens window with JSON error on submit.
+ - 2018-01-30 Fixed bug#[13592](https://bugs.otrs.org/show_bug.cgi?id=13592) - ACL with invalid-temporarily status is not included in export file when exporting ACL.
+ - 2018-01-30 Fixed bug#[13468](https://bugs.otrs.org/show_bug.cgi?id=13468) - Generic interface works not with a interface which use the http status code '204'.
+ - 2018-01-29 Fixed bug#[13586](https://bugs.otrs.org/show_bug.cgi?id=13586) - Wrong tooltip text in customer interface (ID of the field instead of human readable text).
+ - 2018-01-25 Fixed bug#[13584](https://bugs.otrs.org/show_bug.cgi?id=13584)(PR#1894) - Emails sent via AgentTicketEmailOutbound are always visible for customer. Thanks to Robert Ullrich.
+ - 2018-01-25 Fixed bug#[13558](https://bugs.otrs.org/show_bug.cgi?id=13558) - ACL PossibleAdd ignores AgentTicketCompose and AgentTicketForward.
+ - 2018-01-24 Fixed bug#[13515](https://bugs.otrs.org/show_bug.cgi?id=13515) - On Login page it is impossible to insert a picture from a website (AgentLoginLogo).
+ - 2018-01-24 Fixed bug#[13567](https://bugs.otrs.org/show_bug.cgi?id=13567) - $GetParam{StateID} used for ACLCompatGetParam but $GetParam{NewStateID} given.
+ - 2018-01-24 Fixed bug#[13530](https://bugs.otrs.org/show_bug.cgi?id=13530) - Internal server error in AgentTicketForward if no article ID is provided.
+ - 2018-01-24 Fixed bug#[13472](https://bugs.otrs.org/show_bug.cgi?id=13472) - Conversion of Dates not accepting valid format.
+ - 2018-01-23 Fixed bug#[2289](https://bugs.otrs.org/show_bug.cgi?id=2289) - backup.pl - compress with bzip2 dont works.
+ - 2018-01-22 Fixed bug#[13235](https://bugs.otrs.org/show_bug.cgi?id=13235) - Race condition when fetching mails.
+ - 2018-01-22 Fixed bug#[13405](https://bugs.otrs.org/show_bug.cgi?id=13405) - CIC overlay display error.
+ - 2018-01-21 Updated translations, thanks to all translators.
+ - 2018-01-18 Fixed bug#[13552](https://bugs.otrs.org/show_bug.cgi?id=13552) - Wrong documentation in POD of TicketSearch.
+ - 2018-01-13 Fixed bug#[13534](https://bugs.otrs.org/show_bug.cgi?id=13534) - Comments in the Config XML files are not ignored.
+ - 2018-01-13 Fixed bug#[13339](https://bugs.otrs.org/show_bug.cgi?id=13339) - If deployment fails because of wrong settings, this wrong settings wouldn't be displayed.
+ - 2018-01-12 Fixed bug#[13543](https://bugs.otrs.org/show_bug.cgi?id=13543) - Wrong Month Name in OTRS Appoinment Calender.
+ - 2018-01-12 Fixed bug#[13521](https://bugs.otrs.org/show_bug.cgi?id=13521) - Article sender field contains user's OoO information.
+ - 2018-01-12 Fixed bug#[13498](https://bugs.otrs.org/show_bug.cgi?id=13498) - Multi-upload form is showing inline attachments after new uploads.
+ - 2018-01-11 Fixed bug#[13542](https://bugs.otrs.org/show_bug.cgi?id=13542) - Deep recursion error in package manager install/upgrade in a very special constellation.
+ - 2018-01-11 Fixed bug#[13536](https://bugs.otrs.org/show_bug.cgi?id=13536) - System maintenance does not show formatted timestamps and messages.
+ - 2018-01-10 Fixed bug#[13523](https://bugs.otrs.org/show_bug.cgi?id=13523) - Loading an invalid communication ID causes all to be shown.
+ - 2018-01-09 Follow-up fix for bug#[13325](https://bugs.otrs.org/show_bug.cgi?id=13325) - OTRS_CUSTOMER_BODY not working for most notification events.
 
 #6.0.4 2018-01-16
  - 2018-01-12 Fixed bug#[13527](https://bugs.otrs.org/show_bug.cgi?id=13527) - Reset locally not working as expected.

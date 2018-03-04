@@ -30,7 +30,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D-%M-%Y';
     $Self->{DateInputFormat}     = '%D-%M-%Y';
     $Self->{DateInputFormatLong} = '%D-%M-%Y - %T';
-    $Self->{Completeness}        = 0.480539699014011;
+    $Self->{Completeness}        = 0.479033649698016;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -2444,7 +2444,7 @@ sub Data {
         'Edit your preferences' => 'Bewerk uw voorkeuren',
         'Personal preferences' => '',
         'Preferences' => 'Voorkeuren',
-        'Warning! You\'re currently not editing your own preferences, but those of %s.' =>
+        'Please note: you\'re currently editing the preferences of %s.' =>
             '',
         'Go back to editing this agent' => '',
         'Set up your personal preferences. Save each setting by clicking the checkmark on the right.' =>
@@ -2939,6 +2939,9 @@ sub Data {
         'Send a bugreport' => 'Een bug report indienen',
         'Expand' => 'Klap uit',
 
+        # Template: AttachmentList
+        'Click to delete this attachment.' => '',
+
         # Template: DraftButtons
         'Update draft' => '',
         'Save as new draft' => '',
@@ -3292,6 +3295,7 @@ sub Data {
         'Loading, please wait...' => '',
 
         # JS Template: UploadContainer
+        'Click to select a file for upload.' => '',
         'Click to select files or just drop them here.' => '',
         'Click to select a file or just drop it here.' => '',
         'Uploading...' => '',
@@ -3652,6 +3656,8 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminMailAccount.pm
         'Mail account added!' => 'E-mailaccount toegevoegd.',
+        'Email account fetch already fetched by another process. Please try again later!' =>
+            '',
         'Dispatching by email To: field.' => 'Toewijzen gebaseerd op e-mailadres.',
         'Dispatching by selected Queue.' => 'Toewijzen gebaseerd op geselecteerde wachtrij.',
 
@@ -3701,9 +3707,11 @@ sub Data {
         'Updated' => '',
         'Already up-to-date' => '',
         'Installed' => '',
+        'Not correctly deployed' => '',
         'Package updated correctly' => '',
         'Package was already updated' => '',
         'Dependency installed correctly' => '',
+        'The package needs to be reinstalled' => '',
         'The package contains cyclic dependencies' => '',
         'Not found in on-line repositories' => '',
         'Required version is higher than available' => '',
@@ -4016,8 +4024,6 @@ sub Data {
         'Updated user preferences' => '',
         'System was unable to deploy your changes.' => '',
         'Setting not found!' => '',
-        'This feature is part of the %s Please contact us at %s for an upgrade.' =>
-            '',
         'System was unable to reset the setting!' => '',
 
         # Perl Module: Kernel/Modules/AgentSplitSelection.pm
@@ -4583,7 +4589,8 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/Notification/CustomerSystemMaintenanceCheck.pm
         'System maintenance is active!' => '',
-        'A system maintenance period will start at: ' => 'Een systeem onderhoudsperiode begint op:',
+        'A system maintenance period will start at: %s and is expected to stop at: %s' =>
+            '',
 
         # Perl Module: Kernel/Output/HTML/Notification/DaemonCheck.pm
         'OTRS Daemon is not running.' => 'OTRS Daemon is niet actief.',
@@ -4921,6 +4928,11 @@ sub Data {
         'InnoDB Log File Size' => 'InnoDB Log bestandsgrootte',
         'The setting innodb_log_file_size must be at least 256 MB.' => 'De instelling innodb_log_file_size meot minimaal 256MB zijn',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/InvalidDefaultValues.pm
+        'Invalid Default Values' => '',
+        'Tables with invalid default values were found. In order to fix it automatically, please run: bin/otrs.Console.pl Maint::Database::Check --repair' =>
+            '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/MaxAllowedPacket.pm
         'Maximum Query Size' => 'Maximale Query Lengte',
         'The setting \'max_allowed_packet\' must be higher than 64 MB.' =>
@@ -4937,6 +4949,9 @@ sub Data {
         'Tables with a different storage engine than the default engine were found.' =>
             'Er zijn tabellen gevonden die een afwijkende storage engine gebruiken.',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/TableCheck.pm
+        'Table check found some problems.' => '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Version.pm
         'MySQL 5.x or higher is required.' => 'MySQL 5.x of hoger is vereist.',
 
@@ -4948,6 +4963,11 @@ sub Data {
         'NLS_DATE_FORMAT must be set to \'YYYY-MM-DD HH24:MI:SS\'.' => 'NLS_DATE_FORMAT moet ingesteld zijn op \'YYYY-MM-DD HH24:MI:SS\'.',
         'NLS_DATE_FORMAT Setting SQL Check' => 'NLS_DATE_FORMAT instelling SQL controle',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/oracle/PrimaryKeySequencesAndTriggers.pm
+        'Primary Key Sequences and Triggers' => '',
+        'The following sequences and/or triggers with possible wrong names have been found. Please rename them manually.' =>
+            '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/Charset.pm
         'Setting client_encoding needs to be UNICODE or UTF8.' => 'Instelling client_encoding moet UNICODE of UTF8 zijn',
         'Setting server_encoding needs to be UNICODE or UTF8.' => 'Instelling server_encoding moet UNICODE of UTF8 zijn',
@@ -4955,6 +4975,11 @@ sub Data {
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/DateStyle.pm
         'Date Format' => 'Datum Format',
         'Setting DateStyle needs to be ISO.' => 'Instelling DateStyle moet ISO zijn',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/PrimaryKeySequences.pm
+        'Primary Key Sequences' => '',
+        'The following sequences with possible wrong names have been found. Please rename them manually.' =>
+            '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/Version.pm
         'PostgreSQL 9.2 or higher is required.' => '',
@@ -5202,6 +5227,9 @@ sub Data {
         'Could not update modified setting!' => '',
         'Setting could not be unlocked!' => '',
         'Missing key %s!' => '',
+        'Invalid setting: %s' => '',
+        'Could not combine settings values into a perl hash.' => '',
+        'Can not lock the deployment for UserID \'%s\'!' => '',
         'All Settings' => '',
 
         # Perl Module: Kernel/System/SysConfig/BaseValueType.pm
@@ -5657,8 +5685,6 @@ sub Data {
         # JS File: Core.Agent
         'Slide the navigation bar' => 'Schuif de navigaiebalk',
         'Please turn off Compatibility Mode in Internet Explorer!' => 'Zet a.u.b. Compatibility Mode in Internet Explorer uit!',
-        'This feature is part of the %s.  Please contact us at %s for an upgrade.' =>
-            'Deze feature is onderdeel van het %s. Neem contact met ons op via %s voor een upgrade',
         'Find out more' => '',
 
         # JS File: Core.App.Responsive
@@ -7442,6 +7468,7 @@ Het Helpdesk Team
         'JavaScript function for the search frontend.' => '',
         'Language' => 'Taal',
         'Large' => 'Groot',
+        'Last Screen Overview' => '',
         'Last customer subject' => '',
         'Lastname Firstname' => '',
         'Lastname Firstname (UserLogin)' => '',
@@ -8697,6 +8724,8 @@ Het Helpdesk Team
         'Clear all',
         'Clear debug log',
         'Clear search',
+        'Click to delete this attachment.',
+        'Click to select a file for upload.',
         'Click to select a file or just drop it here.',
         'Click to select files or just drop them here.',
         'Clone web service',
@@ -8954,7 +8983,7 @@ Het Helpdesk Team
         'This address already exists on the address list.',
         'This element has children elements and can currently not be removed.',
         'This event is already attached to the job, Please use a different one.',
-        'This feature is part of the %s.  Please contact us at %s for an upgrade.',
+        'This feature is part of the %s. Please contact us at %s for an upgrade.',
         'This field is required.',
         'This is %s',
         'This is a repeating appointment',

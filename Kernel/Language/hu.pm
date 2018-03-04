@@ -29,7 +29,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y-%M-%D';
     $Self->{DateInputFormat}     = '%Y-%M-%D';
     $Self->{DateInputFormatLong} = '%Y-%M-%D - %T';
-    $Self->{Completeness}        = 0.998962117280747;
+    $Self->{Completeness}        = 0.997756686798965;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -1309,7 +1309,7 @@ sub Data {
         'Unauthorized Usage Detected' => 'Jogosulatlan használat észlelhető',
         'This system uses the %s without a proper license! Please make contact with %s to renew or activate your contract!' =>
             'Ez a rendszer a megfelelő licenc nélkül használja az %s programot. A szerződés megújításához vagy aktiválásához vegye fel a kapcsolatot a következővel: %s!',
-        '%s not Correctly Installed' => '%s nincs helyesen telepítve',
+        '%s not Correctly Installed' => 'Az %s nincs helyesen telepítve',
         'Your %s is not correctly installed. Please reinstall it with the button below.' =>
             'Az %s nincs helyesen telepítve. Telepítse újra a lenti gombbal.',
         'Reinstall %s' => '%s újratelepítése',
@@ -1323,9 +1323,9 @@ sub Data {
         '%s Update Available' => '%s frissítés érhető el',
         'An update for your %s is available! Please update at your earliest!' =>
             'Frissítés érhető el az %s programhoz! Frissítsen a lehető leghamarabb!',
-        '%s Correctly Deployed' => 'Az %s helyesen üzembe állítva',
+        '%s Correctly Deployed' => 'Az %s megfelelően üzembe lett állítva',
         'Congratulations, your %s is correctly installed and up to date!' =>
-            'Gratulálunk, az %s helyesen telepített van és naprakész!',
+            'Gratulálunk, az %s helyesen van telepítve és naprakész!',
 
         # Template: AdminOTRSBusinessNotInstalled
         'Go to the OTRS customer portal' => 'Ugrás az OTRS ügyfélportáljára',
@@ -1444,7 +1444,7 @@ sub Data {
         'This package is verified by OTRSverify (tm)' => 'Ezt a csomagot az OTRSverify (tm) ellenőrizte.',
         'Uninstall' => 'Eltávolítás',
         'Package not correctly deployed! Please reinstall the package.' =>
-            'A csomag nincs rendesen üzembe állítva! Telepítse újra a csomagot.',
+            'A csomag nincs megfelelően üzembe állítva! Telepítse újra a csomagot.',
         'Reinstall' => 'Újratelepítés',
         'Features for %s customers only' => 'Csak a(z) %s ügyfelek szolgáltatásai',
         'With %s, you can benefit from the following optional features. Please make contact with %s if you need more information.' =>
@@ -2443,8 +2443,8 @@ sub Data {
         'Edit your preferences' => 'Beállítások szerkesztése',
         'Personal preferences' => 'Személyes beállítások',
         'Preferences' => 'Beállítások',
-        'Warning! You\'re currently not editing your own preferences, but those of %s.' =>
-            'Figyelmeztetés! Jelenleg nem a saját beállításait szerkeszti, hanem %s beállításait.',
+        'Please note: you\'re currently editing the preferences of %s.' =>
+            '',
         'Go back to editing this agent' => 'Vissza az ügyintéző szerkesztéséhez',
         'Set up your personal preferences. Save each setting by clicking the checkmark on the right.' =>
             'Állítsa be a személyes beállításait. Az egyes beállításokat a jobb oldalán lévő pipára kattintva mentheti el.',
@@ -2632,7 +2632,7 @@ sub Data {
         'History of %s%s%s' => '%s%s%s előzményei',
         'Filter for history items' => 'Szűrő az előzményelemekhez',
         'Expand/collapse all' => 'Összes kinyitása vagy összecsukása',
-        'CreateTime' => 'Létrehozás ideje (CreateTime)',
+        'CreateTime' => 'Létrehozás ideje',
         'Article' => 'Bejegyzés',
 
         # Template: AgentTicketMerge
@@ -2938,15 +2938,18 @@ sub Data {
         'Send a bugreport' => 'Hibajelentés küldése',
         'Expand' => 'Kinyitás',
 
+        # Template: AttachmentList
+        'Click to delete this attachment.' => '',
+
         # Template: DraftButtons
         'Update draft' => 'Piszkozat frissítése',
         'Save as new draft' => 'Mentés új piszkozatként',
 
         # Template: DraftNotifications
         'You have loaded the draft "%s".' => 'Betöltötte a következő piszkozatot: „%s”.',
-        'You have loaded the draft "%s". You last changed it %s.' => 'Betöltötte a következő piszkozatot: „%s”. Utoljára %s változtatta meg.',
+        'You have loaded the draft "%s". You last changed it %s.' => 'Betöltötte a következő piszkozatot: „%s”. Utoljára %s-kor változtatta meg.',
         'You have loaded the draft "%s". It was last changed %s by %s.' =>
-            'Betöltötte a következő piszkozatot: „%s”. Utoljára %s változtatta meg %s.',
+            'Betöltötte a következő piszkozatot: „%s”. Utoljára %s-kor %s változtatta meg.',
         'Please note that this draft is outdated because the ticket was modified since this draft was created.' =>
             'Ne feledje, hogy ez a piszkozat elavult, mert a jegyet módosították a piszkozat létrehozása óta.',
 
@@ -3291,6 +3294,7 @@ sub Data {
         'Loading, please wait...' => 'Betöltés, kérem várjon…',
 
         # JS Template: UploadContainer
+        'Click to select a file for upload.' => '',
         'Click to select files or just drop them here.' => 'Kattintson a fájlok kijelöléséhez, vagy egyszerűen dobja ide azokat.',
         'Click to select a file or just drop it here.' => 'Kattintson egy fájl kijelöléséhez, vagy egyszerűen dobja ide azt.',
         'Uploading...' => 'Feltöltés…',
@@ -3651,6 +3655,8 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminMailAccount.pm
         'Mail account added!' => 'Levelezőfiók hozzáadva!',
+        'Email account fetch already fetched by another process. Please try again later!' =>
+            '',
         'Dispatching by email To: field.' => 'Szétválogatás az e-mail címzett mezője szerint.',
         'Dispatching by selected Queue.' => 'Szétválogatás a kiválasztott várólista szerint.',
 
@@ -3671,11 +3677,11 @@ sub Data {
         # Perl Module: Kernel/Modules/AdminOTRSBusiness.pm
         'Your system was successfully upgraded to %s.' => 'A rendszere sikeresen frissítve lett a következő verzióra: %s.',
         'There was a problem during the upgrade to %s.' => 'Hiba történt az %s verzióra való frissítés közben.',
-        '%s was correctly reinstalled.' => 'Az %s rendben újra lett telepítve.',
+        '%s was correctly reinstalled.' => 'Az %s megfelelően újra lett telepítve.',
         'There was a problem reinstalling %s.' => 'Hiba történt az %s újratelepítésekor.',
         'Your %s was successfully updated.' => 'Az %s sikeresen frissítve lett.',
         'There was a problem during the upgrade of %s.' => 'Hiba történt az %s frissítése közben.',
-        '%s was correctly uninstalled.' => 'Az %s rendben el lett távolítva.',
+        '%s was correctly uninstalled.' => 'Az %s megfelelően el lett távolítva.',
         'There was a problem uninstalling %s.' => 'Hiba történt az %s eltávolításakor.',
 
         # Perl Module: Kernel/Modules/AdminPGP.pm
@@ -3700,9 +3706,11 @@ sub Data {
         'Updated' => 'Frissítve',
         'Already up-to-date' => 'Már naprakész',
         'Installed' => 'Telepítve',
-        'Package updated correctly' => 'A csomag sikeresen frissítve',
+        'Not correctly deployed' => '',
+        'Package updated correctly' => 'A csomag megfelelően frissítve',
         'Package was already updated' => 'A csomag már frissítve lett',
-        'Dependency installed correctly' => 'A függőség sikeresen telepítve',
+        'Dependency installed correctly' => 'A függőség megfelelően telepítve',
+        'The package needs to be reinstalled' => '',
         'The package contains cyclic dependencies' => 'A csomag körkörös függőségeket tartalmaz',
         'Not found in on-line repositories' => 'Nem található az internetes tárolókban',
         'Required version is higher than available' => 'A szükséges verzió magasabb az elérhetőnél',
@@ -4015,8 +4023,6 @@ sub Data {
         'Updated user preferences' => 'Felhasználói beállítások frissítve',
         'System was unable to deploy your changes.' => 'A rendszer nem tudta üzembe állítani a változtatásokat.',
         'Setting not found!' => 'A beállítás nem található!',
-        'This feature is part of the %s Please contact us at %s for an upgrade.' =>
-            'Ez a szolgáltatás az %s része. A frissítéshez lépjen velünk kapcsolatba a következő címen: %s.',
         'System was unable to reset the setting!' => 'A rendszer nem tudta visszaállítani a beállítást!',
 
         # Perl Module: Kernel/Modules/AgentSplitSelection.pm
@@ -4376,7 +4382,7 @@ sub Data {
         'Error: Please set the value for innodb_log_file_size on your database to at least %s MB (current: %s MB, recommended: %s MB). For more information, please have a look at %s.' =>
             'Hiba: Állítsa be az adatbázison az innodb_log_file_size értékét legalább %s MB méretűre (jelenleg: %s MB, ajánlott: %s MB). További információkért nézze meg a következőt: %s.',
         'Wrong database collation (%s is %s, but it needs to be utf8).' =>
-            '',
+            'Hibás adatbázis egyeztetés (a %s értéke %s, de utf8 értékűnek kell lennie).',
 
         # Perl Module: Kernel/Modules/PublicCalendar.pm
         'No %s!' => 'Nincs %s!',
@@ -4582,7 +4588,8 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/Notification/CustomerSystemMaintenanceCheck.pm
         'System maintenance is active!' => 'A rendszerkarbantartás aktív!',
-        'A system maintenance period will start at: ' => 'Egy rendszerkarbantartás időszak fog kezdődni ekkor: ',
+        'A system maintenance period will start at: %s and is expected to stop at: %s' =>
+            'Egy rendszerkarbantartás időszak fog kezdődni ekkor: %s, és várható befejezése: %s',
 
         # Perl Module: Kernel/Output/HTML/Notification/DaemonCheck.pm
         'OTRS Daemon is not running.' => 'Az OTRS démon nem fut.',
@@ -4920,6 +4927,11 @@ sub Data {
         'InnoDB Log File Size' => 'InnoDB naplófájl méret',
         'The setting innodb_log_file_size must be at least 256 MB.' => 'Az innodb_log_file_size beállításnak legalább 256 MB értékűnek kell lennie.',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/InvalidDefaultValues.pm
+        'Invalid Default Values' => '',
+        'Tables with invalid default values were found. In order to fix it automatically, please run: bin/otrs.Console.pl Maint::Database::Check --repair' =>
+            '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/MaxAllowedPacket.pm
         'Maximum Query Size' => 'Legnagyobb lekérdezési méret',
         'The setting \'max_allowed_packet\' must be higher than 64 MB.' =>
@@ -4936,6 +4948,9 @@ sub Data {
         'Tables with a different storage engine than the default engine were found.' =>
             'Az alapértelmezett motortól eltérő motorral rendelkező táblák találhatók.',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/TableCheck.pm
+        'Table check found some problems.' => '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Version.pm
         'MySQL 5.x or higher is required.' => 'MySQL 5.x vagy újabb szükséges.',
 
@@ -4947,6 +4962,11 @@ sub Data {
         'NLS_DATE_FORMAT must be set to \'YYYY-MM-DD HH24:MI:SS\'.' => 'Az NLS_DATE_FORMAT értékét „YYYY-MM-DD HH24:MI:SS” értékre kell állítani.',
         'NLS_DATE_FORMAT Setting SQL Check' => 'NLS_DATE_FORMAT beállítás SQL ellenőrzés',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/oracle/PrimaryKeySequencesAndTriggers.pm
+        'Primary Key Sequences and Triggers' => '',
+        'The following sequences and/or triggers with possible wrong names have been found. Please rename them manually.' =>
+            '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/Charset.pm
         'Setting client_encoding needs to be UNICODE or UTF8.' => 'A client_encoding beállításnak UNICODE vagy UTF8 értékűnek kell lennie.',
         'Setting server_encoding needs to be UNICODE or UTF8.' => 'A server_encoding beállításnak UNICODE vagy UTF8 értékűnek kell lennie.',
@@ -4954,6 +4974,11 @@ sub Data {
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/DateStyle.pm
         'Date Format' => 'Dátumformátum',
         'Setting DateStyle needs to be ISO.' => 'A DateStyle beállításnak ISO értékűnek kell lennie.',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/PrimaryKeySequences.pm
+        'Primary Key Sequences' => '',
+        'The following sequences with possible wrong names have been found. Please rename them manually.' =>
+            '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/postgresql/Version.pm
         'PostgreSQL 9.2 or higher is required.' => 'PostgreSQL 9.2 vagy újabb szükséges.',
@@ -5073,7 +5098,7 @@ sub Data {
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageDeployment.pm
         'Package Installation Status' => 'Csomagtelepítési állapot',
         'Some packages have locally modified files.' => 'Néhány csomag helyileg módosított fájlokkal rendelkezik.',
-        'Some packages are not correctly installed.' => 'Néhány csomag nincs helyesen telepítve.',
+        'Some packages are not correctly installed.' => 'Néhány csomag nincs megfelelően telepítve.',
         'Package Verification Status' => 'Csomagellenőrzési állapot',
         'Some packages are not verified by the OTRS Group! It is recommended not to use this packages.' =>
             'Néhány csomagot nem ellenőrzött az OTRS csoport! Nem javasolt a csomagok használata.',
@@ -5201,6 +5226,9 @@ sub Data {
         'Could not update modified setting!' => 'Nem sikerült frissíteni a módosított beállítást!',
         'Setting could not be unlocked!' => 'A beállítást nem sikerült feloldani!',
         'Missing key %s!' => 'Hiányzó %s kulcs!',
+        'Invalid setting: %s' => 'Érvénytelen beállítás: %s',
+        'Could not combine settings values into a perl hash.' => 'Nem sikerült egyesíteni a beállítások értékeit Perl kivonatba.',
+        'Can not lock the deployment for UserID \'%s\'!' => 'Nem lehet zárolni az üzembe állítást a következő felhasználó-azonosítónál: „%s”!',
         'All Settings' => 'Összes beállítás',
 
         # Perl Module: Kernel/System/SysConfig/BaseValueType.pm
@@ -5656,8 +5684,6 @@ sub Data {
         # JS File: Core.Agent
         'Slide the navigation bar' => 'Csúsztassa a navigációs sávot',
         'Please turn off Compatibility Mode in Internet Explorer!' => 'Kapcsolja ki a kompatibilitási módot az Internet Explorerben!',
-        'This feature is part of the %s.  Please contact us at %s for an upgrade.' =>
-            'Ez a szolgáltatás az %s része. A frissítéshez lépjen velünk kapcsolatba a következő címen: %s.',
         'Find out more' => 'Tudjon meg többet',
 
         # JS File: Core.App.Responsive
@@ -6121,7 +6147,7 @@ Az Ön segélyszolgálat csapata
         'Communication & Notifications' => 'Kommunikáció és értesítések',
         'Communication Log GUI' => 'Kommunikációs napló grafikus felhasználói felület',
         'Communication log limit per page for Communication Log Overview.' =>
-            '',
+            'Oldalankénti kommunikációs napló korlát a kommunikációs napló áttekintőnél.',
         'CommunicationLog Overview Limit' => 'Kommunikációs napló áttekintő korlát',
         'Company Status' => 'Vállalat állapot',
         'Company Tickets.' => 'Vállalati jegyek.',
@@ -7042,7 +7068,7 @@ Az Ön segélyszolgálat csapata
             'Dinamikus mezők, amelyek a keresési eredmények CSV formátumba való exportálásához használhatók.',
         'Dynamic fields groups for process widget. The key is the name of the group, the value contains the fields to be shown. Example: \'Key => My Group\', \'Content: Name_X, NameY\'.' =>
             'Dinamikus mezők csoportjai a feldolgozó felületi elemhez. A kulcs a csoport neve, az érték a megjelenítendő mezőket tartalmazza. Példa: „Kulcs => Saját csoport”, „Tartalom: Név_X, Név_Y”.',
-        'Dynamic fields limit per page for Dynamic Fields Overview.' => '',
+        'Dynamic fields limit per page for Dynamic Fields Overview.' => 'Oldalankénti dinamikus mező korlát a dinamikus mezők áttekintőnél.',
         'Dynamic fields options shown in the ticket message screen of the customer interface. NOTE. If you want to display these fields also in the ticket zoom of the customer interface, you have to enable them in CustomerTicketZoom###DynamicField.' =>
             'Az ügyfélfelület jegy üzenet képernyőjén megjelenő dinamikus mezők lehetőségei. MEGJEGYZÉS: Ha az ügyfélfelület jegy nagyításában is meg szeretné jeleníteni ezeket a mezőket, akkor engedélyeznie kell azokat ebben: CustomerTicketZoom###DynamicField.',
         'Dynamic fields options shown in the ticket reply section in the ticket zoom screen of the customer interface.' =>
@@ -7441,6 +7467,7 @@ Az Ön segélyszolgálat csapata
         'JavaScript function for the search frontend.' => 'JavaScript függvény a keresési előtétprogramhoz.',
         'Language' => 'Nyelv',
         'Large' => 'Nagy',
+        'Last Screen Overview' => 'Utolsó képernyő áttekintője',
         'Last customer subject' => 'Legutóbbi ügyféltárgy',
         'Lastname Firstname' => 'Vezetéknév Keresztnév',
         'Lastname Firstname (UserLogin)' => 'Vezetéknév Keresztnév (Felhasználónév)',
@@ -8528,9 +8555,9 @@ Az Ön segélyszolgálat csapata
         'Ticket bulk module.' => 'Jegy tömeges modul.',
         'Ticket event module that triggers the escalation stop events.' =>
             'Jegyesemény modul, amely aktiválja az eszkaláció leállítás eseményeket.',
-        'Ticket limit per page for Ticket Overview "Medium".' => '',
-        'Ticket limit per page for Ticket Overview "Preview".' => '',
-        'Ticket limit per page for Ticket Overview "Small".' => '',
+        'Ticket limit per page for Ticket Overview "Medium".' => 'Oldalankénti jegykorlát a „Közepes” jegyáttekintéshez.',
+        'Ticket limit per page for Ticket Overview "Preview".' => 'Oldalankénti jegykorlát az „Előnézet” jegyáttekintéshez.',
+        'Ticket limit per page for Ticket Overview "Small".' => 'Oldalankénti jegykorlát a „Kis” jegyáttekintéshez.',
         'Ticket notifications' => 'Jegyértesítések',
         'Ticket overview' => 'Jegyáttekintő',
         'Ticket plain view of an email.' => 'Egy e-mail egyszerű jegynézete.',
@@ -8696,6 +8723,8 @@ Az Ön segélyszolgálat csapata
         'Clear all',
         'Clear debug log',
         'Clear search',
+        'Click to delete this attachment.',
+        'Click to select a file for upload.',
         'Click to select a file or just drop it here.',
         'Click to select files or just drop them here.',
         'Clone web service',
@@ -8953,7 +8982,7 @@ Az Ön segélyszolgálat csapata
         'This address already exists on the address list.',
         'This element has children elements and can currently not be removed.',
         'This event is already attached to the job, Please use a different one.',
-        'This feature is part of the %s.  Please contact us at %s for an upgrade.',
+        'This feature is part of the %s. Please contact us at %s for an upgrade.',
         'This field is required.',
         'This is %s',
         'This is a repeating appointment',
