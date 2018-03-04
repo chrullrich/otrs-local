@@ -37,12 +37,11 @@ sub Run {
     $Self->{CurrentUserID} = $Self->{UserID};
     if (
         $EditUserID
-        && $EditUserID != $Self->{UserID}
         && $Self->_CheckEditPreferencesPermission()
         )
     {
         $Self->{CurrentUserID}       = $EditUserID;
-        $Self->{CurrentUserIDNotice} = 1;
+        $Self->{EditingAnotherAgent} = 1;
     }
 
     # ------------------------------------------------------------ #
@@ -540,7 +539,7 @@ sub Run {
             TemplateFile => 'AgentPreferencesOverview',
             Data         => {
                 Items               => \@PreferencesGroups,
-                CurrentUserIDNotice => $Self->{CurrentUserIDNotice},
+                EditingAnotherAgent => $Self->{EditingAnotherAgent},
                 CurrentUserFullname => $UserObject->UserName( UserID => $Self->{CurrentUserID} ),
                 CurrentUserID       => $Self->{CurrentUserID},
                 View                => $UserPreferences{AgentPreferencesView} || 'Grid',
@@ -572,12 +571,11 @@ sub AgentPreferencesForm {
     $Self->{CurrentUserID} = $Self->{UserID};
     if (
         $EditUserID
-        && $EditUserID != $Self->{UserID}
         && $Self->_CheckEditPreferencesPermission()
         )
     {
+        $Self->{EditingAnotherAgent} = 1;
         $Self->{CurrentUserID}       = $EditUserID;
-        $Self->{CurrentUserIDNotice} = 1;
     }
 
     # Show navigation in advanced group
@@ -638,7 +636,7 @@ sub AgentPreferencesForm {
             %Param,
             CategoriesStrg      => $Self->_GetCategoriesStrg(),
             RootNavigation      => $RootNavigation,
-            CurrentUserIDNotice => $Self->{CurrentUserIDNotice},
+            EditingAnotherAgent => $Self->{EditingAnotherAgent},
             CurrentUserFullname =>
                 $Kernel::OM->Get('Kernel::System::User')->UserName( UserID => $Self->{CurrentUserID} ),
             CurrentUserID => $Self->{CurrentUserID},
@@ -689,7 +687,10 @@ sub AgentPreferencesForm {
         next PRIO if !$ConfigObject->{PreferencesGroups}->{$Group};
 
         my %Preference = %{ $ConfigObject->{PreferencesGroups}->{$Group} };
-        next PRIO if !$Preference{Active};
+
+        if ( !$Self->{EditingAnotherAgent} && !$Preference{Active} ) {
+            next PRIO;
+        }
 
         # load module
         my $Module = $Preference{Module} || 'Kernel::Output::HTML::Preferences::Generic';
@@ -865,7 +866,7 @@ sub _SettingReset {
     }
     elsif ( !$SysConfigObject->can('UserSettingValueDelete') ) {    # OTRS Business Solution™
         $Result{Data}->{Error} = $LayoutObject->{LanguageObject}->Translate(
-            "This feature is part of the %s Please contact us at %s for an upgrade."
+            "This feature is part of the %s. Please contact us at %s for an upgrade."
             , 'OTRS Business Solution™'
             , 'sales@otrs.com'
         );

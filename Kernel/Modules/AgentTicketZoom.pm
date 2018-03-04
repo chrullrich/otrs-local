@@ -54,7 +54,7 @@ sub new {
             && !defined $Self->{ZoomTimeline}
             )
         {
-            $Self->{ZoomExpand} = $ConfigObject->Get('Ticket::Frontend::ZoomExpand');
+            $Self->{ZoomExpand} = $ConfigObject->Get('Ticket::Frontend::AgentZoomExpand');
             if ( $UserPreferences{UserLastUsedZoomViewType} ) {
                 if ( $UserPreferences{UserLastUsedZoomViewType} eq 'Expand' ) {
                     $Self->{ZoomExpand} = 1;
@@ -89,7 +89,7 @@ sub new {
                     $Self->{ZoomTimeline} = 1;
                 }
                 else {
-                    $LastUsedZoomViewType = $ConfigObject->Get('Ticket::Frontend::ZoomExpand')
+                    $LastUsedZoomViewType = $ConfigObject->Get('Ticket::Frontend::AgentZoomExpand')
                         ? 'Expand'
                         : 'Collapse';
                 }
@@ -1479,7 +1479,7 @@ sub MaskAgentZoom {
             Name => 'FormDraftTable',
             Data => {
                 FormDrafts => \@FormDrafts,
-                TicketID   => $Param{TicketID},
+                TicketID   => $Self->{TicketID},
             },
         );
     }
@@ -2917,6 +2917,7 @@ sub _ArticleItem {
 
     # show article actions
     my @MenuItems = $LayoutObject->ArticleActions(
+        %Param,
         TicketID  => $Param{Ticket}->{TicketID},
         ArticleID => $Param{Article}->{ArticleID},
         Type      => $Param{Type},
