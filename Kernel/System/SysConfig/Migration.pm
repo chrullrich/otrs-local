@@ -111,7 +111,11 @@ sub MigrateXMLStructure {
 
     my @Frontends;
 
+    SETTING:
     for my $Setting (@Settings) {
+
+        # Stop the setting loop process if it's the ending tag.
+        last SETTING if $Setting =~ m/<\/otrs_config>/i;
 
         # Update version (from 1.0 to 2.0).
         $Setting =~ s{^(<otrs_config.*?version)="1.0"}{$1="2.0"}gsmx;
@@ -993,10 +997,14 @@ sub MigrateXMLStructure {
             $Setting =~ m{ Name="PostMaster::(PreFilter|PreCreateFilter|PostFilter|CheckFollowUp)Module\#\#\# .+ }xms
             )
         {
-            $Setting =~ s{<Item Key="X-OTRS-ArticleType">(.*?)</Item>}{<Item Key="X-OTRS-IsVisibleForCustomer">$ArticleTypeMapping{$1}->{Visible}</Item>}g;
-            $Setting =~ s{<Item Key="X-OTRS-FollowUp-ArticleType">(.*?)</Item>}{<Item Key="X-OTRS-FollowUp-IsVisibleForCustomer">$ArticleTypeMapping{$1}->{Visible}</Item>}g;
-            $Setting =~ s{<Item Key="ArticleType"[^>]*>(.*?)</Item>}{<Item Key="IsVisibleForCustomer" Translatable="1">$ArticleTypeMapping{$1}->{Visible}</Item>}g;
-            $Setting =~ s{<Item Key="Module">Kernel::System::PostMaster::Filter::FollowUpArticleTypeCheck</Item>}{<Item Key="Module">Kernel::System::PostMaster::Filter::FollowUpArticleVisibilityCheck</Item>}g;
+            $Setting
+                =~ s{<Item Key="X-OTRS-ArticleType">(.*?)</Item>}{<Item Key="X-OTRS-IsVisibleForCustomer">$ArticleTypeMapping{$1}->{Visible}</Item>}g;
+            $Setting
+                =~ s{<Item Key="X-OTRS-FollowUp-ArticleType">(.*?)</Item>}{<Item Key="X-OTRS-FollowUp-IsVisibleForCustomer">$ArticleTypeMapping{$1}->{Visible}</Item>}g;
+            $Setting
+                =~ s{<Item Key="ArticleType"[^>]*>(.*?)</Item>}{<Item Key="IsVisibleForCustomer" Translatable="1">$ArticleTypeMapping{$1}->{Visible}</Item>}g;
+            $Setting
+                =~ s{<Item Key="Module">Kernel::System::PostMaster::Filter::FollowUpArticleTypeCheck</Item>}{<Item Key="Module">Kernel::System::PostMaster::Filter::FollowUpArticleVisibilityCheck</Item>}g;
         }
 
         # Remove Group.
@@ -1848,14 +1856,23 @@ sub MigrateConfigEffectiveValues {
                     #   PostMaster::PreCreateFilterModule
                     #   PostMaster::PostFilterModule
                     #   PostMaster::CheckFollowUpModule
-                    if ( $SettingName =~ m{ \A PostMaster::(PreFilter|PreCreateFilter|PostFilter|CheckFollowUp)Module \z }xms ) {
+                    if (
+                        $SettingName
+                        =~ m{ \A PostMaster::(PreFilter|PreCreateFilter|PostFilter|CheckFollowUp)Module \z }xms
+                        )
+                    {
 
                         # update no longer existing module.
-                        if ( $OTRS5EffectiveValue->{Module} eq 'Kernel::System::PostMaster::Filter::FollowUpArticleTypeCheck' ) {
-                            $OTRS5EffectiveValue->{Module} = 'Kernel::System::PostMaster::Filter::FollowUpArticleVisibilityCheck';
+                        if (
+                            $OTRS5EffectiveValue->{Module} eq
+                            'Kernel::System::PostMaster::Filter::FollowUpArticleTypeCheck'
+                            )
+                        {
+                            $OTRS5EffectiveValue->{Module}
+                                = 'Kernel::System::PostMaster::Filter::FollowUpArticleVisibilityCheck';
                         }
 
-                        # Define maping for old to new keys.
+                        # Define mapping for old to new keys.
                         my %Old2NewKeyMapping = (
                             'X-OTRS-ArticleType'          => 'X-OTRS-IsVisibleForCustomer',
                             'X-OTRS-FollowUp-ArticleType' => 'X-OTRS-FollowUp-IsVisibleForCustomer',
@@ -1870,11 +1887,12 @@ sub MigrateConfigEffectiveValues {
                             # Convert subentries below Match and Set.
                             AREA:
                             for my $Area (qw(Match Set)) {
-                                next AREA if !IsHashRefWithData($OTRS5EffectiveValue->{$Area});
+                                next AREA if !IsHashRefWithData( $OTRS5EffectiveValue->{$Area} );
                                 next AREA if !$OTRS5EffectiveValue->{$Area}->{$OldKey};
 
                                 # Add the new key with the converted value from the old key.
-                                $OTRS5EffectiveValue->{$Area}->{$NewKey} = $ArticleTypeMapping{ $OTRS5EffectiveValue->{$Area}->{$OldKey} }->{Visible};
+                                $OTRS5EffectiveValue->{$Area}->{$NewKey}
+                                    = $ArticleTypeMapping{ $OTRS5EffectiveValue->{$Area}->{$OldKey} }->{Visible};
 
                                 # Delete the old key.
                                 delete $OTRS5EffectiveValue->{$Area}->{$OldKey};
@@ -1884,7 +1902,8 @@ sub MigrateConfigEffectiveValues {
                             next OLDKEY if !$OTRS5EffectiveValue->{$OldKey};
 
                             # Add the new key with the converted value from the old key.
-                            $OTRS5EffectiveValue->{$NewKey} = $ArticleTypeMapping{ $OTRS5EffectiveValue->{$OldKey} }->{Visible};
+                            $OTRS5EffectiveValue->{$NewKey}
+                                = $ArticleTypeMapping{ $OTRS5EffectiveValue->{$OldKey} }->{Visible};
 
                             # Delete the old key.
                             delete $OTRS5EffectiveValue->{$OldKey};
@@ -1929,7 +1948,8 @@ sub MigrateConfigEffectiveValues {
             # check and convert config name if it has been renamed in OTRS 6
             # otherwise it will use the given old name
             my $NewSettingName = $Self->_LookupNewConfigName(
-                OldName => $SettingName,
+                OldName                    => $SettingName,
+                PackageLookupNewConfigName => $Param{PackageLookupNewConfigName},
             );
 
             # skip settings which are not in the given package settings
