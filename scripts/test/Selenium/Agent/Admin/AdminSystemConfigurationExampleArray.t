@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -656,6 +656,8 @@ my @Tests = (
                 'AccessKey'   => '',
                 'Block'       => '',
                 'Description' => 'Description',
+                "Group"       => [],
+                "GroupRo"     => [],
                 'Link'        => 'Action=AgentTest;Subaction=Test',
                 'LinkOption'  => '',
                 'Name'        => 'Test',
@@ -670,6 +672,7 @@ my @Tests = (
                 'Group'       => [
                     'admin'
                 ],
+                "GroupRo"    => [],
                 'Link'       => 'Action=AgentTest;Subaction=Test',
                 'LinkOption' => '',
                 'Name'       => 'Navigation name',
@@ -1145,6 +1148,7 @@ $Selenium->RunTest(
             );
 
             if ( $Test->{ExpectedResult} ) {
+
                 $Self->IsDeeply(
                     $Setting{EffectiveValue},
                     $Test->{ExpectedResult},

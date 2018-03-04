@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -27,6 +27,13 @@ sub CheckPreviousRequirement {
     if ( $Param{CommandlineOptions}->{NonInteractive} || !is_interactive() ) {
         return 1;
     }
+
+    # Check if following table already exists. In this case, time zone configuration is already done.
+    my $TableExists = $Self->TableExists(
+        Table => 'ticket_number_counter',
+    );
+
+    return 1 if $TableExists;
 
     # Check if configuration was already made.
     my $OTRSTimeZone        = $Kernel::OM->Get('Kernel::Config')->Get('OTRSTimeZone')        // 'UTC';
@@ -114,6 +121,13 @@ sub Run {
     my ( $Self, %Param ) = @_;
 
     my $Verbose = $Param{CommandlineOptions}->{Verbose} || 0;
+
+    # Check if following table already exists. In this case, time zone configuration is already done.
+    my $TableExists = $Self->TableExists(
+        Table => 'ticket_number_counter',
+    );
+
+    return 1 if $TableExists;
 
     #
     # Check for interactive mode

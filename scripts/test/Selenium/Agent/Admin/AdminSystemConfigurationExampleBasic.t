@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -1332,6 +1332,21 @@ $Selenium->RunTest(
                 push @TestNames, $Test->{Name};
             }
         }
+
+        # Make sure that invisible setting can't be reached by manipulating url.
+        $Selenium->VerifiedGet(
+            "${ScriptAlias}index.pl?Action=AdminSystemConfiguration;Subaction=View;Setting=SystemConfiguration::MaximumDeployments"
+        );
+
+        # Check if there is notification.
+        $Self->True(
+            index(
+                $Selenium->get_page_source(),
+                "This group doesn't contain any settings. Please try navigating to one of its sub groups or another group."
+                ) > -1,
+            "Invisible setting not found."
+        );
+
     }
 );
 

@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -207,7 +207,7 @@ my @Tests = (
         Data => {
             Events          => [ 'TicketDynamicFieldUpdate_DFT1' . $RandomID . 'Update' ],
             RecipientAgents => [$UserID],
-            RecipientEmail  => ['test@otrsexample.com'],
+            RecipientEmail  => ['zzztest@otrsexample.com'],
         },
         ExpectedResults => [
             {
@@ -215,7 +215,7 @@ my @Tests = (
                 Body    => "JobName $TicketID Kernel::System::Email::Test $UserData{UserFirstname}=\n",
             },
             {
-                ToArray => ['test@otrsexample.com'],
+                ToArray => ['zzztest@otrsexample.com'],
                 Body    => "JobName $TicketID Kernel::System::Email::Test $UserData{UserFirstname}=\n",
             },
         ],
@@ -369,8 +369,10 @@ for my $Test (@Tests) {
         $Email->{Body} = ${ $Email->{Body} };
     }
 
+    my @EmailsSort = sort { $a->{ToArray}[0] cmp $b->{ToArray}[0] } @{$Emails};
+
     $Self->IsDeeply(
-        $Emails,
+        \@EmailsSort,
         $Test->{ExpectedResults},
         "$Test->{Name} - Recipients",
     );
