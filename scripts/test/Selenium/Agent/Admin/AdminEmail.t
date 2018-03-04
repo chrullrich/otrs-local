@@ -26,6 +26,12 @@ $Selenium->RunTest(
 
         my $Language = 'de';
 
+        # do not validate email addresses
+        $Helper->ConfigSettingChange(
+            Key   => 'CheckEmailAddresses',
+            Value => 0,
+        );
+
         # do not check RichText
         $Helper->ConfigSettingChange(
             Valid => 1,
@@ -102,7 +108,7 @@ $Selenium->RunTest(
             UserLanguage => $Language,
         );
 
-        my $Expected = $LanguageObject->Get(
+        my $Expected = $LanguageObject->Translate(
             "Your message was sent to"
         ) . ": $TestUserLogin\@localunittest.com";
 

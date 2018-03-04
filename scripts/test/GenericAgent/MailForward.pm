@@ -19,12 +19,12 @@ our @ObjectDependencies = (
     'Kernel::System::Log',
     'Kernel::System::Queue',
     'Kernel::System::Ticket',
+    'Kernel::System::Ticket::Article',
 );
 
 sub new {
     my ( $Type, %Param ) = @_;
 
-    # allocate new hash for object
     my $Self = {};
     bless( $Self, $Type );
 
@@ -34,7 +34,6 @@ sub new {
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    # check needed param
     if ( !$Param{New}->{'TargetAddress'} ) {
         $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
@@ -43,32 +42,38 @@ sub Run {
         return;
     }
 
-    # get ticket object
-    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
-
-    my %Ticket = $TicketObject->TicketGet(
+    my %Ticket = $Kernel::OM->Get('Kernel::System::Ticket')->TicketGet(
         %Param,
         UserID => 1,
     );
 
-    my %Article = $TicketObject->ArticleFirstArticle(
-        %Param,
-        UserID => 1,
-    );
+    my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+    my $ArticleBackendObject;
 
+    my @Articles = $ArticleObject->ArticleList(
+        %Param,
+        OnlyFirst => 1,
+    );
+    my %Article;
+    for my $Article (@Articles) {
+        $ArticleBackendObject = $ArticleObject->BackendForArticle(
+            %Param,
+            ArticleID => $Article->{ArticleID},
+        );
+        %Article = $ArticleBackendObject->ArticleGet(
+            %Param,
+            ArticleID => $Article->{ArticleID},
+        );
+    }
     return if !(%Article);
 
-    my %AttachmentIndex = $TicketObject->ArticleAttachmentIndex(
-        %Article,
-        UserID => 1,
-    );
+    my %AttachmentIndex = $ArticleBackendObject->ArticleAttachmentIndex(%Article);
 
     my @Attachments;
 
     for my $FileID ( sort { $a <=> $b } keys %AttachmentIndex ) {
-        my %Attachment = $TicketObject->ArticleAttachment(
+        my %Attachment = $ArticleBackendObject->ArticleAttachment(
             %Article,
-            UserID => 1,
             FileID => $FileID,
         );
         if (%Attachment) {
@@ -78,13 +83,13 @@ sub Run {
 
     my %FromQueue = $Kernel::OM->Get('Kernel::System::Queue')->GetSystemAddress( QueueID => $Ticket{QueueID} );
 
-    $TicketObject->ArticleSend(
+    my $EmailArticleBackendObject = $ArticleObject->BackendForChannel( ChannelName => 'Email' );
+
+    $EmailArticleBackendObject->ArticleSend(
         %Article,
         Attachment     => \@Attachments,
         To             => scalar $Param{New}->{'TargetAddress'},
         From           => "$FromQueue{RealName} <$FromQueue{Email}>",
-        ArticleType    => 'email-internal',
-        ArticleTypeID  => undef,                                        # overwrite from %Article
         SenderType     => 'system',
         SenderTypeID   => undef,                                        # overwrite from %Article
         HistoryType    => 'Forward',

@@ -6,6 +6,7 @@
 
     body, html {
         font-size: 1em;
+        overflow-x: hidden;
     }
 
     .ArticleBody {
@@ -55,14 +56,68 @@
         height: 0px;
     }
 
-    #ToolBar li,
-    .RTL #ToolBar li {
+    #ToolBar li:not(.UserAvatar),
+    .RTL #ToolBar li:not(.UserAvatar),
+    #ToolBar li.UserAvatar div a,
+    #ToolBar li.UserAvatar div span {
+        float: none;
+        display: inline-block;
+        padding: 8px;
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+
+    #ToolBar li.UserAvatar > a,
+    #ToolBar li.UserAvatar div:after,
+    #ToolBar li.UserAvatar div span {
+        display: none;
+    }
+
+    #ToolBar li.UserAvatar {
+        display: inline-block;
         float: none;
         display: inline-block;
         background-color: #444;
         padding: 8px;
         margin-bottom: 10px;
         margin-top: 10px;
+        background: none;
+        width: auto;
+    }
+
+    #ToolBar li.UserAvatar i {
+        display: block !important;
+        color: #f92;
+    }
+
+    #ToolBar li.UserAvatar div a:last-child {
+        padding-bottom: 0px;
+    }
+
+    #ToolBar li.UserAvatar a strong {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    #ToolBar li.UserAvatar {
+        margin: 0px;
+    }
+
+    #ToolBar li.UserAvatar a {
+        width: 24px;
+        height: 34px;
+        margin: 0 5px;
+        float: left;
+        position: relative;
+    }
+
+    #ToolBar li.UserAvatar div {
+        display: inline-block !important;
+        position: static;
+        background: none;
+        width: auto;
+        margin: 0px;
     }
 
     #ToolBar li i {
@@ -348,6 +403,10 @@
         display: none;
     }
 
+    .AdditionlFieldIcon span {
+        display: none;
+    }
+
     .MainBox.FormScreen > .AsteriskExplanation {
         margin: -10px 0px 10px 0px;
     }
@@ -372,13 +431,6 @@
     fieldset.TableLike > .Row > .FloatingField {
         padding: 0px;
         float: none;
-        margin: 0;
-    }
-
-    body.Popup fieldset.TableLike > .RichTextField,
-    body.RealPopup.RTL fieldset.TableLike > .RichTextField {
-        padding: 0px;
-        margin: 0;
     }
 
     fieldset.TableLike > .Field > select,
@@ -395,6 +447,8 @@
         width: 90%;
     }
 
+    fieldset.TableLike > .Field > input[type=radio],
+    fieldset.TableLike > .Row > .Field > input[type=radio],
     fieldset.TableLike > .Field > input[type=radio],
     fieldset.TableLike > .Row > .Field > input[type=checkbox] {
         width: auto;
@@ -676,12 +730,14 @@
         font-size: 16px;
     }
 
-    #SearchForm, #AgentCustomerInformationCenterSearchForm {
+    #SearchForm, #AgentCustomerInformationCenterSearchForm, #AgentCustomerUserInformationCenterSearchForm {
         width: auto;
     }
 
     #AgentCustomerInformationCenterSearchForm fieldset.TableLike > .Field > input,
-    #AgentCustomerInformationCenterSearchForm fieldset.TableLike > .Row > .Field > input {
+    #AgentCustomerInformationCenterSearchForm fieldset.TableLike > .Row > .Field > input,
+    #AgentCustomerUserInformationCenterSearchForm fieldset.TableLike > .Field > input,
+    #AgentCustomerUserInformationCenterSearchForm fieldset.TableLike > .Row > .Field > input {
         width: 100%;
     }
 
@@ -1195,14 +1251,12 @@
     /* Breadcrumb */
 
     .BreadCrumb {
-        overflow-x: scroll;
-        padding: 7px 0px;
+        overflow-x: auto;
     }
 
     .BreadCrumb li,
     .BreadCrumb a {
         font-size: 12px;
-        line-height: 20px;
         max-width: none;
         white-space: nowrap;
     }

@@ -11,7 +11,7 @@ package Kernel::System::Console::Command::Maint::Database::PasswordCrypt;
 use strict;
 use warnings;
 
-use base qw(Kernel::System::Console::BaseCommand);
+use parent qw(Kernel::System::Console::BaseCommand);
 
 our @ObjectDependencies = (
     'Kernel::System::DB',
@@ -20,10 +20,10 @@ our @ObjectDependencies = (
 sub Configure {
     my ( $Self, %Param ) = @_;
 
-    $Self->Description('Makes a database password unreadable for inclusion in Kernel/Config.pm.');
+    $Self->Description('Make a database password unreadable for inclusion in Kernel/Config.pm.');
     $Self->AddArgument(
         Name        => 'password',
-        Description => "The database password to be crypted.",
+        Description => "The database password to be encrypted.",
         Required    => 1,
         ValueRegex  => qr/.*/smx,
     );

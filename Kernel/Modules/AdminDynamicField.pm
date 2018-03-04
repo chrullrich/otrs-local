@@ -10,6 +10,7 @@ package Kernel::Modules::AdminDynamicField;
 
 use strict;
 use warnings;
+use utf8;
 
 our $ObjectManagerDisabled = 1;
 
@@ -126,10 +127,15 @@ sub _ShowOverview {
         );
     }
 
+    my $OTRSBusinessIsInstalled = $Kernel::OM->Get('Kernel::System::OTRSBusiness')->OTRSBusinessIsInstalled();
+
     # call all needed template blocks
     $LayoutObject->Block(
         Name => 'Main',
-        Data => \%Param,
+        Data => {
+            %Param,
+            OTRSBusinessIsInstalled => $OTRSBusinessIsInstalled,
+            }
     );
 
     my %FieldTypes;
@@ -168,6 +174,7 @@ sub _ShowOverview {
     my %ObjectTypeConfig = %{$ObjectTypeConfig};
 
     # cycle thought all objects to create the select add field selects
+    my @ObjectTypes;
     OBJECTTYPE:
     for my $ObjectType (
         sort {
@@ -180,9 +187,38 @@ sub _ShowOverview {
 
         my $SelectName = $ObjectType . 'DynamicField';
 
+        my @FieldList = map { { Key => $_, Value => $FieldTypes{$_} } } sort keys %FieldTypes;
+
+        for my $Field (@FieldList) {
+
+            if ( !$ConfigObject->Get("Frontend::Module")->{ $FieldDialogs{ $Field->{Key} } } ) {
+                $Field->{Disabled} = 1;
+            }
+        }
+
+        # Add disabled teaser options for OTRSBusiness dynamic fields.
+        if ( !$OTRSBusinessIsInstalled ) {
+            push @FieldList, {
+                Key      => 'Database',
+                Value    => $LayoutObject->{LanguageObject}->Translate( 'Database (%s)', 'OTRS Business Solution™' ),
+                Disabled => 1,
+            };
+            push @FieldList, {
+                Key   => 'Webservice',
+                Value => $LayoutObject->{LanguageObject}->Translate( 'Web service (%s)', 'OTRS Business Solution™' ),
+                Disabled => 1,
+            };
+            push @FieldList, {
+                Key => 'ContactWithData',
+                Value =>
+                    $LayoutObject->{LanguageObject}->Translate( 'Contact with data (%s)', 'OTRS Business Solution™' ),
+                Disabled => 1,
+            };
+        }
+
         # create the Add Dynamic Field select
         my $AddDynamicFieldStrg = $LayoutObject->BuildSelection(
-            Data          => \%FieldTypes,
+            Data          => \@FieldList,
             Name          => $SelectName,
             PossibleNone  => 1,
             Translation   => 1,
@@ -191,6 +227,11 @@ sub _ShowOverview {
             Class         => 'Modernize W75pc',
         );
 
+        my $ObjectTypeName = $Kernel::OM->Get('Kernel::Config')->Get('DynamicFields::ObjectType')
+            ->{$ObjectType}->{DisplayName} || $ObjectType;
+
+        push @ObjectTypes, $ObjectType;
+
         # call ActionAddDynamicField block
         $LayoutObject->Block(
             Name => 'ActionAddDynamicField',
@@ -198,22 +239,22 @@ sub _ShowOverview {
                 %Param,
                 AddDynamicFieldStrg => $AddDynamicFieldStrg,
                 ObjectType          => $ObjectType,
+                ObjectTypeName      => $ObjectTypeName,
                 SelectName          => $SelectName,
             },
         );
     }
 
-    # parse the fields dialogs as JSON structure
-    my $FieldDialogsConfig = $LayoutObject->JSONEncode(
-        Data => \%FieldDialogs,
+    # send data to JS
+    $LayoutObject->AddJSData(
+        Key   => 'ObjectTypes',
+        Value => \@ObjectTypes
     );
 
-    # set JS configuration
-    $LayoutObject->Block(
-        Name => 'ConfigSet',
-        Data => {
-            FieldDialogsConfig => $FieldDialogsConfig,
-        },
+    # send data to JS
+    $LayoutObject->AddJSData(
+        Key   => 'DynamicFields',
+        Value => \%FieldDialogs
     );
 
     # call hint block

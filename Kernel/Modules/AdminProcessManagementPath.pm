@@ -13,8 +13,8 @@ use warnings;
 
 use List::Util qw(first);
 
-use Kernel::Language qw(Translatable);
 use Kernel::System::VariableCheck qw(:all);
+use Kernel::Language qw(Translatable);
 
 our $ObjectManagerDisabled = 1;
 
@@ -134,8 +134,6 @@ sub Run {
 
         my $Redirect = $ParamObject->GetParam( Param => 'PopupRedirect' ) || '';
 
-        my $ConfigJSON = $LayoutObject->JSONEncode( Data => $ReturnConfig );
-
         # check if needed to open another window or if popup should go back
         if ( $Redirect && $Redirect eq '1' ) {
 
@@ -188,7 +186,7 @@ sub Run {
                     ID        => $RedirectID,
                     EntityID  => $RedirectEntityID,
                 },
-                ConfigJSON => $ConfigJSON,
+                ConfigJSON => $ReturnConfig,
             );
         }
         else {
@@ -202,7 +200,7 @@ sub Run {
                 # close the popup
                 return $Self->_PopupResponse(
                     ClosePopup => 1,
-                    ConfigJSON => $ConfigJSON,
+                    ConfigJSON => $ReturnConfig,
                 );
             }
             else {
@@ -211,7 +209,7 @@ sub Run {
                 return $Self->_PopupResponse(
                     Redirect   => 1,
                     Screen     => $LastScreen,
-                    ConfigJSON => $ConfigJSON,
+                    ConfigJSON => $ReturnConfig,
                 );
             }
         }
@@ -225,6 +223,7 @@ sub Run {
         # close the popup
         return $Self->_PopupResponse(
             ClosePopup => 1,
+            ConfigJSON => '',
         );
     }
 
@@ -324,6 +323,14 @@ sub _ShowEdit {
     }
     $Param{Title} = Translatable('Edit Path');
 
+    # send data to JS
+    for my $AddJSData (qw(TransitionEntityID ProcessEntityID StartActivityID)) {
+        $LayoutObject->AddJSData(
+            Key   => $AddJSData,
+            Value => $Param{$AddJSData}
+        );
+    }
+
     my $Output = $LayoutObject->Header(
         Value => $Param{Title},
         Type  => 'Small',
@@ -350,8 +357,8 @@ sub _GetParams {
         qw( ID EntityID ProcessData TransitionInfo ProcessEntityID StartActivityID TransitionEntityID )
         )
     {
-        $GetParam->{$ParamName}
-            = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => $ParamName ) || '';
+        $GetParam->{$ParamName} = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => $ParamName )
+            || '';
     }
 
     return $GetParam;
@@ -424,20 +431,24 @@ sub _PopupResponse {
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
     if ( $Param{Redirect} && $Param{Redirect} eq 1 ) {
-        $LayoutObject->Block(
-            Name => 'Redirect',
-            Data => {
+
+        # send data to JS
+        $LayoutObject->AddJSData(
+            Key   => 'Redirect',
+            Value => {
                 ConfigJSON => $Param{ConfigJSON},
                 %{ $Param{Screen} },
-            },
+                }
         );
     }
     elsif ( $Param{ClosePopup} && $Param{ClosePopup} eq 1 ) {
-        $LayoutObject->Block(
-            Name => 'ClosePopup',
-            Data => {
+
+        # send data to JS
+        $LayoutObject->AddJSData(
+            Key   => 'ClosePopup',
+            Value => {
                 ConfigJSON => $Param{ConfigJSON},
-            },
+                }
         );
     }
 
@@ -450,4 +461,5 @@ sub _PopupResponse {
 
     return $Output;
 }
+
 1;

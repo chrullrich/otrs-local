@@ -206,6 +206,12 @@ $Selenium->RunTest(
             "Setting for toggle widgets found on page",
         );
 
+        # check if there is link to CIC search modal dialog from heading (name of the company)
+        $Self->True(
+            $Selenium->find_element( "#CustomerInformationCenterHeading", 'css' ),
+            'There is link to customer information center search modal dialog.',
+        );
+
         # test links in Company Status widget
         for my $TestLinks ( sort keys %TicketData ) {
 
@@ -258,9 +264,8 @@ $Selenium->RunTest(
         $Selenium->find_element( "#ToCustomer", 'css' )->send_keys( $CustomerUserIDs[0] );
 
         # Click on wanted element in dropdown menu.
-        my $CustomerAutoComplete = "\"Firstname1 Lastname1\" <$UserEmails[0]> ($CustomerUserIDs[0])";
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("li.ui-menu-item:visible").length' );
-        $Selenium->execute_script("\$('li.ui-menu-item:contains($CustomerAutoComplete)').click()");
+        $Selenium->execute_script("\$('li.ui-menu-item:contains($CustomerUserIDs[0])').click()");
 
         # Error is expected.
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".Dialog.Modal").length' );
@@ -294,7 +299,7 @@ $Selenium->RunTest(
         $Selenium->find_element( "#FromCustomer", 'css' )->send_keys( $CustomerUserIDs[0] );
 
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("li.ui-menu-item:visible").length' );
-        $Selenium->execute_script("\$('li.ui-menu-item:contains($CustomerAutoComplete)').click()");
+        $Selenium->execute_script("\$('li.ui-menu-item:contains($CustomerUserIDs[0])').click()");
 
         # Error is expected.
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".Dialog.Modal").length' );

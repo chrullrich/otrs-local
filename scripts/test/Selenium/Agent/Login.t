@@ -91,7 +91,10 @@ $Selenium->RunTest(
         # login
         $Selenium->find_element( '#LoginButton', 'css' )->VerifiedClick();
 
-        # login successful?
+        # try to expand the user profile sub menu by clicking the avatar
+        $Selenium->find_element( '.UserAvatar > a', 'css' )->VerifiedClick();
+
+        # check if we see the logout button
         $Element = $Selenium->find_element( 'a#LogoutButton', 'css' );
 
         # Check for version tag in the footer.
@@ -112,7 +115,7 @@ $Selenium->RunTest(
             # create new session id
             my $NewSessionID = $SessionObject->CreateSessionID(
                 UserLogin       => $TestUserLogins[$Counter],
-                UserLastRequest => $Kernel::OM->Get('Kernel::System::Time')->SystemTime(),
+                UserLastRequest => $Kernel::OM->Create('Kernel::System::DateTime')->ToEpoch(),
                 UserType        => 'User',
             );
 
@@ -161,6 +164,9 @@ $Selenium->RunTest(
             index( $Selenium->get_page_source(), 'Please note that the session limit is almost reached.' ) > -1,
             "AgentSessionLimitPriorWarning is reached.",
         );
+
+        # try to expand the user profile sub menu by clicking the avatar
+        $Selenium->find_element( '.UserAvatar > a', 'css' )->VerifiedClick();
 
         $Element = $Selenium->find_element( 'a#LogoutButton', 'css' );
         $Element->VerifiedClick();
@@ -226,6 +232,9 @@ $Selenium->RunTest(
         $Element->send_keys( $TestUserLogins[0] );
 
         $Selenium->find_element( '#LoginButton', 'css' )->VerifiedClick();
+
+        # try to expand the user profile sub menu by clicking the avatar
+        $Selenium->find_element( '.UserAvatar > a', 'css' )->VerifiedClick();
 
         # login successful?
         $Element = $Selenium->find_element( 'a#LogoutButton', 'css' );

@@ -48,6 +48,12 @@ $Selenium->RunTest(
         $Selenium->find_element( "table thead tr th", 'css' );
         $Selenium->find_element( "table tbody tr td", 'css' );
 
+        # check breadcrumb on Overview screen
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
+
         # click 'Add signature'
         $Selenium->find_element("//a[contains(\@href, \'Action=AdminSignature;Subaction=Add' )]")->VerifiedClick();
         for my $ID (
@@ -62,7 +68,7 @@ $Selenium->RunTest(
         # check client side validation
         my $Element = $Selenium->find_element( "#Name", 'css' );
         $Element->send_keys("");
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
         $Self->Is(
             $Selenium->execute_script(
@@ -71,6 +77,18 @@ $Selenium->RunTest(
             '1',
             'Client side validation correctly detected missing input value',
         );
+
+        # check breadcrumb on Add screen
+        my $Count = 1;
+        for my $BreadcrumbText ( 'Signature Management', 'Add Signature' ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
 
         # create real test Signature
         my $SignatureRandomID = "Signature" . $Helper->GetRandomID();
@@ -82,12 +100,19 @@ $Selenium->RunTest(
         $Selenium->find_element( "#Name",     'css' )->send_keys($SignatureRandomID);
         $Selenium->find_element( "#RichText", 'css' )->send_keys($SignatureRichText);
         $Selenium->find_element( "#Comment",  'css' )->send_keys($SignatureComment);
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element( "#Submit",   'css' )->VerifiedClick();
 
         # check if test Signature show on AdminSignature screen
         $Self->True(
             index( $Selenium->get_page_source(), $SignatureRandomID ) > -1,
             "$SignatureRandomID Signature found on page",
+        );
+
+        #check is there notification after service is added
+        my $Notification = 'Signature added!';
+        $Self->True(
+            $Selenium->execute_script("return \$('.MessageBox.Notice p:contains($Notification)').length"),
+            "$Notification - notification is found."
         );
 
         # check test Signature values
@@ -114,6 +139,18 @@ $Selenium->RunTest(
             "#ValidID stored value",
         );
 
+        # check breadcrumb on Edit screen
+        $Count = 1;
+        for my $BreadcrumbText ( 'Signature Management', 'Edit Signature: ' . $SignatureRandomID ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
+
         # edit test Signature, clear comment and set it to invalid
         my $EditSignatureRichText
             = "Your Ticket-Team \n\n<OTRS_Responsible_UserFirstname> <OTRS_Responsible_UserLastname>";
@@ -122,7 +159,14 @@ $Selenium->RunTest(
         $Selenium->find_element( "#RichText", 'css' )->send_keys($EditSignatureRichText);
         $Selenium->find_element( "#Comment",  'css' )->clear();
         $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
+
+        #check is there notification after service is updated
+        $Notification = 'Signature updated!';
+        $Self->True(
+            $Selenium->execute_script("return \$('.MessageBox.Notice p:contains($Notification)').length"),
+            "$Notification - notification is found."
+        );
 
         # check class of invalid Signature in the overview table
         $Self->True(

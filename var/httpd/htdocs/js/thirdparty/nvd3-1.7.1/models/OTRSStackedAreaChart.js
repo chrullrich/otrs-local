@@ -32,7 +32,12 @@ nv.models.OTRSstackedAreaChart = function() {
         , tooltips = true
         , tooltip = function(key, x, y, e, graph) {
             return '<h3>' + key + '</h3>' +
-                '<p>' +  y + ' on ' + x + '</p>'
+// ---
+// OTRS
+// ---
+//                '<p>' +  y + ' on ' + x + '</p>'
+                '<p>' +  y + ' - ' + x + '</p>'
+// ---
         }
         , x //can be accessed via chart.xScale()
         , y //can be accessed via chart.yScale()
@@ -42,8 +47,8 @@ nv.models.OTRSstackedAreaChart = function() {
 // ---
 // OTRS
 // ---
-//        , noData = "No Data Available."
-        , noData = Core.Config.Get('NoDataAvailable')
+//        , noData = 'No Data Available.'
+        , noData = Core.Language.Translate('No Data Available.')
 // ---
         , dispatch = d3.dispatch('tooltipShow', 'tooltipHide', 'stateChange', 'changeState','renderEnd')
         , controlWidth = 250
@@ -51,7 +56,7 @@ nv.models.OTRSstackedAreaChart = function() {
 // OTRS
 // ---
 //        , cData = ['Stacked','Stream','Expanded']
-        , cData = [ Core.Config.Get('Stacked') || 'Stacked', Core.Config.Get('Stream') || 'Stream', Core.Config.Get('Expanded') || 'Expanded' ]
+        , cData = [ Core.Language.Translate('Stacked'), Core.Language.Translate('Stream'), Core.Language.Translate('Expanded') ]
 // ---
         , controlLabels = {}
         , duration = 250
@@ -207,8 +212,8 @@ nv.models.OTRSstackedAreaChart = function() {
 // ---
 //                        key: controlLabels.stacked || 'Stacked',
 //                        metaKey: 'Stacked',
-                        key: controlLabels.stacked || Core.Config.Get('Stacked') || 'Stacked',
-                        metaKey: Core.Config.Get('Stacked') || 'Stacked',
+                        key: controlLabels.stacked || Core.Language.Translate('Stacked'),
+                        metaKey: Core.Language.Translate('Stacked'),
 // ---
                         disabled: stacked.style() != 'stack',
                         style: 'stack'
@@ -219,8 +224,8 @@ nv.models.OTRSstackedAreaChart = function() {
 // ---
 //                        key: controlLabels.stream || 'Stream',
 //                        metaKey: 'Stream',
-                        key: controlLabels.stream || Core.Config.Get('Stream') || 'Stream',
-                        metaKey: Core.Config.Get('Stream') || 'Stream',
+                        key: controlLabels.stream || Core.Language.Translate('Stream'),
+                        metaKey: Core.Language.Translate('Stream'),
 // ---
                         disabled: stacked.style() != 'stream',
                         style: 'stream'
@@ -231,8 +236,8 @@ nv.models.OTRSstackedAreaChart = function() {
 // ---
 //                        key: controlLabels.expanded || 'Expanded',
 //                        metaKey: 'Expanded',
-                        key: controlLabels.expanded || Core.Config.Get('Expanded') || 'Expanded',
-                        metaKey: Core.Config.Get('Expanded') || 'Expanded',
+                        key: controlLabels.expanded || Core.Language.Translate('Expanded'),
+                        metaKey: Core.Language.Translate('Expanded'),
 // ---
                         disabled: stacked.style() != 'expand',
                         style: 'expand'

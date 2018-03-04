@@ -36,11 +36,22 @@ $Selenium->RunTest(
             Password => $TestUserLogin,
         );
 
+        # get language object
+        my $LanguageObject = Kernel::Language->new(
+            UserLanguage => $Language,
+        );
+
         # get script alias
         my $ScriptAlias = $Kernel::OM->Get('Kernel::Config')->Get('ScriptAlias');
 
         # navigate to AdminRole screen
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminRole");
+
+        # check breadcrumb on Overview screen
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
 
         # check roles overview screen,
         # if there are roles, check is there table on screen
@@ -52,14 +63,10 @@ $Selenium->RunTest(
             $Selenium->find_element( "table tbody tr td", 'css' );
         }
         else {
-            my $LanguageObject = Kernel::Language->new(
-                UserLanguage => $Language,
-            );
-
             $Self->True(
                 index(
                     $Selenium->get_page_source(),
-                    $LanguageObject->Get(
+                    $LanguageObject->Translate(
                         "There are no roles defined. Please use the 'Add' button to create a new role."
                         )
                     ) > -1,
@@ -76,6 +83,25 @@ $Selenium->RunTest(
         $Element->is_enabled();
         $Selenium->find_element( "#Comment", 'css' );
         $Selenium->find_element( "#ValidID", 'css' );
+
+        # define translated strings
+        my $RoleManagement = $LanguageObject->Translate('Role Management');
+
+        # check breadcrumb on Add screen
+        my $Count = 1;
+        for my $BreadcrumbText (
+            $RoleManagement,
+            $LanguageObject->Translate('Add Role')
+            )
+        {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
 
         # check client side validation
         $Selenium->find_element( "#Name", 'css' )->clear();
@@ -103,6 +129,13 @@ $Selenium->RunTest(
         $Selenium->find_element( "table thead tr th", 'css' );
         $Selenium->find_element( "table tbody tr td", 'css' );
 
+        #check is there notification 'Role added!' after role is added
+        my $Notification = $LanguageObject->Translate('Role added!');
+        $Self->True(
+            $Selenium->execute_script("return \$('.MessageBox.Notice p:contains($Notification)').length"),
+            "$Notification - notification is found."
+        );
+
         # go to new role again
         $Selenium->find_element( $RandomID, 'link_text' )->VerifiedClick();
 
@@ -123,6 +156,22 @@ $Selenium->RunTest(
             "#Comment stored value",
         );
 
+        # check breadcrumb on Edit screen
+        $Count = 1;
+        for my $BreadcrumbText (
+            $RoleManagement,
+            $LanguageObject->Translate('Edit Role') . ': ' . $RandomID
+            )
+        {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
+
         # set test role to invalid
         $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
         $Selenium->find_element( "#Comment", 'css' )->clear();
@@ -132,6 +181,13 @@ $Selenium->RunTest(
         $Self->True(
             index( $Selenium->get_page_source(), $RandomID ) > -1,
             "$RandomID found on page",
+        );
+
+        #check is there notification 'Role updated!' after role is updated
+        $Notification = $LanguageObject->Translate('Role updated!');
+        $Self->True(
+            $Selenium->execute_script("return \$('.MessageBox.Notice p:contains($Notification)').length"),
+            "$Notification - notification is found."
         );
 
         # chack class of invalid Role in the overview table

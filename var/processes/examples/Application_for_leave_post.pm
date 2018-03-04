@@ -12,10 +12,9 @@ package var::processes::examples::Application_for_leave_post;
 use strict;
 use warnings;
 
-our @ObjectDependencies = (
-    'Kernel::Config',
-    'Kernel::System::SysConfig',
-);
+use parent qw(var::processes::examples::Base);
+
+our @ObjectDependencies = ();
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -61,41 +60,10 @@ sub Run {
         }
     );
 
-    my $ConfigObject    = $Kernel::OM->Get('Kernel::Config');
-    my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
-
-    for my $Item (@Data) {
-        my $ItemName     = ( keys %{$Item} )[0];
-        my $CurrentValue = $ConfigObject->Get($ItemName);
-
-        for my $Key ( sort keys %{ $Item->{$ItemName} } ) {
-
-            for my $InnerKey ( sort keys %{ $Item->{$ItemName}->{$Key} } ) {
-
-                my $Value = $Item->{$ItemName}->{$Key}->{$InnerKey};
-
-                if (
-                    !$CurrentValue->{$Key}->{$InnerKey}
-                    || $CurrentValue->{$Key}->{$InnerKey} ne $Value
-                    )
-                {
-                    $CurrentValue->{$Key}->{$InnerKey} = $Value;
-                }
-            }
-        }
-
-        $ConfigObject->Set(
-            Key   => $ItemName,
-            Value => $CurrentValue,
-        );
-
-        $SysConfigObject->ConfigItemUpdate(
-            Valid        => 1,
-            Key          => $ItemName,
-            Value        => $CurrentValue,
-            NoValidation => 1,
-        );
-    }
+    $Response{Success} = $Self->SystemConfigurationUpdate(
+        ProcessName => 'Application For Leave',
+        Data        => \@Data,
+    );
 
     return %Response;
 }

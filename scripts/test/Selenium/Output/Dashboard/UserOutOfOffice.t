@@ -22,19 +22,16 @@ $Selenium->RunTest(
         my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
         # make sure that UserOutOfOffice is enabled
-        my %UserOutOfOfficeSysConfig = $Kernel::OM->Get('Kernel::System::SysConfig')->ConfigItemGet(
+        my %UserOutOfOfficeSysConfig = $Kernel::OM->Get('Kernel::System::SysConfig')->SettingGet(
             Name    => 'DashboardBackend###0390-UserOutOfOffice',
             Default => 1,
         );
-
-        %UserOutOfOfficeSysConfig = map { $_->{Key} => $_->{Content} }
-            grep { defined $_->{Key} } @{ $UserOutOfOfficeSysConfig{Setting}->[1]->{Hash}->[1]->{Item} };
 
         # enable UserOutOfOffice and set it to load as default plugin
         $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'DashboardBackend###0390-UserOutOfOffice',
-            Value => \%UserOutOfOfficeSysConfig,
+            Value => $UserOutOfOfficeSysConfig{EffectiveValue},
 
         );
 
@@ -58,12 +55,8 @@ $Selenium->RunTest(
         );
 
         # get time object
-        my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
-
-        # get current system time
-        my ( $Sec, $Min, $Hour, $Day, $Month, $Year, $WeekDay ) = $TimeObject->SystemTime2Date(
-            SystemTime => $TimeObject->SystemTime(),
-        );
+        my $DTObj    = $Kernel::OM->Create('Kernel::System::DateTime');
+        my $DTValues = $DTObj->Get();
 
         # create OutOfOffice params
         my @OutOfOfficeTime = (
@@ -73,27 +66,27 @@ $Selenium->RunTest(
             },
             {
                 Key   => 'OutOfOfficeStartYear',
-                Value => $Year,
+                Value => $DTValues->{Year},
             },
             {
                 Key   => 'OutOfOfficeEndYear',
-                Value => $Year + 1,
+                Value => $DTValues->{Year} + 1,
             },
             {
                 Key   => 'OutOfOfficeStartMonth',
-                Value => $Month,
+                Value => $DTValues->{Month},
             },
             {
                 Key   => 'OutOfOfficeEndMonth',
-                Value => $Month,
+                Value => $DTValues->{Month},
             },
             {
                 Key   => 'OutOfOfficeStartDay',
-                Value => $Day,
+                Value => $DTValues->{Day},
             },
             {
                 Key   => 'OutOfOfficeEndDay',
-                Value => $Day,
+                Value => $DTValues->{Day},
             },
         );
 
@@ -111,7 +104,12 @@ $Selenium->RunTest(
         $Selenium->VerifiedRefresh();
 
         # test OutOfOffice plugin
-        my $ExpectedResult = "$TestUserLogin until $Month/$Day/" . ( $Year + 1 );
+        my $ExpectedResult = sprintf(
+            "$TestUserLogin until %02d/%02d/%d",
+            $DTValues->{Month},
+            $DTValues->{Day},
+            $DTValues->{Year} + 1,
+        );
         $Self->True(
             index( $Selenium->get_page_source(), $ExpectedResult ) > -1,
             "OutOfOffice message - found on screen"

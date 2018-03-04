@@ -176,11 +176,3 @@
         </div>
     </div>
 </div>
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-$('.ProcessPrint').on('click', function() {
-    window.print();
-    return false;
-});
-//]]></script>
-[% END %]

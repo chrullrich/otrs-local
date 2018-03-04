@@ -226,7 +226,7 @@ $Self->True(
     "Dropdown ValueSet() for Ticket $TicketID1",
 );
 
-# set webservice name
+# set web service name
 my $WebserviceName = $Helper->GetRandomID();
 
 # create web-service object
@@ -235,7 +235,7 @@ my $WebserviceObject = $Kernel::OM->Get('Kernel::System::GenericInterface::Webse
 $Self->Is(
     'Kernel::System::GenericInterface::Webservice',
     ref $WebserviceObject,
-    "Create webservice object",
+    "Create web service object",
 );
 
 my $WebserviceID = $WebserviceObject->WebserviceAdd(
@@ -255,7 +255,7 @@ my $WebserviceID = $WebserviceObject->WebserviceAdd(
 );
 $Self->True(
     $WebserviceID,
-    "Added Webservice",
+    "Added web service",
 );
 
 # get config object
@@ -308,6 +308,7 @@ my $WebserviceConfig = {
                 NameSpace => 'http://otrs.org/SoapTestInterface/',
                 Encoding  => 'UTF-8',
                 Endpoint  => $RemoteSystem,
+                Timeout   => 120,
             },
         },
         Invoker => {
@@ -333,7 +334,7 @@ my $WebserviceUpdate = $WebserviceObject->WebserviceUpdate(
 );
 $Self->True(
     $WebserviceUpdate,
-    "Updated Webservice $WebserviceID - $WebserviceName",
+    "Updated web service $WebserviceID - $WebserviceName",
 );
 
 # disable SessionCheckRemoteIP setting
@@ -775,21 +776,25 @@ my $UserIDNoOutOfOffice = $UserObject->UserLookup(
 );
 
 # set a user out of office
-my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
-my ( $SSec, $SMin, $SHour, $SDay, $SMonth, $SYear, $SWeekDay ) = $TimeObject->SystemTime2Date(
-    SystemTime => $TimeObject->SystemTime() - ( 24 * 60 * 60 ),
+my $StartDateTimeObject = $Kernel::OM->Create('Kernel::System::DateTime');
+
+$StartDateTimeObject->Subtract(
+    Days => 1,
 );
-my ( $ESec, $EMin, $EHour, $EDay, $EMonth, $EYear, $EWeekDay ) = $TimeObject->SystemTime2Date(
-    SystemTime => $TimeObject->SystemTime() + ( 24 * 60 * 60 ),
+my $StartDateTimeSettings = $StartDateTimeObject->Get();
+my $EndDateTimeObject     = $Kernel::OM->Create('Kernel::System::DateTime');
+$EndDateTimeObject->Add(
+    Days => 1,
 );
-my %OutOfOfficeParams = (
+my $EndDateTimeSettings = $EndDateTimeObject->Get();
+my %OutOfOfficeParams   = (
     OutOfOffice           => 1,
-    OutOfOfficeStartYear  => $SYear,
-    OutOfOfficeStartMonth => $SMonth,
-    OutOfOfficeStartDay   => $SDay,
-    OutOfOfficeEndYear    => $EYear,
-    OutOfOfficeEndMonth   => $EMonth,
-    OutOfOfficeEndDay     => $EDay,
+    OutOfOfficeStartYear  => $StartDateTimeSettings->{Year},
+    OutOfOfficeStartMonth => $StartDateTimeSettings->{Month},
+    OutOfOfficeStartDay   => $StartDateTimeSettings->{Day},
+    OutOfOfficeEndYear    => $EndDateTimeSettings->{Year},
+    OutOfOfficeEndMonth   => $EndDateTimeSettings->{Month},
+    OutOfOfficeEndDay     => $EndDateTimeSettings->{Day},
 );
 for my $Key ( sort keys %OutOfOfficeParams ) {
     $UserObject->SetPreferences(
@@ -936,7 +941,7 @@ my $WebserviceDelete = $WebserviceObject->WebserviceDelete(
 );
 $Self->True(
     $WebserviceDelete,
-    "Deleted Webservice $WebserviceID",
+    "Deleted web service $WebserviceID",
 );
 
 # delete tickets
@@ -966,6 +971,14 @@ for my $DynamicFieldID ( sort keys %{$DeleteFieldList} ) {
     next DYNAMICFIELD if !$DeleteFieldList->{$DynamicFieldID};
 
     next DYNAMICFIELD if $DeleteFieldList->{$DynamicFieldID} !~ m{ ^Unittest }xms;
+
+    my $DynamicFieldConfig = $DynamicFieldObject->DynamicFieldGet(
+        ID => $DynamicFieldID,
+    );
+    my $ValuesDeleteSuccess = $BackendObject->AllValuesDelete(
+        DynamicFieldConfig => $DynamicFieldConfig,
+        UserID             => $Self->{UserID},
+    );
 
     $DynamicFieldObject->DynamicFieldDelete(
         ID     => $DynamicFieldID,

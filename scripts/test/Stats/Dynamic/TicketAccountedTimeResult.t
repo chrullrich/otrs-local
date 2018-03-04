@@ -18,18 +18,18 @@ my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
 # Set some config options for the testing.
 $ConfigObject->Set(
-    Key   => 'TimeZone',
-    Value => '+0',
-);
-$ConfigObject->Set(
-    Key   => 'TimeZoneUser',
-    Value => 1,
+    Key   => 'OTRSTimeZone',
+    Value => 'UTC',
 );
 
-my $StatsObject  = $Kernel::OM->Get('Kernel::System::Stats');
-my $QueueObject  = $Kernel::OM->Get('Kernel::System::Queue');
-my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
-my $TimeObject   = $Kernel::OM->Get('Kernel::System::Time');
+my $ArticleBackendObject = $Kernel::OM->Get('Kernel::System::Ticket::Article')->BackendForChannel(
+    ChannelName => 'Internal',
+);
+
+my $StatsObject    = $Kernel::OM->Get('Kernel::System::Stats');
+my $QueueObject    = $Kernel::OM->Get('Kernel::System::Queue');
+my $TicketObject   = $Kernel::OM->Get('Kernel::System::Ticket');
+my $DateTimeObject = $Kernel::OM->Create('Kernel::System::DateTime');
 
 # get helper object
 $Kernel::OM->ObjectParamAdd(
@@ -40,9 +40,6 @@ $Kernel::OM->ObjectParamAdd(
 my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
 my $RandomID = $Helper->GetRandomID();
-
-# UTC tests
-local $ENV{TZ} = 'UTC';
 
 # create new queues
 my @QueueNames;
@@ -160,9 +157,12 @@ for my $Ticket (@Tickets) {
         next TICKET;
     }
 
-    my $SystemTime = $TimeObject->TimeStamp2SystemTime(
-        String => $Ticket->{TimeStamp},
-    );
+    my $SystemTime = $Kernel::OM->Create(
+        'Kernel::System::DateTime',
+        ObjectParams => {
+            String => $Ticket->{TimeStamp},
+            }
+    )->ToEpoch();
 
     # set the fixed time
     $Helper->FixedTimeSet($SystemTime);
@@ -182,21 +182,21 @@ for my $Ticket (@Tickets) {
 
         for my $AccountTime ( @{ $Ticket->{TicketData}->{AccountTimes} } ) {
 
-            my $ArticleID = $TicketObject->ArticleCreate(
-                TicketID       => $TicketID,
-                ArticleType    => 'note-internal',
-                SenderType     => 'agent',
-                From           => 'Agent Some Agent Some Agent <email@example.com>',
-                To             => 'Customer A <customer-a@example.com>',
-                Cc             => 'Customer B <customer-b@example.com>',
-                ReplyTo        => 'Customer B <customer-b@example.com>',
-                Subject        => 'some short subject',
-                Body           => 'some short body',
-                ContentType    => 'text/plain; charset=ISO-8859-15',
-                HistoryType    => 'OwnerUpdate',
-                HistoryComment => 'Some free text!',
-                UserID         => 1,
-                NoAgentNotify  => 1,
+            my $ArticleID = $ArticleBackendObject->ArticleCreate(
+                TicketID             => $TicketID,
+                SenderType           => 'agent',
+                IsVisibleForCustomer => 0,
+                From                 => 'Agent Some Agent Some Agent <email@example.com>',
+                To                   => 'Customer A <customer-a@example.com>',
+                Cc                   => 'Customer B <customer-b@example.com>',
+                ReplyTo              => 'Customer B <customer-b@example.com>',
+                Subject              => 'some short subject',
+                Body                 => 'some short body',
+                ContentType          => 'text/plain; charset=ISO-8859-15',
+                HistoryType          => 'OwnerUpdate',
+                HistoryComment       => 'Some free text!',
+                UserID               => 1,
+                NoAgentNotify        => 1,
             );
 
             my $TicketAccountTime = $TicketObject->TicketAccountTime(
@@ -373,9 +373,12 @@ for my $Test (@Tests) {
     }
 
     # set the fixed time
-    my $SystemTime = $TimeObject->TimeStamp2SystemTime(
-        String => $Test->{TimeStamp},
-    );
+    my $SystemTime = $Kernel::OM->Create(
+        'Kernel::System::DateTime',
+        ObjectParams => {
+            String => $Test->{TimeStamp},
+            }
+    )->ToEpoch();
     $Helper->FixedTimeSet($SystemTime);
 
     # print test case description

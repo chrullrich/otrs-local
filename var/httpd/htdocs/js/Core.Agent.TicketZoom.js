@@ -116,25 +116,31 @@ Core.Agent.TicketZoom = (function (TargetNS) {
      *      Set iframe height automatically based on real content height and default config setting.
      */
     TargetNS.IframeAutoHeight = function ($Iframe) {
-        var NewHeight;
+
+        var NewHeight,
+            IframeBodyHeight;
 
         if (isJQueryObject($Iframe)) {
-            // slightly change the width of the iframe to not be exactly 100% width anymore
-            // this prevents a double horizontal scrollbar (from iframe and surrounding div)
-            $Iframe.width($Iframe.width() - 2);
-
+            IframeBodyHeight = $Iframe.contents().find('body').height();
             NewHeight = $Iframe.contents().height();
             if (!NewHeight || isNaN(NewHeight)) {
                 NewHeight = Core.Config.Get('Ticket::Frontend::HTMLArticleHeightDefault');
             }
             else {
-                if (NewHeight > Core.Config.Get('Ticket::Frontend::HTMLArticleHeightMax')) {
+                NewHeight = IframeBodyHeight;
+                if (IframeBodyHeight > Core.Config.Get('Ticket::Frontend::HTMLArticleHeightMax')) {
                     NewHeight = Core.Config.Get('Ticket::Frontend::HTMLArticleHeightMax');
                 }
             }
 
             // add delta for scrollbar
             NewHeight = parseInt(NewHeight, 10) + 25;
+
+            // make sure the minimum height is in line with the avatar images
+            if (NewHeight < 46) {
+                NewHeight = 46;
+            }
+
             $Iframe.height(NewHeight + 'px');
         }
     };
@@ -150,6 +156,7 @@ Core.Agent.TicketZoom = (function (TargetNS) {
      *      This function loads the given article via ajax.
      */
     function LoadArticle(ArticleURL, ArticleID) {
+
         // Clear timeout for URL hash check, because hash is now changed manually
         window.clearTimeout(CheckURLHashTimeout);
 
@@ -169,9 +176,11 @@ Core.Agent.TicketZoom = (function (TargetNS) {
             // Bottom position of scroller element
                 ScrollerBottomY = ScrollerY + ScrollerHeight,
             // Offset of scroller element (relative)
-                ScrollerOffset = $('div.Scroller').get(0).scrollTop;
+                ScrollerOffset = $('div.Scroller').get(0).scrollTop,
+            // article menu
+                ArticleIndex, Index, MenuItems = Core.Config.Get('MenuItems') || [];
 
-            $('#ArticleItems a.AsPopup').bind('click', function () {
+            $('#ArticleItems a.AsPopup').on('click', function () {
                 var Matches,
                     PopupType = 'TicketAction';
 
@@ -183,10 +192,9 @@ Core.Agent.TicketZoom = (function (TargetNS) {
                 return false;
             });
 
-            // Initialize modernized input fields in article action menu
-            Core.UI.InputFields.Activate($('#ArticleItems'));
+            // Add event bindings to new widget.
+            ArticleDetailsEvents();
 
-            // Add event bindings to new widget
             Core.UI.InitWidgetActionToggle();
 
             // Add hash to the URL to provide direct URLs and history back/forward functionality
@@ -220,7 +228,6 @@ Core.Agent.TicketZoom = (function (TargetNS) {
                 $('div.Scroller').get(0).scrollTop = ScrollerOffset + (ActiveArticleBottomY - ScrollerBottomY) + 5;
             }
 
-
             // Initiate URL hash check again
             TargetNS.CheckURLHash();
 
@@ -228,8 +235,48 @@ Core.Agent.TicketZoom = (function (TargetNS) {
             // is showed in article area
             Core.Agent.CheckSessionExpiredAndReload();
 
+            // create open popup event for dropdown elements
+            if (MenuItems.length > 0) {
+                for (ArticleIndex in MenuItems) {
+                    for (Index in MenuItems[ArticleIndex]) {
+                        if (MenuItems[ArticleIndex][Index].ItemType === 'Dropdown' && MenuItems[ArticleIndex][Index].Type === 'OnLoad') {
+                            if (MenuItems[ArticleIndex][Index].DropdownType === 'Forward') {
+                                Core.Agent.TicketZoom.ArticleActionMenuDropdown(MenuItems[ArticleIndex][Index].FormID, "ForwardTemplateID");
+                            }
+                            else if (MenuItems[ArticleIndex][Index].DropdownType === 'Reply') {
+                                Core.Agent.TicketZoom.ArticleActionMenuDropdown(MenuItems[ArticleIndex][Index].FormID, "ResponseID");
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Initialize modern input fields in article actions.
+            Core.UI.InputFields.Activate($('#ArticleItems'));
         });
     }
+
+    /**
+     * @name ArticleActionMenuDropdown
+     * @memberof Core.Agent.TicketZoom
+     * @function
+     * @param {String} FormID - ID of html element for which event is created
+     * @param {String} Name - Name of html element for which event is created
+     * @description
+     *      This function creates onchange open popup event for dropdown html element.
+     */
+    TargetNS.ArticleActionMenuDropdown = function (FormID, Name) {
+        var URL;
+        $('#' + FormID + ' select[name=' + Name + ']').on('change', function () {
+            if ($(this).val() > 0) {
+                URL = Core.Config.Get('Baselink') + $(this).parents().serialize();
+                Core.UI.Popup.OpenPopup(URL, 'TicketAction');
+
+                // reset the select box so that it can be used again from the same window
+                $(this).val('0');
+            }
+        });
+    };
 
     /**
      * @name LoadArticleFromExternal
@@ -311,27 +358,301 @@ Core.Agent.TicketZoom = (function (TargetNS) {
     };
 
     /**
+     * @private
+     * @name ArticleViewEvents
+     * @memberof Core.Agent.TicketZoom
+     * @function
+     * @description
+     *      This function initializes article view settings dialog.
+     */
+    function ArticleViewEvents() {
+        var $ArticleViewSettingsObj = $('#ArticleViewSettings'),
+            ArticleViewSettingsDialogHTML;
+
+        if (!$ArticleViewSettingsObj.length) {
+            return;
+        }
+
+        ArticleViewSettingsDialogHTML = Core.Template.Render('Agent/TicketZoom/ArticleViewSettingsDialog', {
+            'ArticleViewStrg': Core.Config.Get('ArticleViewStrg')
+        });
+
+        // Calendar settings button
+        $ArticleViewSettingsObj.off('click.AgentTicketZoom').on('click.AgentTicketZoom', function (Event) {
+
+            Core.UI.Dialog.ShowContentDialog(ArticleViewSettingsDialogHTML, Core.Language.Translate('Settings'), '10px', 'Center', true,
+                [
+                    {
+                        Label: Core.Language.Translate('Close this dialog'),
+                        Type: 'Close'
+                    }
+                ], true);
+
+            $('#ArticleView').off('change').on('change', function() {
+
+                if (!parseInt(Core.Config.Get('OTRSBusinessIsInstalled'), 10) && ($(this).val() === null || $(this).val() === '')) {
+                    Core.UI.Dialog.CloseDialog($('.Dialog:visible'));
+                    Core.Agent.ShowOTRSBusinessRequiredDialog();
+                    return false;
+                }
+                else {
+                    Core.UI.Dialog.MakeDialogWait();
+                    $('#ArticleView').closest('form').submit();
+                }
+            });
+
+            Event.preventDefault();
+            Event.stopPropagation();
+
+            return false;
+        });
+    }
+
+    /**
+     * @private
+     * @name ArticleFilterEvents
+     * @memberof Core.Agent.TicketZoom
+     * @function
+     * @param {String} ArticleFilterDialog - parameter which defines what kind of dialog will be created
+     * @param {String} TicketID - ID of ticket which is shown
+     * @description
+     *      This function sets and resets article filter.
+     */
+    function ArticleFilterEvents(ArticleFilterDialog, TicketID) {
+
+        if (ArticleFilterDialog === 1) {
+            $('#SetArticleFilter').on('click', function () {
+                Core.UI.Dialog.ShowContentDialog($('#ArticleFilterDialog'), Core.Language.Translate("Article filter"), '20px', 'Center', true, [
+                    {
+                        Label: Core.Language.Translate("Apply"),
+                        Function: function () {
+                            var Data = Core.AJAX.SerializeForm($('#ArticleFilterDialogForm'));
+                            Core.AJAX.FunctionCall(Core.Config.Get('CGIHandle'), Data, function () {
+                                location.reload();
+                            }, 'text');
+                        }
+                    },
+                    {
+                        Label: Core.Language.Translate("Reset"),
+                        Function: function () {
+                            $('#CommunicationChannelFilter').val('').trigger('redraw.InputField');
+                            $('#ArticleSenderTypeFilter').val('').trigger('redraw.InputField');
+                        }
+                    }
+                ]);
+                return false;
+            });
+            $('#ResetArticleFilter').on('click', function () {
+                var Data = {
+                    Action:       'AgentTicketZoom',
+                    Subaction:    'ArticleFilterSet',
+                    TicketID:     TicketID,
+                    SaveDefaults: 1
+                };
+                Core.AJAX.FunctionCall(Core.Config.Get('CGIHandle'), Data, function () {
+                    location.reload();
+                });
+            });
+        }
+        else {
+            $('#SetArticleFilter').on('click', function () {
+                $('#EventTypeFilterDialog').find('form').css('width', '500px');
+                Core.UI.Dialog.ShowContentDialog($('#EventTypeFilterDialog'), Core.Language.Translate("Event Type Filter"), '20px', 'Center', true, [
+                    {
+                        Label: Core.Language.Translate("Apply"),
+                        Function: function () {
+                            var Data = Core.AJAX.SerializeForm($('#EventTypeFilterDialogForm'));
+                            Core.AJAX.FunctionCall(Core.Config.Get('CGIHandle'), Data, function () {
+                                location.reload();
+                            }, 'text');
+                        }
+                    },
+                    {
+                        Label: Core.Language.Translate("Reset"),
+                        Function: function () {
+                            $('#EventTypeFilter').val('').trigger('redraw.InputField');
+                        }
+                    }
+                ]);
+                return false;
+            });
+            $('#ResetArticleFilter').on('click', function () {
+                var Data = {
+                    Action:       'AgentTicketZoom',
+                    Subaction:    'EvenTypeFilterSet',
+                    TicketID:     TicketID,
+                    SaveDefaults: 1
+                };
+                Core.AJAX.FunctionCall(Core.Config.Get('CGIHandle'), Data, function () {
+                    location.reload();
+                });
+            });
+        }
+    }
+
+    /**
+     * @private
+     * @name InitProcessWidget
+     * @memberof Core.Agent.TicketZoom
+     * @function
+     * @description
+     *      This function initializes events for process widget.
+     */
+     function InitProcessWidget() {
+        var WidgetWidth, FieldsPerRow, FieldMargin, FieldWidth;
+
+        if ($('.DynamicFieldAutoResize').length > 0) {
+            WidgetWidth  = parseInt($('#DynamicFieldsWidget').innerWidth() - 15, 10);
+            FieldMargin  = parseInt($('.DynamicFieldAutoResize').css('margin-right'), 10) + 2;
+            FieldsPerRow = 4;
+
+            // define amount of fields per row depending on display resolution
+            if (WidgetWidth < 400) {
+                FieldsPerRow = 1;
+            }
+            else if (WidgetWidth < 600) {
+                FieldsPerRow = 2;
+            }
+            else if (WidgetWidth < 1000) {
+                FieldsPerRow = 3;
+            }
+
+            // determine the needed field width and resize the fields
+            if (FieldsPerRow === 1) {
+                FieldWidth = '100%';
+            }
+            else {
+                FieldWidth = parseInt(WidgetWidth / FieldsPerRow - FieldMargin - 1, 10) || 0;
+            }
+
+            $('.DynamicFieldAutoResize').width(FieldWidth);
+        }
+
+        $('.ShowFieldInfoOverlay').on('click', function() {
+
+            var OverlayTitle  = $(this).closest('label').attr('title'),
+                OverlayHTML   = $(this).closest('.FieldContainer').find('.Value').html();
+
+            OverlayHTML = '<div class="FieldOverlay">' + OverlayHTML + '</div>';
+
+            Core.UI.Dialog.ShowDialog({
+                Modal: true,
+                Title: OverlayTitle,
+                HTML: OverlayHTML,
+                PositionTop: '100px',
+                PositionLeft: 'Center',
+                CloseOnEscape: true,
+                Buttons: [
+                    {
+                        Type: 'Close',
+                        Label: Core.Language.Translate("Close this dialog"),
+                        Function: function() {
+                            Core.UI.Dialog.CloseDialog($('.Dialog:visible'));
+                            Core.Form.EnableForm($('form[name="compose"]'));
+                            return false;
+                        }
+                    }
+                ]
+            });
+        });
+    }
+
+    function ArticleDetailsEvents() {
+
+        // Toggle article details.
+        $('.WidgetAction.Expand').off('click').on('click', function() {
+            var $WidgetObj = $(this).closest('.WidgetSimple');
+
+            if ($WidgetObj.hasClass('MenuExpanded')) {
+                $WidgetObj.find('.WidgetMenu').slideUp('fast')
+                $WidgetObj.removeClass('MenuExpanded');
+            }
+            else {
+                $WidgetObj.find('.WidgetMenu').slideDown('fast');
+                $WidgetObj.addClass('MenuExpanded');
+            }
+            return false;
+        });
+    }
+
+    /**
+     * @name InitWidgets
+     * @memberof Core.Agent.TicketZoom
+     * @function
+     * @param {Object} AsyncWidgetActions - list of widgets to initialize
+     * @description
+     *      This function initializes configured asynchronous widgets.
+     */
+    function InitWidgets(AsyncWidgetActions) {
+        $.each(AsyncWidgetActions, function (ElementID, URLPart) {
+            Core.AJAX.ContentUpdate($('#' + ElementID), Core.Config.Get('Baselink') + URLPart, function() {
+
+                // wait for content update
+                $('#' + ElementID).find("a.AsPopup").on('click', function () {
+                    var Matches,
+                        PopupType = 'TicketAction';
+
+                    Matches = $(this).attr('class').match(/PopupType_(\w+)/);
+                    if (Matches) {
+                        PopupType = Matches[1];
+                    }
+
+                    Core.UI.Popup.OpenPopup($(this).attr('href'), PopupType);
+                    return false;
+                });
+
+                $('#' + ElementID).find('.WidgetSimple').hide().fadeIn();
+                Core.UI.InitWidgetActionToggle();
+            });
+        });
+    }
+
+    /**
      * @name Init
      * @memberof Core.Agent.TicketZoom
      * @function
-     * @param {Object} Options - The options, mostly defined in SysConfig and passed through.
-     * @param {Number} Options.ArticleTableHeight - The height of the article table. Value is stored in the user preferences.
      * @description
      *      This function initializes the special module functions.
      */
-    TargetNS.Init = function (Options) {
+    TargetNS.Init = function () {
         var ZoomExpand = false,
             URLHash,
             $ArticleElement,
-            ResizeTimeoutScroller;
+            ResizeTimeoutScroller,
+            ArticleIndex, Index, MenuItems = Core.Config.Get('MenuItems') || [],
+            ArticleTableHeight = parseInt(Core.Config.Get('ArticleTableHeight'), 10),
+            TicketID = Core.Config.Get('TicketID'),
+            Count, ArticleIDs = Core.Config.Get('ArticleIDs'),
+            ArticleFilterDialog = parseInt(Core.Config.Get('ArticleFilterDialog'), 10),
+            AsyncWidgetActions = Core.Config.Get('AsyncWidgetActions') || {},
+            TimelineView = Core.Config.Get('TimelineView'),
+            ProcessWidget = Core.Config.Get('ProcessWidget');
 
-        // Check, if ZoomExpand is active or not
-        // Only active on tickets with less than 400 articles (see bug#8424)
-        if ($('div.ArticleView a.OneArticle').length) {
-            ZoomExpand = !$('div.ArticleView a.OneArticle').hasClass('Active');
+        // create open popup event for dropdown elements
+        if (MenuItems.length > 0) {
+            for (ArticleIndex in MenuItems) {
+                for (Index in MenuItems[ArticleIndex]) {
+                    if (MenuItems[ArticleIndex][Index].ItemType === 'Dropdown' && MenuItems[ArticleIndex][Index].Type !== 'OnLoad') {
+                        if (MenuItems[ArticleIndex][Index].DropdownType === 'Forward') {
+                            TargetNS.ArticleActionMenuDropdown(MenuItems[ArticleIndex][Index].FormID, "ForwardTemplateID");
+                        }
+                        else if (MenuItems[ArticleIndex][Index].DropdownType === 'Reply') {
+                            TargetNS.ArticleActionMenuDropdown(MenuItems[ArticleIndex][Index].FormID, "ResponseID");
+                        }
+                    }
+                }
+            }
         }
 
-        Core.UI.Resizable.Init($('#ArticleTableBody'), Options.ArticleTableHeight, function (Event, UI, Height) {
+        // Check, if ZoomExpand is active or not.
+        //   Only active on tickets with less than 400 articles (see bug#8424).
+        //   Since passed value is a regular 0/1 string, make sure it's a boolean first. To do this, convert it to
+        //   integer by performing addition on it (+) and then use double not (!!) for casting it to boolean.
+        //   !! + "1" === false;
+        //   !! + "0" === true;
+        ZoomExpand = !! + Core.Config.Get('ZoomExpand');
+
+        Core.UI.Resizable.Init($('#ArticleTableBody'), ArticleTableHeight, function (Event, UI, Height) {
             // remember new height for next reload
             window.clearTimeout(ResizeTimeoutScroller);
             ResizeTimeoutScroller = window.setTimeout(function () {
@@ -340,11 +661,11 @@ Core.Agent.TicketZoom = (function (TargetNS) {
         });
 
 
-        $('.DataTable tbody td a.Attachment').bind('click', function (Event) {
+        $('.DataTable tbody td a.Attachment').on('click', function (Event) {
             var Position;
             if ($(this).attr('rel') && $('#' + $(this).attr('rel')).length) {
                 Position = $(this).offset();
-                Core.UI.Dialog.ShowContentDialog($('#' + $(this).attr('rel'))[0].innerHTML, 'Attachments', Position.top - $(window).scrollTop(), parseInt(Position.left, 10) + 25);
+                Core.UI.Dialog.ShowContentDialog($('#' + $(this).attr('rel'))[0].innerHTML, Core.Language.Translate('Attachments'), Position.top - $(window).scrollTop(), parseInt(Position.left, 10) + 25);
             }
             Event.preventDefault();
             Event.stopPropagation();
@@ -376,12 +697,15 @@ Core.Agent.TicketZoom = (function (TargetNS) {
                 }
             }
         }
-        $('a.Timeline').bind('click', function() {
+        $('a.Timeline').on('click', function() {
             $(this).attr('href', $(this).attr('href') + ';ArticleID=' + URLHash);
         });
 
+        // Start asynchronous loading of widgets
+        InitWidgets(AsyncWidgetActions);
+
         // loading new articles
-        $('#ArticleTable tbody tr').bind('click', function () {
+        $('#ArticleTable tbody tr').on('click', function () {
 
             Core.App.Publish('Event.Agent.TicketZoom.ArticleClick');
 
@@ -395,6 +719,9 @@ Core.Agent.TicketZoom = (function (TargetNS) {
 
                 // Load content of new article
                 LoadArticle($(this).find('input.ArticleInfo').val(), $(this).find('input.ArticleID').val());
+
+                // mark an article as seen
+                TargetNS.MarkAsSeen(TicketID, $(this).find('input.ArticleID').val());
             }
 
             // Mode: show all articles - jump to the selected article
@@ -410,7 +737,7 @@ Core.Agent.TicketZoom = (function (TargetNS) {
             TargetNS.CheckURLHash();
         }
 
-        $('a.AsPopup').off('click').on('click', function () {
+        $('a.AsPopup').on('click', function () {
             var Matches,
                 PopupType = 'TicketAction';
 
@@ -442,9 +769,58 @@ Core.Agent.TicketZoom = (function (TargetNS) {
             $(this).next('p.Value').find('.Switch').toggleClass('Hidden');
         });
 
-        // Initialize allocation list for link object table.
-        Core.Agent.TableFilters.SetAllocationList();
+        // mark all articles as seen
+        if (parseInt(Core.Config.Get('TicketItemMarkAsSeen'), 10) === 1) {
+            TargetNS.MarkTicketAsSeen(TicketID);
+        }
+
+        // mark an article as seen
+        for (Count in ArticleIDs) {
+            TargetNS.MarkAsSeen(TicketID, ArticleIDs[Count]);
+        }
+
+        // event on change queue
+        $('#DestQueueID').on('change', function () {
+            if ($('#DestQueueID option:selected').val()) {
+                $(this).closest('form').submit();
+            }
+        });
+
+        // Add event bindings to all article widgets.
+        ArticleDetailsEvents();
+
+        // Initialize article view settings dialog.
+        ArticleViewEvents();
+
+        // initialize article filter events
+        if (typeof ArticleFilterDialog !== 'undefined') {
+            ArticleFilterEvents(ArticleFilterDialog, TicketID);
+        }
+
+        // initialize timeline view
+        if (typeof TimelineView !== 'undefined' && parseInt(TimelineView.Enabled, 10) === 1) {
+            Core.Agent.TicketZoom.TimelineView.InitTimelineView(TimelineView);
+        }
+
+        // initialize events for process widget
+        if (typeof ProcessWidget !== 'undefined' && parseInt(ProcessWidget, 10) === 1) {
+            InitProcessWidget();
+        }
+
+        Core.App.Subscribe('Event.AJAX.ContentUpdate.Callback', function() {
+            $('a.SplitSelection').unbind('click.SplitSelection').bind('click.SplitSelection', function() {
+                Core.Agent.TicketSplit.OpenSplitSelection($(this).attr('href'));
+                return false;
+            });
+        });
+
+        $('a.SplitSelection').unbind('click.SplitSelection').bind('click.SplitSelection', function() {
+            Core.Agent.TicketSplit.OpenSplitSelection($(this).attr('href'));
+            return false;
+        });
     };
+
+    Core.Init.RegisterNamespace(TargetNS, 'APP_MODULE');
 
     return TargetNS;
 }(Core.Agent.TicketZoom || {}));

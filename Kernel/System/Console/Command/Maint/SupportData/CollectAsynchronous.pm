@@ -11,7 +11,7 @@ package Kernel::System::Console::Command::Maint::SupportData::CollectAsynchronou
 use strict;
 use warnings;
 
-use base qw(Kernel::System::Console::BaseCommand);
+use parent qw(Kernel::System::Console::BaseCommand);
 
 our @ObjectDependencies = (
     'Kernel::System::SupportDataCollector',
@@ -20,7 +20,7 @@ our @ObjectDependencies = (
 sub Configure {
     my ( $Self, %Param ) = @_;
 
-    $Self->Description('Collects certain support data asynchronously.');
+    $Self->Description('Collect certain support data asynchronously.');
 
     return;
 }

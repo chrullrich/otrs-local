@@ -75,11 +75,12 @@ $Selenium->RunTest(
 
         # create test template
         my $TemplateRandomID = "template" . $Helper->GetRandomID();
+        my $TemplateType     = 'Answer';
         my $TemplateID       = $StandardTemplateObject->StandardTemplateAdd(
             Name         => $TemplateRandomID,
             Template     => 'Thank you for your email.',
             ContentType  => 'text/plain; charset=utf-8',
-            TemplateType => 'Answer',
+            TemplateType => $TemplateType,
             ValidID      => 1,
             UserID       => $UserID,
         );
@@ -100,6 +101,12 @@ $Selenium->RunTest(
             $Element->is_enabled();
             $Element->is_displayed();
         }
+
+        # check breadcrumb on Overview screen
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
 
         # check for test template and test attachment on screen
         $Self->True(
@@ -129,8 +136,25 @@ $Selenium->RunTest(
         # change test Attachment relation for test Template
         $Selenium->find_element("//a[contains(\@href, \'Subaction=Template;ID=$TemplateID' )]")->VerifiedClick();
 
+        # check breadcrumb on relations screen
+        my $Count = 1;
+        my $IsLinkedBreadcrumbText;
+        for my $BreadcrumbText (
+            'Manage Templates-Attachments Relations',
+            'Change Attachment Relations for Template \'' . $TemplateType . ' - ' . $TemplateRandomID . '\''
+            )
+        {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
+
         $Selenium->find_element("//input[\@value='$AttachmentID'][\@type='checkbox']")->VerifiedClick();
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element("//button[\@value='Save'][\@type='submit']")->VerifiedClick();
 
         # check test Template relation for test Attachment
         $Selenium->find_element("//a[contains(\@href, \'Subaction=Attachment;ID=$AttachmentID' )]")->VerifiedClick();
@@ -141,10 +165,10 @@ $Selenium->RunTest(
         );
 
         $Selenium->find_element("//input[\@value='$TemplateID'][\@type='checkbox']")->VerifiedClick();
-        $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element("//button[\@value='Save'][\@type='submit']")->VerifiedClick();
 
         # since there are no tickets that rely on our test TemplateAttachment,
-        # we can remove test template and  test attachment from the DB
+        # we can remove test template and test attachment from the DB
         my $Success = $StdAttachmentObject->StdAttachmentStandardTemplateMemberAdd(
             AttachmentID       => $AttachmentID,
             StandardTemplateID => $TemplateID,

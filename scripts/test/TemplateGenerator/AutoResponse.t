@@ -24,6 +24,11 @@ $Kernel::OM->ObjectParamAdd(
 );
 my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
+$ConfigObject->Set(
+    Key   => 'CheckEmailAddresses',
+    Value => '0',
+);
+
 # force rich text editor
 my $Success = $ConfigObject->Set(
     Key   => 'Frontend::RichText',
@@ -119,8 +124,10 @@ $Self->True(
     "AutoResponseQueue() - assigned auto response - $AutoResonseName to queue - $QueueName",
 );
 
-# get ticket object
-my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+my $TicketObject         = $Kernel::OM->Get('Kernel::System::Ticket');
+my $ArticleBackendObject = $Kernel::OM->Get('Kernel::System::Ticket::Article')->BackendForChannel(
+    ChannelName => 'Email',
+);
 
 # create a new ticket
 my $TicketID = $TicketObject->TicketCreate(
@@ -190,13 +197,14 @@ for my $Test (@Tests) {
     );
 
     # create auto response article (bug#12097)
-    my $ArticleID = $TicketObject->SendAutoResponse(
+    my $ArticleID = $ArticleBackendObject->SendAutoResponse(
         TicketID         => $TicketID,
         AutoResponseType => 'auto reply/new ticket',
         OrigHeader       => {
             From => $Test->{CustomerUser},
         },
-        UserID => 1,
+        IsVisibleForCustomer => 1,
+        UserID               => 1,
     );
     $Self->IsNot(
         $ArticleID,

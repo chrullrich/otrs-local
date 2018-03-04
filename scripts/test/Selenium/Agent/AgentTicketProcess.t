@@ -276,6 +276,19 @@ $Selenium->RunTest(
             UserID   => $TestUserID,
         );
 
+        # Navigate to agent ticket process directly via URL with pre-selected process and activity dialog
+        # see bug#12850 ( https://bugs.otrs.org/show_bug.cgi?id=12850 ).
+        $Selenium->VerifiedGet(
+            "${ScriptAlias}index.pl?Action=AgentTicketProcess;ID=$ListReverse{$ProcessName};ActivityDialogEntityID=$Process->{Activities}->[0]"
+        );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
+
+        # Check pre-selected process is loaded correctly, see bug#12850 ( https://bugs.otrs.org/show_bug.cgi?id=12850 ).
+        $Self->True(
+            $Selenium->find_element( "#Subject", 'css' ),
+            "Pre-selected process with activity dialog via URL is successful"
+        );
+
         # Navigate to AgentTicketProcess screen.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketProcess");
 
@@ -390,8 +403,8 @@ $Selenium->RunTest(
         #   previous process step.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketHistory;TicketID=$TicketID[1]");
         $Self->True(
-            index( $Selenium->get_page_source(), 'FieldName=TestTextZeroProcess;Value=0;' ) > -1,
-            'Dynamic field set to correct value by process',
+            index( $Selenium->get_page_source(), 'Changed dynamic field TestTextZeroProcess from "" to "0".' ) > -1,
+            'Dynamic field set to correct value by process'
         );
 
         # Create second scenario for test AgentTicketProcess.

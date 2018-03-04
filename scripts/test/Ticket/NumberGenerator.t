@@ -16,7 +16,7 @@ use vars (qw($Self));
 my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
 # check all number generators
-for my $Backend (qw(AutoIncrement Date DateChecksum Random)) {
+for my $Backend (qw(AutoIncrement Date DateChecksum)) {
 
     # check subject formats
     for my $TicketSubjectFormat (qw(Left Right)) {
@@ -34,11 +34,6 @@ for my $Backend (qw(AutoIncrement Date DateChecksum Random)) {
         );
 
         my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
-
-        $Self->True(
-            $TicketObject->isa( 'Kernel::System::Ticket::Number::' . $Backend ),
-            "TicketObject loaded the correct backend",
-        );
 
         for my $TicketHook ( 'Ticket#', 'Tickétø#', 'Reg$Ex*Special+Chars' ) {
 

@@ -8,38 +8,25 @@
 
 package Kernel::Output::HTML::Notification::AgentOnline;
 
+use parent 'Kernel::Output::HTML::Base';
+
 use strict;
 use warnings;
 
 our @ObjectDependencies = (
     'Kernel::Config',
     'Kernel::System::AuthSession',
-    'Kernel::System::Time',
+    'Kernel::System::DateTime',
     'Kernel::Output::HTML::Layout',
 );
-
-sub new {
-    my ( $Type, %Param ) = @_;
-
-    # allocate new hash for object
-    my $Self = {};
-    bless( $Self, $Type );
-
-    # get UserID param
-    $Self->{UserID} = $Param{UserID} || die "Got no UserID!";
-
-    return $Self;
-}
 
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    # get session object
     my $SessionObject = $Kernel::OM->Get('Kernel::System::AuthSession');
 
     my $SessionMaxIdleTime = $Kernel::OM->Get('Kernel::Config')->Get('SessionMaxIdleTime');
 
-    # get session info
     my %Online   = ();
     my @Sessions = $SessionObject->GetAllSessionIDs();
 
@@ -51,12 +38,13 @@ sub Run {
             $Self->{UserID} ne $Data{UserID}
             && $Data{UserType} eq 'User'
             && $Data{UserLastRequest}
-            && $Data{UserLastRequest} + $SessionMaxIdleTime > $Kernel::OM->Get('Kernel::System::Time')->SystemTime()
+            && $Data{UserLastRequest} + $SessionMaxIdleTime
+            > $Kernel::OM->Create('Kernel::System::DateTime')->ToEpoch()
             && $Data{UserFirstname}
             && $Data{UserLastname}
             )
         {
-            $Online{ $Data{UserID} } = "$Data{UserFirstname} $Data{UserLastname}";
+            $Online{ $Data{UserID} } = "$Data{UserFullname}";
             if ( $Param{Config}->{ShowEmail} ) {
                 $Online{ $Data{UserID} } .= " ($Data{UserEmail})";
             }

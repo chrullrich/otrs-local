@@ -74,19 +74,15 @@ $Selenium->RunTest(
             push @UserID, $TestUserID;
         }
 
-        my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
-        my ( $Sec, $Min, $Hour, $Day, $Month, $Year, $WeekDay ) = $TimeObject->SystemTime2Date(
-            SystemTime => $TimeObject->SystemTime(),
-        );
-
-        my %Values = (
+        my $DateTimeSettings = $Kernel::OM->Create('Kernel::System::DateTime')->Get();
+        my %Values           = (
             'OutOfOffice'           => 'on',
-            'OutOfOfficeStartYear'  => $Year,
-            'OutOfOfficeStartMonth' => $Month,
-            'OutOfOfficeStartDay'   => $Day,
-            'OutOfOfficeEndYear'    => $Year + 1,
-            'OutOfOfficeEndMonth'   => $Month,
-            'OutOfOfficeEndDay'     => $Day,
+            'OutOfOfficeStartYear'  => $DateTimeSettings->{Year},
+            'OutOfOfficeStartMonth' => $DateTimeSettings->{Month},
+            'OutOfOfficeStartDay'   => $DateTimeSettings->{Day},
+            'OutOfOfficeEndYear'    => $DateTimeSettings->{Year} + 1,
+            'OutOfOfficeEndMonth'   => $DateTimeSettings->{Month},
+            'OutOfOfficeEndDay'     => $DateTimeSettings->{Day},
         );
 
         for my $Key ( sort keys %Values ) {
@@ -150,7 +146,7 @@ $Selenium->RunTest(
 
         # check page
         for my $ID (
-            qw(NewOwnerID Subject RichText FileUpload ArticleTypeID submitRichText)
+            qw(NewOwnerID Subject RichText FileUpload IsVisibleForCustomer submitRichText)
             )
         {
             my $Element = $Selenium->find_element( "#$ID", 'css' );

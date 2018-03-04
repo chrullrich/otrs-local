@@ -142,7 +142,6 @@ sub Run {
                 Label => $CustomerList{$CustomerLogin},
                 Value => $CustomerData{UserCustomerID}
                 };
-
             last CUSTOMERLOGIN if scalar @Result >= $MaxResults;
 
         }
@@ -159,7 +158,7 @@ sub Run {
         );
     }
 
-    my $Output .= $LayoutObject->Output(
+    my $Output = $LayoutObject->Output(
         TemplateFile => 'AgentCustomerInformationCenterSearch',
         Data         => \%Param,
     );

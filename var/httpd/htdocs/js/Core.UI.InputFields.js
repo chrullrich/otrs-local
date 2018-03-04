@@ -204,7 +204,7 @@ Core.UI.InputFields = (function (TargetNS) {
     TargetNS.Activate = function ($Context) {
 
         // Check SysConfig
-        if (Core.Config.Get('InputFieldsActivated') === 1) {
+        if (parseInt(Core.Config.Get('InputFieldsActivated'), 10) === 1) {
 
             // Initialize select fields on all applicable fields
             TargetNS.InitSelect($('select.Modernize', $Context));
@@ -287,7 +287,7 @@ Core.UI.InputFields = (function (TargetNS) {
             return;
         }
 
-        $SearchObj.removeAttr('readonly', 'readonly');
+        $SearchObj.prop('readonly', false);
         $InputContainerObj.removeClass('AlreadyDisabled');
 
         // Check if there are only empty and disabled options
@@ -302,7 +302,7 @@ Core.UI.InputFields = (function (TargetNS) {
             // Disable the field, add the tooltip and dash string
             $SearchObj
                 .attr('readonly', 'readonly')
-                .attr('title', Core.Config.Get('InputFieldsNotAvailable'));
+                .attr('title', Core.Language.Translate('Not available'));
 
             // when the original field does no longer provide any valid options,
             // we also want to remove existing selections
@@ -313,7 +313,8 @@ Core.UI.InputFields = (function (TargetNS) {
 
             // Enable the field, remove the tooltip and dash string
             $SearchObj
-                .removeAttr('readonly title')
+                .removeAttr('title')
+                .prop('readonly', false)
                 .val('');
         }
     }
@@ -351,7 +352,11 @@ Core.UI.InputFields = (function (TargetNS) {
         // If the dropdown of the field is opened, close it (by calling blur event)
         // TODO: nicer way to find opened select elements
         $('select.Modernize', $Context).each(function () {
-            $('#' + Core.App.EscapeSelector($(this).data('modernized'))).filter('[aria-expanded=true]').trigger('blur');
+            var Selector = Core.App.EscapeSelector($(this).data('modernized'));
+            if (!Selector) {
+                return;
+            }
+            $('#' + Selector).filter('[aria-expanded=true]').trigger('blur');
         });
     }
 
@@ -368,13 +373,13 @@ Core.UI.InputFields = (function (TargetNS) {
     function ShowSelectionBoxes($SelectObj, $InputContainerObj) {
         var Selection,
             SelectionLength,
+            $SelectionFilterObj,
             i = 0,
             OffsetLeft = 0,
             OffsetRight = Config.SelectionBoxOffsetRight,
             MoreBox = false,
             Multiple = ($SelectObj.attr('multiple') !== '' && $SelectObj.attr('multiple') !== undefined) ? true : false,
             PossibleNone = false,
-            MoreString = Core.Config.Get('InputFieldsMore'),
             MaxWidth,
             $SearchObj = $InputContainerObj.find('.InputField_Search'),
             $TempMoreObj;
@@ -387,6 +392,7 @@ Core.UI.InputFields = (function (TargetNS) {
 
         // Remove any existing boxes in supplied container
         $InputContainerObj.find('.InputField_Selection').remove();
+        $InputContainerObj.find('.InputField_SelectionFilter').remove();
         $InputContainerObj.find('.InputField_More').remove();
 
         // Check for empty values (allow field clearing).
@@ -407,7 +413,7 @@ Core.UI.InputFields = (function (TargetNS) {
         if ($SelectObj.val()) {
 
             // Maximum available width for boxes
-            MaxWidth = $SearchObj.width();
+            MaxWidth = $SearchObj.width() - Config.SelectionBoxOffsetRight - Config.InputFieldPadding;
 
             // Check which kind of selection we are dealing with
             if ($.isArray($SelectObj.val())) {
@@ -422,7 +428,7 @@ Core.UI.InputFields = (function (TargetNS) {
             if (SelectionLength > 1) {
                 $TempMoreObj = $('<div />').hide()
                     .addClass('InputField_More')
-                    .text(MoreString.replace(/%s/, '##'))
+                    .text(Core.Language.Translate("and %s more...").replace(/%s/, '##'))
                     .appendTo($InputContainerObj);
 
                 // Save place for string
@@ -464,13 +470,13 @@ Core.UI.InputFields = (function (TargetNS) {
                     $RemoveObj.addClass('Remove')
                         .append(
                             $('<a />').attr('href', '#')
-                                .attr('title', Core.Config.Get('InputFieldsRemoveSelection'))
+                                .attr('title', Core.Language.Translate('Remove selection'))
                                 .text('x')
                                 .attr('role', 'button')
                                 .attr('tabindex', '-1')
                                 .attr(
                                     'aria-label',
-                                    Core.Config.Get('InputFieldsRemoveSelection') + ': ' + Text
+                                    Core.Language.Translate('Remove selection') + ': ' + Text
                                 )
                                 .off('click.InputField').on('click.InputField', function () {
                                     var HasEmptyElement = $SelectObj.find('option[value=""]').length === 0 ? false : true,
@@ -488,6 +494,9 @@ Core.UI.InputFields = (function (TargetNS) {
                                         $SelectObj.trigger('change');
                                         ValidateFormElement($SelectObj);
                                     }, 0);
+                                    if (Multiple) {
+                                        RefreshSelectionFilter($SelectObj, null);
+                                    }
                                     return false;
                                 })
                         );
@@ -544,7 +553,7 @@ Core.UI.InputFields = (function (TargetNS) {
                                     OffsetLeft + 'px'
                                 )
                                 .text(
-                                    MoreString.replace(/%s/, SelectionLength - i)
+                                    Core.Language.Translate("and %s more...").replace(/%s/, SelectionLength - i)
                                 )
                                 .on('click.InputField', function () {
                                     $SearchObj.trigger('focus');
@@ -567,8 +576,44 @@ Core.UI.InputFields = (function (TargetNS) {
                 i++;
             });
 
-        }
+            if (Multiple && MoreBox) {
+                $SelectionFilterObj = $('<a />').appendTo($InputContainerObj);
+                $SelectionFilterObj.addClass('InputField_Action InputField_SelectionFilter')
+                    .attr('href', '#')
+                    .attr('title', Core.Language.Translate('Show current selection'))
+                    .css(($('body').hasClass('RTL') ? 'left' : 'right'), Config.SelectionBoxOffsetRight + 'px')
+                    .append($('<i />').addClass('fa fa-eye'))
+                    .attr('role', 'button')
+                    .attr('tabindex', '-1')
+                    .attr('aria-label', Core.Language.Translate('Current selection'))
+                    .off('click.InputField').on('click.InputField', function () {
+                        if ($SelectObj.data('filters') !== '' && $SelectObj.data('filters') !== undefined) {
 
+                            // See if we already have a selection filter
+                            $.each($SelectObj.data('filters').Filters, function(Index, Filter) {
+                                if (Filter.Name === Core.Language.Translate('Current selection')) {
+                                    $SelectObj.data('filtered', Index + 1);
+                                    $SelectObj.data('expand-filters', true);
+                                    $SelectObj.data('selection-filter', true);
+                                    ApplyFilter($SelectObj, null);
+
+                                    // Refresh the field and get focus
+                                    $SearchObj = $('#' + Core.App.EscapeSelector($SelectObj.data('modernized')));
+                                    $SearchObj.width($SelectObj.outerWidth())
+                                        .trigger('blur');
+                                    CheckAvailability($SelectObj, $SearchObj, $InputContainerObj);
+                                    setTimeout(function () {
+                                        $SearchObj.focus();
+                                    }, 0);
+                                    return true;
+                                }
+                            });
+                        }
+
+                        return false;
+                });
+            }
+        }
     }
 
     /**
@@ -781,6 +826,7 @@ Core.UI.InputFields = (function (TargetNS) {
 
             // Restore original data
             $SelectObj.append($SelectObj.data('original'));
+            $SelectObj.data('expand-filters', false);
         }
 
         // Restore selection
@@ -832,7 +878,6 @@ Core.UI.InputFields = (function (TargetNS) {
             case 'Filter':
                 $FilterObj.off('click.InputField').on('click.InputField', function (Event) {
 
-
                     // Allow selection of only one filter
                     $FilterObj.siblings('input').each(function (Index, Filter) {
                         if ($(Filter).attr('id') !== $FilterObj.attr('id')) {
@@ -866,12 +911,8 @@ Core.UI.InputFields = (function (TargetNS) {
                     setTimeout(function () {
                         $SearchObj.focus();
                     }, 0);
-                })
-
-                // Prevent clicks on action to steal focus from search field
-                .on('mousedown.InputField', function () {
-                    return false;
                 });
+
                 break;
         }
     }
@@ -924,6 +965,135 @@ Core.UI.InputFields = (function (TargetNS) {
             $TabbableElements.eq($TabbableElements.index($Element) - 1)
                 .focus();
         }, 0);
+    }
+
+    /**
+     * @private
+     * @name BuildSelectionFilter
+     * @memberof Core.UI.InputFields
+     * @param {jQueryObject} $SelectObj - Original select field
+     * @description
+     *      Build current selection filter.
+     */
+    function BuildSelectionFilter($SelectObj) {
+        var Filters = new Object(),
+            SelectionFilterIndex,
+            SelectionFilter,
+            Elements;
+
+        if ($SelectObj.data('filters') !== '' && $SelectObj.data('filters') !== undefined) {
+            Filters.Filters = $SelectObj.data('filters').Filters;
+
+            // See if we already have a selection filter
+            $.each(Filters.Filters, function(Index, Filter) {
+                if (Filter.Name === Core.Language.Translate('Current selection')) {
+                    SelectionFilterIndex = Index;
+                    SelectionFilter = Filter;
+                    Filters.Filters.splice(SelectionFilterIndex, 1);
+                    SelectionFilter.Data = new Array();
+                    return true;
+                }
+            });
+        } else {
+            Filters.Filters = new Array();
+        }
+
+        if (Filters.Filters.length === 0 || !SelectionFilterIndex) {
+            SelectionFilter = new Object();
+            SelectionFilter.Name = Core.Language.Translate('Current selection');
+            SelectionFilter.Data = new Array();
+        }
+
+        // Generate JSON structure based on select field options
+        // Sort the list by default if tree view is active
+        Elements = Core.UI.TreeSelection.BuildElementsArray($SelectObj, $SelectObj.data('tree', true));
+
+        SelectionFilter.Data = GetSelectionFilterData(Elements);
+
+        function GetSelectionFilterData(Elements, Data) {
+            if (Data === undefined) {
+                Data = new Array();
+            }
+            $.each(Elements, function (Index, Element) {
+                if (typeof Element === 'object') {
+                    if (Element.state) {
+                        if (Element.state.selected) {
+                            Data.push({
+                                'Key': Element.ID,
+                                'Value': Element.Name
+                            });
+                        }
+                        if (Element.children.length > 0) {
+                            return GetSelectionFilterData(Element.children, Data);
+                        }
+                    }
+                }
+            });
+            return Data;
+        }
+
+        if (SelectionFilter.Data.length == 0) {
+            SelectionFilter.Data.push({
+                'Key': '',
+                'Value': ''
+            });
+        }
+
+        Filters.Filters.push(SelectionFilter);
+        $SelectObj.data('filters', Filters);
+    }
+
+    /**
+     * @private
+     * @name RefreshSelectionFilter
+     * @memberof Core.UI.InputFields
+     * @param {jQueryObject} $SelectObj - Original select field
+     * @param {jQueryObject} $ToolbarContainerObj - Container for toolbar actions
+     * @description
+     *      Refresh current selection filter.
+     */
+    function RefreshSelectionFilter($SelectObj, $ToolbarContainerObj) {
+        var Filters = new Object(),
+            SelectionFilterIndex,
+            $FilterObj;
+
+        // Rebuild the selection filter
+        BuildSelectionFilter($SelectObj);
+
+        // Get index
+        if ($SelectObj.data('filters') !== '' && $SelectObj.data('filters') !== undefined) {
+            Filters.Filters = $SelectObj.data('filters').Filters;
+            $.each(Filters.Filters, function(Index, Filter) {
+                if (Filter.Name === Core.Language.Translate('Current selection')) {
+                    SelectionFilterIndex = Index;
+                    if ($ToolbarContainerObj) {
+                        $FilterObj = $ToolbarContainerObj.find('input[type="checkbox"]').filter(function () {
+                            return $(this).data('index') === SelectionFilterIndex + 1;
+                        });
+                    }
+                    return true;
+                }
+            });
+        }
+
+        // Check if the selection is empty.
+        if ($SelectObj.val() !== null && $SelectObj.val().length === 0) {
+            $SelectObj.data('filtered', '0');
+            $SelectObj.data('selection', []);
+            ApplyFilter($SelectObj, $ToolbarContainerObj);
+            if ($FilterObj) {
+                $FilterObj.attr('disabled', true)
+                    .attr('checked', false);
+            }
+        } else {
+            if (SelectionFilterIndex === parseInt($SelectObj.data('filtered'), 10) - 1) {
+                ApplyFilter($SelectObj, $ToolbarContainerObj);
+            }
+            if ($FilterObj) {
+                $FilterObj.attr('disabled', false);
+            }
+        }
+
     }
 
     /**
@@ -1117,6 +1287,12 @@ Core.UI.InputFields = (function (TargetNS) {
                     $SearchObj.addClass(Config.ServerErrorClass);
                 }
 
+                // Add selection filter
+                if (Multiple) {
+                    Filterable = true;
+                    BuildSelectionFilter($SelectObj);
+                }
+
                 if (Filterable) {
 
                     // Preserve original data
@@ -1227,7 +1403,7 @@ Core.UI.InputFields = (function (TargetNS) {
                                 left: $InputContainerObj.offset().left
                             });
 
-                        // decide wether list should be positioned on top or at the bottom of the input field
+                        // decide whether list should be positioned on top or at the bottom of the input field
                         if (AvailableHeightTop > AvailableHeightBottom) {
                             AvailableMaxHeight = AvailableHeightTop;
 
@@ -1316,6 +1492,7 @@ Core.UI.InputFields = (function (TargetNS) {
 
                     // Remove any existing selection boxes in container
                     $InputContainerObj.find('.InputField_Selection').remove();
+                    $InputContainerObj.find('.InputField_SelectionFilter').remove();
                     $InputContainerObj.find('.InputField_More').remove();
 
                     // Create list container
@@ -1531,6 +1708,9 @@ Core.UI.InputFields = (function (TargetNS) {
                             $TreeObj.blur();
                         }
 
+                        // Refresh selection filter
+                        RefreshSelectionFilter($SelectObj, $ToolbarContainerObj);
+
                         // Delay triggering change event on original field (see bug#11419)
                         $SelectObj.data('changed', true);
 
@@ -1558,7 +1738,7 @@ Core.UI.InputFields = (function (TargetNS) {
                             HoveredValue = $HoveredNode.closest('li').data('id');
 
                             // at this point, the jstree events have already selected the new value and processed the event
-                            // but we need to know, if the hovered element was selected before or not to decide wether to
+                            // but we need to know, if the hovered element was selected before or not to decide whether to
                             // select or deselect it now. therefor we check for OldSelectedID
                             if (!Multiple) {
                                 if (HoveredValue !== OldSelectedID) {
@@ -1608,6 +1788,9 @@ Core.UI.InputFields = (function (TargetNS) {
 
                             OldSelectedID = SelectedID;
                             SelectedID = $SelectObj.val();
+
+                            // Update selection filter
+                            RefreshSelectionFilter($SelectObj, $ToolbarContainerObj);
 
                             // Delay triggering change event on original field (see bug#11419)
                             $SelectObj.data('changed', true);
@@ -1786,8 +1969,8 @@ Core.UI.InputFields = (function (TargetNS) {
                             .attr('href', '#')
                             .attr('role', 'button')
                             .attr('tabindex', '-1')
-                            .text(Core.Config.Get('InputFieldsSelectAll'))
-                            .attr('aria-label', Core.Config.Get('InputFieldsSelectAll'))
+                            .text(Core.Language.Translate('Select all'))
+                            .attr('aria-label', Core.Language.Translate('Select all'))
                             .appendTo($ToolbarObj)
                             .wrap('<li />');
                         RegisterActionEvent($TreeObj, $SelectAllObj, 'SelectAll');
@@ -1797,8 +1980,8 @@ Core.UI.InputFields = (function (TargetNS) {
                             .attr('href', '#')
                             .attr('role', 'button')
                             .attr('tabindex', '-1')
-                            .text(Core.Config.Get('InputFieldsClearAll'))
-                            .attr('aria-label', Core.Config.Get('InputFieldsClearAll'))
+                            .text(Core.Language.Translate('Clear all'))
+                            .attr('aria-label', Core.Language.Translate('Clear all'))
                             .appendTo($ToolbarObj)
                             .wrap('<li />');
                         RegisterActionEvent($TreeObj, $ClearAllObj, 'ClearAll');
@@ -1811,8 +1994,8 @@ Core.UI.InputFields = (function (TargetNS) {
                             .attr('href', '#')
                             .attr('role', 'button')
                             .attr('tabindex', '-1')
-                            .text(Core.Config.Get('InputFieldsFilters'))
-                            .attr('aria-label', Core.Config.Get('InputFieldsFilters'))
+                            .text(Core.Language.Translate('Filters'))
+                            .attr('aria-label', Core.Language.Translate('Filters'))
                             .appendTo($ToolbarObj)
                             .wrap('<li />');
                         RegisterFilterEvent($SelectObj, $InputContainerObj, $ToolbarContainerObj, $FiltersObj, 'ShowFilters');
@@ -1844,6 +2027,7 @@ Core.UI.InputFields = (function (TargetNS) {
                                 $SpanObj = $('<span />').appendTo($FiltersListObj);
                             $FilterObj.attr('type', 'checkbox')
                                 .attr('tabindex', '-1')
+                                .addClass('InputField_FilterCheckbox')
                                 .data('index', FilterIndex + 1);
                             if (
                                 $SelectObj.data('filtered')
@@ -1939,8 +2123,8 @@ Core.UI.InputFields = (function (TargetNS) {
                             .attr('href', '#')
                             .attr('role', 'button')
                             .attr('tabindex', '-1')
-                            .text(Core.Config.Get('InputFieldsConfirm'))
-                            .attr('aria-label', Core.Config.Get('InputFieldsConfirm'))
+                            .text(Core.Language.Translate('Confirm'))
+                            .attr('aria-label', Core.Language.Translate('Confirm'))
                             .appendTo($ToolbarObj)
                             .prepend('<i class="fa fa-check-square-o" /> ')
                             .wrap('<li />');
@@ -1963,6 +2147,7 @@ Core.UI.InputFields = (function (TargetNS) {
                         window.clearTimeout(SearchTimeout);
 
                         SearchTimeout = window.setTimeout(function () {
+
                             // Abandon search if empty string
                             if (SearchValue === '') {
                                 $TreeObj.jstree('delete_node', $TreeObj.find('.jstree-no-match'));
@@ -2022,7 +2207,7 @@ Core.UI.InputFields = (function (TargetNS) {
 
                                 // Add no match node
                                 NoMatchNodeJSON = {
-                                    text: Core.Config.Get('InputFieldsNoMatchMsg'),
+                                    text: Core.Language.Translate('No matches found.'),
                                     state: {
                                         disabled: true
                                     },
@@ -2045,12 +2230,12 @@ Core.UI.InputFields = (function (TargetNS) {
                                 $ClearSearchObj = $('<a />').insertAfter($SearchObj);
                                 $ClearSearchObj.addClass('InputField_Action InputField_ClearSearch')
                                     .attr('href', '#')
-                                    .attr('title', Core.Config.Get('InputFieldsClearSearch'))
+                                    .attr('title', Core.Language.Translate('Clear search'))
                                     .css(($('body').hasClass('RTL') ? 'left' : 'right'), Config.SelectionBoxOffsetRight + 'px')
                                     .append($('<i />').addClass('fa fa-times-circle'))
                                     .attr('role', 'button')
                                     .attr('tabindex', '-1')
-                                    .attr('aria-label', Core.Config.Get('InputFieldsClearSearch'))
+                                    .attr('aria-label', Core.Language.Translate('Clear search'))
                                     .off('click.InputField').on('click.InputField', function () {
 
                                         // Reset the search field
@@ -2288,6 +2473,8 @@ Core.UI.InputFields = (function (TargetNS) {
             Core.App.Publish('Event.UI.InputFields.Resize');
         }, 100);
     });
+
+    Core.Init.RegisterNamespace(TargetNS, 'APP_GLOBAL');
 
     return TargetNS;
 }(Core.UI.InputFields || {}));

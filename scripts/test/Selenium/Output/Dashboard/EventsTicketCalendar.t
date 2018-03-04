@@ -33,20 +33,17 @@ $Selenium->RunTest(
             Value => \%$Config,
         );
 
-        my %EventsTicketCalendarSysConfig = $Kernel::OM->Get('Kernel::System::SysConfig')->ConfigItemGet(
+        my %EventsTicketCalendarSysConfig = $Kernel::OM->Get('Kernel::System::SysConfig')->SettingGet(
             Name    => 'DashboardBackend###0280-DashboardEventsTicketCalendar',
             Default => 1,
         );
-
-        %EventsTicketCalendarSysConfig = map { $_->{Key} => $_->{Content} }
-            grep { defined $_->{Key} } @{ $EventsTicketCalendarSysConfig{Setting}->[1]->{Hash}->[1]->{Item} };
 
         # enable EventsTicketCalendar and set it to load as default plugin
         $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'DashboardBackend###0280-DashboardEventsTicketCalendar',
             Value => {
-                %EventsTicketCalendarSysConfig,
+                %{ $EventsTicketCalendarSysConfig{EffectiveValue} },
                 Default => 1,
                 }
         );
@@ -124,19 +121,17 @@ $Selenium->RunTest(
         # get backend object
         my $BackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
 
-        # get time object
-        my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
-
-        # get current system time
-        my $Now = $TimeObject->SystemTime();
+        # create datetime object
+        my $DateTimeObject = $Kernel::OM->Create('Kernel::System::DateTime');
 
         my %DynamicFieldValue = (
-            TicketCalendarStartTime => $TimeObject->SystemTime2TimeStamp(
-                SystemTime => $Now,
-            ),
-            TicketCalendarEndTime => $TimeObject->SystemTime2TimeStamp(
-                SystemTime => $Now + 60 * 60,
-            ),
+            TicketCalendarStartTime => $DateTimeObject->ToString(),
+            TicketCalendarEndTime   => $Kernel::OM->Create(
+                'Kernel::System::DateTime',
+                ObjectParams => {
+                    Epoch => $DateTimeObject->ToEpoch() + 60 * 60,
+                    }
+                )->ToString(),
         );
 
         # set value of ticket's dynamic fields

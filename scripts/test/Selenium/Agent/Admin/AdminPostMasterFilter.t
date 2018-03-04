@@ -25,7 +25,8 @@ $Selenium->RunTest(
 
         # Create test user and login.
         my $TestUserLogin = $Helper->TestUserCreate(
-            Groups => ['admin'],
+            Language => $Language,
+            Groups   => ['admin'],
         ) || die "Did not get test user";
 
         $Selenium->Login(
@@ -49,13 +50,21 @@ $Selenium->RunTest(
         $Selenium->find_element( "table thead tr th", 'css' );
         $Selenium->find_element( "table tbody tr td", 'css' );
 
+        # Check breadcrumb on Overview screen.
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
+
         # Click 'Add filter'.
         $Selenium->find_element("//a[contains(\@href, \'Action=AdminPostMasterFilter;Subaction=AddAction' )]")
             ->VerifiedClick();
 
         # Check client side validation.
         $Selenium->find_element( "#EditName", 'css' )->clear();
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+        $Selenium->execute_script("\$('#Submit').click();");
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#EditName.Error").length' );
+
         $Self->Is(
             $Selenium->execute_script(
                 "return \$('#EditName').hasClass('Error')"
@@ -90,6 +99,20 @@ $Selenium->RunTest(
             }
         }
 
+        # Check breadcrumb on Add screen.
+        my $SecondBreadcrumbText = $LanguageObject->Translate('PostMaster Filter Management');
+        my $ThirdBreadcrumbText  = $LanguageObject->Translate('Add PostMaster Filter');
+        my $Count                = 1;
+        for my $BreadcrumbText ( $SecondBreadcrumbText, $ThirdBreadcrumbText ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
+
         # Add first test PostMasterFilter.
         my $PostMasterName     = "postmasterfilter" . $Helper->GetRandomID();
         my $PostMasterBody     = "Selenium test for PostMasterFilter";
@@ -97,32 +120,15 @@ $Selenium->RunTest(
 
         $Selenium->find_element( "#EditName", 'css' )->send_keys($PostMasterName);
         $Selenium->execute_script("\$('#MatchHeader1').val('Body').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element( "#MatchNot1",   'css' )->VerifiedClick();
+        $Selenium->find_element( "#MatchNot1",   'css' )->click();
         $Selenium->find_element( "#MatchValue1", 'css' )->send_keys($PostMasterBody);
         $Selenium->execute_script(
             "\$('#SetHeader1').val('X-OTRS-Priority').trigger('redraw.InputField').trigger('change');"
         );
 
-        # Make sure that "Body" is disabled on other condition selects.
-        my $BodyDisabled
-            = $Selenium->execute_script("return \$('#MatchHeader2 option[Value=\"Body\"]').attr('disabled');");
-        $Self->Is(
-            $BodyDisabled,
-            "disabled",
-            "Body is disabled in #MatchHeader2."
-        );
-
-        # Make sure that "X-OTRS-Priority" is disabled on other selects.
-        my $XOTRSPriorityDisabled
-            = $Selenium->execute_script("return \$('#SetHeader2 option[Value=\"X-OTRS-Priority\"]').attr('disabled');");
-        $Self->Is(
-            $XOTRSPriorityDisabled,
-            "disabled",
-            "X-OTRS-Priority is disabled in #SetHeader2."
-        );
-
         $Selenium->find_element( "#SetValue1", 'css' )->send_keys($PostMasterPriority);
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+        $Selenium->execute_script("\$('#Submit').click();");
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#PostMasterFilters").length;' );
 
         # Check for created first test PostMasterFilter on screen.
         $Self->True(
@@ -164,17 +170,32 @@ $Selenium->RunTest(
             "#SetValue1 stored value",
         );
 
+        # Check breadcrumb on Edit screen.
+        $Count               = 1;
+        $ThirdBreadcrumbText = $LanguageObject->Translate('Edit PostMaster Filter') . ": $PostMasterName";
+        for my $BreadcrumbText ( $SecondBreadcrumbText, $ThirdBreadcrumbText ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
+
         # Edit test PostMasterFilter.
         my $EditPostMasterPriority = "4 high";
 
         $Selenium->execute_script("\$('#StopAfterMatch').val('1').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element( "#MatchNot1", 'css' )->VerifiedClick();
+        $Selenium->find_element( "#MatchNot1", 'css' )->click();
         $Selenium->find_element( "#SetValue1", 'css' )->clear();
         $Selenium->find_element( "#SetValue1", 'css' )->send_keys($EditPostMasterPriority);
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+        $Selenium->execute_script("\$('#Submit').click();");
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#PostMasterFilters").length;' );
 
         # Check edited test PostMasterFilter values.
-        $Selenium->find_element( $PostMasterName, 'link_text' )->VerifiedClick();
+        $Selenium->find_element( $PostMasterName, 'link_text' )->click();
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#StopAfterMatch").length;' );
 
         $Self->Is(
             $Selenium->find_element( '#StopAfterMatch', 'css' )->get_value(),
@@ -197,22 +218,7 @@ $Selenium->RunTest(
         $Selenium->find_element( "#MatchValue1", 'css' )->send_keys('0');
         $Selenium->find_element( "#SetValue1",   'css' )->clear();
         $Selenium->find_element( "#SetValue1",   'css' )->send_keys('0');
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
-
-        # Check edited test PostMasterFilter values.
-        $Selenium->find_element( $PostMasterName, 'link_text' )->VerifiedClick();
-
-        $Self->Is(
-            $Selenium->find_element( '#MatchValue1', 'css' )->get_value(),
-            0,
-            "#SetValue1 updated value",
-        );
-
-        $Self->Is(
-            $Selenium->find_element( '#SetValue1', 'css' )->get_value(),
-            0,
-            "#SetValue1 updated value",
-        );
+        $Selenium->execute_script("\$('#Submit').click();");
 
         # Go back to AdminPostMasterFilter screen.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminPostMasterFilter");
@@ -228,7 +234,10 @@ $Selenium->RunTest(
             "\$('#SetHeader1').val('X-OTRS-Priority').trigger('redraw.InputField').trigger('change');"
         );
         $Selenium->find_element( "#SetValue1", 'css' )->send_keys($PostMasterPriority);
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+        $Selenium->execute_script("\$('#Submit').click();");
+
+        # Wait for dialog to appears.
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#DialogButton1").length;' );
 
         # Confirm JS error.
         $Selenium->find_element( "#DialogButton1", 'css' )->click();
@@ -246,7 +255,8 @@ $Selenium->RunTest(
         my $PostMasterName2 = $PostMasterName . '2';
         $Selenium->find_element( "#EditName", 'css' )->clear();
         $Selenium->find_element( "#EditName", 'css' )->send_keys($PostMasterName2);
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+        $Selenium->execute_script("\$('#Submit').click();");
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#PostMasterFilters").length;' );
 
         # Verify second PostMasterFilter is created.
         $Self->True(
@@ -260,7 +270,10 @@ $Selenium->RunTest(
         # Try to change name as first PostMasterFilter, verify duplication error.
         $Selenium->find_element( "#EditName", 'css' )->clear();
         $Selenium->find_element( "#EditName", 'css' )->send_keys($PostMasterName);
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+        $Selenium->execute_script("\$('#Submit').click();");
+
+        # Wait for dialog to appears.
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#DialogButton1").length;' );
 
         # Confirm JS error.
         $Selenium->find_element( "#DialogButton1", 'css' )->click();
@@ -279,7 +292,8 @@ $Selenium->RunTest(
         my $PostMasterName3 = $PostMasterName . '3';
         $Selenium->find_element( "#EditName", 'css' )->clear();
         $Selenium->find_element( "#EditName", 'css' )->send_keys($PostMasterName3);
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+        $Selenium->execute_script("\$('#Submit').click();");
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#PostMasterFilters").length;' );
 
         $Self->True(
             index( $Selenium->get_page_source(), $PostMasterName2 ) == -1,
@@ -290,26 +304,54 @@ $Selenium->RunTest(
             "$PostMasterName2 edited second PostMasterFilter found on page",
         );
 
-        for my $Item ( $PostMasterName3, $PostMasterName ) {
+        # Delete second PostMasterFilter.
+        $Selenium->find_element(
+            "//a[contains(\@data-query-string, \'Subaction=Delete;Name=$PostMasterName3' )]"
+        )->click();
 
-            # Delete  PostMasterFilter.
-            $Selenium->find_element(
-                "//a[contains(\@href, \'Subaction=Delete;Name=$Item' )]"
-            )->click();
+        # Wait for dialog to appears.
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#DialogButton1").length;' );
 
-            # Accept delete confirmation dialog
-            $Selenium->accept_alert();
+        # Verify delete dialog message.
+        my $DeleteMessage = $LanguageObject->Translate("Do you really want to delete this postmaster filter?");
+        $Self->True(
+            index( $Selenium->get_page_source(), $DeleteMessage ) > -1,
+            "Delete message is found",
+        );
 
-            $Selenium->WaitFor(
-                JavaScript => "return typeof(\$) === 'function' &&  \$('tbody tr:contains($Item)').length === 0;"
-            );
+        # Confirm delete action.
+        $Selenium->find_element( "#DialogButton1", 'css' )->VerifiedClick();
 
-            # Check if PostMasterFilter is deleted.
-            $Self->True(
-                index( $Selenium->get_page_source(), $Item ) == -1,
-                "PostMasterFilter '$Item' is deleted"
-            );
-        }
+        # Wait for the dialog to disappear.
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".Dialog:visible").length === 0;' );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#PostMasterFilters").length > 0;' );
+
+        # Check if second PostMasterFilter is deleted.
+        $Self->True(
+            index( $Selenium->get_page_source(), $PostMasterName3 ) == -1,
+            "Second PostMasterFilter '$PostMasterName3' is deleted"
+        );
+
+        # Delete first PostMasterFilter.
+        $Selenium->find_element(
+            "//a[contains(\@data-query-string, \'Subaction=Delete;Name=$PostMasterName' )]"
+        )->click();
+
+        # Wait for dialog to appears.
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".Dialog:visible").length === 1;' );
+
+        # Confirm delete action.
+        $Selenium->find_element( "#DialogButton1", 'css' )->VerifiedClick();
+
+        # Wait for the dialog to disappear.
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".Dialog:visible").length === 0;' );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#PostMasterFilters").length > 0;' );
+
+        # Check if first postmaster filter is deleted.
+        $Self->True(
+            index( $Selenium->get_page_source(), $PostMasterName ) == -1,
+            "First PostMasterFilter '$PostMasterName' is deleted"
+        );
     }
 );
 

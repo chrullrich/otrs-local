@@ -12,17 +12,17 @@ use utf8;
 
 use vars (qw($Self));
 
-# get needed objects
-my $QueueObject   = $Kernel::OM->Get('Kernel::System::Queue');
-my $ServiceObject = $Kernel::OM->Get('Kernel::System::Service');
-my $SLAObject     = $Kernel::OM->Get('Kernel::System::SLA');
-my $StateObject   = $Kernel::OM->Get('Kernel::System::State');
-my $TicketObject  = $Kernel::OM->Get('Kernel::System::Ticket');
-my $TimeObject    = $Kernel::OM->Get('Kernel::System::Time');
-my $TypeObject    = $Kernel::OM->Get('Kernel::System::Type');
-my $UserObject    = $Kernel::OM->Get('Kernel::System::User');
+my $QueueObject          = $Kernel::OM->Get('Kernel::System::Queue');
+my $ServiceObject        = $Kernel::OM->Get('Kernel::System::Service');
+my $SLAObject            = $Kernel::OM->Get('Kernel::System::SLA');
+my $StateObject          = $Kernel::OM->Get('Kernel::System::State');
+my $TicketObject         = $Kernel::OM->Get('Kernel::System::Ticket');
+my $ArticleObject        = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+my $ArticleBackendObject = $ArticleObject->BackendForChannel( ChannelName => 'Internal' );
+my $DateTimeObject       = $Kernel::OM->Create('Kernel::System::DateTime');
+my $TypeObject           = $Kernel::OM->Get('Kernel::System::Type');
+my $UserObject           = $Kernel::OM->Get('Kernel::System::User');
 
-# get helper object
 $Kernel::OM->ObjectParamAdd(
     'Kernel::System::UnitTest::Helper' => {
         RestoreDatabase  => 1,
@@ -122,9 +122,9 @@ $Self->Is(
     'TicketGet() (TypeID)',
 );
 $Self->Is(
-    $Ticket{SolutionTime},
+    $Ticket{Closed},
     $Ticket{Created},
-    'Ticket created as closed as Solution Time = Creation Time',
+    'Ticket created as closed as Close Time = Creation Time',
 );
 
 my $TestUserLogin = $Helper->TestUserCreate(
@@ -193,10 +193,10 @@ $Self->Is(
     'TicketOwnerSet() (ChangeBy - System ID 1 now)',
 );
 
-my $ArticleID = $TicketObject->ArticleCreate(
-    TicketID    => $TicketID,
-    ArticleType => 'note-internal',
-    SenderType  => 'agent',
+my $ArticleID = $ArticleBackendObject->ArticleCreate(
+    TicketID             => $TicketID,
+    SenderType           => 'agent',
+    IsVisibleForCustomer => 0,
     From =>
         'Some Agent Some Agent Some Agent Some Agent Some Agent Some Agent Some Agent Some Agent Some Agent Some Agent Some Agent <email@example.com>',
     To =>
@@ -234,20 +234,18 @@ If you feel the urge to write Perl modules, perlnewmod will give you good advice
 
 $Self->True(
     $ArticleID,
-    'ArticleCreate()',
+    'ArticleCreate()'
 );
 
 $Self->Is(
-    $TicketObject->ArticleCount( TicketID => $TicketID ),
+    scalar $ArticleObject->ArticleList( TicketID => $TicketID ),
     1,
     'ArticleCount',
 );
 
-my %Article = $TicketObject->ArticleGet( ArticleID => $ArticleID );
-$Self->Is(
-    $Article{Title},
-    'Some Ticket_Title',
-    'ArticleGet()',
+my %Article = $ArticleBackendObject->ArticleGet(
+    TicketID  => $TicketID,
+    ArticleID => $ArticleID,
 );
 $Self->True(
     $Article{From} eq
@@ -256,33 +254,43 @@ $Self->True(
 );
 
 for my $Key (qw( Body Subject From To ReplyTo )) {
-    my $Success = $TicketObject->ArticleUpdate(
+    my $Success = $ArticleBackendObject->ArticleUpdate(
+        TicketID  => $TicketID,
         ArticleID => $ArticleID,
         Key       => $Key,
         Value     => "New $Key",
         UserID    => 1,
-        TicketID  => $TicketID,
     );
     $Self->True(
         $Success,
-        'ArticleUpdate()',
+        'ArticleUpdate()'
     );
-    my %Article2 = $TicketObject->ArticleGet( ArticleID => $ArticleID );
+
+    my %Article2 = $ArticleBackendObject->ArticleGet(
+        TicketID  => $TicketID,
+        ArticleID => $ArticleID,
+    );
     $Self->Is(
         $Article2{$Key},
         "New $Key",
-        'ArticleUpdate()',
+        'ArticleUpdate()'
     );
 
     # set old value
-    $Success = $TicketObject->ArticleUpdate(
+    $Success = $ArticleBackendObject->ArticleUpdate(
+        TicketID  => $TicketID,
         ArticleID => $ArticleID,
         Key       => $Key,
         Value     => $Article{$Key},
         UserID    => 1,
-        TicketID  => $TicketID,
     );
 }
+
+$ArticleObject->ArticleSearchIndexBuild(
+    TicketID  => $TicketID,
+    ArticleID => $ArticleID,
+    UserID    => 1,
+);
 
 my $TicketSearchTicketNumber = substr $Ticket{TicketNumber}, 0, 10;
 my %TicketIDs = $TicketObject->TicketSearch(
@@ -307,6 +315,19 @@ $Self->True(
 $Self->True(
     $TicketIDs{$TicketID},
     'TicketSearch() (HASH:TicketNumber)',
+);
+
+# Test TicketNumber search condition '0', expecting no results, see bug#11461.
+%TicketIDs = $TicketObject->TicketSearch(
+    Result       => 'HASH',
+    Limit        => 100,
+    TicketNumber => 0,
+    UserID       => 1,
+    Permission   => 'rw',
+);
+$Self->True(
+    !$TicketIDs{$TicketID},
+    'TicketSearch() (HASH:TicketNumber eq 0)',
 );
 
 %TicketIDs = $TicketObject->TicketSearch(
@@ -502,7 +523,7 @@ $Self->False(
 %TicketIDs = $TicketObject->TicketSearch(
     Result              => 'HASH',
     Limit               => 100,
-    Body                => 'write perl modules',
+    MIMEBase_Body       => 'write perl modules',
     ConditionInline     => 1,
     ContentSearchPrefix => '*',
     ContentSearchSuffix => '*',
@@ -512,13 +533,13 @@ $Self->False(
 );
 $Self->True(
     $TicketIDs{$TicketID},
-    'TicketSearch() (HASH:Body,StateType:Closed)',
+    'TicketSearch() (HASH:MIMEBase_Body,StateType:Closed)',
 );
 
 %TicketIDs = $TicketObject->TicketSearch(
     Result              => 'HASH',
     Limit               => 100,
-    Body                => 'write perl modules',
+    MIMEBase_Body       => 'write perl modules',
     ConditionInline     => 1,
     ContentSearchPrefix => '*',
     ContentSearchSuffix => '*',
@@ -528,7 +549,7 @@ $Self->True(
 );
 $Self->True(
     !$TicketIDs{$TicketID},
-    'TicketSearch() (HASH:Body,StateType:Open)',
+    'TicketSearch() (HASH:MIMEBase_,StateType:Open)',
 );
 
 $TicketObject->MoveTicket(
@@ -632,7 +653,7 @@ for my $Condition (
 
         # result limit
         Limit               => 1000,
-        From                => $Condition,
+        MIMEBase_From       => $Condition,
         ConditionInline     => 1,
         ContentSearchPrefix => '*',
         ContentSearchSuffix => '*',
@@ -641,7 +662,7 @@ for my $Condition (
     );
     $Self->True(
         $TicketIDs{$TicketID},
-        "TicketSearch() (HASH:From,ConditionInline,From='$Condition')",
+        "TicketSearch() (HASH:MIMEBase_From,ConditionInline,MIMEBase_From='$Condition')",
     );
 }
 
@@ -668,16 +689,17 @@ for my $Condition (
 
         # result limit
         Limit               => 1000,
-        From                => $Condition,
+        MIMEBase_From       => $Condition,
         ConditionInline     => 1,
         ContentSearchPrefix => '*',
         ContentSearchSuffix => '*',
         UserID              => 1,
         Permission          => 'rw',
     );
+
     $Self->True(
         ( !$TicketIDs{$TicketID} ),
-        "TicketSearch() (HASH:From,ConditionInline,From='$Condition')",
+        "TicketSearch() (HASH:MIMEBase_From,ConditionInline,MIMEBase_From='$Condition')",
     );
 }
 
@@ -761,7 +783,7 @@ $Helper->FixedTimeAddSeconds(5);
 
 # set unlock timeout
 my $UnlockTimeout = $TicketObject->TicketUnlockTimeoutUpdate(
-    UnlockTimeout => $TimeObject->SystemTime() + 10000,
+    UnlockTimeout => $DateTimeObject->ToEpoch() + 10000,
     TicketID      => $TicketID,
     UserID        => 1,
 );
@@ -1185,15 +1207,15 @@ $Self->False(
 );
 
 # Test TicketCreateTimeNewerDate
-my $SystemTime = $TimeObject->SystemTime();
+my $TicketCreateTimeNewerDate = $Kernel::OM->Create('Kernel::System::DateTime');
+$TicketCreateTimeNewerDate->Subtract( Hours => 1 );
+
 %TicketIDs = $TicketObject->TicketSearch(
     Result                    => 'HASH',
     Limit                     => 100,
-    TicketCreateTimeNewerDate => $TimeObject->SystemTime2TimeStamp(
-        SystemTime => $SystemTime - ( 60 * 60 ),
-    ),
-    UserID     => 1,
-    Permission => 'rw',
+    TicketCreateTimeNewerDate => $TicketCreateTimeNewerDate->ToString(),
+    UserID                    => 1,
+    Permission                => 'rw',
 );
 $Self->True(
     $TicketIDs{$TicketID},
@@ -1201,15 +1223,15 @@ $Self->True(
 );
 
 # Test TicketLastChangeTimeNewerDate
-$SystemTime = $TimeObject->SystemTime();
-%TicketIDs  = $TicketObject->TicketSearch(
+my $TicketLastChangeTimeNewerDate = $Kernel::OM->Create('Kernel::System::DateTime');
+$TicketLastChangeTimeNewerDate->Subtract( Hours => 1 );
+
+%TicketIDs = $TicketObject->TicketSearch(
     Result                        => 'HASH',
     Limit                         => 100,
-    TicketLastChangeTimeNewerDate => $TimeObject->SystemTime2TimeStamp(
-        SystemTime => $SystemTime - ( 60 * 60 ),
-    ),
-    UserID     => 1,
-    Permission => 'rw',
+    TicketLastChangeTimeNewerDate => $TicketLastChangeTimeNewerDate->ToString(),
+    UserID                        => 1,
+    Permission                    => 'rw',
 );
 $Self->True(
     $TicketIDs{$TicketID},
@@ -1217,15 +1239,15 @@ $Self->True(
 );
 
 # Test ArticleCreateTimeNewerDate
-$SystemTime = $TimeObject->SystemTime();
-%TicketIDs  = $TicketObject->TicketSearch(
+my $ArticleCreateTimeNewerDate = $Kernel::OM->Create('Kernel::System::DateTime');
+$ArticleCreateTimeNewerDate->Subtract( Hours => 1 );
+
+%TicketIDs = $TicketObject->TicketSearch(
     Result                     => 'HASH',
     Limit                      => 100,
-    ArticleCreateTimeNewerDate => $TimeObject->SystemTime2TimeStamp(
-        SystemTime => $SystemTime - ( 60 * 60 ),
-    ),
-    UserID     => 1,
-    Permission => 'rw',
+    ArticleCreateTimeNewerDate => $ArticleCreateTimeNewerDate->ToString(),
+    UserID                     => 1,
+    Permission                 => 'rw',
 );
 $Self->True(
     $TicketIDs{$TicketID},
@@ -1233,14 +1255,15 @@ $Self->True(
 );
 
 # Test TicketLastChangeOlderDate
+my $TicketLastChangeOlderDate = $Kernel::OM->Create('Kernel::System::DateTime');
+$TicketLastChangeOlderDate->Subtract( Hours => 1 );
+
 %TicketIDs = $TicketObject->TicketSearch(
     Result                        => 'HASH',
     Limit                         => 100,
-    TicketLastChangeTimeOlderDate => $TimeObject->SystemTime2TimeStamp(
-        SystemTime => $SystemTime - ( 60 * 60 ),
-    ),
-    UserID     => 1,
-    Permission => 'rw',
+    TicketLastChangeTimeOlderDate => $TicketLastChangeOlderDate->ToString(),
+    UserID                        => 1,
+    Permission                    => 'rw',
 );
 $Self->False(
     $TicketIDs{$TicketID},
@@ -1248,14 +1271,15 @@ $Self->False(
 );
 
 # Test TicketCreateOlderDate
+my $TicketCreateOlderDate = $Kernel::OM->Create('Kernel::System::DateTime');
+$TicketCreateOlderDate->Subtract( Hours => 1 );
+
 %TicketIDs = $TicketObject->TicketSearch(
     Result                    => 'HASH',
     Limit                     => 100,
-    TicketCreateTimeOlderDate => $TimeObject->SystemTime2TimeStamp(
-        SystemTime => $SystemTime - ( 60 * 60 ),
-    ),
-    UserID     => 1,
-    Permission => 'rw',
+    TicketCreateTimeOlderDate => $TicketCreateOlderDate->ToString(),
+    UserID                    => 1,
+    Permission                => 'rw',
 );
 $Self->False(
     $TicketIDs{$TicketID},
@@ -1263,14 +1287,15 @@ $Self->False(
 );
 
 # Test ArticleCreateOlderDate
+my $ArticleCreateOlderDate = $Kernel::OM->Create('Kernel::System::DateTime');
+$ArticleCreateOlderDate->Subtract( Hours => 1 );
+
 %TicketIDs = $TicketObject->TicketSearch(
     Result                     => 'HASH',
     Limit                      => 100,
-    ArticleCreateTimeOlderDate => $TimeObject->SystemTime2TimeStamp(
-        SystemTime => $SystemTime - ( 60 * 60 ),
-    ),
-    UserID     => 1,
-    Permission => 'rw',
+    ArticleCreateTimeOlderDate => $ArticleCreateOlderDate->ToString(),
+    UserID                     => 1,
+    Permission                 => 'rw',
 );
 $Self->False(
     $TicketIDs{$TicketID},
@@ -1278,14 +1303,15 @@ $Self->False(
 );
 
 # Test TicketCloseTimeNewerDate
+my $TicketCloseTimeNewerDate = $Kernel::OM->Create('Kernel::System::DateTime');
+$TicketCloseTimeNewerDate->Subtract( Hours => 1 );
+
 %TicketIDs = $TicketObject->TicketSearch(
     Result                   => 'HASH',
     Limit                    => 100,
-    TicketCloseTimeNewerDate => $TimeObject->SystemTime2TimeStamp(
-        SystemTime => $SystemTime - ( 60 * 60 ),
-    ),
-    UserID     => 1,
-    Permission => 'rw',
+    TicketCloseTimeNewerDate => $TicketCloseTimeNewerDate->ToString(),
+    UserID                   => 1,
+    Permission               => 'rw',
 );
 $Self->True(
     $TicketIDs{$TicketID},
@@ -1293,14 +1319,15 @@ $Self->True(
 );
 
 # Test TicketCloseOlderDate
+my $TicketCloseOlderDate = $Kernel::OM->Create('Kernel::System::DateTime');
+$TicketCloseOlderDate->Subtract( Hours => 1 );
+
 %TicketIDs = $TicketObject->TicketSearch(
     Result                   => 'HASH',
     Limit                    => 100,
-    TicketCloseTimeOlderDate => $TimeObject->SystemTime2TimeStamp(
-        SystemTime => $SystemTime - ( 60 * 60 ),
-    ),
-    UserID     => 1,
-    Permission => 'rw',
+    TicketCloseTimeOlderDate => $TicketCloseOlderDate->ToString(),
+    UserID                   => 1,
+    Permission               => 'rw',
 );
 $Self->False(
     $TicketIDs{$TicketID},
@@ -1337,46 +1364,6 @@ $Self->Is(
     'TicketGet() (Lock)',
 );
 
-%Article = $TicketObject->ArticleGet( ArticleID => $ArticleID );
-$Self->Is(
-    $Article{Title},
-    'Very long title 01234567890123456789012345678901234567890123456789'
-        . '0123456789012345678901234567890123456789012345678901234567890123456789'
-        . '0123456789012345678901234567890123456789012345678901234567890123456789'
-        . '0123456789012345678901234567890123456789',
-    'ArticleGet() (Title)',
-);
-$Self->Is(
-    $Article{Queue},
-    'Junk',
-    'ArticleGet() (Queue)',
-);
-$Self->Is(
-    $Article{Priority},
-    '2 low',
-    'ArticleGet() (Priority)',
-);
-$Self->Is(
-    $Article{State},
-    'open',
-    'ArticleGet() (State)',
-);
-$Self->Is(
-    $Article{Owner},
-    'root@localhost',
-    'ArticleGet() (Owner)',
-);
-$Self->Is(
-    $Article{Responsible},
-    'root@localhost',
-    'ArticleGet() (Responsible)',
-);
-$Self->Is(
-    $Article{Lock},
-    'lock',
-    'ArticleGet() (Lock)',
-);
-
 my @MoveQueueList = $TicketObject->MoveQueueList(
     TicketID => $TicketID,
     Type     => 'Name',
@@ -1388,7 +1375,7 @@ $Self->Is(
     'MoveQueueList() (Raw)',
 );
 $Self->Is(
-    $MoveQueueList[$#MoveQueueList],
+    $MoveQueueList[-1],
     'Junk',
     'MoveQueueList() (Junk)',
 );
@@ -1437,31 +1424,30 @@ $Self->Is(
     'TicketAccountedTimeGet()',
 );
 
-my $AccountedTime2 = $TicketObject->ArticleAccountedTimeGet(
+my $AccountedTime2 = $ArticleObject->ArticleAccountedTimeGet(
     ArticleID => $ArticleID,
 );
 
 $Self->Is(
     $AccountedTime2,
     4132.56,
-    'ArticleAccountedTimeGet()',
+    'ArticleAccountedTimeGet()'
 );
 
-my ( $Sec, $Min, $Hour, $Day, $Month, $Year ) = $TimeObject->SystemTime2Date(
-    SystemTime => $TimeObject->SystemTime(),
-);
+my $HistoryTicketStatusGetStartObj    = $Kernel::OM->Create('Kernel::System::DateTime');
+my $HistoryTicketStatusGetStartValues = $HistoryTicketStatusGetStartObj->Get();
 
-my ( $StopSec, $StopMin, $StopHour, $StopDay, $StopMonth, $StopYear ) = $TimeObject->SystemTime2Date(
-    SystemTime => $TimeObject->SystemTime() - 60 * 60 * 24,
-);
+my $HistoryTicketStatusGetStopObj = $Kernel::OM->Create('Kernel::System::DateTime');
+$HistoryTicketStatusGetStopObj->Subtract( Days => 1 );
+my $HistoryTicketStatusGetStopValues = $HistoryTicketStatusGetStopObj->Get();
 
 my %TicketStatus = $TicketObject->HistoryTicketStatusGet(
-    StopYear   => $Year,
-    StopMonth  => $Month,
-    StopDay    => $Day,
-    StartYear  => $StopYear,
-    StartMonth => $StopMonth,
-    StartDay   => $StopDay,
+    StopYear   => $HistoryTicketStatusGetStartValues->{Year},
+    StopMonth  => $HistoryTicketStatusGetStartValues->{Month},
+    StopDay    => $HistoryTicketStatusGetStartValues->{Day},
+    StartYear  => $HistoryTicketStatusGetStopValues->{Year},
+    StartMonth => $HistoryTicketStatusGetStopValues->{Month},
+    StartDay   => $HistoryTicketStatusGetStopValues->{Day},
 );
 
 if ( $TicketStatus{$TicketID} ) {
@@ -1927,7 +1913,7 @@ $Self->Is(
 );
 
 my $Diff               = 60;
-my $CurrentSystemTime  = $TimeObject->SystemTime();
+my $CurrentSystemTime  = $Kernel::OM->Create('Kernel::System::DateTime')->ToEpoch();
 my $PendingTimeSetDiff = $TicketObject->TicketPendingTimeSet(
     Diff     => $Diff,
     TicketID => $TicketID,
@@ -1970,16 +1956,19 @@ $Self->True(
     UserID   => 1,
 );
 
-my $PendingUntilTime = $TimeObject->Date2SystemTime(
-    Year   => '2003',
-    Month  => '08',
-    Day    => '14',
-    Hour   => '22',
-    Minute => '05',
-    Second => '00',
-);
+my $PendingUntilTime = $Kernel::OM->Create(
+    'Kernel::System::DateTime',
+    ObjectParams => {
+        Year   => '2003',
+        Month  => '08',
+        Day    => '14',
+        Hour   => '22',
+        Minute => '05',
+        Second => '00',
+        }
+)->ToEpoch();
 
-$PendingUntilTime = $TimeObject->SystemTime() - $PendingUntilTime;
+$PendingUntilTime = $Kernel::OM->Create('Kernel::System::DateTime')->ToEpoch() - $PendingUntilTime;
 
 $Self->Is(
     $TicketPending{UntilTime},
@@ -2029,11 +2018,14 @@ $Self->True(
     UserID   => 1,
 );
 
-$PendingUntilTime = $TimeObject->TimeStamp2SystemTime(
-    String => '2003-09-14 22:05:00',
-);
+$PendingUntilTime = $Kernel::OM->Create(
+    'Kernel::System::DateTime',
+    ObjectParams => {
+        String => '2003-09-14 22:05:00',
+        }
+)->ToEpoch();
 
-$PendingUntilTime = $TimeObject->SystemTime() - $PendingUntilTime;
+$PendingUntilTime = $Kernel::OM->Create('Kernel::System::DateTime')->ToEpoch() - $PendingUntilTime;
 
 $Self->Is(
     $TicketPending{UntilTime},
@@ -2111,15 +2103,15 @@ $Self->Is(
 $Helper->FixedTimeAddSeconds( -60 * 60 );
 
 # Test TicketCreateTimeNewerDate (future date)
-$SystemTime = $TimeObject->SystemTime();
-%TicketIDs  = $TicketObject->TicketSearch(
+$TicketCreateTimeNewerDate = $Kernel::OM->Create('Kernel::System::DateTime');
+$TicketCreateTimeNewerDate->Add( Hours => 1 );
+
+%TicketIDs = $TicketObject->TicketSearch(
     Result                    => 'HASH',
     Limit                     => 100,
-    TicketCreateTimeNewerDate => $TimeObject->SystemTime2TimeStamp(
-        SystemTime => $SystemTime + ( 60 * 60 ),
-    ),
-    UserID     => 1,
-    Permission => 'rw',
+    TicketCreateTimeNewerDate => $TicketCreateTimeNewerDate->ToString(),
+    UserID                    => 1,
+    Permission                => 'rw',
 );
 $Self->False(
     $TicketIDs{$TicketID},
@@ -2127,15 +2119,15 @@ $Self->False(
 );
 
 # Test ArticleCreateTimeNewerDate (future date)
-$SystemTime = $TimeObject->SystemTime();
-%TicketIDs  = $TicketObject->TicketSearch(
+$ArticleCreateTimeNewerDate = $Kernel::OM->Create('Kernel::System::DateTime');
+$ArticleCreateTimeNewerDate->Add( Hours => 1 );
+
+%TicketIDs = $TicketObject->TicketSearch(
     Result                     => 'HASH',
     Limit                      => 100,
-    ArticleCreateTimeNewerDate => $TimeObject->SystemTime2TimeStamp(
-        SystemTime => $SystemTime + ( 60 * 60 ),
-    ),
-    UserID     => 1,
-    Permission => 'rw',
+    ArticleCreateTimeNewerDate => $ArticleCreateTimeNewerDate->ToString(),
+    UserID                     => 1,
+    Permission                 => 'rw',
 );
 $Self->False(
     $TicketIDs{$TicketID},
@@ -2143,14 +2135,15 @@ $Self->False(
 );
 
 # Test TicketCloseTimeNewerDate (future date)
+$TicketCloseTimeNewerDate = $Kernel::OM->Create('Kernel::System::DateTime');
+$TicketCloseTimeNewerDate->Add( Hours => 1 );
+
 %TicketIDs = $TicketObject->TicketSearch(
     Result                   => 'HASH',
     Limit                    => 100,
-    TicketCloseTimeNewerDate => $TimeObject->SystemTime2TimeStamp(
-        SystemTime => $SystemTime + ( 60 * 60 ),
-    ),
-    UserID     => 1,
-    Permission => 'rw',
+    TicketCloseTimeNewerDate => $TicketCloseTimeNewerDate->ToString(),
+    UserID                   => 1,
+    Permission               => 'rw',
 );
 $Self->False(
     $TicketIDs{$TicketID},

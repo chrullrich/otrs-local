@@ -12,11 +12,14 @@ use strict;
 use warnings;
 
 our $ObjectManagerDisabled = 1;
+our @ObjectDependencies    = ();
 
 sub new {
     my ( $Class, %Param ) = @_;
 
     bless \%Param, $Class;
+
+    return $Class;
 }
 
 sub Data {

@@ -11,7 +11,7 @@ package Kernel::System::Console::Command::Maint::Cache::Delete;
 use strict;
 use warnings;
 
-use base qw(Kernel::System::Console::BaseCommand);
+use parent qw(Kernel::System::Console::BaseCommand);
 
 our @ObjectDependencies = (
     'Kernel::System::Cache',
@@ -20,7 +20,7 @@ our @ObjectDependencies = (
 sub Configure {
     my ( $Self, %Param ) = @_;
 
-    $Self->Description('Deletes cache files created by OTRS.');
+    $Self->Description('Delete cache files created by OTRS.');
     $Self->AddOption(
         Name        => 'expired',
         Description => 'Delete only caches which are expired by TTL.',

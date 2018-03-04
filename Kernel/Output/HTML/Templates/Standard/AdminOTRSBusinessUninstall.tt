@@ -6,11 +6,25 @@
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
-[% SET OTRSBusinessLabel = '<strong>OTRS Business Solution</strong>™' %]
+[%
+    SET OTRSBusinessLabel      = '<strong>OTRS Business Solution</strong>™';
+    SET OTRSBusinessLabelPlain = 'OTRS Business Solution™';
+%]
 
 <div class="MainBox ARIARoleMain LayoutFixedSidebar SidebarFirst">
-    <h1>[% Translate("Manage %s", OTRSBusinessLabel) %]</h1>
+    <h1>[% Translate("Manage %s") | html | ReplacePlaceholders(OTRSBusinessLabel) %]</h1>
 
+    [% BreadcrumbPath = [
+            {
+                Name => Translate("Manage %s", OTRSBusinessLabelPlain),
+                Link => Env("Action"),
+            },
+        ]
+    %]
+
+    [% INCLUDE "Breadcrumb.tt" Path = BreadcrumbPath %]
+
+    <div class="Clear"></div>
     <div class="SidebarColumn">
         <div class="WidgetSimple">
             <div class="Header">
@@ -41,7 +55,7 @@
             <div class="Content">
 [% RenderBlockStart("DowngradeNotPossible") %]
                 <p>
-                    [% Translate('Sorry, but currently you can\'t downgrade due to the following packages which depend on %s:', OTRSBusinessLabel) %]
+                    [% Translate("Sorry, but currently you can't downgrade due to the following packages which depend on %s:") | html | ReplacePlaceholders(OTRSBusinessLabel) %]
                 </p>
                 <ul class="Default">
             [% FOR Package IN Data.Packages %]
@@ -72,7 +86,7 @@
                     <li>[% Translate('DynamicField Database') | html %]</li>
                     <li>[% Translate('SLA Selection Dialog') | html %]</li>
                     <li>[% Translate('Ticket Attachment View') | html %]</li>
-                    <li>[% Translate('The %s skin', OTRSBusinessLabel) %]</li>
+                    <li>[% Translate('The %s skin') | html | ReplacePlaceholders(OTRSBusinessLabel) %]</li>
                 </ul>
                 <p class="SpacingTop">
                     <a href="[% Env("Baselink") %]Action=[% Env("Action") %];Subaction=UninstallAction">

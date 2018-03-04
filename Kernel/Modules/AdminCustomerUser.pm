@@ -12,6 +12,7 @@ use strict;
 use warnings;
 
 use Kernel::System::CheckItem;
+use Kernel::System::VariableCheck qw(:all);
 use Kernel::Language qw(Translatable);
 
 our $ObjectManagerDisabled = 1;
@@ -22,6 +23,12 @@ sub new {
     # allocate new hash for object
     my $Self = {%Param};
     bless( $Self, $Type );
+
+    my $DynamicFieldConfigs = $Kernel::OM->Get('Kernel::System::DynamicField')->DynamicFieldListGet(
+        ObjectType => 'CustomerUser',
+    );
+
+    $Self->{DynamicFieldLookup} = { map { $_->{Name} => $_ } @{$DynamicFieldConfigs} };
 
     return $Self;
 }
@@ -52,9 +59,6 @@ sub Run {
             Type => $Nav eq 'Agent' ? 'Customers' : 'Admin',
         );
     }
-
-    # Get list of valid IDs.
-    my @ValidIDList = $Kernel::OM->Get('Kernel::System::Valid')->ValidIDsGet();
 
     # check the permission for the SwitchToCustomer feature
     if ( $ConfigObject->Get('SwitchToCustomer') ) {
@@ -101,27 +105,10 @@ sub Run {
             Valid => 1,
         );
 
-        # get groups rw/ro
-        for my $Type (qw(rw ro)) {
-            my %GroupData = $Kernel::OM->Get('Kernel::System::CustomerGroup')->GroupMemberList(
-                Result => 'HASH',
-                Type   => $Type,
-                UserID => $UserData{UserID},
-            );
-            for my $GroupKey ( sort keys %GroupData ) {
-                if ( $Type eq 'rw' ) {
-                    $UserData{"UserIsGroup[$GroupData{$GroupKey}]"} = 'Yes';
-                }
-                else {
-                    $UserData{"UserIsGroupRo[$GroupData{$GroupKey}]"} = 'Yes';
-                }
-            }
-        }
-
         # create new session id
         my $NewSessionID = $Kernel::OM->Get('Kernel::System::AuthSession')->CreateSessionID(
             %UserData,
-            UserLastRequest => $Kernel::OM->Get('Kernel::System::Time')->SystemTime(),
+            UserLastRequest => $Kernel::OM->Create('Kernel::System::DateTime')->ToEpoch(),
             UserType        => 'Customer',
             SessionSource   => 'CustomerInterface',
         );
@@ -234,11 +221,15 @@ sub Run {
     # change
     # ------------------------------------------------------------ #
     elsif ( $Self->{Subaction} eq 'Change' ) {
-        my $User = $ParamObject->GetParam( Param => 'ID' ) || '';
+        my $User         = $ParamObject->GetParam( Param => 'ID' )           || '';
+        my $Notification = $ParamObject->GetParam( Param => 'Notification' ) || '';
 
         # get user data
         my %UserData = $CustomerUserObject->CustomerUserDataGet( User => $User );
+
         my $Output = $NavBar;
+        $Output .= $LayoutObject->Notify( Info => Translatable('Customer updated!') )
+            if ( $Notification && $Notification eq 'Update' );
         $Output .= $Self->_Edit(
             Nav    => $Nav,
             Action => 'Change',
@@ -266,38 +257,150 @@ sub Run {
         # challenge token check for write action
         $LayoutObject->ChallengeTokenCheck();
 
+        # update only the preferences and dynamic fields, if the source is readonly or a ldap backend
+        my $UpdateOnlyPreferences;
+
+        if ( $ConfigObject->Get($Source)->{ReadOnly} || $ConfigObject->Get($Source)->{Module} =~ /LDAP/i ) {
+            $UpdateOnlyPreferences = 1;
+        }
+
         my $Note = '';
         my ( %GetParam, %Errors );
-        for my $Entry ( @{ $ConfigObject->Get($Source)->{Map} } ) {
-            $GetParam{ $Entry->[0] } = $ParamObject->GetParam( Param => $Entry->[0] ) || '';
 
-            # check mandatory fields
-            if ( !$GetParam{ $Entry->[0] } && $Entry->[4] ) {
-                $Errors{ $Entry->[0] . 'Invalid' } = 'ServerError';
+        # Get dynamic field backend object.
+        my $DynamicFieldBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
+
+        ENTRY:
+        for my $Entry ( @{ $ConfigObject->Get($Source)->{Map} } ) {
+
+            # check dynamic fields
+            if ( $Entry->[5] eq 'dynamic_field' ) {
+
+                my $DynamicFieldConfig = $Self->{DynamicFieldLookup}->{ $Entry->[2] };
+
+                if ( !IsHashRefWithData($DynamicFieldConfig) ) {
+                    $Kernel::OM->Get('Kernel::System::Log')->Log(
+                        Priority => 'error',
+                        Message  => "DynamicField $Entry->[2] not found!",
+                    );
+                    next ENTRY;
+                }
+
+                my $ValidationResult = $DynamicFieldBackendObject->EditFieldValueValidate(
+                    DynamicFieldConfig => $DynamicFieldConfig,
+                    ParamObject        => $ParamObject,
+                    Mandatory          => $Entry->[4],
+                );
+
+                if ( $ValidationResult->{ServerError} ) {
+                    $Errors{ $Entry->[0] } = $ValidationResult;
+                }
+                else {
+
+                    # generate storable value of dynamic field edit field
+                    $GetParam{ $Entry->[0] } = $DynamicFieldBackendObject->EditFieldValueGet(
+                        DynamicFieldConfig => $DynamicFieldConfig,
+                        ParamObject        => $ParamObject,
+                        LayoutObject       => $LayoutObject,
+                    );
+                }
+            }
+
+            # check remaining non-dynamic-field mandatory fields
+            else {
+                $GetParam{ $Entry->[0] } = $ParamObject->GetParam( Param => $Entry->[0] ) || '';
+
+                next ENTRY if $UpdateOnlyPreferences;
+
+                if ( !$GetParam{ $Entry->[0] } && $Entry->[4] ) {
+                    $Errors{ $Entry->[0] . 'Invalid' } = 'ServerError';
+                }
             }
         }
         $GetParam{ID} = $ParamObject->GetParam( Param => 'ID' ) || '';
 
         # check email address
         if (
-            $GetParam{UserEmail}
+            !$UpdateOnlyPreferences
+            && $GetParam{UserEmail}
             && !$CheckItemObject->CheckEmail( Address => $GetParam{UserEmail} )
-            && grep { $_ eq $GetParam{ValidID} } @ValidIDList
             )
         {
             $Errors{UserEmailInvalid} = 'ServerError';
             $Errors{ErrorType}        = $CheckItemObject->CheckErrorType() . 'ServerErrorMsg';
         }
 
+        # Get the current user data for some checks.
+        my %CurrentUserData = $CustomerUserObject->CustomerUserDataGet(
+            User => $GetParam{ID},
+        );
+
+        # Check CustomerID, if CustomerCompanySupport is enabled and the UserCustomerID was changed.
+        if (
+            $ConfigObject->Get($Source)->{CustomerCompanySupport}
+            && $GetParam{UserCustomerID}
+            && $CurrentUserData{UserCustomerID} ne $GetParam{UserCustomerID}
+            )
+        {
+
+            my %Company = $Kernel::OM->Get('Kernel::System::CustomerCompany')->CustomerCompanyGet(
+                CustomerID => $GetParam{UserCustomerID},
+            );
+
+            if ( !%Company ) {
+                $Errors{UserCustomerIDInvalid} = 'ServerError';
+            }
+        }
+
         # if no errors occurred
         if ( !%Errors ) {
 
-            # update user
-            my $Update = $CustomerUserObject->CustomerUserUpdate(
-                %GetParam,
-                UserID => $Self->{UserID},
-            );
-            if ($Update) {
+            my $UpdateSuccess;
+            if ( !$UpdateOnlyPreferences ) {
+                $UpdateSuccess = $CustomerUserObject->CustomerUserUpdate(
+                    %GetParam,
+                    UserID => $Self->{UserID},
+                );
+            }
+
+            if ( $UpdateSuccess || $UpdateOnlyPreferences ) {
+
+                # set dynamic field values
+                my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
+
+                ENTRY:
+                for my $Entry ( @{ $ConfigObject->Get($Source)->{Map} } ) {
+                    next ENTRY if $Entry->[5] ne 'dynamic_field';
+
+                    my $DynamicFieldConfig = $Self->{DynamicFieldLookup}->{ $Entry->[2] };
+
+                    if ( !IsHashRefWithData($DynamicFieldConfig) ) {
+                        $Note .= $LayoutObject->Notify(
+                            Info => $LayoutObject->{LanguageObject}->Translate(
+                                'Dynamic field %s not found!',
+                                $Entry->[2],
+                            ),
+                        );
+                        next ENTRY;
+                    }
+
+                    my $ValueSet = $DynamicFieldBackendObject->ValueSet(
+                        DynamicFieldConfig => $DynamicFieldConfig,
+                        ObjectName         => $GetParam{UserLogin},
+                        Value              => $GetParam{ $Entry->[0] },
+                        UserID             => $Self->{UserID},
+                    );
+
+                    if ( !$ValueSet ) {
+                        $Note .= $LayoutObject->Notify(
+                            Info => $LayoutObject->{LanguageObject}->Translate(
+                                'Unable to set value for dynamic field %s!',
+                                $Entry->[2],
+                            ),
+                        );
+                        next ENTRY;
+                    }
+                }
 
                 # update preferences
                 my %Preferences = %{ $ConfigObject->Get('CustomerPreferencesGroups') };
@@ -338,27 +441,31 @@ sub Run {
                     }
                 }
 
+                # clear customer user cache
+                $CustomerUserObject->CustomerUserCacheClear(
+                    UserLogin => $GetParam{UserLogin},
+                );
+
                 # get user data and show screen again
                 if ( !$Note ) {
-                    $Self->_Overview(
-                        Nav    => $Nav,
-                        Search => $Search,
-                    );
-                    my $Output = $NavBar . $Note;
-                    $Output .= $LayoutObject->Notify( Info => Translatable('Customer updated!') );
-                    $Output .= $LayoutObject->Output(
-                        TemplateFile => 'AdminCustomerUser',
-                        Data         => \%Param,
-                    );
 
-                    if ( $Nav eq 'None' ) {
-                        $Output .= $LayoutObject->Footer( Type => 'Small' );
+                    # if the user would like to continue editing the priority, just redirect to the edit screen
+                    if (
+                        defined $ParamObject->GetParam( Param => 'ContinueAfterSave' )
+                        && ( $ParamObject->GetParam( Param => 'ContinueAfterSave' ) eq '1' )
+                        )
+                    {
+                        my $ID = $ParamObject->GetParam( Param => 'ID' ) || '';
+                        return $LayoutObject->Redirect(
+                            OP =>
+                                "Action=$Self->{Action};Subaction=Change;ID=$ID;Search=$Search;Nav=$Nav;Notification=Update"
+                        );
                     }
                     else {
-                        $Output .= $LayoutObject->Footer();
-                    }
 
-                    return $Output;
+                        # otherwise return to overview
+                        return $LayoutObject->Redirect( OP => "Action=$Self->{Action};Notification=Update" );
+                    }
                 }
             }
             else {
@@ -427,16 +534,54 @@ sub Run {
 
         my $AutoLoginCreation = $ConfigObject->Get($Source)->{AutoLoginCreation};
 
+        # Get dynamic field backend object.
+        my $DynamicFieldBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
+
         ENTRY:
         for my $Entry ( @{ $ConfigObject->Get($Source)->{Map} } ) {
-            $GetParam{ $Entry->[0] } = $ParamObject->GetParam( Param => $Entry->[0] ) || '';
 
             # don't validate UserLogin if AutoLoginCreation is configured
             next ENTRY if ( $AutoLoginCreation && $Entry->[0] eq 'UserLogin' );
 
-            # check mandatory fields
-            if ( !$GetParam{ $Entry->[0] } && $Entry->[4] ) {
-                $Errors{ $Entry->[0] . 'Invalid' } = 'ServerError';
+            # check dynamic fields
+            if ( $Entry->[5] eq 'dynamic_field' ) {
+
+                my $DynamicFieldConfig = $Self->{DynamicFieldLookup}->{ $Entry->[2] };
+
+                if ( !IsHashRefWithData($DynamicFieldConfig) ) {
+                    $Kernel::OM->Get('Kernel::System::Log')->Log(
+                        Priority => 'error',
+                        Message  => "DynamicField $Entry->[2] not found!",
+                    );
+                    next ENTRY;
+                }
+
+                my $ValidationResult = $DynamicFieldBackendObject->EditFieldValueValidate(
+                    DynamicFieldConfig => $DynamicFieldConfig,
+                    ParamObject        => $ParamObject,
+                    Mandatory          => $Entry->[4],
+                );
+
+                if ( $ValidationResult->{ServerError} ) {
+                    $Errors{ $Entry->[0] } = $ValidationResult;
+                }
+                else {
+
+                    # generate storable value of dynamic field edit field
+                    $GetParam{ $Entry->[0] } = $DynamicFieldBackendObject->EditFieldValueGet(
+                        DynamicFieldConfig => $DynamicFieldConfig,
+                        ParamObject        => $ParamObject,
+                        LayoutObject       => $LayoutObject,
+                    );
+                }
+            }
+
+            # check remaining non-dynamic-field mandatory fields
+            else {
+                $GetParam{ $Entry->[0] } = $ParamObject->GetParam( Param => $Entry->[0] ) || '';
+                if ( !$GetParam{ $Entry->[0] } && $Entry->[4] ) {
+                    $Errors{ $Entry->[0] . 'Invalid' } = 'ServerError';
+                }
             }
         }
 
@@ -444,11 +589,22 @@ sub Run {
         if (
             $GetParam{UserEmail}
             && !$CheckItemObject->CheckEmail( Address => $GetParam{UserEmail} )
-            && grep { $_ eq $GetParam{ValidID} } @ValidIDList
             )
         {
             $Errors{UserEmailInvalid} = 'ServerError';
             $Errors{ErrorType}        = $CheckItemObject->CheckErrorType() . 'ServerErrorMsg';
+        }
+
+        # Check CustomerID, if CustomerCompanySupport is enabled.
+        if ( $ConfigObject->Get($Source)->{CustomerCompanySupport} && $GetParam{UserCustomerID} ) {
+
+            my %Company = $Kernel::OM->Get('Kernel::System::CustomerCompany')->CustomerCompanyGet(
+                CustomerID => $GetParam{UserCustomerID},
+            );
+
+            if ( !%Company ) {
+                $Errors{UserCustomerIDInvalid} = 'ServerError';
+            }
         }
 
         # if no errors occurred
@@ -461,6 +617,43 @@ sub Run {
                 Source => $Source
             );
             if ($User) {
+
+                # set dynamic field values
+                my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
+
+                ENTRY:
+                for my $Entry ( @{ $ConfigObject->Get($Source)->{Map} } ) {
+                    next ENTRY if $Entry->[5] ne 'dynamic_field';
+
+                    my $DynamicFieldConfig = $Self->{DynamicFieldLookup}->{ $Entry->[2] };
+
+                    if ( !IsHashRefWithData($DynamicFieldConfig) ) {
+                        $Note .= $LayoutObject->Notify(
+                            Info => $LayoutObject->{LanguageObject}->Translate(
+                                'Dynamic field %s not found!',
+                                $Entry->[2],
+                            ),
+                        );
+                        next ENTRY;
+                    }
+
+                    my $ValueSet = $DynamicFieldBackendObject->ValueSet(
+                        DynamicFieldConfig => $DynamicFieldConfig,
+                        ObjectName         => $GetParam{UserLogin},
+                        Value              => $GetParam{ $Entry->[0] },
+                        UserID             => $Self->{UserID},
+                    );
+
+                    if ( !$ValueSet ) {
+                        $Note .= $LayoutObject->Notify(
+                            Info => $LayoutObject->{LanguageObject}->Translate(
+                                'Unable to set value for dynamic field %s!',
+                                $Entry->[2],
+                            ),
+                        );
+                        next ENTRY;
+                    }
+                }
 
                 # update preferences
                 my %Preferences = %{ $ConfigObject->Get('CustomerPreferencesGroups') };
@@ -508,11 +701,13 @@ sub Run {
                     if ( $Nav eq 'None' ) {
                         my $Output = $NavBar;
 
-                        $LayoutObject->Block(
-                            Name => 'BorrowedViewSubmitJS',
-                            Data => {
-                                Customer => $User,
-                            },
+                        $LayoutObject->AddJSData(
+                            Key   => 'Customer',
+                            Value => $User,
+                        );
+                        $LayoutObject->AddJSData(
+                            Key   => 'Nav',
+                            Value => $Nav,
                         );
 
                         $Output .= $LayoutObject->Output(
@@ -618,7 +813,12 @@ sub Run {
             Nav    => $Nav,
             Search => $Search,
         );
+
+        my $Notification = $ParamObject->GetParam( Param => 'Notification' ) || '';
         my $Output = $NavBar;
+        $Output .= $LayoutObject->Notify( Info => Translatable('Customer user updated!') )
+            if ( $Notification && $Notification eq 'Update' );
+
         $Output .= $LayoutObject->Output(
             TemplateFile => 'AdminCustomerUser',
             Data         => \%Param,
@@ -673,13 +873,13 @@ sub _Overview {
         );
     }
 
-    # when there is no data to show, a message is displayed on the table with this colspan
-    my $ColSpan = 6;
-
     if ( $Param{Search} ) {
 
         # get config object
         my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
+        # when there is no data to show, a message is displayed on the table with this colspan
+        my $ColSpan = 6;
 
         # same Limit as $Self->{CustomerUserMap}->{CustomerUserSearchListLimit}
         # smallest Limit from all sources
@@ -694,18 +894,18 @@ sub _Overview {
             }
         }
 
-        my %AllUsers = $CustomerUserObject->CustomerSearch(
+        my %ListAllItems = $CustomerUserObject->CustomerSearch(
             Search => $Param{Search},
             Limit  => $Limit + 1,
             Valid  => 0,
         );
 
-        if ( keys %AllUsers <= $Limit ) {
-            my $ListAll = keys %AllUsers;
+        if ( keys %ListAllItems <= $Limit ) {
+            my $ListAllItems = keys %ListAllItems;
             $LayoutObject->Block(
                 Name => 'OverviewHeader',
                 Data => {
-                    ListAll => $ListAll,
+                    ListAll => $ListAllItems,
                     Limit   => $Limit,
                 },
             );
@@ -716,15 +916,15 @@ sub _Overview {
             Valid  => 0,
         );
 
-        if ( keys %AllUsers > $Limit ) {
-            my $ListAll        = keys %AllUsers;
+        if ( keys %ListAllItems > $Limit ) {
+            my $ListAllItems   = keys %ListAllItems;
             my $SearchListSize = keys %List;
 
             $LayoutObject->Block(
                 Name => 'OverviewHeader',
                 Data => {
                     SearchListSize => $SearchListSize,
-                    ListAll        => $ListAll,
+                    ListAll        => $ListAllItems,
                     Limit          => $Limit,
                 },
             );
@@ -823,14 +1023,18 @@ sub _Overview {
         );
     }
 
-    if ( $Param{Nav} eq 'None' ) {
-        $LayoutObject->Block( Name => 'BorrowedViewJS' );
-    }
+    $LayoutObject->AddJSData(
+        Key   => 'Nav',
+        Value => $Param{Nav},
+    );
+
+    return;
 }
 
 sub _Edit {
     my ( $Self, %Param ) = @_;
 
+    # Get layout object.
     my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
     my $Output = '';
@@ -851,19 +1055,77 @@ sub _Edit {
         Data => \%Param,
     );
 
-    # shows header
     if ( $Param{Action} eq 'Change' ) {
+
+        # shows edit header
         $LayoutObject->Block( Name => 'HeaderEdit' );
+
+        # shows effective permissions matrix
+        $Self->_EffectivePermissions(%Param);
     }
+
+    # shows add header
     else {
         $LayoutObject->Block( Name => 'HeaderAdd' );
     }
 
+    my $UpdateOnlyPreferences;
+
+    # Get config object
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
+    # update user
+    if ( $ConfigObject->Get( $Param{Source} )->{ReadOnly} || $ConfigObject->Get( $Param{Source} )->{Module} =~ /LDAP/i )
+    {
+        $UpdateOnlyPreferences = 1;
+    }
+
+    # Get dynamic field backend object.
+    my $DynamicFieldBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
+    my $ParamObject               = $Kernel::OM->Get('Kernel::System::Web::Request');
 
     ENTRY:
     for my $Entry ( @{ $ConfigObject->Get( $Param{Source} )->{Map} } ) {
         next ENTRY if !$Entry->[0];
+
+        # Handle dynamic fields
+        if ( $Entry->[5] eq 'dynamic_field' ) {
+
+            my $DynamicFieldConfig = $Self->{DynamicFieldLookup}->{ $Entry->[2] };
+
+            next ENTRY if !IsHashRefWithData($DynamicFieldConfig);
+
+            # Get HTML for dynamic field
+            my $DynamicFieldHTML = $DynamicFieldBackendObject->EditFieldRender(
+                DynamicFieldConfig => $DynamicFieldConfig,
+                Value              => $Param{ $Entry->[0] } ? $Param{ $Entry->[0] } : undef,
+                Mandatory          => $Entry->[4],
+                LayoutObject       => $LayoutObject,
+                ParamObject        => $ParamObject,
+
+                # Server error, if any
+                %{ $Param{Errors}->{ $Entry->[0] } },
+            );
+
+            # skip fields for which HTML could not be retrieved
+            next ENTRY if !IsHashRefWithData($DynamicFieldHTML);
+
+            $LayoutObject->Block(
+                Name => 'Item',
+                Data => {},
+            );
+
+            $LayoutObject->Block(
+                Name => 'DynamicField',
+                Data => {
+                    Name  => $DynamicFieldConfig->{Name},
+                    Label => $DynamicFieldHTML->{Label},
+                    Field => $DynamicFieldHTML->{Field},
+                },
+            );
+
+            next ENTRY;
+        }
 
         my $Block = 'Input';
 
@@ -873,20 +1135,15 @@ sub _Edit {
         }
 
         # check if login auto creation
-        if (
-            $ConfigObject->Get( $Param{Source} )->{AutoLoginCreation}
-            && $Entry->[0] eq 'UserLogin'
-            )
-        {
+        if ( $ConfigObject->Get( $Param{Source} )->{AutoLoginCreation} && $Entry->[0] eq 'UserLogin' ) {
             $Block = 'InputHidden';
         }
-        if ( $Entry->[7] ) {
-            $Param{ReadOnlyType} = 'readonly';
-            $Param{ReadOnly}     = '*';
+
+        if ( $Entry->[7] || $UpdateOnlyPreferences ) {
+            $Param{ReadOnly} = 1;
         }
         else {
-            $Param{ReadOnlyType} = '';
-            $Param{ReadOnly}     = '';
+            $Param{ReadOnly} = 0;
         }
 
         # show required flag
@@ -934,6 +1191,7 @@ sub _Edit {
                 Translation => 1,
                 SelectedID  => $Param{ $Entry->[0] },
                 Class       => "$Param{RequiredClass} Modernize " . $Param{Errors}->{ $Entry->[0] . 'Invalid' },
+                Disabled    => $UpdateOnlyPreferences ? 1 : 0,
             );
         }
         elsif ( $Entry->[0] =~ /^ValidID/i ) {
@@ -950,6 +1208,7 @@ sub _Edit {
                 Name       => $Entry->[0],
                 SelectedID => defined( $Param{ $Entry->[0] } ) ? $Param{ $Entry->[0] } : 1,
                 Class      => "$Param{RequiredClass} Modernize " . $Param{Errors}->{ $Entry->[0] . 'Invalid' },
+                Disabled   => $UpdateOnlyPreferences ? 1 : 0,
             );
         }
         elsif (
@@ -977,13 +1236,27 @@ sub _Edit {
                 $Param{RequiredClass} = 'Validate_Required';
             }
 
-            $Param{Option} = $LayoutObject->BuildSelection(
-                Data       => \%CompanyList,
-                Name       => $Entry->[0],
-                Max        => 80,
-                SelectedID => $Param{ $Entry->[0] } || $Param{CustomerID},
-                Class      => "$Param{RequiredClass} Modernize " . $Param{Errors}->{ $Entry->[0] . 'Invalid' },
-            );
+            my $UseAutoComplete = $Kernel::OM->Get('Kernel::Config')->Get('AdminCustomerUser::UseAutoComplete');
+
+            if ($UseAutoComplete) {
+
+                my $Value = $Param{ $Entry->[0] } || $Param{CustomerID};
+                $Param{Option} = '<input type="text" id="UserCustomerID" name="UserCustomerID" value="' . $Value . '"
+                    class="W50pc CustomerAutoCompleteSimple '
+                    . $Param{RequiredClass} . ' '
+                    . $Param{Errors}->{ $Entry->[0] . 'Invalid' }
+                    . '" data-customer-search-type="CustomerID" />';
+            }
+            else {
+                $Param{Option} = $LayoutObject->BuildSelection(
+                    Data       => \%CompanyList,
+                    Name       => $Entry->[0],
+                    Max        => 80,
+                    SelectedID => $Param{ $Entry->[0] } || $Param{CustomerID},
+                    Class      => "$Param{RequiredClass} Modernize " . $Param{Errors}->{ $Entry->[0] . 'Invalid' },
+                    Disabled   => $UpdateOnlyPreferences ? 1 : 0,
+                );
+            }
         }
         elsif ( $Param{Action} eq 'Add' && $Entry->[0] =~ /^UserCustomerID$/i ) {
 
@@ -1047,125 +1320,345 @@ sub _Edit {
             }
         }
     }
+
     my $PreferencesUsed = $ConfigObject->Get( $Param{Source} )->{AdminSetPreferences};
     if ( ( defined $PreferencesUsed && $PreferencesUsed != 0 ) || !defined $PreferencesUsed ) {
 
-        # extract groups
-        my @Groups = @{ $ConfigObject->Get('CustomerPreferencesView') };
+        my %Data;
+        my %Preferences = %{ $ConfigObject->Get('CustomerPreferencesGroups') };
 
-        for my $Column (@Groups) {
+        GROUP:
+        for my $Group ( sort keys %Preferences ) {
 
-            my %Data;
-            my %Preferences = %{ $ConfigObject->Get('CustomerPreferencesGroups') };
+            next GROUP if !$Group;
 
-            GROUP:
-            for my $Group ( sort keys %Preferences ) {
+            my $PreferencesGroup = $Preferences{$Group};
 
-                next GROUP if !$Group;
-                next GROUP if !$Preferences{$Group}->{Column};
-                next GROUP if $Preferences{$Group}->{Column} ne $Column;
+            next GROUP if !$PreferencesGroup;
+            next GROUP if ref $PreferencesGroup ne 'HASH';
 
-                if ( $Data{ $Preferences{$Group}->{Prio} } ) {
+            if ( $Data{ $PreferencesGroup->{Prio} } ) {
 
-                    COUNT:
-                    for my $Count ( 1 .. 151 ) {
+                COUNT:
+                for ( 1 .. 151 ) {
 
-                        $Preferences{$Group}->{Prio}++;
+                    $PreferencesGroup->{Prio}++;
 
-                        next COUNT if $Data{ $Preferences{$Group}->{Prio} };
-
-                        $Data{ $Preferences{$Group}->{Prio} } = $Group;
-
+                    if ( !$Data{ $PreferencesGroup->{Prio} } ) {
+                        $Data{ $PreferencesGroup->{Prio} } = $Group;
                         last COUNT;
                     }
                 }
-
-                $Data{ $Preferences{$Group}->{Prio} } = $Group;
             }
 
-            # sort
-            for my $Key ( sort keys %Data ) {
-                $Data{ sprintf "%07d", $Key } = $Data{$Key};
-                delete $Data{$Key};
+            $Data{ $PreferencesGroup->{Prio} } = $Group;
+        }
+
+        # sort
+        for my $Key ( sort keys %Data ) {
+            $Data{ sprintf "%07d", $Key } = $Data{$Key};
+            delete $Data{$Key};
+        }
+
+        # show each preferences setting
+        PRIO:
+        for my $Prio ( sort keys %Data ) {
+
+            my $Group = $Data{$Prio};
+            if ( !$ConfigObject->{CustomerPreferencesGroups}->{$Group} ) {
+                next PRIO;
             }
 
-            # show each preferences setting
-            PRIO:
-            for my $Prio ( sort keys %Data ) {
+            my %Preference = %{ $ConfigObject->{CustomerPreferencesGroups}->{$Group} };
+            if ( $Group eq 'Password' ) {
+                next PRIO;
+            }
 
-                my $Group = $Data{$Prio};
-                if ( !$ConfigObject->{CustomerPreferencesGroups}->{$Group} ) {
-                    next PRIO;
-                }
+            my $Module = $Preference{Module}
+                || 'Kernel::Output::HTML::CustomerPreferencesGeneric';
 
-                my %Preference = %{ $ConfigObject->{CustomerPreferencesGroups}->{$Group} };
-                if ( $Group eq 'Password' ) {
-                    next PRIO;
-                }
-
-                my $Module = $Preference{Module}
-                    || 'Kernel::Output::HTML::CustomerPreferencesGeneric';
-
-                # load module
-                if ( $Kernel::OM->Get('Kernel::System::Main')->Require($Module) ) {
-                    my $Object = $Module->new(
-                        %{$Self},
-                        ConfigItem => \%Preference,
-                        UserObject => $Kernel::OM->Get('Kernel::System::CustomerUser'),
-                        Debug      => $Self->{Debug},
-                    );
-                    my @Params = $Object->Param( UserData => \%Param );
-                    if (@Params) {
-                        for my $ParamItem (@Params) {
-                            $LayoutObject->Block(
-                                Name => 'Item',
-                                Data => {%Param},
+            # load module
+            if ( $Kernel::OM->Get('Kernel::System::Main')->Require($Module) ) {
+                my $Object = $Module->new(
+                    %{$Self},
+                    ConfigItem => \%Preference,
+                    UserObject => $Kernel::OM->Get('Kernel::System::CustomerUser'),
+                    Debug      => $Self->{Debug},
+                );
+                my @Params = $Object->Param( UserData => \%Param );
+                if (@Params) {
+                    for my $ParamItem (@Params) {
+                        $LayoutObject->Block(
+                            Name => 'Item',
+                            Data => {%Param},
+                        );
+                        if (
+                            ref $ParamItem->{Data} eq 'HASH'
+                            || ref $Preference{Data} eq 'HASH'
+                            )
+                        {
+                            my %BuildSelectionParams = (
+                                %Preference,
+                                %{$ParamItem},
                             );
-                            if (
-                                ref $ParamItem->{Data} eq 'HASH'
-                                || ref $Preference{Data} eq 'HASH'
-                                )
-                            {
-                                my %BuildSelectionParams = (
-                                    %Preference,
-                                    %{$ParamItem},
-                                );
-                                $BuildSelectionParams{Class}
-                                    = join( ' ', $BuildSelectionParams{Class} // '', 'Modernize' );
+                            $BuildSelectionParams{Class} = join( ' ', $BuildSelectionParams{Class} // '', 'Modernize' );
 
-                                $ParamItem->{Option} = $LayoutObject->BuildSelection(
-                                    %BuildSelectionParams,
-                                );
-                            }
-
-                            $LayoutObject->Block(
-                                Name => $ParamItem->{Block} || $Preference{Block} || 'Option',
-                                Data => {
-                                    Group => $Group,
-                                    %Param,
-                                    %Data,
-                                    %Preference,
-                                    %{$ParamItem},
-                                },
+                            $ParamItem->{Option} = $LayoutObject->BuildSelection(
+                                %BuildSelectionParams,
                             );
                         }
+
+                        $LayoutObject->Block(
+                            Name => $ParamItem->{Block} || $Preference{Block} || 'Option',
+                            Data => {
+                                Group => $Group,
+                                %Param,
+                                %Data,
+                                %Preference,
+                                %{$ParamItem},
+                            },
+                        );
                     }
                 }
-                else {
-                    return $LayoutObject->FatalError();
-                }
+            }
+            else {
+                return $LayoutObject->FatalError();
             }
         }
     }
 
-    if ( $Param{Nav} eq 'None' ) {
-        $LayoutObject->Block( Name => 'BorrowedViewJS' );
-    }
+    $LayoutObject->AddJSData(
+        Key   => 'Nav',
+        Value => $Param{Nav},
+    );
 
     return $LayoutObject->Output(
         TemplateFile => 'AdminCustomerUser',
         Data         => \%Param,
     );
+}
+
+sub _EffectivePermissions {
+    my ( $Self, %Param ) = @_;
+
+    # only if customer group feature is active
+    if ( !$Kernel::OM->Get('Kernel::Config')->Get('CustomerGroupSupport') ) {
+        return 1;
+    }
+
+    # get needed objects
+    my $ConfigObject        = $Kernel::OM->Get('Kernel::Config');
+    my $LayoutObject        = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $CustomerGroupObject = $Kernel::OM->Get('Kernel::System::CustomerGroup');
+
+    # show tables
+    $LayoutObject->Block(
+        Name => 'EffectivePermissions',
+    );
+
+    my %Groups;
+    my %Permissions;
+
+    # go through permission types
+    my @Types = @{ $ConfigObject->Get('System::Customer::Permission') };
+    for my $Type (@Types) {
+
+        # show header
+        $LayoutObject->Block(
+            Name => "HeaderGroupPermissionType",
+            Data => {
+                Type => $Type,
+            },
+        );
+
+        # get groups of the user
+        my %UserGroups = $CustomerGroupObject->GroupMemberList(
+            UserID         => $Param{ID},
+            Type           => $Type,
+            Result         => 'HASH',
+            RawPermissions => 0,            # get effective permissions
+        );
+
+        # store data in lookup hashes
+        for my $GroupID ( sort keys %UserGroups ) {
+            $Groups{$GroupID} = $UserGroups{$GroupID};
+            $Permissions{$GroupID}{$Type} = 1;
+        }
+    }
+
+    # show message if no permissions found
+    if ( !%Permissions ) {
+        $LayoutObject->Block(
+            Name => 'NoGroupPermissionsFoundMsg',
+        );
+    }
+
+    # go through groups, sort by name
+    else {
+        for my $GroupID ( sort { uc( $Groups{$a} ) cmp uc( $Groups{$b} ) } keys %Groups ) {
+
+            # show table rows
+            $LayoutObject->Block(
+                Name => 'GroupPermissionTableRow',
+                Data => {
+                    ID   => $GroupID,
+                    Name => $Groups{$GroupID},
+                },
+            );
+
+            # show permission marks
+            for my $Type (@Types) {
+                my $PermissionMark = $Permissions{$GroupID}{$Type} ? 'On' : 'Off';
+                my $HighlightMark = $Type eq 'rw' ? 'Highlight' : '';
+                $LayoutObject->Block(
+                    Name => 'GroupPermissionMark',
+                );
+                $LayoutObject->Block(
+                    Name => 'GroupPermissionMark' . $PermissionMark,
+                    Data => {
+                        Highlight => $HighlightMark,
+                    },
+                );
+            }
+        }
+    }
+
+    # get all accessible customers of the user
+    my %Customers = $CustomerGroupObject->GroupContextCustomers(
+        CustomerUserID => $Param{ID},
+    );
+
+    # show message if no customers found
+    if ( !%Customers ) {
+        $LayoutObject->Block(
+            Name => 'NoCustomerAccessFoundMsg',
+        );
+        return 1;
+    }
+
+    # get permission contexts
+    my $ContextConfig            = $ConfigObject->Get('CustomerGroupPermissionContext');
+    my $DirectAccessContextKey   = '001-CustomerID-same';
+    my $IndirectAccessContextKey = '100-CustomerID-other';
+
+    # use default context if none are found
+    if ( !IsHashRefWithData($ContextConfig) ) {
+        $ContextConfig = {
+            $DirectAccessContextKey => {
+                Name => Translatable('Same Customer'),
+            },
+        };
+    }
+
+    # show default and extra context headers if available
+    if ( $ContextConfig->{$DirectAccessContextKey} ) {
+        $LayoutObject->Block(
+            Name => 'HeaderCustomerAccessContext',
+            Data => {
+                Name => Translatable('Direct'),
+            },
+        );
+    }
+    if ( $ContextConfig->{$IndirectAccessContextKey} ) {
+        $LayoutObject->Block(
+            Name => 'HeaderCustomerAccessContext',
+            Data => {
+                Name => Translatable('Indirect'),
+            },
+        );
+    }
+
+    # determine customers for direct and indirect access
+    my @UserCustomerIDs = $Kernel::OM->Get('Kernel::System::CustomerUser')->CustomerIDs(
+        User => $Param{ID},
+    );
+    my %ExtraCustomerIDs;
+    if ( $ContextConfig->{$IndirectAccessContextKey} ) {
+        my $ExtraContextName = $CustomerGroupObject->GroupContextNameGet(
+            SysConfigName => $IndirectAccessContextKey,
+        );
+
+        # for all CustomerIDs get groups with extra access
+        my %ExtraPermissionGroups;
+        CUSTOMERID:
+        for my $CustomerID (@UserCustomerIDs) {
+            my %GroupList = $CustomerGroupObject->GroupCustomerList(
+                CustomerID => $CustomerID,
+                Type       => 'ro',
+                Context    => $ExtraContextName,
+                Result     => 'HASH',
+            );
+            next CUSTOMERID if !%GroupList;
+
+            # add to groups
+            %ExtraPermissionGroups = (
+                %ExtraPermissionGroups,
+                %GroupList,
+            );
+        }
+
+        # add all unique accessible Group<->Customer combinations
+        GROUPID:
+        for my $GroupID ( sort keys %ExtraPermissionGroups ) {
+            my @GroupCustomerIDs = $CustomerGroupObject->GroupCustomerList(
+                GroupID => $GroupID,
+                Type    => 'ro',
+                Result  => 'ID',
+            );
+            next GROUPID if !@GroupCustomerIDs;
+
+            # add to ExtraCustomerIDs
+            %ExtraCustomerIDs = (
+                %ExtraCustomerIDs,
+                map { $_ => 1 } @GroupCustomerIDs,
+            );
+        }
+    }
+
+    # go through customers
+    CUSTOMERID:
+    for my $CustomerID ( sort keys %Customers ) {
+
+        # show table rows
+        $LayoutObject->Block(
+            Name => 'CustomerAccessTableRow',
+            Data => {
+                ID   => $CustomerID,
+                Name => $Customers{$CustomerID},
+            },
+        );
+
+        # 'Same Customer'
+        if ( $ContextConfig->{$DirectAccessContextKey} ) {
+
+            # check if we should show check mark for 'Same Customer'
+            my $AccessMark = ( grep { $_ eq $CustomerID } @UserCustomerIDs ) ? 'On' : 'Off';
+
+            # show blocks
+            $LayoutObject->Block(
+                Name => 'CustomerAccessMark',
+            );
+            $LayoutObject->Block(
+                Name => 'CustomerAccessMark' . $AccessMark,
+            );
+        }
+
+        # 'Other Customers'
+        next CUSTOMERID if !$ContextConfig->{$IndirectAccessContextKey};
+
+        # check if we should show check mark for 'Other Customers'
+        my $AccessMark = $ExtraCustomerIDs{$CustomerID} ? 'On' : 'Off';
+
+        # show blocks
+        $LayoutObject->Block(
+            Name => 'CustomerAccessMark',
+        );
+        $LayoutObject->Block(
+            Name => 'CustomerAccessMark' . $AccessMark,
+        );
+    }
+
+    return 1;
 }
 
 1;

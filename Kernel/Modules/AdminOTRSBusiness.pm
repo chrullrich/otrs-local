@@ -241,6 +241,7 @@ sub NotInstalledScreen {
         if ( $GetParam{Type} ) {
             $LayoutObject->Block(
                 Name => 'Actions',
+                Data => \%GetParam,
             );
         }
 

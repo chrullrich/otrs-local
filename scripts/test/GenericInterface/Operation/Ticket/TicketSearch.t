@@ -21,18 +21,31 @@ use Kernel::GenericInterface::Operation::Session::SessionCreate;
 
 use Kernel::System::VariableCheck qw(:all);
 
-# get config object
 my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
-# get helper object
-# skip SSL certificate verification
+# Skip SSL certificate verification.
 $Kernel::OM->ObjectParamAdd(
     'Kernel::System::UnitTest::Helper' => {
-
         SkipSSLVerify => 1,
     },
 );
 my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
+
+# search old test tickets
+my @OldTicketIDs = $TicketObject->TicketSearch(
+    CustomerUserLogin => '*@example.com',
+    Result            => 'ARRAY',
+    UserID            => 1,
+);
+
+# delete old test ticket to have a clean environment
+for my $TicketID (@OldTicketIDs) {
+    $TicketObject->TicketDelete(
+        TicketID => $TicketID,
+        UserID   => 1,
+    );
+}
 
 # get a random number
 my $RandomID = $Helper->GetRandomNumber();
@@ -42,11 +55,8 @@ $ConfigObject->Set(
     Value => 0,
 );
 
-# get time object
-my $TimeObject = $Kernel::OM->Get('Kernel::System::Time');
-
 # get the start time for the test
-my $StartTime = $TimeObject->SystemTime();
+my $StartTime = $Kernel::OM->Create('Kernel::System::DateTime');
 
 # get user object
 my $UserObject = $Kernel::OM->Get('Kernel::System::User');
@@ -202,12 +212,9 @@ for my $DynamicFieldProperty (@DynamicFieldProperties) {
     );
 }
 
-# create ticket object
-my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
-
 # create 3 tickets
 
-#ticket id container
+# ticket id container
 my @TicketIDs;
 
 # create ticket 1
@@ -241,7 +248,7 @@ $Self->True(
 );
 
 # update escalation times directly in the DB
-my $EscalationTime = $TimeObject->SystemTime() + 120;
+my $EscalationTime = $StartTime->ToEpoch() + 120;
 return if !$Kernel::OM->Get('Kernel::System::DB')->Do(
     SQL => '
         UPDATE ticket
@@ -541,63 +548,99 @@ $Self->True(
     "TicketCreate() successful for Ticket Four ID $TicketID4",
 );
 
+my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+my $ArticleBackendObject = $ArticleObject->BackendForChannel( ChannelName => 'Internal' );
+
 # first article
-my $ArticleID41 = $TicketObject->ArticleCreate(
-    TicketID       => $TicketID4,
-    ArticleType    => 'phone',
-    SenderType     => 'agent',
-    From           => 'Agent Some Agent Some Agent <email@example.com>',
-    To             => 'Customer A <customer-a@example.com>',
-    Cc             => 'Customer B <customer-b@example.com>',
-    ReplyTo        => 'Customer B <customer-b@example.com>',
-    Subject        => 'first article',
-    Body           => 'A text for the body, Title äöüßÄÖÜ€ис',
-    ContentType    => 'text/plain; charset=ISO-8859-15',
-    HistoryType    => 'OwnerUpdate',
-    HistoryComment => 'first article',
-    UserID         => 1,
-    NoAgentNotify  => 1,
+my $ArticleID41 = $ArticleBackendObject->ArticleCreate(
+    TicketID             => $TicketID4,
+    SenderType           => 'agent',
+    IsVisibleForCustomer => 1,
+    From                 => 'Agent Some Agent Some Agent <email@example.com>',
+    To                   => 'Customer A <customer-a@example.com>',
+    Cc                   => 'Customer B <customer-b@example.com>',
+    ReplyTo              => 'Customer B <customer-b@example.com>',
+    Subject              => 'first article',
+    Body                 => 'A text for the body, Title äöüßÄÖÜ€ис',
+    ContentType          => 'text/plain; charset=ISO-8859-15',
+    HistoryType          => 'OwnerUpdate',
+    HistoryComment       => 'first article',
+    UserID               => 1,
+    NoAgentNotify        => 1,
+);
+
+$ArticleObject->ArticleSearchIndexBuild(
+    TicketID  => $TicketID4,
+    ArticleID => $ArticleID41,
+    UserID    => 1,
 );
 
 # second article
-my $ArticleID42 = $TicketObject->ArticleCreate(
-    TicketID    => $TicketID4,
-    ArticleType => 'phone',
-    SenderType  => 'agent',
-    From        => 'Anot Real Agent <email@example.com>',
-    To          => 'Customer A <customer-a@example.com>',
-    Cc          => 'Customer B <customer-b@example.com>',
-    ReplyTo     => 'Customer B <customer-b@example.com>',
-    Subject     => 'second article',
-    Body        => 'A text for the body, not too long',
-    ContentType => 'text/plain; charset=ISO-8859-15',
-
-    #    Attachment     => \@Attachments,
-    HistoryType    => 'OwnerUpdate',
-    HistoryComment => 'second article',
-    UserID         => 1,
-    NoAgentNotify  => 1,
+my $ArticleID42 = $ArticleBackendObject->ArticleCreate(
+    TicketID             => $TicketID4,
+    SenderType           => 'agent',
+    IsVisibleForCustomer => 1,
+    From                 => 'Anot Real Agent <email@example.com>',
+    To                   => 'Customer A <customer-a@example.com>',
+    Cc                   => 'Customer B <customer-b@example.com>',
+    ReplyTo              => 'Customer B <customer-b@example.com>',
+    Subject              => 'second article',
+    Body                 => 'A text for the body, not too long',
+    ContentType          => 'text/plain; charset=ISO-8859-15',
+    HistoryType          => 'OwnerUpdate',
+    HistoryComment       => 'second article',
+    UserID               => 1,
+    NoAgentNotify        => 1,
 );
 
-# save articles without attachments
-my @ArticleWithoutAttachments = $TicketObject->ArticleGet(
-    TicketID => $TicketID4,
-    UserID   => 1,
+$ArticleObject->ArticleSearchIndexBuild(
+    TicketID  => $TicketID4,
+    ArticleID => $ArticleID42,
+    UserID    => 1,
 );
 
-for my $Article (@ArticleWithoutAttachments) {
+# Helper method to retrieve article content for supplied list of articles.
+#
+#    $ArticleContentGet->(
+#        TicketID             => 123,           # (required)
+#        Articles             => \@Articles,    # (required)
+#        DynamicFields        => 1,             # (optional) Include dynamic field values
+#    );
+#
+my $ArticleContentGet = sub {
+    my (%Param) = @_;
 
-    for my $Key ( sort keys %{$Article} ) {
-        if ( !$Article->{$Key} ) {
-            $Article->{$Key} = '';
-        }
-        if ( $Key eq 'Age' || $Key eq 'AgeTimeUnix' ) {
-            delete $Article->{$Key};
-        }
+    if (
+        !$Param{TicketID}
+        && !IsArrayRefWithData( $Param{Articles} )
+        )
+    {
+        return;
     }
-}
 
-# file checks
+    my @ArticleContents;
+    for my $Article ( @{ $Param{Articles} } ) {
+        my %ArticleContent = $ArticleBackendObject->ArticleGet(
+            %Param,
+            ArticleID => $Article->{ArticleID},
+        );
+
+        push @ArticleContents, \%ArticleContent;
+    }
+
+    return @ArticleContents;
+};
+
+# Get article contents (no attachments).
+my @Articles = $ArticleObject->ArticleList(
+    TicketID => $TicketID4,
+);
+my @ArticleWithoutAttachments = $ArticleContentGet->(
+    Articles => \@Articles,
+    TicketID => $TicketID4,
+);
+
+# Add attachments to article.
 for my $File (qw(xls txt doc png pdf)) {
     my $Location = $ConfigObject->Get('Home')
         . "/scripts/test/sample/StdAttachment/StdAttachment-Test1.$File";
@@ -608,7 +651,7 @@ for my $File (qw(xls txt doc png pdf)) {
         Type     => 'Local',
     );
 
-    my $ArticleWriteAttachment = $TicketObject->ArticleWriteAttachment(
+    my $ArticleWriteAttachment = $ArticleBackendObject->ArticleWriteAttachment(
         Content     => ${$ContentRef},
         Filename    => "StdAttachment-Test1.$File",
         ContentType => $File,
@@ -617,59 +660,76 @@ for my $File (qw(xls txt doc png pdf)) {
     );
 }
 
-# get articles and attachments
-my @ArticleBox = $TicketObject->ArticleGet(
+# Get article contents (attachments).
+my @ArticleBox = $ArticleContentGet->(
+    Articles => \@Articles,
     TicketID => $TicketID4,
-    UserID   => 1,
 );
 
-# start article loop
-ARTICLE:
-for my $Article (@ArticleBox) {
+# Helper method to retrieve article attachment content for supplied list of articles.
+#
+#    $ArticleAttachmentContentGet->(
+#        Articles  => \@Articles,    # (required)
+#        NoContent => 1,             # (optional) Omit actual attachment content, return only meta data
+#        HTMLBody  => 1,             # (optional) Include HTML body attachment content
+#    );
+#
+my $ArticleAttachmentContentGet = sub {
+    my (%Param) = @_;
 
-    for my $Key ( sort keys %{$Article} ) {
-        if ( !$Article->{$Key} ) {
-            $Article->{$Key} = '';
-        }
-        if ( $Key eq 'Age' || $Key eq 'AgeTimeUnix' ) {
-            delete $Article->{$Key};
-        }
+    if ( !IsArrayRefWithData( $Param{Articles} ) ) {
+        return;
     }
 
-    # get attachment index (without attachments)
-    my %AtmIndex = $TicketObject->ArticleAttachmentIndex(
-        ContentPath                => $Article->{ContentPath},
-        ArticleID                  => $Article->{ArticleID},
-        StripPlainBodyAsAttachment => 3,
-        Article                    => $Article,
-        UserID                     => 1,
-    );
+    my @Articles = @{ $Param{Articles} };
 
-    next ARTICLE if !IsHashRefWithData( \%AtmIndex );
+    ARTICLE:
+    for my $Article (@Articles) {
 
-    my @Attachments;
-    ATTACHMENT:
-    for my $FileID ( sort keys %AtmIndex ) {
-        next ATTACHMENT if !$FileID;
-        my %Attachment = $TicketObject->ArticleAttachment(
-            ArticleID => $Article->{ArticleID},
-            FileID    => $FileID,
-            UserID    => 1,
+        for my $Key ( sort keys %{$Article} ) {
+            if ( !defined $Article->{$Key} ) {
+                $Article->{$Key} = '';
+            }
+        }
+
+        # Get attachment index.
+        my %AtmIndex = $ArticleBackendObject->ArticleAttachmentIndex(
+            ArticleID        => $Article->{ArticleID},
+            ExcludePlainText => 1,
+            ExcludeHTMLBody  => $Param{HTMLBody} ? 0 : 1,
         );
 
-        next ATTACHMENT if !IsHashRefWithData( \%Attachment );
+        next ARTICLE if !IsHashRefWithData( \%AtmIndex );
 
-        # convert content to base64
-        $Attachment{Content}            = encode_base64( $Attachment{Content} );
-        $Attachment{ContentID}          = '';
-        $Attachment{ContentAlternative} = '';
-        push @Attachments, {%Attachment};
+        my @Attachments;
+        ATTACHMENT:
+        for my $FileID ( sort keys %AtmIndex ) {
+            next ATTACHMENT if !$FileID;
+            my %Attachment = $ArticleBackendObject->ArticleAttachment(
+                ArticleID => $Article->{ArticleID},
+                FileID    => $FileID,
+            );
+
+            next ATTACHMENT if !IsHashRefWithData( \%Attachment );
+
+            $Attachment{FileID} = $FileID;
+
+            # convert content to base64
+            $Attachment{Content}            = $Param{NoContent} ? '' : encode_base64( $Attachment{Content} );
+            $Attachment{ContentID}          = '';
+            $Attachment{ContentAlternative} = '';
+            push @Attachments, {%Attachment};
+        }
+
+        # set Attachments data
+        $Article->{Attachment} = \@Attachments;
     }
+};
 
-    # set Attachments data
-    $Article->{Atms} = \@Attachments;
-
-}    # finish article loop
+# Insert attachment content.
+$ArticleAttachmentContentGet->(
+    Articles => \@ArticleBox,
+);
 
 # get the Ticket entry
 my %TicketEntryFour = $TicketObject->TicketGet(
@@ -680,7 +740,7 @@ my %TicketEntryFour = $TicketObject->TicketGet(
 
 $Self->True(
     IsHashRefWithData( \%TicketEntryFour ),
-    "TicketGet() successful for Local TicketGet Four ID $TicketID4",
+    "TicketGet() successful for Local TicketGet Four ID $TicketID4"
 );
 
 for my $Key ( sort keys %TicketEntryFour ) {
@@ -695,15 +755,15 @@ for my $Key ( sort keys %TicketEntryFour ) {
 # add ticket id
 push @TicketIDs, $TicketID4;
 
-# set webservice name
+# set web service name
 my $WebserviceName = '-Test-' . $RandomID;
 
-# create webservice object
+# create web service object
 my $WebserviceObject = $Kernel::OM->Get('Kernel::System::GenericInterface::Webservice');
 $Self->Is(
     'Kernel::System::GenericInterface::Webservice',
     ref $WebserviceObject,
-    "Create webservice object",
+    "Create web service object"
 );
 
 my $WebserviceID = $WebserviceObject->WebserviceAdd(
@@ -723,13 +783,13 @@ my $WebserviceID = $WebserviceObject->WebserviceAdd(
 );
 $Self->True(
     $WebserviceID,
-    "Added Webservice",
+    'Added web service'
 );
 
 # get remote host with some precautions for certain unit test systems
 my $Host = $Helper->GetTestHTTPHostname();
 
-# prepare webservice config
+# prepare web service config
 my $RemoteSystem =
     $ConfigObject->Get('HttpType')
     . '://'
@@ -773,6 +833,7 @@ my $WebserviceConfig = {
                 NameSpace => 'http://otrs.org/SoapTestInterface/',
                 Encoding  => 'UTF-8',
                 Endpoint  => $RemoteSystem,
+                Timeout   => 120,
             },
         },
         Invoker => {
@@ -786,7 +847,7 @@ my $WebserviceConfig = {
     },
 };
 
-# update webservice with real config
+# update web service with real config
 my $WebserviceUpdate = $WebserviceObject->WebserviceUpdate(
     ID      => $WebserviceID,
     Name    => $WebserviceName,
@@ -796,7 +857,7 @@ my $WebserviceUpdate = $WebserviceObject->WebserviceUpdate(
 );
 $Self->True(
     $WebserviceUpdate,
-    "Updated Webservice $WebserviceID - $WebserviceName",
+    "Updated web service $WebserviceID - $WebserviceName"
 );
 
 # Get SessionID
@@ -805,7 +866,7 @@ my $RequesterSessionObject = $Kernel::OM->Get('Kernel::GenericInterface::Request
 $Self->Is(
     'Kernel::GenericInterface::Requester',
     ref $RequesterSessionObject,
-    "SessionID - Create requester object",
+    'SessionID - Create requester object'
 );
 
 # create a new user for current test
@@ -814,7 +875,7 @@ my $UserLogin = $Helper->TestUserCreate(
 );
 my $Password = $UserLogin;
 
-# start requester with our webservice
+# start requester with our web service
 my $RequesterSessionResult = $RequesterSessionObject->Run(
     WebserviceID => $WebserviceID,
     Invoker      => 'SessionCreate',
@@ -1174,7 +1235,105 @@ my @Tests = (
         Operation => 'TicketSearch',
     },
     {
-        Name           => "Test DF " . $TestCounter++,
+        Name           => "Test (Hash) DF " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            DynamicField => {
+                Name   => "DFT1$RandomID",
+                Equals => 'ticket2_field1',
+            },
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [$TicketID2],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => $TicketID2,
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test (Hash) DF " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            DynamicField => {
+                Name => "DFT1$RandomID",
+                Like => '*_field1',
+            },
+            SortBy => 'TicketNumber',
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [ $TicketID2, $TicketID1 ],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => [ $TicketID2, $TicketID1 ],
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test (Array) DF " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            DynamicField => [
+                {
+                    Name   => "DFT1$RandomID",
+                    Equals => 'ticket2_field1',
+                },
+            ],
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [$TicketID2],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => $TicketID2,
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test (Array) DF " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            DynamicField => [
+                {
+                    Name => "DFT1$RandomID",
+                    Like => '*_field1',
+                },
+            ],
+            SortBy => 'TicketNumber',
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [ $TicketID2, $TicketID1 ],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => [ $TicketID2, $TicketID1 ],
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test (Old API) DF " . $TestCounter++,
         SuccessRequest => 1,
         RequestData    => {
             "DynamicField_DFT1$RandomID" => {
@@ -1196,7 +1355,7 @@ my @Tests = (
         Operation => 'TicketSearch',
     },
     {
-        Name           => "Test DF " . $TestCounter++,
+        Name           => "Test (Old API) DF " . $TestCounter++,
         SuccessRequest => 1,
         RequestData    => {
             "DynamicField_DFT1$RandomID" => {
@@ -1242,13 +1401,11 @@ my @Tests = (
         Operation => 'TicketSearch',
     },
     {
-        Name           => "Test DF " . $TestCounter++,
+        Name           => "Test LastChangeTimeNewerDate +  CreateTimeNewerDate " . $TestCounter++,
         SuccessRequest => 1,
         RequestData    => {
-            TicketLastChangeTimeNewerDate =>
-                $TimeObject->SystemTime2TimeStamp( SystemTime => $StartTime ),
-            TicketCreateTimeNewerDate =>
-                $TimeObject->SystemTime2TimeStamp( SystemTime => $StartTime ),
+            TicketLastChangeTimeNewerDate => $StartTime->ToString(),
+            TicketCreateTimeNewerDate     => $StartTime->ToString(),
             SortBy  => 'Ticket',    # force order, because the Age (default) can be the same
             OrderBy => 'Down',
         },
@@ -1267,11 +1424,15 @@ my @Tests = (
         Operation => 'TicketSearch',
     },
     {
-        Name           => "Test DF " . $TestCounter++,
+        Name           => "Test CreateTimeNewerDate " . $TestCounter++,
         SuccessRequest => 1,
         RequestData    => {
-            TicketCreateTimeNewerDate =>
-                $TimeObject->SystemTime2TimeStamp( SystemTime => $TimeObject->SystemTime() + 1 ),
+            TicketCreateTimeNewerDate => $Kernel::OM->Create(
+                'Kernel::System::DateTime',
+                ObjectParams => {
+                    Epoch => $StartTime->ToEpoch() + 10,
+                },
+                )->ToString(),
             SortBy  => 'Ticket',    # force order, because the Age (default) can be the same
             OrderBy => 'Down',
         },
@@ -1289,10 +1450,8 @@ my @Tests = (
         Name           => "Test Limit " . $TestCounter++,
         SuccessRequest => 1,
         RequestData    => {
-            TicketLastChangeTimeNewerDate =>
-                $TimeObject->SystemTime2TimeStamp( SystemTime => $StartTime ),
-            TicketCreateTimeNewerDate =>
-                $TimeObject->SystemTime2TimeStamp( SystemTime => $StartTime ),
+            TicketLastChangeTimeNewerDate => $StartTime->ToString(),
+            TicketCreateTimeNewerDate     => $StartTime->ToString(),
             SortBy  => 'Ticket',    # force order, because the Age (default) can be the same
             OrderBy => 'Down',
             Limit   => 1,
@@ -1391,24 +1550,301 @@ my @Tests = (
         },
         Operation => 'TicketSearch',
     },
-
     {
         Name           => "Test ContentSearch Parameter" . $TestCounter++,
         SuccessRequest => 1,
         RequestData    => {
-            Body          => 'not too long',
-            Subject       => 'not too long',
-            ContentSearch => 'OR',
+            MIMEBase_Body    => 'text body long',
+            MIMEBase_Subject => 'text body long',
+            ContentSearch    => 'OR',
         },
         ExpectedReturnLocalData => {
             Data => {
                 TicketID => [$TicketID4],
             },
-            Success => 1
+            Success => 1,
         },
         ExpectedReturnRemoteData => {
             Data => {
                 TicketID => $TicketID4,
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test Operator 'Empty' DFT1 - DF " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            TicketID     => [ $TicketID1, $TicketID2, $TicketID3, $TicketID4 ],
+            DynamicField => {
+                Name  => "DFT1$RandomID",
+                Empty => 1,
+            },
+            OrderBy => 'Up',
+            SortBy  => 'TicketNumber',
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test Operator 'Empty' DFT2 - DF " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            TicketID     => [ $TicketID1, $TicketID2, $TicketID3, $TicketID4 ],
+            DynamicField => {
+                Name  => "DFT2$RandomID",
+                Empty => 1,
+            },
+            OrderBy => 'Up',
+            SortBy  => 'TicketNumber',
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test Operator 'Empty' DFT3 - DF " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            TicketID     => [ $TicketID1, $TicketID2, $TicketID3, $TicketID4 ],
+            DynamicField => {
+                Name  => "DFT3$RandomID",
+                Empty => 1,
+            },
+            OrderBy => 'Up',
+            SortBy  => 'TicketNumber',
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test Operator 'Empty' DFT4 - DF " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            TicketID     => [ $TicketID1, $TicketID2, $TicketID3, $TicketID4 ],
+            DynamicField => {
+                Name  => "DFT4$RandomID",
+                Empty => 1,
+            },
+            OrderBy => 'Up',
+            SortBy  => 'TicketNumber',
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test Operator 'Empty' DFT ALL - DF " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            TicketID     => [ $TicketID1, $TicketID2, $TicketID3, $TicketID4 ],
+            DynamicField => [
+                {
+                    Name  => "DFT1$RandomID",
+                    Empty => 1,
+                },
+                {
+                    Name  => "DFT2$RandomID",
+                    Empty => 1,
+                },
+                {
+                    Name  => "DFT3$RandomID",
+                    Empty => 1,
+                },
+                {
+                    Name  => "DFT4$RandomID",
+                    Empty => 1,
+                },
+            ],
+            OrderBy => 'Up',
+            SortBy  => 'TicketNumber',
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test (Old API) Operator 'Empty' DFT1 - DF " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            TicketID                     => [ $TicketID1, $TicketID2, $TicketID3, $TicketID4 ],
+            "DynamicField_DFT1$RandomID" => {
+                Empty => 1,
+            },
+            OrderBy => 'Up',
+            SortBy  => 'TicketNumber',
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test (Old API) Operator 'Empty' DFT2 - DF " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            TicketID                     => [ $TicketID1, $TicketID2, $TicketID3, $TicketID4 ],
+            "DynamicField_DFT2$RandomID" => {
+                Empty => 1,
+            },
+            OrderBy => 'Up',
+            SortBy  => 'TicketNumber',
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test (Old API) Operator 'Empty' DFT3 - DF " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            TicketID                     => [ $TicketID1, $TicketID2, $TicketID3, $TicketID4 ],
+            "DynamicField_DFT3$RandomID" => {
+                Empty => 1,
+            },
+            OrderBy => 'Up',
+            SortBy  => 'TicketNumber',
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test (Old API) Operator 'Empty' DFT4 - DF " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            TicketID                     => [ $TicketID1, $TicketID2, $TicketID3, $TicketID4 ],
+            "DynamicField_DFT4$RandomID" => {
+                Empty => 1,
+            },
+            OrderBy => 'Up',
+            SortBy  => 'TicketNumber',
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1,
+        },
+        Operation => 'TicketSearch',
+    },
+    {
+        Name           => "Test (Old API) Operator 'Empty' DFT ALL - DF " . $TestCounter++,
+        SuccessRequest => 1,
+        RequestData    => {
+            TicketID                     => [ $TicketID1, $TicketID2, $TicketID3, $TicketID4 ],
+            "DynamicField_DFT1$RandomID" => {
+                Empty => 1,
+            },
+            "DynamicField_DFT2$RandomID" => {
+                Empty => 1,
+            },
+            "DynamicField_DFT3$RandomID" => {
+                Empty => 1,
+            },
+            "DynamicField_DFT4$RandomID" => {
+                Empty => 1,
+            },
+            OrderBy => 'Up',
+            SortBy  => 'TicketNumber',
+        },
+        ExpectedReturnLocalData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
+            },
+            Success => 1
+        },
+        ExpectedReturnRemoteData => {
+            Data => {
+                TicketID => [ $TicketID3, $TicketID4 ],
             },
             Success => 1,
         },
@@ -1419,8 +1855,9 @@ my @Tests = (
 # Add a wrong value test for each possible parameter on direct search
 
 for my $Item (
-    qw(TicketNumber Title From To Cc Subject Body CustomerID CustomerUserLogin StateType
-    Fulltext
+    qw(
+    TicketNumber Title MIMEBase_From MIMEBase_To MIMEBase_Cc MIMEBase_Subject
+    MIMEBase_Body CustomerID CustomerUserLogin StateType Fulltext
     )
     )
 {
@@ -1527,7 +1964,7 @@ my $DebuggerObject = Kernel::GenericInterface::Debugger->new(
 $Self->Is(
     ref $DebuggerObject,
     'Kernel::GenericInterface::Debugger',
-    'DebuggerObject instantiate correctly',
+    'DebuggerObject instantiate correctly'
 );
 
 for my $Test (@Tests) {
@@ -1544,13 +1981,14 @@ for my $Test (@Tests) {
         "$Test->{Name} - Create local object",
     );
 
-    # start requester with our webservice
+    # start requester with our web service
     my $LocalResult = $LocalObject->Run(
         WebserviceID => $WebserviceID,
         Invoker      => $Test->{Operation},
         Data         => {
             UserLogin => $UserLogin,
             Password  => $Password,
+            TicketID  => [ $TicketID1, $TicketID2, $TicketID3, $TicketID4 ],
             %{ $Test->{RequestData} },
         },
     );
@@ -1559,7 +1997,7 @@ for my $Test (@Tests) {
     $Self->Is(
         'HASH',
         ref $LocalResult,
-        "$Test->{Name} - Local result structure is valid",
+        "$Test->{Name} - Local result structure is valid"
     );
 
     # create requester object
@@ -1567,15 +2005,16 @@ for my $Test (@Tests) {
     $Self->Is(
         'Kernel::GenericInterface::Requester',
         ref $RequesterObject,
-        "$Test->{Name} - Create requester object",
+        "$Test->{Name} - Create requester object"
     );
 
-    # start requester with our webservice
+    # start requester with our web service
     my $RequesterResult = $RequesterObject->Run(
         WebserviceID => $WebserviceID,
         Invoker      => $Test->{Operation},
         Data         => {
             SessionID => $NewSessionID,
+            TicketID  => [ $TicketID1, $TicketID2, $TicketID3, $TicketID4 ],
             %{ $Test->{RequestData} },
             }
     );
@@ -1602,21 +2041,21 @@ for my $Test (@Tests) {
     $Self->IsDeeply(
         $RequesterResult,
         $Test->{ExpectedReturnRemoteData},
-        "$Test->{Name} - Requester success status (needs configured and running webserver)",
+        "$Test->{Name} - Requester success status (needs configured and running webserver)"
     );
 
     if ( $Test->{ExpectedReturnLocalData} ) {
         $Self->IsDeeply(
             $LocalResult,
             $Test->{ExpectedReturnLocalData},
-            "$Test->{Name} - Local result matched with expected local call result.",
+            "$Test->{Name} - Local result matched with expected local call result."
         );
     }
     else {
         $Self->IsDeeply(
             $LocalResult,
             $Test->{ExpectedReturnRemoteData},
-            "$Test->{Name} - Local result matched with remote result.",
+            "$Test->{Name} - Local result matched with remote result."
         );
     }
 
@@ -1624,14 +2063,14 @@ for my $Test (@Tests) {
 
 # cleanup
 
-# cleanup webservice
+# cleanup web service
 my $WebserviceDelete = $WebserviceObject->WebserviceDelete(
     ID     => $WebserviceID,
     UserID => $UserID,
 );
 $Self->True(
     $WebserviceDelete,
-    "Deleted Webservice $WebserviceID",
+    "Deleted web service $WebserviceID"
 );
 
 # delete the tickets
@@ -1644,7 +2083,7 @@ for my $TicketID (@TicketIDs) {
     # sanity check
     $Self->True(
         $TicketDelete,
-        "TicketDelete() successful for Ticket ID $TicketID",
+        "TicketDelete() successful for Ticket ID $TicketID"
     );
 }
 
@@ -1661,7 +2100,7 @@ for my $TestFieldConfigItem (@TestFieldConfig) {
     # sanity check
     $Self->True(
         $DFDelete,
-        "DynamicFieldDelete() successful for Field ID $TestFieldConfigItemID",
+        "DynamicFieldDelete() successful for Field ID $TestFieldConfigItemID"
     );
 }
 
@@ -1674,14 +2113,14 @@ my $Success = $DBObject->Do(
 );
 $Self->True(
     $Success,
-    "User preference referenced to User ID $UserID is deleted!",
+    "User preference referenced to User ID $UserID is deleted!"
 );
 $Success = $DBObject->Do(
     SQL => "DELETE FROM users WHERE id = $UserID",
 );
 $Self->True(
     $Success,
-    "User with ID $UserID is deleted!",
+    "User with ID $UserID is deleted!"
 );
 
 # delete type
@@ -1690,7 +2129,7 @@ $Success = $DBObject->Do(
 );
 $Self->True(
     $Success,
-    "Type with ID $TypeID is deleted!",
+    "Type with ID $TypeID is deleted!"
 );
 
 # cleanup cache

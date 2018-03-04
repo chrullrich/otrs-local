@@ -111,24 +111,6 @@
         </div>
     </div>
     <div class="Footer">
-        <button class="Primary CallForAction" id="Submit" title="[% Translate("Submit") | html %]" type="submit" value="[% Translate("Submit") | html %]"><span>[% Translate("Submit") | html %]</span></button>
+        <button class="Primary CallForAction" id="Submit" title="[% Translate("Save") | html %]" type="submit" value="[% Translate("Save") | html %]"><span>[% Translate("Save") | html %]</span></button>
     </div>
 </div>
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-    Core.Config.Set('Config.TransitionEntityID', "[% Data.TransitionEntityID %]" );
-    Core.Config.Set('Config.ProcessEntityID', "[% Data.ProcessEntityID %]" );
-    Core.Config.Set('Config.StartActivityID', "[% Data.StartActivityID %]" );
-//]]></script>
-[% END %]
-
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-Core.Agent.Admin.ProcessManagement.InitPathEdit();
-
-// Localizations
-Core.Agent.Admin.ProcessManagement.Localization = {
-    EditConfirm: "[% Translate("As soon as you use this button or link, you will leave this screen and its current state will be saved automatically. Do you want to continue?") | html %]"
-};
-//]]></script>
-[% END %]

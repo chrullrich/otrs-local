@@ -23,7 +23,14 @@ $Selenium->RunTest(
         $Helper->ConfigSettingChange(
             Valid => 1,
             Key   => 'Frontend::RichText',
-            Value => 0
+            Value => 0,
+        );
+
+        # Enable SMIME due to 'Enable email security' checkbox must be enabled.
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'SMIME',
+            Value => 1,
         );
 
         # Create string which length is over 4000 characters.
@@ -50,6 +57,12 @@ $Selenium->RunTest(
         $Selenium->find_element( "table thead tr th", 'css' );
         $Selenium->find_element( "table tbody tr td", 'css' );
 
+        # Check breadcrumb on Overview screen.
+        $Self->True(
+            $Selenium->find_element( '.BreadCrumb', 'css' ),
+            "Breadcrumb is found on Overview screen.",
+        );
+
         # Click "Add notification".
         $Selenium->find_element("//a[contains(\@href, \'Action=AdminNotificationEvent;Subaction=Add' )]")
             ->VerifiedClick();
@@ -64,6 +77,18 @@ $Selenium->RunTest(
             my $Element = $Selenium->find_element( "#$ID", 'css' );
             $Element->is_enabled();
             $Element->is_displayed();
+        }
+
+        # Check breadcrumb on Add screen.
+        my $Count = 1;
+        for my $BreadcrumbText ( 'Ticket Notification Management', 'Add Notification' ) {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
         }
 
         # Toggle Ticket filter widget.
@@ -83,20 +108,23 @@ $Selenium->RunTest(
         );
 
         # Create test NotificationEvent.
-        my $NotifEventRandomID = "NotificationEvent" . $Helper->GetRandomID();
-        my $NotifEventText     = "Selenium NotificationEvent test";
-        $Selenium->find_element( "#Name",    'css' )->send_keys($NotifEventRandomID);
-        $Selenium->find_element( "#Comment", 'css' )->send_keys($NotifEventText);
+        my $NotifEventRandomID = 'NotificationEvent' . $Helper->GetRandomID();
+        my $NotifEventText     = 'Selenium NotificationEvent test';
+        $Selenium->find_element( '#Name',    'css' )->send_keys($NotifEventRandomID);
+        $Selenium->find_element( '#Comment', 'css' )->send_keys($NotifEventText);
         $Selenium->execute_script("\$('#Events').val('ArticleCreate').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element( "#ArticleSubjectMatch", 'css' )->send_keys($NotifEventText);
-        $Selenium->find_element( "#en_Subject",          'css' )->send_keys($NotifEventText);
+        $Selenium->execute_script(
+            "\$('#ArticleIsVisibleForCustomer').val('1').trigger('redraw.InputField').trigger('change');"
+        );
+        $Selenium->find_element( '#MIMEBase_Subject', 'css' )->send_keys($NotifEventText);
+        $Selenium->find_element( '#en_Subject',       'css' )->send_keys($NotifEventText);
 
         # Insert long string into text area using jQuery, since send_keys() takes too long.
         $Selenium->execute_script(
             "\$('#en_Body').val('$TooLongString').trigger('change');"
         );
 
-        $Selenium->find_element("//button[\@type='submit']")->click();
+        $Selenium->find_element( "#Submit", 'css' )->click();
 
         # If database backend is PostgreSQL or Oracle, first test body length validation.
         my $DBType = $Kernel::OM->Get('Kernel::System::DB')->{'DB::Type'};
@@ -121,8 +149,8 @@ $Selenium->RunTest(
             $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && !\$('.Dialog.Modal').length" );
 
             $Selenium->find_element( '#en_Body', 'css' )->clear();
-            $Selenium->find_element( "#en_Body", 'css' )->send_keys($NotifEventText);
-            $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+            $Selenium->find_element( '#en_Body', 'css' )->send_keys($NotifEventText);
+            $Selenium->find_element( "#Submit",  'css' )->VerifiedClick();
 
             $TooLongString = $NotifEventText;
         }
@@ -134,13 +162,18 @@ $Selenium->RunTest(
         # Check if test NotificationEvent show on AdminNotificationEvent screen.
         $Self->True(
             $Selenium->execute_script("return \$('table td a:contains($NotifEventRandomID)').length"),
-            "$NotifEventRandomID NotificaionEvent found on page",
+            "$NotifEventRandomID NotificationEvent found on page",
+        );
+
+        # Check is there notification 'Notification added!' after notification is added.
+        my $Notification = 'Notification added!';
+        $Self->True(
+            $Selenium->execute_script("return \$('.MessageBox.Notice p:contains($Notification)').length"),
+            "$Notification - notification is found."
         );
 
         # Check test NotificationEvent values.
         $Selenium->find_element( $NotifEventRandomID, 'link_text' )->VerifiedClick();
-
-        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#Name').length" );
 
         $Self->Is(
             $Selenium->find_element( '#Name', 'css' )->get_value(),
@@ -163,15 +196,36 @@ $Selenium->RunTest(
             "#en_Body stored value",
         );
         $Self->Is(
-            $Selenium->find_element( '#ArticleSubjectMatch', 'css' )->get_value(),
+            $Selenium->find_element( '#ArticleIsVisibleForCustomer', 'css' )->get_value(),
+            '1',
+            '#ArticleIsVisibleForCustomer stored value'
+        );
+        $Self->Is(
+            $Selenium->find_element( '#MIMEBase_Subject', 'css' )->get_value(),
             $NotifEventText,
-            "#ArticleSubjectMatch stored value",
+            "#MIMEBase_Subject stored value",
         );
         $Self->Is(
             $Selenium->find_element( '#ValidID', 'css' )->get_value(),
             1,
             "#ValidID stored value",
         );
+
+        # Check breadcrumb on Edit screen.
+        $Count = 1;
+        for my $BreadcrumbText (
+            'Ticket Notification Management',
+            'Edit Notification: ' . $NotifEventRandomID
+            )
+        {
+            $Self->Is(
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $BreadcrumbText,
+                "Breadcrumb text '$BreadcrumbText' is found on screen"
+            );
+
+            $Count++;
+        }
 
         # Edit test NotificationEvent and set it to invalid.
         my $EditNotifEventText = "Selenium edited NotificationEvent test";
@@ -184,20 +238,28 @@ $Selenium->RunTest(
                 "return typeof(\$) === 'function' && \$('a[aria-controls=\"Core_UI_AutogeneratedID_2\"]').attr('aria-expanded') === 'true'"
         );
 
-        $Selenium->find_element( "#Comment",             'css' )->clear();
-        $Selenium->find_element( "#en_Body",             'css' )->clear();
-        $Selenium->find_element( "#en_Body",             'css' )->send_keys($EditNotifEventText);
-        $Selenium->find_element( "#en_Subject",          'css' )->clear();
-        $Selenium->find_element( "#en_Subject",          'css' )->send_keys($EditNotifEventText);
-        $Selenium->find_element( "#ArticleSubjectMatch", 'css' )->clear();
-        $Selenium->find_element( "#ArticleBodyMatch",    'css' )->send_keys($EditNotifEventText);
+        $Selenium->find_element( "#Comment",    'css' )->clear();
+        $Selenium->find_element( "#en_Body",    'css' )->clear();
+        $Selenium->find_element( "#en_Body",    'css' )->send_keys($EditNotifEventText);
+        $Selenium->find_element( "#en_Subject", 'css' )->clear();
+        $Selenium->find_element( "#en_Subject", 'css' )->send_keys($EditNotifEventText);
+        $Selenium->execute_script(
+            "\$('#ArticleIsVisibleForCustomer').val('0').trigger('redraw.InputField').trigger('change');"
+        );
+        $Selenium->find_element( "#MIMEBase_Subject", 'css' )->clear();
+        $Selenium->find_element( "#MIMEBase_Body",    'css' )->send_keys($EditNotifEventText);
         $Selenium->execute_script("\$('#ValidID').val('2').trigger('redraw.InputField').trigger('change');");
-        $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
+        $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
+
+        # Check is there notification 'Notification updated!' after notification is added.
+        $Notification = 'Notification updated!';
+        $Self->True(
+            $Selenium->execute_script("return \$('.MessageBox.Notice p:contains($Notification)').length"),
+            "$Notification - notification is found."
+        );
 
         # Check edited NotifcationEvent values.
         $Selenium->find_element( $NotifEventRandomID, 'link_text' )->VerifiedClick();
-
-        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#Comment').length" );
 
         $Self->Is(
             $Selenium->find_element( '#Comment', 'css' )->get_value(),
@@ -210,20 +272,61 @@ $Selenium->RunTest(
             "#en_Body updated value",
         );
         $Self->Is(
-            $Selenium->find_element( '#ArticleSubjectMatch', 'css' )->get_value(),
-            "",
-            "#ArticleSubjectMatch updated value",
+            $Selenium->find_element( '#ArticleIsVisibleForCustomer', 'css' )->get_value(),
+            '0',
+            '#ArticleIsVisibleForCustomer updated value'
         );
         $Self->Is(
-            $Selenium->find_element( '#ArticleBodyMatch', 'css' )->get_value(),
+            $Selenium->find_element( '#MIMEBase_Subject', 'css' )->get_value(),
+            "",
+            "#MIMEBase_Subject updated value",
+        );
+        $Self->Is(
+            $Selenium->find_element( '#MIMEBase_Body', 'css' )->get_value(),
             $EditNotifEventText,
-            "#ArticleBodyMatch updated value",
+            "#MIMEBase_Body updated value",
         );
         $Self->Is(
             $Selenium->find_element( '#ValidID', 'css' )->get_value(),
             2,
             "#ValidID updated value",
         );
+
+        # Test javascript enable/disable actions on checkbox checking.
+        my @InputFields = (
+            "EmailSigningCrypting_Search",
+            "EmailMissingSigningKeys_Search",
+            "EmailMissingCryptingKeys_Search"
+        );
+
+        # Set initial checkbox state.
+        $Selenium->execute_script("\$('#EmailSecuritySettings').prop('checked', false)");
+
+        my @Tests = (
+            {
+                Name     => 'Input fields are enabled',
+                HasClass => 0,
+            },
+            {
+                Name     => 'Input fields are disabled',
+                HasClass => 1,
+            }
+        );
+
+        for my $Test (@Tests) {
+            $Selenium->find_element( "#EmailSecuritySettings", 'css' )->VerifiedClick();
+            sleep 1;
+
+            for my $InputField (@InputFields) {
+                $Self->Is(
+                    $Selenium->execute_script(
+                        "return \$('#$InputField').parent().hasClass('AlreadyDisabled')"
+                    ),
+                    $Test->{HasClass},
+                    $Test->{Name},
+                );
+            }
+        }
 
         # Go back to AdminNotificationEvent overview screen.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminNotificationEvent");
@@ -262,6 +365,29 @@ JAVASCRIPT
             "Test NotificationEvent is deleted - $NotifEventRandomID",
         ) || die;
 
+        my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
+        # Import existing template without overwrite.
+        my $Location = $ConfigObject->Get('Home')
+            . "/scripts/test/sample/NotificationEvent/Export_Notification_Ticket_create_notification.yml";
+        $Selenium->find_element( "#FileUpload", 'css' )->send_keys($Location);
+
+        $Selenium->find_element("//button[\@value=\'Upload Notification configuration']")->VerifiedClick();
+
+        $Selenium->find_element(
+            "//p[contains(text(), \'There where errors adding/updating the following Notifications')]"
+        );
+
+        # Import existing template with overwrite.
+        $Location = $ConfigObject->Get('Home')
+            . "/scripts/test/sample/NotificationEvent/Export_Notification_Ticket_create_notification.yml";
+        $Selenium->find_element( "#FileUpload", 'css' )->send_keys($Location);
+
+        $Selenium->find_element( "#OverwriteExistingNotifications", 'css' )->VerifiedClick();
+
+        $Selenium->find_element("//button[\@value=\'Upload Notification configuration']")->VerifiedClick();
+
+        $Selenium->find_element("//p[contains(text(), \'The following Notifications have been updated successfully')]");
     }
 
 );

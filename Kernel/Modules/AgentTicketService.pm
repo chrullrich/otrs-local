@@ -11,8 +11,8 @@ package Kernel::Modules::AgentTicketService;
 use strict;
 use warnings;
 
-use Kernel::Language qw(Translatable);
 use Kernel::System::VariableCheck qw(:all);
+use Kernel::Language qw(Translatable);
 
 our $ObjectManagerDisabled = 1;
 
@@ -303,18 +303,6 @@ sub Run {
     # otherwise use Preview as default as in LayoutTicket
     $View ||= 'Preview';
 
-    # Check if selected view is available.
-    my $Backends = $ConfigObject->Get('Ticket::Frontend::Overview');
-    if ( !$Backends->{$View} ) {
-
-        # Try to find fallback, take first configured view mode.
-        KEY:
-        for my $Key ( sort keys %{$Backends} ) {
-            $View = $Key;
-            last KEY;
-        }
-    }
-
     # get personal page shown count
     my $PageShownPreferencesKey = 'UserTicketOverview' . $View . 'PageShown';
     my $PageShown = $Self->{$PageShownPreferencesKey} || 10;
@@ -417,7 +405,7 @@ sub Run {
                 %{ $Filters{$FilterColumn}->{Search} },
                 %ColumnFilter,
                 Result => 'COUNT',
-            );
+            ) || 0;
         }
 
         if ( $FilterColumn eq $Filter ) {
@@ -488,7 +476,7 @@ sub Run {
             Permission => $Permission,
             UserID     => $Self->{UserID},
             Result     => 'COUNT',
-        );
+        ) || 0;
     }
 
     # add the count for the custom services
@@ -512,7 +500,7 @@ sub Run {
             Permission => $Permission,
             UserID     => $Self->{UserID},
             Result     => 'COUNT',
-        );
+        ) || 0;
 
         next SERVICEID if !$Count;
 

@@ -49,7 +49,7 @@ $Selenium->RunTest(
                 'Input' =>
                     'This is a test text with <b>some</b> <i>formatting</i> and <a href=\"http://www.test.de\">a link</a>. Also, there is a list: <ul><li>Listitem 1</li><li>Listitem 2</li></ul>.',
                 'Expected' =>
-                    "This is a test text with <strong>some</strong> <em>formatting</em> and <a href=\"http://www.test.de\">a link</a>. Also, there is a list:\n\n<ul>\n\t<li>Listitem 1</li>\n\t<li>Listitem 2</li>\n</ul>\n.",
+                    "This is a test text with <strong>some</strong> <em>formatting</em> and <a href=\"http://www.test.de\">a link</a>. Also, there is a list:\n<ul>\n\t<li>Listitem 1</li>\n\t<li>Listitem 2</li>\n</ul>\n.",
             },
             {
                 'Name' => '2: Remove invalid/forbidden tags',
@@ -72,10 +72,13 @@ $Selenium->RunTest(
         # navigate to AgentDashboard screen
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketPhone");
 
+        # wait until jquery is ready
+        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function'" );
+
         # wait for the CKE to load
         $Selenium->WaitFor(
             JavaScript =>
-                "return typeof(\$) === 'function' && \$('body.cke_editable', \$('.cke_wysiwyg_frame').contents()).length == 1"
+                "return \$('body.cke_editable', \$('.cke_wysiwyg_frame').contents()).length == 1"
         );
 
        # send some text to the CKE's textarea (we cant do it with Selenium directly because the textarea is not visible)
@@ -96,13 +99,7 @@ $Selenium->RunTest(
         );
 
         # now go through the test cases
-        for my $TestCase (@TestCasesBasic) {
-
-            # wait for the CKE to load
-            $Selenium->WaitFor(
-                JavaScript =>
-                    "return typeof(\$) === 'function' && \$('body.cke_editable', \$('.cke_wysiwyg_frame').contents()).length == 1"
-            );
+        for my $TestCase ( sort @TestCasesBasic ) {
 
             $Selenium->execute_script( 'CKEDITOR.instances.RichText.setData("' . $TestCase->{Input} . '");' );
 

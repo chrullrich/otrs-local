@@ -6,8 +6,9 @@
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
-package Kernel::System::Log::File;
 ## nofilter(TidyAll::Plugin::OTRS::Perl::Time)
+
+package Kernel::System::Log::File;
 
 use strict;
 use warnings;
@@ -70,7 +71,7 @@ sub Log {
     }
 
     # write log file
-    $Kernel::OM->Get('Kernel::System::Encode')->SetIO($FH);
+    $Kernel::OM->Get('Kernel::System::Encode')->ConfigureOutputFileHandle( FileHandle => $FH );
 
     print $FH '[' . localtime() . ']';    ## no critic
 

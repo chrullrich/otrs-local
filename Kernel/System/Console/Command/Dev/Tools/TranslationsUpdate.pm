@@ -11,22 +11,22 @@ package Kernel::System::Console::Command::Dev::Tools::TranslationsUpdate;
 use strict;
 use warnings;
 
-use base qw(Kernel::System::Console::BaseCommand);
+use parent qw(Kernel::System::Console::BaseCommand);
 
 use File::Basename;
 use File::Copy;
 use Lingua::Translit;
 use Pod::Strip;
-use Storable ();
 
 use Kernel::Language;
 
 our @ObjectDependencies = (
     'Kernel::Config',
+    'Kernel::System::DateTime',
     'Kernel::System::Encode',
     'Kernel::System::Main',
+    'Kernel::System::Storable',
     'Kernel::System::SysConfig',
-    'Kernel::System::Time',
 );
 
 sub Configure {
@@ -50,7 +50,7 @@ sub Configure {
     $Self->AddOption(
         Name => 'generate-po',
         Description =>
-            "Generate PO (translation content) files. This is only needed if a module is not yet available in transifex to force initial creation of the gettext files.",
+            "Generate PO (translation content) files. This is only needed if a module is not yet available in Transifex to force initial creation of the gettext files.",
         Required => 0,
         HasValue => 0,
     );
@@ -132,6 +132,9 @@ sub Run {
 }
 
 my @OriginalTranslationStrings;
+
+# Remember which strings came from JavaScript
+my %UsedInJS;
 
 sub HandleLanguage {
     my ( $Self, %Param ) = @_;
@@ -263,6 +266,76 @@ sub HandleLanguage {
             }egx;
         }
 
+        # Add strings from .html.tmpl files (JavaScript templates).
+        my $JSDirectory = $IsSubTranslation
+            ? "$ModuleDirectory/Kernel/Output/JavaScript/Templates/$DefaultTheme"
+            : "$Home/Kernel/Output/JavaScript/Templates/$DefaultTheme";
+
+        my @JSTemplateList;
+        if ( -d $JSDirectory ) {
+            @JSTemplateList = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
+                Directory => $JSDirectory,
+                Filter    => '*.html.tmpl',
+                Recursive => 1,
+            );
+        }
+
+        my $CustomJSTemplatesDir = "$ModuleDirectory/Custom/Kernel/Output/JavaScript/Templates/$DefaultTheme";
+        if ( $IsSubTranslation && -d $CustomJSTemplatesDir ) {
+            my @CustomJSTemplateList = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
+                Directory => $CustomJSTemplatesDir,
+                Filter    => '*.html.tmpl',
+                Recursive => 1,
+            );
+            push @JSTemplateList, @CustomJSTemplateList;
+        }
+
+        for my $File (@JSTemplateList) {
+
+            my $ContentRef = $Kernel::OM->Get('Kernel::System::Main')->FileRead(
+                Location => $File,
+                Mode     => 'utf8',
+            );
+
+            if ( !ref $ContentRef ) {
+                die "Can't open $File: $!";
+            }
+
+            my $Content = ${$ContentRef};
+
+            $File =~ s{^.*/(.+?)\.html\.tmpl}{$1}smx;
+
+            # Find strings marked for translation.
+            $Content =~ s{
+                \{\{
+                \s*
+                (["'])(.*?)(?<!\\)\1
+                \s*
+                \|
+                \s*
+                Translate
+            }
+            {
+                my $Word = $2 // '';
+
+                # Unescape any \" or \' signs.
+                $Word =~ s{\\"}{"}smxg;
+                $Word =~ s{\\'}{'}smxg;
+
+                if (!$UsedWords{$Word}++) {
+                    push @OriginalTranslationStrings, {
+                        Location => "JS Template: $File",
+                        Source   => $Word,
+                    };
+                }
+
+                # Also save that this string was used in JS (for later use in Loader).
+                $UsedInJS{$Word} = 1;
+
+                '';
+            }egx;
+        }
+
         # add translatable strings from Perl code
         my @PerlModuleList = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
             Directory => $IsSubTranslation ? "$ModuleDirectory/Kernel" : "$Home/Kernel",
@@ -282,9 +355,10 @@ sub HandleLanguage {
         }
 
         # include var/packagesetup folder for modules
-        if ($IsSubTranslation) {
+        my $PackageSetupDir = "$ModuleDirectory/var/packagesetup";
+        if ( $IsSubTranslation && -d $PackageSetupDir ) {
             my @PackageSetupModuleList = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
-                Directory => "$ModuleDirectory/var/packagesetup",
+                Directory => $PackageSetupDir,
                 Filter    => '*.pm',
                 Recursive => 1,
             );
@@ -401,8 +475,74 @@ sub HandleLanguage {
             }egx;
         }
 
+        # add translatable strings from JavaScript code
+        my @JSFileList = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
+            Directory => $IsSubTranslation ? "$ModuleDirectory/var/httpd/htdocs/js" : "$Home/var/httpd/htdocs/js",
+            Filter    => '*.js',
+            Recursive => 1,
+        );
+
+        FILE:
+        for my $File (@JSFileList) {
+
+            my $ContentRef = $Kernel::OM->Get('Kernel::System::Main')->FileRead(
+                Location => $File,
+                Mode     => 'utf8',
+            );
+
+            if ( !ref $ContentRef ) {
+                die "Can't open $File: $!";
+            }
+
+            # skip js cache files
+            next FILE if ( $File =~ m{\/js\/js-cache\/}xmsg );
+
+            my $Content = ${$ContentRef};
+
+            # skip thirdparty files without custom markers
+            if ( $File =~ m{\/js\/thirdparty\/}xmsg ) {
+                next FILE if ( $Content !~ m{\/\/\s*OTRS}xmsg );
+            }
+
+            $File =~ s{^.*/(.+?)\.js}{$1}smx;
+
+            # Purge all comments
+            $Content =~ s{^ \s* // .*? \n}{\n}xmsg;
+
+            # do translation
+            $Content =~ s{
+                (?:
+                    Core.Language.Translate
+                )
+                \(
+                    \s*
+                    (["'])(.*?)(?<!\\)\1
+            }
+            {
+                my $Word = $2 // '';
+
+                # unescape any \" or \' signs
+                $Word =~ s{\\"}{"}smxg;
+                $Word =~ s{\\'}{'}smxg;
+
+                if ( $Word && !$UsedWords{$Word}++ ) {
+
+                    push @OriginalTranslationStrings, {
+                        Location => "JS File: $File",
+                        Source => $Word,
+                    };
+
+                }
+
+                # also save that this string was used in JS (for later use in Loader)
+                $UsedInJS{$Word} = 1;
+
+                '';
+            }egx;
+        }
+
         # add translatable strings from SysConfig
-        my @Strings = $Kernel::OM->Get('Kernel::System::SysConfig')->ConfigItemTranslatableStrings();
+        my @Strings = $Kernel::OM->Get('Kernel::System::SysConfig')->ConfigurationTranslatableStrings();
 
         STRING:
         for my $String ( sort @Strings ) {
@@ -528,6 +668,7 @@ sub HandleLanguage {
         LanguageFile       => $LanguageFile,
         TargetFile         => $TargetFile,
         TranslationStrings => \@TranslationStrings,
+        UsedInJS           => \%UsedInJS,
     );
 
     return 1;
@@ -624,13 +765,10 @@ sub WritePOTFile {
 
     my $Package = $Param{Module} // 'OTRS';
 
-    my $TimeObject   = $Kernel::OM->Get('Kernel::System::Time');
-    my $CreationDate = $TimeObject->SystemTime2TimeStamp(
-        SystemTime => $TimeObject->SystemTime(),
+    # build creation date, only YEAR-MO-DA HO:MI is needed without seconds
+    my $CreationDate = $Kernel::OM->Create('Kernel::System::DateTime')->Format(
+        Format => '%Y-%m-%d %H:%M+0000'
     );
-
-    # only YEAR-MO-DA HO:MI is needed without seconds
-    $CreationDate = substr( $CreationDate, 0, -3 ) . '+0000';
 
     push @POTEntries, Locale::PO->new(
         -msgid => '',
@@ -717,6 +855,26 @@ sub WritePerlLanguageFile {
         }
     }
 
+    # add data structure for JS translations
+    my $JSData = "    \$Self->{JavaScriptStrings} = [\n";
+
+    if ( $Param{IsSubTranslation} ) {
+        $JSData = '    push @{ $Self->{JavaScriptStrings} // [] }, (' . "\n";
+    }
+
+    for my $String ( sort keys %{ $Param{UsedInJS} // {} } ) {
+        my $Key = $String;
+        $Key =~ s/'/\\'/g;
+        $JSData .= $Indent . "'" . $Key . "',\n";
+    }
+
+    if ( $Param{IsSubTranslation} ) {
+        $JSData .= "    );\n";
+    }
+    else {
+        $JSData .= "    ];\n";
+    }
+
     my %MetaData;
     my $NewOut = '';
 
@@ -744,6 +902,8 @@ use utf8;
 sub Data {
     my \$Self = shift;
 $Data
+
+$JSData
 }
 
 1;
@@ -784,8 +944,10 @@ EOF
     \$Self->{Completeness}        = $Completeness;
 
     # csv separator
-    \$Self->{Separator} = '$LanguageCoreObject->{Separator}';
+    \$Self->{Separator}         = '$LanguageCoreObject->{Separator}';
 
+    \$Self->{DecimalSeparator}  = '$LanguageCoreObject->{DecimalSeparator}';
+    \$Self->{ThousandSeparator} = '$LanguageCoreObject->{ThousandSeparator}';
 EOF
 
                 if ( $LanguageCoreObject->{TextDirection} ) {
@@ -798,10 +960,13 @@ EOF
                 $NewOut .= <<"EOF";
     \$Self->{Translation} = {
 $Data
+    };
+
 EOF
+                $NewOut .= $JSData . "\n";
             }
+
             if ( $_ =~ /\$\$STOP\$\$/ ) {
-                $NewOut .= "    };\n";
                 $NewOut .= $Line;
                 $MetaData{DataPrinted} = 0;
             }
