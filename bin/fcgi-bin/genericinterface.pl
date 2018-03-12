@@ -35,6 +35,12 @@ use Module::Refresh;
 use Kernel::GenericInterface::Provider;
 use Kernel::System::ObjectManager;
 
+# keep external secrets from process environment
+my %secrets;
+foreach (grep(/^OTRS_/, keys %ENV)) {
+    $secrets{$_} = $ENV{$_};
+}
+
 # response loop
 while ( our $WebRequest = CGI::Fast->new() ) {
 
@@ -42,6 +48,9 @@ while ( our $WebRequest = CGI::Fast->new() ) {
     eval {
         Module::Refresh->refresh();
     };
+
+    # merge secrets into request environment
+    %ENV = (%ENV, %secrets);
 
     local $Kernel::OM = Kernel::System::ObjectManager->new(
         'Kernel::System::Log' => {
