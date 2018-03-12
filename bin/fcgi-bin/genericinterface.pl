@@ -44,6 +44,9 @@ while ( our $WebRequest = CGI::Fast->new() ) {
     };
 
     local $Kernel::OM = Kernel::System::ObjectManager->new(
+        'Kernel::System::Log' => {
+            LogPrefix => 'GenericInterfaceProvider',
+        },
         'Kernel::System::Web::Request' => {
             WebRequest => $WebRequest,
         },

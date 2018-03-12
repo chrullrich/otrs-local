@@ -77,7 +77,7 @@ sub Run {
     if (
         $RequestURI
         && $RequestURI
-        =~ m{ nph-genericinterface[.]pl/ (?: WebserviceID/ (?<ID> \d+ ) | Webservice/ (?<Name> [^/?]+ ) ) }smx
+        =~ m{ genericinterface[.]pl/ (?: WebserviceID/ (?<ID> \d+ ) | Webservice/ (?<Name> [^/?]+ ) ) }smx
         )
     {
         %WebserviceGetData = (
