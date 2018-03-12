@@ -30,7 +30,7 @@ sub Load {
     # ---------------------------------------------------- #
 
     # The database host
-    $Self->{DatabaseHost} = 'db.h1.chrullrich.net';
+    $Self->{DatabaseHost} = '';
 
     # The database name
     $Self->{Database} = 'otrs';
@@ -47,9 +47,9 @@ sub Load {
 
     # The database DSN for PostgreSQL ==> more: "perldoc DBD::Pg"
     # if you want to use a local socket connection
-#    $Self->{DatabaseDSN} = "DBI:Pg:dbname=$Self->{Database};";
+    $Self->{DatabaseDSN} = "DBI:Pg:dbname=$Self->{Database};";
     # if you want to use a TCP/IP connection
-    $Self->{DatabaseDSN} = "DBI:Pg:dbname=$Self->{Database};host=$Self->{DatabaseHost};";
+#    $Self->{DatabaseDSN} = "DBI:Pg:dbname=$Self->{Database};host=$Self->{DatabaseHost};";
     # if you have PostgresSQL 8.1 or earlier, activate the legacy driver with this line:
 #    $Self->{DatabasePostgresqlBefore82} = 1;
 
