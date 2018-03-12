@@ -21,6 +21,7 @@ scripts/apache2-perl-startup2.pl
 var/virtualfs
 var/run
 var/log/*.log
+var/log/*/*.log
 var/OPM
 var/Stats
 var/tmp/*
