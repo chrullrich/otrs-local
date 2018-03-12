@@ -12,6 +12,7 @@ syntax: glob
 
 # OTRS
 ARCHIVE
+env
 doc/manual/en
 Kernel/Config/Files/ZZZ*.pm
 Kernel/Config/GenericAgent.pm
