@@ -40,7 +40,7 @@ sub Load {
 
     # The password of database user. You also can use bin/znuny.Console.pl Maint::Database::PasswordCrypt
     # for crypted passwords
-    $Self->{DatabasePw} = 'some-pass';
+    $Self->{DatabasePw} = $ENV{"OTRS_DATABASE_PASSWORD"};
 
     # The database DSN for MySQL ==> more: "perldoc DBD::mysql"
     $Self->{DatabaseDSN} = "DBI:mysql:database=$Self->{Database};host=$Self->{DatabaseHost};";
