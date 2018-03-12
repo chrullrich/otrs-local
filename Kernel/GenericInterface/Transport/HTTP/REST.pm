@@ -238,7 +238,8 @@ sub ProviderProcessRequest {
     }
 
     # Read request.
-    my $Content = $::WebRequest->param("POSTDATA");
+    my $Content;
+    read STDIN, $Content, $Length;
 
     # If there is no STDIN data it might be caused by fastcgi already having read the request.
     # In this case we need to get the data from CGI.
@@ -888,14 +889,6 @@ sub _Output {
         $ErrorMessage    = 'Invalid Content';
     }
 
-    # Prepare protocol.
-    my $Protocol = defined $ENV{SERVER_PROTOCOL} ? $ENV{SERVER_PROTOCOL} : 'HTTP/1.0';
-
-    # FIXME: according to SOAP::Transport::HTTP the previous should only be used
-    #   for IIS to imitate nph- behavior
-    #   for all other browser 'Status:' should be used here
-    #   this breaks apache though
-
     # prepare data
     $Param{Content}  ||= '';
     $Param{HTTPCode} ||= 500;
@@ -951,8 +944,7 @@ sub _Output {
     binmode STDOUT, ':utf8';    ## no critic
 
     # Print data to http - '\r' is required according to HTTP RFCs.
-    my $StatusMessage = HTTP::Status::status_message( $Param{HTTPCode} );
-    print STDOUT "$Protocol $Param{HTTPCode} $StatusMessage\r\n";
+    print STDOUT "Status: $Param{HTTPCode}\r\n";
     print STDOUT "Content-Type: $ContentType; charset=UTF-8\r\n";
     print STDOUT "Content-Length: $ContentLength\r\n";
     print STDOUT "Connection: $Connection\r\n";
