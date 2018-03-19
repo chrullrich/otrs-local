@@ -27,6 +27,7 @@ use Kernel::System::VariableCheck qw(:all);
 our @ObjectDependencies = (
     'Kernel::Config',
     'Kernel::System::Cache',
+    'Kernel::System::Calendar',
     'Kernel::System::CustomerUser',
     'Kernel::System::DB',
     'Kernel::System::DynamicField',
@@ -753,6 +754,12 @@ sub TicketDelete {
     $Kernel::OM->Get('Kernel::System::Cache')->Delete(
         Type => $Self->{CacheType},
         Key  => 'TicketFlag::' . $Param{TicketID},
+    );
+
+    # Delete calendar appointments linked to this ticket.
+    #   Please see bug#13642 for more information.
+    return if !$Kernel::OM->Get('Kernel::System::Calendar')->TicketAppointmentDelete(
+        TicketID => $Param{TicketID},
     );
 
     # delete ticket_history
@@ -2465,8 +2472,8 @@ sub TicketEscalationDateCalculation {
                     }
             );
 
-            my $DeltaObj = $DateTimeObject->Delta(
-                DateTimeObject => $StartTimeObj,
+            my $DeltaObj = $StartTimeObj->Delta(
+                DateTimeObject => $DateTimeObject,
                 ForWorkingTime => 1,
                 Calendar       => $Escalation{Calendar},
             );
