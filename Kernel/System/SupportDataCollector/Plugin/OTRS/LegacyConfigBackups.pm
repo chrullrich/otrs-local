@@ -6,6 +6,7 @@
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
+## nofilter(TidyAll::Plugin::OTRS::Perl::LayoutObject)
 package Kernel::System::SupportDataCollector::Plugin::OTRS::LegacyConfigBackups;
 
 use strict;
@@ -19,6 +20,7 @@ our @ObjectDependencies = (
     'Kernel::Config',
     'Kernel::System::Main',
     'Kernel::System::Package',
+    'Kernel::Output::HTML::Layout',
 );
 
 sub GetDisplayPath {
@@ -86,12 +88,14 @@ sub Run {
         }
     }
 
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
     if ( @InvalidPackages || @WrongFrameworkVersion ) {
         $Self->AddResultOk(
             Label   => Translatable('Legacy Configuration Backups'),
             Value   => scalar @BackupFiles,
-            Message => Translatable(
-                "Legacy configuration backup files found in $BackupsFolder, but they might still be required by some packages."
+            Message => $LayoutObject->{LanguageObject}->Translate(
+                'Legacy configuration backup files found in %s, but they might still be required by some packages.',
+                $BackupsFolder
             ),
         );
         return $Self->GetResults();
@@ -100,8 +104,9 @@ sub Run {
     $Self->AddResultWarning(
         Label   => Translatable('Legacy Configuration Backups'),
         Value   => scalar @BackupFiles,
-        Message => Translatable(
-            "Legacy configuration backup files are no longer needed for the installed packages, please remove them from $BackupsFolder."
+        Message => $LayoutObject->{LanguageObject}->Translate(
+            'Legacy configuration backup files are no longer needed for the installed packages, please remove them from %s.',
+            $BackupsFolder
         ),
     );
     return $Self->GetResults();
