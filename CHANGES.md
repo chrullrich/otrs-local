@@ -1,4 +1,62 @@
-#6.0.6 2018-??-??
+#6.0.7 2018-??-??
+
+#6.0.6 2018-03-13
+ - 2018-03-05 Updated translations, thanks to all translators.
+ - 2018-03-05 Fixed bug#[13713](https://bugs.otrs.org/show_bug.cgi?id=13713) - Dashboard widget 'Appointments' ignores user specific time zone on output.
+ - 2018-03-05 Fixed bug#[13709](https://bugs.otrs.org/show_bug.cgi?id=13709) - SupportDataCollector causes Internal Server Error.
+ - 2018-03-05 Fixed bug#[13708](https://bugs.otrs.org/show_bug.cgi?id=13708) - GenericInterface article EventFilter does not work with ticket data.
+ - 2018-03-05 Fixed Allow array as top-level-XML-Element on REST Response from remote site, thanks to Andreas Hergert (PR#1905).
+ - 2018-03-05 Fixed bug#[13549](https://bugs.otrs.org/show_bug.cgi?id=13549) - Scrolling not possible for some articles on iOS Safari.
+ - 2018-03-02 Added improvements for the time zone migration script in non interactive mode.
+ - 2018-03-01 Reduced warnings thrown by Layout object when BuildSelection is used with TreeView option.
+ - 2018-03-01 Fixed bug#[13703](https://bugs.otrs.org/show_bug.cgi?id=13703) - Complex LinkObject Table broken after successful configuration.
+ - 2018-03-01 Fixed bug#[13687](https://bugs.otrs.org/show_bug.cgi?id=13687) - CustomerIDRaw parameter is empty in Customer View.
+ - 2018-02-28 Fixed bug#[13560](https://bugs.otrs.org/show_bug.cgi?id=13560) - SysConfig added columns for dashboard widgets can't be removed.
+ - 2018-02-28 Fixed bug#[13692](https://bugs.otrs.org/show_bug.cgi?id=13692) - Support Data Collector shows wrong information in OTRS -> Database Records -> Months Between First And Last Ticket / Tickets Per Month (avg).
+ - 2018-02-28 Fixed bug#[13670](https://bugs.otrs.org/show_bug.cgi?id=13670) - FilterLink has to be LinkFilter in ViewModules.
+ - 2018-02-28 Fixed bug#[13643](https://bugs.otrs.org/show_bug.cgi?id=13643) - After CustomerCompanySupport is disabled the customer-user cannot be defined at several places.
+ - 2018-02-28 Follow-up fix for bug#[13596](https://bugs.otrs.org/show_bug.cgi?id=13596) - "S" view in mobile browser cannot be rolled horizontally.
+ - 2018-02-28 Fixed bug#[13706](https://bugs.otrs.org/show_bug.cgi?id=13706) - Empty user configuration files cause internal server error.
+ - 2018-02-28 Fixed bug#[13701](https://bugs.otrs.org/show_bug.cgi?id=13701) - Error Message if attachment is 0.
+ - 2018-02-28 Fixed bug#[13642](https://bugs.otrs.org/show_bug.cgi?id=13642) - Deletion of tickets not possible if automatically created appointments exist for it.
+ - 2018-02-28 Follow-up fix for bug#[12822](https://bugs.otrs.org/show_bug.cgi?id=12822) - SysConfig should make better use of white space.
+ - 2018-02-27 Fixed bug#[13698](https://bugs.otrs.org/show_bug.cgi?id=13698)(PR#1909) - AJAX-Update missing parameter in Customer User Information Center. Thanks to Andreas Hergert.
+ - 2018-02-26 Fixed bug#[13697](https://bugs.otrs.org/show_bug.cgi?id=13697) - Config ‘SystemMaintenance::TimeNotifyUpcomingMaintenance’ does not work correctly.
+ - 2018-02-26 Fixed bug#[13463](https://bugs.otrs.org/show_bug.cgi?id=13463) - Updating agent data as an admin will delete user preferences.
+ - 2018-02-26 Fixed bug#[13690](https://bugs.otrs.org/show_bug.cgi?id=13690) - Frontend::Module###AgentTicketEmail not hiding split target "Email ticket".
+ - 2018-02-23 Fixed bug#[13686](https://bugs.otrs.org/show_bug.cgi?id=13686) - Autocomplete JS config format is wrong in Customer interface.
+ - 2018-02-23 Fixed bug#[13669](https://bugs.otrs.org/show_bug.cgi?id=13669) - Agent login interface login button problem.
+ - 2018-02-23 Fixed bug#[13610](https://bugs.otrs.org/show_bug.cgi?id=13610) - AgentTicketEmail take wrong Database Credentials.
+ - 2018-02-21 Fixed bug#[13680](https://bugs.otrs.org/show_bug.cgi?id=13680) - SLA edit screen is not fully modern.
+ - 2018-02-21 Fixed bug#[13676](https://bugs.otrs.org/show_bug.cgi?id=13676) - Column headers and tooltips are not translated, thanks to Balazs Ur - (PR#1904).
+ - 2018-02-21 Fixed bug#[13681](https://bugs.otrs.org/show_bug.cgi?id=13681) - Legacy description for NotificationEvent sysconfig.
+ - 2018-02-20 Fixed bug#[13674](https://bugs.otrs.org/show_bug.cgi?id=13674) - Wording issue in Session Management screen of Admin interface, thanks to Balazs Ur - (PR#1900).
+ - 2018-02-20 Fixed bug#[13675](https://bugs.otrs.org/show_bug.cgi?id=13675) - Notification transport name and label are not marked for translation , thanks to Balazs Ur - (PR#1903).
+ - 2018-02-16 Improved console output documentation for options that can be specified multiple times.
+ - 2018-02-15 Fixed bug#[13644](https://bugs.otrs.org/show_bug.cgi?id=13644) - Attachment and text missing on some mails.
+ - 2018-02-14 Fixed bug#[13638](https://bugs.otrs.org/show_bug.cgi?id=13638) - Subject Field in customer search not aligned correctly when field label above is split in 2 lines.
+ - 2018-02-14 Fixed bug#[13593](https://bugs.otrs.org/show_bug.cgi?id=13593) - Current pagination number is not highlighted on the dashboard widget.
+ - 2018-02-14 Fixed bug#[13547](https://bugs.otrs.org/show_bug.cgi?id=13547) - Wrong link in notification to enable cloud services.
+ - 2018-02-14 Fixed bug#[13653](https://bugs.otrs.org/show_bug.cgi?id=13653) - Untranslated word "All" in system configuration search.
+ - 2018-02-14 Fixed bug#[13635](https://bugs.otrs.org/show_bug.cgi?id=13635) - Broken workflow in system configuration history module.
+ - 2018-02-14 Fixed bug#[13569](https://bugs.otrs.org/show_bug.cgi?id=13569) - Dynamic Fields per Template not working anymore since OTRS 6.
+ - 2018-02-13 Fixed bug#[13585](https://bugs.otrs.org/show_bug.cgi?id=13585) - Follow-up: coloring issues in Ivory slim skin.
+ - 2018-02-09 Fixed bug#[13603](https://bugs.otrs.org/show_bug.cgi?id=13603) - Text in Ticketheader overlaps itself when printing via browser.
+ - 2018-02-09 Fixed bug#[13631](https://bugs.otrs.org/show_bug.cgi?id=13631) - Design bug in "Message of Today" text display.
+ - 2018-02-09 Fixed bug#[13649](https://bugs.otrs.org/show_bug.cgi?id=13649) - Dropdown for ticket link is hidden behind appointment mask in appointment calendar.
+ - 2018-02-09 Fixed bug#[13597](https://bugs.otrs.org/show_bug.cgi?id=13597) - In case of OTRS 6 Upgrade "Email Delivery Failure" notification message is incorrectly displayed.
+ - 2018-02-09 Fixed bug#[13583](https://bugs.otrs.org/show_bug.cgi?id=13583) - Activation of by-default disabled Frontend::Module leads into error.
+ - 2018-02-09 Fixed bug#[13646](https://bugs.otrs.org/show_bug.cgi?id=13646) - Unintuitive SysConfig setting CloudServices::Disabled.
+ - 2018-02-09 Fixed bug#[13628](https://bugs.otrs.org/show_bug.cgi?id=13628) - Error message from Dev::Tools::TranslationsUpdate if certain directory does not exist.
+ - 2018-02-09 Fixed bug#[13585](https://bugs.otrs.org/show_bug.cgi?id=13585) - Coloring issues in Ivory skin.
+ - 2018-02-09 Fixed bug#[13587](https://bugs.otrs.org/show_bug.cgi?id=13587) - Error message when customer user does not have a first name.
+ - 2018-02-07 Fixed bug#[13633](https://bugs.otrs.org/show_bug.cgi?id=13633) - "Escalated since" is always displayed as "0m" in notification of escalated tickets.
+ - 2018-02-07 Fixed bug#[13550](https://bugs.otrs.org/show_bug.cgi?id=13550) - In ticket notifications to the agent, certain lines are duplicated.
+ - 2018-02-07 Fixed bug#[13578](https://bugs.otrs.org/show_bug.cgi?id=13578) - Untranslated words in Support Data Collector.
+ - 2018-02-07 Fixed bug#[13641](https://bugs.otrs.org/show_bug.cgi?id=13641) - Impossible to set PostmasterFilter Headers X-OTRS-IsVisibleForCustomer or X-OTRS-FollowUp-IsVisibleForCustomer to 0.
+ - 2018-02-07 Fixed bug#[13609](https://bugs.otrs.org/show_bug.cgi?id=13609) - "Need TwoFactorToken!" generates error in system log.
+ - 2018-02-06 Fixed translation mechanism in AdminCommunicationLog, thanks to Balazs Ur (PR#1901).
+ - 2018-02-06 Fixed column spans in communication log screens, thanks to Balazs Ur (PR#1902).
 
 #6.0.5 2018-02-13
  - 2018-02-05 Updated translations, thanks to all translators.
