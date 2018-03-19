@@ -317,7 +317,7 @@
         </Value>
     </Setting>
     <Setting Name="Ticket::EventModulePost###7000-NotificationEvent" Required="0" Valid="1">
-        <Description Translatable="1">Sends the notifications which are configured in the admin interface under "Notfication (Event)".</Description>
+        <Description Translatable="1">Sends the notifications which are configured in the admin interface under "Ticket Notifications".</Description>
         <Navigation>Core::Event::Ticket</Navigation>
         <Value>
             <Hash>
@@ -7501,7 +7501,7 @@
                             <Array>
                             </Array>
                         </Item>
-                        <Item Key="Description" Translatable="1">Overview of all open Tickets.</Item>
+                        <Item Key="Description" Translatable="1">Overview of all Tickets per assigned Queue.</Item>
                         <Item Key="Name" Translatable="1">Queue view</Item>
                         <Item Key="Link">Action=AgentTicketQueue</Item>
                         <Item Key="LinkOption"></Item>
@@ -7522,7 +7522,7 @@
                             <Array>
                             </Array>
                         </Item>
-                        <Item Key="Description"></Item>
+                        <Item Key="Description" Translatable="1">Overview of all Tickets per assigned Queue.</Item>
                         <Item Key="Name" Translatable="1">Tickets</Item>
                         <Item Key="Link">Action=AgentTicketQueue</Item>
                         <Item Key="LinkOption"></Item>
