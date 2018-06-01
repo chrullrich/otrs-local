@@ -1126,7 +1126,7 @@ sub _SendEventNotification {
         return {
             Status  => 'Failed',
             Message => 'Status unknown.',
-            }
+        };
     }
 
     my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
@@ -1501,7 +1501,7 @@ sub _DBInsert {
 
     if ( $Param{ID} ) {
         unshift @Cols,  'id';
-        unshift @Binds, \$Param{ID},
+        unshift @Binds, \$Param{ID};
     }
 
     my @Placeholders = map {'?'} @Cols;

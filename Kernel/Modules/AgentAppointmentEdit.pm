@@ -922,7 +922,7 @@ sub Run {
         $Appointment{NotificationCustom} ||= '';
 
         if ( $Appointment{NotificationCustom} eq 'datetime' ) {
-            $Param{NotificationCustomDateTimeInputRadio} = 'checked="checked"'
+            $Param{NotificationCustomDateTimeInputRadio} = 'checked="checked"';
         }
         elsif ( $Appointment{NotificationCustom} eq 'relative' ) {
             $Param{NotificationCustomRelativeInputRadio} = 'checked="checked"';

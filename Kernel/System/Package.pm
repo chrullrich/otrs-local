@@ -5088,7 +5088,7 @@ sub _PackageInstallOrderListGet {
         $Param{InstallOrder}->{$PackageName} = $InitialValue;
     }
 
-    return $Success
+    return $Success;
 }
 
 =head2 _PackageOnlineListGet()

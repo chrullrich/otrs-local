@@ -10,6 +10,8 @@ package Kernel::System::SysConfig;
 
 use strict;
 use warnings;
+
+use Time::HiRes();
 use utf8;
 
 use Kernel::System::VariableCheck qw(:all);
@@ -3697,6 +3699,23 @@ sub ConfigurationDeploySync {
 
     my $SysConfigDBObject = $Kernel::OM->Get('Kernel::System::SysConfig::DB');
 
+    # Check that all deployments are valid, but wait if there are deployments in add procedure
+    my $CleanupSuccess;
+    TRY:
+    for my $Try ( 1 .. 40 ) {
+        $CleanupSuccess = $SysConfigDBObject->DeploymentListCleanup();
+        last TRY if !$CleanupSuccess;
+        last TRY if $CleanupSuccess == 1;
+        sleep .5;
+    }
+    if ( $CleanupSuccess != 1 ) {
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => "There are invalid deployments in the database that could not be removed!",
+        );
+        return;
+    }
+
     my %LastDeployment = $SysConfigDBObject->DeploymentGetLast();
 
     if ( !%LastDeployment ) {
@@ -3772,7 +3791,7 @@ sub ConfigurationDeployCleanup {
 
 Wrapper of Kernel::System::SysConfig::DB::DeploymentGet() - Get deployment information.
 
-    my %Deployment = $SysConfigDBObject->ConfigurationDeployGet(
+    my %Deployment = $SysConfigObject->ConfigurationDeployGet(
         DeploymentID => 123,
     );
 

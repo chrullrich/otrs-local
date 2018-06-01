@@ -1408,16 +1408,6 @@
             </Array>
         </Value>
     </Setting>
-    <Setting Name="Ticket::EventModulePost###2000-ArticleSearchIndex" Required="0" Valid="1">
-        <Description Translatable="1">Marks articles for index rebuild right after the article's update.</Description>
-        <Navigation>Core::Event::Ticket</Navigation>
-        <Value>
-            <Hash>
-                <Item Key="Module">Kernel::System::Ticket::Event::ArticleSearchIndex</Item>
-                <Item Key="Event">(ArticleUpdate)</Item>
-            </Hash>
-        </Value>
-    </Setting>
     <Setting Name="Ticket::Frontend::Overview###Small" Required="0" Valid="1">
         <Description Translatable="1">Allows having a small format ticket overview (CustomerInfo =&gt; 1 - shows also the customer information).</Description>
         <Navigation>Frontend::Agent::TicketOverview</Navigation>
@@ -4951,7 +4941,7 @@
                 <Item Key="Action">AgentTicketProcess</Item>
                 <Item Key="AccessKey"></Item>
                 <Item Key="CssClass">ProcessTicket</Item>
-                <Item Key="Icon">fa fa-th-large</Item>
+                <Item Key="Icon">fa fa-sitemap</Item>
                 <Item Key="Priority">1020030</Item>
             </Hash>
         </Value>
@@ -6226,7 +6216,7 @@
                 <Item Key="Group"></Item>
                 <Item Key="Default">1</Item>
                 <Item Key="Sort">SortBy=Age;OrderBy=Up</Item>
-                <Item Key="CacheTTLLocal">0.5</Item>
+                <Item Key="CacheTTLLocal">2</Item>
                 <Item Key="States">
                     <Hash>
                         <Item Key="1">new</Item>
