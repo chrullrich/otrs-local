@@ -742,7 +742,7 @@ sub PartsAttachments {
         my $Subject = $Self->_DecodeString( String => $SubjectString );
 
         # trim whitespace
-        $Subject =~ s/^\s+|\n|\s+$//g;
+        $Subject =~ s/^\s+|\r|\n|\s+$//g;
         if ( length($Subject) > 246 ) {
             $Subject = substr( $Subject, 0, 246 );
         }
@@ -772,7 +772,7 @@ sub PartsAttachments {
     }
     if ( $PartData{Disposition} ) {
         chomp $PartData{Disposition};
-        $PartData{Disposition} = lc $PartData{Disposition}
+        $PartData{Disposition} = lc $PartData{Disposition};
     }
 
     # get attachment size
@@ -851,7 +851,7 @@ sub PartsAttachments {
                     $PartData{Content} = $HTMLUtilsObject->DocumentComplete(
                         String  => $HTMLContent,
                         Charset => 'utf-8',
-                        )
+                    );
                 }
                 else {
                     $PartData{Content} = $HTMLUtilsObject->ToAscii(

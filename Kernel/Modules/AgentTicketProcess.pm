@@ -84,7 +84,7 @@ sub Run {
         $Self->{LinkTicketData} = \%TicketData;
 
         # set LinkTicketID param for showing on main form
-        $Param{LinkTicketID} = $Self->{LinkTicketID}
+        $Param{LinkTicketID} = $Self->{LinkTicketID};
     }
 
     # get the article information on link actions
@@ -267,7 +267,7 @@ sub Run {
     # fetch also FadeAway processes to continue working with existing tickets, but not to start new
     #    ones
     if ( !$Self->{IsMainWindow} && $Self->{Subaction} ) {
-        push @ProcessStates, 'FadeAway'
+        push @ProcessStates, 'FadeAway';
     }
 
     # create process object
@@ -5133,7 +5133,7 @@ sub _StoreActivityDialog {
                 my $HistoryComment = '%%Note';
                 if ( $CommunicationChannel eq 'Phone' ) {
                     $HistoryType    = 'PhoneCallAgent';
-                    $HistoryComment = '%%'
+                    $HistoryComment = '%%';
                 }
 
                 my $From = "\"$Self->{UserFullname}\" <$Self->{UserEmail}>";
