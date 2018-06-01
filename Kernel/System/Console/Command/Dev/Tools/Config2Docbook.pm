@@ -173,7 +173,7 @@ EOF
             }
 
             my $DefaultValueText = $LanguageObject->Translate('Default value');
-            print <<"EOF"
+            print <<"EOF";
                     <para>$DefaultValueText:
                         <programlisting><![CDATA[$EffectiveValueStrg]]></programlisting>
                     </para>

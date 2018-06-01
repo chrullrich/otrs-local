@@ -159,7 +159,7 @@ sub Run {
             # Separator if required if SOAPAction is enabled and selected scheme uses separator.
             if ( !$GetParam->{SOAPActionSeparator} ) {
                 $Error{SOAPActionSeparatorServerError}        = $ServerError;
-                $Error{SOAPActionSeparatorServerErrorMessage} = $ServerErrorMessage
+                $Error{SOAPActionSeparatorServerErrorMessage} = $ServerErrorMessage;
             }
         }
         elsif ( $GetParam->{SOAPActionScheme} eq 'FreeText' ) {
@@ -167,7 +167,7 @@ sub Run {
             # Free text if required if SOAPAction is enabled and selected scheme uses free text.
             if ( !$GetParam->{SOAPActionSeparator} ) {
                 $Error{SOAPActionSeparatorServerError}        = $ServerError;
-                $Error{SOAPActionSeparatorServerErrorMessage} = $ServerErrorMessage
+                $Error{SOAPActionSeparatorServerErrorMessage} = $ServerErrorMessage;
             }
         }
     }

@@ -250,7 +250,7 @@ sub JobRun {
         #   but don't overwrite existing keys
         for my $Counter ( 1 .. 6 ) {
             if ( $Job{New}->{"ParamKey$Counter"} ) {
-                $Job{New}->{ $Job{New}->{"ParamKey$Counter"} } //= $Job{New}->{"ParamValue$Counter"}
+                $Job{New}->{ $Job{New}->{"ParamKey$Counter"} } //= $Job{New}->{"ParamValue$Counter"};
             }
         }
 

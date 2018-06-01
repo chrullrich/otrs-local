@@ -1272,7 +1272,7 @@ for my $Test (@Tests) {
                                 || {}
                         };
                         for my $ObjectID ( sort keys %{ObjectsPerRelation} ) {
-                            $LinkLookup{$ObjectID} = $LinkType
+                            $LinkLookup{$ObjectID} = $LinkType;
                         }
                     }
                 }

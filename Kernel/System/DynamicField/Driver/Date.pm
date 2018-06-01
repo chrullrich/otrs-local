@@ -1245,7 +1245,7 @@ sub StatsSearchFieldParameterBuild {
 
     # set start of day
     elsif ( $Operator eq 'GreaterThanEquals' ) {
-        $ToReturn .= ' 00:00:00'
+        $ToReturn .= ' 00:00:00';
     }
 
     # same values for unknown operators

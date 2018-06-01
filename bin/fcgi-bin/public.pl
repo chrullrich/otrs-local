@@ -48,6 +48,11 @@ foreach (grep(/^OTRS_/, keys %ENV)) {
 # Response loop
 while ( my $WebRequest = CGI::Fast->new() ) {
 
+    # Reload files in @INC that have changed since the last request.
+    eval {
+        Module::Refresh->refresh();
+    };
+
     # merge secrets into request environment
     %ENV = (%ENV, %secrets);
 

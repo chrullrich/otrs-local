@@ -1606,7 +1606,7 @@ sub MaskAgentZoom {
             );
 
             if ($ACL) {
-                %{$NextActivityDialogs} = $TicketObject->TicketAclData()
+                %{$NextActivityDialogs} = $TicketObject->TicketAclData();
             }
 
             $LayoutObject->Block(
