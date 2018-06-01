@@ -41,7 +41,10 @@ my $TestUserID    = $Kernel::OM->Get('Kernel::System::User')->UserLookup(
 );
 
 # get ticket object
-my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
+my $TicketObject         = $Kernel::OM->Get('Kernel::System::Ticket');
+my $ArticleBackendObject = $Kernel::OM->Get('Kernel::System::Ticket::Article')->BackendForChannel(
+    ChannelName => 'Email',
+);
 
 #
 # Create a test ticket
@@ -62,6 +65,25 @@ my $TicketID = $TicketObject->TicketCreate(
 $Self->True(
     $TicketID,
     "TicketCreate() - $TicketID",
+);
+
+my $ArticleID1 = $ArticleBackendObject->ArticleCreate(
+    TicketID             => $TicketID,
+    IsVisibleForCustomer => 0,
+    SenderType           => 'agent',
+    From                 => 'Some Agent <otrs@example.com>',
+    To                   => 'Suplier<suplier@example.com>',
+    Subject              => 'Email for suplier',
+    Body           => "the message text\nthe message text\nthe message text\nthe message text\nthe message text\n",
+    Charset        => 'utf8',
+    MimeType       => 'text/plain',
+    HistoryType    => 'OwnerUpdate',
+    HistoryComment => 'Some free text!',
+    UserID         => 1,
+);
+$Self->True(
+    $ArticleID1,
+    "First article created."
 );
 
 my $DynamicFieldObject = $Kernel::OM->Get('Kernel::System::DynamicField');
@@ -207,6 +229,25 @@ $Self->True(
 
 # Run() tests
 my @Tests = (
+    {
+        Name   => 'Correct Ticket->Smart tags',
+        Config => {
+            UserID => $UserID,
+            Ticket => \%Ticket,
+            Config => {
+                ContentType          => 'text/plain; charset=UTF-8',
+                CommunicationChannel => 'Internal',
+                IsVisibleForCustomer => 1,
+                SenderType           => 'agent',
+                From                 => 'Admin OTRS',
+                HistoryComment       => 'Info',
+                HistoryType          => 'AddNote',
+                Body                 => '<OTRS_AGENT_BODY[2]>',
+                Subject              => '<OTRS_AGENT_SUBJECT[10]>'
+            },
+        },
+        Success => 1,
+    },
     {
         Name    => 'No Params',
         Config  => undef,
@@ -709,6 +750,25 @@ for my $Test (@Tests) {
                 )
             {
                 $Article{$Attribute} //= '';
+            }
+
+            if ( $OrigTest->{Config}->{Config}->{$Attribute} eq '<OTRS_AGENT_BODY[2]>' )
+            {
+                my @Count = ( $Article{$Attribute} =~ /the message text/g );
+                $Self->Is(
+                    scalar @Count,
+                    2,
+                    'Smart tag <OTRS_AGENT_BODY[2]> is replaced right'
+                );
+            }
+
+            if ( $OrigTest->{Config}->{Config}->{$Attribute} eq '<OTRS_AGENT_SUBJECT[10]>' )
+            {
+                $Self->Is(
+                    $Article{$Attribute},
+                    'Email for  [...]',
+                    'Smart tag <OTRS_AGENT_SUBJECT[10]> is replaced right'
+                );
             }
 
             if ( $Attribute eq 'CommunicationChannel' ) {

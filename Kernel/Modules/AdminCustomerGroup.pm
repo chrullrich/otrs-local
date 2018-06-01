@@ -725,7 +725,7 @@ sub _Overview {
             Data => {
                 Name => $CustomerAlwaysGroups[ $ID - 1 ],
             },
-            )
+        );
     }
 
     # return output

@@ -27,8 +27,8 @@ use lib "$Bin/../..";
 use lib "$Bin/../../Kernel/cpan-lib";
 use lib "$Bin/../../Custom";
 
-# Imports the library; required line
 use CGI::Fast;
+use Module::Refresh;
 
 # load agent web interface
 use Kernel::System::Web::InterfacePublic();
@@ -47,6 +47,11 @@ foreach (grep(/^OTRS_/, keys %ENV)) {
 
 # Response loop
 while ( my $WebRequest = CGI::Fast->new() ) {
+
+    # Reload files in @INC that have changed since the last request.
+    eval {
+        Module::Refresh->refresh();
+    };
 
     # merge secrets into request environment
     %ENV = (%ENV, %secrets);
