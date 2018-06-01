@@ -3676,7 +3676,7 @@ sub BuildDateSelection {
 
 Produces human readable data size.
 
-    my $SizeStr = $MainObject->HumanReadableDataSize(
+    my $SizeStr = $LayoutObject->HumanReadableDataSize(
         Size => 123,  # size in bytes
     );
 
