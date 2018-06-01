@@ -2097,7 +2097,7 @@ sub Run {
 
                 # get AJAX param values
                 if ( $Object->can('GetParamAJAX') ) {
-                    %GetParam = ( %GetParam, $Object->GetParamAJAX(%GetParam) )
+                    %GetParam = ( %GetParam, $Object->GetParamAJAX(%GetParam) );
                 }
 
                 # get options that have to be removed from the selection visible

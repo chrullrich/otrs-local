@@ -48,7 +48,7 @@ sub Run {
             Data         => \%Param
         );
         $Output .= $LayoutObject->Footer();
-        return $Output
+        return $Output;
     }
 
     my $RegistrationState = $Kernel::OM->Get('Kernel::System::SystemData')->SystemDataGet(

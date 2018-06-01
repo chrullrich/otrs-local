@@ -175,7 +175,7 @@ sub Run {
     # fetch also FadeAway processes to continue working with existing tickets, but not to start new
     #    ones
     if ( !$Self->{IsMainWindow} && $Self->{Subaction} ) {
-        push @ProcessStates, 'FadeAway'
+        push @ProcessStates, 'FadeAway';
     }
 
     # get process object
