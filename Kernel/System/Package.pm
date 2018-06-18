@@ -3473,8 +3473,8 @@ sub PackageUpgradeAllIsRunning {
     }
 
     return (
-        IsRunning => $IsRunning // 0,
-        UpgradeStatus  => $SystemData{Status}  || '',
+        IsRunning      => $IsRunning // 0,
+        UpgradeStatus  => $SystemData{Status} || '',
         UpgradeSuccess => $SystemData{Success} || '',
     );
 }
@@ -5207,7 +5207,7 @@ framework version.
 Returns:
 
     %RepositoryList = (
-        'http://ftp.otrs.org/pub/otrs/packages' => 'OTRS Free Features',
+        'http://ftp.otrs.org/pub/otrs/packages' => 'OTRS Freebie Features',
         # ...,
     );
 
