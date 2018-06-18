@@ -231,7 +231,7 @@ $Selenium->RunTest(
             index(
                 $Selenium->get_page_source(),
                 "Avatars have been disabled by the system administrator. You'll see your initials instead."
-                ) > -1,
+            ) > -1,
             "Avatars disabled message found"
         );
 
@@ -246,7 +246,7 @@ $Selenium->RunTest(
             index(
                 $Selenium->get_page_source(),
                 "You can change your avatar image by registering with your email address"
-                ) > -1,
+            ) > -1,
             "Gravatar message found"
         );
 
@@ -528,7 +528,7 @@ JAVASCRIPT
 
             if ($CategoriesVisible) {
                 $Selenium->execute_script(
-                    "\$('#Category').val('OTRSFree').trigger('redraw.InputField').trigger('change');"
+                    "\$('#Category').val('OTRS').trigger('redraw.InputField').trigger('change');"
                 );
             }
 

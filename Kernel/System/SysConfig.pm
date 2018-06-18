@@ -333,27 +333,16 @@ sub SettingGet {
         }
 
         # Get real EffectiveValue - EffectiveValue from DB could be modified in the ZZZAbc.pm file.
-        my $LoadedEffectiveValue;
-
-        my @SettingStructure = split( '###', $Setting{Name} );
-        for my $Key (@SettingStructure) {
-            if ( !defined $LoadedEffectiveValue ) {
-
-                # first iteration
-                $LoadedEffectiveValue = $ConfigObject->Get($Key);
-            }
-            elsif ( ref $LoadedEffectiveValue eq 'HASH' ) {
-                $LoadedEffectiveValue = $LoadedEffectiveValue->{$Key};
-            }
-        }
+        my $LoadedEffectiveValue = $Self->GlobalEffectiveValueGet(
+            SettingName => $Setting{Name},
+        );
 
         my $IsOverridden = DataIsDifferent(
-            Data1 => $SettingDeployed{EffectiveValue},
-            Data2 => $LoadedEffectiveValue,
+            Data1 => $SettingDeployed{EffectiveValue} // {},
+            Data2 => $LoadedEffectiveValue //            {},
         );
 
         if ($IsOverridden) {
-
             $Setting{OverriddenFileName} = $Self->OverriddenFileNameGet(
                 SettingName    => $Setting{Name},
                 EffectiveValue => $Setting{EffectiveValue},
@@ -390,6 +379,9 @@ sub SettingGet {
             $Setting{Description},
         );
     }
+
+    # If setting is overridden in the perl file, using the "delete" statement, EffectiveValue is undef.
+    $Setting{EffectiveValue} //= '';
 
     # Return updated default.
     return %Setting;
@@ -2110,7 +2102,7 @@ Returns:
 
     %Result = (
        'ACL::CacheTTL' => {
-            'Category' => 'OTRSFree',
+            'Category' => 'OTRS',
             'IsInvisible' => '0',
             'Metadata' => "ACL::CacheTTL--- '3600'
 Cache-Zeit in Sekunden f\x{fc}r Datenbank ACL-Backends.",
@@ -2761,7 +2753,7 @@ Returns navigation tree in the hash format.
         RootNavigation         => 'Parent',     # (optional) If provided only sub groups of the root navigation are returned.
         UserModificationActive => 1,            # (optional) Return settings that can be modified on user level only.
         IsValid                => 1,            # (optional) By default, display all settings.
-        Category               => 'OTRSFree'    # (optional)
+        Category               => 'OTRS'        # (optional)
     );
 
 Returns:
@@ -3043,8 +3035,8 @@ sub ConfigurationListGet {
     my @ConfigurationList = $SysConfigDBObject->DefaultSettingListGet(
         Navigation               => $Param{Navigation},
         UserModificationPossible => $Param{TargetUserID} ? 1 : undef,
-        UserPreferencesGroup => $Param{UserPreferencesGroup} || undef,
-        IsInvisible => $Param{Invisible} ? undef : 0,
+        UserPreferencesGroup     => $Param{UserPreferencesGroup} || undef,
+        IsInvisible              => $Param{Invisible} ? undef : 0,
         %CategoryOptions,
     );
 
@@ -3463,6 +3455,22 @@ sub ConfigurationDeploy {
         $EffectiveValueCheckResult{$SettingKey} = \%EffectiveValueCheck;
 
         next SETTING if $EffectiveValueCheck{Success};
+
+        # Check if setting is overridden, in this case allow deployemnt.
+        my $OverriddenFileName = $Self->OverriddenFileNameGet(
+            SettingName    => $CurrentSetting->{Name},
+            UserID         => $Param{UserID},
+            EffectiveValue => $CurrentSetting->{EffectiveValue},
+        );
+
+        if ($OverriddenFileName) {
+
+            # Setting in the DB has invalid value, but it's overridden in perl file.
+
+            # Note: This check can't be moved to the SettingEffectiveValueCheck(), since it works with Cache,
+            # so if perl file is updated, changes won't be reflected.
+            next SETTING;
+        }
 
         $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
@@ -4325,7 +4333,7 @@ Returns a list of setting names.
 
     my @Result = $SysConfigObject->ConfigurationSearch(
         Search           => 'The search string', # (optional)
-        Category         => 'OTRSFree'           # (optional)
+        Category         => 'OTRS'               # (optional)
         IncludeInvisible => 1,                   # (optional) Default 0.
     );
 
@@ -4417,8 +4425,8 @@ Returns:
             DisplayName => 'All Settings',
             Files => [],
         },
-        OTRSFree => {
-            DisplayName => 'OTRS Free',
+        OTRS => {
+            DisplayName => 'OTRS',
             Files       => ['Calendar.xml', CloudServices.xml', 'Daemon.xml', 'Framework.xml', 'GenericInterface.xml', 'ProcessManagement.xml', 'Ticket.xml' ],
         },
         # ...
@@ -4448,8 +4456,8 @@ sub ConfigurationCategoriesGet {
             DisplayName => Translatable('All Settings'),
             Files       => [],
         },
-        OTRSFree => {
-            DisplayName => 'OTRS Free',
+        OTRS => {
+            DisplayName => 'OTRS',
             Files       => [
                 'Calendar.xml', 'CloudServices.xml', 'Daemon.xml', 'Framework.xml',
                 'GenericInterface.xml', 'ProcessManagement.xml', 'Ticket.xml',
@@ -4711,10 +4719,10 @@ sub SettingsSet {
 
     # Deploy successfully updated settings.
     my %DeploymentResult = $Self->ConfigurationDeploy(
-        Comments => $Param{Comments} || '',
-        UserID   => $Param{UserID},
-        Force    => 1,
-        DirtySettings => \@DeploySettings
+        Comments      => $Param{Comments} || '',
+        UserID        => $Param{UserID},
+        Force         => 1,
+        DirtySettings => \@DeploySettings,
     );
 
     return $DeploymentResult{Success};
@@ -4727,7 +4735,7 @@ Returns file name which overrides setting Effective value.
     my $FileName = $SysConfigObject->OverriddenFileNameGet(
         SettingName    => 'Setting::Name',  # (required)
         UserID         => 1,                # (required)
-        EffectiveValue => '3',              # (optional)
+        EffectiveValue => '3',              # (optional) EffectiveValue stored in the DB.
     );
 
 Returns:
@@ -4752,19 +4760,10 @@ sub OverriddenFileNameGet {
 
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
-    my $LoadedEffectiveValue;
-
+    my $LoadedEffectiveValue = $Self->GlobalEffectiveValueGet(
+        SettingName => $Param{SettingName},
+    );
     my @SettingStructure = split( '###', $Param{SettingName} );
-    for my $Key (@SettingStructure) {
-        if ( !defined $LoadedEffectiveValue ) {
-
-            # first iteration
-            $LoadedEffectiveValue = $ConfigObject->Get($Key);
-        }
-        elsif ( ref $LoadedEffectiveValue eq 'HASH' ) {
-            $LoadedEffectiveValue = $LoadedEffectiveValue->{$Key};
-        }
-    }
 
     my $EffectiveValue = $Param{EffectiveValue};
 
@@ -4774,8 +4773,8 @@ sub OverriddenFileNameGet {
     $EffectiveValue =~ s/\<OTRS_CONFIG_(.+?)\>/$ConfigObject->{$1}/g;
 
     my $IsOverridden = DataIsDifferent(
-        Data1 => $EffectiveValue,
-        Data2 => $LoadedEffectiveValue,
+        Data1 => $EffectiveValue //       {},
+        Data2 => $LoadedEffectiveValue // {},
     );
 
     # This setting is not Overridden in perl file, return.
@@ -4786,11 +4785,15 @@ sub OverriddenFileNameGet {
     my $Home      = $ConfigObject->Get('Home');
     my $Directory = "$Home/Kernel/Config/Files";
 
+    my $MainObject = $Kernel::OM->Get('Kernel::System::Main');
+
     # Get all .pm files that start with 'ZZZ'.
-    my @FilesInDirectory = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
+    my @FilesInDirectory = $MainObject->DirectoryRead(
         Directory => $Directory,
         Filter    => 'ZZZ*.pm',
     );
+
+    my @Modules;
 
     FILE:
     for my $File (@FilesInDirectory) {
@@ -4802,35 +4805,44 @@ sub OverriddenFileNameGet {
         # Skip the file that was regulary deployed.
         next FILE if $FileName eq 'ZZZAAuto';
 
-        # Check if this file overrides our setting.
+        push @Modules, {
+            "Kernel::Config::Files::$FileName" => $File,
+        };
+    }
+
+    # Check Config.pm as well.
+    push @Modules, {
+        'Kernel::Config' => 'Kernel/Config.pm',
+    };
+
+    # Read EffectiveValues from DB (they are stored in ZZZAAuto file).
+    my $Loaded = $MainObject->Require(
+        'Kernel::Config::Files::ZZZAAuto',
+    );
+
+    # If module couldn't be loaded, there is no user specific setting.
+    return if !$Loaded;
+
+    my $ConfigFromDB = {};
+    Kernel::Config::Files::ZZZAAuto->Load($ConfigFromDB);
+
+    for my $Module (@Modules) {
+        my $ModuleName = ( keys %{$Module} )[0];
+
+        # Check if this module overrides our setting.
         my $SettingFound = $Self->_IsOverriddenInModule(
-            Module           => "Kernel::Config::Files::$FileName",
+            Module           => $ModuleName,
             SettingStructure => \@SettingStructure,
+            ConfigFromDB     => $ConfigFromDB,
         );
 
         if ($SettingFound) {
-            $Result = $File;
+            $Result = $Module->{$ModuleName};
         }
     }
 
     if ($Result) {
         $Result =~ s/^$Home\/?(.*)$/$1/;
-    }
-    else {
-
-        $Result = 'Kernel/Config.pm';
-
-        # Check if there is user specific value for this setting.
-        my $SettingFound = $Self->_IsOverriddenInModule(
-            Module           => "Kernel::Config::Files::User::$Param{UserID}",
-            SettingStructure => \@SettingStructure,
-        );
-
-        if ($SettingFound) {
-
-            # There is user specific value, allow admin modification.
-            $Result = 0;
-        }
     }
 
     return $Result;
@@ -4899,7 +4911,7 @@ sub _IsOverriddenInModule {
     my ( $Self, %Param ) = @_;
 
     # Check needed stuff.
-    for my $Needed (qw(Module SettingStructure)) {
+    for my $Needed (qw(Module SettingStructure ConfigFromDB)) {
         if ( !$Param{$Needed} ) {
             $Kernel::OM->Get('Kernel::System::Log')->Log(
                 Priority => 'error',
@@ -4917,12 +4929,9 @@ sub _IsOverriddenInModule {
         return;
     }
 
-    my $MainObject = $Kernel::OM->Get('Kernel::System::Main');
-
     my $Result;
 
-    # Check if the setting applies to the current user only.
-    my $Loaded = $MainObject->Require(
+    my $Loaded = $Kernel::OM->Get('Kernel::System::Main')->Require(
         $Param{Module},
         Silent => 1,
     );
@@ -4930,16 +4939,30 @@ sub _IsOverriddenInModule {
     # If module couldn't be loaded, there is no user specific setting.
     return $Result if !$Loaded;
 
-    # Try to load setting value.
-    my $OverriddenSettings = {};
-    $Param{Module}->Load($OverriddenSettings);
+    # Get effective value from the DB.
+    my $OverriddenSettings = $Kernel::OM->Get('Kernel::System::Storable')->Clone(
+        Data => $Param{ConfigFromDB},
+    );
+
+    if ( $Param{Module} eq 'Kernel::Config' ) {
+        bless( $OverriddenSettings, 'Kernel::Config' );
+        $OverriddenSettings->Load();
+    }
+    else {
+        # Apply changes from this file only.
+        $Param{Module}->Load($OverriddenSettings);
+    }
+
+    # OverridenSettings contains EffectiveValues from DB, overridden by provided Module,
+    # so we can compare if setting was changed in this file.
 
     # Loaded hash is empty, return.
-    return $Result if !IsHashRefWithData($OverriddenSettings);
+    return $Result if !IsHashRefWithData($OverriddenSettings) && ref $OverriddenSettings ne 'Kernel::Config';
 
     # Check if this file overrides our setting.
     my $SettingFound = 0;
     my $LoadedEffectiveValue;
+    my $ConfigFromDB;
 
     KEY:
     for my $Key ( @{ $Param{SettingStructure} } ) {
@@ -4947,7 +4970,20 @@ sub _IsOverriddenInModule {
 
             # First iteration.
             $LoadedEffectiveValue = $OverriddenSettings->{$Key};
-            if ( defined $LoadedEffectiveValue ) {
+            $ConfigFromDB         = $Param{ConfigFromDB}->{$Key};
+
+            if ( defined $ConfigFromDB && !defined $LoadedEffectiveValue ) {
+
+                # Setting is overridden using the "delete" statement.
+                $SettingFound = 1;
+            }
+            elsif (
+                DataIsDifferent(
+                    Data1 => $LoadedEffectiveValue // {},
+                    Data2 => $ConfigFromDB //         {},
+                )
+                )
+            {
                 $SettingFound = 1;
             }
             else {
@@ -4956,12 +4992,31 @@ sub _IsOverriddenInModule {
         }
         elsif ( ref $LoadedEffectiveValue eq 'HASH' ) {
             $LoadedEffectiveValue = $LoadedEffectiveValue->{$Key};
-            if ( defined $LoadedEffectiveValue ) {
+            $ConfigFromDB         = $ConfigFromDB->{$Key};
+
+            if ( defined $ConfigFromDB && !defined $LoadedEffectiveValue ) {
+
+                # Setting is overridden using the "delete" statement.
+                $SettingFound = 1;
+            }
+            elsif (
+                DataIsDifferent(
+                    Data1 => $LoadedEffectiveValue // {},
+                    Data2 => $ConfigFromDB //         {},
+                )
+                )
+            {
                 $SettingFound = 1;
             }
             else {
                 $SettingFound = 0;
             }
+        }
+        else {
+            $Kernel::OM->Get('Kernel::System::Log')->Log(
+                Priority => 'error',
+                Message  => "Unhandled exception!"
+            );
         }
     }
 
@@ -5994,7 +6049,7 @@ Returns:
 
     %Result = (
        'ACL::CacheTTL' => {
-            'Category' => 'OTRSFree',
+            'Category' => 'OTRS',
             'IsInvisible' => '0',
             'Metadata' => "ACL::CacheTTL--- '3600'
 Cache-Zeit in Sekunden f\x{fc}r Datenbank ACL-Backends.",
