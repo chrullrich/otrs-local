@@ -1,4 +1,38 @@
-#6.0.8 2018-??-??
+#6.0.9 2018-??-??
+
+#6.0.8 2018-06-12
+ - 2018-06-04 Updated translations, thanks to all translators.
+ - 2018-06-02 Fixed bug#[13728](https://bugs.otrs.org/show_bug.cgi?id=13728) - Processes need to be deployed after update to Version 6.
+ - 2018-06-01 Fixed bug#[13824](https://bugs.otrs.org/show_bug.cgi?id=13824) - Search conditions in AdminProcessManagement are resetted.
+ - 2018-06-01 Fixed bug#[13880](https://bugs.otrs.org/show_bug.cgi?id=13880) - "Customer user" field is cleared once the focus is lost in AgentTicketCustomer.
+ - 2018-06-01 Fixed bug#[13889](https://bugs.otrs.org/show_bug.cgi?id=13889) - Postmaster filter value limit is 100 characters in frontend.
+ - 2018-06-01 Renamed 'OTRS Free' to '((OTRS)) Community Edition'.
+ - 2018-05-30 Fixed bug#[13868](https://bugs.otrs.org/show_bug.cgi?id=13868) - Customer User Title is not translated.
+ - 2018-05-28 Fixed bug#[13870](https://bugs.otrs.org/show_bug.cgi?id=13870) - Content of Title and Subject columns are the same in Excel/CSV output of search.
+ - 2018-05-28 Fixed bug#[13819](https://bugs.otrs.org/show_bug.cgi?id=13819) - ACL's CompareMatchWithData floods the log when service is not in relation with customer user.
+ - 2018-05-25 Fixed bug#[13883](https://bugs.otrs.org/show_bug.cgi?id=13883) - Several display issues in Admin Screen "Ticket Notification Management".
+ - 2018-05-25 Fixed bug#[13826](https://bugs.otrs.org/show_bug.cgi?id=13142) - Error The given param 'QueueIDs' is invalid or an empty array reference.
+ - 2018-05-23 Fixed bug#[13826](https://bugs.otrs.org/show_bug.cgi?id=13826) - Queue Names are translated (but should not).
+ - 2018-05-18 Fixed bug#[13869](https://bugs.otrs.org/show_bug.cgi?id=13869) - Unexpected shadow in long Sysconfig entry.
+ - 2018-05-16 Fixed bug#[13820](https://bugs.otrs.org/show_bug.cgi?id=13820) - Wrong UserID argument in AdminAppointmentNotificationEvent.
+ - 2018-05-14 Fixed bug#[13827](https://bugs.otrs.org/show_bug.cgi?id=13827) - GenericInterface EventTrigger does not consider Asynchronous parameter during creation.
+ - 2018-05-11 Fixed bug#[13732](https://bugs.otrs.org/show_bug.cgi?id=13732) - For mails with inline images and little text, the display area remains very small.
+ - 2018-05-11 Fixed bug#[13821](https://bugs.otrs.org/show_bug.cgi?id=13821) - CustomerUserListFields: search result create a wrong entry.
+ - 2018-05-10 Fixed bug#[13846](https://bugs.otrs.org/show_bug.cgi?id=13846) - Ticket invoker base module does not use modernized fields.
+ - 2018-05-10 Fixed bug#[13795](https://bugs.otrs.org/show_bug.cgi?id=13795) - Transition Action 'TicketTitleSet': Tag of a dyn. field type 'date' display the time, too.
+ - 2018-05-10 Fixed bug#[13850](https://bugs.otrs.org/show_bug.cgi?id=13850) - Problems with overridden SysConfig settings.
+ - 2018-05-10 Follow-up fix for bug#[7988](https://bugs.otrs.org/show_bug.cgi?id=7988) - Search attributes not consistent.
+ - 2018-05-10 Fixed bug#[12864](https://bugs.otrs.org/show_bug.cgi?id=12864) - Hang in my_readline.
+ - 2018-05-10 Fixed bug#[13855](https://bugs.otrs.org/show_bug.cgi?id=13855) - Some migration modules will be executed with every DBUpdate-to-6.pl run.
+ - 2018-05-08 Fixed bug#[12686](https://bugs.otrs.org/show_bug.cgi?id=12686) - Wrong sorting order in the admin screen.
+ - 2018-05-08 Fixed bug#[13836](https://bugs.otrs.org/show_bug.cgi?id=13836) - Filter in timeline view not being applied.
+ - 2018-05-08 Fixed bug#[12994](https://bugs.otrs.org/show_bug.cgi?id=12994) - Merge Tickets with same linked objects causes error.
+ - 2018-05-07 Fixed bug#[13818](https://bugs.otrs.org/show_bug.cgi?id=13818) - Dynamic field values of tickets are not displayed in customer ticket search result.
+ - 2018-04-30 Changed default gravatar image for articles to 'mm' (mystery man).
+ - 2018-04-25 Fixed bug#[13764](https://bugs.otrs.org/show_bug.cgi?id=13764) - Mixed up plain and rich text body in process management when article is created.
+ - 2018-04-25 Fixed bug#[13815](https://bugs.otrs.org/show_bug.cgi?id=13815) - The little arrow is cut off for articles.
+ - 2018-04-24 Fixed bug#[13805](https://bugs.otrs.org/show_bug.cgi?id=13805) - Distribution OpenBSD is not recognized by support data collector.
+ - 2018-04-18 Fixed bug#[11132](https://bugs.otrs.org/show_bug.cgi?id=11132) - Loss of attached files with long Cyrillic names.
 
 #6.0.7 2018-05-04
  - 2018-04-23 Updated translations, thanks to all translators.

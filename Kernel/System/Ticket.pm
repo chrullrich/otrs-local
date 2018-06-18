@@ -652,8 +652,8 @@ sub TicketCreate {
         $Self->TicketCustomerSet(
             TicketID => $TicketID,
             No       => $Param{CustomerNo} || $Param{CustomerID} || '',
-            User => $Param{CustomerUser} || '',
-            UserID => $Param{UserID},
+            User     => $Param{CustomerUser} || '',
+            UserID   => $Param{UserID},
         );
     }
 
@@ -2141,9 +2141,7 @@ sub TicketServiceList {
         );
 
         # Filter Services based on relation with CustomerUser and KeepChildren config.
-        for my $ServiceID ( sort keys %AllServices ) {
-            $Services{$ServiceID} = $CustomerServices{$ServiceID};
-        }
+        %Services = map { $_ => $CustomerServices{$_} } grep { defined $CustomerServices{$_} } sort keys %AllServices;
     }
     else {
         %Services = %AllServices;
@@ -6229,27 +6227,71 @@ sub TicketMergeLinkedObjects {
         }
     }
 
-    # lookup the object id of a ticket
+    # Lookup the object id of a ticket.
     my $TicketObjectID = $Kernel::OM->Get('Kernel::System::LinkObject')->ObjectLookup(
         Name => 'Ticket',
     );
 
-    # update links from old ticket to new ticket where the old ticket is the source
-    $Kernel::OM->Get('Kernel::System::DB')->Do(
+    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
+    # Delete all duplicate links relations between merged tickets.
+    # See bug#12994 (https://bugs.otrs.org/show_bug.cgi?id=12994).
+    $DBObject->Prepare(
+        SQL => '
+            SELECT target_key
+            FROM link_relation
+            WHERE target_object_id = ?
+              AND source_object_id = ?
+              AND source_key= ?
+              AND target_key
+              IN (SELECT target_key FROM link_relation WHERE source_key= ? )',
+        Bind => [
+            \$TicketObjectID,
+            \$TicketObjectID,
+            \$Param{MainTicketID},
+            \$Param{MergeTicketID},
+        ],
+    );
+
+    my @Relations;
+    while ( my @Row = $DBObject->FetchrowArray() ) {
+        push @Relations, $Row[0];
+    }
+    if (@Relations) {
+
+        my $SQL = "DELETE FROM link_relation
+                 WHERE target_object_id = ?
+                   AND source_object_id = ?
+                   AND source_key = ?
+                   AND target_key IN ( '${\(join '\',\'', @Relations)}' )";
+
+        $DBObject->Prepare(
+            SQL  => $SQL,
+            Bind => [
+                \$TicketObjectID,
+                \$TicketObjectID,
+                \$Param{MergeTicketID},
+            ],
+        );
+    }
+
+    # Update links from old ticket to new ticket where the old ticket is the source  MainTicketID.
+    $DBObject->Do(
         SQL => '
             UPDATE link_relation
             SET source_key = ?
             WHERE source_object_id = ?
               AND source_key = ?',
         Bind => [
+
             \$Param{MainTicketID},
             \$TicketObjectID,
             \$Param{MergeTicketID},
         ],
     );
 
-    # update links from old ticket to new ticket where the old ticket is the target
-    $Kernel::OM->Get('Kernel::System::DB')->Do(
+    # Update links from old ticket to new ticket where the old ticket is the target.
+    $DBObject->Do(
         SQL => '
             UPDATE link_relation
             SET target_key = ?
@@ -6262,8 +6304,8 @@ sub TicketMergeLinkedObjects {
         ],
     );
 
-    # delete all links between tickets where source and target object are the same
-    $Kernel::OM->Get('Kernel::System::DB')->Do(
+    # Delete all links between tickets where source and target object are the same.
+    $DBObject->Do(
         SQL => '
             DELETE FROM link_relation
             WHERE source_object_id = ?
