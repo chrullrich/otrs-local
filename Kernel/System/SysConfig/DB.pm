@@ -1215,7 +1215,7 @@ Get default setting list with complete data.
         UserPreferencesGroup     => 'Some Group',
         Navigation               => 'ASimple::Path::Structure',
         Locked                   => 1, # check for locked settings
-        Category                 => 'OTRSFree',                         # optional (requires CategoryFiles)
+        Category                 => 'OTRS',                             # optional (requires CategoryFiles)
         CategoryFiles            => ['Framework.xml', 'Ticket.xml', ],  # optional (requires Category)
         NoCache                  => 0,                                  # (optional) Default 0. If set, system will not generate cache.
     );
@@ -5054,7 +5054,7 @@ sub DeploymentModifiedVersionList {
         return;
     }
 
-    my $Mode = $Param{Mode} // 'Equals';
+    my $Mode        = $Param{Mode} // 'Equals';
     my %ModeMapping = (
         Equals            => '=',
         GreaterThan       => '>',
