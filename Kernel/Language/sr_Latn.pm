@@ -30,7 +30,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.997416465725112;
+    $Self->{Completeness}        = 0.995015469233414;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -201,7 +201,7 @@ sub Data {
         'Recipients' => 'Primaoci',
         'Send to' => 'Pošalji za ',
         'Send to these agents' => 'Pošalji ovim operaterima',
-        'Send to all group members (agents only)' => '',
+        'Send to all group members (agents only)' => 'Pošalji svim članovima grupe (samo operaterima)',
         'Send to all role members' => 'Pošalji svim pripadnicima uloge',
         'Send on out of office' => 'Pošalji i kad je van kancelarije',
         'Also send if the user is currently out of office.' => 'Takođe pošalji i kada je korisnik van kancelarije.',
@@ -244,6 +244,7 @@ sub Data {
 
         # Template: AdminAppointmentNotificationEventTransportEmailSettings
         'Additional recipient email addresses' => 'Imejl adresa dodatnog primaoca',
+        'This field must have less then 200 characters.' => '',
         'Article visible for customer' => 'Članak vidljiv klijentima',
         'An article will be created if the notification is sent to the customer or an additional email address.' =>
             'Članak je kreiran i obaveštenje poslato klijentu ili na drugu imejl adresu.',
@@ -999,7 +1000,7 @@ sub Data {
         'The response data will be processed by this mapping, to transform it to the kind of data the remote system expects.' =>
             'Podaci odgovora će biti obrađeni kroz ovo mapiranje, radi transformacije u oblik koji udaljeni sistem očekuje.',
         'Include Ticket Data' => 'Uključi podatke tiketa',
-        'Include ticket data in response.' => '',
+        'Include ticket data in response.' => 'Uključi podatke tiketa u odgovoru.',
 
         # Template: AdminGenericInterfaceTransportHTTPREST
         'Network Transport' => 'Mrežni transport',
@@ -1999,7 +2000,7 @@ sub Data {
             'Ovo stanje se koristi u sistemskoj konfiguraciji, neophodna je dodatna potvrda za promenu podešavanja na novu vrednost! ',
         'State type' => 'Tip statusa',
         'It\'s not possible to invalidate this entry because there is no other merge states in system!' =>
-            '',
+            'Nije moguće obeležiti ovu stavku kao nevažeću jer ne postoji više statusa spojenih tiketa u sistemu!',
         'This state is used in the following config settings:' => 'Ovo stanje se koristi u sledećim sistemskim podešavanjima: ',
 
         # Template: AdminSupportDataCollector
@@ -2839,7 +2840,7 @@ sub Data {
 
         # Template: CustomerFooterJS
         '%s detected possible network issues. You could either try reloading this page manually or wait until your browser has re-established the connection on its own.' =>
-            '',
+            '%s je detektovao moguće probleme sa vašom mrežnom vezom. Možete pokušati da ručno osvežite ovu stranicu ili da sačekate da vaš pregledač sam ponovo uspostavi vezu.',
         'The connection has been re-established after a temporary connection loss. Due to this, elements on this page could have stopped to work correctly. In order to be able to use all elements correctly again, it is strongly recommended to reload this page.' =>
             'Veza je ponovo uspostavljena nakon privremenog prekida. Zbog toga, elementi na ovoj stranici su mogli da prestanu da korektno funkcionišu. Da bi sve elemente mogli ponovo normalno da koristite, preporučujemo obavezno osvežavanje ove stranice. ',
 
@@ -3587,6 +3588,8 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceInvokerDefault.pm
         'Could not determine config for invoker %s' => 'Nije moguće utvrditi konfiguraciju za pozivaoca %s',
+        'InvokerType %s is not registered' => '',
+        'MappingType %s is not registered' => '',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceInvokerEvent.pm
         'Need Invoker!' => 'Neophodan pozivalac!',
@@ -3615,6 +3618,7 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceOperationDefault.pm
         'Could not determine config for operation %s' => 'Nije moguće utvrditi konfiguraciju za operaciju %s',
+        'OperationType %s is not registered' => '',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceTransportHTTPREST.pm
         'Need valid Subaction!' => 'Neophodan važeći Subaction!',
@@ -4590,6 +4594,10 @@ sub Data {
         'You have Out of Office enabled, would you like to disable it?' =>
             'Aktivirana je opcija van kancelarije, želite li da je isključite?',
 
+        # Perl Module: Kernel/Output/HTML/Notification/PackageManagerCheckNotVerifiedPackages.pm
+        'The installation of packages which are not verified by the OTRS Group is activated. These packages could threaten your whole system! It is recommended not to use unverified packages.' =>
+            '',
+
         # Perl Module: Kernel/Output/HTML/Notification/SystemConfigurationInvalidCheck.pm
         'You have %s invalid setting(s) deployed. Click here to show invalid settings.' =>
             'Imate %s raspoređeno(a) nevažeće(a) podešavanje(a). Kliknite ovde za prikaz nevažećih podešavanja.',
@@ -4790,6 +4798,10 @@ sub Data {
         'Can\'t read file!' => 'Nemoguće čitanje datoteke!',
         '<p>If you continue to install this package, the following issues may occur:</p><ul><li>Security problems</li><li>Stability problems</li><li>Performance problems</li></ul><p>Please note that issues that are caused by working with this package are not covered by OTRS service contracts.</p>' =>
             '<p>Ako nastavite sa instalacijom ovog paketa, mogu se javiti sledeći problemi:</p><ul><li>Bezbednosni problemi</li><li>Problemi stabilnosti</li><li>Problemi u performansama</li></ul><p>Napominjemo da problemi nastali usled rada sa ovim paketom nisu pokriveni OTRS servisnim ugovorom.</p>',
+        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default.</p>' =>
+            '',
+        '<p>You can activate the installation of not verified packages in the <a href="%sAction=AdminSystemConfiguration;Subaction=View;Setting=Package%3A%3AAllowNotVerifiedPackages" target="_blank">System Configuration</a>.</p>' =>
+            '',
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
         'The process "%s" and all of its data has been imported successfully.' =>
@@ -5067,10 +5079,6 @@ sub Data {
         'Email Sending Queue' => 'Red za slanje imejlova',
         'Emails queued for sending' => 'Broj imejlova zakazanih za slanje',
 
-        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/ErrorLog.pm
-        'Error Log' => 'Greška u prijavi',
-        'There are error reports in your system log.' => 'Postoje izveštaji o greškama u vašem pristupnom sistemu.',
-
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/FQDN.pm
         'FQDN (domain name)' => 'FQDN (naziv domena)',
         'Please configure your FQDN setting.' => 'Molimo da konfigurišete FQDN podešavanje.',
@@ -5250,6 +5258,10 @@ sub Data {
 
         # Perl Module: Kernel/System/Ticket.pm
         'Reset of unlock time.' => 'Poništavanje vremena otključavanja.',
+
+        # Perl Module: Kernel/System/Ticket/Article/Backend/Chat.pm
+        'Chat Participant' => '',
+        'Chat Message Text' => '',
 
         # Perl Module: Kernel/System/Web/InterfaceAgent.pm
         'Login failed! Your user name or password was entered incorrectly.' =>
@@ -5687,7 +5699,7 @@ sub Data {
         # JS File: Core.App
         'Error: Browser Check failed!' => 'Greška: provera pretraživača nije uspela!',
         'Reload page' => 'Osveži stranicu',
-        'Reload page (%ss)' => '',
+        'Reload page (%ss)' => 'Osveži stranicu (%ss)',
 
         # JS File: Core.Debug
         'Namespace %s could not be initialized, because %s could not be found.' =>
@@ -5958,12 +5970,12 @@ Vaša tehnička podrška
             'Dozvoljava klijentima da podese SLA za tiket u klijentskom interfejsu.',
         'Allows customers to set the ticket priority in the customer interface.' =>
             'Dozvoljava klijentima da podese prioritet tiketa u klijentskom interfejsu.',
-        'Allows customers to set the ticket queue in the customer interface. If this is set to \'No\', QueueDefault should be configured.' =>
-            'Dozvoljava klijentima da podese red tiketa u korisničkom interfejsu. Ako je podešeno na \'Ne\', onda treba podesiti QueueDefault.',
+        'Allows customers to set the ticket queue in the customer interface. If this is not enabled, QueueDefault should be configured.' =>
+            '',
         'Allows customers to set the ticket service in the customer interface.' =>
             'Dozvoljava klijentima da podese uslugu za tiket u korisničkom interfejsu.',
-        'Allows customers to set the ticket type in the customer interface. If this is set to \'No\', TicketTypeDefault should be configured.' =>
-            'Dozvoljava klijentima da podese tip tiketa u interfejsu  korisnika. Ukoliko je ovo podešeno na  \'No\', treba konfigurisati TicketTypeDefault.',
+        'Allows customers to set the ticket type in the customer interface. If this is not enabled, TicketTypeDefault should be configured.' =>
+            '',
         'Allows default services to be selected also for non existing customers.' =>
             'Dozvoljava da podrazumevane usluge budu izabrane i za nepostojeće klijente.',
         'Allows defining services and SLAs for tickets (e. g. email, desktop, network, ...), and escalation attributes for SLAs (if ticket service/SLA feature is enabled).' =>
@@ -6798,6 +6810,8 @@ Vaša tehnička podrška
             'Određuje modul za prikaz obaveštenja u interfejsu operatera, ako je operater prijavljen na sistem dok je aktivno održavanje sistema.',
         'Defines the module to display a notification in the agent interface, if the agent session limit prior warning is reached.' =>
             'Određuje modul za prikaz obaveštenja u interfejsu operatera ako .je dostignut limit sesija operatera.',
+        'Defines the module to display a notification in the agent interface, if the installation of not verified packages is activated (only shown to admins).' =>
+            '',
         'Defines the module to display a notification in the agent interface, if the system is used by the admin user (normally you shouldn\'t work as admin).' =>
             'Definiše modul za prikazivanje obaveštenja u interfejsu operatera ako se sistem koristi od strane admin korisnika (normalno ne treba da rade kao administrator).',
         'Defines the module to display a notification in the agent interface, if there are invalid sysconfig settings deployed.' =>
@@ -7275,7 +7289,7 @@ Vaša tehnička podrška
             'Registracija modula interfejsa (prikaz ličnih omiljenih kao podnavigacija administratorskog menija).',
         'Frontend module registration for the agent interface.' => 'Registracija modula pristupa za interfejs operatera.',
         'Frontend module registration for the customer interface.' => 'Registracija modula pristupa za interfejs klijenta.',
-        'Frontend module registration for the public interface.' => '',
+        'Frontend module registration for the public interface.' => 'Registracija pristupnog modula za javni interfejs.',
         'Full value' => 'Cela vrednost',
         'Fulltext index regex filters to remove parts of the text.' => 'Tekst indeks filteri (regularni izrazi) za uklanjanje delova teksta.',
         'Fulltext search' => 'Tekst za pretragu',
@@ -7318,8 +7332,8 @@ Vaša tehnička podrška
         'Graph: Stacked Area Chart' => 'Grafik: Naslagani prostorni grafikon',
         'Greek' => 'Grčki',
         'Hebrew' => 'Hebrejski',
-        'Helps to extend your articles full-text search (From, To, Cc, Subject and Body search). Runtime will do full-text searches on live data (it works fine for up to 50.000 tickets). StaticDB will strip all articles and will build an index after article creation, increasing fulltext searches about 50%. To create an initial index use "bin/otrs.Console.pl Maint::Ticket::FulltextIndexRebuild".' =>
-            'Omogućuje proširenu tekstualnu pretragu vaših članaka (pretraga po poljima From, To, Cc, Subject i Body). Runtime će vršiti pretragu postojećih podataka (daje dobre performanse za do 50.000 tiketa). StaticDB će ignorisati sve članke i napraviće indeks pretrage po kreiranju članka, ubrzavajući tekstualnu pretragu za oko 50%. Za kreiranje početnog indeksa koristite "bin/otrs.Console.pl Maint::Ticket::FulltextIndexRebuild".',
+        'Helps to extend your articles full-text search (From, To, Cc, Subject and Body search). It will strip all articles and will build an index after article creation, increasing fulltext searches about 50%. To create an initial index use "bin/otrs.Console.pl Maint::Ticket::FulltextIndexRebuild".' =>
+            '',
         'High Contrast' => 'Visoki kontrast',
         'High contrast skin for visually impaired users.' => 'Visoko kontrastni izgled za osobe slabijeg vida.',
         'Hindi' => 'Hindi',
@@ -7347,7 +7361,7 @@ Vaša tehnička podrška
         'If "HTTPBasicAuth" was selected for Customer::AuthModule, you can specify (by using a RegExp) to strip parts of REMOTE_USER (e. g. for to remove trailing domains). RegExp-Note, $1 will be the new Login.' =>
             'Ukoliko je podešen HTTPBasicAuth za Customer::AuthModule, možete podesiti (putem RegExp) uklanjanje delova REMOTE_USER vrednosti (npr. radi uklanjanja dodatnih domena). Napomena: $1 će biti novi Login.',
         'If "HTTPBasicAuth" was selected for Customer::AuthModule, you can specify to strip leading parts of user names (e. g. for domains like example_domain\user to user).' =>
-            'Ukoliko je „HTTPBasicAuth” izabran za „Customer::AuthModule”, možete podesiti uklanjanje početnih delova korisničkih imena (npr. za domene kao „example_domain\user” u „user”).',
+            'Ukoliko je podešen HTTPBasicAuth za Customer::AuthModule, možete podesiti uklanjanje delova korisničkih imena (npr. za domene kao example_domain\user u user).',
         'If "LDAP" was selected for Customer::AuthModule and if you want to add a suffix to every customer login name, specifiy it here, e. g. you just want to write the username user but in your LDAP directory exists user@domain.' =>
             'Ukoliko je podešen LDAP za Customer::AuthModule i želite da dodate sufiks svakom korisničkom imenu, definišite ga ovde, npr. želite samo user za korisničko ime, ali u vašem LDAP direktorijumu postoji user@domain.',
         'If "LDAP" was selected for Customer::AuthModule and special paramaters are needed for the Net::LDAP perl module, you can specify them here. See "perldoc Net::LDAP" for more information about the parameters.' =>
@@ -7436,6 +7450,8 @@ Vaša tehnička podrška
             'Ukoliko je ova opcija uključena, tiketi kreirani preko veb interfejsa od strane klijenata ili operatera, će dobiti automatski odgovor ukoliko je podešen. Ako je ova opcija isključena, automatski odgovori neće biti slati.',
         'If this regex matches, no message will be send by the autoresponder.' =>
             'Ako se ovaj izraz poklapa, automatski odgovarač neće poslati nijednu poruku.',
+        'If this setting is enabled, it is possible to install packages which are not verified by OTRS Group. These packages could threaten your whole system!' =>
+            '',
         'If this setting is enabled, local modifications will not be highlighted as errors in the package manager and support data collector.' =>
             'Ukoliko je ovo podešavanje uključeno, lokalne izmene neće biti prikazane kao greške u upravljaču paketima i sakupljaču podataka podrške.',
         'If you\'re going to be out of office, you may wish to let other users know by setting the exact dates of your absence.' =>
@@ -7529,6 +7545,7 @@ Vaša tehnička podrška
         'List view' => 'Pregled liste',
         'Lithuanian' => 'Litvanski',
         'Loader module registration for the agent interface.' => 'Registracija modula za učitavanje za interfejs operatera.',
+        'Loader module registration for the customer interface.' => '',
         'Lock / unlock this ticket' => 'Zaključaj / otključaj ovaj tiket',
         'Locked Tickets' => 'Zaključani tiketi',
         'Locked Tickets.' => 'Zaključani tiketi.',
@@ -7838,7 +7855,7 @@ Vaša tehnička podrška
         'Removed subscription for user "%s".' => 'Pretplata za korisnika "%s" je isključena.',
         'Removes old system configuration deployments (Sunday mornings).' =>
             'Uklanja stare rasporede sistemske konfiguracije (nedeljom ujutru).',
-        'Removes old ticket number counters (Sunday mornings).' => 'Uklanja stare brojače tiketa (nedeljom ujutru).',
+        'Removes old ticket number counters (each 10 minutes).' => '',
         'Removes the ticket watcher information when a ticket is archived.' =>
             'Uklanja informacije posmatrača tiketa kada se tiket arhivira.',
         'Renew existing SMIME certificates from customer backend. Note: SMIME and SMIME::FetchFromCustomer needs to be enabled in SysConfig and customer backend needs to be configured to fetch UserSMIMECertificate attribute.' =>
@@ -8214,6 +8231,16 @@ Vaša tehnička podrška
             'Prikazuje vezu u meniju za dodavanje napomene u detaljnom pregledu u interfejsu operatera. Dodatna kontrola prikaza ove veze može se postići korišćenjem ključa "Group" sa sadržajem "rw:group1;move_into:group2". Za združivanje veza u meniju podesite ključ "ClusterName" sa sadržajem koji će biti naziv koji želite da vidite u interfejsu. Koristite ključ "ClusterPriority" za izmenu redosleda grupa u meniju.',
         'Shows a link in the menu to add a note to a ticket in every ticket overview of the agent interface.' =>
             'U meniju prikazuje vezu za dodavanje napomene na tiket u svaki pregled tiketa u interfejsu operatera.',
+        'Shows a link in the menu to add a phone call inbound in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
+            '',
+        'Shows a link in the menu to add a phone call outbound in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
+            '',
+        'Shows a link in the menu to change the customer who requested the ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
+            '',
+        'Shows a link in the menu to change the owner of a ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
+            '',
+        'Shows a link in the menu to change the responsible agent of a ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
+            '',
         'Shows a link in the menu to close a ticket in every ticket overview of the agent interface.' =>
             'U meniju prikazuje vezu za zatvaranje tiketa u svaki pregled tiketa u interfejsu operatera.',
         'Shows a link in the menu to close a ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
@@ -8234,16 +8261,10 @@ Vaša tehnička podrška
             'U meniju prikazuje vezu za pomeranje tiketa u svaki pregled tiketa u interfejsu operatera.',
         'Shows a link in the menu to print a ticket or an article in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
             'Prikazuje vezu u meniju za štampu tiketa ili članka u detaljnom pregledu u interfejsu operatera. Dodatna kontrola prikaza ove veze može se postići korišćenjem ključa "Group" sa sadržajem "rw:group1;move_into:group2". Za združivanje veza u meniju podesite ključ "ClusterName" sa sadržajem koji će biti naziv koji želite da vidite u interfejsu. Koristite ključ "ClusterPriority" za izmenu redosleda grupa u meniju.',
-        'Shows a link in the menu to see the customer who requested the ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            'Prikazuje vezu u meniju za kontrolu korisnika na koga se vodi tiket u detaljnom pregledu u interfejsu operatera. Dodatna kontrola prikaza ove veze može se postići korišćenjem ključa "Group" sa sadržajem "rw:group1;move_into:group2". Za združivanje veza u meniju podesite ključ "ClusterName" sa sadržajem koji će biti naziv koji želite da vidite u interfejsu. Koristite ključ "ClusterPriority" za izmenu redosleda grupa u meniju.',
         'Shows a link in the menu to see the history of a ticket in every ticket overview of the agent interface.' =>
             'U meniju prikazuje vezu za gledanje istorijata tiketa u svaki pregled tiketa u interfejsu operatera.',
-        'Shows a link in the menu to see the owner of a ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            'Prikazuje vezu u meniju za kontrolu vlasnika tiketa u detaljnom pregledu u interfejsu operatera. Dodatna kontrola prikaza ove veze može se postići korišćenjem ključa "Group" sa sadržajem "rw:group1;move_into:group2". Za združivanje veza u meniju podesite ključ "ClusterName" sa sadržajem koji će biti naziv koji želite da vidite u interfejsu. Koristite ključ "ClusterPriority" za izmenu redosleda grupa u meniju.',
         'Shows a link in the menu to see the priority of a ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
             'Prikazuje vezu u meniju za kontrolu prioriteta tiketa u detaljnom pregledu u interfejsu operatera. Dodatna kontrola prikaza ove veze može se postići korišćenjem ključa "Group" sa sadržajem "rw:group1;move_into:group2". Za združivanje veza u meniju podesite ključ "ClusterName" sa sadržajem koji će biti naziv koji želite da vidite u interfejsu. Koristite ključ "ClusterPriority" za izmenu redosleda grupa u meniju.',
-        'Shows a link in the menu to see the responsible agent of a ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            'Prikazuje vezu u meniju za kontrolu odgovornog tiketa u detaljnom pregledu u interfejsu operatera. Dodatna kontrola prikaza ove veze može se postići korišćenjem ključa "Group" sa sadržajem "rw:group1;move_into:group2". Za združivanje veza u meniju podesite ključ "ClusterName" sa sadržajem koji će biti naziv koji želite da vidite u interfejsu. Koristite ključ "ClusterPriority" za izmenu redosleda grupa u meniju.',
         'Shows a link in the menu to send an outbound email in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
             'Prikazuje vezu u meniju za slanje odlazne imejl poruke u detaljnom pregledu u interfejsu operatera. Dodatna kontrola prikaza ove veze može se postići korišćenjem ključa "Group" sa sadržajem "rw:group1;move_into:group2". Za združivanje veza u meniju podesite ključ "ClusterName" sa sadržajem koji će biti naziv koji želite da vidite u interfejsu. Koristite ključ "ClusterPriority" za izmenu redosleda grupa u meniju.',
         'Shows a link in the menu to set a ticket as junk in every ticket overview of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
@@ -8489,7 +8510,7 @@ Vaša tehnička podrška
         'The identifier for a ticket, e.g. Ticket#, Call#, MyTicket#. The default is Ticket#.' =>
             'Identifikator tiketa, npr. Ticket#, Call#, MyTicket#. Podrazumevano je Ticket#.',
         'The logo shown in the header of the agent interface for the skin "High Contrast". See "AgentLogo" for further description.' =>
-            '',
+            'Logo prikazan u zaglavlju interfejsa operatera za izgled "High Contrast". Pogledajte "AgentLogo" za detaljniji opis.',
         'The logo shown in the header of the agent interface for the skin "default". See "AgentLogo" for further description.' =>
             'Logo prikazan u zaglavlju interfejsa operatera za izgled "podrazumevani". Pogledajte "AgentLogo" za detaljniji opis.',
         'The logo shown in the header of the agent interface for the skin "ivory". See "AgentLogo" for further description.' =>

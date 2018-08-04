@@ -264,19 +264,19 @@ sub SettingRender {
 
     my $EffectiveValue = $Param{EffectiveValue} // '';
 
-    # Set undefined group attributes.
-    for my $Group (qw(Group GroupRo)) {
-        if ( !defined $EffectiveValue->{$Group} ) {
-            $EffectiveValue->{$Group} = [];
-        }
-    }
-
     if ( !IsHashRefWithData($EffectiveValue) ) {
         $Kernel::OM->Get('Kernel::System::Log')->Log(
             Priority => 'error',
             Message  => "EffectiveValue must be a hash!"
         );
         return '';
+    }
+
+    # Set undefined group attributes.
+    for my $Group (qw(Group GroupRo)) {
+        if ( !defined $EffectiveValue->{$Group} ) {
+            $EffectiveValue->{$Group} = [];
+        }
     }
 
     my %EffectiveValueCheck = (
@@ -301,7 +301,7 @@ sub SettingRender {
     if ( !$EffectiveValueCheck{Success} ) {
         my $Message = $LanguageObject->Translate("Value is not correct! Please, consider updating this module.");
 
-        $HTML .= "<div class='BadEffectiveValue'>\n";
+        $HTML .= $Param{IsValid} ? "<div class='BadEffectiveValue'>\n" : "<div>\n";
         $HTML .= "<p>* $Message</p>\n";
         $HTML .= "</div>\n";
     }
