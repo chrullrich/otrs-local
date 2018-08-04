@@ -140,6 +140,18 @@ sub SendNotification {
             $EmailTemplate = 'Default';
         }
 
+        my $RecipientLanugageObject = $LayoutObject->{LanguageObject};
+
+        if ( $Recipient{UserLanguage} ) {
+
+            # Create new language object to include recipient language preference if applicable.
+            $RecipientLanugageObject = Kernel::Language->new(
+                UserLanguage => $Recipient{UserLanguage},
+            );
+        }
+
+        local $LayoutObject->{LanguageObject} = $RecipientLanugageObject;
+
         # generate HTML
         $Notification{Body} = $LayoutObject->Output(
             TemplateFile => "NotificationEvent/Email/$EmailTemplate",
