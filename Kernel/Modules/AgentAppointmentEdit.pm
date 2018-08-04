@@ -320,6 +320,7 @@ sub Run {
                             $Rule->{$Type} eq 'FirstResponseTime'
                             || $Rule->{$Type} eq 'UpdateTime'
                             || $Rule->{$Type} eq 'SolutionTime'
+                            || $Rule->{$Type} eq 'PendingTime'
                             )
                         {
                             $GetParam{ReadOnlyStart}    = 1 if $Type eq 'StartDate';

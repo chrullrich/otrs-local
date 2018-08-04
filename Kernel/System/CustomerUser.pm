@@ -15,8 +15,6 @@ use Kernel::System::VariableCheck qw(:all);
 
 use parent qw(Kernel::System::EventHandler);
 
-use Kernel::System::VariableCheck qw(:all);
-
 our @ObjectDependencies = (
     'Kernel::Config',
     'Kernel::Language',
@@ -1123,6 +1121,35 @@ sub SetPreferences {
         );
         return;
     }
+
+    # Don't allow overwriting of native user data.
+    my %Blacklisted = (
+        UserID         => 1,
+        UserLogin      => 1,
+        UserPassword   => 1,
+        UserFirstname  => 1,
+        UserLastname   => 1,
+        UserFullname   => 1,
+        UserStreet     => 1,
+        UserCity       => 1,
+        UserZip        => 1,
+        UserCountry    => 1,
+        UserComment    => 1,
+        UserCustomerID => 1,
+        UserTitle      => 1,
+        UserEmail      => 1,
+        ChangeTime     => 1,
+        ChangeBy       => 1,
+        CreateTime     => 1,
+        CreateBy       => 1,
+        UserPhone      => 1,
+        UserMobile     => 1,
+        UserFax        => 1,
+        UserMailString => 1,
+        ValidID        => 1,
+    );
+
+    return 0 if $Blacklisted{ $Param{Key} };
 
     # check if user exists
     my %User = $Self->CustomerUserDataGet( User => $Param{UserID} );
