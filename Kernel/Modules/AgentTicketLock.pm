@@ -91,7 +91,7 @@ sub Run {
         );
         if ( $OwnerID != $Self->{UserID} ) {
             my $Output = $LayoutObject->Header(
-                Title => 'Error',
+                Title => Translatable('Error'),
                 Type  => 'Small',
             );
             $Output .= $LayoutObject->Warning(
@@ -114,6 +114,22 @@ sub Run {
         if ( !$Lock ) {
             return $LayoutObject->ErrorScreen();
         }
+
+        my $PreviousOwner = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => 'PreviousOwner' );
+
+        if ($PreviousOwner) {
+
+            my $OwnerSet = $TicketObject->TicketOwnerSet(
+                TicketID  => $Self->{TicketID},
+                UserID    => $Self->{UserID},
+                NewUserID => $PreviousOwner,
+            );
+
+            if ( !$OwnerSet ) {
+                return $LayoutObject->ErrorScreen();
+            }
+        }
+
     }
     else {
 
@@ -126,7 +142,7 @@ sub Run {
                 TicketID => $Self->{TicketID},
             );
             my $Output = $LayoutObject->Header(
-                Title => 'Error',
+                Title => Translatable('Error'),
                 Type  => 'Small',
             );
             $Output .= $LayoutObject->Warning(
