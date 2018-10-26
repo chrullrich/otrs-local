@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Modules::AgentTicketZoom;
@@ -2696,6 +2696,10 @@ sub _ArticleTree {
                 # remove empty lines
                 $Item->{ArticleData}->{ArticlePlain} =~ s{^[\n\r]+}{}xmsg;
 
+                # Modify plain text and body to avoid '</script>' tag issue (see bug#14023).
+                $Item->{ArticleData}->{ArticlePlain} =~ s{</script>}{<###/script>}xmsg;
+                $Item->{ArticleData}->{Body} =~ s{</script>}{<###/script>}xmsg;
+
                 my %ArticleFlagsAll = $ArticleObject->ArticleFlagGet(
                     ArticleID => $Item->{ArticleID},
                     UserID    => 1,
@@ -2822,6 +2826,11 @@ sub _ArticleTree {
 
         # Include current article ID only if it's selected.
         $Param{CurrentArticleID} //= $Self->{ArticleID};
+
+        # Modify body text to avoid '</script>' tag issue (see bug#14023).
+        for my $ArticleBoxItem (@ArticleBox) {
+            $ArticleBoxItem->{Body} =~ s{</script>}{<###/script>}xmsg;
+        }
 
         # send data to JS
         $LayoutObject->AddJSData(

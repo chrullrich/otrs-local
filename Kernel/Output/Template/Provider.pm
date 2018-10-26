@@ -1,14 +1,14 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Output::Template::Provider;
 ## no critic(Perl::Critic::Policy::OTRS::RequireCamelCase)
-## nofilter(TidyAll::Plugin::OTRS::Perl::SyntaxCheck) # bails on TT Constants
+## nofilter(TidyAll::Plugin::OTRS::Perl::SyntaxCheck)
 
 use strict;
 use warnings;
@@ -345,7 +345,7 @@ sub _PreProcessTemplateContent {
     #
     # Remove DTL-style comments (lines starting with #)
     #
-    $Content =~ s/^#.*\n//gm;
+    $Content =~ s/^#.*\n//gm if !$ENV{TEMPLATE_KEEP_COMMENTS};
 
     #
     # Insert a BLOCK call into the template.
@@ -697,10 +697,10 @@ sub MigrateDTLtoTT {
 
 =head1 TERMS AND CONDITIONS
 
-This software is part of the OTRS project (L<http://otrs.org/>).
+This software is part of the OTRS project (L<https://otrs.org/>).
 
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
-the enclosed file COPYING for license information (AGPL). If you
-did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
+the enclosed file COPYING for license information (GPL). If you
+did not receive this file, see L<https://www.gnu.org/licenses/gpl-3.0.txt>.
 
 =cut

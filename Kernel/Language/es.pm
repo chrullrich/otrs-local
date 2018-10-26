@@ -7,8 +7,8 @@
 # Copyright (C) 2013 Enrique Matías Sánchez <quique@unizar.es>
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Language::es;
@@ -29,7 +29,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.666723960123754;
+    $Self->{Completeness}        = 0.665922746781116;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -2443,7 +2443,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Editar sus preferencias',
-        'Personal preferences' => '',
+        'Personal Preferences' => '',
         'Preferences' => 'Preferencias',
         'Please note: you\'re currently editing the preferences of %s.' =>
             '',
@@ -2471,7 +2471,6 @@ sub Data {
         'Reset to default' => '',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => '',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             '',
         'Did you know?' => '',
@@ -2957,6 +2956,7 @@ sub Data {
         'View notifications' => 'Ver notificiaciones',
         'Notifications' => '',
         'Notifications (OTRS Business Solution™)' => '',
+        'Personal preferences' => '',
         'Logout' => 'Cerrar la sesión',
         'You are logged in as' => 'Ha iniciado sesión como',
 
@@ -2968,7 +2968,14 @@ sub Data {
         'General Specifications and Mail Settings' => 'Indicaciones generales y ajustes del correo',
         'Finish' => 'Finalizar',
         'Welcome to %s' => 'Bienvenido a %s',
+        'Germany' => '',
         'Phone' => 'Teléfono',
+        'United States' => '',
+        'Mexico' => '',
+        'Hungary' => '',
+        'Brazil' => '',
+        'Singapore' => '',
+        'Hong Kong' => '',
         'Web site' => 'Sitio web',
 
         # Template: InstallerConfigureMail
