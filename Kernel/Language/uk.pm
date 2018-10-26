@@ -2,8 +2,8 @@
 # Copyright (C) 2010 ÐÐµÐ»ÑÑÐºÐ¸Ð¹ ÐÑÑÐµÐ¼
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Language::uk;
@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%M/%D/%Y';
     $Self->{DateInputFormat}     = '%M/%D/%Y';
     $Self->{DateInputFormatLong} = '%M/%D/%Y - %T';
-    $Self->{Completeness}        = 0.506875214850464;
+    $Self->{Completeness}        = 0.506266094420601;
 
     # csv separator
     $Self->{Separator}         = ',';
@@ -2438,7 +2438,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Змінити налаштування',
-        'Personal preferences' => '',
+        'Personal Preferences' => '',
         'Preferences' => 'Налаштування',
         'Please note: you\'re currently editing the preferences of %s.' =>
             '',
@@ -2466,7 +2466,6 @@ sub Data {
         'Reset to default' => '',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => '',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             '',
         'Did you know?' => '',
@@ -2952,6 +2951,7 @@ sub Data {
         'View notifications' => '',
         'Notifications' => '',
         'Notifications (OTRS Business Solution™)' => '',
+        'Personal preferences' => '',
         'Logout' => 'Вийти',
         'You are logged in as' => 'Ви ввійшли як',
 
@@ -2963,7 +2963,14 @@ sub Data {
         'General Specifications and Mail Settings' => 'Загальні характеристики та налаштування пошти',
         'Finish' => 'Закінчити',
         'Welcome to %s' => 'Ласкаво просимо до %s',
+        'Germany' => '',
         'Phone' => 'Телефон',
+        'United States' => '',
+        'Mexico' => '',
+        'Hungary' => '',
+        'Brazil' => '',
+        'Singapore' => '',
+        'Hong Kong' => '',
         'Web site' => 'Веб-сторінка',
 
         # Template: InstallerConfigureMail

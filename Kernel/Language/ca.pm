@@ -2,8 +2,8 @@
 # Copyright (C) 2012 Sistemes OTIC (ibsalut) - Antonio Linde
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Language::ca;
@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.219491234101066;
+    $Self->{Completeness}        = 0.219227467811159;
 
     # csv separator
     $Self->{Separator}         = '';
@@ -2438,7 +2438,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Editar les seves preferències',
-        'Personal preferences' => '',
+        'Personal Preferences' => '',
         'Preferences' => 'Preferències',
         'Please note: you\'re currently editing the preferences of %s.' =>
             '',
@@ -2466,7 +2466,6 @@ sub Data {
         'Reset to default' => '',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => '',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             '',
         'Did you know?' => '',
@@ -2952,6 +2951,7 @@ sub Data {
         'View notifications' => '',
         'Notifications' => '',
         'Notifications (OTRS Business Solution™)' => '',
+        'Personal preferences' => '',
         'Logout' => 'Desconnectar-se',
         'You are logged in as' => 'Està connectat com',
 
@@ -2963,7 +2963,14 @@ sub Data {
         'General Specifications and Mail Settings' => 'Especificacions generals i de correu',
         'Finish' => 'Finalitzar',
         'Welcome to %s' => '',
+        'Germany' => '',
         'Phone' => 'Telèfono',
+        'United States' => '',
+        'Mexico' => '',
+        'Hungary' => '',
+        'Brazil' => '',
+        'Singapore' => '',
+        'Hong Kong' => '',
         'Web site' => 'Web',
 
         # Template: InstallerConfigureMail

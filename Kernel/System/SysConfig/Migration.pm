@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::System::SysConfig::Migration;
@@ -880,7 +880,7 @@ sub MigrateXMLStructure {
                 $ReplacementString = "\n\t\t\t<Hash>\n" .
                     "\t\t\t\t<DefaultItem ValueType=\"Select\">\n";
                 for my $DFoption (@DFoptions) {
-                    ## nofilter (TidyAll::Plugin::OTRS::Perl::Translatable)
+                    ## nofilter(TidyAll::Plugin::OTRS::Perl::Translatable)
                     $ReplacementString
                         .= "\t\t\t\t\t<Item ValueType=\"Option\" Value=\"$DFCount\" Translatable=\"1\">$DFoption</Item>\n";
                     $DFCount++;
@@ -2885,10 +2885,10 @@ sub _SettingUpdate {
 
 =head1 TERMS AND CONDITIONS
 
-This software is part of the OTRS project (L<http://otrs.org/>).
+This software is part of the OTRS project (L<https://otrs.org/>).
 
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
-the enclosed file COPYING for license information (AGPL). If you
-did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
+the enclosed file COPYING for license information (GPL). If you
+did not receive this file, see L<https://www.gnu.org/licenses/gpl-3.0.txt>.
 
 =cut

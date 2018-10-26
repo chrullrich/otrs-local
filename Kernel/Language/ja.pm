@@ -1,13 +1,13 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # Copyright (C) 2010-2011 Kaz Kamimura <kamypus at yahoo.co.jp>
 # Copyright (C) 2011/12/08 Kaoru Hayama TIS Inc.
 # Copyright (C) 2014 Norihiro Tanaka NTT Data Intellilink Corp.
 # Copyright (C) 2014 Toshihiro Takehara Cloud ASIA Co., Ltd.
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 package Kernel::Language::ja;
 
@@ -27,7 +27,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y/%M/%D';
     $Self->{DateInputFormat}     = '%Y/%M/%D';
     $Self->{DateInputFormatLong} = '%Y/%M/%D - %T';
-    $Self->{Completeness}        = 0.760055001718804;
+    $Self->{Completeness}        = 0.759141630901288;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -2444,7 +2444,7 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
 
         # Template: AgentPreferences
         'Edit your preferences' => '個人設定を編集',
-        'Personal preferences' => '個人設定',
+        'Personal Preferences' => '個人設定',
         'Preferences' => '個人設定',
         'Please note: you\'re currently editing the preferences of %s.' =>
             '',
@@ -2472,7 +2472,6 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
         'Reset to default' => 'デフォルトにリセットする',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => '個人設定',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             '右側のグループから選択して、変更したい設定を見つけて下さい。',
         'Did you know?' => 'ご存知ですか？',
@@ -2958,6 +2957,7 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
         'View notifications' => '通知を見る',
         'Notifications' => '通知',
         'Notifications (OTRS Business Solution™)' => '通知(OTRS Business Solution™)',
+        'Personal preferences' => '個人設定',
         'Logout' => 'ログアウト',
         'You are logged in as' => 'ログイン中: ',
 
@@ -2969,7 +2969,14 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
         'General Specifications and Mail Settings' => '共通仕様とメール設定',
         'Finish' => '完了',
         'Welcome to %s' => '%s にようこそ',
+        'Germany' => '',
         'Phone' => '電話',
+        'United States' => '',
+        'Mexico' => '',
+        'Hungary' => '',
+        'Brazil' => '',
+        'Singapore' => '',
+        'Hong Kong' => '',
         'Web site' => 'Webサイト',
 
         # Template: InstallerConfigureMail

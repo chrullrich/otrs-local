@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 use strict;
@@ -55,7 +55,7 @@ $Selenium->RunTest(
         my $Count = 0;
         for my $Item (@NavigationCheck) {
             my $Navigation = $Selenium->execute_script(
-                "return \$('.WidgetSimple:eq(7) ul li:eq($Count) a span:eq(1)').text().trim()"
+                "return \$('.WidgetSimple:eq(7) ul li:eq($Count) a span.Title').text().trim()"
             );
 
             $Navigation =~ s/\n\s+/@/g;
@@ -64,16 +64,16 @@ $Selenium->RunTest(
             $Self->Is(
                 $Navigation[0],
                 $NavigationCheck[$Count],
-                "$NavigationCheck[$Count] - admin navigation item is sort well",
+                "$NavigationCheck[$Count] - admin navigation item is sorted well",
             );
 
             # Add item to favourite.
             $Selenium->execute_script(
-                "\$('.WidgetSimple:eq(7) ul li:eq($Count) a span:eq(5)').trigger('click')"
+                "\$('.WidgetSimple:eq(7) ul li:eq($Count) a span.AddAsFavourite').trigger('click')"
             );
 
             my $Favourite = $Selenium->execute_script(
-                "return \$('.WidgetSimple:eq(7) ul li:eq($Count) a span:eq(5)').attr('data-module')"
+                "return \$('.WidgetSimple:eq(7) ul li:eq($Count) a span.AddAsFavourite').attr('data-module')"
             );
 
             $Selenium->WaitFor(

@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Modules::AgentTicketProcess;
@@ -1151,14 +1151,15 @@ sub _GetParam {
                 )
             {
 
-                my %DateParam = ( Prefix => $Prefix );
-
                 # map the GetParam's Date Values to our DateParamHash
-                %DateParam = map {
-                    ( $Prefix . $_ )
-                        => $ParamObject->GetParam( Param => ( $Prefix . $_ ) )
-                    }
-                    qw(Year Month Day Hour Minute);
+                my %DateParam = (
+                    Prefix => $Prefix,
+                    map {
+                        ( $Prefix . $_ )
+                            => $ParamObject->GetParam( Param => ( $Prefix . $_ ) )
+                        }
+                        qw(Year Month Day Hour Minute)
+                );
 
                 # if all values are present
                 if (
@@ -4786,8 +4787,10 @@ sub _StoreActivityDialog {
             if ( !$TicketParam{Title} ) {
 
                 # get the current server Time-stamp
-                my $CurrentTimeStamp = $Kernel::OM->Create('Kernel::System::DateTime')->ToString();
-                $TicketParam{Title} = "$Param{ProcessName} - $CurrentTimeStamp";
+                my $DateTimeObject   = $Kernel::OM->Create('Kernel::System::DateTime');
+                my $CurrentTimeStamp = $DateTimeObject->ToString();
+                my $OTRSTimeZone     = $DateTimeObject->OTRSTimeZoneGet();
+                $TicketParam{Title} = "$Param{ProcessName} - $CurrentTimeStamp ($OTRSTimeZone)";
 
                 # use article subject from the web request if any
                 if ( IsStringWithData( $Param{GetParam}->{Subject} ) ) {
@@ -5185,10 +5188,10 @@ sub _StoreActivityDialog {
                             {
                                 next ATTACHMENT;
                             }
-
-                            # remember inline images and normal attachments
-                            push @NewAttachmentData, \%{$Attachment};
                         }
+
+                        # Remember inline images and normal attachments.
+                        push @NewAttachmentData, \%{$Attachment};
                     }
 
                     @Attachments = @NewAttachmentData;
@@ -5235,9 +5238,6 @@ sub _StoreActivityDialog {
                     return $LayoutObject->ErrorScreen();
                 }
 
-                # remove pre submitted attachments
-                $UploadCacheObject->FormIDRemove( FormID => $Self->{FormID} );
-
                 # write attachments
                 for my $Attachment (@Attachments) {
                     $ArticleBackendObject->ArticleWriteAttachment(
@@ -5247,53 +5247,8 @@ sub _StoreActivityDialog {
                     );
                 }
 
-                # get the link ticket id if given
-                my $LinkTicketID = $ParamObject->GetParam( Param => 'LinkTicketID' ) || '';
-
-                # get screen config
-                my $Config = $Kernel::OM->Get('Kernel::Config')->Get("Ticket::Frontend::$Self->{Action}");
-
-                # link tickets
-                if (
-                    $LinkTicketID
-                    && $Config->{SplitLinkType}
-                    && $Config->{SplitLinkType}->{LinkType}
-                    && $Config->{SplitLinkType}->{Direction}
-                    )
-                {
-
-                    my $Access = $TicketObject->TicketPermission(
-                        Type     => 'ro',
-                        TicketID => $LinkTicketID,
-                        UserID   => $Self->{UserID}
-                    );
-
-                    if ( !$Access ) {
-                        return $LayoutObject->NoPermission(
-                            Message    => "You need ro permission!",
-                            WithHeader => 'yes',
-                        );
-                    }
-
-                    my $SourceKey = $LinkTicketID;
-                    my $TargetKey = $TicketID;
-
-                    if ( $Config->{SplitLinkType}->{Direction} eq 'Source' ) {
-                        $SourceKey = $TicketID;
-                        $TargetKey = $LinkTicketID;
-                    }
-
-                    # link the tickets
-                    $Kernel::OM->Get('Kernel::System::LinkObject')->LinkAdd(
-                        SourceObject => 'Ticket',
-                        SourceKey    => $SourceKey,
-                        TargetObject => 'Ticket',
-                        TargetKey    => $TargetKey,
-                        Type         => $Config->{SplitLinkType}->{LinkType} || 'Normal',
-                        State        => 'Valid',
-                        UserID       => $Self->{UserID},
-                    );
-                }
+                # Remove pre submitted attachments.
+                $UploadCacheObject->FormIDRemove( FormID => $Self->{FormID} );
 
                 # time accounting
                 if ( $Param{GetParam}->{TimeUnits} ) {
@@ -5495,6 +5450,54 @@ sub _StoreActivityDialog {
                 );
             }
         }
+    }
+
+    # get the link ticket id if given
+    my $LinkTicketID = $ParamObject->GetParam( Param => 'LinkTicketID' ) || '';
+
+    # get screen config
+    my $Config = $Kernel::OM->Get('Kernel::Config')->Get("Ticket::Frontend::$Self->{Action}");
+
+    # link tickets
+    if (
+        $LinkTicketID
+        && $Config->{SplitLinkType}
+        && $Config->{SplitLinkType}->{LinkType}
+        && $Config->{SplitLinkType}->{Direction}
+        )
+    {
+
+        my $Access = $TicketObject->TicketPermission(
+            Type     => 'ro',
+            TicketID => $LinkTicketID,
+            UserID   => $Self->{UserID}
+        );
+
+        if ( !$Access ) {
+            return $LayoutObject->NoPermission(
+                Message    => "You need ro permission!",
+                WithHeader => 'yes',
+            );
+        }
+
+        my $SourceKey = $LinkTicketID;
+        my $TargetKey = $TicketID;
+
+        if ( $Config->{SplitLinkType}->{Direction} eq 'Source' ) {
+            $SourceKey = $TicketID;
+            $TargetKey = $LinkTicketID;
+        }
+
+        # link the tickets
+        $Kernel::OM->Get('Kernel::System::LinkObject')->LinkAdd(
+            SourceObject => 'Ticket',
+            SourceKey    => $SourceKey,
+            TargetObject => 'Ticket',
+            TargetKey    => $TargetKey,
+            Type         => $Config->{SplitLinkType}->{LinkType} || 'Normal',
+            State        => 'Valid',
+            UserID       => $Self->{UserID},
+        );
     }
 
     # Transitions will be handled by ticket event module (TicketProcessTransitions.pm).

@@ -1,11 +1,11 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # Copyright (C) 2011 Andrej Cimerlajt, i-Rose d.o.o. <andrej.cimerlajt@i-rose.si>
 # Copyright (C) 2011 Gorazd Å½agar, i-Rose d.o.o. <gorazd.zagar@i-rose.si>
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 # This translation is only partially complete
@@ -28,7 +28,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.23066345823307;
+    $Self->{Completeness}        = 0.230386266094421;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -2442,7 +2442,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Uredite vaše nastavitve',
-        'Personal preferences' => '',
+        'Personal Preferences' => '',
         'Preferences' => 'Nastavitve',
         'Please note: you\'re currently editing the preferences of %s.' =>
             '',
@@ -2470,7 +2470,6 @@ sub Data {
         'Reset to default' => '',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => '',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             '',
         'Did you know?' => '',
@@ -2956,6 +2955,7 @@ sub Data {
         'View notifications' => '',
         'Notifications' => '',
         'Notifications (OTRS Business Solution™)' => '',
+        'Personal preferences' => '',
         'Logout' => 'Odjava',
         'You are logged in as' => 'Prijavljeni ste kot',
 
@@ -2967,7 +2967,14 @@ sub Data {
         'General Specifications and Mail Settings' => 'Splošne tehnične zahteve in nastavitve za e-pošto',
         'Finish' => 'Končaj',
         'Welcome to %s' => '',
+        'Germany' => '',
         'Phone' => 'Telefon',
+        'United States' => '',
+        'Mexico' => '',
+        'Hungary' => '',
+        'Brazil' => '',
+        'Singapore' => '',
+        'Hong Kong' => '',
         'Web site' => 'Web stran',
 
         # Template: InstallerConfigureMail
