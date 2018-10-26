@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::System::HTMLUtils;
@@ -56,7 +56,10 @@ sub new {
 
 convert an HTML string to an ASCII string
 
-    my $Ascii = $HTMLUtilsObject->ToAscii( String => $String );
+    my $Ascii = $HTMLUtilsObject->ToAscii(
+        String => $String,
+        NoLineLength => 1, # optional, don't consider line length,
+    );
 
 =cut
 
@@ -566,7 +569,7 @@ sub ToAscii {
     $Param{String} =~ s/^\s*\n\s*\n/\n/mg;
 
     # force line breaking
-    if ( length $Param{String} > $LineLength ) {
+    if ( length $Param{String} > $LineLength && !$Param{NoLineLength} ) {
         $Param{String} =~ s/(.{4,$LineLength})(?:\s|\z)/$1\n/gm;
     }
 
@@ -1160,10 +1163,28 @@ sub Safety {
                 }egsxim;
             }
 
+            # Remove malicious CSS content
+            $Tag =~ s{
+                (\s)style=("|') (.*?) \2
+            }
+            {
+                my ($Space, $Delimiter, $Content) = ($1, $2, $3);
+
+                if (
+                    ($Param{NoIntSrcLoad} && $Content =~ m{url\(})
+                    || ($Param{NoExtSrcLoad} && $Content =~ m/(http|ftp|https):\//i)) {
+                    $Replaced = 1;
+                    '';
+                }
+                else {
+                    "${Space}style=${Delimiter}${Content}${Delimiter}";
+                }
+            }egsxim;
+
             # remove load tags
             if ($Param{NoIntSrcLoad} || $Param{NoExtSrcLoad}) {
                 $Tag =~ s{
-                    ($TagStart (.+?) (?: \s | /) src=(.+?) (\s.+?|) $TagEnd)
+                    ($TagStart (.+?) (?: \s | /) (?:src|poster)=(.+?) (\s.+?|) $TagEnd)
                 }
                 {
                     my $URL = $3;
@@ -1258,10 +1279,10 @@ sub EmbeddedImagesExtract {
 
 =head1 TERMS AND CONDITIONS
 
-This software is part of the OTRS project (L<http://otrs.org/>).
+This software is part of the OTRS project (L<https://otrs.org/>).
 
 This software comes with ABSOLUTELY NO WARRANTY. For details, see
-the enclosed file COPYING for license information (AGPL). If you
-did not receive this file, see L<http://www.gnu.org/licenses/agpl.txt>.
+the enclosed file COPYING for license information (GPL). If you
+did not receive this file, see L<https://www.gnu.org/licenses/gpl-3.0.txt>.
 
 =cut

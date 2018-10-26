@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Language::sw;
@@ -27,7 +27,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%M/%D/%Y';
     $Self->{DateInputFormat}     = '%M/%D/%Y';
     $Self->{DateInputFormatLong} = '%M/%D/%Y - %T';
-    $Self->{Completeness}        = 0.494843588862152;
+    $Self->{Completeness}        = 0.494248927038627;
 
     # csv separator
     $Self->{Separator}         = ',';
@@ -2441,7 +2441,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Harir mapendeleo yako',
-        'Personal preferences' => '',
+        'Personal Preferences' => '',
         'Preferences' => 'Pendekezo',
         'Please note: you\'re currently editing the preferences of %s.' =>
             '',
@@ -2469,7 +2469,6 @@ sub Data {
         'Reset to default' => '',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => '',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             '',
         'Did you know?' => '',
@@ -2955,6 +2954,7 @@ sub Data {
         'View notifications' => '',
         'Notifications' => 'Taarifa',
         'Notifications (OTRS Business Solution™)' => '',
+        'Personal preferences' => '',
         'Logout' => 'Funga',
         'You are logged in as' => 'Umeingia kama',
 
@@ -2966,7 +2966,14 @@ sub Data {
         'General Specifications and Mail Settings' => 'Ubainishi wa jumla na mipangilio ya barua pepe',
         'Finish' => 'Maliza',
         'Welcome to %s' => '',
+        'Germany' => '',
         'Phone' => 'Simu',
+        'United States' => '',
+        'Mexico' => '',
+        'Hungary' => '',
+        'Brazil' => '',
+        'Singapore' => '',
+        'Hong Kong' => '',
         'Web site' => 'Tovuti',
 
         # Template: InstallerConfigureMail
