@@ -1,4 +1,53 @@
-#6.0.11 2018-??-??
+#6.0.13 2018-??-??
+
+#6.0.12 2018-10-05
+ - 2018-09-27 Updated translations, thanks to all translators.
+ - 2018-09-27 Added Korean language, thanks to 신홍열.
+ - 2018-09-27 Fixed bug#[13623](https://bugs.otrs.org/show_bug.cgi?id=13623) - Long running DBUpgrade from OTRS 5 to OTRS 6 due to inefficient SQL queries.
+ - 2018-09-25 Fixed bug#[13754](https://bugs.otrs.org/show_bug.cgi?id=13754) - Overridden module configuration lost after update.
+ - 2018-09-25 Fixed bug#[14022](https://bugs.otrs.org/show_bug.cgi?id=14022) - Parsing Error System Configuration.
+ - 2018-09-24 Fixed bug#[14077](https://bugs.otrs.org/show_bug.cgi?id=14077) - Logged-in Users Dashlet missing css.
+ - 2018-09-19 Fixed bug#[14072](https://bugs.otrs.org/show_bug.cgi?id=14072) - Type activation warning disappears after new type is added.
+ - 2018-09-18 Improved handling of JSData in Templates.
+
+#6.0.11 2018-09-21
+ - 2018-09-13 Updated translations, thanks to all translators.
+ - 2018-09-11 Fixed bug#[13990](https://bugs.otrs.org/show_bug.cgi?id=13990) - Process Management issue when splitting tickets to Process tickets.
+ - 2018-09-11 Fixed bug#[14023](https://bugs.otrs.org/show_bug.cgi?id=14023) - Timeline View is broken when a body string contains closing script tag.
+ - 2018-09-10 Fixed bug#[14057](https://bugs.otrs.org/show_bug.cgi?id=14057) - UserInitialsGet ignores FirstnameLastnameOrder.
+ - 2018-09-07 Fixed bug#[14052](https://bugs.otrs.org/show_bug.cgi?id=14052) - Reason param in LogoutURL sys config items makes error.
+ - 2018-09-05 Follow-up fix for bug#[13968](https://bugs.otrs.org/show_bug.cgi?id=13968) - Attachments with spaces in file name does not work properly.
+ - 2018-09-04 Fixed bug#[14044](https://bugs.otrs.org/show_bug.cgi?id=14044) - DefaultOverviewColumns and DefaultColumns configurations are inconsistent.
+ - 2018-08-30 Fixed bug#[14030](https://bugs.otrs.org/show_bug.cgi?id=14030) - Values of the type field are translated in the bulk view.
+ - 2018-08-29 Fixed bug#[13903](https://bugs.otrs.org/show_bug.cgi?id=13903) - Setting an invalid sender-type will crash mail processing.
+ - 2018-08-29 Fixed bug#[14045](https://bugs.otrs.org/show_bug.cgi?id=14045) - Error creating DateTime object for pending time in Process ticket.
+ - 2018-08-28 Fixed bug#[14039](https://bugs.otrs.org/show_bug.cgi?id=14039) - Filter in admin panel ignores category titles.
+ - 2018-08-27 Fixed bug#[14025](https://bugs.otrs.org/show_bug.cgi?id=14025) - backup.pl may delete a backup it just created.
+ - 2018-08-27 Fixed bug#[13767](https://bugs.otrs.org/show_bug.cgi?id=13767) - Search result wrong displayed when there is only one result in IE 11.
+ - 2018-08-17 Fixed bug#[13987](https://bugs.otrs.org/show_bug.cgi?id=13987) - The value typed in e.g. customer user is deleted frequently, if already one customer user is selected.
+ - 2018-08-17 Fixed bug#[13957](https://bugs.otrs.org/show_bug.cgi?id=13957) - POP3 fetching mails in wrong order.
+ - 2018-08-15 Fixed bug#[13614](https://bugs.otrs.org/show_bug.cgi?id=13614) - Title is shown based on the first article in customer ticket overview even if the first article is marked as not visible for customer.
+ - 2018-08-15 Fixed bug#[14011](https://bugs.otrs.org/show_bug.cgi?id=14011) - 'Backspace' key returns to previous page in modernize field selection.
+ - 2018-08-15 Fixed bug#[14014](https://bugs.otrs.org/show_bug.cgi?id=14014) - Missing attachments created in process ticket articles.
+ - 2018-08-10 Fixed bug#[14006](https://bugs.otrs.org/show_bug.cgi?id=14006) - TicketOverview does not show last visible for customer article for process ticket.
+ - 2018-08-09 Fixed bug#[14004](https://bugs.otrs.org/show_bug.cgi?id=14004) - Packages are only accessible via HTTP instead of HTTPS.
+ - 2018-08-08 Fixed bug#[14003](https://bugs.otrs.org/show_bug.cgi?id=14003) - Not possible to add more conditions on process transition edit which has more then 10 conditions.
+ - 2018-08-08 Fixed bug#[14009](https://bugs.otrs.org/show_bug.cgi?id=14009) - Wrong description for RedirectAfterCloseDisabled configuration.
+ - 2018-08-07 Fixed bug#[14008](https://bugs.otrs.org/show_bug.cgi?id=14008) - Kernel::System::VariableCheck::DataIsDifferent() does not work if one data element is undefined.
+ - 2018-08-07 Fixed bug#[13968](https://bugs.otrs.org/show_bug.cgi?id=13968) - Attachments with spaces in file name does not work properly.
+ - 2018-08-07 Follow-up fix for bug#[13597](https://bugs.otrs.org/show_bug.cgi?id=13597) - In case of OTRS 6 Upgrade "Email Delivery Failure" notification message is incorrectly displayed.
+ - 2018-09-04 Added improvements to HTML filter.
+ - 2018-09-03 Added improvements to SupportDataCollector Admin screen.
+ - 2018-08-02 Fixed bug#[13997](https://bugs.otrs.org/show_bug.cgi?id=13997) - Error in pattern matching for DiskSpacePartitions.
+ - 2018-08-02 Fixed bug#[13995](https://bugs.otrs.org/show_bug.cgi?id=13995) - Ticket attributes are not working in ResponseFormat.
+ - 2018-08-02 Fixed bug#[13993](https://bugs.otrs.org/show_bug.cgi?id=13993) - Misleading breadcrumb path in AgentPreferences screen.
+ - 2018-08-01 Follow-up fix for bug#[13805](https://bugs.otrs.org/show_bug.cgi?id=13805) - Distribution OpenBSD is not recognized by support data collector.
+ - 2018-08-01 Follow-up fix for bug#[13643](https://bugs.otrs.org/show_bug.cgi?id=13643) - After CustomerCompanySupport is disabled the customer-user cannot be defined at several places.
+ - 2018-08-01 Fixed bug#[13983](https://bugs.otrs.org/show_bug.cgi?id=13983) - Default process ticket title time stamp does not show appropriate time zone value.
+ - 2018-08-01 Fixed bug#[13988](https://bugs.otrs.org/show_bug.cgi?id=13988) - The Hungarian subsidiary is missing form the first page of the installer.
+ - 2018-08-01 Fixed bug#[13986](https://bugs.otrs.org/show_bug.cgi?id=13986) - UserSearch function does not work for login with upper-case letters on case sensitive databases.
+ - 2018-08-01 Fixed bug#[13981](https://bugs.otrs.org/show_bug.cgi?id=13981) - CustomerID change popup window can not be shown in AgentTicketProcess screen.
+ - 2018-07-25 Fixed bug#[13972](https://bugs.otrs.org/show_bug.cgi?id=13972) - API documentation: missing default permission types 'note' and 'owner'.
 
 #6.0.10 2018-07-31
  - 2018-07-24 Updated translations, thanks to all translators.

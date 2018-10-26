@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 use strict;
@@ -242,7 +242,8 @@ $Selenium->RunTest(
 
                 # Send a "return" key to trigger the javascript events, because we need a change of the field,
                 #   if no auto complete result exists.
-                $Selenium->find_element( "input.CustomerAutoComplete", 'css' )->send_keys("\n");
+                $Selenium->find_element( "input.CustomerAutoComplete", 'css' )->send_keys("\N{U+E015}");
+                $Selenium->find_element( "input.CustomerAutoComplete", 'css' )->send_keys("\N{U+E007}");
 
                 # Wait for ajax call after customer user selection.
                 $Selenium->WaitFor(
@@ -326,9 +327,7 @@ $Selenium->RunTest(
                     $Selenium->WaitFor(
                         JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length'
                     );
-                    $Selenium->WaitFor(
-                        JavaScript => 'return typeof($) === "function" && $("li.ui-menu-item:visible").length'
-                    );
+                    sleep 1;
 
                     # select customer id
                     $Selenium->execute_script(

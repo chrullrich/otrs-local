@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 use strict;
@@ -414,52 +414,54 @@ $Selenium->RunTest(
         my $Handles = $Selenium->get_window_handles();
         $Selenium->switch_to_window( $Handles->[1] );
 
-        # Wait without jQuery because it might not be loaded yet.
-        $Selenium->WaitFor( JavaScript => 'return document.getElementById("ToCustomer");' );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#ToCustomer").length;' );
+        sleep 2;
 
         # Check duplication of customer user who doesn't exist in the system (see bug#13784).
         $Selenium->find_element( "#ToCustomer", 'css' )->send_keys( 'Test', "\N{U+E007}" );
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#RemoveCustomerTicket_2").length' );
+        $Selenium->WaitFor( JavaScript => 'return $("#RemoveCustomerTicket_2").length;' );
         $Selenium->find_element( "#ToCustomer", 'css' )->send_keys( 'Test', "\N{U+E007}" );
 
         $Selenium->WaitFor(
             JavaScript =>
-                'return typeof($) === "function" && $(".Dialog.Modal.Alert:visible").length'
+                'return typeof($) === "function" && $(".Dialog.Modal.Alert:visible").length;'
         );
         $Self->Is(
-            $Selenium->execute_script('return $(".Dialog.Modal.Alert").length'),
+            $Selenium->execute_script('return $(".Dialog.Modal.Alert").length;'),
             1,
             "Alert dialog is found.",
         );
 
         $Selenium->execute_script("\$('#DialogButton1').click();");
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".Dialog.Modal").length' );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".Dialog.Modal").length;' );
 
-        # Chenge focus from #ToCustomer input field.
+        # Change focus from #ToCustomer input field.
         $Selenium->find_element( "body", 'css' )->click();
+
+        $Selenium->WaitFor( JavaScript => 'return $("#RemoveCustomerTicket_2").length;' );
 
         # Remove entered 'Test' for customer user.
         $Selenium->find_element( "#RemoveCustomerTicket_2", 'css' )->click();
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$("#RemoveCustomerTicket_2").length' );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$("#RemoveCustomerTicket_2").length;' );
 
         # Input required field and select customer.
         $Selenium->find_element( "#ToCustomer", 'css' )->send_keys($TestCustomer);
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("li.ui-menu-item:visible").length' );
-        $Selenium->execute_script("\$('li.ui-menu-item:contains($TestCustomer)').click()");
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("li.ui-menu-item:visible").length;' );
+        $Selenium->execute_script("\$('li.ui-menu-item:contains($TestCustomer)').click();");
 
         $Selenium->WaitFor(
             JavaScript =>
-                'return typeof($) === "function" && $(".Dialog.Modal.Alert:visible").length'
+                'return typeof($) === "function" && $(".Dialog.Modal.Alert:visible").length;'
         );
 
         $Self->Is(
-            $Selenium->execute_script('return $(".Dialog.Modal.Alert").length'),
+            $Selenium->execute_script('return $(".Dialog.Modal.Alert").length;'),
             1,
             "Error message found.",
         );
 
         $Selenium->execute_script("\$('#DialogButton1').click();");
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".Dialog.Modal").length' );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".Dialog.Modal").length;' );
 
         # Check AgentTicketCompose page.
         for my $ID (
@@ -467,13 +469,13 @@ $Selenium->RunTest(
             FileUpload StateID IsVisibleForCustomer submitRichText)
             )
         {
-            $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#$ID').length" );
+            $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#$ID').length;" );
             my $Element = $Selenium->find_element( "#$ID", 'css' );
             $Element->is_enabled();
         }
 
         $Self->Is(
-            $Selenium->execute_script('return $("#IsVisibleForCustomer").val()'),
+            $Selenium->execute_script('return $("#IsVisibleForCustomer").val();'),
             1,
             "Default customer visibility is honored",
         );
@@ -578,7 +580,7 @@ $Selenium->RunTest(
         $Selenium->switch_to_window( $Handles->[1] );
 
         # Wait until page has loaded, if necessary.
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".CancelClosePopup").length' );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".CancelClosePopup").length;' );
 
         # Verify that compose worked as expected.
         my $HistoryText = "Sent email to \"\"$TestCustomer $TestCustomer\"";
@@ -590,6 +592,12 @@ $Selenium->RunTest(
         $Selenium->close();
         $Selenium->switch_to_window( $Handles->[0] );
         $Selenium->WaitFor( WindowCount => 1 );
+
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'Ticket::Frontend::ResponseFormat',
+            Value => '[% Data.TicketNumber | html%]',
+        );
 
         # Test ticket lock and owner after closing AgentTicketCompose popup (see bug#12479).
         # Enable RequiredLock for AgentTicketCompose.
@@ -638,7 +646,19 @@ $Selenium->RunTest(
         $Handles = $Selenium->get_window_handles();
         $Selenium->switch_to_window( $Handles->[1] );
 
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".UndoClosePopup").length' );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".UndoClosePopup").length;' );
+        sleep 2;
+
+        # Check if Ticket number is shown correctly in text field.
+        # See bug#133995 https://bugs.otrs.org/show_bug.cgi?id=13995
+        my $TicketNumber = $TicketObject->TicketNumberLookup(
+            TicketID => $TicketID,
+        );
+        $Self->Is(
+            $Selenium->execute_script('return $("#RichText").val().trim();'),
+            $TicketNumber,
+            "Text field contains ticket number $TicketNumber"
+        );
 
         # Click on 'Undo&Close' to close popup and set state and owner to the previous values.
         $Selenium->find_element( ".UndoClosePopup", 'css' )->click();

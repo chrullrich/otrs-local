@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Language::th_TH;
@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.599518734960467;
+    $Self->{Completeness}        = 0.598867147270855;
 
     # csv separator
     $Self->{Separator}         = ',';
@@ -2441,7 +2441,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => 'แก้ไขการตั้งค่าของคุณ',
-        'Personal preferences' => '',
+        'Personal Preferences' => '',
         'Preferences' => 'การกำหนดลักษณะ',
         'Please note: you\'re currently editing the preferences of %s.' =>
             '',
@@ -2469,7 +2469,6 @@ sub Data {
         'Reset to default' => '',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => '',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             '',
         'Did you know?' => '',
@@ -2955,6 +2954,7 @@ sub Data {
         'View notifications' => 'ดูการแจ้งเตือน',
         'Notifications' => '',
         'Notifications (OTRS Business Solution™)' => '',
+        'Personal preferences' => '',
         'Logout' => 'ออกจากระบบ',
         'You are logged in as' => 'คุณได้เข้าสู่ระบบเป็น',
 
@@ -2966,7 +2966,14 @@ sub Data {
         'General Specifications and Mail Settings' => 'คุณสมบัติทั่วไปและการตั้งค่าเมล์',
         'Finish' => 'เสร็จ',
         'Welcome to %s' => 'ยินดีต้อนรับสู่ %s',
+        'Germany' => '',
         'Phone' => 'โทรศัพท์',
+        'United States' => '',
+        'Mexico' => '',
+        'Hungary' => '',
+        'Brazil' => '',
+        'Singapore' => '',
+        'Hong Kong' => '',
         'Web site' => 'เว็บไซต์',
 
         # Template: InstallerConfigureMail
@@ -7060,7 +7067,7 @@ Thanks for your help!
         'Disable cloud services' => '',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be enabled).' =>
             '',
-        'Disables the redirection to the last screen overview / dashboard after a ticket is created.' =>
+        'Disables the redirection to the last screen overview / dashboard after a ticket is closed.' =>
             '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If not enabled, the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If enabled, it also disables the GenericAgent, PackageManager and SQL Box.' =>
             '',
@@ -7488,6 +7495,7 @@ Thanks for your help!
         'Ivory (Slim)' => 'ดิไอวอรี่ (บาง)',
         'Japanese' => 'ภาษาญี่ปุ่น',
         'JavaScript function for the search frontend.' => '',
+        'Korean' => '',
         'Language' => 'ภาษา',
         'Large' => 'ขนาดใหญ่',
         'Last Screen Overview' => '',
@@ -8565,7 +8573,7 @@ Thanks for your help!
             '',
         'This will allow the system to send text messages via SMS.' => '',
         'Ticket Close.' => 'ตั๋วปิด',
-        'Ticket Compose Bounce Email.' => '',
+        'Ticket Compose Bounce Email.' => '__',
         'Ticket Compose email Answer.' => '',
         'Ticket Customer.' => 'ตั๋วลูกค้า',
         'Ticket Forward Email.' => '',

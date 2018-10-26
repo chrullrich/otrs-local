@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # Copyright (C) 2003 Gilberto Cezar de Almeida <gibalmeida at hotmail.com>
 # Copyright (C) 2005 Alterado por Glaucia C. Messina (glauglauu@yahoo.com)
 # Copyright (C) 2007-2010 Fabricio Luiz Machado <soprobr gmail.com>
@@ -8,8 +8,8 @@
 # Copyright (C) 2013-2014 Murilo Moreira de Oliveira <murilo.moreira 60kg gmail.com>
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 package Kernel::Language::pt_BR;
 
@@ -29,7 +29,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.707975249226538;
+    $Self->{Completeness}        = 0.71077926536217;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -193,7 +193,7 @@ sub Data {
             'Aqui você pode escolher quais eventos irão acionar essa notificação. Um filtro de compromisso adicional pode ser aplicado abaixo para enviar apenas compromissos com determinados critérios.',
         'Appointment Filter' => 'Filtrar Compromisso',
         'Type' => 'Tipo',
-        'Title' => 'Título',
+        'Title' => 'Titulo',
         'Location' => 'Localização',
         'Team' => 'Time',
         'Resource' => 'Recurso',
@@ -243,7 +243,7 @@ sub Data {
 
         # Template: AdminAppointmentNotificationEventTransportEmailSettings
         'Additional recipient email addresses' => 'Caixa de endereço de e-mail adicional',
-        'This field must have less then 200 characters.' => '',
+        'This field must have less then 200 characters.' => 'Este campo precisa ter menos de 200 caracteres.',
         'Article visible for customer' => 'Artigo visível para o cliente',
         'An article will be created if the notification is sent to the customer or an additional email address.' =>
             'Um artigo será criado se as notificações são enviadas para o usuário ou para um endereço de e-mail adicional.',
@@ -520,7 +520,7 @@ sub Data {
         'Dynamic Fields List' => 'Lista de Campos Dinâmicos',
         'Dynamic fields per page' => 'Campos dinâmicos por página',
         'Label' => 'Rótulo',
-        'Order' => 'Ordem',
+        'Order' => 'Pedido',
         'Object' => 'Objeto',
         'Delete this field' => 'Remover este campo',
 
@@ -828,7 +828,7 @@ sub Data {
         'Schedule retry' => 'Programar nova tentativa',
         'Should requests causing an error be triggered again at a later time?' =>
             'Os pedidos que causam erro devem ser acionados novamente mais tarde?',
-        'Initial retry interval' => '',
+        'Initial retry interval' => 'Intervalo inicial de repetição',
         'Interval after which to trigger the first retry.' => '',
         'Note: This and all further retry intervals are based on the error handling module execution time for the initial request.' =>
             '',
@@ -846,7 +846,7 @@ sub Data {
             '',
         'Maximum retry count' => 'Contagem máxima de repetição',
         'Maximum number of retries before a failing request is discarded, not counting the initial request.' =>
-            '',
+            'Número máximo de tentativas antes do descarte de uma requisição falhada, sem contar a requisição inicial',
         'Example: If a request is initially triggered at 10:00 with initial interval at \'1 minute\', retry factor at \'2\' and maximum retry count at \'2\', retries would be triggered at 10:01 and 10:02 only.' =>
             '',
         'Note: Maximum retry count might not be reached if a maximum retry period is configured as well and reached earlier.' =>
@@ -2428,7 +2428,7 @@ sub Data {
         'Yes, accepted.' => 'Sim, aceito.',
 
         # Template: AgentLinkObject
-        'Manage links for %s' => '',
+        'Manage links for %s' => 'Gerenciar links para %s',
         'Create new links' => 'Criar novos links',
         'Manage existing links' => 'Gerenciar links existentes',
         'Link with' => 'Estabelecer link com',
@@ -2443,7 +2443,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Alterar Suas Preferências',
-        'Personal preferences' => 'Preferências Pessoais',
+        'Personal Preferences' => 'Preferências Pessoais',
         'Preferences' => 'Preferências',
         'Please note: you\'re currently editing the preferences of %s.' =>
             '',
@@ -2471,7 +2471,6 @@ sub Data {
         'Reset to default' => 'Retornar ao padrão',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => 'Preferências Pessoais',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             '',
         'Did you know?' => 'Você sabia?',
@@ -2957,6 +2956,7 @@ sub Data {
         'View notifications' => 'Visualizar notificações',
         'Notifications' => 'Notificações',
         'Notifications (OTRS Business Solution™)' => '',
+        'Personal preferences' => 'Preferências Pessoais',
         'Logout' => 'Sair',
         'You are logged in as' => 'Você está logado como',
 
@@ -2968,7 +2968,14 @@ sub Data {
         'General Specifications and Mail Settings' => 'Especificações Gerais e Configurações de E-mail',
         'Finish' => 'Finalizar',
         'Welcome to %s' => 'Bem-vindo a %s',
+        'Germany' => '',
         'Phone' => 'Telefone',
+        'United States' => '',
+        'Mexico' => '',
+        'Hungary' => '',
+        'Brazil' => '',
+        'Singapore' => '',
+        'Hong Kong' => '',
         'Web site' => 'Website',
 
         # Template: InstallerConfigureMail
@@ -3919,8 +3926,8 @@ sub Data {
         'There was an error creating the System Maintenance' => 'Ocorreu um erro durante a criação da manutenção de sistema',
         'Need SystemMaintenanceID!' => 'Necessário SystemMaintenanceID!',
         'Could not get data for SystemMaintenanceID %s' => 'Não foi possível obter dados para SystemMaintenanceID %s',
-        'System Maintenance was added successfully!' => '',
-        'System Maintenance was updated successfully!' => '',
+        'System Maintenance was added successfully!' => 'Manutenção do Sistema foi criada com sucesso!',
+        'System Maintenance was updated successfully!' => 'Manutenção do Sistema foi atualizada com sucesso!',
         'Session has been killed!' => 'Sessão foi eliminada!',
         'All sessions have been killed, except for your own.' => 'Todas sessões foram desconectadas, exceto por esta.',
         'There was an error updating the System Maintenance' => 'Ocorreu um erro durante a atualização da manutenção de sistema',
@@ -4007,10 +4014,10 @@ sub Data {
         'Need SourceObject and SourceKey!' => 'Necessário SourceObject e SourceKey!',
         'You need ro permission!' => 'Você precisa de permissões de ro (apenas leitura)',
         'Can not delete link with %s!' => 'Não é possível excluir associação com %s!',
-        '%s Link(s) deleted successfully.' => '',
+        '%s Link(s) deleted successfully.' => '%s link(s) excluído(s) com sucesso.',
         'Can not create link with %s! Object already linked as %s.' => 'Não é possível criar associação com %s! Objeto já associado como %s.',
         'Can not create link with %s!' => 'Não é possível criar associação com %s!',
-        '%s links added successfully.' => '',
+        '%s links added successfully.' => '%s link(s) adicionado(s) com sucesso.',
         'The object %s cannot link with other object!' => 'O Objeto %snão pode ser linkado com outro objeto!',
 
         # Perl Module: Kernel/Modules/AgentPreferences.pm
@@ -4584,7 +4591,7 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/Notification/CustomerSystemMaintenanceCheck.pm
         'System maintenance is active!' => 'Manutenção de sistema está ativa!',
         'A system maintenance period will start at: %s and is expected to stop at: %s' =>
-            '',
+            'Uma manutenção do sistema irá iniciar às: %s e deverá terminar às: %s',
 
         # Perl Module: Kernel/Output/HTML/Notification/DaemonCheck.pm
         'OTRS Daemon is not running.' => 'OTRS Daemon não esta executando',
@@ -4749,7 +4756,7 @@ sub Data {
         'Send unencrypted notification' => 'Enviar notificação não-encriptada',
 
         # Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
-        'Configuration Options Reference' => 'Referência de opções de configuração',
+        'Configuration Options Reference' => 'Referência de Opções de Configuração',
         'This setting can not be changed.' => 'Esta configuração não pode ser alterada.',
         'This setting is not active by default.' => 'Esta configuração não está ativa por padrão.',
         'This setting can not be deactivated.' => 'Esta configuração não pode ser desativada.',
@@ -4804,7 +4811,7 @@ sub Data {
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
         'The process "%s" and all of its data has been imported successfully.' =>
-            '',
+            'O processo "%s" e todos os seus dados foram importados com sucesso.',
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process/State.pm
         'Inactive' => 'Inativo',
@@ -5882,7 +5889,7 @@ Thanks for your help!
         'Admin Area.' => 'Área Admin.',
         'Admin Notification' => 'Notificação Administrativa',
         'Admin area navigation for the agent interface.' => '',
-        'Admin modules overview.' => '',
+        'Admin modules overview.' => 'Visão geral dos módulos de administração.',
         'Admin.' => 'Administração.',
         'Administration' => 'Administração',
         'Agent Customer Search' => '',
@@ -6217,7 +6224,7 @@ Thanks for your help!
             'Ticket criado [%s] em "%s" com prioridade "%s" e estado "%s".',
         'Croatian' => 'Croata',
         'Custom RSS Feed' => 'RSS Feed customizado',
-        'Custom RSS feed.' => '',
+        'Custom RSS feed.' => 'RSS Feed customizado',
         'Custom text for the page shown to customers that have no tickets yet (if you need those text translated add them to a custom translation module).' =>
             '',
         'Customer Administration' => 'Administração de Cliente',
@@ -6252,7 +6259,7 @@ Thanks for your help!
             '',
         'Czech' => 'Tcheco',
         'Danish' => 'Dinamarquês',
-        'Dashboard overview.' => '',
+        'Dashboard overview.' => 'Painel de Controle',
         'Data used to export the search result in CSV format.' => 'Os dados utilizados para exportar o resultado da pesquisa no formato CSV.',
         'Date / Time' => 'Data / Hora',
         'Default (Slim)' => 'Padrão (fino)',
@@ -7045,10 +7052,10 @@ Thanks for your help!
             '',
         'Disable HTTP header "X-Frame-Options: SAMEORIGIN" to allow OTRS to be included as an IFrame in other websites. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             '',
-        'Disable cloud services' => '',
+        'Disable cloud services' => 'Desabilitar serviços de nuvem',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be enabled).' =>
             '',
-        'Disables the redirection to the last screen overview / dashboard after a ticket is created.' =>
+        'Disables the redirection to the last screen overview / dashboard after a ticket is closed.' =>
             '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If not enabled, the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If enabled, it also disables the GenericAgent, PackageManager and SQL Box.' =>
             '',
@@ -7276,7 +7283,7 @@ Thanks for your help!
         'Frontend module registration (show personal favorites as sub navigation items of \'Admin\').' =>
             '',
         'Frontend module registration for the agent interface.' => '',
-        'Frontend module registration for the customer interface.' => '',
+        'Frontend module registration for the customer interface.' => 'Registro de módulo front-end para a interface de cliente.',
         'Frontend module registration for the public interface.' => 'Frontend de registo do módulo para a interface pública.',
         'Full value' => 'Valor total',
         'Fulltext index regex filters to remove parts of the text.' => '',
@@ -7476,6 +7483,7 @@ Thanks for your help!
         'Ivory (Slim)' => 'Marfim (fino)',
         'Japanese' => 'Japonês',
         'JavaScript function for the search frontend.' => '',
+        'Korean' => '',
         'Language' => 'Idioma',
         'Large' => 'Grande',
         'Last Screen Overview' => '',
@@ -7538,7 +7546,7 @@ Thanks for your help!
         'Locked Tickets' => 'Chamados Bloqueados',
         'Locked Tickets.' => 'Chamados Bloqueados.',
         'Locked ticket.' => 'Chamado bloqueado.',
-        'Logged in users.' => '',
+        'Logged in users.' => 'Usuário logados',
         'Logged-In Users' => 'Usuário logados',
         'Logout of customer panel.' => 'Logout do painel de clientes.',
         'Look into a ticket!' => 'Examinar em detalhes o conteúdo de um chamado!',
@@ -7661,7 +7669,7 @@ Thanks for your help!
         'New Year\'s Eve' => 'Véspera de Ano Novo',
         'New process ticket' => 'Novo chamado via processo',
         'News about OTRS releases!' => 'Notícias sobre lançamentos OTRS!',
-        'News about OTRS.' => '',
+        'News about OTRS.' => 'Notícias sobre OTRS.',
         'Next possible ticket states after adding a phone note in the ticket phone inbound screen of the agent interface.' =>
             '',
         'Next possible ticket states after adding a phone note in the ticket phone outbound screen of the agent interface.' =>
@@ -7702,12 +7710,12 @@ Thanks for your help!
         'Other Customers' => '',
         'Out Of Office' => 'Fora do Escritório',
         'Out Of Office Time' => 'Período Fora do Escritório',
-        'Out of Office users.' => '',
+        'Out of Office users.' => 'Usuários Fora do Escritório',
         'Overloads (redefines) existing functions in Kernel::System::Ticket. Used to easily add customizations.' =>
             '',
         'Overview Escalated Tickets.' => 'Visão Geral de Chamados Escalados.',
         'Overview Refresh Time' => 'Tempo de Atualização do Painel',
-        'Overview of all Tickets per assigned Queue.' => '',
+        'Overview of all Tickets per assigned Queue.' => 'Visão geral de todos os Chamados associados as Filas.',
         'Overview of all appointments.' => 'Visão geral de todos os compromissos.',
         'Overview of all escalated tickets.' => 'Revisão de todos os chamados escalados.',
         'Overview of all open Tickets.' => 'Visão Geral de Todos os Chamados Abertos',
@@ -8455,9 +8463,9 @@ Thanks for your help!
         'Starts a wildcard search of the active object after the link object mask is started.' =>
             '',
         'Stat#' => 'Estatística Nº:.',
-        'States' => 'Estados',
-        'Statistic Reports overview.' => '',
-        'Statistics overview.' => '',
+        'States' => 'Estado',
+        'Statistic Reports overview.' => 'Visão Geral de Estatísticas',
+        'Statistics overview.' => 'Resumo de Estatísticas',
         'Status view' => 'Visão de Estados',
         'Stopped response time escalation.' => '',
         'Stopped solution time escalation.' => '',
@@ -8595,7 +8603,7 @@ Thanks for your help!
             '',
         'To accept login information, such as an EULA or license.' => '',
         'To download attachments.' => 'Para baixar anexos.',
-        'To view HTML attachments.' => '',
+        'To view HTML attachments.' => 'Para visualizar anexos HTML.',
         'Toggles display of OTRS FeatureAddons list in PackageManager.' =>
             '',
         'Toolbar Item for a shortcut. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>

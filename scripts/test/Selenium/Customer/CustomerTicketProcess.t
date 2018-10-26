@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 use strict;
@@ -406,21 +406,17 @@ $Selenium->RunTest(
         my @TicketID = split( 'TicketID=', $Selenium->get_current_url() );
         push @DeleteTicketIDs, $TicketID[1];
 
-        # Click on next step in Process ticket.
-        $Selenium->find_element("//a[contains(\@href, \'ProcessEntityID=$ListReverse{$ProcessName}' )]")->click();
+        # Go on next step in Process ticket.
+        my $URLNextAction = $Selenium->execute_script("return \$('#Activities a').attr('href');");
+        $URLNextAction =~ s/^\///s;
+        $Selenium->VerifiedGet($URLNextAction);
 
-        $Selenium->WaitFor( WindowCount => 2 );
-        my $Handles = $Selenium->get_window_handles();
-        $Selenium->switch_to_window( $Handles->[1] );
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#Subject").length;' );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#PriorityID").length;' );
 
         # For test scenario to complete, in next step we set ticket priority to 5 very high.
         $Selenium->execute_script("\$('#PriorityID').val('5').trigger('redraw.InputField').trigger('change');");
         $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->click();
-
-        $Selenium->WaitFor( WindowCount => 1 );
-        $Selenium->switch_to_window( $Handles->[0] );
-        $Selenium->VerifiedRefresh();
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#Activities").length' );
 
         # Check for inputed values as final step in first scenario.
         $Self->True(

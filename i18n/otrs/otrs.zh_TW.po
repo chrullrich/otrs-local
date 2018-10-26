@@ -1,15 +1,18 @@
-# 
 # Translators:
-# Ann Li <dn.annli@gmail.com>, 2016
-# Sam Chen <silent198214@gmail.com>, 2016
-# 育彰 楊 <yuchang.yang@grandfortunetech.com>, 2016
+# Martin Gruner <martin.gruner@otrs.com>, 2018
+# Udo Bretz, 2018
+# Ann Li <dn.annli@gmail.com>, 2018
+# Sam Chen <silent198214@gmail.com>, 2018
+# 育彰 楊 <yuchang.yang@grandfortunetech.com>, 2018
+# 邱意展, 2018
+# Carlos Rodríguez <carlos.rodriguez@otrs.com>, 2018
 msgid ""
 msgstr ""
-"Project-Id-Version: OTRS\n"
-"POT-Creation-Date: 2018-07-16 16:18+0000\n"
-"PO-Revision-Date: 2018-07-16 16:20+0000\n"
-"Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>\n"
-"Language-Team: Chinese (Taiwan) (http://www.transifex.com/otrs/OTRS/language/zh_TW/)\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2018-09-27 16:58+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Carlos Rodríguez <carlos.rodriguez@otrs.com>, 2018\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/otrs/teams/23435/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -155,7 +158,8 @@ msgid ""
 "Set up matching criteria for this ACL. Use 'Properties' to match the current"
 " screen or 'PropertiesDatabase' to match attributes of the current ticket "
 "that are in the database."
-msgstr "為ACL設置匹配條件。'Properties'用於匹配工單在内存中的屬性'，而'PropertiesDatabase'用於匹配工單在數據庫中的屬性。"
+msgstr ""
+"為ACL設置匹配條件。'Properties'用於匹配工單在内存中的屬性'，而'PropertiesDatabase'用於匹配工單在數據庫中的屬性。"
 
 #. Template: AdminACLEdit
 msgid "Change settings"
@@ -814,7 +818,7 @@ msgstr "刪除附件"
 
 #. Template: AdminAttachment
 msgid "Do you really want to delete this attachment?"
-msgstr ""
+msgstr "您確定要刪除此附件？"
 
 #. Template: AdminAttachment
 msgid "Attachment"
@@ -1508,7 +1512,7 @@ msgstr "切換激活狀態給全部"
 
 #. Template: AdminCustomerUserCustomer
 msgid "Active"
-msgstr "激活"
+msgstr "啟用"
 
 #. Template: AdminCustomerUserCustomer
 msgid "Toggle active state for %s"
@@ -1756,7 +1760,7 @@ msgstr "定義年期"
 msgid ""
 "Activate this feature to define a fixed range of years (in the future and in"
 " the past) to be displayed on the year part of the field."
-msgstr "激活此選項來定義固定的年份範圍(過去的和未來的), 用於顯示在此字段的年份中."
+msgstr "啟用此選項來定義固定的年份範圍 (過去和未來), 用於顯示在此字段的年份中."
 
 #. Template: AdminDynamicFieldDateTime
 msgid "Years in the past"
@@ -2597,7 +2601,7 @@ msgstr ""
 
 #. Template: AdminGenericInterfaceErrorHandlingDefault
 msgid ""
-"Example: Enter '^.*401 Unauthorized.*\\$' to handle only authentication "
+"Example: Enter '^.*401 Unauthorized.*\\\\$' to handle only authentication "
 "related errors."
 msgstr ""
 
@@ -3171,8 +3175,9 @@ msgstr ""
 
 #. Template: AdminGenericInterfaceMappingXSLT
 msgid ""
-"Example 3: Search = '^(?<number>\\d+) (?<text>.+?)\\$' / Replace = "
-"'_\\$+{text}_\\$+{number}' turns '16 elementname' into '_elementname_16'."
+"Example 3: Search = '^(?<number>\\\\d+) (?<text>.+?)\\\\$' / Replace = "
+"'_\\\\$+{text}_\\\\$+{number}' turns '16 elementname' into "
+"'_elementname_16'."
 msgstr ""
 
 #. Template: AdminGenericInterfaceMappingXSLT
@@ -4113,7 +4118,7 @@ msgstr "鎖定"
 
 #. Template: AdminNotificationEvent
 msgid "SLA"
-msgstr "SLA"
+msgstr "服務級別協議"
 
 #. Template: AdminNotificationEvent
 msgid "Customer User ID"
@@ -4618,7 +4623,8 @@ msgid ""
 "Please make sure your database accepts packages over %s MB in size (it "
 "currently only accepts packages up to %s MB). Please adapt the "
 "max_allowed_packet setting of your database in order to avoid errors."
-msgstr "請確認您的數據庫能夠接收大於%sMB的數據包（目前能夠接收的最大數據包為%sMB）。為了避免程序報錯，請調整數據庫max_allowed_packet参數。"
+msgstr ""
+"請確認您的數據庫能夠接收大於%sMB的數據包（目前能夠接收的最大數據包為%sMB）。為了避免程序報錯，請調整數據庫max_allowed_packet参數。"
 
 #. Template: AdminPackageManager
 msgid "Install"
@@ -5118,7 +5124,8 @@ msgstr "請注意，修改這個環節操作將影響以下環節"
 msgid ""
 "Please note that customer users will not be able to see or use the following"
 " fields: Owner, Responsible, Lock, PendingTime and CustomerID."
-msgstr "請注意，用戶並不能看到或對以下字段時行操作：Owner, Responsible, Lock, PendingTime and CustomerID."
+msgstr ""
+"請注意，用戶並不能看到或對以下字段時行操作：Owner, Responsible, Lock, PendingTime and CustomerID."
 
 #. Template: AdminProcessManagementActivityDialog
 msgid ""
@@ -5560,7 +5567,9 @@ msgid ""
 "portal, the escalation update time is reset. If there is no customer "
 "contact, either email-external or phone, added to a ticket before the time "
 "defined here expires, the ticket is escalated."
-msgstr "如果有新的信件，例如用戶通過門戶或郵件發送跟進信件，則對升級更新時間進行復位. 如果在此所定義的時間之前，服務人員沒有對新工單添加任何信件，無論是郵件-外部或電話，該工單將升級."
+msgstr ""
+"如果有新的信件，例如用戶通過門戶或郵件發送跟進信件，則對升級更新時間進行復位. 如果在此所定義的時間之前，服務人員沒有對新工單添加任何信件，無論是郵件-"
+"外部或電話，該工單將升級."
 
 #. Template: AdminQueue
 msgid ""
@@ -7542,7 +7551,7 @@ msgstr "保存設置"
 
 #. Template: AgentDashboardCommon
 msgid "Close this widget"
-msgstr ""
+msgstr "關閉此工具"
 
 #. Template: AgentDashboardCommon
 msgid "more"
@@ -7780,8 +7789,8 @@ msgid "Edit your preferences"
 msgstr "編輯個人設置"
 
 #. Template: AgentPreferences
-msgid "Personal preferences"
-msgstr ""
+msgid "Personal Preferences"
+msgstr "個人設置"
 
 #. Template: AgentPreferences
 msgid "Preferences"
@@ -7799,7 +7808,7 @@ msgstr ""
 msgid ""
 "Set up your personal preferences. Save each setting by clicking the "
 "checkmark on the right."
-msgstr ""
+msgstr "調整您的個人設置，記得按下右邊的儲存按鈕。"
 
 #. Template: AgentPreferences
 msgid ""
@@ -7835,6 +7844,8 @@ msgid ""
 "at %s. Please note that it can take some time until your new avatar becomes "
 "available because of caching."
 msgstr ""
+"您可以使用註冊時的電子郵件 %s 來 %s 登記就能變更頭像。\n"
+"請注意，更換頭像需要一點時間才會生效。"
 
 #. Template: AgentPreferences
 msgid "Off"
@@ -7846,15 +7857,15 @@ msgstr "結束"
 
 #. Template: AgentPreferences
 msgid "This setting can currently not be saved."
-msgstr ""
+msgstr "目前無法儲存此設定"
 
 #. Template: AgentPreferences
 msgid "This setting can currently not be saved"
-msgstr ""
+msgstr "目前無法儲存此設定"
 
 #. Template: AgentPreferences
 msgid "Save this setting"
-msgstr ""
+msgstr "儲存設定"
 
 #. Template: AgentPreferences
 msgid "Did you know? You can help translating OTRS at %s."
@@ -7862,10 +7873,6 @@ msgstr ""
 
 #. Template: SettingsList
 msgid "Reset to default"
-msgstr ""
-
-#. Template: AgentPreferencesOverview
-msgid "Personal Preferences"
 msgstr ""
 
 #. Template: AgentPreferencesOverview
@@ -8844,7 +8851,7 @@ msgstr ""
 #. Template: Invalid
 msgid ""
 "This feature is part of the %s. Please contact us at %s for an upgrade."
-msgstr ""
+msgstr "此功能為 %s 的一部分，請聯繫 %s 來取得升級。"
 
 #. Template: Invalid
 msgid "Please re-install %s package in order to display this article."
@@ -9270,7 +9277,11 @@ msgstr ""
 
 #. Template: Header
 msgid "Notifications (OTRS Business Solution™)"
-msgstr ""
+msgstr "通知 (OTRS Business Solution™)"
+
+#. Template: Header
+msgid "Personal preferences"
+msgstr "個人設置"
 
 #. Template: Header
 msgid "Logout"
@@ -9309,8 +9320,36 @@ msgid "Welcome to %s"
 msgstr ""
 
 #. Template: Installer
+msgid "Germany"
+msgstr ""
+
+#. Template: Installer
 msgid "Phone"
 msgstr "電話"
+
+#. Template: Installer
+msgid "United States"
+msgstr ""
+
+#. Template: Installer
+msgid "Mexico"
+msgstr ""
+
+#. Template: Installer
+msgid "Hungary"
+msgstr ""
+
+#. Template: Installer
+msgid "Brazil"
+msgstr ""
+
+#. Template: Installer
+msgid "Singapore"
+msgstr ""
+
+#. Template: Installer
+msgid "Hong Kong"
+msgstr ""
 
 #. Template: Installer
 msgid "Web site"
@@ -10439,7 +10478,7 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AdminAppointmentCalendarManage.pm
 msgid "Please contact the administrator."
-msgstr ""
+msgstr "請聯繫系統管理員"
 
 #. Perl Module: Kernel/Modules/AdminAppointmentCalendarManage.pm
 msgid "No CalendarID!"
@@ -12277,11 +12316,11 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AgentDashboardCommon.pm
 msgid "Customer Name"
-msgstr ""
+msgstr "客戶名稱"
 
 #. Perl Module: Kernel/Modules/AgentDashboardCommon.pm
 msgid "Customer User Name"
-msgstr ""
+msgstr "用戶名"
 
 #. Perl Module: Kernel/Modules/AgentLinkObject.pm
 msgid "Need SourceObject and SourceKey!"
@@ -12900,7 +12939,7 @@ msgstr "我訂閱的工單"
 
 #. Perl Module: Kernel/Modules/AgentTicketWatcher.pm
 msgid "Feature is not active"
-msgstr "功能沒有激活"
+msgstr "功能尚未啟用"
 
 #. Perl Module: Kernel/Modules/AgentTicketZoom.pm
 msgid "Link Deleted"
@@ -13858,7 +13897,7 @@ msgstr "有更多升級的工單"
 msgid ""
 "Please select a time zone in your preferences and confirm it by clicking the"
 " save button."
-msgstr ""
+msgstr "請在設置中選擇並保存您的時區."
 
 #. Perl Module: Kernel/Output/HTML/Notification/CustomerOnline.pm
 msgid "Online Customer: %s"
@@ -14777,7 +14816,7 @@ msgstr ""
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/Database/mysql/StorageEngine.pm
 msgid "Default Storage Engine"
-msgstr ""
+msgstr " "
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/Database/mysql/StorageEngine.pm
@@ -15612,7 +15651,7 @@ msgstr "成功登出"
 
 #. Perl Module: Kernel/System/Web/InterfaceAgent.pm
 msgid "Feature not active!"
-msgstr "該功能尚未激活!"
+msgstr "該功能尚未啟用！"
 
 #. Perl Module: Kernel/System/Web/InterfaceAgent.pm
 msgid "Sent password reset instructions. Please check your email."
@@ -16236,7 +16275,8 @@ msgid ""
 "appropriate changes in the SysConfig, you will be locked out of the "
 "administrations panel! If this happens, please rename the group back to "
 "admin per SQL statement."
-msgstr "警告：當您更改'管理'組的名稱時，在SysConfig作出相應的變化之前，您將被管理面板鎖住！如果發生這種情況，請用SQL語句把組名改回到'admin'"
+msgstr ""
+"警告：當您更改'管理'組的名稱時，在SysConfig作出相應的變化之前，您將被管理面板鎖住！如果發生這種情況，請用SQL語句把組名改回到'admin'"
 
 #. JS File: Core.Agent.Admin.MailAccount
 msgid "Delete this Mail Account"
@@ -16679,6 +16719,8 @@ msgid ""
 "Please note that at least one of the settings you have changed requires a "
 "page reload. Click here to reload the current screen."
 msgstr ""
+"您已成功變更設定，必須重新加載頁面來使變更生效。\n"
+"點此重新整理頁面。"
 
 #. JS File: Core.Agent.Preferences
 msgid "An unknown error occurred. Please contact the administrator."
@@ -16756,7 +16798,7 @@ msgstr ""
 
 #. JS File: Core.Agent
 msgid "Find out more"
-msgstr ""
+msgstr "了解更多"
 
 #. JS File: Core.App.Responsive
 msgid "Switch to mobile mode"
@@ -17793,7 +17835,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Avatar"
-msgstr ""
+msgstr "頭像"
 
 #. SysConfig
 msgid "Balanced white skin by Felix Niklas (slim version)."
@@ -17910,11 +17952,11 @@ msgstr ""
 
 #. SysConfig
 msgid "Change your avatar image."
-msgstr ""
+msgstr "更換您的頭像"
 
 #. SysConfig
 msgid "Change your password and more."
-msgstr ""
+msgstr "變更您的密碼或其他設定｡"
 
 #. SysConfig
 msgid "Changed SLA to \"%s\" (%s)."
@@ -18042,7 +18084,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Choose which notifications you'd like to receive."
-msgstr ""
+msgstr "選擇您想收到的通知｡"
 
 #. SysConfig
 msgid "Christmas Eve"
@@ -21136,7 +21178,7 @@ msgstr ""
 #. SysConfig
 msgid ""
 "Disables the redirection to the last screen overview / dashboard after a "
-"ticket is created."
+"ticket is closed."
 msgstr ""
 
 #. SysConfig
@@ -22115,7 +22157,7 @@ msgstr ""
 msgid ""
 "If \"HTTPBasicAuth\" was selected for Customer::AuthModule, you can specify "
 "to strip leading parts of user names (e. g. for domains like "
-"example_domain\\user to user)."
+"example_domain\\\\user to user)."
 msgstr ""
 
 #. SysConfig
@@ -22413,7 +22455,7 @@ msgstr ""
 msgid ""
 "If you're going to be out of office, you may wish to let other users know by"
 " setting the exact dates of your absence."
-msgstr ""
+msgstr "如果您要離開辦公室，可以設定此選項來告知其他用戶。"
 
 #. SysConfig
 msgid ""
@@ -22538,6 +22580,10 @@ msgstr "日本語"
 
 #. SysConfig
 msgid "JavaScript function for the search frontend."
+msgstr ""
+
+#. SysConfig
+msgid "Korean"
 msgstr ""
 
 #. SysConfig
@@ -22765,7 +22811,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Logged-In Users"
-msgstr ""
+msgstr "已登入的用戶"
 
 #. SysConfig
 msgid "Logout of customer panel."
@@ -23169,7 +23215,7 @@ msgstr "關於OTRS發布的新聞！"
 
 #. SysConfig
 msgid "News about OTRS."
-msgstr ""
+msgstr "關於 OTRS 的最新資訊"
 
 #. SysConfig
 msgid ""
@@ -23306,7 +23352,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Out Of Office"
-msgstr ""
+msgstr "不在辦公室的用戶列表"
 
 #. SysConfig
 msgid "Out Of Office Time"
@@ -23314,7 +23360,7 @@ msgstr "不在辦公室的時間"
 
 #. SysConfig
 msgid "Out of Office users."
-msgstr ""
+msgstr "不在辦公室的用戶"
 
 #. SysConfig
 msgid ""
@@ -24132,7 +24178,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Running Process Tickets"
-msgstr ""
+msgstr "時間緊迫的工單"
 
 #. SysConfig
 msgid ""
@@ -24260,11 +24306,11 @@ msgstr "界面主題."
 msgid ""
 "Select your personal time zone. All times will be displayed relative to this"
 " time zone."
-msgstr ""
+msgstr "系統中的時間會相對應您所選擇的時區。"
 
 #. SysConfig
 msgid "Select your preferred layout for the software."
-msgstr ""
+msgstr "選擇您的介面主題｡"
 
 #. SysConfig
 msgid "Select your preferred theme for OTRS."
@@ -24388,7 +24434,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Set a new password by filling in your current password and a new one."
-msgstr ""
+msgstr "輸入目前密碼來變更密碼"
 
 #. SysConfig
 msgid "Set sender email addresses for this system."
@@ -25726,7 +25772,7 @@ msgstr "簡易"
 
 #. SysConfig
 msgid "Skin"
-msgstr "皮膚"
+msgstr "主題"
 
 #. SysConfig
 msgid "Slovak"
@@ -26546,7 +26592,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Tweak the system as you wish."
-msgstr ""
+msgstr "調整您的系統｡"
 
 #. SysConfig
 msgid ""

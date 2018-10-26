@@ -1,10 +1,10 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # Copyright (C) 2004 Vladimir Gerdjikov <gerdjikov at gerdjikovs.net>
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Language::bg;
@@ -25,7 +25,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y - %T';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.213647301478171;
+    $Self->{Completeness}        = 0.216100240302094;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -66,10 +66,10 @@ sub Data {
         'No matches found.' => 'Не бяха открити резултати.',
 
         # Template: AdminACLEdit
-        'Edit ACL %s' => 'Промени ACL %s',
-        'Edit ACL' => '',
+        'Edit ACL %s' => 'Редактиране ACL %s',
+        'Edit ACL' => 'Редактиране ACL',
         'Go to overview' => 'Отидете на преглед',
-        'Delete ACL' => 'Изтрии ACL',
+        'Delete ACL' => 'Изтрий ACL',
         'Delete Invalid ACL' => 'Изтриване на невалиден ACL',
         'Match settings' => 'Настройки на съвпадението',
         'Set up matching criteria for this ACL. Use \'Properties\' to match the current screen or \'PropertiesDatabase\' to match attributes of the current ticket that are in the database.' =>
@@ -80,10 +80,10 @@ sub Data {
         'Check the official' => 'Провери официално',
         'documentation' => 'Документация',
         'Show or hide the content' => 'Покажи или скрий компонента',
-        'Edit ACL Information' => '',
+        'Edit ACL Information' => 'Редактиране ACL информация',
         'Name' => 'Име',
         'Stop after match' => 'Спри след съвпадението',
-        'Edit ACL Structure' => '',
+        'Edit ACL Structure' => 'Редактиране ACL структура ',
         'Save ACL' => 'Запази ACL',
         'Save' => 'Съхраняване',
         'or' => 'или',
@@ -96,20 +96,20 @@ sub Data {
             'Създайте нов ACL, като изпратите данните за формуляра. След като създадете ACL, ще можете да добавяте конфигурационни елементи в режим на редактиране.',
 
         # Template: AdminAppointmentCalendarManage
-        'Calendar Management' => '',
-        'Add Calendar' => '',
-        'Edit Calendar' => '',
-        'Go back' => '',
-        'Calendar Overview' => '',
-        'Add new Calendar' => '',
-        'Import Appointments' => '',
-        'Calendar Import' => '',
+        'Calendar Management' => 'Управление Календар',
+        'Add Calendar' => 'Добавяне Календар',
+        'Edit Calendar' => 'Редактиране Календар',
+        'Go back' => 'Назад',
+        'Calendar Overview' => 'Обобщение Календар',
+        'Add new Calendar' => 'Добавяне нов Календар',
+        'Import Appointments' => 'Добавяне срещи',
+        'Calendar Import' => 'Импортиране Календар',
         'Here you can upload a configuration file to import a calendar to your system. The file needs to be in .yml format as exported by calendar management module.' =>
-            '',
-        'Overwrite existing entities' => '',
-        'Upload calendar configuration' => '',
-        'Import Calendar' => '',
-        'Filter for calendars' => '',
+            'От тук можете да качите конфигурационен файл за импортиране на календар към вашата системата. Файлът трябва да бъде. yml формат. ',
+        'Overwrite existing entities' => 'Презаписване съществуващите субекти',
+        'Upload calendar configuration' => 'Качване конфигурация на календара',
+        'Import Calendar' => 'Импортиране Календар',
+        'Filter for calendars' => 'Филтър за календари',
         'Depending on the group field, the system will allow users the access to the calendar according to their permission level.' =>
             '',
         'Read only: users can see and export all appointments in the calendar.' =>
@@ -2439,7 +2439,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => '',
-        'Personal preferences' => '',
+        'Personal Preferences' => '',
         'Preferences' => 'Предпочитания',
         'Please note: you\'re currently editing the preferences of %s.' =>
             '',
@@ -2467,7 +2467,6 @@ sub Data {
         'Reset to default' => '',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => '',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             '',
         'Did you know?' => '',
@@ -2953,6 +2952,7 @@ sub Data {
         'View notifications' => '',
         'Notifications' => '',
         'Notifications (OTRS Business Solution™)' => '',
+        'Personal preferences' => '',
         'Logout' => 'Изход',
         'You are logged in as' => '',
 
@@ -2964,7 +2964,14 @@ sub Data {
         'General Specifications and Mail Settings' => '',
         'Finish' => 'Край',
         'Welcome to %s' => '',
+        'Germany' => '',
         'Phone' => 'Телефон',
+        'United States' => '',
+        'Mexico' => '',
+        'Hungary' => '',
+        'Brazil' => '',
+        'Singapore' => '',
+        'Hong Kong' => '',
         'Web site' => '',
 
         # Template: InstallerConfigureMail
@@ -7044,7 +7051,7 @@ Thanks for your help!
         'Disable cloud services' => '',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be enabled).' =>
             '',
-        'Disables the redirection to the last screen overview / dashboard after a ticket is created.' =>
+        'Disables the redirection to the last screen overview / dashboard after a ticket is closed.' =>
             '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If not enabled, the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If enabled, it also disables the GenericAgent, PackageManager and SQL Box.' =>
             '',
@@ -7472,6 +7479,7 @@ Thanks for your help!
         'Ivory (Slim)' => '',
         'Japanese' => '',
         'JavaScript function for the search frontend.' => '',
+        'Korean' => '',
         'Language' => 'Език',
         'Large' => 'Подробен',
         'Last Screen Overview' => '',

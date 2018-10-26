@@ -4,8 +4,8 @@
 # Copyright (C) 2010 Lars Jørgensen <lajo[at]kb.dk>
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 package Kernel::Language::da;
 
@@ -25,7 +25,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.401168786524579;
+    $Self->{Completeness}        = 0.400617919670443;
 
     # csv separator
     $Self->{Separator}         = '';
@@ -2439,7 +2439,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Opdater dine indstillinger',
-        'Personal preferences' => 'Personlige indstillinger',
+        'Personal Preferences' => 'Personlinge indstillinger',
         'Preferences' => 'Indstillinger',
         'Please note: you\'re currently editing the preferences of %s.' =>
             '',
@@ -2467,7 +2467,6 @@ sub Data {
         'Reset to default' => '',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => 'Personlinge indstillinger',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             '',
         'Did you know?' => '',
@@ -2953,6 +2952,7 @@ sub Data {
         'View notifications' => '',
         'Notifications' => '',
         'Notifications (OTRS Business Solution™)' => 'Meddelelser (OTRS Business Solution™)',
+        'Personal preferences' => 'Personlige indstillinger',
         'Logout' => 'Log ud',
         'You are logged in as' => 'Du er logget ind som',
 
@@ -2964,7 +2964,14 @@ sub Data {
         'General Specifications and Mail Settings' => 'Generelle specifikationer og mail-indstillinger',
         'Finish' => 'Færdig',
         'Welcome to %s' => 'Velkommen til %s',
+        'Germany' => '',
         'Phone' => 'Telefon',
+        'United States' => '',
+        'Mexico' => '',
+        'Hungary' => '',
+        'Brazil' => '',
+        'Singapore' => '',
+        'Hong Kong' => '',
         'Web site' => 'Webside',
 
         # Template: InstallerConfigureMail
@@ -7045,7 +7052,7 @@ Thanks for your help!
         'Disable cloud services' => '',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be enabled).' =>
             '',
-        'Disables the redirection to the last screen overview / dashboard after a ticket is created.' =>
+        'Disables the redirection to the last screen overview / dashboard after a ticket is closed.' =>
             '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If not enabled, the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If enabled, it also disables the GenericAgent, PackageManager and SQL Box.' =>
             '',
@@ -7473,6 +7480,7 @@ Thanks for your help!
         'Ivory (Slim)' => '',
         'Japanese' => '',
         'JavaScript function for the search frontend.' => '',
+        'Korean' => '',
         'Language' => 'Sprog',
         'Large' => 'Stor',
         'Last Screen Overview' => '',
@@ -8452,7 +8460,7 @@ Thanks for your help!
         'Starts a wildcard search of the active object after the link object mask is started.' =>
             '',
         'Stat#' => 'Rapport',
-        'States' => 'Tilstande',
+        'States' => 'Status',
         'Statistic Reports overview.' => '',
         'Statistics overview.' => '',
         'Status view' => 'Statusoversigt',

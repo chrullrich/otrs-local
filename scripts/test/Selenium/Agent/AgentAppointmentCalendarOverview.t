@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 use strict;
@@ -217,7 +217,7 @@ $Selenium->RunTest(
         );
 
         # Verify copy-to-clipboard link.
-        my $URL = $Selenium->find_element( '.CopyToClipboard', 'css' )->get_attribute('data-clipboard-text');
+        my $URL = $Selenium->execute_script("return \$('.CopyToClipboard').attr('data-clipboard-text');");
 
         $Self->True(
             $URL,
@@ -273,7 +273,7 @@ $Selenium->RunTest(
         );
 
         # Check location link contains correct value.
-        my $LocationLinkURL = $Selenium->find_element( '.LocationLink', 'css' )->get_attribute('href');
+        my $LocationLinkURL = $Selenium->execute_script("return \$('.LocationLink').attr('href');");
         $Self->True(
             $LocationLinkURL =~ /Straubing$/,
             'Location link contains correct value',
@@ -302,10 +302,7 @@ $Selenium->RunTest(
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=${TicketID}");
 
         # Find link to the appointment on page.
-        my $LinkedAppointment = $Selenium->find_element(
-            "//a[contains(\@href, \'Action=AgentAppointmentCalendarOverview;AppointmentID=' )]"
-        );
-        $Selenium->VerifiedGet( $LinkedAppointment->get_attribute('href') );
+        $Selenium->find_element( '.LinkObjectLink', 'css' )->click();
         $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#Title').length" );
 
         $Self->Is(
@@ -331,7 +328,7 @@ $Selenium->RunTest(
         );
 
         # Check location link contains correct value.
-        $LocationLinkURL = $Selenium->find_element( '.LocationLink', 'css' )->get_attribute('href');
+        $LocationLinkURL = $Selenium->execute_script("return \$('.LocationLink').attr('href');");
         $Self->True(
             $LocationLinkURL =~ /Straubing$/,
             'Location link contains correct value',

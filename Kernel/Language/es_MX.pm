@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Language::es_MX;
@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.514953592299759;
+    $Self->{Completeness}        = 0.514246481290766;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -2438,7 +2438,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Modificar mis preferencias',
-        'Personal preferences' => '',
+        'Personal Preferences' => '',
         'Preferences' => 'Preferencias',
         'Please note: you\'re currently editing the preferences of %s.' =>
             '',
@@ -2466,7 +2466,6 @@ sub Data {
         'Reset to default' => '',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => '',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             '',
         'Did you know?' => '',
@@ -2849,7 +2848,7 @@ sub Data {
         'Please see the documentation or ask your admin for further information.' =>
             'Por favor, refiérase a la documentación o pregunte a su administrador para obtener más información.',
         'One moment please, you are being redirected...' => 'Un momento por favor, está siendo redirigido...',
-        'Login' => 'Identificador',
+        'Login' => 'Inicio de sesión',
         'User name' => 'Nombre de usuario',
         'Your user name' => 'Su nombre de usuario',
         'Your password' => 'Su contraseña',
@@ -2952,6 +2951,7 @@ sub Data {
         'View notifications' => '',
         'Notifications' => '',
         'Notifications (OTRS Business Solution™)' => '',
+        'Personal preferences' => '',
         'Logout' => 'Cerrar Sesión',
         'You are logged in as' => 'Ud. inició sesión como',
 
@@ -2963,7 +2963,14 @@ sub Data {
         'General Specifications and Mail Settings' => 'Especificaciones Generales y Configuraciones de Correo',
         'Finish' => 'Finalizar',
         'Welcome to %s' => 'Bienvenido a %s',
+        'Germany' => '',
         'Phone' => 'Teléfono',
+        'United States' => '',
+        'Mexico' => '',
+        'Hungary' => '',
+        'Brazil' => '',
+        'Singapore' => '',
+        'Hong Kong' => '',
         'Web site' => 'Sitio web',
 
         # Template: InstallerConfigureMail
@@ -7043,7 +7050,7 @@ Thanks for your help!
         'Disable cloud services' => '',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be enabled).' =>
             '',
-        'Disables the redirection to the last screen overview / dashboard after a ticket is created.' =>
+        'Disables the redirection to the last screen overview / dashboard after a ticket is closed.' =>
             '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If not enabled, the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If enabled, it also disables the GenericAgent, PackageManager and SQL Box.' =>
             '',
@@ -7471,6 +7478,7 @@ Thanks for your help!
         'Ivory (Slim)' => '',
         'Japanese' => 'Japonés',
         'JavaScript function for the search frontend.' => '',
+        'Korean' => '',
         'Language' => 'Idioma',
         'Large' => 'Grande',
         'Last Screen Overview' => '',
@@ -8450,7 +8458,7 @@ Thanks for your help!
         'Starts a wildcard search of the active object after the link object mask is started.' =>
             '',
         'Stat#' => 'Estadística#',
-        'States' => 'Estados',
+        'States' => 'Estado',
         'Statistic Reports overview.' => '',
         'Statistics overview.' => '',
         'Status view' => 'Vista de estados',

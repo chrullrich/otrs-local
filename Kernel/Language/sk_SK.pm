@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Language::sk_SK;
@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.185287040220007;
+    $Self->{Completeness}        = 0.185204256779952;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -432,7 +432,7 @@ sub Data {
         'Customer User Management' => '',
         'Add Customer User' => 'Pridať používateľa',
         'Edit Customer User' => 'Upraviť používateľa',
-        'Back to search results' => '',
+        'Back to search results' => 'Späť do výsledkov vyhľadávania',
         'Customer user are needed to have a customer history and to login via customer panel.' =>
             '',
         'List (%s total)' => '',
@@ -2438,7 +2438,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Zmeniť nastavenia',
-        'Personal preferences' => '',
+        'Personal Preferences' => '',
         'Preferences' => 'Nastavenia',
         'Please note: you\'re currently editing the preferences of %s.' =>
             '',
@@ -2466,7 +2466,6 @@ sub Data {
         'Reset to default' => '',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => '',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             '',
         'Did you know?' => '',
@@ -2952,6 +2951,7 @@ sub Data {
         'View notifications' => '',
         'Notifications' => '',
         'Notifications (OTRS Business Solution™)' => '',
+        'Personal preferences' => '',
         'Logout' => 'Odhlásenie ',
         'You are logged in as' => 'Ste prihlásený ako',
 
@@ -2963,7 +2963,14 @@ sub Data {
         'General Specifications and Mail Settings' => '',
         'Finish' => '',
         'Welcome to %s' => '',
+        'Germany' => '',
         'Phone' => 'Telefón',
+        'United States' => '',
+        'Mexico' => '',
+        'Hungary' => '',
+        'Brazil' => '',
+        'Singapore' => '',
+        'Hong Kong' => '',
         'Web site' => '',
 
         # Template: InstallerConfigureMail
@@ -7043,7 +7050,7 @@ Thanks for your help!
         'Disable cloud services' => '',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be enabled).' =>
             '',
-        'Disables the redirection to the last screen overview / dashboard after a ticket is created.' =>
+        'Disables the redirection to the last screen overview / dashboard after a ticket is closed.' =>
             '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If not enabled, the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If enabled, it also disables the GenericAgent, PackageManager and SQL Box.' =>
             '',
@@ -7471,6 +7478,7 @@ Thanks for your help!
         'Ivory (Slim)' => '',
         'Japanese' => '',
         'JavaScript function for the search frontend.' => '',
+        'Korean' => '',
         'Language' => 'Jazyk',
         'Large' => 'Veľký',
         'Last Screen Overview' => '',

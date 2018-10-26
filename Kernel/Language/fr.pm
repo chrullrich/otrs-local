@@ -10,8 +10,8 @@
 # Copyright (C) 2013 Dylan Oberson <dylan.oberson@epfl.ch>
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Language::fr;
@@ -32,7 +32,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.391371605362668;
+    $Self->{Completeness}        = 0.391692413319602;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -246,7 +246,7 @@ sub Data {
 
         # Template: AdminAppointmentNotificationEventTransportEmailSettings
         'Additional recipient email addresses' => 'Adresses de courriel supplémentaires pour les destinataires.',
-        'This field must have less then 200 characters.' => '',
+        'This field must have less then 200 characters.' => 'Ce champ doit contenir moins de 200 caractères.',
         'Article visible for customer' => 'Article visible pour le client',
         'An article will be created if the notification is sent to the customer or an additional email address.' =>
             'Un article va être créé si la notification est envoyé au client ou à un email additionnel.',
@@ -2287,7 +2287,7 @@ sub Data {
         'Remove entry' => 'Supprimer l\'entrée',
 
         # Template: AgentCustomerInformationCenter
-        'Customer Information Center' => 'Tableau de Bord Client',
+        'Customer Information Center' => 'Centre d\'informations des utilisateurs client et clients',
 
         # Template: AgentCustomerInformationCenterSearch
         'Customer User' => 'Utilisateur client',
@@ -2322,7 +2322,7 @@ sub Data {
         'Change search options' => 'Changer les options de recherche',
 
         # Template: AgentCustomerUserInformationCenter
-        'Customer User Information Center' => '',
+        'Customer User Information Center' => 'Centre d\'informations des utilisateurs client',
 
         # Template: AgentDaemonInfo
         'The OTRS Daemon is a daemon process that performs asynchronous tasks, e.g. ticket escalation triggering, email sending, etc.' =>
@@ -2446,7 +2446,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Editer vos préférences',
-        'Personal preferences' => 'Préférences personnelles',
+        'Personal Preferences' => 'Préférences personnelles',
         'Preferences' => 'Préférences',
         'Please note: you\'re currently editing the preferences of %s.' =>
             'Attention: vous êtes en train de modifier les préférences personnelles de %s.',
@@ -2474,7 +2474,6 @@ sub Data {
         'Reset to default' => '',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => 'Préférences personnelles',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             'Sélectionnez à droite les paramètres que vous souhaitez modifier.',
         'Did you know?' => 'Le saviez-vous ?',
@@ -2960,6 +2959,7 @@ sub Data {
         'View notifications' => '',
         'Notifications' => '',
         'Notifications (OTRS Business Solution™)' => '',
+        'Personal preferences' => 'Préférences personnelles',
         'Logout' => 'Déconnexion',
         'You are logged in as' => 'Vous êtes connecté avec',
 
@@ -2971,7 +2971,14 @@ sub Data {
         'General Specifications and Mail Settings' => 'Spécifications Générales et Réglages de Messagerie',
         'Finish' => 'Terminer',
         'Welcome to %s' => '',
+        'Germany' => '',
         'Phone' => 'Téléphone',
+        'United States' => '',
+        'Mexico' => '',
+        'Hungary' => '',
+        'Brazil' => '',
+        'Singapore' => '',
+        'Hong Kong' => '',
         'Web site' => 'Site web',
 
         # Template: InstallerConfigureMail
@@ -6232,9 +6239,9 @@ Thanks for your help!
         'Customer Ticket Print Module.' => '',
         'Customer User Administration' => 'Administration des utilisateurs client',
         'Customer User Information' => 'Informations des utilisateurs client',
-        'Customer User Information Center Search.' => '',
-        'Customer User Information Center search.' => '',
-        'Customer User Information Center.' => '',
+        'Customer User Information Center Search.' => 'Rechercher dans le centre d\'informations des utilisateurs client.',
+        'Customer User Information Center search.' => 'Rechercher dans le centre d\'informations des utilisateurs client.',
+        'Customer User Information Center.' => 'Centre d\'informations des utilisateurs client.',
         'Customer Users ↔ Customers' => 'Utilisateurs client ↔ Clients',
         'Customer Users ↔ Groups' => 'Utilisateurs client ↔ Groupes',
         'Customer Users ↔ Services' => 'Utilisateurs client ↔ Services',
@@ -7051,7 +7058,7 @@ Thanks for your help!
         'Disable cloud services' => 'Désactiver les services cloud',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be enabled).' =>
             '',
-        'Disables the redirection to the last screen overview / dashboard after a ticket is created.' =>
+        'Disables the redirection to the last screen overview / dashboard after a ticket is closed.' =>
             '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If not enabled, the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If enabled, it also disables the GenericAgent, PackageManager and SQL Box.' =>
             '',
@@ -7479,6 +7486,7 @@ Thanks for your help!
         'Ivory (Slim)' => '',
         'Japanese' => 'Japonais',
         'JavaScript function for the search frontend.' => '',
+        'Korean' => '',
         'Language' => 'Langue',
         'Large' => 'Grand',
         'Last Screen Overview' => '',
@@ -8458,7 +8466,7 @@ Thanks for your help!
         'Starts a wildcard search of the active object after the link object mask is started.' =>
             '',
         'Stat#' => 'Stat#',
-        'States' => 'États',
+        'States' => 'État',
         'Statistic Reports overview.' => 'Vue d\'ensemble des rapports de statistiques.',
         'Statistics overview.' => 'Vue d\'ensemble des statistiques.',
         'Status view' => 'Vue par statut',
@@ -8515,7 +8523,7 @@ Thanks for your help!
         'The logo shown in the header of the customer interface. The URL to the image can be a relative URL to the skin image directory, or a full URL to a remote web server.' =>
             '',
         'The logo shown on top of the login box of the agent interface. The URL to the image can be a relative URL to the skin image directory, or a full URL to a remote web server.' =>
-            'Le logo affiché sur la page d\'authentification des opérateurs. L\'URL peut faire référence à un fichier situé sur l\'ordinateur, ou à une adresse Web de l\'image.',
+            'Le logo affiché sur la page d\'authentification des opérateurs. L\'URL peut faire référence à un fichier situé sur l\'ordinateur, ou à l\'adresse Web de l\'image.',
         'The maximal number of articles expanded on a single page in AgentTicketZoom.' =>
             '',
         'The maximal number of articles shown on a single page in AgentTicketZoom.' =>

@@ -3,8 +3,8 @@
 # Copyright (C) 2012 FCCN - Rui Francisco <rui.francisco@fccn.pt>
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Language::pt;
@@ -25,7 +25,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y-%M-%D';
     $Self->{DateInputFormat}     = '%Y-%M-%D';
     $Self->{DateInputFormatLong} = '%Y-%M-%D - %T';
-    $Self->{Completeness}        = 0.329494671708491;
+    $Self->{Completeness}        = 0.329042224510814;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -471,7 +471,7 @@ sub Data {
         'Change Customer Relations for Customer User' => '',
         'Change Customer User Relations for Customer' => '',
         'Toggle active state for all' => 'Ativar estado para todos',
-        'Active' => 'Ativo',
+        'Active' => 'Activo',
         'Toggle active state for %s' => 'Ativara estar para %s ',
 
         # Template: AdminCustomerUserGroup
@@ -1473,7 +1473,7 @@ sub Data {
         'Logfile too large!' => 'Ficheiro de log demasiado grande',
         'The logfile is too large, you need to reset it' => 'Ficheiro de log demasiado grande, é necessário limpar',
         'Reset' => 'Restaurar',
-        'Overview' => 'Vista Geral',
+        'Overview' => 'Visão Geral',
         'Interface' => 'Interface',
         'Requests' => 'Pedidos',
         'Min Response' => 'Resposta mínima',
@@ -1852,7 +1852,7 @@ sub Data {
         'owner' => 'proprietário',
         'Permissions to change the owner of tickets in this group/queue.' =>
             'Permissões para alterar o proprietário do ticket neste grupo/fila',
-        'priority' => 'Prioridade',
+        'priority' => 'prioridade',
         'Permissions to change the ticket priority in this group/queue.' =>
             'Permissões para modificar a prioridade do ticket neste grupo/fila',
 
@@ -2439,7 +2439,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Editar preferências',
-        'Personal preferences' => '',
+        'Personal Preferences' => '',
         'Preferences' => 'Preferências',
         'Please note: you\'re currently editing the preferences of %s.' =>
             '',
@@ -2467,7 +2467,6 @@ sub Data {
         'Reset to default' => '',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => '',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             '',
         'Did you know?' => '',
@@ -2953,6 +2952,7 @@ sub Data {
         'View notifications' => '',
         'Notifications' => '',
         'Notifications (OTRS Business Solution™)' => '',
+        'Personal preferences' => '',
         'Logout' => 'Sair',
         'You are logged in as' => 'Autenticado como ',
 
@@ -2964,7 +2964,14 @@ sub Data {
         'General Specifications and Mail Settings' => 'Especificações comuns e definições de email',
         'Finish' => 'Fim',
         'Welcome to %s' => '',
+        'Germany' => '',
         'Phone' => 'Telefone',
+        'United States' => '',
+        'Mexico' => '',
+        'Hungary' => '',
+        'Brazil' => '',
+        'Singapore' => '',
+        'Hong Kong' => '',
         'Web site' => 'Site',
 
         # Template: InstallerConfigureMail
@@ -3444,7 +3451,7 @@ sub Data {
         'sorted ascending' => 'ordenado por ordem crescente',
         'Trace' => '',
         'Debug' => '',
-        'Info' => 'Informação',
+        'Info' => 'Info',
         'Warn' => '',
         'days' => 'dias',
         'day' => 'dia',
@@ -4425,7 +4432,7 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/ArticleAction/ReinstallPackageLink.pm
         'Upgrade to OTRS Business Solution™' => '',
         'Re-install Package' => '',
-        'Upgrade' => 'Melhoria de Versão',
+        'Upgrade' => 'Upgrade',
         'Re-install' => '',
 
         # Perl Module: Kernel/Output/HTML/ArticleCheck/PGP.pm
@@ -4505,7 +4512,7 @@ sub Data {
         'This ticket has no title or subject' => 'Este ticket não tem título ou assunto',
 
         # Perl Module: Kernel/Output/HTML/Dashboard/TicketStatsGeneric.pm
-        '7 Day Stats' => 'Estatísticas dos últimos 7 dias',
+        '7 Day Stats' => 'Estatísticas de 7 dias',
 
         # Perl Module: Kernel/Output/HTML/Dashboard/UserOnline.pm
         'User set their status to unavailable.' => '',
@@ -7044,7 +7051,7 @@ Thanks for your help!
         'Disable cloud services' => '',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be enabled).' =>
             '',
-        'Disables the redirection to the last screen overview / dashboard after a ticket is created.' =>
+        'Disables the redirection to the last screen overview / dashboard after a ticket is closed.' =>
             '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If not enabled, the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If enabled, it also disables the GenericAgent, PackageManager and SQL Box.' =>
             '',
@@ -7472,6 +7479,7 @@ Thanks for your help!
         'Ivory (Slim)' => '',
         'Japanese' => '',
         'JavaScript function for the search frontend.' => '',
+        'Korean' => '',
         'Language' => 'Idioma',
         'Large' => 'Grande',
         'Last Screen Overview' => '',
@@ -7651,7 +7659,7 @@ Thanks for your help!
             '',
         'NameX' => '',
         'New Ticket' => 'Novo Ticket',
-        'New Tickets' => 'Novos tickets',
+        'New Tickets' => 'Novos Tickets',
         'New Window' => '',
         'New Year\'s Day' => 'Dia de Ano Novo',
         'New Year\'s Eve' => 'Vespera de Ano Novo',
@@ -7682,7 +7690,7 @@ Thanks for your help!
             '',
         'OTRS doesn\'t support recurring Appointments without end date or number of iterations. During import process, it might happen that ICS file contains such Appointments. Instead, system creates all Appointments in the past, plus Appointments for the next N months (120 months/10 years by default).' =>
             '',
-        'Open Tickets / Need to be answered' => 'Tickets abertos / precisam de resposta',
+        'Open Tickets / Need to be answered' => 'Tickets Abertos / Precisam de ser respondidos',
         'Open an external link!' => '',
         'Open tickets (customer user)' => '',
         'Open tickets (customer)' => '',
@@ -8451,7 +8459,7 @@ Thanks for your help!
         'Starts a wildcard search of the active object after the link object mask is started.' =>
             '',
         'Stat#' => 'Stat#',
-        'States' => 'Estados',
+        'States' => 'Estado',
         'Statistic Reports overview.' => '',
         'Statistics overview.' => '',
         'Status view' => '',
@@ -8633,7 +8641,7 @@ Thanks for your help!
             '',
         'Use new type of select and autocomplete fields in customer interface, where applicable (InputFields).' =>
             '',
-        'User Profile' => 'Perfil de utilizador',
+        'User Profile' => 'Perfil do Utilizador',
         'UserFirstname' => 'Nome próprio do utilizador',
         'UserLastname' => 'Apelido do utilizador',
         'Users, Groups & Roles' => 'Utilizadores, Grupos e Papeis',

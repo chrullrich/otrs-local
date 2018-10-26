@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 use strict;
@@ -189,7 +189,7 @@ $Selenium->RunTest(
             qw(DestQueueID NewUserID NewStateID)
             )
         {
-            $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#$ID').length" );
+            $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#$ID').length;" );
             my $Element = $Selenium->find_element( "#$ID", 'css' );
             $Element->is_enabled();
         }
@@ -205,7 +205,7 @@ $Selenium->RunTest(
         # Wait for reload to kick in.
         $Selenium->WaitFor(
             JavaScript =>
-                'return typeof(Core) == "object" && typeof(Core.App) == "object" && Core.App.PageLoadComplete'
+                'return typeof(Core) == "object" && typeof(Core.App) == "object" && Core.App.PageLoadComplete;'
         );
 
         # Force sub menus to be visible in order to be able to click one of the links.
@@ -218,7 +218,7 @@ $Selenium->RunTest(
         $Selenium->switch_to_window( $Handles->[1] );
 
         # Wait until page has loaded, if necessary.
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".CancelClosePopup").length' );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".CancelClosePopup").length;' );
 
         # Confirm ticket move action.
         my $MoveMsg = "Changed queue to \"Misc\" (4) from \"Raw\" (2).";
@@ -289,7 +289,7 @@ $Selenium->RunTest(
 
         $Self->Is(
             $Selenium->execute_script(
-                "return \$('p.Value[title=\"Misc\"]').text()"
+                "return \$('p.Value[title=\"Misc\"]').text();"
             ),
             'Misc',
             'The Queue was not changed.',
@@ -300,12 +300,12 @@ $Selenium->RunTest(
         # Wait for reload to kick in.
         $Selenium->WaitFor(
             JavaScript =>
-                'return typeof(Core) == "object" && typeof(Core.App) == "object" && Core.App.PageLoadComplete'
+                "return typeof(Core) == 'object' && typeof(Core.App) == 'object' && Core.App.PageLoadComplete && \$('p.Value[title=\"Raw\"]').text() === 'Raw';"
         );
 
         $Self->Is(
             $Selenium->execute_script(
-                "return \$('p.Value[title=\"Raw\"]').text()"
+                "return \$('p.Value[title=\"Raw\"]').text();"
             ),
             'Raw',
             'The Queue was changed.',

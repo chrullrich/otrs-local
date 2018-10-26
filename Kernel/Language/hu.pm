@@ -7,8 +7,8 @@
 # Copyright (C) 2013 Csaba Németh <csaba@sopron.hu>
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Language::hu;
@@ -29,7 +29,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y-%M-%D';
     $Self->{DateInputFormat}     = '%Y-%M-%D';
     $Self->{DateInputFormatLong} = '%Y-%M-%D - %T';
-    $Self->{Completeness}        = 1;
+    $Self->{Completeness}        = 0.999828355647099;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -1559,7 +1559,7 @@ sub Data {
         'Cancel & close' => 'Megszakítás és bezárás',
         'Go Back' => 'Vissza',
         'Please note, that changing this activity will affect the following processes' =>
-            'Ne feledje, hogy a tevékenység módosítása érinteni fogja a következő folyamatokat',
+            'Ne feledje, hogy a tevékenység megváltoztatása érinteni fogja a következő folyamatokat',
         'Activity' => 'Tevékenység',
         'Activity Name' => 'Tevékenység neve',
         'Activity Dialogs' => 'Tevékenység párbeszédek',
@@ -2443,7 +2443,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Beállítások szerkesztése',
-        'Personal preferences' => 'Személyes beállítások',
+        'Personal Preferences' => 'Személyes beállítások',
         'Preferences' => 'Beállítások',
         'Please note: you\'re currently editing the preferences of %s.' =>
             'Ne feledje: jelenleg %s beállításait szerkeszti.',
@@ -2471,7 +2471,6 @@ sub Data {
         'Reset to default' => 'Visszaállítás az alapértelmezettre',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => 'Személyes beállítások',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             'Válasszon a jobb oldali csoportok közül azon beállítások megtalálásához, amelyeket meg szeretne változtatni.',
         'Did you know?' => 'Tudta?',
@@ -2957,6 +2956,7 @@ sub Data {
         'View notifications' => 'Értesítések megtekintése',
         'Notifications' => 'Értesítések',
         'Notifications (OTRS Business Solution™)' => 'Értesítések (OTRS Business Solution™)',
+        'Personal preferences' => 'Személyes beállítások',
         'Logout' => 'Kilépés',
         'You are logged in as' => 'Belépett a következő néven:',
 
@@ -2968,7 +2968,14 @@ sub Data {
         'General Specifications and Mail Settings' => 'Általános specifikációk és levelezési beállítások',
         'Finish' => 'Befejezés',
         'Welcome to %s' => 'Üdvözli a(z) %s',
+        'Germany' => 'Németország',
         'Phone' => 'Telefon',
+        'United States' => 'Egyesült Államok',
+        'Mexico' => 'Mexikó',
+        'Hungary' => 'Magyarország',
+        'Brazil' => 'Brazília',
+        'Singapore' => 'Szingapúr',
+        'Hong Kong' => 'Hongkong',
         'Web site' => 'Weboldal',
 
         # Template: InstallerConfigureMail
@@ -3651,7 +3658,7 @@ sub Data {
         # Perl Module: Kernel/Modules/AdminMailAccount.pm
         'Mail account added!' => 'Levelezőfiók hozzáadva!',
         'Email account fetch already fetched by another process. Please try again later!' =>
-            'Az e-mail fiók lekérését egy másik folyamat már lekérte. Próbálja meg később!',
+            'Az e-mail fiók lekérését egy másik folyamat már lekérte. Próbálja meg később újra!',
         'Dispatching by email To: field.' => 'Szétválogatás az e-mail címzett mezője szerint.',
         'Dispatching by selected Queue.' => 'Szétválogatás a kiválasztott várólista szerint.',
 
@@ -4731,7 +4738,7 @@ sub Data {
         'Please note that the session limit is almost reached.' => 'Ne feledje, hogy a munkamenet-korlátot majdnem elérte.',
         'Login rejected! You have exceeded the maximum number of concurrent Agents! Contact sales@otrs.com immediately!' =>
             'Belépés elutasítva! Túllépte az egyidejű ügyintézők számát! Azonnal vegye fel a kapcsolatot velünk a sales@otrs.com e-mail címen!',
-        'Session limit reached! Please try again later.' => 'A munkamenetkorlát elérve! Próbálkozzon később.',
+        'Session limit reached! Please try again later.' => 'A munkamenetkorlát elérve! Próbálja meg később újra.',
         'Session per user limit reached!' => 'A felhasználónkénti munkamenetkorlát elérve!',
 
         # Perl Module: Kernel/System/AuthSession/DB.pm
@@ -4811,12 +4818,12 @@ sub Data {
         'FadeAway' => 'Kivezetve',
 
         # Perl Module: Kernel/System/Registration.pm
-        'Can\'t contact registration server. Please try again later.' => 'Nem sikerült elérni a regisztrációs kiszolgálót. Próbálkozzon később.',
+        'Can\'t contact registration server. Please try again later.' => 'Nem sikerült elérni a regisztrációs kiszolgálót. Próbálja meg később újra.',
         'No content received from registration server. Please try again later.' =>
-            'Nem érkezett tartalom a regisztrációs kiszolgálótól. Próbálkozzon később.',
+            'Nem érkezett tartalom a regisztrációs kiszolgálótól. Próbálja meg később újra.',
         'Can\'t get Token from sever' => 'Nem lehet lekérni a tokent a kiszolgálóról',
         'Username and password do not match. Please try again.' => 'A felhasználónév és a jelszó nem egyezik. Próbálja újra.',
-        'Problems processing server result. Please try again later.' => 'Hiba a kiszolgáló eredményének feldolgozásakor. Próbálkozzon később.',
+        'Problems processing server result. Please try again later.' => 'Hiba a kiszolgáló eredményének feldolgozásakor. Próbálja meg később újra.',
 
         # Perl Module: Kernel/System/Stats.pm
         'Sum' => 'Összesen',
@@ -5566,7 +5573,7 @@ sub Data {
         'Search the System Configuration' => 'A rendszerbeállítás keresése',
         'Please enter at least one search word to find anything.' => 'Adjon meg legalább egy keresőszót, ha bármire rá szeretne keresni.',
         'Unfortunately deploying is currently not possible, maybe because another agent is already deploying. Please try again later.' =>
-            'Sajnálatos módon az üzembe állítás jelenleg nem lehetséges, mert talán egy másik ügyintéző már üzembe állította. Próbálja meg később.',
+            'Sajnálatos módon az üzembe állítás jelenleg nem lehetséges, mert talán egy másik ügyintéző már üzembe állította. Próbálja meg később újra.',
         'Deploy' => 'Üzembe állítás',
         'The deployment is already running.' => 'Az üzembe állítás már fut.',
         'Deployment successful. You\'re being redirected...' => 'Az üzembe állítás sikerült. Most átirányítjuk…',
@@ -7059,8 +7066,8 @@ Az Ön segélyszolgálat csapata
         'Disable cloud services' => 'Felhőszolgáltatások letiltása',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be enabled).' =>
             'Letiltja az emlékeztető értesítések küldését egy jegy felelős ügyintézőjének (a Ticket::Responsible modulnak engedélyezve kell lennie).',
-        'Disables the redirection to the last screen overview / dashboard after a ticket is created.' =>
-            'Letiltja a legutolsó képernyő áttekintőjére vagy a vezérlőpultra történő átirányítást, miután egy jegyet létrehoztak.',
+        'Disables the redirection to the last screen overview / dashboard after a ticket is closed.' =>
+            'Letiltja a legutolsó képernyő áttekintőjére vagy a vezérlőpultra történő átirányítást, miután egy jegyet lezártak.',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If not enabled, the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If enabled, it also disables the GenericAgent, PackageManager and SQL Box.' =>
             'Letiltja a webes telepítőt (http://yourhost.example.com/otrs/installer.pl), hogy megakadályozza a rendszer feltörését. Ha nincs engedélyezve, akkor a rendszer újratelepíthető, és a jelenlegi alap konfiguráció lesz felhasználva a telepítő parancsfájlon belüli kérdések előre kitöltéséhez. Ha engedélyezve van, akkor letiltja az általános ügyintézőt, a csomagkezelőt és az SQL dobozt is.',
         'Display a warning and prevent search when using stop words within fulltext search.' =>
@@ -7086,7 +7093,7 @@ Az Ön segélyszolgálat csapata
         'Dynamic Fields used to export the search result in CSV format.' =>
             'Dinamikus mezők, amelyek a keresési eredmények CSV formátumba való exportálásához használhatók.',
         'Dynamic fields groups for process widget. The key is the name of the group, the value contains the fields to be shown. Example: \'Key => My Group\', \'Content: Name_X, NameY\'.' =>
-            'Dinamikus mezők csoportjai a feldolgozó felületi elemhez. A kulcs a csoport neve, az érték a megjelenítendő mezőket tartalmazza. Példa: „Kulcs => Saját csoport”, „Tartalom: Név_X, Név_Y”.',
+            'Dinamikus mezők csoportjai a folyamat felületi elemhez. A kulcs a csoport neve, az érték a megjelenítendő mezőket tartalmazza. Példa: „Kulcs => Saját csoport”, „Tartalom: Név_X, Név_Y”.',
         'Dynamic fields limit per page for Dynamic Fields Overview.' => 'Oldalankénti dinamikus mező korlát a dinamikus mezők áttekintőnél.',
         'Dynamic fields options shown in the ticket message screen of the customer interface. NOTE. If you want to display these fields also in the ticket zoom of the customer interface, you have to enable them in CustomerTicketZoom###DynamicField.' =>
             'Az ügyfélfelület jegy üzenet képernyőjén megjelenő dinamikus mezők lehetőségei. MEGJEGYZÉS: Ha az ügyfélfelület jegy nagyításában is meg szeretné jeleníteni ezeket a mezőket, akkor engedélyeznie kell azokat ebben: CustomerTicketZoom###DynamicField.',
@@ -7095,7 +7102,7 @@ Az Ön segélyszolgálat csapata
         'Dynamic fields shown in the email outbound screen of the agent interface.' =>
             'Az ügyintézői felület kimenő e-mail képernyőjén megjelenített dinamikus mezők.',
         'Dynamic fields shown in the process widget in ticket zoom screen of the agent interface.' =>
-            'Az ügyintézői felület jegynagyítás képernyőjén a feldolgozó felületi elemben megjelenített dinamikus mezők.',
+            'Az ügyintézői felület jegynagyítás képernyőjén a folyamat felületi elemben megjelenített dinamikus mezők.',
         'Dynamic fields shown in the sidebar of the ticket zoom screen of the agent interface.' =>
             'Az ügyintézői felület jegynagyítás képernyőjének oldalsávján megjelenített dinamikus mezők.',
         'Dynamic fields shown in the ticket close screen of the agent interface.' =>
@@ -7281,9 +7288,9 @@ Az Ön segélyszolgálat csapata
         'Frontend module registration (disable company link if no company feature is used).' =>
             'Előtétprogram-modul regisztráció (vállalat-hivatkozás letiltása, ha nincs vállalat-szolgáltatás használatban).',
         'Frontend module registration (disable ticket processes screen if no process available) for Customer.' =>
-            'Előtétprogram-modul regisztráció (jegy feldolgozások képernyő letiltása, ha nincs elérhető folyamat) az ügyfélnek.',
+            'Előtétprogram-modul regisztráció (a jegyfolyamatok képernyő letiltása, ha nincs elérhető folyamat) az ügyfélnek.',
         'Frontend module registration (disable ticket processes screen if no process available).' =>
-            'Előtétprogram-modul regisztráció (jegy feldolgozások képernyő letiltása, ha nincs elérhető folyamat).',
+            'Előtétprogram-modul regisztráció (a jegyfolyamatok képernyő letiltása, ha nincs elérhető folyamat).',
         'Frontend module registration (show personal favorites as sub navigation items of \'Admin\').' =>
             'Előtétprogram-modul regisztráció (személyes kedvencek megjelenítése az „Adminisztráció” alnavigációs elemeiként).',
         'Frontend module registration for the agent interface.' => 'Előtétprogram-modul regisztráció az ügyintézői felülethez.',
@@ -7487,6 +7494,7 @@ Az Ön segélyszolgálat csapata
         'Ivory (Slim)' => 'Elefántcsont (karcsú)',
         'Japanese' => 'Japán',
         'JavaScript function for the search frontend.' => 'JavaScript függvény a keresési előtétprogramhoz.',
+        'Korean' => '',
         'Language' => 'Nyelv',
         'Large' => 'Nagy',
         'Last Screen Overview' => 'Utolsó képernyő áttekintője',
@@ -7772,7 +7780,7 @@ Az Ön segélyszolgálat csapata
         'Parameters for the dashboard backend of the ticket escalation overview of the agent interface . "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns. Possible settings: 0 = Disabled, 1 = Available, 2 = Enabled by default. "AccessibleTickets" determines if the plugin will show only tickets assigned to a customer user directly (=0) or also all accessible tickets for this customer (=1).' =>
             'Paraméterek az ügyintézői felület jegyeszkaláció áttekintésének vezérlőpult háttérprogramjához. A „Limit” az alapértelmezetten megjelenített bejegyzések száma. A „Group” használható a hozzáférés korlátozásához a bővítményre (például Group: admin;csoport1;csoport2;). A „Default” azt határozza meg, hogy a bővítmény alapértelmezetten engedélyezve van, vagy hogy a felhasználónak kézzel kell engedélyeznie azt. A „CacheTTLLocal” a bővítmény gyorsítótár ideje percben. Megjegyzés: csak jegyattribútumok és dinamikus mezők (DynamicField_NévX) engedélyezettek DefaultColumns értékeinél. Lehetséges beállítások: 0 = letiltva, 1 = elérhető, 2 = alapértelmezetten engedélyezve. Az „AccessibleTickets” határozza meg, hogy a bővítmény csak közvetlenül az ügyfél-felhasználóhoz rendelt jegyeket fogja megjeleníteni (=0), vagy az összes elérhető jegyet is ennél az ügyfélnél (=1).',
         'Parameters for the dashboard backend of the ticket events calendar of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. "Mandatory" determines if the plugin is always shown and can not be removed by agents.' =>
-            'Paraméterek az ügyintézői felület jegy esemény naptárának vezérlőpult háttérprogramjához. A „Limit” az alapértelmezetten megjelenített bejegyzések száma. A „Group” használható a hozzáférés korlátozásához a bővítményre (például Group: admin;csoport1;csoport2;). A „Default” azt határozza meg, hogy a bővítmény alapértelmezetten engedélyezve van, vagy hogy a felhasználónak kézzel kell engedélyeznie azt. A „CacheTTLLocal” a bővítmény gyorsítótár ideje percben. A „Mandatory” határozza meg, hogy a bővítmény mindig megjelenjen, és az ügyintézők ne tudják eltávolítani.',
+            'Paraméterek az ügyintézői felület események jegynaptárának vezérlőpult háttérprogramjához. A „Limit” az alapértelmezetten megjelenített bejegyzések száma. A „Group” használható a hozzáférés korlátozásához a bővítményre (például Group: admin;csoport1;csoport2;). A „Default” azt határozza meg, hogy a bővítmény alapértelmezetten engedélyezve van, vagy hogy a felhasználónak kézzel kell engedélyeznie azt. A „CacheTTLLocal” a bővítmény gyorsítótár ideje percben. A „Mandatory” határozza meg, hogy a bővítmény mindig megjelenjen, és az ügyintézők ne tudják eltávolítani.',
         'Parameters for the dashboard backend of the ticket pending reminder overview of the agent interface . "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. "Mandatory" determines if the plugin is always shown and can not be removed by agents. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns.' =>
             'Paraméterek az ügyintézői felület jegy emlékeztető függőben áttekintésének vezérlőpult háttérprogramjához. A „Limit” az alapértelmezetten megjelenített bejegyzések száma. A „Group” használható a hozzáférés korlátozásához a bővítményre (például Group: admin;csoport1;csoport2;). A „Default” azt határozza meg, hogy a bővítmény alapértelmezetten engedélyezve van, vagy hogy a felhasználónak kézzel kell engedélyeznie azt. A „CacheTTLLocal” a bővítmény gyorsítótár ideje percben. A „Mandatory” határozza meg, hogy a bővítmény mindig megjelenjen, és az ügyintézők ne tudják eltávolítani. Megjegyzés: csak jegyattribútumok és dinamikus mezők (DynamicField_NévX) engedélyezettek DefaultColumns értékeinél.',
         'Parameters for the dashboard backend of the ticket pending reminder overview of the agent interface . "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. Note: Only Ticket attributes and Dynamic Fields (DynamicField_NameX) are allowed for DefaultColumns.' =>

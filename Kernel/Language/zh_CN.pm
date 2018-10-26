@@ -8,8 +8,8 @@
 # Copyright (C) 2013 Michael Shi <micshi at 163.com>
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Language::zh_CN;
@@ -30,7 +30,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y.%M.%D';
     $Self->{DateInputFormat}     = '%Y.%M.%D';
     $Self->{DateInputFormatLong} = '%Y.%M.%D - %T';
-    $Self->{Completeness}        = 0.997765555173599;
+    $Self->{Completeness}        = 0.999656711294198;
 
     # csv separator
     $Self->{Separator}         = '';
@@ -91,7 +91,7 @@ sub Data {
         'Edit ACL Structure' => '编辑ACL结构',
         'Save ACL' => '保存访问控制列表',
         'Save' => '保存',
-        'or' => '或',
+        'or' => 'or（或）',
         'Save and finish' => '保存并完成',
         'Cancel' => '取消',
         'Do you really want to delete this ACL?' => '您真的想要删除这个ACL吗？',
@@ -188,7 +188,7 @@ sub Data {
         'This message will be shown on the agent preferences screen as a tooltip for this notification.' =>
             '这个信息将会在服务人员偏好设置屏幕作为这个通知的提示信息显示。',
         'Toggle this widget' => '收起/展开小部件',
-        'Events' => '事件',
+        'Events' => 'Events（事件）',
         'Event' => '事件',
         'Here you can choose which events will trigger this notification. An additional appointment filter can be applied below to only send for appointments with certain criteria.' =>
             '在这里你可以选择哪个事件将会触发这个通知，下面的预约过滤器可以选择符合特定条件的预约。',
@@ -198,7 +198,7 @@ sub Data {
         'Location' => '位置',
         'Team' => '团队',
         'Resource' => '资源',
-        'Recipients' => '接收人',
+        'Recipients' => '收件人',
         'Send to' => '发送给',
         'Send to these agents' => '发送给服务人员',
         'Send to all group members (agents only)' => '发送给组的所有成员（仅服务人员）',
@@ -244,7 +244,7 @@ sub Data {
 
         # Template: AdminAppointmentNotificationEventTransportEmailSettings
         'Additional recipient email addresses' => '额外的收件人邮件地址',
-        'This field must have less then 200 characters.' => '',
+        'This field must have less then 200 characters.' => '这个字段不能超过200个字符。',
         'Article visible for customer' => '信件对客户的可见性',
         'An article will be created if the notification is sent to the customer or an additional email address.' =>
             '如果通知发送给客户或额外的邮件地址时创建一封信件。',
@@ -276,7 +276,7 @@ sub Data {
         'Filter for auto responses' => '自动响应过滤器',
         'Response' => '回复内容',
         'Auto response from' => '自动响应的发件人',
-        'Reference' => '相关参考',
+        'Reference' => 'ACL设置参考',
         'To get the first 20 character of the subject.' => '获取主题的前20个字符。',
         'To get the first 5 lines of the email.' => '获取邮件的前五行。',
         'To get the name of the ticket\'s customer user (if given).' => '获取工单的客户用户名字（如果有）。',
@@ -378,7 +378,7 @@ sub Data {
         # Template: AdminCommunicationLogObjectLog
         '#' => '序号',
         'Priority' => '优先级',
-        'Module' => '模块',
+        'Module' => 'Module（模块）',
         'Information' => '信息',
         'No log entries found.' => '没有找到日志条目。',
 
@@ -406,7 +406,7 @@ sub Data {
 
         # Template: AdminCustomerGroup
         'Manage Customer-Group Relations' => '管理客户与组的关系',
-        'Notice' => '注意',
+        'Notice' => 'Notice（注意）',
         'This feature is disabled!' => '该功能已关闭！',
         'Just use this feature if you want to define group permissions for customers.' =>
             '该功能用于为客户定义权限组。',
@@ -428,9 +428,9 @@ sub Data {
         'Toggle %s permission for %s' => '授予/取消 %s 权限给 %s',
         'Customer Default Groups:' => '客户的默认组:',
         'No changes can be made to these groups.' => '不能更改默认组.',
-        'ro' => '只读',
+        'ro' => 'ro（只读）',
         'Read only access to the ticket in this group/queue.' => '对于组/队列中的工单具有 \'只读\'权限。',
-        'rw' => '读写',
+        'rw' => 'rw（读写）',
         'Full read and write access to the tickets in this group/queue.' =>
             '对于组/队列中的工单具有完整的\'读写\'权限。',
 
@@ -476,7 +476,7 @@ sub Data {
         'Change Customer Relations for Customer User' => '修改客户用户和客户的关联',
         'Change Customer User Relations for Customer' => '修改客户关联的用户',
         'Toggle active state for all' => '全部激活/不激活状态',
-        'Active' => '激活',
+        'Active' => 'Active（活动的）',
         'Toggle active state for %s' => '%s 激活/不激活状态',
 
         # Template: AdminCustomerUserGroup
@@ -520,15 +520,15 @@ sub Data {
             '为了增加一个新的字段，从对象列表中选择一个字段类型，对象定义了字段的范围并且不能在创建后修改。',
         'Dynamic Fields List' => '动态字段列表',
         'Dynamic fields per page' => '每页动态字段个数',
-        'Label' => '标记',
-        'Order' => '顺序',
+        'Label' => '标签',
+        'Order' => '订单',
         'Object' => '对象',
         'Delete this field' => '删除这个字段',
 
         # Template: AdminDynamicFieldCheckbox
         'Dynamic Fields' => '动态字段',
         'Go back to overview' => '返回概览',
-        'General' => '常规',
+        'General' => '一般',
         'This field is required, and the value should be alphabetic and numeric characters only.' =>
             '这个字段是必需的，且它的值只能是字母和数字。',
         'Must be unique and only accept alphabetic and numeric characters.' =>
@@ -576,7 +576,7 @@ sub Data {
         'Here you can restrict the entering of dates of tickets.' => '在这里可以限制输入工单日期。',
 
         # Template: AdminDynamicFieldDropdown
-        'Possible values' => '可选值',
+        'Possible values' => '可能值',
         'Key' => '键',
         'Value' => '值',
         'Remove value' => '删除值',
@@ -677,7 +677,7 @@ sub Data {
         'No create time settings.' => '没有创建时间。',
         'Ticket created' => '工单创建时间',
         'Ticket created between' => '工单创建时间（在...之间）',
-        'and' => '和',
+        'and' => 'and（与）',
         'Last changed times' => '最后修改时间',
         'No last changed time settings.' => '没有最后修改时间设置。',
         'Ticket last changed' => '工单最后修改',
@@ -880,7 +880,7 @@ sub Data {
         'Mapping for incoming response data' => '映射入站请求数据',
         'The response data will be processed by this mapping, to transform it to the kind of data the invoker of OTRS expects.' =>
             '这个映射将对响应数据进行处理，将它转换为OTRS调用程序所期待的数据。',
-        'Asynchronous' => '异步的',
+        'Asynchronous' => '异步',
         'Condition' => '条件',
         'Edit this event' => '编辑这个事件',
         'This invoker will be triggered by the configured events.' => '配置事件将触发这个调用程序。',
@@ -972,7 +972,7 @@ sub Data {
         'Example 2: Search = \'^\' / Replace = \'_\' turns \'16x16\' into \'_16x16\'.' =>
             '示例2：搜索 = \'^\' / 替换 = \'_\' ，可将\'16x16\' 变成\'_16x16\'。',
         'Example 3: Search = \'^(?<number>\d+) (?<text>.+?)\$\' / Replace = \'_\$+{text}_\$+{number}\' turns \'16 elementname\' into \'_elementname_16\'.' =>
-            '示例3：搜索=  \'^(?<number>\d+) (?<text>.+?)\$\'/替换= \'_\$+{text}_\$+{number}\'，可将 \'16 elementname\'变成\'_elementname_16\'。',
+            '示例3：搜索=  \'^(?<number>\d+) (?<text>.+?)\$\' / 替换= \'_\$+{text}_\$+{number}\'，可将 \'16 elementname\'变成\'_elementname_16\'。',
         'For information about regular expressions in Perl please see here:' =>
             '有关Perl中正则表达式的信息，请参见：',
         'Perl regular expressions tutorial' => 'Perl正则表达式教程',
@@ -1027,7 +1027,7 @@ sub Data {
             '例如：https://www.otrs.com:10745/api/v1.0 (最后不带斜杠/)',
         'Timeout' => '超时',
         'Timeout value for requests.' => '请求的超时值。',
-        'Authentication' => '身份验证',
+        'Authentication' => 'Authentication（身份验证）',
         'An optional authentication mechanism to access the remote system.' =>
             '用于访问远程系统的可选认证机制。',
         'BasicAuth User' => '基本认证用户',
@@ -1398,7 +1398,7 @@ sub Data {
         'PGP key' => 'PGP密钥',
 
         # Template: AdminPackageManager
-        'Package Manager' => '软件包管理',
+        'Package Manager' => '软件包管理器',
         'Uninstall Package' => '卸载软件包',
         'Uninstall package' => '卸载软件包',
         'Do you really want to uninstall this package?' => '是否确认卸载该软件包?',
@@ -1599,16 +1599,16 @@ sub Data {
         'Assigned Fields' => '分配的字段',
         'Communication Channel' => '通信渠道',
         'Is visible for customer' => '对客户可见',
-        'Display' => '显示',
+        'Display' => 'Display（显示）',
 
         # Template: AdminProcessManagementPath
         'Path' => '路径',
         'Edit this transition' => '编辑这个转换',
-        'Transition Actions' => '转换动作',
+        'Transition Actions' => '转换操作',
         'You can assign Transition Actions to this Transition by dragging the elements with the mouse from the left list to the right list.' =>
             '用鼠标将左侧列表中的元素拖放到右侧，你可以为这个转换分配转换动作。',
         'Filter available Transition Actions' => '可用转换动作的过滤器',
-        'Available Transition Actions' => '可用的转换动作',
+        'Available Transition Actions' => '可用的转换操作',
         'Create New Transition Action' => '创建新的转换动作',
         'Assigned Transition Actions' => '分配的转换动作',
 
@@ -1850,14 +1850,14 @@ sub Data {
         'Toggle %s permission for all' => '全部授予/取消 %s 权限',
         'move_into' => '转移到',
         'Permissions to move tickets into this group/queue.' => '将工单转移到这个组/队列的权限。',
-        'create' => '创建',
+        'create' => 'create（创建）',
         'Permissions to create tickets in this group/queue.' => '在这个组/队列具有创建工单的权限。',
-        'note' => '备注',
+        'note' => 'note（备注）',
         'Permissions to add notes to tickets in this group/queue.' => '在这个组/队列具有添加备注的权限。',
-        'owner' => '所有者',
+        'owner' => 'owner（所有者）',
         'Permissions to change the owner of tickets in this group/queue.' =>
             '在这个组/队列具有变更工单所有者的权限。',
-        'priority' => '优先级',
+        'priority' => 'priority（优先级）',
         'Permissions to change the ticket priority in this group/queue.' =>
             '在这个组/队列具有更改工单优先级的权限。',
 
@@ -2162,7 +2162,7 @@ sub Data {
         'Delete this entry' => '删除该条目',
         'Do you really want to delete this template?' => '您真的想要删除这个模板吗？',
         'A standard template with this name already exists!' => '模板名称已存在！',
-        'Template' => '模板',
+        'Template' => '模版',
         'Create type templates only supports this smart tags' => '“Create创建”类型的模板只支持以下智能标签',
         'Example template' => '模板样例',
         'The current ticket state is' => '当前工单状态是',
@@ -2358,7 +2358,7 @@ sub Data {
 
         # Template: AgentDashboardCustomerIDList
         'Change Customer Relations' => '变更客户关系',
-        'Open' => '处理中',
+        'Open' => 'Open（处理中）',
         'Closed' => '已关闭',
         '%s open ticket(s) of %s' => '%s个处理中的工单，共%s个',
         '%s closed ticket(s) of %s' => '%s个已关闭的工单，共%s个',
@@ -2444,7 +2444,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => '编辑个人设置',
-        'Personal preferences' => '个人偏好设置',
+        'Personal Preferences' => '个人偏好设置',
         'Preferences' => '偏好设置',
         'Please note: you\'re currently editing the preferences of %s.' =>
             '请注意：你现在编辑的是%s的偏好设置。',
@@ -2472,7 +2472,6 @@ sub Data {
         'Reset to default' => '重置为默认',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => '个人偏好设置',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             '从右侧的组中选择您想要更改的设置。',
         'Did you know?' => '你知道吗？',
@@ -2958,7 +2957,8 @@ sub Data {
         'View notifications' => '查看通知',
         'Notifications' => '通知',
         'Notifications (OTRS Business Solution™)' => '通知 (OTRS商业版)',
-        'Logout' => '退出',
+        'Personal preferences' => '个人偏好设置',
+        'Logout' => '注销',
         'You are logged in as' => '您已登录为',
 
         # Template: Installer
@@ -2969,7 +2969,14 @@ sub Data {
         'General Specifications and Mail Settings' => '一般设定和邮件配置',
         'Finish' => '完成',
         'Welcome to %s' => '欢迎使用%s',
+        'Germany' => '德国',
         'Phone' => '电话',
+        'United States' => '美国',
+        'Mexico' => '墨西哥',
+        'Hungary' => '匈牙利',
+        'Brazil' => '巴西',
+        'Singapore' => '新加坡',
+        'Hong Kong' => '香港',
         'Web site' => '网址',
 
         # Template: InstallerConfigureMail
@@ -3001,7 +3008,7 @@ sub Data {
 
         # Template: InstallerDBResult
         'Done' => '完成',
-        'Error' => '错误',
+        'Error' => 'Error（错误）',
         'Database setup successful!' => '数据库设置成功！',
 
         # Template: InstallerDBStart
@@ -3017,7 +3024,7 @@ sub Data {
         'Result of database check' => '数据库检查结果',
         'Database check successful.' => '数据库检查完成。',
         'Database User' => '数据库用户',
-        'New' => '新建',
+        'New' => 'New（新建）',
         'A new database user with limited permissions will be created for this OTRS system.' =>
             '已经为OTRS系统创建了新的数据库普通用户。',
         'Repeat Password' => '重复输入密码',
@@ -3448,8 +3455,8 @@ sub Data {
         'sorted descending' => '降序排序',
         'sorted ascending' => '升序排序',
         'Trace' => '跟踪',
-        'Debug' => '调试',
-        'Info' => '详情',
+        'Debug' => 'Debug（调试）',
+        'Info' => 'Info（信息）',
         'Warn' => '警告',
         'days' => '天',
         'day' => '天',
@@ -3589,7 +3596,7 @@ sub Data {
         # Perl Module: Kernel/Modules/AdminGenericInterfaceInvokerDefault.pm
         'Could not determine config for invoker %s' => '不能确定调用程序%s 的配置',
         'InvokerType %s is not registered' => '调用程序类型 %s 没有注册',
-        'MappingType %s is not registered' => '',
+        'MappingType %s is not registered' => '映射类型%s 没有注册',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceInvokerEvent.pm
         'Need Invoker!' => '需要调用程序！',
@@ -3802,7 +3809,7 @@ sub Data {
         'Could not get data for TransitionID %s' => '不能获得TransitionID %s的数据',
         'There was an error updating the Transition' => '更新转换时出现了一个错误',
         'Edit Transition "%s"' => '编辑转换“%s”',
-        'xor' => '异或',
+        'xor' => 'xor（异或）',
         'String' => '字符串',
         'Transition validation module' => '转换验证模块',
 
@@ -4833,9 +4840,9 @@ sub Data {
         'Pending until time' => '挂起待定时间',
         'Close Time' => '关闭时间',
         'Escalation' => '升级',
-        'Escalation - First Response Time' => '升级 - 首次响应时间',
-        'Escalation - Update Time' => '升级 - 更新时间',
-        'Escalation - Solution Time' => '升级 - 解决时间',
+        'Escalation - First Response Time' => '首次响应时间升级',
+        'Escalation - Update Time' => '更新时间升级',
+        'Escalation - Solution Time' => '解决时间升级',
         'Agent/Owner' => '服务人员/所有者',
         'Created by Agent/Owner' => '创建人',
         'Assigned to Customer User Login' => '分配给客户用户登录名',
@@ -5260,8 +5267,8 @@ sub Data {
         'Reset of unlock time.' => '重置解锁时间。',
 
         # Perl Module: Kernel/System/Ticket/Article/Backend/Chat.pm
-        'Chat Participant' => '',
-        'Chat Message Text' => '',
+        'Chat Participant' => '聊天参与人',
+        'Chat Message Text' => '聊天消息文本',
 
         # Perl Module: Kernel/System/Web/InterfaceAgent.pm
         'Login failed! Your user name or password was entered incorrectly.' =>
@@ -5300,31 +5307,31 @@ sub Data {
         'Group for default access.' => '具有默认权限的组。',
         'Group of all administrators.' => '所有管理员的组。',
         'Group for statistics access.' => '具有统计权限的组。',
-        'new' => '新建',
+        'new' => 'new-新建',
         'All new state types (default: viewable).' => '所有新工单的状态类型（默认：可查看）。',
-        'open' => '处理中',
+        'open' => 'open-处理中',
         'All open state types (default: viewable).' => '所有处理中的工单的状态类型（默认：可查看）。',
-        'closed' => '已关闭',
+        'closed' => 'closed-已关闭',
         'All closed state types (default: not viewable).' => '所有已关闭工单的状态类型（默认：不可查看）。',
         'pending reminder' => '挂起提醒',
         'All \'pending reminder\' state types (default: viewable).' => '所有挂起提醒的工单的状态类型（默认：可查看）。',
         'pending auto' => '等待自动',
         'All \'pending auto *\' state types (default: viewable).' => '所有等待自动成功/失败关闭的工单的状态类型（默认：可查看）。',
-        'removed' => '已删除',
+        'removed' => 'removed-已删除',
         'All \'removed\' state types (default: not viewable).' => '所有已移除工单的状态类型（默认：不可查看）。',
-        'merged' => '已合并',
+        'merged' => 'merged-已合并',
         'State type for merged tickets (default: not viewable).' => '合并的工单的状态类型（默认：不可查看）。',
         'New ticket created by customer.' => '客户创建的新工单。',
-        'closed successful' => '成功关闭',
+        'closed successful' => 'closed successful-成功关闭',
         'Ticket is closed successful.' => '工单已经成功关闭。',
-        'closed unsuccessful' => '失败关闭',
+        'closed unsuccessful' => 'closed unsuccessful-失败关闭',
         'Ticket is closed unsuccessful.' => '工单没有成功关闭。',
         'Open tickets.' => '处理工单。',
         'Customer removed ticket.' => '客户移除工单。',
         'Ticket is pending for agent reminder.' => '工单为服务人员提醒而挂起。',
-        'pending auto close+' => '等待自动成功关闭',
+        'pending auto close+' => '挂起等待成功关闭',
         'Ticket is pending for automatic close.' => '工单等待自动关闭而挂起。',
-        'pending auto close-' => '等待自动失败关闭',
+        'pending auto close-' => '挂起等待失败关闭',
         'State for merged tickets.' => '已合并工单的状态。',
         'system standard salutation (en)' => '系统标准问候语（英）',
         'Standard Salutation.' => '标准问候语。',
@@ -5344,19 +5351,19 @@ sub Data {
         'All default incoming tickets.' => '所有默认进入的工单。',
         'All junk tickets.' => '所有的垃圾工单。',
         'All misc tickets.' => '所有的杂项工单。',
-        'auto reply' => '自动回复',
+        'auto reply' => 'auto reply-自动回复',
         'Automatic reply which will be sent out after a new ticket has been created.' =>
             '创建新工单后会发送自动答复。',
-        'auto reject' => '自动拒绝',
+        'auto reject' => 'auto reject 自动拒绝',
         'Automatic reject which will be sent out after a follow-up has been rejected (in case queue follow-up option is "reject").' =>
             '跟进工单被拒绝后会发送自动拒绝（在队列跟进选项设置为“拒绝”时）。',
-        'auto follow up' => '自动跟进',
+        'auto follow up' => 'auto follow up-自动跟进',
         'Automatic confirmation which is sent out after a follow-up has been received for a ticket (in case queue follow-up option is "possible").' =>
             '跟进工单被接受后会发送自动确认（在队列跟进选项设置为“可能”时）。',
-        'auto reply/new ticket' => '自动回复/新建工单',
+        'auto reply/new ticket' => '自动回复/新工单',
         'Automatic response which will be sent out after a follow-up has been rejected and a new ticket has been created (in case queue follow-up option is "new ticket").' =>
             '跟进工单被拒绝并创建新工单后会发送自动响应（在队列跟进选项设置为“新建工单”时）。',
-        'auto remove' => '自动删除',
+        'auto remove' => 'auto remove-自动移除',
         'Auto remove will be sent out after a customer removed the request.' =>
             '客户移除请求后会发送自动移除。',
         'default reply (after new ticket has been created)' => '默认答复（新工单创建后）',
@@ -5867,8 +5874,8 @@ Thanks for your help!
         'Activates time accounting.' => '激活工时管理。',
         'ActivityID' => '活动ID',
         'Add a note to this ticket' => '添加工单备注',
-        'Add an inbound phone call to this ticket' => '为本工单添加接入电话',
-        'Add an outbound phone call to this ticket' => '为本工单添加拨出电话',
+        'Add an inbound phone call to this ticket' => '为本工单添加一个客户来电',
+        'Add an outbound phone call to this ticket' => '为本工单添加致电客户',
         'Added %s time unit(s), for a total of %s time unit(s).' => '已添加%s个时间单位，总共有%s个时间单位。',
         'Added email. %s' => '已添加电子邮件：%s',
         'Added follow-up to ticket [%s]. %s' => '已添加到工单 [%s]的跟进。%s',
@@ -5969,11 +5976,11 @@ Thanks for your help!
         'Allows customers to set the ticket priority in the customer interface.' =>
             '在客户界面允许设置工单的优先级。',
         'Allows customers to set the ticket queue in the customer interface. If this is not enabled, QueueDefault should be configured.' =>
-            '',
+            '允许在客户界面设置工单的队列，如果此处未启用，则需要配置QueueDefault（默认队列）。',
         'Allows customers to set the ticket service in the customer interface.' =>
             '在客户界面允许设置工单所属的服务。',
         'Allows customers to set the ticket type in the customer interface. If this is not enabled, TicketTypeDefault should be configured.' =>
-            '',
+            '允许在客户界面设置工单类型，如果此处未启用，则需要配置TicketTypeDefault（默认工单类型）。',
         'Allows default services to be selected also for non existing customers.' =>
             '允许未知客户选择默认服务。',
         'Allows defining services and SLAs for tickets (e. g. email, desktop, network, ...), and escalation attributes for SLAs (if ticket service/SLA feature is enabled).' =>
@@ -6256,7 +6263,7 @@ Thanks for your help!
         'Customer user search' => '客户用户搜索',
         'CustomerID search' => '客户ID搜索',
         'CustomerName' => '客户名称',
-        'CustomerUser' => '客户用户',
+        'CustomerUser' => '客户',
         'Customers ↔ Groups' => '客户 ↔ 组',
         'Customizable stop words for fulltext index. These words will be removed from the search index.' =>
             '全文索引可定制的停用词，这些词将从搜索索引中移除。',
@@ -6411,9 +6418,9 @@ Thanks for your help!
         'Defines if a ticket lock is required in the ticket pending screen of a zoomed ticket in the agent interface (if the ticket isn\'t locked yet, the ticket gets locked and the current agent will be set automatically as its owner).' =>
             '定义服务人员界面在工单挂起屏幕是否需要工单锁定（如果工单还没有锁定，则工单被锁定且当前服务人员被自动设置为工单所有者）。',
         'Defines if a ticket lock is required in the ticket phone inbound screen of the agent interface (if the ticket isn\'t locked yet, the ticket gets locked and the current agent will be set automatically as its owner).' =>
-            '定义服务人员界面在工单电话接入屏幕是否需要工单锁定（如果工单还没有锁定，则工单被锁定且当前服务人员被自动设置为工单所有者）。',
+            '定义服务人员界面在工单客户来电屏幕是否需要工单锁定（如果工单还没有锁定，则工单被锁定且当前服务人员被自动设置为工单所有者）。',
         'Defines if a ticket lock is required in the ticket phone outbound screen of the agent interface (if the ticket isn\'t locked yet, the ticket gets locked and the current agent will be set automatically as its owner).' =>
-            '定义服务人员界面在工单拨出电话屏幕是否需要工单锁定（如果工单还没有锁定，则工单被锁定且当前服务人员被自动设置为工单所有者）。',
+            '定义服务人员界面在工单致电客户屏幕是否需要工单锁定（如果工单还没有锁定，则工单被锁定且当前服务人员被自动设置为工单所有者）。',
         'Defines if a ticket lock is required in the ticket priority screen of a zoomed ticket in the agent interface (if the ticket isn\'t locked yet, the ticket gets locked and the current agent will be set automatically as its owner).' =>
             '定义服务人员界面在工单优先级屏幕是否需要工单锁定（如果工单还没有锁定，则工单被锁定且当前服务人员被自动设置为工单所有者）。',
         'Defines if a ticket lock is required in the ticket responsible screen of the agent interface (if the ticket isn\'t locked yet, the ticket gets locked and the current agent will be set automatically as its owner).' =>
@@ -7058,8 +7065,8 @@ Thanks for your help!
         'Disable cloud services' => '禁用云服务',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be enabled).' =>
             '禁止发送提醒通知给工单负责人（需要启用Ticket::Responsible设置）。',
-        'Disables the redirection to the last screen overview / dashboard after a ticket is created.' =>
-            '禁用创建工单后重定向到最近的概览屏幕或仪表板。',
+        'Disables the redirection to the last screen overview / dashboard after a ticket is closed.' =>
+            '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If not enabled, the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If enabled, it also disables the GenericAgent, PackageManager and SQL Box.' =>
             '禁用WEB安装程序(http://yourhost.example.com/otrs/installer.pl)，防止系统被劫持。如果不启用，系统能够被重新安装，当前的基本配置将被安装脚本的预设问题替换。如果启用了，还同时禁用了通用代理、软件包管理和SQL查询窗口。',
         'Display a warning and prevent search when using stop words within fulltext search.' =>
@@ -7331,7 +7338,7 @@ Thanks for your help!
         'Greek' => '希腊语',
         'Hebrew' => '希伯来语',
         'Helps to extend your articles full-text search (From, To, Cc, Subject and Body search). It will strip all articles and will build an index after article creation, increasing fulltext searches about 50%. To create an initial index use "bin/otrs.Console.pl Maint::Ticket::FulltextIndexRebuild".' =>
-            '',
+            '帮助扩展信件全文搜索（发件人、收件人、抄送、主题和正文搜索）。它将在信件创建后剥离所有信件并建立索引，提升全文搜索50%的效率。可使用命令"bin/otrs.Console.pl Maint::Ticket::FulltextIndexRebuild"来创建初始索引。',
         'High Contrast' => '高对比度',
         'High contrast skin for visually impaired users.' => '用于视力受损用户的高对比度皮肤。',
         'Hindi' => '印度语',
@@ -7359,7 +7366,7 @@ Thanks for your help!
         'If "HTTPBasicAuth" was selected for Customer::AuthModule, you can specify (by using a RegExp) to strip parts of REMOTE_USER (e. g. for to remove trailing domains). RegExp-Note, $1 will be the new Login.' =>
             '如果Customer::AuthModule（客户认证模块）选择“HTTPBasicAuth（HTTP基本认证）”，您可以使用正则表达式剥去REMOTE_USER的部分内容（如剥去尾部的域名）。正则表达式注释：$1将是新的登录名。',
         'If "HTTPBasicAuth" was selected for Customer::AuthModule, you can specify to strip leading parts of user names (e. g. for domains like example_domain\user to user).' =>
-            '如果Customer::AuthModule（客户认证模块）选择“HTTPBasicAuth（HTTP基本认证）”，您可以指定剥离用户名的主要部分（如域名，比如将example_domain\user变为user）。',
+            '如果Customer::AuthModule（客户认证模块）选择“HTTPBasicAuth（HTTP基本认证）”，您可以指定剥去用户名称的主要部分（例如域名，如从example_domain\user变为user）。',
         'If "LDAP" was selected for Customer::AuthModule and if you want to add a suffix to every customer login name, specifiy it here, e. g. you just want to write the username user but in your LDAP directory exists user@domain.' =>
             '如果Customer::AuthModule（客户认证模块）选择“LDAP”，并且如果您想给每个客户登录名添加一个前缀，则在这里指定，例如，你只想写入用户名user，但在您的LDAP目录存在user@domain。',
         'If "LDAP" was selected for Customer::AuthModule and special paramaters are needed for the Net::LDAP perl module, you can specify them here. See "perldoc Net::LDAP" for more information about the parameters.' =>
@@ -7462,7 +7469,7 @@ Thanks for your help!
         'Include unknown customers in ticket filter.' => '在工单过滤器中包括未知客户。',
         'Includes article create times in the ticket search of the agent interface.' =>
             '服务人员界面工单搜索时包括工单创建时间。',
-        'Incoming Phone Call.' => '来电。',
+        'Incoming Phone Call.' => '客户来电。',
         'IndexAccelerator: to choose your backend TicketViewAccelerator module. "RuntimeDB" generates each queue view on the fly from ticket table (no performance problems up to approx. 60.000 tickets in total and 6.000 open tickets in the system). "StaticDB" is the most powerful module, it uses an extra ticket-index table that works like a view (recommended if more than 80.000 and 6.000 open tickets are stored in the system). Use the command "bin/otrs.Console.pl Maint::Ticket::QueueIndexRebuild" for initial index creation.' =>
             '索引加速器：选择您的后端工单视图加速器模块。“RuntimeDB（运行时数据库）”实时生成每个队列视图（工单总数不超过60000个且系统打开的工单不超过6000个时没有性能问题）。“StaticDB（静态数据库）是最强大的模块，它使用额外的类似于视图的工单索引表（工单总数超过80000且系统打开的工单超过6000时推荐使用），使用命令"bin/otrs.Console.pl Maint::Ticket::QueueIndexRebuild"来初始化索引。',
         'Indicates if a bounce e-mail should always be treated as normal follow-up.' =>
@@ -7486,6 +7493,7 @@ Thanks for your help!
         'Ivory (Slim)' => '象牙白（修身版）',
         'Japanese' => '日语',
         'JavaScript function for the search frontend.' => '搜索界面的JavaScript函数。',
+        'Korean' => '',
         'Language' => '语言',
         'Large' => '详细',
         'Last Screen Overview' => '最近屏幕概览',
@@ -7542,8 +7550,8 @@ Thanks for your help!
             '客户界面始终载入的响应CSS文件列表。',
         'List view' => '列表视图',
         'Lithuanian' => '立陶宛语',
-        'Loader module registration for the agent interface.' => '客户界面的加载器模块注册。',
-        'Loader module registration for the customer interface.' => '',
+        'Loader module registration for the agent interface.' => '服务人员界面的加载器模块注册。',
+        'Loader module registration for the customer interface.' => '客户界面的加载器模块注册。',
         'Lock / unlock this ticket' => '锁定/解锁这个工单',
         'Locked Tickets' => '锁定的工单',
         'Locked Tickets.' => '锁定的工单。',
@@ -7655,7 +7663,7 @@ Thanks for your help!
             '显示通知和升级信息的模块（ShownMax：显示升级的最大数，EscalationInMinutes：显示将在...分钟内升级的工单，CacheTime：经计算的升级缓冲秒数）',
         'Module to use database filter storage.' => '使用数据库过滤器的模块。',
         'Module used to detect if attachments are present.' => '用于检测是否存在附件的模块。',
-        'Multiselect' => '多选',
+        'Multiselect' => '多选框',
         'My Queues' => '我的队列',
         'My Services' => '我的服务',
         'My Tickets.' => '我的工单。',
@@ -7696,7 +7704,7 @@ Thanks for your help!
             'OTRS能够使用一个或多个只读镜像数据库以扩展操作（如全文搜索或生成统计报表）。您可以在这里指定第一个镜像数据库的DSN（数据源名称）。',
         'OTRS doesn\'t support recurring Appointments without end date or number of iterations. During import process, it might happen that ICS file contains such Appointments. Instead, system creates all Appointments in the past, plus Appointments for the next N months (120 months/10 years by default).' =>
             'OTRS不支持对没有结束日期或没有重复次数的预约做循环处理。在导入过程中，可能有ICS文件包含了此类预约。作为替代，系统将所有的此类预约创建为已过去的预约，然后加上接下来的N个月(默认120个月或10年)的重复预约。',
-        'Open Tickets / Need to be answered' => '正在处理/需要回复的工单',
+        'Open Tickets / Need to be answered' => '处理中/需要回复的工单',
         'Open an external link!' => '打开一个外部链接！',
         'Open tickets (customer user)' => '处理中的工单（客户用户）',
         'Open tickets (customer)' => '处理中的工单（客户）',
@@ -7806,8 +7814,8 @@ Thanks for your help!
         'Permitted width for compose email windows.' => '编写邮件屏幕允许的宽度。',
         'Permitted width for compose note windows.' => '编写备注屏幕允许的宽度。',
         'Persian' => '波斯语',
-        'Phone Call Inbound' => '接电话',
-        'Phone Call Outbound' => '打电话',
+        'Phone Call Inbound' => '客户来电',
+        'Phone Call Outbound' => '致电客户',
         'Phone Call.' => '电话。',
         'Phone call' => '电话',
         'Phone communication channel.' => '电话通信渠道',
@@ -7907,7 +7915,7 @@ Thanks for your help!
             '从归档中恢复一个工单（只针对工单状态变更为任何可处理的状态的事件）。',
         'Retains all services in listings even if they are children of invalid elements.' =>
             '在列表中保留所有的服务，即使他们是无效的子元素。',
-        'Right' => '右',
+        'Right' => '权限',
         'Roles ↔ Groups' => '角色 ↔ 组',
         'Run file based generic agent jobs (Note: module name needs to be specified in -configuration-module param e.g. "Kernel::System::GenericAgent").' =>
             '运行基于文件的自动任务(注意：需要在-configuration-module参数中指定模块名，如"Kernel::System::GenericAgent")。',
@@ -8044,7 +8052,7 @@ Thanks for your help!
         'Sets the default next ticket state, after the creation of an email ticket in the agent interface.' =>
             '设置服务人员界面创建邮件工单后的默认下一状态。',
         'Sets the default note text for new telephone tickets. E.g \'New ticket via call\' in the agent interface.' =>
-            '设置服务人员界面新建电话工单的默认备注文本，例如：“通过电话新建的工单”。',
+            '设置服务人员界面新建电话工单的默认备注文本，例如：“通过客户来电新建的工单”。',
         'Sets the default priority for new email tickets in the agent interface.' =>
             '设置服务人员界面新建邮件工单的默认优先级。',
         'Sets the default priority for new phone tickets in the agent interface.' =>
@@ -8056,7 +8064,7 @@ Thanks for your help!
         'Sets the default subject for new email tickets (e.g. \'email Outbound\') in the agent interface.' =>
             '设置服务人员界面新建邮件工单的默认主题，例如“邮件外发”。',
         'Sets the default subject for new phone tickets (e.g. \'Phone call\') in the agent interface.' =>
-            '设置服务人员界面新建电话工单的默认主题，例如“打电话”。',
+            '设置服务人员界面新建电话工单的默认主题，例如“客户来电”。',
         'Sets the default subject for notes added in the close ticket screen of the agent interface.' =>
             '设置服务人员界面关闭工单屏幕添加备注的默认主题。',
         'Sets the default subject for notes added in the ticket move screen of the agent interface.' =>
@@ -8216,70 +8224,70 @@ Thanks for your help!
         'Shows a link in the menu for creating a calendar appointment linked to the ticket directly from the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
             '在服务人员界面工单详情屏幕，在菜单上显示一个链接，以创建一个日历预约并直接链接到此工单。可通过键“Group”和值如“rw:group1;move_into:group2”进行额外的访问控制，以显示或不显示这个链接。如果要放到菜单组中，使用键“ClusterName”，值可以是界面上能看到的任意名称。使用键“ClusterPriority”来配置菜单组在工具栏中显示的顺序。',
         'Shows a link in the menu for subscribing / unsubscribing from a ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '在服务人员界面工单详情视图中，为关注/取消关注工单菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
+            '在服务人员界面工单详情视图中，为“关注/取消关注工单”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu that allows linking a ticket with another object in the ticket zoom view of the agent interface.  Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '在服务人员界面工单详情视图中，为链接工单到另一对象菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
+            '在服务人员界面工单详情视图中，为“链接工单到另一对象”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu that allows merging tickets in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '在服务人员界面工单详情视图中，为合并工单菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
+            '在服务人员界面工单详情视图中，为“合并工单”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to access the history of a ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '在服务人员界面工单详情视图中，为访问工单历史菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
+            '在服务人员界面工单详情视图中，为“访问工单历史”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to add a free text field in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '在服务人员界面工单详情视图中，为工单自定义字段菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
+            '在服务人员界面工单详情视图中，为“工单自定义字段”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to add a note in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '在服务人员界面工单详情视图中，为添加工单备注菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
+            '在服务人员界面工单详情视图中，为“添加工单备注”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to add a note to a ticket in every ticket overview of the agent interface.' =>
-            '在服务人员界面所有工单概览视图，为添加工单备注菜单显示一个链接。',
+            '在服务人员界面所有工单概览视图，为“添加工单备注”菜单显示一个链接。',
         'Shows a link in the menu to add a phone call inbound in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '',
+            '在服务人员界面工单详情视图中，为“添加客户来电”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to add a phone call outbound in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '',
+            '在服务人员界面工单详情视图中，为“添加致电客户”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to change the customer who requested the ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '',
+            '在服务人员界面工单详情视图中，为“修改请求工单的客户”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。在服务人员界面工单详情视图中，为锁定/解锁工单菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to change the owner of a ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '',
+            '在服务人员界面工单详情视图中，为“修改工单所有者”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to change the responsible agent of a ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '',
+            '在服务人员界面工单详情视图中，为“修改工单负责人”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to close a ticket in every ticket overview of the agent interface.' =>
-            '在服务人员界面所有工单概览视图，为关闭工单菜单显示一个链接。',
+            '在服务人员界面所有工单概览视图，为“关闭工单”菜单显示一个链接。',
         'Shows a link in the menu to close a ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '在服务人员界面工单详情视图中，为关闭工单菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
+            '在服务人员界面工单详情视图中，为“关闭工单”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to delete a ticket in every ticket overview of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
-            '在服务人员界面所有工单概览视图，为删除工单菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。',
+            '在服务人员界面所有工单概览视图，为“删除工单”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。',
         'Shows a link in the menu to delete a ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '在服务人员界面工单详情视图中，为删除工单菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
+            '在服务人员界面工单详情视图中，为“删除工单”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to enroll a ticket into a process in the ticket zoom view of the agent interface.' =>
-            '在服务人员界面工单详情视图中，为注册工单到一个流程菜单显示一个链接。',
+            '在服务人员界面工单详情视图中，为“注册工单到一个流程”菜单显示一个链接。',
         'Shows a link in the menu to go back in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '在服务人员界面工单详情视图中，为返回菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
+            '在服务人员界面工单详情视图中，为“返回”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to lock / unlock a ticket in the ticket overviews of the agent interface.' =>
-            '在服务人员界面工单概览视图中，为锁定/解锁工单显示一个链接。',
+            '在服务人员界面工单概览视图中，为“锁定/解锁工单”显示一个链接。',
         'Shows a link in the menu to lock/unlock tickets in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '在服务人员界面工单详情视图中，为锁定/解锁工单菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
+            '在服务人员界面工单详情视图中，为“锁定/解锁工单”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to move a ticket in every ticket overview of the agent interface.' =>
-            '在服务人员界面所有工单概览视图，为转移工单菜单显示一个链接。',
+            '在服务人员界面所有工单概览视图，为“转移工单”菜单显示一个链接。',
         'Shows a link in the menu to print a ticket or an article in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '在服务人员界面工单详情视图中，为打印工单/信件菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
+            '在服务人员界面工单详情视图中，为“打印工单/信件”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to see the history of a ticket in every ticket overview of the agent interface.' =>
-            '在服务人员界面所有工单概览视图，为查看工单历史菜单显示一个链接。',
+            '在服务人员界面所有工单概览视图，为“查看工单历史”菜单显示一个链接。',
         'Shows a link in the menu to see the priority of a ticket in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '在服务人员界面工单详情视图中，为查看工单优先级菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
+            '在服务人员界面工单详情视图中，为“查看工单优先级”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to send an outbound email in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '在服务人员界面工单详情视图中，为发送工单的外发邮件菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
+            '在服务人员界面工单详情视图中，为“发送工单的外发邮件”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to set a ticket as junk in every ticket overview of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
-            '在服务人员界面工单各种概览视图中，在菜单中为设置工单为垃圾显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。',
+            '在服务人员界面工单各种概览视图中，为“设置工单为垃圾”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。',
         'Shows a link in the menu to set a ticket as pending in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '在服务人员界面工单详情视图中，为挂起工单菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
+            '在服务人员界面工单详情视图中，为“挂起工单”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a link in the menu to set the priority of a ticket in every ticket overview of the agent interface.' =>
-            '在服务人员界面所有工单概览视图，为设置工单优先级菜单显示一个链接。',
+            '在服务人员界面所有工单概览视图，为“设置工单优先级”菜单显示一个链接。',
         'Shows a link in the menu to zoom a ticket in the ticket overviews of the agent interface.' =>
-            '在服务人员界面所有工单概览视图，为工单详情屏幕菜单显示一个链接。',
+            '在服务人员界面所有工单概览视图，为“工单详情”菜单显示一个链接。',
         'Shows a link to access article attachments via a html online viewer in the zoom view of the article in the agent interface.' =>
             '在服务人员界面信件详情视图中，为通过HTML在线查看器访问信件附件显示一个链接。',
         'Shows a link to download article attachments in the zoom view of the article in the agent interface.' =>
             '在服务人员界面信件详情视图中，为下载信件附件显示一个链接。',
         'Shows a link to see a zoomed email ticket in plain text.' => '为以纯文本查看邮件工单显示一个链接。',
         'Shows a link to set a ticket as junk in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2". To cluster menu items use for Key "ClusterName" and for the Content any name you want to see in the UI. Use "ClusterPriority" to configure the order of a certain cluster within the toolbar.' =>
-            '在服务人员界面工单详情视图中，为设置工单为垃圾菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
+            '在服务人员界面工单详情视图中，为“设置工单为垃圾”菜单显示一个链接。可以通过使用键“Group（组）”和值如“rw:group1;move_into:group2”来实现显示/不显示这个链接的额外访问控制。 为了给菜单条目分组，使用键"ClusterName（菜单组名称）"，其值可为您想在界面上看到的任何菜单组名称（系统默认为Miscellaneous-杂项），使用键"ClusterPriority（菜单组优先级）"来配置工具栏中菜单组的显示顺序。',
         'Shows a list of all the involved agents on this ticket, in the close ticket screen of the agent interface.' =>
             '在服务人员界面关闭工单屏幕，显示这个工单相关的所有服务人员列表。',
         'Shows a list of all the involved agents on this ticket, in the ticket free text screen of the agent interface.' =>
@@ -8703,7 +8711,7 @@ Thanks for your help!
         'phone' => '电话',
         'responsible' => '负责人',
         'reverse' => '倒序',
-        'stats' => '统计值',
+        'stats' => 'stats（统计）',
 
     };
 

@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 use strict;
@@ -53,6 +53,7 @@ for my $Key ( sort keys %CustomerData ) {
     next KEY if $Key =~ m/ShowTickets$/smx;
     next KEY if $Key eq 'Source';
     next KEY if $Key eq 'CustomerCompanyValidID';
+    next KEY if $Key eq 'UserLanguage';
 
     $Self->False(
         $CustomerUserObject->SetPreferences(

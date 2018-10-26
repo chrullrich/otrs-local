@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 use strict;
@@ -47,11 +47,11 @@ $Selenium->RunTest(
 
         # Click 'Add web service' button.
         $Selenium->find_element("//button[\@type='submit']")->VerifiedClick();
-        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#Name').length" );
+        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#Name').length;" );
 
         # Import web service.
         $Selenium->find_element( "#ImportButton", 'css' )->click();
-        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('.Dialog.Modal').length" );
+        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('.Dialog.Modal').length;" );
 
         my $File     = 'GenericTicketConnectorREST.yml';
         my $Location = "$Home/scripts/test/sample/Webservice/$File";
@@ -61,12 +61,12 @@ $Selenium->RunTest(
         $Selenium->find_element( "#ImportButtonAction", 'css' )->click();
         $Selenium->WaitFor(
             JavaScript =>
-                "return typeof(\$) === 'function' && !\$('.Dialog.Modal').length && \$('tr td:contains(\"$Name\")').length"
+                "return typeof(\$) === 'function' && !\$('.Dialog.Modal').length && \$('tr td:contains(\"$Name\")').length;"
         );
 
         # Verify that web service is created.
         $Self->True(
-            $Selenium->execute_script("return \$('.MessageBox p:contains(Web service \"$Name\" created)').length"),
+            $Selenium->execute_script("return \$('.MessageBox p:contains(Web service \"$Name\" created)').length;"),
             "$Name is created",
         );
 
@@ -113,37 +113,47 @@ $Selenium->RunTest(
         $Selenium->find_element( $Name, 'link_text' )->VerifiedClick();
 
         # Go to Debugger screen.
-        $Selenium->execute_script("return \$('.fa-bug').click();");
+        $Selenium->execute_script("\$('.fa-bug').click();");
         $Selenium->WaitFor(
             JavaScript =>
-                "return typeof(\$) === 'function' && \$('#RequestList').length"
+                "return typeof(\$) === 'function' && \$('#RequestList').length;"
         );
 
         $Self->True(
             $Selenium->execute_script("return \$('#RequestList tr:eq(1)').text().trim();"),
             "There is a content in RequestList, link tiket add event is trigered",
         );
+        sleep 1;
 
         # Go back to the overview screen.
-        $Selenium->execute_script("return \$('.fa-caret-left').click();");
+        $Selenium->execute_script("\$('.fa-caret-left').click();");
+
+        # Wait until page has loaded.
         $Selenium->WaitFor(
             JavaScript =>
-                "return typeof(\$) === 'function' && \$('#DeleteButton').length"
+                'return typeof(Core) == "object" && typeof(Core.App) == "object" && Core.App.PageLoadComplete;'
         );
+        $Selenium->WaitFor(
+            JavaScript =>
+                "return typeof(\$) === 'function' && \$('#DeleteButton').length;"
+        );
+
+        sleep 1;
 
         # Delete web service.
         $Selenium->find_element( "#DeleteButton", 'css' )->click();
+
         $Selenium->WaitFor(
             JavaScript =>
-                "return typeof(\$) === 'function' && \$('.Dialog.Modal').length && \$('#DialogButton2').length"
+                "return typeof(\$) === 'function' && \$('.Dialog.Modal').length && \$('#DialogButton2').length;"
         );
         $Selenium->find_element( "#DialogButton2", 'css' )->click();
 
         # Wait until delete dialog has closed and action performed.
-        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && !\$('#DialogButton2').length" );
+        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && !\$('#DialogButton2').length;" );
         $Selenium->WaitFor(
             JavaScript =>
-                'return typeof(Core) == "object" && typeof(Core.App) == "object" && Core.App.PageLoadComplete'
+                'return typeof(Core) == "object" && typeof(Core.App) == "object" && Core.App.PageLoadComplete;'
         );
 
         # Verify that web service is deleted.

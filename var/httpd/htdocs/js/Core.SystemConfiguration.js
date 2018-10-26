@@ -1,9 +1,9 @@
 // --
-// Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+// Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
-// the enclosed file COPYING for license information (AGPL). If you
-// did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+// the enclosed file COPYING for license information (GPL). If you
+// did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 // --
 
 /*eslint-disable no-window*/
@@ -407,7 +407,6 @@ var Core = Core || {};
             if($(this).parent().parent().hasClass("HashItem")) {
                 // update key name
                 Key = $(this).parent().parent().find(".Key").val();
-                Key = Core.App.EscapeHTML(Key);
 
                 FullName = FullName.substr(0, FullName.lastIndexOf("###"));
                 FullName += "###" + Key;

@@ -1,10 +1,10 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # Copyright (C) 2010 Thomas Kaltenbrunner <tkaltenbrunner at opc.de>
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 package Kernel::Language::de;
 
@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.98178068064627;
+    $Self->{Completeness}        = 0.980260899416409;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -2438,7 +2438,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Persönliche Einstellungen bearbeiten',
-        'Personal preferences' => 'Persönliche Einstellungen',
+        'Personal Preferences' => 'Persönliche Einstellungen',
         'Preferences' => 'Einstellungen',
         'Please note: you\'re currently editing the preferences of %s.' =>
             'Bitte beachten: Sie bearbeiten derzeit die Einstellungen von %s',
@@ -2466,7 +2466,6 @@ sub Data {
         'Reset to default' => 'Auf Standard zurücksetzen',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => 'Persönliche Einstellungen',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             'Wählen Sie aus den Gruppen auf der rechten Seite, um auf Einstellungen zuzugreifen, die Sie ändern möchten.',
         'Did you know?' => 'Wussten Sie schon?',
@@ -2952,6 +2951,7 @@ sub Data {
         'View notifications' => 'Benachrichtigungen betrachten',
         'Notifications' => 'Benachrichtigungen',
         'Notifications (OTRS Business Solution™)' => 'Benachrichtigungen (OTRS Business Solution™)',
+        'Personal preferences' => 'Persönliche Einstellungen',
         'Logout' => 'Abmelden',
         'You are logged in as' => 'Angemeldet als',
 
@@ -2963,7 +2963,14 @@ sub Data {
         'General Specifications and Mail Settings' => 'Allgemeine Einstellungen und E-Mail-Einstellungen',
         'Finish' => 'Abschließen',
         'Welcome to %s' => 'Willkommen bei %s',
+        'Germany' => '',
         'Phone' => 'Telefon',
+        'United States' => '',
+        'Mexico' => '',
+        'Hungary' => '',
+        'Brazil' => '',
+        'Singapore' => '',
+        'Hong Kong' => '',
         'Web site' => 'Website',
 
         # Template: InstallerConfigureMail
@@ -7033,7 +7040,7 @@ Ihr Helpdesk-Team
         'Determines the next screen after the follow-up screen of a zoomed ticket in the customer interface.' =>
             'Legt den Bildschirm fest, der nach einem Follow-Up aus der Ticket-Detailansicht im Kundenbereich aufgerufen werden soll.',
         'Determines the next screen after the ticket is moved. LastScreenOverview will return the last overview screen (e.g. search results, queueview, dashboard). TicketZoom will return to the TicketZoom.' =>
-            'Bestimmt das nächste Fenster nach dem das Ticket verschoben ist. LastScreenOverview wechselt zur letzten Übersichtsseite. TicketZoom wechselt zur Ticket-Detailansicht.',
+            'Bestimmt das nächste Fenster nach dem das Ticket verschoben ist. LastScreenOverview wechselt zur letzten Übersichtsseite. TicketZoom wechselt zur Ticket Detailansicht.',
         'Determines the possible states for pending tickets that changed state after reaching time limit.' =>
             'Bestimmt die möglichen Status eines unerledigten Tickets, das den Status verändert hat nachdem die Zeitbegrenzung erreicht wurde.',
         'Determines the strings that will be shown as recipient (To:) of the phone ticket and as sender (From:) of the email ticket in the agent interface. For Queue as NewQueueSelectionType "<Queue>" shows the names of the queues and for SystemAddress "<Realname> <<Email>>" shows the name and email of the recipient.' =>
@@ -7053,8 +7060,8 @@ Ihr Helpdesk-Team
         'Disable cloud services' => 'Cloud-Services deaktivieren',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be enabled).' =>
             '',
-        'Disables the redirection to the last screen overview / dashboard after a ticket is created.' =>
-            'Deaktiviert die Weiterleitung auf die letzte Übersicht / das Dashboard, nachdem ein Ticket erstellt wurde.',
+        'Disables the redirection to the last screen overview / dashboard after a ticket is closed.' =>
+            '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If not enabled, the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If enabled, it also disables the GenericAgent, PackageManager and SQL Box.' =>
             '',
         'Display a warning and prevent search when using stop words within fulltext search.' =>
@@ -7354,7 +7361,7 @@ Ihr Helpdesk-Team
         'If "HTTPBasicAuth" was selected for Customer::AuthModule, you can specify (by using a RegExp) to strip parts of REMOTE_USER (e. g. for to remove trailing domains). RegExp-Note, $1 will be the new Login.' =>
             'Wenn "HTTPBasicAuth" als Customer::AuthModule ausgewählt ist, kann hier ein regulärer Ausdruck definiert werden, um Teile von REMOTE_USER zu entfernen (z.B. für anhängende Domänen). Hinweis: $1 enthält den neuen Login-Namen.',
         'If "HTTPBasicAuth" was selected for Customer::AuthModule, you can specify to strip leading parts of user names (e. g. for domains like example_domain\user to user).' =>
-            'Wenn "HTTPBasicAuth" als Customer::AuthModule ausgewählt ist, können Sie hier angeben, ob führende Teile von Benutzernamen (z.B. zur Umwandlung von Domänen wie "example_domain\user" zu "user").',
+            'Wenn "HTTPBasicAuth" als Customer::AuthModule festgelegt wurde, können Sie festlegen, ob Teile am Anfang des Benutzernamens entfernt werden sollen (z. B. um die Domain aus Nutzernamen wie example_domain\user zu entfernen).',
         'If "LDAP" was selected for Customer::AuthModule and if you want to add a suffix to every customer login name, specifiy it here, e. g. you just want to write the username user but in your LDAP directory exists user@domain.' =>
             'Wenn "LDAP" als Customer::AuthModule ausgewählt ist und Sie einen Suffix zu jedem Kunden-Loginnamen hinzufügen möchten, können Sie dies hier festlegen (z.B. wenn "benutzername" im LDAP als "benutzername@domain" existiert).',
         'If "LDAP" was selected for Customer::AuthModule and special paramaters are needed for the Net::LDAP perl module, you can specify them here. See "perldoc Net::LDAP" for more information about the parameters.' =>
@@ -7481,6 +7488,7 @@ Ihr Helpdesk-Team
         'Ivory (Slim)' => 'Elfenbein (Schlank)',
         'Japanese' => 'Japanisch',
         'JavaScript function for the search frontend.' => 'JavaScript-Funktion für das Suche-Frontend.',
+        'Korean' => '',
         'Language' => 'Sprache',
         'Large' => 'Groß',
         'Last Screen Overview' => '',

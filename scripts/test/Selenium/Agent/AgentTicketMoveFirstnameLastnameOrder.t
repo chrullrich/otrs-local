@@ -1,9 +1,9 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 use strict;
@@ -136,11 +136,16 @@ $Selenium->RunTest(
         my $Handles = $Selenium->get_window_handles();
         $Selenium->switch_to_window( $Handles->[1] );
 
+        # Wait until page has loaded.
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#DestQueueID").length;' );
+
+        sleep 2;
+
         # Change ticket queue.
         $Selenium->execute_script("\$('#DestQueueID').val('4').trigger('redraw.InputField').trigger('change');");
 
         $Selenium->execute_script("\$('#WidgetArticle.Collapsed .WidgetAction > a').trigger('click');");
-        $Selenium->WaitFor( JavaScript => 'return $("#WidgetArticle.Expanded").length' );
+        $Selenium->WaitFor( JavaScript => 'return $("#WidgetArticle.Expanded").length;' );
 
         $Selenium->find_element( "#Subject",        'css' )->send_keys("Subject-QueueMove$RandomID");
         $Selenium->find_element( "#RichText",       'css' )->send_keys("Body-QueueMove$RandomID");
@@ -148,6 +153,11 @@ $Selenium->RunTest(
 
         $Selenium->WaitFor( WindowCount => 1 );
         $Selenium->switch_to_window( $Handles->[0] );
+
+        $Selenium->WaitFor(
+            JavaScript =>
+                "return typeof(\$) === 'function' && \$('#ArticleTable tbody .Sender a:contains(\"$Lastname, $Firstname ($UserLogin)\")').length;"
+        );
 
         # Check if the sender format is correct.
         $Self->Is(

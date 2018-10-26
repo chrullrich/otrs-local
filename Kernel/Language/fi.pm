@@ -4,8 +4,8 @@
 # Copyright (C) 2012-2013 Niklas Lampén <Niklas.Lampen@aava.eu>
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
-# the enclosed file COPYING for license information (AGPL). If you
-# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# the enclosed file COPYING for license information (GPL). If you
+# did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
 
 package Kernel::Language::fi;
@@ -26,7 +26,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.206256445513922;
+    $Self->{Completeness}        = 0.206144867833848;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -674,7 +674,7 @@ sub Data {
         'Ticket created' => 'Tiketti luotu',
         'Ticket created between' => 'Tiketti luotu välillä',
         'and' => 'ja',
-        'Last changed times' => '',
+        'Last changed times' => 'Viimeksi muokattu',
         'No last changed time settings.' => '',
         'Ticket last changed' => 'Tiketti viimeksi muutettu',
         'Ticket last changed between' => '',
@@ -2440,7 +2440,7 @@ sub Data {
 
         # Template: AgentPreferences
         'Edit your preferences' => 'Muokkaa asetuksiasi',
-        'Personal preferences' => '',
+        'Personal Preferences' => '',
         'Preferences' => 'Käyttäjäasetukset',
         'Please note: you\'re currently editing the preferences of %s.' =>
             '',
@@ -2468,7 +2468,6 @@ sub Data {
         'Reset to default' => '',
 
         # Template: AgentPreferencesOverview
-        'Personal Preferences' => '',
         'Choose from the groups on the right to find the settings you\'d wish to change.' =>
             '',
         'Did you know?' => '',
@@ -2954,6 +2953,7 @@ sub Data {
         'View notifications' => '',
         'Notifications' => '',
         'Notifications (OTRS Business Solution™)' => '',
+        'Personal preferences' => '',
         'Logout' => 'Kirjaudu ulos',
         'You are logged in as' => 'Olet kirjautunut käyttäjänä',
 
@@ -2965,7 +2965,14 @@ sub Data {
         'General Specifications and Mail Settings' => 'Yleiset määritykset ja sähköpostiasetukset',
         'Finish' => 'Loppu',
         'Welcome to %s' => 'Tervetuloa %s järjestelmään',
+        'Germany' => '',
         'Phone' => 'Puhelin',
+        'United States' => '',
+        'Mexico' => '',
+        'Hungary' => '',
+        'Brazil' => '',
+        'Singapore' => '',
+        'Hong Kong' => '',
         'Web site' => 'Kotisivu',
 
         # Template: InstallerConfigureMail
@@ -7045,7 +7052,7 @@ Thanks for your help!
         'Disable cloud services' => '',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be enabled).' =>
             '',
-        'Disables the redirection to the last screen overview / dashboard after a ticket is created.' =>
+        'Disables the redirection to the last screen overview / dashboard after a ticket is closed.' =>
             '',
         'Disables the web installer (http://yourhost.example.com/otrs/installer.pl), to prevent the system from being hijacked. If not enabled, the system can be reinstalled and the current basic configuration will be used to pre-populate the questions within the installer script. If enabled, it also disables the GenericAgent, PackageManager and SQL Box.' =>
             '',
@@ -7473,6 +7480,7 @@ Thanks for your help!
         'Ivory (Slim)' => '',
         'Japanese' => '',
         'JavaScript function for the search frontend.' => '',
+        'Korean' => '',
         'Language' => 'Kieli',
         'Large' => 'Suuri',
         'Last Screen Overview' => '',
@@ -8452,7 +8460,7 @@ Thanks for your help!
         'Starts a wildcard search of the active object after the link object mask is started.' =>
             '',
         'Stat#' => '',
-        'States' => 'Tilat',
+        'States' => 'Tila',
         'Statistic Reports overview.' => '',
         'Statistics overview.' => '',
         'Status view' => 'Tilanäkymä',
