@@ -128,7 +128,7 @@ $Selenium->RunTest(
         my $Count = 1;
         for my $BreadcrumbText ( 'S/MIME Management', 'Add Certificate' ) {
             $Self->Is(
-                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim();"),
                 $BreadcrumbText,
                 "Breadcrumb text '$BreadcrumbText' is found on screen"
             );
@@ -150,7 +150,7 @@ $Selenium->RunTest(
         $Count = 1;
         for my $BreadcrumbText ( 'S/MIME Management', 'Add Private Key' ) {
             $Self->Is(
-                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim()"),
+                $Selenium->execute_script("return \$('.BreadCrumb li:eq($Count)').text().trim();"),
                 $BreadcrumbText,
                 "Breadcrumb text '$BreadcrumbText' is found on screen"
             );
@@ -177,11 +177,8 @@ $Selenium->RunTest(
         $Selenium->WaitFor(
             JavaScript => 'return typeof($) === "function" && $("a.CancelClosePopup:visible").length === 1;'
         );
-
-        $Self->True(
-            $Selenium->find_element( "a.CancelClosePopup", 'css' )->click(),
-            "Pop-up window is found - JS is successful"
-        );
+        $Selenium->VerifiedRefresh();
+        $Selenium->find_element( "a.CancelClosePopup", 'css' )->click();
 
         # Switch window back.
         $Selenium->WaitFor( WindowCount => 1 );
@@ -196,12 +193,23 @@ $Selenium->RunTest(
             );
 
             $Selenium->find_element("//a[contains(\@href, \'Subaction=Delete;Type=$TestSMIME;Filename=' )]")->click();
+            sleep 1;
+
             $Selenium->WaitFor( AlertPresent => 1 );
             $Selenium->accept_alert();
 
             $Selenium->WaitFor(
                 JavaScript =>
-                    'return typeof(Core) == "object" && typeof(Core.App) == "object" && Core.App.PageLoadComplete'
+                    "return typeof(\$) === 'function' && \$('a[href*=\"Delete;Type=$TestSMIME;Filename=\"]').length == 0;"
+            );
+            $Selenium->VerifiedRefresh();
+
+            # Check if dynamic field is deleted.
+            $Self->False(
+                $Selenium->execute_script(
+                    "return \$('a[href*=\"Delete;Type=$TestSMIME;Filename=\"]').length;"
+                ),
+                "SMIME-$TestSMIME is deleted",
             );
         }
 
