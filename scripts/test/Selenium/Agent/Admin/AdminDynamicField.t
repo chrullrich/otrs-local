@@ -231,21 +231,19 @@ $Selenium->RunTest(
 
                 $Selenium->accept_alert();
 
-                $Selenium->WaitFor( JavaScript => "return \$('.Dialog').length;" );
                 $Selenium->WaitFor(
                     JavaScript =>
                         "return typeof(\$) === 'function' && \$('#DynamicFieldID_$DynamicFieldID').length == 0;"
                 );
+                $Selenium->VerifiedRefresh();
 
-                # Check if dynamic filed is deleted.
+                # Check if dynamic field is deleted.
                 $Self->False(
                     $Selenium->execute_script(
                         "return \$('#DynamicFieldID_$DynamicFieldID').length;"
                     ),
                     "DynamicField ($Type-$ID) $RandomID is deleted",
                 );
-
-                $Selenium->VerifiedRefresh();
             }
 
             # Make sure the cache is correct.
