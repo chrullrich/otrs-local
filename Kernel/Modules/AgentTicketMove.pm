@@ -427,13 +427,13 @@ sub Run {
             %GetParam,
             %ACLCompatGetParam,
             TicketID => $Self->{TicketID},
-            QueueID  => $GetParam{DestQueueID} || 1,
+            QueueID  => $GetParam{DestQueueID} || $Ticket{QueueID},
         );
         my $NextPriorities = $Self->_GetPriorities(
             %GetParam,
             %ACLCompatGetParam,
             TicketID => $Self->{TicketID},
-            QueueID  => $GetParam{DestQueueID} || 1,
+            QueueID  => $GetParam{DestQueueID} || $Ticket{QueueID},
         );
 
         # update Dynamc Fields Possible Values via AJAX
@@ -902,30 +902,30 @@ sub Run {
                     UserID   => $Self->{UserID}
                 );
 
-                # Set new owner if ticket owner is different then logged user.
-                if ( $Lock && ( $Ticket{OwnerID} != $Self->{UserID} ) ) {
+                if ($Lock) {
 
-                    # Remember previous owner, which will be used to restore ticket owner on undo action.
-                    $Param{PreviousOwner} = $Ticket{OwnerID};
+                    # Set new owner if ticket owner is different then logged user.
+                    if ( $Ticket{OwnerID} != $Self->{UserID} ) {
 
-                    my $Success = $TicketObject->TicketOwnerSet(
-                        TicketID  => $Self->{TicketID},
-                        UserID    => $Self->{UserID},
-                        NewUserID => $Self->{UserID},
-                    );
+                        # Remember previous owner, which will be used to restore ticket owner on undo action.
+                        $Param{PreviousOwner} = $Ticket{OwnerID};
 
-                    # show lock state
-                    if ($Success) {
-                        $LayoutObject->Block(
-                            Name => 'PropertiesLock',
-                            Data => {
-                                %Param,
-                                TicketID => $Self->{TicketID}
-                            },
+                        $TicketObject->TicketOwnerSet(
+                            TicketID  => $Self->{TicketID},
+                            UserID    => $Self->{UserID},
+                            NewUserID => $Self->{UserID},
                         );
-                        $TicketUnlock = 1;
                     }
 
+                    # Show lock state.
+                    $LayoutObject->Block(
+                        Name => 'PropertiesLock',
+                        Data => {
+                            %Param,
+                            TicketID => $Self->{TicketID}
+                        },
+                    );
+                    $TicketUnlock = 1;
                 }
             }
             else {
@@ -987,7 +987,7 @@ sub Run {
             %GetParam,
             %ACLCompatGetParam,
             TicketID => $Self->{TicketID},
-            QueueID  => $GetParam{DestQueueID} || 1,
+            QueueID  => $GetParam{DestQueueID} || $Ticket{QueueID},
         );
 
         # get next priorities
@@ -995,7 +995,7 @@ sub Run {
             %GetParam,
             %ACLCompatGetParam,
             TicketID => $Self->{TicketID},
-            QueueID  => $GetParam{DestQueueID} || 1,
+            QueueID  => $GetParam{DestQueueID} || $Ticket{QueueID},
         );
 
         # get old owners
