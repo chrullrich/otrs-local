@@ -17,7 +17,7 @@ use Kernel::System::VariableCheck qw(IsStringWithData IsHashRefWithData);
 use parent qw(
     Kernel::GenericInterface::Operation::Common
     Kernel::System::LinkObject
-)
+);
 
 =head1 NAME
 
@@ -27,11 +27,7 @@ Kernel::GenericInterface::Operation::LinkObject::LinkAdd - GenericInterface Link
 
 =head1 PUBLIC INTERFACE
 
-=over 4
-
-=cut
-
-=item new()
+=head2 new()
 
 usually, you want to create an instance of this
 by using Kernel::GenericInterface::Operation->new();
@@ -49,7 +45,7 @@ sub new {
         if ( !$Param{$Needed} ) {
             return {
                 Success      => 0,
-                ErrorMessage => "Got no $Needed!"
+                ErrorMessage => "Got no $Needed!",
             };
         }
 
@@ -57,7 +53,6 @@ sub new {
     }
 
     # create additional objects
-    $Self->{CommonObject} = Kernel::GenericInterface::Operation::Common->new( %{$Self} );
     $Self->{LinkObject}
         = $Kernel::OM->Get('Kernel::System::LinkObject');
 
@@ -93,17 +88,6 @@ Create a new link.
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    my $Result = $Self->Init(
-        WebserviceID => $Self->{WebserviceID},
-    );
-
-    if ( !$Result->{Success} ) {
-        $Self->ReturnError(
-            ErrorCode    => 'Webservice.InvalidConfiguration',
-            ErrorMessage => $Result->{ErrorMessage},
-        ),
-    }
-
     # check needed stuff
     if ( !IsHashRefWithData( $Param{Data} ) ) {
         return $Self->ReturnError(
@@ -112,7 +96,7 @@ sub Run {
         );
     }
 
-    if ( !$Param{SourceObject} || !Param{TargetObject} ) {
+    if ( !$Param{Data}->{SourceObject} || !$Param{Data}->{TargetObject} ) {
         return $Self->ReturnError(
             ErrorCode    => 'LinkAdd.MissingParameter',
             ErrorMessage => "LinkAdd: SourceObject and TargetObject are required!"
@@ -150,11 +134,17 @@ sub Run {
     my $PermissionUserID = $UserID;
 
     my $LinkID = $Self->{LinkObject}->LinkAdd(
-        %Param,
+        SourceObject => $Param{Data}->{SourceObject},
+        SourceKey => $Param{Data}->{SourceKey},
+        TargetObject => $Param{Data}->{TargetObject},
+        TargetKey => $Param{Data}->{TargetKey},
+        Type => $Param{Data}->{Type},
+        State => $Param{Data}->{State},
+        UserID => $Param{Data}->{UserID},
     );
 
     if ( !$LinkID ) {
-        return $Self->{CommonObject}->ReturnError(
+        return $Self->ReturnError(
             ErrorCode    => 'LinkAdd.Failed',
             ErrorMessage => "LinkAdd: Operation failed.",
         );
