@@ -12,7 +12,6 @@ use utf8;
 
 use vars (qw($Self));
 
-# get helper object
 $Kernel::OM->ObjectParamAdd(
     'Kernel::System::UnitTest::Helper' => {
         RestoreDatabase => 1,
@@ -36,13 +35,13 @@ my ( $Result, $ExitCode );
 $Self->Is(
     $ExitCode,
     0,
-    "Exit code",
+    'Exit code'
 );
 
 # Check output text.
 $Self->True(
     $Result =~ m{All settings are valid\.} ? 1 : 0,
-    'Check default result.'
+    'Check default result'
 );
 
 # Get Setting.
@@ -85,7 +84,7 @@ else {
 
 $Self->True(
     $Success,
-    'Setting updated.'
+    'Setting updated'
 );
 
 {
@@ -97,14 +96,15 @@ $Self->True(
 $Self->Is(
     $ExitCode,
     0,
-    "Exit code",
+    'Exit code'
 );
 
 $Self->True(
-    $Result =~ m{Auto-corrected setting: Ticket::Frontend::AgentTicketPhone###Priority.*?Deployment successful\.}s
-    ? 1
-    : 0,
-    'Check invalid result.'
+    (
+        $Result
+            =~ m{Auto-corrected setting:.*Ticket::Frontend::AgentTicketPhone###Priority.*Deployment successful\.}s
+    ) // 0,
+    'Check invalid result'
 );
 
 # cleanup cache is done by RestoreDatabase

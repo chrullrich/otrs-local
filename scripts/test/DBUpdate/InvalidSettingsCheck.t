@@ -27,7 +27,6 @@ my $SysConfigDBObject = $Kernel::OM->Get('Kernel::System::SysConfig::DB');
 my $DBUpdateObject = $Kernel::OM->Create('scripts::DBUpdateTo6::InvalidSettingsCheck');
 
 # Set one setting to the invalid value.
-
 my $SettingName = 'Ticket::Frontend::AgentTicketPhone###Priority';
 
 # Get Setting.
@@ -70,7 +69,7 @@ else {
 
 $Self->True(
     $Success,
-    'Setting updated.'
+    'Setting updated'
 );
 
 $Success = $SysConfigObject->SettingUnlock(
@@ -78,7 +77,7 @@ $Success = $SysConfigObject->SettingUnlock(
 );
 $Self->True(
     $Success,
-    'Setting unlocked.'
+    'Setting unlocked'
 );
 
 # Fix invalid setting during migration.
@@ -90,7 +89,7 @@ $Success = $DBUpdateObject->Run(
 
 $Self->True(
     $Success,
-    'Migration went OK.'
+    'Migration went OK'
 );
 
 # Get invalid settings.
@@ -103,7 +102,7 @@ my $SettingIsInvalid = grep { $_ eq $SettingName } @InvalidSettings;
 
 $Self->False(
     $SettingIsInvalid,
-    'Make sure that setting is no longer invalid.'
+    'Make sure that setting is no longer invalid'
 );
 
 1;

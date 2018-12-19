@@ -298,8 +298,9 @@ $Selenium->RunTest(
         $Selenium->VerifiedGet("${ScriptAlias}customer.pl?Action=CustomerTicketProcess");
 
         # Create first scenario for test CustomerTicketProcess.
-        $Selenium->execute_script(
-            "\$('#ProcessEntityID').val('$ListReverse{$ProcessName}').trigger('redraw.InputField').trigger('change');"
+        $Selenium->InputFieldValueSet(
+            Element => '#ProcessEntityID',
+            Value   => $ListReverse{$ProcessName},
         );
         $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#Subject').length" );
 
@@ -310,8 +311,9 @@ $Selenium->RunTest(
             "All Types are visible before ACL"
         );
 
-        $Selenium->execute_script(
-            "\$('#DynamicField_TestDropdownACLProcess').val('c').trigger('redraw.InputField').trigger('change');"
+        $Selenium->InputFieldValueSet(
+            Element => '#DynamicField_TestDropdownACLProcess',
+            Value   => 'c',
         );
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
 
@@ -319,8 +321,9 @@ $Selenium->RunTest(
             $Selenium->execute_script("return \$('#TypeID option:contains(\"$Types[0]->{Name}\")').length;"),
             "DynamicField change - ACL restricted Types"
         );
-        $Selenium->execute_script(
-            "\$('#TypeID').val('$Types[1]->{ID}').trigger('redraw.InputField').trigger('change');"
+        $Selenium->InputFieldValueSet(
+            Element => '#TypeID',
+            Value   => $Types[1]->{ID},
         );
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
 
@@ -331,7 +334,10 @@ $Selenium->RunTest(
             "DynamicField filtered options count",
         );
 
-        $Selenium->execute_script("\$('#QueueID').val('4').trigger('redraw.InputField').trigger('change');");
+        $Selenium->InputFieldValueSet(
+            Element => '#QueueID',
+            Value   => 4,
+        );
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
 
         $Self->Is(
@@ -348,10 +354,14 @@ $Selenium->RunTest(
 
         $Selenium->find_element( "#Subject",  'css' )->send_keys($SubjectRandom);
         $Selenium->find_element( "#RichText", 'css' )->send_keys($ContentRandom);
-        $Selenium->execute_script("\$('#QueueID').val('2').trigger('redraw.InputField').trigger('change');");
+        $Selenium->InputFieldValueSet(
+            Element => '#QueueID',
+            Value   => 2,
+        );
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
-        $Selenium->execute_script(
-            "\$('#TypeID').val('$Types[1]->{ID}').trigger('redraw.InputField').trigger('change');"
+        $Selenium->InputFieldValueSet(
+            Element => '#TypeID',
+            Value   => $Types[1]->{ID},
         );
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
 
@@ -377,10 +387,14 @@ $Selenium->RunTest(
 
         my $OTRSBusinessIsInstalled = $Kernel::OM->Get('Kernel::System::OTRSBusiness')->OTRSBusinessIsInstalled();
         my $OTRSSTORMIsInstalled    = $Kernel::OM->Get('Kernel::System::OTRSBusiness')->OTRSSTORMIsInstalled();
+        my $OTRSCONTROLIsInstalled  = $Kernel::OM->Get('Kernel::System::OTRSBusiness')->OTRSCONTROLIsInstalled();
 
         my $FooterMessage;
         if ($OTRSSTORMIsInstalled) {
             $FooterMessage = 'STORM powered by OTRS';
+        }
+        elsif ($OTRSCONTROLIsInstalled) {
+            $FooterMessage = 'CONTROL powered by OTRS';
         }
         elsif ($OTRSBusinessIsInstalled) {
             $FooterMessage = 'Powered by OTRS Business Solution';
@@ -389,10 +403,15 @@ $Selenium->RunTest(
             $FooterMessage = 'Powered by ' . $ConfigObject->Get('Product');
         }
 
-        $Self->True(
-            index( $Selenium->get_page_source(), $FooterMessage ) > -1,
-            "$FooterMessage found in footer on page (after attachment upload)",
-        );
+        # Get secure disable banner.
+        my $SecureDisableBanner = $ConfigObject->Get('Secure::DisableBanner');
+
+        if ( !$SecureDisableBanner ) {
+            $Self->True(
+                index( $Selenium->get_page_source(), $FooterMessage ) > -1,
+                "$FooterMessage found in footer on page (after attachment upload)",
+            );
+        }
 
         $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->click();
 
@@ -424,7 +443,10 @@ $Selenium->RunTest(
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#PriorityID").length;' );
 
         # For test scenario to complete, in next step we set ticket priority to 5 very high.
-        $Selenium->execute_script("\$('#PriorityID').val('5').trigger('redraw.InputField').trigger('change');");
+        $Selenium->InputFieldValueSet(
+            Element => '#PriorityID',
+            Value   => 5,
+        );
         $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->click();
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#Activities").length' );
 
@@ -449,16 +471,21 @@ $Selenium->RunTest(
         $Selenium->VerifiedGet("${ScriptAlias}customer.pl?Action=CustomerTicketProcess");
 
         # Create second scenario for test CustomerTicketProcess.
-        $Selenium->execute_script(
-            "\$('#ProcessEntityID').val('$ListReverse{$ProcessName}').trigger('redraw.InputField').trigger('change');"
+        $Selenium->InputFieldValueSet(
+            Element => '#ProcessEntityID',
+            Value   => $ListReverse{$ProcessName},
         );
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#Subject").length;' );
 
         # In this scenario we just set ticket queue to junk to finish test.
-        $Selenium->execute_script("\$('#QueueID').val('3').trigger('redraw.InputField').trigger('change');");
+        $Selenium->InputFieldValueSet(
+            Element => '#QueueID',
+            Value   => 3,
+        );
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && !$(".AJAXLoader:visible").length' );
-        $Selenium->execute_script(
-            "\$('#TypeID').val('$Types[1]->{ID}').trigger('redraw.InputField').trigger('change');"
+        $Selenium->InputFieldValueSet(
+            Element => '#TypeID',
+            Value   => $Types[1]->{ID},
         );
         $Selenium->find_element("//button[\@value='Submit'][\@type='submit']")->VerifiedClick();
 

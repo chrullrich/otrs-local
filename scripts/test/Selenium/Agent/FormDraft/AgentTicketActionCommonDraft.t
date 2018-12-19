@@ -309,8 +309,9 @@ $Selenium->RunTest(
                             "return typeof(\$) === 'function' && \$('#$Test->{Fields}->{$Field}->{ID}').length"
                     );
 
-                    $Selenium->execute_script(
-                        "\$('#$Test->{Fields}->{$Field}->{ID}').val('$Test->{Fields}->{$Field}->{Value}').trigger('redraw.InputField').trigger('change');"
+                    $Selenium->InputFieldValueSet(
+                        Element => "#$Test->{Fields}->{$Field}->{ID}",
+                        Value   => $Test->{Fields}->{$Field}->{Value},
                     );
                 }
                 elsif ( $Test->{Fields}->{$Field}->{Type} eq 'Attachment' ) {
@@ -395,7 +396,7 @@ $Selenium->RunTest(
                 "Draft for $Test->{Module} $Title is found",
             );
 
-            my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+            my $ArticleObject        = $Kernel::OM->Get('Kernel::System::Ticket::Article');
             my $ArticleBackendObject = $ArticleObject->BackendForChannel( ChannelName => 'Phone' );
 
             # Create test Article to trigger that draft is outdated.
@@ -469,8 +470,9 @@ $Selenium->RunTest(
                         "Initial Draft value for $Test->{Module} field $FieldValue is correct - $Value"
                     );
 
-                    $Selenium->execute_script(
-                        "\$('#$ID').val('$Test->{Fields}->{$FieldValue}->{Update}').trigger('redraw.InputField').trigger('change');"
+                    $Selenium->InputFieldValueSet(
+                        Element => "#$ID",
+                        Value   => $Test->{Fields}->{$FieldValue}->{Update},
                     );
                 }
                 elsif ( $Test->{Fields}->{$FieldValue}->{Type} eq 'Attachment' ) {

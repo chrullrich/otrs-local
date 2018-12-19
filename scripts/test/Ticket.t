@@ -295,7 +295,7 @@ $ArticleObject->ArticleSearchIndexBuild(
 );
 
 my $TicketSearchTicketNumber = substr $Ticket{TicketNumber}, 0, 10;
-my %TicketIDs = $TicketObject->TicketSearch(
+my %TicketIDs                = $TicketObject->TicketSearch(
     Result       => 'HASH',
     Limit        => 100,
     TicketNumber => [ $TicketSearchTicketNumber . '%', '%not exisiting%' ],
@@ -356,6 +356,25 @@ $Self->True(
 $Self->True(
     $TicketIDs{$TicketID},
     'TicketSearch() (HASH:TicketID as ARRAYREF)',
+);
+
+my $ErrorOutput = '';
+
+{
+    local *STDERR;
+    open STDERR, ">>", \$ErrorOutput;
+
+    %TicketIDs = $TicketObject->TicketSearch(
+        TicketID => [],
+        UserID   => 1,
+    );
+}
+
+# Verify that search does not fail SQL syntax check when an empty array reference is passed for the TicketID param.
+#   Please see bug#14227 for more information.
+$Self->False(
+    ( $ErrorOutput =~ m{you have an error in your sql syntax}i ) // 1,
+    'TicketSearch() (HASH:TicketID as an empty ARRAYREF)'
 );
 
 my $Count = $TicketObject->TicketSearch(
@@ -1967,7 +1986,7 @@ my $PendingUntilTime = $Kernel::OM->Create(
         Hour   => '22',
         Minute => '05',
         Second => '00',
-        }
+    }
 )->ToEpoch();
 
 $PendingUntilTime = $Kernel::OM->Create('Kernel::System::DateTime')->ToEpoch() - $PendingUntilTime;
@@ -2024,7 +2043,7 @@ $PendingUntilTime = $Kernel::OM->Create(
     'Kernel::System::DateTime',
     ObjectParams => {
         String => '2003-09-14 22:05:00',
-        }
+    }
 )->ToEpoch();
 
 $PendingUntilTime = $Kernel::OM->Create('Kernel::System::DateTime')->ToEpoch() - $PendingUntilTime;

@@ -25,6 +25,14 @@ $Selenium->RunTest(
         my $Helper       = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
         my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
+        # Change "Move" action to be a link instead of dropdown, since there is an issue to click
+        # on the "Customer" action (dropdown can be on top is some cases).
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'Ticket::Frontend::MoveType',
+            Value => 'link',
+        );
+
         my $Language      = 'de';
         my $TestUserLogin = $Helper->TestUserCreate(
             Language => $Language,
@@ -77,7 +85,10 @@ $Selenium->RunTest(
         $Selenium->WaitFor( JavaScript => "return \$.active == 0" );
 
         # Change the queue to trigger an ajax call.
-        $Selenium->execute_script("\$('#Dest').val('2||Raw').trigger('redraw.InputField').trigger('change');");
+        $Selenium->InputFieldValueSet(
+            Element => '#Dest',
+            Value   => '2||Raw',
+        );
 
         # Wait until all AJAX calls finished.
         $Selenium->WaitFor( JavaScript => "return \$.active == 0" );
