@@ -172,8 +172,9 @@ $Selenium->RunTest(
         $Selenium->execute_script('$(".WidgetSimple.Collapsed .WidgetAction.Toggle a").click();');
 
         # Add test event.
-        $Selenium->execute_script(
-            "\$('#TicketEvent').val('EscalationResponseTimeStart').trigger('redraw.InputField').trigger('change');"
+        $Selenium->InputFieldValueSet(
+            Element => '#TicketEvent',
+            Value   => 'EscalationResponseTimeStart',
         );
 
         $Self->Is(
@@ -186,8 +187,9 @@ $Selenium->RunTest(
 
         # Try to add same event, it should result in an error.
         for my $Event (qw(EscalationResponseTimeNotifyBefore EscalationResponseTimeStart)) {
-            $Selenium->execute_script(
-                "\$('#TicketEvent').val('$Event').trigger('redraw.InputField').trigger('change');"
+            $Selenium->InputFieldValueSet(
+                Element => '#TicketEvent',
+                Value   => $Event,
             );
         }
 
@@ -370,7 +372,10 @@ $Selenium->RunTest(
             "$CheckboxDynamicFieldName Used1 is selected",
         );
 
-        $Selenium->execute_script("\$('#NewDelete').val('1').trigger('redraw.InputField').trigger('change');");
+        $Selenium->InputFieldValueSet(
+            Element => '#NewDelete',
+            Value   => 1,
+        );
         $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
         # run test job
@@ -449,7 +454,10 @@ $Selenium->RunTest(
         # set test job to invalid
         $Selenium->find_element( $GenericAgentJob, 'link_text' )->VerifiedClick();
 
-        $Selenium->execute_script("\$('#Valid').val('0').trigger('redraw.InputField').trigger('change');");
+        $Selenium->InputFieldValueSet(
+            Element => '#Valid',
+            Value   => 0,
+        );
         $Selenium->find_element( "#Submit", 'css' )->VerifiedClick();
 
         # check class of invalid generic job in the overview table
@@ -460,9 +468,24 @@ $Selenium->RunTest(
             "There is a class 'Invalid' for test generic job",
         );
 
-        # delete test job
-        $Selenium->find_element("//a[contains(\@href, \'Subaction=Delete;Profile=$GenericAgentJob\' )]")
-            ->VerifiedClick();
+        # Delete test job confirmation dialog. See bug#14197.
+        $Selenium->find_element("//a[contains(\@href, \'Subaction=Delete;Profile=$GenericAgentJob\' )]")->click();
+        $Selenium->WaitFor( AlertPresent => 1 );
+        $Selenium->accept_alert();
+
+        $Selenium->WaitFor(
+            JavaScript =>
+                "return typeof(\$) === 'function' && \$('table tbody tr td:contains($GenericAgentJob)').length == 0;"
+        );
+        $Selenium->VerifiedRefresh();
+
+        # Check if GenericAgentJob is deleted.
+        $Self->False(
+            $Selenium->execute_script(
+                "return \$('table tbody tr td:contains($GenericAgentJob)').length"
+            ),
+            "GenericAgentJob $GenericAgentJob is no found on page",
+        );
 
         # delete created test dynamic fields
         my $Success;

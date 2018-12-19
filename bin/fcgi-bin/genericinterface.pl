@@ -55,7 +55,7 @@ while ( my $WebRequest = CGI::Fast->new() ) {
         },
         'Kernel::System::Web::Request' => {
             WebRequest => $WebRequest,
-            }
+        }
     );
     my $Provider = Kernel::GenericInterface::Provider->new();
 

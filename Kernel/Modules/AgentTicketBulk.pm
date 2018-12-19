@@ -112,10 +112,11 @@ sub Run {
         );
         my @JSONData = (
             {
-                Name       => 'QueueID',
-                Data       => \%QueueList,
-                SelectedID => $GetParam{QueueID},
-                TreeView   => $TreeView,
+                Name         => 'QueueID',
+                Data         => \%QueueList,
+                SelectedID   => $GetParam{QueueID},
+                TreeView     => $TreeView,
+                PossibleNone => 1,
             },
         );
 
@@ -760,7 +761,7 @@ sub Run {
                     }
 
                     my @Recipients = $Self->_GetRecipientList( TicketIDs => [ $Ticket{TicketID} ] );
-                    my $Customer = $Recipients[0];
+                    my $Customer   = $Recipients[0];
 
                     # get template generator object
                     my $CustomerUserObject      = $Kernel::OM->Get('Kernel::System::CustomerUser');
@@ -1548,7 +1549,7 @@ sub _GetOwners {
         my $GroupObject = $Kernel::OM->Get('Kernel::System::Group');
 
         for my $QueueID (@QueueIDs) {
-            my $GroupID = $QueueObject->GetQueueGroupID( QueueID => $QueueID );
+            my $GroupID     = $QueueObject->GetQueueGroupID( QueueID => $QueueID );
             my %GroupMember = $GroupObject->PermissionGroupGet(
                 GroupID => $GroupID,
                 Type    => 'owner',
@@ -1614,7 +1615,7 @@ sub _GetResponsibles {
         my $GroupObject = $Kernel::OM->Get('Kernel::System::Group');
 
         for my $QueueID (@QueueIDs) {
-            my $GroupID = $QueueObject->GetQueueGroupID( QueueID => $QueueID );
+            my $GroupID     = $QueueObject->GetQueueGroupID( QueueID => $QueueID );
             my %GroupMember = $GroupObject->PermissionGroupGet(
                 GroupID => $GroupID,
                 Type    => 'responsible',

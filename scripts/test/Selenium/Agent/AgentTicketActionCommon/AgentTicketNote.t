@@ -337,7 +337,7 @@ $Selenium->RunTest(
         );
 
         my $QueueObject = $Kernel::OM->Get('Kernel::System::Queue');
-        my $QueueID = $QueueObject->QueueLookup( Queue => 'Raw' );
+        my $QueueID     = $QueueObject->QueueLookup( Queue => 'Raw' );
 
         # Assign the template to our queue.
         my $Success = $QueueObject->QueueStandardTemplateMemberAdd(
@@ -383,8 +383,9 @@ $Selenium->RunTest(
         );
 
         # Select the created template.
-        $Selenium->execute_script(
-            "\$('#StandardTemplateID').val('$TemplateID').trigger('redraw.InputField').trigger('change');"
+        $Selenium->InputFieldValueSet(
+            Element => '#StandardTemplateID',
+            Value   => $TemplateID,
         );
 
         # Wait a short time and for the spinner to disappear.

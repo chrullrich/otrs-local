@@ -645,6 +645,7 @@ sub PackageInstall {
             'SysConfigDefaultList',
             'SysConfigDefault',
             'SysConfigPersistent',
+            'SysConfigModifiedList',
         ],
     );
     $Kernel::OM->Get('Kernel::System::Loader')->CacheDelete();
@@ -750,6 +751,7 @@ sub PackageReinstall {
             'SysConfigDefaultList',
             'SysConfigDefault',
             'SysConfigPersistent',
+            'SysConfigModifiedList',
         ],
     );
     $Kernel::OM->Get('Kernel::System::Loader')->CacheDelete();
@@ -1179,6 +1181,7 @@ sub PackageUpgrade {
             'SysConfigDefaultList',
             'SysConfigDefault',
             'SysConfigPersistent',
+            'SysConfigModifiedList',
         ],
     );
     $Kernel::OM->Get('Kernel::System::Loader')->CacheDelete();
@@ -1290,6 +1293,7 @@ sub PackageUninstall {
             'SysConfigDefaultList',
             'SysConfigDefault',
             'SysConfigPersistent',
+            'SysConfigModifiedList',
         ],
     );
     $Kernel::OM->Get('Kernel::System::Loader')->CacheDelete();
@@ -2196,7 +2200,7 @@ build an opm package
 sub PackageBuild {
     my ( $Self, %Param ) = @_;
 
-    my $XML = '';
+    my $XML  = '';
     my $Home = $Param{Home} || $Self->{ConfigObject}->Get('Home');
 
     # check needed stuff
@@ -3522,7 +3526,7 @@ sub PackageUpgradeAllIsRunning {
             'Kernel::System::DateTime',
             ObjectParams => {
                 String => $SystemData{UpdateTime},
-                }
+            }
         );
         $TargetDateTimeObject->Add( Minutes => 5 );
         if ( $CurrentDateTimeObject > $TargetDateTimeObject ) {
@@ -4488,6 +4492,7 @@ sub _PackageUninstallMerged {
             'SysConfigDefaultList',
             'SysConfigDefault',
             'SysConfigPersistent',
+            'SysConfigModifiedList',
         ],
     );
     $Kernel::OM->Get('Kernel::System::Loader')->CacheDelete();
@@ -4512,7 +4517,7 @@ sub _MergedPackages {
     return 1 if ref $Param{Structure}->{PackageMerge} ne 'ARRAY';
 
     # get repository list
-    my @RepositoryList = $Self->RepositoryList();
+    my @RepositoryList    = $Self->RepositoryList();
     my %PackageListLookup = map { $_->{Name}->{Content} => $_ } @RepositoryList;
 
     # check required packages
@@ -5325,7 +5330,7 @@ sub _ConfiguredRepositoryDefinitionGet {
     return %RepositoryList if !@Matches;
 
     my @FrameworkVersionParts = split /\./, $Self->{ConfigObject}->Get('Version');
-    my $FrameworkVersion = $FrameworkVersionParts[0];
+    my $FrameworkVersion      = $FrameworkVersionParts[0];
 
     my $CurrentITSMRepository = "http://ftp.otrs.org/pub/otrs/itsm/packages$FrameworkVersion/";
 
