@@ -1,3 +1,25 @@
+#6.0.16 2018-??-??
+
+#6.0.15 2018-12-14
+ - 2018-12-06 Updated translations, thanks to all translators.
+ - 2018-12-05 Added possibility to display links in footer section of customer and public interface.
+ - 2018-12-05 Fixed bug#[14106](https://bugs.otrs.org/show_bug.cgi?id=14106) - XSLT Editor breaks.
+ - 2018-11-27 Use scale in transforamtion for Notification item on hover, thanks to Andrew Bone (PR#1958).
+ - 2018-11-27 Fixed bug#[13829](https://bugs.otrs.org/show_bug.cgi?id=13829) - Internal server error when Z time is used in RSS-Feed.
+ - 2018-11-22 Fixed bug#[14227](https://bugs.otrs.org/show_bug.cgi?id=14227) - Passing an empty arrayref in 'TicketID' to ticket-search, results in invalid SQL statement.
+ - 2018-11-21 Improved SysConfig caching, rebuilding SysConfig is up to 50% faster.
+ - 2018-11-21 Follow-up fix for bug#[14154](https://bugs.otrs.org/show_bug.cgi?id=14154) - After migration, configuration deployment does not work due to the invalid setting value.
+ - 2018-11-21 Fixed bug#[14229](https://bugs.otrs.org/show_bug.cgi?id=14229) - Transition Action  fails to transfer line breaks of content in dynamic field textarea.
+ - 2018-11-20 Fixed bug#[14237](https://bugs.otrs.org/show_bug.cgi?id=14237) - Sorting of state menu entries is different then order in state overview screen.
+ - 2018-11-19 Fixed bug#[14148](https://bugs.otrs.org/show_bug.cgi?id=14148) - Superfluous filter boxes and "Add Group" form in Group Management screen.
+ - 2018-11-19 Fixed bug#[14197](https://bugs.otrs.org/show_bug.cgi?id=14197) - Missing confirmation dialog when deleting a generic agent job.
+ - 2018-11-15 Fixed bug#[14209](https://bugs.otrs.org/show_bug.cgi?id=14209) - System maintenance 'Kill all Sessions, except for your own' button is too big and aligned right.
+ - 2018-11-15 Fixed bug#[14226](https://bugs.otrs.org/show_bug.cgi?id=14226) - It is not possible to deselect queue in AgentTicketBulk after AJAX update.
+ - 2018-11-15 Fixed bug#[14195](https://bugs.otrs.org/show_bug.cgi?id=14195) - False positive in Bounce Detection if eml attachment present.
+ - 2018-11-08 Follow-up fix for bug#[14154](https://bugs.otrs.org/show_bug.cgi?id=14154) - After migration, configuration deployment does not work due to the invalid setting value.
+ - 2018-11-05 Fixed bug#[14201](https://bugs.otrs.org/show_bug.cgi?id=14201) - backup.pl - dump errors are not detected.
+ - 2018-11-05 Fixed bug#[14063](https://bugs.otrs.org/show_bug.cgi?id=14063) - CustomerUserNameFields not used.
+
 #6.0.14 2018-11-14
  - 2018-11-13 Follow-up fix for bug#[13978](https://bugs.otrs.org/show_bug.cgi?id=13978) - User and customer preferences may override user data.
 

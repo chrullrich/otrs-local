@@ -23,16 +23,17 @@ my @Tests = (
                 Hover => '.Content',
             },
             {
-                Click => '.SettingEdit',
+                JqueryClick => '.SettingEdit',
             },
             {
-                Click => '.Setting > .Array > .AddArrayItem',
+                JqueryClick => '.Setting > .Array > .AddArrayItem',
             },
             {
                 Select => '.Setting > .Array > .ArrayItem:nth-of-type(2) input',
             },
             {
-                Click => '.Setting > .Array > .ArrayItem:nth-of-type(2) .Hash .HashItem:nth-of-type(4) .AddArrayItem',
+                JqueryClick =>
+                    '.Setting > .Array > .ArrayItem:nth-of-type(2) .Hash .HashItem:nth-of-type(4) .AddArrayItem',
             },
             {
                 Select =>
@@ -42,7 +43,7 @@ my @Tests = (
                 Write => 'admin',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 # Wait for validation error (Description).
@@ -52,7 +53,7 @@ my @Tests = (
                 Write => 'Description',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 # Wait for validation error (Link).
@@ -62,7 +63,7 @@ my @Tests = (
                 Write => 'Action=AgentTest;Subaction=Test',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 # Wait for validation error (Name).
@@ -72,7 +73,7 @@ my @Tests = (
                 Write => 'Navigation name',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 # Wait for validation error (NavBar).
@@ -86,7 +87,7 @@ my @Tests = (
                 Click => '.Setting > .Array > .ArrayItem:nth-of-type(1) > .RemoveButton',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 Select => 'input',
@@ -117,10 +118,10 @@ my @Tests = (
                 Hover => '.Content',
             },
             {
-                Click => '.SettingEdit',
+                JqueryClick => '.SettingEdit',
             },
             {
-                Click => '.ArrayItem:nth-of-type(2) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(2) .RemoveButton',
             },
 
             # check if remove buttons are hidden
@@ -128,7 +129,7 @@ my @Tests = (
                 ElementMissing => '.RemoveButton:visible',
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
             {
                 Select => '.ArrayItem:nth-of-type(2) input',
@@ -143,7 +144,7 @@ my @Tests = (
                 Write => 'New item',
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
 
             # check if add button is hidden
@@ -151,13 +152,13 @@ my @Tests = (
                 ElementMissing => '.AddArrayItem:visible',
             },
             {
-                Click => '.ArrayItem:nth-of-type(3) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(3) .RemoveButton',
             },
             {
                 Hover => '.Setting',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 Select => 'input',
@@ -175,16 +176,16 @@ my @Tests = (
                 Hover => '.Content',
             },
             {
-                Click => '.SettingEdit',
+                JqueryClick => '.SettingEdit',
             },
             {
-                Click => '.ArrayItem:nth-of-type(1) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(1) .RemoveButton',
             },
             {
-                Click => '.ArrayItem:nth-of-type(1) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(1) .RemoveButton',
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
             {
                 Select => '.ArrayItem:nth-of-type(1) input:nth-child(2)',
@@ -193,16 +194,18 @@ my @Tests = (
                 ElementValue => 1,
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
             {
-                Click => '.ArrayItem:nth-of-type(2) label',    # make sure that label is working as well
+                # Make sure that label is working as well.
+                # Normal click, it's not jQuery object.
+                Click => '.ArrayItem:nth-of-type(2) label',
             },
             {
                 Hover => '.Setting',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 Select => 'input',
@@ -220,16 +223,16 @@ my @Tests = (
                 Hover => '.Content',
             },
             {
-                Click => '.SettingEdit',
+                JqueryClick => '.SettingEdit',
             },
             {
-                Click => '.ArrayItem:nth-of-type(1) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(1) .RemoveButton',
             },
             {
-                Click => '.ArrayItem:nth-of-type(1) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(1) .RemoveButton',
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
 
             # check default day
@@ -271,7 +274,7 @@ my @Tests = (
                     . ".ArrayItem:nth-of-type(1) select:nth-child(3)').val(\"2016\")",
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
             {
                 # Wait to load item
@@ -296,7 +299,7 @@ my @Tests = (
                 Hover => '.Setting',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 Select => 'select',
@@ -322,6 +325,10 @@ my @Tests = (
                 Select => 'select',
             },
             {
+                # There is animation running in the AJAX call, which scrolls on top of the page.
+                WaitForJS => 'return $("ul.SettingsList").hasClass("Initialized");',
+            },
+            {
                 # Scroll to the setting.
                 JS => "\$('.WidgetSimple[data-name=\"ExampleArrayDate\"]')[0].scrollIntoView(true);",
             },
@@ -329,14 +336,14 @@ my @Tests = (
                 Hover => '.Content',
             },
             {
-                Click => '.SettingEdit',
+                JqueryClick => '.SettingEdit',
             },
             {
                 # Wait until Datepicker is loaded.
                 Select => '.ArrayItem:nth-of-type(1) .DatepickerIcon',
             },
             {
-                Click => '.ArrayItem:nth-of-type(1) .DatepickerIcon',
+                JqueryClick => '.ArrayItem:nth-of-type(1) .DatepickerIcon',
             },
             {
                 DatepickerDay => 10,
@@ -350,7 +357,7 @@ my @Tests = (
             },
             {
                 # Discard changes
-                Click => '.Cancel',
+                JqueryClick => '.Cancel',
             },
         ],
         ExpectedResult => [
@@ -365,16 +372,16 @@ my @Tests = (
                 Hover => '.Content',
             },
             {
-                Click => '.SettingEdit',
+                JqueryClick => '.SettingEdit',
             },
             {
-                Click => '.ArrayItem:nth-of-type(1) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(1) .RemoveButton',
             },
             {
-                Click => '.ArrayItem:nth-of-type(1) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(1) .RemoveButton',
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
 
             # check default day
@@ -442,7 +449,7 @@ my @Tests = (
                     . ".ArrayItem:nth-of-type(1) select:nth-of-type(5)').val(\"2\")",
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
             {
                 # wait to init DatePicker
@@ -478,7 +485,7 @@ my @Tests = (
                 Hover => '.Setting',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 Select => 'select',
@@ -496,13 +503,13 @@ my @Tests = (
                 Hover => '.Content',
             },
             {
-                Click => '.SettingEdit',
+                JqueryClick => '.SettingEdit',
             },
             {
-                Click => '.ArrayItem:nth-of-type(2) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(2) .RemoveButton',
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
             {
                 Select => '.ArrayItem:nth-of-type(2) input',
@@ -520,7 +527,7 @@ my @Tests = (
                 Hover => '.Setting',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 Select => 'input',
@@ -539,13 +546,13 @@ my @Tests = (
                 Hover => '.Content',
             },
             {
-                Click => '.SettingEdit',
+                JqueryClick => '.SettingEdit',
             },
             {
-                Click => '.ArrayItem:nth-of-type(2) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(2) .RemoveButton',
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
             {
                 Select => '.ArrayItem:nth-of-type(2) select',
@@ -555,9 +562,10 @@ my @Tests = (
             },
             {
                 # Select "1 very low".
-                JS => "\$('.WidgetSimple[data-name=\"ExampleArrayEntity\"] "
-                    . ".ArrayItem:nth-of-type(2) select').val(\"1 very low\")"
-                    . ".trigger('redraw.InputField').trigger('change');",
+                InputFieldValueSet => {
+                    Element => '.WidgetSimple[data-name=\"ExampleArrayEntity\"] .ArrayItem:nth-of-type(2) select',
+                    Value   => '1 very low',
+                },
             },
             {
                 # Wait until option is selected.
@@ -569,7 +577,7 @@ my @Tests = (
                 Hover => '.Setting',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 Select => 'select',
@@ -587,13 +595,13 @@ my @Tests = (
                 Hover => '.Content',
             },
             {
-                Click => '.SettingEdit',
+                JqueryClick => '.SettingEdit',
             },
             {
-                Click => '.ArrayItem:nth-of-type(2) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(2) .RemoveButton',
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
             {
                 Select => '.ArrayItem:nth-of-type(2) input',
@@ -611,7 +619,7 @@ my @Tests = (
                 Hover => '.Setting',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 Select => 'input',
@@ -629,13 +637,13 @@ my @Tests = (
                 Hover => '.Content',
             },
             {
-                Click => '.SettingEdit',
+                JqueryClick => '.SettingEdit',
             },
             {
-                Click => '.ArrayItem:nth-of-type(2) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(2) .RemoveButton',
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
             {
                 Select => '.ArrayItem:nth-of-type(2) input',
@@ -650,10 +658,10 @@ my @Tests = (
                 ExpectAlert => 'Setting value is not valid!',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
-                Click => '.Cancel',
+                JqueryClick => '.Cancel',
             },
         ],
         ExpectedResult => [    # Error occured, nothing was changed
@@ -668,16 +676,16 @@ my @Tests = (
                 Hover => '.Content',
             },
             {
-                Click => '.SettingEdit',
+                JqueryClick => '.SettingEdit',
             },
             {
-                Click => '.ArrayItem:nth-of-type(1) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(1) .RemoveButton',
             },
             {
-                Click => '.ArrayItem:nth-of-type(1) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(1) .RemoveButton',
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
             {
                 Select => '.ArrayItem:nth-of-type(1) input',
@@ -692,7 +700,7 @@ my @Tests = (
                 Write => 'Password 1',
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
             {
                 Select => '.ArrayItem:nth-of-type(2) input',
@@ -707,7 +715,7 @@ my @Tests = (
                 Hover => '.Setting',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 Select => 'input',
@@ -725,13 +733,13 @@ my @Tests = (
                 Hover => '.Content',
             },
             {
-                Click => '.SettingEdit',
+                JqueryClick => '.SettingEdit',
             },
             {
-                Click => '.ArrayItem:nth-of-type(2) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(2) .RemoveButton',
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
             {
                 Select => '.ArrayItem:nth-of-type(2) select',
@@ -741,9 +749,10 @@ my @Tests = (
             },
             {
                 # Select Kernel::System::Log::File
-                JS => "\$('.WidgetSimple[data-name=\"ExampleArrayPerlModule\"] "
-                    . ".ArrayItem:nth-of-type(2) select').val(\"Kernel::System::Log::File\")"
-                    . ".trigger('redraw.InputField').trigger('change');",
+                InputFieldValueSet => {
+                    Element => '.WidgetSimple[data-name=\"ExampleArrayPerlModule\"] .ArrayItem:nth-of-type(2) select',
+                    Value   => 'Kernel::System::Log::File',
+                },
             },
             {
                 # Wait until option is selected.
@@ -755,7 +764,7 @@ my @Tests = (
                 Hover => '.Setting',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 Select => 'select',
@@ -774,13 +783,13 @@ my @Tests = (
                 Hover => '.Content',
             },
             {
-                Click => '.SettingEdit',
+                JqueryClick => '.SettingEdit',
             },
             {
-                Click => '.ArrayItem:nth-of-type(2) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(2) .RemoveButton',
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
             {
                 Select => '.ArrayItem:nth-of-type(2) select',
@@ -790,9 +799,10 @@ my @Tests = (
             },
             {
                 # Select option-2.
-                JS => "\$('.WidgetSimple[data-name=\"ExampleArraySelect\"] "
-                    . ".ArrayItem:nth-of-type(2) select').val(\"option-2\")"
-                    . ".trigger('redraw.InputField').trigger('change');",
+                InputFieldValueSet => {
+                    Element => '.WidgetSimple[data-name=\"ExampleArraySelect\"] .ArrayItem:nth-of-type(2) select',
+                    Value   => 'option-2',
+                },
             },
             {
                 # Wait until option is selected.
@@ -804,7 +814,7 @@ my @Tests = (
                 Hover => '.Setting',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 Select => '.ArrayItem:nth-of-type(2) select',
@@ -826,13 +836,13 @@ my @Tests = (
                 Hover => '.Content',
             },
             {
-                Click => '.SettingEdit',
+                JqueryClick => '.SettingEdit',
             },
             {
-                Click => '.ArrayItem:nth-of-type(2) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(2) .RemoveButton',
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
             {
                 Select => '.ArrayItem:nth-of-type(2) textarea',
@@ -850,7 +860,7 @@ my @Tests = (
                 Hover => '.Setting',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 Select => 'textarea',
@@ -869,13 +879,13 @@ my @Tests = (
                 Hover => '.Content',
             },
             {
-                Click => '.SettingEdit',
+                JqueryClick => '.SettingEdit',
             },
             {
-                Click => '.ArrayItem:nth-of-type(2) .RemoveButton',
+                JqueryClick => '.ArrayItem:nth-of-type(2) .RemoveButton',
             },
             {
-                Click => '.AddArrayItem',
+                JqueryClick => '.AddArrayItem',
             },
             {
                 Select => '.ArrayItem:nth-of-type(2) select',
@@ -885,9 +895,10 @@ my @Tests = (
             },
             {
                 # Select Europe/Berlin
-                JS => "\$('.WidgetSimple[data-name=\"ExampleArrayTimeZone\"] "
-                    . ".ArrayItem:nth-of-type(2) select').val('Europe/Berlin')"
-                    . ".trigger('redraw.InputField').trigger('change');",
+                InputFieldValueSet => {
+                    Element => '.WidgetSimple[data-name=\"ExampleArrayTimeZone\"] .ArrayItem:nth-of-type(2) select',
+                    Value   => 'Europe/Berlin',
+                },
             },
             {
                 # Wait until option is selected.
@@ -899,7 +910,7 @@ my @Tests = (
                 Hover => '.Setting',
             },
             {
-                Click => '.Update',
+                JqueryClick => '.Update',
             },
             {
                 Select => 'select',
@@ -966,7 +977,7 @@ $Selenium->RunTest(
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminSystemConfiguration");
 
         my $OTRSBusinessIsInstalled = $Kernel::OM->Get('Kernel::System::OTRSBusiness')->OTRSBusinessIsInstalled();
-        my $OBTeaserFound = index( $Selenium->get_page_source(), 'supports versioning, rollback and' ) > -1;
+        my $OBTeaserFound           = index( $Selenium->get_page_source(), 'supports versioning, rollback and' ) > -1;
         if ( !$OTRSBusinessIsInstalled ) {
             $Self->True(
                 $OBTeaserFound,
@@ -1005,8 +1016,12 @@ $Selenium->RunTest(
                         JavaScript => 'return $("' . $Prefix . '").hasClass("HasOverlay") == 0',
                     );
 
-                    $Selenium->execute_script( '$("' . "$Prefix $Value" . '").click();' );
-                    sleep 1;
+                    # Give JS some time to do the stuff.
+                    Time::HiRes::sleep(0.2);
+
+                    $Selenium->execute_script(
+                        '$("' . "$Prefix $Value" . '").click();'
+                    );
 
                     if ($AlertText) {
                         $Selenium->WaitFor(
@@ -1027,20 +1042,51 @@ $Selenium->RunTest(
                         $AlertText = '';
                     }
                     else {
-                        my $HasOverlay = $Selenium->execute_script(
-                            'return $("' . $Prefix . '.HasOverlay").length',
+                        $Selenium->WaitFor(
+                            Time       => 120,
+                            JavaScript => 'return $("' . $Prefix . '").hasClass("HasOverlay") == 0',
+                        );
+                    }
+                }
+                elsif ( $CommandType eq 'JqueryClick' ) {
+                    $Selenium->WaitFor(
+                        JavaScript => 'return $("' . "$Prefix $Value" . '").length',
+                    );
+                    $Selenium->WaitFor(
+                        JavaScript => 'return $("' . $Prefix . '").hasClass("HasOverlay") == 0',
+                    );
+
+                    $Selenium->WaitForjQueryEventBound(
+                        CSSSelector => "$Prefix $Value",
+                    );
+
+                    $Selenium->execute_script(
+                        '$("' . "$Prefix $Value" . '").click();'
+                    );
+
+                    if ($AlertText) {
+                        $Selenium->WaitFor(
+                            AlertPresent => 1,
                         );
 
-                        if ($HasOverlay) {
-                            $Selenium->WaitFor(
-                                Time       => 120,
-                                JavaScript => 'return $("' . $Prefix . '").hasClass("HasOverlay") == 0',
-                            );
-                        }
+                        # Verify alert message.
+                        $Self->Is(
+                            $AlertText,
+                            $Selenium->get_alert_text(),
+                            "$Test->{Name} - Check alert text - $AlertText",
+                        );
 
-                        if ( $Value eq '.Update' ) {
-                            sleep 1;
-                        }
+                        # Accept alert.
+                        $Selenium->accept_alert();
+
+                        # Reset alert text.
+                        $AlertText = '';
+                    }
+                    else {
+                        $Selenium->WaitFor(
+                            Time       => 120,
+                            JavaScript => 'return $("' . $Prefix . '").hasClass("HasOverlay") == 0',
+                        );
                     }
                 }
                 elsif ( $CommandType eq 'Clear' ) {
@@ -1090,7 +1136,7 @@ $Selenium->RunTest(
                     $JSValue =~ s{\\}{\\\\}g;
 
                     $Selenium->WaitFor(
-                        JavaScript => 'return typeof($) === "function" && $("' . "$Prefix $JSValue" . '").length',
+                        JavaScript => 'return typeof($) === "function" && $("' . "$Prefix $JSValue" . '").length'
                     );
 
                     $SelectedItem = $Selenium->find_element( "$Prefix $Value", "css" );
@@ -1105,6 +1151,19 @@ $Selenium->RunTest(
 
                     $Selenium->execute_script(
                         $Command->{JS},
+                    );
+                }
+                elsif ( $CommandType eq 'InputFieldValueSet' ) {
+
+                    # Wait for any tasks to complete.
+                    $Selenium->WaitFor(
+                        JavaScript => 'return typeof($) === "function" && $("' . $Prefix
+                            . '").hasClass("HasOverlay") == 0',
+                    );
+
+                    $Selenium->InputFieldValueSet(
+                        Element => $Value->{Element},
+                        Value   => $Value->{Value},
                     );
                 }
                 elsif ( $CommandType eq 'WaitForJS' ) {

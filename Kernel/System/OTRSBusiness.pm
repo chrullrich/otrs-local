@@ -151,6 +151,43 @@ sub OTRSSTORMIsInstalled {
     return $IsInstalled;
 }
 
+=head2 OTRSCONTROLIsInstalled()
+
+checks if OTRSControl is installed in the current system.
+That does not necessarily mean that it is also active, for
+example if the package is only on the database but not on
+the file system.
+
+=cut
+
+sub OTRSCONTROLIsInstalled {
+    my ( $Self, %Param ) = @_;
+
+    my $CacheObject = $Kernel::OM->Get('Kernel::System::Cache');
+
+    # as the check for installed packages can be
+    # very expensive, we want to use caching here
+    my $Cache = $CacheObject->Get(
+        Type => $Self->{CacheType},
+        TTL  => $Self->{CacheTTL},
+        Key  => 'OTRSCONTROLIsInstalled',
+    );
+
+    return $Cache if defined $Cache;
+
+    my $IsInstalled = $Self->_GetCONTROLPackageFromRepository() ? 1 : 0;
+
+    # set cache
+    $CacheObject->Set(
+        Type  => $Self->{CacheType},
+        TTL   => $Self->{CacheTTL},
+        Key   => 'OTRSCONTROLIsInstalled',
+        Value => $IsInstalled,
+    );
+
+    return $IsInstalled;
+}
+
 =head2 OTRSBusinessIsAvailable()
 
 checks with C<cloud.otrs.com> if OTRSBusiness is available for the current framework.
@@ -598,7 +635,7 @@ sub OTRSBusinessContractExpiryDateCheck {
         'Kernel::System::DateTime',
         ObjectParams => {
             String => $EntitlementData{ExpiryDate},
-            }
+        }
     );
 
     my $DateTimeObject = $Kernel::OM->Create('Kernel::System::DateTime');
@@ -626,10 +663,10 @@ sub HandleBusinessPermissionCloudServiceResult {
     #   to determine if the results can still be used later, if a connection to
     #   cloud.otrs.com cannot be made temporarily.
     my %StoreData = (
-        BusinessPermission            => $OperationResult->{Data}->{BusinessPermission} // 0,
-        ExpiryDate                    => $OperationResult->{Data}->{ExpiryDate} // '',
+        BusinessPermission            => $OperationResult->{Data}->{BusinessPermission}            // 0,
+        ExpiryDate                    => $OperationResult->{Data}->{ExpiryDate}                    // '',
         LastUpdateTime                => $Kernel::OM->Create('Kernel::System::DateTime')->ToString(),
-        AgentSessionLimit             => $OperationResult->{Data}->{AgentSessionLimit} // 0,
+        AgentSessionLimit             => $OperationResult->{Data}->{AgentSessionLimit}             // 0,
         AgentSessionLimitPriorWarning => $OperationResult->{Data}->{AgentSessionLimitPriorWarning} // 0,
     );
 
@@ -669,7 +706,7 @@ sub HandleBusinessVersionCheckCloudServiceResult {
 
     my %StoreData = (
         LatestVersionForCurrentFramework => $OperationResult->{Data}->{LatestVersionForCurrentFramework} // '',
-        FrameworkUpdateAvailable         => $OperationResult->{Data}->{FrameworkUpdateAvailable} // '',
+        FrameworkUpdateAvailable         => $OperationResult->{Data}->{FrameworkUpdateAvailable}         // '',
     );
 
     my $SystemDataObject = $Kernel::OM->Get('Kernel::System::SystemData');
@@ -1028,6 +1065,23 @@ sub _GetSTORMPackageFromRepository {
     for my $Package (@RepositoryList) {
 
         return $Package if $Package->{Name} eq 'OTRSSTORM';
+    }
+
+    return;
+}
+
+sub _GetCONTROLPackageFromRepository {
+    my ( $Self, %Param ) = @_;
+
+    my $PackageObject = $Kernel::OM->Get('Kernel::System::Package');
+
+    my @RepositoryList = $PackageObject->RepositoryList(
+        Result => 'short',
+    );
+
+    for my $Package (@RepositoryList) {
+
+        return $Package if $Package->{Name} eq 'OTRSCONTROL';
     }
 
     return;
