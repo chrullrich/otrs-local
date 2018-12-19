@@ -581,7 +581,7 @@ sub PackageInstall {
     # install database (pre)
     if ( $Structure{DatabaseInstall} && $Structure{DatabaseInstall}->{pre} ) {
 
-        my $DatabaseInstall = $Self->_CheckDBMerged( Database => $Structure{DatabaseInstall}->{pre} );
+        my $DatabaseInstall = $Self->_CheckDBInstalledOrMerged( Database => $Structure{DatabaseInstall}->{pre} );
 
         if ( IsArrayRefWithData($DatabaseInstall) ) {
             $Self->_Database( Database => $DatabaseInstall );
@@ -622,7 +622,7 @@ sub PackageInstall {
     # install database (post)
     if ( $Structure{DatabaseInstall} && $Structure{DatabaseInstall}->{post} ) {
 
-        my $DatabaseInstall = $Self->_CheckDBMerged( Database => $Structure{DatabaseInstall}->{post} );
+        my $DatabaseInstall = $Self->_CheckDBInstalledOrMerged( Database => $Structure{DatabaseInstall}->{post} );
 
         if ( IsArrayRefWithData($DatabaseInstall) ) {
             $Self->_Database( Database => $DatabaseInstall );
@@ -1857,13 +1857,6 @@ sub PackageVerify {
     # Check if installation of packages, which are not verified by us, is possible.
     my $PackageAllowNotVerifiedPackages = $Kernel::OM->Get('Kernel::Config')->Get('Package::AllowNotVerifiedPackages');
 
-    # return package as verified if cloud services are disabled
-    if ( $Self->{CloudServicesDisabled} ) {
-
-        my $Verify = $PackageAllowNotVerifiedPackages ? 'verified' : 'not_verified';
-        return $Verify;
-    }
-
     # define package verification info
     my $PackageVerifyInfo;
 
@@ -1894,6 +1887,20 @@ sub PackageVerify {
                 Translatable('Package not verified by the OTRS Group! It is recommended not to use this package.'),
             PackageInstallPossible => 0,
         };
+    }
+
+    # return package as verified if cloud services are disabled
+    if ( $Self->{CloudServicesDisabled} ) {
+
+        my $Verify = $PackageAllowNotVerifiedPackages ? 'verified' : 'not_verified';
+
+        if ( $Verify eq 'not_verified' ) {
+            $PackageVerifyInfo->{VerifyCSSClass} = 'NotVerifiedPackage';
+        }
+
+        $Self->{PackageVerifyInfo} = $PackageVerifyInfo;
+
+        return $Verify;
     }
 
     # investigate name
@@ -4655,7 +4662,7 @@ sub _MergedPackages {
     return 1;
 }
 
-sub _CheckDBMerged {
+sub _CheckDBInstalledOrMerged {
     my ( $Self, %Param ) = @_;
 
     # check needed stuff
@@ -4705,7 +4712,11 @@ sub _CheckDBMerged {
             )
             || (
                 defined $Part->{IfNotPackage}
-                && defined $Self->{MergedPackages}->{ $Part->{IfNotPackage} }
+                &&
+                (
+                    defined $Self->{MergedPackages}->{ $Part->{IfNotPackage} }
+                    || $Self->PackageIsInstalled( Name => $Part->{IfNotPackage} )
+                )
             )
             )
         {

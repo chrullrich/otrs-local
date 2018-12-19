@@ -51,6 +51,8 @@ sub FormIDRemove {
         return;
     }
 
+    return if !$Self->_FormIDValidate( $Param{FormID} );
+
     my $Directory = $Self->{TempDir} . '/' . $Param{FormID};
 
     if ( !-d $Directory ) {
@@ -95,6 +97,8 @@ sub FormIDAddFile {
         }
     }
 
+    return if !$Self->_FormIDValidate( $Param{FormID} );
+
     $Param{Content} = '' if !defined( $Param{Content} );
 
     # create content id
@@ -135,6 +139,7 @@ sub FormIDAddFile {
         Content    => \$Param{Content},
         Mode       => 'binmode',
         Permission => '640',
+        NoReplace  => 1,
     );
     return if !$MainObject->FileWrite(
         Directory  => $Directory,
@@ -142,6 +147,7 @@ sub FormIDAddFile {
         Content    => \$Param{ContentType},
         Mode       => 'binmode',
         Permission => '640',
+        NoReplace  => 1,
     );
     return if !$MainObject->FileWrite(
         Directory  => $Directory,
@@ -149,6 +155,7 @@ sub FormIDAddFile {
         Content    => \$ContentID,
         Mode       => 'binmode',
         Permission => '640',
+        NoReplace  => 1,
     );
     return if !$MainObject->FileWrite(
         Directory  => $Directory,
@@ -156,6 +163,7 @@ sub FormIDAddFile {
         Content    => \$Disposition,
         Mode       => 'binmode',
         Permission => '644',
+        NoReplace  => 1,
     );
     return 1;
 }
@@ -172,6 +180,8 @@ sub FormIDRemoveFile {
             return;
         }
     }
+
+    return if !$Self->_FormIDValidate( $Param{FormID} );
 
     my @Index = @{ $Self->FormIDGetAllFilesMeta(%Param) };
 
@@ -193,18 +203,22 @@ sub FormIDRemoveFile {
     $MainObject->FileDelete(
         Directory => $Directory,
         Filename  => "$File{Filename}",
+        NoReplace => 1,
     );
     $MainObject->FileDelete(
         Directory => $Directory,
         Filename  => "$File{Filename}.ContentType",
+        NoReplace => 1,
     );
     $MainObject->FileDelete(
         Directory => $Directory,
         Filename  => "$File{Filename}.ContentID",
+        NoReplace => 1,
     );
     $MainObject->FileDelete(
         Directory => $Directory,
         Filename  => "$File{Filename}.Disposition",
+        NoReplace => 1,
     );
 
     return 1;
@@ -222,6 +236,8 @@ sub FormIDGetAllFilesData {
     }
 
     my @Data;
+
+    return \@Data if !$Self->_FormIDValidate( $Param{FormID} );
 
     my $Directory = $Self->{TempDir} . '/' . $Param{FormID};
 
@@ -318,6 +334,8 @@ sub FormIDGetAllFilesMeta {
     }
 
     my @Data;
+
+    return \@Data if !$Self->_FormIDValidate( $Param{FormID} );
 
     my $Directory = $Self->{TempDir} . '/' . $Param{FormID};
 
@@ -443,6 +461,22 @@ sub FormIDCleanUp {
                 next SUBDIR;
             }
         }
+    }
+
+    return 1;
+}
+
+sub _FormIDValidate {
+    my ( $Self, $FormID ) = @_;
+
+    return if !$FormID;
+
+    if ( $FormID !~ m{^ \d+ \. \d+ \. \d+ $}xms ) {
+        $Kernel::OM->Get('Kernel::System::Log')->Log(
+            Priority => 'error',
+            Message  => 'Invalid FormID!',
+        );
+        return;
     }
 
     return 1;

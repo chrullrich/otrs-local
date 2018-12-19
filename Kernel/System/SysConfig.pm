@@ -2063,8 +2063,8 @@ sub SettingReset {
         Data2 => \$DefaultSetting{EffectiveValue},
     ) || 0;
 
-    $IsModified ||= $ModifiedSetting{IsValid} != $DefaultSetting{IsValid};
-    $IsModified ||= $ModifiedSetting{UserModificationActive} != $DefaultSetting{UserModificationActive};
+    $IsModified ||= $SettingDeployed{IsValid} != $DefaultSetting{IsValid};
+    $IsModified ||= $SettingDeployed{UserModificationActive} != $DefaultSetting{UserModificationActive};
     $ModifiedSetting{IsDirty} = $IsModified ? 1 : 0;
 
     # Copy values from default.
@@ -3177,9 +3177,11 @@ sub ConfigurationList {
 Returns list of enabled settings that have invalid effective value.
 
     my @List = $SysConfigObject->ConfigurationInvalidList(
-        CachedOnly => 0,    # (optional) Default 0. If enabled, system will return cached value.
+        CachedOnly  => 0,   # (optional) Default 0. If enabled, system will return cached value.
                             #                 If there is no cache yet, system will return empty list, but
                             #                 it will also trigger async call to generate cache.
+        Undeployed  => 1,   # (optional) Default 0. Check settings that are not deployed as well.
+        NoCache     => 1,   # (optional) Default 0. If enabled, system won't check the cached valuue.
     );
 
 Returns:
@@ -3196,13 +3198,17 @@ sub ConfigurationInvalidList {
     my $CacheType = 'SysConfig';
     my $CacheKey  = 'ConfigurationInvalidList';
 
+    if ( $Param{Undeployed} ) {
+        $CacheKey .= '::Undeployed';
+    }
+
     # Return cache.
     my $Cache = $CacheObject->Get(
         Type => $CacheType,
         Key  => $CacheKey,
     );
 
-    return @{$Cache} if ref $Cache eq 'ARRAY';
+    return @{$Cache} if ref $Cache eq 'ARRAY' && !$Param{NoCache};
 
     if ( $Param{CachedOnly} ) {
 
@@ -3233,13 +3239,14 @@ sub ConfigurationInvalidList {
     my $ExpireTime = $DateTimeObject->ToEpoch();
 
     for my $Setting (@SettingsEnabled) {
-        my %SettingDeployed = $Self->SettingGet(
+        my %SettingData = $Self->SettingGet(
             Name     => $Setting->{Name},
-            Deployed => 1,
+            Deployed => $Param{Undeployed} ? undef : 1,
+            NoCache  => $Param{NoCache},
         );
 
         my %EffectiveValueCheck = $Self->SettingEffectiveValueCheck(
-            EffectiveValue    => $SettingDeployed{EffectiveValue},
+            EffectiveValue    => $SettingData{EffectiveValue},
             XMLContentParsed  => $Setting->{XMLContentParsed},
             CurrentSystemTime => $CurrentSystemTime,
             ExpireTime        => $ExpireTime,
@@ -3618,7 +3625,11 @@ sub ConfigurationDeploy {
 
         $CacheObject->Delete(
             Type => 'SysConfig',
-            Key  => 'ConfigurationInvalidList'
+            Key  => 'ConfigurationInvalidList',
+        );
+        $CacheObject->Delete(
+            Type => 'SysConfig',
+            Key  => 'ConfigurationInvalidList::Undeployed',
         );
     }
     else {

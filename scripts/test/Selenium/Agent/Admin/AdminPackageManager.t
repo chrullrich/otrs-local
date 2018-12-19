@@ -217,20 +217,30 @@ $Selenium->RunTest(
         );
 
         $Selenium->find_element( '#FileUpload', 'css' )->send_keys($Location);
+        sleep 2;
+
         $Selenium->find_element("//button[\@value='Install'][\@type='submit']")->VerifiedClick();
 
         $CheckBreadcrumb->(
             BreadcrumbText => 'Install Package:',
         );
-        $Selenium->find_element("//button[\@value='Continue'][\@type='submit']")->VerifiedClick();
 
-        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $(".DataTable").length;' );
+        $Selenium->find_element("//button[\@value='Continue'][\@type='submit']")->click();
+        $Selenium->WaitFor(
+            Time => 120,
+            JavaScript =>
+                'return typeof($) == "function" && !$("button[value=\'Continue\']").length;'
+        );
+
+        $PackageCheck = $PackageObject->PackageIsInstalled(
+            Name => 'Test',
+        );
         $Self->True(
-            $Selenium->find_element(
-                "//a[contains(\@href, \'Subaction=View;Name=Test' )]"
-            )->is_displayed(),
+            $PackageCheck,
             'Test package is installed'
         );
+
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminPackageManager");
 
         # Load page with metadata of installed package.
         $Selenium->find_element(
@@ -259,7 +269,12 @@ $Selenium->RunTest(
             BreadcrumbText => 'Uninstall Package:',
         );
 
-        $Selenium->find_element("//button[\@value='Uninstall package'][\@type='submit']")->VerifiedClick();
+        $Selenium->find_element("//button[\@value='Uninstall package'][\@type='submit']")->click();
+        $Selenium->WaitFor(
+            Time => 120,
+            JavaScript =>
+                'return typeof($) == "function" && !$("button[value=\'Uninstall package\']").length;'
+        );
 
         # Check if test package is uninstalled.
         $Self->True(

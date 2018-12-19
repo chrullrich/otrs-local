@@ -93,6 +93,12 @@ sub Run {
 
         my $Config = $ConfigObject->Get("Ticket::Frontend::$Self->{Action}");
 
+        # Get List type.
+        my $TreeView = 0;
+        if ( $ConfigObject->Get('Ticket::Frontend::ListType') eq 'tree' ) {
+            $TreeView = 1;
+        }
+
         my %GetParam;
         for my $Key (qw(OwnerID ResponsibleID PriorityID QueueID Queue TypeID StateID)) {
             $GetParam{$Key} = $ParamObject->GetParam( Param => $Key ) || '';
@@ -107,8 +113,9 @@ sub Run {
         my @JSONData = (
             {
                 Name       => 'QueueID',
-                Data       => { %QueueList, '' => '-' },
+                Data       => \%QueueList,
                 SelectedID => $GetParam{QueueID},
+                TreeView   => $TreeView,
             },
         );
 
