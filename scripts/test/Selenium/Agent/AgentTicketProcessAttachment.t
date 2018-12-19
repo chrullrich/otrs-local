@@ -143,8 +143,9 @@ $Selenium->RunTest(
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketProcess");
 
         # Select test process.
-        $Selenium->execute_script(
-            "\$('#ProcessEntityID').val('$ListReverse{$ProcessName}').trigger('redraw.InputField').trigger('change');"
+        $Selenium->InputFieldValueSet(
+            Element => '#ProcessEntityID',
+            Value   => $ListReverse{$ProcessName},
         );
 
         # Wait until page has loaded, if necessary.
@@ -205,7 +206,7 @@ $Selenium->RunTest(
 
         # Get test ticket ID.
         my @TicketZoomUrl = split( 'Action=AgentTicketZoom;TicketID=', $Url );
-        my $TicketID = $TicketZoomUrl[1];
+        my $TicketID      = $TicketZoomUrl[1];
 
         # Verify article attachment is created.
         $Self->True(

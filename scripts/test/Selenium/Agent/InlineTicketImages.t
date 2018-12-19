@@ -163,8 +163,8 @@ my $CheckEmailContentDisposition = sub {
     my $Body = $Email->{Message}->{Body};
 
     # Search for the image content-type and then get the content-disposition.
-    my $Pos = index $Body, 'Content-Type: image/png;';
-    my $Substr = substr $Body, $Pos;
+    my $Pos                  = index $Body, 'Content-Type: image/png;';
+    my $Substr               = substr $Body, $Pos;
     my ($ContentDisposition) = ( $Substr =~ m/Content-Disposition: (\w+);/i );
 
     $Self->Is(
@@ -190,8 +190,9 @@ my $CheckTicketReplyOrForward = sub {
     $Selenium->VerifiedGet( "${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=" . $TicketID );
 
     if ( $Action eq 'Reply' ) {
-        $Selenium->execute_script(
-            "\$('form[title=\"Reply\"] select[id^=\"ResponseID\"]').val('1').trigger('redraw.InputField').trigger('change');"
+        $Selenium->InputFieldValueSet(
+            Element => "form[title=\"Reply\"] select[id^=\"ResponseID\"]",
+            Value   => 1,
         );
     }
     else {    # Forward

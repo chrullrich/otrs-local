@@ -45,7 +45,7 @@ sub Run {
     # ------------------------------------------------------------ #
     if ( $Self->{Subaction} eq 'Change' ) {
         my $ID = $ParamObject->GetParam( Param => 'ID' ) || '';
-        my %Data = $StateObject->StateGet( ID => $ID );
+        my %Data   = $StateObject->StateGet( ID => $ID );
         my $Output = $LayoutObject->Header();
         $Output .= $LayoutObject->NavigationBar();
         $Self->_Edit(
@@ -451,7 +451,7 @@ sub _Overview {
         # get valid list
         my %ValidList = $Kernel::OM->Get('Kernel::System::Valid')->ValidList();
 
-        for my $ListKey ( sort { $List{$a} cmp $List{$b} } keys %List ) {
+        for my $ListKey ( sort { lc $List{$a} cmp lc $List{$b} } keys %List ) {
 
             my %Data = $StateObject->StateGet( ID => $ListKey );
             $LayoutObject->Block(

@@ -103,7 +103,7 @@ sub new {
     #   is none yet.
     if ( !$Self->{UserLanguage} ) {
         my @BrowserLanguages = split /\s*,\s*/, $Self->{Lang} || $ENV{HTTP_ACCEPT_LANGUAGE} || '';
-        my %Data = %{ $ConfigObject->Get('DefaultUsedLanguages') };
+        my %Data             = %{ $ConfigObject->Get('DefaultUsedLanguages') };
         LANGUAGE:
         for my $BrowserLang (@BrowserLanguages) {
             for my $Language ( reverse sort keys %Data ) {
@@ -617,7 +617,7 @@ sub Redirect {
     #  o http://bugs.otrs.org/show_bug.cgi?id=9835
     #  o http://support.microsoft.com/default.aspx?scid=kb;en-us;221154
     if ( $ENV{SERVER_SOFTWARE} =~ /^microsoft\-iis\/6/i ) {
-        my $Host = $ENV{HTTP_HOST} || $ConfigObject->Get('FQDN');
+        my $Host     = $ENV{HTTP_HOST} || $ConfigObject->Get('FQDN');
         my $HttpType = $ConfigObject->Get('HttpType');
         $Param{Redirect} = $HttpType . '://' . $Host . $Param{Redirect};
     }
@@ -719,6 +719,7 @@ sub Login {
     my $OTRSBusinessObject = $Kernel::OM->Get('Kernel::System::OTRSBusiness');
     $Param{OTRSBusinessIsInstalled} = $OTRSBusinessObject->OTRSBusinessIsInstalled();
     $Param{OTRSSTORMIsInstalled}    = $OTRSBusinessObject->OTRSSTORMIsInstalled();
+    $Param{OTRSCONTROLIsInstalled}  = $OTRSBusinessObject->OTRSCONTROLIsInstalled();
 
     # we need the baselink for VerfifiedGet() of selenium tests
     $Self->AddJSData(
@@ -1523,7 +1524,7 @@ sub Footer {
 
     # get datepicker data, if needed in module
     if ($HasDatepicker) {
-        my $VacationDays = $Self->DatepickerGetVacationDays();
+        my $VacationDays  = $Self->DatepickerGetVacationDays();
         my $TextDirection = $Self->{LanguageObject}->{TextDirection} || '';
 
         # send data to JS
@@ -1580,6 +1581,7 @@ sub Footer {
     if ( $ConfigObject->Get('SecureMode') ) {
         $Param{OTRSBusinessIsInstalled} = $OTRSBusinessObject->OTRSBusinessIsInstalled();
         $Param{OTRSSTORMIsInstalled}    = $OTRSBusinessObject->OTRSSTORMIsInstalled();
+        $Param{OTRSCONTROLIsInstalled}  = $OTRSBusinessObject->OTRSCONTROLIsInstalled();
     }
 
     # Check if video chat is enabled.
@@ -3075,7 +3077,7 @@ sub NavigationBar {
                     %Param,
                     Config => $Jobs{$Job},
                     NavBar => \%NavBar || {}
-                    )
+                )
             );
         }
     }
@@ -3380,7 +3382,7 @@ sub BuildDateSelection {
             'Kernel::System::DateTime',
             ObjectParams => {
                 TimeZone => $Self->{UserTimeZone}
-                }
+            }
         );
         if ( $Param{AddSeconds} ) {
             $DateTimeObject->Add( Seconds => $Param{AddSeconds} );
@@ -3615,7 +3617,7 @@ sub BuildDateSelection {
                     defined( $Param{ $Prefix . 'Minute' } )
                     ? int( $Param{ $Prefix . 'Minute' } )
                     : $m
-                    )
+                )
                 ) . "\" "
                 . ( $Param{Disabled} ? 'readonly="readonly"' : '' ) . "/>";
         }
@@ -3759,22 +3761,22 @@ sub HumanReadableDataSize {
     if ( $Param{Size} >= ( 1024**4 ) ) {
 
         $ReadableSize = $FormatSize->( $Param{Size} / ( 1024**4 ) );
-        $SizeStr = $Self->{LanguageObject}->Translate( '%s TB', $ReadableSize );
+        $SizeStr      = $Self->{LanguageObject}->Translate( '%s TB', $ReadableSize );
     }
     elsif ( $Param{Size} >= ( 1024**3 ) ) {
 
         $ReadableSize = $FormatSize->( $Param{Size} / ( 1024**3 ) );
-        $SizeStr = $Self->{LanguageObject}->Translate( '%s GB', $ReadableSize );
+        $SizeStr      = $Self->{LanguageObject}->Translate( '%s GB', $ReadableSize );
     }
     elsif ( $Param{Size} >= ( 1024**2 ) ) {
 
         $ReadableSize = $FormatSize->( $Param{Size} / ( 1024**2 ) );
-        $SizeStr = $Self->{LanguageObject}->Translate( '%s MB', $ReadableSize );
+        $SizeStr      = $Self->{LanguageObject}->Translate( '%s MB', $ReadableSize );
     }
     elsif ( $Param{Size} >= 1024 ) {
 
         $ReadableSize = $FormatSize->( $Param{Size} / 1024 );
-        $SizeStr = $Self->{LanguageObject}->Translate( '%s KB', $ReadableSize );
+        $SizeStr      = $Self->{LanguageObject}->Translate( '%s KB', $ReadableSize );
     }
     else {
         $SizeStr = $Self->{LanguageObject}->Translate( '%s B', $Param{Size} );
@@ -3841,6 +3843,7 @@ sub CustomerLogin {
     my $OTRSBusinessObject = $Kernel::OM->Get('Kernel::System::OTRSBusiness');
     $Param{OTRSBusinessIsInstalled} = $OTRSBusinessObject->OTRSBusinessIsInstalled();
     $Param{OTRSSTORMIsInstalled}    = $OTRSBusinessObject->OTRSSTORMIsInstalled();
+    $Param{OTRSCONTROLIsInstalled}  = $OTRSBusinessObject->OTRSCONTROLIsInstalled();
 
     $Self->AddJSData(
         Key   => 'Baselink',
@@ -3971,10 +3974,27 @@ sub CustomerLogin {
         Value => $Param{LoginFailed},
     );
 
+    # Display footer links.
+    my $FooterLinks = $ConfigObject->Get('PublicFrontend::FooterLinks');
+    if ( IsHashRefWithData($FooterLinks) ) {
+
+        my @FooterLinks;
+
+        for my $Link ( sort keys %{$FooterLinks} ) {
+
+            push @FooterLinks, {
+                Description => $FooterLinks->{$Link},
+                Target      => $Link,
+            };
+        }
+
+        $Param{FooterLinks} = \@FooterLinks;
+    }
+
     # create & return output
     $Output .= $Self->Output(
         TemplateFile => 'CustomerLogin',
-        Data         => \%Param
+        Data         => \%Param,
     );
 
     # remove the version tag from the header if configured
@@ -4136,7 +4156,7 @@ sub CustomerFooter {
 
     # get datepicker data, if needed in module
     if ($HasDatepicker) {
-        my $VacationDays = $Self->DatepickerGetVacationDays();
+        my $VacationDays  = $Self->DatepickerGetVacationDays();
         my $TextDirection = $Self->{LanguageObject}->{TextDirection} || '';
 
         # send data to JS
@@ -4194,6 +4214,7 @@ sub CustomerFooter {
         my $OTRSBusinessObject = $Kernel::OM->Get('Kernel::System::OTRSBusiness');
         $Param{OTRSBusinessIsInstalled} = $OTRSBusinessObject->OTRSBusinessIsInstalled();
         $Param{OTRSSTORMIsInstalled}    = $OTRSBusinessObject->OTRSSTORMIsInstalled();
+        $Param{OTRSCONTROLIsInstalled}  = $OTRSBusinessObject->OTRSCONTROLIsInstalled();
     }
 
     # AutoComplete-Config
@@ -4220,6 +4241,7 @@ sub CustomerFooter {
         CheckEmailAddresses      => $ConfigObject->Get('CheckEmailAddresses'),
         OTRSBusinessIsInstalled  => $Param{OTRSBusinessIsInstalled},
         OTRSSTORMIsInstalled     => $Param{OTRSSTORMIsInstalled},
+        OTRSCONTROLIsInstalled   => $Param{OTRSCONTROLIsInstalled},
         InputFieldsActivated     => $ConfigObject->Get('ModernizeCustomerFormFields'),
         Autocomplete             => $AutocompleteConfig,
         VideoChatEnabled         => $Param{VideoChatEnabled},
@@ -4234,10 +4256,27 @@ sub CustomerFooter {
         );
     }
 
+    # Display footer links.
+    my $FooterLinks = $ConfigObject->Get('PublicFrontend::FooterLinks');
+    if ( IsHashRefWithData($FooterLinks) ) {
+
+        my @FooterLinks;
+
+        for my $Link ( sort keys %{$FooterLinks} ) {
+
+            push @FooterLinks, {
+                Description => $FooterLinks->{$Link},
+                Target      => $Link,
+            };
+        }
+
+        $Param{FooterLinks} = \@FooterLinks;
+    }
+
     # create & return output
     return $Self->Output(
         TemplateFile => "CustomerFooter$Type",
-        Data         => \%Param
+        Data         => \%Param,
     );
 }
 

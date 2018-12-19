@@ -43,7 +43,7 @@ sub Run {
         my $ID = $ParamObject->GetParam( Param => 'ID' )
             || $ParamObject->GetParam( Param => 'GroupID' )
             || '';
-        my %Data = $GroupObject->GroupGet( ID => $ID );
+        my %Data   = $GroupObject->GroupGet( ID => $ID );
         my $Output = $LayoutObject->Header();
         $Output .= $LayoutObject->NavigationBar();
         $Output .= $LayoutObject->Notify( Info => Translatable('Group updated!') )
@@ -309,6 +309,7 @@ sub _Overview {
 
     $LayoutObject->Block( Name => 'ActionList' );
     $LayoutObject->Block( Name => 'ActionAdd' );
+    $LayoutObject->Block( Name => 'Filter' );
 
     my %List = $GroupObject->GroupList(
         ValidID => 0,
