@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 # --
 # Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
 # --
@@ -25,12 +25,18 @@ use lib "$Bin/../..";
 use lib "$Bin/../../Kernel/cpan-lib";
 use lib "$Bin/../../Custom";
 
+# Imports the library; required line
 use CGI::Fast;
-use Module::Refresh;
 
 # load generic interface
 use Kernel::GenericInterface::Provider;
 use Kernel::System::ObjectManager;
+
+# keep external secrets from process environment
+my %secrets;
+foreach (grep(/^OTRS_/, keys %ENV)) {
+    $secrets{$_} = $ENV{$_};
+}
 
 # response loop
 while ( my $WebRequest = CGI::Fast->new() ) {
@@ -40,7 +46,13 @@ while ( my $WebRequest = CGI::Fast->new() ) {
         Module::Refresh->refresh();
     };
 
+    # merge secrets into request environment
+    %ENV = (%ENV, %secrets);
+
     local $Kernel::OM = Kernel::System::ObjectManager->new(
+        'Kernel::System::Log' => {
+            LogPrefix => 'GenericInterfaceProvider',
+        },
         'Kernel::System::Web::Request' => {
             WebRequest => $WebRequest,
             }
