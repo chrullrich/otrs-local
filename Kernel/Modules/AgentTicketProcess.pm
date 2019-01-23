@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -4799,6 +4799,7 @@ sub _StoreActivityDialog {
             }
 
             # create a new ticket
+            $TicketParam{OwnerID} = 1;
             $TicketID = $TicketObject->TicketCreate(%TicketParam);
 
             if ( !$TicketID ) {
@@ -5497,6 +5498,21 @@ sub _StoreActivityDialog {
             Type         => $Config->{SplitLinkType}->{LinkType} || 'Normal',
             State        => 'Valid',
             UserID       => $Self->{UserID},
+        );
+    }
+
+    if ( $Param{GetParam}->{OwnerID} ) {
+        $TicketObject->TicketOwnerSet(
+            TicketID  => $TicketID,
+            NewUserID => $Param{GetParam}->{OwnerID},
+            UserID    => $Self->{UserID},
+        );
+
+        # set lock
+        $TicketObject->TicketLockSet(
+            TicketID => $TicketID,
+            Lock     => 'lock',
+            UserID   => $Self->{UserID},
         );
     }
 
