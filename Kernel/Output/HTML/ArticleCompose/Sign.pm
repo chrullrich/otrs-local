@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -41,8 +41,8 @@ sub Option {
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    # Get config object.
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
     # Check if PGP and SMIME are disabled.
     return if !$ConfigObject->Get('PGP') && !$ConfigObject->Get('SMIME');
@@ -51,10 +51,28 @@ sub Run {
 
     # Sender with unique key won't be displayed in the selection
     my $UniqueSignKeyIDsToRemove = $Self->_GetUniqueSignKeyIDsToRemove(%Param);
+    my $InvalidMessage           = '';
+    my $Class                    = '';
     if ( IsArrayRefWithData($UniqueSignKeyIDsToRemove) ) {
         for my $UniqueSignKeyIDToRemove ( @{$UniqueSignKeyIDsToRemove} ) {
+            if ( $KeyList{$UniqueSignKeyIDToRemove} =~ m/WARNING: EXPIRED KEY].*\] (.*)/ ) {
+                $InvalidMessage .= $LayoutObject->{LanguageObject}->Translate(
+                    "Cannot use expired signing key: '%s'. ", $1
+                );
+                $Self->{Error}->{InvalidKey} = 1;
+                $Class .= ' ServerError';
+            }
+            elsif ( $KeyList{$UniqueSignKeyIDToRemove} =~ m/WARNING: REVOKED KEY].*\] (.*)/ ) {
+                $InvalidMessage .= $LayoutObject->{LanguageObject}->Translate(
+                    "Cannot use revoked signing key: '%s'. ", $1
+                );
+                $Self->{Error}->{InvalidKey} = 1;
+                $Class .= ' ServerError';
+            }
+
             delete $KeyList{$UniqueSignKeyIDToRemove};
         }
+
     }
 
     # Add signing options.
@@ -71,11 +89,6 @@ sub Run {
             $Param{SignKeyID} = $Self->_PickSignKeyID(%Param) || '';
         }
     }
-
-    # Get layout object.
-    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
-    my $InvalidMessage;
-    my $Class = '';
 
     if (
         $Param{StoreNew}
@@ -98,6 +111,27 @@ sub Run {
                 );
             }
             $Self->{Error}->{SignMissingKey} = 1;
+            $Class .= ' ServerError';
+        }
+    }
+
+    # Check if selected signing keys are expired.
+    if ( defined $Param{SignKeyID} && !$Self->{Error}->{InvalidKey} ) {
+        my ( $Type, $Key ) = split /::/, $Param{SignKeyID};
+
+        if ( $KeyList{ $Param{SignKeyID} } =~ m/WARNING: EXPIRED KEY].*] (.*)/ ) {
+            $InvalidMessage .= $LayoutObject->{LanguageObject}->Translate(
+                "Cannot use expired signing key: '%s'. ",
+                join ', ', $1
+            );
+            $Self->{Error}->{InvalidKey} = 1;
+            $Class .= ' ServerError';
+        }
+        elsif ( $KeyList{ $Param{SignKeyID} } =~ m/WARNING: REVOKED KEY].*\] (.*)/ ) {
+            $InvalidMessage .= $LayoutObject->{LanguageObject}->Translate(
+                "Cannot use revoked signing key: '%s'. ", $1
+            );
+            $Self->{Error}->{InvalidKey} = 1;
             $Class .= ' ServerError';
         }
     }
@@ -174,7 +208,16 @@ sub Data {
                     $Expires = "[$DataRef->{Expires}]";
                 }
 
-                $KeyList{"PGP::$DataRef->{Key}"} = "PGP: $DataRef->{Key} $Expires $DataRef->{Identifier}";
+                my $Status = '';
+                $Status = '[' . $DataRef->{Status} . ']';
+                if ( $DataRef->{Status} eq 'expired' ) {
+                    $Status = '[WARNING: EXPIRED KEY]';
+                }
+                elsif ( $DataRef->{Status} eq 'revoked' ) {
+                    $Status = '[WARNING: REVOKED KEY]';
+                }
+
+                $KeyList{"PGP::$DataRef->{Key}"} = "PGP: $Status $DataRef->{Key} $Expires $DataRef->{Identifier}";
             }
         }
     }
@@ -190,8 +233,47 @@ sub Data {
             Search => $SearchAddress[0]->address(),
         );
         for my $DataRef (@PrivateKeys) {
-            $KeyList{"SMIME::$DataRef->{Filename}"}
-                = "SMIME: $DataRef->{Filename} [$DataRef->{EndDate}] $DataRef->{Email}";
+            my $Expired = '';
+            my $EndDate = '';
+            if ( $DataRef->{EndDate} ) {
+                $EndDate = "[$DataRef->{EndDate}]";
+
+                # EndDate is in this fomrmatat: May 12 23:50:40 2018 GMT
+                # It is transformed in supported format for DateTimeObject: 2018-05-12T23:50:40GMT
+                $DataRef->{EndDate} =~ /(\w+)\s(\d\d)\s(\d\d:\d\d:\d\d)\s(\d\d\d\d)\s(\w+)/;
+
+                my %Month = (
+                    Jan => '01',
+                    Feb => '02',
+                    Mar => '03',
+                    Apr => '04',
+                    May => '05',
+                    Jun => '06',
+                    Jul => '07',
+                    Aug => '08',
+                    Sep => '09',
+                    Oct => '10',
+                    Nov => '11',
+                    Dec => '12',
+                );
+
+                my $EndDateTimeObject = $Kernel::OM->Create(
+                    'Kernel::System::DateTime',
+                    ObjectParams => {
+                        String => "$4-$Month{$1}-$2T$3$5",
+                    },
+                );
+                my $CurrentTimeObject = $Kernel::OM->Create(
+                    'Kernel::System::DateTime',
+                );
+
+                # Check if key is expired.
+                if ( $EndDateTimeObject->Compare( DateTimeObject => $CurrentTimeObject ) == -1 ) {
+                    $Expired = ' [WARNING: EXPIRED KEY]';
+                }
+            }
+
+            $KeyList{"SMIME::$DataRef->{Filename}"} = "SMIME:$Expired $DataRef->{Filename} $EndDate $DataRef->{Email}";
         }
     }
 

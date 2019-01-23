@@ -1,4 +1,29 @@
-#6.0.16 2018-??-??
+#6.0.17 ????-??-??
+
+#6.0.16 2019-01-18
+ - 2019-01-08 Updated translations, thanks to all translators.
+ - 2019-01-08 Fixed bug#[14270](https://bugs.otrs.org/show_bug.cgi?id=14270) - Escalation Notification is shown wrong.
+ - 2019-01-08 Fixed bug#[14229](https://bugs.otrs.org/show_bug.cgi?id=14229) - Transition Action fails to transfer line breaks of content in dynamic field textarea.
+ - 2019-01-07 Add total count of links to "complex" link table, thanks to Frennkie (PR#[1893](https://github.com/OTRS/otrs/pull/1893)).
+ - 2019-01-02 Improved performance of the FileStorable cache module by 30%, thanks to Yuri Myasoedov (PR#[1961](https://github.com/OTRS/otrs/pull/1961)).
+ - 2018-12-26 Fixed bug#[13930](https://bugs.otrs.org/show_bug.cgi?id=13930) - NotificationOwnerUpdate and TicketOwnerUpdate will not be triggered when a Owner is set in a new process ticket.
+ - 2018-12-25 Fixed bug#[14322](https://bugs.otrs.org/show_bug.cgi?id=14322) - Old session is not deleted on SwitchToUser.
+ - 2018-12-24 Fixed bug#[14286](https://bugs.otrs.org/show_bug.cgi?id=14286) - Months are missing below the charts in reports.
+ - 2018-12-21 Fixed bug#[14245](https://bugs.otrs.org/show_bug.cgi?id=14245) - Expired PGP Keys are not shown.
+ - 2018-12-20 Fixed bug#[14311](https://bugs.otrs.org/show_bug.cgi?id=14311) - Appointment widget has wrong colspan if no appointment present.
+ - 2018-12-19 Fixed bug#[14157](https://bugs.otrs.org/show_bug.cgi?id=14157) - Edit ACL Screen, Syntax error unrecognised expression '#'.
+ - 2018-12-16 Fixed bug#[14305](https://bugs.otrs.org/show_bug.cgi?id=14305) - Incorrect handling of content-type in PictureUpload.
+ - 2018-12-14 Set NotificationRecipientEmail setting as non-required, thanks to Yuri Myasoedov (PR#1960).
+ - 2018-12-14 Added button which generates shared secret key for two factor authentication (agent interface).
+ - 2018-12-14 Fixed bug#[13444](https://bugs.otrs.org/show_bug.cgi?id=13444) - DynamicField Dropdown values are not verified if submitted via web service.
+ - 2018-12-12 Fixed bug#[14216](https://bugs.otrs.org/show_bug.cgi?id=14216) - Update Script to OTRS 6 is not cleaning OTRSPostMasterKeepState.
+ - 2018-12-12 Fixed bug#[13865](https://bugs.otrs.org/show_bug.cgi?id=13865) - Timezone not respected in Generic Agent, Reports and Autoreply.
+ - 2018-12-12 Fixed bug#[14105](http://bugs.otrs.org/show_bug.cgi?id=14105) - SMIME signed messages cause a lot of database errors on customer ticket zoom, thanks to Renee Bäcker.
+ - 2018-12-11 Fixed bug#[14259](https://bugs.otrs.org/show_bug.cgi?id=14259) - Config Rebuild locking issue on cluster nodes.
+ - 2018-12-10 Fixed bug#[14221](https://bugs.otrs.org/show_bug.cgi?id=14221) - Ticket notification with ArticleSend event leads into deep recursion.
+ - 2018-12-10 Fixed bug#[14262](https://bugs.otrs.org/show_bug.cgi?id=14262) - Untranslated string and wrong charset in package manager notification.
+ - 2018-12-06 Fixed bug#[14282](https://bugs.otrs.org/show_bug.cgi?id=14282) - After upgrading from OTRS 5 to 6 some the values of some renamed package settings are not preserved.
+ - 2018-12-06 Fixed bug#[14165](https://bugs.otrs.org/show_bug.cgi?id=14165) - Article's style of plain text is wrong in AgentTicketZoom.
 
 #6.0.15 2018-12-14
  - 2018-12-06 Updated translations, thanks to all translators.
