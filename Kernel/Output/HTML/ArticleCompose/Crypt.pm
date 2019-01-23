@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -40,8 +40,8 @@ sub Option {
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    # Get config object.
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
     # Check if PGP and SMIME are disabled.
     return if !$ConfigObject->Get('PGP') && !$ConfigObject->Get('SMIME');
@@ -50,8 +50,22 @@ sub Run {
 
     # Recipients with unique public keys won't be displayed in the selection
     my $UniqueEncryptKeyIDsToRemove = $Self->_GetUniqueEncryptKeyIDsToRemove(%Param);
+    my @ExpiredIdentifiers;
+    my @RevokedIdentifiers;
+    my $InvalidMessage = '';
+    my $Class          = '';
     if ( IsArrayRefWithData($UniqueEncryptKeyIDsToRemove) ) {
         for my $UniqueEncryptKeyIDToRemove ( @{$UniqueEncryptKeyIDsToRemove} ) {
+
+            if ( $KeyList{$UniqueEncryptKeyIDToRemove} =~ m/WARNING: EXPIRED KEY/ ) {
+                my ( $Type, $Key, $Identifier ) = split /::/, $UniqueEncryptKeyIDToRemove;
+                push @ExpiredIdentifiers, $Identifier;
+            }
+
+            if ( $KeyList{$UniqueEncryptKeyIDToRemove} =~ m/WARNING: REVOKED KEY/ ) {
+                my ( $Type, $Key, $Identifier ) = split /::/, $UniqueEncryptKeyIDToRemove;
+                push @RevokedIdentifiers, $Identifier;
+            }
             delete $KeyList{$UniqueEncryptKeyIDToRemove};
         }
     }
@@ -68,8 +82,6 @@ sub Run {
         @SearchAddress = Mail::Address->parse($Recipient);
     }
 
-    my $Class = '';
-
     if (
         !IsArrayRefWithData( $Param{CryptKeyID} )
         || ( $Param{ExpandCustomerName} && $Param{ExpandCustomerName} == 3 )
@@ -77,11 +89,6 @@ sub Run {
     {
         $Param{CryptKeyID} = $Self->_PickEncryptKeyIDs(%Param);
     }
-
-    # Get layout object.
-    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
-
-    my $InvalidMessage;
 
     # Check if all recipients have at least a key selected
     if (
@@ -107,6 +114,48 @@ sub Run {
             $Self->{Error}->{EncryptMissingKey} = 1;
             $Class .= ' ServerError';
         }
+    }
+
+    # Check if selected encryption keys are expired.
+    if (
+        IsArrayRefWithData( $Param{CryptKeyID} )
+        && !IsArrayRefWithData( \@ExpiredIdentifiers )
+        && !IsArrayRefWithData( \@RevokedIdentifiers )
+        )
+    {
+
+        ENCRYPTKEYID:
+        for my $EncryptKey ( @{ $Param{CryptKeyID} } ) {
+            my ( $Type, $Key, $Identifier ) = split /::/, $EncryptKey;
+
+            if ( $KeyList{$EncryptKey} =~ m/WARNING: EXPIRED KEY/ ) {
+                push @ExpiredIdentifiers, $Identifier;
+            }
+
+            if ( $KeyList{$EncryptKey} =~ m/WARNING: REVOKED KEY/ ) {
+                push @RevokedIdentifiers, $Identifier;
+            }
+        }
+    }
+
+    if ( IsArrayRefWithData( \@ExpiredIdentifiers ) ) {
+        $InvalidMessage .= $LayoutObject->{LanguageObject}->Translate(
+            "Cannot use expired encryption keys for the addresses: '%s'. ",
+            join ', ', @ExpiredIdentifiers
+        );
+
+        $Self->{Error}->{ExpiredKey} = 1;
+        $Class .= ' ServerError';
+    }
+
+    if ( IsArrayRefWithData( \@RevokedIdentifiers ) ) {
+        $InvalidMessage .= $LayoutObject->{LanguageObject}->Translate(
+            "Cannot use revoked encryption keys for the addresses: '%s'. ",
+            join ', ', @RevokedIdentifiers
+        );
+
+        $Self->{Error}->{ExpiredKey} = 1;
+        $Class .= ' ServerError';
     }
 
     # Add encrypt options.
@@ -225,12 +274,48 @@ sub Data {
                 Search => $SearchAddress->address(),
             );
             for my $DataRef (@PublicKeys) {
+                my $Expired = '';
                 my $EndDate = '';
                 if ( $DataRef->{EndDate} ) {
                     $EndDate = "[$DataRef->{EndDate}]";
+
+                    # EndDate is in this fomrmatat: May 12 23:50:40 2018 GMT
+                    # It is transformed in supported format for DateTimeObject: 2018-05-12T23:50:40GMT
+                    $DataRef->{EndDate} =~ /(\w+)\s(\d\d)\s(\d\d:\d\d:\d\d)\s(\d\d\d\d)\s(\w+)/;
+
+                    my %Month = (
+                        Jan => '01',
+                        Feb => '02',
+                        Mar => '03',
+                        Apr => '04',
+                        May => '05',
+                        Jun => '06',
+                        Jul => '07',
+                        Aug => '08',
+                        Sep => '09',
+                        Oct => '10',
+                        Nov => '11',
+                        Dec => '12',
+                    );
+
+                    my $EndDateTimeObject = $Kernel::OM->Create(
+                        'Kernel::System::DateTime',
+                        ObjectParams => {
+                            String => "$4-$Month{$1}-$2T$3$5",
+                        },
+                    );
+                    my $CurrentTimeObject = $Kernel::OM->Create(
+                        'Kernel::System::DateTime',
+                    );
+
+                    # Check if key is expired.
+                    if ( $EndDateTimeObject->Compare( DateTimeObject => $CurrentTimeObject ) == -1 ) {
+                        $Expired = ' [WARNING: EXPIRED KEY]';
+                    }
                 }
+
                 $KeyList{"SMIME::$DataRef->{Filename}::$DataRef->{Email}"}
-                    = "SMIME: $DataRef->{Filename} $EndDate $DataRef->{Email}";
+                    = "SMIME:$Expired $DataRef->{Filename} $EndDate $DataRef->{Email}";
             }
         }
     }
