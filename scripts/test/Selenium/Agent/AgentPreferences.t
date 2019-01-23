@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -107,13 +107,42 @@ $Selenium->RunTest(
 
         # check for some settings
         for my $ID (
-            qw(CurPw NewPw NewPw1 UserLanguage OutOfOfficeOn OutOfOfficeOff UserGoogleAuthenticatorSecretKey)
+            qw(CurPw NewPw NewPw1 UserTimeZone_Search UserLanguage_Search OutOfOfficeOn OutOfOfficeOff UserGoogleAuthenticatorSecretKey GenerateUserGoogleAuthenticatorSecretKey)
             )
         {
+
+            # Scroll to element view if necessary.
+            $Selenium->execute_script("\$('#$ID')[0].scrollIntoView(true);");
+
             my $Element = $Selenium->find_element( "#$ID", 'css' );
-            $Element->is_enabled();
-            $Element->is_displayed();
+
+            $Self->True(
+                $Element->is_enabled(),
+                "$ID is enabled."
+            );
+
+            $Self->True(
+                $Element->is_displayed(),
+                "$ID is displayed."
+            );
         }
+
+        # Click on "Generate" button.
+        $Selenium->find_element( "#GenerateUserGoogleAuthenticatorSecretKey", 'css' )->click();
+
+        # Wait until generated key is there.
+        $Selenium->WaitFor(
+            JavaScript =>
+                "return \$('#UserGoogleAuthenticatorSecretKey').val().length"
+        );
+
+        my $SecretKey = $Selenium->execute_script(
+            "return \$('#UserGoogleAuthenticatorSecretKey').val();"
+        );
+        $Self->True(
+            $SecretKey =~ m{[A-Z2-7]{16}} ? 1 : 0,
+            'Secret key is valid.'
+        );
 
         # check some of AgentPreferences default values
         $Self->Is(
@@ -459,6 +488,8 @@ JAVASCRIPT
             "ivory",
             "#UserSkin updated value",
         );
+
+        # Enable two factor authenticator.
 
         if ( $Kernel::OM->Get('Kernel::System::OTRSBusiness')->OTRSBusinessIsInstalled() ) {
 
