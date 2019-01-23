@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2018 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -204,7 +204,7 @@ $Selenium->RunTest(
         );
 
         # Allow apache to pick up the changed SysConfig via Apache::Reload.
-        sleep 1;
+        sleep 2;
 
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminPackageManager");
 
@@ -225,7 +225,7 @@ $Selenium->RunTest(
             BreadcrumbText => 'Install Package:',
         );
 
-        $Selenium->find_element("//button[\@value='Continue'][\@type='submit']")->click();
+        $Selenium->find_element("//button[\@value='Continue'][\@type='submit']")->VerifiedClick();
         $Selenium->WaitFor(
             Time => 120,
             JavaScript =>
@@ -239,8 +239,6 @@ $Selenium->RunTest(
             $PackageCheck,
             'Test package is installed'
         );
-
-        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminPackageManager");
 
         # Load page with metadata of installed package.
         $Selenium->find_element(
@@ -269,12 +267,7 @@ $Selenium->RunTest(
             BreadcrumbText => 'Uninstall Package:',
         );
 
-        $Selenium->find_element("//button[\@value='Uninstall package'][\@type='submit']")->click();
-        $Selenium->WaitFor(
-            Time => 120,
-            JavaScript =>
-                'return typeof($) == "function" && !$("button[value=\'Uninstall package\']").length;'
-        );
+        $Selenium->find_element("//button[\@value='Uninstall package'][\@type='submit']")->VerifiedClick();
 
         # Check if test package is uninstalled.
         $Self->True(
@@ -307,6 +300,31 @@ $Selenium->RunTest(
             'Info for incompatible package is shown'
         );
 
+        # Set default repository list.
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'Package::RepositoryList',
+            Value => {
+                'ftp://ftp.example.com/pub/otrs/misc/packages/' => '[Example] ftp://ftp.example.com/'
+            },
+        );
+
+        # Allow web server to pick up the changed SysConfig.
+        sleep 2;
+
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AdminPackageManager");
+        $Selenium->InputFieldValueSet(
+            Element => '#Soruce',
+            Value   => 'ftp://ftp.example.com/pub/otrs/misc/packages/',
+        );
+        $Selenium->find_element("//button[\@name=\'GetRepositoryList']")->VerifiedClick();
+
+        # Check that there is a notification about no packages.
+        my $Notification = 'No packages found in selected repository. Please check log for more info!';
+        $Self->True(
+            $Selenium->execute_script("return \$('.MessageBox.Notice p:contains($Notification)').length"),
+            "$Notification - notification is found."
+        );
     }
 );
 
