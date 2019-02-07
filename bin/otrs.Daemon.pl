@@ -132,7 +132,11 @@ elsif ( $ARGV[1] ) {
 
 # check for action
 if ( lc $ARGV[0] eq 'start' ) {
-    exit 1 if !Start();
+    exit 1 if !Start(1);
+    exit 0;
+}
+elsif ( lc $ARGV[0] eq 'foreground' ) {
+    exit 1 if !Start(0);
     exit 0;
 }
 elsif ( lc $ARGV[0] eq 'stop' ) {
@@ -177,16 +181,22 @@ sub PrintUsage {
 
 sub Start {
 
-    # Create a fork of the current process.
-    #   Parent gets the PID of the child.
-    #   Child gets PID = 0.
-    my $DaemonPID = fork;
+    my ($detach) = @_;
 
-    # Check if fork was not possible.
-    die "Can not create daemon process: $!" if !defined $DaemonPID || $DaemonPID < 0;
+    if ($detach) {
 
-    # Close parent gracefully.
-    exit 0 if $DaemonPID;
+        # Create a fork of the current process.
+        #   Parent gets the PID of the child.
+        #   Child gets PID = 0.
+        my $DaemonPID = fork;
+
+        # Check if fork was not possible.
+        die "Can not create daemon process: $!" if !defined $DaemonPID || $DaemonPID < 0;
+
+        # Close parent gracefully.
+        exit 0 if $DaemonPID;
+
+    }
 
     # Lock PID.
     my $LockSuccess = _PIDLock();
