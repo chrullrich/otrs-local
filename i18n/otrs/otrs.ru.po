@@ -30,13 +30,16 @@
 # Rasim Kalimullin <neutrino.vm@gmail.com>, 2018
 # Martin Gruner <martin.gruner@otrs.com>, 2018
 # Sergey Nikitin <nikitin.sergey.v@gmail.com>, 2018
+# toshkov, 2019
+# Yuri Myasoedov <omerta13@yandex.ru>, 2019
+# Александр Федоров <somerandompilotguy45@gmail.com>, 2019
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2019-01-08 15:00+0000\n"
+"POT-Creation-Date: 2019-02-21 13:30+0000\n"
 "PO-Revision-Date: 2018-09-20 13:03+0000\n"
-"Last-Translator: Sergey Nikitin <nikitin.sergey.v@gmail.com>, 2018\n"
+"Last-Translator: Александр Федоров <somerandompilotguy45@gmail.com>, 2019\n"
 "Language-Team: Russian (https://www.transifex.com/otrs/teams/23435/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -62,7 +65,7 @@ msgstr "Синхронизировать ACL"
 
 #. Template: AdminACL
 msgid "Export ACLs"
-msgstr "Экспорт  ACL"
+msgstr "Экспортировать  ACL"
 
 #. Template: AdminACL
 msgid "Filter for ACLs"
@@ -150,7 +153,7 @@ msgstr "Действительность"
 
 #. Template: AdminACL
 msgid "Export"
-msgstr "Экспорт"
+msgstr "Экспортировать"
 
 #. Template: AdminACL
 msgid "Copy"
@@ -166,7 +169,7 @@ msgstr "Совпадений не найдено."
 
 #. Template: AdminACLEdit
 msgid "Edit ACL %s"
-msgstr "Редактировать ACL %s"
+msgstr "Изменить ACL %s"
 
 #. Template: AdminACLEdit
 msgid "Edit ACL"
@@ -228,7 +231,7 @@ msgstr "Изменить информацию о ACL"
 
 #. Template: AdminACLEdit
 msgid "Name"
-msgstr "Name - Название"
+msgstr "Название"
 
 #. Template: AdminACLEdit
 msgid "Stop after match"
@@ -280,7 +283,7 @@ msgstr "Добавить календарь"
 
 #. Template: AdminAppointmentCalendarManage
 msgid "Edit Calendar"
-msgstr "Редактировать календарь"
+msgstr "Изменить календарь"
 
 #. Template: AdminAppointmentCalendarManage
 msgid "Calendar Overview"
@@ -296,7 +299,7 @@ msgstr "Импортировать мероприятия"
 
 #. Template: AdminAppointmentCalendarManage
 msgid "Calendar Import"
-msgstr "Импорт календаря"
+msgstr "Импортировать календарь"
 
 #. Template: AdminAppointmentCalendarManage
 msgid ""
@@ -322,11 +325,11 @@ msgstr "Импортировать календарь"
 
 #. Template: AdminAppointmentCalendarManage
 msgid "Filter for Calendars"
-msgstr "Фильтр Календарей"
+msgstr "Фильтр календарей"
 
 #. Template: AdminAppointmentCalendarManage
 msgid "Filter for calendars"
-msgstr "Фильтр для Календарей"
+msgstr "Фильтр для календарей"
 
 #. Template: AdminAppointmentCalendarManage
 msgid ""
@@ -357,7 +360,7 @@ msgstr ""
 
 #. Template: AdminAppointmentCalendarManage
 msgid "Read/write: users can manage the calendar itself."
-msgstr "Запись/чтение: пользователи имеют полное управление календарем."
+msgstr "Чтение/запись: пользователи могут полностью управлять календарём."
 
 #. Template: AdminAppointmentCalendarManage
 msgid "Group"
@@ -533,7 +536,7 @@ msgstr "Добавить уведомление"
 
 #. Template: AdminAppointmentNotificationEvent
 msgid "Edit Notification"
-msgstr "Редактировать уведомления"
+msgstr "Изменить уведомление"
 
 #. Template: AdminAppointmentNotificationEvent
 msgid "Export Notifications"
@@ -541,7 +544,7 @@ msgstr "Экспорт уведомлений"
 
 #. Template: AdminAppointmentNotificationEvent
 msgid "Filter for Notifications"
-msgstr "Фильтр для Уведомлений"
+msgstr "Фильтр для уведомлений"
 
 #. Template: AdminAppointmentNotificationEvent
 msgid "Filter for notifications"
@@ -567,7 +570,7 @@ msgstr "Загрузить конфигурацию уведомлений"
 
 #. Template: AdminAppointmentNotificationEvent
 msgid "Import Notification configuration"
-msgstr "Импортировать настройки Уведомлений"
+msgstr "Импортировать настройки уведомлений"
 
 #. Template: AdminAppointmentNotificationEvent
 msgid "List"
@@ -625,7 +628,7 @@ msgstr "Фильтр мероприятий."
 
 #. Template: AdminAppointmentNotificationEvent
 msgid "Type"
-msgstr "Type - Тип"
+msgstr "Тип"
 
 #. Template: AdminAppointmentNotificationEvent
 msgid "Title"
@@ -665,7 +668,7 @@ msgstr "Отправить всем членам роли"
 
 #. Template: AdminAppointmentNotificationEvent
 msgid "Send on out of office"
-msgstr "Отправить для отсутствующих/out of office"
+msgstr "Отправить для отсутствующих на месте"
 
 #. Template: AdminAppointmentNotificationEvent
 msgid "Also send if the user is currently out of office."
@@ -784,7 +787,7 @@ msgstr "Справка по тэгам"
 
 #. Template: AdminAppointmentNotificationEvent
 msgid "Notifications are sent to an agent."
-msgstr "Уведомления направляются к агенту."
+msgstr "Уведомления отправляются агенту."
 
 #. Template: AdminAppointmentNotificationEvent
 msgid "You can use the following tags"
@@ -991,7 +994,7 @@ msgstr "Пример ответа"
 
 #. Template: AdminCloudServiceSupportDataCollector
 msgid "Cloud Service Management"
-msgstr "Управление Облаком"
+msgstr "Управление облачным сервисом"
 
 #. Template: AdminCloudServiceSupportDataCollector
 msgid "Support Data Collector"
@@ -1110,7 +1113,7 @@ msgstr ""
 
 #. Template: AdminCommunicationLog
 msgid "Filter for Communications"
-msgstr ""
+msgstr "Фильтр по сеансам связи"
 
 #. Template: AdminCommunicationLog
 msgid "Filter for communications"
@@ -1228,7 +1231,7 @@ msgstr "Назад в обзорный список"
 
 #. Template: AdminCommunicationLogAccounts
 msgid "Filter for Accounts"
-msgstr ""
+msgstr "Фильтр по учетным записям"
 
 #. Template: AdminCommunicationLogAccounts
 msgid "Filter for accounts"
@@ -2148,7 +2151,7 @@ msgstr "Отправить"
 
 #. Template: AdminGenericAgent
 msgid "Generic Agent Job Management"
-msgstr ""
+msgstr "Управление Заданиями Общего Агента"
 
 #. Template: AdminGenericAgent
 msgid "Edit Job"
@@ -6163,7 +6166,7 @@ msgstr "Фильтр для Шаблонов"
 
 #. Template: AdminQueueTemplates
 msgid "Filter for templates"
-msgstr ""
+msgstr "Фильтр для шаблонов"
 
 #. Template: AdminQueueTemplates
 msgid "Templates"
@@ -6598,7 +6601,7 @@ msgstr "Фильтр для Агентов"
 
 #. Template: AdminRoleUser
 msgid "Filter for agents"
-msgstr ""
+msgstr "Фильтр для агентов"
 
 #. Template: AdminRoleUser
 msgid "Agents"
@@ -10984,10 +10987,6 @@ msgid "Deploy now"
 msgstr "Применить сейчас"
 
 #. JS Template: DialogDeployment
-msgid "Close"
-msgstr "Закрыть"
-
-#. JS Template: DialogDeployment
 msgid "Try again"
 msgstr "Попробуйте еще раз"
 
@@ -11032,7 +11031,7 @@ msgstr ""
 
 #. Perl Module: Kernel/Config/Defaults.pm
 msgid "Database Backend"
-msgstr ""
+msgstr "Бэкенд Базы данных"
 
 #. Perl Module: Kernel/Config/Defaults.pm
 msgid "CustomerIDs"
@@ -15284,20 +15283,10 @@ msgstr ""
 #. Perl Module: Kernel/System/Package.pm
 msgid ""
 "<p>The installation of packages which are not verified by the OTRS Group is "
-"not possible by default.</p>"
+"not possible by default. You can activate the installation of not verified "
+"packages via the \"AllowNotVerifiedPackages\" system configuration "
+"setting.</p>"
 msgstr ""
-"<p>Установка пакетов, которые не верифицированы OTRS Group, невозможна по "
-"умолчанию"
-
-#. Perl Module: Kernel/System/Package.pm
-msgid ""
-"<p>You can activate the installation of not verified packages in the <a "
-"href=\"%sAction=AdminSystemConfiguration;Subaction=View;Setting=Package%3A%3AAllowNotVerifiedPackages\""
-" target=\"_blank\">System Configuration</a>.</p>"
-msgstr ""
-"<p>Вы можете активировать установку не проверенных пакетов в <a "
-"href=\"%sAction=AdminSystemConfiguration;Subaction=View;Setting=Package%3A%3AAllowNotVerifiedPackages\""
-" target=\"_blank\">Системной Конфигурации</a>.</p>"
 
 #. Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
 msgid "The process \"%s\" and all of its data has been imported successfully."
@@ -15977,7 +15966,7 @@ msgstr "Записи базы данных"
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
 msgid "Tickets"
-msgstr "Tickets/Заявки"
+msgstr "Заявки"
 
 #. Perl Module:
 #. Kernel/System/SupportDataCollector/Plugin/OTRS/DatabaseRecords.pm
@@ -16554,7 +16543,7 @@ msgstr "Сбросить время разблокировки."
 
 #. Perl Module: Kernel/System/Ticket/Article/Backend/Chat.pm
 msgid "Chat Participant"
-msgstr ""
+msgstr "Участник чата"
 
 #. Perl Module: Kernel/System/Ticket/Article/Backend/Chat.pm
 msgid "Chat Message Text"
@@ -17282,7 +17271,7 @@ msgstr "Вы действительно желаете удалить это У�
 
 #. JS File: Core.Agent.Admin.PGP
 msgid "Do you really want to delete this key?"
-msgstr ""
+msgstr "Вы действительно хотите удалить этот ключ?"
 
 #. JS File: Core.Agent.Admin.PackageManager
 msgid ""
@@ -17787,7 +17776,7 @@ msgstr ""
 
 #. JS File: Core.Agent.SharedSecretGenerator
 msgid "Generate"
-msgstr ""
+msgstr "Сгенерировать"
 
 #. JS File: Core.Agent.SortedTree
 msgid "This element has children elements and can currently not be removed."
@@ -18607,14 +18596,6 @@ msgid "All new tickets, these tickets have not been worked on yet"
 msgstr "Все новые заявки; с этими заявками еще никто не работал"
 
 #. SysConfig
-msgid ""
-"All open tickets, these tickets have already been worked on, but need a "
-"response"
-msgstr ""
-"Все открытые заявки; с этими заявками уже работали, но они нуждаются в "
-"ответе"
-
-#. SysConfig
 msgid "All open tickets, these tickets have already been worked on."
 msgstr "Все открытые заявки, это заявки работа с которыми начата."
 
@@ -19323,6 +19304,10 @@ msgid "Christmas Eve"
 msgstr "Сочельник"
 
 #. SysConfig
+msgid "Close"
+msgstr "Закрыть"
+
+#. SysConfig
 msgid "Close this ticket"
 msgstr "Закрыть эту заявку"
 
@@ -19460,11 +19445,11 @@ msgstr "Взаимодействие"
 
 #. SysConfig
 msgid "Communication & Notifications"
-msgstr ""
+msgstr "Каналы связи и Уведомления"
 
 #. SysConfig
 msgid "Communication Log GUI"
-msgstr ""
+msgstr "Графический интерфейс Журнала сеансов связи"
 
 #. SysConfig
 msgid "Communication log limit per page for Communication Log Overview."
@@ -19534,13 +19519,8 @@ msgid ""
 "Configures a default TicketDynamicField setting. \"Name\" defines the "
 "dynamic field which should be used, \"Value\" is the data that will be set, "
 "and \"Event\" defines the trigger event. Please check the developer manual "
-"(http://otrs.github.io/doc/), chapter \"Ticket Event Module\"."
+"(https://doc.otrs.com/doc/), chapter \"Ticket Event Module\"."
 msgstr ""
-"Задает настройки TicketDynamicField по умолчанию. \"Name/Имя\" задает поле, "
-"которое будет использоваться, \"Value/Значение\" - данные которые будут "
-"заданы и \"Event/Событие\" определяет событие триггера. Подробнее, смотрите "
-"в руководстве разработчика (http://otrs.github.io/doc/), раздел \"Ticket "
-"Event Module\"."
 
 #. SysConfig
 msgid "Controls how to display the ticket history entries as readable values."
@@ -21021,12 +21001,8 @@ msgstr ""
 msgid ""
 "Defines the default front-end (HTML) theme to be used by the agents and "
 "customers. If you like, you can add your own theme. Please refer the "
-"administrator manual located at http://otrs.github.io/doc/."
+"administrator manual located at https://doc.otrs.com/doc/."
 msgstr ""
-"Задает имя темы (HTML theme - имя папки для альтернативных модулей), которая"
-" будет использоваться в интерфейсах агентов и клиентов. По желанию, вы "
-"можете добавить свою собственную тему. Подробности в руководстве "
-"администратора http://otrs.github.io/doc/."
 
 #. SysConfig
 msgid ""
@@ -23192,7 +23168,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Disable cloud services"
-msgstr ""
+msgstr "Отключить облачные сервисы"
 
 #. SysConfig
 msgid ""
@@ -23516,7 +23492,7 @@ msgstr "Исходящая эл. почта"
 
 #. SysConfig
 msgid "Email Resend"
-msgstr ""
+msgstr "Повторная отправка Письма"
 
 #. SysConfig
 msgid "Email communication channel."
@@ -23828,7 +23804,7 @@ msgstr ""
 
 #. SysConfig
 msgid "External Link"
-msgstr ""
+msgstr "Внешняя Ссылка"
 
 #. SysConfig
 msgid "Fetch emails via fetchmail (using SSL)."
@@ -25607,7 +25583,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Number of tickets to be displayed in each page."
-msgstr ""
+msgstr "Количество заявок, отображаемых на каждой странице."
 
 #. SysConfig
 msgid "OTRS Group Services"
@@ -25634,10 +25610,6 @@ msgid ""
 "such Appointments. Instead, system creates all Appointments in the past, "
 "plus Appointments for the next N months (120 months/10 years by default)."
 msgstr ""
-
-#. SysConfig
-msgid "Open Tickets / Need to be answered"
-msgstr "Открытые Заявки / Ожидают ответа"
 
 #. SysConfig
 msgid "Open an external link!"
@@ -26500,10 +26472,9 @@ msgstr "Перестраивает индексы заявок для AgentTicke
 #. SysConfig
 msgid ""
 "Recognize if a ticket is a follow-up to an existing ticket using an external"
-" ticket number."
+" ticket number. Note: the first capturing group from the 'NumberRegExp' "
+"expression will be used as the ticket number value."
 msgstr ""
-"Распознает, что ответ/дополнение к существующей заявке использует внешний "
-"номер заявки."
 
 #. SysConfig
 msgid "Refresh interval"
@@ -29041,11 +29012,11 @@ msgstr "Состояния"
 
 #. SysConfig
 msgid "Statistic Reports overview."
-msgstr ""
+msgstr "Обзор статистических отчетов."
 
 #. SysConfig
 msgid "Statistics overview."
-msgstr ""
+msgstr "Обзор статистики."
 
 #. SysConfig
 msgid "Status view"
@@ -29101,11 +29072,11 @@ msgstr "Обслуживание системы"
 
 #. SysConfig
 msgid "Templates ↔ Attachments"
-msgstr ""
+msgstr "Шаблоны ↔ Вложения"
 
 #. SysConfig
 msgid "Templates ↔ Queues"
-msgstr ""
+msgstr "Шаблоны ↔ Очереди"
 
 #. SysConfig
 msgid "Textarea"
@@ -29284,6 +29255,8 @@ msgid ""
 "The secret you supplied is invalid. The secret must only contain letters "
 "(A-Z, uppercase) and numbers (2-7) and must consist of 16 characters."
 msgstr ""
+"Введенный вами секрет не подходит. Секрет может состоять только из: Букв "
+"(A-Z, заглавных) и цифр (2-7) и может состоять только из 16 символов."
 
 #. SysConfig
 msgid ""
@@ -29315,11 +29288,11 @@ msgstr ""
 
 #. SysConfig
 msgid "This is a Description for Comment on Framework."
-msgstr ""
+msgstr "Это Описание Комментария к Фреймворку"
 
 #. SysConfig
 msgid "This is a Description for DynamicField on Framework."
-msgstr ""
+msgstr "Это Описание Динамических Полей Фреймворка"
 
 #. SysConfig
 msgid "This is the default orange - black skin for the customer interface."
@@ -29502,7 +29475,7 @@ msgstr "Наблюдающий за заявкой"
 
 #. SysConfig
 msgid "Ticket Zoom"
-msgstr ""
+msgstr "Увеличить Заявку"
 
 #. SysConfig
 msgid "Ticket Zoom."

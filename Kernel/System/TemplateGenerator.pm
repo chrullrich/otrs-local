@@ -1189,10 +1189,17 @@ sub _Replace {
         %Ticket = %{ $Param{TicketData} };
     }
 
+    my $CustomerUserObject = $Kernel::OM->Get('Kernel::System::CustomerUser');
+
     # Determine recipient's timezone if needed.
     my $RecipientTimeZone;
     if ( $Param{AddTimezoneInfo} ) {
         $RecipientTimeZone = $Kernel::OM->Create('Kernel::System::DateTime')->OTRSTimeZoneGet();
+
+        my %CustomerUser;
+        if ( IsHashRefWithData( \%Ticket ) && $Ticket{CustomerUserID} ) {
+            %CustomerUser = $CustomerUserObject->CustomerUserDataGet( User => $Ticket{CustomerUserID} );
+        }
 
         my %UserPreferences;
 
@@ -1207,12 +1214,17 @@ sub _Replace {
             && $Param{Recipient}->{UserID}
             )
         {
-            %UserPreferences = $Kernel::OM->Get('Kernel::System::CustomerUser')->GetPreferences(
+            %UserPreferences = $CustomerUserObject->GetPreferences(
                 UserID => $Param{Recipient}->{UserID},
             );
         }
-        elsif ( $Param{AddTimezoneInfo}->{AutoResponse} && $Ticket{CustomerUserID} ) {
-            %UserPreferences = $Kernel::OM->Get('Kernel::System::CustomerUser')->GetPreferences(
+        elsif (
+            $Param{AddTimezoneInfo}->{AutoResponse}
+            && $Ticket{CustomerUserID}
+            && IsHashRefWithData( \%CustomerUser )
+            )
+        {
+            %UserPreferences = $CustomerUserObject->GetPreferences(
                 UserID => $Ticket{CustomerUserID},
             );
         }
@@ -1766,7 +1778,7 @@ sub _Replace {
 
                 if ( $Ticket{CustomerUserID} ) {
 
-                    $From = $Kernel::OM->Get('Kernel::System::CustomerUser')->CustomerName(
+                    $From = $CustomerUserObject->CustomerName(
                         UserLogin => $Ticket{CustomerUserID}
                     );
                 }
@@ -1812,7 +1824,7 @@ sub _Replace {
 
         my $CustomerUserID = $Param{Data}->{CustomerUserID} || $Ticket{CustomerUserID};
 
-        my %CustomerUser = $Kernel::OM->Get('Kernel::System::CustomerUser')->CustomerUserDataGet(
+        my %CustomerUser = $CustomerUserObject->CustomerUserDataGet(
             User => $CustomerUserID,
         );
 
@@ -1876,8 +1888,9 @@ sub _RemoveUnSupportedTag {
         $Param{Text} =~ s/(\n|\r)//g;
     }
 
-    # cleanup all not supported tags
-    my $NotSupportedTag = $Start . "(?:" . join( "|", @{ $Param{ListOfUnSupportedTag} } ) . ")" . $End;
+    # Cleanup all not supported tags with and without number, e.g. OTRS_CUSTOMER_BODY and OTRS_CUSTOMER_BODY[n].
+    # See https://bugs.otrs.org/show_bug.cgi?id=14369 and https://bugs.otrs.org/show_bug.cgi?id=10825.
+    my $NotSupportedTag = $Start . "(?:" . join( "|", @{ $Param{ListOfUnSupportedTag} } ) . ")(\\[.*?\\])?" . $End;
     $Param{Text} =~ s/$NotSupportedTag/-/gi;
 
     return $Param{Text};

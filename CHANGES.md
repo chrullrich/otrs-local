@@ -1,4 +1,32 @@
-#6.0.17 ????-??-??
+#6.0.17 2019-03-08
+ - 2019-02-21 Fixed bug#[14396](https://bugs.otrs.org/show_bug.cgi?id=14396) - Names are not consistent (mixed singular and plural forms).
+ - 2019-02-21 Fixed bug#[14287](https://bugs.otrs.org/show_bug.cgi?id=14287) - Show context setting dialog in ticket overview screens does not support columns with brackets.
+ - 2019-02-21 Fixed bug#[11932](https://bugs.otrs.org/show_bug.cgi?id=11932) - OTRS does not handle more than 10 S/MIME certificates per user.
+ - 2019-02-21 Fixed bug#[14417](https://bugs.otrs.org/show_bug.cgi?id=14417) - Use of uninitialized value in concatenation.
+ - 2019-02-19 Improved console commands Admin::Config::FixInvalid (load setting values from YAML file) and Admin::Config::ListInvalid (export invalid settings to the YAML file).
+ - 2019-02-16 Fixed bug#[14411](https://bugs.otrs.org/show_bug.cgi?id=14411) - ACL description Bug causes error.
+ - 2019-02-14 Improved SysConfig performance.
+ - 2019-02-14 Improved performance of the following console commands:
+      Admin::Package::Install
+      Admin::Package::Reinstall
+      Admin::Package::ReinstallAll
+      Admin::Package::Uninstall
+      Admin::Package::Upgrade
+      Admin::Package::UpgradeAll
+      Admin::Package::UpgradeAll
+ - 2019-02-13 Updated translations, thanks to all translators.
+ - 2019-02-11 Fixed bug#[14391](https://bugs.otrs.org/show_bug.cgi?id=14391) - Log spam when autoreply is sent to unknown customer.
+ - 2019-02-11 Fixed bug#[14282](https://bugs.otrs.org/show_bug.cgi?id=14282) - After upgrading from OTRS 5 to 6 some the values of some renamed package settings are not preserved.
+ - 2019-02-11 Fixed bug#[14309](https://bugs.otrs.org/show_bug.cgi?id=14309) - ArticleSearchIndexRebuildWorker is not working correctly.
+ - 2019-02-08 Fixed bug#[14346](https://bugs.otrs.org/show_bug.cgi?id=14346) - A blank space in the first column of text is either duplicated or removed.
+ - 2019-02-04 Fixed bug#[14379](https://bugs.otrs.org/show_bug.cgi?id=14379) - Communication Log - Time Range.
+ - 2019-02-01 Fixed bug#[14373](https://bugs.otrs.org/show_bug.cgi?id=14373) - Ticket lock is set even there is no owner set in activity dialog.
+ - 2019-01-31 Follow-up fix for bug#[10825](https://bugs.otrs.org/show_bug.cgi?id=10825) - <OTRS_CUSTOMER_Body>  in  Reply-Template.
+ - 2019-01-30 Fixed bug#[14329](https://bugs.otrs.org/show_bug.cgi?id=14329) - AppointmentNotification partial title filter.
+ - 2019-01-28 Fixed bug#[14370](https://bugs.otrs.org/show_bug.cgi?id=14370) - Article Overview not readable (white text on white ground) with High Contrast Skin.
+ - 2019-01-23 Fixed bug#[14363](https://bugs.otrs.org/show_bug.cgi?id=14363) - The regex in ExternalTicketnumberRecognitaion does not match.
+ - 2019-01-18 Fixed bug#[14145](https://bugs.otrs.org/show_bug.cgi?id=14145) - s/mime shows first line of encoded message and cert information in <OTRS_CUSTOMER_EMAIL>.
+ - 2019-01-17 Further improved handling of JSData in templates.
 
 #6.0.16 2019-01-18
  - 2019-01-08 Updated translations, thanks to all translators.

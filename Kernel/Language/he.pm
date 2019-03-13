@@ -26,7 +26,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.241509433962264;
+    $Self->{Completeness}        = 0.243864767461816;
 
     # csv separator
     $Self->{Separator}         = '';
@@ -45,10 +45,11 @@ sub Data {
         'Deploy ACLs' => 'הפעל ACLs',
         'Export ACLs' => 'ייצא ACLs',
         'Filter for ACLs' => 'מסנן עבור ACLs',
-        'Just start typing to filter...' => '',
-        'Configuration Import' => '',
+        'Just start typing to filter...' => 'בשביל סינון, התחיל לכתוב...',
+        'Configuration Import' => 'הגדרות ייבוא',
         'Here you can upload a configuration file to import ACLs to your system. The file needs to be in .yml format as exported by the ACL editor module.' =>
-            '',
+            'כאן אפשר להעלות את קובץ ההגדות מ- ACLs למערכת.
+הקבצים צריכים להיות בפורמט yml. אשר ייצאו דרך מודול  ACL editor.',
         'This field is required.' => 'זהו שדה נדרש.',
         'Overwrite existing ACLs?' => 'לדרוס ACL קיימים?',
         'Upload ACL configuration' => 'העלה הגדרות ACL',
@@ -61,7 +62,7 @@ sub Data {
         'ACLs' => 'ACLs',
         'Please note: This table represents the execution order of the ACLs. If you need to change the order in which ACLs are executed, please change the names of the affected ACLs.' =>
             '',
-        'ACL name' => '',
+        'ACL name' => 'שם ACL',
         'Comment' => 'הערה',
         'Validity' => 'תקפות',
         'Export' => 'ייצא',
@@ -71,7 +72,7 @@ sub Data {
 
         # Template: AdminACLEdit
         'Edit ACL %s' => 'ערוך ACL %s',
-        'Edit ACL' => '',
+        'Edit ACL' => 'ערוך ACL %s',
         'Go to overview' => 'עבור למבט-על',
         'Delete ACL' => 'מחק ACL',
         'Delete Invalid ACL' => 'מחק ACL לא חוקי',
@@ -88,7 +89,7 @@ sub Data {
         'Name' => 'שם',
         'Stop after match' => 'עצור לאחר ההתאמה',
         'Edit ACL Structure' => '',
-        'Save ACL' => '',
+        'Save ACL' => 'שמור ACL',
         'Save' => 'שמור',
         'or' => 'או',
         'Save and finish' => 'שמור וסיים',
@@ -100,19 +101,19 @@ sub Data {
             '',
 
         # Template: AdminAppointmentCalendarManage
-        'Calendar Management' => '',
-        'Add Calendar' => '',
-        'Edit Calendar' => '',
-        'Calendar Overview' => '',
-        'Add new Calendar' => '',
-        'Import Appointments' => '',
-        'Calendar Import' => '',
+        'Calendar Management' => 'ניהול יומן',
+        'Add Calendar' => 'הוסף יומן',
+        'Edit Calendar' => 'ערוך יומן',
+        'Calendar Overview' => 'דרוס יומן',
+        'Add new Calendar' => 'הוסף יומן חדש',
+        'Import Appointments' => 'ייבא פגישה',
+        'Calendar Import' => 'ייבוא יומן',
         'Here you can upload a configuration file to import a calendar to your system. The file needs to be in .yml format as exported by calendar management module.' =>
             '',
         'Overwrite existing entities' => '',
         'Upload calendar configuration' => '',
-        'Import Calendar' => '',
-        'Filter for Calendars' => '',
+        'Import Calendar' => 'ייבא יומן',
+        'Filter for Calendars' => 'סינון עבור יומנים',
         'Filter for calendars' => '',
         'Depending on the group field, the system will allow users the access to the calendar according to their permission level.' =>
             '',
@@ -3320,7 +3321,6 @@ sub Data {
         'Deploying, please wait...' => '',
         'Preparing to deploy, please wait...' => '',
         'Deploy now' => '',
-        'Close' => 'סגור',
         'Try again' => '',
 
         # JS Template: DialogReset
@@ -4807,9 +4807,7 @@ sub Data {
         'Can\'t read file!' => '',
         '<p>If you continue to install this package, the following issues may occur:</p><ul><li>Security problems</li><li>Stability problems</li><li>Performance problems</li></ul><p>Please note that issues that are caused by working with this package are not covered by OTRS service contracts.</p>' =>
             '',
-        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default.</p>' =>
-            '',
-        '<p>You can activate the installation of not verified packages in the <a href="%sAction=AdminSystemConfiguration;Subaction=View;Setting=Package%3A%3AAllowNotVerifiedPackages" target="_blank">System Configuration</a>.</p>' =>
+        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default. You can activate the installation of not verified packages via the "AllowNotVerifiedPackages" system configuration setting.</p>' =>
             '',
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
@@ -5942,8 +5940,6 @@ Thanks for your help!
         'All customer users of a CustomerID' => 'Alle Kundenbenutzer einer Kundennummer',
         'All escalated tickets' => 'כל הפניות שעברו אסקלציה',
         'All new tickets, these tickets have not been worked on yet' => 'כל הפניות החדשות, כאלו שטרם עבדו עליהן',
-        'All open tickets, these tickets have already been worked on, but need a response' =>
-            'כל הפניות הפתוחות, פניות שכבר עבדו עליהן, אך עדיין ממתינות למענה',
         'All open tickets, these tickets have already been worked on.' =>
             '',
         'All tickets with a reminder set where the reminder date has been reached' =>
@@ -6128,6 +6124,7 @@ Thanks for your help!
             '',
         'Choose which notifications you\'d like to receive.' => '',
         'Christmas Eve' => 'ערב חג המולד',
+        'Close' => 'סגור',
         'Close this ticket' => 'סגור פניה זו',
         'Closed tickets (customer user)' => '',
         'Closed tickets (customer)' => '',
@@ -6176,7 +6173,7 @@ Thanks for your help!
         'Configure which screen should be shown after a new ticket has been created.' =>
             '',
         'Configure your own log text for PGP.' => '',
-        'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (http://otrs.github.io/doc/), chapter "Ticket Event Module".' =>
+        'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (https://doc.otrs.com/doc/), chapter "Ticket Event Module".' =>
             '',
         'Controls how to display the ticket history entries as readable values.' =>
             '',
@@ -6525,7 +6522,7 @@ Thanks for your help!
             '',
         'Defines the default filter fields in the customer user address book search (CustomerUser or CustomerCompany). For the CustomerCompany fields a prefix \'CustomerCompany_\' must be added.' =>
             '',
-        'Defines the default front-end (HTML) theme to be used by the agents and customers. If you like, you can add your own theme. Please refer the administrator manual located at http://otrs.github.io/doc/.' =>
+        'Defines the default front-end (HTML) theme to be used by the agents and customers. If you like, you can add your own theme. Please refer the administrator manual located at https://doc.otrs.com/doc/.' =>
             '',
         'Defines the default front-end language. All the possible values are determined by the available language files on the system (see the next setting).' =>
             '',
@@ -7704,7 +7701,6 @@ Thanks for your help!
             '',
         'OTRS doesn\'t support recurring Appointments without end date or number of iterations. During import process, it might happen that ICS file contains such Appointments. Instead, system creates all Appointments in the past, plus Appointments for the next N months (120 months/10 years by default).' =>
             '',
-        'Open Tickets / Need to be answered' => 'פניות פתוחות / ממתינות למענה',
         'Open an external link!' => '',
         'Open tickets (customer user)' => '',
         'Open tickets (customer)' => '',
@@ -7853,7 +7849,7 @@ Thanks for your help!
         'Queue view' => 'תצוגת תורים',
         'Queues ↔ Auto Responses' => '',
         'Rebuild the ticket index for AgentTicketQueue.' => '',
-        'Recognize if a ticket is a follow-up to an existing ticket using an external ticket number.' =>
+        'Recognize if a ticket is a follow-up to an existing ticket using an external ticket number. Note: the first capturing group from the \'NumberRegExp\' expression will be used as the ticket number value.' =>
             '',
         'Refresh interval' => 'לרענן כל',
         'Registers a log module, that can be used to log communication related information.' =>
@@ -8776,7 +8772,6 @@ Thanks for your help!
         'Click to select a file or just drop it here.',
         'Click to select files or just drop them here.',
         'Clone web service',
-        'Close',
         'Close preview',
         'Close this dialog',
         'Complex %s with %s arguments',

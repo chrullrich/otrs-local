@@ -30,7 +30,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y.%M.%D';
     $Self->{DateInputFormat}     = '%Y.%M.%D';
     $Self->{DateInputFormatLong} = '%Y.%M.%D - %T';
-    $Self->{Completeness}        = 0.998627787307033;
+    $Self->{Completeness}        = 0.999656770207654;
 
     # csv separator
     $Self->{Separator}         = '';
@@ -647,7 +647,7 @@ sub Data {
         'Schedule minutes' => '计划的分钟',
         'Schedule hours' => '计划的小时',
         'Schedule days' => '计划的天',
-        'Automatic execution values are in the system timezone.' => '',
+        'Automatic execution values are in the system timezone.' => '自动执行时间在系统时区中的值。',
         'Currently this generic agent job will not run automatically.' =>
             '目前这个自动任务不会自动运行。',
         'To enable automatic execution select at least one value from minutes, hours and days!' =>
@@ -3321,7 +3321,6 @@ sub Data {
         'Deploying, please wait...' => '正在部署，请稍候...',
         'Preparing to deploy, please wait...' => '准备部署，请稍候...',
         'Deploy now' => '现在部署',
-        'Close' => '关闭',
         'Try again' => '重试',
 
         # JS Template: DialogReset
@@ -3719,7 +3718,7 @@ sub Data {
         'Package could not be upgraded' => '软件包无法更新',
         'Repository List' => '软件仓库列表',
         'No packages found in selected repository. Please check log for more info!' =>
-            '',
+            '在选定的软件仓库中找不到软件包， 请查看日志以获取更多信息！',
         'Package not verified due a communication issue with verification server!' =>
             '不能验证软件包，因为与验证服务器无法正常通信！',
         'Can\'t connect to OTRS Feature Add-on list server!' => '不能连接到OTRS附加功能列表服务器！',
@@ -4455,9 +4454,9 @@ sub Data {
         'There are no selected encryption keys for the addresses: \'%s\'. ' =>
             '地址：\'%s\'没有选择加密密钥。',
         'Cannot use expired encryption keys for the addresses: \'%s\'. ' =>
-            '',
+            '无法为地址：\'%s\'使用过期的加密密钥。',
         'Cannot use revoked encryption keys for the addresses: \'%s\'. ' =>
-            '',
+            '不能为地址：\'%s\'使用已撤销的加密密钥。',
         'Encrypt' => '加密',
         'Keys/certificates will only be shown for recipients with more than one key/certificate. The first found key/certificate will be pre-selected. Please make sure to select the correct one.' =>
             '密钥/证书只会显示给具有多个密钥/证书的收件人，找到的第一个密钥/证书将被预选，请确保选择了正确的密钥/证书。',
@@ -4472,8 +4471,8 @@ sub Data {
         'SMIME encrypt' => 'SMIME加密',
 
         # Perl Module: Kernel/Output/HTML/ArticleCompose/Sign.pm
-        'Cannot use expired signing key: \'%s\'. ' => '',
-        'Cannot use revoked signing key: \'%s\'. ' => '',
+        'Cannot use expired signing key: \'%s\'. ' => '不能使用过期的签名密钥：\'%s\'。',
+        'Cannot use revoked signing key: \'%s\'. ' => '不能使用已撤销的签名密钥：“%s”。',
         'There are no signing keys available for the addresses \'%s\'.' =>
             '没有签名密钥可用于地址：\'%s\'。',
         'There are no selected signing keys for the addresses \'%s\'.' =>
@@ -4808,10 +4807,8 @@ sub Data {
         'Can\'t read file!' => '不能读取文件！',
         '<p>If you continue to install this package, the following issues may occur:</p><ul><li>Security problems</li><li>Stability problems</li><li>Performance problems</li></ul><p>Please note that issues that are caused by working with this package are not covered by OTRS service contracts.</p>' =>
             '<p>如果安装这个扩展包，可能导致以下问题：</p><ul><li>安全问题</li><li>稳定问题</li><li>性能问题</li></ul><p>请注意，使用此软件包所引起的问题不在OTRS服务合同范围内。</p>',
-        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default.</p>' =>
-            '<p>默认情况下，没有通过OTRS集团验证的软件包无法使用。</p>',
-        '<p>You can activate the installation of not verified packages in the <a href="%sAction=AdminSystemConfiguration;Subaction=View;Setting=Package%3A%3AAllowNotVerifiedPackages" target="_blank">System Configuration</a>.</p>' =>
-            '<p>可以在<a href="%sAction=AdminSystemConfiguration;Subaction=View;Setting=Package%3A%3AAllowNotVerifiedPackages" target="_blank">系统配置</a>中激活这些没有通过验证的软件包。</p>',
+        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default. You can activate the installation of not verified packages via the "AllowNotVerifiedPackages" system configuration setting.</p>' =>
+            '',
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
         'The process "%s" and all of its data has been imported successfully.' =>
@@ -5677,7 +5674,7 @@ sub Data {
             '请移除以下不能用于搜索的词语：',
 
         # JS File: Core.Agent.SharedSecretGenerator
-        'Generate' => '',
+        'Generate' => '生成',
 
         # JS File: Core.Agent.SortedTree
         'This element has children elements and can currently not be removed.' =>
@@ -5952,8 +5949,6 @@ Thanks for your help!
         'All customer users of a CustomerID' => '一个客户ID的所有客户用户',
         'All escalated tickets' => '所有升级的工单',
         'All new tickets, these tickets have not been worked on yet' => '所有新建工单，这些工单目前还没有被处理',
-        'All open tickets, these tickets have already been worked on, but need a response' =>
-            '所有正在处理中且需要回复的工单',
         'All open tickets, these tickets have already been worked on.' =>
             '所有处理的工单，这些工单已经在处理了。',
         'All tickets with a reminder set where the reminder date has been reached' =>
@@ -6138,6 +6133,7 @@ Thanks for your help!
             '选择你要接收哪些工单变更的通知消息。 请注意，您不能完全禁用标记为强制性的通知。',
         'Choose which notifications you\'d like to receive.' => '选择您想要接收的通知。',
         'Christmas Eve' => '平安夜',
+        'Close' => '关闭',
         'Close this ticket' => '关闭工单',
         'Closed tickets (customer user)' => '已关闭的工单（客户用户）',
         'Closed tickets (customer)' => '已关闭的工单（客户）',
@@ -6186,8 +6182,8 @@ Thanks for your help!
         'Configure which screen should be shown after a new ticket has been created.' =>
             '配置创建新工单后显示的界面。',
         'Configure your own log text for PGP.' => '配置您自己的PGP日志文本。',
-        'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (http://otrs.github.io/doc/), chapter "Ticket Event Module".' =>
-            '配置默认的TicketDynamicField（工单动态字段）设置，“Name（名称）”定义要使用的动态字段，“Value（值）”是要设置的数值，“Event（事件）”定义触发的事件。请检查开发手册（http://otrs.github.io/doc/）的“Ticket Event Module（工单事件模块）”章节。',
+        'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (https://doc.otrs.com/doc/), chapter "Ticket Event Module".' =>
+            '配置默认的TicketDynamicField（工单动态字段）设置，“Name（名称）”定义要使用的动态字段，“Value（值）”是要设置的数值，“Event（事件）”定义触发的事件。请检查开发手册（https://doc.otrs.com/doc/）的“Ticket Event Module（工单事件模块）”章节。',
         'Controls how to display the ticket history entries as readable values.' =>
             '控制如何显示工单历史条目为可读值。',
         'Controls if CustomerID is automatically copied from the sender address for unknown customers.' =>
@@ -6535,8 +6531,8 @@ Thanks for your help!
             '定义服务人员界面工单自定义字段界面的默认备注正文。',
         'Defines the default filter fields in the customer user address book search (CustomerUser or CustomerCompany). For the CustomerCompany fields a prefix \'CustomerCompany_\' must be added.' =>
             '定义客户用户通讯录搜索（客户用户或客户单位）中的默认过滤器字段。 对于客户单位字段，必须添加一个前缀“CustomerCompany_”。',
-        'Defines the default front-end (HTML) theme to be used by the agents and customers. If you like, you can add your own theme. Please refer the administrator manual located at http://otrs.github.io/doc/.' =>
-            '定义服务人员和客户使用的默认前端主题（HTML）。如果您喜欢，您可以添加您自己的主题。请参考管理员手册http://otrs.github.io/doc/。',
+        'Defines the default front-end (HTML) theme to be used by the agents and customers. If you like, you can add your own theme. Please refer the administrator manual located at https://doc.otrs.com/doc/.' =>
+            '定义服务人员和客户使用的默认前端主题（HTML）。如果您喜欢，您可以添加您自己的主题。请参考管理员手册https://doc.otrs.com/doc/。',
         'Defines the default front-end language. All the possible values are determined by the available language files on the system (see the next setting).' =>
             '定义默认的前端语言。所有可能的值由系统中可用的语言文件确定（查看下一个设置）。',
         'Defines the default history type in the customer interface.' => '定义客户界面中的默认历史类型。',
@@ -7210,7 +7206,7 @@ Thanks for your help!
             '全文索引的英语停止词，这些词将从搜索索引中移除。',
         'Enroll process for this ticket' => '这个工单的注册过程',
         'Enter your shared secret to enable two factor authentication. WARNING: Make sure that you add the shared secret to your generator application and the application works well. Otherwise you will be not able to login anymore without the two factor token.' =>
-            '',
+            '输入您的共享密钥以启用双因素身份验证。 警告：确保将共享密钥添加到生成器应用程序，并且应用程序运行良好。 否则，如果没有双因素令牌，您将无法再登录。',
         'Escalated Tickets' => '升级的工单',
         'Escalation view' => '升级视图',
         'EscalationTime' => '升级时间',
@@ -7714,7 +7710,6 @@ Thanks for your help!
             'OTRS能够使用一个或多个只读镜像数据库以扩展操作（如全文搜索或生成统计报表）。您可以在这里指定第一个镜像数据库的DSN（数据源名称）。',
         'OTRS doesn\'t support recurring Appointments without end date or number of iterations. During import process, it might happen that ICS file contains such Appointments. Instead, system creates all Appointments in the past, plus Appointments for the next N months (120 months/10 years by default).' =>
             'OTRS不支持对没有结束日期或没有重复次数的预约做循环处理。在导入过程中，可能有ICS文件包含了此类预约。作为替代，系统将所有的此类预约创建为已过去的预约，然后加上接下来的N个月(默认120个月或10年)的重复预约。',
-        'Open Tickets / Need to be answered' => '处理中/需要回复的工单',
         'Open an external link!' => '打开一个外部链接！',
         'Open tickets (customer user)' => '处理中的工单（客户用户）',
         'Open tickets (customer)' => '处理中的工单（客户）',
@@ -7863,8 +7858,8 @@ Thanks for your help!
         'Queue view' => '队列视图',
         'Queues ↔ Auto Responses' => '队列 ↔ 自动回复',
         'Rebuild the ticket index for AgentTicketQueue.' => '为AgentTicketQueue（服务人员工单队列）重建工单索引。',
-        'Recognize if a ticket is a follow-up to an existing ticket using an external ticket number.' =>
-            '通过外部工单编号识别一个工单是否为已有工单的跟进。',
+        'Recognize if a ticket is a follow-up to an existing ticket using an external ticket number. Note: the first capturing group from the \'NumberRegExp\' expression will be used as the ticket number value.' =>
+            '',
         'Refresh interval' => '刷新间隔',
         'Registers a log module, that can be used to log communication related information.' =>
             '注册一个日志模块用于记录通信相关信息。',
@@ -8786,7 +8781,6 @@ Thanks for your help!
         'Click to select a file or just drop it here.',
         'Click to select files or just drop them here.',
         'Clone web service',
-        'Close',
         'Close preview',
         'Close this dialog',
         'Complex %s with %s arguments',
