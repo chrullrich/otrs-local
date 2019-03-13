@@ -53,7 +53,7 @@
                     <strong>[% Translate("Change settings") | html %]</strong>: [% Translate("Set up what you want to change if the criteria match. Keep in mind that 'Possible' is a white list, 'PossibleNot' a black list.") | html %]
                 </p>
                 <p class="FieldExplanation">
-                    [% Translate("Check the official") | html %] <a href="https://otrs.github.io/doc/manual/admin/stable/en/html/customization.html#acl" target="_blank">[% Translate("documentation") | html %]</a>.
+                    [% Translate("Check the official") | html %] <a href="https://doc.otrs.com/doc/manual/admin/stable/en/html/customization.html#acl" target="_blank">[% Translate("documentation") | html %]</a>.
                 </p>
             </div>
         </div>
@@ -96,7 +96,7 @@
 
                         <label for="Description">[% Translate("Description") | html %]:</label>
                         <div class="Field">
-                            <textarea name="Description" id="Description" class="W50pc [% Data.DescriptionServerError | html %]" rows="5">[% Data.Description | html %]</textarea>
+                            <textarea name="Description" id="Description" class="W50pc [% Data.DescriptionServerError | html %]" rows="5" maxlength="200">[% Data.Description | html %]</textarea>
                         </div>
                         <div class="Clear"></div>
 

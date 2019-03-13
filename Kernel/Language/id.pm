@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.68696397941681;
+    $Self->{Completeness}        = 0.686802814484297;
 
     # csv separator
     $Self->{Separator}         = ',';
@@ -3317,7 +3317,6 @@ bin/otrs.Daemon.pl status\').',
         'Deploying, please wait...' => '',
         'Preparing to deploy, please wait...' => '',
         'Deploy now' => '',
-        'Close' => 'Tutup',
         'Try again' => '',
 
         # JS Template: DialogReset
@@ -4804,9 +4803,7 @@ bin/otrs.Daemon.pl status\').',
         'Can\'t read file!' => '',
         '<p>If you continue to install this package, the following issues may occur:</p><ul><li>Security problems</li><li>Stability problems</li><li>Performance problems</li></ul><p>Please note that issues that are caused by working with this package are not covered by OTRS service contracts.</p>' =>
             '',
-        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default.</p>' =>
-            '',
-        '<p>You can activate the installation of not verified packages in the <a href="%sAction=AdminSystemConfiguration;Subaction=View;Setting=Package%3A%3AAllowNotVerifiedPackages" target="_blank">System Configuration</a>.</p>' =>
+        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default. You can activate the installation of not verified packages via the "AllowNotVerifiedPackages" system configuration setting.</p>' =>
             '',
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
@@ -5950,8 +5947,6 @@ Helpdesk Team Anda
         'All customer users of a CustomerID' => 'Semua pengguna pelanggan dari ID Pelanggan',
         'All escalated tickets' => 'Semua tiket yang telah tereskalasi',
         'All new tickets, these tickets have not been worked on yet' => 'Semua tiket baru, tiket-tiket ini belum dikerjakan.',
-        'All open tickets, these tickets have already been worked on, but need a response' =>
-            'Semua tiket terbuka, tiket-tiket ini telah dikerjakan, tetapi memerlukan respon.',
         'All open tickets, these tickets have already been worked on.' =>
             '',
         'All tickets with a reminder set where the reminder date has been reached' =>
@@ -6136,6 +6131,7 @@ Helpdesk Team Anda
             '',
         'Choose which notifications you\'d like to receive.' => '',
         'Christmas Eve' => 'Malam natal',
+        'Close' => 'Tutup',
         'Close this ticket' => 'Tutup tiket ini',
         'Closed tickets (customer user)' => 'Tiket tertutup (customer pengguna)',
         'Closed tickets (customer)' => 'Tiket tertutup (pelanggan)',
@@ -6184,8 +6180,8 @@ Helpdesk Team Anda
         'Configure which screen should be shown after a new ticket has been created.' =>
             'Konfigurasi yang layar harus ditampilkan setelah tiket baru telah dibuat.',
         'Configure your own log text for PGP.' => 'Mengkonfigurasi teks log Anda sendiri untuk PGP.',
-        'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (http://otrs.github.io/doc/), chapter "Ticket Event Module".' =>
-            'Mengkonfigurasi TicketDynamicField pengaturan default. "Nama" mendefinisikan bidang yang dinamis yang harus digunakan, "Value" adalah data yang akan ditetapkan, dan "Event" mendefinisikan acara pemicu. Silakan periksa pengembang user (http://otrs.github.io/doc/), bab "Ticket acara Modul".',
+        'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (https://doc.otrs.com/doc/), chapter "Ticket Event Module".' =>
+            'Mengkonfigurasi TicketDynamicField pengaturan default. "Nama" mendefinisikan bidang yang dinamis yang harus digunakan, "Value" adalah data yang akan ditetapkan, dan "Event" mendefinisikan acara pemicu. Silakan periksa pengembang user (https://doc.otrs.com/doc/), bab "Ticket acara Modul".',
         'Controls how to display the ticket history entries as readable values.' =>
             'Kontrol bagaimana menampilkan entri sejarah tiket sebagai nilai-nilai yang dapat dibaca.',
         'Controls if CustomerID is automatically copied from the sender address for unknown customers.' =>
@@ -6533,8 +6529,8 @@ Helpdesk Team Anda
             'Mendefinisikan tubuh default catatan dalam tiket layar teks bebas dari antarmuka agen.',
         'Defines the default filter fields in the customer user address book search (CustomerUser or CustomerCompany). For the CustomerCompany fields a prefix \'CustomerCompany_\' must be added.' =>
             '',
-        'Defines the default front-end (HTML) theme to be used by the agents and customers. If you like, you can add your own theme. Please refer the administrator manual located at http://otrs.github.io/doc/.' =>
-            'Mendefinisikan default front-end (HTML) tema yang akan digunakan oleh agen dan pelanggan. Jika Anda suka, Anda dapat menambahkan tema Anda sendiri. Silahkan lihat manual administrator yang terletak di http://otrs.github.io/doc/.',
+        'Defines the default front-end (HTML) theme to be used by the agents and customers. If you like, you can add your own theme. Please refer the administrator manual located at https://doc.otrs.com/doc/.' =>
+            'Mendefinisikan default front-end (HTML) tema yang akan digunakan oleh agen dan pelanggan. Jika Anda suka, Anda dapat menambahkan tema Anda sendiri. Silahkan lihat manual administrator yang terletak di https://doc.otrs.com/doc/.',
         'Defines the default front-end language. All the possible values are determined by the available language files on the system (see the next setting).' =>
             'Mendefinisikan bahasa default front-end. Semua nilai yang mungkin ditentukan oleh file bahasa yang tersedia pada sistem (lihat pengaturan berikutnya).',
         'Defines the default history type in the customer interface.' => 'Mendefinisikan jenis sejarah default dalam antarmuka pelanggan.',
@@ -7713,7 +7709,6 @@ Helpdesk Team Anda
             'OTRS dapat menggunakan satu atau lebih database cermin dibaca untuk operasi mahal seperti penuh pencarian teks atau statistik generasi. Di sini Anda dapat menentukan DSN untuk database cermin pertama.',
         'OTRS doesn\'t support recurring Appointments without end date or number of iterations. During import process, it might happen that ICS file contains such Appointments. Instead, system creates all Appointments in the past, plus Appointments for the next N months (120 months/10 years by default).' =>
             '',
-        'Open Tickets / Need to be answered' => 'Tiket terbuka/perlu dijawab',
         'Open an external link!' => '',
         'Open tickets (customer user)' => 'Tiket terbuka (pelanggan pengguna)',
         'Open tickets (customer)' => 'Buka tiket (pelanggan)',
@@ -7862,8 +7857,8 @@ Helpdesk Team Anda
         'Queue view' => 'lihat antrian',
         'Queues ↔ Auto Responses' => '',
         'Rebuild the ticket index for AgentTicketQueue.' => 'Membangun kembali indeks tiket untuk AgentTicketQueue.',
-        'Recognize if a ticket is a follow-up to an existing ticket using an external ticket number.' =>
-            'Mengakui jika tiket adalah tindak lanjut ke tiket yang ada menggunakan nomor tiket eksternal.',
+        'Recognize if a ticket is a follow-up to an existing ticket using an external ticket number. Note: the first capturing group from the \'NumberRegExp\' expression will be used as the ticket number value.' =>
+            '',
         'Refresh interval' => 'refresh interval',
         'Registers a log module, that can be used to log communication related information.' =>
             '',
@@ -8785,7 +8780,6 @@ Helpdesk Team Anda
         'Click to select a file or just drop it here.',
         'Click to select files or just drop them here.',
         'Clone web service',
-        'Close',
         'Close preview',
         'Close this dialog',
         'Complex %s with %s arguments',

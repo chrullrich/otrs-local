@@ -27,7 +27,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y/%M/%D';
     $Self->{DateInputFormat}     = '%Y/%M/%D';
     $Self->{DateInputFormatLong} = '%Y/%M/%D - %T';
-    $Self->{Completeness}        = 0.766209262435678;
+    $Self->{Completeness}        = 0.766088896516218;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -3321,7 +3321,6 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
         'Deploying, please wait...' => 'デプロイしています。暫くお待ち下さい...',
         'Preparing to deploy, please wait...' => 'デプロイ中です。お待ち下さい...',
         'Deploy now' => '今すぐデプロイ',
-        'Close' => 'クローズ',
         'Try again' => '再試行する',
 
         # JS Template: DialogReset
@@ -4809,10 +4808,8 @@ OTRSが443ポートを用いてcloud.otrs.comに接続できることを確認�
         'Can\'t read file!' => 'ファイルを読み込めません！',
         '<p>If you continue to install this package, the following issues may occur:</p><ul><li>Security problems</li><li>Stability problems</li><li>Performance problems</li></ul><p>Please note that issues that are caused by working with this package are not covered by OTRS service contracts.</p>' =>
             '<p>このパッケージのインストールを継続すると、以下の問題が発生するかもしれません。</p><ul><li>&nbsp;-セキュリティ上の問題</li><li>&nbsp;-安定性の問題</li><li>&nbsp;-パフォーマンスの問題</li></ul><p>このパッケージを動作させることによって引き起こされた問題はOTRSサービス契約の対象外ですのでご注意ください。</p>',
-        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default.</p>' =>
+        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default. You can activate the installation of not verified packages via the "AllowNotVerifiedPackages" system configuration setting.</p>' =>
             '',
-        '<p>You can activate the installation of not verified packages in the <a href="%sAction=AdminSystemConfiguration;Subaction=View;Setting=Package%3A%3AAllowNotVerifiedPackages" target="_blank">System Configuration</a>.</p>' =>
-            '<p>未認証のインストール済みパッケージは<a href="%sAction=AdminSystemConfiguration;Subaction=View;Setting=Package%3A%3AAllowNotVerifiedPackages" target="_blank">システム設定</a>から有効化することができます。</p>',
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
         'The process "%s" and all of its data has been imported successfully.' =>
@@ -5953,8 +5950,6 @@ Thanks for your help!
         'All customer users of a CustomerID' => '顧客IDの全ての顧客ユーザー',
         'All escalated tickets' => '全エスカレーションチケット',
         'All new tickets, these tickets have not been worked on yet' => '全新規チケット。まだ着手されていません',
-        'All open tickets, these tickets have already been worked on, but need a response' =>
-            '全対応中チケット。着手済みだが応答が必要です',
         'All open tickets, these tickets have already been worked on.' =>
             '全対応中チケット。すでに着手済みのものです',
         'All tickets with a reminder set where the reminder date has been reached' =>
@@ -6139,6 +6134,7 @@ Thanks for your help!
             '',
         'Choose which notifications you\'d like to receive.' => '',
         'Christmas Eve' => 'クリスマスイブ',
+        'Close' => 'クローズ',
         'Close this ticket' => 'このチケットをクローズ',
         'Closed tickets (customer user)' => 'クローズ・チケット(顧客ユーザー)',
         'Closed tickets (customer)' => 'クローズ・チケット(顧客)',
@@ -6187,7 +6183,7 @@ Thanks for your help!
         'Configure which screen should be shown after a new ticket has been created.' =>
             '新規チケットが作成された後に表示する画面を選択してください。',
         'Configure your own log text for PGP.' => 'PGPのための利用者独自のログテキストを設定します。',
-        'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (http://otrs.github.io/doc/), chapter "Ticket Event Module".' =>
+        'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (https://doc.otrs.com/doc/), chapter "Ticket Event Module".' =>
             '',
         'Controls how to display the ticket history entries as readable values.' =>
             '',
@@ -6536,7 +6532,7 @@ Thanks for your help!
             '担当者インタフェースのチケット・フリー・テキスト・スクリーンで、メモのデフォルトの本文を定義します。',
         'Defines the default filter fields in the customer user address book search (CustomerUser or CustomerCompany). For the CustomerCompany fields a prefix \'CustomerCompany_\' must be added.' =>
             '顧客ユーザーのアドレス帳の検索（CustomerUser又はCustomerCompany）のデフォルトのフィルターフィールドを定義します。 CustomerCompanyフィールドには、接頭辞 \'CustomerCompany_\'を追加する必要があります。',
-        'Defines the default front-end (HTML) theme to be used by the agents and customers. If you like, you can add your own theme. Please refer the administrator manual located at http://otrs.github.io/doc/.' =>
+        'Defines the default front-end (HTML) theme to be used by the agents and customers. If you like, you can add your own theme. Please refer the administrator manual located at https://doc.otrs.com/doc/.' =>
             '',
         'Defines the default front-end language. All the possible values are determined by the available language files on the system (see the next setting).' =>
             'デフォルトのフロント・エンドの言語を設定します。全ての可能性ある値は、システムの利用可能な言語ファイルによって定義されます（次の設定を参照ください)。.',
@@ -7725,7 +7721,6 @@ Contentはダイナミック・フィールドの形式によって設定内容�
             'OTRSは、フルテキスト検索や統計生成などの高価な操作に、1つまたは複数の読み取り専用ミラーデータベースを使用できます。 ここでは、最初のミラーデータベースのDSNを指定できます。',
         'OTRS doesn\'t support recurring Appointments without end date or number of iterations. During import process, it might happen that ICS file contains such Appointments. Instead, system creates all Appointments in the past, plus Appointments for the next N months (120 months/10 years by default).' =>
             '',
-        'Open Tickets / Need to be answered' => '対応中チケット／要対応',
         'Open an external link!' => '外部リンクを開く！',
         'Open tickets (customer user)' => '対応中チケット(顧客ユーザー)',
         'Open tickets (customer)' => '対応中チケット(顧客)',
@@ -7874,7 +7869,7 @@ Contentはダイナミック・フィールドの形式によって設定内容�
         'Queue view' => 'キュー・ビュー',
         'Queues ↔ Auto Responses' => '',
         'Rebuild the ticket index for AgentTicketQueue.' => 'AgentTicketQueueのチケットインデックスを再構築します。',
-        'Recognize if a ticket is a follow-up to an existing ticket using an external ticket number.' =>
+        'Recognize if a ticket is a follow-up to an existing ticket using an external ticket number. Note: the first capturing group from the \'NumberRegExp\' expression will be used as the ticket number value.' =>
             '',
         'Refresh interval' => '更新間隔',
         'Registers a log module, that can be used to log communication related information.' =>
@@ -8797,7 +8792,6 @@ Contentはダイナミック・フィールドの形式によって設定内容�
         'Click to select a file or just drop it here.',
         'Click to select files or just drop them here.',
         'Clone web service',
-        'Close',
         'Close preview',
         'Close this dialog',
         'Complex %s with %s arguments',
