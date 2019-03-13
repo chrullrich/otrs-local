@@ -1,17 +1,17 @@
 # Translators:
 # KOSTAS PETRIDIS <kpetridis@cteam.gr>, 2018
-# Korina Lampridou <korina@it.auth.gr>, 2018
 # Alexandros Kosiaris <akosiaris@gmail.com>, 2018
 # Krikor Maroukian <krikor.maroukian@gmail.com>, 2018
 # Martin Gruner <martin.gruner@otrs.com>, 2018
 # Angelos Chraniotis <chraniotis@gmail.com>, 2018
+# Korina Lampridou <korina@it.auth.gr>, 2019
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2019-01-08 15:00+0000\n"
+"POT-Creation-Date: 2019-02-21 13:30+0000\n"
 "PO-Revision-Date: 2018-09-20 13:03+0000\n"
-"Last-Translator: Angelos Chraniotis <chraniotis@gmail.com>, 2018\n"
+"Last-Translator: Korina Lampridou <korina@it.auth.gr>, 2019\n"
 "Language-Team: Greek (https://www.transifex.com/otrs/teams/23435/el/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -45,11 +45,11 @@ msgstr "Φίλτρο για τα ACL"
 
 #. Template: AdminACL
 msgid "Just start typing to filter..."
-msgstr ""
+msgstr "Απλά αρχίστε να πληκτρολογείτε για φιλτράρισμα.."
 
 #. Template: AdminACL
 msgid "Configuration Import"
-msgstr ""
+msgstr "Εισαγωγή αρχείου παραμετροποίησης"
 
 #. Template: AdminACL
 msgid ""
@@ -162,7 +162,7 @@ msgstr "Διαγραφή μη έγκυρων ACL"
 
 #. Template: AdminACLEdit
 msgid "Match settings"
-msgstr ""
+msgstr "Ταίριασμα ρυθμίσεων"
 
 #. Template: AdminACLEdit
 msgid ""
@@ -173,7 +173,7 @@ msgstr ""
 
 #. Template: AdminACLEdit
 msgid "Change settings"
-msgstr ""
+msgstr "Αλλαγή ρυθμίσεων"
 
 #. Template: AdminACLEdit
 msgid ""
@@ -183,11 +183,11 @@ msgstr ""
 
 #. Template: AdminACLEdit
 msgid "Check the official"
-msgstr ""
+msgstr "Ελέγξτε το επίσημο"
 
 #. Template: AdminACLEdit
 msgid "documentation"
-msgstr ""
+msgstr "τεκμηρίωση"
 
 #. Template: AdminACLEdit
 msgid "Show or hide the content"
@@ -195,7 +195,7 @@ msgstr "Εμφάνιση ή απόκρυψη περιεχομένου"
 
 #. Template: AdminACLEdit
 msgid "Edit ACL Information"
-msgstr ""
+msgstr "Επεξεργασία πληροφοριών ACL"
 
 #. Template: AdminACLEdit
 msgid "Name"
@@ -203,15 +203,15 @@ msgstr "Όνομα"
 
 #. Template: AdminACLEdit
 msgid "Stop after match"
-msgstr ""
+msgstr "Σταμάτα μετά το ταίριασμα"
 
 #. Template: AdminACLEdit
 msgid "Edit ACL Structure"
-msgstr ""
+msgstr "Επεξεργασία δομής ACL"
 
 #. Template: AdminACLEdit
 msgid "Save ACL"
-msgstr ""
+msgstr "Αποθήκευση ACL"
 
 #. Template: AdminACLEdit
 msgid "Save"
@@ -10293,10 +10293,6 @@ msgid "Deploy now"
 msgstr ""
 
 #. JS Template: DialogDeployment
-msgid "Close"
-msgstr "Κλείσιμο"
-
-#. JS Template: DialogDeployment
 msgid "Try again"
 msgstr ""
 
@@ -14465,14 +14461,9 @@ msgstr ""
 #. Perl Module: Kernel/System/Package.pm
 msgid ""
 "<p>The installation of packages which are not verified by the OTRS Group is "
-"not possible by default.</p>"
-msgstr ""
-
-#. Perl Module: Kernel/System/Package.pm
-msgid ""
-"<p>You can activate the installation of not verified packages in the <a "
-"href=\"%sAction=AdminSystemConfiguration;Subaction=View;Setting=Package%3A%3AAllowNotVerifiedPackages\""
-" target=\"_blank\">System Configuration</a>.</p>"
+"not possible by default. You can activate the installation of not verified "
+"packages via the \"AllowNotVerifiedPackages\" system configuration "
+"setting.</p>"
 msgstr ""
 
 #. Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
@@ -17560,14 +17551,6 @@ msgid "All new tickets, these tickets have not been worked on yet"
 msgstr "Όλα τα νέα δελτία, όσα δεν έχουν ακόμη επεξεργαστεί"
 
 #. SysConfig
-msgid ""
-"All open tickets, these tickets have already been worked on, but need a "
-"response"
-msgstr ""
-"Όλα τα ανοιχτά δελτία, αυτά τα δελτία έχουν ήδη επεξεργαστεί, αλλά "
-"χρειάζονται μια απάντηση."
-
-#. SysConfig
 msgid "All open tickets, these tickets have already been worked on."
 msgstr ""
 
@@ -18168,6 +18151,10 @@ msgid "Christmas Eve"
 msgstr "Χριστούγεννα"
 
 #. SysConfig
+msgid "Close"
+msgstr "Κλείσιμο"
+
+#. SysConfig
 msgid "Close this ticket"
 msgstr "Κλείσιμο Δελτίου"
 
@@ -18340,7 +18327,7 @@ msgid ""
 "Configures a default TicketDynamicField setting. \"Name\" defines the "
 "dynamic field which should be used, \"Value\" is the data that will be set, "
 "and \"Event\" defines the trigger event. Please check the developer manual "
-"(http://otrs.github.io/doc/), chapter \"Ticket Event Module\"."
+"(https://doc.otrs.com/doc/), chapter \"Ticket Event Module\"."
 msgstr ""
 
 #. SysConfig
@@ -19559,7 +19546,7 @@ msgstr ""
 msgid ""
 "Defines the default front-end (HTML) theme to be used by the agents and "
 "customers. If you like, you can add your own theme. Please refer the "
-"administrator manual located at http://otrs.github.io/doc/."
+"administrator manual located at https://doc.otrs.com/doc/."
 msgstr ""
 
 #. SysConfig
@@ -23391,10 +23378,6 @@ msgid ""
 msgstr ""
 
 #. SysConfig
-msgid "Open Tickets / Need to be answered"
-msgstr "Ανοικτά Δελτία / Απαιτούν απάντηση"
-
-#. SysConfig
 msgid "Open an external link!"
 msgstr ""
 
@@ -24065,7 +24048,8 @@ msgstr ""
 #. SysConfig
 msgid ""
 "Recognize if a ticket is a follow-up to an existing ticket using an external"
-" ticket number."
+" ticket number. Note: the first capturing group from the 'NumberRegExp' "
+"expression will be used as the ticket number value."
 msgstr ""
 
 #. SysConfig

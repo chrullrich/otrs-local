@@ -23,7 +23,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.611835334476844;
+    $Self->{Completeness}        = 0.611635489960529;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -3314,7 +3314,6 @@ sub Data {
         'Deploying, please wait...' => '',
         'Preparing to deploy, please wait...' => '',
         'Deploy now' => '',
-        'Close' => 'Tutup',
         'Try again' => '',
 
         # JS Template: DialogReset
@@ -4801,9 +4800,7 @@ sub Data {
         'Can\'t read file!' => '',
         '<p>If you continue to install this package, the following issues may occur:</p><ul><li>Security problems</li><li>Stability problems</li><li>Performance problems</li></ul><p>Please note that issues that are caused by working with this package are not covered by OTRS service contracts.</p>' =>
             '',
-        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default.</p>' =>
-            '',
-        '<p>You can activate the installation of not verified packages in the <a href="%sAction=AdminSystemConfiguration;Subaction=View;Setting=Package%3A%3AAllowNotVerifiedPackages" target="_blank">System Configuration</a>.</p>' =>
+        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default. You can activate the installation of not verified packages via the "AllowNotVerifiedPackages" system configuration setting.</p>' =>
             '',
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
@@ -5949,8 +5946,6 @@ dalaman.',
         'All customer users of a CustomerID' => 'Semua pengguna pelanggan PelangganID',
         'All escalated tickets' => 'Semua peningkatan tiket',
         'All new tickets, these tickets have not been worked on yet' => 'Semua tiket baru, tiket ini masih belum dijalankan lagi',
-        'All open tickets, these tickets have already been worked on, but need a response' =>
-            'Semua tiket buka, tiket ini sudah dijalankan, tetapi perlu tindak balas',
         'All open tickets, these tickets have already been worked on.' =>
             '',
         'All tickets with a reminder set where the reminder date has been reached' =>
@@ -6135,6 +6130,7 @@ dalaman.',
             '',
         'Choose which notifications you\'d like to receive.' => '',
         'Christmas Eve' => 'Perayaan Natal',
+        'Close' => 'Tutup',
         'Close this ticket' => 'Tutup tiket ini',
         'Closed tickets (customer user)' => 'Tiket ditutup (pengguna pelanggan)',
         'Closed tickets (customer)' => 'Tiket ditutup (pelanggan)',
@@ -6183,8 +6179,8 @@ dalaman.',
         'Configure which screen should be shown after a new ticket has been created.' =>
             'Konfigurasi skrin hendaklah ditunjukkan selepas tiket baru telah diwujudkan.',
         'Configure your own log text for PGP.' => 'Konfigur teks log anda sendiri untuk PGP.',
-        'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (http://otrs.github.io/doc/), chapter "Ticket Event Module".' =>
-            'Mengkonfigurasi tetapan TicketDynamicField default. "Nama" mentakrifkan bidang dinamik yang sepatutnya digunakan, "Nilai" adalah data yang akan diset, dan "Event" mentakrifkan peristiwa pencetus. Sila semak manual pemaju (http://otrs.github.io/doc/), bab "Tiket Acara Modul".',
+        'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (https://doc.otrs.com/doc/), chapter "Ticket Event Module".' =>
+            'Mengkonfigurasi tetapan TicketDynamicField default. "Nama" mentakrifkan bidang dinamik yang sepatutnya digunakan, "Nilai" adalah data yang akan diset, dan "Event" mentakrifkan peristiwa pencetus. Sila semak manual pemaju (https://doc.otrs.com/doc/), bab "Tiket Acara Modul".',
         'Controls how to display the ticket history entries as readable values.' =>
             'Mengawal bagaimana untuk memaparkan catatan sejarah tiket sebagai nilai-nilai yang boleh dibaca.',
         'Controls if CustomerID is automatically copied from the sender address for unknown customers.' =>
@@ -6532,8 +6528,8 @@ dalaman.',
             'Mentakrifkan badan asal nota dalam skrin tiket teks percuma dari paparan ejen.',
         'Defines the default filter fields in the customer user address book search (CustomerUser or CustomerCompany). For the CustomerCompany fields a prefix \'CustomerCompany_\' must be added.' =>
             '',
-        'Defines the default front-end (HTML) theme to be used by the agents and customers. If you like, you can add your own theme. Please refer the administrator manual located at http://otrs.github.io/doc/.' =>
-            'Mentakrifkan tema (HTML) bahagian depan default yang akan digunakan oleh ejen-ejen dan pelanggan. Jika anda suka, anda boleh menambah tema anda sendiri. Sila rujuk manual pentadbir yang terletak di http://otrs.github.io/doc/.',
+        'Defines the default front-end (HTML) theme to be used by the agents and customers. If you like, you can add your own theme. Please refer the administrator manual located at https://doc.otrs.com/doc/.' =>
+            'Mentakrifkan tema (HTML) bahagian depan default yang akan digunakan oleh ejen-ejen dan pelanggan. Jika anda suka, anda boleh menambah tema anda sendiri. Sila rujuk manual pentadbir yang terletak di https://doc.otrs.com/doc/.',
         'Defines the default front-end language. All the possible values are determined by the available language files on the system (see the next setting).' =>
             'Mentakrifkan  bahasa hadapan-hujung asal. Semua nilai-nilai yang mungkin ditentukan oleh fail bahasa yang ada pada sistem (lihat tetapan yang seterusnya).',
         'Defines the default history type in the customer interface.' => 'Mentakrifkan jenis sejarah asal dalam paparan pelanggan.',
@@ -7712,7 +7708,6 @@ Search_DynamicField_XTimeSlotStartMonth=01; Search_DynamicField_XTimeSlotStartDa
             'OTRS boleh menggunakan salah satu atau lebih pangkalan data cermin baca sahaja untuk operasi mahal seperti carian atau statistik teks penuh generasi. Di sini anda boleh menentukan DSN untuk pangkalan data cermin pertama.',
         'OTRS doesn\'t support recurring Appointments without end date or number of iterations. During import process, it might happen that ICS file contains such Appointments. Instead, system creates all Appointments in the past, plus Appointments for the next N months (120 months/10 years by default).' =>
             '',
-        'Open Tickets / Need to be answered' => 'Tiket Buka / Perlu untuk dijawab',
         'Open an external link!' => '',
         'Open tickets (customer user)' => 'Buka tiket (pengguna pelanggan)',
         'Open tickets (customer)' => 'Buka tiket (pelanggan)',
@@ -7861,8 +7856,8 @@ Search_DynamicField_XTimeSlotStartMonth=01; Search_DynamicField_XTimeSlotStartDa
         'Queue view' => 'Paparan Aturan',
         'Queues ↔ Auto Responses' => '',
         'Rebuild the ticket index for AgentTicketQueue.' => 'Membina semula indeks tiket untuk AgentTicketQueue.',
-        'Recognize if a ticket is a follow-up to an existing ticket using an external ticket number.' =>
-            'Mengenalpasti jika tiket ialah susulan kepada tiket sedia ada menggunakan nombor tiket luar.',
+        'Recognize if a ticket is a follow-up to an existing ticket using an external ticket number. Note: the first capturing group from the \'NumberRegExp\' expression will be used as the ticket number value.' =>
+            '',
         'Refresh interval' => 'Tempoh selang refresh',
         'Registers a log module, that can be used to log communication related information.' =>
             '',
@@ -8784,7 +8779,6 @@ Search_DynamicField_XTimeSlotStartMonth=01; Search_DynamicField_XTimeSlotStartDa
         'Click to select a file or just drop it here.',
         'Click to select files or just drop them here.',
         'Clone web service',
-        'Close',
         'Close preview',
         'Close this dialog',
         'Complex %s with %s arguments',

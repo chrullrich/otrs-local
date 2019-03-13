@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.345626072041166;
+    $Self->{Completeness}        = 0.35095246267376;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -40,8 +40,8 @@ sub Data {
         'Deploy ACLs' => 'Desplegar',
         'Export ACLs' => 'Exportar ACLs',
         'Filter for ACLs' => 'Filtro para ACLs',
-        'Just start typing to filter...' => '',
-        'Configuration Import' => '',
+        'Just start typing to filter...' => 'Solo empieza a escribir para filtrar...',
+        'Configuration Import' => 'Importe de Configuración',
         'Here you can upload a configuration file to import ACLs to your system. The file needs to be in .yml format as exported by the ACL editor module.' =>
             '',
         'This field is required.' => 'Este es un campo obligatorio.',
@@ -56,7 +56,7 @@ sub Data {
         'ACLs' => '',
         'Please note: This table represents the execution order of the ACLs. If you need to change the order in which ACLs are executed, please change the names of the affected ACLs.' =>
             '',
-        'ACL name' => '',
+        'ACL name' => 'Nombre del ACL',
         'Comment' => 'Comentario',
         'Validity' => 'Validez',
         'Export' => 'Exportar',
@@ -66,29 +66,29 @@ sub Data {
 
         # Template: AdminACLEdit
         'Edit ACL %s' => 'Editar ACL %s',
-        'Edit ACL' => '',
+        'Edit ACL' => 'Editar ACL',
         'Go to overview' => 'Ir la vista de resumen',
         'Delete ACL' => 'Borrar ACL',
         'Delete Invalid ACL' => 'Borrar ACL inválida',
         'Match settings' => '',
         'Set up matching criteria for this ACL. Use \'Properties\' to match the current screen or \'PropertiesDatabase\' to match attributes of the current ticket that are in the database.' =>
             '',
-        'Change settings' => '',
+        'Change settings' => 'Cambiar Configuración',
         'Set up what you want to change if the criteria match. Keep in mind that \'Possible\' is a white list, \'PossibleNot\' a black list.' =>
             '',
         'Check the official' => '',
-        'documentation' => '',
+        'documentation' => 'documentación',
         'Show or hide the content' => 'Mostrar u ocultar el contenido',
-        'Edit ACL Information' => '',
+        'Edit ACL Information' => 'Editar Información del ACL',
         'Name' => 'Nombre',
         'Stop after match' => 'Parar al coincidir',
-        'Edit ACL Structure' => '',
-        'Save ACL' => '',
+        'Edit ACL Structure' => 'Editar Estructura de ACL',
+        'Save ACL' => 'Guardar ACL',
         'Save' => 'Guardar',
         'or' => 'o',
-        'Save and finish' => '',
+        'Save and finish' => 'Guarda y finalizar',
         'Cancel' => 'Cancelar',
-        'Do you really want to delete this ACL?' => '',
+        'Do you really want to delete this ACL?' => '¿Realmente deseas eliminar este ACL?',
 
         # Template: AdminACLNew
         'Create a new ACL by submitting the form data. After creating the ACL, you will be able to add configuration items in edit mode.' =>
@@ -135,7 +135,7 @@ sub Data {
         'Rule' => 'Regla',
         'Remove this entry' => 'Eliminar esta entrada',
         'Remove' => 'Quitar',
-        'Start date' => '',
+        'Start date' => 'Fecha de Inicio',
         'End date' => 'Fecha de término',
         'Use options below to narrow down for which tickets appointments will be automatically created.' =>
             'Use las opciones mostradas abajo para acortar las citas de tickets serán creadas automáticamente.',
@@ -151,7 +151,7 @@ sub Data {
 
         # Template: AdminAppointmentImport
         'Appointment Import' => 'Importar Cita',
-        'Go back' => '',
+        'Go back' => 'Ir atrás',
         'Uploaded file must be in valid iCal format (.ics).' => 'El archivo cargado tiene que estar en un formato iCal válido (.ics)',
         'If desired Calendar is not listed here, please make sure that you have at least \'create\' permissions.' =>
             'Si el Calendario deseado no aparece en la lista, por favor asegúrese de que tenga al menos el permiso de "crear"',
@@ -166,18 +166,18 @@ sub Data {
         'Appointment Notification Management' => 'Gestión de Notificaciones de Citas',
         'Add Notification' => 'Agregar Notificación',
         'Edit Notification' => 'Modificar Notificación',
-        'Export Notifications' => '',
+        'Export Notifications' => 'Exportar Notificaciones',
         'Filter for Notifications' => '',
         'Filter for notifications' => '',
         'Here you can upload a configuration file to import appointment notifications to your system. The file needs to be in .yml format as exported by the appointment notification module.' =>
             'Aquí es posible cargar un archivo de configuración para importar las notificaciones de las citas a su sistema. El archivo necesita estar en el formato .yml como los exportados por el módulo de notificaciones de citas.',
-        'Overwrite existing notifications?' => '',
-        'Upload Notification configuration' => '',
-        'Import Notification configuration' => '',
+        'Overwrite existing notifications?' => '¿Sobrescribir notificaciones existentes?',
+        'Upload Notification configuration' => 'Subir configuración de Notificaciones',
+        'Import Notification configuration' => 'Importar configuración de Notificaciones',
         'List' => 'Listar',
         'Delete' => 'Borrar',
         'Delete this notification' => 'Eliminar esta notificación',
-        'Show in agent preferences' => '',
+        'Show in agent preferences' => 'Mostrar en preferencias del agente',
         'Agent preferences tooltip' => '',
         'This message will be shown on the agent preferences screen as a tooltip for this notification.' =>
             '',
@@ -193,36 +193,36 @@ sub Data {
         'Team' => 'Equipo',
         'Resource' => 'Recurso',
         'Recipients' => '',
-        'Send to' => '',
-        'Send to these agents' => '',
+        'Send to' => 'Enviar a',
+        'Send to these agents' => 'Enviar a estos agentes',
         'Send to all group members (agents only)' => '',
-        'Send to all role members' => '',
-        'Send on out of office' => '',
+        'Send to all role members' => 'Enviar a todos los miembros del rol',
+        'Send on out of office' => 'Enviar un fuera de oficina',
         'Also send if the user is currently out of office.' => '',
-        'Once per day' => '',
+        'Once per day' => 'Una vez por dia',
         'Notify user just once per day about a single appointment using a selected transport.' =>
             'Notificar al usuario solo una vez al día acerca de una sola cita usando el transporte seleccionado.',
-        'Notification Methods' => '',
+        'Notification Methods' => 'Métodos de Notificación',
         'These are the possible methods that can be used to send this notification to each of the recipients. Please select at least one method below.' =>
             '',
-        'Enable this notification method' => '',
+        'Enable this notification method' => 'Habilitar éste método de notificación',
         'Transport' => '',
         'At least one method is needed per notification.' => '',
-        'Active by default in agent preferences' => '',
+        'Active by default in agent preferences' => 'Activo por defecto en las preferencias del agente',
         'This is the default value for assigned recipient agents who didn\'t make a choice for this notification in their preferences yet. If the box is enabled, the notification will be sent to such agents.' =>
             '',
-        'This feature is currently not available.' => '',
+        'This feature is currently not available.' => 'Ésta característica no está disponible',
         'Upgrade to %s' => '',
         'Please activate this transport in order to use it.' => '',
-        'No data found' => '',
-        'No notification method found.' => '',
-        'Notification Text' => '',
+        'No data found' => 'No hay datos encontrados',
+        'No notification method found.' => 'No se encontraron métodos de notificación',
+        'Notification Text' => 'Texto de la Notificación',
         'This language is not present or enabled on the system. This notification text could be deleted if it is not needed anymore.' =>
             '',
         'Remove Notification Language' => '',
         'Subject' => 'Asunto',
         'Text' => 'Texto',
-        'Message body' => '',
+        'Message body' => 'Cuerpo del mensaje',
         'Add new notification language' => '',
         'Save Changes' => 'Guardar Cambios',
         'Tag Reference' => '',
@@ -234,7 +234,7 @@ sub Data {
         'To get the calendar attribute' => 'Para obtener el atributo del calendario',
         'Attributes of the recipient user for the notification' => '',
         'Config options' => 'Opciones de configuración',
-        'Example notification' => '',
+        'Example notification' => 'Ejemplo de notificación',
 
         # Template: AdminAppointmentNotificationEventTransportEmailSettings
         'Additional recipient email addresses' => '',
@@ -3315,7 +3315,6 @@ sub Data {
         'Deploying, please wait...' => '',
         'Preparing to deploy, please wait...' => '',
         'Deploy now' => '',
-        'Close' => 'Cerrar',
         'Try again' => '',
 
         # JS Template: DialogReset
@@ -4802,9 +4801,7 @@ sub Data {
         'Can\'t read file!' => '',
         '<p>If you continue to install this package, the following issues may occur:</p><ul><li>Security problems</li><li>Stability problems</li><li>Performance problems</li></ul><p>Please note that issues that are caused by working with this package are not covered by OTRS service contracts.</p>' =>
             '',
-        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default.</p>' =>
-            '',
-        '<p>You can activate the installation of not verified packages in the <a href="%sAction=AdminSystemConfiguration;Subaction=View;Setting=Package%3A%3AAllowNotVerifiedPackages" target="_blank">System Configuration</a>.</p>' =>
+        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default. You can activate the installation of not verified packages via the "AllowNotVerifiedPackages" system configuration setting.</p>' =>
             '',
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
@@ -5937,8 +5934,6 @@ Thanks for your help!
         'All customer users of a CustomerID' => '',
         'All escalated tickets' => 'Todos los tickets escalados',
         'All new tickets, these tickets have not been worked on yet' => 'Todos los tickets nuevos en los que aún no se ha trabajado',
-        'All open tickets, these tickets have already been worked on, but need a response' =>
-            'Todos los tickets abiertos en los que ya se trabajó, pero necesitan una respuesta',
         'All open tickets, these tickets have already been worked on.' =>
             '',
         'All tickets with a reminder set where the reminder date has been reached' =>
@@ -6123,6 +6118,7 @@ Thanks for your help!
             '',
         'Choose which notifications you\'d like to receive.' => '',
         'Christmas Eve' => 'Noche buena',
+        'Close' => 'Cerrar',
         'Close this ticket' => 'Cerrar este ticket',
         'Closed tickets (customer user)' => '',
         'Closed tickets (customer)' => '',
@@ -6171,7 +6167,7 @@ Thanks for your help!
         'Configure which screen should be shown after a new ticket has been created.' =>
             '',
         'Configure your own log text for PGP.' => '',
-        'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (http://otrs.github.io/doc/), chapter "Ticket Event Module".' =>
+        'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (https://doc.otrs.com/doc/), chapter "Ticket Event Module".' =>
             '',
         'Controls how to display the ticket history entries as readable values.' =>
             '',
@@ -6520,7 +6516,7 @@ Thanks for your help!
             'Define el contenido por defecto del cuerpo de una nota, en la ventana de campos libres de ticket de la interfaz del agente.',
         'Defines the default filter fields in the customer user address book search (CustomerUser or CustomerCompany). For the CustomerCompany fields a prefix \'CustomerCompany_\' must be added.' =>
             '',
-        'Defines the default front-end (HTML) theme to be used by the agents and customers. If you like, you can add your own theme. Please refer the administrator manual located at http://otrs.github.io/doc/.' =>
+        'Defines the default front-end (HTML) theme to be used by the agents and customers. If you like, you can add your own theme. Please refer the administrator manual located at https://doc.otrs.com/doc/.' =>
             '',
         'Defines the default front-end language. All the possible values are determined by the available language files on the system (see the next setting).' =>
             'Define el lenguaje por defecto del front-end. Todos los valores posibles se determinan por los archivos de idiomas disponible en el sistema (vea la siguiente configuración).',
@@ -7699,7 +7695,6 @@ Thanks for your help!
             '',
         'OTRS doesn\'t support recurring Appointments without end date or number of iterations. During import process, it might happen that ICS file contains such Appointments. Instead, system creates all Appointments in the past, plus Appointments for the next N months (120 months/10 years by default).' =>
             '',
-        'Open Tickets / Need to be answered' => 'Tickets Abiertos / Que necesitan de una respuesta',
         'Open an external link!' => '',
         'Open tickets (customer user)' => '',
         'Open tickets (customer)' => '',
@@ -7848,7 +7843,7 @@ Thanks for your help!
         'Queue view' => 'Vista de Filas',
         'Queues ↔ Auto Responses' => '',
         'Rebuild the ticket index for AgentTicketQueue.' => '',
-        'Recognize if a ticket is a follow-up to an existing ticket using an external ticket number.' =>
+        'Recognize if a ticket is a follow-up to an existing ticket using an external ticket number. Note: the first capturing group from the \'NumberRegExp\' expression will be used as the ticket number value.' =>
             '',
         'Refresh interval' => 'Intervalo de actualización',
         'Registers a log module, that can be used to log communication related information.' =>
@@ -8771,7 +8766,6 @@ Thanks for your help!
         'Click to select a file or just drop it here.',
         'Click to select files or just drop them here.',
         'Clone web service',
-        'Close',
         'Close preview',
         'Close this dialog',
         'Complex %s with %s arguments',

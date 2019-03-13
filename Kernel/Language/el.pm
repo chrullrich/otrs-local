@@ -25,7 +25,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.146998284734134;
+    $Self->{Completeness}        = 0.148446885189634;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -41,8 +41,8 @@ sub Data {
         'Deploy ACLs' => 'Ανάπτυξη των ACL',
         'Export ACLs' => 'Εξαγωγή των ACL',
         'Filter for ACLs' => 'Φίλτρο για τα ACL',
-        'Just start typing to filter...' => '',
-        'Configuration Import' => '',
+        'Just start typing to filter...' => 'Απλά αρχίστε να πληκτρολογείτε για φιλτράρισμα..',
+        'Configuration Import' => 'Εισαγωγή αρχείου παραμετροποίησης',
         'Here you can upload a configuration file to import ACLs to your system. The file needs to be in .yml format as exported by the ACL editor module.' =>
             'Εδώ μπορείτε να μεταφορτώσετε ένα αρχείο ρυθμίσεων για την των ACL στο σύστημα σας. Το αρχείο θα πρέπει να είναι σε μορφή .yml όπως έχει εξαχθεί από τη μονάδα επεξεργασίας των ACL.',
         'This field is required.' => 'Αυτό το πεδίο είναι απαιτούμενο.',
@@ -71,20 +71,20 @@ sub Data {
         'Go to overview' => 'Μετάβαση στην επισκόπηση',
         'Delete ACL' => 'Διαγραφή ACL',
         'Delete Invalid ACL' => 'Διαγραφή μη έγκυρων ACL',
-        'Match settings' => '',
+        'Match settings' => 'Ταίριασμα ρυθμίσεων',
         'Set up matching criteria for this ACL. Use \'Properties\' to match the current screen or \'PropertiesDatabase\' to match attributes of the current ticket that are in the database.' =>
             '',
-        'Change settings' => '',
+        'Change settings' => 'Αλλαγή ρυθμίσεων',
         'Set up what you want to change if the criteria match. Keep in mind that \'Possible\' is a white list, \'PossibleNot\' a black list.' =>
             '',
-        'Check the official' => '',
-        'documentation' => '',
+        'Check the official' => 'Ελέγξτε το επίσημο',
+        'documentation' => 'τεκμηρίωση',
         'Show or hide the content' => 'Εμφάνιση ή απόκρυψη περιεχομένου',
-        'Edit ACL Information' => '',
+        'Edit ACL Information' => 'Επεξεργασία πληροφοριών ACL',
         'Name' => 'Όνομα',
-        'Stop after match' => '',
-        'Edit ACL Structure' => '',
-        'Save ACL' => '',
+        'Stop after match' => 'Σταμάτα μετά το ταίριασμα',
+        'Edit ACL Structure' => 'Επεξεργασία δομής ACL',
+        'Save ACL' => 'Αποθήκευση ACL',
         'Save' => 'Αποθήκευση',
         'or' => 'ή',
         'Save and finish' => 'Αποθήκευση και τερματισμός',
@@ -3321,7 +3321,6 @@ sub Data {
         'Deploying, please wait...' => '',
         'Preparing to deploy, please wait...' => '',
         'Deploy now' => '',
-        'Close' => 'Κλείσιμο',
         'Try again' => '',
 
         # JS Template: DialogReset
@@ -4808,9 +4807,7 @@ sub Data {
         'Can\'t read file!' => '',
         '<p>If you continue to install this package, the following issues may occur:</p><ul><li>Security problems</li><li>Stability problems</li><li>Performance problems</li></ul><p>Please note that issues that are caused by working with this package are not covered by OTRS service contracts.</p>' =>
             '',
-        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default.</p>' =>
-            '',
-        '<p>You can activate the installation of not verified packages in the <a href="%sAction=AdminSystemConfiguration;Subaction=View;Setting=Package%3A%3AAllowNotVerifiedPackages" target="_blank">System Configuration</a>.</p>' =>
+        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default. You can activate the installation of not verified packages via the "AllowNotVerifiedPackages" system configuration setting.</p>' =>
             '',
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
@@ -5943,8 +5940,6 @@ Thanks for your help!
         'All customer users of a CustomerID' => '',
         'All escalated tickets' => 'Όλα τα σημαντικότερα δελτία',
         'All new tickets, these tickets have not been worked on yet' => 'Όλα τα νέα δελτία, όσα δεν έχουν ακόμη επεξεργαστεί',
-        'All open tickets, these tickets have already been worked on, but need a response' =>
-            'Όλα τα ανοιχτά δελτία, αυτά τα δελτία έχουν ήδη επεξεργαστεί, αλλά χρειάζονται μια απάντηση.',
         'All open tickets, these tickets have already been worked on.' =>
             '',
         'All tickets with a reminder set where the reminder date has been reached' =>
@@ -6129,6 +6124,7 @@ Thanks for your help!
             '',
         'Choose which notifications you\'d like to receive.' => '',
         'Christmas Eve' => 'Χριστούγεννα',
+        'Close' => 'Κλείσιμο',
         'Close this ticket' => 'Κλείσιμο Δελτίου',
         'Closed tickets (customer user)' => '',
         'Closed tickets (customer)' => '',
@@ -6177,7 +6173,7 @@ Thanks for your help!
         'Configure which screen should be shown after a new ticket has been created.' =>
             '',
         'Configure your own log text for PGP.' => '',
-        'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (http://otrs.github.io/doc/), chapter "Ticket Event Module".' =>
+        'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (https://doc.otrs.com/doc/), chapter "Ticket Event Module".' =>
             '',
         'Controls how to display the ticket history entries as readable values.' =>
             '',
@@ -6526,7 +6522,7 @@ Thanks for your help!
             '',
         'Defines the default filter fields in the customer user address book search (CustomerUser or CustomerCompany). For the CustomerCompany fields a prefix \'CustomerCompany_\' must be added.' =>
             '',
-        'Defines the default front-end (HTML) theme to be used by the agents and customers. If you like, you can add your own theme. Please refer the administrator manual located at http://otrs.github.io/doc/.' =>
+        'Defines the default front-end (HTML) theme to be used by the agents and customers. If you like, you can add your own theme. Please refer the administrator manual located at https://doc.otrs.com/doc/.' =>
             '',
         'Defines the default front-end language. All the possible values are determined by the available language files on the system (see the next setting).' =>
             '',
@@ -7705,7 +7701,6 @@ Thanks for your help!
             '',
         'OTRS doesn\'t support recurring Appointments without end date or number of iterations. During import process, it might happen that ICS file contains such Appointments. Instead, system creates all Appointments in the past, plus Appointments for the next N months (120 months/10 years by default).' =>
             '',
-        'Open Tickets / Need to be answered' => 'Ανοικτά Δελτία / Απαιτούν απάντηση',
         'Open an external link!' => '',
         'Open tickets (customer user)' => '',
         'Open tickets (customer)' => '',
@@ -7854,7 +7849,7 @@ Thanks for your help!
         'Queue view' => 'Προβολή Ουρών',
         'Queues ↔ Auto Responses' => '',
         'Rebuild the ticket index for AgentTicketQueue.' => '',
-        'Recognize if a ticket is a follow-up to an existing ticket using an external ticket number.' =>
+        'Recognize if a ticket is a follow-up to an existing ticket using an external ticket number. Note: the first capturing group from the \'NumberRegExp\' expression will be used as the ticket number value.' =>
             '',
         'Refresh interval' => '',
         'Registers a log module, that can be used to log communication related information.' =>
@@ -8777,7 +8772,6 @@ Thanks for your help!
         'Click to select a file or just drop it here.',
         'Click to select files or just drop them here.',
         'Clone web service',
-        'Close',
         'Close preview',
         'Close this dialog',
         'Complex %s with %s arguments',

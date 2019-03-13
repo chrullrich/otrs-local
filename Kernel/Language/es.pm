@@ -29,7 +29,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.676843910806175;
+    $Self->{Completeness}        = 0.679251759052686;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -980,7 +980,7 @@ sub Data {
             '',
         'For information about regular expressions in Perl please see here:' =>
             '',
-        'Perl regular expressions tutorial' => '',
+        'Perl regular expressions tutorial' => 'Tutorial de expresiones regulares en Perl',
         'If modifiers are desired they have to be specified within the regexes themselves.' =>
             '',
         'Regular expressions defined here will be applied before the XSLT mapping.' =>
@@ -1004,11 +1004,11 @@ sub Data {
         'Mapping for outgoing response data' => 'Asignación de datos de respuesta de salida',
         'The response data will be processed by this mapping, to transform it to the kind of data the remote system expects.' =>
             'Los datos de respuesta serán procesados por esta asignación, para transformar a la clase de datos que el sistema remoto espera.',
-        'Include Ticket Data' => '',
-        'Include ticket data in response.' => '',
+        'Include Ticket Data' => 'Incluir en el Ticket Datos de Entrada ',
+        'Include ticket data in response.' => 'Incluir en la respuesta los datos del ticket',
 
         # Template: AdminGenericInterfaceTransportHTTPREST
-        'Network Transport' => '',
+        'Network Transport' => 'Transporte de Red',
         'Properties' => 'Propiedades',
         'Route mapping for Operation' => 'Asignación de rutas para la Operación',
         'Define the route that should get mapped to this operation. Variables marked by a \':\' will get mapped to the entered name and passed along with the others to the mapping. (e.g. /Ticket/:TicketID).' =>
@@ -1031,15 +1031,15 @@ sub Data {
         'e.g https://www.otrs.com:10745/api/v1.0 (without trailing backslash)' =>
             'ej. https://www.otrs.com:10745/api/v1.0 (sin la barra invertida)',
         'Timeout' => 'Se acabó el tiempo',
-        'Timeout value for requests.' => '',
+        'Timeout value for requests.' => 'Valor de tiempo de espera para las solicitudes.',
         'Authentication' => 'Autenticación',
         'An optional authentication mechanism to access the remote system.' =>
-            '',
+            'Un mecanismo de autenticación opcional para acceder al sistema remoto.',
         'BasicAuth User' => '',
         'The user name to be used to access the remote system.' => 'Nombre de usuario a ser usado para acceder al sistema remoto.',
         'BasicAuth Password' => '',
         'The password for the privileged user.' => 'La contraseña para el usuario con permisos especiales.',
-        'Use Proxy Options' => '',
+        'Use Proxy Options' => 'Utilizar Opciones de Proxy',
         'Show or hide Proxy options to connect to the remote system.' => '',
         'Proxy Server' => 'Servidor Proxy',
         'URI of a proxy server to be used (if needed).' => 'URI del servidor proxy a usar (si se requiere).',
@@ -1048,15 +1048,15 @@ sub Data {
         'The user name to be used to access the proxy server.' => 'El nombre de usuario a ser usado para acceder al servidor proxy.',
         'Proxy Password' => 'Contraseña de Proxy',
         'The password for the proxy user.' => 'La contraseña para el usuario de proxy.',
-        'Skip Proxy' => '',
+        'Skip Proxy' => 'Saltar Proxy',
         'Skip proxy servers that might be configured globally?' => '',
         'Use SSL Options' => 'Usar opciones SSL',
         'Show or hide SSL options to connect to the remote system.' => 'Muestra u oculta las opciones SSL para conectar al sistema remoto.',
-        'Client Certificate' => '',
+        'Client Certificate' => 'Certificado de Cliente',
         'The full path and name of the SSL client certificate file (must be in PEM, DER or PKCS#12 format).' =>
             '',
         'e.g. /opt/otrs/var/certificates/SOAP/certificate.pem' => '',
-        'Client Certificate Key' => '',
+        'Client Certificate Key' => 'Clave de Certificado de Cliente',
         'The full path and name of the SSL client certificate key file (if not already included in certificate file).' =>
             '',
         'e.g. /opt/otrs/var/certificates/SOAP/key.pem' => '',
@@ -1091,8 +1091,8 @@ sub Data {
             '',
         'SOAPAction scheme' => '',
         'Select how SOAPAction should be constructed.' => '',
-        'Some web services require a specific construction.' => '',
-        'Some web services send a specific construction.' => '',
+        'Some web services require a specific construction.' => 'Algunos servicios web requieren una construcción específica.',
+        'Some web services send a specific construction.' => 'Algunos servicios web envían una construcción específica.',
         'SOAPAction separator' => 'Separador SOAPAcción',
         'Character to use as separator between name space and SOAP operation.' =>
             '',
@@ -1172,7 +1172,7 @@ sub Data {
         'Error handling modules are used to react in case of errors during the communication. Those modules are executed in a specific order, which can be changed by drag and drop.' =>
             '',
         'Backend' => '',
-        'Add error handling module' => '',
+        'Add error handling module' => 'Agregar módulo de manejo de errores',
         'Operations are individual system functions which remote systems can request.' =>
             'Operaciones son funciones de sistema individuales las cuales los sistemas remotos pueden solicitar.',
         'Invokers prepare data for a request to a remote web service, and process its response data.' =>
@@ -1222,7 +1222,7 @@ sub Data {
         'Add Mail Account' => 'Agregar Cuenta de Correo',
         'Edit Mail Account for host' => '',
         'and user account' => '',
-        'Filter for Mail Accounts' => '',
+        'Filter for Mail Accounts' => 'Filtro para Cuenta de Mail',
         'Filter for mail accounts' => '',
         'All incoming emails with one account will be dispatched in the selected queue.' =>
             '',
@@ -3320,7 +3320,6 @@ sub Data {
         'Deploying, please wait...' => '',
         'Preparing to deploy, please wait...' => '',
         'Deploy now' => '',
-        'Close' => 'Cerrar',
         'Try again' => '',
 
         # JS Template: DialogReset
@@ -3430,7 +3429,7 @@ sub Data {
         'Attachment added!' => '¡Archivo adjunto añadido!',
 
         # Perl Module: Kernel/Modules/AdminAutoResponse.pm
-        'Auto Response added!' => '',
+        'Auto Response added!' => 'Auto Respuesta Añadida!',
 
         # Perl Module: Kernel/Modules/AdminCommunicationLog.pm
         'Invalid CommunicationID!' => '',
@@ -4808,9 +4807,7 @@ sub Data {
         'Can\'t read file!' => '¡El archivo no se puede leer!',
         '<p>If you continue to install this package, the following issues may occur:</p><ul><li>Security problems</li><li>Stability problems</li><li>Performance problems</li></ul><p>Please note that issues that are caused by working with this package are not covered by OTRS service contracts.</p>' =>
             '',
-        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default.</p>' =>
-            '<p>La instalación de paquetes que no han sido verificados por el Grupo OTRS no es posible por defecto.</p>',
-        '<p>You can activate the installation of not verified packages in the <a href="%sAction=AdminSystemConfiguration;Subaction=View;Setting=Package%3A%3AAllowNotVerifiedPackages" target="_blank">System Configuration</a>.</p>' =>
+        '<p>The installation of packages which are not verified by the OTRS Group is not possible by default. You can activate the installation of not verified packages via the "AllowNotVerifiedPackages" system configuration setting.</p>' =>
             '',
 
         # Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
@@ -5960,8 +5957,6 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'All customer users of a CustomerID' => 'Todos los clientes de un IDCliente',
         'All escalated tickets' => 'Todos los Tickets escalados',
         'All new tickets, these tickets have not been worked on yet' => 'Todos los Tickets nuevos, todavía no se ha trabajado en estos tickets',
-        'All open tickets, these tickets have already been worked on, but need a response' =>
-            'Todos los Tickets abiertos, ya se ha trabajado en estos tickets, pero necesitan una respuesta',
         'All open tickets, these tickets have already been worked on.' =>
             '',
         'All tickets with a reminder set where the reminder date has been reached' =>
@@ -6146,6 +6141,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
             '',
         'Choose which notifications you\'d like to receive.' => '',
         'Christmas Eve' => 'Nochebuena',
+        'Close' => 'Cerrar',
         'Close this ticket' => 'Cerrar este ticket',
         'Closed tickets (customer user)' => 'Tickets cerrados (cliente usuario)',
         'Closed tickets (customer)' => 'Tickets cerrados (cliente)',
@@ -6194,8 +6190,8 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'Configure which screen should be shown after a new ticket has been created.' =>
             'Configura que pantalla debe ser mostrada después de que un nuevo ticket haya sido creado.',
         'Configure your own log text for PGP.' => 'Configure su propio texto de registro de PGP.',
-        'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (http://otrs.github.io/doc/), chapter "Ticket Event Module".' =>
-            'Configura un ajuste por defecto de CampoDinamicoTicket. "Nombre" define el campo dinámico que debe ser usado, "Valor" es el dato que será establecido, y "Evento" define el disparador del evento. Por favor compruebe el manual del desarrollador (http://otrs.github.io/doc/), capítulo "Módulo Evento Ticket".',
+        'Configures a default TicketDynamicField setting. "Name" defines the dynamic field which should be used, "Value" is the data that will be set, and "Event" defines the trigger event. Please check the developer manual (https://doc.otrs.com/doc/), chapter "Ticket Event Module".' =>
+            'Configura un ajuste por defecto de CampoDinamicoTicket. "Nombre" define el campo dinámico que debe ser usado, "Valor" es el dato que será establecido, y "Evento" define el disparador del evento. Por favor compruebe el manual del desarrollador (https://doc.otrs.com/doc/), capítulo "Módulo Evento Ticket".',
         'Controls how to display the ticket history entries as readable values.' =>
             'Controla cómo mostrar el historial de entradas como valores legibles.',
         'Controls if CustomerID is automatically copied from the sender address for unknown customers.' =>
@@ -6543,7 +6539,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
             '',
         'Defines the default filter fields in the customer user address book search (CustomerUser or CustomerCompany). For the CustomerCompany fields a prefix \'CustomerCompany_\' must be added.' =>
             '',
-        'Defines the default front-end (HTML) theme to be used by the agents and customers. If you like, you can add your own theme. Please refer the administrator manual located at http://otrs.github.io/doc/.' =>
+        'Defines the default front-end (HTML) theme to be used by the agents and customers. If you like, you can add your own theme. Please refer the administrator manual located at https://doc.otrs.com/doc/.' =>
             '',
         'Defines the default front-end language. All the possible values are determined by the available language files on the system (see the next setting).' =>
             '',
@@ -7722,7 +7718,6 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
             '',
         'OTRS doesn\'t support recurring Appointments without end date or number of iterations. During import process, it might happen that ICS file contains such Appointments. Instead, system creates all Appointments in the past, plus Appointments for the next N months (120 months/10 years by default).' =>
             '',
-        'Open Tickets / Need to be answered' => 'Tickets Abiertos / Necesitan ser respondidos',
         'Open an external link!' => '¡Abrir un enlace externo!',
         'Open tickets (customer user)' => 'Tickets abiertos (usuario cliente)',
         'Open tickets (customer)' => 'Tickets abiertos (cliente)',
@@ -7871,7 +7866,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'Queue view' => 'Vista por colas',
         'Queues ↔ Auto Responses' => '',
         'Rebuild the ticket index for AgentTicketQueue.' => '',
-        'Recognize if a ticket is a follow-up to an existing ticket using an external ticket number.' =>
+        'Recognize if a ticket is a follow-up to an existing ticket using an external ticket number. Note: the first capturing group from the \'NumberRegExp\' expression will be used as the ticket number value.' =>
             '',
         'Refresh interval' => 'Intervalo de actualización',
         'Registers a log module, that can be used to log communication related information.' =>
@@ -8794,7 +8789,6 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'Click to select a file or just drop it here.',
         'Click to select files or just drop them here.',
         'Clone web service',
-        'Close',
         'Close preview',
         'Close this dialog',
         'Complex %s with %s arguments',

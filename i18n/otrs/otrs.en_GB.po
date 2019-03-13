@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2019-01-08 15:00+0000\n"
+"POT-Creation-Date: 2019-02-21 13:30+0000\n"
 "PO-Revision-Date: 2018-09-20 13:03+0000\n"
 "Last-Translator: Isabell Long <isabell@issyl0.co.uk>, 2018\n"
 "Language-Team: English (United Kingdom) (https://www.transifex.com/otrs/teams/23435/en_GB/)\n"
@@ -10638,10 +10638,6 @@ msgid "Deploy now"
 msgstr ""
 
 #. JS Template: DialogDeployment
-msgid "Close"
-msgstr "Close"
-
-#. JS Template: DialogDeployment
 msgid "Try again"
 msgstr ""
 
@@ -14861,14 +14857,9 @@ msgstr ""
 #. Perl Module: Kernel/System/Package.pm
 msgid ""
 "<p>The installation of packages which are not verified by the OTRS Group is "
-"not possible by default.</p>"
-msgstr ""
-
-#. Perl Module: Kernel/System/Package.pm
-msgid ""
-"<p>You can activate the installation of not verified packages in the <a "
-"href=\"%sAction=AdminSystemConfiguration;Subaction=View;Setting=Package%3A%3AAllowNotVerifiedPackages\""
-" target=\"_blank\">System Configuration</a>.</p>"
+"not possible by default. You can activate the installation of not verified "
+"packages via the \"AllowNotVerifiedPackages\" system configuration "
+"setting.</p>"
 msgstr ""
 
 #. Perl Module: Kernel/System/ProcessManagement/DB/Process.pm
@@ -18071,14 +18062,6 @@ msgid "All new tickets, these tickets have not been worked on yet"
 msgstr "All new tickets, these tickets have not been worked on yet"
 
 #. SysConfig
-msgid ""
-"All open tickets, these tickets have already been worked on, but need a "
-"response"
-msgstr ""
-"All open tickets, these tickets have already been worked on, but need a "
-"response"
-
-#. SysConfig
 msgid "All open tickets, these tickets have already been worked on."
 msgstr ""
 
@@ -18738,6 +18721,10 @@ msgid "Christmas Eve"
 msgstr "Christmas Eve"
 
 #. SysConfig
+msgid "Close"
+msgstr "Close"
+
+#. SysConfig
 msgid "Close this ticket"
 msgstr "Close this ticket"
 
@@ -18913,12 +18900,8 @@ msgid ""
 "Configures a default TicketDynamicField setting. \"Name\" defines the "
 "dynamic field which should be used, \"Value\" is the data that will be set, "
 "and \"Event\" defines the trigger event. Please check the developer manual "
-"(http://otrs.github.io/doc/), chapter \"Ticket Event Module\"."
+"(https://doc.otrs.com/doc/), chapter \"Ticket Event Module\"."
 msgstr ""
-"Configures a default TicketDynamicField setting. \"Name\" defines the "
-"dynamic field which should be used, \"Value\" is the data that will be set, "
-"and \"Event\" defines the trigger event. Please check the developer manual "
-"(http://otrs.github.io/doc/), chapter \"Ticket Event Module\"."
 
 #. SysConfig
 msgid "Controls how to display the ticket history entries as readable values."
@@ -20324,11 +20307,8 @@ msgstr ""
 msgid ""
 "Defines the default front-end (HTML) theme to be used by the agents and "
 "customers. If you like, you can add your own theme. Please refer the "
-"administrator manual located at http://otrs.github.io/doc/."
+"administrator manual located at https://doc.otrs.com/doc/."
 msgstr ""
-"Defines the default front-end (HTML) theme to be used by the agents and "
-"customers. If you like, you can add your own theme. Please refer the "
-"administrator manual located at http://otrs.github.io/doc/."
 
 #. SysConfig
 msgid ""
@@ -24856,10 +24836,6 @@ msgid ""
 msgstr ""
 
 #. SysConfig
-msgid "Open Tickets / Need to be answered"
-msgstr "Open Tickets / Need to be answered"
-
-#. SysConfig
 msgid "Open an external link!"
 msgstr ""
 
@@ -25555,10 +25531,9 @@ msgstr "Rebuild the ticket index for AgentTicketQueue."
 #. SysConfig
 msgid ""
 "Recognize if a ticket is a follow-up to an existing ticket using an external"
-" ticket number."
+" ticket number. Note: the first capturing group from the 'NumberRegExp' "
+"expression will be used as the ticket number value."
 msgstr ""
-"Recognise if a ticket is a follow-up to an existing ticket using an external"
-" ticket number."
 
 #. SysConfig
 msgid "Refresh interval"
