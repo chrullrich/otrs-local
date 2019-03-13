@@ -12,6 +12,7 @@ use strict;
 use warnings;
 
 use parent qw(Kernel::System::Console::BaseCommand);
+use Time::HiRes qw(sleep);
 
 our @ObjectDependencies = (
     'Kernel::System::Cache',
@@ -107,7 +108,7 @@ sub Run {
 
     my $CacheObject = $Kernel::OM->Get('Kernel::System::Cache');
 
-    # Enable in memory cache, which is normally disabled for commands.
+    # Enable in-memory cache to improve SysConfig performance, which is normally disabled for commands.
     $CacheObject->Configure(
         CacheInMemory => 1,
     );
