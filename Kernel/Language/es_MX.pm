@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.575596361764201;
+    $Self->{Completeness}        = 0.575856164383562;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -623,7 +623,7 @@ sub Data {
         'Send' => 'Enviar',
 
         # Template: AdminGenericAgent
-        'Generic Agent Job Management' => '',
+        'Generic Agent Job Management' => 'Gestión de Trabajos para el Agente Genérico',
         'Edit Job' => 'Editar tarea',
         'Add Job' => 'Agregar Tarea',
         'Run Job' => 'Ejecutar Tarea',
@@ -636,7 +636,7 @@ sub Data {
         'Job Settings' => 'Configuraciones de la Tarea',
         'Job name' => 'Nombre de la tarea',
         'The name you entered already exists.' => 'El nombre introdujo ya existe.',
-        'Automatic Execution (Multiple Tickets)' => '',
+        'Automatic Execution (Multiple Tickets)' => 'Ejecución Automática (Múltiples Tickets)',
         'Execution Schedule' => 'Agenda de Ejecución',
         'Schedule minutes' => 'Fijar minutos',
         'Schedule hours' => 'Fijar horas',
@@ -646,7 +646,7 @@ sub Data {
             'Actualmente esta tarea del agente genérico no se ejecutará automáticamente',
         'To enable automatic execution select at least one value from minutes, hours and days!' =>
             'Para habilitar la ejecución automática, seleccione al menos un valor de minutos, horas y días.',
-        'Event Based Execution (Single Ticket)' => '',
+        'Event Based Execution (Single Ticket)' => 'Ejecución Basada en Eventos (Ticket Individual)',
         'Event Triggers' => 'Disparadores de Eventos',
         'List of all configured events' => 'Lista de todos los eventos configurados',
         'Delete this event' => 'Eliminar este evento',
@@ -772,7 +772,7 @@ sub Data {
         # Template: AdminGenericInterfaceErrorHandlingDefault
         'Add ErrorHandling' => 'Agregar Manejo de Errores',
         'Edit ErrorHandling' => 'Editar manejo de errores',
-        'Do you really want to delete this error handling module?' => '',
+        'Do you really want to delete this error handling module?' => '¿Realmente quiere remover este módulo de manejo de errores?',
         'All configuration data will be lost.' => 'Todos los datos de la configuración se perderán.',
         'General options' => 'Opciones generales',
         'The name can be used to distinguish different error handling configurations.' =>
@@ -1022,7 +1022,7 @@ sub Data {
         'Add response header' => 'Agregar encabezado de respuesta',
         'Endpoint' => 'Punto final',
         'URI to indicate specific location for accessing a web service.' =>
-            '',
+            'URI para indicar la ubicación específica para acceder a un servicio web.',
         'e.g https://www.otrs.com:10745/api/v1.0 (without trailing backslash)' =>
             'ej. https://www.otrs.com:10745/api/v1.0 (sin la barra invertida)',
         'Timeout' => '',
@@ -1050,11 +1050,11 @@ sub Data {
         'Client Certificate' => 'Certificado del Cliente ',
         'The full path and name of the SSL client certificate file (must be in PEM, DER or PKCS#12 format).' =>
             '',
-        'e.g. /opt/otrs/var/certificates/SOAP/certificate.pem' => '',
+        'e.g. /opt/otrs/var/certificates/SOAP/certificate.pem' => 'p.e. /opt/otrs/var/certificates/SOAP/certificate.pem',
         'Client Certificate Key' => 'Certificado Llave del Cliente',
         'The full path and name of the SSL client certificate key file (if not already included in certificate file).' =>
             '',
-        'e.g. /opt/otrs/var/certificates/SOAP/key.pem' => '',
+        'e.g. /opt/otrs/var/certificates/SOAP/key.pem' => 'p.e. /opt/otrs/var/certificates/SOAP/key.pem',
         'Client Certificate Key Password' => 'Contraseña para el Certificado Llave del Cliente',
         'The password to open the SSL certificate if the key is encrypted.' =>
             '',
@@ -1065,7 +1065,7 @@ sub Data {
         'Certification Authority (CA) Directory' => 'Directorio del Certificado de Autorización (CA)',
         'The full path of the certification authority directory where the CA certificates are stored in the file system.' =>
             '',
-        'e.g. /opt/otrs/var/certificates/SOAP/CA' => '',
+        'e.g. /opt/otrs/var/certificates/SOAP/CA' => 'p.e. /opt/otrs/var/certificates/SOAP/CA',
         'Controller mapping for Invoker' => 'Mapeo del Controlador para el Invocador',
         'The controller that the invoker should send requests to. Variables marked by a \':\' will get replaced by the data value and passed along with the request. (e.g. /Ticket/:TicketID?UserLogin=:UserLogin&Password=:Password).' =>
             '',
@@ -1076,7 +1076,7 @@ sub Data {
         'The default HTTP command to use for the requests.' => 'El comando HTTP predeterminado para usar con las peticiones.',
 
         # Template: AdminGenericInterfaceTransportHTTPSOAP
-        'e.g. https://local.otrs.com:8000/Webservice/Example' => '',
+        'e.g. https://local.otrs.com:8000/Webservice/Example' => 'p.e. https://local.otrs.com:8000/Webservice/Example',
         'Set SOAPAction' => '',
         'Set to "Yes" in order to send a filled SOAPAction header.' => '',
         'Set to "No" in order to send an empty SOAPAction header.' => '',
@@ -2038,7 +2038,8 @@ sub Data {
         'This email address is already used as system email address.' => '',
         'The display name and email address will be shown on mail you send.' =>
             'El nombre a mostrar y la dirección de correo electrónico se agregarán en los correos que ud. envíe.',
-        'This system address cannot be set to invalid, because it is used in one or more queue(s).' =>
+        'This system address cannot be set to invalid.' => '',
+        'This system address cannot be set to invalid, because it is used in one or more queue(s) or auto response(s).' =>
             '',
 
         # Template: AdminSystemConfiguration
@@ -2161,7 +2162,7 @@ sub Data {
         'Your email address is' => 'Su dirección de correo electrónico es',
 
         # Template: AdminTemplateAttachment
-        'Manage Templates-Attachments Relations' => 'Gestionar relaciones  entre Plantillas-Archivos adjuntos.',
+        'Manage Template-Attachment Relations' => '',
         'Toggle active for all' => 'Activar para todos',
         'Link %s to selected %s' => 'Vínculo %s a %s seleccionados(as)',
 
@@ -2474,9 +2475,9 @@ sub Data {
         'Split' => 'Separar',
 
         # Template: AgentStatisticsAdd
-        'Statistics Overview' => '',
-        'Read more about statistics in OTRS' => '',
+        'Statistics Management' => '',
         'Add Statistics' => '',
+        'Read more about statistics in OTRS' => '',
         'Dynamic Matrix' => 'Matriz Dinámica',
         'Each cell contains a singular data point.' => '',
         'Dynamic List' => 'Lista Dinámica',
@@ -2487,11 +2488,13 @@ sub Data {
         'Create Statistic' => 'Crear Estádística',
 
         # Template: AgentStatisticsEdit
+        'Edit Statistics' => '',
         'Run now' => 'Ejecutar ahora',
         'Statistics Preview' => 'Vista Previa de Estadísticas',
         'Save Statistic' => '',
 
         # Template: AgentStatisticsImport
+        'Import Statistics' => '',
         'Import Statistics Configuration' => '',
 
         # Template: AgentStatisticsOverview
@@ -2504,6 +2507,8 @@ sub Data {
         'Delete statistic %s' => 'Eliminar estadística %s',
 
         # Template: AgentStatisticsView
+        'Statistics Overview' => '',
+        'View Statistics' => '',
         'Statistics Information' => '',
         'Created by' => 'Creado por',
         'Changed by' => 'Modificado por',
@@ -3365,6 +3370,7 @@ sub Data {
         'There was an error synchronizing the ACLs.' => '',
         'ACL %s could not be deleted' => '',
         'There was an error getting data for ACL with ID %s' => '',
+        '%s (copy) %s' => '',
         'Please note that ACL restrictions will be ignored for the Superuser account (UserID 1).' =>
             '',
         'Exact match' => '',
@@ -3403,6 +3409,7 @@ sub Data {
         'There was an error getting data for Notification with ID:%s!' =>
             '',
         'Unknown Notification %s!' => '',
+        '%s (copy)' => '',
         'There was an error creating the Notification' => '',
         'Notifications could not be Imported due to a unknown error, please check OTRS logs for more information' =>
             '',
@@ -4063,11 +4070,15 @@ sub Data {
         # Perl Module: Kernel/Modules/AgentTicketBulk.pm
         'Can\'t lock Tickets, no TicketIDs are given!' => '',
         'Ticket (%s) is not unlocked!' => '',
+        'The following tickets were ignored because they are locked by another agent or you don\'t have write access to tickets: %s.' =>
+            '',
+        'The following ticket was ignored because it is locked by another agent or you don\'t have write access to ticket: %s.' =>
+            '',
+        'You need to select at least one ticket.' => '',
         'Bulk feature is not enabled!' => '',
         'No selectable TicketID is given!' => '',
         'You either selected no ticket or only tickets which are locked by other agents.' =>
             '',
-        'You need to select at least one ticket.' => '',
         'The following tickets were ignored because they are locked by another agent or you don\'t have write access to these tickets: %s.' =>
             '',
         'The following tickets were locked: %s.' => '',
@@ -4521,6 +4532,7 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/Layout.pm
         'Standard' => 'Estándar',
+        'The following tickets are not updated: %s.' => '',
         'h' => 'h',
         'm' => 'm',
         'd' => 'd',
@@ -5003,6 +5015,7 @@ sub Data {
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/KernelVersion.pm
         'Kernel Version' => 'Versión de Kernel',
+        'Could not determine kernel version.' => 'No fué posible determiar la versión del Kernel',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/Load.pm
         'System Load' => 'Carga del Sistema',
@@ -5093,9 +5106,9 @@ sub Data {
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/LegacyConfigBackups.pm
         'Legacy Configuration Backups' => '',
         'No legacy configuration backup files found.' => '',
-        'Legacy configuration backup files found in %s, but they might still be required by some packages.' =>
+        'Legacy configuration backup files found in Kernel/Config/Backups folder, but they might still be required by some packages.' =>
             '',
-        'Legacy configuration backup files are no longer needed for the installed packages, please remove them from %s.' =>
+        'Legacy configuration backup files are no longer needed for the installed packages, please remove them from Kernel/Config/Backups folder.' =>
             '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageDeployment.pm
@@ -5161,7 +5174,6 @@ sub Data {
         'OTRS time zone is not set.' => '',
         'User default time zone' => '',
         'User default time zone is not set.' => '',
-        'OTRS time zone setting for calendar' => '',
         'Calendar time zone is not set.' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/UI/AgentSkinUsage.pm
@@ -5981,6 +5993,9 @@ Thanks for your help!
             '',
         'Allows extended search conditions in ticket search of the generic agent interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&&*key2*)" or "(*key1*||*key2*)".' =>
             '',
+        'Allows generic agent to execute custom command line scripts.' =>
+            '',
+        'Allows generic agent to execute custom modules.' => '',
         'Allows having a medium format ticket overview (CustomerInfo => 1 - shows also the customer information).' =>
             'Permite tener un formato de vista mediana para los tickets (InformaciónCliente => 1 - muestra además la información del cliente).',
         'Allows having a small format ticket overview (CustomerInfo => 1 - shows also the customer information).' =>
@@ -6050,7 +6065,7 @@ Thanks for your help!
         'Balanced white skin by Felix Niklas (slim version).' => '',
         'Balanced white skin by Felix Niklas.' => 'Piel blanca balanceda diseñada por Felix Niklas.',
         'Based on global RichText setting' => '',
-        'Basic fulltext index settings. Execute "bin/otrs.Console.pl Maint::Ticket::FulltextIndexRebuild" in order to generate a new index.' =>
+        'Basic fulltext index settings. Execute "bin/otrs.Console.pl Maint::Ticket::FulltextIndex --rebuild" in order to generate a new index.' =>
             '',
         'Blocks all the incoming emails that do not have a valid ticket number in subject with From: @example.com address.' =>
             'Bloquea todos los correos electrónicos entrantes que no tienen un número de ticket válido en el asunto con dirección De: @ejemplo.com.',
@@ -7328,7 +7343,7 @@ Thanks for your help!
         'Graph: Stacked Area Chart' => '',
         'Greek' => 'Griego',
         'Hebrew' => 'Hebrep',
-        'Helps to extend your articles full-text search (From, To, Cc, Subject and Body search). It will strip all articles and will build an index after article creation, increasing fulltext searches about 50%. To create an initial index use "bin/otrs.Console.pl Maint::Ticket::FulltextIndexRebuild".' =>
+        'Helps to extend your articles full-text search (From, To, Cc, Subject and Body search). It will strip all articles and will build an index after article creation, increasing fulltext searches about 50%. To create an initial index use "bin/otrs.Console.pl Maint::Ticket::FulltextIndex --rebuild".' =>
             '',
         'High Contrast' => '',
         'High contrast skin for visually impaired users.' => '',
@@ -8334,6 +8349,7 @@ Thanks for your help!
         'Shows information on how to start OTRS Daemon' => '',
         'Shows link to external page in the ticket zoom view of the agent interface. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
             '',
+        'Shows the article head information in the agent zoom view.' => '',
         'Shows the articles sorted normally or in reverse, under ticket zoom in the agent interface.' =>
             'Muestra los artículos ordenados normalmente o de forma inversa, en la vista detallada de un ticket, en la interfaz del agente.',
         'Shows the customer user information (phone and email) in the compose screen.' =>
