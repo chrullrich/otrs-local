@@ -166,13 +166,11 @@ $Selenium->RunTest(
         # Input search parameters for CustomerUser.
         $Selenium->find_element( "#AgentCustomerInformationCenterSearchCustomerUser", 'css' )
             ->send_keys( $RandomID . 'CustomerUser' . '*' );
+        sleep 1;
 
-        $Selenium->WaitFor( JavaScript => "return \$('.ui-menu:eq(1) li').length > 0;" );
+        # Check result of customer user search (there should be 5 matches).
+        $Selenium->WaitFor( JavaScript => "return \$('.ui-menu:eq(1) li').length == 5;" );
 
-        $Self->Is(
-            $Selenium->execute_script("return \$('.ui-menu:eq(1) li').length;"), 5,
-            'Check result of customer user search.',
-        );
         $Selenium->find_element( "#AgentCustomerInformationCenterSearchCustomerUser", 'css' )->clear();
 
         # Input search parameters CustomerID.
@@ -328,6 +326,14 @@ $Selenium->RunTest(
                     UserID   => $TestUserID,
                 );
 
+                # Ticket deletion could fail if apache still writes to ticket history. Try again in this case.
+                if ( !$Success ) {
+                    sleep 3;
+                    $Success = $TicketObject->TicketDelete(
+                        TicketID => $TicketID,
+                        UserID   => $TestUserID,
+                    );
+                }
                 $Self->True(
                     $Success,
                     "Delete ticket - $TicketID"
