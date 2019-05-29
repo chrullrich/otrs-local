@@ -21,6 +21,7 @@ our @ObjectDependencies = (
     'Kernel::Config',
     'Kernel::Language',
     'Kernel::System::AuthSession',
+    'Kernel::System::Cache',
     'Kernel::System::Chat',
     'Kernel::System::CustomerGroup',
     'Kernel::System::DateTime',
@@ -1194,6 +1195,37 @@ sub Notify {
     );
 }
 
+=head2 NotifyNonUpdatedTickets()
+
+Adds notification about tickets which are not updated.
+
+    my $Output = $LayoutObject->NotifyNonUpdatedTickets();
+
+=cut
+
+sub NotifyNonUpdatedTickets {
+    my ( $Self, %Param ) = @_;
+
+    my $NonUpdatedTicketsString = $Kernel::OM->Get('Kernel::System::Cache')->Get(
+        Type => 'Ticket',
+        Key  => 'NonUpdatedTicketsString-' . $Self->{UserID},
+    );
+
+    return if !$NonUpdatedTicketsString;
+
+    # Delete this value from the cache.
+    $Kernel::OM->Get('Kernel::System::Cache')->Delete(
+        Type => 'Ticket',
+        Key  => 'NonUpdatedTicketsString-' . $Self->{UserID},
+    );
+
+    return $Self->Notify(
+        Info => $Self->{LanguageObject}
+            ->Translate( "The following tickets are not updated: %s.", $NonUpdatedTicketsString ),
+    );
+
+}
+
 =head2 Header()
 
 generates the HTML for the page begin in the Agent interface.
@@ -1606,6 +1638,7 @@ sub Footer {
         SessionIDCookie                => $Self->{SessionIDCookie},
         SessionName                    => $Self->{SessionName},
         SessionID                      => $Self->{SessionID},
+        SessionUseCookie               => $ConfigObject->Get('SessionUseCookie'),
         ChallengeToken                 => $Self->{UserChallengeToken},
         CustomerPanelSessionName       => $ConfigObject->Get('CustomerPanelSessionName'),
         UserLanguage                   => $Self->{UserLanguage},
@@ -4238,6 +4271,7 @@ sub CustomerFooter {
         SessionIDCookie          => $Self->{SessionIDCookie},
         SessionName              => $Self->{SessionName},
         SessionID                => $Self->{SessionID},
+        SessionUseCookie         => $ConfigObject->Get('SessionUseCookie'),
         ChallengeToken           => $Self->{UserChallengeToken},
         CustomerPanelSessionName => $ConfigObject->Get('CustomerPanelSessionName'),
         UserLanguage             => $Self->{UserLanguage},
