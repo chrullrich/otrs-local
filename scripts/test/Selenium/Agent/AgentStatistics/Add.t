@@ -439,6 +439,7 @@ $Selenium->RunTest(
             }
 
             # Delete created test statistics.
+            $Selenium->execute_script('window.Core.App.PageLoadComplete = false;');
             $Selenium->find_element(
                 "//a[contains(\@href, \'Action=AgentStatistics;Subaction=DeleteAction;StatID=$StatsIDLast\' )]"
             )->click();
@@ -446,14 +447,9 @@ $Selenium->RunTest(
             $Selenium->WaitFor( AlertPresent => 1 );
             sleep 1;
             $Selenium->accept_alert();
-
             $Selenium->WaitFor(
                 JavaScript =>
-                    'return typeof(Core) == "object" && typeof(Core.App) == "object" && Core.App.PageLoadComplete;'
-            );
-            $Selenium->WaitFor(
-                JavaScript =>
-                    "return typeof(\$) === 'function' && !\$('a[href*=\"Action=AgentStatistics;Subaction=Edit;StatID=$StatsIDLast\"]').length;"
+                    'return typeof(Core) == "object" && typeof(Core.App) == "object" && Core.App.PageLoadComplete'
             );
 
             $Self->True(
@@ -461,7 +457,7 @@ $Selenium->RunTest(
                     "return !\$('a[href*=\"Action=AgentStatistics;Subaction=Edit;StatID=$StatsIDLast\"]').length;"
                 ),
                 "StatsData statistic is deleted - $StatsData->{Title} "
-            );
+            ) || die;
         }
 
         my $DBObject = $Kernel::OM->Get('Kernel::System::DB');

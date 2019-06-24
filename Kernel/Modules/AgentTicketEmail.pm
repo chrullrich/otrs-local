@@ -462,6 +462,15 @@ sub Run {
                 $Article{ContentType} = 'text/plain';
             }
 
+            # Strip out external content if BlockLoadingRemoteContent is enabled.
+            if ( $ConfigObject->Get('Ticket::Frontend::BlockLoadingRemoteContent') ) {
+                my %SafetyCheckResult = $Kernel::OM->Get('Kernel::System::HTMLUtils')->Safety(
+                    String       => $Article{Body},
+                    NoExtSrcLoad => 1,
+                );
+                $Article{Body} = $SafetyCheckResult{String};
+            }
+
             # show customer info
             if ( $ConfigObject->Get('Ticket::Frontend::CustomerInfoCompose') ) {
                 if ( $Article{CustomerUserID} ) {
@@ -2037,8 +2046,9 @@ sub Run {
 
                 # set template text, replace smart tags (limited as ticket is not created)
                 $TemplateText = $TemplateGenerator->Template(
-                    TemplateID => $GetParam{StandardTemplateID},
-                    UserID     => $Self->{UserID},
+                    TemplateID     => $GetParam{StandardTemplateID},
+                    UserID         => $Self->{UserID},
+                    CustomerUserID => $CustomerUser,
                 );
 
                 # create StdAttachmentObject
