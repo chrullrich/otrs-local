@@ -239,7 +239,7 @@ Core.Agent.AppointmentCalendar = (function (TargetNS) {
                             Action: 'AgentAppointmentEdit',
                             Subaction: 'UpdatePreferences',
                             OverviewScreen: Core.Config.Get('OverviewScreen') ? Core.Config.Get('OverviewScreen') : 'CalendarOverview',
-                            DefaultView: Core.Config.Get('DefaultView')
+                            DefaultView: View.name
                         },
                         function (Response) {
                             if (!Response.Success) {

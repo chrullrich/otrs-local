@@ -363,8 +363,8 @@ sub _ShowEdit {
     # Create options for request and response name schemes.
     for my $Type (qw(Request Response)) {
         my $TypeDefault = $Type eq 'Request' ? 'Plain' : 'Response';
-        my $SelectedID = $TransportConfig->{ $Type . 'NameScheme' } || $TypeDefault;
-        my %Data       = (
+        my $SelectedID  = $TransportConfig->{ $Type . 'NameScheme' } || $TypeDefault;
+        my %Data        = (
             'Plain'   => "<FunctionName>DATA</FunctionName>",
             $Type     => "<FunctionName${Type}>DATA</FunctionName${Type}>",
             'Append'  => "<FunctionNameFreeText>DATA</FunctionNameFreeText>",
@@ -391,9 +391,12 @@ sub _ShowEdit {
     }
 
     # Create SOAPAction select.
-    my $SelectedSOAPAction = $TransportConfig->{SOAPAction} || 'Yes';
+    my $SelectedSOAPAction = $TransportConfig->{SOAPAction} || Translatable('Yes');
     $Param{SOAPActionStrg} = $LayoutObject->BuildSelection(
-        Data          => [ 'No', 'Yes' ],
+        Data => {
+            'No'  => Translatable('No'),
+            'Yes' => Translatable('Yes'),
+        },
         Name          => 'SOAPAction',
         SelectedValue => $SelectedSOAPAction,
         Sort          => 'AlphaNumericValue',
@@ -408,7 +411,7 @@ sub _ShowEdit {
         $Param{SOAPActionSchemeHidden} = 'Hidden';
     }
     my $SelectedSOAPActionScheme = $TransportConfig->{SOAPActionScheme} || 'NameSpaceSeparatorOperation';
-    my $VisibleOperationName = $Param{CommunicationType} eq 'Request' ? 'Invoker' : 'Operation';
+    my $VisibleOperationName     = $Param{CommunicationType} eq 'Request' ? 'Invoker' : 'Operation';
     $Param{SOAPActionSchemeStrg} = $LayoutObject->BuildSelection(
         Data => [
             {
@@ -496,9 +499,12 @@ sub _ShowEdit {
 
         # Create use Proxy select.
         $Param{UseProxyStrg} = $LayoutObject->BuildSelection(
-            Data          => [ 'No', 'Yes' ],
+            Data => {
+                'No'  => Translatable('No'),
+                'Yes' => Translatable('Yes'),
+            },
             Name          => 'UseProxy',
-            SelectedValue => $Param{UseProxy} || 'No',
+            SelectedValue => $Param{UseProxy} || Translatable('No'),
             PossibleNone  => 0,
             Sort          => 'AlphanumericValue',
             Class         => 'Modernize',
@@ -506,9 +512,12 @@ sub _ShowEdit {
 
         # Create Proxy exclude select.
         $Param{ProxyExcludeStrg} = $LayoutObject->BuildSelection(
-            Data          => [ 'No', 'Yes' ],
+            Data => {
+                'No'  => Translatable('No'),
+                'Yes' => Translatable('Yes'),
+            },
             Name          => 'ProxyExclude',
-            SelectedValue => $Param{ProxyExclude} || 'No',
+            SelectedValue => $Param{ProxyExclude} || Translatable('No'),
             PossibleNone  => 0,
             Sort          => 'AlphanumericValue',
             Class         => 'Modernize',
@@ -523,9 +532,12 @@ sub _ShowEdit {
 
         # Create use SSL select.
         $Param{UseSSLStrg} = $LayoutObject->BuildSelection(
-            Data          => [ 'No', 'Yes' ],
+            Data => {
+                'No'  => Translatable('No'),
+                'Yes' => Translatable('Yes'),
+            },
             Name          => 'UseSSL',
-            SelectedValue => $Param{UseSSL} || 'No',
+            SelectedValue => $Param{UseSSL} || Translatable('No'),
             PossibleNone  => 0,
             Sort          => 'AlphanumericValue',
             Class         => 'Modernize',
