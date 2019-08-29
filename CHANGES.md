@@ -1,3 +1,39 @@
+#6.0.21 2019-08-23
+ - 2019-08-08 Updated translations, thanks to all translators.
+ - 2019-08-08 Fixed bug#[14694](https://bugs.otrs.org/show_bug.cgi?id=14694) - Multiple emails are sent out by one action.
+   A regression was introduced in a previous bugfix in OTRS 6.0.7, that resulted in an errant submit handler which would result in multiple instances of the same article in case the recipient field was entered manually.
+ - 2019-08-05 Fixed bug#[14693](https://bugs.otrs.org/show_bug.cgi?id=14693) - Console command Maint::Ticket::InvalidUserCleanup reports error about ArticleFlagDelete().
+ - 2019-08-05 Fixed bug#[14713](https://bugs.otrs.org/show_bug.cgi?id=14713) - Untranslated strings in GenericInterface screens.
+ - 2019-08-05 Fixed bug#[14644](https://bugs.otrs.org/show_bug.cgi?id=14644) - Client side validation does not show tooltips in the Appointment calendar.
+ - 2019-08-05 Fixed bug#[14572](https://bugs.otrs.org/show_bug.cgi?id=14572) - Package installation via Console upgrade command bypasses OTRS verification.
+ - 2019-08-05 Fixed bug#[14672](https://bugs.otrs.org/show_bug.cgi?id=14672) - Values from multi-select Dynamic Fields do not work as recipient in Ticket Notifications.
+ - 2019-08-02 Added colorization of weekends in calendars.
+ - 2019-08-02 Fixed bug#[14655](https://bugs.otrs.org/show_bug.cgi?id=14655) - In the process management OTRS_CURRENT tags are not correctly interpreted when used in the TicketOwnerSet and TicketResponsibleSet transition action.
+ - 2019-07-29 Fixed bug#[14357](https://bugs.otrs.org/show_bug.cgi?id=14357) - Email sending doesn't work fine with specific module versions.
+   Recently additional option for otrs.CheckModules.pl has been introduced to show recommended version of modules which should be used. Modules 'IO::Socket::SSL' and 'Net::SMTP' have increased recommended versions.
+ - 2019-07-29 Fixed bug#[14605](https://bugs.otrs.org/show_bug.cgi?id=14605) - Password field is not mandatory on S/MIME screen.
+ - 2019-07-29 Fixed bug#[14629](https://bugs.otrs.org/show_bug.cgi?id=14629) - In the Calendar Overview screen, last selected Timeline overview is not saved.
+ - 2019-07-25 Fixed bug#[14670](https://bugs.otrs.org/show_bug.cgi?id=14670) - Ticket notification migration from 5 to 6 fails if notification content is missing.
+ - 2019-07-25 Follow-up fix for bug#[14557](https://bugs.otrs.org/show_bug.cgi?id=14557) - Webservice debug log does not honor selected agent timezone.
+ - 2019-07-24 Fixed bug#[12956](https://bugs.otrs.org/show_bug.cgi?id=12956) - After splitting the ticket Customer Information are wrong.
+ - 2019-07-23 Fixed bug#[14358](https://bugs.otrs.org/show_bug.cgi?id=14358) - Ticket Title is hidden in the ticket zoom screen using Mobile Mode in Agent interface.
+ - 2019-07-23 Fixed bug#[14503](https://bugs.otrs.org/show_bug.cgi?id=14503) - Filter label is not visible if High contrast skin is used.
+ - 2019-07-23 Fixed bug#[14662](https://bugs.otrs.org/show_bug.cgi?id=14662) - Syncing LDAP fields causes error when value is undefined.
+ - 2019-07-22 Fixed bug#[14563](https://bugs.otrs.org/show_bug.cgi?id=14563) - Responsible agent is not shown in the 'To' Field of the Article in the Ticket zoom screen.
+ - 2019-07-22 Fixed bug#[14666](https://bugs.otrs.org/show_bug.cgi?id=14666) - OTRS console command Dev::Code::CPANAudit scans OTRS home folder and decreases performance.
+   System scans all folders for perl modules, which is not needed.
+ - 2019-07-19 Fixed bug#[14646](https://bugs.otrs.org/show_bug.cgi?id=14646) - OTRS_CUSTOMER_DATA tags not correctly interpreted in DynamicFieldSet transition action.
+ - 2019-07-19 Additional recipient email addresses in notification events are correctly separated on send to prevent information leakage.
+ - 2019-07-18 Fixed bug#[14651](https://bugs.otrs.org/show_bug.cgi?id=14651) - System configuration descriptions refers to non-existing parameters (e.g. AccessibleTickets).
+ - 2019-07-10 Fixed bug#[14593](https://bugs.otrs.org/show_bug.cgi?id=14593) - Article seen flag shows wrong state when there are more then 1500 articles for one ticket.
+ - 2019-07-10 Fixed bug#[14618](https://bugs.otrs.org/show_bug.cgi?id=14618) - Information about usage of 'URI' or 'URL' filters is missing at some dynamic field types.
+ - 2019-07-09 Fixed bug#[14612](https://bugs.otrs.org/show_bug.cgi?id=14612) - Explanation for 'Kernel::System::Email::Test' is missing from SendmailModule System configuration description.
+ - 2019-07-04 Fixed bug#[14597](https://bugs.otrs.org/show_bug.cgi?id=14597) - Missing hint on how to separate 'Additional Email Recipients' in notifications.
+ - 2019-07-03 Added improvements for user module regarding the LDAP auth synchronization.
+ - 2019-07-01 Fixed bug#[14575](https://bugs.otrs.org/show_bug.cgi?id=14575) - Input field in the FrontendNavigation type in SysConfig has incorrect value when single quotes are used.
+ - 2019-06-29 Fixed bug#[14601](https://bugs.otrs.org/show_bug.cgi?id=14601) - Entitlement check message is different in GUI and log.
+ - 2019-06-25 Fixed bug#[14606](https://bugs.otrs.org/show_bug.cgi?id=14606) - Values of Activity status and Customer visibility drop-downs are not translated in the Ticket notification screen.
+
 #6.0.20 2019-07-12
  - 2019-07-01 Improved value masking in tag replacement method.
  - 2019-06-27 Updated translations, thanks to all translators.
@@ -33,7 +69,6 @@
    It's not possible to use both parameters at the same time (--status --rebuild) - description was updated.
  - 2019-05-14 Fixed bug#[14488](https://bugs.otrs.org/show_bug.cgi?id=14488) - New note notification is not sent if agent does not have both ro AND note permission on the queue.
    With this fix in place, inform agent selection contains only agents with ro permission.
-
 
 #6.0.19 2019-05-31
  - 2019-05-16 Updated translations, thanks to all translators.

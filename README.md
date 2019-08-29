@@ -1,6 +1,5 @@
 Released OTRS (https://www.otrs.com/) versions with few tweaks to fix particular annoyances, like the constant advertising for the commercial version.
 
-
 What is OTRS?
 =============
 OTRS (the former Open Ticket Request System now stands for Open Technology
