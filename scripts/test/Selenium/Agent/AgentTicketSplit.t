@@ -32,11 +32,18 @@ $Selenium->RunTest(
             Value => 0,
         );
 
+        # Do not check RichText.
+        $Helper->ConfigSettingChange(
+            Valid => 1,
+            Key   => 'Frontend::RichText',
+            Value => '0',
+        );
+
         my %AgentTicketEmailConfig = $Kernel::OM->Get('Kernel::System::SysConfig')->SettingGet(
             Name => 'Frontend::Module###AgentTicketEmail',
         );
 
-        # create test system address
+        # Create test system address.
         my $SystemAddressID = $SystemAddressObject->SystemAddressAdd(
             Name     => "sys$RandomID\@localhost.com",
             Realname => 'SeleniumSystemAddress',
@@ -57,7 +64,7 @@ $Selenium->RunTest(
         my $Subject      = 'Selenium test';
         my $Body         = 'Just a test body for selenium testing';
 
-        # create test ticket
+        # Create test ticket.
         my $TicketID = $TicketObject->TicketCreate(
             Title        => 'First test ticket',
             Queue        => $Queue,
@@ -74,7 +81,7 @@ $Selenium->RunTest(
             "TicketID $TicketID - created",
         );
 
-        # get create article data
+        # Get create article data.
         my $ToCustomer   = "to$CustomerID\@localhost.com";
         my $FromCustomer = "from$CustomerID\@localhost.com";
         my @TestArticles = (
@@ -95,7 +102,7 @@ $Selenium->RunTest(
             },
         );
 
-        # create test articles for test ticket
+        # Create test articles for test ticket.
         my $AccountedTime = 123;
         my @ArticleIDs;
         for my $TestArticle (@TestArticles) {
@@ -132,7 +139,7 @@ $Selenium->RunTest(
             );
         }
 
-        # create and login test user
+        # Create and login test user.
         my $TestUserLogin = $Helper->TestUserCreate(
             Groups => [ 'admin', 'users' ],
         ) || die "Did not get test user";
@@ -143,10 +150,8 @@ $Selenium->RunTest(
             Password => $TestUserLogin,
         );
 
-        # get script alias
         my $ScriptAlias = $Kernel::OM->Get('Kernel::Config')->Get('ScriptAlias');
 
-        # get test data
         my @Tests = (
             {
                 ArticleID      => $ArticleIDs[0],
@@ -167,9 +172,7 @@ $Selenium->RunTest(
 
         my @AllTicketIDs = ($TicketID);
 
-        # run test scenarios
         for my $Test (@Tests) {
-
             for my $Screen (qw(Phone Email)) {
 
                 # Navigate to the ticket zoom screen.
@@ -177,11 +180,20 @@ $Selenium->RunTest(
                     "${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketID;ArticleID=$Test->{ArticleID}",
                 );
 
+                # Wait until screen is loaded completely.
+                $Selenium->WaitFor(
+                    ElementMissing => [ '.WidgetIsLoading', 'css' ],
+                );
+
+                $Selenium->WaitForjQueryEventBound(
+                    CSSSelector => ".SplitSelection",
+                );
+
                 # Click on the split action.
                 $Selenium->find_element( '.SplitSelection', 'css' )->click();
 
                 $Selenium->WaitFor(
-                    JavaScript => 'return $("#SplitSubmit").length'
+                    JavaScript => 'return $("#SplitSubmit").length;'
                 );
 
                 if ( $Screen eq 'Email' ) {
@@ -193,76 +205,94 @@ $Selenium->RunTest(
                     );
                 }
 
+                $Selenium->WaitForjQueryEventBound(
+                    CSSSelector => "#SplitSubmit",
+                );
+
                 $Selenium->find_element( '#SplitSubmit', 'css' )->VerifiedClick();
 
-                # Check From field.
-                my $From = $Selenium->execute_script(
-                    "return \$('#CustomerTicketText_1').val();"
-                );
-                $Self->Is(
-                    $From,
-                    $Test->{ToValueOnSplit},
-                    "Check From field for ArticleID = $ArticleIDs[0] in $Screen split screen.",
-                );
-
-                # Check CustomerID.
-                my $TestCustomerID = $Selenium->execute_script(
-                    "return \$('#CustomerID').val();"
-                );
-                $Self->Is(
-                    $TestCustomerID,
-                    $CustomerID,
-                    "Check CustomerID field for ArticleID = $ArticleIDs[0] in $Screen split screen",
-                );
-
-                # Check Queue.
-                my $TestQueue = $Selenium->execute_script(
-                    "return \$('#Dest option:selected').text();"
-                );
-                $Self->Is(
-                    $TestQueue,
-                    $Queue,
-                    "Check Queue field for ArticleID = $ArticleIDs[0] in $Screen split screen",
-                );
-
-                # Check Priority.
-                my $TestPriority = $Selenium->execute_script(
-                    "return \$('#PriorityID option:selected').text();"
-                );
-                $Self->Is(
-                    $TestPriority,
-                    $Priority,
-                    "Check Priority field for ArticleID = $ArticleIDs[0] in $Screen split screen",
-                );
-
-                # Check Subject.
-                my $TestSubject = $Selenium->execute_script(
-                    "return \$('#Subject').val();"
-                );
-                $Self->Is(
-                    $TestSubject,
-                    $Subject,
-                    "Check Subject field for ArticleID = $ArticleIDs[0] in $Screen split screen",
+                my @PageFields = (
+                    {
+                        Name  => 'From',
+                        ID    => 'CustomerTicketText_1',
+                        Value => $Test->{ToValueOnSplit},
+                    },
+                    {
+                        Name  => 'CustomerID',
+                        ID    => 'CustomerID',
+                        Value => $CustomerID,
+                    },
+                    {
+                        Name     => 'Queue',
+                        ID       => 'Dest',
+                        Value    => $Queue,
+                        Dropdown => 1,
+                    },
+                    {
+                        Name     => 'Priority',
+                        ID       => 'PriorityID',
+                        Value    => $Priority,
+                        Dropdown => 1,
+                    },
+                    {
+                        Name  => 'Subject',
+                        ID    => 'Subject',
+                        Value => $Subject,
+                    },
+                    {
+                        Name  => 'Body',
+                        ID    => 'RichText',
+                        Value => $Body,
+                    },
+                    {
+                        Name  => 'AccountedTime',
+                        ID    => 'TimeUnits',
+                        Value => $AccountedTime,
+                    },
                 );
 
-                # Check Body.
-                my $TestBody = $Selenium->execute_script(
-                    "return \$('#RichText').val();"
-                );
-                $Self->Is(
-                    $TestBody,
-                    $Body,
-                    "Check Subject field for ArticleID = $ArticleIDs[0] in $Screen split screen",
+                for my $PageField (@PageFields) {
+                    my $ID    = $PageField->{ID};
+                    my $Value = $PageField->{Value};
+
+                    if ( $PageField->{Dropdown} ) {
+                        $Selenium->WaitFor(
+                            JavaScript =>
+                                "return typeof(\$) === 'function' && \$('#$ID option:selected').text() == '$Value';"
+                        );
+                        $Self->Is(
+                            $Selenium->execute_script(
+                                "return \$('#$ID option:selected').text();"
+                            ),
+                            $Value,
+                            "Check '$PageField->{Name}' field for ArticleID = $ArticleIDs[0] in '$Screen' split screen",
+                        );
+                    }
+                    else {
+                        $Selenium->WaitFor(
+                            JavaScript => "return typeof(\$) === 'function' && \$('#$ID').val() == '$Value';"
+                        );
+                        $Self->Is(
+                            $Selenium->execute_script("return \$('#$ID').val();"),
+                            $Value,
+                            "Check '$PageField->{Name}' field for ArticleID = $ArticleIDs[0] in '$Screen' split screen",
+                        );
+                    }
+                }
+
+                $Selenium->execute_script(
+                    "\$('#submitRichText')[0].scrollIntoView(true);",
                 );
 
-                # Check accounted time on creation screen.
-                my $TestAccountedTime = $Selenium->execute_script(
-                    "return \$('#TimeUnits').val();"
+                $Selenium->WaitForjQueryEventBound(
+                    CSSSelector => "#submitRichText",
                 );
-                $Self->Is(
-                    $TestAccountedTime,
-                    $AccountedTime,
-                    "Check AccountedTime field for ArticleID = $ArticleIDs[0] in $Screen split screen",
+
+                $Self->True(
+                    $Selenium->execute_script(
+                        "return \$('#submitRichText').length;"
+                    ),
+                    "Element '#submitRichText' is found in screen"
                 );
 
                 # Submit form.
@@ -310,15 +340,14 @@ $Selenium->RunTest(
 
                 $Selenium->find_element("//a[contains(\@href, \'Action=AgentTicketZoom;' )]")->VerifiedClick();
                 $Selenium->WaitFor(
-                    JavaScript => "return \$('.TableLike label:contains(Accounted time:)').next().length;"
+                    JavaScript => "return \$('.TableLike label:contains(\"Accounted time:\")').next().length;"
                 );
 
                 # Check accounted time on zoom screen.
-                $TestAccountedTime = $Selenium->execute_script(
-                    "return \$('.TableLike label:contains(Accounted time:)').next().text().trim();"
-                );
                 $Self->Is(
-                    $TestAccountedTime,
+                    $Selenium->execute_script(
+                        "return \$('.TableLike label:contains(\"Accounted time:\")').next().text().trim();"
+                    ),
                     $AccountedTime,
                     "Check AccountedTime field for ArticleID = $ArticleIDs[0] in $Screen split screen",
                 );
@@ -337,20 +366,33 @@ $Selenium->RunTest(
             "${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketID",
         );
 
+        $Selenium->WaitForjQueryEventBound(
+            CSSSelector => ".SplitSelection",
+        );
+
         # Click on the split action.
         $Selenium->find_element( '.SplitSelection', 'css' )->click();
         $Selenium->WaitFor(
-            JavaScript => 'return $("#SplitSubmit").length'
+            JavaScript => 'return $("#SplitSubmit").length;'
         );
 
         # Verify there is no 'Email ticket' split option.
         $Self->True(
             $Selenium->execute_script(
-                "return \$(\"#SplitSelection option[value='EmailTicket']\").length === 0"
+                "return \$(\"#SplitSelection option[value='EmailTicket']\").length === 0;"
             ),
             "Split option for 'Email Ticket' is disabled.",
         );
-        $Selenium->find_element( '.Close', 'css' )->click();
+
+        $Selenium->WaitForjQueryEventBound(
+            CSSSelector => ".Dialog.Modal a.Close",
+        );
+
+        $Selenium->find_element( '.Dialog.Modal a.Close', 'css' )->click();
+
+        $Selenium->WaitFor(
+            JavaScript => 'return !$(".Dialog.Modal").length;'
+        );
 
         # Check customer information widget (https://bugs.otrs.org/show_bug.cgi?id=14414).
         # Enable AgentTicketEmail frontend module.
@@ -496,6 +538,9 @@ $Selenium->RunTest(
                         $Selenium->WaitFor(
                             JavaScript =>
                                 "return \$('label:contains(Email)').next().attr('title') === '$TestCustomerUsers[$Number]->{UserEmail}';"
+                        );
+                        $Selenium->WaitFor(
+                            JavaScript => 'return !$(".AJAXLoader:visible").length;'
                         );
                         $Self->Is(
                             $Selenium->execute_script(
