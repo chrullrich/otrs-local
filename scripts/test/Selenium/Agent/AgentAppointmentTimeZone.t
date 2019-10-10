@@ -83,14 +83,23 @@ $Selenium->RunTest(
         # Wait for AJAX to finish.
         $Selenium->WaitFor(
             JavaScript =>
-                'return typeof($) === "function" && $(".fc-timelineWeek-view .fc-slats td.fc-widget-content:nth-child(5)").length'
+                'return typeof($) === "function" && $(".fc-timelineWeek-view .fc-slats td.fc-widget-content:nth-child(5)").length;'
         );
+
+        # Hide indicator line if visible. This was causing issue in some of tests in specific execution time.
+        if ( $Selenium->execute_script("return \$('.fc-now-indicator.fc-now-indicator-line:visible').length;") ) {
+            $Selenium->execute_script("\$('.fc-now-indicator.fc-now-indicator-line').hide();");
+            $Selenium->WaitFor(
+                JavaScript =>
+                    'return typeof($) === "function" && $(".fc-now-indicator.fc-now-indicator-line").is(":hidden");'
+            );
+        }
 
         # Click on the timeline view for an appointment dialog.
         $Selenium->find_element( '.fc-timelineWeek-view .fc-slats td.fc-widget-content:nth-child(5)', 'css' )->click();
 
         # Wait until form and overlay has loaded, if necessary.
-        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#Title').length" );
+        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#Title').length;" );
 
         # Enter some data, and put end hour to 18h for nice long appointment.
         $Selenium->find_element( 'Title', 'name' )->send_keys('Time Zone Appointment');
@@ -118,7 +127,7 @@ $Selenium->RunTest(
         # Wait for dialog to close and AJAX to finish.
         $Selenium->WaitFor(
             JavaScript =>
-                'return typeof($) === "function" && !$(".Dialog:visible").length && !$(".CalendarWidget.Loading").length'
+                'return typeof($) === "function" && !$(".Dialog:visible").length && !$(".CalendarWidget.Loading").length;'
         );
 
         # Verify appointment is visible.

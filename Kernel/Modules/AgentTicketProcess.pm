@@ -2691,14 +2691,20 @@ sub _RenderArticle {
             AttachmentsInclude => 1,
         );
 
-        # Strip out external content if BlockLoadingRemoteContent is enabled.
-        if ( $ConfigObject->Get('Ticket::Frontend::BlockLoadingRemoteContent') ) {
-            my %SafetyCheckResult = $Kernel::OM->Get('Kernel::System::HTMLUtils')->Safety(
-                String       => $Param{GetParam}->{Body},
-                NoExtSrcLoad => 1,
-            );
-            $Param{GetParam}->{Body} = $SafetyCheckResult{String};
-        }
+        my %SafetyCheckResult = $Kernel::OM->Get('Kernel::System::HTMLUtils')->Safety(
+            String => $Param{GetParam}->{Body},
+
+            # Strip out external content if BlockLoadingRemoteContent is enabled.
+            NoExtSrcLoad => $ConfigObject->Get('Ticket::Frontend::BlockLoadingRemoteContent'),
+
+            # Disallow potentially unsafe content.
+            NoApplet     => 1,
+            NoObject     => 1,
+            NoEmbed      => 1,
+            NoSVG        => 1,
+            NoJavaScript => 1,
+        );
+        $Param{GetParam}->{Body} = $SafetyCheckResult{String};
     }
 
     # get all attachments meta data
@@ -2968,9 +2974,11 @@ sub _RenderCustomer {
     }
 
     # Customer user from article is preselected for new split ticket. See bug#12956.
-    if ( IsHashRefWithData( $Self->{LinkArticleData} )
+    if (
+        IsHashRefWithData( $Self->{LinkArticleData} )
         && $Self->{LinkArticleData}->{From}
-        && $Self->{LinkArticleData}->{SenderType} eq 'customer' )
+        && $Self->{LinkArticleData}->{SenderType} eq 'customer'
+        )
     {
 
         my @ArticleFromAddress = Mail::Address->parse( $Self->{LinkArticleData}->{From} );
