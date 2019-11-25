@@ -1633,7 +1633,11 @@ sub Run {
                         || $CustomerInfo{$TicketColumn};
 
                     # If value is in date format, change block type to 'Time' so it can be localized. See bug#14542.
-                    if ( $DataValue =~ /^\d\d\d\d-(\d|\d\d)-(\d|\d\d)\s(\d|\d\d):(\d|\d\d):(\d|\d\d)/ ) {
+                    if (
+                        defined $DataValue
+                        && $DataValue =~ /^\d\d\d\d-(\d|\d\d)-(\d|\d\d)\s(\d|\d\d):(\d|\d\d):(\d|\d\d)/
+                        )
+                    {
                         $BlockType = 'Time';
                     }
                 }
@@ -1772,6 +1776,12 @@ sub Run {
             Name => 'DocumentColumnFilterForm',
             Data => {},
         );
+
+        # Add UseSubQueues param if available.
+        if ( $Param{UseSubQueues} ) {
+            $Param{ColumnFilterForm}->{UseSubQueues} = $Param{UseSubQueues};
+        }
+
         for my $Element ( sort keys %{ $Param{ColumnFilterForm} } ) {
             $LayoutObject->Block(
                 Name => 'DocumentColumnFilterFormElement',

@@ -207,13 +207,13 @@ sub _ArticleSenderImage {
         my $Email = $EmailParser->GetEmailAddress( Email => $Addresses[0] );
         if ($Email) {
             my $DefaultIcon
-                = $Kernel::OM->Get('Kernel::Config')->Get('Frontend::Gravatar::ArticleDefaultImage') || 'mm';
+                = $Kernel::OM->Get('Kernel::Config')->Get('Frontend::Gravatar::ArticleDefaultImage') || 'mp';
 
             # Get current user's email and compare it to the sender's email.
             if ( $Param{UserID} ) {
                 my %CurrentUserData = $Kernel::OM->Get('Kernel::System::User')->GetUserData( UserID => $Param{UserID} );
                 if ( $Email eq $CurrentUserData{UserEmail} ) {
-                    $DefaultIcon = $Kernel::OM->Get('Kernel::Config')->Get('Frontend::Gravatar::DefaultImage') | 'mm';
+                    $DefaultIcon = $Kernel::OM->Get('Kernel::Config')->Get('Frontend::Gravatar::DefaultImage') | 'mp';
                 }
             }
 
@@ -274,7 +274,7 @@ sub _ArticleModuleMeta {
             my @Count    = $RegExp =~ m{\(}gx;
             my $Elements = scalar @Count;
 
-            if ( my @MatchData = $ArticlePlain =~ m{([\s:]$RegExp)}gxi ) {
+            if ( my @MatchData = $ArticlePlain =~ m{((?<!\w)$RegExp)}gxi ) {
                 my $Counter = 0;
 
                 MATCH:
