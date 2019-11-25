@@ -148,6 +148,11 @@ $Selenium->RunTest(
         # Navigate to zoom view of created test ticket.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketIDs[0]");
 
+        # Wait until screen is loaded completely.
+        $Selenium->WaitFor(
+            ElementMissing => [ '.WidgetIsLoading', 'css' ],
+        );
+
         # Verify that parent test tickets is linked with child test ticket.
         $Self->True(
             index( $Selenium->get_page_source(), 'Child' ) > -1,
@@ -168,9 +173,22 @@ $Selenium->RunTest(
             "TicketNumber $TicketNumbers[2] - found",
         ) || die;
 
+        # Scroll to child ticket link.
+        $Selenium->execute_script(
+            "\$('a.LinkObjectLink[href*=\"Action=AgentTicketZoom;TicketID=$TicketIDs[1]\"]')[0].scrollIntoView(true);",
+        );
+
+        $Self->True(
+            $Selenium->execute_script(
+                "return \$('a.LinkObjectLink[href*=\"Action=AgentTicketZoom;TicketID=$TicketIDs[1]\"]').length;"
+            ),
+            "Link for child TicketID $TicketIDs[1] is found"
+        );
+
         # Click on child ticket.
-        $Selenium->find_element("//a[contains(\@href, \'Action=AgentTicketZoom;TicketID=$TicketIDs[1]' )]")
-            ->VerifiedClick();
+        $Selenium->find_element(
+            "//a[contains(\@class, 'LinkObjectLink')][contains(\@href, \'Action=AgentTicketZoom;TicketID=$TicketIDs[1]' )]"
+        )->VerifiedClick();
 
         # Verify that child test ticket is linked with parent test ticket.
         $Self->True(
@@ -207,6 +225,11 @@ $Selenium->RunTest(
 
         # Navigate to AgentTicketZoom screen.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketIDs[0]");
+
+        # Wait until screen is loaded completely.
+        $Selenium->WaitFor(
+            ElementMissing => [ '.WidgetIsLoading', 'css' ],
+        );
 
         # Check for updated ticket title in linked tickets complex view table.
         $Self->True(
@@ -552,6 +575,11 @@ $Selenium->RunTest(
         # Navigate to zoom view of created test ticket.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketIDs[0]");
 
+        # Wait until screen is loaded completely.
+        $Selenium->WaitFor(
+            ElementMissing => [ '.WidgetIsLoading', 'css' ],
+        );
+
         # Make sure they are really linked.
         $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("#WidgetTicket").length;' );
         $Selenium->find_element( "#WidgetTicket", "css" );
@@ -634,6 +662,11 @@ $Selenium->RunTest(
 
         # Navigate to zoom view of created test ticket.
         $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketIDs[0]");
+
+        # Wait until screen is loaded completely.
+        $Selenium->WaitFor(
+            ElementMissing => [ '.WidgetIsLoading', 'css' ],
+        );
 
         # Verify column settings button is available for both Ticket and Appointment link object widget.
         # See bug#13702 (https://bugs.otrs.org/show_bug.cgi?id=13702);
