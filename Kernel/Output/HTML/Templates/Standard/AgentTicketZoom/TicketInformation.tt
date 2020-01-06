@@ -192,6 +192,15 @@
                         </fieldset>
 [% RenderBlockEnd("ProcessData") %]
 
+[% RenderBlockStart("TicketShortNumber") %]
+                    <fieldset class="TableLike FixedLabelSmall Narrow">
+                        <label>Shortnumber:</label>
+                        <p class="Value">[% Data.TicketShortnumber %]</p>
+                        <div class="Clear"></div>
+                    </fieldset>
+[% RenderBlockEnd("TicketShortNumber") %]
+
+
 # show ticket dynamic fields
                     <fieldset class="TableLike FixedLabelSmall Narrow">
 [% RenderBlockStart("TicketDynamicField") %]

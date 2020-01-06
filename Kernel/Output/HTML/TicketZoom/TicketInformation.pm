@@ -18,6 +18,8 @@ use utf8;
 use Kernel::Language qw(Translatable);
 use Kernel::System::VariableCheck qw(:all);
 
+use Kernel::Output::HTML::shortnumber qw(encode_B);
+
 our $ObjectManagerDisabled = 1;
 
 sub Run {
@@ -64,6 +66,12 @@ sub Run {
             Data => {%Ticket},
         );
     }
+
+    $Ticket{TicketShortnumber} = Kernel::Output::HTML::shortnumber::encode_B($Ticket{TicketNumber});
+    $LayoutObject->Block(
+        Name => 'TicketShortNumber',
+        Data => {%Ticket},
+    );
 
     if ( $Ticket{ArchiveFlag} eq 'y' ) {
         $LayoutObject->Block(
