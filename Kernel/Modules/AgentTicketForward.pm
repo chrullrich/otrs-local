@@ -41,7 +41,7 @@ sub new {
     my $ParamObject = $Kernel::OM->Get('Kernel::System::Web::Request');
 
     for (
-        qw(From To Cc Bcc Subject Body InReplyTo References ComposeStateID IsVisibleForCustomerPresent
+        qw(To Cc Bcc Subject Body InReplyTo References ComposeStateID IsVisibleForCustomerPresent
         IsVisibleForCustomer ArticleID TimeUnits Year Month Day Hour Minute FormID FormDraftID Title)
         )
     {
@@ -1055,8 +1055,15 @@ sub SendEmail {
         }
     }
 
-    # Make sure we don't save form if a draft was loaded.
+    # Make sure sender is correct one. See bug#14872 ( https://bugs.otrs.org/show_bug.cgi?id=14872 ).
+    $GetParam{From} = $Kernel::OM->Get('Kernel::System::TemplateGenerator')->Sender(
+        QueueID => $Ticket{QueueID},
+        UserID  => $Self->{UserID},
+    );
+
     if ( $Self->{LoadedFormDraftID} ) {
+
+        # Make sure we don't save form if a draft was loaded.
         %Error = ( LoadedFormDraft => 1 );
     }
 
@@ -1250,6 +1257,11 @@ sub SendEmail {
         $IsVisibleForCustomer = $GetParam{IsVisibleForCustomer} ? 1 : 0;
     }
 
+    my $From = $Kernel::OM->Get('Kernel::System::TemplateGenerator')->Sender(
+        QueueID => $Ticket{QueueID},
+        UserID  => $Self->{UserID},
+    );
+
     my $EmailArticleBackendObject = $Kernel::OM->Get('Kernel::System::Ticket::Article')->BackendForChannel(
         ChannelName => 'Email',
     );
@@ -1260,7 +1272,7 @@ sub SendEmail {
         IsVisibleForCustomer => $IsVisibleForCustomer,
         HistoryType          => 'Forward',
         HistoryComment       => "\%\%$To",
-        From                 => $GetParam{From},
+        From                 => $From,
         To                   => $GetParam{To},
         Cc                   => $GetParam{Cc},
         Bcc                  => $GetParam{Bcc},

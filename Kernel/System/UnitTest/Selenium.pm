@@ -120,6 +120,7 @@ sub new {
     eval {
         $Self = $Class->SUPER::new(
             webelement_class => 'Kernel::System::UnitTest::Selenium::WebElement',
+            error_handler    => \&SeleniumErrorHandler,
             %SeleniumTestsConfig
         );
     };
@@ -158,7 +159,53 @@ sub new {
     # Remember the start system time for the selenium test run.
     $Self->{TestStartSystemTime} = time;    ## no critic
 
+    # Force usage of legacy webdriver methods in Chrome until things are more stable.
+    if ( lc $SeleniumTestsConfig{browser_name} eq 'chrome' ) {
+        $Self->{is_wd3} = 0;
+    }
     return $Self;
+}
+
+sub SeleniumErrorHandler {
+    my ( $Self, $Error ) = @_;
+
+    my $Caller     = 0;
+    my $StackTrace = "Selenium stack trace: ($$): \n";
+
+    COUNT:
+    for ( my $Count = 0; $Count < 30; $Count++ ) {
+
+        my ( $Package1, $Filename1, $Line1, $Subroutine1 ) = caller( $Caller + $Count );
+
+        last COUNT if !$Line1;
+
+        my ( $Package2, $Filename2, $Line2, $Subroutine2 ) = caller( $Caller + 1 + $Count );
+
+        # if there is no caller module use the file name
+        $Subroutine2 ||= $0;
+
+        # Cut limit stack trace to test evaluation itself.
+        last COUNT if $Subroutine2 eq 'Kernel::System::UnitTest::Driver::Run';
+
+        # print line if upper caller module exists
+        my $VersionString = '';
+
+        eval { $VersionString = $Package1->VERSION || ''; };    ## no critic
+
+        # version is present
+        if ($VersionString) {
+            $VersionString = ' (v' . $VersionString . ')';
+        }
+
+        $StackTrace .= "   Module: $Subroutine2$VersionString Line: $Line1\n";
+
+        last COUNT if !$Line2;
+    }
+
+    $Self->{_SeleniumStackTrace} = $StackTrace;
+    $Self->{_SeleniumException}  = $Error;
+
+    die $Error;
 }
 
 =head2 RunTest()
@@ -418,7 +465,7 @@ sub WaitFor {
         && !$Param{ElementMissing}
         )
     {
-        die "Need JavaScript, WindowCount, ElementExists, ElementMissing or AlertPresent.";
+        die "Need JavaScript, WindowCount, ElementExists, ElementMissing, Callback or AlertPresent.";
     }
 
     local $Self->{SuppressCommandRecording} = 1;
@@ -446,6 +493,7 @@ sub WaitFor {
         elsif ( $Param{ElementExists} ) {
             my @Arguments
                 = ref( $Param{ElementExists} ) eq 'ARRAY' ? @{ $Param{ElementExists} } : $Param{ElementExists};
+
             if ( eval { $Self->find_element(@Arguments) } ) {
                 Time::HiRes::sleep($WaitSeconds);
                 return 1;
@@ -454,6 +502,7 @@ sub WaitFor {
         elsif ( $Param{ElementMissing} ) {
             my @Arguments
                 = ref( $Param{ElementMissing} ) eq 'ARRAY' ? @{ $Param{ElementMissing} } : $Param{ElementMissing};
+
             if ( !eval { $Self->find_element(@Arguments) } ) {
                 Time::HiRes::sleep($WaitSeconds);
                 return 1;
@@ -470,7 +519,8 @@ sub WaitFor {
     }
     $Argument = "Callback" if $Param{Callback};
 
-    die "WaitFor($Argument) failed.";
+    # Use the selenium error handler to generate a stack trace.
+    die $Self->SeleniumErrorHandler("WaitFor($Argument) failed.\n");
 }
 
 =head2 SwitchToFrame()
@@ -585,23 +635,33 @@ for analysis (in folder /var/otrs-unittest if it exists, in $Home/var/httpd/htdo
 sub HandleError {
     my ( $Self, $Error ) = @_;
 
-    $Self->{UnitTestDriverObject}->False( 1, "Exception in Selenium': $Error" );
+    # If we really have a selenium error, get the stack trace for it.
+    if ( $Error eq $Self->{_SeleniumException} && $Self->{_SeleniumStackTrace} ) {
+        $Error .= "\n" . $Self->{_SeleniumStackTrace};
+    }
 
-    #eval {
+    $Self->{UnitTestDriverObject}->False( 1, $Error );
+
+    # Don't create a test entry for the screenshot command,
+    #   to make sure it gets attached to the previous error entry.
+    local $Self->{SuppressCommandRecording} = 1;
+
     my $Data = $Self->screenshot();
     return if !$Data;
     $Data = MIME::Base64::decode_base64($Data);
+
+    # Attach the screenshot to the actual error entry.
+    my $Filename = $Kernel::OM->Get('Kernel::System::UnitTest::Helper')->GetRandomNumber() . '.png';
+    $Self->{UnitTestDriverObject}->AttachSeleniumScreenshot(
+        Filename => $Filename,
+        Content  => $Data
+    );
 
     #
     # Store screenshots in a local folder from where they can be opened directly in the browser.
     #
     my $LocalScreenshotDir = $Kernel::OM->Get('Kernel::Config')->Get('Home') . '/var/httpd/htdocs/SeleniumScreenshots';
     mkdir $LocalScreenshotDir || return $Self->False( 1, "Could not create $LocalScreenshotDir." );
-
-    my $DateTimeObj = $Kernel::OM->Create('Kernel::System::DateTime');
-    my $Filename    = $DateTimeObj->ToString();
-    $Filename .= '-' . ( int rand 100_000_000 ) . '.png';
-    $Filename =~ s{[ :]}{-}smxg;
 
     my $HttpType = $Kernel::OM->Get('Kernel::Config')->Get('HttpType');
     my $Hostname = $Kernel::OM->Get('Kernel::System::UnitTest::Helper')->GetTestHTTPHostname();
@@ -631,11 +691,7 @@ sub HandleError {
             || return $Self->{UnitTestDriverObject}->False( 1, "Could not write file $SharedScreenshotDir/$Filename" );
     }
 
-    $Self->{UnitTestDriverObject}->False( 1, "Saved screenshot in $URL" );
-    $Self->{UnitTestDriverObject}->AttachSeleniumScreenshot(
-        Filename => $Filename,
-        Content  => $Data
-    );
+    $Self->{UnitTestDriverObject}->True( 1, "Saved screenshot in $URL" );
 
     return;
 }
@@ -675,7 +731,7 @@ sub DEMOLISH {
             }
         }
 
-        # Cleanup all sessions, which was created after the selenium test start time.
+        # Cleanup all sessions which were created after the selenium test start time.
         my $AuthSessionObject = $Kernel::OM->Get('Kernel::System::AuthSession');
 
         my @Sessions = $AuthSessionObject->GetAllSessionIDs();

@@ -191,7 +191,7 @@ sub Run {
     my %GetParam;
     for (
         qw(
-        From To Cc Bcc Subject Body InReplyTo References ResponseID ReplyArticleID StateID ArticleID
+        To Cc Bcc Subject Body InReplyTo References ResponseID ReplyArticleID StateID ArticleID
         IsVisibleForCustomerPresent IsVisibleForCustomer TimeUnits Year Month Day Hour Minute FormID ReplyAll
         FormDraftID Title
         )
@@ -868,8 +868,15 @@ sub Run {
                 );
         }
 
-        # Make sure we don't save form if a draft was loaded.
+        # Make sure sender is correct one. See bug#14872 ( https://bugs.otrs.org/show_bug.cgi?id=14872 ).
+        $GetParam{From} = $Kernel::OM->Get('Kernel::System::TemplateGenerator')->Sender(
+            QueueID => $Ticket{QueueID},
+            UserID  => $Self->{UserID},
+        );
+
         if ( $Self->{LoadedFormDraftID} ) {
+
+            # Make sure we don't save form if a draft was loaded.
             %Error = ( LoadedFormDraft => 1 );
         }
 
@@ -881,6 +888,17 @@ sub Run {
                 Type      => 'Small',
                 BodyClass => 'Popup',
             );
+
+            # When a draft is loaded, inform a user that article subject will be empty
+            # if contains only the ticket hook (if nothing is modified).
+            if ( $Error{LoadedFormDraft} ) {
+                $Output .= $LayoutObject->Notify(
+                    Data => $LayoutObject->{LanguageObject}->Translate(
+                        'Article subject will be empty if the subject contains only the ticket hook!'
+                    ),
+                );
+            }
+
             $GetParam{StandardResponse} = $GetParam{Body};
             $Output .= $Self->_Mask(
                 TicketID   => $Self->{TicketID},
@@ -982,6 +1000,11 @@ sub Run {
             $IsVisibleForCustomer = $GetParam{IsVisibleForCustomer} ? 1 : 0;
         }
 
+        my $From = $Kernel::OM->Get('Kernel::System::TemplateGenerator')->Sender(
+            QueueID => $Ticket{QueueID},
+            UserID  => $Self->{UserID},
+        );
+
         # send email
         my $ArticleID = $ArticleBackendObject->ArticleSend(
             IsVisibleForCustomer => $IsVisibleForCustomer,
@@ -989,7 +1012,7 @@ sub Run {
             TicketID             => $Self->{TicketID},
             HistoryType          => 'SendAnswer',
             HistoryComment       => "\%\%$Recipients",
-            From                 => $GetParam{From},
+            From                 => $From,
             To                   => $GetParam{To},
             Cc                   => $GetParam{Cc},
             Bcc                  => $GetParam{Bcc},
@@ -1274,6 +1297,13 @@ sub Run {
             Value     => $Ticket{TicketNumber},
             Type      => 'Small',
             BodyClass => 'Popup',
+        );
+
+        # Inform a user that article subject will be empty if contains only the ticket hook (if nothing is modified).
+        $Output .= $LayoutObject->Notify(
+            Data => $LayoutObject->{LanguageObject}->Translate(
+                'Article subject will be empty if the subject contains only the ticket hook!'
+            ),
         );
 
         # get std attachment object
