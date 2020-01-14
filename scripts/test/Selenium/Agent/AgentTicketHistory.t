@@ -25,6 +25,11 @@ $Selenium->RunTest(
             Value => 0,
         );
 
+        $Helper->ConfigSettingChange(
+            Key   => 'Ticket::Type',
+            Value => 1,
+        );
+
         my $TicketObject              = $Kernel::OM->Get('Kernel::System::Ticket');
         my $ArticleObject             = $Kernel::OM->Get('Kernel::System::Ticket::Article');
         my $DynamicFieldObject        = $Kernel::OM->Get('Kernel::System::DynamicField');
@@ -138,6 +143,15 @@ $Selenium->RunTest(
             push @DynamicFieldIDs, $DynamicFieldID;
         }
 
+        # Add TicketType.
+        my $TypeName   = "Type$RandomID";
+        my $TypeObject = $Kernel::OM->Get('Kernel::System::Type');
+        my $TypeID     = $TypeObject->TypeAdd(
+            Name    => $TypeName,
+            ValidID => 1,
+            UserID  => 1,
+        );
+
         # Create test ticket.
         my $TicketID = $TicketObject->TicketCreate(
             Title        => 'Selenium ticket',
@@ -149,6 +163,7 @@ $Selenium->RunTest(
             CustomerUser => 'customer@example.com',
             OwnerID      => 1,
             UserID       => 1,
+            TypeID       => $TypeID,
         );
         $Self->True(
             $TicketID,
@@ -258,18 +273,7 @@ $Selenium->RunTest(
         );
 
         # Click on 'History' and switch window.
-        $Selenium->find_element("//a[contains(\@href, \'Action=AgentTicketHistory;TicketID=$TicketID' )]")->click();
-
-        $Selenium->WaitFor( WindowCount => 2 );
-        my $Handles = $Selenium->get_window_handles();
-        $Selenium->switch_to_window( $Handles->[1] );
-
-        # Wait until page has loaded, if necessary.
-        $Selenium->WaitFor(
-            JavaScript =>
-                "return typeof(\$) === 'function' && \$('a[href*=\"AgentTicketZoom;TicketID=$TicketID;ArticleID=$ArticleIDs[1]\"]').length;"
-        );
-        sleep 1;
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketHistory;TicketID=$TicketID");
 
         # Check the history entry for the dynamic field.
         my $PageSource = $Selenium->get_page_source();
@@ -281,14 +285,16 @@ $Selenium->RunTest(
             );
         }
 
+        # Check if Type is shown correctly. See bug#14826.
+        my $TypeExpectedResults = "Changed type from \"\" () to \"$TypeName\" ($TypeID). (TypeUpdate)";
+        $Self->True(
+            index( $PageSource, $TypeExpectedResults ) > -1,
+            "Human readable history entry for Type is found on page.",
+        );
+
         # Click on 'Zoom view' for created second article.
         $Selenium->find_element("//a[contains(\@href, 'AgentTicketZoom;TicketID=$TicketID;ArticleID=$ArticleIDs[1]')]")
-            ->click();
-
-        # Switch window back.
-        $Selenium->WaitFor( WindowCount => 1 );
-        $Selenium->switch_to_window( $Handles->[0] );
-        sleep 2;
+            ->VerifiedClick();
 
         # Verify new URL.
         my $ChangedURL = $Selenium->get_current_url();
@@ -328,6 +334,17 @@ $Selenium->RunTest(
                 "Dynamic field - ID $DynamicFieldID - deleted",
             );
         }
+
+        my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+
+        # Delete Type.
+        $Success = $DBObject->Do(
+            SQL => "DELETE FROM ticket_type WHERE id = $TypeID",
+        );
+        $Self->True(
+            $Success,
+            "Type with ID $TypeID is deleted!"
+        );
 
         # Make sure the cache is correct.
         $Kernel::OM->Get('Kernel::System::Cache')->CleanUp( Type => 'Ticket' );

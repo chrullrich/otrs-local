@@ -584,6 +584,9 @@ $Selenium->RunTest(
             # Reload the AgentTicketEmail screen for every test, to refresh the page completely.
             $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketEmail");
 
+            # Wait until jQuery has been loaded.
+            $Selenium->WaitFor( JavaScript => 'return typeof($) === "function";' );
+
             for my $SubTest ( @{$Test} ) {
 
                 # Reset the page load complete flag inside the frame, so following switch to frame can check if it has
@@ -741,6 +744,17 @@ $Selenium->RunTest(
                         }
                     ' );
 
+                    # On some systems submit button is not loaded after switch to frame, but it exist in page source.
+                    # Because of that so many waitings is added.
+                    sleep 2;
+                    $Selenium->WaitFor(
+                        JavaScript => "return typeof(\$) === 'function' && \$('#SearchFormSubmit').length"
+                    );
+                    $Selenium->WaitForjQueryEventBound(
+                        CSSSelector => '#SearchFormSubmit',
+                        Event       => 'click',
+                    );
+
                     $Selenium->find_element( '#SearchFormSubmit', 'css' )->click();
 
                     $Selenium->SwitchToFrame(
@@ -770,6 +784,11 @@ $Selenium->RunTest(
 
                 if ( IsArrayRefWithData( $SubTest->{ExcludeSearchResultCustomerUser} ) ) {
 
+                    # Wait until form and overlay has loaded, if neccessary.
+                    $Selenium->WaitFor(
+                        JavaScript => "return typeof(\$) === 'function' && \$('#ChangeSearch').length"
+                    );
+
                     for my $CustomerUserLogin ( @{ $SubTest->{ExcludeSearchResultCustomerUser} } ) {
 
                         $Self->True(
@@ -777,7 +796,7 @@ $Selenium->RunTest(
                                 "return \$('input[value=\"$CustomerUserLogin\"]:disabled').length;"
                             ),
                             "CustomerUser $CustomerUserLogin is disabled on result page",
-                        );
+                        ) || die;
                     }
                 }
 

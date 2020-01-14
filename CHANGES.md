@@ -1,3 +1,28 @@
+#6.0.25 2020-01-10
+ - 2019-12-12 Updated translations, thanks to all translators.
+ - 2019-12-11 Improved handling of the uploaded inline images.
+ - 2019-12-06 Fixed bug#[14886](https://bugs.otrs.org/show_bug.cgi?id=14886) - When config ExternalFrontend::TicketCreate###Queue is disabled, customer user can create a ticket in default queue without sufficient permission.
+ - 2019-12-05 Fixed bug#[14233](https://bugs.otrs.org/show_bug.cgi?id=14233) - It's not possible to disable ticket type via ACL in the AgentTicketSearch.
+ - Improved the draft feature in the agent frontend.
+ - 2019-12-04 Fixed bug#[14791](https://bugs.otrs.org/show_bug.cgi?id=14791) - ICS files with carriage return character can not be imported to calendar.
+ - 2019-12-03 Fixed bug#[14883](https://bugs.otrs.org/show_bug.cgi?id=14883) - Confusing message 'This message has been queued for sending' is shown in the TicketZoom screen.
+ - 2019-12-02 Fixed bug#[14881](https://bugs.otrs.org/show_bug.cgi?id=14881) - Signature and Salutation text fields are not marked as mandatory in add and edit screens in admin interface.
+ - 2019-11-29 Improved article sending via email communication channel.
+ - 2019-11-29 Fixed bug#[14869](https://bugs.otrs.org/show_bug.cgi?id=14869) - The value of config Ticket::IncludeUnknownTicketCustomers is ignored in the statistic.
+ - 2019-11-29 Fixed bug#[14861](https://bugs.otrs.org/show_bug.cgi?id=14861) - Foreign Customer Company DB validation is wrong.
+ - 2019-11-28 Fixed bug#[14834](https://bugs.otrs.org/show_bug.cgi?id=14834) - Packages with long description (comment) can not be deployed in the system configuration.
+ - 2019-11-28 Follow-up fix for bug#[14761](https://bugs.otrs.org/show_bug.cgi?id=14761) - It's not possible to create article with attachment named '0'.
+ - 2019-11-20 Fixed bug#[14659](https://bugs.otrs.org/show_bug.cgi?id=14659) - Composing a new mail message with a blank subject causes no warning to appear.
+ - 2019-11-15 Fixed bug#[14852](https://bugs.otrs.org/show_bug.cgi?id=14852) - Customer company filter is reset after going to the other page.
+ - Improved config 'Ticket::ViewableStateType' description.
+ - 2019-11-07 Fixed bug#[14826](https://bugs.otrs.org/show_bug.cgi?id=14826) - Ticket history shows incomplete record for the Type entry.
+ - 2019-11-07 Fixed bug#[14864](https://bugs.otrs.org/show_bug.cgi?id=14864) - When generic agent changes a ticket's CustomerID, CustomerUserID is cleared and is empty.
+ - 2019-11-05 Fixed bug#[14851](https://bugs.otrs.org/show_bug.cgi?id=14851) - Predefined values for dynamic fields are missing in the system configuration for TicketSearch screens.
+ - 2019-11-05 Fixed bug#[14747](https://bugs.otrs.org/show_bug.cgi?id=14747) - PerformanceLog file increases despite max size is reached.
+ - 2019-11-05 Fixed bug#[14845](https://bugs.otrs.org/show_bug.cgi?id=14845) - It's not possible to save system configuration settings with Date type on Internet Explorer.
+ - 2019-11-05 Removed unneeded dependency Crypt::SSLeay.
+ - 2019-11-04 Fixed bug#[14842](https://bugs.otrs.org/show_bug.cgi?id=14842) - Downgrade to ((OTRS)) Community Edition is possible for every agent whether or not the agent is member of the admin group.
+
 #6.0.24 2019-11-15
  - 2019-10-31 Updated translations, thanks to all translators.
  - 2019-10-25 Fixed bug#[13651](https://bugs.otrs.org/show_bug.cgi?id=13651) - User is logged out after deploying system configuration changes.
@@ -5,6 +30,7 @@
  - 2019-10-24 Updated welcome ticket text.
  - 2019-10-24 Fixed bug#[14763](https://bugs.otrs.org/show_bug.cgi?id=14763) - Invisible SysConfig settings are not removed on package deinstallation.
  - 2019-10-23 Follow-up fix for bug#[14542](https://bugs.otrs.org/show_bug.cgi?id=14542) - Date values for escalation times are not localized in ticket small overview.
+ - 2019-10-22 Fixed bug#[14810](https://bugs.otrs.org/show_bug.cgi?id=14810) - Attributes are not replaced with OTRS_CURRENT_ tags in Transition Action modules in the process management.
  - 2019-10-21 Fixed bug#[14742](https://bugs.otrs.org/show_bug.cgi?id=14742) - Short and long dynamic field descriptions are not translated in the process management.
  Translation short/long description in a process.
  - 2019-10-21 Fixed bug#[14742](https://bugs.otrs.org/show_bug.cgi?id=14742) - Translation short/long description in a process.

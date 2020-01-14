@@ -779,6 +779,11 @@ sub Form {
         BodyClass => 'Popup',
     );
 
+    # Inform a user that article subject will be empty if contains only the ticket hook (if nothing is modified).
+    $Output .= $LayoutObject->Notify(
+        Data => Translatable('Article subject will be empty if the subject contains only the ticket hook!'),
+    );
+
     $Output .= $Self->_Mask(
         TicketNumber => $Ticket{TicketNumber},
         TicketID     => $Self->{TicketID},
@@ -1189,8 +1194,15 @@ sub SendEmail {
         }
     }
 
-    # Make sure we don't save form if a draft was loaded.
+    # Make sure sender is correct one. See bug#14872 ( https://bugs.otrs.org/show_bug.cgi?id=14872 ).
+    $GetParam{From} = $Kernel::OM->Get('Kernel::System::TemplateGenerator')->Sender(
+        QueueID => $Ticket{QueueID},
+        UserID  => $Self->{UserID},
+    );
+
     if ( $Self->{LoadedFormDraftID} ) {
+
+        # Make sure we don't save form if a draft was loaded.
         %Error = ( LoadedFormDraft => 1 );
     }
 
@@ -1272,6 +1284,17 @@ sub SendEmail {
             Type      => 'Small',
             BodyClass => 'Popup',
         );
+
+        # When a draft is loaded, inform a user that article subject will be empty
+        # if contains only the ticket hook (if nothing is modified).
+        if ( $Error{LoadedFormDraft} ) {
+            $Output .= $LayoutObject->Notify(
+                Data => $LayoutObject->{LanguageObject}->Translate(
+                    'Article subject will be empty if the subject contains only the ticket hook!'
+                ),
+            );
+        }
+
         $Output .= $Self->_Mask(
             TicketNumber => $Ticket{TicketNumber},
             Title        => $Ticket{Title},
@@ -1359,6 +1382,11 @@ sub SendEmail {
         $To .= $GetParam{$Key};
     }
 
+    my $From = $Kernel::OM->Get('Kernel::System::TemplateGenerator')->Sender(
+        QueueID => $Ticket{QueueID},
+        UserID  => $Self->{UserID},
+    );
+
     my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
     my $ArticleID     = $ArticleObject->BackendForChannel( ChannelName => 'Email' )->ArticleSend(
         SenderType           => 'agent',
@@ -1366,7 +1394,7 @@ sub SendEmail {
         TicketID             => $Self->{TicketID},
         HistoryType          => 'EmailAgent',
         HistoryComment       => "\%\%$To",
-        From                 => $GetParam{From},
+        From                 => $From,
         To                   => $GetParam{To},
         Cc                   => $GetParam{Cc},
         Bcc                  => $GetParam{Bcc},
@@ -2158,7 +2186,7 @@ sub _GetExtendedParams {
     # get params
     my %GetParam;
     for my $Key (
-        qw(From To Cc Bcc Subject Body ComposeStateID IsVisibleForCustomer IsVisibleForCustomerPresent
+        qw(To Cc Bcc Subject Body ComposeStateID IsVisibleForCustomer IsVisibleForCustomerPresent
         ArticleID TimeUnits Year Month Day Hour Minute FormID FormDraftID Title)
         )
     {
