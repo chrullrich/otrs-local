@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -168,7 +168,8 @@ sub Run {
     my $Success = 1;
 
     # Check if there are errors.
-    if ( $ErrorMessage || $ConsoleCommandFailure ) {
+    # Do not log debug messages as Daemon errors. See bug#14722 (https://bugs.otrs.org/show_bug.cgi?id=14722).
+    if ( ( $ErrorMessage && $ErrorMessage !~ /Debug: /g ) || $ConsoleCommandFailure ) {
 
         $ErrorMessage //= "Console command '$Param{TaskName}' is failed.";
 

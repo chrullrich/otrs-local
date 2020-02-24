@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -48,7 +48,7 @@ sub Param {
     my $DateTimeSettings = $DateTimeObject->Get();
 
     # create possible time selections
-    my %Year = map { $_ => $_; } ( $DateTimeSettings->{Year} - 10 .. $DateTimeSettings->{Year} );
+    my %Year  = map { $_ => $_; } ( $DateTimeSettings->{Year} - 10 .. $DateTimeSettings->{Year} );
     my %Month = map { $_ => sprintf( "%02d", $_ ); } ( 1 .. 12 );
 
     my @Params = (

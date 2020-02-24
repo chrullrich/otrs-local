@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -297,12 +297,15 @@ EOF
         my $TranslatedDesc = $Param{LayoutObject}->{LanguageObject}->Translate(
             'Ignore this field.',
         );
-        $HTMLString = <<"EOF";
+
+        if ( !$Param{NoIgnoreField} ) {
+            $HTMLString = <<"EOF";
 <input type="radio" id="$FieldNameUsed0" name="$FieldNameUsed" value="" $FieldUsedChecked0 />
 $TranslatedDesc
 <div class="clear"></div>
 <input type="radio" id="$FieldNameUsed1" name="$FieldNameUsed" value="1" $FieldUsedChecked1 />
 EOF
+        }
     }
 
     my $FieldLabelEscaped = $Param{LayoutObject}->Ascii2Html(

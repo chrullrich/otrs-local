@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -128,6 +128,17 @@ sub Run {
                     . "Can't get DynamicField config for DynamicField: '$CurrentDynamicField'!",
             );
             return;
+        }
+
+        # Transform value from string to array for multiselect field (see bug#14900).
+        if (
+            $DynamicFieldConfig->{FieldType} eq 'Multiselect'
+            && IsStringWithData( $Param{Config}->{$CurrentDynamicField} )
+            )
+        {
+            $Param{Config}->{$CurrentDynamicField} = $Self->_ConvertScalar2ArrayRef(
+                Data => $Param{Config}->{$CurrentDynamicField},
+            );
         }
 
         # try to set the configured value

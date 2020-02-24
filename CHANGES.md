@@ -1,9 +1,31 @@
+#6.0.26 2020-02-07
+ - 2020-01-23 Updated translations, thanks to all translators.
+ - 2020-01-22 Update jquery to 3.4.1.
+ - 2020-01-16 Fixed bug#[14917](https://bugs.otrs.org/show_bug.cgi?id=14917) - Permission problem with Notification and Group rights (NOTE/RO).
+  When user sends a note to the 'InvolvedAgent', target user doesn't receive notification if he doesn't have the 'RO' permission (even if he has other permissions, like NOTE).
+ - 2020-01-15 Fixed bug#[14908](https://bugs.otrs.org/show_bug.cgi?id=14908) - Line brakes are ignored in the long descriptions (Activity Dialog).
+ - 2020-01-08 Fixed bug#[14367](https://bugs.otrs.org/show_bug.cgi?id=14367) - Generic agent edit screen is slow when there are many dynamic fields.
+ - 2020-01-08 Fixed bug#[13159](https://bugs.otrs.org/show_bug.cgi?id=13159) - Generic agent deletes the content of dropdown dynamic field if empty value is added.
+  It only happens when 'Add empty value' is set.
+ - 2019-12-27 Fixed bug#[14882](https://bugs.otrs.org/show_bug.cgi?id=14882) - Number of tickets is wrong in the customer information center if dynamic fields are used.
+  If dynamic fields are used as attributes in Frontend::CustomerUser::Item###15-OpenTickets the number of tickets for the link in the customer information center is not displayed correctly.
+ - 2019-12-25 Fixed bug#[14722](https://bugs.otrs.org/show_bug.cgi?id=14722) - Debug messages are shown as Daemon errors.
+ - 2019-12-25 Fixed bug#[14900](https://bugs.otrs.org/show_bug.cgi?id=14900) - Transition action / Sequence flow DynamicFieldSet can't handle multiselect field value set.
+ - 2019-12-25 Fixed bug#[14288](https://bugs.otrs.org/show_bug.cgi?id=14288) - CustomerUser is not set when ticket is created via Web Service.
+  CustomerUser parameter expects customer user login, so when email is provided it didn't worked out.
+ - 2019-12-20 Fixed bug#[14912](https://bugs.otrs.org/show_bug.cgi?id=14912) - Installer refers to non-existing documentation.
+ - 2019-12-18 Fixed bug#[14896](https://bugs.otrs.org/show_bug.cgi?id=14896) - Process print action in process overview screen does not open in pop-up window.
+ - 2019-12-16 Fixed bug#[14895](https://bugs.otrs.org/show_bug.cgi?id=14895) - Caching issues with dropdown and multiselect dynamic fields when they are filled by 'DynamicFieldFromCustomerUser::Mapping' (Agent interface).
+ - 2019-12-16 Fixed bug#[14910](https://bugs.otrs.org/show_bug.cgi?id=14910) - Missing ZZZAAuto.pm prevents deployment of overridden invalid entity type database settings.
+  If system has invalid setting stored in the SysConfig database which is overridden via ZZZ*pm files, rebuild fails and therefore machines can't be deployed when upgrading the system.
+ - 2019-12-10 Fixed bug#[14903](https://bugs.otrs.org/show_bug.cgi?id=14903) - There is a space after some time values in statistics.
+
 #6.0.25 2020-01-10
  - 2019-12-12 Updated translations, thanks to all translators.
  - 2019-12-11 Improved handling of the uploaded inline images.
  - 2019-12-06 Fixed bug#[14886](https://bugs.otrs.org/show_bug.cgi?id=14886) - When config ExternalFrontend::TicketCreate###Queue is disabled, customer user can create a ticket in default queue without sufficient permission.
  - 2019-12-05 Fixed bug#[14233](https://bugs.otrs.org/show_bug.cgi?id=14233) - It's not possible to disable ticket type via ACL in the AgentTicketSearch.
- - Improved the draft feature in the agent frontend.
+ - 2019-12-05 Improved the draft feature in the agent frontend.
  - 2019-12-04 Fixed bug#[14791](https://bugs.otrs.org/show_bug.cgi?id=14791) - ICS files with carriage return character can not be imported to calendar.
  - 2019-12-03 Fixed bug#[14883](https://bugs.otrs.org/show_bug.cgi?id=14883) - Confusing message 'This message has been queued for sending' is shown in the TicketZoom screen.
  - 2019-12-02 Fixed bug#[14881](https://bugs.otrs.org/show_bug.cgi?id=14881) - Signature and Salutation text fields are not marked as mandatory in add and edit screens in admin interface.
@@ -14,7 +36,7 @@
  - 2019-11-28 Follow-up fix for bug#[14761](https://bugs.otrs.org/show_bug.cgi?id=14761) - It's not possible to create article with attachment named '0'.
  - 2019-11-20 Fixed bug#[14659](https://bugs.otrs.org/show_bug.cgi?id=14659) - Composing a new mail message with a blank subject causes no warning to appear.
  - 2019-11-15 Fixed bug#[14852](https://bugs.otrs.org/show_bug.cgi?id=14852) - Customer company filter is reset after going to the other page.
- - Improved config 'Ticket::ViewableStateType' description.
+ - 2019-11-07 Improved config 'Ticket::ViewableStateType' description.
  - 2019-11-07 Fixed bug#[14826](https://bugs.otrs.org/show_bug.cgi?id=14826) - Ticket history shows incomplete record for the Type entry.
  - 2019-11-07 Fixed bug#[14864](https://bugs.otrs.org/show_bug.cgi?id=14864) - When generic agent changes a ticket's CustomerID, CustomerUserID is cleared and is empty.
  - 2019-11-05 Fixed bug#[14851](https://bugs.otrs.org/show_bug.cgi?id=14851) - Predefined values for dynamic fields are missing in the system configuration for TicketSearch screens.

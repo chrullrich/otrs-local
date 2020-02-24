@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -1475,8 +1475,8 @@ sub _Mask {
     }
 
     # Expand option
-    my $ExpandOption = ( $ZoomExpand ? 'One' : 'All' );
-    my $ExpandText = ( $ZoomExpand ? 'Show one article' : 'Show all articles' );
+    my $ExpandOption = ( $ZoomExpand ? 'One'              : 'All' );
+    my $ExpandText   = ( $ZoomExpand ? 'Show one article' : 'Show all articles' );
     $LayoutObject->Block(
         Name => 'Expand',
         Data => {

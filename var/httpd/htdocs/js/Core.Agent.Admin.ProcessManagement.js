@@ -1,5 +1,5 @@
 // --
-// Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+// Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
 // the enclosed file COPYING for license information (GPL). If you
@@ -32,6 +32,9 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
      */
     TargetNS.Init = function () {
         var Subaction = Core.Config.Get('Subaction');
+
+        // Initialize Popup
+        InitProcessPopups();
 
         // Initialize Popup response (Redirect and close Popup)
         InitProcessPopupsResponse();
@@ -967,9 +970,6 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
         // Init DnD on Accordion
         TargetNS.InitAccordionDnD();
 
-        // Initialize the different create and edit links/buttons
-        InitProcessPopups();
-
         // Initialize the different Delete Links
         InitDeleteEntity();
 
@@ -1079,9 +1079,6 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
 
             Form.submit();
         });
-
-        // Init popups
-        InitProcessPopups();
 
         // Init handling of closing popup with the OS functionality ("X")
         $(window).off("beforeunload.PMPopup").on("beforeunload.PMPopup", function () {
@@ -1322,8 +1319,6 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
             return false;
         });
 
-        InitProcessPopups();
-
         // Init handling of closing popup with the OS functionality ("X")
         $(window).off("beforeunload.PMPopup").on("beforeunload.PMPopup", function () {
             window.opener.Core.Agent.Admin.ProcessManagement.HandlePopupClose();
@@ -1480,8 +1475,6 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
             Form.submit();
         });
 
-        InitProcessPopups();
-
         // Init handling of closing popup with the OS functionality ("X")
         $(window).off("beforeunload.PMPopup").on("beforeunload.PMPopup", function () {
             window.opener.Core.Agent.Admin.ProcessManagement.HandlePopupClose();
@@ -1578,9 +1571,6 @@ Core.Agent.Admin.ProcessManagement = (function (TargetNS) {
 
             Form.submit();
         });
-
-        // Init popups
-        InitProcessPopups();
 
         // Init handling of closing popup with the OS functionality ("X")
         $(window).off("beforeunload.PMPopup").on("beforeunload.PMPopup", function () {

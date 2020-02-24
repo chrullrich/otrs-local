@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -493,7 +493,7 @@ sub Update {
         }
 
         push @SQLSet, sprintf( '%s = ?', $DBNames{$Col} );
-        push @Binds, \$Value;
+        push @Binds,  \$Value;
     }
     push @SQL, 'SET', join( q{, }, @SQLSet );
 
@@ -1219,7 +1219,7 @@ sub _FiltersSQLAndBinds {
         }
 
         push @FilterFields, sprintf( '(%s = ?)', $FilterDBName );
-        push @Bind, \$Value;
+        push @Bind,         \$Value;
     }
 
     my $FinalFilterSQL = join ' AND ', @FilterFields;

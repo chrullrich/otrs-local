@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -5350,7 +5350,7 @@ sub HistoryTicketGet {
             )
         {
             if (
-                $Row[0] =~ /^\%\%(.+?)\%\%(.+?)(\%\%|)$/
+                $Row[0]    =~ /^\%\%(.+?)\%\%(.+?)(\%\%|)$/
                 || $Row[0] =~ /^Old: '(.+?)' New: '(.+?)'/
                 || $Row[0] =~ /^Changed Ticket State from '(.+?)' to '(.+?)'/
                 )

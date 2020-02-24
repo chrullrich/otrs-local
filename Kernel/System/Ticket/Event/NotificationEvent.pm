@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -1115,6 +1115,16 @@ sub _RecipientsGet {
             TicketID => $Ticket{TicketID},
             UserID   => $User{UserID}
         );
+
+        # Additional permissions for notes.
+        # Please see bug#14917 for more information.
+        if ( !$Permission && $Param{Event} eq 'NotificationAddNote' ) {
+            $Permission = $TicketObject->TicketPermission(
+                Type     => 'note',
+                TicketID => $Ticket{TicketID},
+                UserID   => $User{UserID}
+            );
+        }
 
         next RECIPIENT if !$Permission;
 

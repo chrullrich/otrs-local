@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -50,7 +50,7 @@ sub Configure {
     $Self->AddOption(
         Name => 'generate-po',
         Description =>
-            "Generate PO (translation content) files. This is only needed if a module is not yet available in Transifex to force initial creation of the gettext files.",
+            "Generate PO (translation content) files. This is only needed if a module is not yet available in Weblate to force initial creation of the gettext files.",
         Required => 0,
         HasValue => 0,
     );
@@ -151,20 +151,20 @@ sub HandleLanguage {
 
     my $DefaultTheme = $Kernel::OM->Get('Kernel::Config')->Get('DefaultTheme');
 
-    # We need to map internal codes to the official ones used by Transifex
-    my %TransifexLanguagesMap = (
+    # We need to map internal codes to the official ones used by Weblate
+    my %WeblateLanguagesMap = (
         sr_Cyrl => 'sr',
         sr_Latn => 'sr',
     );
 
-    my $TransifexLanguage = $TransifexLanguagesMap{$Language} // $Language;
-    my $Home              = $Kernel::OM->Get('Kernel::Config')->Get('Home');
+    my $WeblateLanguage = $WeblateLanguagesMap{$Language} // $Language;
+    my $Home            = $Kernel::OM->Get('Kernel::Config')->Get('Home');
 
     if ( !$Module ) {
         $LanguageFile  = "$Home/Kernel/Language/$Language.pm";
         $TargetFile    = "$Home/Kernel/Language/$Language.pm";
         $TargetPOTFile = "$Home/i18n/otrs/otrs.pot";
-        $TargetPOFile  = "$Home/i18n/otrs/otrs.$TransifexLanguage.po";
+        $TargetPOFile  = "$Home/i18n/otrs/otrs.$WeblateLanguage.po";
     }
     else {
         $IsSubTranslation = 1;
@@ -180,7 +180,7 @@ sub HandleLanguage {
         $TargetFile = "$ModuleDirectory/Kernel/Language/${Language}_$Module.pm";
 
         $TargetPOTFile = "$ModuleDirectory/i18n/$Module/$Module.pot";
-        $TargetPOFile  = "$ModuleDirectory/i18n/$Module/$Module.$TransifexLanguage.po";
+        $TargetPOFile  = "$ModuleDirectory/i18n/$Module/$Module.$WeblateLanguage.po";
     }
 
     my $WritePOT = $Param{WritePO} || -e $TargetPOTFile;
@@ -638,7 +638,8 @@ sub HandleLanguage {
 
         # transliterate word from existing translation if language supports it
         if ( $TranslitLanguagesMap{$Language} ) {
-            $Translation = ( $IsSubTranslation ? $TranslitLanguageObject : $TranslitLanguageCoreObject )->{Translation}
+            $Translation = $POTranslations{$String}
+                || ( $IsSubTranslation ? $TranslitLanguageObject : $TranslitLanguageCoreObject )->{Translation}
                 ->{$String};
             $Translation = $TranslitObject->translit($Translation) || '';
         }
@@ -668,7 +669,7 @@ sub HandleLanguage {
             Module             => $Module,
         );
     }
-    if ( $Param{WritePO} ) {
+    if ( $Param{WritePO} && !$TranslitLanguagesMap{$Language} ) {
         $Self->WritePOFile(
             TranslationStrings => \@TranslationStrings,
             TargetPOTFile      => $TargetPOTFile,
@@ -703,6 +704,10 @@ sub LoadPOFile {
 
     ENTRY:
     for my $Entry ( @{$POEntries} ) {
+
+        # Skip entries marked as "fuzzy" for now, as they may be very different than the source string.
+        next ENTRY if $Entry->fuzzy();
+
         if ( $Entry->msgstr() ) {
             my $Source = $Entry->dequote( $Entry->msgid() );
             $Source =~ s/\\{2}/\\/g;
@@ -765,7 +770,7 @@ sub WritePOFile {
     }
 
     # Theoretically we could now also check for removed strings, but since the translations
-    #   are handled by transifex, this will not be needed as Transifex will handle that for us.
+    #   are handled by Weblate, this will not be needed as Weblate will handle that for us.
 
     Locale::PO->save_file_fromarray( $Param{TargetPOFile}, $POEntries )
         || die "Could not save file $Param{TargetPOFile}: $!";
@@ -903,7 +908,7 @@ sub WritePerlLanguageFile {
 
         $NewOut = <<"EOF";
 $Separator
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 $Separator
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
