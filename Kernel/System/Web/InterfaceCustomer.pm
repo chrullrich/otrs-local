@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -1139,7 +1139,7 @@ sub Run {
 
             KEY:
             for my $Key ( sort keys %{$NavigationConfig} ) {
-                next KEY if $Key !~ m/^\d+/i;
+                next KEY if $Key                 !~ m/^\d+/i;
                 next KEY if $Param{RequestedURL} !~ m/Subaction/i;
 
                 my @ModuleNavigationConfigs;

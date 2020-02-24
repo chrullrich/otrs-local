@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -33,10 +33,12 @@ sub Run {
     $Output .= $LayoutObject->NavigationBar();
 
     # Get log data.
-    my $Log = $Kernel::OM->Get('Kernel::System::Log')->GetLog( Limit => 400 ) || '';
+    my $Log = $Kernel::OM->Get('Kernel::System::Log')->GetLog() || '';
 
     # Split data to lines.
-    my @Message = split /\n/, $Log;
+    my $Limit    = 400;
+    my @Messages = split /\n/, $Log;
+    splice @Messages, $Limit;
 
     # Create months map.
     my %MonthMap;
@@ -48,7 +50,7 @@ sub Run {
 
     # Create table.
     ROW:
-    for my $Row (@Message) {
+    for my $Row (@Messages) {
 
         my @Parts = split /;;/, $Row;
 
@@ -57,7 +59,7 @@ sub Run {
         my $ErrorClass = ( $Parts[1] =~ /error/ ) ? 'Error' : '';
 
         # Create date and time object from ctime log stamp.
-        my @Time           = split ' ', $Parts[0];
+        my @Time = split ' ', $Parts[0];
         my $DateTimeObject = $Kernel::OM->Create(
             'Kernel::System::DateTime',
             ObjectParams => {
@@ -86,7 +88,7 @@ sub Run {
     }
 
     # Print no data found message.
-    if ( !@Message ) {
+    if ( !@Messages ) {
         $LayoutObject->Block(
             Name => 'AdminLogNoDataRow',
             Data => {},

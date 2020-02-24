@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -676,8 +676,8 @@ sub _EffectivePermissions {
 
         # show permission marks
         for my $Type (@Types) {
-            my $PermissionMark = $Permissions{$GroupID}{$Type} ? 'On' : 'Off';
-            my $HighlightMark = $Type eq 'rw' ? 'Highlight' : '';
+            my $PermissionMark = $Permissions{$GroupID}{$Type} ? 'On'        : 'Off';
+            my $HighlightMark  = $Type eq 'rw'                 ? 'Highlight' : '';
             $LayoutObject->Block(
                 Name => 'GroupPermissionMark',
             );

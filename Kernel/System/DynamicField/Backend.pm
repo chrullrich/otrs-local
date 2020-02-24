@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -423,7 +423,7 @@ sub ValueSet {
 
     # Either ObjectID or ObjectName has to be given
     if (
-        ( !$Param{ObjectID}   && !$Param{ObjectName} )
+        ( !$Param{ObjectID} && !$Param{ObjectName} )
         || ( $Param{ObjectID} && $Param{ObjectName} )
         )
     {
@@ -926,7 +926,7 @@ sub ValueGet {
 
     # Either ObjectID or ObjectName has to be given
     if (
-        ( !$Param{ObjectID}   && !$Param{ObjectName} )
+        ( !$Param{ObjectID} && !$Param{ObjectName} )
         || ( $Param{ObjectID} && $Param{ObjectName} )
         )
     {

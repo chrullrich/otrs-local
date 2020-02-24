@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -75,7 +75,7 @@ sub Run {
     # MultipleCustomer From-field
     my @MultipleCustomer;
     my $CustomersNumber = $ParamObject->GetParam( Param => 'CustomerTicketCounterFromCustomer' ) || 0;
-    my $Selected = $ParamObject->GetParam( Param => 'CustomerSelected' ) || '';
+    my $Selected        = $ParamObject->GetParam( Param => 'CustomerSelected' )                  || '';
 
     # hash for check duplicated entries
     my %AddressesList;
@@ -807,8 +807,8 @@ sub Run {
                 ID => $GetParam{NextStateID},
             );
         }
-        my $NextState = $StateData{Name} || '';
-        my $Dest = $ParamObject->GetParam( Param => 'Dest' ) || '';
+        my $NextState = $StateData{Name}                          || '';
+        my $Dest      = $ParamObject->GetParam( Param => 'Dest' ) || '';
 
         # see if only a name has been passed
         if ( $Dest && $Dest !~ m{ \A (\d+)? \| \| .+ \z }xms ) {

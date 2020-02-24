@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -251,8 +251,8 @@ sub List {
 
     for my $Item ( @{$List} ) {
 
-        my $ArticleID = $Item->{ArticleID} ? $Item->{ArticleID} : '-';
-        my $Attempts = $Item->{Attempts} ? "<yellow>$Item->{Attempts}</yellow>" : $Item->{Attempts};
+        my $ArticleID = $Item->{ArticleID} ? $Item->{ArticleID}                   : '-';
+        my $Attempts  = $Item->{Attempts}  ? "<yellow>$Item->{Attempts}</yellow>" : $Item->{Attempts};
 
         my $Recipient = '-';
 

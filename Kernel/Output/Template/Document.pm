@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -74,7 +74,7 @@ sub _InstallOTRSExtensions {
             $_tt_args{'BlockName'} = shift;
             $_tt_params            = shift;
             $_tt_params            = {} if ref $_tt_params ne 'HASH';
-            $_tt_params = { %_tt_args, %$_tt_params };
+            $_tt_params            = { %_tt_args, %$_tt_params };
 
             my $stash = $Context->localise($_tt_params);
             eval {

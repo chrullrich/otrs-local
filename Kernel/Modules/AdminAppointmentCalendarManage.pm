@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -53,7 +53,7 @@ sub Run {
 
         # Queue, OwnerIDs and ResponsibleIDs are multiple selection fields, get array instead.
         if (
-            $Key =~ /^QueueID_/
+            $Key    =~ /^QueueID_/
             || $Key =~ /^SearchParam_[0-9a-f]+_OwnerIDs$/
             || $Key =~ /^SearchParam_[0-9a-f]+_ResponsibleIDs$/
             )

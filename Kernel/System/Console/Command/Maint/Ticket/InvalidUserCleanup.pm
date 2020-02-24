@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -194,7 +194,7 @@ sub _CleanupFlags {
                 Key      => 'Seen',
                 UserID   => $User->{UserID},
             );
-            $Count++ if $Delete;
+            $Count++                                  if $Delete;
             Time::HiRes::usleep( $Param{MicroSleep} ) if $Param{MicroSleep};
         }
 
@@ -231,7 +231,7 @@ sub _CleanupFlags {
                 Key       => 'Seen',
                 UserID    => $User->{UserID},
             );
-            $Count++ if $Delete;
+            $Count++                                  if $Delete;
             Time::HiRes::usleep( $Param{MicroSleep} ) if $Param{MicroSleep};
         }
 
@@ -266,7 +266,7 @@ sub _CleanupFlags {
                     WatchUserID => $User->{UserID},
                     UserID      => 1,
                 );
-                $Count++ if $Unsubscribe;
+                $Count++                                  if $Unsubscribe;
                 Time::HiRes::usleep( $Param{MicroSleep} ) if $Param{MicroSleep};
             }
 

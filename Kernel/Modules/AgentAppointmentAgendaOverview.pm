@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -231,7 +231,7 @@ sub Run {
     }
     elsif ( $Param{Filter} eq 'Week' ) {
         my $CalendarWeekDayStart = $Kernel::OM->Get('Kernel::Config')->Get('CalendarWeekDayStart') || 7;
-        my $CalendarWeekDayEnd = ( $CalendarWeekDayStart - 1 ) || 7;
+        my $CalendarWeekDayEnd   = ( $CalendarWeekDayStart - 1 )                                   || 7;
 
         # Get start of the week.
         my $StartTimeObject = $Kernel::OM->Create(

@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -61,7 +61,7 @@ sub Run {
     # Create navigation tree
     if ( $Self->{Subaction} eq 'AJAXNavigationTree' ) {
 
-        my $Category = $ParamObject->GetParam( Param => 'Category' ) || '';
+        my $Category               = $ParamObject->GetParam( Param => 'Category' )               || '';
         my $UserModificationActive = $ParamObject->GetParam( Param => 'UserModificationActive' ) || '0';
         my $IsValid = $ParamObject->GetParam( Param => 'IsValid' ) // undef;
 
