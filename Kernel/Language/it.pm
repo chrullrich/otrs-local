@@ -32,7 +32,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.661964649898029;
+    $Self->{Completeness}        = 0.660176092109719;
 
     # csv separator
     $Self->{Separator}         = '';
@@ -422,7 +422,7 @@ sub Data {
         'Filter for Groups' => 'Filtri per gruppi',
         'Select the customer:group permissions.' => 'Seleziona i permessi cliente:gruppo.',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
-            'Se non si effettua una selezione, non ci saranno permessi in questo gruppo (i ticket non saranno disponibili al cliente)',
+            'Se non si effettua una selezione, non ci saranno permessi in questo gruppo (i ticket non saranno disponibili al cliente).',
         'Search Results' => 'Risultato della ricerca',
         'Customers' => 'Clienti',
         'Groups' => 'Gruppi',
@@ -683,7 +683,7 @@ sub Data {
         'Responsible' => 'Responsabile',
         'Ticket lock' => 'Blocco ticket',
         'Dynamic fields' => 'Campi dinamici',
-        'Add dynamic field' => '',
+        'Add dynamic field' => 'Aggiungi campo dinamico',
         'Create times' => 'Tempi di creazione',
         'No create time settings.' => 'Data di creazione mancante.',
         'Ticket created' => 'Ticket creato',
@@ -697,14 +697,18 @@ sub Data {
         'No change time settings.' => 'Nessuna modifica tempo.',
         'Ticket changed' => 'Ticket cambiato',
         'Ticket changed between' => 'Ticket cambiato fra',
+        'Last close times' => '',
+        'No last close time settings.' => '',
+        'Ticket last close' => '',
+        'Ticket last close between' => '',
         'Close times' => 'Tempi di chiusura',
         'No close time settings.' => 'Nessuna data di chiusura.',
         'Ticket closed' => 'Ticket chiusi',
         'Ticket closed between' => 'Ticket chiuso tra',
         'Pending times' => 'Tempi di attesa',
-        'No pending time settings.' => 'Tempo di attesa non selezionato',
+        'No pending time settings.' => 'Tempo di attesa non selezionato.',
         'Ticket pending time reached' => 'Tempo di attesa per ticket raggiunto',
-        'Ticket pending time reached between' => 'Tempo di attesa per ticket raggiunto fra ',
+        'Ticket pending time reached between' => 'Tempo di attesa per ticket raggiunto fra',
         'Escalation times' => 'Tempi di escalation',
         'No escalation time settings.' => 'Tempo di gestione non selezionato.',
         'Ticket escalation time reached' => 'Tempo di gestione per ticket superato',
@@ -2167,6 +2171,14 @@ sub Data {
         'Do you really want to delete this template?' => 'Vuoi veramente cancellare questo modello?',
         'A standard template with this name already exists!' => 'Un modello standard con questo nome esiste già!',
         'Template' => 'Modello',
+        'To get the first 20 characters of the subject of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 5 lines of the body of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 20 characters of the subject of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 5 lines of the body of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
         'Create type templates only supports this smart tags' => 'Crea modelli di tipi supporta solo questi smart tag',
         'Example template' => 'Modello di esempio',
         'The current ticket state is' => 'Lo stato attuale del ticket è',
@@ -2367,7 +2379,7 @@ sub Data {
         'Edit customer ID' => 'Modifica ID cliente',
 
         # Template: AgentDashboardCustomerIDStatus
-        'Escalated tickets' => '',
+        'Escalated tickets' => 'Tickets scaduti',
         'Open tickets' => 'Ticket aperti',
         'Closed tickets' => 'Ticket chiusi',
         'All tickets' => 'Tutti i ticket',
@@ -3746,7 +3758,7 @@ sub Data {
             'Spiacenti, Apache::Reload è necessario come PerlModule e PerlInitHandler nel file di configurazione di Apache. Vedi anche script/apache2-httpd.include.conf. In alternativa, è possibile utilizzare lo strumento da riga di comando bin/otrs.Console.pl per installare i pacchetti!',
         'No such package!' => 'Nessun pacchetto del genere!',
         'No such file %s in package!' => 'Nessun file del genere %s nel pacchetto!',
-        'No such file %s in local file system!' => '',
+        'No such file %s in local file system!' => 'Nessun file %s nel file system locale!',
         'Can\'t read %s!' => 'Impossibile leggere %s!',
         'File is OK' => 'File è OK',
         'Package has locally modified files.' => 'Il pacchetto ha file modificati localmente.',
@@ -3762,7 +3774,7 @@ sub Data {
         'Dependency installed correctly' => 'Dipendenza installata correttamente',
         'The package needs to be reinstalled' => 'Il pacchetto deve essere reinstallato',
         'The package contains cyclic dependencies' => 'Il pacchetto contiene dipendenze cicliche',
-        'Not found in on-line repositories' => '',
+        'Not found in on-line repositories' => 'Non trovato nelle repository on-line',
         'Required version is higher than available' => '',
         'Dependencies fail to upgrade or install' => '',
         'Package could not be installed' => '',
@@ -4985,6 +4997,8 @@ sub Data {
         'Client Connection Charset' => 'Charset della Connessione Client',
         'Setting character_set_client needs to be utf8.' => 'Il parametro character_set_client deve essere impostato a utf8.',
         'Server Database Charset' => 'Charset del Server Database',
+        'This character set is not yet supported, please see https://bugs.otrs.org/show_bug.cgi?id=12361. Please convert your database to the character set \'utf8\'.' =>
+            '',
         'The setting character_set_database needs to be \'utf8\'.' => '',
         'Table Charset' => 'Charset della Tabella',
         'There were tables found which do not have \'utf8\' as charset.' =>
@@ -6180,6 +6194,8 @@ Thanks for your help!
         'Checks for queued outgoing emails to be sent.' => '',
         'Checks if an E-Mail is a followup to an existing ticket by searching the subject for a valid ticket number.' =>
             'Verifica se una email è una prosecuzione a un ticket esistente cercando l\'oggetto di un numero ticket valido.',
+        'Checks if an email is a follow-up to an existing ticket with external ticket number which can be found by ExternalTicketNumberRecognition filter module.' =>
+            '',
         'Checks the SystemID in ticket number detection for follow-ups. If not enabled, SystemID will be changed after using the system.' =>
             '',
         'Checks the availability of OTRS Business Solution™ for this system.' =>
@@ -7135,6 +7151,7 @@ Thanks for your help!
             '',
         'Disable HTTP header "X-Frame-Options: SAMEORIGIN" to allow OTRS to be included as an IFrame in other websites. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             '',
+        'Disable autocomplete in the login screen.' => '',
         'Disable cloud services' => '',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be enabled).' =>
             '',
@@ -7404,6 +7421,7 @@ Thanks for your help!
             '',
         'Global Search Module.' => '',
         'Go to dashboard!' => 'Vai al cruscotto!',
+        'Good PGP signature.' => '',
         'Google Authenticator' => 'Autenticatore Google',
         'Graph: Bar Chart' => '',
         'Graph: Line Chart' => '',
@@ -7558,6 +7576,8 @@ Thanks for your help!
         'It is possible to configure different skins, for example to distinguish between diferent customers, to be used on a per-domain basis within the application. Using a regular expression (regex), you can configure a Key/Content pair to match a domain. The value in "Key" should match the domain, and the value in "Content" should be a valid skin on your system. Please see the example entries for the proper form of the regex.' =>
             '',
         'It is possible to configure different themes, for example to distinguish between agents and customers, to be used on a per-domain basis within the application. Using a regular expression (regex), you can configure a Key/Content pair to match a domain. The value in "Key" should match the domain, and the value in "Content" should be a valid theme on your system. Please see the example entries for the proper form of the regex.' =>
+            '',
+        'It was not possible to check the PGP signature, this may be caused by a missing public key or an unsupported algorithm.' =>
             '',
         'Italian' => 'Italiano',
         'Italian stop words for fulltext index. These words will be removed from the search index.' =>
@@ -7759,6 +7779,8 @@ Thanks for your help!
             '',
         'Next possible ticket states after adding a phone note in the ticket phone outbound screen of the agent interface.' =>
             '',
+        'No public key found.' => '',
+        'No valid OpenPGP data found.' => '',
         'None' => 'Nessuno',
         'Norwegian' => 'Norvegese',
         'Notification Settings' => 'Impostazioni delle notifiche',
@@ -8466,6 +8488,7 @@ Thanks for your help!
             '',
         'Shows time use complete description (days, hours, minutes), if enabled; or just first letter (d, h, m), if not enabled.' =>
             '',
+        'Signature data.' => '',
         'Signatures' => 'Firme',
         'Simple' => 'Semplice',
         'Skin' => 'Tema',
@@ -8570,6 +8593,13 @@ Thanks for your help!
         'Templates ↔ Queues' => '',
         'Textarea' => 'Area di testo',
         'Thai' => 'Thai',
+        'The PGP signature is expired.' => '',
+        'The PGP signature was made by a revoked key, this could mean that the signature is forged.' =>
+            '',
+        'The PGP signature was made by an expired key.' => '',
+        'The PGP signature with the keyid has not been verified successfully.' =>
+            '',
+        'The PGP signature with the keyid is good.' => '',
         'The agent skin\'s InternalName which should be used in the agent interface. Please check the available skins in Frontend::Agent::Skins.' =>
             '',
         'The customer skin\'s InternalName which should be used in the customer interface. Please check the available skins in Frontend::Customer::Skins.' =>
@@ -8629,6 +8659,7 @@ Thanks for your help!
         'This is the default orange - black skin for the customer interface.' =>
             'Questa è la skin arancione - nera predefinita per l\'interfaccia clienti.',
         'This is the default orange - black skin.' => 'Questo è il tema arancione - nero predefinito.',
+        'This key is not certified with a trusted signature!' => '',
         'This module and its PreRun() function will be executed, if defined, for every request. This module is useful to check some user options or to display news about new applications.' =>
             'Questo modulo e la sua funzione PreRun() verranno eseguiti, se definiti, per ogni richiesta. Questo modulo è utile per verificare alcune opzioni utente o per visualizzare notizie su nuove applicazioni.',
         'This module is part of the admin area of OTRS.' => 'Questo modulo fa parte dell\'area di amministrazione di OTRS.',
@@ -8805,6 +8836,7 @@ NOTA: i sistemi di terze parti richiedono una configurazione a se.',
         '%s KB',
         '%s MB',
         '%s TB',
+        '+%s more',
         'A key with this name (\'%s\') already exists.',
         'A package upgrade was recently finished. Click here to see the results.',
         'A popup of this screen is already open. Do you want to close it and load this one instead?',

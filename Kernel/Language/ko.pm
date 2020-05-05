@@ -24,7 +24,7 @@ sub Data {
     $Self->{DateFormatShort}     = '';
     $Self->{DateInputFormat}     = '';
     $Self->{DateInputFormatLong} = '';
-    $Self->{Completeness}        = 0.971617946974847;
+    $Self->{Completeness}        = 0.96799864544531;
 
     # csv separator
     $Self->{Separator}         = '';
@@ -689,6 +689,10 @@ sub Data {
         'No change time settings.' => '변경 시간 설정이 없습니다.',
         'Ticket changed' => '티켓 변경됨',
         'Ticket changed between' => '티켓 변경 사이',
+        'Last close times' => '',
+        'No last close time settings.' => '',
+        'Ticket last close' => '',
+        'Ticket last close between' => '',
         'Close times' => '끝나는 시간',
         'No close time settings.' => '가까운 시간 설정이 없습니다.',
         'Ticket closed' => '티켓이 폐쇄되었습니다.',
@@ -2159,6 +2163,14 @@ sub Data {
         'Do you really want to delete this template?' => '이 템플릿을 정말로 삭제 하시겠습니까?',
         'A standard template with this name already exists!' => '이 이름을 가진 표준 템플릿이 이미 존재합니다!',
         'Template' => '템플릿',
+        'To get the first 20 characters of the subject of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 5 lines of the body of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 20 characters of the subject of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 5 lines of the body of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
         'Create type templates only supports this smart tags' => '만들기 유형 템플릿은 이 스마트 태그만 지원합니다.',
         'Example template' => '템플릿 예제',
         'The current ticket state is' => '현재 티켓 상태는 다음과 같습니다.',
@@ -4013,7 +4025,7 @@ sub Data {
         'Monthly' => '월간',
         'Yearly' => '연간',
         'every' => '...마다',
-        'for %s time(s)' => '1 % s 시간 동안',
+        'for %s time(s)' => '1 %s 시간 동안',
         'until ...' => '때까지...',
         'for ... time(s)' => '...시간(들) 동안',
         'until %s' => '%s 까지',
@@ -4977,6 +4989,8 @@ sub Data {
         'Client Connection Charset' => '클라이언트 연결 문자 세트',
         'Setting character_set_client needs to be utf8.' => 'character_set_client 설정은 utf8이어야합니다.',
         'Server Database Charset' => '서버 데이터베이스 문자 세트',
+        'This character set is not yet supported, please see https://bugs.otrs.org/show_bug.cgi?id=12361. Please convert your database to the character set \'utf8\'.' =>
+            '',
         'The setting character_set_database needs to be \'utf8\'.' => '설정 character_set_database는 \'utf8\'이어야합니다.',
         'Table Charset' => '표 문자 집합',
         'There were tables found which do not have \'utf8\' as charset.' =>
@@ -6183,6 +6197,8 @@ Thanks for your help!
         'Checks for queued outgoing emails to be sent.' => '보낸 대기중인 보내는 전자 메일을 확인합니다.',
         'Checks if an E-Mail is a followup to an existing ticket by searching the subject for a valid ticket number.' =>
             '유효한 티켓 번호를 검색하여 전자 메일이 기존 티켓의 후속 조치인지 확인합니다.',
+        'Checks if an email is a follow-up to an existing ticket with external ticket number which can be found by ExternalTicketNumberRecognition filter module.' =>
+            '',
         'Checks the SystemID in ticket number detection for follow-ups. If not enabled, SystemID will be changed after using the system.' =>
             '후속 조치를 위해 티켓 번호 검색에서 SystemID를 확인합니다. 활성화되지 않은 경우 시스템을 사용한 후 SystemID가 변경됩니다.',
         'Checks the availability of OTRS Business Solution™ for this system.' =>
@@ -7138,6 +7154,7 @@ Thanks for your help!
             '외부 스크립트 내용로드를 허용하려면 HTTP 헤더 "Content-Security-Policy"를 비활성화하십시오. 이 HTTP 헤더를 비활성화하면 보안 문제가 발생할 수 있습니다! 자신이하는 일을 아는 경우에만 사용을 중지하십시오!',
         'Disable HTTP header "X-Frame-Options: SAMEORIGIN" to allow OTRS to be included as an IFrame in other websites. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             'HTTP 헤더 "X-Frame-Options : SAMEORIGIN"을 사용하지 않도록 설정하여 OTRS를 다른 웹 사이트의 IFrame으로 포함 할 수 있습니다. 이 HTTP 헤더를 비활성화하면 보안 문제가 발생할 수 있습니다! 자신이하는 일을 아는 경우에만 사용을 중지하십시오!',
+        'Disable autocomplete in the login screen.' => '',
         'Disable cloud services' => '클라우드 서비스 사용 중지',
         'Disables sending reminder notifications to the responsible agent of a ticket (Ticket::Responsible needs to be enabled).' =>
             '책임있는 에이전트에게 티켓 알림을 보내는 것을 비활성화합니다 (Ticket :: Responsible을 활성화해야합니다).',
@@ -7407,6 +7424,7 @@ Thanks for your help!
             '최종 사용자에게 번역 파일에 정의 된 CSV 파일의 구분 문자를 무시할 수 있습니다. 참고 : \'활성\'을 0으로 설정하면 상담원이이 그룹의 개인 환경 설정에서 설정을 편집하지 못하게되지만 관리자가 다른 사용자를 대신하여 설정을 편집 할 수 있습니다. \'PreferenceGroup\'을 사용하여 이러한 설정을 사용자 인터페이스에 표시 할 영역을 제어하십시오.',
         'Global Search Module.' => '글로벌 검색 모듈.',
         'Go to dashboard!' => '대시 보드로 이동!',
+        'Good PGP signature.' => '',
         'Google Authenticator' => 'Google OTP',
         'Graph: Bar Chart' => '그래프 : 막대 차트',
         'Graph: Line Chart' => '그래프 : 선 차트',
@@ -7562,6 +7580,8 @@ Thanks for your help!
             '서로 다른 스킨을 구성하여 서로 다른 고객을 구별하고 응용 프로그램 내에서 도메인별로 사용할 수 있습니다. 정규식 (정규식)을 사용하면 키 / 내용 쌍을 도메인과 일치하도록 구성 할 수 있습니다. "Key"의 값은 도메인과 일치해야하며 "Content"의 값은 시스템의 유효한 스킨이어야합니다. 올바른 형식의 정규식에 대한 예제 항목을 참조하십시오.',
         'It is possible to configure different themes, for example to distinguish between agents and customers, to be used on a per-domain basis within the application. Using a regular expression (regex), you can configure a Key/Content pair to match a domain. The value in "Key" should match the domain, and the value in "Content" should be a valid theme on your system. Please see the example entries for the proper form of the regex.' =>
             '에이전트와 고객을 구별하기 위해 응용 프로그램 내에서 도메인별로 사용되도록 다른 테마를 구성 할 수 있습니다. 정규식 (정규식)을 사용하면 키 / 내용 쌍을 도메인과 일치하도록 구성 할 수 있습니다. "Key"의 값은 도메인과 일치해야하며 "Content"의 값은 시스템의 유효한 테마 여야합니다. 올바른 형식의 정규식에 대한 예제 항목을 참조하십시오.',
+        'It was not possible to check the PGP signature, this may be caused by a missing public key or an unsupported algorithm.' =>
+            '',
         'Italian' => '이탈리아 사람',
         'Italian stop words for fulltext index. These words will be removed from the search index.' =>
             '전체 텍스트 색인에 대한 이탈리아어 중지 단어. 이 단어는 검색 색인에서 제거됩니다.',
@@ -7692,7 +7712,7 @@ Thanks for your help!
             '티켓 확대보기의 고객 정보 테이블의 최대 크기 (문자 수)',
         'Medium' => '중간의',
         'Merge this ticket and all articles into another ticket' => '이 티켓과 모든 기사를 다른 티켓으로 병합하십시오.',
-        'Merged Ticket (%s/%s) to (%s/%s).' => '합쳐진 티켓 (%s/ %s) ~ (%s/ 1 % s).',
+        'Merged Ticket (%s/%s) to (%s/%s).' => '합쳐진 티켓 (%s/%s) ~ (%s/ 1 %s).',
         'Merged Ticket <OTRS_TICKET> to <OTRS_MERGE_TO_TICKET>.' => 'Merged Ticket 1 to 2.',
         'Minute' => '분',
         'Miscellaneous' => '기타',
@@ -7762,6 +7782,8 @@ Thanks for your help!
             '다음 가능한 티켓 상태는 에이전트 인터페이스의 티켓 인바운드 인바운드 화면에 전화 메모를 추가한 후의 상태입니다.',
         'Next possible ticket states after adding a phone note in the ticket phone outbound screen of the agent interface.' =>
             '가능한 다음 티켓 상태는 상담원 인터페이스의 티켓 전화 아웃 바운드 화면에 전화 메모를 추가한 후의 상태입니다.',
+        'No public key found.' => '',
+        'No valid OpenPGP data found.' => '',
         'None' => '없음',
         'Norwegian' => '노르웨이인',
         'Notification Settings' => '알림 설정',
@@ -8469,6 +8491,7 @@ Thanks for your help!
             '사용 가능한 경우 긴 형식 (일, 시간, 분)으로 시간을 표시합니다. 또는 짧은 형식 (일, 시간)으로 설정할 수 있습니다.',
         'Shows time use complete description (days, hours, minutes), if enabled; or just first letter (d, h, m), if not enabled.' =>
             '사용 가능한 경우 시간 사용 완료 설명 (일, 시간, 분)을 표시합니다. 또는 활성화되지 않은 경우 첫 번째 문자 (d, h, m).',
+        'Signature data.' => '',
         'Signatures' => '서명',
         'Simple' => '단순한',
         'Skin' => '피부',
@@ -8573,6 +8596,13 @@ Thanks for your help!
         'Templates ↔ Queues' => '템플릿 ↔ 대기열',
         'Textarea' => '텍스트 영역',
         'Thai' => '태국 사람',
+        'The PGP signature is expired.' => '',
+        'The PGP signature was made by a revoked key, this could mean that the signature is forged.' =>
+            '',
+        'The PGP signature was made by an expired key.' => '',
+        'The PGP signature with the keyid has not been verified successfully.' =>
+            '',
+        'The PGP signature with the keyid is good.' => '',
         'The agent skin\'s InternalName which should be used in the agent interface. Please check the available skins in Frontend::Agent::Skins.' =>
             '에이전트 인터페이스에서 사용해야하는 에이전트 스킨의 InternalName입니다. Frontend :: Agent :: Skins에서 사용 가능한 스킨을 확인하십시오.',
         'The customer skin\'s InternalName which should be used in the customer interface. Please check the available skins in Frontend::Customer::Skins.' =>
@@ -8632,6 +8662,7 @@ Thanks for your help!
         'This is the default orange - black skin for the customer interface.' =>
             '이것은 고객 인터페이스의 기본 오렌지색 검정색 스킨입니다.',
         'This is the default orange - black skin.' => '이것은 기본 오랜지색 검은색 피부입니다.',
+        'This key is not certified with a trusted signature!' => '',
         'This module and its PreRun() function will be executed, if defined, for every request. This module is useful to check some user options or to display news about new applications.' =>
             '이 모듈과 PreRun () 함수는 모든 요청에 ​​대해 정의 된 경우 실행됩니다. 이 모듈은 일부 사용자 옵션을 확인하거나 새 응용 프로그램에 대한 뉴스를 표시하는 데 유용합니다.',
         'This module is part of the admin area of OTRS.' => '이 모듈은 OTRS의 관리 영역의 일부입니다.',
@@ -8804,6 +8835,7 @@ Thanks for your help!
         '%s KB',
         '%s MB',
         '%s TB',
+        '+%s more',
         'A key with this name (\'%s\') already exists.',
         'A package upgrade was recently finished. Click here to see the results.',
         'A popup of this screen is already open. Do you want to close it and load this one instead?',

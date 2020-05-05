@@ -14,6 +14,7 @@ use warnings;
 use File::stat;
 use Storable();
 use Term::ANSIColor();
+use Time::HiRes();
 
 use Kernel::System::VariableCheck qw(IsHashRefWithData IsArrayRefWithData);
 
@@ -120,8 +121,8 @@ sub Run {
         }
     }
 
-    # Use non-overridden time() function.
-    my $StartTime = CORE::time;    ## no critic;
+    my $StartTime      = CORE::time();                      # Use non-overridden time().
+    my $StartTimeHiRes = [ Time::HiRes::gettimeofday() ];
 
     my @Files = $Kernel::OM->Get('Kernel::System::Main')->DirectoryRead(
         Directory => $Directory,
@@ -158,14 +159,15 @@ sub Run {
             $Self->_HandleFile(
                 PostTestScripts => $Param{PostTestScripts},
                 File            => $File,
+                DataDiffType    => $Param{DataDiffType},
             );
         }
     }
 
-    # Use non-overridden time() function.
-    my $Duration = CORE::time - $StartTime;    ## no critic
+    my $Duration = sprintf( '%.3f', Time::HiRes::tv_interval($StartTimeHiRes) );
 
-    my $Host = $ConfigObject->Get('FQDN');
+    my $Host           = $ConfigObject->Get('FQDN');
+    my $TestCountTotal = $Self->{TestCountOk} + $Self->{TestCountNotOk};
 
     print "=====================================================================\n";
 
@@ -176,8 +178,13 @@ sub Run {
         }
     }
 
-    print $Self->_Color( 'yellow', $Host ) . " ran tests in " . $Self->_Color( 'yellow', "${Duration}s" );
-    print " for " . $Self->_Color( 'yellow', $Product ) . "\n";
+    printf(
+        "%s ran %s test(s) in %s for %s.\n",
+        $Self->_Color( 'yellow', $Host ),
+        $Self->_Color( 'yellow', $TestCountTotal ),
+        $Self->_Color( 'yellow', "${Duration}s" ),
+        $Self->_Color( 'yellow', $Product )
+    );
 
     if ( $Self->{TestCountNotOk} ) {
         print $Self->_Color( 'red', "$Self->{TestCountNotOk} tests failed.\n" );
@@ -186,7 +193,7 @@ sub Run {
         for my $FailedFile ( @{ $Self->{NotOkInfo} || [] } ) {
             my ( $File, @Tests ) = @{ $FailedFile || [] };
             next FAILEDFILE if !@Tests;
-            print sprintf "  %s #%s\n", $File, join ", ", @Tests;
+            print sprintf "  %s %s\n", $File, join ", ", @Tests;
         }
     }
     elsif ( $Self->{TestCountOk} ) {
@@ -244,8 +251,9 @@ sub _HandleFile {
         my $Driver = $Kernel::OM->Create(
             'Kernel::System::UnitTest::Driver',
             ObjectParams => {
-                Verbose => $Self->{Verbose},
-                ANSI    => $Self->{ANSI},
+                Verbose      => $Self->{Verbose},
+                ANSI         => $Self->{ANSI},
+                DataDiffType => $Param{DataDiffType},
             },
         );
 
@@ -438,7 +446,7 @@ sub _SubmitResults {
         Scenario => $Param{Scenario}   // '',
         Meta     => {
             StartTime => $Param{StartTime},
-            Duration  => $Param{Duration},
+            Duration  => int $Param{Duration},      # CI master expects an integer here.
             TestOk    => $Self->{TestCountOk},
             TestNotOk => $Self->{TestCountNotOk},
         },

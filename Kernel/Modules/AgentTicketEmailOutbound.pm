@@ -1382,9 +1382,11 @@ sub SendEmail {
         $To .= $GetParam{$Key};
     }
 
-    my $From = $Kernel::OM->Get('Kernel::System::TemplateGenerator')->Sender(
-        QueueID => $Ticket{QueueID},
-        UserID  => $Self->{UserID},
+    # Get attributes like sender address.
+    my %Data = $Kernel::OM->Get('Kernel::System::TemplateGenerator')->Attributes(
+        TicketID => $Self->{TicketID},
+        Data     => {},
+        UserID   => $Self->{UserID},
     );
 
     my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
@@ -1394,7 +1396,7 @@ sub SendEmail {
         TicketID             => $Self->{TicketID},
         HistoryType          => 'EmailAgent',
         HistoryComment       => "\%\%$To",
-        From                 => $From,
+        From                 => $Data{From},
         To                   => $GetParam{To},
         Cc                   => $GetParam{Cc},
         Bcc                  => $GetParam{Bcc},
@@ -1530,6 +1532,14 @@ sub AjaxUpdate {
     my @MultipleCustomer    = @{ $GetParamExtended{MultipleCustomer} };
     my @MultipleCustomerCc  = @{ $GetParamExtended{MultipleCustomerCc} };
     my @MultipleCustomerBcc = @{ $GetParamExtended{MultipleCustomerBcc} };
+
+    my %Ticket = $Kernel::OM->Get('Kernel::System::Ticket')->TicketGet( TicketID => $Self->{TicketID} );
+
+    # Make sure sender is correct one. See bug#14872 ( https://bugs.otrs.org/show_bug.cgi?id=14872 ).
+    $GetParam{From} = $Kernel::OM->Get('Kernel::System::TemplateGenerator')->Sender(
+        QueueID => $Ticket{QueueID},
+        UserID  => $Self->{UserID},
+    );
 
     my @ExtendedData;
 
