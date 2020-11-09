@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-03-04 07:48+0000\n"
+"POT-Creation-Date: 2020-04-08 06:39+0000\n"
 "PO-Revision-Date: 2018-09-20 13:03+0000\n"
 "Last-Translator: OTRS SDN BHD <otrssdnbhd@gmail.com>, 2019\n"
 "Language-Team: Malay (https://www.transifex.com/otrs/teams/23435/ms/)\n"
@@ -2325,25 +2325,21 @@ msgstr "Tiket berubah antara"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "Last changed times"
 msgid "Last close times"
 msgstr "Masa perubahan lepas"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "No close time settings."
 msgid "No last close time settings."
 msgstr "Tiada tetapan masa dekat"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "Ticket closed"
 msgid "Ticket last close"
 msgstr "tiket ditutup"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "Ticket closed between"
 msgid "Ticket last close between"
 msgstr "Tiket ditutup antara"
 
@@ -15394,6 +15390,13 @@ msgid "Server Database Charset"
 msgstr "Setchar Pangkalan data Pelayan"
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Charset.pm
+msgid ""
+"This character set is not yet supported, please see https://bugs.otrs.org/"
+"show_bug.cgi?id=12361. Please convert your database to the character set "
+"'utf8'."
+msgstr ""
+
+#. Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Charset.pm
 msgid "The setting character_set_database needs to be 'utf8'."
 msgstr ""
 
@@ -18773,9 +18776,6 @@ msgstr ""
 
 #. SysConfig
 #, fuzzy
-#| msgid ""
-#| "Checks if an E-Mail is a followup to an existing ticket by searching the "
-#| "subject for a valid ticket number."
 msgid ""
 "Checks if an email is a follow-up to an existing ticket with external ticket "
 "number which can be found by ExternalTicketNumberRecognition filter module."
@@ -23501,6 +23501,11 @@ msgid "Go to dashboard!"
 msgstr "Pergi ke papan pemuka!"
 
 #. SysConfig
+#, fuzzy
+msgid "Good PGP signature."
+msgstr "Tambah Tandatangan"
+
+#. SysConfig
 msgid "Google Authenticator"
 msgstr "Pengesah Google"
 
@@ -24147,6 +24152,12 @@ msgstr ""
 "dalam \"Key\" harus sepadan domain, dan nilai dalam \"Content\" harus "
 "menjadi tema yang sah pada sistem anda. Sila lihat catatan contoh untuk "
 "bentuk yang betul daripada regex."
+
+#. SysConfig
+msgid ""
+"It was not possible to check the PGP signature, this may be caused by a "
+"missing public key or an unsupported algorithm."
+msgstr ""
 
 #. SysConfig
 msgid "Italian"
@@ -24886,6 +24897,16 @@ msgid ""
 msgstr ""
 "Status tiket yang mungkin yang seterusnya selepas menambah nita telefon "
 "dalam skrin tiket telefon keluar dari paparan ejen."
+
+#. SysConfig
+#, fuzzy
+msgid "No public key found."
+msgstr "Tiada data tiket ditemui."
+
+#. SysConfig
+#, fuzzy
+msgid "No valid OpenPGP data found."
+msgstr "Tiada data tiket ditemui."
 
 #. SysConfig
 msgid "None"
@@ -27784,6 +27805,11 @@ msgid ""
 msgstr ""
 
 #. SysConfig
+#, fuzzy
+msgid "Signature data."
+msgstr "Tandatangan dikemaskini!"
+
+#. SysConfig
 msgid "Signatures"
 msgstr "Tanda Tangan"
 
@@ -28206,6 +28232,29 @@ msgid "Thai"
 msgstr "Thai"
 
 #. SysConfig
+#, fuzzy
+msgid "The PGP signature is expired."
+msgstr "Tandatangan untuk mendapatkan jawapan e-mel."
+
+#. SysConfig
+msgid ""
+"The PGP signature was made by a revoked key, this could mean that the "
+"signature is forged."
+msgstr ""
+
+#. SysConfig
+msgid "The PGP signature was made by an expired key."
+msgstr ""
+
+#. SysConfig
+msgid "The PGP signature with the keyid has not been verified successfully."
+msgstr ""
+
+#. SysConfig
+msgid "The PGP signature with the keyid is good."
+msgstr ""
+
+#. SysConfig
 msgid ""
 "The agent skin's InternalName which should be used in the agent interface. "
 "Please check the available skins in Frontend::Agent::Skins."
@@ -28408,6 +28457,11 @@ msgstr ""
 #. SysConfig
 msgid "This is the default orange - black skin."
 msgstr ""
+
+#. SysConfig
+#, fuzzy
+msgid "This key is not certified with a trusted signature!"
+msgstr "Terdapat ruang yang lain dengan nama yang sama."
 
 #. SysConfig
 msgid ""

@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 # --
 # Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
 # --
@@ -424,6 +424,17 @@ my @NeededModules = (
             emerge => 'www-apache/mod_perl',
             zypper => 'apache2-mod_perl',
             ports  => 'www/mod_perl2',
+        },
+    },
+    {
+        Module    => 'Moo',
+        Required  => 1,
+        Comment   => 'Required for random number generator.',
+        InstTypes => {
+            aptget => 'libmoo-perl',
+            emerge => 'dev-perl/Moo',
+            zypper => 'perl-Moo',
+            ports  => 'devel/p5-Moo',
         },
     },
     {

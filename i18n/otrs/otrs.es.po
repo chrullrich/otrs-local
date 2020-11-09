@@ -33,15 +33,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-03-04 07:48+0000\n"
-"PO-Revision-Date: 2018-09-20 13:03+0000\n"
-"Last-Translator: Santi Herranz <santi.herranz@isalus.es>, 2019\n"
-"Language-Team: Spanish (https://www.transifex.com/otrs/teams/23435/es/)\n"
+"POT-Creation-Date: 2020-04-08 06:39+0000\n"
+"PO-Revision-Date: 2020-04-29 09:22+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: Spanish <https://translate.app.otrs.com/projects/otrs-6/otrs/"
+"es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.11.3\n"
 
 #. Template: AdminACL
 msgid "ACL Management"
@@ -2426,25 +2428,21 @@ msgstr "Ticket modificado entre"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "Last changed times"
 msgid "Last close times"
 msgstr "Últimas fechas modificadas"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "No close time settings."
 msgid "No last close time settings."
 msgstr "No hay fechas de cierre"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "Ticket closed"
 msgid "Ticket last close"
 msgstr "Ticket cerrado"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "Ticket closed between"
 msgid "Ticket last close between"
 msgstr "Ticket cerrado entre"
 
@@ -8987,7 +8985,7 @@ msgstr "Obtener todo"
 
 #. Template: AgentTicketEmailOutbound
 msgid "Outbound Email for %s%s%s"
-msgstr "Email de Salida para %s%s"
+msgstr "Email de Salida para %s%s%s"
 
 #. Template: AgentTicketEmailResend
 msgid "Resend Email for %s%s%s"
@@ -11424,7 +11422,7 @@ msgstr "Fracasado"
 
 #. Perl Module: Kernel/Modules/AdminCommunicationLog.pm
 msgid "Invalid Filter: %s!"
-msgstr "¡Filtro no válido:% s!"
+msgstr "¡Filtro no válido: %s!"
 
 #. Perl Module: Kernel/Modules/AdminCommunicationLog.pm
 msgid "Less than a second"
@@ -13237,7 +13235,7 @@ msgstr ""
 #. Perl Module: Kernel/Modules/AgentLinkObject.pm
 msgid "Can not create link with %s! Object already linked as %s."
 msgstr ""
-"¡No se puede crear un enlace con % s! El objeto ya esta enlazado con % s."
+"¡No se puede crear un enlace con %s! El objeto ya esta enlazado con %s."
 
 #. Perl Module: Kernel/Modules/AgentLinkObject.pm
 msgid "Can not create link with %s!"
@@ -13410,7 +13408,7 @@ msgstr "No se puede bloquear los Ticket, ningún TicketID está dado!"
 
 #. Perl Module: Kernel/Modules/AgentTicketBulk.pm
 msgid "Ticket (%s) is not unlocked!"
-msgstr "¡El ticket (% s) no está desbloqueado!"
+msgstr "¡El ticket (%s) no está desbloqueado!"
 
 #. Perl Module: Kernel/Modules/AgentTicketBulk.pm
 msgid ""
@@ -15788,6 +15786,13 @@ msgstr "El ajuste character_set_client necesita ser utf8."
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Charset.pm
 msgid "Server Database Charset"
 msgstr "Juego de Caracteres del Servidor de Base de Datos"
+
+#. Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Charset.pm
+msgid ""
+"This character set is not yet supported, please see https://bugs.otrs.org/"
+"show_bug.cgi?id=12361. Please convert your database to the character set "
+"'utf8'."
+msgstr ""
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Charset.pm
 msgid "The setting character_set_database needs to be 'utf8'."
@@ -19282,9 +19287,6 @@ msgstr ""
 
 #. SysConfig
 #, fuzzy
-#| msgid ""
-#| "Checks if an E-Mail is a followup to an existing ticket by searching the "
-#| "subject for a valid ticket number."
 msgid ""
 "Checks if an email is a follow-up to an existing ticket with external ticket "
 "number which can be found by ExternalTicketNumberRecognition filter module."
@@ -23496,6 +23498,11 @@ msgid "Go to dashboard!"
 msgstr "¡Ir al panel principal!"
 
 #. SysConfig
+#, fuzzy
+msgid "Good PGP signature."
+msgstr "Añadir firma"
+
+#. SysConfig
 msgid "Google Authenticator"
 msgstr "Google Authenticator"
 
@@ -24013,6 +24020,12 @@ msgid ""
 "Content pair to match a domain. The value in \"Key\" should match the "
 "domain, and the value in \"Content\" should be a valid theme on your system. "
 "Please see the example entries for the proper form of the regex."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"It was not possible to check the PGP signature, this may be caused by a "
+"missing public key or an unsupported algorithm."
 msgstr ""
 
 #. SysConfig
@@ -24716,6 +24729,16 @@ msgid ""
 msgstr ""
 "Siguiente estado posible del ticket después de agregar una nota en la "
 "pantalla de llamada telefónica saliente para la interfaz de agente."
+
+#. SysConfig
+#, fuzzy
+msgid "No public key found."
+msgstr "No se encontraron datos del ticket."
+
+#. SysConfig
+#, fuzzy
+msgid "No valid OpenPGP data found."
+msgstr "No se encontraron datos del ticket."
 
 #. SysConfig
 msgid "None"
@@ -27219,6 +27242,11 @@ msgid ""
 msgstr ""
 
 #. SysConfig
+#, fuzzy
+msgid "Signature data."
+msgstr "¡Firma actualizada!"
+
+#. SysConfig
 msgid "Signatures"
 msgstr "Firmas"
 
@@ -27581,6 +27609,29 @@ msgid "Thai"
 msgstr "Tailandés"
 
 #. SysConfig
+#, fuzzy
+msgid "The PGP signature is expired."
+msgstr "Firma para respuestas por correo."
+
+#. SysConfig
+msgid ""
+"The PGP signature was made by a revoked key, this could mean that the "
+"signature is forged."
+msgstr ""
+
+#. SysConfig
+msgid "The PGP signature was made by an expired key."
+msgstr ""
+
+#. SysConfig
+msgid "The PGP signature with the keyid has not been verified successfully."
+msgstr ""
+
+#. SysConfig
+msgid "The PGP signature with the keyid is good."
+msgstr ""
+
+#. SysConfig
 msgid ""
 "The agent skin's InternalName which should be used in the agent interface. "
 "Please check the available skins in Frontend::Agent::Skins."
@@ -27765,6 +27816,11 @@ msgstr ""
 #. SysConfig
 msgid "This is the default orange - black skin."
 msgstr "Este es el aspecto predeterminado naranja - negro."
+
+#. SysConfig
+#, fuzzy
+msgid "This key is not certified with a trusted signature!"
+msgstr "Hay otro campo con el mismo nombre."
 
 #. SysConfig
 msgid ""

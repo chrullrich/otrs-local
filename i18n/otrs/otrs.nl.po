@@ -21,15 +21,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-03-04 07:48+0000\n"
-"PO-Revision-Date: 2018-09-20 13:03+0000\n"
-"Last-Translator: Nick van der Burg <nickvdburg.nvdb@gmail.com>, 2019\n"
-"Language-Team: Dutch (https://www.transifex.com/otrs/teams/23435/nl/)\n"
+"POT-Creation-Date: 2020-04-08 06:39+0000\n"
+"PO-Revision-Date: 2020-06-11 14:31+0000\n"
+"Last-Translator: Philip Steeman <philip.steeman@vives.be>\n"
+"Language-Team: Dutch <https://translate.app.otrs.com/projects/otrs-6/otrs/nl/"
+">\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.0.4\n"
 
 #. Template: AdminACL
 msgid "ACL Management"
@@ -2375,25 +2377,21 @@ msgstr "Ticket gewijzigd tussen"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "Last changed times"
 msgid "Last close times"
 msgstr "Tijdstip van laatste wijziging"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "No close time settings."
 msgid "No last close time settings."
 msgstr "Alle"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "Ticket closed"
 msgid "Ticket last close"
 msgstr "Ticket gesloten"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "Ticket closed between"
 msgid "Ticket last close between"
 msgstr "Ticket gesloten tussen"
 
@@ -10730,19 +10728,19 @@ msgstr ""
 
 #. JS Template: UploadContainer
 msgid "Click to select a file for upload."
-msgstr ""
+msgstr "Klik om een bestand te selecteren om te uploaden."
 
 #. JS Template: UploadContainer
 msgid "Click to select files or just drop them here."
-msgstr ""
+msgstr "Klik om bestanden te selecteren of zet ze hier neer."
 
 #. JS Template: UploadContainer
 msgid "Click to select a file or just drop it here."
-msgstr ""
+msgstr "Klik om een bestand te selecteren of zet het hier neer."
 
 #. JS Template: UploadContainer
 msgid "Uploading..."
-msgstr ""
+msgstr "Uploaden..."
 
 #. JS Template: InformationDialog
 msgid "Process state"
@@ -15460,6 +15458,13 @@ msgid "Server Database Charset"
 msgstr "Server Database karakterinstelling"
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Charset.pm
+msgid ""
+"This character set is not yet supported, please see https://bugs.otrs.org/"
+"show_bug.cgi?id=12361. Please convert your database to the character set "
+"'utf8'."
+msgstr ""
+
+#. Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Charset.pm
 msgid "The setting character_set_database needs to be 'utf8'."
 msgstr ""
 
@@ -17770,7 +17775,7 @@ msgstr ""
 
 #. SysConfig
 msgid " (work units)"
-msgstr "(werk eenheden)"
+msgstr " (werk eenheden)"
 
 #. SysConfig
 msgid " 2 minutes"
@@ -22863,6 +22868,11 @@ msgid "Go to dashboard!"
 msgstr "Ga naar het dashboard!"
 
 #. SysConfig
+#, fuzzy
+msgid "Good PGP signature."
+msgstr "Nieuwe handtekening"
+
+#. SysConfig
 msgid "Google Authenticator"
 msgstr "Google Authenticator"
 
@@ -23408,6 +23418,12 @@ msgid ""
 "Content pair to match a domain. The value in \"Key\" should match the "
 "domain, and the value in \"Content\" should be a valid theme on your system. "
 "Please see the example entries for the proper form of the regex."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"It was not possible to check the PGP signature, this may be caused by a "
+"missing public key or an unsupported algorithm."
 msgstr ""
 
 #. SysConfig
@@ -24092,6 +24108,16 @@ msgid ""
 "Next possible ticket states after adding a phone note in the ticket phone "
 "outbound screen of the agent interface."
 msgstr ""
+
+#. SysConfig
+#, fuzzy
+msgid "No public key found."
+msgstr "Geen tickets gevonden."
+
+#. SysConfig
+#, fuzzy
+msgid "No valid OpenPGP data found."
+msgstr "Geen tickets gevonden."
 
 #. SysConfig
 msgid "None"
@@ -26587,6 +26613,11 @@ msgid ""
 msgstr ""
 
 #. SysConfig
+#, fuzzy
+msgid "Signature data."
+msgstr "Handtekening bijgewerkt."
+
+#. SysConfig
 msgid "Signatures"
 msgstr "Handtekeningen"
 
@@ -26947,6 +26978,29 @@ msgid "Thai"
 msgstr ""
 
 #. SysConfig
+#, fuzzy
+msgid "The PGP signature is expired."
+msgstr "De ondertekening voor beantwoording van berichten per e-mail."
+
+#. SysConfig
+msgid ""
+"The PGP signature was made by a revoked key, this could mean that the "
+"signature is forged."
+msgstr ""
+
+#. SysConfig
+msgid "The PGP signature was made by an expired key."
+msgstr ""
+
+#. SysConfig
+msgid "The PGP signature with the keyid has not been verified successfully."
+msgstr ""
+
+#. SysConfig
+msgid "The PGP signature with the keyid is good."
+msgstr ""
+
+#. SysConfig
 msgid ""
 "The agent skin's InternalName which should be used in the agent interface. "
 "Please check the available skins in Frontend::Agent::Skins."
@@ -27125,6 +27179,11 @@ msgstr ""
 #. SysConfig
 msgid "This is the default orange - black skin."
 msgstr ""
+
+#. SysConfig
+#, fuzzy
+msgid "This key is not certified with a trusted signature!"
+msgstr "Er is een ander veld met dezelfde naam."
 
 #. SysConfig
 msgid ""

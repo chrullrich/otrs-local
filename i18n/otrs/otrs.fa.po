@@ -10,15 +10,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-03-04 07:48+0000\n"
-"PO-Revision-Date: 2018-09-20 13:03+0000\n"
-"Last-Translator: saeedi <mohsen.saeedi@gmail.com>, 2019\n"
-"Language-Team: Persian (https://www.transifex.com/otrs/teams/23435/fa/)\n"
+"POT-Creation-Date: 2020-04-08 06:39+0000\n"
+"PO-Revision-Date: 2020-03-14 13:10+0000\n"
+"Last-Translator: Mohsen Ebrahimi <ebrahimi.m@of.iut.ac.ir>\n"
+"Language-Team: Persian <https://translate.app.otrs.com/projects/otrs-6/otrs/"
+"fa/>\n"
 "Language: fa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 3.11.2\n"
 
 #. Template: AdminACL
 msgid "ACL Management"
@@ -135,7 +137,7 @@ msgstr "کپی"
 
 #. Template: AdminACL
 msgid "No data found."
-msgstr "داده‌ای یافت نشد"
+msgstr "داده‌ای یافت نشد."
 
 #. Template: AdminACL
 msgid "No matches found."
@@ -2317,25 +2319,21 @@ msgstr "درخواست تغییر داده شده بین"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "Last changed times"
 msgid "Last close times"
 msgstr "زمان آخرین تغییر "
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "No close time settings."
 msgid "No last close time settings."
 msgstr "زمان بستن تنظیم نشده است"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "Ticket closed"
 msgid "Ticket last close"
 msgstr "درخواست بسته شده"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "Ticket closed between"
 msgid "Ticket last close between"
 msgstr "درخواست بسته شده بین"
 
@@ -4116,7 +4114,7 @@ msgid ""
 "area."
 msgstr ""
 "گروه admin برای دسترسی به بخش مدیریت سیستم و گروه stats برای دسترسی به بخش "
-"گزارشات است."
+"گزارش ها است."
 
 #. Template: AdminGroup
 msgid ""
@@ -8329,43 +8327,43 @@ msgstr ""
 
 #. Template: AgentStatisticsOverview
 msgid "Statistics"
-msgstr "گزارشات"
+msgstr "گزارش ها"
 
 #. Template: AgentStatisticsOverview
 msgid "Run"
-msgstr "دویدن"
+msgstr "اجرا"
 
 #. Template: AgentStatisticsOverview
 msgid "Edit statistic \"%s\"."
-msgstr "ویرایش آمار \\ \" %s \"."
+msgstr "ویرایش گزارش \" %s \"."
 
 #. Template: AgentStatisticsOverview
 msgid "Export statistic \"%s\""
-msgstr "آمارارسال \\ \" %s \""
+msgstr ""
 
 #. Template: AgentStatisticsOverview
 msgid "Export statistic %s"
-msgstr "آمار ارسال %s"
+msgstr "استخراج گزارش \"%s\""
 
 #. Template: AgentStatisticsOverview
 msgid "Delete statistic \"%s\""
-msgstr "حذف آمار \\ \" %s \""
+msgstr "حذف گزارش \"%s\""
 
 #. Template: AgentStatisticsOverview
 msgid "Delete statistic %s"
-msgstr "حذف آمار %s"
+msgstr "حذف گزارش \"%s\""
 
 #. Template: AgentStatisticsView
 msgid "Statistics Overview"
-msgstr ""
+msgstr "مرور گزارش ها"
 
 #. Template: AgentStatisticsView
 msgid "View Statistics"
-msgstr ""
+msgstr "مشاهده گزارش ها"
 
 #. Template: AgentStatisticsView
 msgid "Statistics Information"
-msgstr ""
+msgstr "اطلاعات گزارش ها"
 
 #. Template: AgentStatisticsView
 msgid "Created by"
@@ -9364,7 +9362,7 @@ msgstr ""
 
 #. Template: CustomerLogin
 msgid "One moment please, you are being redirected..."
-msgstr "لطفا چند لحظه صبرکنید ، شما در حال هدایت می شوید ..."
+msgstr "چند لحظه صبر کنید، در حال هدایت..."
 
 #. Template: CustomerLogin
 msgid "Login"
@@ -9452,7 +9450,7 @@ msgstr "ویرایش تنظیمات شخصی"
 
 #. Template: CustomerNavigationBar
 msgid "Logout %s"
-msgstr ""
+msgstr "خروج %s"
 
 #. Template: CustomerTicketMessage
 msgid "Service level agreement"
@@ -9666,7 +9664,7 @@ msgstr ""
 
 #. Template: Header
 msgid "Logout"
-msgstr "خروج "
+msgstr "خروج"
 
 #. Template: Header
 msgid "You are logged in as"
@@ -15363,6 +15361,13 @@ msgid "Server Database Charset"
 msgstr "سرور مجموعه کاراکتر پایگاه"
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Charset.pm
+msgid ""
+"This character set is not yet supported, please see https://bugs.otrs.org/"
+"show_bug.cgi?id=12361. Please convert your database to the character set "
+"'utf8'."
+msgstr ""
+
+#. Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Charset.pm
 msgid "The setting character_set_database needs to be 'utf8'."
 msgstr ""
 
@@ -18764,9 +18769,6 @@ msgstr ""
 
 #. SysConfig
 #, fuzzy
-#| msgid ""
-#| "Checks if an E-Mail is a followup to an existing ticket by searching the "
-#| "subject for a valid ticket number."
 msgid ""
 "Checks if an email is a follow-up to an existing ticket with external ticket "
 "number which can be found by ExternalTicketNumberRecognition filter module."
@@ -23469,6 +23471,11 @@ msgid "Go to dashboard!"
 msgstr "برو به داشبورد!"
 
 #. SysConfig
+#, fuzzy
+msgid "Good PGP signature."
+msgstr "افزودن امضاء"
+
+#. SysConfig
 msgid "Google Authenticator"
 msgstr "Google Authenticator را"
 
@@ -24120,6 +24127,12 @@ msgstr ""
 "با یک دامنه پیکربندی کنید. ارزش در \\ \"کلید \" باید دامنه مطابقت، و ارزش در "
 "\\ \"محتوا \" باید یک موضوع معتبر بر روی سیستم شما می شود. لطفا برای فرم "
 "مناسب از عبارت منظم مشاهده نوشته های مثال."
+
+#. SysConfig
+msgid ""
+"It was not possible to check the PGP signature, this may be caused by a "
+"missing public key or an unsupported algorithm."
+msgstr ""
 
 #. SysConfig
 msgid "Italian"
@@ -24845,6 +24858,16 @@ msgid ""
 msgstr ""
 "بعدی ایالات بلیط ممکن است پس از اضافه کردن یک یادداشت تلفن در صفحه نمایش "
 "خروجی تلفن بلیط رابط عامل."
+
+#. SysConfig
+#, fuzzy
+msgid "No public key found."
+msgstr "اطلاعات درخواست یافت نشد."
+
+#. SysConfig
+#, fuzzy
+msgid "No valid OpenPGP data found."
+msgstr "اطلاعات درخواست یافت نشد."
 
 #. SysConfig
 msgid "None"
@@ -25633,7 +25656,7 @@ msgstr ""
 
 #. SysConfig
 msgid "Reports"
-msgstr "گزارشات"
+msgstr "گزارش ها"
 
 #. SysConfig
 msgid "Reports (OTRS Business Solution™)"
@@ -27671,6 +27694,11 @@ msgid ""
 msgstr ""
 
 #. SysConfig
+#, fuzzy
+msgid "Signature data."
+msgstr "امضا به روز شده!"
+
+#. SysConfig
 msgid "Signatures"
 msgstr "امضاء"
 
@@ -28083,6 +28111,29 @@ msgid "Thai"
 msgstr "تایلندی"
 
 #. SysConfig
+#, fuzzy
+msgid "The PGP signature is expired."
+msgstr "یامضاء برای پاسخ‌های ایمیل "
+
+#. SysConfig
+msgid ""
+"The PGP signature was made by a revoked key, this could mean that the "
+"signature is forged."
+msgstr ""
+
+#. SysConfig
+msgid "The PGP signature was made by an expired key."
+msgstr ""
+
+#. SysConfig
+msgid "The PGP signature with the keyid has not been verified successfully."
+msgstr ""
+
+#. SysConfig
+msgid "The PGP signature with the keyid is good."
+msgstr ""
+
+#. SysConfig
 msgid ""
 "The agent skin's InternalName which should be used in the agent interface. "
 "Please check the available skins in Frontend::Agent::Skins."
@@ -28288,6 +28339,11 @@ msgstr "پوست سیاه و سفید برای رابط مشتری - این به
 #. SysConfig
 msgid "This is the default orange - black skin."
 msgstr "پوست سیاه و سفید - این به طور پیش فرض نارنجی است."
+
+#. SysConfig
+#, fuzzy
+msgid "This key is not certified with a trusted signature!"
+msgstr " یکی دیگر از این زمینه با همین نام وجود دارد."
 
 #. SysConfig
 msgid ""
