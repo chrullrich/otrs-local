@@ -167,7 +167,7 @@ sub Run {
     my $Duration = sprintf( '%.3f', Time::HiRes::tv_interval($StartTimeHiRes) );
 
     my $Host           = $ConfigObject->Get('FQDN');
-    my $TestCountTotal = $Self->{TestCountOk} + $Self->{TestCountNotOk};
+    my $TestCountTotal = ( $Self->{TestCountOk} // 0 ) + ( $Self->{TestCountNotOk} // 0 );
 
     print "=====================================================================\n";
 
@@ -298,6 +298,15 @@ sub _HandleFile {
 
 sub _SubmitResults {
     my ( $Self, %Param ) = @_;
+
+    # Disable some plugins which are not useful in unit test context.
+    $Kernel::OM->Get('Kernel::Config')->Set(
+        Key   => 'SupportDataCollector::DisablePlugins',
+        Value => [
+            'Kernel::System::SupportDataCollector::Plugin::OTRS::DaemonRunning',
+            'Kernel::System::SupportDataCollector::Plugin::OTRS::DefaultUser',
+        ],
+    );
 
     my %SupportData = $Kernel::OM->Get('Kernel::System::SupportDataCollector')->Collect();
     die "Could not collect SupportData.\n" if !$SupportData{Success};

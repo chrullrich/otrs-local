@@ -33,15 +33,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-03-04 07:48+0000\n"
-"PO-Revision-Date: 2018-09-20 13:03+0000\n"
-"Last-Translator: Santi Herranz <santi.herranz@isalus.es>, 2019\n"
-"Language-Team: Spanish (https://www.transifex.com/otrs/teams/23435/es/)\n"
+"POT-Creation-Date: 2020-07-01 07:05+0000\n"
+"PO-Revision-Date: 2020-04-29 09:22+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: Spanish <https://translate.app.otrs.com/projects/otrs-6/otrs/"
+"es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.11.3\n"
 
 #. Template: AdminACL
 msgid "ACL Management"
@@ -2426,25 +2428,21 @@ msgstr "Ticket modificado entre"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "Last changed times"
 msgid "Last close times"
 msgstr "Últimas fechas modificadas"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "No close time settings."
 msgid "No last close time settings."
 msgstr "No hay fechas de cierre"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "Ticket closed"
 msgid "Ticket last close"
 msgstr "Ticket cerrado"
 
 #. Template: AdminGenericAgent
 #, fuzzy
-#| msgid "Ticket closed between"
 msgid "Ticket last close between"
 msgstr "Ticket cerrado entre"
 
@@ -8987,7 +8985,7 @@ msgstr "Obtener todo"
 
 #. Template: AgentTicketEmailOutbound
 msgid "Outbound Email for %s%s%s"
-msgstr "Email de Salida para %s%s"
+msgstr "Email de Salida para %s%s%s"
 
 #. Template: AgentTicketEmailResend
 msgid "Resend Email for %s%s%s"
@@ -11424,7 +11422,7 @@ msgstr "Fracasado"
 
 #. Perl Module: Kernel/Modules/AdminCommunicationLog.pm
 msgid "Invalid Filter: %s!"
-msgstr "¡Filtro no válido:% s!"
+msgstr "¡Filtro no válido: %s!"
 
 #. Perl Module: Kernel/Modules/AdminCommunicationLog.pm
 msgid "Less than a second"
@@ -13237,7 +13235,7 @@ msgstr ""
 #. Perl Module: Kernel/Modules/AgentLinkObject.pm
 msgid "Can not create link with %s! Object already linked as %s."
 msgstr ""
-"¡No se puede crear un enlace con % s! El objeto ya esta enlazado con % s."
+"¡No se puede crear un enlace con %s! El objeto ya esta enlazado con %s."
 
 #. Perl Module: Kernel/Modules/AgentLinkObject.pm
 msgid "Can not create link with %s!"
@@ -13410,7 +13408,7 @@ msgstr "No se puede bloquear los Ticket, ningún TicketID está dado!"
 
 #. Perl Module: Kernel/Modules/AgentTicketBulk.pm
 msgid "Ticket (%s) is not unlocked!"
-msgstr "¡El ticket (% s) no está desbloqueado!"
+msgstr "¡El ticket (%s) no está desbloqueado!"
 
 #. Perl Module: Kernel/Modules/AgentTicketBulk.pm
 msgid ""
@@ -15790,6 +15788,13 @@ msgid "Server Database Charset"
 msgstr "Juego de Caracteres del Servidor de Base de Datos"
 
 #. Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Charset.pm
+msgid ""
+"This character set is not yet supported, please see https://bugs.otrs.org/"
+"show_bug.cgi?id=12361. Please convert your database to the character set "
+"'utf8'."
+msgstr ""
+
+#. Perl Module: Kernel/System/SupportDataCollector/Plugin/Database/mysql/Charset.pm
 msgid "The setting character_set_database needs to be 'utf8'."
 msgstr ""
 
@@ -16696,162 +16701,162 @@ msgstr ""
 msgid "Action \"%s\" not found!"
 msgstr "¡Acción \"% s\" no encontrada!"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "invalid-temporarily"
 msgstr "temporalmente-no-válido"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Group for default access."
 msgstr "Grupo para acceso por defecto."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Group of all administrators."
 msgstr "Grupo de todos los administradores."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Group for statistics access."
 msgstr "Grupo para acceso a estadísticas."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "new"
 msgstr "nuevo"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "All new state types (default: viewable)."
 msgstr "Todos los nuevos tipos de estado (por defecto: visible). "
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "open"
 msgstr "abierto"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "All open state types (default: viewable)."
 msgstr "Todos los tipos de estado abierto (por defecto: visible). "
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "closed"
 msgstr "cerrado"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "All closed state types (default: not viewable)."
 msgstr "Todos los tipos de estado cerrado (por defecto: no visible). "
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "pending reminder"
 msgstr "pendiente de recordatorio"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "All 'pending reminder' state types (default: viewable)."
 msgstr ""
 "Todos los tipos de estado 'recordatorio en espera' (por defecto: visible). "
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "pending auto"
 msgstr "pendiente automático"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "All 'pending auto *' state types (default: viewable)."
 msgstr "Todos los tipos de estado 'en espera auto' (por defecto: visible). "
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "removed"
 msgstr "eliminado"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "All 'removed' state types (default: not viewable)."
 msgstr "Todos los tipos de estado 'eliminado' (por defecto: no visible). "
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "merged"
 msgstr "fusionado"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "State type for merged tickets (default: not viewable)."
 msgstr "Tipo de estado para tickets fusionados (por defecto: no visible). "
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "New ticket created by customer."
 msgstr "Nuevo ticket creado por cliente."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "closed successful"
 msgstr "cerrado con éxito"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket is closed successful."
 msgstr "El ticket está cerrado con éxito."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "closed unsuccessful"
 msgstr "cerrado sin éxito"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket is closed unsuccessful."
 msgstr "El ticket está cerrado sin éxito."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Open tickets."
 msgstr "Tickets abiertos."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Customer removed ticket."
 msgstr "El Cliente quitó el ticket."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket is pending for agent reminder."
 msgstr "Ticket está pendiente de recordatorio de agente."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "pending auto close+"
 msgstr "pendiente de cierre automático+"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket is pending for automatic close."
 msgstr "Ticket está pendiente para cierre automático."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "pending auto close-"
 msgstr "pendiente de cierre automático-"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "State for merged tickets."
 msgstr "Estado para tickets fusionados."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "system standard salutation (en)"
 msgstr "saludo sistema estandar (en)"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Standard Salutation."
 msgstr "Saludo Estándar"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "system standard signature (en)"
 msgstr "firma sistema estandar (en)"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Standard Signature."
 msgstr "Firma Estándar"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Standard Address."
 msgstr "Dirección Estandar"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "possible"
 msgstr "posible"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Follow-ups for closed tickets are possible. Ticket will be reopened."
 msgstr ""
 "Los seguimientos para tickets cerrados son posibles. El ticket será "
 "reabierto."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "reject"
 msgstr "rechazar"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid ""
 "Follow-ups for closed tickets are not possible. No new ticket will be "
 "created."
@@ -16859,47 +16864,47 @@ msgstr ""
 "Los seguimientos para tickets cerrados no son posibles. No se creará un "
 "nuevo ticket."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "new ticket"
 msgstr "nuevo ticket"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid ""
 "Follow-ups for closed tickets are not possible. A new ticket will be created."
 msgstr ""
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Postmaster queue."
 msgstr "Cola Postmaster"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "All default incoming tickets."
 msgstr "Todos los tickets entrantes por defecto."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "All junk tickets."
 msgstr "Todos los tickets basura."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "All misc tickets."
 msgstr "Todos los tickets genericos."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "auto reply"
 msgstr "respuesta automática"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid ""
 "Automatic reply which will be sent out after a new ticket has been created."
 msgstr ""
 "Respuesta automática la cual será enviada después de que un nuevo ticket "
 "haya sido creado."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "auto reject"
 msgstr "rechazo automático"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid ""
 "Automatic reject which will be sent out after a follow-up has been rejected "
 "(in case queue follow-up option is \"reject\")."
@@ -16908,11 +16913,11 @@ msgstr ""
 "sido rechazado (en caso de que la opción de seguimiento de cola sea \"rechazo"
 "\")."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "auto follow up"
 msgstr "seguimiento automático"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid ""
 "Automatic confirmation which is sent out after a follow-up has been received "
 "for a ticket (in case queue follow-up option is \"possible\")."
@@ -16921,11 +16926,11 @@ msgstr ""
 "recibido para un ticket ( en caso de que la opción de seguimiento de cola "
 "sea \"posible\")."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "auto reply/new ticket"
 msgstr "respuesta automática/nuevo ticket"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid ""
 "Automatic response which will be sent out after a follow-up has been "
 "rejected and a new ticket has been created (in case queue follow-up option "
@@ -16935,32 +16940,32 @@ msgstr ""
 "sido rechazado y un nuevo ticket haya sido creado (en caso de que la opción "
 "de seguimiento de cola sea \"nuevo ticket\")."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "auto remove"
 msgstr "eliminación automática"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Auto remove will be sent out after a customer removed the request."
 msgstr ""
 "Eliminar auto será enviado después de que un cliente elimine la petición."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "default reply (after new ticket has been created)"
 msgstr ""
 "respuesta por defecto (después de que un nuevo ticket haya sido creado)"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "default reject (after follow-up and rejected of a closed ticket)"
 msgstr ""
 "rechazo por defecto (después de seguimiento y rechazo de un ticket cerrado)"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "default follow-up (after a ticket follow-up has been added)"
 msgstr ""
 "seguimiento por defecto (después de que un seguimiento de ticket haya sido "
 "añadido)"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid ""
 "default reject/new ticket created (after closed follow-up with new ticket "
 "creation)"
@@ -16968,59 +16973,59 @@ msgstr ""
 "rechazo por defecto/nuevo ticket creado (después de cerrar seguimiento con "
 "la creación de nuevo ticket)"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Unclassified"
 msgstr "Sin clasificar"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "1 very low"
 msgstr "1 muy baja"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "2 low"
 msgstr "2 baja"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "3 normal"
 msgstr "3 normal"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "4 high"
 msgstr "4 alta"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "5 very high"
 msgstr "5 muy alta"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "unlock"
 msgstr "desbloqueado"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "lock"
 msgstr "bloqueado"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "tmp_lock"
 msgstr "tmp_lock"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "agent"
 msgstr "agente"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "system"
 msgstr "sistema"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "customer"
 msgstr "cliente"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket create notification"
 msgstr "Notificacion de creación de Ticket"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid ""
 "You will receive a notification each time a new ticket is created in one of "
 "your \"My Queues\" or \"My Services\"."
@@ -17028,11 +17033,11 @@ msgstr ""
 "Recibirá una notificación cada vez que se cree un nuevo ticket en una de sus "
 "\"Mis colas\" o \"Mis servicios\"."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket follow-up notification (unlocked)"
 msgstr "Notificación de seguimiento de Ticket (desbloqueada)"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid ""
 "You will receive a notification if a customer sends a follow-up to an "
 "unlocked ticket which is in your \"My Queues\" or \"My Services\"."
@@ -17041,11 +17046,11 @@ msgstr ""
 "seguimiento a un Ticket desbloqueado que se encuentre en  \"Mis colas\" o "
 "\"Mis servicios\"."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket follow-up notification (locked)"
 msgstr "Notificación de seguimiento de Ticket (bloqueada)"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid ""
 "You will receive a notification if a customer sends a follow-up to a locked "
 "ticket of which you are the ticket owner or responsible."
@@ -17053,11 +17058,11 @@ msgstr ""
 "Recibirás una notificación cada vez que el cliente te manda el seguimiento "
 "al ticket bloqueado de la cuál eres el propietario ó responsable."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket lock timeout notification"
 msgstr "Notificación de bloqueo de tickets por tiempo"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid ""
 "You will receive a notification as soon as a ticket owned by you is "
 "automatically unlocked."
@@ -17065,49 +17070,49 @@ msgstr ""
 "Recibirá una notificación tan pronto como un ticket del cual seas "
 "propietario sea automáticamente desbloqueado."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket owner update notification"
 msgstr "Notificación de actualización de propietario de Ticket"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket responsible update notification"
 msgstr "Notificación de actualización de responsable de Ticket"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket new note notification"
 msgstr "Notificación de nueva nota en ticket"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket queue update notification"
 msgstr "Notificación de actualización de cola de Ticket"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid ""
 "You will receive a notification if a ticket is moved into one of your \"My "
 "Queues\"."
 msgstr "Recibirá una notificación si un ticket es movido a \"Mis colas\"."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket pending reminder notification (locked)"
 msgstr "Notificación de recordatorio de Ticket pendiente (bloqueada)"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket pending reminder notification (unlocked)"
 msgstr "Notificación de recordatorio de Ticket pendiente (desbloqueada)"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket escalation notification"
 msgstr "Notificación de escalamiento de Ticket"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket escalation warning notification"
 msgstr "Notificación de advertencia de escalamiento de Ticket"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket service update notification"
 msgstr "Notificación de actualización de servicio de Ticket"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid ""
 "You will receive a notification if a ticket's service is changed to one of "
 "your \"My Services\"."
@@ -17115,11 +17120,11 @@ msgstr ""
 "Recibirás una notificación cada vez que el servicio de ticket se cambia a "
 "uno de sus \"Mis Servicios\""
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Appointment reminder notification"
 msgstr "Notificación de recordatorio de cita"
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid ""
 "You will receive a notification each time a reminder time is reached for one "
 "of your appointments."
@@ -17127,7 +17132,7 @@ msgstr ""
 "Recibirá una notificación cada vez que se alcance la hora de un recordatorio "
 "para una de sus citas."
 
-#. Database XML Definition: scripts/database/otrs-initial_insert.xml
+#. Database XML / SOPM Definition: scripts/database/otrs-initial_insert.xml
 msgid "Ticket email delivery failure notification"
 msgstr ""
 
@@ -19282,9 +19287,6 @@ msgstr ""
 
 #. SysConfig
 #, fuzzy
-#| msgid ""
-#| "Checks if an E-Mail is a followup to an existing ticket by searching the "
-#| "subject for a valid ticket number."
 msgid ""
 "Checks if an email is a follow-up to an existing ticket with external ticket "
 "number which can be found by ExternalTicketNumberRecognition filter module."
@@ -23496,6 +23498,11 @@ msgid "Go to dashboard!"
 msgstr "¡Ir al panel principal!"
 
 #. SysConfig
+#, fuzzy
+msgid "Good PGP signature."
+msgstr "Añadir firma"
+
+#. SysConfig
 msgid "Google Authenticator"
 msgstr "Google Authenticator"
 
@@ -24013,6 +24020,12 @@ msgid ""
 "Content pair to match a domain. The value in \"Key\" should match the "
 "domain, and the value in \"Content\" should be a valid theme on your system. "
 "Please see the example entries for the proper form of the regex."
+msgstr ""
+
+#. SysConfig
+msgid ""
+"It was not possible to check the PGP signature, this may be caused by a "
+"missing public key or an unsupported algorithm."
 msgstr ""
 
 #. SysConfig
@@ -24716,6 +24729,16 @@ msgid ""
 msgstr ""
 "Siguiente estado posible del ticket después de agregar una nota en la "
 "pantalla de llamada telefónica saliente para la interfaz de agente."
+
+#. SysConfig
+#, fuzzy
+msgid "No public key found."
+msgstr "No se encontraron datos del ticket."
+
+#. SysConfig
+#, fuzzy
+msgid "No valid OpenPGP data found."
+msgstr "No se encontraron datos del ticket."
 
 #. SysConfig
 msgid "None"
@@ -27219,6 +27242,11 @@ msgid ""
 msgstr ""
 
 #. SysConfig
+#, fuzzy
+msgid "Signature data."
+msgstr "¡Firma actualizada!"
+
+#. SysConfig
 msgid "Signatures"
 msgstr "Firmas"
 
@@ -27581,6 +27609,29 @@ msgid "Thai"
 msgstr "Tailandés"
 
 #. SysConfig
+#, fuzzy
+msgid "The PGP signature is expired."
+msgstr "Firma para respuestas por correo."
+
+#. SysConfig
+msgid ""
+"The PGP signature was made by a revoked key, this could mean that the "
+"signature is forged."
+msgstr ""
+
+#. SysConfig
+msgid "The PGP signature was made by an expired key."
+msgstr ""
+
+#. SysConfig
+msgid "The PGP signature with the keyid has not been verified successfully."
+msgstr ""
+
+#. SysConfig
+msgid "The PGP signature with the keyid is good."
+msgstr ""
+
+#. SysConfig
 msgid ""
 "The agent skin's InternalName which should be used in the agent interface. "
 "Please check the available skins in Frontend::Agent::Skins."
@@ -27765,6 +27816,11 @@ msgstr ""
 #. SysConfig
 msgid "This is the default orange - black skin."
 msgstr "Este es el aspecto predeterminado naranja - negro."
+
+#. SysConfig
+#, fuzzy
+msgid "This key is not certified with a trusted signature!"
+msgstr "Hay otro campo con el mismo nombre."
 
 #. SysConfig
 msgid ""
