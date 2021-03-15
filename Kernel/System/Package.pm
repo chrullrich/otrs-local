@@ -5320,7 +5320,7 @@ framework version.
 Returns:
 
     %RepositoryList = (
-        'http://ftp.otrs.org/pub/otrs/packages' => 'OTRS Freebie Features',
+        'https://download.znuny.org/releases/packages' => 'OTRS Freebie Features',
         # ...,
     );
 
@@ -5342,14 +5342,14 @@ sub _ConfiguredRepositoryDefinitionGet {
     return () if !%RepositoryList;
 
     # Make sure ITSM repository matches the current framework version.
-    my @Matches = grep { $_ =~ m{http://ftp\.otrs\.org/pub/otrs/itsm/packages\d+/}msxi } sort keys %RepositoryList;
+    my @Matches = grep { $_ =~ m{https://download\.znuny\.org/releases/itsm/packages\d+/}msxi } sort keys %RepositoryList;
 
     return %RepositoryList if !@Matches;
 
     my @FrameworkVersionParts = split /\./, $Self->{ConfigObject}->Get('Version');
     my $FrameworkVersion      = $FrameworkVersionParts[0];
 
-    my $CurrentITSMRepository = "http://ftp.otrs.org/pub/otrs/itsm/packages$FrameworkVersion/";
+    my $CurrentITSMRepository = "https://download.znuny.org/releases/itsm/packages$FrameworkVersion/";
 
     # Delete all old ITSM repositories, but leave the current if exists
     for my $Repository (@Matches) {
