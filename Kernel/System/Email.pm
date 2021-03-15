@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -695,7 +695,16 @@ Really send the mail
 
     my $Result = $SendObject->SendExecute(
         From                   => $RealFrom,
-        ToArray                => \@ToArray,
+        To                     => \@ToArray,
+        Header                 => \$Param{Header},
+        Body                   => \$Param{Body},
+        CommunicationLogObject => $CommunicationLogObject,
+    );
+
+    # or
+    my $Result = $SendObject->SendExecute(
+        From                   => $RealFrom,
+        To                     => $To, # can be a string with comma separated mail addresses
         Header                 => \$Param{Header},
         Body                   => \$Param{Body},
         CommunicationLogObject => $CommunicationLogObject,

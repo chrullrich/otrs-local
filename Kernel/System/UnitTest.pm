@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2020 OTRS AG, https://otrs.com/
+# Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -272,7 +272,10 @@ sub _HandleFile {
         $ResultData->{TestNotOk}++;
     }
 
-    $Self->{ResultData}->{ $Param{File} } = $ResultData;
+    my $Home         = $Kernel::OM->Get('Kernel::Config')->Get('Home');
+    my $RelativeFile = substr( $Param{File}, length($Home) + 1 );
+
+    $Self->{ResultData}->{$RelativeFile} = $ResultData;
     $Self->{TestCountOk}    += $ResultData->{TestOk}    // 0;
     $Self->{TestCountNotOk} += $ResultData->{TestNotOk} // 0;
 
@@ -470,12 +473,15 @@ sub _SubmitResults {
     *STDOUT->flush();
     *STDERR->flush();
 
+    # Resolve wildcards in attachment paths late, when the files already exist.
+    my @AttachmentPaths = map { glob($_) } ( @{ $Param{AttachmentPath} // [] } );
+
     # Limit attachment sizes to 20MB in total.
-    my $AttachmentCount = scalar grep { -r $_ } @{ $Param{AttachmentPath} // [] };
+    my $AttachmentCount = scalar grep { -r $_ } @AttachmentPaths;
     my $AttachmentsSize = 1024 * 1024 * 20;
 
     ATTACHMENT_PATH:
-    for my $AttachmentPath ( @{ $Param{AttachmentPath} // [] } ) {
+    for my $AttachmentPath (@AttachmentPaths) {
         my $FileHandle;
         my $Content;
 
