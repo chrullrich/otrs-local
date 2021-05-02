@@ -2,7 +2,7 @@
 # --
 # auto_build.sh - build automatically OTRS tar, rpm and src-rpm
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2012-2021 Znuny GmbH, https://znuny.com/
+# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
 # --
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ echo "Copyright (C) 2001-2021 OTRS AG, https://otrs.com/";
 echo "Copyright (C) 2012-2021 Znuny GmbH, https://znuny.com/";
 
 PATH_TO_CVS_SRC=$1
-PRODUCT=OTRS
+PRODUCT="Znuny LTS"
 VERSION=$2
 RELEASE=$3
 ARCHIVE_DIR="znuny-$VERSION"
@@ -181,6 +181,7 @@ else
     echo "No md5sum found in \$PATH!"
 fi
 ln -s $PACKAGE-$VERSION.tar.gz $PACKAGE-6.0.tar.gz
+ln -s $PACKAGE-$VERSION.tar.gz $PACKAGE-latest-6.0.tar.gz
 ln -s $PACKAGE-$VERSION.tar.gz $PACKAGE-latest.tar.gz
 echo "--------------------------------------------------------------------------";
 echo "Note: You may have to tag your git tree: git tag rel-6_x_x -a -m \"6.x.x\"";
