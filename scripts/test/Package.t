@@ -1,5 +1,6 @@
 # --
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
+# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -150,6 +151,9 @@ my $StringSecond = '<?xml version="1.0" encoding="utf-8" ?>
   </Filelist>
 </otrs_package>
 ';
+
+# make sure test package is not installed
+$PackageObject->PackageUninstall( String => $String );
 
 # check if the package is already installed - check by name
 my $PackageIsInstalledByName = $PackageObject->PackageIsInstalled( Name => 'Test' );
