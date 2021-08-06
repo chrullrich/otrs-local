@@ -1,3 +1,16 @@
+# 6.0.36 2021-08-05
+ - 2021-07-28 Improved JavaScript recognition in function Kernel::System::HTMLUtils::Safety. Thanks for hints to Tim Püttmanns, maxence.
+ - 2021-07-27 Files in configured directories of SysConfig options SMIME::PrivatePath and SMIME::CertPath will now not be included in a support bundle anymore if they are within the Znuny directory (CVE-2021-21440). Thanks for hints to Centuran Consulting.
+ - 2021-07-27 Added safety checks for form/URL parameters to AdminAppointmentCalendarManage, AgentAppointmentEdit and AgentAppointmentList. Thanks for hints to Centuran Consulting.
+ - 2021-07-26 Added permission check to ticket recipient list (CVE-2021-21443). Thanks for hints to Centuran Consulting.
+ - 2021-07-26 Added permission check to appointment list (CVE-2021-36091). Thanks for hints to Centuran Consulting.
+ - 2021-06-25 Linebreak now does not break fulltext search anymore (#49). Thanks to Johannes Nickel (@hanneshal). [#49](https://github.com/znuny/Znuny/pull/49)
+ - 2021-06-25 Incorrect empty hash initializations fixed (#96). Thanks to Paweł Bogusławski (@pboguslawski). [#96](https://github.com/znuny/Znuny/pull/96)
+ - 2021-06-25 Changed breadcrumb for the main action entry to a link. (#91). Thanks to maxence (@tipue-dev). [#91](https://github.com/znuny/Znuny/pull/91)
+ - 2021-06-17 Fixed not needed error message in TicketList.pm (#94). Thanks to Paweł Bogusławski (@pboguslawski). [#94](https://github.com/znuny/Znuny/pull/94)
+ - 2021-06-15 Do not warn agents about empty article subjects by default (#88). Thanks to Renée Bäcker (@reneeb). [#88]
+ - 2021-06-15 Column list validation before saving agent preferences (#84). Thanks to Paweł Bogusławski (@pboguslawski). [#84](https://github.com/znuny/Znuny/pull/84)
+
 # 6.0.35 2021-06-02
  - 2021-05-28 Improved StorageSwitch command to be more flexible (#27). Thanks to Renée Bäcker (@reneeb). [#27](https://github.com/znuny/Znuny/pull/27)
  - 2021-05-26 Changed autocomplete to 'new-password' (#64). Thanks to maxence (@tipue-dev) and Thijs Kinkhorst (@thijskh) [#64](https://github.com/znuny/Znuny/pull/64)
@@ -7,6 +20,12 @@
  - 2021-05-03 Changed behaviour of `NotificationEvent::Transport::Base->_ReplaceTicketAttributes()` function if multiselect fields are used.
 
 # 6.0.34 2021-04-21
+ - 2021-04-16 Fixed uninitialized value in pattern match warning for the TicketUpdate operation (#57). Thanks to maxence (@tipue-dev) [#57](https://github.com/znuny/Znuny/pull/57)
+ - 2021-04-16 Fixed webservice console commands only use valid webservices to check if the name is already used (#56). Thanks to maxence (@tipue-dev) [#56](https://github.com/znuny/Znuny/pull/56)
+ - 2021-04-16 Fixed uninitialized value in pattern match warning for the TicketCreate operation (#55). Thanks to maxence (@tipue-dev) [#55](https://github.com/znuny/Znuny/pull/55)
+ - 2021-04-16 Changed CommunicationChannel to optional (#54). Thanks to maxence (@tipue-dev) [#54](https://github.com/znuny/Znuny/pull/54)
+ - 2021-04-16 Fixed webservice creation only uses valid webservices to check if the name is already used (#53). Thanks to maxence (@tipue-dev) [#53](https://github.com/znuny/Znuny/pull/53)
+ - 2021-04-16 Improved POD in Priority.pm (#46). Thanks to maxence (@tipue-dev) [#46](https://github.com/znuny/Znuny/pull/46)
  - 2021-04-14 Updated jquery-validate from version 1.16.0 to 1.19.3 (CVE-2021-21252).
  - 2021-04-13 Fixed product URL in HTTP Headers. Thanks to Renée Bäcker (@reneeb) [#42](https://github.com/znuny/Znuny/pull/42)
  - 2021-04-13 Updated CPAN module Sisimai. Thanks to Renée Bäcker (@reneeb) [#37](https://github.com/znuny/Znuny/pull/37)
