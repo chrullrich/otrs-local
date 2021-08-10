@@ -437,6 +437,7 @@
 [% RenderBlockEnd("RichTextLabelMandatory") %]
 
                                     <div id="RichTextField" class="RichTextField">
+                                        <textarea id="RichTextRuler" rows="1" cols="[% Config("Ticket::Frontend::TextAreaNote") %]" readonly="readonly" tabindex="-1" style="margin: 0px; border:0px; resize: none; overflow: hidden;">         1         2         3         4         5         6         7 *       8         9</textarea><br>
                                         <textarea id="RichText" class="RichText Validate [% Data.BodyInvalid %] [% Data.BodyRequired %]" name="Body" rows="15" cols="[% Config("Ticket::Frontend::TextAreaNote") %]">[% Data.Body | html %]</textarea>
                                         <div id="RichTextError" class="TooltipErrorMessage">
                                             <p>[% Translate("This field is required.") | html %]</p>
