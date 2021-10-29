@@ -1688,6 +1688,7 @@ sub Footer {
         InputFieldsActivated           => $ConfigObject->Get('ModernizeFormFields'),
         OTRSBusinessIsInstalled        => $Param{OTRSBusinessIsInstalled},
         VideoChatEnabled               => $Param{VideoChatEnabled},
+        DatepickerShowWeek             => $ConfigObject->Get('Datepicker::ShowWeek') || 0,
         PendingStateIDs                => \@PendingStateIDs,
         CheckSearchStringsForStopWords => (
             $ConfigObject->Get('Ticket::SearchIndex::WarnOnStopWordUsage')
@@ -5528,13 +5529,6 @@ sub _BuildSelectionDataRefCreate {
             push @SortKeys, sort { lc $a cmp lc $b } ( values %List );
         }
 
-        # translate value
-        if ( $OptionRef->{Translation} ) {
-            for my $Row ( sort keys %{$DataLocal} ) {
-                $DataLocal->{$Row} = $Self->{LanguageObject}->Translate( $DataLocal->{$Row} );
-            }
-        }
-
         # sort hash (after the translation)
         if ( $OptionRef->{Sort} eq 'NumericKey' ) {
             @SortKeys = sort { $a <=> $b } ( keys %{$DataLocal} );
@@ -5783,6 +5777,10 @@ sub _BuildSelectionDataRefCreate {
     # SelectedID and SelectedValue option
     if ( defined $OptionRef->{SelectedID} || $OptionRef->{SelectedValue} ) {
         for my $Row ( @{$DataRef} ) {
+            my $CheckValue = $Row->{Value};
+            if ( $OptionRef->{Translation} ) {
+               $CheckValue = $Self->{LanguageObject}->Translate( $Row->{Value} );
+            }
             if (
                 (
                     (
@@ -5792,13 +5790,13 @@ sub _BuildSelectionDataRefCreate {
                     ||
                     (
                         defined $Row->{Value}
-                        && $OptionRef->{SelectedValue}->{ $Row->{Value} }
+                        && $OptionRef->{SelectedValue}->{ $CheckValue }
                     )
                 )
                 &&
                 (
                     defined $Row->{Value}
-                    && !$DisabledElements{ $Row->{Value} }
+                    && !$DisabledElements{ $CheckValue }
                 )
                 )
             {
@@ -5892,6 +5890,13 @@ sub _BuildSelectionDataRefCreate {
                     }
                 }
             }
+        }
+    }
+
+    # translate value
+    if ( $OptionRef->{Translation} ) {
+        for my $Row ( @{$DataRef} ) {
+            $Row->{Value} = $Self->{LanguageObject}->Translate( $Row->{Value} );
         }
     }
 
