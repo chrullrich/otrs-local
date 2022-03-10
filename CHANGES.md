@@ -1,3 +1,52 @@
+# 6.3.1 2022-03-09
+ - 2022-03-07 Integrated package Znuny4OTRS-CalendarBasedTicketCreation.
+ - 2022-03-07 Original owners of tickets will now be set again when cancelling a ticket bulk action.
+ - 2022-03-02 Sector Nord AG: Fixed AgentAppointmentCalendarOverview AppointmentTooltip (#216). Thanks to Sector Nord AG (@jsinagowitz). [#216](https://github.com/znuny/Znuny/pull/216)
+ - 2022-03-02 Integrated package Znuny4OTRS-OwnerToolbar.
+ - 2022-02-25 Fixed Bug - Since version 6.0.31 the size of embedded images within the RTE cannot be changed via click & drag anymore [#98](https://github.com/znuny/Znuny/issues/98).
+ - 2022-02-25 Fixed Bug - Fixed subject regex for rfc822 attachments on email parsing operation. No error will be thrown anymore if subject is missing/empty.
+ - 2022-02-21 Integrated package Znuny4OTRS-AdvancedTimeUnit.
+ - 2022-02-21 Added scope flag to AdminProcessManagement to reduce possible overflow selection. Thanks to Michel Rodriguez [@mirod](https://github.com/mirod).
+ - 2022-02-18 Added 'autolink' extraPlugin to CKEditor.
+ - 2022-02-18 Added 'textwatcher', 'autocomplete' and 'textmatch' as extraPlugins to CKEditor global config.
+ - 2022-02-17 Integrated package Znuny4OTRS-MailAccounts.
+ - 2022-02-17 Integrated package Znuny4OTRS-OAuth2TokenManagement.
+ - 2022-02-17 Updated CKEditor from version 4.16.0 to 4.17.1.
+ - 2022-02-16 Sector Nord AG: Added ProcessManagement TransitionAction - AppointmentUpdate and AppointmentRemove. Thanks to Sector Nord AG (@jsinagowitz). [#196](https://github.com/znuny/Znuny/pull/196)
+ - 2022-02-15 Fixed config navigation path for customer frontend module AJAXDynamicFieldWebservice. Thanks to Renée Bäcker (@reneeb). [#193](https://github.com/znuny/Znuny/pull/193)
+ - 2022-02-14 Integrated package Znuny-DatabaseBackend.
+ - 2022-02-11 Fixed Bug - Show menu items when showing the error screen. [#210](https://github.com/znuny/Znuny/issues/210)
+ - 2022-02-07 Added clear log action to AdminLog.
+ - 2022-02-03 Fixed Bug - Dashboard-TicketQueueOverview refresh [#156](https://github.com/znuny/Znuny/issues/156).
+ - 2022-02-03 Updated jQuery UI from 1.12.1 to 1.13.1.
+ - 2022-02-03 Fixed unnecessary error message - 'Use of uninitialized value in pattern match...'
+ - 2022-02-03 Fixed link detection matches trailing dot.
+ - 2022-02-01 Fixed description of option Kernel::System::Ticket::Number::Random in SysConfig.
+ - 2022-01-22 Updated third party jquery to 3.6.0. [#168](https://git.znuny.com/Znuny/Public/Znuny/-/issues/168)
+ - 2022-01-18 List all configured calendars in support data collector (#185). Thanks to Renée Bäcker (@reneeb). [#185](https://github.com/znuny/Znuny/pull/185)
+ - 2022-01-18 Fixed broken SmartTag example CUSTOMER_BODY (#191). Thanks to Shawn Beasley (@dignin). [#191](https://github.com/znuny/Znuny/pull/191)
+ - 2022-01-13 Added jq function also for regex matches in GenericInterface/Event/Handler.
+ - 2022-01-11 Fixed Bug - Email overwritten when editing an agent.
+ - 2022-01-07 Integrated package Znuny4OTRS-RandomTicketNumberGenerator.
+ - 2022-01-07 Parameter %Param are now passed to function Kernel::System::Email::Check. Thanks to Renée Bäcker (@reneeb). [#26](https://github.com/znuny/Znuny/pull/26)
+ - 2022-01-07 Integrated package Znuny4OTRS-AdvancedBulkAction.
+ - 2022-01-06 Fixed Bug - The page refresh stops the fulltext search via toolbar. [#182](https://github.com/znuny/Znuny/issues/182)
+ - 2021-12-27 Integrated package Znuny4OTRS-ExcelStats.
+ - 2021-12-27 Added ITSMConfigurationManagement compatibility.
+ - 2021-12-14 Added ProcessListTreeView in AgentTicketProcess and CustomerTicketProcess.
+ - 2021-12-14 Added missing translation for process and activity in CustomerTicketZoom.tt.
+ - 2021-12-14 Removed translation for process in AdminProcessManagement.
+ - 2021-12-14 Fixed bug, too long process / activity names are not translated.
+ - 2021-12-03 Fixed - Links in dynamic fields are shortened so that the link no longer works (CustomerTicketZoom).
+ - 2021-12-01 Fixed Bug - Avoidable error message / entry in logfiles (#123). [#123](https://github.com/znuny/Znuny/issues/123)
+ - 2021-11-26 Fixed error "Parameter 'Config' must be a hash ref with data!" (#173). Thanks to @meisterheister. [#173](https://github.com/znuny/Znuny/issues/173)
+ - 2021-11-25 Removed error log if !IsHashRefWithData( Config ) in `SanitizeConfig`. This is to strict and not needed.
+ - 2021-11-25 Sector Nord AG: Replaced hardcoded attributes with a dynamic Sysconfig in Kernel/System/Ticket/Event/NotificationEvent.pm (#171). Thanks to @LuBroering (Lukas Bröring SectorNord AG). [#171](https://github.com/znuny/Znuny/pull/171)
+ - 2021-11-25 Add option '--no-tablespaces' to scripts/backup.pl (#136). Thanks to @meisterheister. [#136](https://github.com/znuny/Znuny/pull/136)
+ - 2021-11-25 Prevents error message "no TicketID" on sending an answer if no TicketID exists (#133). Thanks to Renée Bäcker (@reneeb). [#133](https://github.com/znuny/Znuny/pull/133)
+ - 2021-11-25 Fixed - "No TicketID is given!" on each outgoing reply (#170). Thanks to Renée Bäcker (@reneeb). [#170](https://github.com/znuny/Znuny/issues/170)
+ - 2021-11-25 Fixed - Bug - Regression Error Message in Log (#126). Thanks to Renée Bäcker (@reneeb). [#126](https://github.com/znuny/Znuny/issues/126)
+
 # 6.2.2 2021-12-15
  - 2021-12-14 Added ProcessListTreeView in AgentTicketProcess and CustomerTicketProcess.
  - 2021-12-14 Added missing translation for process and activity in CustomerTicketZoom.tt.
@@ -5,7 +54,7 @@
  - 2021-12-14 Fixed bug, too long process / activity names are not translated.
  - 2021-12-03 Fixed - Links in dynamic fields are shortened so that the link no longer works (CustomerTicketZoom).
  - 2021-12-02 Fixed Bug - Avoidable error message / entry in logfiles (#123). [#123](https://github.com/znuny/Znuny/issues/123)
- - 2021-12-01 Fixed wrong POD of TransitionAction::AppointmentCreate.
+ - 2021-12-02 Fixed wrong POD of TransitionAction::AppointmentCreate.
  - 2021-11-30 Added _ReplaceAdditionalAttributes to ProcessManagement/TransitionAction.
  - 2021-11-29 Fixed POD of Kernel::System::ProcessManagement::TransitionAction::DynamicFieldRemove::Run.
  - 2021-11-26 Fixed error "Parameter 'Config' must be a hash ref with data!" (#173). Thanks to @meisterheister. [#173](https://github.com/znuny/Znuny/issues/173)
@@ -35,7 +84,7 @@
  - 2021-10-06 Added support for content type application/xml to generic interface REST transport.
  - 2021-10-06 Added option to keep attributes of XML in generic interface XSLT mapping.
  - 2021-10-06 Sector Nord AG: Added optional check condition in TransitionActions. Thanks to Sector Nord AG (@paulfolkers). [#144](https://github.com/znuny/Znuny/pull/144)
- - 2021-10-06 Sector Nord AG: Added TransitionAction parameter placeholder. Thanks to Sector Nord AG (@tjsinagowitz). [#145](https://github.com/znuny/Znuny/pull/145)
+ - 2021-10-06 Sector Nord AG: Added TransitionAction parameter placeholder. Thanks to Sector Nord AG (@jsinagowitz). [#145](https://github.com/znuny/Znuny/pull/145)
  - 2021-10-05 Sector Nord AG: Added ticket event and event module TicketAllChildrenClosed. Thanks to Sector Nord AG (@paulfolkers). [#143](https://github.com/znuny/Znuny/pull/143)
  - 2021-10-01 Added initial config for Frontend::Navigation###AdminCustomerUserCustomer###001-Framework. Thanks to Kevin Janssen (@BuTzZ). [#146](https://github.com/znuny/Znuny/pull/146)
  - 2021-10-01 Disabled connection to external RSS during unit testing.
@@ -88,6 +137,19 @@
  - 2021-06-15 Improvements for Dev::Code::CPANUpdate (#38). Thanks to Renée Bäcker (@reneeb). [#38](https://github.com/znuny/Znuny/pull/38)
  - 2021-06-15 Use ticket title as the default appointment title (#90). Thanks to Renée Bäcker (@reneeb). [#90](https://github.com/znuny/Znuny/pull/90)
  - 2021-06-15 Column list validation before saving agent preferences (#84). Thanks to Paweł Bogusławski (@pboguslawski). [#84](https://github.com/znuny/Znuny/pull/84)
+
+# 6.0.40 2022-03-09
+ - 2022-03-07 Original owners of tickets will now be set again when cancelling a ticket bulk action.
+ - 2022-03-02 Sector Nord AG: Fixed AgentAppointmentCalendarOverview AppointmentTooltip (#216). Thanks to Sector Nord AG (@jsinagowitz). [#216](https://github.com/znuny/Znuny/pull/216)
+ - 2022-02-25 Fixed Bug - Since version 6.0.31 the size of embedded images within the RTE cannot be changed via click & drag anymore [#98](https://github.com/znuny/Znuny/issues/98).
+ - 2022-02-25 Fixed Bug - Fixed subject regex for rfc822 attachments on email parsing operation. No error will be thrown anymore if subject is missing/empty.
+ - 2022-02-18 Updated CKEditor from version 4.16.0 to 4.17.1.
+ - 2022-02-11 Fixed Bug - Show menu items when showing the error screen. [#210](https://github.com/znuny/Znuny/issues/210)
+ - 2022-02-03 Fixed Bug - Dashboard-TicketQueueOverview refresh [#156](https://github.com/znuny/Znuny/issues/156).
+ - 2022-02-03 Updated jQuery UI from 1.12.1 to 1.13.1.
+ - 2022-02-03 Fixed link detection matches trailing dot.
+ - 2022-01-11 Fixed Bug - Email overwritten when editing an agent.
+ - 2022-01-06 Fixed Bug - The page refresh stops the fulltext search via toolbar. [#182](https://github.com/znuny/Znuny/issues/182)
 
 # 6.0.39 2021-12-15
  - 2021-12-14 Added ProcessListTreeView in AgentTicketProcess and CustomerTicketProcess.

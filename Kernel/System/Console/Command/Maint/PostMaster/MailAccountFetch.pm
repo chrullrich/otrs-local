@@ -1,6 +1,6 @@
 # --
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -203,7 +203,7 @@ sub Run {
 
         if ( !$FetchedCount && $MailAccountID ) {
             $Self->PrintError("Could not find mail account $MailAccountID.");
-            $ExitCode = $Self->ExitCodeError();
+            $ExitCode = $Self->ExitCodeError(2);
         }
 
         # Close child process at the end.
@@ -240,6 +240,10 @@ sub Run {
     alarm 0;
 
     $Self->Print("<green>Done.</green>\n\n");
+
+    # Return exit error code if child process cannot find mail account.
+    return $Self->ExitCodeError() if ( $? >> 8 ) > 1;
+
     return $Self->ExitCodeOk();
 }
 

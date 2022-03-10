@@ -1,6 +1,6 @@
 # --
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -2889,33 +2889,16 @@ sub _RenderArticle {
         )
     {
 
-        if ( $ConfigObject->Get('Ticket::Frontend::NeedAccountedTime') ) {
-
-            $LayoutObject->Block(
-                Name => 'TimeUnitsLabelMandatory',
-                Data => \%Param,
-            );
-            $Param{TimeUnitsRequired} = 'Validate_Required';
+        $Param{TimeUnitsRequired} = 1;
+        if ( $Param{ActivityDialogField}->{Config}->{TimeUnits} == 2 ) {
+            $Param{TimeUnitsRequired} = 1;
         }
         elsif ( $Param{ActivityDialogField}->{Config}->{TimeUnits} == 1 ) {
-
-            $LayoutObject->Block(
-                Name => 'TimeUnitsLabel',
-                Data => \%Param,
-            );
-            $Param{TimeUnitsRequired} = '';
-        }
-        else {
-
-            $LayoutObject->Block(
-                Name => 'TimeUnitsLabelMandatory',
-                Data => \%Param,
-            );
-            $Param{TimeUnitsRequired} = 'Validate_Required';
+            $Param{TimeUnitsRequired} = 0;
         }
 
         # Get TimeUnits value.
-        $Param{TimeUnits} = $Param{GetParam}{TimeUnits};
+        $Param{TimeUnits} = $Param{GetParam}->{TimeUnits};
 
         if ( !defined $Param{TimeUnits} && $Self->{ArticleID} ) {
             $Param{TimeUnits} = $Self->_GetTimeUnits(
@@ -2923,6 +2906,9 @@ sub _RenderArticle {
             );
         }
 
+        $Param{TimeUnitsBlock} = $LayoutObject->TimeUnits(
+            %Param,
+        );
         $LayoutObject->Block(
             Name => 'TimeUnits',
             Data => \%Param,

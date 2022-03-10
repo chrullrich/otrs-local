@@ -1,6 +1,6 @@
 # --
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -19,9 +19,7 @@ $Kernel::OM->ObjectParamAdd(
         RestoreDatabase => 1,
     },
 );
-my $Helper = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
-
-# get needed objects
+my $HelperObject      = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 my $ConfigObject      = $Kernel::OM->Get('Kernel::Config');
 my $CalendarObject    = $Kernel::OM->Get('Kernel::System::Calendar');
 my $AppointmentObject = $Kernel::OM->Get('Kernel::System::Calendar::Appointment');
@@ -44,6 +42,19 @@ $Self->True(
 
 $Self->Is(
     scalar keys %{$PluginList},
+    $PluginCount,
+    'Registered plugin count',
+);
+
+my $PluginKeys = $PluginObject->PluginKeys();
+
+$Self->True(
+    $PluginKeys,
+    'Plugin keys loaded',
+);
+
+$Self->Is(
+    scalar keys %{$PluginKeys},
     $PluginCount,
     'Registered plugin count',
 );
@@ -82,27 +93,33 @@ for my $PluginKey ( sort keys %{$PluginConfig} ) {
     );
 
     # check required methods
+    METHODE:
     for my $MethodName (qw(LinkAdd LinkList Search)) {
+
+        next METHODE if !$PluginModule->can($MethodName);
+
         $Self->True(
             $PluginModule->can($MethodName),
             "Plugin module implements $MethodName()",
         );
     }
 
-    my $PluginURL = $PluginConfig->{$PluginKey}->{URL};
+    my $URL = $PluginConfig->{$PluginKey}->{URL} || '';
+    if ($URL) {
 
-    # check if URL contains ID placeholder
-    $Self->True(
-        scalar $PluginURL =~ /%s/,
-        'Plugin module URL contains ID placeholder',
-    );
+        # check if URL contains ID placeholder
+        $Self->True(
+            scalar $URL =~ /%s/,
+            'Plugin module URL contains ID placeholder',
+        );
+    }
 }
 
 # check ticket plugin if registered
 if ($PluginKeyTicket) {
 
     # create test group
-    my $GroupName = 'test-calendar-group-' . $Helper->GetRandomID();
+    my $GroupName = 'test-calendar-group-' . $HelperObject->GetRandomID();
     my $GroupID   = $GroupObject->GroupAdd(
         Name    => $GroupName,
         ValidID => 1,
@@ -115,7 +132,7 @@ if ($PluginKeyTicket) {
     );
 
     # create test user
-    my ( $UserLogin, $UserID ) = $Helper->TestUserCreate(
+    my ( $UserLogin, $UserID ) = $HelperObject->TestUserCreate(
         Groups => [ 'users', $GroupName ],
     );
 
@@ -124,7 +141,7 @@ if ($PluginKeyTicket) {
         "Test user $UserID created",
     );
 
-    my $RandomID = $Helper->GetRandomID();
+    my $RandomID = $HelperObject->GetRandomID();
 
     # create a test ticket
     my $TicketID = $TicketObject->TicketCreate(
@@ -180,10 +197,13 @@ if ($PluginKeyTicket) {
     );
 
     # search the ticket via ticket number
-    my $ResultList = $PluginObject->PluginSearch(
-        Search    => $TicketNumber,
-        PluginKey => $PluginKeyTicket,
-        UserID    => $UserID,
+    my $ResultList = $PluginObject->PluginFunction(
+        PluginKey      => $PluginKeyTicket,
+        PluginFunction => 'Search',
+        PluginData     => {
+            UserID => $UserID,
+            Search => $TicketNumber,    # (required) Search string
+        },
     );
 
     $Self->IsDeeply(
@@ -198,10 +218,13 @@ if ($PluginKeyTicket) {
     );
 
     # search the ticket via ticket id
-    $ResultList = $PluginObject->PluginSearch(
-        ObjectID  => $TicketID,
-        PluginKey => $PluginKeyTicket,
-        UserID    => $UserID,
+    $ResultList = $PluginObject->PluginFunction(
+        PluginKey      => $PluginKeyTicket,
+        PluginFunction => 'Search',
+        PluginData     => {
+            UserID   => $UserID,
+            ObjectID => $TicketID,
+        },
     );
 
     $Self->IsDeeply(
@@ -216,11 +239,14 @@ if ($PluginKeyTicket) {
     );
 
     # link appointment with the ticket
-    my $Success = $PluginObject->PluginLinkAdd(
-        AppointmentID => $AppointmentID,
-        PluginKey     => $PluginKeyTicket,
-        PluginData    => $TicketID,
-        UserID        => $UserID,
+    my $Success = $PluginObject->PluginFunction(
+        PluginKey      => $PluginKeyTicket,
+        PluginFunction => 'LinkAdd',
+        PluginData     => {
+            TargetKey => $TicketID,         # TicketID, depends on TargetObject
+            SourceKey => $AppointmentID,    # AppointmentID
+            UserID    => $UserID,
+        }
     );
 
     $Self->True(
@@ -229,10 +255,13 @@ if ($PluginKeyTicket) {
     );
 
     # verify link
-    my $LinkList = $PluginObject->PluginLinkList(
-        AppointmentID => $AppointmentID,
-        PluginKey     => $PluginKeyTicket,
-        UserID        => $UserID,
+    my $LinkList = $PluginObject->PluginFunction(
+        PluginKey      => $PluginKeyTicket,
+        PluginFunction => 'LinkList',
+        PluginData     => {
+            AppointmentID => $AppointmentID,
+            UserID        => $UserID,
+        },
     );
 
     $Self->True(
@@ -260,9 +289,13 @@ if ($PluginKeyTicket) {
     );
 
     # delete links
-    $Success = $PluginObject->PluginLinkDelete(
-        AppointmentID => $AppointmentID,
-        UserID        => $UserID,
+    $Success = $PluginObject->PluginFunction(
+        PluginKey      => $PluginKeyTicket,
+        PluginFunction => 'LinkDelete',
+        PluginData     => {
+            AppointmentID => $AppointmentID,
+            UserID        => $UserID,
+        },
     );
 
     $Self->True(
@@ -271,10 +304,13 @@ if ($PluginKeyTicket) {
     );
 
     # verify links have been deleted
-    $LinkList = $PluginObject->PluginLinkList(
-        AppointmentID => $AppointmentID,
-        PluginKey     => $PluginKeyTicket,
-        UserID        => $UserID,
+    $LinkList = $PluginObject->PluginFunction(
+        PluginKey      => $PluginKeyTicket,
+        PluginFunction => 'LinkList',
+        PluginData     => {
+            AppointmentID => $AppointmentID,
+            UserID        => $UserID,
+        },
     );
 
     $Self->IsDeeply(
@@ -283,5 +319,29 @@ if ($PluginKeyTicket) {
         'PluginLinkList() - Empty link list',
     );
 }
+
+my @PluginGroups = $PluginObject->PluginGroups();
+
+$Self->IsDeeply(
+    \@PluginGroups,
+    [
+        {
+            'Title' => 'Ticket',
+            'Prio'  => 1000,
+            'Key'   => 'Ticket'
+        },
+        {
+            'Title' => 'Link',
+            'Prio'  => 8000,
+            'Key'   => 'Link'
+        },
+        {
+            'Key'   => 'Miscellaneous',
+            'Title' => 'Miscellaneous',
+            'Prio'  => 9001
+        }
+    ],
+    'Plugin keys loaded',
+);
 
 1;

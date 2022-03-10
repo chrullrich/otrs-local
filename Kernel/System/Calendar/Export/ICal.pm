@@ -1,6 +1,6 @@
 # --
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -379,11 +379,15 @@ sub Export {
         # include plugin (link) data
         my $PluginList = $PluginObject->PluginList();
         for my $PluginKey ( sort keys %{$PluginList} ) {
-            my $LinkList = $PluginObject->PluginLinkList(
-                AppointmentID => $Appointment{AppointmentID},
-                PluginKey     => $PluginKey,
-                UserID        => $Param{UserID},
+            my $LinkList = $PluginObject->PluginFunction(
+                PluginKey      => $PluginKey,
+                PluginFunction => 'LinkList',
+                PluginData     => {
+                    AppointmentID => $Appointment{AppointmentID},
+                    UserID        => $Param{UserID},
+                }
             );
+
             my @LinkArray;
             for my $LinkID ( sort keys %{$LinkList} ) {
                 push @LinkArray, $LinkList->{$LinkID}->{LinkID};
