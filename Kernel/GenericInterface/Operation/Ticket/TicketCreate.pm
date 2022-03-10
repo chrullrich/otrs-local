@@ -1,6 +1,6 @@
 # --
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
 # Copyright (C) 2021 maxence business consulting GmbH, http://www.maxence.de
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -653,7 +653,6 @@ sub _CheckTicket {
         }
     }
 
-    # check Ticket->CustomerUser
     if ( !$Self->ValidateCustomer( %{$Ticket} ) ) {
         return {
             ErrorCode => 'TicketCreate.InvalidParameter',
@@ -669,6 +668,7 @@ sub _CheckTicket {
             ErrorMessage => "TicketCreate: Ticket->QueueID or Ticket->Queue parameter is required!",
         };
     }
+
     if ( !$Self->ValidateQueue( %{$Ticket} ) ) {
         return {
             ErrorCode    => 'TicketCreate.InvalidParameter',
@@ -713,6 +713,7 @@ sub _CheckTicket {
 
     # check Ticket->Service
     if ( $Ticket->{ServiceID} || $Ticket->{Service} ) {
+
         if ( !$Self->ValidateService( %{$Ticket} ) ) {
             return {
                 ErrorCode => 'TicketCreate.InvalidParameter',
@@ -1564,7 +1565,11 @@ sub _TicketCreate {
         if ($Signature) {
             $Article->{Body} = $Article->{Body} . $Signature;
 
-            if ( $Article->{ContentType} =~ /text\/html/i || $Article->{MimeType} =~ /text\/html/i ) {
+            if (
+                ( $Article->{ContentType} && $Article->{ContentType} =~ /text\/html/i )
+                || ( $Article->{MimeType} && $Article->{MimeType} =~ /text\/html/i )
+                )
+            {
                 $PlainBody = $Kernel::OM->Get('Kernel::System::HTMLUtils')->ToAscii(
                     String => $Article->{Body},
                 );

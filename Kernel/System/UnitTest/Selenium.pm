@@ -1,6 +1,6 @@
 # --
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -1952,7 +1952,11 @@ sub _CaptureScreenshot {
     # trying to extract the name of the test file right from the UnitTestObject
     # kind of hacky but there is no other place where to get this information
     my $TestFile = 'UnknownTestFile';
-    if ( $Self->{UnitTestDriverObject}->{TestFile} =~ m{scripts\/test\/(.+?)\.t$} ) {
+    if (
+        $Self->{UnitTestDriverObject}->{TestFile}
+        && $Self->{UnitTestDriverObject}->{TestFile} =~ m{scripts\/test\/(.+?)\.t$}
+        )
+    {
         $TestFile = $1;
 
         # make folder path a filename

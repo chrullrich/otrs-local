@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -258,8 +258,6 @@ for my $Test (@Tests) {
         UnitTestObject => $Self,
     );
 
-    use Data::Dumper;
-    print STDERR 'Debug Dump - - $Result = ' . Dumper( \$Result ) . "\n";
     $Self->True(
         ( $Result =~ m{$Test->{ExpectedResult}}msi ? 1 : 0 ),
         $Test->{Name} . " - ExpectedResult: $Test->{ExpectedResult}",

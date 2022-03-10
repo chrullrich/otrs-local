@@ -1,6 +1,6 @@
 # --
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -433,10 +433,13 @@ EOF
         my @NewFiles = $MainObject->DirectoryRead(
             Directory => $NewDir,
             Filter    => '*.pm',
+            Recursive => 1,
         );
+
         for my $NewFile (@NewFiles) {
             if ( $NewFile !~ /Layout.pm$/ ) {
-                $NewFile =~ s{\A.*\/(.+?).pm\z}{$1}xms;
+                $NewFile =~ s{$NewDir/(.+?).pm\z}{$1}xms;
+                $NewFile =~ s{\/}{::}g;
                 my $NewClassName = "Kernel::Output::HTML::Layout::$NewFile";
                 if ( !$MainObject->RequireBaseClass($NewClassName) ) {
                     $Self->FatalDie(
@@ -2443,6 +2446,7 @@ sub NoPermission {
     # create output
     my $Output;
     $Output = $Self->Header( Title => 'Insufficient Rights' ) if ( $WithHeader eq 'yes' );
+    $Output .= $Self->NavigationBar() if ( $WithHeader eq 'yes' && $Self->{UserID} );
     $Output .= $Self->Output(
         TemplateFile => 'NoPermission',
         Data         => \%Param
@@ -3316,7 +3320,7 @@ sub NavigationBar {
             next NOTIFICATIONMODULE if !$Object;
 
             # run module
-            $Output .= $Object->Run( %Param, Config => $Jobs{$Job} );
+            $Output .= $Object->Run( %Param, Config => $Jobs{$Job} ) || '';
         }
     }
 
@@ -5779,7 +5783,7 @@ sub _BuildSelectionDataRefCreate {
         for my $Row ( @{$DataRef} ) {
             my $CheckValue = $Row->{Value};
             if ( $OptionRef->{Translation} ) {
-               $CheckValue = $Self->{LanguageObject}->Translate( $Row->{Value} );
+                $CheckValue = $Self->{LanguageObject}->Translate( $Row->{Value} );
             }
             if (
                 (
@@ -5790,13 +5794,13 @@ sub _BuildSelectionDataRefCreate {
                     ||
                     (
                         defined $Row->{Value}
-                        && $OptionRef->{SelectedValue}->{ $CheckValue }
+                        && $OptionRef->{SelectedValue}->{$CheckValue}
                     )
                 )
                 &&
                 (
                     defined $Row->{Value}
-                    && !$DisabledElements{ $CheckValue }
+                    && !$DisabledElements{$CheckValue}
                 )
                 )
             {
