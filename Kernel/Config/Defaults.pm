@@ -909,15 +909,15 @@ sub LoadDefaults {
     # --------------------------------------------------- #
     # MIME-Viewer for online to html converter
     # --------------------------------------------------- #
-    # (e. g. xlhtml (xls2html), http://chicago.sourceforge.net/xlhtml/)
-#    $Self->{'MIME-Viewer'}->{'application/excel'} = 'xlhtml';
+    # (e.g. xlhtml (xls2html), http://chicago.sourceforge.net/xlhtml/)
+#     $Self->{'MIME-Viewer'}->{'application/excel'} = 'xlhtml';
     # MIME-Viewer for online to html converter
-    # (e. g. wv (word2html), http://wvware.sourceforge.net/)
-#    $Self->{'MIME-Viewer'}->{'application/msword'} = 'wvWare';
-    # (e. g. pdftohtml (pdf2html), http://pdftohtml.sourceforge.net/)
-#    $Self->{'MIME-Viewer'}->{'application/pdf'} = 'pdftohtml -stdout -i';
-    # (e. g. xml2html (xml2html))
-#    $Self->{'MIME-Viewer'}->{'text/xml'} = $Self->{Home}.'/scripts/tools/xml2html.pl';
+    # (e.g. wv (word2html), http://wvware.sourceforge.net/)
+#     $Self->{'MIME-Viewer'}->{'application/msword'} = 'wvWare';
+    # (e.g. pdftohtml (pdf2html), http://pdftohtml.sourceforge.net/)
+#     $Self->{'MIME-Viewer'}->{'application/pdf'} = 'pdftohtml -stdout -i';
+    # (e.g. xml2html (xml2html))
+#     $Self->{'MIME-Viewer'}->{'text/xml'} = $Self->{Home}.'/scripts/tools/xml2html.pl';
 
     # --------------------------------------------------- #
     # directories                                         #
@@ -941,6 +941,7 @@ sub LoadDefaults {
 
     # Customer Common CSS
     $Self->{'Loader::Customer::CommonCSS'}->{'000-Framework'} = [
+        'Core.Color.css',
         'Core.Reset.css',
         'Core.Default.css',
         'Core.Form.css',
@@ -957,6 +958,7 @@ sub LoadDefaults {
 
     # Agent Common CSS
     $Self->{'Loader::Agent::CommonCSS'}->{'000-Framework'} = [
+        'Core.Color.css',
         'Core.Reset.css',
         'Core.Default.css',
         'Core.Header.css',
@@ -991,7 +993,7 @@ sub LoadDefaults {
         'thirdparty/jquery-ui-1.13.1/jquery-ui.js',
         'thirdparty/jquery-pubsub/pubsub.js',
         'thirdparty/jquery-jstree-3.3.7/jquery.jstree.js',
-        'thirdparty/nunjucks-3.2.3/nunjucks.js',
+        'thirdparty/nunjucks-3.2.2/nunjucks.min.js',
         'Core.Init.js',
         'Core.Debug.js',
         'Core.Exception.js',
@@ -1030,7 +1032,7 @@ sub LoadDefaults {
         'thirdparty/jquery-validate-1.16.0/jquery.validate.js',
         'thirdparty/jquery-pubsub/pubsub.js',
         'thirdparty/jquery-jstree-3.3.7/jquery.jstree.js',
-        'thirdparty/nunjucks-3.2.3/nunjucks.js',
+        'thirdparty/nunjucks-3.2.2/nunjucks.min.js',
         'thirdparty/jscolor-2.4.6/jscolor.js',
         'Core.Init.js',
         'Core.JavaScriptEnhancements.js',

@@ -12,7 +12,7 @@
 # "bin/otrs.Console.pl Dev::Tools::RPMSpecGenerate". All changes will be lost.
 #
 
-Summary:      The Znuny service desk.
+Summary:      The Znuny help desk.
 Name:         znuny
 Version:      0.0
 License:      GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
@@ -151,7 +151,7 @@ rm -rf $RPM_BUILD_ROOT
 /opt/otrs/Kernel/Output*
 /opt/otrs/Kernel/System*
 /opt/otrs/scripts*
-/opt/otrs/i18n/otrs/*
+/opt/otrs/i18n/Znuny/*
 
 %dir /opt/otrs/var/
 %dir /opt/otrs/var/article/
