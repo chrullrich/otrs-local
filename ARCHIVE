@@ -20,7 +20,7 @@ aa44944613e5c885508d3ad0ba73f631::bin/otrs.Console.pl
 d114a1e70271f2be154c438521d32c8b::bin/otrs.Daemon.pl
 69a2540a683bfd0f663be9bd663cab07::bin/otrs.PostMaster.pl
 93f36127176bc10fe2872bf81b6e528d::bin/otrs.SetPermissions.pl
-81d9075c89ae1b3193cbd61e5438c5af::CHANGES.md
+a78f533a1aef5d416a0b0bf0cb265978::CHANGES.md
 eccc9fa12069986c369d0b38d7a9c3d7::CONTRIBUTING.md
 1ebbd3e34237af26da5dc08a4e440464::COPYING
 d3e41fdb35711bb711988afb75a0624f::COPYING-Third-Party
@@ -1032,7 +1032,7 @@ ee4938ac6e70a71ecf2885aa6031a1f9::Kernel/Modules/AdminProcessManagement.pm
 b237e7082f963c265e27431170518863::Kernel/Modules/AdminProcessManagementActivity.pm
 6d5a3e2cef5fcbfb08acedb96b311147::Kernel/Modules/AdminProcessManagementActivityDialog.pm
 3caca6e41097667af940d128f8bfa6f5::Kernel/Modules/AdminProcessManagementPath.pm
-05c060384e08d43d55ffab12ef6bd353::Kernel/Modules/AdminProcessManagementTransition.pm
+8e5e8f89a812af73baff1fa7183aaeb2::Kernel/Modules/AdminProcessManagementTransition.pm
 e8ac4b4f3e11051daba2207868ed3be4::Kernel/Modules/AdminProcessManagementTransitionAction.pm
 f779c4feed93275eec2def10dafb8bb9::Kernel/Modules/AdminQueue.pm
 5417ca9d859bc3acab462536906b241b::Kernel/Modules/AdminQueueAutoResponse.pm
@@ -1211,7 +1211,7 @@ e931500fe07e72e2b05efbed49a60a8e::Kernel/Output/HTML/HeaderMeta/CustomerTicketSe
 d2eaab78eb0df1bda26c4edc86010cbc::Kernel/Output/HTML/Layout/Loader.pm
 489af4f2282f357985d7909af2617258::Kernel/Output/HTML/Layout/OutputFilter.pm
 269958d1cc46d3656f3d427bbf1a3efd::Kernel/Output/HTML/Layout/Popup.pm
-d603b69ce237c7d9d9788bfbfbe23f66::Kernel/Output/HTML/Layout/Template.pm
+4e8e54cab509a0a40b93cb8deec05f68::Kernel/Output/HTML/Layout/Template.pm
 b5d6f960da19b491faf1d54b9055f182::Kernel/Output/HTML/Layout/Ticket.pm
 ebfff57e9ed481d9bf2168613307d1bd::Kernel/Output/HTML/Layout.pm
 878311fd0d09c8cac08627d9683ba841::Kernel/Output/HTML/LinkObject/Appointment.pm
@@ -1900,7 +1900,7 @@ da44b9d14eff97c242226198be0b0478::Kernel/System/DynamicField/ScreenConfiguration
 00f802ca7f6ce93d8f3c9d1a5bfc3f76::Kernel/System/DynamicField/Webservice/Base.pm
 7aa8b72ab6442079b86a92ea21571c0f::Kernel/System/DynamicField/Webservice/DirectRequest.pm
 af70fddc6ae58b48277c549129586987::Kernel/System/DynamicField/Webservice/ResponseValues.pm
-40d611b4e8a69a925a83d7ec1602f876::Kernel/System/DynamicField/Webservice.pm
+9596a520445be7bb52412d7ac4775475::Kernel/System/DynamicField/Webservice.pm
 b10694d6b9e0cf6a1d812be70d9ce731::Kernel/System/DynamicField.pm
 f755dc3136b4e2267987f4c181b06a84::Kernel/System/DynamicFieldValue.pm
 6714a69753ce5bdff25be152ccfde34f::Kernel/System/Email/DoNotSendEmail.pm
@@ -1957,7 +1957,7 @@ fe4ce1656b1ddda6dc659d5e95d93d88::Kernel/System/MailAccount.pm
 fed8107df6c3a8c011f7ed0d10179f62::Kernel/System/ObjectManager.pm
 54b9f5145e2c1227b168a72982b89f10::Kernel/System/OTRSBusiness.pm
 1bd46dfdb7d876ded443b29a4abc0dbc::Kernel/System/Package/Event/SupportDataSend.pm
-5ca2a844d66e0c535bd62caf6bf081d0::Kernel/System/Package.pm
+530631c14c23de45d524663e0453795d::Kernel/System/Package.pm
 cfbabfcb895a6ae49ad4719d00294ce7::Kernel/System/PDF.pm
 83d0de872cfb56db66718aafe140ab01::Kernel/System/PID.pm
 0a0226f29227916f6dc92723eb9378fc::Kernel/System/PostMaster/DestQueue.pm
@@ -2314,7 +2314,7 @@ e7ddfec184c1efaf8ccdac87e1d03a3d::Kernel/System/XML.pm
 0ad3f31f8d008c9abe5f4892b2b4038b::Kernel/System/YAML.pm
 b04f54497b4308fd630ccd20908e2c46::Kernel/System/ZnunyHelper.pm
 60b4539ce8f55ce1400408551fcec141::README.md
-e473418262013b9d056c8b8a023ef9d5::RELEASE
+68628b36a035b0a5ec66b8d392e84812::RELEASE
 1511d08a6fe4d84990fa5995be70a60b::scripts/apache2-httpd-plack-proxy.conf
 caffb9d364da24b05b01c4b371ca5ebd::scripts/apache2-httpd.include.conf
 f6659aa823ab6c6c11bc92c1ee929500::scripts/apache2-perl-startup.pl
@@ -2350,7 +2350,7 @@ dcfb08a9546b58004b6e2f6e69c16f9d::scripts/database/otrs-schema-post.postgresql.s
 bcdbb0bc691335f49a9f5403b4fc6ae9::scripts/database/otrs-schema.postgresql.sql
 abb7fc92e6f0ce6ad782406c3a29e5d8::scripts/database/otrs-schema.xml
 7179fb8df773108649384576e110491f::scripts/MigrateToZnuny6_3.pl
-bd7d2a63a12031f9823fbfa4da5624d3::scripts/MigrateToZnuny6_3.pm
+cf2d4661c0c5a2ceaa0bfd5e11a7d99b::scripts/MigrateToZnuny6_3.pm
 6f8a82917a305b35d33e3174130e199c::scripts/Migration/Base/ACLDeploy.pm
 9850e9f111ff4b6db4dec01c3a7c9b56::scripts/Migration/Base/CacheCleanup.pm
 067dfb68068b952bdb25291ff6013f35::scripts/Migration/Base/CPANAuditCheck.pm
@@ -2375,7 +2375,8 @@ f9a4f5d073c22490953956dc4b4bc884::scripts/Migration/Znuny6_3/MigrateExcelStatsFo
 0f1a388674f9046e7bd2bbc9ab8ddc85::scripts/Migration/Znuny6_3/MigratePostMasterPreFilterSystemCommandCalls.pm
 0dc0920f9414d5978b4bd07908978891::scripts/Migration/Znuny6_3/MigrateProcessEntitesToScope.pm
 08bddcfc4852c2599076c531287a699e::scripts/Migration/Znuny6_3/MigrateSysConfigSettings.pm
-8dd4e0480a994af785f1f0240dd635f6::scripts/Migration/Znuny6_3/RemoveGenericAgentSystemCommandCalls.pm
+ec7f00a47556267279550531e0c35335::scripts/Migration/Znuny6_3/RemoveGenericAgentSystemCommandCalls.pm
+34e13431ca6b7ee2a70aa4e38833897d::scripts/Migration/Znuny6_3/ShowITSMUpgradeInstructions.pm
 ccba8fb800e48c3490567343842a347c::scripts/Migration/Znuny6_3/UninstallMergedPackages.pm
 3046ba3aec7b61a743658ba27e5e05c4::scripts/Migration/Znuny6_3/UpgradeDatabaseStructure.pm
 1975f61e46cb6be93cd7eb7431ef0286::scripts/OAuth2TokenManagement/oauth2_token_config_example.yml
