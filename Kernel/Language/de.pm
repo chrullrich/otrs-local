@@ -25,7 +25,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.994297816878462;
+    $Self->{Completeness}        = 0.993640958747758;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -309,7 +309,6 @@ sub Data {
             'Die Systemregistrierung ist ein Service der OTRS Gruppe, der Ihnen viele Vorteile sichert!',
         'Please note that the use of OTRS cloud services requires the system to be registered.' =>
             'Bitte beachten Sie, dass die Verwendung von OTRS Cloud-Services ein registriertes System voraussetzt.',
-        'Register this system' => 'Registrieren Sie dieses System',
         'Here you can configure available cloud services that communicate securely with %s.' =>
             'Hier können Sie verfügbare Cloud-Services konfigurieren die sicher mit %s kommunizieren.',
         'Available Cloud Services' => 'Verfügbare Cloud-Services',
@@ -641,6 +640,11 @@ sub Data {
         'This is the default term for the click search.' => 'Dies ist der Standardbegriff für die Klicksuche.',
         'Initial default search term' => 'Initialer Standardwert für die Suche',
         'This is the default search term when the mask is loaded.' => 'Dies ist der Standardbegriff für die Suche, wenn die Maske geladen wird.',
+        'Attributes' => '',
+        'Attributes for invoker execution (initially default values will be used).' =>
+            'Attribute für Invoker-Ausführung (initial werden Defaultwerte verwendet).',
+        'Attribute keys' => '',
+        'Custom attribute form for invoker execution.' => 'Benutzerdefiniertes Attributformular für die Invoker-Ausführung.',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminDynamicFieldWebservice/Config.tt
         'Web service' => 'Webservice',
@@ -669,7 +673,7 @@ sub Data {
         'The separator to show between the values if there\'s more than one key configured to be displayed above. If left empty, a single space will be used as separator. Use <space> to add spaces.' =>
             'Trennzeichen, das zwischen Anzeigewerten angezeigt wird, wenn oben mehr als ein Schlüssel zur Anzeige konfiguriert ist. Wenn diese Konfigurationsoption leer gelassen wird, die ein Leerzeichen als Trennzeichen verwendet. Benutzen Sie <space>, um Leerzeichen zu konfigurieren.',
         'Limit' => 'Limit',
-        'Maximum number of results for web service queries, e.g. for autcomplete selection list.' =>
+        'Maximum number of results for web service queries, e.g. for autocomplete selection list.' =>
             'Maximale Anzahl von Ergebnissen für Webservice-Abfragen, z. B. für die automatische Vervollständigung der Auswahlliste.',
         'Autocomplete min. input length' => 'Min. Länge für Autovervollständigung',
         'Minimum length of input for autocomplete field to trigger search.' =>
@@ -985,6 +989,8 @@ sub Data {
             'Asynchrone Ereignisauslöser werden vom OTRS Scheduler Daemon im Hintergrund verarbeitet (empfohlen).',
         'Synchronous event triggers would be processed directly during the web request.' =>
             'Synchrone Ereignisauslöser werden direkt während der laufenden Web-Anfrage verarbeitet.',
+        'Add all attachments' => 'Alle Anhänge hinzufügen',
+        'Add all attachments to invoker payload.' => 'Alle Anhänge zur Nutzlast des Invokers hinzufügen.',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminGenericInterfaceInvokerEvent.tt
         'GenericInterface Invoker Event Settings for Web Service %s' => 'GenericInterface Invoker Ereignis-Einstellungen für Webservice %s',
@@ -1142,6 +1148,33 @@ sub Data {
         'The user name to be used to access the remote system.' => 'Der Benutzername für den Zugriff auf das entfernte System.',
         'BasicAuth Password' => 'BasicAuth-Passwort',
         'The password for the privileged user.' => 'Dass Passwort des berechtigten Benutzers.',
+        'JWT authentication: Key file' => 'JWT-Authentifizierung: Key-Datei',
+        'ATTENTION: Key file and/or password (if needed, see below) seem to be invalid.' =>
+            'ACHTUNG: Key-Datei und/oder Passwort (falls benötigt, siehe unten) scheinen ungültig zu sein.',
+        'Path to private key file (PEM or DER). The key will be used to sign the JWT.' =>
+            'Pfad zur Datei mit dem privaten Key (PEM oder DER). Der Key wird zum Signieren des JWT verwendet.',
+        'JWT authentication: Key file password' => 'JWT-Authentifizierung: Key-Datei-Passwort',
+        'ATTENTION: Password and/or key file (see above) seem to be invalid.' =>
+            'ACHTUNG: Password und/oder Key-Datei (siehe oben) scheinen ungültig zu sein.',
+        'JWT authentication: Certificate file' => '',
+        'ATTENTION: Certificate file could not be parsed.' => 'ACHTUNG: Zertifikat-Datei konnte nicht gelesen werden.',
+        'ATTENTION: Certificate is expired.' => 'ACHTUNG: Zertifikat ist abgelaufen.',
+        'Path to X.509 certificate file (PEM). Data of the certificate can be used for the payload and/or header data of the JWT.' =>
+            'Pfad zur X.509-Zertifikat-Datei (PEM). Die Daten des Zertifikats können für die Payload und/oder die Header-Daten des JWT verwendet werden.',
+        'JWT authentication: Algorithm' => 'JWT-Authentifizierung: Algorithmus',
+        'JWT authentication: TTL' => 'JWT-Authentifizierung: TTL',
+        'TTL (time to live) in seconds for the JWT. This value will be used to calculate the expiration date which will be available in placeholders ExpirationDateTimestamp and ExpirationDateString.' =>
+            'TTL (Time to live) in Sekunden für das JWT. Dieser Wert wird zur Berechnung des Ablaufdatums verwendet und steht in den Platzhaltern ExpirationDateTimestamp und ExpirationDateString zur Verfügung.',
+        'JWT authentication: Payload' => 'JWT-Authentifizierung: Payload',
+        'Payload for JWT. Give key/value pairs (separated by ;), e.g.: Key1=Value1;Key2=Value2;Key3=Value3' =>
+            'Payload für JWT. Geben Sie Key- und Value-Paare an (durch ; getrennt), z. B.: Key1=Value1;Key2=Value2;Key3=Value3',
+        'Available placeholders (prefixed with OTRS_JWT): ExpirationDateTimestamp, ExpirationDateString. Additionally if X.509 certificate support is present: CertSubject, CertIssuer, CertSerial, CertNotBefore, CertNotAfter, CertEmail, CertVersion.' =>
+            'Verfügbare Platzhalter (OTRS_JWT vorangestellt): ExpirationDateTimestamp, ExpirationDateString. Zusätzlich bei vorhandener Unterstützung von X.509-Zertifikaten: CertSubject, CertIssuer, CertSerial, CertNotBefore, CertNotAfter, CertEmail, CertVersion.',
+        'Placeholder usage example: Key1=<OTRS_JWT_ExpirationDateTimestamp>' =>
+            'Beispiel für Platzhalterverwendung: Key1=<OTRS_JWT_ExpirationDateTimestamp>',
+        'JWT authentication: Additional header data' => 'JWT-Authentifizierung: Zusätzliche Header-Daten',
+        'Additional header data for JWT. Give key/value pairs (separated by ;), e.g.: Key1=Value1;Key2=Value2;Key3=Value3' =>
+            'Zusätzliche Header-Daten für JWT. Geben Sie Key- und Value-Paare an (durch ; getrennt), z. B.: Key1=Value1;Key2=Value2;Key3=Value3',
         'Content type' => 'Content-Type',
         'The default content type added to HTTP header to use for POST and PUT requests.' =>
             'Default-Content-Type, der für POST- und PUT-Requests zum HTTP-Header hinzugefügt wird.',
@@ -1533,7 +1566,7 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminOTRSBusinessUninstall.tt
         'Cancel downgrade and go back' => 'Downgrade abbrechen und zurück',
-        'Go to OTRS Package Manager' => 'Zum OTRS Paket-Manager wechseln',
+        'Go to Package Manager' => 'Zum Paket-Manager wechseln',
         'Sorry, but currently you can\'t downgrade due to the following packages which depend on %s:' =>
             'Entschuldigung, Sie können ein Downgrade derzeit aufgrund folgender, zu %s abhängiger Pakete nicht durchführen:',
         'Vendor' => 'Anbieter',
@@ -1727,7 +1760,7 @@ sub Data {
         'Activity' => 'Aktivität',
         'Activity Name' => 'Name der Aktivität',
         'Scope' => 'Geltungsbereich',
-        'Scope EntityID' => 'Geltungsbereich EntitätsID',
+        'Scope Entity ID' => 'Geltungsbereich-Entitäts-ID',
         'This field is required for activities with a scope.' => 'Dieses Feld ist für Aktivitäten mit einem Geltungsbereich erforderlich.',
         'Activity Dialogs' => 'Aktivitäts-Dialoge',
         'You can assign Activity Dialogs to this Activity by dragging the elements with the mouse from the left list to the right list.' =>
@@ -1766,6 +1799,8 @@ sub Data {
         'Assigned Fields' => 'Zugewiesene Felder',
         'Communication Channel' => 'Kommunikationskanal',
         'Is visible for customer' => 'Ist sichtbar für Kunde',
+        'Text Template' => 'Textvorlage',
+        'Auto fill' => 'automatisch ausfüllen',
         'Display' => 'Anzeige',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagementPath.tt
@@ -1914,92 +1949,6 @@ sub Data {
         'Filter for Templates' => 'Filter für Vorlagen',
         'Filter for templates' => 'Filter für Vorlagen',
         'Templates' => 'Vorlagen',
-
-        # TT Template: Kernel/Output/HTML/Templates/Standard/AdminRegistration.tt
-        'System Registration Management' => 'Systemregistrierungs-Verwaltung',
-        'Edit System Registration' => 'Systemregistrierung bearbeiten',
-        'System Registration Overview' => 'Übersicht Systemregistrierung',
-        'Register System' => 'System registrieren',
-        'Validate OTRS-ID' => 'OTRS-ID validieren',
-        'Deregister System' => 'System deregistrieren',
-        'Edit details' => 'Details bearbeiten',
-        'Show transmitted data' => 'Übertragene Daten anzeigen',
-        'Deregister system' => 'System deregistrieren',
-        'Overview of registered systems' => 'Übersicht der registrieren Systeme',
-        'This system is registered with OTRS Group.' => 'Dieses System ist bei der OTRS Gruppe registriert.',
-        'System type' => 'Systemtyp',
-        'Unique ID' => 'Unique ID',
-        'Last communication with registration server' => 'Letzte Kommunikation mit dem Registrierungs-Server',
-        'System Registration not Possible' => 'Systemregistrierung nicht möglich',
-        'Please note that you can\'t register your system if OTRS Daemon is not running correctly!' =>
-            'Bitte beachten Sie, dass Sie ihr System nicht registrieren können, wenn der OTRS Daemon nicht läuft!',
-        'Instructions' => 'Anweisungen',
-        'System Deregistration not Possible' => 'Deregistrierung des Systems nicht möglich',
-        'Please note that you can\'t deregister your system if you\'re using the %s or having a valid service contract.' =>
-            'Sie können dieses System nicht deregistrieren wenn Sie %s einsetzen oder einen gültigen Servicevertrag besitzen.',
-        'OTRS-ID Login' => 'OTRS-ID Login',
-        'Read more' => 'Mehr erfahren',
-        'You need to log in with your OTRS-ID to register your system.' =>
-            'Um Ihr System zu registrieren, loggen Sie sich bitte mit Ihrer OTRS-ID ein.',
-        'Your OTRS-ID is the email address you used to sign up on the OTRS.com webpage.' =>
-            'Verwenden Sie dazu die E-Mail-Adresse, mit der Sie sich auf der OTRS Webseite angemeldet haben.',
-        'Data Protection' => 'Datenschutz',
-        'What are the advantages of system registration?' => 'Welche Vorteile bietet die Systemregistrierung?',
-        'You will receive updates about relevant security releases.' => 'Bei sicherheitsrelevanten Releases werden Sie benachrichtigt.',
-        'With your system registration we can improve our services for you, because we have all relevant information available.' =>
-            'Die Registrierung Ihres Systems ermöglicht es der OTRS Gruppe, Sie schneller und effizienter zu betreuen, weil uns wichtige Informationen über Ihr System bereits vorliegen, die ein mehrmaliges Nachfragen unnötig machen.',
-        'This is only the beginning!' => 'Und das ist erst der Anfang!',
-        'We will inform you about our new services and offerings soon.' =>
-            'Seien Sie gespannt auf weitere Möglichkeiten, die wir Ihnen vorstellen werden.',
-        'Can I use OTRS without being registered?' => 'Kann ich OTRS auch ohne Registrierung nutzen?',
-        'System registration is optional.' => 'Die Systemregistrierung ist optional.',
-        'You can download and use OTRS without being registered.' => 'Sie können OTRS auch ohne Registrierung im vollen Umfang downloaden und nutzen.',
-        'Is it possible to deregister?' => 'Kann ich meine Registrierung rückgängig machen?',
-        'You can deregister at any time.' => 'Sie können Ihr System jederzeit deregistrieren.',
-        'Which data is transfered when registering?' => 'Welche Daten werden bei der Registrierung übertragen?',
-        'A registered system sends the following data to OTRS Group:' => 'Ein registriertes System überträgt folgende Daten an die OTRS Gruppe:',
-        'Fully Qualified Domain Name (FQDN), OTRS version, Database, Operating System and Perl version.' =>
-            'Fully Qualified Domain Name (FQDN), OTRS Version, Datenbank, Betriebssystem und Perl Version.',
-        'Why do I have to provide a description for my system?' => 'Warum muss das System beschrieben werden?',
-        'The description of the system is optional.' => 'Die Beschreibung des Systems ist optional.',
-        'The description and system type you specify help you to identify and manage the details of your registered systems.' =>
-            'Der Systemtyp und die Beschreibung hilft Ihnen, Ihre Systeme zu identifizieren und die Systemregistrierung zu verwalten.',
-        'How often does my OTRS system send updates?' => 'Wie oft sendet mein OTRS Updates?',
-        'Your system will send updates to the registration server at regular intervals.' =>
-            'Ihr System sendet in regelmäßigen Abständen Updates an den Registrierungsserver.',
-        'Typically this would be around once every three days.' => 'In der Regel findet eine Übertragung an jedem dritten Tag statt.',
-        'If you deregister your system, you will lose these benefits:' =>
-            'Wenn Sie Ihr System deregistrieren, verlieren Sie folgende Vorteile:',
-        'You need to log in with your OTRS-ID to deregister your system.' =>
-            'Um Ihr System zu deregistrieren, loggen Sie sich bitte mit Ihrer OTRS-ID ein.',
-        'OTRS-ID' => 'OTRS-ID',
-        'You don\'t have an OTRS-ID yet?' => 'Sie haben noch keine OTRS-ID?',
-        'Sign up now' => 'Registrieren Sie sich jetzt',
-        'Forgot your password?' => 'Passwort vergessen?',
-        'Retrieve a new one' => 'Neues anfordern',
-        'Next' => 'Weiter',
-        'This data will be frequently transferred to OTRS Group when you register this system.' =>
-            'Wenn Sie dieses System registrieren, werden folgende Daten in regelmäßigen Abständen an die OTRS Gruppe übertragen.',
-        'Attribute' => 'Attribut',
-        'FQDN' => 'FQDN',
-        'OTRS Version' => 'OTRS-Version',
-        'Database' => 'Datenbank',
-        'Operating System' => 'Betriebssystem',
-        'Perl Version' => 'Perl-Version',
-        'Optional description of this system.' => 'Optionale Beschreibung für dieses System.',
-        'Register' => 'Registrieren',
-        'Continuing with this step will deregister the system from OTRS Group.' =>
-            'Wenn Sie fortfahren, wird dieses System bei der OTRS Gruppe deregistriert.',
-        'Deregister' => 'Deregistrieren',
-        'You can modify registration settings here.' => 'Sie können ihre Registrierungseinstellungen hier bearbeiten.',
-        'Overview of Transmitted Data' => 'Übersicht der übertragenen Daten',
-        'There is no data regularly sent from your system to %s.' => 'Von Ihrem System werden keine Daten regelmäßig an %s übertragen.',
-        'The following data is sent at minimum every 3 days from your system to %s.' =>
-            'Folgende Daten werden mindestens aller 3 Tage von Ihrem System an %s übertragen.',
-        'The data will be transferred in JSON format via a secure https connection.' =>
-            'Die Daten werden im JSON-Format über eine sichere https-Verbindung übertragen.',
-        'System Registration Data' => 'Daten der Systemregistrierung',
-        'Support Data' => 'Supportdaten',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminRole.tt
         'Role Management' => 'Verwaltung von Rollen',
@@ -2174,20 +2123,13 @@ sub Data {
         'Sending support data to OTRS Group is not possible!' => 'Das Senden von Support-Daten an die OTRS-Gruppe ist nicht möglich!',
         'Enable Cloud Services' => 'Cloud-Services aktivieren',
         'Enable cloud services' => 'Cloud-Services aktivieren',
-        'This data is sent to OTRS Group on a regular basis. To stop sending this data please update your system registration.' =>
-            'Diese Daten werden regelmäßig an die OTRS Gruppe gesendet. Falls Sie das Senden der Daten beenden möchten, aktualisieren Sie bitte ihre Systemregistrierung.',
-        'You can manually trigger the Support Data sending by pressing this button:' =>
-            'Sie können den Versand der Support-Daten manuell auslösen, indem Sie diese Schaltfläche verwenden:',
-        'Send Update' => 'Update senden',
-        'Currently this data is only shown in this system.' => 'Diese Daten werden derzeit nur in Ihrem System angezeigt.',
         'A support bundle (including: system registration information, support data, a list of installed packages and all locally modified source code files) can be generated by pressing this button:' =>
             'Ein Support-Paket (einschließlich: Systemregistrierungsdaten, Support-Daten, eine Liste der installierten Pakete und aller lokal geänderten Quellcode-Dateien) kann mit dieser Schaltfläche erstellt werden:',
         'Generate Support Bundle' => 'Support-Paket erstellen',
         'The Support Bundle has been Generated' => 'Das Support-Paket wurde erstellt',
-        'Please choose one of the following options.' => 'Bitte wählen Sie eine der nachfolgenden Optionen aus.',
-        'Download File' => 'Datei herunterladen',
-        'A file containing the support bundle will be downloaded to the local system. Please save the file and send it to the OTRS Group, using an alternate method.' =>
-            'Das Support-Paket wird als Datei ins lokale Dateisystem heruntergeladen. Bitte speichern Sie die Datei und senden Sie diese auf anderen Wegen an die OTRS Gruppe.',
+        'A file containing the support bundle will be downloaded to the local system.' =>
+            'Das Support-Paket wird als Datei ins lokale Dateisystem heruntergeladen.',
+        'Support Data' => 'Supportdaten',
         'Error: Support data could not be collected (%s).' => 'Fehler: Support-Daten konnten nicht ermittelt werden (%s).',
         'Details' => 'Details',
 
@@ -2353,6 +2295,7 @@ sub Data {
         'Add ticket attribute relations' => 'Abhängige Ticketattribute hinzufügen',
         'Edit ticket attribute relations' => 'Abhängige Ticketattribute bearbeiten',
         'Import CSV or Excel file' => 'CSV- oder Excel-Datei importieren',
+        'Attribute' => 'Attribut',
         'Last update' => 'Letzte Aktualisierung',
         'Are you sure you want to delete entry \'%s\'?' => 'Sind Sie sicher, dass der Eintrag \'%s\' gelöscht werden soll?',
         'Download previously imported file' => 'Zuvor importierte Datei herunterladen',
@@ -2744,7 +2687,6 @@ sub Data {
         'Here you can select additional agents which should receive a notification regarding the new article.' =>
             'Hier können Sie zusätzliche Agenten auswählen, die eine Benachrichtigung über den neuen Artikel enthalten sollen.',
         'Text will also be received by' => 'Text wird auch gesendet an',
-        'Text Template' => 'Textvorlage',
         'Setting a template will overwrite any text or attachment.' => 'Die Auswahl einer Vorlage wird bereits bestehenden Text oder Anhänge löschen.',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketBounce.tt
@@ -2854,6 +2796,7 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewNavBar.tt
         'Remove active filters for this screen.' => 'Aktive Filter für diesen Bildschirm entfernen.',
+        'Remove mention' => 'Erwähnung entfernen',
         'Tickets per page' => 'Tickets pro Seite',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewPreview.tt
@@ -2971,6 +2914,9 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/LinkTable.tt
         'Linked Objects' => 'Verknüpfte Objekte',
 
+        # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/MentionsTable.tt
+        'Mentions' => 'Erwähnungen',
+
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/TicketInformation.tt
         'Archive' => 'Archiv',
         'This ticket is archived.' => 'Dieses Ticket ist archiviert.',
@@ -3056,6 +3002,7 @@ sub Data {
         'Your 2 Factor Token' => 'Ihr 2-Faktor-Token',
         'Log In' => 'Anmelden',
         'Not yet registered?' => 'Noch nicht registriert?',
+        'Sign up now' => 'Registrieren Sie sich jetzt',
         'Back' => 'Zurück',
         'Request New Password' => 'Neues Passwort anfordern',
         'Your User Name' => 'Ihr Benutzername',
@@ -3158,6 +3105,7 @@ sub Data {
         'Phone' => 'Telefon',
         'Web site' => 'Website',
         'Community' => 'Community',
+        'Next' => 'Weiter',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/InstallerConfigureMail.tt
         'Configure Outbound Mail' => 'Mailversand konfigurieren',
@@ -3209,6 +3157,7 @@ sub Data {
             'Ein neuer Datenbank-Benutzer mit beschränkten Rechten wird für dieses OTRS-System erstellt.',
         'Repeat Password' => 'Passwort wiederholen',
         'Generated password' => 'Generiertes Passwort',
+        'Database' => 'Datenbank',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/InstallerDBmysql.tt
         'Passwords do not match' => 'Passworte stimmen nicht überein',
@@ -3860,6 +3809,13 @@ sub Data {
         # Perl Module: Kernel/Modules/AdminGenericInterfaceTransportHTTPREST.pm
         'Need valid Subaction!' => 'Benötige gültige Unteraktion!',
         'This field should be an integer.' => 'Dieses Feld darf nur Ganzzahlen enthalten.',
+        'Invalid key file and/or password (if needed, see below).' => 'Ungültige Key-Datei und/oder Passwort (falls benötigt, siehe unten).',
+        'Invalid password and/or key file (see above).' => 'Ungültiges Passwort und/oder Key-Datei (siehe oben).',
+        'Certificate is expired.' => 'Zertifikat ist abgelaufen.',
+        'Certificate file could not be parsed.' => 'Zertifikat-Datei konnte nicht gelesen werden.',
+        'Please enter a time in seconds (at least 10 seconds).' => 'Bitte geben Sie eine Zeit in Sekunden ein (mind. 10 Sekunden).',
+        'Please enter data in expected form (see explanation of field).' =>
+            'Bitte geben Sie die Daten in der erwarteten Form ein (siehe Feldbeschreibung).',
         'File or Directory not found.' => 'Datei oder Verzeichnis nicht gefunden.',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
@@ -3907,6 +3863,7 @@ sub Data {
         'Customer user of the ticket' => 'Kundenbenutzer des Tickets',
         'All recipients of the first article' => 'Alle Empfänger des ersten Artikels',
         'All recipients of the last article' => 'Alle Empfänger des letzten Artikels',
+        'All users who are mentioned in a ticket' => 'Alle Benutzer, die in einem Ticket erwähnt werden.',
         'Invisible to customer' => 'Unsichtbar für Kunde',
         'Visible to customer' => 'Sichtbar für Kunde',
 
@@ -4068,12 +4025,6 @@ sub Data {
         'Change Queue Relations for Template' => 'Zuordnung von Vorlage zu Queue verändern',
         'Change Template Relations for Queue' => 'Vorlagen-Zuordnungen für Queue verändern',
 
-        # Perl Module: Kernel/Modules/AdminRegistration.pm
-        'Production' => 'Produktiv',
-        'Test' => 'Test',
-        'Training' => 'Training',
-        'Development' => 'Entwicklung',
-
         # Perl Module: Kernel/Modules/AdminRole.pm
         'Role updated!' => 'Rolle aktualisiert!',
         'Role added!' => 'Rolle hinzugefügt!',
@@ -4104,7 +4055,6 @@ sub Data {
         'Relation deleted!' => 'Beziehung gelöscht!',
         'Impossible to delete relation!' => 'Beziehung konnte nicht gelöscht werden!',
         'Certificate %s could not be read!' => 'Zertifikat %s konnte nicht gelesen werden!',
-        'Needed Fingerprint' => 'Benötige Fingerprint',
         'Handle Private Certificate Relations' => 'Zuordnungen von privaten Zertifikaten verwalten',
 
         # Perl Module: Kernel/Modules/AdminSalutation.pm
@@ -4359,6 +4309,10 @@ sub Data {
         'Pending' => 'Warten',
         'Reminder Reached' => 'Erinnerung erreicht',
         'My Locked Tickets' => 'Meine gesperrten Tickets',
+
+        # Perl Module: Kernel/Modules/AgentTicketMentionView.pm
+        'New mention' => 'Neue Erwähnung',
+        'My Mentions' => 'Meine Erwähnungen',
 
         # Perl Module: Kernel/Modules/AgentTicketMerge.pm
         'Can\'t merge ticket with itself!' => 'Kann Ticket nicht mit sich selbst zusammenführen!',
@@ -4630,6 +4584,9 @@ sub Data {
             'Fehler: Bitte erhöhen Sie den Wert für innodb_log_file_size in Ihrer Datenbank-Konfiguration auf mindestens %s MB (aktuell: %s MB, empfohlen: %s MB). Mehr Informationen finden Sie unter %s.',
         'Wrong database collation (%s is %s, but it needs to be utf8).' =>
             'Falsche Datenbank-Sortierfolge (%s ist %s, muss aber utf8 sein).',
+
+        # Perl Module: Kernel/Modules/Mentions.pm
+        '%s users will be mentioned' => '%s Benutzer werden erwähnt',
 
         # Perl Module: Kernel/Modules/PublicCalendar.pm
         'No %s!' => 'Kein %s!',
@@ -4960,6 +4917,11 @@ sub Data {
         'Locked Tickets Reminder Reached' => 'Gesperrte Tickets, Erinnerungszeit erreicht',
         'Locked Tickets Total' => 'Gesperrte Tickets insgesamt',
 
+        # Perl Module: Kernel/Output/HTML/ToolBar/TicketMention.pm
+        'Total mentions' => 'Gesamte Erwähnungen',
+        'Total new mentions' => 'Gesamte neue Erwähnungen',
+        'New mentions' => 'Neue Erwähnungen',
+
         # Perl Module: Kernel/Output/HTML/ToolBar/TicketOwner.pm
         'Owned Tickets New' => '',
         'Owned Tickets Reminder Reached' => '',
@@ -5043,6 +5005,9 @@ sub Data {
         'This field is required or' => 'Dieses Feld ist ein Pflichtfeld oder',
         'The field content is too long!' => 'Der Feldinhalt ist zu lang!',
         'Maximum size is %s characters.' => 'Die Maximallänge beträgt %s Zeichen.',
+
+        # Perl Module: Kernel/System/Mention.pm
+        'LastMention' => 'Letzte Erwähnung',
 
         # Perl Module: Kernel/System/NotificationEvent.pm
         'Couldn\'t read Notification configuration file. Please make sure the file is valid.' =>
@@ -5237,6 +5202,7 @@ sub Data {
         'PostgreSQL 9.2 or higher is required.' => 'PostgreSQL 9.2 oder höher wird benötigt.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/DiskPartitionOTRS.pm
+        'Operating System' => 'Betriebssystem',
         'OTRS Disk Partition' => 'OTRS-Festplattenpartition',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/DiskSpace.pm
@@ -5271,6 +5237,9 @@ sub Data {
             'CPAN::Audit hat berichtet, dass ein oder mehrere installierte Perl-Module bekannte Schwachstellen aufweisen. Bitte beachten Sie, dass es möglicherweise falsche Positivmeldungen für Distributionen gibt, die Perl-Module patchen, ohne ihre Versionsnummer zu ändern.',
         'CPAN::Audit did not report any known vulnerabilities in the installed Perl modules.' =>
             'CPAN::Audit hat keine bekannten Schwachstellen in den installierten Perl-Modulen gemeldet.',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/PerlVersion.pm
+        'Perl Version' => 'Perl-Version',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/Swap.pm
         'Free Swap Space (%)' => 'Freier Auslagerungsspeicher (%)',
@@ -5429,6 +5398,9 @@ sub Data {
         'UI - Special Statistics' => 'UI - Spezielle Statistiken',
         'Agents using custom main menu ordering' => 'Agenten mit eigener Hauptmenüsortierung',
         'Agents using favourites for the admin overview' => 'Agenten, die Favoriten für die Administrator-Übersicht nutzen',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/Version.pm
+        'OTRS Version' => 'OTRS-Version',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/LoadedModules.pm
         'Webserver' => 'Webserver',
@@ -7787,6 +7759,8 @@ sub Data {
             'Mapping von Ticket::Generic-Invoker-Name (Schlüssel) zu einer Liste von Feldern (Inhalt), die base-64-kodiert werden sollen. Felder müssen in der folgenden Form angegeben werden: Feld1->Feld2;Feld3->Feld4->Feld5;Feld6. Eine verschachtelte Datenstruktur kann also durch Verbindung der Felder mit \'->\' angegeben werden. Inhalte aus verschiedenen Feldern je Invoker können kodiert werden, indem die Felder mit \';\' voneinander getrennt werden. Bitte beachten Sie die Dokumentation des Pakets für weitere Informationen.',
         'Mapping of Ticket::Generic invoker name (key) to list of fields (content) which will be removed from the request. Fields have to be given in the following form: Field1->Field2;Field3->Field4->Field5;Field6. So a nested data structure can be given by connecting the fields with \'->\'. Different fields can be omitted by separating them by \';\'.' =>
             'Mapping von Ticket::Generic-Invoker-Name (Schlüssel) zu einer Liste von Feldern (Inhalt), die aus dem Request entfernt werden. Felder müssen in der folgenden Form angegeben werden: Feld1->Feld2;Feld3->Feld4->Feld5;Feld6. Eine verschachtelte Datenstruktur kann also durch Verbindung der Felder mit \'->\' angegeben werden. Verschiedene Felder je Invoker können entfernt werden, indem sie mit \';\' voneinander getrennt werden. Bitte beachten Sie die Dokumentation des Pakets für weitere Informationen.',
+        'Maximum number of parallel instances when using OTRS_AsynchronousInvokerExecution in invoker Ticket::Generic.' =>
+            'Maximale Anzahl paralleler Instanzen bei Nutzung von OTRS_AsynchronousInvokerExecution im Invoker Ticket::Generic.',
         'Enables support for huge XML data in load_xml calls of CPAN library XML::LibXML. This should only be enabled if absolutely needed. Disabling this option (default) protects against denial of service through entity expansion attacks. Before enabling this option ensure that alternative measures to protect the application against this type of attack have been taken.' =>
             'Aktiviert die Unterstützung für große XML-Daten in load_xml-Aufrufen der CPAN-Bibliothek XML::LibXML. Diese Option sollte nur aktiviert werden, wenn sie unbedingt benötigt wird. Die Deaktivierung dieser Option (Standard) schützt vor Denial-of-Service-Angriffen durch Entity-Expansion. Bevor diese Option aktiviert wird, muss sichergestellt werden, dass alternative Maßnahmen ergriffen wurden, um die Anwendung gegen diese Art von Angriffen zu schützen.',
         'Shows a link in the menu to create a unit test for the current ticket.' =>
@@ -7802,6 +7776,14 @@ sub Data {
             'Ticket-Event-Modul zur Speicherung von Werten des gewählten Webservice-Datensatzes in den konfigurierten zusätzlichen dynamischen Feldern.',
         'It might happen that a dynamic field of type WebserviceText or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
             'Es kann vorkommen, dass ein dynamisches Feld vom Typ WebserviceText oder WebserviceMultiselect auf einen Wert gesetzt wird, der aus einer konfigurierten Webservice-Tabelle geholt wird, aber der Webservice-Datensatz keinen Wert in dem Feld hat, das als angezeigter Wert konfiguriert ist. Aktivieren Sie diese Einstellung, um diese dynamischen Felder im Ticketinformations-Widget von AgentTicketZoom auszublenden, damit sie nicht als leer angezeigt werden.',
+        'Mapping for field values received from form. This setting is necessary for the correct identification of the form fields. Key means value type, value means possible representation in views.' =>
+            'Mapping für die vom Formular empfangenen Feldwerte. Diese Einstellung ist für die korrekte Identifizierung der Formularfelder notwendig. Schlüssel ist Typ, Inhalt ist möglicher Name im Formular.',
+        'Mapping for field values received from form which have multiple values. This setting is needed when the view shows the values of a particular field in a custom way (e.g. selectable customer user in ticket creation view). This setting is always respected first. There is also the possibility to specify an order for checking fields. (Field of customer user in ticket creation view can be saved as CustomerUser or just simple e-mail. First we need to check if CustomerKey is present (CustomerKey -> ID of CustomerUser). If not, then simply take plain text (CustomerTicketText -> E-mail)).' =>
+            'Zuordnung für Feldwerte, die vom Formular empfangen werden und mehrere Werte haben. Diese Einstellung wird benötigt, wenn die Ansicht die Werte eines bestimmten Feldes in einer benutzerdefinierten Weise anzeigt (z. B. auswählbarer Kundenbenutzer in der Ansicht zur Ticketerstellung). Diese Einstellung wird immer zuerst beachtet. Es besteht auch die Möglichkeit, eine Reihenfolge für die Überprüfung der Felder festzulegen. (Das Feld des Kundenbenutzers in der Ticket-Erstellungsansicht kann als CustomerUser oder als einfache E-Mail gespeichert werden. Zuerst muss geprüft werden, ob CustomerKey vorhanden ist (CustomerKey -> ID von CustomerUser). Ist dies nicht der Fall, wird einfach der Text verwendet (CustomerTicketText -> E-Mail)).',
+        'Options and default field set for attributes. Values of this setting will always be passed as simple form value without possibility to further configure it in AdminDynamicField view. The keys with which the form values will be sent to the invoker can be edited in the "Default" section of this setting.' =>
+            'Optionen und Standardfeld für Attribute. Die Werte dieser Einstellung werden immer als einfache Formularwerte übergeben, ohne die Möglichkeit, sie in der Ansicht AdminDynamicField weiter zu konfigurieren. Die Schlüssel, mit denen die Formularwerte an den Invoker gesendet werden, können im Abschnitt "Default" dieser Einstellung bearbeitet werden.',
+        'Options and default field set for selectable attributes. Values which will be passed to invoker (ID or Name or both) can be configured in AdminDynamicField view. The keys with which the form values (ID or Name) will be sent to the invoker can be edited in the "Default" section of this setting. Example usage for field Queue: Field with selected ID and Name will send QueueID = 3 and Queue = Raw.' =>
+            'Optionen und Standardfeld für auswählbare Attribute. Die Werte, die an den Aufrufer übergeben werden (ID oder Name oder beides), können in der Ansicht AdminDynamicField konfiguriert werden. Die Schlüssel, mit denen die Formularwerte (ID oder Name) an den Invoker gesendet werden, können im Abschnitt "Default" dieser Einstellung bearbeitet werden. Beispiel für die Verwendung des Feldes Queue: Feld mit ausgewählter ID und Name sendet QueueID = 3 und Queue = Raw.',
         'Template for the out-of-office message shown to the user in the frontend. Placeholders for out-of-office information can be used via ###PlaceholderName###. Possible placeholders are: StartYear, StartMonth, StartDay, EndYear, EndMonth, EndDay, DaysRemaining.' =>
             'Template für die "Out-of-Office"-Nachricht, die im Agenten-Interface angezeigt wird. Platzhalter für Out-Of-Office-Daten können wie folgt benutzt werden: ###PlatzhalterName###. Mögliche Out-Of-Office-PLatzhalter sind: StartYear, StartMonth, StartDay, EndYear, EndMonth, EndDay, DaysRemaining.',
         'Message that will be shown if the agent is currently logged in.' =>
@@ -7870,6 +7852,8 @@ sub Data {
             'Authentifikationstyp für das Sendmail-Modul. Falls \'OAuth2-Token\' gewählt wurde, muss SendmailModule::OAuth2TokenConfigName ebenfalls konfiguriert werden.',
         'Name of the OAuth2 token configuration to use for sending mails if \'OAuth2 token\' was configured in SendmailModule::AuthenticationType.' =>
             'Name der OAuth2-Token-Konfiguration für den Versand von E-Mails, falls \'OAuth2-Token\' in SendmailModule::AuthenticationType konfiguriert wurde.',
+        'Hosts that need a separate info about authentication method and token (instead of both in one line). Most commonly needed for Office 365 and Outlook.' =>
+            'Hosts, die eine getrennte Info über Authentifizierungsmethode und Token benötigen (anstatt beides in einer Zeile). Wird am häufigsten für Office 365 und Outlook benötigt.',
         'This option enables a dropdown which will be displayed instead of the time unit input field.' =>
             'Diese Option aktiviert ein Dropdown, das anstelle des Eingabefeldes für die Zeiteinheit angezeigt wird.',
         'Defines the default ticket attribute for ticket sorting in the owner view of the agent interface.' =>
@@ -7908,6 +7892,28 @@ sub Data {
             'Schwellenwert (in Minuten) für das Aufholen der Ticketerstellung für Termine. Tickets für fällige Termine werden nur dann erstellt, wenn ihr geplantes Erstellungsdatum nicht älter als die konfigurierte Anzahl von Minuten ist. Dadurch wird verhindert, dass Tickets für z. B. wiederkehrende Termine erstellt werden, wenn die Ticketerstellung einige Zeit später durchgeführt wird.',
         'Creates the calendar-based tickets regularly.' => 'Erstellt regelmäßig die kalenderbasierten Tickets.',
         'Cleans up the calendar-based tickets regularly.' => 'Säubert die kalenderbasierten Tickets regelmäßig.',
+        'Maximum number of quoted lines to be added to forwarded messages.' =>
+            'Maximale Anzahl zitierter Zeilen in weitergeleiteten Nachrichten.',
+        'Re-indexes S/MIME certificate folders. Note: S/MIME needs to be enabled in SysConfig.' =>
+            'Re-indiziert S/MIME-Zertifikat-Verzeichnisse. Hinweis: S/MIME muss in der SysConfig aktiviert sein.',
+        'Maximum length of displayed attachment filenames in the article preview of ticket zoom view.' =>
+            'Maximale Länge der angezeigten Dateinamen von Anhängen in der Artikelvorschau der Ticket-Detailansicht.',
+        'General settings for autocompletion in rich text editor.' => 'Allgemeine Einstellungen für Autovervollständigung im Rich-Text-Editor.',
+        'Rich text editor configuration for autocompletion module.' => 'Rich-Text-Editor-Konfiguration für Autocompletion-Modul.',
+        'Rich text editor configuration for autocompletion module to support templates.' =>
+            'Rich-Text-Editor-Konfiguration für Autocompletion-Modul zur Unterstützung von Vorlagen.',
+        'Defines which notifications about mentions should be sent.' => 'Bestimmt, welche Benachrichtigungen über Erwähnungen versendet werden sollen.',
+        'Defines if the toolbar mention icon should count mentions.' => 'Erwähnungs-Icon in Toolbar soll Anzahl der Erwähnungen anzeigen.',
+        'Frontend registration of triggers for mention plugin of CKEditor.' =>
+            'Frontend-Registrierung für Trigger des CKEditor-Mention-Plugins.',
+        'Frontend registration of input/output templates for mention plugin of CKEditor.' =>
+            'Frontend-Registrierung für Template des CKEditor-Mention-Plugins.',
+        'Event handler for mentions.' => 'Event-Handler für Erwähnungen.',
+        'Parameters for the dashboard backend of the last mention widget.' =>
+            'Parameter für das Dasboard-Widget "Letzte Erwähnung".',
+        'Agent interface notification module to show the number of mentions.' =>
+            'Benachrichtigungsmodul für Agenten-Interface, das die Anzahl der Erwähnungen anzeigt.',
+        'Module to grant access to the mentioned agents of a ticket.' => 'Modul, das Zugriff für die erwähnten Agenten eines Tickets gewährt.',
 
         # XML Definition: scripts/database/otrs-initial_insert.xml
         'invalid-temporarily' => 'ungültig-temporär',
@@ -8020,6 +8026,7 @@ sub Data {
         'You will receive a notification each time a reminder time is reached for one of your appointments.' =>
             'Sie erhalten immer dann eine Benachrichtigung, wenn der Benachrichtigungszeitpunkt für einen Ihrer Termine erreicht wurde.',
         'Ticket email delivery failure notification' => 'Benachrichtigung über Fehler beim Versand von E-Mail-Tickets',
+        'Mention notification' => 'Benachrichtigung für Erwähnung',
 
         # JS File: var/httpd/htdocs/js/Core.AJAX.js
         'Error during AJAX communication. Status: %s, Error: %s' => 'Fehler während AJAX-Kommunikation. Status: %s, Fehler: %s',
@@ -8691,6 +8698,7 @@ Ihr Helpdesk-Team
             'Bestimmt die Zeichenfolgen, die als Empfänger (An:) eines Telefon-Tickets und als Absender (Von:) eines E-Mail-Tickets im Agenten-Interface angezeigt werden. Für Queue als NewQueueSelectionType zeigt "<Queue>" den Namen der Queue und für SystemAddress zeigt "<Realname> <<Email>>" den Namen und E-Mail-Adresse des Empfängers.',
         'Determines the strings that will be shown as recipient (To:) of the ticket in the customer interface. For Queue as CustomerPanelSelectionType, "<Queue>" shows the names of the queues, and for SystemAddress, "<Realname> <<Email>>" shows the name and email of the recipient.' =>
             'Bestimmt die Zeichenfolgen, die als Empfänger (An:) eines Tickets im Kunden-Interface angezeigt werden. Für Queue als CustomerPanelSelectionType zeigt "<Queue>" den Namen der Queues und für SystemAddress zeigt "<Realname> <<Email>>" den Namen und E-Mail-Adresse des Empfängers.',
+        'Development' => 'Entwicklung',
         'Disable cloud services' => 'Cloud-Services deaktivieren',
         'Display communication log entries.' => 'Einträge des Verbindungsprotokolls anzeigen.',
         'Down' => 'Ab',
@@ -8809,6 +8817,7 @@ Ihr Helpdesk-Team
         'Korean' => 'Koreanisch',
         'Language' => 'Sprache',
         'Large' => 'Groß',
+        'Last Mentions' => 'Letzte Erwähnungen',
         'Last Screen Overview' => 'Letzte Masken-Übersicht',
         'Last customer subject' => 'Letzter Kunden-Betreff',
         'Last view - limit' => 'Letzte Ansicht - Limit',
@@ -8859,13 +8868,15 @@ Ihr Helpdesk-Team
         'Manage existing sessions.' => 'Sitzungen verwalten.',
         'Manage support data.' => 'Supportdaten verwalten.',
         'Manage system files.' => 'Systemdateien verwalten',
-        'Manage system registration.' => 'Systemregistrierung verwalten.',
         'Manage tasks triggered by event or time based execution.' => 'Verwaltung von event- oder zeitbasierten Aufgaben.',
         'Management of ticket attribute relations.' => 'Verwaltung von abhängigen Ticketattributen.',
         'Mark as Spam!' => 'Als Spam makieren!',
         'Mark this ticket as junk!' => 'Dieses Ticket als Junk markieren!',
         'Mattermost Username' => 'Mattermost-Benutzername',
         'Medium' => 'Mittel',
+        'Mentioned in article' => 'In Artikel erwähnt',
+        'Mentioned in ticket' => 'In Ticket erwähnt',
+        'Mentions.' => 'Erwähnungen.',
         'Merge this ticket and all articles into another ticket' => 'Dieses Ticket und alle Artikel in ein anderes Ticket zusammenfassen',
         'Merged Ticket (%s/%s) to (%s/%s).' => 'Ticket (%s/%s) zusammengeführt mit (%s/%s).',
         'Merged Ticket <OTRS_TICKET> to <OTRS_MERGE_TO_TICKET>.' => 'Ticket <OTRS_TICKET> wurde mit <OTRS_MERGE_TO_TICKET> zusammengefasst.',
@@ -9023,6 +9034,7 @@ Ihr Helpdesk-Team
         'Shows a preview of the ticket overview (CustomerInfo => 1 - shows also Customer-Info, CustomerInfoMaxSize max. size in characters of Customer-Info).' =>
             'Ermöglicht eine Ticket-Übersicht mit einigen Ticketinformationen (Customer => 1 - zeigt auch die Kundeninformation, CustomerInfoMaxSize steuert die maximale Anzahl an Zeichen der Kundeninformation).',
         'Shows information on how to start OTRS Daemon' => 'Informationen über das Starten des OTRS Daemons anzeigen',
+        'Shows last mention of tickets.' => 'Zeigt letzte Erwähnung von Tickets.',
         'Signature data.' => 'Signatur-Daten.',
         'Signatures' => 'Signaturen',
         'Simple' => 'Einfach',
@@ -9030,6 +9042,7 @@ Ihr Helpdesk-Team
         'Slovak' => 'Slowakisch',
         'Slovenian' => 'Slowenisch',
         'Small' => 'Klein',
+        'Snippet' => '',
         'Software Package Manager.' => 'Softwarepaketverwaltung.',
         'Solution time' => 'Lösungszeit',
         'SolutionDiffInMin' => 'Lösungszeitdifferenz in Minuten',
@@ -9253,7 +9266,6 @@ Ihr Helpdesk-Team
         'Current selection',
         'Currently not possible',
         'Customer interface does not support articles not visible for customers.',
-        'Data Protection',
         'Date/Time',
         'Day',
         'Dec',
@@ -9482,7 +9494,6 @@ Ihr Helpdesk-Team
         'Support Data information was successfully sent.',
         'Switch to desktop mode',
         'Switch to mobile mode',
-        'System Registration',
         'Team',
         'Th',
         'The browser you are using is too old.',

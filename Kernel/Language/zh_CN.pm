@@ -32,7 +32,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y.%M.%D';
     $Self->{DateInputFormat}     = '%Y.%M.%D';
     $Self->{DateInputFormatLong} = '%Y.%M.%D - %T';
-    $Self->{Completeness}        = 0.94672531769306;
+    $Self->{Completeness}        = 0.935431273438774;
 
     # csv separator
     $Self->{Separator}         = '';
@@ -316,7 +316,6 @@ sub Data {
             '系统注册是OTRS集团的一项服务，它为您提供了很多好处!',
         'Please note that the use of OTRS cloud services requires the system to be registered.' =>
             '请注意：为了使用OTRS云服务，需要先注册系统。',
-        'Register this system' => '注册本系统',
         'Here you can configure available cloud services that communicate securely with %s.' =>
             '你可以在这里配置可用的云服务，其与%s的通信是安全的。',
         'Available Cloud Services' => '可用的云服务',
@@ -648,6 +647,11 @@ sub Data {
         'This is the default term for the click search.' => '',
         'Initial default search term' => '',
         'This is the default search term when the mask is loaded.' => '',
+        'Attributes' => '',
+        'Attributes for invoker execution (initially default values will be used).' =>
+            '',
+        'Attribute keys' => '',
+        'Custom attribute form for invoker execution.' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminDynamicFieldWebservice/Config.tt
         'Web service' => 'Web服务',
@@ -676,7 +680,7 @@ sub Data {
         'The separator to show between the values if there\'s more than one key configured to be displayed above. If left empty, a single space will be used as separator. Use <space> to add spaces.' =>
             '',
         'Limit' => '限制',
-        'Maximum number of results for web service queries, e.g. for autcomplete selection list.' =>
+        'Maximum number of results for web service queries, e.g. for autocomplete selection list.' =>
             '',
         'Autocomplete min. input length' => '',
         'Minimum length of input for autocomplete field to trigger search.' =>
@@ -992,6 +996,8 @@ sub Data {
             '异步的事件触发器将由后端的OTRS调度程序守护进程处理（推荐）。',
         'Synchronous event triggers would be processed directly during the web request.' =>
             '同步的事件触发器则是在web请求期间直接处理的。',
+        'Add all attachments' => '',
+        'Add all attachments to invoker payload.' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminGenericInterfaceInvokerEvent.tt
         'GenericInterface Invoker Event Settings for Web Service %s' => 'Web服务%s的通用接口调用程序事件设置',
@@ -1149,6 +1155,33 @@ sub Data {
         'The user name to be used to access the remote system.' => '用于访问远程系统的用户名。',
         'BasicAuth Password' => '基本认证密码',
         'The password for the privileged user.' => '特权用户的密码。',
+        'JWT authentication: Key file' => '',
+        'ATTENTION: Key file and/or password (if needed, see below) seem to be invalid.' =>
+            '',
+        'Path to private key file (PEM or DER). The key will be used to sign the JWT.' =>
+            '',
+        'JWT authentication: Key file password' => '',
+        'ATTENTION: Password and/or key file (see above) seem to be invalid.' =>
+            '',
+        'JWT authentication: Certificate file' => '',
+        'ATTENTION: Certificate file could not be parsed.' => '',
+        'ATTENTION: Certificate is expired.' => '',
+        'Path to X.509 certificate file (PEM). Data of the certificate can be used for the payload and/or header data of the JWT.' =>
+            '',
+        'JWT authentication: Algorithm' => '',
+        'JWT authentication: TTL' => '',
+        'TTL (time to live) in seconds for the JWT. This value will be used to calculate the expiration date which will be available in placeholders ExpirationDateTimestamp and ExpirationDateString.' =>
+            '',
+        'JWT authentication: Payload' => '',
+        'Payload for JWT. Give key/value pairs (separated by ;), e.g.: Key1=Value1;Key2=Value2;Key3=Value3' =>
+            '',
+        'Available placeholders (prefixed with OTRS_JWT): ExpirationDateTimestamp, ExpirationDateString. Additionally if X.509 certificate support is present: CertSubject, CertIssuer, CertSerial, CertNotBefore, CertNotAfter, CertEmail, CertVersion.' =>
+            '',
+        'Placeholder usage example: Key1=<OTRS_JWT_ExpirationDateTimestamp>' =>
+            '',
+        'JWT authentication: Additional header data' => '',
+        'Additional header data for JWT. Give key/value pairs (separated by ;), e.g.: Key1=Value1;Key2=Value2;Key3=Value3' =>
+            '',
         'Content type' => '',
         'The default content type added to HTTP header to use for POST and PUT requests.' =>
             '',
@@ -1540,7 +1573,7 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminOTRSBusinessUninstall.tt
         'Cancel downgrade and go back' => '取消降级并返回',
-        'Go to OTRS Package Manager' => '进入 OTRS 软件包管理',
+        'Go to Package Manager' => '',
         'Sorry, but currently you can\'t downgrade due to the following packages which depend on %s:' =>
             '当前不能降级，因为以下软件包依赖%s：',
         'Vendor' => '提供者',
@@ -1734,7 +1767,7 @@ sub Data {
         'Activity' => '活动',
         'Activity Name' => '活动名称',
         'Scope' => '',
-        'Scope EntityID' => '',
+        'Scope Entity ID' => '',
         'This field is required for activities with a scope.' => '',
         'Activity Dialogs' => '活动对话框',
         'You can assign Activity Dialogs to this Activity by dragging the elements with the mouse from the left list to the right list.' =>
@@ -1773,6 +1806,8 @@ sub Data {
         'Assigned Fields' => '分配的字段',
         'Communication Channel' => '通信渠道',
         'Is visible for customer' => '对客户可见',
+        'Text Template' => '内容模板',
+        'Auto fill' => '',
         'Display' => 'Display（显示）',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagementPath.tt
@@ -1921,92 +1956,6 @@ sub Data {
         'Filter for Templates' => '模板过滤器',
         'Filter for templates' => '模板筛选',
         'Templates' => '模板',
-
-        # TT Template: Kernel/Output/HTML/Templates/Standard/AdminRegistration.tt
-        'System Registration Management' => '系统注册管理',
-        'Edit System Registration' => '编辑系统注册',
-        'System Registration Overview' => '系统注册概览',
-        'Register System' => '注册系统',
-        'Validate OTRS-ID' => '验证OTRS-ID',
-        'Deregister System' => '取消系统注册',
-        'Edit details' => '编辑详细信息',
-        'Show transmitted data' => '显示已传输的数据',
-        'Deregister system' => '取消系统注册',
-        'Overview of registered systems' => '注册系统概述',
-        'This system is registered with OTRS Group.' => '本系统已注册到OTRS集团。',
-        'System type' => '系统类型',
-        'Unique ID' => '唯一ID',
-        'Last communication with registration server' => '与注册服务器上一次的通信',
-        'System Registration not Possible' => '系统注册不可能',
-        'Please note that you can\'t register your system if OTRS Daemon is not running correctly!' =>
-            '请注意：如果OTRS守护进程没有正确运行，你就不能注册你的系统！',
-        'Instructions' => '说明',
-        'System Deregistration not Possible' => '系统取消注册不可能',
-        'Please note that you can\'t deregister your system if you\'re using the %s or having a valid service contract.' =>
-            '请注意：如果你正在使用%s 或具有一个有效的服务合同，你就不能取消你的系统注册。',
-        'OTRS-ID Login' => 'OTRS-ID登陆',
-        'Read more' => '阅读更多',
-        'You need to log in with your OTRS-ID to register your system.' =>
-            '为了注册系统，需要你先使用OTRS-ID进行登陆。',
-        'Your OTRS-ID is the email address you used to sign up on the OTRS.com webpage.' =>
-            'OTRS-ID是你在OTRS.com网站注册的电子邮箱地址。',
-        'Data Protection' => '数据保护',
-        'What are the advantages of system registration?' => '系统注册有什么好处?',
-        'You will receive updates about relevant security releases.' => '你将及时收到有关安全版本的更新信息。',
-        'With your system registration we can improve our services for you, because we have all relevant information available.' =>
-            '你的系统注册有助于我们改善为你提供的服务，因为我们能获得必要的相关信息。',
-        'This is only the beginning!' => '这仅仅是开始！',
-        'We will inform you about our new services and offerings soon.' =>
-            '有了新的服务和产品我们能很快通知你。',
-        'Can I use OTRS without being registered?' => '如果不进行系统注册，我还可以使用OTRS吗?',
-        'System registration is optional.' => '系统注册是可选的。',
-        'You can download and use OTRS without being registered.' => '不进行注册，你仍然可以下载和使用OTRS。',
-        'Is it possible to deregister?' => '可以取消注册吗？',
-        'You can deregister at any time.' => '你可以随时取消系统注册。',
-        'Which data is transfered when registering?' => '注册后，哪些数据会被上传?',
-        'A registered system sends the following data to OTRS Group:' => '注册过的系统会将以下数据上传给OTRS集团：',
-        'Fully Qualified Domain Name (FQDN), OTRS version, Database, Operating System and Perl version.' =>
-            '域名(FQDN)、OTRS版本、数据库、操作系统和Perl版本。',
-        'Why do I have to provide a description for my system?' => '为什么需要我提供有关注册系统的描述?',
-        'The description of the system is optional.' => '注册系统的描述是可选的。',
-        'The description and system type you specify help you to identify and manage the details of your registered systems.' =>
-            '注册系统描述和类型有助于您识别和管理系统的细节。',
-        'How often does my OTRS system send updates?' => '我的OTRS系统上传数据的频度?',
-        'Your system will send updates to the registration server at regular intervals.' =>
-            '你的系统将定期向注册服务器发送更新。',
-        'Typically this would be around once every three days.' => '通常这将是大约每3天1次。',
-        'If you deregister your system, you will lose these benefits:' =>
-            '如果你取消注册你的系统，你将失去以下好处：',
-        'You need to log in with your OTRS-ID to deregister your system.' =>
-            '为了取消注册你的系统，你需要以OTRS-ID登录。',
-        'OTRS-ID' => 'OTRS-ID',
-        'You don\'t have an OTRS-ID yet?' => '还没有OTRS-ID吗？',
-        'Sign up now' => '现在注册',
-        'Forgot your password?' => '忘记密码了吗？',
-        'Retrieve a new one' => '获取新的密码',
-        'Next' => '下一步',
-        'This data will be frequently transferred to OTRS Group when you register this system.' =>
-            '注册本系统后，这个数据会经常传送给OTRS集团。',
-        'Attribute' => '属性',
-        'FQDN' => '正式域名',
-        'OTRS Version' => 'OTRS版本',
-        'Database' => '数据库',
-        'Operating System' => '操作系统',
-        'Perl Version' => 'Perl版本',
-        'Optional description of this system.' => '本系统可选的描述。',
-        'Register' => '注册',
-        'Continuing with this step will deregister the system from OTRS Group.' =>
-            '继续这一步将从OTRS集团取消注册本系统。',
-        'Deregister' => '取消注册',
-        'You can modify registration settings here.' => '你可以在这里修改注册设置。',
-        'Overview of Transmitted Data' => '已传输的数据概览',
-        'There is no data regularly sent from your system to %s.' => '你的系统还没有定期向%s 发送数据。',
-        'The following data is sent at minimum every 3 days from your system to %s.' =>
-            '你的系统至少每3天向%s 发送一次以下数据。',
-        'The data will be transferred in JSON format via a secure https connection.' =>
-            'JSON格式的数据将通过安全的HTTPS连接进行上传。',
-        'System Registration Data' => '系统注册信息',
-        'Support Data' => '支持数据',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminRole.tt
         'Role Management' => '角色管理',
@@ -2181,20 +2130,13 @@ sub Data {
         'Sending support data to OTRS Group is not possible!' => '不能将支持数据发送给OTRS集团！',
         'Enable Cloud Services' => '启用云服务',
         'Enable cloud services' => '启用云服务',
-        'This data is sent to OTRS Group on a regular basis. To stop sending this data please update your system registration.' =>
-            '这些数据被定期发送到OTRS集团，要停止发送这些数据，请更新你的系统注册配置。',
-        'You can manually trigger the Support Data sending by pressing this button:' =>
-            '你可以通过这个按钮手动发送支持数据：',
-        'Send Update' => '发送更新',
-        'Currently this data is only shown in this system.' => '目前支持数据只是在本地系统上显示。',
         'A support bundle (including: system registration information, support data, a list of installed packages and all locally modified source code files) can be generated by pressing this button:' =>
             '点击以下按钮生成支持数据包（包括：系统注册信息、支持数据、已安装软件包列表和本地所有修改过的源代码文件）：',
         'Generate Support Bundle' => '生成支持数据包',
         'The Support Bundle has been Generated' => '已生成支持包',
-        'Please choose one of the following options.' => '请选择以下的任一个选项。',
-        'Download File' => '下载文件',
-        'A file containing the support bundle will be downloaded to the local system. Please save the file and send it to the OTRS Group, using an alternate method.' =>
-            '包含支持数据包的文件已经可以下载到本地。请保存文件，然后通过其他方法把这个文件发送给OTRS集团。',
+        'A file containing the support bundle will be downloaded to the local system.' =>
+            '包含支持数据包的文件已经可以下载到本地。',
+        'Support Data' => '支持数据',
         'Error: Support data could not be collected (%s).' => '错误：%s 无法收集支持数据。',
         'Details' => '详情',
 
@@ -2360,6 +2302,7 @@ sub Data {
         'Add ticket attribute relations' => '',
         'Edit ticket attribute relations' => '',
         'Import CSV or Excel file' => '',
+        'Attribute' => '属性',
         'Last update' => '',
         'Are you sure you want to delete entry \'%s\'?' => '',
         'Download previously imported file' => '',
@@ -2751,7 +2694,6 @@ sub Data {
         'Here you can select additional agents which should receive a notification regarding the new article.' =>
             '你可以在这里选择额外的服务人员，以收到这封信件的通知。',
         'Text will also be received by' => '内容也将被以下人员接收到',
-        'Text Template' => '内容模板',
         'Setting a template will overwrite any text or attachment.' => '设置一个模板将覆盖任何文本或附件。',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketBounce.tt
@@ -2861,6 +2803,7 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewNavBar.tt
         'Remove active filters for this screen.' => '清除这个屏幕的过滤器。',
+        'Remove mention' => '',
         'Tickets per page' => '工单数/页',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewPreview.tt
@@ -2978,6 +2921,9 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/LinkTable.tt
         'Linked Objects' => '连接的对象',
 
+        # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/MentionsTable.tt
+        'Mentions' => '',
+
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/TicketInformation.tt
         'Archive' => '归档',
         'This ticket is archived.' => '该工单已归档。',
@@ -3063,6 +3009,7 @@ sub Data {
         'Your 2 Factor Token' => '你的双因素令牌',
         'Log In' => '登录',
         'Not yet registered?' => '还未注册?',
+        'Sign up now' => '现在注册',
         'Back' => '后退',
         'Request New Password' => '请求新密码',
         'Your User Name' => '你的用户名',
@@ -3165,6 +3112,7 @@ sub Data {
         'Phone' => '电话',
         'Web site' => '网址',
         'Community' => '',
+        'Next' => '下一步',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/InstallerConfigureMail.tt
         'Configure Outbound Mail' => '外发邮件配置',
@@ -3216,6 +3164,7 @@ sub Data {
             '已经为OTRS系统创建了新的数据库普通用户。',
         'Repeat Password' => '重复输入密码',
         'Generated password' => '自动生成的密码',
+        'Database' => '数据库',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/InstallerDBmysql.tt
         'Passwords do not match' => '密码不匹配',
@@ -3867,6 +3816,13 @@ sub Data {
         # Perl Module: Kernel/Modules/AdminGenericInterfaceTransportHTTPREST.pm
         'Need valid Subaction!' => '需要有效的子动作！',
         'This field should be an integer.' => '该字段应为整数。',
+        'Invalid key file and/or password (if needed, see below).' => '',
+        'Invalid password and/or key file (see above).' => '',
+        'Certificate is expired.' => '',
+        'Certificate file could not be parsed.' => '',
+        'Please enter a time in seconds (at least 10 seconds).' => '',
+        'Please enter data in expected form (see explanation of field).' =>
+            '',
         'File or Directory not found.' => '找不到文件或目录。',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
@@ -3914,6 +3870,7 @@ sub Data {
         'Customer user of the ticket' => '该工单的客户用户',
         'All recipients of the first article' => '第一封信件的所有收件人',
         'All recipients of the last article' => '最近一封信件的所有收件人',
+        'All users who are mentioned in a ticket' => '',
         'Invisible to customer' => '客户不可见',
         'Visible to customer' => '对客户可见',
 
@@ -4075,12 +4032,6 @@ sub Data {
         'Change Queue Relations for Template' => '修改模板的队列关系',
         'Change Template Relations for Queue' => '修改队列的模板关系',
 
-        # Perl Module: Kernel/Modules/AdminRegistration.pm
-        'Production' => '生产',
-        'Test' => '测试',
-        'Training' => '培训',
-        'Development' => '开发',
-
         # Perl Module: Kernel/Modules/AdminRole.pm
         'Role updated!' => '角色已更新！',
         'Role added!' => '角色已添加！',
@@ -4111,7 +4062,6 @@ sub Data {
         'Relation deleted!' => '关系已删除！',
         'Impossible to delete relation!' => '不可能删除关系！',
         'Certificate %s could not be read!' => '不能读取证书 %s ！',
-        'Needed Fingerprint' => '需要指纹',
         'Handle Private Certificate Relations' => '处理私有证书关系',
 
         # Perl Module: Kernel/Modules/AdminSalutation.pm
@@ -4366,6 +4316,10 @@ sub Data {
         'Pending' => '挂起',
         'Reminder Reached' => '提醒时间已过',
         'My Locked Tickets' => '我锁定的工单',
+
+        # Perl Module: Kernel/Modules/AgentTicketMentionView.pm
+        'New mention' => '',
+        'My Mentions' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketMerge.pm
         'Can\'t merge ticket with itself!' => '不能将工单合并到它自己！',
@@ -4637,6 +4591,9 @@ sub Data {
             '错误：请设置数据库参数innodb_log_file_size至少为%s MB（当前：%s MB，推荐：%s MB），请参阅 %s 获取更多信息。',
         'Wrong database collation (%s is %s, but it needs to be utf8).' =>
             '错误的数据库排序规则（%s是%s，但需要是utf8）。',
+
+        # Perl Module: Kernel/Modules/Mentions.pm
+        '%s users will be mentioned' => '',
 
         # Perl Module: Kernel/Modules/PublicCalendar.pm
         'No %s!' => '没有%s!',
@@ -4967,6 +4924,11 @@ sub Data {
         'Locked Tickets Reminder Reached' => '提醒过的锁定工单数',
         'Locked Tickets Total' => '锁定工单总数',
 
+        # Perl Module: Kernel/Output/HTML/ToolBar/TicketMention.pm
+        'Total mentions' => '',
+        'Total new mentions' => '',
+        'New mentions' => '',
+
         # Perl Module: Kernel/Output/HTML/ToolBar/TicketOwner.pm
         'Owned Tickets New' => '',
         'Owned Tickets Reminder Reached' => '',
@@ -5050,6 +5012,9 @@ sub Data {
         'This field is required or' => '这个字段是必填的',
         'The field content is too long!' => '字段值太长了！',
         'Maximum size is %s characters.' => '最多%s个字符。',
+
+        # Perl Module: Kernel/System/Mention.pm
+        'LastMention' => '',
 
         # Perl Module: Kernel/System/NotificationEvent.pm
         'Couldn\'t read Notification configuration file. Please make sure the file is valid.' =>
@@ -5244,6 +5209,7 @@ sub Data {
         'PostgreSQL 9.2 or higher is required.' => '需要PostgreSQL 9.2或更高版本。',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/DiskPartitionOTRS.pm
+        'Operating System' => '操作系统',
         'OTRS Disk Partition' => 'OTRS磁盘分区',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/DiskSpace.pm
@@ -5278,6 +5244,9 @@ sub Data {
             'CPAN::Audit 报告一个或多个已安装的 Perl 模块是否存在已知漏洞。 请注意，在不更改版本号的情况下修补Perl模块的发行版可能存在误报。',
         'CPAN::Audit did not report any known vulnerabilities in the installed Perl modules.' =>
             '在已安装的Perl模块中 CPAN::Audit 未报告出任何已知漏洞。',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/PerlVersion.pm
+        'Perl Version' => 'Perl版本',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/Swap.pm
         'Free Swap Space (%)' => '可用的交换空间(%)',
@@ -5436,6 +5405,9 @@ sub Data {
         'UI - Special Statistics' => '用户界面 - 特殊的统计',
         'Agents using custom main menu ordering' => '服务人员使用定制的主菜单排序',
         'Agents using favourites for the admin overview' => '服务人员在系统管理概览使用收藏夹',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/Version.pm
+        'OTRS Version' => 'OTRS版本',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/LoadedModules.pm
         'Webserver' => 'WEB服务器',
@@ -7794,6 +7766,8 @@ sub Data {
             '',
         'Mapping of Ticket::Generic invoker name (key) to list of fields (content) which will be removed from the request. Fields have to be given in the following form: Field1->Field2;Field3->Field4->Field5;Field6. So a nested data structure can be given by connecting the fields with \'->\'. Different fields can be omitted by separating them by \';\'.' =>
             '',
+        'Maximum number of parallel instances when using OTRS_AsynchronousInvokerExecution in invoker Ticket::Generic.' =>
+            '',
         'Enables support for huge XML data in load_xml calls of CPAN library XML::LibXML. This should only be enabled if absolutely needed. Disabling this option (default) protects against denial of service through entity expansion attacks. Before enabling this option ensure that alternative measures to protect the application against this type of attack have been taken.' =>
             '',
         'Shows a link in the menu to create a unit test for the current ticket.' =>
@@ -7808,6 +7782,14 @@ sub Data {
         'Ticket event module that stores values of the selected web service record into the configured additional dynamic fields.' =>
             '',
         'It might happen that a dynamic field of type WebserviceText or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
+            '',
+        'Mapping for field values received from form. This setting is necessary for the correct identification of the form fields. Key means value type, value means possible representation in views.' =>
+            '',
+        'Mapping for field values received from form which have multiple values. This setting is needed when the view shows the values of a particular field in a custom way (e.g. selectable customer user in ticket creation view). This setting is always respected first. There is also the possibility to specify an order for checking fields. (Field of customer user in ticket creation view can be saved as CustomerUser or just simple e-mail. First we need to check if CustomerKey is present (CustomerKey -> ID of CustomerUser). If not, then simply take plain text (CustomerTicketText -> E-mail)).' =>
+            '',
+        'Options and default field set for attributes. Values of this setting will always be passed as simple form value without possibility to further configure it in AdminDynamicField view. The keys with which the form values will be sent to the invoker can be edited in the "Default" section of this setting.' =>
+            '',
+        'Options and default field set for selectable attributes. Values which will be passed to invoker (ID or Name or both) can be configured in AdminDynamicField view. The keys with which the form values (ID or Name) will be sent to the invoker can be edited in the "Default" section of this setting. Example usage for field Queue: Field with selected ID and Name will send QueueID = 3 and Queue = Raw.' =>
             '',
         'Template for the out-of-office message shown to the user in the frontend. Placeholders for out-of-office information can be used via ###PlaceholderName###. Possible placeholders are: StartYear, StartMonth, StartDay, EndYear, EndMonth, EndDay, DaysRemaining.' =>
             '',
@@ -7877,6 +7859,8 @@ sub Data {
             '',
         'Name of the OAuth2 token configuration to use for sending mails if \'OAuth2 token\' was configured in SendmailModule::AuthenticationType.' =>
             '',
+        'Hosts that need a separate info about authentication method and token (instead of both in one line). Most commonly needed for Office 365 and Outlook.' =>
+            '',
         'This option enables a dropdown which will be displayed instead of the time unit input field.' =>
             '',
         'Defines the default ticket attribute for ticket sorting in the owner view of the agent interface.' =>
@@ -7915,6 +7899,28 @@ sub Data {
             '',
         'Creates the calendar-based tickets regularly.' => '',
         'Cleans up the calendar-based tickets regularly.' => '',
+        'Maximum number of quoted lines to be added to forwarded messages.' =>
+            '',
+        'Re-indexes S/MIME certificate folders. Note: S/MIME needs to be enabled in SysConfig.' =>
+            '',
+        'Maximum length of displayed attachment filenames in the article preview of ticket zoom view.' =>
+            '',
+        'General settings for autocompletion in rich text editor.' => '',
+        'Rich text editor configuration for autocompletion module.' => '',
+        'Rich text editor configuration for autocompletion module to support templates.' =>
+            '',
+        'Defines which notifications about mentions should be sent.' => '',
+        'Defines if the toolbar mention icon should count mentions.' => '',
+        'Frontend registration of triggers for mention plugin of CKEditor.' =>
+            '',
+        'Frontend registration of input/output templates for mention plugin of CKEditor.' =>
+            '',
+        'Event handler for mentions.' => '',
+        'Parameters for the dashboard backend of the last mention widget.' =>
+            '',
+        'Agent interface notification module to show the number of mentions.' =>
+            '',
+        'Module to grant access to the mentioned agents of a ticket.' => '',
 
         # XML Definition: scripts/database/otrs-initial_insert.xml
         'invalid-temporarily' => '暂时无效',
@@ -8027,6 +8033,7 @@ sub Data {
         'You will receive a notification each time a reminder time is reached for one of your appointments.' =>
             '每当你的一个预约到达提醒时间时，你就会收到一个通知。',
         'Ticket email delivery failure notification' => '工单邮件发送失败通知',
+        'Mention notification' => '',
 
         # JS File: var/httpd/htdocs/js/Core.AJAX.js
         'Error during AJAX communication. Status: %s, Error: %s' => 'AJAX通信时发生错误。 状态：%s，错误：%s',
@@ -8698,6 +8705,7 @@ Thanks for your help!
             '确定服务人员界面电话工单显示为收件人（To:）和邮件工单显示为发件人（From:）的字符串。如果NewQueueSelectionType参数设置为“队列”，"<Queue>"显示队列名称，如果NewQueueSelectionType参数设置“系统邮件地址”，"<Realname> <<Email>>"显示收件人的名称和邮件地址。',
         'Determines the strings that will be shown as recipient (To:) of the ticket in the customer interface. For Queue as CustomerPanelSelectionType, "<Queue>" shows the names of the queues, and for SystemAddress, "<Realname> <<Email>>" shows the name and email of the recipient.' =>
             '确定客户界面工单显示为收件人（To:）的字符串。如果NewQueueSelectionType参数设置为“队列”，"<Queue>"显示队列名称，如果NewQueueSelectionType参数设置“系统邮件地址”，"<Realname> <<Email>>"显示收件人的名称和邮件地址。',
+        'Development' => '开发',
         'Disable cloud services' => '禁用云服务',
         'Display communication log entries.' => '显示通信日志条目。',
         'Down' => '下',
@@ -8816,6 +8824,7 @@ Thanks for your help!
         'Korean' => '韩语',
         'Language' => '语言',
         'Large' => '详细',
+        'Last Mentions' => '',
         'Last Screen Overview' => '最近屏幕概览',
         'Last customer subject' => '最后客户主题',
         'Last view - limit' => '',
@@ -8866,13 +8875,15 @@ Thanks for your help!
         'Manage existing sessions.' => '管理已登录会话。',
         'Manage support data.' => '管理支持数据。',
         'Manage system files.' => '',
-        'Manage system registration.' => '管理系统注册。',
         'Manage tasks triggered by event or time based execution.' => '管理事件触发或基于时间执行的任务。',
         'Management of ticket attribute relations.' => '',
         'Mark as Spam!' => '标记为垃圾!',
         'Mark this ticket as junk!' => '标记这个工单为垃圾!',
         'Mattermost Username' => '',
         'Medium' => '基本',
+        'Mentioned in article' => '',
+        'Mentioned in ticket' => '',
+        'Mentions.' => '',
         'Merge this ticket and all articles into another ticket' => '将这个工单和所有的信件合并到另一工单',
         'Merged Ticket (%s/%s) to (%s/%s).' => '已将工单(%s/%s)合并到(%s/%s)。',
         'Merged Ticket <OTRS_TICKET> to <OTRS_MERGE_TO_TICKET>.' => '合并工单<OTRS_TICKET>到 <OTRS_MERGE_TO_TICKET>。',
@@ -9030,6 +9041,7 @@ Thanks for your help!
         'Shows a preview of the ticket overview (CustomerInfo => 1 - shows also Customer-Info, CustomerInfoMaxSize max. size in characters of Customer-Info).' =>
             '显示工单概览的预览（如果参数CustomerInfo值为1，还将显示客户信息，参数CustomerInfoMaxSize定义了显示客户信息的最大字符数）。',
         'Shows information on how to start OTRS Daemon' => '显示如何启动OTRS守护进程的信息',
+        'Shows last mention of tickets.' => '',
         'Signature data.' => '签名数据。',
         'Signatures' => '签名',
         'Simple' => '简单',
@@ -9037,6 +9049,7 @@ Thanks for your help!
         'Slovak' => '斯洛伐克语',
         'Slovenian' => '斯洛文尼亚语',
         'Small' => '简洁',
+        'Snippet' => '',
         'Software Package Manager.' => '软件包管理器。',
         'Solution time' => '解决时间',
         'SolutionDiffInMin' => '解决时间差（分钟）',
@@ -9260,7 +9273,6 @@ Thanks for your help!
         'Current selection',
         'Currently not possible',
         'Customer interface does not support articles not visible for customers.',
-        'Data Protection',
         'Date/Time',
         'Day',
         'Dec',
@@ -9489,7 +9501,6 @@ Thanks for your help!
         'Support Data information was successfully sent.',
         'Switch to desktop mode',
         'Switch to mobile mode',
-        'System Registration',
         'Team',
         'Th',
         'The browser you are using is too old.',
