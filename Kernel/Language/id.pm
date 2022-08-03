@@ -25,7 +25,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.642391658520691;
+    $Self->{Completeness}        = 0.632153921408772;
 
     # csv separator
     $Self->{Separator}         = ',';
@@ -309,7 +309,6 @@ sub Data {
             'Pendaftaran sistem adalah layanan dari Grup OTRS, yang memberikan banyak keuntungan!',
         'Please note that the use of OTRS cloud services requires the system to be registered.' =>
             'Mohon dicatat bahwa penggunaan Layanan cloud OTRS memerlukan pendaftaran sistem',
-        'Register this system' => 'Daftarkan sistem ini',
         'Here you can configure available cloud services that communicate securely with %s.' =>
             'Disini anda dapat mengkonfigurasi layanan cloud yang tersedia yang berkomunikasi secara aman dengan %s',
         'Available Cloud Services' => 'Layanan cloud yang tersedia',
@@ -641,6 +640,11 @@ sub Data {
         'This is the default term for the click search.' => '',
         'Initial default search term' => '',
         'This is the default search term when the mask is loaded.' => '',
+        'Attributes' => '',
+        'Attributes for invoker execution (initially default values will be used).' =>
+            '',
+        'Attribute keys' => '',
+        'Custom attribute form for invoker execution.' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminDynamicFieldWebservice/Config.tt
         'Web service' => '',
@@ -669,7 +673,7 @@ sub Data {
         'The separator to show between the values if there\'s more than one key configured to be displayed above. If left empty, a single space will be used as separator. Use <space> to add spaces.' =>
             '',
         'Limit' => 'Batas',
-        'Maximum number of results for web service queries, e.g. for autcomplete selection list.' =>
+        'Maximum number of results for web service queries, e.g. for autocomplete selection list.' =>
             '',
         'Autocomplete min. input length' => '',
         'Minimum length of input for autocomplete field to trigger search.' =>
@@ -985,6 +989,8 @@ sub Data {
             'Asynchronous ditangani oleh OTRS Scheduler Daemon di latar belakang ( dianjurkan ) .',
         'Synchronous event triggers would be processed directly during the web request.' =>
             'Sinkron pemicu akan diproses langsung selama permintaan web.',
+        'Add all attachments' => '',
+        'Add all attachments to invoker payload.' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminGenericInterfaceInvokerEvent.tt
         'GenericInterface Invoker Event Settings for Web Service %s' => '',
@@ -1142,6 +1148,33 @@ sub Data {
         'The user name to be used to access the remote system.' => 'Nama pengguna yang digunakan untuk mengakses sistem remote .',
         'BasicAuth Password' => '',
         'The password for the privileged user.' => 'Password untuk pengguna istimewa ',
+        'JWT authentication: Key file' => '',
+        'ATTENTION: Key file and/or password (if needed, see below) seem to be invalid.' =>
+            '',
+        'Path to private key file (PEM or DER). The key will be used to sign the JWT.' =>
+            '',
+        'JWT authentication: Key file password' => '',
+        'ATTENTION: Password and/or key file (see above) seem to be invalid.' =>
+            '',
+        'JWT authentication: Certificate file' => '',
+        'ATTENTION: Certificate file could not be parsed.' => '',
+        'ATTENTION: Certificate is expired.' => '',
+        'Path to X.509 certificate file (PEM). Data of the certificate can be used for the payload and/or header data of the JWT.' =>
+            '',
+        'JWT authentication: Algorithm' => '',
+        'JWT authentication: TTL' => '',
+        'TTL (time to live) in seconds for the JWT. This value will be used to calculate the expiration date which will be available in placeholders ExpirationDateTimestamp and ExpirationDateString.' =>
+            '',
+        'JWT authentication: Payload' => '',
+        'Payload for JWT. Give key/value pairs (separated by ;), e.g.: Key1=Value1;Key2=Value2;Key3=Value3' =>
+            '',
+        'Available placeholders (prefixed with OTRS_JWT): ExpirationDateTimestamp, ExpirationDateString. Additionally if X.509 certificate support is present: CertSubject, CertIssuer, CertSerial, CertNotBefore, CertNotAfter, CertEmail, CertVersion.' =>
+            '',
+        'Placeholder usage example: Key1=<OTRS_JWT_ExpirationDateTimestamp>' =>
+            '',
+        'JWT authentication: Additional header data' => '',
+        'Additional header data for JWT. Give key/value pairs (separated by ;), e.g.: Key1=Value1;Key2=Value2;Key3=Value3' =>
+            '',
         'Content type' => '',
         'The default content type added to HTTP header to use for POST and PUT requests.' =>
             '',
@@ -1533,7 +1566,7 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminOTRSBusinessUninstall.tt
         'Cancel downgrade and go back' => 'Batalkan downgrade dan kembali',
-        'Go to OTRS Package Manager' => 'Pergi ke OTRS paket manajer',
+        'Go to Package Manager' => '',
         'Sorry, but currently you can\'t downgrade due to the following packages which depend on %s:' =>
             'Maaf, saat ini Anda tidak bisa downgrade karena paket berikut bergantung pada %s:',
         'Vendor' => 'Vendor',
@@ -1728,7 +1761,7 @@ EMAILADDRESS:info@example.com dari, kepada atau Cc.',
         'Activity' => 'Aktivitas',
         'Activity Name' => 'Nama activitas',
         'Scope' => '',
-        'Scope EntityID' => '',
+        'Scope Entity ID' => '',
         'This field is required for activities with a scope.' => '',
         'Activity Dialogs' => 'Dialog activitas',
         'You can assign Activity Dialogs to this Activity by dragging the elements with the mouse from the left list to the right list.' =>
@@ -1767,6 +1800,8 @@ EMAILADDRESS:info@example.com dari, kepada atau Cc.',
         'Assigned Fields' => 'Fields ditugaskan',
         'Communication Channel' => '',
         'Is visible for customer' => '',
+        'Text Template' => 'Template teks',
+        'Auto fill' => '',
         'Display' => 'Tampilkan',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagementPath.tt
@@ -1915,92 +1950,6 @@ EMAILADDRESS:info@example.com dari, kepada atau Cc.',
         'Filter for Templates' => 'Filter untuk sebuah klise',
         'Filter for templates' => '',
         'Templates' => 'Klise',
-
-        # TT Template: Kernel/Output/HTML/Templates/Standard/AdminRegistration.tt
-        'System Registration Management' => 'Manajemen sistem registrasi',
-        'Edit System Registration' => '',
-        'System Registration Overview' => '',
-        'Register System' => '',
-        'Validate OTRS-ID' => '',
-        'Deregister System' => 'Sistem deregister',
-        'Edit details' => 'Mengubah rincian',
-        'Show transmitted data' => 'Tampilkan data dikirimkan',
-        'Deregister system' => 'Sistem deregister',
-        'Overview of registered systems' => 'Ikhtisar sistem yang terdaftar',
-        'This system is registered with OTRS Group.' => 'Sistem ini telah terdaftar oleh grup OTRS',
-        'System type' => 'Jenis sistem',
-        'Unique ID' => 'Unique ID',
-        'Last communication with registration server' => 'Komunikasi terakhir dengan server registrasi',
-        'System Registration not Possible' => '',
-        'Please note that you can\'t register your system if OTRS Daemon is not running correctly!' =>
-            'Perlu diingat bahwa anda tidak dapat mendaftarkan sistem anda apabila OTRS Daemon tidak berjalan dengan baik',
-        'Instructions' => 'Instruksi',
-        'System Deregistration not Possible' => '',
-        'Please note that you can\'t deregister your system if you\'re using the %s or having a valid service contract.' =>
-            'Perlu diingat bahwa anda tidak bisa deregistrer sistem anda apabila anda mengunnakannya %s atau mempunyai sebuah kontrak layanan sah',
-        'OTRS-ID Login' => 'OTRS-ID masuk',
-        'Read more' => 'Baca lagi',
-        'You need to log in with your OTRS-ID to register your system.' =>
-            'Anda perlu masuk dengan menggunakan OTRS-ID anda ke dalam sistem pendaftaran anda',
-        'Your OTRS-ID is the email address you used to sign up on the OTRS.com webpage.' =>
-            'OTRS-ID anda merupakan alamat email anda yang digunakan saat pendaftaran di layanan web OTRS.com',
-        'Data Protection' => 'Perlindungan data',
-        'What are the advantages of system registration?' => 'Apa keuntungan dari sistem pendaftaran?',
-        'You will receive updates about relevant security releases.' => 'Anda akan menerima update tentang rilis keamanan yang relevan.',
-        'With your system registration we can improve our services for you, because we have all relevant information available.' =>
-            'Dengan sistem registrasi anda, kita dapat meningkatkan layanan untuk anda, karena kita memiliki semua informasi yang relevan ',
-        'This is only the beginning!' => 'Ini hanya permulaan!',
-        'We will inform you about our new services and offerings soon.' =>
-            'Kami akan memberitahu anda tentang layanan baru kami dan akan mempersembahkannya dengan segera.',
-        'Can I use OTRS without being registered?' => 'Apakah saya bisa menggunakan OTRS tanpa melakukan pendaftaran?',
-        'System registration is optional.' => 'Sistem pendaftaran adalah pilihan',
-        'You can download and use OTRS without being registered.' => 'Anda bisa memuat naik dan menggunakan OTRS tanpa harus daftar',
-        'Is it possible to deregister?' => 'Apakah mungkin untuk melakukan deregister?',
-        'You can deregister at any time.' => 'Anda bisa melakukan deregister kapan saja',
-        'Which data is transfered when registering?' => 'Data manakah yang ditransfer saat mendaftar?',
-        'A registered system sends the following data to OTRS Group:' => 'Sebuah sistem yang terdaftar akan mengirimkan data berikut untuk grup OTRS',
-        'Fully Qualified Domain Name (FQDN), OTRS version, Database, Operating System and Perl version.' =>
-            'Nama Fully Qualified Domain (FQDN), versi OTRS, Database, Sistem Operasi dan versi Perl.',
-        'Why do I have to provide a description for my system?' => 'Mengapa saya harus memberikan keterangan untuk sistem saya?',
-        'The description of the system is optional.' => 'Deskripsi dari sistem ini adalah opsional.',
-        'The description and system type you specify help you to identify and manage the details of your registered systems.' =>
-            'Deskripsi dan jenis sistem yang anda tentukan untuk membantu anda mengidentifikasi dan mengelola rincian sistem yang terdaftar.',
-        'How often does my OTRS system send updates?' => 'Seberapa sering sistem OTRS saya mengirim pembaruan?',
-        'Your system will send updates to the registration server at regular intervals.' =>
-            'Sistem anda akan mengirimkan pembaruan ke server pendaftaran secara berkala.',
-        'Typically this would be around once every three days.' => 'Biasanya ini akan menjadi sekitar tiga hari sekali.',
-        'If you deregister your system, you will lose these benefits:' =>
-            'Jika anda melakukan deregister sistem anda, maka anda akan kehilangan manfaat berikut:',
-        'You need to log in with your OTRS-ID to deregister your system.' =>
-            'Anda perlu masuk dengan menggunakan ID OTRS anda ke dalam sistem deregister anda',
-        'OTRS-ID' => 'ID OTRS',
-        'You don\'t have an OTRS-ID yet?' => 'Anda tidak mempunyai ID OTRS?',
-        'Sign up now' => 'Daftarkan sekarang',
-        'Forgot your password?' => 'Anda lupa password?',
-        'Retrieve a new one' => 'Mengambil yang baru',
-        'Next' => 'Lanjut',
-        'This data will be frequently transferred to OTRS Group when you register this system.' =>
-            'Data ini akan sering dialihkan ke OTRS Grup saat anda mendaftar sistem ini.',
-        'Attribute' => 'Atribut',
-        'FQDN' => 'FQDN',
-        'OTRS Version' => 'Versi OTRS',
-        'Database' => 'Database',
-        'Operating System' => 'Sistem operasi',
-        'Perl Version' => 'Versi Perl',
-        'Optional description of this system.' => 'Deskripsi opsional sistem ini',
-        'Register' => 'Daftar',
-        'Continuing with this step will deregister the system from OTRS Group.' =>
-            'Melanjutkan dengan langkah berikut akan mempengaruhi deregister dari grup OTRS',
-        'Deregister' => 'Tidak terdaftar',
-        'You can modify registration settings here.' => 'Anda bisa mengubah pengaturan disini',
-        'Overview of Transmitted Data' => '',
-        'There is no data regularly sent from your system to %s.' => 'Tidak ada data regular yang dikirim dari sistem ke %s',
-        'The following data is sent at minimum every 3 days from your system to %s.' =>
-            'Data berikut dikirim dengan minimal 3 hari dari sistem anda ke %s',
-        'The data will be transferred in JSON format via a secure https connection.' =>
-            'Data akan di transfer dalam format JSON melalui koneksi https yang aman ',
-        'System Registration Data' => 'Data sistem pendaftaran',
-        'Support Data' => 'Data pendukung',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminRole.tt
         'Role Management' => 'Tugas manajemen',
@@ -2175,20 +2124,13 @@ EMAILADDRESS:info@example.com dari, kepada atau Cc.',
         'Sending support data to OTRS Group is not possible!' => 'Mengirimkan dukungan data ke dalam grup OTRS tidak didapati',
         'Enable Cloud Services' => 'Mengadakan layanan cloud',
         'Enable cloud services' => 'Mengaktifkan layanan cloud',
-        'This data is sent to OTRS Group on a regular basis. To stop sending this data please update your system registration.' =>
-            'Data ini dihantar ke grup OTRS dalam basis yang sederhana. Untuk menghentikan data ini, silahkan perbarui system pendaftaran anda',
-        'You can manually trigger the Support Data sending by pressing this button:' =>
-            'Anda dapat secara manual memicu Data Dukungan pengiriman dengan menekan tombol:',
-        'Send Update' => 'Hantar pembaruan',
-        'Currently this data is only shown in this system.' => 'Saat ini data hanya menampilkan sistem ini',
         'A support bundle (including: system registration information, support data, a list of installed packages and all locally modified source code files) can be generated by pressing this button:' =>
             'Sebuah bundel dukungan (termasuk: informasi pendaftaran sistem, data pendukung, daftar paket yang diinstal dan semua sumber kode yang diubah secara manual) dapat dihasilkan dengan menekan tombol ini:',
         'Generate Support Bundle' => 'Menghasilkan Dukungan Bundle',
         'The Support Bundle has been Generated' => '',
-        'Please choose one of the following options.' => 'Silahkan pilih satu dari pilihan berikut',
-        'Download File' => 'Memuat turun file',
-        'A file containing the support bundle will be downloaded to the local system. Please save the file and send it to the OTRS Group, using an alternate method.' =>
-            'Sebuah file yang berisi dukungan bundel akan di-download ke sistem lokal. Harap menyimpan file dan mengirimkannya ke grup OTRS,  denganmenggunakan metode alternatif.',
+        'A file containing the support bundle will be downloaded to the local system.' =>
+            'Sebuah file yang berisi dukungan bundel akan di-download ke sistem lokal.',
+        'Support Data' => 'Data pendukung',
         'Error: Support data could not be collected (%s).' => 'Eror: data pendukung tidak dapat dikumpulkan (%s)',
         'Details' => 'Rincian',
 
@@ -2354,6 +2296,7 @@ EMAILADDRESS:info@example.com dari, kepada atau Cc.',
         'Add ticket attribute relations' => '',
         'Edit ticket attribute relations' => '',
         'Import CSV or Excel file' => '',
+        'Attribute' => 'Atribut',
         'Last update' => '',
         'Are you sure you want to delete entry \'%s\'?' => '',
         'Download previously imported file' => '',
@@ -2746,7 +2689,6 @@ bin/otrs.Daemon.pl status\').',
         'Here you can select additional agents which should receive a notification regarding the new article.' =>
             'Di sini anda dapat memilih agen tambahan yang harus menerima pemberitahuan tentang artikel baru.',
         'Text will also be received by' => 'Teks akan diterima oleh',
-        'Text Template' => 'Template teks',
         'Setting a template will overwrite any text or attachment.' => 'Pengaturan template akan menimpa teks atau lampiran.',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketBounce.tt
@@ -2856,6 +2798,7 @@ bin/otrs.Daemon.pl status\').',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewNavBar.tt
         'Remove active filters for this screen.' => 'Membuang filter yang aktif untuk skrin ini',
+        'Remove mention' => '',
         'Tickets per page' => 'Tiket per halaman',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewPreview.tt
@@ -2973,6 +2916,9 @@ bin/otrs.Daemon.pl status\').',
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/LinkTable.tt
         'Linked Objects' => 'Menghubungkan obyek',
 
+        # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/MentionsTable.tt
+        'Mentions' => '',
+
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/TicketInformation.tt
         'Archive' => 'Arsip',
         'This ticket is archived.' => 'Tiket ini diarsipkan',
@@ -3058,6 +3004,7 @@ bin/otrs.Daemon.pl status\').',
         'Your 2 Factor Token' => '2 faktor bukti anda',
         'Log In' => 'Masukkan',
         'Not yet registered?' => 'Belum terdaftar?',
+        'Sign up now' => 'Daftarkan sekarang',
         'Back' => 'Kembali',
         'Request New Password' => 'Meminta kata sandi baru',
         'Your User Name' => 'Nama pengguna anda',
@@ -3160,6 +3107,7 @@ bin/otrs.Daemon.pl status\').',
         'Phone' => 'Telepon',
         'Web site' => 'Website',
         'Community' => '',
+        'Next' => 'Lanjut',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/InstallerConfigureMail.tt
         'Configure Outbound Mail' => 'Mengkonfigurasi surat outbound',
@@ -3211,6 +3159,7 @@ bin/otrs.Daemon.pl status\').',
             'Pengguna database baru dengan hak akses yang terbatas akan dibuat untuk sistem OTRS ini.',
         'Repeat Password' => 'Ulang kata sandi',
         'Generated password' => 'Mengeluarkan kata sandi',
+        'Database' => 'Database',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/InstallerDBmysql.tt
         'Passwords do not match' => 'Kata sandi tidak sesuai',
@@ -3862,6 +3811,13 @@ bin/otrs.Daemon.pl status\').',
         # Perl Module: Kernel/Modules/AdminGenericInterfaceTransportHTTPREST.pm
         'Need valid Subaction!' => '',
         'This field should be an integer.' => '',
+        'Invalid key file and/or password (if needed, see below).' => '',
+        'Invalid password and/or key file (see above).' => '',
+        'Certificate is expired.' => '',
+        'Certificate file could not be parsed.' => '',
+        'Please enter a time in seconds (at least 10 seconds).' => '',
+        'Please enter data in expected form (see explanation of field).' =>
+            '',
         'File or Directory not found.' => '',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
@@ -3909,6 +3865,7 @@ bin/otrs.Daemon.pl status\').',
         'Customer user of the ticket' => '',
         'All recipients of the first article' => '',
         'All recipients of the last article' => '',
+        'All users who are mentioned in a ticket' => '',
         'Invisible to customer' => '',
         'Visible to customer' => '',
 
@@ -4070,12 +4027,6 @@ bin/otrs.Daemon.pl status\').',
         'Change Queue Relations for Template' => 'Ubah hubungan Queue menjadi Template',
         'Change Template Relations for Queue' => 'Ubah hubungan template menjadi Queue',
 
-        # Perl Module: Kernel/Modules/AdminRegistration.pm
-        'Production' => 'Produksi',
-        'Test' => '',
-        'Training' => 'Latihan',
-        'Development' => '',
-
         # Perl Module: Kernel/Modules/AdminRole.pm
         'Role updated!' => 'Peran telah di perbarui!',
         'Role added!' => 'Peran telah ditambahkan!',
@@ -4106,7 +4057,6 @@ bin/otrs.Daemon.pl status\').',
         'Relation deleted!' => 'Hubungan dihapus',
         'Impossible to delete relation!' => 'Tidak bisa menghapus relasi',
         'Certificate %s could not be read!' => 'Sertifikat %s tidak dapat dibaca!',
-        'Needed Fingerprint' => 'Diperlukan sidik jari',
         'Handle Private Certificate Relations' => '',
 
         # Perl Module: Kernel/Modules/AdminSalutation.pm
@@ -4361,6 +4311,10 @@ bin/otrs.Daemon.pl status\').',
         'Pending' => 'Ditunda',
         'Reminder Reached' => 'Pengingat tercapai',
         'My Locked Tickets' => 'Tiket terkunci saya',
+
+        # Perl Module: Kernel/Modules/AgentTicketMentionView.pm
+        'New mention' => '',
+        'My Mentions' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketMerge.pm
         'Can\'t merge ticket with itself!' => 'Tidak dapat menggabungkan tiket dengan dirinya sendiri!',
@@ -4632,6 +4586,9 @@ bin/otrs.Daemon.pl status\').',
             'Kesalahan: Silakan menetapkan nilai untuk innodb_log_file_size pada database Anda untuk setidaknya%s MB (saat ini: %s MB, direkomendasikan: %s MB). Untuk informasi lebih lanjut, silakan lihat di %s.',
         'Wrong database collation (%s is %s, but it needs to be utf8).' =>
             '',
+
+        # Perl Module: Kernel/Modules/Mentions.pm
+        '%s users will be mentioned' => '',
 
         # Perl Module: Kernel/Modules/PublicCalendar.pm
         'No %s!' => '',
@@ -4962,6 +4919,11 @@ bin/otrs.Daemon.pl status\').',
         'Locked Tickets Reminder Reached' => 'Pengingat Tiket Terkunci Tercapai',
         'Locked Tickets Total' => 'Total Tiket Terkunci',
 
+        # Perl Module: Kernel/Output/HTML/ToolBar/TicketMention.pm
+        'Total mentions' => '',
+        'Total new mentions' => '',
+        'New mentions' => '',
+
         # Perl Module: Kernel/Output/HTML/ToolBar/TicketOwner.pm
         'Owned Tickets New' => '',
         'Owned Tickets Reminder Reached' => '',
@@ -5045,6 +5007,9 @@ bin/otrs.Daemon.pl status\').',
         'This field is required or' => 'Bidang ini dibutuhkan untuk',
         'The field content is too long!' => 'Konten dari bidang ini terlalu panjang!',
         'Maximum size is %s characters.' => 'Ukuran maksimum adalah %s karakter',
+
+        # Perl Module: Kernel/System/Mention.pm
+        'LastMention' => '',
 
         # Perl Module: Kernel/System/NotificationEvent.pm
         'Couldn\'t read Notification configuration file. Please make sure the file is valid.' =>
@@ -5239,6 +5204,7 @@ bin/otrs.Daemon.pl status\').',
         'PostgreSQL 9.2 or higher is required.' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/DiskPartitionOTRS.pm
+        'Operating System' => 'Sistem operasi',
         'OTRS Disk Partition' => 'OTRS Disk Partisi',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/DiskSpace.pm
@@ -5273,6 +5239,9 @@ bin/otrs.Daemon.pl status\').',
             '',
         'CPAN::Audit did not report any known vulnerabilities in the installed Perl modules.' =>
             '',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/PerlVersion.pm
+        'Perl Version' => 'Versi Perl',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/Swap.pm
         'Free Swap Space (%)' => 'Ruang bebas Swap (%)',
@@ -5431,6 +5400,9 @@ bin/otrs.Daemon.pl status\').',
         'UI - Special Statistics' => '',
         'Agents using custom main menu ordering' => '',
         'Agents using favourites for the admin overview' => '',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/Version.pm
+        'OTRS Version' => 'Versi OTRS',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/LoadedModules.pm
         'Webserver' => 'Webserver',
@@ -7790,6 +7762,8 @@ bin/otrs.Daemon.pl status\').',
             '',
         'Mapping of Ticket::Generic invoker name (key) to list of fields (content) which will be removed from the request. Fields have to be given in the following form: Field1->Field2;Field3->Field4->Field5;Field6. So a nested data structure can be given by connecting the fields with \'->\'. Different fields can be omitted by separating them by \';\'.' =>
             '',
+        'Maximum number of parallel instances when using OTRS_AsynchronousInvokerExecution in invoker Ticket::Generic.' =>
+            '',
         'Enables support for huge XML data in load_xml calls of CPAN library XML::LibXML. This should only be enabled if absolutely needed. Disabling this option (default) protects against denial of service through entity expansion attacks. Before enabling this option ensure that alternative measures to protect the application against this type of attack have been taken.' =>
             '',
         'Shows a link in the menu to create a unit test for the current ticket.' =>
@@ -7804,6 +7778,14 @@ bin/otrs.Daemon.pl status\').',
         'Ticket event module that stores values of the selected web service record into the configured additional dynamic fields.' =>
             '',
         'It might happen that a dynamic field of type WebserviceText or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
+            '',
+        'Mapping for field values received from form. This setting is necessary for the correct identification of the form fields. Key means value type, value means possible representation in views.' =>
+            '',
+        'Mapping for field values received from form which have multiple values. This setting is needed when the view shows the values of a particular field in a custom way (e.g. selectable customer user in ticket creation view). This setting is always respected first. There is also the possibility to specify an order for checking fields. (Field of customer user in ticket creation view can be saved as CustomerUser or just simple e-mail. First we need to check if CustomerKey is present (CustomerKey -> ID of CustomerUser). If not, then simply take plain text (CustomerTicketText -> E-mail)).' =>
+            '',
+        'Options and default field set for attributes. Values of this setting will always be passed as simple form value without possibility to further configure it in AdminDynamicField view. The keys with which the form values will be sent to the invoker can be edited in the "Default" section of this setting.' =>
+            '',
+        'Options and default field set for selectable attributes. Values which will be passed to invoker (ID or Name or both) can be configured in AdminDynamicField view. The keys with which the form values (ID or Name) will be sent to the invoker can be edited in the "Default" section of this setting. Example usage for field Queue: Field with selected ID and Name will send QueueID = 3 and Queue = Raw.' =>
             '',
         'Template for the out-of-office message shown to the user in the frontend. Placeholders for out-of-office information can be used via ###PlaceholderName###. Possible placeholders are: StartYear, StartMonth, StartDay, EndYear, EndMonth, EndDay, DaysRemaining.' =>
             '',
@@ -7873,6 +7855,8 @@ bin/otrs.Daemon.pl status\').',
             '',
         'Name of the OAuth2 token configuration to use for sending mails if \'OAuth2 token\' was configured in SendmailModule::AuthenticationType.' =>
             '',
+        'Hosts that need a separate info about authentication method and token (instead of both in one line). Most commonly needed for Office 365 and Outlook.' =>
+            '',
         'This option enables a dropdown which will be displayed instead of the time unit input field.' =>
             '',
         'Defines the default ticket attribute for ticket sorting in the owner view of the agent interface.' =>
@@ -7911,6 +7895,28 @@ bin/otrs.Daemon.pl status\').',
             '',
         'Creates the calendar-based tickets regularly.' => '',
         'Cleans up the calendar-based tickets regularly.' => '',
+        'Maximum number of quoted lines to be added to forwarded messages.' =>
+            '',
+        'Re-indexes S/MIME certificate folders. Note: S/MIME needs to be enabled in SysConfig.' =>
+            '',
+        'Maximum length of displayed attachment filenames in the article preview of ticket zoom view.' =>
+            '',
+        'General settings for autocompletion in rich text editor.' => '',
+        'Rich text editor configuration for autocompletion module.' => '',
+        'Rich text editor configuration for autocompletion module to support templates.' =>
+            '',
+        'Defines which notifications about mentions should be sent.' => '',
+        'Defines if the toolbar mention icon should count mentions.' => '',
+        'Frontend registration of triggers for mention plugin of CKEditor.' =>
+            '',
+        'Frontend registration of input/output templates for mention plugin of CKEditor.' =>
+            '',
+        'Event handler for mentions.' => '',
+        'Parameters for the dashboard backend of the last mention widget.' =>
+            '',
+        'Agent interface notification module to show the number of mentions.' =>
+            '',
+        'Module to grant access to the mentioned agents of a ticket.' => '',
 
         # XML Definition: scripts/database/otrs-initial_insert.xml
         'invalid-temporarily' => 'tidak valid sementara',
@@ -8023,6 +8029,7 @@ bin/otrs.Daemon.pl status\').',
         'You will receive a notification each time a reminder time is reached for one of your appointments.' =>
             '',
         'Ticket email delivery failure notification' => '',
+        'Mention notification' => '',
 
         # JS File: var/httpd/htdocs/js/Core.AJAX.js
         'Error during AJAX communication. Status: %s, Error: %s' => '',
@@ -8695,6 +8702,7 @@ Helpdesk Team Anda
             'Menentukan string yang akan ditampilkan sebagai penerima (Untuk :) dari tiket ponsel dan sebagai pengirim (Dari :) dari tiket email di antarmuka agen. Untuk Queue sebagai NewQueueSelectionType "<Antrian>" menunjukkan nama-nama antrian dan untuk SystemAddress "<Realname> << Email >>" menunjukkan nama dan email penerima.',
         'Determines the strings that will be shown as recipient (To:) of the ticket in the customer interface. For Queue as CustomerPanelSelectionType, "<Queue>" shows the names of the queues, and for SystemAddress, "<Realname> <<Email>>" shows the name and email of the recipient.' =>
             'Menentukan string yang akan ditampilkan sebagai penerima (Untuk :) dari tiket di antarmuka pelanggan. Untuk Queue sebagai CustomerPanelSelectionType, "<Antrian>" menunjukkan nama-nama antrian, dan untuk SystemAddress, "<Realname> << Email >>" menunjukkan nama dan email penerima.',
+        'Development' => '',
         'Disable cloud services' => '',
         'Display communication log entries.' => '',
         'Down' => 'Bawah',
@@ -8813,6 +8821,7 @@ Helpdesk Team Anda
         'Korean' => '',
         'Language' => 'Bahasa',
         'Large' => 'Besar',
+        'Last Mentions' => '',
         'Last Screen Overview' => '',
         'Last customer subject' => 'subjek pelanggan terakhir',
         'Last view - limit' => '',
@@ -8863,13 +8872,15 @@ Helpdesk Team Anda
         'Manage existing sessions.' => 'Mengelola sesi yang ada.',
         'Manage support data.' => 'Mengelola data dukungan.',
         'Manage system files.' => '',
-        'Manage system registration.' => 'Mengelola sistem pendaftaran.',
         'Manage tasks triggered by event or time based execution.' => 'Mengelola tugas dipicu oleh peristiwa atau waktu eksekusi berdasarkan.',
         'Management of ticket attribute relations.' => '',
         'Mark as Spam!' => 'Tandai sebagai Spam!',
         'Mark this ticket as junk!' => 'Tandai tiket ini sebagai sampah!',
         'Mattermost Username' => '',
         'Medium' => 'Medium',
+        'Mentioned in article' => '',
+        'Mentioned in ticket' => '',
+        'Mentions.' => '',
         'Merge this ticket and all articles into another ticket' => '',
         'Merged Ticket (%s/%s) to (%s/%s).' => '',
         'Merged Ticket <OTRS_TICKET> to <OTRS_MERGE_TO_TICKET>.' => 'igabung Tiket <OTRS TIKET> ke <OTRS MERGE_TO_TICKET>.',
@@ -9027,6 +9038,7 @@ Helpdesk Team Anda
         'Shows a preview of the ticket overview (CustomerInfo => 1 - shows also Customer-Info, CustomerInfoMaxSize max. size in characters of Customer-Info).' =>
             'Menunjukkan preview dari gambaran tiket (CustomerInfo => 1 - menunjukkan juga pelanggan-Info, CustomerInfo Max Ukuran max ukuran dalam karakter Pelanggan-Info.).',
         'Shows information on how to start OTRS Daemon' => 'Menunjukkan informasi tentang cara untuk memulai OTRS Daemon',
+        'Shows last mention of tickets.' => '',
         'Signature data.' => '',
         'Signatures' => 'Tanda tangan',
         'Simple' => 'Sederhana',
@@ -9034,6 +9046,7 @@ Helpdesk Team Anda
         'Slovak' => 'Slovak',
         'Slovenian' => 'Slovenia',
         'Small' => 'Kecil',
+        'Snippet' => '',
         'Software Package Manager.' => 'Software Package Manager.',
         'Solution time' => '',
         'SolutionDiffInMin' => 'solusi diffinmin',
@@ -9257,7 +9270,6 @@ Helpdesk Team Anda
         'Current selection',
         'Currently not possible',
         'Customer interface does not support articles not visible for customers.',
-        'Data Protection',
         'Date/Time',
         'Day',
         'Dec',
@@ -9486,7 +9498,6 @@ Helpdesk Team Anda
         'Support Data information was successfully sent.',
         'Switch to desktop mode',
         'Switch to mobile mode',
-        'System Registration',
         'Team',
         'Th',
         'The browser you are using is too old.',

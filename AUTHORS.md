@@ -43,9 +43,10 @@ The following persons contributed to Znuny:
 * Johannes Hörburger <johannes.hoerburger@otrs.com>
 * Johannes Nickel <jn@znuny.com>
 * Kai Herlemann <43746520+KaiHerlemann@users.noreply.github.com>
-* Kamil Furtek <kfurtek@opgksoftware.com>
+* Kamil Furtek <kfurtek@dev.opgksoftware.com>
 * Keith Moore <tenareth@gmail.com>
 * Kevin Janssen <77158891+BuTzZ@users.noreply.github.com>
+* Konrad Gumienny <kgumienny@dev.opgksoftware.com>
 * Luca Maranzano <liuk@linux.it>
 * Lukas Bröring SectorNord AG <91135132+LuBroering@users.noreply.github.com>
 * Manuel Hecht <manuel.hecht@otrs.com>
@@ -93,7 +94,7 @@ The following persons contributed to Znuny:
 * Stefan Rother <stefan.rother@otrs.com>
 * Stefan Wintermeyer <stefan@otrs.org>
 * Steva Stevic <svik@s7designcreative.com>
-* Sławomir Niedbała <sniedbala@opgksoftware.com>
+* Sławomir Niedbała <sniedbala@dev.opgksoftware.com>
 * Theo van Hoesel <Th.J.v.Hoesel+GitHub@gmail.com>
 * Thomas Raith <thomas.raith@otrs.com>
 * Thomas Wouters <thomas@sijn.org>
@@ -105,6 +106,7 @@ The following persons contributed to Znuny:
 * Wojciech Kuchta <klapi85@gmail.com>
 * Yuri Myasoedov <ymyasoedov@yandex.ru>
 * Zoran Ilibasic <zilibasic@s7designcreative.com>
+* akmet <akmet@users.noreply.github.com>
 * anonymous <unknown@anonymous>
 * b1-luettje <53084931+b1-luettje@users.noreply.github.com>
 * djurici <igor.djuric@muehlbauer.de>

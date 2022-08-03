@@ -25,7 +25,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.184099055066797;
+    $Self->{Completeness}        = 0.184249143975216;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -309,7 +309,6 @@ sub Data {
             '',
         'Please note that the use of OTRS cloud services requires the system to be registered.' =>
             '',
-        'Register this system' => '',
         'Here you can configure available cloud services that communicate securely with %s.' =>
             '',
         'Available Cloud Services' => '',
@@ -641,6 +640,11 @@ sub Data {
         'This is the default term for the click search.' => '',
         'Initial default search term' => '',
         'This is the default search term when the mask is loaded.' => '',
+        'Attributes' => '',
+        'Attributes for invoker execution (initially default values will be used).' =>
+            '',
+        'Attribute keys' => '',
+        'Custom attribute form for invoker execution.' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminDynamicFieldWebservice/Config.tt
         'Web service' => '',
@@ -669,7 +673,7 @@ sub Data {
         'The separator to show between the values if there\'s more than one key configured to be displayed above. If left empty, a single space will be used as separator. Use <space> to add spaces.' =>
             '',
         'Limit' => 'Sınır',
-        'Maximum number of results for web service queries, e.g. for autcomplete selection list.' =>
+        'Maximum number of results for web service queries, e.g. for autocomplete selection list.' =>
             '',
         'Autocomplete min. input length' => '',
         'Minimum length of input for autocomplete field to trigger search.' =>
@@ -985,6 +989,8 @@ sub Data {
             '',
         'Synchronous event triggers would be processed directly during the web request.' =>
             '',
+        'Add all attachments' => '',
+        'Add all attachments to invoker payload.' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminGenericInterfaceInvokerEvent.tt
         'GenericInterface Invoker Event Settings for Web Service %s' => '',
@@ -1142,6 +1148,33 @@ sub Data {
         'The user name to be used to access the remote system.' => '',
         'BasicAuth Password' => '',
         'The password for the privileged user.' => '',
+        'JWT authentication: Key file' => '',
+        'ATTENTION: Key file and/or password (if needed, see below) seem to be invalid.' =>
+            '',
+        'Path to private key file (PEM or DER). The key will be used to sign the JWT.' =>
+            '',
+        'JWT authentication: Key file password' => '',
+        'ATTENTION: Password and/or key file (see above) seem to be invalid.' =>
+            '',
+        'JWT authentication: Certificate file' => '',
+        'ATTENTION: Certificate file could not be parsed.' => '',
+        'ATTENTION: Certificate is expired.' => '',
+        'Path to X.509 certificate file (PEM). Data of the certificate can be used for the payload and/or header data of the JWT.' =>
+            '',
+        'JWT authentication: Algorithm' => '',
+        'JWT authentication: TTL' => '',
+        'TTL (time to live) in seconds for the JWT. This value will be used to calculate the expiration date which will be available in placeholders ExpirationDateTimestamp and ExpirationDateString.' =>
+            '',
+        'JWT authentication: Payload' => '',
+        'Payload for JWT. Give key/value pairs (separated by ;), e.g.: Key1=Value1;Key2=Value2;Key3=Value3' =>
+            '',
+        'Available placeholders (prefixed with OTRS_JWT): ExpirationDateTimestamp, ExpirationDateString. Additionally if X.509 certificate support is present: CertSubject, CertIssuer, CertSerial, CertNotBefore, CertNotAfter, CertEmail, CertVersion.' =>
+            '',
+        'Placeholder usage example: Key1=<OTRS_JWT_ExpirationDateTimestamp>' =>
+            '',
+        'JWT authentication: Additional header data' => '',
+        'Additional header data for JWT. Give key/value pairs (separated by ;), e.g.: Key1=Value1;Key2=Value2;Key3=Value3' =>
+            '',
         'Content type' => '',
         'The default content type added to HTTP header to use for POST and PUT requests.' =>
             '',
@@ -1533,7 +1566,7 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminOTRSBusinessUninstall.tt
         'Cancel downgrade and go back' => '',
-        'Go to OTRS Package Manager' => '',
+        'Go to Package Manager' => '',
         'Sorry, but currently you can\'t downgrade due to the following packages which depend on %s:' =>
             '',
         'Vendor' => 'Sağlayıcı',
@@ -1727,7 +1760,7 @@ sub Data {
         'Activity' => 'Etkinlik',
         'Activity Name' => 'Etkinlik Adı',
         'Scope' => '',
-        'Scope EntityID' => '',
+        'Scope Entity ID' => '',
         'This field is required for activities with a scope.' => '',
         'Activity Dialogs' => 'Etkinlik Diyalogları',
         'You can assign Activity Dialogs to this Activity by dragging the elements with the mouse from the left list to the right list.' =>
@@ -1766,6 +1799,8 @@ sub Data {
         'Assigned Fields' => '',
         'Communication Channel' => '',
         'Is visible for customer' => '',
+        'Text Template' => '',
+        'Auto fill' => '',
         'Display' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagementPath.tt
@@ -1914,92 +1949,6 @@ sub Data {
         'Filter for Templates' => '',
         'Filter for templates' => '',
         'Templates' => '',
-
-        # TT Template: Kernel/Output/HTML/Templates/Standard/AdminRegistration.tt
-        'System Registration Management' => '',
-        'Edit System Registration' => '',
-        'System Registration Overview' => '',
-        'Register System' => '',
-        'Validate OTRS-ID' => '',
-        'Deregister System' => '',
-        'Edit details' => '',
-        'Show transmitted data' => '',
-        'Deregister system' => '',
-        'Overview of registered systems' => '',
-        'This system is registered with OTRS Group.' => '',
-        'System type' => '',
-        'Unique ID' => '',
-        'Last communication with registration server' => '',
-        'System Registration not Possible' => '',
-        'Please note that you can\'t register your system if OTRS Daemon is not running correctly!' =>
-            '',
-        'Instructions' => '',
-        'System Deregistration not Possible' => '',
-        'Please note that you can\'t deregister your system if you\'re using the %s or having a valid service contract.' =>
-            '',
-        'OTRS-ID Login' => '',
-        'Read more' => '',
-        'You need to log in with your OTRS-ID to register your system.' =>
-            '',
-        'Your OTRS-ID is the email address you used to sign up on the OTRS.com webpage.' =>
-            '',
-        'Data Protection' => '',
-        'What are the advantages of system registration?' => '',
-        'You will receive updates about relevant security releases.' => '',
-        'With your system registration we can improve our services for you, because we have all relevant information available.' =>
-            '',
-        'This is only the beginning!' => '',
-        'We will inform you about our new services and offerings soon.' =>
-            '',
-        'Can I use OTRS without being registered?' => '',
-        'System registration is optional.' => '',
-        'You can download and use OTRS without being registered.' => '',
-        'Is it possible to deregister?' => '',
-        'You can deregister at any time.' => '',
-        'Which data is transfered when registering?' => '',
-        'A registered system sends the following data to OTRS Group:' => '',
-        'Fully Qualified Domain Name (FQDN), OTRS version, Database, Operating System and Perl version.' =>
-            '',
-        'Why do I have to provide a description for my system?' => '',
-        'The description of the system is optional.' => '',
-        'The description and system type you specify help you to identify and manage the details of your registered systems.' =>
-            '',
-        'How often does my OTRS system send updates?' => '',
-        'Your system will send updates to the registration server at regular intervals.' =>
-            '',
-        'Typically this would be around once every three days.' => '',
-        'If you deregister your system, you will lose these benefits:' =>
-            '',
-        'You need to log in with your OTRS-ID to deregister your system.' =>
-            '',
-        'OTRS-ID' => '',
-        'You don\'t have an OTRS-ID yet?' => '',
-        'Sign up now' => 'Şimdi kaydol',
-        'Forgot your password?' => '',
-        'Retrieve a new one' => '',
-        'Next' => 'Ileri',
-        'This data will be frequently transferred to OTRS Group when you register this system.' =>
-            '',
-        'Attribute' => 'Nitelik',
-        'FQDN' => '',
-        'OTRS Version' => '',
-        'Database' => 'Veritabanı',
-        'Operating System' => '',
-        'Perl Version' => '',
-        'Optional description of this system.' => '',
-        'Register' => '',
-        'Continuing with this step will deregister the system from OTRS Group.' =>
-            '',
-        'Deregister' => '',
-        'You can modify registration settings here.' => '',
-        'Overview of Transmitted Data' => '',
-        'There is no data regularly sent from your system to %s.' => '',
-        'The following data is sent at minimum every 3 days from your system to %s.' =>
-            '',
-        'The data will be transferred in JSON format via a secure https connection.' =>
-            '',
-        'System Registration Data' => '',
-        'Support Data' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminRole.tt
         'Role Management' => 'Rol Yönetimi',
@@ -2174,20 +2123,13 @@ sub Data {
         'Sending support data to OTRS Group is not possible!' => '',
         'Enable Cloud Services' => '',
         'Enable cloud services' => '',
-        'This data is sent to OTRS Group on a regular basis. To stop sending this data please update your system registration.' =>
-            '',
-        'You can manually trigger the Support Data sending by pressing this button:' =>
-            '',
-        'Send Update' => '',
-        'Currently this data is only shown in this system.' => '',
         'A support bundle (including: system registration information, support data, a list of installed packages and all locally modified source code files) can be generated by pressing this button:' =>
             '',
         'Generate Support Bundle' => '',
         'The Support Bundle has been Generated' => '',
-        'Please choose one of the following options.' => '',
-        'Download File' => '',
-        'A file containing the support bundle will be downloaded to the local system. Please save the file and send it to the OTRS Group, using an alternate method.' =>
+        'A file containing the support bundle will be downloaded to the local system.' =>
             '',
+        'Support Data' => '',
         'Error: Support data could not be collected (%s).' => '',
         'Details' => 'Detay',
 
@@ -2353,6 +2295,7 @@ sub Data {
         'Add ticket attribute relations' => '',
         'Edit ticket attribute relations' => '',
         'Import CSV or Excel file' => '',
+        'Attribute' => 'Nitelik',
         'Last update' => '',
         'Are you sure you want to delete entry \'%s\'?' => '',
         'Download previously imported file' => '',
@@ -2744,7 +2687,6 @@ sub Data {
         'Here you can select additional agents which should receive a notification regarding the new article.' =>
             '',
         'Text will also be received by' => '',
-        'Text Template' => '',
         'Setting a template will overwrite any text or attachment.' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketBounce.tt
@@ -2854,6 +2796,7 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewNavBar.tt
         'Remove active filters for this screen.' => '',
+        'Remove mention' => '',
         'Tickets per page' => 'Her sayfadaki biletler',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewPreview.tt
@@ -2971,6 +2914,9 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/LinkTable.tt
         'Linked Objects' => 'Bağlantılı Nesneler',
 
+        # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/MentionsTable.tt
+        'Mentions' => '',
+
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/TicketInformation.tt
         'Archive' => '',
         'This ticket is archived.' => '',
@@ -3056,6 +3002,7 @@ sub Data {
         'Your 2 Factor Token' => '',
         'Log In' => 'Giriş',
         'Not yet registered?' => 'Henüz kayıt olmadınız mı?',
+        'Sign up now' => 'Şimdi kaydol',
         'Back' => 'Geri',
         'Request New Password' => 'Yeni Parola Talep Et',
         'Your User Name' => 'Kullanıcı Adı',
@@ -3158,6 +3105,7 @@ sub Data {
         'Phone' => 'Telefon',
         'Web site' => 'Web sitesi',
         'Community' => '',
+        'Next' => 'Ileri',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/InstallerConfigureMail.tt
         'Configure Outbound Mail' => '',
@@ -3209,6 +3157,7 @@ sub Data {
             '',
         'Repeat Password' => '',
         'Generated password' => 'Parola oluşturuldu',
+        'Database' => 'Veritabanı',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/InstallerDBmysql.tt
         'Passwords do not match' => '',
@@ -3860,6 +3809,13 @@ sub Data {
         # Perl Module: Kernel/Modules/AdminGenericInterfaceTransportHTTPREST.pm
         'Need valid Subaction!' => '',
         'This field should be an integer.' => '',
+        'Invalid key file and/or password (if needed, see below).' => '',
+        'Invalid password and/or key file (see above).' => '',
+        'Certificate is expired.' => '',
+        'Certificate file could not be parsed.' => '',
+        'Please enter a time in seconds (at least 10 seconds).' => '',
+        'Please enter data in expected form (see explanation of field).' =>
+            '',
         'File or Directory not found.' => '',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
@@ -3907,6 +3863,7 @@ sub Data {
         'Customer user of the ticket' => '',
         'All recipients of the first article' => '',
         'All recipients of the last article' => '',
+        'All users who are mentioned in a ticket' => '',
         'Invisible to customer' => '',
         'Visible to customer' => '',
 
@@ -4068,12 +4025,6 @@ sub Data {
         'Change Queue Relations for Template' => '',
         'Change Template Relations for Queue' => '',
 
-        # Perl Module: Kernel/Modules/AdminRegistration.pm
-        'Production' => '',
-        'Test' => '',
-        'Training' => '',
-        'Development' => '',
-
         # Perl Module: Kernel/Modules/AdminRole.pm
         'Role updated!' => 'Rol güncellendi!',
         'Role added!' => 'Rol eklendi!',
@@ -4104,7 +4055,6 @@ sub Data {
         'Relation deleted!' => '',
         'Impossible to delete relation!' => '',
         'Certificate %s could not be read!' => '',
-        'Needed Fingerprint' => '',
         'Handle Private Certificate Relations' => '',
 
         # Perl Module: Kernel/Modules/AdminSalutation.pm
@@ -4359,6 +4309,10 @@ sub Data {
         'Pending' => 'Bekliyor',
         'Reminder Reached' => 'Hatırlatma süresi doldu',
         'My Locked Tickets' => 'Kilitli Biletlerim',
+
+        # Perl Module: Kernel/Modules/AgentTicketMentionView.pm
+        'New mention' => '',
+        'My Mentions' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketMerge.pm
         'Can\'t merge ticket with itself!' => '',
@@ -4630,6 +4584,9 @@ sub Data {
             '',
         'Wrong database collation (%s is %s, but it needs to be utf8).' =>
             '',
+
+        # Perl Module: Kernel/Modules/Mentions.pm
+        '%s users will be mentioned' => '',
 
         # Perl Module: Kernel/Modules/PublicCalendar.pm
         'No %s!' => '',
@@ -4960,6 +4917,11 @@ sub Data {
         'Locked Tickets Reminder Reached' => '',
         'Locked Tickets Total' => 'Tüm kilitlenen biletler',
 
+        # Perl Module: Kernel/Output/HTML/ToolBar/TicketMention.pm
+        'Total mentions' => '',
+        'Total new mentions' => '',
+        'New mentions' => '',
+
         # Perl Module: Kernel/Output/HTML/ToolBar/TicketOwner.pm
         'Owned Tickets New' => '',
         'Owned Tickets Reminder Reached' => '',
@@ -5043,6 +5005,9 @@ sub Data {
         'This field is required or' => 'Bu alan gereklidir ya da',
         'The field content is too long!' => 'Alan içeriği çok uzun!',
         'Maximum size is %s characters.' => 'En fazla %s karakter olmalıdır.',
+
+        # Perl Module: Kernel/System/Mention.pm
+        'LastMention' => '',
 
         # Perl Module: Kernel/System/NotificationEvent.pm
         'Couldn\'t read Notification configuration file. Please make sure the file is valid.' =>
@@ -5237,6 +5202,7 @@ sub Data {
         'PostgreSQL 9.2 or higher is required.' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/DiskPartitionOTRS.pm
+        'Operating System' => '',
         'OTRS Disk Partition' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/DiskSpace.pm
@@ -5271,6 +5237,9 @@ sub Data {
             '',
         'CPAN::Audit did not report any known vulnerabilities in the installed Perl modules.' =>
             '',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/PerlVersion.pm
+        'Perl Version' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/Swap.pm
         'Free Swap Space (%)' => '',
@@ -5429,6 +5398,9 @@ sub Data {
         'UI - Special Statistics' => '',
         'Agents using custom main menu ordering' => '',
         'Agents using favourites for the admin overview' => '',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/Version.pm
+        'OTRS Version' => '',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/LoadedModules.pm
         'Webserver' => '',
@@ -7787,6 +7759,8 @@ sub Data {
             '',
         'Mapping of Ticket::Generic invoker name (key) to list of fields (content) which will be removed from the request. Fields have to be given in the following form: Field1->Field2;Field3->Field4->Field5;Field6. So a nested data structure can be given by connecting the fields with \'->\'. Different fields can be omitted by separating them by \';\'.' =>
             '',
+        'Maximum number of parallel instances when using OTRS_AsynchronousInvokerExecution in invoker Ticket::Generic.' =>
+            '',
         'Enables support for huge XML data in load_xml calls of CPAN library XML::LibXML. This should only be enabled if absolutely needed. Disabling this option (default) protects against denial of service through entity expansion attacks. Before enabling this option ensure that alternative measures to protect the application against this type of attack have been taken.' =>
             '',
         'Shows a link in the menu to create a unit test for the current ticket.' =>
@@ -7801,6 +7775,14 @@ sub Data {
         'Ticket event module that stores values of the selected web service record into the configured additional dynamic fields.' =>
             '',
         'It might happen that a dynamic field of type WebserviceText or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
+            '',
+        'Mapping for field values received from form. This setting is necessary for the correct identification of the form fields. Key means value type, value means possible representation in views.' =>
+            '',
+        'Mapping for field values received from form which have multiple values. This setting is needed when the view shows the values of a particular field in a custom way (e.g. selectable customer user in ticket creation view). This setting is always respected first. There is also the possibility to specify an order for checking fields. (Field of customer user in ticket creation view can be saved as CustomerUser or just simple e-mail. First we need to check if CustomerKey is present (CustomerKey -> ID of CustomerUser). If not, then simply take plain text (CustomerTicketText -> E-mail)).' =>
+            '',
+        'Options and default field set for attributes. Values of this setting will always be passed as simple form value without possibility to further configure it in AdminDynamicField view. The keys with which the form values will be sent to the invoker can be edited in the "Default" section of this setting.' =>
+            '',
+        'Options and default field set for selectable attributes. Values which will be passed to invoker (ID or Name or both) can be configured in AdminDynamicField view. The keys with which the form values (ID or Name) will be sent to the invoker can be edited in the "Default" section of this setting. Example usage for field Queue: Field with selected ID and Name will send QueueID = 3 and Queue = Raw.' =>
             '',
         'Template for the out-of-office message shown to the user in the frontend. Placeholders for out-of-office information can be used via ###PlaceholderName###. Possible placeholders are: StartYear, StartMonth, StartDay, EndYear, EndMonth, EndDay, DaysRemaining.' =>
             '',
@@ -7870,6 +7852,8 @@ sub Data {
             '',
         'Name of the OAuth2 token configuration to use for sending mails if \'OAuth2 token\' was configured in SendmailModule::AuthenticationType.' =>
             '',
+        'Hosts that need a separate info about authentication method and token (instead of both in one line). Most commonly needed for Office 365 and Outlook.' =>
+            '',
         'This option enables a dropdown which will be displayed instead of the time unit input field.' =>
             '',
         'Defines the default ticket attribute for ticket sorting in the owner view of the agent interface.' =>
@@ -7908,6 +7892,28 @@ sub Data {
             '',
         'Creates the calendar-based tickets regularly.' => '',
         'Cleans up the calendar-based tickets regularly.' => '',
+        'Maximum number of quoted lines to be added to forwarded messages.' =>
+            '',
+        'Re-indexes S/MIME certificate folders. Note: S/MIME needs to be enabled in SysConfig.' =>
+            '',
+        'Maximum length of displayed attachment filenames in the article preview of ticket zoom view.' =>
+            '',
+        'General settings for autocompletion in rich text editor.' => '',
+        'Rich text editor configuration for autocompletion module.' => '',
+        'Rich text editor configuration for autocompletion module to support templates.' =>
+            '',
+        'Defines which notifications about mentions should be sent.' => '',
+        'Defines if the toolbar mention icon should count mentions.' => '',
+        'Frontend registration of triggers for mention plugin of CKEditor.' =>
+            '',
+        'Frontend registration of input/output templates for mention plugin of CKEditor.' =>
+            '',
+        'Event handler for mentions.' => '',
+        'Parameters for the dashboard backend of the last mention widget.' =>
+            '',
+        'Agent interface notification module to show the number of mentions.' =>
+            '',
+        'Module to grant access to the mentioned agents of a ticket.' => '',
 
         # XML Definition: scripts/database/otrs-initial_insert.xml
         'invalid-temporarily' => 'geçici olarak geçersiz',
@@ -8020,6 +8026,7 @@ sub Data {
         'You will receive a notification each time a reminder time is reached for one of your appointments.' =>
             '',
         'Ticket email delivery failure notification' => '',
+        'Mention notification' => '',
 
         # JS File: var/httpd/htdocs/js/Core.AJAX.js
         'Error during AJAX communication. Status: %s, Error: %s' => '',
@@ -8681,6 +8688,7 @@ Thanks for your help!
             '',
         'Determines the strings that will be shown as recipient (To:) of the ticket in the customer interface. For Queue as CustomerPanelSelectionType, "<Queue>" shows the names of the queues, and for SystemAddress, "<Realname> <<Email>>" shows the name and email of the recipient.' =>
             '',
+        'Development' => '',
         'Disable cloud services' => '',
         'Display communication log entries.' => '',
         'Down' => 'Aşağı',
@@ -8799,6 +8807,7 @@ Thanks for your help!
         'Korean' => '',
         'Language' => 'Dil',
         'Large' => 'Büyük',
+        'Last Mentions' => '',
         'Last Screen Overview' => '',
         'Last customer subject' => '',
         'Last view - limit' => '',
@@ -8849,13 +8858,15 @@ Thanks for your help!
         'Manage existing sessions.' => 'Mevcut oturumları yönet.',
         'Manage support data.' => '',
         'Manage system files.' => '',
-        'Manage system registration.' => '',
         'Manage tasks triggered by event or time based execution.' => '',
         'Management of ticket attribute relations.' => '',
         'Mark as Spam!' => 'Spam (çöp) olarak işaretle!',
         'Mark this ticket as junk!' => '',
         'Mattermost Username' => '',
         'Medium' => 'Orta',
+        'Mentioned in article' => '',
+        'Mentioned in ticket' => '',
+        'Mentions.' => '',
         'Merge this ticket and all articles into another ticket' => '',
         'Merged Ticket (%s/%s) to (%s/%s).' => '',
         'Merged Ticket <OTRS_TICKET> to <OTRS_MERGE_TO_TICKET>.' => '',
@@ -9013,6 +9024,7 @@ Thanks for your help!
         'Shows a preview of the ticket overview (CustomerInfo => 1 - shows also Customer-Info, CustomerInfoMaxSize max. size in characters of Customer-Info).' =>
             '',
         'Shows information on how to start OTRS Daemon' => '',
+        'Shows last mention of tickets.' => '',
         'Signature data.' => '',
         'Signatures' => 'İmzalar',
         'Simple' => '',
@@ -9020,6 +9032,7 @@ Thanks for your help!
         'Slovak' => '',
         'Slovenian' => '',
         'Small' => 'Küçük',
+        'Snippet' => '',
         'Software Package Manager.' => '',
         'Solution time' => '',
         'SolutionDiffInMin' => '',
@@ -9243,7 +9256,6 @@ Thanks for your help!
         'Current selection',
         'Currently not possible',
         'Customer interface does not support articles not visible for customers.',
-        'Data Protection',
         'Date/Time',
         'Day',
         'Dec',
@@ -9472,7 +9484,6 @@ Thanks for your help!
         'Support Data information was successfully sent.',
         'Switch to desktop mode',
         'Switch to mobile mode',
-        'System Registration',
         'Team',
         'Th',
         'The browser you are using is too old.',

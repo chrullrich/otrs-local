@@ -1287,6 +1287,13 @@ sub Header {
         );
     }
 
+    if ( $Self->{UserRefreshTime} ) {
+        $Self->AddJSData(
+            Key   => 'RefreshTimeToolbar',
+            Value => $Self->{UserRefreshTime} * 60,
+        );
+    }
+
     # Generate the minified CSS and JavaScript files and the tags referencing them (see LayoutLoader)
     $Self->LoaderCreateAgentCSSCalls();
 
@@ -1701,8 +1708,9 @@ sub Footer {
                 eq 'Kernel::System::Ticket::ArticleSearchIndex::DB'
                 )
         ) ? 1 : 0,
-        SearchFrontend => $JSCall,
-        Autocomplete   => $AutocompleteConfig,
+        SearchFrontend             => $JSCall,
+        Autocomplete               => $AutocompleteConfig,
+        'Mentions::RichTextEditor' => $ConfigObject->Get('Mentions::RichTextEditor') // {},
     );
 
     for my $Config ( sort keys %JSConfig ) {
@@ -6271,6 +6279,7 @@ sub SetRichTextParameters {
     $Self->AddJSData(
         Key   => 'RichText',
         Value => {
+            TicketID       => $Param{Data}->{TicketID} || '',
             Height         => $ScreenRichTextHeight,
             Width          => $ScreenRichTextWidth,
             TextDir        => $TextDir,

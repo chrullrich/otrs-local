@@ -25,7 +25,7 @@ sub Data {
     $Self->{DateFormatShort}     = '';
     $Self->{DateInputFormat}     = '';
     $Self->{DateInputFormatLong} = '';
-    $Self->{Completeness}        = 0.917888563049853;
+    $Self->{Completeness}        = 0.906571009293983;
 
     # csv separator
     $Self->{Separator}         = '';
@@ -309,7 +309,6 @@ sub Data {
             '시스템 등록은 많은 장점을 제공하는 OTRS Group의 서비스입니다!',
         'Please note that the use of OTRS cloud services requires the system to be registered.' =>
             'OTRS 클라우드 서비스를 사용하려면 시스템을 등록해야합니다.',
-        'Register this system' => '이 시스템 등록',
         'Here you can configure available cloud services that communicate securely with %s.' =>
             '%s와 안전하게 통신 할 수있는 클라우드 서비스를 구성 할 수 있습니다.',
         'Available Cloud Services' => '사용가능한 클라우드 서비스',
@@ -641,6 +640,11 @@ sub Data {
         'This is the default term for the click search.' => '',
         'Initial default search term' => '',
         'This is the default search term when the mask is loaded.' => '',
+        'Attributes' => '',
+        'Attributes for invoker execution (initially default values will be used).' =>
+            '',
+        'Attribute keys' => '',
+        'Custom attribute form for invoker execution.' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminDynamicFieldWebservice/Config.tt
         'Web service' => '웹 서비스',
@@ -669,7 +673,7 @@ sub Data {
         'The separator to show between the values if there\'s more than one key configured to be displayed above. If left empty, a single space will be used as separator. Use <space> to add spaces.' =>
             '',
         'Limit' => '한도',
-        'Maximum number of results for web service queries, e.g. for autcomplete selection list.' =>
+        'Maximum number of results for web service queries, e.g. for autocomplete selection list.' =>
             '',
         'Autocomplete min. input length' => '',
         'Minimum length of input for autocomplete field to trigger search.' =>
@@ -985,6 +989,8 @@ sub Data {
             '비동기 이벤트 트리거는 백그라운드에서 OTRS Scheduler Daemon에 의해 처리됩니다 (권장).',
         'Synchronous event triggers would be processed directly during the web request.' =>
             '동기 이벤트 트리거는 웹 요청 중에 직접 처리됩니다.',
+        'Add all attachments' => '',
+        'Add all attachments to invoker payload.' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminGenericInterfaceInvokerEvent.tt
         'GenericInterface Invoker Event Settings for Web Service %s' => '웹 서비스 %s의 GenericInterface Invoker 이벤트 설정',
@@ -1142,6 +1148,33 @@ sub Data {
         'The user name to be used to access the remote system.' => '원격 시스템에 액세스하는 데 사용할 사용자 이름.',
         'BasicAuth Password' => 'BasicAuth 비밀번호',
         'The password for the privileged user.' => '권한있는 사용자의 암호입니다.',
+        'JWT authentication: Key file' => '',
+        'ATTENTION: Key file and/or password (if needed, see below) seem to be invalid.' =>
+            '',
+        'Path to private key file (PEM or DER). The key will be used to sign the JWT.' =>
+            '',
+        'JWT authentication: Key file password' => '',
+        'ATTENTION: Password and/or key file (see above) seem to be invalid.' =>
+            '',
+        'JWT authentication: Certificate file' => '',
+        'ATTENTION: Certificate file could not be parsed.' => '',
+        'ATTENTION: Certificate is expired.' => '',
+        'Path to X.509 certificate file (PEM). Data of the certificate can be used for the payload and/or header data of the JWT.' =>
+            '',
+        'JWT authentication: Algorithm' => '',
+        'JWT authentication: TTL' => '',
+        'TTL (time to live) in seconds for the JWT. This value will be used to calculate the expiration date which will be available in placeholders ExpirationDateTimestamp and ExpirationDateString.' =>
+            '',
+        'JWT authentication: Payload' => '',
+        'Payload for JWT. Give key/value pairs (separated by ;), e.g.: Key1=Value1;Key2=Value2;Key3=Value3' =>
+            '',
+        'Available placeholders (prefixed with OTRS_JWT): ExpirationDateTimestamp, ExpirationDateString. Additionally if X.509 certificate support is present: CertSubject, CertIssuer, CertSerial, CertNotBefore, CertNotAfter, CertEmail, CertVersion.' =>
+            '',
+        'Placeholder usage example: Key1=<OTRS_JWT_ExpirationDateTimestamp>' =>
+            '',
+        'JWT authentication: Additional header data' => '',
+        'Additional header data for JWT. Give key/value pairs (separated by ;), e.g.: Key1=Value1;Key2=Value2;Key3=Value3' =>
+            '',
         'Content type' => '',
         'The default content type added to HTTP header to use for POST and PUT requests.' =>
             '',
@@ -1533,7 +1566,7 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminOTRSBusinessUninstall.tt
         'Cancel downgrade and go back' => '다운그레이드 취소하고 돌아가기',
-        'Go to OTRS Package Manager' => 'OTRS 패키지 관리자로 이동하십시오.',
+        'Go to Package Manager' => '',
         'Sorry, but currently you can\'t downgrade due to the following packages which depend on %s:' =>
             '죄송하지만 현재 %s에 의존하는 다음 패키지 때문에 다운 그레이드 할 수 없습니다 :',
         'Vendor' => '공급 업체',
@@ -1727,7 +1760,7 @@ sub Data {
         'Activity' => '활동',
         'Activity Name' => '활동명',
         'Scope' => '',
-        'Scope EntityID' => '',
+        'Scope Entity ID' => '',
         'This field is required for activities with a scope.' => '',
         'Activity Dialogs' => '활동 대화상자',
         'You can assign Activity Dialogs to this Activity by dragging the elements with the mouse from the left list to the right list.' =>
@@ -1766,6 +1799,8 @@ sub Data {
         'Assigned Fields' => '할당된 필드',
         'Communication Channel' => '통신 채널',
         'Is visible for customer' => '고객에게 표시됩니다.',
+        'Text Template' => '텍스트 템플릿',
+        'Auto fill' => '',
         'Display' => '다스플레이',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagementPath.tt
@@ -1914,92 +1949,6 @@ sub Data {
         'Filter for Templates' => '템플릿 필터링',
         'Filter for templates' => '',
         'Templates' => '템플릿',
-
-        # TT Template: Kernel/Output/HTML/Templates/Standard/AdminRegistration.tt
-        'System Registration Management' => '시스템 등록 관리',
-        'Edit System Registration' => '시스템 등록 편집',
-        'System Registration Overview' => '시스템 등록 개요',
-        'Register System' => '시스템 등록',
-        'Validate OTRS-ID' => 'OTRS-ID 확인',
-        'Deregister System' => 'Deregister System',
-        'Edit details' => '세부 정보 수정',
-        'Show transmitted data' => '전송된 데이터 표시',
-        'Deregister system' => 'Deregister system',
-        'Overview of registered systems' => '등록된 시스템 개요',
-        'This system is registered with OTRS Group.' => '이 시스템은 OTRS 그룹에 등록되어 있습니다.',
-        'System type' => '시스템 유형',
-        'Unique ID' => '고유 ID',
-        'Last communication with registration server' => '등록 서버와의 마지막 통신',
-        'System Registration not Possible' => '시스템 등록이 불가능합니다.',
-        'Please note that you can\'t register your system if OTRS Daemon is not running correctly!' =>
-            'OTRS 데몬이 올바르게 실행되지 않으면 시스템을 등록 할 수 없습니다.',
-        'Instructions' => '명령',
-        'System Deregistration not Possible' => '시스템 등록 취소가 불가능합니다.',
-        'Please note that you can\'t deregister your system if you\'re using the %s or having a valid service contract.' =>
-            '%s를 사용 중이거나 유효한 서비스 계약이있는 경우 시스템 등록을 취소 할 수 없습니다.',
-        'OTRS-ID Login' => 'OTRS-ID 로그인',
-        'Read more' => '더 많은 것을 읽으십시오',
-        'You need to log in with your OTRS-ID to register your system.' =>
-            '시스템을 등록하려면 OTRS-ID로 로그인해야합니다.',
-        'Your OTRS-ID is the email address you used to sign up on the OTRS.com webpage.' =>
-            'OTRS-ID는 OTRS.com 웹 페이지에 가입 할 때 사용한 이메일 주소입니다.',
-        'Data Protection' => '데이터 보호',
-        'What are the advantages of system registration?' => '시스템 등록의 이점은 무엇입니까?',
-        'You will receive updates about relevant security releases.' => '관련 보안 릴리스에 대한 업데이트가 제공됩니다.',
-        'With your system registration we can improve our services for you, because we have all relevant information available.' =>
-            '시스템 등록을 통해 우리는 모든 관련 정보를 이용할 수 있으므로 귀하를 위해 서비스를 개선 할 수 있습니다.',
-        'This is only the beginning!' => '이것은 단지 시작일뿐입니다!',
-        'We will inform you about our new services and offerings soon.' =>
-            '조만간 새로운 서비스와 제품에 대해 알려 드리겠습니다.',
-        'Can I use OTRS without being registered?' => 'OTRS를 등록하지 않고도 사용할 수 있습니까?',
-        'System registration is optional.' => '시스템 등록은 선택 사항입니다.',
-        'You can download and use OTRS without being registered.' => '등록없이 OTRS를 다운로드하여 사용할 수 있습니다.',
-        'Is it possible to deregister?' => '등록 취소가 가능합니까?',
-        'You can deregister at any time.' => '언제든지 등록 취소 할 수 있습니다.',
-        'Which data is transfered when registering?' => '등록할 때 어떤 데이터가 전송됩니까?',
-        'A registered system sends the following data to OTRS Group:' => '등록 된 시스템은 다음 데이터를 OTRS 그룹에 보냅니다.',
-        'Fully Qualified Domain Name (FQDN), OTRS version, Database, Operating System and Perl version.' =>
-            'FQDN (정규화 된 도메인 이름), OTRS 버전, 데이터베이스, 운영 체제 및 Perl 버전',
-        'Why do I have to provide a description for my system?' => '왜 내 시스템에 대한 설명을 제공해야 합니까?',
-        'The description of the system is optional.' => '시스템 설명은 선택 사항 입니다.',
-        'The description and system type you specify help you to identify and manage the details of your registered systems.' =>
-            '지정하는 설명 W 시스템 유형은 등록 된 시스템의 세부 사항을 식별하고 관리하는 데 도움을줍니다.',
-        'How often does my OTRS system send updates?' => 'OTRS 시스템은 얼마나 자주 업데이트를 보내나요?',
-        'Your system will send updates to the registration server at regular intervals.' =>
-            '시스템은 일정한 간격으로 등록 서버에 업데이트를 보냅니다.',
-        'Typically this would be around once every three days.' => '일반적으로 3일에 1번 정도입니다.',
-        'If you deregister your system, you will lose these benefits:' =>
-            '시스템 등록을 취소하면 다음과 같은 이점을 잃게 됩니다.',
-        'You need to log in with your OTRS-ID to deregister your system.' =>
-            '시스템 등록을 취소하려면 OTRS-ID로 로그인해야합니다.',
-        'OTRS-ID' => 'OTRS-ID ',
-        'You don\'t have an OTRS-ID yet?' => '아직 OTRS-ID가 없습니까?',
-        'Sign up now' => '지금 등록하세요',
-        'Forgot your password?' => '비밀번호를 잊어 버렸습니까?',
-        'Retrieve a new one' => '새 항목 가져 오기',
-        'Next' => '다음',
-        'This data will be frequently transferred to OTRS Group when you register this system.' =>
-            '이 시스템을 등록 할 때이 데이터는 OTRS 그룹으로 자주 전송됩니다.',
-        'Attribute' => '속성',
-        'FQDN' => 'FQDN',
-        'OTRS Version' => 'OTRS 버전',
-        'Database' => '데이터베이스',
-        'Operating System' => '운영 체제',
-        'Perl Version' => '펄 버전',
-        'Optional description of this system.' => '이 시스템에 대한 선택적 설명.',
-        'Register' => '기록',
-        'Continuing with this step will deregister the system from OTRS Group.' =>
-            '이 단계를 계속하면 OTRS 그룹의 시스템 등록이 취소됩니다.',
-        'Deregister' => '위임자',
-        'You can modify registration settings here.' => '여기에서 등록 설정을 수정할 수 있습니다.',
-        'Overview of Transmitted Data' => '전송된 데이터의 개요',
-        'There is no data regularly sent from your system to %s.' => '시스템에서 %s로 정기적으로 전송되는 데이터는 없습니다.',
-        'The following data is sent at minimum every 3 days from your system to %s.' =>
-            '다음 데이터는 최소 3 일마다 시스템에서 %s로 전송됩니다.',
-        'The data will be transferred in JSON format via a secure https connection.' =>
-            '데이터는 안전한 https 연결을 통해 JSON 형식으로 전송됩니다.',
-        'System Registration Data' => '시스템 등록 데이터',
-        'Support Data' => '지원 데이터',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminRole.tt
         'Role Management' => '역할 관리',
@@ -2174,20 +2123,13 @@ sub Data {
         'Sending support data to OTRS Group is not possible!' => 'OTRS 그룹에 지원 데이터를 보낼 수 없습니다!',
         'Enable Cloud Services' => '클라우드 서비스 사용',
         'Enable cloud services' => '클라우드 서비스 사용',
-        'This data is sent to OTRS Group on a regular basis. To stop sending this data please update your system registration.' =>
-            '이 데이터는 정기적으로 OTRS 그룹에 전송됩니다. 이 데이터의 전송을 중지하려면 시스템 등록을 업데이트하십시오.',
-        'You can manually trigger the Support Data sending by pressing this button:' =>
-            '이 버튼을 눌러 Support Data를 수동으로 트리거 할 수 있습니다 :',
-        'Send Update' => '업데이트 보내기',
-        'Currently this data is only shown in this system.' => '현재 이 데이터는 이 시스템에만 표시됩니다.',
         'A support bundle (including: system registration information, support data, a list of installed packages and all locally modified source code files) can be generated by pressing this button:' =>
             '이 단추를 누르면 지원 번들 (시스템 등록 정보, 지원 데이터, 설치된 패키지 목록 및 모든 로컬로 수정 된 소스 코드 파일 포함)을 생성 할 수 있습니다.',
         'Generate Support Bundle' => '지원 번들 생성',
         'The Support Bundle has been Generated' => '지원 번들이 생성 되었습니다.',
-        'Please choose one of the following options.' => '다음 옵션 중 하나를 선택 하십시오.',
-        'Download File' => '다운로드 파일',
-        'A file containing the support bundle will be downloaded to the local system. Please save the file and send it to the OTRS Group, using an alternate method.' =>
-            '지원 번들이 들어있는 파일은 로컬 시스템에 다운로드됩니다. 파일을 저장하고 대체 방법을 사용하여 OTRS 그룹에 보내십시오.',
+        'A file containing the support bundle will be downloaded to the local system.' =>
+            '지원 번들이 들어있는 파일은 로컬 시스템에 다운로드됩니다.',
+        'Support Data' => '지원 데이터',
         'Error: Support data could not be collected (%s).' => '오류 : 지원 데이터를 수집 할 수 없습니다 (%s).',
         'Details' => '세부',
 
@@ -2353,6 +2295,7 @@ sub Data {
         'Add ticket attribute relations' => '',
         'Edit ticket attribute relations' => '',
         'Import CSV or Excel file' => '',
+        'Attribute' => '속성',
         'Last update' => '',
         'Are you sure you want to delete entry \'%s\'?' => '',
         'Download previously imported file' => '',
@@ -2744,7 +2687,6 @@ sub Data {
         'Here you can select additional agents which should receive a notification regarding the new article.' =>
             '여기에서 새 기사와 관련된 알림을 받을 추가 상담원을 선택할 수 있습니다.',
         'Text will also be received by' => '다음에 의해 텍스트도 받게 됩니다.',
-        'Text Template' => '텍스트 템플릿',
         'Setting a template will overwrite any text or attachment.' => '템플릿을 설정하면 텍스트나 첨부파일을 덮어씁니다.',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketBounce.tt
@@ -2854,6 +2796,7 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewNavBar.tt
         'Remove active filters for this screen.' => '이 화면에서 활성 필터를 제거하십시오.',
+        'Remove mention' => '',
         'Tickets per page' => '페이지 당 티켓',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewPreview.tt
@@ -2971,6 +2914,9 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/LinkTable.tt
         'Linked Objects' => '연결된 개체',
 
+        # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/MentionsTable.tt
+        'Mentions' => '',
+
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/TicketInformation.tt
         'Archive' => '아카이브',
         'This ticket is archived.' => '이 티켓은 보관 처리됩니다.',
@@ -3056,6 +3002,7 @@ sub Data {
         'Your 2 Factor Token' => '당신의 2 팩터 토큰',
         'Log In' => '로그인',
         'Not yet registered?' => '아직 등록되지 않았습니까?',
+        'Sign up now' => '지금 등록하세요',
         'Back' => '뒤',
         'Request New Password' => '새 비밀번호 요청',
         'Your User Name' => '사용자 이름',
@@ -3158,6 +3105,7 @@ sub Data {
         'Phone' => '전화',
         'Web site' => '웹 사이트',
         'Community' => '',
+        'Next' => '다음',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/InstallerConfigureMail.tt
         'Configure Outbound Mail' => '아웃 바운드 메일 구성',
@@ -3209,6 +3157,7 @@ sub Data {
             '제한된 권한을 가진 새로운 데이터베이스 사용자가이 OTRS 시스템에 대해 생성됩니다.',
         'Repeat Password' => '비밀번호 반복',
         'Generated password' => '생성된 암호',
+        'Database' => '데이터베이스',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/InstallerDBmysql.tt
         'Passwords do not match' => '비밀번호가 일치하지 않습니다.',
@@ -3860,6 +3809,13 @@ sub Data {
         # Perl Module: Kernel/Modules/AdminGenericInterfaceTransportHTTPREST.pm
         'Need valid Subaction!' => '유효한 서브 액션이 필요합니다!',
         'This field should be an integer.' => '이 필드는 정수여야 합니다.',
+        'Invalid key file and/or password (if needed, see below).' => '',
+        'Invalid password and/or key file (see above).' => '',
+        'Certificate is expired.' => '',
+        'Certificate file could not be parsed.' => '',
+        'Please enter a time in seconds (at least 10 seconds).' => '',
+        'Please enter data in expected form (see explanation of field).' =>
+            '',
         'File or Directory not found.' => '파일 또는 디렉터리를 찾을 수 없음.',
 
         # Perl Module: Kernel/Modules/AdminGenericInterfaceWebservice.pm
@@ -3907,6 +3863,7 @@ sub Data {
         'Customer user of the ticket' => '티켓의 고객 사용자',
         'All recipients of the first article' => '첫 번째 기사의 모든 수신자',
         'All recipients of the last article' => '마지막 기사의 모든 수신자',
+        'All users who are mentioned in a ticket' => '',
         'Invisible to customer' => '',
         'Visible to customer' => '',
 
@@ -4068,12 +4025,6 @@ sub Data {
         'Change Queue Relations for Template' => '템플릿에 대한 대기열 관계 변경',
         'Change Template Relations for Queue' => '대기열에 대한 템플릿 관계 변경',
 
-        # Perl Module: Kernel/Modules/AdminRegistration.pm
-        'Production' => '생산',
-        'Test' => '테스트',
-        'Training' => '훈련',
-        'Development' => '개발',
-
         # Perl Module: Kernel/Modules/AdminRole.pm
         'Role updated!' => '역할이 업데이트 되었습니다!',
         'Role added!' => '역할이 추가되었습니다!',
@@ -4104,7 +4055,6 @@ sub Data {
         'Relation deleted!' => '관계가 삭제되었습니다!',
         'Impossible to delete relation!' => '관계를 삭제할 수 없습니다!',
         'Certificate %s could not be read!' => '인증서 %s을 읽을 수 없습니다.',
-        'Needed Fingerprint' => '필요한 지문',
         'Handle Private Certificate Relations' => '개인 인증서 관계 처리',
 
         # Perl Module: Kernel/Modules/AdminSalutation.pm
@@ -4359,6 +4309,10 @@ sub Data {
         'Pending' => '지연',
         'Reminder Reached' => '알림발생',
         'My Locked Tickets' => '나의 잠긴 티켓',
+
+        # Perl Module: Kernel/Modules/AgentTicketMentionView.pm
+        'New mention' => '',
+        'My Mentions' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketMerge.pm
         'Can\'t merge ticket with itself!' => '티켓을 합칠 수 없습니다.',
@@ -4630,6 +4584,9 @@ sub Data {
             '오류 : 데이터베이스의 innodb_log_file_size 값을 최소 %s MB (현재 : %s MB, 권장 : %s MB)로 설정하십시오. 자세한 내용은 %s를보십시오.',
         'Wrong database collation (%s is %s, but it needs to be utf8).' =>
             '잘못된 데이터베이스 정렬 (%s는 %s이지만 utf8이어야합니다).',
+
+        # Perl Module: Kernel/Modules/Mentions.pm
+        '%s users will be mentioned' => '',
 
         # Perl Module: Kernel/Modules/PublicCalendar.pm
         'No %s!' => '아니 %s!',
@@ -4960,6 +4917,11 @@ sub Data {
         'Locked Tickets Reminder Reached' => '잠긴 티켓 알리미에 도달 했습니다.',
         'Locked Tickets Total' => '잠긴 티켓 합계',
 
+        # Perl Module: Kernel/Output/HTML/ToolBar/TicketMention.pm
+        'Total mentions' => '',
+        'Total new mentions' => '',
+        'New mentions' => '',
+
         # Perl Module: Kernel/Output/HTML/ToolBar/TicketOwner.pm
         'Owned Tickets New' => '',
         'Owned Tickets Reminder Reached' => '',
@@ -5043,6 +5005,9 @@ sub Data {
         'This field is required or' => '이 필드는 필수이거나',
         'The field content is too long!' => '입력란 내용이 너무 깁니다.',
         'Maximum size is %s characters.' => '최대 크기는%s자입니다.',
+
+        # Perl Module: Kernel/System/Mention.pm
+        'LastMention' => '',
 
         # Perl Module: Kernel/System/NotificationEvent.pm
         'Couldn\'t read Notification configuration file. Please make sure the file is valid.' =>
@@ -5237,6 +5202,7 @@ sub Data {
         'PostgreSQL 9.2 or higher is required.' => 'PostgreSQL 9.2 이상이 필요합니다.',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/DiskPartitionOTRS.pm
+        'Operating System' => '운영 체제',
         'OTRS Disk Partition' => 'OTRS 디스크 파티션',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/DiskSpace.pm
@@ -5271,6 +5237,9 @@ sub Data {
             '',
         'CPAN::Audit did not report any known vulnerabilities in the installed Perl modules.' =>
             '',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/PerlVersion.pm
+        'Perl Version' => '펄 버전',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OS/Swap.pm
         'Free Swap Space (%)' => '무료 스왑 공간 (%)',
@@ -5429,6 +5398,9 @@ sub Data {
         'UI - Special Statistics' => 'UI - 특수 통계',
         'Agents using custom main menu ordering' => '사용자 정의 주 메뉴 순서를 사용하는 에이전트',
         'Agents using favourites for the admin overview' => '관리자 개요에 즐겨찾기를 사용하는 에이전트',
+
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/Version.pm
+        'OTRS Version' => 'OTRS 버전',
 
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/Webserver/Apache/LoadedModules.pm
         'Webserver' => '웹 서버',
@@ -7787,6 +7759,8 @@ sub Data {
             '',
         'Mapping of Ticket::Generic invoker name (key) to list of fields (content) which will be removed from the request. Fields have to be given in the following form: Field1->Field2;Field3->Field4->Field5;Field6. So a nested data structure can be given by connecting the fields with \'->\'. Different fields can be omitted by separating them by \';\'.' =>
             '',
+        'Maximum number of parallel instances when using OTRS_AsynchronousInvokerExecution in invoker Ticket::Generic.' =>
+            '',
         'Enables support for huge XML data in load_xml calls of CPAN library XML::LibXML. This should only be enabled if absolutely needed. Disabling this option (default) protects against denial of service through entity expansion attacks. Before enabling this option ensure that alternative measures to protect the application against this type of attack have been taken.' =>
             '',
         'Shows a link in the menu to create a unit test for the current ticket.' =>
@@ -7801,6 +7775,14 @@ sub Data {
         'Ticket event module that stores values of the selected web service record into the configured additional dynamic fields.' =>
             '',
         'It might happen that a dynamic field of type WebserviceText or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
+            '',
+        'Mapping for field values received from form. This setting is necessary for the correct identification of the form fields. Key means value type, value means possible representation in views.' =>
+            '',
+        'Mapping for field values received from form which have multiple values. This setting is needed when the view shows the values of a particular field in a custom way (e.g. selectable customer user in ticket creation view). This setting is always respected first. There is also the possibility to specify an order for checking fields. (Field of customer user in ticket creation view can be saved as CustomerUser or just simple e-mail. First we need to check if CustomerKey is present (CustomerKey -> ID of CustomerUser). If not, then simply take plain text (CustomerTicketText -> E-mail)).' =>
+            '',
+        'Options and default field set for attributes. Values of this setting will always be passed as simple form value without possibility to further configure it in AdminDynamicField view. The keys with which the form values will be sent to the invoker can be edited in the "Default" section of this setting.' =>
+            '',
+        'Options and default field set for selectable attributes. Values which will be passed to invoker (ID or Name or both) can be configured in AdminDynamicField view. The keys with which the form values (ID or Name) will be sent to the invoker can be edited in the "Default" section of this setting. Example usage for field Queue: Field with selected ID and Name will send QueueID = 3 and Queue = Raw.' =>
             '',
         'Template for the out-of-office message shown to the user in the frontend. Placeholders for out-of-office information can be used via ###PlaceholderName###. Possible placeholders are: StartYear, StartMonth, StartDay, EndYear, EndMonth, EndDay, DaysRemaining.' =>
             '',
@@ -7870,6 +7852,8 @@ sub Data {
             '',
         'Name of the OAuth2 token configuration to use for sending mails if \'OAuth2 token\' was configured in SendmailModule::AuthenticationType.' =>
             '',
+        'Hosts that need a separate info about authentication method and token (instead of both in one line). Most commonly needed for Office 365 and Outlook.' =>
+            '',
         'This option enables a dropdown which will be displayed instead of the time unit input field.' =>
             '',
         'Defines the default ticket attribute for ticket sorting in the owner view of the agent interface.' =>
@@ -7908,6 +7892,28 @@ sub Data {
             '',
         'Creates the calendar-based tickets regularly.' => '',
         'Cleans up the calendar-based tickets regularly.' => '',
+        'Maximum number of quoted lines to be added to forwarded messages.' =>
+            '',
+        'Re-indexes S/MIME certificate folders. Note: S/MIME needs to be enabled in SysConfig.' =>
+            '',
+        'Maximum length of displayed attachment filenames in the article preview of ticket zoom view.' =>
+            '',
+        'General settings for autocompletion in rich text editor.' => '',
+        'Rich text editor configuration for autocompletion module.' => '',
+        'Rich text editor configuration for autocompletion module to support templates.' =>
+            '',
+        'Defines which notifications about mentions should be sent.' => '',
+        'Defines if the toolbar mention icon should count mentions.' => '',
+        'Frontend registration of triggers for mention plugin of CKEditor.' =>
+            '',
+        'Frontend registration of input/output templates for mention plugin of CKEditor.' =>
+            '',
+        'Event handler for mentions.' => '',
+        'Parameters for the dashboard backend of the last mention widget.' =>
+            '',
+        'Agent interface notification module to show the number of mentions.' =>
+            '',
+        'Module to grant access to the mentioned agents of a ticket.' => '',
 
         # XML Definition: scripts/database/otrs-initial_insert.xml
         'invalid-temporarily' => '유효하지 않은 일시적',
@@ -8020,6 +8026,7 @@ sub Data {
         'You will receive a notification each time a reminder time is reached for one of your appointments.' =>
             '약속 중 하나에 대해 미리 알림 시간에 도달할 때마다 알림을 받게 됩니다.',
         'Ticket email delivery failure notification' => '티켓 전자 메일 배달 실패 알림',
+        'Mention notification' => '',
 
         # JS File: var/httpd/htdocs/js/Core.AJAX.js
         'Error during AJAX communication. Status: %s, Error: %s' => 'AJAX 통신 중 오류가 발생했습니다. 상태 : %s, 오류 : %s',
@@ -8692,6 +8699,7 @@ Thanks for your help!
             '에이전트 티켓에서 전화 티켓의받는 사람 (To :) 및 전자 메일 티켓의 보낸 사람 (From :)으로 표시 될 문자열을 결정합니다. Queue as NewQueueSelectionType "1"은 대기열의 이름을 표시하고 SystemAddress의 "2 3"은받는 사람의 이름과 전자 메일을 표시합니다.',
         'Determines the strings that will be shown as recipient (To:) of the ticket in the customer interface. For Queue as CustomerPanelSelectionType, "<Queue>" shows the names of the queues, and for SystemAddress, "<Realname> <<Email>>" shows the name and email of the recipient.' =>
             '고객 인터페이스에서 티켓의받는 사람 (To :)으로 표시 될 문자열을 결정합니다. Queue는 CustomerPanelSelectionType으로, "1"은 대기열의 이름을 표시하고 SystemAddress의 경우 "2 3"은 수신자의 이름과 전자 메일을 표시합니다.',
+        'Development' => '개발',
         'Disable cloud services' => '클라우드 서비스 사용 중지',
         'Display communication log entries.' => '통신 로그 항목을 표시하십시오.',
         'Down' => '하위',
@@ -8810,6 +8818,7 @@ Thanks for your help!
         'Korean' => '',
         'Language' => '언어',
         'Large' => '큰',
+        'Last Mentions' => '',
         'Last Screen Overview' => '마지막 화면 개요',
         'Last customer subject' => '마지막 고객 주제',
         'Last view - limit' => '',
@@ -8860,13 +8869,15 @@ Thanks for your help!
         'Manage existing sessions.' => '기존 세션을 관리합니다.',
         'Manage support data.' => '지원 데이터를 관리합니다.',
         'Manage system files.' => '',
-        'Manage system registration.' => '시스템 등록을 관리합니다.',
         'Manage tasks triggered by event or time based execution.' => '이벤트 또는 시간 기반 실행에 의해 트리거된 작업을 관리합니다.',
         'Management of ticket attribute relations.' => '',
         'Mark as Spam!' => '스팸으로 표시하십시오!',
         'Mark this ticket as junk!' => '이 티켓을 정크로 표시하십시오!',
         'Mattermost Username' => '',
         'Medium' => '중간의',
+        'Mentioned in article' => '',
+        'Mentioned in ticket' => '',
+        'Mentions.' => '',
         'Merge this ticket and all articles into another ticket' => '이 티켓과 모든 기사를 다른 티켓으로 병합하십시오.',
         'Merged Ticket (%s/%s) to (%s/%s).' => '합쳐진 티켓 (%s/%s) ~ (%s/ 1 %s).',
         'Merged Ticket <OTRS_TICKET> to <OTRS_MERGE_TO_TICKET>.' => 'Merged Ticket 1 to 2.',
@@ -9024,6 +9035,7 @@ Thanks for your help!
         'Shows a preview of the ticket overview (CustomerInfo => 1 - shows also Customer-Info, CustomerInfoMaxSize max. size in characters of Customer-Info).' =>
             '티켓 개요의 미리보기를 표시합니다 (CustomerInfo => 1 - Customer-Info, CustomerInfoMaxSize 최대 크기는 Customer-Info의 문자로 표시).',
         'Shows information on how to start OTRS Daemon' => 'OTRS 데몬을 시작하는 방법에 대한 정보를 보여줍니다.',
+        'Shows last mention of tickets.' => '',
         'Signature data.' => '',
         'Signatures' => '서명',
         'Simple' => '단순한',
@@ -9031,6 +9043,7 @@ Thanks for your help!
         'Slovak' => '슬로바키아 사람',
         'Slovenian' => '슬로베니아',
         'Small' => '작은',
+        'Snippet' => '',
         'Software Package Manager.' => '소프트웨어 패키지 관리자.',
         'Solution time' => '솔루션 시간',
         'SolutionDiffInMin' => 'SolutionDiffInMin',
@@ -9254,7 +9267,6 @@ Thanks for your help!
         'Current selection',
         'Currently not possible',
         'Customer interface does not support articles not visible for customers.',
-        'Data Protection',
         'Date/Time',
         'Day',
         'Dec',
@@ -9483,7 +9495,6 @@ Thanks for your help!
         'Support Data information was successfully sent.',
         'Switch to desktop mode',
         'Switch to mobile mode',
-        'System Registration',
         'Team',
         'Th',
         'The browser you are using is too old.',

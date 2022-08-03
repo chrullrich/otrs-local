@@ -1,3 +1,32 @@
+# 6.4.2 2022-07-28
+ - 2022-07-28 Fixed check for recipients in mention notifications. [#270)(https://github.com/znuny/Znuny/issues/270)
+ - 2022-07-28 Added missing module registration to customer interface.
+ - 2022-07-28 Fixed content type of output of AJAX backend modules Kernel/Modules/AJAXRichTextAutocompletion.pm and Kernel/Modules/Mentions.pm.
+ - 2022-07-28 Package Znuny-SMIME will now be uninstalled on Znuny upgrade.
+
+# 6.4.1 2022-07-27
+ - 2022-07-21 Fixed creation of tickets for recurring appointments.
+ - 2022-07-20 Other users now can be referenced/mentioned in rich text editor and will be notified about it.
+ - 2022-07-05 Attachment filenames in ticket zoom will now be truncated if they are too long to be displayed correctly.
+ - 2022-06-29 Added support for nested group search to LDAP modules based on [PR#11](https://github.com/znuny/Znuny/pull/11). Thanks to Frank Wall (@fraenki).
+ - 2022-06-23 Fixed issue with high CPU load on parsing e-mails in PostMaster filter DetectAttachment.
+ - 2022-06-22 Fixed OAuth2 authentication when using POP3 with Microsoft Office 365 or Outlook. [#259](https://github.com/znuny/Znuny/issues/259)
+ - 2022-06-21 Added support for tag OTRS_TicketArticleCreateEvent and attachments to invoker Ticket::Generic.
+ - 2022-06-21 Added support for JSON web tokens (JWT).
+ - 2022-06-20 Improved S/MIME key storage.
+ - 2022-06-17 Added support for autocompletion to CKEditor.
+ - 2022-06-09 Added S/MIME check for sender header. Thanks to @akmet [PR#68](https://github.com/znuny/Znuny/pull/68).
+ - 2022-05-31 Maximum number of lines of quote in body of a message now can be limited in AgentTicketForward and AgentTicketCompose.
+ - 2022-05-30 Fixed use of URL parameter in Kernel::System::Calendar::Plugin::Ticket::Link::LinkList and Kernel::System::Calendar::Export::ICal::Export.
+ - 2022-05-25 Initial search in dialog AgentLinkObject is now limited to tickets which belong to the same customer ID.
+ - 2022-05-24 Sanitized output of ACL Perl config file when dumping and deploying it to avoid unexpected execution of arbitrary Perl code.
+ - 2022-05-19 Sector Nord AG: Fixed transition action for recurring appointments with specific recurrence frequency. Thanks to Sector Nord AG (@jsinagowitz). [#219](https://github.com/znuny/Znuny/pull/219)
+ - 2022-05-10 Mandatory fields in expanded bulk action widgets now will be handled correctly as mandatory.
+ - 2022-05-04 Fixed select fields not being shown in modernized mode after submit with input errors.
+ - 2022-04-21 Added standard templates to [Agent/Customer]TicketProcess.
+ - 2022-03-14 Fixed sending notifications to invalid customer users.
+ - 2022-03-11 Removed system registration.
+
 # 6.3.4 2022-06-15
  - 2022-05-30 Fixed use of URL parameter in Kernel::System::Calendar::Plugin::Ticket::Link::LinkList and Kernel::System::Calendar::Export::ICal::Export.
  - 2022-05-24 Sanitized output of ACL Perl config file when dumping and deploying it to avoid unexpected execution of arbitrary Perl code.
@@ -166,7 +195,11 @@
  - 2021-06-15 Use ticket title as the default appointment title (#90). Thanks to Renée Bäcker (@reneeb). [#90](https://github.com/znuny/Znuny/pull/90)
  - 2021-06-15 Column list validation before saving agent preferences (#84). Thanks to Paweł Bogusławski (@pboguslawski). [#84](https://github.com/znuny/Znuny/pull/84)
 
-# 6.0.44 2022-??-??
+# 6.0.45 2022-07-27
+ - 2022-07-05 Attachment filenames in ticket zoom will now be truncated if they are too long to be displayed correctly.
+ - 2022-06-23 Fixed issue with high CPU load on parsing e-mails in PostMaster filter DetectAttachment.
+
+# 6.0.44 2022-06-15
  - 2022-06-09 Added S/MIME check for sender header. Thanks to @akmet [PR#68](https://github.com/znuny/Znuny/pull/68).
  - 2022-05-24 Sanitized output of ACL Perl config file when dumping and deploying it to avoid unexpected execution of arbitrary Perl code.
  - 2022-05-09 Mandatory fields in expanded bulk action widgets now will be handled correctly as mandatory.
