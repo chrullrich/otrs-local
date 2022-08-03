@@ -20,7 +20,7 @@ aa44944613e5c885508d3ad0ba73f631::bin/otrs.Console.pl
 d114a1e70271f2be154c438521d32c8b::bin/otrs.Daemon.pl
 69a2540a683bfd0f663be9bd663cab07::bin/otrs.PostMaster.pl
 93f36127176bc10fe2872bf81b6e528d::bin/otrs.SetPermissions.pl
-8c73f6d2ee1578fa8340bb979cbbff0b::CHANGES.md
+56ce379fb9e220a8fa86621ff3f619e5::CHANGES.md
 eccc9fa12069986c369d0b38d7a9c3d7::CONTRIBUTING.md
 1ebbd3e34237af26da5dc08a4e440464::COPYING
 d3e41fdb35711bb711988afb75a0624f::COPYING-Third-Party
@@ -84,7 +84,7 @@ ca19e8c3aaf74fbe030f690458279fcd::Kernel/Config/Files/XML/Daemon.xml
 ce204a4d1c78b84b9d01916f545d1112::Kernel/Config/Files/XML/GenericInterface.xml
 66ccc4deadfc4a45dfe079c89f39aea5::Kernel/Config/Files/XML/ProcessManagement.xml
 6ece44d250ac4cb7abdbb0bb5b3e6df9::Kernel/Config/Files/XML/Ticket.xml
-ef0277979b3f5ac4200af1cd3bb745e0::Kernel/Config/Files/XML/Znuny.xml
+0a0ba391812f9778adea1e7f9053063b::Kernel/Config/Files/XML/Znuny.xml
 219ccb85bb331e57f496e74d16c9530e::Kernel/Config.pm.dist
 7b0643fe02c723994e33bd6309ecd9e0::Kernel/Config.pod.dist
 7aba8930f7e657ced7bb58a708936784::Kernel/cpan-lib/Algorithm/Diff.pm
@@ -1129,7 +1129,7 @@ bf00eb3666b28f074f5b5d10bbd10137::Kernel/Modules/AgentZoom.pm
 699f081d9cc5f90f316505f0e12dcb55::Kernel/Modules/AjaxAttachment.pm
 73e62cc3ac02dba4971a9bd9e6dea092::Kernel/Modules/AJAXDynamicFieldWebservice.pm
 add797ef5a77598e0b31887469bd0c33::Kernel/Modules/AJAXNotificationEventTransportWebservice.pm
-94df487414350cb1c7b211eab2e212fe::Kernel/Modules/AJAXRichTextAutocompletion.pm
+7bfdd54b59b715cfbe95b9290cbc4afa::Kernel/Modules/AJAXRichTextAutocompletion.pm
 ab683c5ea3a75de3efcd3299573c1344::Kernel/Modules/CustomerAccept.pm
 5f9c02c6cfcb3274dafbdaeab9deacd0::Kernel/Modules/CustomerPreferences.pm
 191c255ddc40ca112899237f2a2396d6::Kernel/Modules/CustomerTicketArticleContent.pm
@@ -1141,7 +1141,7 @@ e8ba3ebca7bc1b9eb4998e3eab3c4b70::Kernel/Modules/CustomerTicketOverview.pm
 09c43351eb507399b737e81f342b4c3f::Kernel/Modules/CustomerTicketSearch.pm
 a2417eddf5c35faa81acb7fb2e435980::Kernel/Modules/CustomerTicketZoom.pm
 17fcf19601200eec0a16e77a7c3274f9::Kernel/Modules/Installer.pm
-6e784faa9a0d59ea712525dd9e6810cc::Kernel/Modules/Mentions.pm
+73e96de6bced4ef69b64d4d28e1b1578::Kernel/Modules/Mentions.pm
 2f1eb249e012f326adf616f5c2e9d23c::Kernel/Modules/PictureUpload.pm
 857076fc9662157eb3a81f02dd1b94fd::Kernel/Modules/PreApplicationLastViews.pm
 de697150f0f57f298a5f606783de06a6::Kernel/Modules/PublicCalendar.pm
@@ -2211,7 +2211,7 @@ dcacea8ca526e151bc7ee9ecf6a73798::Kernel/System/Ticket/Event/ForceState.pm
 ab89782314c52b5a0fc2867ad7c72762::Kernel/System/Ticket/Event/ForceUnlock.pm
 e2342beda25aa7551687dc57bc17925d::Kernel/System/Ticket/Event/GenericAgent.pm
 c726c89ed54b6586373b9949a3101827::Kernel/System/Ticket/Event/LockAfterCreate.pm
-33d9123ad34f258e33ffd82bfb56bde9::Kernel/System/Ticket/Event/Mentions.pm
+6a1aa90585489290f6a9353fbd96aa8d::Kernel/System/Ticket/Event/Mentions.pm
 4d7f20b77968a8ad958d0a009d713030::Kernel/System/Ticket/Event/NotificationEvent/Transport/Base.pm
 db6f016fd3aa8082de45c4b76b764880::Kernel/System/Ticket/Event/NotificationEvent/Transport/Email.pm
 8eab81c9bd230c2a58dddca9d6b3613d::Kernel/System/Ticket/Event/NotificationEvent/Transport/Webservice.pm
@@ -2329,7 +2329,7 @@ e7ddfec184c1efaf8ccdac87e1d03a3d::Kernel/System/XML.pm
 0ad3f31f8d008c9abe5f4892b2b4038b::Kernel/System/YAML.pm
 b04f54497b4308fd630ccd20908e2c46::Kernel/System/ZnunyHelper.pm
 f700ea53ac4f6e51f8e71c17f0ab2397::README.md
-e37ceda74bfeb8622b091b0f309c137e::RELEASE
+98a0c5ece725218959e1a8b038d4f60b::RELEASE
 57e131b5b7affc5411f3bd174a0c66a3::scripts/apache2-httpd-plack-proxy.conf
 49623aa0dcd41d558a583247817f606a::scripts/apache2-httpd.include.conf
 f6659aa823ab6c6c11bc92c1ee929500::scripts/apache2-perl-startup.pl
@@ -2380,7 +2380,7 @@ a9fc5bdeed6824b82f068c32d4e01bcc::scripts/Migration/Base/PerlVersionCheck.pm
 f7def379c9b6ccf140dd3341e072777d::scripts/Migration/Base/RebuildConfigCleanup.pm
 f1c84499d3b476b63e8785127e445174::scripts/Migration/Base.pm
 06cc3d8d45073dce9739bf1060a47dfd::scripts/Migration/Znuny/MigrateSysConfigSettings.pm
-46348346a106a06d0b5520aeec40c066::scripts/Migration/Znuny/UninstallMergedPackages.pm
+4fce49cb46b98fe848a0e360c05ea4c3::scripts/Migration/Znuny/UninstallMergedPackages.pm
 52ac9eda9ed2d3461817ab7c27e93acb::scripts/Migration/Znuny/UpgradeDatabaseStructure/Mentions.pm
 ef984f3e4d56ae972593e757c3c1ec7e::scripts/Migration/Znuny/UpgradeDatabaseStructure/RecreateForeignKeysToArticleTable.pm
 5e13d71a35c8b4b493074b5ee76757ed::scripts/Migration/Znuny/UpgradeDatabaseStructure/SMIMEKeys.pm
