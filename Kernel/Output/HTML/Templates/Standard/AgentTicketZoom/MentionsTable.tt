@@ -7,7 +7,7 @@
 # --
 <div class="WidgetSimple">
     <div class="Header">
-        <div class="WidgetAction Toggle">
+        <div class="WidgetAction Mentions Toggle">
             <a href="#" title="[% Translate("Show or hide the content") | html %]"><i class="fa fa-caret-right"></i><i class="fa fa-caret-down"></i></a>
         </div>
         <h2>[% Translate("Mentions") | html %]</h2>
@@ -17,7 +17,7 @@
 [% RenderBlockStart("User") %]
             <li style="word-wrap: break-word;">-[% Data.UserFullname %]
                 [% IF Data.Removable %]
-                    <a href="#" id=[% Data.UserID %] class="MentionRow"><i class="fa fa-trash"></i></a>
+                    <a href="#" data-user-id=[% Data.UserID %] class="MentionRow"><i class="fa fa-trash"></i></a>
                 [% END %]
             </li>
 [% RenderBlockEnd("User") %]

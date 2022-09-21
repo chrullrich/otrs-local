@@ -112,13 +112,14 @@ sub new {
         $Self->{RestoreDatabase} = 1;
         my $StartedTransaction = $Self->BeginWork();
         $Self->{UnitTestDriverObject}->True( $StartedTransaction, 'Started database transaction.' );
-
     }
 
     # Disable scheduling of asynchronous tasks using C<AsynchronousExecutor> component of System daemon.
     if ( $Param{DisableAsyncCalls} ) {
         $Self->DisableAsyncCalls();
     }
+
+    $Self->_DisableDefaultSysConfigSettings();
 
     if ( $Param{DisableSysConfigs} ) {
         $Self->DisableSysConfigs(
@@ -928,6 +929,27 @@ sub DisableAsyncCalls {
     return 1;
 }
 
+=head2 _DisableDefaultSysConfigSettings()
+
+These SysConfig options are disabled by default.
+
+=cut
+
+sub _DisableDefaultSysConfigSettings {
+    my ( $Self, %Param ) = @_;
+
+    my @DisableSysConfigs = (
+        'Ticket::EventModulePost###999-NotifyOnEmptyProcessTickets',
+        'Ticket::EventModulePost###Mentions',
+    );
+
+    $Self->DisableSysConfigs(
+        DisableSysConfigs => \@DisableSysConfigs,
+    );
+
+    return 1;
+}
+
 =head2 DisableSysConfigs()
 
 Disables SysConfigs for current UnitTest.
@@ -993,11 +1015,11 @@ receive all calls sent over system C<DBObject>.
 All database contents will be automatically dropped when the Helper object is destroyed.
 
     $HelperObject->ProvideTestDatabase(
-        DatabaseXMLString => $XML,      # (optional) OTRS database XML schema to execute
+        DatabaseXMLString => $XML,      # (optional) database XML schema to execute
                                         # or
         DatabaseXMLFiles => [           # (optional) List of XML files to load and execute
-            '/opt/otrs/scripts/database/otrs-schema.xml',
-            '/opt/otrs/scripts/database/otrs-initial_insert.xml',
+            '/opt/otrs/scripts/database/schema.xml',
+            '/opt/otrs/scripts/database/initial_insert.xml',
         ],
     );
 

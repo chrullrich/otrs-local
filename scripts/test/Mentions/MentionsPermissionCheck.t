@@ -92,11 +92,10 @@ $Self->Is(
 );
 
 my $Success = $MentionObject->AddMention(
-    Recipient => {
-        UserID => $UserID
-    },
-    TicketID  => $TicketID,
-    ArticleID => $ArticleID
+    MentionedUserID => $UserID,
+    TicketID        => $TicketID,
+    ArticleID       => $ArticleID,
+    UserID          => 1,
 );
 
 @Ticket = $TicketObject->TicketSearch(
