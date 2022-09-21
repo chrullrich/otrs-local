@@ -25,7 +25,7 @@ sub Data {
     $Self->{DateFormatShort}     = '';
     $Self->{DateInputFormat}     = '';
     $Self->{DateInputFormatLong} = '';
-    $Self->{Completeness}        = 0.906571009293983;
+    $Self->{Completeness}        = 0.904544714122821;
 
     # csv separator
     $Self->{Separator}         = '';
@@ -1175,6 +1175,7 @@ sub Data {
         'JWT authentication: Additional header data' => '',
         'Additional header data for JWT. Give key/value pairs (separated by ;), e.g.: Key1=Value1;Key2=Value2;Key3=Value3' =>
             '',
+        'OAuth2 token configuration' => '',
         'Content type' => '',
         'The default content type added to HTTP header to use for POST and PUT requests.' =>
             '',
@@ -1385,7 +1386,6 @@ sub Data {
         'Delete account' => '계정 삭제',
         'Fetch mail' => '메일 가져오기',
         'Do you really want to delete this mail account?' => '정말로 이 메일 계정을 삭제 하시겠습니까?',
-        'OAuth2 token configuration' => '',
         'Example: mail.example.com' => '예 : mail.example.com',
         'IMAP Folder' => 'IMAP 폴더',
         'Only modify this if you need to fetch mail from a different folder than INBOX.' =>
@@ -1469,6 +1469,9 @@ sub Data {
             '',
         'Client ID' => '',
         'Client secret' => '',
+        'URL for authorization code' => '',
+        'URL for token by authorization code' => '',
+        'URL for token by refresh token' => '',
         'Template' => '템플릿',
         'This is the template that was used to create this OAuth2 token configuration.' =>
             '',
@@ -2355,6 +2358,7 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentAppointmentCalendarOverview.tt
         'Add new Appointment' => '새 약속 추가',
+        'Appointments' => '약속',
         'Calendars' => '캘린더',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentAppointmentEdit.tt
@@ -5006,6 +5010,11 @@ sub Data {
         'The field content is too long!' => '입력란 내용이 너무 깁니다.',
         'Maximum size is %s characters.' => '최대 크기는%s자입니다.',
 
+        # Perl Module: Kernel/System/MailQueue.pm
+        'Error while validating Message data.' => '',
+        'Error while validating Sender email address.' => '',
+        'Error while validating Recipient email address.' => '',
+
         # Perl Module: Kernel/System/Mention.pm
         'LastMention' => '',
 
@@ -6717,8 +6726,8 @@ sub Data {
             '에이전트 인터페이스의 티켓 비어있는 텍스트 화면에서 노트의 기본 본문을 정의합니다.',
         'Shows a list of all the involved agents on this ticket, in the ticket free text screen of the agent interface.' =>
             '에이전트 인터페이스의 티켓없는 텍스트 화면에 이 티켓의 모든 관련 에이전트 목록을 표시합니다.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket free text screen of the agent interface.' =>
-            '에이전트 인터페이스의 티켓없는 텍스트 화면에서 가능한 모든 에이전트 (큐 / 티켓에 대한 메모 권한이있는 모든 에이전트)의 목록을 표시하여이 참고 사항에 대해 사용자에게 알릴 정보를 결정합니다.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket free text screen of the agent interface.' =>
+            '',
         'Defines if the note in the ticket free text screen of the agent interface is visible for the customer by default.' =>
             '상담원 인터페이스의 티켓 프리 텍스트 화면에있는 노트가 기본적으로 고객에게 표시되는지 여부를 정의합니다.',
         'Shows the ticket priority options in the ticket free text screen of the agent interface.' =>
@@ -6855,8 +6864,8 @@ sub Data {
             '에이전트 인터페이스의 티켓 닫이 화면에 추가된 메모의 기본 본문 텍스트를 설정합니다.',
         'Shows a list of all the involved agents on this ticket, in the close ticket screen of the agent interface.' =>
             '에이전트 인터페이스의 닫기 티켓 화면에서 이 티켓에 관련된 모든 에이전트의 목록을 표시합니다.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the close ticket screen of the agent interface.' =>
-            '가능한 모든 에이전트 (대기열 / 티켓에 대한 메모 권한이있는 모든 에이전트)의 목록을 표시하여 에이전트 인터페이스의 티켓 닫기 화면에서이 메모에 대한 정보를 알릴 사용자를 결정합니다.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the close ticket screen of the agent interface.' =>
+            '',
         'Defines if the note in the close ticket screen of the agent interface is visible for the customer by default.' =>
             '상담원 인터페이스의 닫기 티켓 화면에 있는 메모가 기본적으로 고객에게 표시되는지 여부를 정의합니다.',
         'Shows the ticket priority options in the close ticket screen of the agent interface.' =>
@@ -6899,8 +6908,8 @@ sub Data {
             '에이전트 인터페이스의 티켓 메모 화면에 추가 된 노트의 기본 본문 텍스트를 설정합니다.',
         'Shows a list of all the involved agents on this ticket, in the ticket note screen of the agent interface.' =>
             '에이전트 인터페이스의 티켓 메모 화면에서 이 티켓에 관련된 모든 에이전트의 목록을 표시합니다.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket note screen of the agent interface.' =>
-            '에이전트 인터페이스의 티켓 메모 화면에서 가능한 모든 에이전트 (대기열 / 티켓에 대한 메모 권한을 가진 모든 에이전트)의 목록을 표시하여이 참고 사항에 대해 사용자에게 알릴 정보를 결정합니다.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket note screen of the agent interface.' =>
+            '',
         'Defines if the note in the ticket note screen of the agent interface is visible for the customer by default.' =>
             '상담원 인터페이스의 티켓 메모 화면에있는 메모가 기본적으로 고객에게 표시되는지 여부를 정의합니다.',
         'Shows the ticket priority options in the ticket note screen of the agent interface.' =>
@@ -6943,8 +6952,8 @@ sub Data {
             '에이전트 인터페이스에서 확대 / 축소 된 티켓의 티켓 소유자 화면에 추가 된 노트의 기본 본문 텍스트를 설정합니다.',
         'Shows a list of all the involved agents on this ticket, in the ticket owner screen of a zoomed ticket in the agent interface.' =>
             '에이전트 인터페이스의 확대된 티켓의 티켓 소유자 화면에서 이 티켓에 관련된 모든 에이전트의 목록을 표시합니다.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket owner screen of a zoomed ticket in the agent interface.' =>
-            '에이전트 인터페이스의 확대 된 티켓의 티켓 소유자 화면에서 가능한 모든 에이전트 (대기열 / 티켓에 대한 메모 권한이있는 모든 에이전트)의 목록을 표시하여이 참고 사항에 대해 사용자에게 알릴 사용자를 결정합니다.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket owner screen of a zoomed ticket in the agent interface.' =>
+            '',
         'Defines if the note in the ticket owner screen of the agent interface is visible for the customer by default.' =>
             '에이전트 인터페이스의 티켓 소유자 화면에있는 노트가 기본적으로 고객에게 표시되는지 여부를 정의합니다.',
         'Shows the ticket priority options in the ticket owner screen of a zoomed ticket in the agent interface.' =>
@@ -6987,8 +6996,8 @@ sub Data {
             '에이전트 인터페이스에서 확대 / 축소된 티켓의 티켓 보류 화면에 추가된 노트의 기본 본문 텍스트를 설정합니다.',
         'Shows a list of all the involved agents on this ticket, in the ticket pending screen of a zoomed ticket in the agent interface.' =>
             '에이전트 인터페이스의 확대된 티켓의 티켓 보류 화면에 이 티켓에 이 티켓에 포함된 모든 관련 에이전트의 목록을 표시합니다.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket pending screen of a zoomed ticket in the agent interface.' =>
-            '가능한 모든 상담원 (대기열 / 티켓에 대한 메모 권한이있는 모든 상담원)의 목록을 표시하여 상담원 인터페이스의 확대 된 티켓의 티켓 보류 화면에서이 메모에 대한 정보를받는 사람을 결정합니다.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket pending screen of a zoomed ticket in the agent interface.' =>
+            '',
         'Defines if the note in the ticket pending screen of the agent interface is visible for the customer by default.' =>
             '에이전트 인터페이스의 티켓 보류 화면에있는 메모가 기본적으로 고객에게 표시되는지 여부를 정의합니다.',
         'Shows the ticket priority options in the ticket pending screen of a zoomed ticket in the agent interface.' =>
@@ -7031,8 +7040,8 @@ sub Data {
             '에이전트 인터페이스에서 확대 / 축소 된 티켓의 티켓 우선 순위 화면에 추가 된 노트의 기본 본문 텍스트를 설정합니다.',
         'Shows a list of all the involved agents on this ticket, in the ticket priority screen of a zoomed ticket in the agent interface.' =>
             '에이전트 인터페이스의 확대된 티켓의 티켓 우선 순위 화면에서 이 티켓에 관련된 모든 에이전트의 목록을 표시합니다.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket priority screen of a zoomed ticket in the agent interface.' =>
-            '상담원 인터페이스의 확대 된 티켓의 티켓 우선 순위 화면에서 가능한 모든 상담원 (대기열 / 티켓에 대한 메모 권한이있는 모든 상담원)의 목록을 표시하여이 메모에 대한 정보를 알릴 사용자를 결정합니다.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket priority screen of a zoomed ticket in the agent interface.' =>
+            '',
         'Defines if the note in the ticket priority screen of the agent interface is visible for the customer by default.' =>
             '에이전트 인터페이스의 티켓 우선 순위화면에 있는 노트가 기본적으로 고객에게 표시되는지 여부를 정의합니다.',
         'Shows the ticket priority options in the ticket priority screen of a zoomed ticket in the agent interface.' =>
@@ -7075,8 +7084,8 @@ sub Data {
             '에이전트 인터페이스의 티켓 책임 화면에 추가 된 노트의 기본 본문 텍스트를 설정합니다.',
         'Shows a list of all the involved agents on this ticket, in the ticket responsible screen of the agent interface.' =>
             '에이전트 인터페이스의 티켓 책임 화면에서 이 티켓에 관련된 모든 에이전트의 목록을 표시합니다.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket responsible screen of the agent interface.' =>
-            '에이전트 인터페이스의 티켓 책임 화면에서 가능한 모든 에이전트 (대기열 / 티켓에 대한 메모 권한이있는 모든 에이전트)의 목록을 표시하여이 참고 사항에 대한 정보를 제공해야합니다.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket responsible screen of the agent interface.' =>
+            '',
         'Defines if the note in the ticket responsible screen of the agent interface is visible for the customer by default.' =>
             '에이전트 인터페이스의 티켓 담당 화면에 있는 노트가 기본적으로 고객에게 표시되는지 여부를 정의합니다.',
         'Shows the ticket priority options in the ticket responsible screen of the agent interface.' =>
@@ -7845,7 +7854,6 @@ sub Data {
         'Handles changes to data of modules which use the DBCRUD base module.' =>
             '',
         'Cache settings for DBCRUD modules (default: 1 day).' => '',
-        'Loader module registration for AdminOAuth2TokenManagement.' => '',
         'Displays notifications for missing and expired OAuth2 tokens.' =>
             '',
         'Authentication type for sendmail module. If \'OAuth2 token\' has been selected, SendmailModule::OAuth2TokenConfigName must also be configured.' =>
@@ -7864,7 +7872,6 @@ sub Data {
             '',
         'Agent interface notification module to see the number of tickets an agent is owner for. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
             '',
-        'Loader module registration for AgentAppointmentEdit.' => '',
         'Defines the next possible ticket states for calendar based tickets.' =>
             '',
         'Defines the default next state.' => '',
@@ -7904,6 +7911,9 @@ sub Data {
             '',
         'Defines which notifications about mentions should be sent.' => '',
         'Defines if the toolbar mention icon should count mentions.' => '',
+        'These groups won\'t be selectable to be mentioned.' => '',
+        'Limits number of users (per article) that will be marked as mentioned and be notified. Users (and users from mentioned groups) that exceed this limit will silently be ignored.' =>
+            '',
         'Frontend registration of triggers for mention plugin of CKEditor.' =>
             '',
         'Frontend registration of input/output templates for mention plugin of CKEditor.' =>
@@ -7915,7 +7925,7 @@ sub Data {
             '',
         'Module to grant access to the mentioned agents of a ticket.' => '',
 
-        # XML Definition: scripts/database/otrs-initial_insert.xml
+        # XML Definition: scripts/database/initial_insert.xml
         'invalid-temporarily' => '유효하지 않은 일시적',
         'Group for default access.' => '기본 액세스 그룹.',
         'Group of all administrators.' => '모든 관리자 그룹.',
@@ -8508,7 +8518,6 @@ Thanks for your help!
             '',
         'Admin modules overview.' => '관리 모듈 개요.',
         'Admin.' => '관리자.',
-        'AdminOAuth2TokenManagement' => '',
         'Administration' => '관리',
         'Agent Customer Search' => '고객 검색',
         'Agent Customer Search.' => '상담원 고객 검색.',
@@ -8546,7 +8555,6 @@ Thanks for your help!
         'Appointment list' => '약속 목록',
         'Appointment list.' => '약속 목록',
         'Appointment notifications' => '약속 알림',
-        'Appointments' => '약속',
         'Arabic (Saudi Arabia)' => '아랍어 (사우디 아라비아)',
         'ArticleTree' => 'ArticleTree',
         'Attachment Name' => '첨부명',
@@ -8807,6 +8815,7 @@ Thanks for your help!
         'Inline' => '인라인',
         'Input' => '입력',
         'Interface language' => '인터페이스 언어',
+        'Internal' => '',
         'Internal communication channel.' => '내부 통신 채널.',
         'International Workers\' Day' => '국제 노동의 날',
         'It was not possible to check the PGP signature, this may be caused by a missing public key or an unsupported algorithm.' =>

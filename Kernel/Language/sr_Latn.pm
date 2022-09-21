@@ -31,7 +31,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.93184412196315;
+    $Self->{Completeness}        = 0.929793125916273;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -1181,6 +1181,7 @@ sub Data {
         'JWT authentication: Additional header data' => '',
         'Additional header data for JWT. Give key/value pairs (separated by ;), e.g.: Key1=Value1;Key2=Value2;Key3=Value3' =>
             '',
+        'OAuth2 token configuration' => '',
         'Content type' => '',
         'The default content type added to HTTP header to use for POST and PUT requests.' =>
             '',
@@ -1391,7 +1392,6 @@ sub Data {
         'Delete account' => 'Obriši nalog',
         'Fetch mail' => 'Preuzmi poštu',
         'Do you really want to delete this mail account?' => 'Da li stvarno želite da obrišete ovaj imejl nalog?',
-        'OAuth2 token configuration' => '',
         'Example: mail.example.com' => 'Primer: mail.example.com',
         'IMAP Folder' => 'IMAP folder',
         'Only modify this if you need to fetch mail from a different folder than INBOX.' =>
@@ -1475,6 +1475,9 @@ sub Data {
             '',
         'Client ID' => '',
         'Client secret' => '',
+        'URL for authorization code' => '',
+        'URL for token by authorization code' => '',
+        'URL for token by refresh token' => '',
         'Template' => 'Šablon',
         'This is the template that was used to create this OAuth2 token configuration.' =>
             '',
@@ -2361,6 +2364,7 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentAppointmentCalendarOverview.tt
         'Add new Appointment' => 'Dodaj novi termin',
+        'Appointments' => 'Termini',
         'Calendars' => 'Kalendari',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentAppointmentEdit.tt
@@ -5012,6 +5016,11 @@ sub Data {
         'The field content is too long!' => 'Sadržaj polja je predugačak!',
         'Maximum size is %s characters.' => 'Maksimalna veličina je %s karaktera.',
 
+        # Perl Module: Kernel/System/MailQueue.pm
+        'Error while validating Message data.' => '',
+        'Error while validating Sender email address.' => '',
+        'Error while validating Recipient email address.' => '',
+
         # Perl Module: Kernel/System/Mention.pm
         'LastMention' => '',
 
@@ -6723,8 +6732,8 @@ sub Data {
             'Definiše telo napomene na prikazu ekrana slobodnog teksta tiketa u interfejsu operatera.',
         'Shows a list of all the involved agents on this ticket, in the ticket free text screen of the agent interface.' =>
             'Prikazuje listu svih uključenih operatera za ovaj tiket, na ekranu slobodnog teksta tiketa u operaterskom interfejsu.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket free text screen of the agent interface.' =>
-            'Prikazuje listu svih mogućih operatera (svi operateri sa dozvolom za napomenu za red/tiket) radi utvrđivanja ko treba da bude informisan o ovoj napomeni, na ekranu slobodnog teksta tiketa u interfejsu operatera.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket free text screen of the agent interface.' =>
+            '',
         'Defines if the note in the ticket free text screen of the agent interface is visible for the customer by default.' =>
             'Definiše da li je poruka u ekranu slobodnog teksta tiketa u interfejsu operatera podrazumevano vidljiva za klijenta.',
         'Shows the ticket priority options in the ticket free text screen of the agent interface.' =>
@@ -6861,8 +6870,8 @@ sub Data {
             'Postavlja podrazumevani sadržaj za napomene dodate na ekranu zatvaranja tiketa u interfejsu operatera.',
         'Shows a list of all the involved agents on this ticket, in the close ticket screen of the agent interface.' =>
             'Prikazuje listu svih uključenih operatera za ovaj tiket, na ekranu zatvaranja tiketa u operaterskom interfejsu.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the close ticket screen of the agent interface.' =>
-            'Prikazuje listu svih mogućih operatera (svi operateri sa dozvolom za napomenu za red/tiket) radi utvrđivanja ko treba da bude informisan o ovoj napomeni, na ekranu zatvaranja tiketa u interfejsu operatera.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the close ticket screen of the agent interface.' =>
+            '',
         'Defines if the note in the close ticket screen of the agent interface is visible for the customer by default.' =>
             'Definiše da li je poruka u ekranu zatvaranja tiketa u interfejsu operatera podrazumevano vidljiva za klijenta.',
         'Shows the ticket priority options in the close ticket screen of the agent interface.' =>
@@ -6905,8 +6914,8 @@ sub Data {
             'Postavlja podrazumevani sadržaj za napomene dodate na ekranu napomene tiketa u interfejsu operatera.',
         'Shows a list of all the involved agents on this ticket, in the ticket note screen of the agent interface.' =>
             'Prikazuje listu svih uključenih operatera za ovaj tiket, na ekranu napomene tiketa u operaterskom interfejsu.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket note screen of the agent interface.' =>
-            'Prikazuje listu svih mogućih operatera (svi operateri sa dozvolom za napomenu za red/tiket) radi utvrđivanja ko treba da bude informisan o ovoj napomeni, na ekranu napomene tiketa u interfejsu operatera.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket note screen of the agent interface.' =>
+            '',
         'Defines if the note in the ticket note screen of the agent interface is visible for the customer by default.' =>
             'Definiše da li je poruka u ekranu napomene tiketa u interfejsu operatera podrazumevano vidljiva za klijenta.',
         'Shows the ticket priority options in the ticket note screen of the agent interface.' =>
@@ -6949,8 +6958,8 @@ sub Data {
             'Postavlja podrazumevani sadržaj za napomene dodate na ekranu vlasnika tiketa u interfejsu operatera.',
         'Shows a list of all the involved agents on this ticket, in the ticket owner screen of a zoomed ticket in the agent interface.' =>
             'Prikazuje listu svih uključenih operatera za ovaj tiket, na ekranu vlasnika tiketa na detaljnom prikazu tiketa u operaterskom interfejsu.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket owner screen of a zoomed ticket in the agent interface.' =>
-            'Prikazuje listu svih mogućih operatera (svi operateri sa dozvolom za napomenu za red/tiket) radi utvrđivanja ko treba da bude informisan o ovoj napomeni, na ekranu vlasništva tiketa na detaljnom prikazu tiketa u interfejsu operatera.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket owner screen of a zoomed ticket in the agent interface.' =>
+            '',
         'Defines if the note in the ticket owner screen of the agent interface is visible for the customer by default.' =>
             'Definiše da li je poruka u ekranu vlasnika tiketa u interfejsu operatera podrazumevano vidljiva za klijenta.',
         'Shows the ticket priority options in the ticket owner screen of a zoomed ticket in the agent interface.' =>
@@ -6993,8 +7002,8 @@ sub Data {
             'Postavlja podrazumevani sadržaj za napomene dodate na ekranu tiketa na čekanju na detaljnom prikazu tiketa u interfejsu operatera.',
         'Shows a list of all the involved agents on this ticket, in the ticket pending screen of a zoomed ticket in the agent interface.' =>
             'Prikazuje listu svih uključenih operatera za ovaj tiket, na ekranu tiketa na čekanju na detaljnom prikazu tiketa u operaterskom interfejsu.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket pending screen of a zoomed ticket in the agent interface.' =>
-            'Prikazuje listu svih mogućih operatera (svi operateri sa dozvolom za napomenu za red/tiket) radi utvrđivanja ko treba da bude informisan o ovoj napomeni, na ekranu tiketa na čekanju na detaljnom prikazu tiketa u interfejsu operatera.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket pending screen of a zoomed ticket in the agent interface.' =>
+            '',
         'Defines if the note in the ticket pending screen of the agent interface is visible for the customer by default.' =>
             'Definiše da li je poruka u ekranu tiketa na čekanju u interfejsu operatera podrazumevano vidljiva za klijenta.',
         'Shows the ticket priority options in the ticket pending screen of a zoomed ticket in the agent interface.' =>
@@ -7037,8 +7046,8 @@ sub Data {
             'Postavlja podrazumevani sadržaj za napomene dodate na ekranu prioriteta tiketa na detaljnom prikazu tiketa u interfejsu operatera.',
         'Shows a list of all the involved agents on this ticket, in the ticket priority screen of a zoomed ticket in the agent interface.' =>
             'Prikazuje listu svih uključenih operatera za ovaj tiket, na ekranu prioriteta tiketa na detaljnom prikazu tiketa u operaterskom interfejsu.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket priority screen of a zoomed ticket in the agent interface.' =>
-            'Prikazuje listu svih mogućih operatera (svi operateri sa dozvolom za napomenu za red/tiket) radi utvrđivanja ko treba da bude informisan o ovoj napomeni, na ekranu prioriteta tiketa na detaljnom prikazu tiketa u interfejsu operatera.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket priority screen of a zoomed ticket in the agent interface.' =>
+            '',
         'Defines if the note in the ticket priority screen of the agent interface is visible for the customer by default.' =>
             'Definiše da li je poruka u ekranu prioriteta tiketa u interfejsu operatera podrazumevano vidljiva za klijenta.',
         'Shows the ticket priority options in the ticket priority screen of a zoomed ticket in the agent interface.' =>
@@ -7081,8 +7090,8 @@ sub Data {
             'Postavlja podrazumevani sadržaj za napomene dodate na ekranu odgovornog za tiket u interfejsu operatera.',
         'Shows a list of all the involved agents on this ticket, in the ticket responsible screen of the agent interface.' =>
             'Prikazuje listu svih uključenih operatera za ovaj tiket, na ekranu odgovornog za tiket u operaterskom interfejsu.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket responsible screen of the agent interface.' =>
-            'Prikazuje listu svih mogućih operatera (svi operateri sa dozvolom za napomenu za red/tiket) radi utvrđivanja ko treba da bude informisan o ovoj napomeni, na ekranu odgovornosti za tiket u interfejsu operatera.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket responsible screen of the agent interface.' =>
+            '',
         'Defines if the note in the ticket responsible screen of the agent interface is visible for the customer by default.' =>
             'Definiše da li je poruka u ekranu odgovornog tiketa u interfejsu operatera podrazumevano vidljiva za klijenta.',
         'Shows the ticket priority options in the ticket responsible screen of the agent interface.' =>
@@ -7851,7 +7860,6 @@ sub Data {
         'Handles changes to data of modules which use the DBCRUD base module.' =>
             '',
         'Cache settings for DBCRUD modules (default: 1 day).' => '',
-        'Loader module registration for AdminOAuth2TokenManagement.' => '',
         'Displays notifications for missing and expired OAuth2 tokens.' =>
             '',
         'Authentication type for sendmail module. If \'OAuth2 token\' has been selected, SendmailModule::OAuth2TokenConfigName must also be configured.' =>
@@ -7870,7 +7878,6 @@ sub Data {
             '',
         'Agent interface notification module to see the number of tickets an agent is owner for. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
             '',
-        'Loader module registration for AgentAppointmentEdit.' => '',
         'Defines the next possible ticket states for calendar based tickets.' =>
             '',
         'Defines the default next state.' => '',
@@ -7910,6 +7917,9 @@ sub Data {
             '',
         'Defines which notifications about mentions should be sent.' => '',
         'Defines if the toolbar mention icon should count mentions.' => '',
+        'These groups won\'t be selectable to be mentioned.' => '',
+        'Limits number of users (per article) that will be marked as mentioned and be notified. Users (and users from mentioned groups) that exceed this limit will silently be ignored.' =>
+            '',
         'Frontend registration of triggers for mention plugin of CKEditor.' =>
             '',
         'Frontend registration of input/output templates for mention plugin of CKEditor.' =>
@@ -7921,7 +7931,7 @@ sub Data {
             '',
         'Module to grant access to the mentioned agents of a ticket.' => '',
 
-        # XML Definition: scripts/database/otrs-initial_insert.xml
+        # XML Definition: scripts/database/initial_insert.xml
         'invalid-temporarily' => 'nevažeći-privremeno',
         'Group for default access.' => 'Grupa za podrazumevan pristup.',
         'Group of all administrators.' => 'Grupa svih administratora.',
@@ -8514,7 +8524,6 @@ Vaša tehnička podrška
             '',
         'Admin modules overview.' => 'Pregled administratorskih modula.',
         'Admin.' => 'Admin.',
-        'AdminOAuth2TokenManagement' => '',
         'Administration' => 'Administracija',
         'Agent Customer Search' => 'Pretraga klijenata za operatere',
         'Agent Customer Search.' => 'Pretraga klijenata za operatere.',
@@ -8552,7 +8561,6 @@ Vaša tehnička podrška
         'Appointment list' => 'Lista termina',
         'Appointment list.' => 'Lista termina.',
         'Appointment notifications' => 'Obaveštenja o terminu',
-        'Appointments' => 'Termini',
         'Arabic (Saudi Arabia)' => 'Arapski (Saudijska arabija)',
         'ArticleTree' => 'Članak u obliku drveta',
         'Attachment Name' => 'Naziv priloga',
@@ -8813,6 +8821,7 @@ Vaša tehnička podrška
         'Inline' => 'Neposredno',
         'Input' => 'Unos',
         'Interface language' => 'Jezik interfejsa',
+        'Internal' => '',
         'Internal communication channel.' => 'Interni komunikacioni kanal.',
         'International Workers\' Day' => 'Međunarodni praznik rada',
         'It was not possible to check the PGP signature, this may be caused by a missing public key or an unsupported algorithm.' =>

@@ -37,7 +37,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.870536442197946;
+    $Self->{Completeness}        = 0.868545365694739;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -1187,6 +1187,7 @@ sub Data {
         'JWT authentication: Additional header data' => '',
         'Additional header data for JWT. Give key/value pairs (separated by ;), e.g.: Key1=Value1;Key2=Value2;Key3=Value3' =>
             '',
+        'OAuth2 token configuration' => '',
         'Content type' => '',
         'The default content type added to HTTP header to use for POST and PUT requests.' =>
             '',
@@ -1397,7 +1398,6 @@ sub Data {
         'Delete account' => 'Удалить учётную запись',
         'Fetch mail' => 'Забрать почту',
         'Do you really want to delete this mail account?' => 'Действительно удалить эту почтовую учётную запись?',
-        'OAuth2 token configuration' => '',
         'Example: mail.example.com' => 'Пример: mail.example.com',
         'IMAP Folder' => 'Папка IMAP',
         'Only modify this if you need to fetch mail from a different folder than INBOX.' =>
@@ -1481,6 +1481,9 @@ sub Data {
             '',
         'Client ID' => '',
         'Client secret' => '',
+        'URL for authorization code' => '',
+        'URL for token by authorization code' => '',
+        'URL for token by refresh token' => '',
         'Template' => 'Шаблон',
         'This is the template that was used to create this OAuth2 token configuration.' =>
             '',
@@ -2367,6 +2370,7 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentAppointmentCalendarOverview.tt
         'Add new Appointment' => 'Добавить новое мероприятие',
+        'Appointments' => 'Мероприятия',
         'Calendars' => 'Календари',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentAppointmentEdit.tt
@@ -5018,6 +5022,11 @@ sub Data {
         'The field content is too long!' => 'Содержимое поля слишком длинное!',
         'Maximum size is %s characters.' => 'Максимальный размер %s символов',
 
+        # Perl Module: Kernel/System/MailQueue.pm
+        'Error while validating Message data.' => '',
+        'Error while validating Sender email address.' => '',
+        'Error while validating Recipient email address.' => '',
+
         # Perl Module: Kernel/System/Mention.pm
         'LastMention' => '',
 
@@ -6729,8 +6738,8 @@ sub Data {
             'Задает стандартный текст заметки при редактировании Дополнительных полей (ticket free text) в интерфейсе агента.',
         'Shows a list of all the involved agents on this ticket, in the ticket free text screen of the agent interface.' =>
             'Показывает список всех привлекаемых агентов по этой заявке при изменении Дополнительных полей заявки в интерфейсе агента.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket free text screen of the agent interface.' =>
-            'Показывает список всех доступных агентов (всех агентов с правами note для очереди/заявки), чтобы определить кого нужно информировать об этой заметке при изменении Дополнительных полей заявки в интерфейсе агента.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket free text screen of the agent interface.' =>
+            '',
         'Defines if the note in the ticket free text screen of the agent interface is visible for the customer by default.' =>
             'Определяет, будет ли доступно для просмотра клиенту сообщение агента при изменении динамических полей заявки в интерфейсе агента по умолчанию.',
         'Shows the ticket priority options in the ticket free text screen of the agent interface.' =>
@@ -6867,8 +6876,8 @@ sub Data {
             'Устанавливает текст сообщения по умолчанию при закрытии заявки в интерфейсе агента.',
         'Shows a list of all the involved agents on this ticket, in the close ticket screen of the agent interface.' =>
             'Показывает список всех привлекаемых агентов по этой заявке при закрытии заявки в интерфейсе агента.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the close ticket screen of the agent interface.' =>
-            'Показывает список всех доступных агентов (всех агентов с правами note для очереди/заявки), чтобы определить кого нужно информировать об этой заметке при закрытии заявки в интерфейсе агента.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the close ticket screen of the agent interface.' =>
+            '',
         'Defines if the note in the close ticket screen of the agent interface is visible for the customer by default.' =>
             'Определяет, будет ли доступно для просмотра клиенту сообщение агента при закрытии заявки в интерфейсе агента по умолчанию.',
         'Shows the ticket priority options in the close ticket screen of the agent interface.' =>
@@ -6911,8 +6920,8 @@ sub Data {
             'Устанавливает текст сообщения по умолчанию при создании сообщения к заявке в интерфейсе агента.',
         'Shows a list of all the involved agents on this ticket, in the ticket note screen of the agent interface.' =>
             'Показывает список всех привлекаемых агентов по этой заявке при создании зпметки к заявке в интерфейсе агента.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket note screen of the agent interface.' =>
-            'Показывает список всех доступных агентов (всех агентов с правами note для очереди/заявки), чтобы определить кого нужно информировать об этой заметке при создании заметки к заявке в интерфейсе агента.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket note screen of the agent interface.' =>
+            '',
         'Defines if the note in the ticket note screen of the agent interface is visible for the customer by default.' =>
             'Определяет, будет ли доступно для просмотра клиенту заметка, созданная агентом на экране создания заметки в заявке по умолчанию.',
         'Shows the ticket priority options in the ticket note screen of the agent interface.' =>
@@ -6955,8 +6964,8 @@ sub Data {
             'Устанавливает текст сообщения по умолчанию при смене Владельца заявки в интерфейсе агента.',
         'Shows a list of all the involved agents on this ticket, in the ticket owner screen of a zoomed ticket in the agent interface.' =>
             'Показывает список всех привлекаемых агентов по этой заявке при назначении Владельца заявки в интерфейсе агента.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket owner screen of a zoomed ticket in the agent interface.' =>
-            'Показывает список всех доступных агентов (всех агентов с правами note для очереди/заявки), чтобы определить кого нужно информировать об этой заметке при назначении Владельца заявки в интерфейсе агента.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket owner screen of a zoomed ticket in the agent interface.' =>
+            '',
         'Defines if the note in the ticket owner screen of the agent interface is visible for the customer by default.' =>
             'Определяет, будет ли доступно для просмотра клиенту заметка, созданная агентом на экране назначения владельца заявки, по умолчанию.',
         'Shows the ticket priority options in the ticket owner screen of a zoomed ticket in the agent interface.' =>
@@ -6999,8 +7008,8 @@ sub Data {
             'Устанавливает текст сообщения по умолчанию при переводе заявки в ожидание в интерфейсе агента.',
         'Shows a list of all the involved agents on this ticket, in the ticket pending screen of a zoomed ticket in the agent interface.' =>
             'Показывает список всех привлекаемых агентов по этой заявке при переводе заявки в ожидание в интерфейсе агента.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket pending screen of a zoomed ticket in the agent interface.' =>
-            'Показывает список всех доступных агентов (всех агентов с правами note для очереди/заявки), чтобы определить кого нужно информировать об этой заметке при переводе заявки в ожидание в интерфейсе агента.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket pending screen of a zoomed ticket in the agent interface.' =>
+            '',
         'Defines if the note in the ticket pending screen of the agent interface is visible for the customer by default.' =>
             'Определяет, будет ли доступно для просмотра клиенту заметка, созданная агентом на экране перевода заявки в ожидание, по умолчанию.',
         'Shows the ticket priority options in the ticket pending screen of a zoomed ticket in the agent interface.' =>
@@ -7043,8 +7052,8 @@ sub Data {
             'Устанавливает текст сообщения по умолчанию при смене приоритета заявки в интерфейсе агента.',
         'Shows a list of all the involved agents on this ticket, in the ticket priority screen of a zoomed ticket in the agent interface.' =>
             'Показывает список всех привлекаемых агентов по этой заявке при изменении приоритета заявки в интерфейсе агента.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket priority screen of a zoomed ticket in the agent interface.' =>
-            'Показывает список всех доступных агентов (всех агентов с правами note для очереди/заявки), чтобы определить кого нужно информировать об этой заметке при изменении приоритета заявки в интерфейсе агента.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket priority screen of a zoomed ticket in the agent interface.' =>
+            '',
         'Defines if the note in the ticket priority screen of the agent interface is visible for the customer by default.' =>
             'Определяет, будет ли доступно для просмотра клиенту заметка, созданная агентом на экране изменения приоритета заявки, по умолчанию.',
         'Shows the ticket priority options in the ticket priority screen of a zoomed ticket in the agent interface.' =>
@@ -7087,8 +7096,8 @@ sub Data {
             'Устанавливает текст сообщения по умолчанию при назначении Ответственного заявки в интерфейсе агента.',
         'Shows a list of all the involved agents on this ticket, in the ticket responsible screen of the agent interface.' =>
             'Показывает список всех привлекаемых агентов по этой заявке при назначении Ответственного за заявку в интерфейсе агента.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket responsible screen of the agent interface.' =>
-            'Показывает список всех доступных агентов (всех агентов с правами note для очереди/заявки), чтобы определить кого нужно информировать об этой заметке при назначении Ответственного за заявку в интерфейсе агента.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket responsible screen of the agent interface.' =>
+            '',
         'Defines if the note in the ticket responsible screen of the agent interface is visible for the customer by default.' =>
             'Определяет, будет ли доступно для просмотра клиенту заметка, созданная агентом на экране назначения ответственного за заявку, по умолчанию.',
         'Shows the ticket priority options in the ticket responsible screen of the agent interface.' =>
@@ -7857,7 +7866,6 @@ sub Data {
         'Handles changes to data of modules which use the DBCRUD base module.' =>
             '',
         'Cache settings for DBCRUD modules (default: 1 day).' => '',
-        'Loader module registration for AdminOAuth2TokenManagement.' => '',
         'Displays notifications for missing and expired OAuth2 tokens.' =>
             '',
         'Authentication type for sendmail module. If \'OAuth2 token\' has been selected, SendmailModule::OAuth2TokenConfigName must also be configured.' =>
@@ -7876,7 +7884,6 @@ sub Data {
             '',
         'Agent interface notification module to see the number of tickets an agent is owner for. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
             '',
-        'Loader module registration for AgentAppointmentEdit.' => '',
         'Defines the next possible ticket states for calendar based tickets.' =>
             '',
         'Defines the default next state.' => '',
@@ -7916,6 +7923,9 @@ sub Data {
             '',
         'Defines which notifications about mentions should be sent.' => '',
         'Defines if the toolbar mention icon should count mentions.' => '',
+        'These groups won\'t be selectable to be mentioned.' => '',
+        'Limits number of users (per article) that will be marked as mentioned and be notified. Users (and users from mentioned groups) that exceed this limit will silently be ignored.' =>
+            '',
         'Frontend registration of triggers for mention plugin of CKEditor.' =>
             '',
         'Frontend registration of input/output templates for mention plugin of CKEditor.' =>
@@ -7927,7 +7937,7 @@ sub Data {
             '',
         'Module to grant access to the mentioned agents of a ticket.' => '',
 
-        # XML Definition: scripts/database/otrs-initial_insert.xml
+        # XML Definition: scripts/database/initial_insert.xml
         'invalid-temporarily' => 'временно недействительный',
         'Group for default access.' => 'Группа доступа по умолчанию.',
         'Group of all administrators.' => 'Группа для всех администраторов.',
@@ -8520,7 +8530,6 @@ Thanks for your help!
             '',
         'Admin modules overview.' => '',
         'Admin.' => 'Администратор.',
-        'AdminOAuth2TokenManagement' => '',
         'Administration' => 'Администрирование',
         'Agent Customer Search' => 'Поиск клиента агентом',
         'Agent Customer Search.' => 'Поиск клиента агентом.',
@@ -8558,7 +8567,6 @@ Thanks for your help!
         'Appointment list' => 'Список мероприятий',
         'Appointment list.' => 'Список мероприятий.',
         'Appointment notifications' => 'Уведомления о мероприятиях',
-        'Appointments' => 'Мероприятия',
         'Arabic (Saudi Arabia)' => 'Арабский (Саудовская Аравия)',
         'ArticleTree' => 'Дерево сообщений',
         'Attachment Name' => 'Имя вложения',
@@ -8819,6 +8827,7 @@ Thanks for your help!
         'Inline' => '',
         'Input' => 'Input',
         'Interface language' => 'Язык интерфейса',
+        'Internal' => '',
         'Internal communication channel.' => 'Внутренний канал связи.',
         'International Workers\' Day' => 'День международной солидарности трудящихся',
         'It was not possible to check the PGP signature, this may be caused by a missing public key or an unsupported algorithm.' =>

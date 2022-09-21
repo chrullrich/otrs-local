@@ -1690,18 +1690,22 @@ sub _Mask {
 
     # show time accounting box
     if ( $ConfigObject->Get('Ticket::Frontend::AccountTime') ) {
+        my $IsTimeUnitsRequired = $ConfigObject->Get('Ticket::Frontend::NeedAccountedTime');
+        $LayoutObject->AddJSData(
+            Key   => 'TimeUnitsRequired',
+            Value => $IsTimeUnitsRequired || '',
+        );
 
-        $Param{TimeUnitsRequired} = (
-            $ConfigObject->Get('Ticket::Frontend::NeedAccountedTime')
-            ? 'Validate_DependingRequiredAND Validate_Depending_Subject'
-            : ''
+        my $TimeUnitsInputType = $ConfigObject->Get('Ticket::Frontend::AccountTimeType') // 'Text';
+        $LayoutObject->AddJSData(
+            Key   => 'TimeUnitsInputType',
+            Value => $TimeUnitsInputType,
         );
 
         $Param{TimeUnitsBlock} = $LayoutObject->TimeUnits(
-            ID                => 'TimeUnits',
-            Name              => 'TimeUnits',
-            TimeUnits         => $Param{TimeUnits},
-            TimeUnitsRequired => $Param{TimeUnitsRequired},
+            ID        => 'TimeUnits',
+            Name      => 'TimeUnits',
+            TimeUnits => $Param{TimeUnits},
         );
 
         $LayoutObject->Block(
@@ -1709,17 +1713,10 @@ sub _Mask {
             Data => \%Param,
         );
 
-        $Param{TimeUnitsRequired} = (
-            $ConfigObject->Get('Ticket::Frontend::NeedAccountedTime')
-            ? 'Validate_DependingRequiredAND Validate_Depending_EmailSubject'
-            : ''
-        );
-
         $Param{EmailTimeUnitsBlock} = $LayoutObject->TimeUnits(
-            ID                => 'EmailTimeUnits',
-            Name              => 'EmailTimeUnits',
-            TimeUnits         => $Param{EmailTimeUnits},
-            TimeUnitsRequired => $Param{TimeUnitsRequired},
+            ID        => 'EmailTimeUnits',
+            Name      => 'EmailTimeUnits',
+            TimeUnits => $Param{EmailTimeUnits},
         );
         $LayoutObject->Block(
             Name => 'EmailTimeUnits',

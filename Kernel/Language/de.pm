@@ -25,7 +25,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.993640958747758;
+    $Self->{Completeness}        = 0.997393712330998;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -573,7 +573,7 @@ sub Data {
         'Years in the future to display (default: 5 years).' => 'Jahre in der Zukunft, die angezeigt werden (Standard: 5).',
         'Show link' => 'Link anzeigen',
         'Reserved keywords. The following placeholders are not allowed:' =>
-            '',
+            'Reservierte Schlüsselwörter. Die folgenden Platzhalter sind nicht erlaubt:',
         'Here you can specify an optional HTTP link for the field value in Overviews and Zoom screens.' =>
             'Hier können Sie einen optionalen HTTP-Link für den Feldwert in Übersichten und Ansichtsseiten angeben.',
         'If special characters (&, @, :, /, etc.) should not be encoded, use \'url\' instead of \'uri\' filter.' =>
@@ -640,10 +640,10 @@ sub Data {
         'This is the default term for the click search.' => 'Dies ist der Standardbegriff für die Klicksuche.',
         'Initial default search term' => 'Initialer Standardwert für die Suche',
         'This is the default search term when the mask is loaded.' => 'Dies ist der Standardbegriff für die Suche, wenn die Maske geladen wird.',
-        'Attributes' => '',
+        'Attributes' => 'Attribute',
         'Attributes for invoker execution (initially default values will be used).' =>
             'Attribute für Invoker-Ausführung (initial werden Defaultwerte verwendet).',
-        'Attribute keys' => '',
+        'Attribute keys' => 'Attribut-Schlüssel',
         'Custom attribute form for invoker execution.' => 'Benutzerdefiniertes Attributformular für die Invoker-Ausführung.',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminDynamicFieldWebservice/Config.tt
@@ -1156,7 +1156,7 @@ sub Data {
         'JWT authentication: Key file password' => 'JWT-Authentifizierung: Key-Datei-Passwort',
         'ATTENTION: Password and/or key file (see above) seem to be invalid.' =>
             'ACHTUNG: Password und/oder Key-Datei (siehe oben) scheinen ungültig zu sein.',
-        'JWT authentication: Certificate file' => '',
+        'JWT authentication: Certificate file' => 'JWT-Authentifizierung: Zertifikatsdatei',
         'ATTENTION: Certificate file could not be parsed.' => 'ACHTUNG: Zertifikat-Datei konnte nicht gelesen werden.',
         'ATTENTION: Certificate is expired.' => 'ACHTUNG: Zertifikat ist abgelaufen.',
         'Path to X.509 certificate file (PEM). Data of the certificate can be used for the payload and/or header data of the JWT.' =>
@@ -1175,6 +1175,7 @@ sub Data {
         'JWT authentication: Additional header data' => 'JWT-Authentifizierung: Zusätzliche Header-Daten',
         'Additional header data for JWT. Give key/value pairs (separated by ;), e.g.: Key1=Value1;Key2=Value2;Key3=Value3' =>
             'Zusätzliche Header-Daten für JWT. Geben Sie Key- und Value-Paare an (durch ; getrennt), z. B.: Key1=Value1;Key2=Value2;Key3=Value3',
+        'OAuth2 token configuration' => 'OAuth2-Token-Konfiguration',
         'Content type' => 'Content-Type',
         'The default content type added to HTTP header to use for POST and PUT requests.' =>
             'Default-Content-Type, der für POST- und PUT-Requests zum HTTP-Header hinzugefügt wird.',
@@ -1385,7 +1386,6 @@ sub Data {
         'Delete account' => 'E-Mail-Konto löschen',
         'Fetch mail' => 'E-Mails abholen',
         'Do you really want to delete this mail account?' => 'Möchten Sie dieses E-Mail-Konto wirklich löschen?',
-        'OAuth2 token configuration' => 'OAuth2-Token-Konfiguration',
         'Example: mail.example.com' => 'Beispiel: mail.example.com',
         'IMAP Folder' => 'IMAP-Ordner',
         'Only modify this if you need to fetch mail from a different folder than INBOX.' =>
@@ -1469,6 +1469,9 @@ sub Data {
             'Es existiert bereits eine OAuth2-Token-Konfiguration mit diesem Namen.',
         'Client ID' => 'Client-ID',
         'Client secret' => 'Client-Secret',
+        'URL for authorization code' => 'URL für Autorisierungscode',
+        'URL for token by authorization code' => 'URL für Token per Autorisierungscode',
+        'URL for token by refresh token' => 'URL für Token per Refresh-Token',
         'Template' => 'Vorlage',
         'This is the template that was used to create this OAuth2 token configuration.' =>
             'Dies ist die Vorlage, die zur Erstellung dieser OAuth2-Token-Konfiguration verwendet wurde.',
@@ -2355,6 +2358,7 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentAppointmentCalendarOverview.tt
         'Add new Appointment' => 'Einen neuen Termin hinzufügen',
+        'Appointments' => 'Termine',
         'Calendars' => 'Kalender',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentAppointmentEdit.tt
@@ -2943,7 +2947,7 @@ sub Data {
         'Back to admin overview' => 'Zurück zur Übersicht',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/Calendar/Plugin/Ticket/Create.tt
-        'Ticket Creation' => '',
+        'Ticket Creation' => 'Ticketerstellung',
         'Link' => 'Verknüpfen',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/Calendar/Plugin/Ticket/Link.tt
@@ -3868,7 +3872,7 @@ sub Data {
         'Visible to customer' => 'Sichtbar für Kunde',
 
         # Perl Module: Kernel/Modules/AdminOAuth2TokenManagement.pm
-        'Authorization code parameters not found.' => '',
+        'Authorization code parameters not found.' => 'Autorisierungscode-Parameter nicht gefunden.',
 
         # Perl Module: Kernel/Modules/AdminOTRSBusiness.pm
         'Your system was successfully upgraded to %s.' => 'Ihr System wurde erfolgreich auf die %s erweitert.',
@@ -3913,7 +3917,7 @@ sub Data {
         'Package could not be upgraded' => 'Paket konnte nicht aktualisiert werden',
         'Repository List' => 'Verzeichnisliste',
         'No packages found in selected repository. Please check log for more info!' =>
-            'Keine Pakte im gewählten Verzeichnis gefunden. Bitte prüfen Sie das Systemprotokoll für mehr Informationen!',
+            'Keine Pakete im gewählten Verzeichnis gefunden. Bitte prüfen Sie das Systemprotokoll für mehr Informationen!',
         'Can\'t connect to OTRS Feature Add-on list server!' => 'Kann nicht zum OTRS Feature-Add-on-Listenserver verbinden!',
         'Can\'t get OTRS Feature Add-on list from server!' => 'Kann OTRS Feature-Add-on-Listen nicht vom Server laden!',
         'Can\'t get OTRS Feature Add-on from server!' => 'Kann OTRS Feature-Add-on nicht vom Server laden!',
@@ -4321,7 +4325,7 @@ sub Data {
         'You need move permissions!' => 'Sie benötigen die "Verschieben"-Berechtigung!',
 
         # Perl Module: Kernel/Modules/AgentTicketOwnerView.pm
-        'My Owned Tickets' => '',
+        'My Owned Tickets' => 'Meine eigenen Tickets',
 
         # Perl Module: Kernel/Modules/AgentTicketPhone.pm
         'Chat is not active.' => 'Der Chat ist nicht aktiv.',
@@ -4923,9 +4927,9 @@ sub Data {
         'New mentions' => 'Neue Erwähnungen',
 
         # Perl Module: Kernel/Output/HTML/ToolBar/TicketOwner.pm
-        'Owned Tickets New' => '',
+        'Owned Tickets New' => 'Eigene Tickets Neu',
         'Owned Tickets Reminder Reached' => '',
-        'Owned Tickets Total' => '',
+        'Owned Tickets Total' => 'Eigene Tickets Gesamt',
 
         # Perl Module: Kernel/Output/HTML/ToolBar/TicketResponsible.pm
         'Responsible Tickets New' => 'Neue verantwortliche Tickets',
@@ -5005,6 +5009,11 @@ sub Data {
         'This field is required or' => 'Dieses Feld ist ein Pflichtfeld oder',
         'The field content is too long!' => 'Der Feldinhalt ist zu lang!',
         'Maximum size is %s characters.' => 'Die Maximallänge beträgt %s Zeichen.',
+
+        # Perl Module: Kernel/System/MailQueue.pm
+        'Error while validating Message data.' => 'Fehler bei der Validierung der Nachrichtendaten.',
+        'Error while validating Sender email address.' => 'Fehler bei der Validierung der Absender-E-Mail-Adresse.',
+        'Error while validating Recipient email address.' => 'Fehler bei der Validierung der E-Mail-Adresse des Empfängers.',
 
         # Perl Module: Kernel/System/Mention.pm
         'LastMention' => 'Letzte Erwähnung',
@@ -5534,7 +5543,7 @@ sub Data {
         'List of colors in hexadecimal RGB which will be available for selection during calendar creation. Make sure the colors are dark enough so white text can be overlayed on them.' =>
             'Liste an Farben in Hexadezimal RGB, welche verschiedenen Benutzerkalendern zugewiesen werden. Stellen Sie sicher, dass die Farben dunkel genug sind, um weißen Text darauf darzustellen. Sofern die Anzahl der Kalender die Anzahl der verfügbaren Farben überschreitet, wird diese Liste erneut von Anfang an genutzt.',
         'Defines available groups for the appointment calendar screen.' =>
-            '',
+            'Definiert die verfügbaren Gruppen für das Terminkalenderansicht.',
         'Defines the ticket plugin for calendar appointments.' => 'Legt das Ticket-Plugin für Termine fest.',
         'Links appointments and tickets with a "Normal" type link.' => 'Verknüpft Termine und Tickets mit einem Link vom Typ "Normal".',
         'Define Actions where a settings button is available in the linked objects widget (LinkObject::ViewMode = "complex"). Please note that these Actions must have registered the following JS and CSS files: Core.AllocationList.css, Core.UI.AllocationList.js, Core.UI.Table.Sort.js, Core.Agent.TableFilters.js.' =>
@@ -5709,7 +5718,7 @@ sub Data {
         'The logo shown in the header of the agent interface for the skin "High Contrast". See "AgentLogo" for further description.' =>
             'Das Logo, das für das Design "hoher Kontrast" im Agenten-Interface angezeigt wird. Mehr Informationen finden Sie in der Einstellung "AgentLogo".',
         'The logo shown on top of the login box of the agent interface. The URL to the image can be a relative URL to the skin image directory, or a full URL to a remote web server.' =>
-            'Das Logo, das in der Abmelde-Box der Agenten-Oberfläche angezeigt wird. Die URL zu dem Bild kann entweder eine relative URL zum Designverzeichnis mit dem Bild sein, oder eine vollständige URL zu einem anderen Webserver.',
+            'Das Logo, das in der Anmelde-Box der Agenten-Oberfläche angezeigt wird. Die URL zu dem Bild kann entweder eine relative URL zum Designverzeichnis mit dem Bild sein, oder eine vollständige URL zu einem anderen Webserver.',
         'Defines the URL base path of icons, CSS and Java Script.' => 'Definiert den URL-Basispfad von Symbolen, CSS und JavaScript.',
         'Defines the URL image path of icons for navigation.' => 'Definiert den URL des Bildpfads von Symbolen für die Navigation.',
         'Defines the URL CSS path.' => 'Definiert den URL-CSS-Pfad.',
@@ -6167,7 +6176,7 @@ sub Data {
         'Frontend module registration for the customer interface.' => 'Frontend-Modulregistrierung für den Kundenbereich.',
         'Activates the available themes on the system. Value 1 means active, 0 means inactive.' =>
             'Aktiviert die verfügbaren Skins auf dem System. Wert 1 bedeutet aktiv, 0 bedeutet inaktiv.',
-        'Defines the default value for the action parameter.' => '',
+        'Defines the default value for the action parameter.' => 'Legt den Standardwert für den Aktionsparameter fest.',
         'Defines the shown links in the footer area of the customer and public interface of this OTRS system. The value in "Key" is the external URL, the value in "Content" is the shown label.' =>
             'Definiert die angezeigten Verknüpfungen im Fußbereich des Öffentlichen- und Kunden-Interface dieses OTRS Systems. Der Wert in "Schlüssel" ist die externe URL, der Wert in "Inhalt" das angezeigte Label.',
         'Defines the default value for the action parameter for the public frontend. The action parameter is used in the scripts of the system.' =>
@@ -6387,7 +6396,7 @@ sub Data {
         'Determines the next possible ticket states, for process tickets in the agent interface.' =>
             'Definiert den Nächstmöglichen Ticket-Status für Prozess-Tickets im Agenten-Interface.',
         'Shows existing parent/child (separated by ::) process lists in the form of a tree or a list.' =>
-            '',
+            'Zeigt vorhandene Eltern/Kind (durch :: getrennte) Prozesslisten in Form eines Baums oder einer Liste an.',
         'Determines the next possible ticket states, for process tickets in the customer interface.' =>
             'Bestimmt die die möglichen Folge-Ticket-Status für Prozesstickets im Kundenbereich.',
         'Controls if CustomerID is read-only in the agent interface.' => 'Legt fest, ob die Kundennummer im Agentenbereich als nur lesend angezeigt wird.',
@@ -6458,7 +6467,7 @@ sub Data {
         'IndexAccelerator: to choose your backend TicketViewAccelerator module. "RuntimeDB" generates each queue view on the fly from ticket table (no performance problems up to approx. 60.000 tickets in total and 6.000 open tickets in the system). "StaticDB" is the most powerful module, it uses an extra ticket-index table that works like a view (recommended if more than 80.000 and 6.000 open tickets are stored in the system). Use the command "bin/otrs.Console.pl Maint::Ticket::QueueIndexRebuild" for initial index creation.' =>
             'IndexAccelerator: Auswahl des Backend-Moduls für TicketViewAccelerator. "RuntimeDB" generiert jede Queue-Ansicht dynamisch aus der Tickettabelle (keine Performance-Probleme bis zu etwa 60.000 Tickets insgesamt und 6.000 offenen Tickets im System). "StaticDB" ist das stärkste Modul, es benutzt zusätzliche Tabelle für den Ticket-Index, die wie eine Übersicht funktioniert (empfohlen bei mehr als 80.000 Tickets insgesamt und 6.000 offenen Tickets im System). Benutzen Sie das Kommando "bin/otrs.Console.pl Maint::Ticket::QueueIndexRebuild" für den initialen Indexaufbau.',
         'Saves the attachments of articles. "DB" stores all data in the database (not recommended for storing big attachments). "FS" stores the data on the filesystem; this is faster but the webserver should run under the OTRS user. You can switch between the modules even on a system that is already in production without any loss of data. Note: Searching for attachment names is not supported when "FS" is used.' =>
-            'Speicherung von Artikel-Ahängen. "DB" legt alle Daten in der Datenbank ab (nicht empfohlen für große Anhänge). "FS" legt alle Daten im Dateisystem ab; dies ist schneller, jedoch sollte der Webserver mit dem OTRS-Benutzer betrieben werden. Sie können im laufenden Betrieb ohne Datenverlust zwischen den Modulen wechseln. Bitte beachten Sie, dass das Suchen nach Anhängen für "FS" nicht unterstützt wird.',
+            'Speicherung von Artikel-Anhängen. "DB" legt alle Daten in der Datenbank ab (nicht empfohlen für große Anhänge). "FS" legt alle Daten im Dateisystem ab; dies ist schneller, jedoch sollte der Webserver mit dem OTRS-Benutzer betrieben werden. Sie können im laufenden Betrieb ohne Datenverlust zwischen den Modulen wechseln. Bitte beachten Sie, dass das Suchen nach Anhängen für "FS" nicht unterstützt wird.',
         'Specifies whether all storage backends should be checked when looking for attachments. This is only required for installations where some attachments are in the file system, and others in the database.' =>
             'Legt fest, ob bei der Suche nach Anhängen alle Storage-Backends geprüft werden sollen. Dies wird nur bei Installationen benötigt, bei denen sich Anhänge sowohl im Dateisystem, als auch in der Datenbank befinden.',
         'Specifies the directory to store the data in, if "FS" was selected for ArticleStorage.' =>
@@ -6647,7 +6656,7 @@ sub Data {
         'Defines the default ticket order (after priority sort) in the escalation view of the agent interface. Up: oldest on top. Down: latest on top.' =>
             'Steuert die Ticket-Sortierung (nach der Sortierung nach Priorität) für die Eskalations-Ansicht des Agentenbereichs. Auf: Älteste oben. Ab: Neuste oben.',
         'Allows extended search conditions in ticket search of the agent interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&amp;&amp;*key2*)" or "(*key1*||*key2*)".' =>
-            '',
+            'Ermöglicht erweiterte Suchbedingungen in der Ticketsuche der Agentenschnittstelle. Mit dieser Funktion können Sie z. B. den Titel eines Tickets mit Bedingungen wie "(*key1*&amp;&amp;*key2*)" oder "(*key1*||*key2*)" suchen.',
         'Maximum number of tickets to be displayed in the result of a search in the agent interface.' =>
             'Maximale Anzahl von Tickets, die im Suchergebnis des Agenten-Interfaces angezeigt werden sollen.',
         'Number of tickets to be displayed in each page of a search result in the agent interface.' =>
@@ -6717,8 +6726,8 @@ sub Data {
             'Definiert den Standard-Inhalt einer Notiz in der TicketFreeText-Oberfläche im Agenten-Interface.',
         'Shows a list of all the involved agents on this ticket, in the ticket free text screen of the agent interface.' =>
             'Zeigt in der "Ticket FreiText" Ansicht der Agenten-Oberfläche eine Liste aller am Ticket beteiligten Agenten.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket free text screen of the agent interface.' =>
-            'Zeigt in der "Ticket FreiText" Ansicht der Agenten-Oberfläche eine Liste aller möglichen Agenten (alle Agenten mit Berechtigung für Notizen in diesem Ticket/ dieser Queue) die informiert werden sollen.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket free text screen of the agent interface.' =>
+            'Zeigt in der "Ticket-FreiText"-Ansicht der Agenten-Oberfläche eine Liste aller möglichen Agenten (alle Agenten mit mindestens RO-Berechtigung in diesem Ticket/dieser Queue), die informiert werden sollen.',
         'Defines if the note in the ticket free text screen of the agent interface is visible for the customer by default.' =>
             'Gibt an, ob die Notiz im Bildschirm für Freitextfelder des Agentenbereichs standardmäßig für den Kunden sichtbar sein soll.',
         'Shows the ticket priority options in the ticket free text screen of the agent interface.' =>
@@ -6855,8 +6864,8 @@ sub Data {
             'Definiert den Standard Body-Text für Notizen in der "Ticket Schließen" Ansicht in der Agenten-Oberfläche.',
         'Shows a list of all the involved agents on this ticket, in the close ticket screen of the agent interface.' =>
             'Zeigt in der "Ticket Schließen" Ansicht der Agenten-Oberfläche eine Liste aller am Ticket beteiligten Agenten.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the close ticket screen of the agent interface.' =>
-            'Zeigt in der "Ticket Schließen" Ansicht der Agenten-Oberfläche eine Liste aller möglichen Agenten (alle Agenten mit Berechtigung für Notizen in diesem Ticket/ dieser Queue) die informiert werden sollen.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the close ticket screen of the agent interface.' =>
+            'Zeigt in der "Ticket Schließen"-Ansicht der Agenten-Oberfläche eine Liste aller möglichen Agenten (alle Agenten mit mindestens RO-Berechtigung in diesem Ticket/dieser Queue), die informiert werden sollen.',
         'Defines if the note in the close ticket screen of the agent interface is visible for the customer by default.' =>
             'Gibt an, ob die Notiz im Bildschirm zum Schließen von Tickets des Agentenbereichs standardmäßig für den Kunden sichtbar sein soll.',
         'Shows the ticket priority options in the close ticket screen of the agent interface.' =>
@@ -6899,8 +6908,8 @@ sub Data {
             'Definiert den Standard Body-Text für Notizen in der "Ticket Notiz" Ansicht in der Agenten-Oberfläche.',
         'Shows a list of all the involved agents on this ticket, in the ticket note screen of the agent interface.' =>
             'Zeigt in der "Ticket Notiz" Ansicht der Agenten-Oberfläche eine Liste aller am Ticket beteiligten Agenten.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket note screen of the agent interface.' =>
-            'Zeigt in der "Ticket Notiz" Ansicht der Agenten-Oberfläche eine Liste aller möglichen Agenten (alle Agenten mit Berechtigung für Notizen in diesem Ticket/ dieser Queue) die informiert werden sollen.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket note screen of the agent interface.' =>
+            'Zeigt in der "Ticket-Notiz"-Ansicht der Agenten-Oberfläche eine Liste aller möglichen Agenten (alle Agenten mit mindestens RO-Berechtigung für Notizen in diesem Ticket/dieser Queue), die informiert werden sollen.',
         'Defines if the note in the ticket note screen of the agent interface is visible for the customer by default.' =>
             'Gibt an, ob die Notiz im Bildschirm zum Erfassen von Notizen des Agentenbereichs standardmäßig für den Kunden sichtbar sein soll.',
         'Shows the ticket priority options in the ticket note screen of the agent interface.' =>
@@ -6943,8 +6952,8 @@ sub Data {
             'Definiert den Standard Body-Text für Notizen in der "Ticket Besitzer" Ansicht in der Agenten-Oberfläche.',
         'Shows a list of all the involved agents on this ticket, in the ticket owner screen of a zoomed ticket in the agent interface.' =>
             'Zeigt in der "Ticket Besitzer" Ansicht der Agenten-Oberfläche eine Liste aller am Ticket beteiligten Agenten.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket owner screen of a zoomed ticket in the agent interface.' =>
-            'Zeigt in der "Ticket Besitzer" Ansicht der Agenten-Oberfläche eine Liste aller möglichen Agenten (alle Agenten mit Berechtigung für Notizen in diesem Ticket/ dieser Queue) die informiert werden sollen.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket owner screen of a zoomed ticket in the agent interface.' =>
+            'Zeigt in der "Ticket-Besitzer"-Ansicht der Agenten-Oberfläche eine Liste aller möglichen Agenten (alle Agenten mit mindestens RO-Berechtigung für Notizen in diesem Ticket/dieser Queue), die informiert werden sollen.',
         'Defines if the note in the ticket owner screen of the agent interface is visible for the customer by default.' =>
             'Gibt an, ob die Notiz im Besitzer-Bildschirm des Agentenbereichs standardmäßig für den Kunden sichtbar sein soll.',
         'Shows the ticket priority options in the ticket owner screen of a zoomed ticket in the agent interface.' =>
@@ -6987,8 +6996,8 @@ sub Data {
             'Definiert den Standard Body-Text für Notizen in der "Warten auf Erinnerung" Ansicht in der Agenten-Oberfläche.',
         'Shows a list of all the involved agents on this ticket, in the ticket pending screen of a zoomed ticket in the agent interface.' =>
             'Zeigt in der "Warten auf Erinnerung" Ansicht der Agenten-Oberfläche eine Liste aller am Ticket beteiligten Agenten.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket pending screen of a zoomed ticket in the agent interface.' =>
-            'Zeigt in der "Warten auf Erinnerung" Ansicht der Agenten-Oberfläche eine Liste aller möglichen Agenten (alle Agenten mit Berechtigung für Notizen in diesem Ticket/ dieser Queue) die informiert werden sollen.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket pending screen of a zoomed ticket in the agent interface.' =>
+            'Zeigt in der "Warten auf Erinnerung"-Ansicht der Agenten-Oberfläche eine Liste aller möglichen Agenten (alle Agenten mit mindestens RO-Berechtigung für Notizen in diesem Ticket/dieser Queue), die informiert werden sollen.',
         'Defines if the note in the ticket pending screen of the agent interface is visible for the customer by default.' =>
             'Gibt an, ob die Notiz im Bildschirm zum Setzen von Wartezeiten des Agentenbereichs standardmäßig für den Kunden sichtbar sein soll.',
         'Shows the ticket priority options in the ticket pending screen of a zoomed ticket in the agent interface.' =>
@@ -7031,8 +7040,8 @@ sub Data {
             'Definiert den Standard Body-Text für Notizen in der "Ticket Priorität" Ansicht in der Agenten-Oberfläche.',
         'Shows a list of all the involved agents on this ticket, in the ticket priority screen of a zoomed ticket in the agent interface.' =>
             'Zeigt in der "Ticket Priorität" Ansicht der Agenten-Oberfläche eine Liste aller am Ticket beteiligten Agenten.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket priority screen of a zoomed ticket in the agent interface.' =>
-            'Zeigt in der "Ticket Priorität" Ansicht der Agenten-Oberfläche eine Liste aller möglichen Agenten (alle Agenten mit Berechtigung für Notizen in diesem Ticket/ dieser Queue) die informiert werden sollen.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket priority screen of a zoomed ticket in the agent interface.' =>
+            'Zeigt in der "Ticket-Priorität"-Ansicht der Agenten-Oberfläche eine Liste aller möglichen Agenten (alle Agenten mit mindestens RO-Berechtigung für Notizen in diesem Ticket/dieser Queue), die informiert werden sollen.',
         'Defines if the note in the ticket priority screen of the agent interface is visible for the customer by default.' =>
             'Gibt an, ob die Notiz im Bildschirm zum Setzen einer Priorität des Agentenbereichs standardmäßig für den Kunden sichtbar sein soll.',
         'Shows the ticket priority options in the ticket priority screen of a zoomed ticket in the agent interface.' =>
@@ -7075,8 +7084,8 @@ sub Data {
             'Definiert den Standard Body-Text für Notizen in der "Ticket Verantwortlicher" Ansicht in der Agenten-Oberfläche.',
         'Shows a list of all the involved agents on this ticket, in the ticket responsible screen of the agent interface.' =>
             'Zeigt in der "Ticket Verantwortlicher" Ansicht der Agenten-Oberfläche eine Liste aller am Ticket beteiligten Agenten.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket responsible screen of the agent interface.' =>
-            'Zeigt in der "Ticket Verantwortlicher" Ansicht der Agenten-Oberfläche eine Liste aller möglichen Agenten (alle Agenten mit Berechtigung für Notizen in diesem Ticket/ dieser Queue) die informiert werden sollen.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket responsible screen of the agent interface.' =>
+            'Zeigt in der "Ticket-Verantwortlicher"-Ansicht der Agenten-Oberfläche eine Liste aller möglichen Agenten (alle Agenten mit mindestens RO-Berechtigung für Notizen in diesem Ticket/dieser Queue), die informiert werden sollen.',
         'Defines if the note in the ticket responsible screen of the agent interface is visible for the customer by default.' =>
             'Gibt an, ob die Notiz im Bildschirm zum Setzen eines Verantwortlichen des Agentenbereichs standardmäßig für den Kunden sichtbar sein soll.',
         'Shows the ticket priority options in the ticket responsible screen of the agent interface.' =>
@@ -7489,7 +7498,7 @@ sub Data {
         'Defines the default ticket order of a search result in the customer interface. Up: oldest on top. Down: latest on top.' =>
             'Steuert die Ticket-Sortierung für die Suchergebnis-Ansicht des Kundenbereichs. Auf: Älteste oben. Ab: Neuste oben.',
         'Allows extended search conditions in ticket search of the customer interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&amp;&amp;*key2*)" or "(*key1*||*key2*)".' =>
-            '',
+            'Ermöglicht erweiterte Suchbedingungen in der Ticketsuche der Kundenschnittstelle. Mit dieser Funktion können Sie z. B. den Titel eines Tickets mit Bedingungen wie "(*key1*&amp;&amp;*key2*)" oder "(*key1*||*key2*)" suchen.',
         'If enabled, the customer can search for tickets in all services (regardless what services are assigned to the customer).' =>
             'Wenn aktiviert, können Kunden nach Tickets mit allen Services suchen (unabhängig davon, welche Services dem jeweiligen Kunden zugewiesen sind).',
         'Defines all the parameters for the ShownTickets object in the customer preferences of the customer interface.' =>
@@ -7514,7 +7523,7 @@ sub Data {
         'Sets the default body text for notes added in the ticket move screen of the agent interface.' =>
             'Definiert den Standard Body-Text für Notizen in der "Ticket Verschieben" Ansicht in der Agenten-Oberfläche.',
         'Allows extended search conditions in ticket search of the generic agent interface. With this feature you can search e. g. ticket title with this kind of conditions like "(*key1*&amp;&amp;*key2*)" or "(*key1*||*key2*)".' =>
-            '',
+            'Ermöglicht erweiterte Suchbedingungen in der Ticketsuche der generischen Agentenschnittstelle. Mit dieser Funktion können Sie z. B. den Titel eines Tickets mit Bedingungen wie "(*key1*&amp;&amp;*key2*)" oder "(*key1*||*key2*)" suchen.',
         'Set the limit of tickets that will be executed on a single genericagent job execution.' =>
             'Legt die maximale Anzahl an Tickets fest, die pro GenericAgent-Job-Ausführung bearbeitet werden.',
         'Allows generic agent to execute custom modules.' => 'Ermöglicht es dem GenericAgent, benutzerdefinierte Module auszuführen.',
@@ -7526,7 +7535,7 @@ sub Data {
         'List of all queue events to be displayed in the GUI.' => 'Liste alle Queue-Ereignisse, die in der Benutzeroberfläche angezeigt werden.',
         'Event module that performs an update statement on TicketIndex to rename the queue name there if needed and if StaticDB is actually used.' =>
             'Ereignismodul, das ein Update-Statement auf TicketIndex ausführt, um die Queue umzubenennen (wenn nötig und wenn StaticDB genutzt wird).',
-        'Ignores not ticket related attributes.' => '',
+        'Ignores not ticket related attributes.' => 'Ignoriert nicht ticketbezogene Attribute.',
         'Transport selection for ticket notifications. Please note: setting \'Active\' to 0 will only prevent agents from editing settings of this group in their personal preferences, but will still allow administrators to edit the settings of another user\'s behalf. Use \'PreferenceGroup\' to control in which area these settings should be shown in the user interface.' =>
             'Transportselektion der Terminbenachrichtigungen. Please note: setting \'Active\' to 0 will only prevent agents from editing settings of this group in their personal preferences, but will still allow administrators to edit the settings of another user\'s behalf. Use \'PreferenceGroup\' to control in which area these settings should be shown in the user interface.',
         'ACL module that allows closing parent tickets only if all its children are already closed ("State" shows which states are not available for the parent ticket until all child tickets are closed).' =>
@@ -7845,7 +7854,6 @@ sub Data {
         'Handles changes to data of modules which use the DBCRUD base module.' =>
             'Verarbeitet Änderungen an Daten von Modulen, die das DBCRUD-Modul als Basis nutzen.',
         'Cache settings for DBCRUD modules (default: 1 day).' => 'Cache-Einstellungen für DBCRUD-Module (Standardwert: 1 Tag).',
-        'Loader module registration for AdminOAuth2TokenManagement.' => '',
         'Displays notifications for missing and expired OAuth2 tokens.' =>
             'Zeigt Benachrichtigungen für fehlende und abgelaufene OAuth2-Token an.',
         'Authentication type for sendmail module. If \'OAuth2 token\' has been selected, SendmailModule::OAuth2TokenConfigName must also be configured.' =>
@@ -7864,7 +7872,6 @@ sub Data {
             'Filterbare Spalten in der betreffenden Ansicht des Agentenbereichs. Hinweis: Nur Ticket-Attribute, Dynamische Felder (DynamicField_NameX) und Kundenattribute (z. B. CustomerUserPhone, CustomerCompanyName) sind zulässig.',
         'Agent interface notification module to see the number of tickets an agent is owner for. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
             'Agenten-Schnittstellen Benachrichtigungs-Modul zum Anzeigen der Anzahl der Tickets, für die der Agent besitzer ist. Zusätzliche Zugriffssteuerung zum Zeigen oder Verstecken dieses Links können durch Nutzung des Schlüssels "Group" und Inhalten wie "rw:group1;move_into:group2" realisiert werden.',
-        'Loader module registration for AgentAppointmentEdit.' => '',
         'Defines the next possible ticket states for calendar based tickets.' =>
             'Definiert die nächstmöglichen Ticketzustände für kalenderbasierte Tickets.',
         'Defines the default next state.' => 'Definiert den standardmäßigen nächsten Zustand in der Agentenschnittstelle.',
@@ -7904,6 +7911,9 @@ sub Data {
             'Rich-Text-Editor-Konfiguration für Autocompletion-Modul zur Unterstützung von Vorlagen.',
         'Defines which notifications about mentions should be sent.' => 'Bestimmt, welche Benachrichtigungen über Erwähnungen versendet werden sollen.',
         'Defines if the toolbar mention icon should count mentions.' => 'Erwähnungs-Icon in Toolbar soll Anzahl der Erwähnungen anzeigen.',
+        'These groups won\'t be selectable to be mentioned.' => 'Diese Gruppen stehen nicht für Erwähnungen zur Auswahl.',
+        'Limits number of users (per article) that will be marked as mentioned and be notified. Users (and users from mentioned groups) that exceed this limit will silently be ignored.' =>
+            'Begrenzt die Anzahl der Benutzer (pro Artikel), die als erwähnt markiert und benachrichtigt werden sollen. Benutzer (und Benutzer aus erwähnten Gruppen), die dieses Limit überschreiten, werden ohne Hinweis ignoriert.',
         'Frontend registration of triggers for mention plugin of CKEditor.' =>
             'Frontend-Registrierung für Trigger des CKEditor-Mention-Plugins.',
         'Frontend registration of input/output templates for mention plugin of CKEditor.' =>
@@ -7915,7 +7925,7 @@ sub Data {
             'Benachrichtigungsmodul für Agenten-Interface, das die Anzahl der Erwähnungen anzeigt.',
         'Module to grant access to the mentioned agents of a ticket.' => 'Modul, das Zugriff für die erwähnten Agenten eines Tickets gewährt.',
 
-        # XML Definition: scripts/database/otrs-initial_insert.xml
+        # XML Definition: scripts/database/initial_insert.xml
         'invalid-temporarily' => 'ungültig-temporär',
         'Group for default access.' => 'Gruppe für den Standardzugriff.',
         'Group of all administrators.' => 'Gruppe aller Administratoren.',
@@ -8507,7 +8517,6 @@ Ihr Helpdesk-Team
             'Admin-Konfigurationsdialog für die dynamischen Feldtypen WebserviceText und WebserviceMultiselect',
         'Admin modules overview.' => 'Admin Modul Übersicht.',
         'Admin.' => 'Admin.',
-        'AdminOAuth2TokenManagement' => '',
         'Administration' => 'Administration',
         'Agent Customer Search' => 'Kundensuche Agentenbereich',
         'Agent Customer Search.' => 'Kundensuche Agentenbereich.',
@@ -8545,7 +8554,6 @@ Ihr Helpdesk-Team
         'Appointment list' => 'Terminliste',
         'Appointment list.' => 'Terminliste.',
         'Appointment notifications' => 'Terminbenachrichtigungen',
-        'Appointments' => 'Termine',
         'Arabic (Saudi Arabia)' => 'Arabisch (Saudi-Arabien)',
         'ArticleTree' => 'Artikelbaum',
         'Attachment Name' => 'Name des Anhangs',
@@ -8667,7 +8675,7 @@ Ihr Helpdesk-Team
         'Customer User Information Center Search.' => 'Suche Kundenbenutzer-Informationszentrum.',
         'Customer User Information Center search.' => 'Kundenbenutzer-Informationszentrum-Suche.',
         'Customer User Information Center.' => 'Kundenbenutzer-Informationszentrum.',
-        'Customer User-Customer Relations' => '',
+        'Customer User-Customer Relations' => 'Beziehungen zwischen Kundenbenutzern und Kunden',
         'Customer Users ↔ Customers' => 'Kundenbenutzer ↔ Kunden',
         'Customer Users ↔ Groups' => 'Kundenbenutzer ↔ Gruppen',
         'Customer Users ↔ Services' => 'Kundenbenutzer ↔ Services',
@@ -8799,13 +8807,14 @@ Ihr Helpdesk-Team
         'If enabled, the different overviews (Dashboard, LockedView, QueueView) will automatically refresh after the specified time.' =>
             'Wenn diese Option aktiviert ist, werden die verschiedenen Übersichtsseiten (Dashboard, LockedView, Queue-Ansicht) automatisch nach der angegebenen Zeit aktualisiert.',
         'If you\'re going to be out of office, you may wish to let other users know by setting the exact dates of your absence.' =>
-            'Informiert andere Benutzer über den genauen Zeitraum ihrer Abwesenheit.',
+            'Informiert andere Benutzer über den genauen Zeitraum Ihrer Abwesenheit.',
         'Import appointments screen.' => 'Termin-Import Oberfläche.',
         'Incoming Phone Call.' => 'Eingehender Telefonanruf.',
         'Indonesian' => 'Indonesisch',
         'Inline' => 'Inline',
         'Input' => 'Eingabe',
         'Interface language' => 'Sprache Benutzeroberfläche',
+        'Internal' => 'Intern',
         'Internal communication channel.' => 'Interner Kommunikationskanal.',
         'International Workers\' Day' => 'Tag der Arbeit',
         'It was not possible to check the PGP signature, this may be caused by a missing public key or an unsupported algorithm.' =>
@@ -8821,7 +8830,7 @@ Ihr Helpdesk-Team
         'Last Screen Overview' => 'Letzte Masken-Übersicht',
         'Last customer subject' => 'Letzter Kunden-Betreff',
         'Last view - limit' => 'Letzte Ansicht - Limit',
-        'Last view - position' => 'Letzte Ansicht - Postition',
+        'Last view - position' => 'Letzte Ansicht - Position',
         'Last view - types' => 'Letzte Ansicht - Typen',
         'Lastname Firstname' => 'Nachname Vorname',
         'Lastname Firstname (UserLogin)' => 'Nachname Vorname (BenutzerAnmeldung)',
@@ -8857,7 +8866,7 @@ Ihr Helpdesk-Team
         'Macedonian' => 'Mazedonisch',
         'Mail Accounts' => 'E-Mailkonten',
         'Malay' => 'Malaysisch',
-        'Manage Customer User-Customer Relations.' => '',
+        'Manage Customer User-Customer Relations.' => 'Beziehungen zwischen Kundenbenutzern und Kunden verwalten.',
         'Manage OAuth2 tokens and their configurations.' => 'Verwalten von OAuth2-Token und deren Konfigurationen.',
         'Manage OTRS Group cloud services.' => 'Cloud-Services der OTRS Gruppe verwalten.',
         'Manage PGP keys for email encryption.' => 'PGP-Schlüssel für E-Mail-Verschlüsselung verwalten.',
@@ -8906,7 +8915,7 @@ Ihr Helpdesk-Team
         'Notified about solution time escalation.' => 'Über Lösungszeit-Eskalation benachrichtigt.',
         'Notified about update time escalation.' => 'Über Aktualisierungszeit-Eskalation benachrichtigt.',
         'Number of displayed tickets' => 'Anzahl der angezeigten Tickets',
-        'OAuth2' => '',
+        'OAuth2' => 'OAuth2',
         'OAuth2 token' => 'OAuth2-Token',
         'OTRS Group Services' => 'Dienstleistungen der OTRS Gruppe',
         'Open an external link!' => 'Externen Link öffnen!',
@@ -9042,7 +9051,7 @@ Ihr Helpdesk-Team
         'Slovak' => 'Slowakisch',
         'Slovenian' => 'Slowenisch',
         'Small' => 'Klein',
-        'Snippet' => '',
+        'Snippet' => 'Snippet',
         'Software Package Manager.' => 'Softwarepaketverwaltung.',
         'Solution time' => 'Lösungszeit',
         'SolutionDiffInMin' => 'Lösungszeitdifferenz in Minuten',

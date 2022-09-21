@@ -25,7 +25,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.632153921408772;
+    $Self->{Completeness}        = 0.63039582993973;
 
     # csv separator
     $Self->{Separator}         = ',';
@@ -1175,6 +1175,7 @@ sub Data {
         'JWT authentication: Additional header data' => '',
         'Additional header data for JWT. Give key/value pairs (separated by ;), e.g.: Key1=Value1;Key2=Value2;Key3=Value3' =>
             '',
+        'OAuth2 token configuration' => '',
         'Content type' => '',
         'The default content type added to HTTP header to use for POST and PUT requests.' =>
             '',
@@ -1385,7 +1386,6 @@ sub Data {
         'Delete account' => 'Hapuskan akun',
         'Fetch mail' => 'Menarik surat',
         'Do you really want to delete this mail account?' => '',
-        'OAuth2 token configuration' => '',
         'Example: mail.example.com' => 'Contoh: surat.contoh.com',
         'IMAP Folder' => 'Berkas IMAP',
         'Only modify this if you need to fetch mail from a different folder than INBOX.' =>
@@ -1469,6 +1469,9 @@ sub Data {
             '',
         'Client ID' => '',
         'Client secret' => '',
+        'URL for authorization code' => '',
+        'URL for token by authorization code' => '',
+        'URL for token by refresh token' => '',
         'Template' => 'Template',
         'This is the template that was used to create this OAuth2 token configuration.' =>
             '',
@@ -2356,6 +2359,7 @@ EMAILADDRESS:info@example.com dari, kepada atau Cc.',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentAppointmentCalendarOverview.tt
         'Add new Appointment' => '',
+        'Appointments' => '',
         'Calendars' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentAppointmentEdit.tt
@@ -5008,6 +5012,11 @@ bin/otrs.Daemon.pl status\').',
         'The field content is too long!' => 'Konten dari bidang ini terlalu panjang!',
         'Maximum size is %s characters.' => 'Ukuran maksimum adalah %s karakter',
 
+        # Perl Module: Kernel/System/MailQueue.pm
+        'Error while validating Message data.' => '',
+        'Error while validating Sender email address.' => '',
+        'Error while validating Recipient email address.' => '',
+
         # Perl Module: Kernel/System/Mention.pm
         'LastMention' => '',
 
@@ -6719,8 +6728,8 @@ bin/otrs.Daemon.pl status\').',
             'Mendefinisikan tubuh default catatan dalam tiket layar teks bebas dari antarmuka agen.',
         'Shows a list of all the involved agents on this ticket, in the ticket free text screen of the agent interface.' =>
             'Shows a list of all the involved agents on this ticket, in the ticket free text screen of the agent interface.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket free text screen of the agent interface.' =>
-            'Menunjukkan daftar semua agen yang mungkin (semua agen dengan izin catatan di antrian / tiket) untuk menentukan siapa yang harus diberitahu tentang catatan ini, dalam tiket layar teks bebas dari antarmuka agen.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket free text screen of the agent interface.' =>
+            '',
         'Defines if the note in the ticket free text screen of the agent interface is visible for the customer by default.' =>
             '',
         'Shows the ticket priority options in the ticket free text screen of the agent interface.' =>
@@ -6857,8 +6866,8 @@ bin/otrs.Daemon.pl status\').',
             'Mengatur teks tubuh default untuk catatan ditambahkan dalam layar tiket penutupan antarmuka agen.',
         'Shows a list of all the involved agents on this ticket, in the close ticket screen of the agent interface.' =>
             'Menunjukkan daftar semua agen yang terlibat pada tiket ini, di layar tiket penutupan antarmuka agen.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the close ticket screen of the agent interface.' =>
-            'Menunjukkan daftar semua agen yang mungkin (semua agen dengan izin catatan di antrian / tiket) untuk menentukan siapa yang harus diberitahu tentang catatan ini, di layar tiket penutupan antarmuka agen.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the close ticket screen of the agent interface.' =>
+            '',
         'Defines if the note in the close ticket screen of the agent interface is visible for the customer by default.' =>
             '',
         'Shows the ticket priority options in the close ticket screen of the agent interface.' =>
@@ -6901,8 +6910,8 @@ bin/otrs.Daemon.pl status\').',
             'Mengatur tubuh teks default untuk catatan ditambahkan dalam layar catatan tiket dari antarmuka agen.',
         'Shows a list of all the involved agents on this ticket, in the ticket note screen of the agent interface.' =>
             'Menunjukkan daftar semua agen yang terlibat pada tiket ini, di layar catatan tiket dari antarmuka agen.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket note screen of the agent interface.' =>
-            'Menunjukkan daftar semua agen yang mungkin (semua agen dengan izin catatan di antrian / tiket) untuk menentukan siapa yang harus diberitahu tentang catatan ini, dalam tiket layar teks bebas dari antarmuka agen.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket note screen of the agent interface.' =>
+            '',
         'Defines if the note in the ticket note screen of the agent interface is visible for the customer by default.' =>
             '',
         'Shows the ticket priority options in the ticket note screen of the agent interface.' =>
@@ -6945,8 +6954,8 @@ bin/otrs.Daemon.pl status\').',
             'Mengatur teks tubuh default untuk catatan ditambahkan dalam layar pemilik tiket dari tiket yang diperbesar di antarmuka agen.',
         'Shows a list of all the involved agents on this ticket, in the ticket owner screen of a zoomed ticket in the agent interface.' =>
             'Menunjukkan daftar semua agen yang terlibat pada tiket ini, di layar pemilik tiket dari tiket yang diperbesar di antarmuka agen.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket owner screen of a zoomed ticket in the agent interface.' =>
-            'Menunjukkan daftar semua agen yang mungkin (semua agen dengan izin catatan di antrian / tiket) untuk menentukan siapa yang harus diberitahu tentang catatan ini, di layar pemilik tiket dari tiket yang diperbesar di antarmuka agen.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket owner screen of a zoomed ticket in the agent interface.' =>
+            '',
         'Defines if the note in the ticket owner screen of the agent interface is visible for the customer by default.' =>
             '',
         'Shows the ticket priority options in the ticket owner screen of a zoomed ticket in the agent interface.' =>
@@ -6989,8 +6998,8 @@ bin/otrs.Daemon.pl status\').',
             'Mengatur teks tubuh default untuk catatan ditambahkan dalam layar tiket yang tertunda dari tiket yang diperbesar di antarmuka agen.',
         'Shows a list of all the involved agents on this ticket, in the ticket pending screen of a zoomed ticket in the agent interface.' =>
             'Menunjukkan daftar semua agen yang terlibat pada tiket ini, di layar tiket tertunda dari tiket yang diperbesar di antarmuka agen.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket pending screen of a zoomed ticket in the agent interface.' =>
-            'Menunjukkan daftar semua agen yang mungkin (semua agen dengan izin catatan di antrian / tiket) untuk menentukan siapa yang harus diberitahu tentang catatan ini, dalam tiket tertunda layar tiket diperbesar dalam antarmuka agen.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket pending screen of a zoomed ticket in the agent interface.' =>
+            '',
         'Defines if the note in the ticket pending screen of the agent interface is visible for the customer by default.' =>
             '',
         'Shows the ticket priority options in the ticket pending screen of a zoomed ticket in the agent interface.' =>
@@ -7033,8 +7042,8 @@ bin/otrs.Daemon.pl status\').',
             'Mengatur teks tubuh default untuk catatan yang ditambahkan dalam layar prioritas tiket dari tiket yang diperbesar di antarmuka agen.',
         'Shows a list of all the involved agents on this ticket, in the ticket priority screen of a zoomed ticket in the agent interface.' =>
             'Menunjukkan daftar semua agen yang terlibat pada tiket ini, di layar prioritas tiket dari tiket yang diperbesar di antarmuka agen.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket priority screen of a zoomed ticket in the agent interface.' =>
-            'Menunjukkan daftar semua agen yang mungkin (semua agen dengan izin catatan di antrian / tiket) untuk menentukan siapa yang harus diberitahu tentang catatan ini, di layar prioritas tiket dari tiket yang diperbesar di antarmuka agen.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket priority screen of a zoomed ticket in the agent interface.' =>
+            '',
         'Defines if the note in the ticket priority screen of the agent interface is visible for the customer by default.' =>
             '',
         'Shows the ticket priority options in the ticket priority screen of a zoomed ticket in the agent interface.' =>
@@ -7077,8 +7086,8 @@ bin/otrs.Daemon.pl status\').',
             'Mengatur teks tubuh default untuk catatan yang ditambahkan dalam tiket layar yang bertanggung jawab dari antarmuka agen.',
         'Shows a list of all the involved agents on this ticket, in the ticket responsible screen of the agent interface.' =>
             'Menunjukkan daftar semua agen yang terlibat pada tiket ini, dalam tiket layar yang bertanggung jawab dari antarmuka agen.',
-        'Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket responsible screen of the agent interface.' =>
-            'Menunjukkan daftar semua agen yang mungkin (semua agen dengan izin catatan di antrian / tiket) untuk menentukan siapa yang harus diberitahu tentang catatan ini, dalam tiket layar yang bertanggung jawab dari antarmuka agen.',
+        'Shows a list of all the possible agents (all agents with at least ro permissions on the queue/ticket) to determine who should be informed about this note, in the ticket responsible screen of the agent interface.' =>
+            '',
         'Defines if the note in the ticket responsible screen of the agent interface is visible for the customer by default.' =>
             '',
         'Shows the ticket priority options in the ticket responsible screen of the agent interface.' =>
@@ -7848,7 +7857,6 @@ bin/otrs.Daemon.pl status\').',
         'Handles changes to data of modules which use the DBCRUD base module.' =>
             '',
         'Cache settings for DBCRUD modules (default: 1 day).' => '',
-        'Loader module registration for AdminOAuth2TokenManagement.' => '',
         'Displays notifications for missing and expired OAuth2 tokens.' =>
             '',
         'Authentication type for sendmail module. If \'OAuth2 token\' has been selected, SendmailModule::OAuth2TokenConfigName must also be configured.' =>
@@ -7867,7 +7875,6 @@ bin/otrs.Daemon.pl status\').',
             '',
         'Agent interface notification module to see the number of tickets an agent is owner for. Additional access control to show or not show this link can be done by using Key "Group" and Content like "rw:group1;move_into:group2".' =>
             '',
-        'Loader module registration for AgentAppointmentEdit.' => '',
         'Defines the next possible ticket states for calendar based tickets.' =>
             '',
         'Defines the default next state.' => '',
@@ -7907,6 +7914,9 @@ bin/otrs.Daemon.pl status\').',
             '',
         'Defines which notifications about mentions should be sent.' => '',
         'Defines if the toolbar mention icon should count mentions.' => '',
+        'These groups won\'t be selectable to be mentioned.' => '',
+        'Limits number of users (per article) that will be marked as mentioned and be notified. Users (and users from mentioned groups) that exceed this limit will silently be ignored.' =>
+            '',
         'Frontend registration of triggers for mention plugin of CKEditor.' =>
             '',
         'Frontend registration of input/output templates for mention plugin of CKEditor.' =>
@@ -7918,7 +7928,7 @@ bin/otrs.Daemon.pl status\').',
             '',
         'Module to grant access to the mentioned agents of a ticket.' => '',
 
-        # XML Definition: scripts/database/otrs-initial_insert.xml
+        # XML Definition: scripts/database/initial_insert.xml
         'invalid-temporarily' => 'tidak valid sementara',
         'Group for default access.' => 'Kelompok untuk akses default.',
         'Group of all administrators.' => 'Grup semua administrator',
@@ -8511,7 +8521,6 @@ Helpdesk Team Anda
             '',
         'Admin modules overview.' => '',
         'Admin.' => 'Admin.',
-        'AdminOAuth2TokenManagement' => '',
         'Administration' => 'Administrasi',
         'Agent Customer Search' => '',
         'Agent Customer Search.' => '',
@@ -8549,7 +8558,6 @@ Helpdesk Team Anda
         'Appointment list' => '',
         'Appointment list.' => '',
         'Appointment notifications' => '',
-        'Appointments' => '',
         'Arabic (Saudi Arabia)' => 'Arab (Saudi Arabia)',
         'ArticleTree' => 'ArticleTree',
         'Attachment Name' => 'Lampirkan nama',
@@ -8810,6 +8818,7 @@ Helpdesk Team Anda
         'Inline' => '',
         'Input' => 'Input',
         'Interface language' => 'bahasa antarmuka',
+        'Internal' => '',
         'Internal communication channel.' => '',
         'International Workers\' Day' => 'Hari Pekerja Internasional',
         'It was not possible to check the PGP signature, this may be caused by a missing public key or an unsupported algorithm.' =>
