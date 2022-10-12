@@ -16,6 +16,8 @@ use Kernel::System::EmailParser;
 use Kernel::System::VariableCheck qw(:all);
 use Kernel::Language qw(Translatable);
 
+use Email::Address::XS;
+
 our $ObjectManagerDisabled = 1;
 
 sub new {
@@ -2958,7 +2960,7 @@ sub _GetQuotedReplyBody {
                 );
 
                 my $ResponseFormat = $LayoutObject->{LanguageObject}
-                    ->FormatTimeString( $Param{CreateTime}, 'DateFormat', 'NoSeconds' );
+                    ->FormatTimeString( $Param{CreateTime}, 'DateFormatShort', 'NoSeconds' );
                 $ResponseFormat .= ' - ' . $Param{From} . ' ';
                 $ResponseFormat
                     .= $LayoutObject->{LanguageObject}->Translate('wrote') . ':';
@@ -2999,16 +3001,22 @@ sub _GetQuotedReplyBody {
         # rewrap body if exists
         if ( $Param{Body} ) {
             $Param{Body} =~ s/\t/ /g;
+            my $from_addr = Email::Address::XS->parse($Param{From});
             my $Quote = $ConfigObject->Get('Ticket::Frontend::Quote');
             if ($Quote) {
                 $Param{Body} =~ s/\n/\n$Quote /g;
                 $Param{Body} = "\n$Quote " . $Param{Body};
 
-                my $ResponseFormat = $LayoutObject->{LanguageObject}
-                    ->FormatTimeString( $Param{CreateTime}, 'DateFormat', 'NoSeconds' );
-                $ResponseFormat .= ' - ' . $Param{From} . ' ';
+                my $ResponseFormat = '* ' . $from_addr->name() . ' ';
+
                 $ResponseFormat
-                    .= $LayoutObject->{LanguageObject}->Translate('wrote') . ":\n";
+                    .= $LayoutObject->{LanguageObject}->Translate('wrote on');
+
+		$ResponseFormat .= ' ';
+
+                $ResponseFormat .= $LayoutObject->{LanguageObject}
+                    ->FormatTimeString( $Param{CreateTime}, 'DateFormatShort', 'NoSeconds' );
+                $ResponseFormat .= ":\n";
 
                 $Param{Body} = $ResponseFormat . $Param{Body};
             }

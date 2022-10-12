@@ -9203,7 +9203,7 @@ Ihr Helpdesk-Team
         'responsible' => 'Verantwortlicher',
         'reverse' => 'umgekehrt',
         'stats' => 'stats',
-
+        'wrote on' => 'schrieb am',
     };
 
     $Self->{JavaScriptStrings} = [
