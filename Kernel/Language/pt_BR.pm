@@ -30,7 +30,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.877341586577619;
+    $Self->{Completeness}        = 0.87607601104434;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -1155,15 +1155,15 @@ sub Data {
         'The password for the privileged user.' => 'A senha para o usuário privilegiado.',
         'JWT authentication: Key file' => '',
         'ATTENTION: Key file and/or password (if needed, see below) seem to be invalid.' =>
-            '',
+            'ATENÇÃO: Arquivo de chave e/ou senha (se necessário, veja abaixo) parecem inválidos.',
         'Path to private key file (PEM or DER). The key will be used to sign the JWT.' =>
             '',
         'JWT authentication: Key file password' => '',
         'ATTENTION: Password and/or key file (see above) seem to be invalid.' =>
             '',
         'JWT authentication: Certificate file' => '',
-        'ATTENTION: Certificate file could not be parsed.' => '',
-        'ATTENTION: Certificate is expired.' => '',
+        'ATTENTION: Certificate file could not be parsed.' => 'ATENÇÃO: Não foi possível analisar o arquivo de certificado.',
+        'ATTENTION: Certificate is expired.' => 'ATENÇÃO: Certificado expirado.',
         'Path to X.509 certificate file (PEM). Data of the certificate can be used for the payload and/or header data of the JWT.' =>
             '',
         'JWT authentication: Algorithm' => '',
@@ -1477,6 +1477,7 @@ sub Data {
         'URL for authorization code' => '',
         'URL for token by authorization code' => '',
         'URL for token by refresh token' => '',
+        'Access token scope' => '',
         'Template' => 'Modelo',
         'This is the template that was used to create this OAuth2 token configuration.' =>
             '',
@@ -2518,6 +2519,9 @@ sub Data {
         'New phone ticket from %s' => 'Novo chamado via fone de %s',
         'New email ticket to %s' => 'Novo chamado via e-mail de %s',
 
+        # TT Template: Kernel/Output/HTML/Templates/Standard/AgentDashboardMyLastChangedTickets.tt
+        'No tickets found.' => '',
+
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentDashboardProductNotify.tt
         '%s %s is available!' => '%s %s está disponível!',
         'Please update now.' => 'Por favor atualize agora.',
@@ -2912,6 +2916,12 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/ArticleRender/MIMEBase.tt
         'This message is being processed. Already tried to send %s time(s). Next try will be %s.' =>
             'Esta mensagem está sendo processada. Já foi(ram) feita(s) %s tentativa(s) de envio. Próxima tentativa será %s.',
+        'This message contains events' => '',
+        'This message contains an event' => '',
+        'Show more information' => '',
+        'Start: %s, End: %s' => '',
+        'Calendar events details' => '',
+        'Calendar event details' => '',
         'To open links in the following article, you might need to press Ctrl or Cmd or Shift key while clicking the link (depending on your browser and OS).' =>
             'Para abrir links no artigo seguinte, talvez você precise pressionar Ctrl, Cmd ou Shift enquanto clica no link (dependendo do seu navegador ou sistema operacional).',
         'Close this message' => 'Fechar esta mensagem',
@@ -4111,7 +4121,7 @@ sub Data {
         # Perl Module: Kernel/Modules/AdminSystemFiles.pm
         'Package files - %s' => '',
         '(Files where only the permissions have been changed will not be displayed.)' =>
-            '',
+            '(Os arquivos onde apenas as permissões foram alteradas não serão exibidos.)',
 
         # Perl Module: Kernel/Modules/AdminSystemMaintenance.pm
         'Start date shouldn\'t be defined after Stop date!' => 'Data inicial não deve ser definida após data final!',
@@ -4595,7 +4605,7 @@ sub Data {
             '',
 
         # Perl Module: Kernel/Modules/Mentions.pm
-        '%s users will be mentioned' => '',
+        '%s users will be mentioned' => '%s usuários serão mencionados',
 
         # Perl Module: Kernel/Modules/PublicCalendar.pm
         'No %s!' => 'Nenhum %s!',
@@ -4714,6 +4724,9 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/Dashboard/EventsTicketCalendar.pm
         'The start time of a ticket has been set after the end time!' => 'O tempo inicial do Ticket foi definido antes do tempo final.',
 
+        # Perl Module: Kernel/Output/HTML/Dashboard/MyLastChangedTickets.pm
+        'Shown Tickets' => 'Chamados Exibidos',
+
         # Perl Module: Kernel/Output/HTML/Dashboard/News.pm
         'Can\'t connect to OTRS News server!' => 'Não foi possível conectar ao servidor de Notícias do OTRS.',
         'Can\'t get OTRS News from server!' => 'Não foi possível obter Notícias do servidor OTRS.',
@@ -4726,7 +4739,6 @@ sub Data {
         'Can\'t connect to %s!' => 'Não foi possível coectar em %s',
 
         # Perl Module: Kernel/Output/HTML/Dashboard/TicketGeneric.pm
-        'Shown Tickets' => 'Chamados Exibidos',
         'Shown Columns' => 'Colunas Exibidas',
         'filter not active' => 'Filtro não ativo.',
         'filter active' => 'Filtro ativo.',
@@ -4982,6 +4994,12 @@ sub Data {
 
         # Perl Module: Kernel/System/Calendar/Plugin/Ticket/Create.pm
         'On the date' => '',
+
+        # Perl Module: Kernel/System/CalendarEvents.pm
+        'on' => '',
+        'of year' => 'do ano',
+        'of month' => '',
+        'all-day' => '',
 
         # Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
         'Configuration Options Reference' => 'Referência de Opções de Configuração',
@@ -5731,14 +5749,19 @@ sub Data {
         'Uses richtext for viewing and editing: articles, salutations, signatures, standard templates, auto responses and notifications.' =>
             'Usar RichText quando visualizar e editar: artigos, saudações, assinaturas, modelos, auto respostas e notificações.',
         'Defines the URL rich text editor path.' => 'Define o caminho URL do editor de texto rico.',
-        'Defines the width for the rich text editor component. Enter number (pixels) or percent value (relative).' =>
-            '',
-        'Defines the height for the rich text editor component. Enter number (pixels) or percent value (relative).' =>
-            'Define a altura do componente de edição rich text. Registre um número (pixels) ou uma porcentagem (relativo).',
         'Defines the default CSS used in rich text editors.' => 'Define o CSS padrão utilizados nos editores rich text.',
         'Defines if the enhanced mode should be used (enables use of table, replace, subscript, superscript, paste from word, etc.).' =>
             'Define se o modo avançado deve ser utilizado (permite o uso de tabela, substituição, subscrito, sobrescrito, colar do Word, etc.).',
         'Defines if the enhanced mode should be used (enables use of table, replace, subscript, superscript, paste from word, etc.) in customer interface.' =>
+            '',
+        'Defines the width for the rich text editor component. Enter number (pixels) or percent value (relative).' =>
+            '',
+        'Defines the height for the rich text editor component. Enter number (pixels) or percent value (relative).' =>
+            'Define a altura do componente de edição rich text. Registre um número (pixels) ou uma porcentagem (relativo).',
+        'Defines the selectable font sizes in the rich text editor.' => '',
+        'Defines the selectable fonts in the rich text editor.' => '',
+        'Defines additional plugins for use in the rich text editor.' => '',
+        'Defines extra content that is allowed for use in the rich text editor.' =>
             '',
         'Disable autocomplete in the login screen.' => '',
         'Disable HTTP header "X-Frame-Options: SAMEORIGIN" to allow OTRS to be included as an IFrame in other websites. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
@@ -7376,6 +7399,7 @@ sub Data {
             'Parâmetros para o backend de painel da visão geral de tickets abertos na interface de agente. "Limit" é o número de registros apresentados como padrão. "Group" é utilizado para restringir o acesso ao plugin (exemplo: Group: admin;group1;group2;). "Default" determina se o plugin é ativado como padrão ou se o usuário precisa ativar manualmente. "CacheTTLLocal" é o tempo de cache em minutos para o plugin. "Mandatory" determina se o plugin é sempre exibido e não pode ser removido pelos agentes. Observação: Somente atributos de ticket e Campos Dinâmicos (DynamicField_NomeX) são permitidos em DefaultColumns.',
         'Parameters for the dashboard backend of the ticket stats of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. "Mandatory" determines if the plugin is always shown and can not be removed by agents.' =>
             'Parâmetros para o backend de painel das estatísticas de ticket na interface de agente. "Limit" é o número de entradas exibidas como padrão. "Group" é utilizado para restringir o acesso ao plugin (exemplo Group: admin;group1;group2;). "Default" determina se o plugin é ativado como padrão ou se o usuário precisa ativar manualmente. "CacheTTLLocal" é o tempo de cache, em minutos, para o plugin. "Mandatory" determina se o plugin é exibido sempre e não pode ser removido pelos agentes.',
+        'MyLastChangedTickets dashboard widget.' => '',
         'Parameters for the dashboard backend of the upcoming events widget of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. "Mandatory" determines if the plugin is always shown and can not be removed by agents.' =>
             'Parâmetros para o backend de painel do widget de eventos futuros na interface de agente. "Limit" é o número de entradas exibidas como padrão. "Group" é utilizado para restringir o acesso ao plugin (exemplo Group: admin;group1;group2;). "Default" determina se o plugin é ativado como padrão ou se o usuário precisa ativar manualmente. "CacheTTLLocal" é o tempo de cache, em minutos, para o plugin. "Mandatory" determina se o plugin é exibido sempre e não pode ser removido pelos agentes.',
         'Parameters for the dashboard backend of the queue overview widget of the agent interface. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "QueuePermissionGroup" is not mandatory, queues are only listed if they belong to this permission group if you enable it. "States" is a list of states, the key is the sort order of the state in the widget. "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. "Mandatory" determines if the plugin is always shown and can not be removed by agents.' =>
@@ -7776,7 +7800,7 @@ sub Data {
         'Maximum number of parallel instances when using OTRS_AsynchronousInvokerExecution in invoker Ticket::Generic.' =>
             '',
         'Enables support for huge XML data in load_xml calls of CPAN library XML::LibXML. This should only be enabled if absolutely needed. Disabling this option (default) protects against denial of service through entity expansion attacks. Before enabling this option ensure that alternative measures to protect the application against this type of attack have been taken.' =>
-            '',
+            'Ativa suporte para dados XML enormes em chamadas load_xml da biblioteca CPAN XML::LibXML. Isso só deve ser ativado se for absolutamente necessário. Desabilitar esta opção (padrão) protege contra negação de serviço por meio de ataques de expansão de entidade. Antes de ativar esta opção, certifique-se de que foram tomadas medidas alternativas para proteger o aplicativo contra esse tipo de ataque.',
         'Shows a link in the menu to create a unit test for the current ticket.' =>
             '',
         'Shows a link in the menu to create and send a unit test for the current ticket.' =>
@@ -8474,7 +8498,7 @@ Obrigado pela ajuda!
         ' 5 minutes' => ' 5 minutos',
         ' 7 minutes' => ' 7 minutos',
         '"Slim" skin which tries to save screen space for power users.' =>
-            '',
+            'Skin "Slim" tenta economizar espaço na tela para usuários avançados',
         '%s' => '%s',
         '(UserLogin) Firstname Lastname' => '(Login) Nome Sobrenome',
         '(UserLogin) Lastname Firstname' => '(Login de Usuário) ÚltimoNome PrimeiroNome',
@@ -8903,6 +8927,7 @@ Obrigado pela ajuda!
         'My Queues' => 'Minhas Filas',
         'My Services' => 'Meus Serviços',
         'My Tickets.' => 'Meus Chamados.',
+        'My last changed tickets' => '',
         'NameX' => 'NomeX',
         'New Ticket' => 'Novo Chamado',
         'New Tickets' => 'Chamados Novos',

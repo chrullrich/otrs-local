@@ -32,7 +32,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y.%M.%D';
     $Self->{DateInputFormat}     = '%Y.%M.%D';
     $Self->{DateInputFormatLong} = '%Y.%M.%D - %T';
-    $Self->{Completeness}        = 0.93337677146115;
+    $Self->{Completeness}        = 0.930648042878025;
 
     # csv separator
     $Self->{Separator}         = '';
@@ -1479,6 +1479,7 @@ sub Data {
         'URL for authorization code' => '',
         'URL for token by authorization code' => '',
         'URL for token by refresh token' => '',
+        'Access token scope' => '',
         'Template' => '模版',
         'This is the template that was used to create this OAuth2 token configuration.' =>
             '',
@@ -2520,6 +2521,9 @@ sub Data {
         'New phone ticket from %s' => '来自于%s新的电话工单',
         'New email ticket to %s' => '给%s新的邮件工单',
 
+        # TT Template: Kernel/Output/HTML/Templates/Standard/AgentDashboardMyLastChangedTickets.tt
+        'No tickets found.' => '',
+
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentDashboardProductNotify.tt
         '%s %s is available!' => '%s %s可用了！',
         'Please update now.' => '请现在更新。',
@@ -2914,6 +2918,12 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketZoom/ArticleRender/MIMEBase.tt
         'This message is being processed. Already tried to send %s time(s). Next try will be %s.' =>
             '此消息正在处理中。 已尝试发送%s次，下次重试将在%s。',
+        'This message contains events' => '',
+        'This message contains an event' => '',
+        'Show more information' => '',
+        'Start: %s, End: %s' => '',
+        'Calendar events details' => '',
+        'Calendar event details' => '',
         'To open links in the following article, you might need to press Ctrl or Cmd or Shift key while clicking the link (depending on your browser and OS).' =>
             '要打开工单里的链接, 你可能需要单击链接的同时按住Ctrl或Cmd或Shift键(取决于您的浏览器和操作系统 ).',
         'Close this message' => '关闭本消息',
@@ -4716,6 +4726,9 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/Dashboard/EventsTicketCalendar.pm
         'The start time of a ticket has been set after the end time!' => '工单开始时间被设置在结束时间之后！',
 
+        # Perl Module: Kernel/Output/HTML/Dashboard/MyLastChangedTickets.pm
+        'Shown Tickets' => '显示工单',
+
         # Perl Module: Kernel/Output/HTML/Dashboard/News.pm
         'Can\'t connect to OTRS News server!' => '无法连接OTRS新闻服务器！',
         'Can\'t get OTRS News from server!' => '无法从服务器获取OTRS新闻！',
@@ -4728,7 +4741,6 @@ sub Data {
         'Can\'t connect to %s!' => '无法连接到%s！',
 
         # Perl Module: Kernel/Output/HTML/Dashboard/TicketGeneric.pm
-        'Shown Tickets' => '显示工单',
         'Shown Columns' => '显示字段',
         'filter not active' => '过滤器没有激活',
         'filter active' => '过滤器是活动的',
@@ -4984,6 +4996,12 @@ sub Data {
 
         # Perl Module: Kernel/System/Calendar/Plugin/Ticket/Create.pm
         'On the date' => '',
+
+        # Perl Module: Kernel/System/CalendarEvents.pm
+        'on' => '',
+        'of year' => '',
+        'of month' => '',
+        'all-day' => '',
 
         # Perl Module: Kernel/System/Console/Command/Dev/Tools/Config2Docbook.pm
         'Configuration Options Reference' => '配置选项参考手册',
@@ -5733,15 +5751,20 @@ sub Data {
         'Uses richtext for viewing and editing: articles, salutations, signatures, standard templates, auto responses and notifications.' =>
             '查看和编辑以下内容时使用富文本：信件、问候语、签名、标准模板、自动响应和通知。',
         'Defines the URL rich text editor path.' => '定义富文本编辑器的URL地址。',
-        'Defines the width for the rich text editor component. Enter number (pixels) or percent value (relative).' =>
-            '定义富文本编辑器组件的宽度。输入数值（像素值）或百分比值（相对值）。',
-        'Defines the height for the rich text editor component. Enter number (pixels) or percent value (relative).' =>
-            '定义富文本编辑器组件的高度。输入数值（像素值）或百分比值（相对值）。',
         'Defines the default CSS used in rich text editors.' => '定义用于富文本编辑器的默认CSS。',
         'Defines if the enhanced mode should be used (enables use of table, replace, subscript, superscript, paste from word, etc.).' =>
             '定义是否使用增强模式（启用表格、替换、下标、上标、从WORD粘贴等功能）。',
         'Defines if the enhanced mode should be used (enables use of table, replace, subscript, superscript, paste from word, etc.) in customer interface.' =>
             '定义客户界面是否使用增强模式（启用表格、替换、下标、上标、从WORD粘贴等功能）。',
+        'Defines the width for the rich text editor component. Enter number (pixels) or percent value (relative).' =>
+            '定义富文本编辑器组件的宽度。输入数值（像素值）或百分比值（相对值）。',
+        'Defines the height for the rich text editor component. Enter number (pixels) or percent value (relative).' =>
+            '定义富文本编辑器组件的高度。输入数值（像素值）或百分比值（相对值）。',
+        'Defines the selectable font sizes in the rich text editor.' => '',
+        'Defines the selectable fonts in the rich text editor.' => '',
+        'Defines additional plugins for use in the rich text editor.' => '',
+        'Defines extra content that is allowed for use in the rich text editor.' =>
+            '',
         'Disable autocomplete in the login screen.' => '在登录屏幕中禁用自动完成功能。',
         'Disable HTTP header "X-Frame-Options: SAMEORIGIN" to allow OTRS to be included as an IFrame in other websites. Disabling this HTTP header can be a security issue! Only disable it, if you know what you are doing!' =>
             '禁用HHTP头"X-Frame-Options: SAMEORIGIN" 以便允许OTRS可以包含在其它网址的IFrame框架中。禁用这个HTTP头可能有安全问题！仅在您知道您在干什么时才禁用它！',
@@ -7378,6 +7401,7 @@ sub Data {
             '服务人员界面处理工单概览的仪表板后端的参数。"Limit（限制）" 是默认的显示条目数，“GROUP”（组）用于到本插件的访问权限限制（如 Group:admin;group1;group2）。“Default（默认）”代表这个插件是默认启用还是需要用户手动启用。“CacheTTL”表明本插件的缓存过期时间（单位：分钟）。“Mandatory（强制）”确定插件是否始终显示且不能被服务人员移除。 注意：只有工单属性和动态字段（DynamicField_NameX）才允许使用DefaultColumns（默认字段）。',
         'Parameters for the dashboard backend of the ticket stats of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. "Mandatory" determines if the plugin is always shown and can not be removed by agents.' =>
             '服务人员界面工单统计的仪表板后端的参数。"Limit（限制）" 是默认的显示条目数，“GROUP”（组）用于到本插件的访问权限限制（如 Group:admin;group1;group2）。“Default（默认）”代表这个插件是默认启用还是需要用户手动启用。“CacheTTL”表明本插件的缓存过期时间（单位：分钟）。“Mandatory（强制）”确定插件是否始终显示且不能被服务人员移除。',
+        'MyLastChangedTickets dashboard widget.' => '',
         'Parameters for the dashboard backend of the upcoming events widget of the agent interface. "Limit" is the number of entries shown by default. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. "Mandatory" determines if the plugin is always shown and can not be removed by agents.' =>
             '服务人员界面即将发生的事件小部件的仪表板后端的参数。"Limit（限制）" 是默认的显示条目数，“GROUP”（组）用于到本插件的访问权限限制（如 Group:admin;group1;group2）。“Default（默认）”代表这个插件是默认启用还是需要用户手动启用。“CacheTTL”表明本插件的缓存过期时间（单位：分钟）。“Mandatory（强制）”确定插件是否始终显示且不能被服务人员移除。',
         'Parameters for the dashboard backend of the queue overview widget of the agent interface. "Group" is used to restrict the access to the plugin (e. g. Group: admin;group1;group2;). "QueuePermissionGroup" is not mandatory, queues are only listed if they belong to this permission group if you enable it. "States" is a list of states, the key is the sort order of the state in the widget. "Default" determines if the plugin is enabled by default or if the user needs to enable it manually. "CacheTTLLocal" is the cache time in minutes for the plugin. "Mandatory" determines if the plugin is always shown and can not be removed by agents.' =>
@@ -8904,6 +8928,7 @@ Thanks for your help!
         'My Queues' => '我的队列',
         'My Services' => '我的服务',
         'My Tickets.' => '我的工单。',
+        'My last changed tickets' => '',
         'NameX' => 'NameX',
         'New Ticket' => '新建工单',
         'New Tickets' => '新建工单',

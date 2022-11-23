@@ -6,7 +6,8 @@
 # the enclosed file COPYING for license information (GPL). If you
 # did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
-## nofilter(TidyAll::Plugin::OTRS::Perl::Pod::NamePod)
+## nofilter(TidyAll::Plugin::Znuny::Perl::Pod::NamePod)
+## nofilter(TidyAll::Plugin::Znuny::Perl::ObjectManagerDirectCall)
 
 package scripts::Migration;    ## no critic
 
@@ -18,11 +19,12 @@ use Kernel::System::VariableCheck qw(IsHashRefWithData);
 
 our @ObjectDependencies = (
     'Kernel::System::Main',
+    'Kernel::System::SysConfig',
 );
 
 =head1 SYNOPSIS
 
-Migrates Znuny 6.3 to Znuny 6.4.
+Migrates Znuny.
 
 =head1 PUBLIC INTERFACE
 
@@ -46,6 +48,8 @@ sub new {
 sub Run {
     my ( $Self, %Param ) = @_;
 
+    my $SysConfigObject = $Kernel::OM->Get('Kernel::System::SysConfig');
+
     # Enable auto-flushing of STDOUT.
     $| = 1;    ## no critic
 
@@ -58,6 +62,12 @@ sub Run {
     }
 
     print "\n Migration started ... \n";
+
+    my $ZZZAAutoBackedUp = $SysConfigObject->CreateZZZAAutoBackup();
+    if ( !$ZZZAAutoBackedUp ) {
+        print "\n\nError backing up ZZZAAuto file.\n";
+        return;
+    }
 
     my $SuccessfulMigration = 1;
     my @Components          = ( 'CheckPreviousRequirement', 'Run' );
@@ -83,6 +93,8 @@ sub Run {
         my $GeneralExecutionTime = sprintf( "%.6f", $GeneralStopTime - $GeneralStartTime );
         print "    Migration took $GeneralExecutionTime seconds.\n\n";
     }
+
+    $SysConfigObject->DeleteZZZAAutoBackup();
 
     return $SuccessfulMigration;
 }
@@ -220,13 +232,24 @@ sub _TasksGet {
             Module  => 'scripts::Migration::Znuny::UpgradeDatabaseStructure',
         },
         {
+            Message => 'Rebuild configuration',
+            Module  => 'scripts::Migration::Base::RebuildConfig',
+        },
+        {
             Message => 'Migrate SysConfig settings',
             Module  => 'scripts::Migration::Znuny::MigrateSysConfigSettings',
         },
-
         {
-            Message => 'Rebuild configuration',
-            Module  => 'scripts::Migration::Base::RebuildConfig',
+            Message => 'Reindex S/MIME certificates',
+            Module  => 'scripts::Migration::Znuny::ReindexSMIMECertificates',
+        },
+        {
+            Message => "Add dynamic fields 'TicketCalendarStartTime' and 'TicketCalendarEndTime'.",
+            Module  => 'scripts::Migration::Znuny::AddTicketCalendarDynamicFields',
+        },
+        {
+            Message => 'Migrate web service configuration',
+            Module  => 'scripts::Migration::Znuny::MigrateWebserviceConfiguration',
         },
 
         # NOTE: UninstallMergedPackages has to be called only after
@@ -235,7 +258,6 @@ sub _TasksGet {
             Message => 'Uninstall merged packages',
             Module  => 'scripts::Migration::Znuny::UninstallMergedPackages',
         },
-        #
 
         {
             Message => 'Initialize default cron jobs',

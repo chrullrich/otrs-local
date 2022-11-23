@@ -6,7 +6,7 @@
 # the enclosed file COPYING for license information (GPL). If you
 # did not receive this file, see https://www.gnu.org/licenses/gpl-3.0.txt.
 # --
-## nofilter(TidyAll::Plugin::OTRS::Perl::Pod::NamePod)
+## nofilter(TidyAll::Plugin::Znuny::Perl::Pod::NamePod)
 
 package scripts::Migration::Base::RebuildConfigCleanup;    ## no critic
 
@@ -26,10 +26,12 @@ Rebuilds the system configuration trying to cleanup the database.
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    return $Self->RebuildConfig(
+    $Self->RebuildConfig(
         %Param,
         CleanUpIfPossible => 1,
     );
+
+    return 1;
 }
 
 1;
