@@ -2004,7 +2004,7 @@ sub _Mask {
         # get user of own groups
         my %ShownUsers;
         my %AllGroupsMembers = $UserObject->UserList(
-            Type  => 'Long',
+            Type  => 'Short',
             Valid => 1,
         );
         if ( $ConfigObject->Get('Ticket::ChangeOwnerToEveryone') ) {
@@ -2033,6 +2033,13 @@ sub _Mask {
         if ($ACL) {
             %ShownUsers = $TicketObject->TicketAclData();
         }
+
+        my %AllGroupsMembersFullnames = $UserObject->UserList(
+            Type  => 'Long',
+            Valid => 1,
+        );
+
+        @ShownUsers{ keys %ShownUsers } = @AllGroupsMembersFullnames{ keys %ShownUsers };
 
         # get old owner
         my @OldUserInfo = $TicketObject->TicketOwnerList( TicketID => $Self->{TicketID} );
@@ -2111,7 +2118,7 @@ sub _Mask {
         # get user of own groups
         my %ShownUsers;
         my %AllGroupsMembers = $UserObject->UserList(
-            Type  => 'Long',
+            Type  => 'Short',
             Valid => 1,
         );
         if ( $ConfigObject->Get('Ticket::ChangeOwnerToEveryone') ) {
@@ -2140,6 +2147,13 @@ sub _Mask {
         if ($ACL) {
             %ShownUsers = $TicketObject->TicketAclData();
         }
+
+        my %AllGroupsMembersFullnames = $UserObject->UserList(
+            Type  => 'Long',
+            Valid => 1,
+        );
+
+        @ShownUsers{ keys %ShownUsers } = @AllGroupsMembersFullnames{ keys %ShownUsers };
 
         # get responsible
         $Param{ResponsibleStrg} = $LayoutObject->BuildSelection(
@@ -2683,9 +2697,12 @@ sub _GetNextStates {
 
 sub _GetResponsible {
     my ( $Self, %Param ) = @_;
+
+    my $UserObject = $Kernel::OM->Get('Kernel::System::User');
+
     my %ShownUsers;
-    my %AllGroupsMembers = $Kernel::OM->Get('Kernel::System::User')->UserList(
-        Type  => 'Long',
+    my %AllGroupsMembers = $UserObject->UserList(
+        Type  => 'Short',
         Valid => 1,
     );
 
@@ -2721,16 +2738,28 @@ sub _GetResponsible {
         UserID        => $Self->{UserID},
     );
 
-    return { $TicketObject->TicketAclData() } if $ACL;
+    if ($ACL) {
+        %ShownUsers = $TicketObject->TicketAclData();
+    }
+
+    my %AllGroupsMembersFullnames = $UserObject->UserList(
+        Type  => 'Long',
+        Valid => 1,
+    );
+
+    @ShownUsers{ keys %ShownUsers } = @AllGroupsMembersFullnames{ keys %ShownUsers };
 
     return \%ShownUsers;
 }
 
 sub _GetOwners {
     my ( $Self, %Param ) = @_;
+
+    my $UserObject = $Kernel::OM->Get('Kernel::System::User');
+
     my %ShownUsers;
-    my %AllGroupsMembers = $Kernel::OM->Get('Kernel::System::User')->UserList(
-        Type  => 'Long',
+    my %AllGroupsMembers = $UserObject->UserList(
+        Type  => 'Short',
         Valid => 1,
     );
 
@@ -2766,7 +2795,16 @@ sub _GetOwners {
         UserID        => $Self->{UserID},
     );
 
-    return { $TicketObject->TicketAclData() } if $ACL;
+    if ($ACL) {
+        %ShownUsers = $TicketObject->TicketAclData();
+    }
+
+    my %AllGroupsMembersFullnames = $UserObject->UserList(
+        Type  => 'Long',
+        Valid => 1,
+    );
+
+    @ShownUsers{ keys %ShownUsers } = @AllGroupsMembersFullnames{ keys %ShownUsers };
 
     return \%ShownUsers;
 }

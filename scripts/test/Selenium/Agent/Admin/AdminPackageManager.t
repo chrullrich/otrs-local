@@ -151,7 +151,7 @@ $Selenium->RunTest(
         $Element->is_displayed();
 
         # Install test package.
-        my $Location = $ConfigObject->Get('Home') . '/scripts/test/sample/PackageManager/TestPackage.opm';
+        my $Location = $Selenium->{Home} . '/scripts/test/sample/PackageManager/TestPackage.opm';
 
         $Selenium->find_element( '#FileUpload', 'css' )->send_keys($Location);
 
@@ -208,7 +208,7 @@ $Selenium->RunTest(
         $NavigateToAdminPackageManager->();
 
         # Try to install incompatible test package.
-        $Location = $ConfigObject->Get('Home') . '/scripts/test/sample/PackageManager/TestPackageIncompatible.opm';
+        $Location = $Selenium->{Home} . '/scripts/test/sample/PackageManager/TestPackageIncompatible.opm';
         $Selenium->find_element( '#FileUpload', 'css' )->send_keys($Location);
 
         $Selenium->execute_script('window.Core.App.PageLoadComplete = false;');
@@ -229,10 +229,12 @@ $Selenium->RunTest(
         $HelperObject->ConfigSettingChange(
             Valid => 1,
             Key   => 'Package::RepositoryList',
-            Value => [{
-                Name => "Example repository 1",
-                URL  => "https://addons.znuny.com/api/addon_repos/",
-            }],
+            Value => [
+                {
+                    Name => "Example repository 1",
+                    URL  => "https://addons.znuny.com/api/addon_repos/",
+                }
+            ],
         );
 
         # Allow web server to pick up the changed SysConfig.
