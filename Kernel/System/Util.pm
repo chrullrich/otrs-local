@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -73,6 +73,31 @@ sub IsITSMInstalled {
     $Self->{ITSMInstalled} = $ConfigObject->Get('Frontend::Module')->{AdminITSMCIPAllocate} ? 1 : 0;
 
     return $Self->{ITSMInstalled};
+}
+
+=head2 IsITSMIncidentProblemManagementInstalled()
+
+Checks if ITSMIncidentProblemManagement is installed.
+
+    my $IsITSMIncidentProblemManagementInstalled = $UtilObject->IsITSMIncidentProblemManagementInstalled();
+
+    Returns 1 if ITSMIncidentProblemManagement is installed and 0 otherwise.
+
+=cut
+
+sub IsITSMIncidentProblemManagementInstalled {
+    my ( $Self, %Param ) = @_;
+
+    # Use cached result because it won't change within the process.
+    return $Self->{ITSMIncidentProblemManagementInstalled} if defined $Self->{ITSMIncidentProblemManagementInstalled};
+
+    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
+    # Just use some arbitrary SysConfig option to check if IncidentProblemManagement is present.
+    $Self->{ITSMIncidentProblemManagementInstalled}
+        = $ConfigObject->Get('Frontend::Module')->{AgentITSMIncidentProblemManagement} ? 1 : 0;
+
+    return $Self->{ITSMIncidentProblemManagementInstalled};
 }
 
 =head2 IsFrontendContext()

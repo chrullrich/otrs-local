@@ -3,7 +3,7 @@
 # Copyright (C) 2008 Hooman Mesgary <info at mesgary.com>
 # Copyright (C) 2009 Afshar Mohebbi <afshar.mohebbi at gmail.com>
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -28,7 +28,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.643007958421309;
+    $Self->{Completeness}        = 0.63611469072165;
 
     # csv separator
     $Self->{Separator}         = '';
@@ -230,16 +230,6 @@ sub Data {
         'Message body' => 'پیام بدن',
         'Add new notification language' => 'اضافه کردن زبان اطلاع رسانی جدید',
         'Save Changes' => 'ذخیره‌سازی تغییرات',
-        'Tag Reference' => 'مرجع برچسب',
-        'Notifications are sent to an agent.' => '',
-        'You can use the following tags' => 'شما می‌توانید از برچسب‌های زیر استفاده نمایید.',
-        'To get the first 20 character of the appointment title.' => '',
-        'To get the appointment attribute' => '',
-        ' e. g.' => 'به عنوان مثال',
-        'To get the calendar attribute' => '',
-        'Attributes of the recipient user for the notification' => 'صفات کاربران دریافت کننده برای اطلاع رسانی',
-        'Config options' => 'گزینه‌های پیکربندی',
-        'Example notification' => 'به عنوان مثال اطلاع رسانی ',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminAppointmentNotificationEventTransportEmailSettings.tt
         'Additional recipient email addresses' => 'دریافت کننده اضافی آدرس ایمیل ',
@@ -261,6 +251,9 @@ sub Data {
         'Edit Attachment' => 'ویرایش پیوست',
         'Filter for Attachments' => 'فیلتر برای پیوست‌ها',
         'Filter for attachments' => '',
+        'Related Actions' => '',
+        'Templates' => 'قالب ها',
+        'Templates ↔ Attachments' => '',
         'Filename' => 'نام فایل',
         'Download file' => 'بارگیری فایل',
         'Delete this attachment' => 'حذف این پیوست',
@@ -273,22 +266,9 @@ sub Data {
         'Edit Auto Response' => 'ویرایش پاسخ خودکار',
         'Filter for Auto Responses' => 'فیلتر برای پاسخ‌های خودکار',
         'Filter for auto responses' => '',
+        'Queues ↔ Auto Responses' => '',
         'Response' => 'پاسخ',
         'Auto response from' => 'پاسخ خودکار از طرف',
-        'Reference' => 'منبع',
-        'To get the first 20 character of the subject.' => 'برای دریافت ۲۰ حرف اول موضوع',
-        'To get the first 5 lines of the email.' => 'برای دریافت ۵ خط اول نامه',
-        'To get the name of the ticket\'s customer user (if given).' => 'برای دریافت نام کاربر و ضوابط بلیط (در صورت داده شده).',
-        'To get the article attribute' => 'برای گرفتن ویژگی مطلب',
-        'Options of the current customer user data' => 'گزینه‌هایی از داده مشترک کنونی',
-        'Ticket owner options' => 'گزینه‌های صاحب درخواست',
-        'Ticket responsible options' => 'گزینه‌های مسئول درخواست',
-        'Options of the current user who requested this action' => 'گزینه‌هایی از کاربر کنونی که این عملیات را درخواست کرده است',
-        'Options of the ticket data' => 'گزینه‌هایی از داده‌های درخواست',
-        'Options of ticket dynamic fields internal key values' => 'گزینه درخواست رشته پویا ارزش های داخلی کلیدی',
-        'Options of ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
-            'گزینه زمینه های پویا بلیط نمایش مقادیر، مفید برای زمینه های کرکره و چندین انتخاب',
-        'Example response' => 'پاسخ نمونه',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminCloudServiceSupportDataCollector.tt
         'Cloud Service Management' => 'مدیریت سرویس های ابری',
@@ -398,6 +378,8 @@ sub Data {
         'Search' => 'جستجو',
         'Wildcards like \'*\' are allowed.' => 'نویسه عام مانند "*" مجاز است.',
         'Select' => 'انتخاب',
+        'Customer Users' => 'مشترکین',
+        'Customers ↔ Groups' => '',
         'List (only %s shown - more available)' => 'فهرست (فقط %s نشان داده شده است - در دسترس تر)',
         'total' => 'مجموع',
         'Please enter a search term to look for customers.' => 'لطفا عبارت جستجو را وارد نمایید تا مشترکین را جستجو نمایید.',
@@ -420,15 +402,16 @@ sub Data {
         'Select the customer:group permissions.' => 'انتخاب دسترسی‌های مشترک:گروه',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             'اگرچیزی انتخاب نشود، هیچ دسترسی در این گروه موجود نیست (درخواست‌ها برای مشترک در دسترس نیست)',
-        'Search Results' => 'نتیجه جستجو',
         'Customers' => 'مشترکین',
         'Groups' => 'گروه‌ها',
+        'Search Results' => 'نتیجه جستجو',
         'Change Group Relations for Customer' => 'تغییر ارتباطات گروه برای مشترک',
         'Change Customer Relations for Group' => 'تغییر ارتباطات مشترک برای گروه',
         'Toggle %s Permission for all' => 'اعمال دسترسی %s برای همه',
         'Toggle %s permission for %s' => 'تعویض %s اجازه %s',
         'Customer Default Groups:' => 'گروه‌های پیش‌فرض مشترک',
         'No changes can be made to these groups.' => 'هیچ تغییری نمی‌توان به این گروه‌ها اعمال کرد.',
+        'Reference' => 'منبع',
         'ro' => 'فقط خواندنی',
         'Read only access to the ticket in this group/queue.' => 'حق فقط خواندنی برای درخواست‌ها در این گروه /لیست.',
         'rw' => 'خواندنی و نوشتنی',
@@ -442,6 +425,9 @@ sub Data {
         'Back to search results' => 'بازگشت به نتایج جستجو',
         'Customer user are needed to have a customer history and to login via customer panel.' =>
             'کاربران و ضوابط مورد نیاز برای یک سابقه مشتری و برای ورود به سایت از طریق پنل مشتری می باشد.',
+        'Customer Users ↔ Customers' => '',
+        'Customer Users ↔ Groups' => '',
+        'Customer Users ↔ Services' => '',
         'List (%s total)' => 'فهرست ( تعداد %s)',
         'Username' => 'نام کاربری',
         'Email' => 'ایمیل',
@@ -473,7 +459,6 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminCustomerUserCustomer.tt
         'Manage Customer User-Customer Relations' => '',
         'Select the customer user:customer relations.' => '',
-        'Customer Users' => 'مشترکین',
         'Change Customer Relations for Customer User' => '',
         'Change Customer User Relations for Customer' => '',
         'Toggle active state for all' => 'اعمال وضعیت فعال برای همه',
@@ -501,6 +486,7 @@ sub Data {
         'Filter for Services' => 'فیلتر برای خدمات',
         'Filter for services' => '',
         'Services' => 'خدمات',
+        'Service Level Agreements' => 'توافقات سطح سرویس',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminDynamicField.tt
         'Dynamic Fields Management' => 'مدیریت پویای زمینه',
@@ -515,6 +501,7 @@ sub Data {
         'Overwrite existing configurations' => '',
         'Import configurations' => '',
         'Export configurations' => '',
+        'Process Management' => 'مدیریت فرآیند',
         'Dynamic fields ↔ Screens' => '',
         'Dynamic Fields List' => ' فهرست زمینه حرکتی',
         'Dynamic fields per page' => 'زمینه های پویا در هر صفحه',
@@ -1363,6 +1350,8 @@ sub Data {
         'Create new groups to handle access permissions for different groups of agent (e. g. purchasing department, support department, sales department, ...). ' =>
             'گروه‌های جدید بسازید تا دسترسی‌ها را برای گروه‌های مختلف کارشناسان مدیریت کنید (مثال: بخش خرید، بخش پشتیبانی، بخش فروش و ...)',
         'It\'s useful for ASP solutions. ' => 'این برای راه‌حل‌های ASP مفید می‌باشد.',
+        'Agents ↔ Groups' => '',
+        'Roles ↔ Groups' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminLog.tt
         'System Log' => 'وقایع ثبت شده سیستم',
@@ -1434,24 +1423,6 @@ sub Data {
             'کاربر اطلاع فقط یک بار در روز با بلیط تک با استفاده از یک حمل و نقل انتخاب در مورد.',
         'This field is required and must have less than 4000 characters.' =>
             '',
-        'Notifications are sent to an agent or a customer.' => 'اعلام به یک کارشناس یا مشترک ارسال شد.',
-        'To get the first 20 character of the subject (of the latest agent article).' =>
-            'برای گرفتن ۲۰ کاراکتر اول موضوع (از آخرین نوشته کارشناس).',
-        'To get the first 5 lines of the body (of the latest agent article).' =>
-            'برای گرفتن اولین ۵ خط بدنه (از آخرین نوشته کارشناس).',
-        'To get the first 20 character of the subject (of the latest customer article).' =>
-            'برای گرفتن اولین ۲۰ کاراکتر موضوع (از آخرین نوشته مشتری).',
-        'To get the first 5 lines of the body (of the latest customer article).' =>
-            'برای گرفتن اولین ۵ خط بدنه (از آخرین نوشته مشتری).',
-        'Attributes of the current customer user data' => 'ویژگی های داده های کاربر مشتری فعلی',
-        'Attributes of the current ticket owner user data' => 'ویژگی های درخواست فعلی داده های کاربرمالک',
-        'Attributes of the current ticket responsible user data' => 'ویژگی های درخواست فعلی داده های کاربر مسئول',
-        'Attributes of the current agent user who requested this action' =>
-            'ویژگی های عامل کاربر در حال حاضر که این عمل درخواست شده',
-        'Attributes of the ticket data' => 'ویژگی های درخواست داده ',
-        'Ticket dynamic fields internal key values' => 'درخواست زمینه های پویا ارزش های کلیدی داخلی',
-        'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
-            'بلیط زمینه های پویا نمایش مقادیر، مفید برای زمینه های کرکره و چندین انتخاب',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminNotificationEventTransportEmailSettings.tt
         'Use comma or semicolon to separate email addresses.' => '',
@@ -1645,6 +1616,12 @@ sub Data {
             'در مورد شما می سوال بیشتر دارند ما خوشحال خواهد بود به آنها پاسخ دهد.',
         'Install Package' => 'نصب بسته',
         'Update Package' => '',
+        'Package' => '',
+        'Required package %s is already installed.' => '',
+        'Required Perl module %s is already installed.' => '',
+        'Required package %s needs to get installed!' => '',
+        'Required package %s needs to get updated to version %s!' => '',
+        'Required Perl module %s needs to get installed or updated!' => '',
         'Continue' => 'ادامه',
         'Please make sure your database accepts packages over %s MB in size (it currently only accepts packages up to %s MB). Please adapt the max_allowed_packet setting of your database in order to avoid errors.' =>
             'لطفا مطمئن شوید که پایگاه داده خود را بسته بر می پذیرد %s MB در اندازه (در حال حاضر تنها بسته می پذیرد تا %s MB). لطفا تنظیمات max_allowed_packet از پایگاه داده خود را به منظور جلوگیری از اشتباهات وفق دهند.',
@@ -1734,12 +1711,12 @@ sub Data {
         'Edit Priority' => 'ویرایش الویت',
         'Filter for Priorities' => '',
         'Filter for priorities' => '',
+        'Configure Priority Visibility and Defaults' => '',
         'This priority is present in a SysConfig setting, confirmation for updating settings to point to the new priority is needed!' =>
             '',
         'This priority is used in the following config settings:' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagement.tt
-        'Process Management' => 'مدیریت فرآیند',
         'Filter for Processes' => 'فیلتر برای پردازش',
         'Filter for processes' => '',
         'Create New Process' => 'خلق فرآیند جدید',
@@ -1756,6 +1733,9 @@ sub Data {
             'برای ایجاد یک فرایند جدید شما هم می توانید یک فرایند است که از یک سیستم دیگر صادر شد وارد و یا ایجاد یک جدید کامل.',
         'Changes to the Processes here only affect the behavior of the system, if you synchronize the Process data. By synchronizing the Processes, the newly made changes will be written to the Configuration.' =>
             'تغییرات در فرایندهای اینجا تنها رفتار سیستم را تحت تاثیر قرار، اگر شما داده های فرایند همگام سازی. با هماهنگ سازی فرآیندها، تغییرات تازه ساخته شده را به پیکربندی نوشته شده است.',
+        'Access Control Lists (ACL)' => 'فهرست سطخ دسترسی (ACL)',
+        'Generic Agent' => '',
+        'Manage Process Widiget Groups' => '',
         'Processes' => 'فرایند ها',
         'Process name' => 'نام فرایند',
         'Print' => 'چاپ',
@@ -1910,6 +1890,13 @@ sub Data {
         'Edit Queue' => 'ویرایش صف درخواست',
         'Filter for Queues' => 'فیلتر برای صف‌های درخواست',
         'Filter for queues' => '',
+        'Email Addresses' => 'آدرس‌های ایمیل',
+        'PostMaster Mail Accounts' => 'حساب‌های ایمیل پستی',
+        'Salutations' => 'عنوان',
+        'Signatures' => 'امضاء',
+        'Templates ↔ Queues' => '',
+        'Configure Working Hours' => '',
+        'Configure Queue Related Settings' => '',
         'A queue with this name already exists!' => 'یک صف با این نام وجود دارد.',
         'This queue is present in a SysConfig setting, confirmation for updating settings to point to the new queue is needed!' =>
             '',
@@ -1958,7 +1945,6 @@ sub Data {
         'Manage Template-Queue Relations' => 'مدیریت روابط الگو صف',
         'Filter for Templates' => 'فیلتر برای قالب',
         'Filter for templates' => '',
-        'Templates' => 'قالب ها',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminRole.tt
         'Role Management' => 'مدیریت نقش',
@@ -1968,6 +1954,7 @@ sub Data {
         'Filter for roles' => '',
         'Create a role and put groups in it. Then add the role to the users.' =>
             'یک نقش بسازید و گروه را در آن قرار دهید سپس نقش را به کاربرها اضافه کنید',
+        'Agents ↔ Roles' => '',
         'There are no roles defined. Please use the \'Add\' button to create a new role.' =>
             'هیچ نقشی ساخته نشده است. لطفا از کلید «افزودن» برای ساخت نقش جدید استفاده نمایید.',
 
@@ -2004,7 +1991,9 @@ sub Data {
         'Edit SLA' => 'ویرایش SLA',
         'Add SLA' => 'افزودن توافقنامه SLA',
         'Filter for SLAs' => '',
+        'Configure SLA Visibility and Defaults' => '',
         'Please write only numbers!' => 'لطفا فقط ارقام را بنویسید!',
+        'Minimum Time Between Incidents' => 'حداقل زمان بین دو رخداد',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSMIME.tt
         'S/MIME Management' => 'مدیریت S/MIME',
@@ -2052,8 +2041,6 @@ sub Data {
         'Edit Salutation' => 'ویرایش عنوان',
         'Filter for Salutations' => '',
         'Filter for salutations' => '',
-        'e. g.' => 'به عنوان مثال',
-        'Example salutation' => 'نمونه عنوان',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSecureMode.tt
         'Secure Mode Needs to be Enabled!' => '',
@@ -2085,9 +2072,11 @@ sub Data {
         'Service Management' => 'مدیریت خدمات',
         'Add Service' => 'افزودن خدمت',
         'Edit Service' => 'ویرایش خدمت',
+        'Configure Service Visibility and Defaults' => '',
         'Service name maximum length is 200 characters (with Sub-service).' =>
             '',
         'Sub-service of' => 'زیرمجموعه‌ای از خدمت',
+        'Criticality' => 'اهمیت',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSession.tt
         'Session Management' => 'مدیریت Session‌ها',
@@ -2111,7 +2100,6 @@ sub Data {
         'Edit Signature' => 'ویرایش امضاء',
         'Filter for Signatures' => '',
         'Filter for signatures' => '',
-        'Example signature' => 'امضای نمونه',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminState.tt
         'State Management' => 'مدیریت وضعیت',
@@ -2121,6 +2109,8 @@ sub Data {
         'Filter for states' => '',
         'Attention' => 'توجه',
         'Please also update the states in SysConfig where needed.' => 'لطفا کشورهای در SysConfig به روز رسانی که در آن مورد نیاز است.',
+        'Configure State Visibility and Defaults' => '',
+        'Configure State Type Visibility and Defaults' => '',
         'This state is present in a SysConfig setting, confirmation for updating settings to point to the new type is needed!' =>
             '',
         'State type' => 'نوع وضعیت',
@@ -2243,7 +2233,6 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSystemFiles/Widget.tt
         'Permissions' => 'دسترسی‌ها',
-        'Package' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSystemMaintenance.tt
         'System Maintenance Management' => 'سیستم مدیریت نگهداری و تعمیرات',
@@ -2282,18 +2271,6 @@ sub Data {
         'Delete this entry' => 'حذف این ورودی',
         'Do you really want to delete this template?' => 'آیا واقعا مایل به حذف این قالب هستید؟',
         'A standard template with this name already exists!' => 'قالب استاندارد با این نام وجود دارد.',
-        'To get the first 20 characters of the subject of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'To get the first 5 lines of the body of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'To get the first 20 characters of the subject of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'To get the first 5 lines of the body of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'Create type templates only supports this smart tags' => 'ایجاد قالب های نوع تنها پشتیبانی از این تگ های هوشمند',
-        'Example template' => 'نمونه قالب',
-        'The current ticket state is' => 'وضعیت فعلی درخواست',
-        'Your email address is' => 'آدرس ایمیل شما:',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminTemplateAttachment.tt
         'Manage Template-Attachment Relations' => '',
@@ -2322,6 +2299,7 @@ sub Data {
         'Edit Type' => 'ویرایش درخواست',
         'Filter for Types' => '',
         'Filter for types' => '',
+        'Configure Type Visibility and Defaults' => '',
         'A type with this name already exists!' => 'یک نوع با این نام وجود دارد.',
         'This type is present in a SysConfig setting, confirmation for updating settings to point to the new type is needed!' =>
             '',
@@ -2551,6 +2529,7 @@ sub Data {
         'Assigned to customer user' => '',
         'Accessible for customer user' => '',
         'My locked tickets' => 'درخواست‎های قفل شده من',
+        'My Owned Tickets' => '',
         'My watched tickets' => 'درخواست مشاهده شده من',
         'My responsibilities' => 'مسئولیت من',
         'Tickets in My Queues' => 'درخواستهای در صفهای من',
@@ -2797,6 +2776,13 @@ sub Data {
         'New Queue' => 'لیست درخواست جدید',
         'Move' => 'انتقال',
 
+        # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketNoteToLinkedTicket.tt
+        'Add note to linked %s%s%s' => '',
+        'Note to linked Ticket' => '',
+        'LinkList invalid.' => '',
+        'Note to origin Ticket' => '',
+        'NoteToTicket invalid.' => '',
+
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewMedium.tt
         'No ticket data found.' => 'اطلاعات درخواست یافت نشد.',
         'Open / Close ticket action menu' => 'باز / بستن بلیط منوی عمل',
@@ -2805,6 +2791,8 @@ sub Data {
         'First Response Time' => 'زمان اولین پاسخ',
         'Update Time' => 'زمان بروز رسانی',
         'Solution Time' => 'زمان ارائه راهکار',
+        'Impact' => 'اثر',
+        'CustomerID' => 'کد اشتراک',
         'Move ticket to a different queue' => 'انتقال درخواست یه صف درخواست دیگر',
         'Change queue' => 'تغییر لیست درخواست',
 
@@ -3050,7 +3038,6 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/CustomerTicketSearch.tt
         'Profile' => 'مشخصات کاربری',
         'e. g. 10*5155 or 105658*' => 'به عنوان مثال 10*5155 یا 105658*',
-        'CustomerID' => 'کد اشتراک',
         'Fulltext Search in Tickets (e. g. "John*n" or "Will*")' => '',
         'Types' => 'انواع',
         'Time Restrictions' => '',
@@ -3282,6 +3269,61 @@ sub Data {
             'این به طور پیش فرض رابط عمومی OTRS موجود است! هیچ پارامتر action داده شده وجود دارد.',
         'You could install a custom public module (via the package manager), for example the FAQ module, which has a public interface.' =>
             'شما می توانید یک ماژول سفارشی عمومی (از طریق مدیر بسته) نصب، به عنوان مثال ماژول پرسش و پاسخ، که دارای یک رابط عمومی است.',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAppointmentNotificationEvent.tt
+        'To get the appointment attribute' => '',
+        ' e. g.' => 'به عنوان مثال',
+        'To get the first 20 character of the appointment title.' => '',
+        'To get the calendar attribute' => '',
+        'Attributes of the recipient user for the notification' => 'صفات کاربران دریافت کننده برای اطلاع رسانی',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAutoResponse.tt
+        'To get the first 20 character of the subject.' => 'برای دریافت ۲۰ حرف اول موضوع',
+        'To get the first 5 lines of the email.' => 'برای دریافت ۵ خط اول نامه',
+        'To get the name of the ticket\'s customer user (if given).' => 'برای دریافت نام کاربر و ضوابط بلیط (در صورت داده شده).',
+        'To get the article attribute' => 'برای گرفتن ویژگی مطلب',
+        'Options of the current customer user data' => 'گزینه‌هایی از داده مشترک کنونی',
+        'Ticket owner options' => 'گزینه‌های صاحب درخواست',
+        'Options of the ticket data' => 'گزینه‌هایی از داده‌های درخواست',
+        'Options of ticket dynamic fields internal key values' => 'گزینه درخواست رشته پویا ارزش های داخلی کلیدی',
+        'Options of ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
+            'گزینه زمینه های پویا بلیط نمایش مقادیر، مفید برای زمینه های کرکره و چندین انتخاب',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminNotificationEvent.tt
+        'To get the first 20 character of the subject (of the latest agent article).' =>
+            'برای گرفتن ۲۰ کاراکتر اول موضوع (از آخرین نوشته کارشناس).',
+        'To get the first 5 lines of the body (of the latest agent article).' =>
+            'برای گرفتن اولین ۵ خط بدنه (از آخرین نوشته کارشناس).',
+        'To get the first 20 character of the subject (of the latest customer article).' =>
+            'برای گرفتن اولین ۲۰ کاراکتر موضوع (از آخرین نوشته مشتری).',
+        'To get the first 5 lines of the body (of the latest customer article).' =>
+            'برای گرفتن اولین ۵ خط بدنه (از آخرین نوشته مشتری).',
+        'Attributes of the current customer user data' => 'ویژگی های داده های کاربر مشتری فعلی',
+        'Attributes of the current ticket owner user data' => 'ویژگی های درخواست فعلی داده های کاربرمالک',
+        'Attributes of the ticket data' => 'ویژگی های درخواست داده ',
+        'Ticket dynamic fields internal key values' => 'درخواست زمینه های پویا ارزش های کلیدی داخلی',
+        'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
+            'بلیط زمینه های پویا نمایش مقادیر، مفید برای زمینه های کرکره و چندین انتخاب',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminSalutation.tt
+        'e. g.' => 'به عنوان مثال',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminTemplate.tt
+        'To get the first 20 characters of the subject of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 5 lines of the body of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 20 characters of the subject of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 5 lines of the body of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/Default.tt
+        'Tag Reference' => 'مرجع برچسب',
+        'You can use the following tags' => 'شما می‌توانید از برچسب‌های زیر استفاده نمایید.',
+        'Ticket responsible options' => 'گزینه‌های مسئول درخواست',
+        'Options of the current user who requested this action' => 'گزینه‌هایی از کاربر کنونی که این عملیات را درخواست کرده است',
+        'Config options' => 'گزینه‌های پیکربندی',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/Statistics/GeneralSpecificationsWidget.tt
         'You can select one or more groups to define access for different agents.' =>
@@ -3579,9 +3621,6 @@ sub Data {
         'All agents with write permission for the appointment (calendar)' =>
             '',
         'Yes, but require at least one active notification method.' => '',
-
-        # Perl Module: Kernel/Modules/AdminAttachment.pm
-        'Attachment added!' => 'پیوست افزوده شد!',
 
         # Perl Module: Kernel/Modules/AdminAutoResponse.pm
         'Auto Response added!' => '',
@@ -3883,7 +3922,7 @@ sub Data {
         'Customer user of the ticket' => '',
         'All recipients of the first article' => '',
         'All recipients of the last article' => '',
-        'All users who are mentioned in a ticket' => '',
+        'All agents who are mentioned in the ticket' => '',
         'Invisible to customer' => '',
         'Visible to customer' => '',
 
@@ -4138,7 +4177,6 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminTemplate.pm
         'Template updated!' => 'الگو به روز شده!',
-        'Template added!' => 'قالب اضافه شده است!',
 
         # Perl Module: Kernel/Modules/AdminTemplateAttachment.pm
         'Change Attachment Relations for Template' => 'روابط تغییر فایل پیوست برای الگو',
@@ -4339,9 +4377,6 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AgentTicketMove.pm
         'You need move permissions!' => 'شما نیاز به مجوز حرکت دارید !',
-
-        # Perl Module: Kernel/Modules/AgentTicketOwnerView.pm
-        'My Owned Tickets' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketPhone.pm
         'Chat is not active.' => 'چت غیر فعال است.',
@@ -4637,6 +4672,10 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketNote.pm
         'Reply to note' => 'به پاسخ توجه داشته باشید',
 
+        # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketNoteToLinkedTicket.pm
+        'Create notice for linked ticket' => '',
+        'Transfer notice' => '',
+
         # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketPhone.pm
         'Split this article' => 'جدا کردن این نوشته',
 
@@ -4855,6 +4894,10 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/Preferences/Language.pm
         '(in process)' => '(در حال انجام)',
+
+        # Perl Module: Kernel/Output/HTML/Preferences/MaxArticlesPerPage.pm
+        'Max. number of articles per page must be between 1 and 1000 or empty.' =>
+            '',
 
         # Perl Module: Kernel/Output/HTML/Preferences/OutOfOffice.pm
         'Please specify an end date that is after the start date.' => 'لطفا تاریخ پایان است که بعد از تاریخ شروع را مشخص کنید.',
@@ -5359,6 +5402,11 @@ sub Data {
         'Legacy configuration backup files are no longer needed for the installed packages, please remove them from Kernel/Config/Backups folder.' =>
             '',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/MultipleJSFileLoad.pm
+        'Views with multiple loaded JavaScript files' => '',
+        'The following JavaScript files loaded multiple times:' => '',
+        'Files' => '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageDeployment.pm
         'Package Installation Status' => 'وضعیت بسته نصب و راه اندازی',
         'Some packages have locally modified files.' => 'برخی از بسته های به صورت محلی فایل ها اصلاح شده.',
@@ -5761,6 +5809,7 @@ sub Data {
             'تعریف می کند که ارتفاع برای غنی جزء ویرایشگر متن. تعداد (پیکسل) یا ارزش درصد (نسبی) را وارد کنید.',
         'Defines the selectable font sizes in the rich text editor.' => '',
         'Defines the selectable fonts in the rich text editor.' => '',
+        'Defines the selectable format tags in the rich text editor.' => '',
         'Defines additional plugins for use in the rich text editor.' => '',
         'Defines extra content that is allowed for use in the rich text editor.' =>
             '',
@@ -6707,6 +6756,14 @@ sub Data {
             'داده های پیش فرض برای استفاده بر روی ویژگی برای صفحه نمایش جستجو بلیط. به عنوان مثال: \ "TicketCreateTimePointFormat = سال؛ TicketCreateTimePointStart = آخرین. TicketCreateTimePoint = 2؛ ".',
         'Default data to use on attribute for ticket search screen. Example: "TicketCreateTimeStartYear=2010;TicketCreateTimeStartMonth=10;TicketCreateTimeStartDay=4;TicketCreateTimeStopYear=2010;TicketCreateTimeStopMonth=11;TicketCreateTimeStopDay=3;".' =>
             'داده های پیش فرض برای استفاده بر روی ویژگی برای صفحه نمایش جستجو بلیط. به عنوان مثال: \ "TicketCreateTimeStartYear = 2010؛ TicketCreateTimeStartMonth = 10؛ TicketCreateTimeStartDay = 4؛ TicketCreateTimeStopYear = 2010؛ TicketCreateTimeStopMonth = 11؛ TicketCreateTimeStopDay = 3؛ ".',
+        'Default data to use on attribute for ticket search screen. Example: "TicketLastChangeTimePointFormat=year;TicketLastChangeTimePointStart=Last;TicketLastChangeTimePoint=2;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketLastChangeTimeStartYear=2010;TicketLastChangeTimeStartMonth=10;TicketLastChangeTimeStartDay=4;TicketLastChangeTimeStopYear=2010;TicketLastChangeTimeMonth=11;TicketLastChangeTimeStopDay=3;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketPendingTimePointFormat=year;TicketPendingTimePointStart=Last;TicketPendingTimePoint=2;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketPendingTimeStartYear=2010;TicketPendingTimeStartMonth=10;TicketPendingTimeStartDay=4;TicketPendingTimeStopYear=2010;TicketPendingTimeMonth=11;TicketPendingTimeStopDay=3;".' =>
+            '',
         'Defines the default ticket attribute for ticket sorting in the locked ticket view of the agent interface.' =>
             'تعریف می کند که به طور پیش فرض ویژگی بلیط برای بلیط مرتب سازی در نظر بلیط قفل رابط عامل.',
         'Defines the default ticket order in the ticket locked view of the agent interface. Up: oldest on top. Down: latest on top.' =>
@@ -7813,7 +7870,7 @@ sub Data {
             '',
         'Ticket event module that stores values of the selected web service record into the configured additional dynamic fields.' =>
             '',
-        'It might happen that a dynamic field of type WebserviceText or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
+        'It might happen that a dynamic field of type WebserviceDropdown or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
             '',
         'Mapping for field values received from form. This setting is necessary for the correct identification of the form fields. Key means value type, value means possible representation in views.' =>
             '',
@@ -7954,6 +8011,57 @@ sub Data {
         'Agent interface notification module to show the number of mentions.' =>
             '',
         'Module to grant access to the mentioned agents of a ticket.' => '',
+        'Mapping of non-standard time zones to official ones.' => '',
+        'Start date (YYYYMMDD) of the range to use when parsing ICS files. The used CPAN module iCal::Parser needs this to be able to parse ICS files with events in a year before the current one. The end date of the range is automatically set to 10 years in the future from the time of parsing/execution.' =>
+            '',
+        'Define a mapping between variables of the customer company data (keys) and dynamic fields of a ticket (values). The purpose is to store customer company data in ticket dynamic fields. The dynamic fields must be present in the system and should be enabled for AgentTicketFreeText, so that they can be set/updated manually by the agent. They mustn\'t be enabled for AgentTicketPhone, AgentTicketEmail and AgentTicketCustomer. If they were, they would have precedence over the automatically set values. To use this mapping, you have to also activate the Ticket::EventModulePost###4100-DynamicFieldFromCustomerCompany setting.' =>
+            '',
+        'This event module stores attributes from customer companies in ticket dynamic fields. Please see DynamicFieldFromCustomerCompany::Mapping setting for how to configure the mapping.' =>
+            '',
+        'Required permissions to use the NoteToLinkedTicket screen in the agent interface.' =>
+            '',
+        'Sets the state of the selected linked ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the default next state of a ticket after adding a note in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Activates the selection if a note in NoteToLinkedTicket screen should be created in this origin ticket.' =>
+            '',
+        'Defines the default value if a note in NoteToLinkedTicket screen should be created in this origin ticket.' =>
+            '',
+        'Sets the default subject for notes added in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the default body text for notes added in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Allows adding notes in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets if a note in NoteToLinkedTicket screen must be filled in by the agent.' =>
+            '',
+        'Defines the history type for the NoteToLinkedTicket screen, which will be used for ticket history in the agent interface.' =>
+            '',
+        'Defines the history comment for the NoteToLinkedTicket screen, which will be used for ticket history in the agent interface.' =>
+            '',
+        'Defines if the note in the NoteToLinkedTicket screen of the agent interface is visible for the customer by default.' =>
+            '',
+        'Sets the ticket type in the NoteToLinkedTicket screen of the agent interface (Ticket::Type needs to be activated).' =>
+            '',
+        'Sets the service in the NoteToLinkedTicket screen of the agent interface (Ticket::Service needs to be activated).' =>
+            '',
+        'Sets the queue in the NoteToLinkedTicket screen of a zoomed ticket in the agent interface.' =>
+            '',
+        'Sets the ticket owner in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the responsible agent of the ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the next state of a ticket after adding a note in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Shows the ticket priority options in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the default ticket priority in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Shows the title field in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
 
         # XML Definition: scripts/database/initial_insert.xml
         'invalid-temporarily' => 'موقتا غیر معتبر',
@@ -8445,6 +8553,8 @@ sub Data {
         'The following files are not allowed to be uploaded: %s' => '',
         'The following files exceed the maximum allowed size per file of %s and were not uploaded: %s' =>
             '',
+        'The names of the following files exceed the maximum allowed length of %s characters and were not uploaded: %s' =>
+            '',
         'The following files were already uploaded and have not been uploaded again: %s' =>
             '',
         'No space left for the following files: %s' => '',
@@ -8524,7 +8634,6 @@ Thanks for your help!
         'AJAX functions for notification event transport web service.' =>
             '',
         'AJAX interface for the web service dynamic field backends.' => '',
-        'Access Control Lists (ACL)' => 'فهرست سطخ دسترسی (ACL)',
         'AccountedTime' => 'AccountedTime',
         'Activation of dynamic fields for screens.' => '',
         'ActivityID' => 'ActivityID',
@@ -8544,7 +8653,7 @@ Thanks for your help!
         'Admin' => 'مدیریت سیستم',
         'Admin Area.' => 'بخش مدیریت.',
         'Admin Notification' => 'اعلام مدیر سیستم',
-        'Admin configuration dialog for dynamic field types WebserviceText and WebserviceMultiselect' =>
+        'Admin configuration dialog for dynamic field types WebserviceDropdown and WebserviceMultiselect' =>
             '',
         'Admin modules overview.' => '',
         'Admin.' => 'مدیر',
@@ -8557,8 +8666,6 @@ Thanks for your help!
         'Agent Statistics.' => '',
         'Agent User Search' => '',
         'Agent User Search.' => '',
-        'Agents ↔ Groups' => '',
-        'Agents ↔ Roles' => '',
         'All CustomerIDs of a customer user.' => '',
         'All customer users of a CustomerID' => 'همه کاربران مشتری از CustomerID',
         'All escalated tickets' => 'تمام درخواست‌هایی که زمان پاسخگویی آن‌ها رو به پایان است',
@@ -8578,6 +8685,7 @@ Thanks for your help!
         'Allows having a small format ticket overview (CustomerInfo => 1 - shows also the customer information).' =>
             'اجازه می دهد تا داشتن یک دید کلی فرمت کوچک بلیط (CustomerInfo => 1 - نشان می دهد نیز اطلاعات مربوط به مشتری).',
         'Always show RichText if available' => 'همیشه RichText  نشان می دهد اگر موجود باشد',
+        'An additional screen to add notes to a linked ticket.' => '',
         'Answer' => 'پاسخ',
         'Appointment Calendar overview page.' => '',
         'Appointment Notifications' => '',
@@ -8707,9 +8815,6 @@ Thanks for your help!
         'Customer User Information Center search.' => '',
         'Customer User Information Center.' => '',
         'Customer User-Customer Relations' => '',
-        'Customer Users ↔ Customers' => '',
-        'Customer Users ↔ Groups' => '',
-        'Customer Users ↔ Services' => '',
         'Customer preferences.' => 'ترجیحات مشتری.',
         'Customer ticket overview' => 'مروری درخواست مشتری',
         'Customer ticket search.' => 'جستجو درخواست مشتری.',
@@ -8718,7 +8823,6 @@ Thanks for your help!
         'CustomerID search' => 'جستجو CustomerID',
         'CustomerName' => 'نام مشتری',
         'CustomerUser' => 'CustomerUser',
-        'Customers ↔ Groups' => '',
         'Czech' => 'چک',
         'Danish' => 'دانمارکی',
         'Dashboard overview.' => '',
@@ -8760,7 +8864,6 @@ Thanks for your help!
         'Edit Customer Users.' => 'ویرایش کاربران مشتری',
         'Edit appointment' => '',
         'Edit customer company' => 'ویرایش شرکت مشتری',
-        'Email Addresses' => 'آدرس‌های ایمیل',
         'Email Outbound' => 'عازم ناحیه دور دست ایمیل',
         'Email Resend' => '',
         'Email communication channel.' => '',
@@ -8913,6 +9016,7 @@ Thanks for your help!
         'Mark as Spam!' => 'به‌عنوان هرزنامه علامت بزن',
         'Mark this ticket as junk!' => 'علامت گذاری به عنوان این درخواست به عنوان آشغال!',
         'Mattermost Username' => '',
+        'Max. number of articles per page in TicketZoom' => '',
         'Medium' => 'متوسط',
         'Mentioned in article' => '',
         'Mentioned in ticket' => '',
@@ -8989,7 +9093,6 @@ Thanks for your help!
         'Portuguese' => 'پرتغالی',
         'Portuguese (Brasil)' => 'پرتغالی (برزیل)',
         'PostMaster Filters' => 'فیلترهای پستی',
-        'PostMaster Mail Accounts' => 'حساب‌های ایمیل پستی',
         'Print this ticket' => 'چاپ این بلیط',
         'Priorities' => 'الویت‌ها',
         'Process Management Activity Dialog GUI' => 'فرآیند مدیریت فعالیت های گفت و گو GUI',
@@ -9008,7 +9111,6 @@ Thanks for your help!
         'Public Calendar' => '',
         'Public calendar.' => '',
         'Queue view' => 'نمای صف درخواست',
-        'Queues ↔ Auto Responses' => '',
         'Refresh interval' => 'بارگذاری مجدد ورودی',
         'Reminder Tickets' => 'درخواست‌های یادآوری شده',
         'Removed subscription for user "%s".' => 'عضویت حذف شده برای کاربر"%s".',
@@ -9018,13 +9120,11 @@ Thanks for your help!
         'Responsible Tickets' => 'کارشناس درخواست',
         'Responsible Tickets.' => 'کارشناس درخواست.',
         'Right' => 'راست',
-        'Roles ↔ Groups' => '',
         'Romanian' => '',
         'Running Process Tickets' => 'در حال اجرا فرآیند درخواست',
         'Russian' => 'روسی',
         'S/MIME Certificates' => 'گواهینامه‌های S/MIME',
         'SMS' => 'پیامک',
-        'Salutations' => 'عنوان',
         'Schedule a maintenance period.' => 'برنامه ریزی یک دوره تعمیر و نگهداری.',
         'Screen after new ticket' => 'وضعیت نمایش پس از دریافت درخواست جدید',
         'Search Customer' => 'جستجوی مشترک',
@@ -9041,6 +9141,8 @@ Thanks for your help!
         'Select how many tickets should be shown in overviews by default.' =>
             '',
         'Select the main interface language.' => '',
+        'Select the maximum articles per page shown in TicketZoom. System default value will apply when entered empty value.' =>
+            '',
         'Select the separator character used in CSV files (stats and searches). If you don\'t select a separator here, the default separator for your language will be used.' =>
             'لطفا کاراکتر استفاده شده برای فایل‌های CSV را انتخاب نمایید. اگر جداکننده‌ای را انتخاب نکنید، جداکننده پیش‌فرض زبان انتخاب شده توسط شما استفاده می‌گردد.',
         'Select where to display the last views.' => '',
@@ -9062,7 +9164,6 @@ Thanks for your help!
         'Sent notification to "%s".' => '',
         'Serbian Cyrillic' => 'سیریلیک صربستان',
         'Serbian Latin' => 'صربی لاتین',
-        'Service Level Agreements' => 'توافقات سطح سرویس',
         'Service view' => 'نمای سرویس',
         'ServiceView' => 'ServiceView',
         'Set a new password by filling in your current password and a new one.' =>
@@ -9077,7 +9178,6 @@ Thanks for your help!
         'Shows information on how to start OTRS Daemon' => 'نشان می دهد اطلاعات در مورد چگونگی شروع OTRS دیمون',
         'Shows last mention of tickets.' => '',
         'Signature data.' => '',
-        'Signatures' => 'امضاء',
         'Simple' => 'ساده',
         'Skin' => 'پوسته',
         'Slovak' => 'اسلواکی',
@@ -9112,8 +9212,6 @@ Thanks for your help!
         'System Configuration Deployment' => '',
         'System Configuration Group' => '',
         'System Maintenance' => 'تعمیر و نگهداری سیستم',
-        'Templates ↔ Attachments' => '',
-        'Templates ↔ Queues' => '',
         'Textarea' => 'ناحیه متنی',
         'Thai' => 'تایلندی',
         'The PGP signature is expired.' => '',
@@ -9201,8 +9299,8 @@ Thanks for your help!
         'We are performing scheduled maintenance. We should be back online shortly.' =>
             'ما در حال انجام تعمیر و نگهداری برنامه ریزی شده هستیم.ما باید بزودی به حالت آن لاین برگردیم.',
         'Web Services' => 'وب سرویس',
+        'Web service (Dropdown)' => '',
         'Web service (Multiselect)' => '',
-        'Web service (Text)' => '',
         'Web service dynamic field AJAX interface' => '',
         'Webservice' => '',
         'Yes, but hide archived tickets' => 'بله، اما آرشیو درخواست پنهان است',
@@ -9262,6 +9360,7 @@ Thanks for your help!
         'Agent',
         'All occurrences',
         'All-day',
+        'An Error Occurred',
         'An error occurred during communication.',
         'An error occurred! Please check the browser error log for more details!',
         'An item with this name is already present.',
@@ -9544,6 +9643,7 @@ Thanks for your help!
         'The following files were already uploaded and have not been uploaded again: %s',
         'The item you\'re currently viewing is part of a not-yet-deployed configuration setting, which makes it impossible to edit it in its current state. Please wait until the setting has been deployed. If you\'re unsure what to do next, please contact your system administrator.',
         'The key must not be empty.',
+        'The names of the following files exceed the maximum allowed length of %s characters and were not uploaded: %s',
         'There are currently no elements available to select from.',
         'There are no more drafts available.',
         'There is a package upgrade process running, click here to see status information about the upgrade progress.',

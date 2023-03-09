@@ -1,6 +1,6 @@
 // --
 // Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-// Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
+// Copyright (C) 2021 Znuny GmbH, https://znuny.org/
 // --
 // This software comes with ABSOLUTELY NO WARRANTY. For details, see
 // the enclosed file COPYING for license information (GPL). If you
@@ -64,13 +64,14 @@ Core.Agent.Header = (function (TargetNS) {
      *      This function initialize header refresh.
      */
     TargetNS.InitToolbarOverview = function () {
-        var RefreshTime = Core.Config.Get('RefreshTimeToolbar');
+        var ToolbarRefreshTime = Core.Config.Get('RefreshTimeToolbar'),
+            RefreshTime = Core.Config.Get('Refresh');
 
-        if (!RefreshTime) {
+        if (RefreshTime || !ToolbarRefreshTime) {
             return;
         }
 
-        Core.Config.Set('RefreshSecondsToolbar', parseInt(RefreshTime, 10) || 0);
+        Core.Config.Set('RefreshSecondsToolbar', parseInt(ToolbarRefreshTime, 10) || 0);
 
         if (!Core.Config.Get('RefreshSecondsToolbar')) {
             return;
@@ -89,26 +90,13 @@ Core.Agent.Header = (function (TargetNS) {
                         Core.Config.Get('Baselink'),
                         Data,
                         function (Response) {
-                            $.each(Response.IconsOrder, function(index,value) {
-                                if (!$('li[class="' + value + '"]').length) {
-                                    $('<li class ="' + value + '"></li>').insertAfter($('li[class="' + Response.IconsOrder[index-1] + '"]'));
-                                }
+                            $('#ToolBar li:not(.UserAvatar)').remove()
+                            $('#ToolBar').append(Response)
 
-                                if (value == "UserAvatar") {
-                                    return;
-                                }
-
-                                $('li[class="' + value + '"]').html(Response.Icons[Response.IconsOrder[index]]);
-                            });
-
-                            $("#ToolBar").children().each(function(index,element) {
-                                if ($.inArray(element.className, Response.IconsOrder) == -1) {
-                                    $('li[class="' + element.className + '"]').remove();
-                                }
-                            });
-
-                            TargetNS.InitToolbarOverview();
-                        }
+                            Core.UI.InputFields.Init()
+                            TargetNS.Init();
+                        },
+                        'html'
                     );
                 },
                 Core.Config.Get('RefreshSecondsToolbar') * 1000

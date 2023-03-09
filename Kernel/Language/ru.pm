@@ -12,7 +12,7 @@
 # Copyright (C) 2013 Andrey N. Burdin <BurdinAN at it-sakh.net>
 # Copyright (C) 2013 Yuriy Kolesnikov <ynkolesnikov at gmail.com>
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -37,7 +37,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.866006171836934;
+    $Self->{Completeness}        = 0.857119845360825;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -236,16 +236,6 @@ sub Data {
         'Message body' => 'Содержание уведомления',
         'Add new notification language' => 'Добавить дополнительный язык для уведомлений',
         'Save Changes' => 'Сохранить изменения',
-        'Tag Reference' => 'Справка по тэгам',
-        'Notifications are sent to an agent.' => 'Уведомления отправляются агенту.',
-        'You can use the following tags' => 'Вы можете использовать следующие теги',
-        'To get the first 20 character of the appointment title.' => 'Чтобы получить первые 20 символов темы мероприятия.',
-        'To get the appointment attribute' => 'Чтобы получить атрибут мероприятия',
-        ' e. g.' => ' например,',
-        'To get the calendar attribute' => 'Чтобы получить атрибут календаря',
-        'Attributes of the recipient user for the notification' => 'Атрибуты пользователя - получателя уведомления',
-        'Config options' => 'Опции конфигурации',
-        'Example notification' => 'Пример уведомления',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminAppointmentNotificationEventTransportEmailSettings.tt
         'Additional recipient email addresses' => 'Дополнительный адрес получателя',
@@ -267,6 +257,9 @@ sub Data {
         'Edit Attachment' => 'Редактировать вложение',
         'Filter for Attachments' => 'Фильтр для вложений',
         'Filter for attachments' => 'Фильтр вложений',
+        'Related Actions' => '',
+        'Templates' => 'Шаблоны',
+        'Templates ↔ Attachments' => 'Шаблоны ↔ Вложения',
         'Filename' => 'Имя файла',
         'Download file' => 'Скачать файл',
         'Delete this attachment' => 'Удалить это вложение',
@@ -279,22 +272,9 @@ sub Data {
         'Edit Auto Response' => 'Изменить автоответ',
         'Filter for Auto Responses' => 'Фильтр для автоответов',
         'Filter for auto responses' => 'Фильтр для автоответов',
+        'Queues ↔ Auto Responses' => 'Очереди ↔ Автоответы',
         'Response' => 'Ответ',
         'Auto response from' => 'Автоответ от',
-        'Reference' => 'Ссылка',
-        'To get the first 20 character of the subject.' => 'Чтобы получить первые 20 символов темы.',
-        'To get the first 5 lines of the email.' => 'Чтобы получить первые 5 строк email.',
-        'To get the name of the ticket\'s customer user (if given).' => 'Получить имя клиента заявки (если указано).',
-        'To get the article attribute' => 'Чтобы получить атрибут сообщения',
-        'Options of the current customer user data' => 'Атрибуты данных о пользователе текущего клиента',
-        'Ticket owner options' => 'Атрибуты владельца заявки',
-        'Ticket responsible options' => 'Атрибуты ответственного за заявку',
-        'Options of the current user who requested this action' => 'Атрибуты текущего пользователя, запросившего это действие',
-        'Options of the ticket data' => 'Атрибуты данных заявки',
-        'Options of ticket dynamic fields internal key values' => 'Атрибуты динамических полей заявки (значения внутренних ключей)',
-        'Options of ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
-            'Атрибуты отображаемых значений динамических полей заявки, полезно при использовании типов Dropdown и Multiselect',
-        'Example response' => 'Пример ответа',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminCloudServiceSupportDataCollector.tt
         'Cloud Service Management' => 'Управление облачным сервисом',
@@ -404,6 +384,8 @@ sub Data {
         'Search' => 'Поиск',
         'Wildcards like \'*\' are allowed.' => 'Разрешены шаблоны типа \'*\'.',
         'Select' => 'Выбор',
+        'Customer Users' => 'Клиенты',
+        'Customers ↔ Groups' => 'Компании ↔ Группы',
         'List (only %s shown - more available)' => 'Список (%s показано, доступно еще)',
         'total' => 'всего',
         'Please enter a search term to look for customers.' => 'Введите запрос для поиска компании.',
@@ -426,15 +408,16 @@ sub Data {
         'Select the customer:group permissions.' => 'Выберите разрешения клиент:группа.',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             'Если ничего не выбрано, тогда у клиентов в этой группе не будет прав (заявки будут недоступны клиенту).',
-        'Search Results' => 'Результаты поиска',
         'Customers' => 'Клиенты',
         'Groups' => 'Группы',
+        'Search Results' => 'Результаты поиска',
         'Change Group Relations for Customer' => 'Изменить связи групп с клиентами',
         'Change Customer Relations for Group' => 'Изменить связь клиентов с группой',
         'Toggle %s Permission for all' => 'Переключить разрешение «%s» для всех',
         'Toggle %s permission for %s' => 'Переключить разрешение «%s» для %s',
         'Customer Default Groups:' => 'Клиентские группы по-умолчанию:',
         'No changes can be made to these groups.' => 'В эти группы нельзя внести изменения.',
+        'Reference' => 'Ссылка',
         'ro' => 'Только чтение',
         'Read only access to the ticket in this group/queue.' => 'Права только на чтение заявки в данной группе/очереди',
         'rw' => 'Чтение/запись',
@@ -448,6 +431,9 @@ sub Data {
         'Back to search results' => 'Назад к результатам поиска',
         'Customer user are needed to have a customer history and to login via customer panel.' =>
             'Необходимо для наличия данных о клиенте и подключения к системе через интерфейс клиента.',
+        'Customer Users ↔ Customers' => 'Клиенты ↔ Компании',
+        'Customer Users ↔ Groups' => 'Клиенты ↔ Группы',
+        'Customer Users ↔ Services' => 'Клиенты ↔ Сервисы',
         'List (%s total)' => 'Список (%s всего)',
         'Username' => 'Логин',
         'Email' => 'Email',
@@ -479,7 +465,6 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminCustomerUserCustomer.tt
         'Manage Customer User-Customer Relations' => 'Управление связями Клиент - Компания клиента',
         'Select the customer user:customer relations.' => 'Выберите связи Клиент:Компания.',
-        'Customer Users' => 'Клиенты',
         'Change Customer Relations for Customer User' => 'Изменить связь Компании с Клиентом',
         'Change Customer User Relations for Customer' => 'Изменить связь Клиента с Компанией',
         'Toggle active state for all' => 'Сделать активным для всех',
@@ -507,6 +492,7 @@ sub Data {
         'Filter for Services' => 'Фильтр для Сервисов',
         'Filter for services' => 'Фильтр для Сервисов',
         'Services' => 'Сервисы',
+        'Service Level Agreements' => 'Соглашения об Уровне Сервиса',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminDynamicField.tt
         'Dynamic Fields Management' => 'Управление динамическими полями',
@@ -521,6 +507,7 @@ sub Data {
         'Overwrite existing configurations' => '',
         'Import configurations' => '',
         'Export configurations' => '',
+        'Process Management' => 'Управление Процессами',
         'Dynamic fields ↔ Screens' => '',
         'Dynamic Fields List' => 'Список динамических полей',
         'Dynamic fields per page' => 'Динамических полей на страницу',
@@ -1369,6 +1356,8 @@ sub Data {
         'Create new groups to handle access permissions for different groups of agent (e. g. purchasing department, support department, sales department, ...). ' =>
             'Создать новые группы, чтобы управлять правами для разных групп агентов (например, департамент закупок, департамент поддержки, департамент продаж, ...).',
         'It\'s useful for ASP solutions. ' => 'Полезно для сервис-провайдеров.',
+        'Agents ↔ Groups' => 'Агенты ↔ Группы',
+        'Roles ↔ Groups' => 'Роли ↔ Группы',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminLog.tt
         'System Log' => 'Системный журнал',
@@ -1440,24 +1429,6 @@ sub Data {
             'Уведомить пользователя только раз в день для каждой отдельной заявки, используя указанный способ доставки.',
         'This field is required and must have less than 4000 characters.' =>
             'Данное поле обязательно и должно быть менее 4000 символов.',
-        'Notifications are sent to an agent or a customer.' => 'Уведомления отправляются агенту или клиенту',
-        'To get the first 20 character of the subject (of the latest agent article).' =>
-            'Первые 20 символов темы из последнего сообщения агента',
-        'To get the first 5 lines of the body (of the latest agent article).' =>
-            'Первые 5 строк последнего сообщения агента',
-        'To get the first 20 character of the subject (of the latest customer article).' =>
-            'Первые 20 символов темы из последнего сообщения клиента',
-        'To get the first 5 lines of the body (of the latest customer article).' =>
-            'Первые 5 строк последнего сообщения клиента',
-        'Attributes of the current customer user data' => 'Атрибуты данных текущего клиента',
-        'Attributes of the current ticket owner user data' => 'Атрибуты текущего владельца заявки',
-        'Attributes of the current ticket responsible user data' => 'Атрибуты текущего ответственного за заявку',
-        'Attributes of the current agent user who requested this action' =>
-            'Атрибуты текущего агента, запросившего это действие',
-        'Attributes of the ticket data' => 'Атрибуты данных заявки',
-        'Ticket dynamic fields internal key values' => 'Значения внутренних ключей динамических полей заявки',
-        'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
-            'Отображаемые значения динамических полей заявки, полезно при использовании полей типа Dropdown и Multiselect',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminNotificationEventTransportEmailSettings.tt
         'Use comma or semicolon to separate email addresses.' => '',
@@ -1651,6 +1622,12 @@ sub Data {
             'В случае, если у Вас возникли вопросы, мы будем рады ответить на них.',
         'Install Package' => 'Установить пакет',
         'Update Package' => 'Обновить пакет',
+        'Package' => '',
+        'Required package %s is already installed.' => '',
+        'Required Perl module %s is already installed.' => '',
+        'Required package %s needs to get installed!' => '',
+        'Required package %s needs to get updated to version %s!' => '',
+        'Required Perl module %s needs to get installed or updated!' => '',
         'Continue' => 'Продолжить',
         'Please make sure your database accepts packages over %s MB in size (it currently only accepts packages up to %s MB). Please adapt the max_allowed_packet setting of your database in order to avoid errors.' =>
             'Убедитесь что ваша СУБД принимает пакеты размером больше %s MB (текущее значение размера пакета - до %s MB). Измените значение параметра max_allowed_packet для вашей СУБД во избежание ошибок.',
@@ -1740,12 +1717,12 @@ sub Data {
         'Edit Priority' => 'Изменить приоритет',
         'Filter for Priorities' => 'Фильтр для Приоритетов',
         'Filter for priorities' => 'Фильтр для Приоритетов',
+        'Configure Priority Visibility and Defaults' => '',
         'This priority is present in a SysConfig setting, confirmation for updating settings to point to the new priority is needed!' =>
             'Это значение приоритета указано в настройках SysConfig, требуется подтверждение для обновления настроек для его использования в системе!',
         'This priority is used in the following config settings:' => 'Этот приоритет используется в следующих параметрах конфигурации:',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagement.tt
-        'Process Management' => 'Управление Процессами',
         'Filter for Processes' => 'Фильтр для Процессов',
         'Filter for processes' => 'Фильтр процессов',
         'Create New Process' => 'Создать новый Процесс',
@@ -1762,6 +1739,9 @@ sub Data {
             'Для создания нового Процесса вы можете импортировать Процесс экспортированный из другой системы или создать полностью новый.',
         'Changes to the Processes here only affect the behavior of the system, if you synchronize the Process data. By synchronizing the Processes, the newly made changes will be written to the Configuration.' =>
             'Изменения в Процессах сделанные здесь будут актуальны после синхронизации данных Процесса. При синхронизации, все вновь внесенные изменения будут записаны в конигурационные файлы системы.',
+        'Access Control Lists (ACL)' => 'Списки управления доступом (ACL)',
+        'Generic Agent' => '',
+        'Manage Process Widiget Groups' => '',
         'Processes' => 'Процессы',
         'Process name' => 'Имя Процесса',
         'Print' => 'Печать',
@@ -1916,6 +1896,13 @@ sub Data {
         'Edit Queue' => 'Изменить очередь',
         'Filter for Queues' => 'Фильтр для очередей',
         'Filter for queues' => 'Фильтр для очередей',
+        'Email Addresses' => 'Адреса email',
+        'PostMaster Mail Accounts' => 'Учетные записи почты для PostMaster',
+        'Salutations' => 'Приветствия',
+        'Signatures' => 'Подписи',
+        'Templates ↔ Queues' => 'Шаблоны ↔ Очереди',
+        'Configure Working Hours' => '',
+        'Configure Queue Related Settings' => '',
         'A queue with this name already exists!' => 'Очередь с таким именем уже существует!',
         'This queue is present in a SysConfig setting, confirmation for updating settings to point to the new queue is needed!' =>
             'Эта очередь указана в настройках SysConfig, требуется подтверждение для обновления настроек для её использования в системе!',
@@ -1964,7 +1951,6 @@ sub Data {
         'Manage Template-Queue Relations' => 'Управление связями шаблон-очередь',
         'Filter for Templates' => 'Фильтр для Шаблонов',
         'Filter for templates' => 'Фильтр для шаблонов',
-        'Templates' => 'Шаблоны',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminRole.tt
         'Role Management' => 'Управление ролями',
@@ -1974,6 +1960,7 @@ sub Data {
         'Filter for roles' => 'Фильтр для Ролей',
         'Create a role and put groups in it. Then add the role to the users.' =>
             'Создайте роль и добавьте в неё группы. Затем распределите роли по пользователям.',
+        'Agents ↔ Roles' => 'Агенты ↔ Роли',
         'There are no roles defined. Please use the \'Add\' button to create a new role.' =>
             'Роли не определены. Пожалуйста, используйте кнопку \'Добавить\' для создания новой роли.',
 
@@ -2010,7 +1997,9 @@ sub Data {
         'Edit SLA' => 'Изменить SLA',
         'Add SLA' => 'Добавить SLA',
         'Filter for SLAs' => 'Фильтр для SLA',
+        'Configure SLA Visibility and Defaults' => '',
         'Please write only numbers!' => 'Сюда можно писать только числа!',
+        'Minimum Time Between Incidents' => 'Минимальное время между инцидентами',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSMIME.tt
         'S/MIME Management' => 'Управление S/MIME',
@@ -2058,8 +2047,6 @@ sub Data {
         'Edit Salutation' => 'Изменить приветствие',
         'Filter for Salutations' => 'Фильтр для приветствий',
         'Filter for salutations' => 'Фильтр для приветствий',
-        'e. g.' => 'например,',
-        'Example salutation' => 'Пример приветствия',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSecureMode.tt
         'Secure Mode Needs to be Enabled!' => 'Необходимо включить безопасный режим!',
@@ -2091,9 +2078,11 @@ sub Data {
         'Service Management' => 'Управление сервисами',
         'Add Service' => 'Добавить сервис',
         'Edit Service' => 'Изменить Сервис',
+        'Configure Service Visibility and Defaults' => '',
         'Service name maximum length is 200 characters (with Sub-service).' =>
             'Максимальная длина названия сервиса 200 символов (с подсервисами).',
         'Sub-service of' => 'Подсервис сервиса',
+        'Criticality' => 'Критичность',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSession.tt
         'Session Management' => 'Управление сеансами',
@@ -2117,7 +2106,6 @@ sub Data {
         'Edit Signature' => 'Изменить подпись',
         'Filter for Signatures' => 'Фильтр для Подписей',
         'Filter for signatures' => 'Фильтр для Подписей',
-        'Example signature' => 'Пример подписи',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminState.tt
         'State Management' => 'Управление состояниями',
@@ -2127,6 +2115,8 @@ sub Data {
         'Filter for states' => 'Фильтр для состояний',
         'Attention' => 'Внимание',
         'Please also update the states in SysConfig where needed.' => 'Пожалуйста, обновите также состояния и в Конфигурации Системы (там, где необходимо).',
+        'Configure State Visibility and Defaults' => '',
+        'Configure State Type Visibility and Defaults' => '',
         'This state is present in a SysConfig setting, confirmation for updating settings to point to the new type is needed!' =>
             'Это состояние указано в настройках SysConfig, требуется подтверждение для обновления настроек для использования нового типа в системе!',
         'State type' => 'Тип состояния',
@@ -2249,7 +2239,6 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSystemFiles/Widget.tt
         'Permissions' => 'Права',
-        'Package' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSystemMaintenance.tt
         'System Maintenance Management' => 'Управление обслуживанием системы',
@@ -2288,18 +2277,6 @@ sub Data {
         'Delete this entry' => 'Удалить эту запись',
         'Do you really want to delete this template?' => 'Действительно удалить этот шаблон?',
         'A standard template with this name already exists!' => 'Стандартный шаблон с таким именем уже существует!',
-        'To get the first 20 characters of the subject of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'To get the first 5 lines of the body of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'To get the first 20 characters of the subject of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'To get the first 5 lines of the body of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'Create type templates only supports this smart tags' => 'Создайте шаблоны типа, только поддерживает это умные теги',
-        'Example template' => 'Пример шаблона',
-        'The current ticket state is' => 'Текущее состояние заявки',
-        'Your email address is' => 'Ваш email адрес ',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminTemplateAttachment.tt
         'Manage Template-Attachment Relations' => 'Управление связями шаблон-вложение',
@@ -2328,6 +2305,7 @@ sub Data {
         'Edit Type' => 'Редактировать тип',
         'Filter for Types' => 'Фильтр для Типов',
         'Filter for types' => 'Фильтр для типов',
+        'Configure Type Visibility and Defaults' => '',
         'A type with this name already exists!' => 'Тип с таким именем уже существует!',
         'This type is present in a SysConfig setting, confirmation for updating settings to point to the new type is needed!' =>
             'Это состояние есть в настройках SysConfig, требуется подтверждение для обновления настроек для использования нового типа в системе!',
@@ -2557,6 +2535,7 @@ sub Data {
         'Assigned to customer user' => 'Назначить клиенту',
         'Accessible for customer user' => 'Доступно клиенту',
         'My locked tickets' => 'Мои заблокированные заявки',
+        'My Owned Tickets' => '',
         'My watched tickets' => 'Мои наблюдаемые заявки',
         'My responsibilities' => 'Заявки, где я ответственный',
         'Tickets in My Queues' => 'Заявки в моих очередях',
@@ -2803,6 +2782,13 @@ sub Data {
         'New Queue' => 'Новая очередь',
         'Move' => 'Переместить',
 
+        # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketNoteToLinkedTicket.tt
+        'Add note to linked %s%s%s' => '',
+        'Note to linked Ticket' => '',
+        'LinkList invalid.' => '',
+        'Note to origin Ticket' => '',
+        'NoteToTicket invalid.' => '',
+
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewMedium.tt
         'No ticket data found.' => 'Не найдено данных о заявках.',
         'Open / Close ticket action menu' => 'Меню действия по заявке - Открыть / Закрыть ',
@@ -2811,6 +2797,8 @@ sub Data {
         'First Response Time' => 'Время до первого ответа',
         'Update Time' => 'Время до изменения заявки',
         'Solution Time' => 'Время до решения заявки',
+        'Impact' => 'Степень влияния',
+        'CustomerID' => 'ID компании',
         'Move ticket to a different queue' => 'Переместить заявку в другую очередь',
         'Change queue' => 'Сменить очередь',
 
@@ -3056,7 +3044,6 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/CustomerTicketSearch.tt
         'Profile' => 'Параметры',
         'e. g. 10*5155 or 105658*' => 'например, 10*5155 или 105658*',
-        'CustomerID' => 'ID компании',
         'Fulltext Search in Tickets (e. g. "John*n" or "Will*")' => 'Полнотекстовый поиск в заявках (например, "Иван*в" или "Петр*")',
         'Types' => 'Типы',
         'Time Restrictions' => 'Временные рамки',
@@ -3288,6 +3275,61 @@ sub Data {
             'Это публичный/общедоступный интерфейс OTRS по умолчанию! Он не имеет дополнительных параметров действий.',
         'You could install a custom public module (via the package manager), for example the FAQ module, which has a public interface.' =>
             'Вы можете установить специальный общедоступный модуль (с помощью менеджера пакетов), например, модуль FAQ, который имеет открытый интерфейс.',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAppointmentNotificationEvent.tt
+        'To get the appointment attribute' => 'Чтобы получить атрибут мероприятия',
+        ' e. g.' => ' например,',
+        'To get the first 20 character of the appointment title.' => 'Чтобы получить первые 20 символов темы мероприятия.',
+        'To get the calendar attribute' => 'Чтобы получить атрибут календаря',
+        'Attributes of the recipient user for the notification' => 'Атрибуты пользователя - получателя уведомления',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAutoResponse.tt
+        'To get the first 20 character of the subject.' => 'Чтобы получить первые 20 символов темы.',
+        'To get the first 5 lines of the email.' => 'Чтобы получить первые 5 строк email.',
+        'To get the name of the ticket\'s customer user (if given).' => 'Получить имя клиента заявки (если указано).',
+        'To get the article attribute' => 'Чтобы получить атрибут сообщения',
+        'Options of the current customer user data' => 'Атрибуты данных о пользователе текущего клиента',
+        'Ticket owner options' => 'Атрибуты владельца заявки',
+        'Options of the ticket data' => 'Атрибуты данных заявки',
+        'Options of ticket dynamic fields internal key values' => 'Атрибуты динамических полей заявки (значения внутренних ключей)',
+        'Options of ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
+            'Атрибуты отображаемых значений динамических полей заявки, полезно при использовании типов Dropdown и Multiselect',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminNotificationEvent.tt
+        'To get the first 20 character of the subject (of the latest agent article).' =>
+            'Первые 20 символов темы из последнего сообщения агента',
+        'To get the first 5 lines of the body (of the latest agent article).' =>
+            'Первые 5 строк последнего сообщения агента',
+        'To get the first 20 character of the subject (of the latest customer article).' =>
+            'Первые 20 символов темы из последнего сообщения клиента',
+        'To get the first 5 lines of the body (of the latest customer article).' =>
+            'Первые 5 строк последнего сообщения клиента',
+        'Attributes of the current customer user data' => 'Атрибуты данных текущего клиента',
+        'Attributes of the current ticket owner user data' => 'Атрибуты текущего владельца заявки',
+        'Attributes of the ticket data' => 'Атрибуты данных заявки',
+        'Ticket dynamic fields internal key values' => 'Значения внутренних ключей динамических полей заявки',
+        'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
+            'Отображаемые значения динамических полей заявки, полезно при использовании полей типа Dropdown и Multiselect',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminSalutation.tt
+        'e. g.' => 'например,',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminTemplate.tt
+        'To get the first 20 characters of the subject of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 5 lines of the body of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 20 characters of the subject of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 5 lines of the body of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/Default.tt
+        'Tag Reference' => 'Справка по тэгам',
+        'You can use the following tags' => 'Вы можете использовать следующие теги',
+        'Ticket responsible options' => 'Атрибуты ответственного за заявку',
+        'Options of the current user who requested this action' => 'Атрибуты текущего пользователя, запросившего это действие',
+        'Config options' => 'Опции конфигурации',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/Statistics/GeneralSpecificationsWidget.tt
         'You can select one or more groups to define access for different agents.' =>
@@ -3585,9 +3627,6 @@ sub Data {
         'All agents with write permission for the appointment (calendar)' =>
             'Все агенты с правом -w/записи на заявку для мероприятия (календаря)',
         'Yes, but require at least one active notification method.' => 'Да, но необходимо указать хотя бы один из способов уведомления.',
-
-        # Perl Module: Kernel/Modules/AdminAttachment.pm
-        'Attachment added!' => 'Вложение добавлено!',
 
         # Perl Module: Kernel/Modules/AdminAutoResponse.pm
         'Auto Response added!' => 'Автоответ добавлен!',
@@ -3889,7 +3928,7 @@ sub Data {
         'Customer user of the ticket' => 'Клиент заявки',
         'All recipients of the first article' => 'Все получатели первой заметки',
         'All recipients of the last article' => 'Все получатели последней заметки',
-        'All users who are mentioned in a ticket' => '',
+        'All agents who are mentioned in the ticket' => '',
         'Invisible to customer' => '',
         'Visible to customer' => '',
 
@@ -4144,7 +4183,6 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminTemplate.pm
         'Template updated!' => 'Шаблон обновлен!',
-        'Template added!' => 'Шаблон добавлен!',
 
         # Perl Module: Kernel/Modules/AdminTemplateAttachment.pm
         'Change Attachment Relations for Template' => 'Изменить связь Вложения с Шаблоном',
@@ -4345,9 +4383,6 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AgentTicketMove.pm
         'You need move permissions!' => 'Требуется права на перемещение!',
-
-        # Perl Module: Kernel/Modules/AgentTicketOwnerView.pm
-        'My Owned Tickets' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketPhone.pm
         'Chat is not active.' => 'Чат не активен.',
@@ -4643,6 +4678,10 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketNote.pm
         'Reply to note' => 'Ответить на сообщение',
 
+        # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketNoteToLinkedTicket.pm
+        'Create notice for linked ticket' => '',
+        'Transfer notice' => '',
+
         # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketPhone.pm
         'Split this article' => 'Разделить это сообщение',
 
@@ -4861,6 +4900,10 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/Preferences/Language.pm
         '(in process)' => '(выполняется)',
+
+        # Perl Module: Kernel/Output/HTML/Preferences/MaxArticlesPerPage.pm
+        'Max. number of articles per page must be between 1 and 1000 or empty.' =>
+            '',
 
         # Perl Module: Kernel/Output/HTML/Preferences/OutOfOffice.pm
         'Please specify an end date that is after the start date.' => 'Пожалуйста, укажите Дату окончания раньше даты начала.',
@@ -5365,6 +5408,11 @@ sub Data {
         'Legacy configuration backup files are no longer needed for the installed packages, please remove them from Kernel/Config/Backups folder.' =>
             '',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/MultipleJSFileLoad.pm
+        'Views with multiple loaded JavaScript files' => '',
+        'The following JavaScript files loaded multiple times:' => '',
+        'Files' => '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageDeployment.pm
         'Package Installation Status' => 'Состояние установки пакетов',
         'Some packages have locally modified files.' => 'Некоторые пакеты содержат локально модифицированные файлы.',
@@ -5767,6 +5815,7 @@ sub Data {
             'Задает высоту окна текстового редактора. Введите число пикселей и значение в процентах.',
         'Defines the selectable font sizes in the rich text editor.' => '',
         'Defines the selectable fonts in the rich text editor.' => '',
+        'Defines the selectable format tags in the rich text editor.' => '',
         'Defines additional plugins for use in the rich text editor.' => '',
         'Defines extra content that is allowed for use in the rich text editor.' =>
             '',
@@ -6713,6 +6762,14 @@ sub Data {
             'Стандартные данные, используемые для атрибутов поиска. Например: "TicketCreateTimePointFormat=year;TicketCreateTimePointStart=Last;TicketCreateTimePoint=2;".',
         'Default data to use on attribute for ticket search screen. Example: "TicketCreateTimeStartYear=2010;TicketCreateTimeStartMonth=10;TicketCreateTimeStartDay=4;TicketCreateTimeStopYear=2010;TicketCreateTimeStopMonth=11;TicketCreateTimeStopDay=3;".' =>
             'Стандартные данные, используемые для атрибутов поиска. Например: "TicketCreateTimeStartYear=2010;TicketCreateTimeStartMonth=10;TicketCreateTimeStartDay=4;TicketCreateTimeStopYear=2010;TicketCreateTimeStopMonth=11;TicketCreateTimeStopDay=3;".',
+        'Default data to use on attribute for ticket search screen. Example: "TicketLastChangeTimePointFormat=year;TicketLastChangeTimePointStart=Last;TicketLastChangeTimePoint=2;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketLastChangeTimeStartYear=2010;TicketLastChangeTimeStartMonth=10;TicketLastChangeTimeStartDay=4;TicketLastChangeTimeStopYear=2010;TicketLastChangeTimeMonth=11;TicketLastChangeTimeStopDay=3;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketPendingTimePointFormat=year;TicketPendingTimePointStart=Last;TicketPendingTimePoint=2;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketPendingTimeStartYear=2010;TicketPendingTimeStartMonth=10;TicketPendingTimeStartDay=4;TicketPendingTimeStopYear=2010;TicketPendingTimeMonth=11;TicketPendingTimeStopDay=3;".' =>
+            '',
         'Defines the default ticket attribute for ticket sorting in the locked ticket view of the agent interface.' =>
             'Задает атрибут заявки по умолчанию для сортировки заявок в обзоре блокированных заявок в интерфейсе агента.',
         'Defines the default ticket order in the ticket locked view of the agent interface. Up: oldest on top. Down: latest on top.' =>
@@ -7819,7 +7876,7 @@ sub Data {
             '',
         'Ticket event module that stores values of the selected web service record into the configured additional dynamic fields.' =>
             '',
-        'It might happen that a dynamic field of type WebserviceText or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
+        'It might happen that a dynamic field of type WebserviceDropdown or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
             '',
         'Mapping for field values received from form. This setting is necessary for the correct identification of the form fields. Key means value type, value means possible representation in views.' =>
             '',
@@ -7960,6 +8017,57 @@ sub Data {
         'Agent interface notification module to show the number of mentions.' =>
             '',
         'Module to grant access to the mentioned agents of a ticket.' => '',
+        'Mapping of non-standard time zones to official ones.' => '',
+        'Start date (YYYYMMDD) of the range to use when parsing ICS files. The used CPAN module iCal::Parser needs this to be able to parse ICS files with events in a year before the current one. The end date of the range is automatically set to 10 years in the future from the time of parsing/execution.' =>
+            '',
+        'Define a mapping between variables of the customer company data (keys) and dynamic fields of a ticket (values). The purpose is to store customer company data in ticket dynamic fields. The dynamic fields must be present in the system and should be enabled for AgentTicketFreeText, so that they can be set/updated manually by the agent. They mustn\'t be enabled for AgentTicketPhone, AgentTicketEmail and AgentTicketCustomer. If they were, they would have precedence over the automatically set values. To use this mapping, you have to also activate the Ticket::EventModulePost###4100-DynamicFieldFromCustomerCompany setting.' =>
+            '',
+        'This event module stores attributes from customer companies in ticket dynamic fields. Please see DynamicFieldFromCustomerCompany::Mapping setting for how to configure the mapping.' =>
+            '',
+        'Required permissions to use the NoteToLinkedTicket screen in the agent interface.' =>
+            '',
+        'Sets the state of the selected linked ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the default next state of a ticket after adding a note in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Activates the selection if a note in NoteToLinkedTicket screen should be created in this origin ticket.' =>
+            '',
+        'Defines the default value if a note in NoteToLinkedTicket screen should be created in this origin ticket.' =>
+            '',
+        'Sets the default subject for notes added in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the default body text for notes added in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Allows adding notes in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets if a note in NoteToLinkedTicket screen must be filled in by the agent.' =>
+            '',
+        'Defines the history type for the NoteToLinkedTicket screen, which will be used for ticket history in the agent interface.' =>
+            '',
+        'Defines the history comment for the NoteToLinkedTicket screen, which will be used for ticket history in the agent interface.' =>
+            '',
+        'Defines if the note in the NoteToLinkedTicket screen of the agent interface is visible for the customer by default.' =>
+            '',
+        'Sets the ticket type in the NoteToLinkedTicket screen of the agent interface (Ticket::Type needs to be activated).' =>
+            '',
+        'Sets the service in the NoteToLinkedTicket screen of the agent interface (Ticket::Service needs to be activated).' =>
+            '',
+        'Sets the queue in the NoteToLinkedTicket screen of a zoomed ticket in the agent interface.' =>
+            '',
+        'Sets the ticket owner in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the responsible agent of the ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the next state of a ticket after adding a note in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Shows the ticket priority options in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the default ticket priority in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Shows the title field in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
 
         # XML Definition: scripts/database/initial_insert.xml
         'invalid-temporarily' => 'временно недействительный',
@@ -8451,6 +8559,8 @@ sub Data {
         'The following files are not allowed to be uploaded: %s' => 'Следующие типы файлов не разрешены для загрузки: %s',
         'The following files exceed the maximum allowed size per file of %s and were not uploaded: %s' =>
             '',
+        'The names of the following files exceed the maximum allowed length of %s characters and were not uploaded: %s' =>
+            '',
         'The following files were already uploaded and have not been uploaded again: %s' =>
             '',
         'No space left for the following files: %s' => 'Недостаточно места для следующих файлов: %s',
@@ -8530,7 +8640,6 @@ Thanks for your help!
         'AJAX functions for notification event transport web service.' =>
             '',
         'AJAX interface for the web service dynamic field backends.' => '',
-        'Access Control Lists (ACL)' => 'Списки управления доступом (ACL)',
         'AccountedTime' => 'Затраченное время',
         'Activation of dynamic fields for screens.' => '',
         'ActivityID' => 'ActivityID',
@@ -8550,7 +8659,7 @@ Thanks for your help!
         'Admin' => 'Администрирование',
         'Admin Area.' => 'Панель администратора.',
         'Admin Notification' => 'Уведомление администратором',
-        'Admin configuration dialog for dynamic field types WebserviceText and WebserviceMultiselect' =>
+        'Admin configuration dialog for dynamic field types WebserviceDropdown and WebserviceMultiselect' =>
             '',
         'Admin modules overview.' => '',
         'Admin.' => 'Администратор.',
@@ -8563,8 +8672,6 @@ Thanks for your help!
         'Agent Statistics.' => 'Статистика агентов',
         'Agent User Search' => 'Поиск агента',
         'Agent User Search.' => '',
-        'Agents ↔ Groups' => 'Агенты ↔ Группы',
-        'Agents ↔ Roles' => 'Агенты ↔ Роли',
         'All CustomerIDs of a customer user.' => 'Все Компании клиента.',
         'All customer users of a CustomerID' => 'Все клиенты Компании',
         'All escalated tickets' => 'Все эскалированные заявки',
@@ -8584,6 +8691,7 @@ Thanks for your help!
         'Allows having a small format ticket overview (CustomerInfo => 1 - shows also the customer information).' =>
             'Допускает использование small(краткий) режима просмотра заявок (CustomerInfo => 1 - показывает также информацию о клиенте).',
         'Always show RichText if available' => 'Всегда показывать RichText если доступно',
+        'An additional screen to add notes to a linked ticket.' => '',
         'Answer' => 'Ответ',
         'Appointment Calendar overview page.' => 'Страница обзора Календаря мероприятий.',
         'Appointment Notifications' => 'Уведомления о мероприятиях',
@@ -8713,9 +8821,6 @@ Thanks for your help!
         'Customer User Information Center search.' => 'Поиск в центре информации о клиентах.',
         'Customer User Information Center.' => 'Центр информации о клиентах.',
         'Customer User-Customer Relations' => '',
-        'Customer Users ↔ Customers' => 'Клиенты ↔ Компании',
-        'Customer Users ↔ Groups' => 'Клиенты ↔ Группы',
-        'Customer Users ↔ Services' => 'Клиенты ↔ Сервисы',
         'Customer preferences.' => 'Предпочтения для клиентов.',
         'Customer ticket overview' => 'Обзор клиентской заявки',
         'Customer ticket search.' => 'Поиск клиентских заявок.',
@@ -8724,7 +8829,6 @@ Thanks for your help!
         'CustomerID search' => 'Поиск по CustomerID',
         'CustomerName' => 'Имя Клиента',
         'CustomerUser' => 'Клиент',
-        'Customers ↔ Groups' => 'Компании ↔ Группы',
         'Czech' => 'Чешский',
         'Danish' => 'Датский',
         'Dashboard overview.' => '',
@@ -8766,7 +8870,6 @@ Thanks for your help!
         'Edit Customer Users.' => 'Редактировать пользователей клиента.',
         'Edit appointment' => 'Редактировать мероприятие',
         'Edit customer company' => 'Редактировать компанию клиента',
-        'Email Addresses' => 'Адреса email',
         'Email Outbound' => 'Исходящая эл. почта',
         'Email Resend' => 'Повторная отправка Письма',
         'Email communication channel.' => '',
@@ -8919,6 +9022,7 @@ Thanks for your help!
         'Mark as Spam!' => 'Пометить как спам!',
         'Mark this ticket as junk!' => 'Пометить эту заявку как мусор!',
         'Mattermost Username' => '',
+        'Max. number of articles per page in TicketZoom' => '',
         'Medium' => 'Средний',
         'Mentioned in article' => '',
         'Mentioned in ticket' => '',
@@ -8995,7 +9099,6 @@ Thanks for your help!
         'Portuguese' => 'Португальский',
         'Portuguese (Brasil)' => 'Португальский (Бразилия)',
         'PostMaster Filters' => 'Фильтры PostMaster (входящей почты)',
-        'PostMaster Mail Accounts' => 'Учетные записи почты для PostMaster',
         'Print this ticket' => 'Напечатать эту заявку',
         'Priorities' => 'Приоритеты',
         'Process Management Activity Dialog GUI' => 'Управление процессами Интерфейс Диалоги Активности',
@@ -9014,7 +9117,6 @@ Thanks for your help!
         'Public Calendar' => 'Общедоступный календарь',
         'Public calendar.' => 'Общедоступный календарь.',
         'Queue view' => 'Просмотр очередей',
-        'Queues ↔ Auto Responses' => 'Очереди ↔ Автоответы',
         'Refresh interval' => 'Интервал обновления',
         'Reminder Tickets' => 'Заявки с напоминанием',
         'Removed subscription for user "%s".' => 'Удалена подписка для пользователя «%s».',
@@ -9024,13 +9126,11 @@ Thanks for your help!
         'Responsible Tickets' => 'Ответственные заявки',
         'Responsible Tickets.' => 'Ответственные заявки',
         'Right' => 'Правый',
-        'Roles ↔ Groups' => 'Роли ↔ Группы',
         'Romanian' => '',
         'Running Process Tickets' => 'Запущенные Процессные заявки',
         'Russian' => 'Русский',
         'S/MIME Certificates' => 'Сертификаты S/MIME',
         'SMS' => 'SMS',
-        'Salutations' => 'Приветствия',
         'Schedule a maintenance period.' => 'Управлять периодом обслуживания.',
         'Screen after new ticket' => 'Экран после создания новой заявки',
         'Search Customer' => 'Искать клиента',
@@ -9047,6 +9147,8 @@ Thanks for your help!
         'Select how many tickets should be shown in overviews by default.' =>
             'Выберете как много заявок будет показываться в обзоре по умолчанию.',
         'Select the main interface language.' => 'Выберете главный язык интерфейса.',
+        'Select the maximum articles per page shown in TicketZoom. System default value will apply when entered empty value.' =>
+            '',
         'Select the separator character used in CSV files (stats and searches). If you don\'t select a separator here, the default separator for your language will be used.' =>
             'Выберите символ разделителя, используемый в файлах CSV (статистика и поиски). Если вы не выберете его здесь, будет использован разделитель по умолчанию для вашего языка.',
         'Select where to display the last views.' => '',
@@ -9068,7 +9170,6 @@ Thanks for your help!
         'Sent notification to "%s".' => '',
         'Serbian Cyrillic' => 'Сербский Кириллица',
         'Serbian Latin' => 'Сербский Латиница',
-        'Service Level Agreements' => 'Соглашения об Уровне Сервиса',
         'Service view' => 'Обзор сервисов',
         'ServiceView' => 'ServiceView',
         'Set a new password by filling in your current password and a new one.' =>
@@ -9083,7 +9184,6 @@ Thanks for your help!
         'Shows information on how to start OTRS Daemon' => 'Показывает информацию о том как запустить OTRS Daemon',
         'Shows last mention of tickets.' => '',
         'Signature data.' => '',
-        'Signatures' => 'Подписи',
         'Simple' => 'Простой',
         'Skin' => 'Окрас',
         'Slovak' => 'Словацкий',
@@ -9118,8 +9218,6 @@ Thanks for your help!
         'System Configuration Deployment' => '',
         'System Configuration Group' => '',
         'System Maintenance' => 'Обслуживание системы',
-        'Templates ↔ Attachments' => 'Шаблоны ↔ Вложения',
-        'Templates ↔ Queues' => 'Шаблоны ↔ Очереди',
         'Textarea' => 'Textarea/Длинный текст',
         'Thai' => 'Тайский',
         'The PGP signature is expired.' => '',
@@ -9207,8 +9305,8 @@ Thanks for your help!
         'We are performing scheduled maintenance. We should be back online shortly.' =>
             'Проводиться плановое техническое обслуживание. Уже скоро закончим.',
         'Web Services' => 'Веб-сервисы',
+        'Web service (Dropdown)' => '',
         'Web service (Multiselect)' => '',
-        'Web service (Text)' => '',
         'Web service dynamic field AJAX interface' => '',
         'Webservice' => '',
         'Yes, but hide archived tickets' => 'Да, скрыть архивированные заявки',
@@ -9268,6 +9366,7 @@ Thanks for your help!
         'Agent',
         'All occurrences',
         'All-day',
+        'An Error Occurred',
         'An error occurred during communication.',
         'An error occurred! Please check the browser error log for more details!',
         'An item with this name is already present.',
@@ -9550,6 +9649,7 @@ Thanks for your help!
         'The following files were already uploaded and have not been uploaded again: %s',
         'The item you\'re currently viewing is part of a not-yet-deployed configuration setting, which makes it impossible to edit it in its current state. Please wait until the setting has been deployed. If you\'re unsure what to do next, please contact your system administrator.',
         'The key must not be empty.',
+        'The names of the following files exceed the maximum allowed length of %s characters and were not uploaded: %s',
         'There are currently no elements available to select from.',
         'There are no more drafts available.',
         'There is a package upgrade process running, click here to see status information about the upgrade progress.',

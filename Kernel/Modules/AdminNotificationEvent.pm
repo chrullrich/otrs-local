@@ -1,6 +1,6 @@
 # --
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -822,7 +822,7 @@ sub _Edit {
             Customer                  => Translatable('Customer user of the ticket'),
             AllRecipientsFirstArticle => Translatable('All recipients of the first article'),
             AllRecipientsLastArticle  => Translatable('All recipients of the last article'),
-            AllMentionedUsers         => Translatable('All users who are mentioned in a ticket'),
+            AllMentionedUsers         => Translatable('All agents who are mentioned in the ticket'),
         },
         Name       => 'Recipients',
         Multiple   => 1,

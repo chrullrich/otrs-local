@@ -649,7 +649,7 @@ msgstr "اضافه کردن زبان اطلاع رسانی جدید"
 msgid "Save Changes"
 msgstr "ذخیره‌سازی تغییرات"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAppointmentNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/Default.tt
 msgid "Tag Reference"
 msgstr "مرجع برچسب"
 
@@ -657,31 +657,31 @@ msgstr "مرجع برچسب"
 msgid "Notifications are sent to an agent."
 msgstr ""
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAppointmentNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/Default.tt
 msgid "You can use the following tags"
 msgstr "شما می‌توانید از برچسب‌های زیر استفاده نمایید."
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAppointmentNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAppointmentNotificationEvent.tt
 msgid "To get the first 20 character of the appointment title."
 msgstr ""
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAppointmentNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAppointmentNotificationEvent.tt
 msgid "To get the appointment attribute"
 msgstr ""
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAppointmentNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAppointmentNotificationEvent.tt
 msgid " e. g."
 msgstr "به عنوان مثال"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAppointmentNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAppointmentNotificationEvent.tt
 msgid "To get the calendar attribute"
 msgstr ""
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAppointmentNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAppointmentNotificationEvent.tt
 msgid "Attributes of the recipient user for the notification"
 msgstr "صفات کاربران دریافت کننده برای اطلاع رسانی"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAppointmentNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/Default.tt
 msgid "Config options"
 msgstr "گزینه‌های پیکربندی"
 
@@ -797,51 +797,51 @@ msgstr "پاسخ"
 msgid "Auto response from"
 msgstr "پاسخ خودکار از طرف"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAutoResponse.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminCustomerGroup.tt
 msgid "Reference"
 msgstr "منبع"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAutoResponse.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAutoResponse.tt
 msgid "To get the first 20 character of the subject."
 msgstr "برای دریافت ۲۰ حرف اول موضوع"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAutoResponse.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAutoResponse.tt
 msgid "To get the first 5 lines of the email."
 msgstr "برای دریافت ۵ خط اول نامه"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAutoResponse.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAutoResponse.tt
 msgid "To get the name of the ticket's customer user (if given)."
 msgstr "برای دریافت نام کاربر و ضوابط بلیط (در صورت داده شده)."
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAutoResponse.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAutoResponse.tt
 msgid "To get the article attribute"
 msgstr "برای گرفتن ویژگی مطلب"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAutoResponse.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAutoResponse.tt
 msgid "Options of the current customer user data"
 msgstr "گزینه‌هایی از داده مشترک کنونی"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAutoResponse.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAutoResponse.tt
 msgid "Ticket owner options"
 msgstr "گزینه‌های صاحب درخواست"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAutoResponse.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/Default.tt
 msgid "Ticket responsible options"
 msgstr "گزینه‌های مسئول درخواست"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAutoResponse.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/Default.tt
 msgid "Options of the current user who requested this action"
 msgstr "گزینه‌هایی از کاربر کنونی که این عملیات را درخواست کرده است"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAutoResponse.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAutoResponse.tt
 msgid "Options of the ticket data"
 msgstr "گزینه‌هایی از داده‌های درخواست"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAutoResponse.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAutoResponse.tt
 msgid "Options of ticket dynamic fields internal key values"
 msgstr "گزینه درخواست رشته پویا ارزش های داخلی کلیدی"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAutoResponse.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAutoResponse.tt
 msgid "Options of ticket dynamic fields display values, useful for Dropdown and Multiselect fields"
 msgstr "گزینه زمینه های پویا بلیط نمایش مقادیر، مفید برای زمینه های کرکره و چندین انتخاب"
 
@@ -1409,7 +1409,7 @@ msgstr ""
 msgid "Select the customer user:customer relations."
 msgstr ""
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminCustomerUserCustomer.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminCustomerCompany.tt
 msgid "Customer Users"
 msgstr "مشترکین"
 
@@ -3881,27 +3881,27 @@ msgstr ""
 msgid "Notifications are sent to an agent or a customer."
 msgstr "اعلام به یک کارشناس یا مشترک ارسال شد."
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminNotificationEvent.tt
 msgid "To get the first 20 character of the subject (of the latest agent article)."
 msgstr "برای گرفتن ۲۰ کاراکتر اول موضوع (از آخرین نوشته کارشناس)."
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminNotificationEvent.tt
 msgid "To get the first 5 lines of the body (of the latest agent article)."
 msgstr "برای گرفتن اولین ۵ خط بدنه (از آخرین نوشته کارشناس)."
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminNotificationEvent.tt
 msgid "To get the first 20 character of the subject (of the latest customer article)."
 msgstr "برای گرفتن اولین ۲۰ کاراکتر موضوع (از آخرین نوشته مشتری)."
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminNotificationEvent.tt
 msgid "To get the first 5 lines of the body (of the latest customer article)."
 msgstr "برای گرفتن اولین ۵ خط بدنه (از آخرین نوشته مشتری)."
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminNotificationEvent.tt
 msgid "Attributes of the current customer user data"
 msgstr "ویژگی های داده های کاربر مشتری فعلی"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminNotificationEvent.tt
 msgid "Attributes of the current ticket owner user data"
 msgstr "ویژگی های درخواست فعلی داده های کاربرمالک"
 
@@ -3913,15 +3913,15 @@ msgstr "ویژگی های درخواست فعلی داده های کاربر م�
 msgid "Attributes of the current agent user who requested this action"
 msgstr "ویژگی های عامل کاربر در حال حاضر که این عمل درخواست شده"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminNotificationEvent.tt
 msgid "Attributes of the ticket data"
 msgstr "ویژگی های درخواست داده "
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminNotificationEvent.tt
 msgid "Ticket dynamic fields internal key values"
 msgstr "درخواست زمینه های پویا ارزش های کلیدی داخلی"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminNotificationEvent.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminNotificationEvent.tt
 msgid "Ticket dynamic fields display values, useful for Dropdown and Multiselect fields"
 msgstr "بلیط زمینه های پویا نمایش مقادیر، مفید برای زمینه های کرکره و چندین انتخاب"
 
@@ -4625,7 +4625,7 @@ msgstr ""
 msgid "This priority is used in the following config settings:"
 msgstr ""
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagement.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminDynamicField.tt
 msgid "Process Management"
 msgstr "مدیریت فرآیند"
 
@@ -5257,7 +5257,7 @@ msgstr "فیلتر برای قالب"
 msgid "Filter for templates"
 msgstr ""
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminQueueTemplates.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAttachment.tt
 msgid "Templates"
 msgstr "قالب ها"
 
@@ -5809,7 +5809,7 @@ msgstr ""
 msgid "Filter for salutations"
 msgstr ""
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminSalutation.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminSalutation.tt
 msgid "e. g."
 msgstr "به عنوان مثال"
 
@@ -6449,19 +6449,19 @@ msgstr "قالب استاندارد با این نام وجود دارد."
 msgid "Template"
 msgstr "قالب"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminTemplate.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminTemplate.tt
 msgid "To get the first 20 characters of the subject of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types."
 msgstr ""
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminTemplate.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminTemplate.tt
 msgid "To get the first 5 lines of the body of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types."
 msgstr ""
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminTemplate.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminTemplate.tt
 msgid "To get the first 20 characters of the subject of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types."
 msgstr ""
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminTemplate.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminTemplate.tt
 msgid "To get the first 5 lines of the body of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types."
 msgstr ""
 
@@ -8533,7 +8533,7 @@ msgstr "مشخصات کاربری"
 msgid "e. g. 10*5155 or 105658*"
 msgstr "به عنوان مثال 10*5155 یا 105658*"
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/CustomerTicketSearch.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewMedium.tt
 msgid "CustomerID"
 msgstr "کد اشتراک"
 
@@ -16287,7 +16287,7 @@ msgstr "یک تصویر"
 msgid "ACL module that allows closing parent tickets only if all its children are already closed (\"State\" shows which states are not available for the parent ticket until all child tickets are closed)."
 msgstr "ماژول ACL فقط زمانی که تمام درخواست‌های فرزند بسته شده باشد، اجازه بستن درخواست‌های والد را می‌دهد. (\"وضعیت\" نان می‌دهد که کدام وضعیت‌ها برای درخواست والدتا زمانی که تمام درخواست‌های فرزند بسته شده است، در دسترس می‌باشد.)"
 
-#. SysConfig
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagement.tt
 msgid "Access Control Lists (ACL)"
 msgstr "فهرست سطخ دسترسی (ACL)"
 
@@ -16523,11 +16523,11 @@ msgstr ""
 msgid "AgentTicketZoom widget that displays ticket data in the side bar."
 msgstr ""
 
-#. SysConfig
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminGroup.tt
 msgid "Agents ↔ Groups"
 msgstr ""
 
-#. SysConfig
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminRole.tt
 msgid "Agents ↔ Roles"
 msgstr ""
 
@@ -17432,15 +17432,15 @@ msgstr ""
 msgid "Customer User Information Center."
 msgstr ""
 
-#. SysConfig
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminCustomerUser.tt
 msgid "Customer Users ↔ Customers"
 msgstr ""
 
-#. SysConfig
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminCustomerUser.tt
 msgid "Customer Users ↔ Groups"
 msgstr ""
 
-#. SysConfig
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminCustomerUser.tt
 msgid "Customer Users ↔ Services"
 msgstr ""
 
@@ -17484,7 +17484,7 @@ msgstr "نام مشتری"
 msgid "CustomerUser"
 msgstr "CustomerUser"
 
-#. SysConfig
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminCustomerCompany.tt
 msgid "Customers ↔ Groups"
 msgstr ""
 
@@ -19516,7 +19516,7 @@ msgstr ""
 msgid "Edit customer company"
 msgstr "ویرایش شرکت مشتری"
 
-#. SysConfig
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminQueue.tt
 msgid "Email Addresses"
 msgstr "آدرس‌های ایمیل"
 
@@ -21371,7 +21371,7 @@ msgstr "پرتغالی (برزیل)"
 msgid "PostMaster Filters"
 msgstr "فیلترهای پستی"
 
-#. SysConfig
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminQueue.tt
 msgid "PostMaster Mail Accounts"
 msgstr "حساب‌های ایمیل پستی"
 
@@ -21447,7 +21447,7 @@ msgstr ""
 msgid "Queue view"
 msgstr "نمای صف درخواست"
 
-#. SysConfig
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAutoResponse.tt
 msgid "Queues ↔ Auto Responses"
 msgstr ""
 
@@ -21611,7 +21611,7 @@ msgstr "حفظ تمام خدمات در لیست حتی اگر آنها کودک
 msgid "Right"
 msgstr "راست"
 
-#. SysConfig
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminGroup.tt
 msgid "Roles ↔ Groups"
 msgstr ""
 
@@ -21655,7 +21655,7 @@ msgstr "پیامک"
 msgid "SMS (Short Message Service)"
 msgstr "اس ام اس (خدمات پیام کوتاه)"
 
-#. SysConfig
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminQueue.tt
 msgid "Salutations"
 msgstr "عنوان"
 
@@ -21827,7 +21827,7 @@ msgstr "سیریلیک صربستان"
 msgid "Serbian Latin"
 msgstr "صربی لاتین"
 
-#. SysConfig
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminCustomerUserService.tt
 msgid "Service Level Agreements"
 msgstr "توافقات سطح سرویس"
 
@@ -22708,7 +22708,7 @@ msgstr ""
 msgid "Signature data."
 msgstr ""
 
-#. SysConfig
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminQueue.tt
 msgid "Signatures"
 msgstr "امضاء"
 
@@ -22988,11 +22988,11 @@ msgstr ""
 msgid "System Maintenance"
 msgstr "تعمیر و نگهداری سیستم"
 
-#. SysConfig
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAttachment.tt
 msgid "Templates ↔ Attachments"
 msgstr ""
 
-#. SysConfig
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminQueue.tt
 msgid "Templates ↔ Queues"
 msgstr ""
 
@@ -24226,7 +24226,7 @@ msgstr ""
 msgid "Delete cache"
 msgstr ""
 
-#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminSystemFiles/Widget.tt
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminPackageManager.tt
 msgid "Package"
 msgstr ""
 
@@ -24346,7 +24346,7 @@ msgstr ""
 msgid "(Files where only the permissions have been changed will not be displayed.)"
 msgstr ""
 
-#. Perl Module: Kernel/Modules/AgentTicketOwnerView.pm
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AgentDashboardTicketGeneric.tt
 msgid "My Owned Tickets"
 msgstr ""
 
@@ -24411,7 +24411,7 @@ msgid "Adds ticket attribute relations based on CSV/Excel data."
 msgstr ""
 
 #. SysConfig
-msgid "Admin configuration dialog for dynamic field types WebserviceText and WebserviceMultiselect"
+msgid "Admin configuration dialog for dynamic field types WebserviceDropdown and WebserviceMultiselect"
 msgstr ""
 
 #. SysConfig
@@ -24611,7 +24611,7 @@ msgid "Ignores not ticket related attributes."
 msgstr ""
 
 #. XML Definition: Kernel/Config/Files/XML/Znuny.xml
-msgid "It might happen that a dynamic field of type WebserviceText or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty."
+msgid "It might happen that a dynamic field of type WebserviceDropdown or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty."
 msgstr ""
 
 #. XML Definition: Kernel/Config/Files/XML/Znuny.xml
@@ -24852,10 +24852,6 @@ msgstr ""
 
 #. SysConfig
 msgid "Web service (Multiselect)"
-msgstr ""
-
-#. SysConfig
-msgid "Web service (Text)"
 msgstr ""
 
 #. SysConfig
@@ -25142,10 +25138,6 @@ msgstr ""
 msgid "Mentions"
 msgstr ""
 
-#. Perl Module: Kernel/Modules/AdminNotificationEvent.pm
-msgid "All users who are mentioned in a ticket"
-msgstr ""
-
 #. Perl Module: Kernel/Modules/AgentTicketMentionView.pm
 msgid "New mention"
 msgstr ""
@@ -25400,5 +25392,313 @@ msgstr ""
 
 #. TT Template: Kernel/Output/HTML/Templates/Standard/AdminOAuth2TokenManagement/Edit.tt
 msgid "Access token scope"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewMedium.tt
+msgid "Impact"
+msgstr "اثر"
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAttachment.tt
+msgid "Related Actions"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAutoResponse.tt
+msgid "Relatd Actions"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminAutoResponse.tt
+msgid "Queues ↔ AUto Responses"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminCustomerCompany.tt
+msgid "Customers Users"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminGroup.tt
+msgid "Agents  ↔ Groups"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminGroup.tt
+msgid "Customer ↔ Groups"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminPriority.tt
+msgid "Configure Priority Visibility and Defaults"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagementProcessEdit.tt
+msgid "Add a Dynamic Field"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagement.tt
+msgid "Manage Process Widiget Groups"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagement.tt
+msgid "Add a Generic Agent Job"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagement.tt
+msgid "Add an ACL"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminQueue.tt
+msgid "Configure Working Hours"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminQueue.tt
+msgid "Configure Queue Related Settings"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminSLA.tt
+msgid "Configure SLA Visibility and Defaults"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminService.tt
+msgid "Configure Service Visibility and Defaults"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminState.tt
+msgid "Configure State Visibility and Defaults"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminState.tt
+msgid "Configure State Type Visibility and Defaults"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagement.tt
+msgid "Action Control Lists"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagement.tt
+msgid "Generic Agents"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminType.tt
+msgid "Configure Type Visibility and Defaults"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagement.tt
+msgid "Generic Agent"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminSLA.tt
+msgid "Minimum Time Between Incidents"
+msgstr "حداقل زمان بین دو رخداد"
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminService.tt
+msgid "Criticality"
+msgstr "اهمیت"
+
+#. SysConfig
+msgid "Web service (Dropdown)"
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Mapping of non-standard time zones to official ones."
+msgstr ""
+
+#. JS File: var/httpd/htdocs/js/Core.UI.js
+msgid "The names of the following files exceed the maximum allowed length of %s characters and were not uploaded: %s"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminPackageManager.tt
+msgid "Required package %s is already installed."
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminPackageManager.tt
+msgid "Required Perl module %s is already installed."
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminPackageManager.tt
+msgid "Required package %s needs to get installed!"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminPackageManager.tt
+msgid "Required package %s needs to get updated to version %s!"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminPackageManager.tt
+msgid "Required Perl module %s needs to get installed or updated!"
+msgstr ""
+
+#. Perl Module: Kernel/Output/HTML/Preferences/MaxArticlesPerPage.pm
+msgid "Max. number of articles per page must be between 1 and 1000 or empty."
+msgstr ""
+
+#. SysConfig
+msgid "Max. number of articles per page in TicketZoom"
+msgstr ""
+
+#. SysConfig
+msgid "Select the maximum articles per page shown in TicketZoom. System default value will apply when entered empty value."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Framework.xml
+msgid "Defines the selectable format tags in the rich text editor."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Define a mapping between variables of the customer company data (keys) and dynamic fields of a ticket (values). The purpose is to store customer company data in ticket dynamic fields. The dynamic fields must be present in the system and should be enabled for AgentTicketFreeText, so that they can be set/updated manually by the agent. They mustn't be enabled for AgentTicketPhone, AgentTicketEmail and AgentTicketCustomer. If they were, they would have precedence over the automatically set values. To use this mapping, you have to also activate the Ticket::EventModulePost###4100-DynamicFieldFromCustomerCompany setting."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "This event module stores attributes from customer companies in ticket dynamic fields. Please see DynamicFieldFromCustomerCompany::Mapping setting for how to configure the mapping."
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketNoteToLinkedTicket.tt
+msgid "Add note to linked %s%s%s"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketNoteToLinkedTicket.tt
+msgid "Note to linked Ticket"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketNoteToLinkedTicket.tt
+msgid "LinkList invalid."
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketNoteToLinkedTicket.tt
+msgid "Note to origin Ticket"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketNoteToLinkedTicket.tt
+msgid "NoteToTicket invalid."
+msgstr ""
+
+#. Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketNoteToLinkedTicket.pm
+msgid "Create notice for linked ticket"
+msgstr ""
+
+#. Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketNoteToLinkedTicket.pm
+msgid "Transfer notice"
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Required permissions to use the NoteToLinkedTicket screen in the agent interface."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Sets the state of the selected linked ticket in the NoteToLinkedTicket screen of the agent interface."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Defines the default next state of a ticket after adding a note in the NoteToLinkedTicket screen of the agent interface."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Activates the selection if a note in NoteToLinkedTicket screen should be created in this origin ticket."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Defines the default value if a note in NoteToLinkedTicket screen should be created in this origin ticket."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Sets the default subject for notes added in the NoteToLinkedTicket screen of the agent interface."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Sets the default body text for notes added in the NoteToLinkedTicket screen of the agent interface."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Allows adding notes in the NoteToLinkedTicket screen of the agent interface."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Sets if a note in NoteToLinkedTicket screen must be filled in by the agent."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Defines the history type for the NoteToLinkedTicket screen, which will be used for ticket history in the agent interface."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Defines the history comment for the NoteToLinkedTicket screen, which will be used for ticket history in the agent interface."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Defines if the note in the NoteToLinkedTicket screen of the agent interface is visible for the customer by default."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Sets the ticket type in the NoteToLinkedTicket screen of the agent interface (Ticket::Type needs to be activated)."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Sets the service in the NoteToLinkedTicket screen of the agent interface (Ticket::Service needs to be activated)."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Sets the queue in the NoteToLinkedTicket screen of a zoomed ticket in the agent interface."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Sets the ticket owner in the NoteToLinkedTicket screen of the agent interface."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Sets the responsible agent of the ticket in the NoteToLinkedTicket screen of the agent interface."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Sets the state of a ticket in the NoteToLinkedTicket screen of the agent interface."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Defines the next state of a ticket after adding a note in the NoteToLinkedTicket screen of the agent interface."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Shows the ticket priority options in the NoteToLinkedTicket screen of the agent interface."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Defines the default ticket priority in the NoteToLinkedTicket screen of the agent interface."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Shows the title field in the NoteToLinkedTicket screen of the agent interface."
+msgstr ""
+
+#. SysConfig
+msgid "An additional screen to add notes to a linked ticket."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Ticket.xml
+msgid "Default data to use on attribute for ticket search screen. Example: \"TicketLastChangeTimePointFormat=year;TicketLastChangeTimePointStart=Last;TicketLastChangeTimePoint=2;\"."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Ticket.xml
+msgid "Default data to use on attribute for ticket search screen. Example: \"TicketLastChangeTimeStartYear=2010;TicketLastChangeTimeStartMonth=10;TicketLastChangeTimeStartDay=4;TicketLastChangeTimeStopYear=2010;TicketLastChangeTimeMonth=11;TicketLastChangeTimeStopDay=3;\"."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Ticket.xml
+msgid "Default data to use on attribute for ticket search screen. Example: \"TicketPendingTimePointFormat=year;TicketPendingTimePointStart=Last;TicketPendingTimePoint=2;\"."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Ticket.xml
+msgid "Default data to use on attribute for ticket search screen. Example: \"TicketPendingTimeStartYear=2010;TicketPendingTimeStartMonth=10;TicketPendingTimeStartDay=4;TicketPendingTimeStopYear=2010;TicketPendingTimeMonth=11;TicketPendingTimeStopDay=3;\"."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Znuny.xml
+msgid "Start date (YYYYMMDD) of the range to use when parsing ICS files. The used CPAN module iCal::Parser needs this to be able to parse ICS files with events in a year before the current one. The end date of the range is automatically set to 10 years in the future from the time of parsing/execution."
+msgstr ""
+
+#. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/MultipleJSFileLoad.pm
+msgid "Views with multiple loaded JavaScript files"
+msgstr ""
+
+#. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/MultipleJSFileLoad.pm
+msgid "The following JavaScript files loaded multiple times:"
+msgstr ""
+
+#. Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/MultipleJSFileLoad.pm
+msgid "Files"
+msgstr ""
+
+#. Perl Module: Kernel/Modules/AdminNotificationEvent.pm
+msgid "All agents who are mentioned in the ticket"
 msgstr ""
 

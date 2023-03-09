@@ -6,7 +6,7 @@
 # Copyright (C) 2009 Arnold Matyasi <arn@webma.hu>
 # Copyright (C) 2013 Csaba Németh <csaba@sopron.hu>
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -31,7 +31,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y-%M-%D';
     $Self->{DateInputFormat}     = '%Y-%M-%D';
     $Self->{DateInputFormatLong} = '%Y-%M-%D - %T';
-    $Self->{Completeness}        = 0.930648042878025;
+    $Self->{Completeness}        = 0.921230670103093;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -230,16 +230,6 @@ sub Data {
         'Message body' => 'Üzenettörzs',
         'Add new notification language' => 'Új értesítési nyelv hozzáadása',
         'Save Changes' => 'Változtatások mentése',
-        'Tag Reference' => 'Címke hivatkozás',
-        'Notifications are sent to an agent.' => 'Az értesítések egy ügyintézőnek kerülnek elküldésre.',
-        'You can use the following tags' => 'A következő címkéket használhatja',
-        'To get the first 20 character of the appointment title.' => 'Az időpontcím első 20 karakterének lekéréséhez.',
-        'To get the appointment attribute' => 'Az időpont jellemzőjének lekéréséhez',
-        ' e. g.' => ' például',
-        'To get the calendar attribute' => 'A naptár jellemzőjének lekéréséhez',
-        'Attributes of the recipient user for the notification' => 'A címzett felhasználó jellemzői az értesítésnél',
-        'Config options' => 'Konfigurációs beállítások',
-        'Example notification' => 'Példa értesítés',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminAppointmentNotificationEventTransportEmailSettings.tt
         'Additional recipient email addresses' => 'További címzett e-mail címek',
@@ -261,6 +251,9 @@ sub Data {
         'Edit Attachment' => 'Melléklet szerkesztése',
         'Filter for Attachments' => 'Szűrő a mellékletekhez',
         'Filter for attachments' => 'Szűrő a mellékletekhez',
+        'Related Actions' => '',
+        'Templates' => 'Sablonok',
+        'Templates ↔ Attachments' => 'Sablonok ↔ Mellékletek',
         'Filename' => 'Fájlnév',
         'Download file' => 'Fájl letöltése',
         'Delete this attachment' => 'Melléklet törlése',
@@ -273,22 +266,9 @@ sub Data {
         'Edit Auto Response' => 'Automatikus válasz szerkesztése',
         'Filter for Auto Responses' => 'Szűrő az automatikus válaszokhoz',
         'Filter for auto responses' => 'Szűrő az automatikus válaszokhoz',
+        'Queues ↔ Auto Responses' => 'Várólisták ↔ Automatikus válaszok',
         'Response' => 'Válasz',
         'Auto response from' => 'Automatikus válasz feladója',
-        'Reference' => 'Hivatkozás',
-        'To get the first 20 character of the subject.' => 'A tárgy első 20 karakterének lekéréséhez.',
-        'To get the first 5 lines of the email.' => 'Az e-mail első 5 sorának lekéréséhez.',
-        'To get the name of the ticket\'s customer user (if given).' => 'A jegy ügyfél-felhasználója nevének lekéréséhez (ha meg van adva).',
-        'To get the article attribute' => 'A bejegyzés jellemzőjének lekéréséhez',
-        'Options of the current customer user data' => 'A jelenlegi ügyfél-felhasználó adatainak beállításai',
-        'Ticket owner options' => 'Jegytulajdonos beállításai',
-        'Ticket responsible options' => 'Jegyfelelős beállításai',
-        'Options of the current user who requested this action' => 'A jelenlegi felhasználó beállításai, aki ezt a műveletet kérte',
-        'Options of the ticket data' => 'A jegy adatainak beállításai',
-        'Options of ticket dynamic fields internal key values' => 'A jegy dinamikus mezői belső kulcs értékeinek beállításai',
-        'Options of ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
-            'A jegy dinamikus mezői megjelenített értékeinek beállításai, legördülő és többválasztós mezőknél hasznos',
-        'Example response' => 'Példa válasz',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminCloudServiceSupportDataCollector.tt
         'Cloud Service Management' => 'Felhőszolgáltatás kezelés',
@@ -398,6 +378,8 @@ sub Data {
         'Search' => 'Keresés',
         'Wildcards like \'*\' are allowed.' => 'Helyettesítő karakterek (például „*”) engedélyezettek.',
         'Select' => 'Kiválasztás',
+        'Customer Users' => 'Ügyfél-felhasználók',
+        'Customers ↔ Groups' => 'Ügyfelek ↔ Csoportok',
         'List (only %s shown - more available)' => 'Lista (csak %s látható – több érhető el)',
         'total' => 'összesen',
         'Please enter a search term to look for customers.' => 'Adjon meg egy keresési kifejezést az ügyfelek kereséséhez.',
@@ -420,15 +402,16 @@ sub Data {
         'Select the customer:group permissions.' => 'Az ügyfél:csoport jogosultságok kiválasztása.',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             'Ha semmi sincs kiválasztva, akkor ebben a csoportban nincsenek jogosultságok (a jegyek nem lesznek elérhetők az ügyfeleknek).',
-        'Search Results' => 'Keresési eredmények',
         'Customers' => 'Ügyfelek',
         'Groups' => 'Csoportok',
+        'Search Results' => 'Keresési eredmények',
         'Change Group Relations for Customer' => 'Csoportkapcsolatok megváltoztatása egy ügyfélnél',
         'Change Customer Relations for Group' => 'Ügyfélkapcsolatok megváltoztatása egy csoportnál',
         'Toggle %s Permission for all' => 'A(z) %s jogosultság ki- vagy bekapcsolása mindenkinek',
         'Toggle %s permission for %s' => 'A(z) %s jogosultság ki- vagy bekapcsolása ehhez: %s',
         'Customer Default Groups:' => 'Alapértelmezett ügyfélcsoportok:',
         'No changes can be made to these groups.' => 'Nem lehet változtatni ezeken a csoportokon.',
+        'Reference' => 'Hivatkozás',
         'ro' => 'csak olvasás',
         'Read only access to the ticket in this group/queue.' => 'Csak olvasható hozzáférés ebben a csoportban/várólistában lévő jegyekhez.',
         'rw' => 'írás, olvasás',
@@ -442,6 +425,9 @@ sub Data {
         'Back to search results' => 'Vissza a keresési eredményekhez',
         'Customer user are needed to have a customer history and to login via customer panel.' =>
             'Az ügyfél-felhasználó az ügyfél-előzményekhez és az ügyfélpanelen keresztüli bejelentkezéshez szükséges.',
+        'Customer Users ↔ Customers' => 'Ügyfél-felhasználók ↔ Ügyfelek',
+        'Customer Users ↔ Groups' => 'Ügyfél-felhasználók ↔ Csoportok',
+        'Customer Users ↔ Services' => 'Ügyfél-felhasználók ↔ Szolgáltatások',
         'List (%s total)' => 'Lista (összesen %s)',
         'Username' => 'Felhasználónév',
         'Email' => 'E-mail',
@@ -473,7 +459,6 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminCustomerUserCustomer.tt
         'Manage Customer User-Customer Relations' => 'Ügyfél-felhasználó–Ügyfél kapcsolatok kezelése',
         'Select the customer user:customer relations.' => 'Az ügyfél-felhasználó:ügyfél kapcsolatok kiválasztása.',
-        'Customer Users' => 'Ügyfél-felhasználók',
         'Change Customer Relations for Customer User' => 'Ügyfélkapcsolatok megváltoztatása egy ügyfél-felhasználónál',
         'Change Customer User Relations for Customer' => 'Ügyfél-felhasználó kapcsolatok megváltoztatása egy ügyfélnél',
         'Toggle active state for all' => 'Aktivált állapot ki- és bekapcsolása mindenkinek',
@@ -501,6 +486,7 @@ sub Data {
         'Filter for Services' => 'Szűrő a szolgáltatásokhoz',
         'Filter for services' => 'Szűrő a szolgáltatásokhoz',
         'Services' => 'Szolgáltatások',
+        'Service Level Agreements' => 'Szolgáltatási megállapodások',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminDynamicField.tt
         'Dynamic Fields Management' => 'Dinamikus mezők kezelése',
@@ -515,6 +501,7 @@ sub Data {
         'Overwrite existing configurations' => '',
         'Import configurations' => '',
         'Export configurations' => '',
+        'Process Management' => 'Folyamatkezelés',
         'Dynamic fields ↔ Screens' => '',
         'Dynamic Fields List' => 'Dinamikus mezők listája',
         'Dynamic fields per page' => 'Oldalankénti dinamikus mezők',
@@ -1363,6 +1350,8 @@ sub Data {
         'Create new groups to handle access permissions for different groups of agent (e. g. purchasing department, support department, sales department, ...). ' =>
             'Új csoportok létrehozása a hozzáférési jogosultságok kezeléséhez az ügyintézők különböző csoportjainál (például beszerzési részleg, támogató részleg, értékesítési részleg, …). ',
         'It\'s useful for ASP solutions. ' => 'Ez ASP megoldásoknál hasznos. ',
+        'Agents ↔ Groups' => 'Ügyintézők ↔ Csoportok',
+        'Roles ↔ Groups' => 'Szerepek ↔ Csoportok',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminLog.tt
         'System Log' => 'Rendszernapló',
@@ -1434,24 +1423,6 @@ sub Data {
             'A felhasználó értesítése csak egyszer egy nap egy egyedüli jegyről egy kiválasztott átvitel használatával.',
         'This field is required and must have less than 4000 characters.' =>
             'Ez a mező kötelező, és rövidebbnek kell lennie 4000 karakternél.',
-        'Notifications are sent to an agent or a customer.' => 'Az értesítések ügyintézőnek vagy ügyfélnek kerülnek elküldésre.',
-        'To get the first 20 character of the subject (of the latest agent article).' =>
-            '(A legutóbbi ügyintéző bejegyzés) tárgya első 20 karakterének lekéréséhez.',
-        'To get the first 5 lines of the body (of the latest agent article).' =>
-            '(A legutóbbi ügyintéző bejegyzés) törzse első 5 sorának lekéréséhez.',
-        'To get the first 20 character of the subject (of the latest customer article).' =>
-            '(A legutóbbi ügyfél bejegyzés) tárgya első 20 karakterének lekéréséhez.',
-        'To get the first 5 lines of the body (of the latest customer article).' =>
-            '(A legutóbbi ügyfél bejegyzés) törzse első 5 sorának lekéréséhez.',
-        'Attributes of the current customer user data' => 'A jelenlegi ügyfél-felhasználó adatainak jellemzői',
-        'Attributes of the current ticket owner user data' => 'A jelenlegi jegytulajdonos felhasználóadatainak jellemzői',
-        'Attributes of the current ticket responsible user data' => 'A jelenlegi jegyfelelős felhasználóadatainak jellemzői',
-        'Attributes of the current agent user who requested this action' =>
-            'A jelenlegi ügyintéző-felhasználó jellemzői, aki ezt a műveletet kérte',
-        'Attributes of the ticket data' => 'A jegy adatainak jellemzői',
-        'Ticket dynamic fields internal key values' => 'A jegy dinamikus mezőinek belső kulcs értékei',
-        'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
-            'A jegy dinamikus mezőinek megjelenített értékei, legördülő és többválasztós mezőknél hasznos',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminNotificationEventTransportEmailSettings.tt
         'Use comma or semicolon to separate email addresses.' => 'Használjon vesszőt vagy pontosvesszőt az e-mail címek elválasztásához.',
@@ -1645,6 +1616,12 @@ sub Data {
             'Abban az esetben, ha további kérdései vannak, szívesen megválaszoljuk azokat.',
         'Install Package' => 'Csomag telepítése',
         'Update Package' => 'Csomag frissítése',
+        'Package' => '',
+        'Required package %s is already installed.' => '',
+        'Required Perl module %s is already installed.' => '',
+        'Required package %s needs to get installed!' => '',
+        'Required package %s needs to get updated to version %s!' => '',
+        'Required Perl module %s needs to get installed or updated!' => '',
         'Continue' => 'Folytatás',
         'Please make sure your database accepts packages over %s MB in size (it currently only accepts packages up to %s MB). Please adapt the max_allowed_packet setting of your database in order to avoid errors.' =>
             'Győződjön meg arról, hogy az adatbázisa elfogad-e %s MB méretűnél nagyobb csomagot (jelenleg csak legfeljebb %s MB méretű csomagot fogad el). A hibák elkerülése érdekében alkalmazkodjon az adatbázisa max_allowed_packet beállításához.',
@@ -1734,12 +1711,12 @@ sub Data {
         'Edit Priority' => 'Prioritás szerkesztése',
         'Filter for Priorities' => 'Szűrő a prioritásokhoz',
         'Filter for priorities' => 'Szűrő a prioritásokhoz',
+        'Configure Priority Visibility and Defaults' => '',
         'This priority is present in a SysConfig setting, confirmation for updating settings to point to the new priority is needed!' =>
             'Ez a prioritás megtalálható egy rendszerbállításban, az új prioritásra mutató beállítások frissítésének megerősítése szükséges!',
         'This priority is used in the following config settings:' => 'Ez a prioritás a következő konfigurációs beállításokban van használva:',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagement.tt
-        'Process Management' => 'Folyamatkezelés',
         'Filter for Processes' => 'Szűrő a folyamatokhoz',
         'Filter for processes' => 'Szűrő a folyamatokhoz',
         'Create New Process' => 'Új folyamat létrehozása',
@@ -1756,6 +1733,9 @@ sub Data {
             'Egy új folyamat létrehozásához importálhat egy másik rendszerből exportált folyamatot, vagy létrehozhat egy teljesen újat.',
         'Changes to the Processes here only affect the behavior of the system, if you synchronize the Process data. By synchronizing the Processes, the newly made changes will be written to the Configuration.' =>
             'A folyamatokon itt elvégzett módosítás csak akkor lesz hatással a rendszer viselkedésére, ha szinkronizálja a folyamatadatokat. A folyamatok szinkronizálásával az újonnan elvégzett módosítások be lesznek írva a beállításokba.',
+        'Access Control Lists (ACL)' => 'Hozzáférés-vezérlési listák (ACL)',
+        'Generic Agent' => '',
+        'Manage Process Widiget Groups' => '',
         'Processes' => 'Folyamatok',
         'Process name' => 'Folyamat neve',
         'Print' => 'Nyomtatás',
@@ -1910,6 +1890,13 @@ sub Data {
         'Edit Queue' => 'Várólista szerkesztése',
         'Filter for Queues' => 'Szűrő a várólistákhoz',
         'Filter for queues' => 'Szűrő a várólistákhoz',
+        'Email Addresses' => 'E-mail címek',
+        'PostMaster Mail Accounts' => 'Levelezési levélfiókok',
+        'Salutations' => 'Megszólítások',
+        'Signatures' => 'Aláírások',
+        'Templates ↔ Queues' => 'Sablonok ↔ Várólisták',
+        'Configure Working Hours' => '',
+        'Configure Queue Related Settings' => '',
         'A queue with this name already exists!' => 'Már létezik ilyen nevű várólista!',
         'This queue is present in a SysConfig setting, confirmation for updating settings to point to the new queue is needed!' =>
             'Ez a várólista megtalálható egy rendszerbállításban, az új várólistára mutató beállítások frissítésének megerősítése szükséges!',
@@ -1958,7 +1945,6 @@ sub Data {
         'Manage Template-Queue Relations' => 'Sablon–Várólista kapcsolatok kezelése',
         'Filter for Templates' => 'Szűrő a sablonokhoz',
         'Filter for templates' => 'Szűrő a sablonokhoz',
-        'Templates' => 'Sablonok',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminRole.tt
         'Role Management' => 'Szerepkezelés',
@@ -1968,6 +1954,7 @@ sub Data {
         'Filter for roles' => 'Szűrő a szerepekhez',
         'Create a role and put groups in it. Then add the role to the users.' =>
             'Hozzon létre egy szerepet és tegyen bele csoportokat. Azután adja a szerepet a felhasználókhoz.',
+        'Agents ↔ Roles' => 'Ügyintézők ↔ Szerepek',
         'There are no roles defined. Please use the \'Add\' button to create a new role.' =>
             'Nincsenek szerepek meghatározva. Használja a „Hozzáadás” gombot egy új szerep létrehozásához.',
 
@@ -2004,7 +1991,9 @@ sub Data {
         'Edit SLA' => 'SLA szerkesztése',
         'Add SLA' => 'SLA hozzáadása',
         'Filter for SLAs' => 'Szűrő az SLA-khoz',
+        'Configure SLA Visibility and Defaults' => '',
         'Please write only numbers!' => 'Csak számokat írjon!',
+        'Minimum Time Between Incidents' => 'Az incidensek közti legkisebb idő',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSMIME.tt
         'S/MIME Management' => 'S/MIME kezelés',
@@ -2052,8 +2041,6 @@ sub Data {
         'Edit Salutation' => 'Megszólítás szerkesztése',
         'Filter for Salutations' => 'Szűrő a megszólításokhoz',
         'Filter for salutations' => 'Szűrő a megszólításokhoz',
-        'e. g.' => 'például',
-        'Example salutation' => 'Példa megszólítás',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSecureMode.tt
         'Secure Mode Needs to be Enabled!' => 'A biztonsági módot engedélyezni szükséges!',
@@ -2085,9 +2072,11 @@ sub Data {
         'Service Management' => 'Szolgáltatás kezelés',
         'Add Service' => 'Szolgáltatás hozzáadása',
         'Edit Service' => 'Szolgáltatás szerkesztése',
+        'Configure Service Visibility and Defaults' => '',
         'Service name maximum length is 200 characters (with Sub-service).' =>
             'A szolgáltatás nevének legnagyobb hossza 200 karakter (alszolgáltatásokkal).',
         'Sub-service of' => 'Részszolgáltatása ennek',
+        'Criticality' => 'Kritikusság',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSession.tt
         'Session Management' => 'Munkamenet-kezelés',
@@ -2111,7 +2100,6 @@ sub Data {
         'Edit Signature' => 'Aláírás szerkesztése',
         'Filter for Signatures' => 'Szűrő az aláírásokhoz',
         'Filter for signatures' => 'Szűrő az aláírásokhoz',
-        'Example signature' => 'Példa aláírás',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminState.tt
         'State Management' => 'Állapot kezelés',
@@ -2121,6 +2109,8 @@ sub Data {
         'Filter for states' => 'Szűrő az állapotokhoz',
         'Attention' => 'Figyelem',
         'Please also update the states in SysConfig where needed.' => 'Frissítse az állapotokat a rendszer beállításaiban is, ahol szükséges.',
+        'Configure State Visibility and Defaults' => '',
+        'Configure State Type Visibility and Defaults' => '',
         'This state is present in a SysConfig setting, confirmation for updating settings to point to the new type is needed!' =>
             'Ez az állapot megtalálható egy rendszerbállításban, az új állapotra mutató beállítások frissítésének megerősítése szükséges!',
         'State type' => 'Állapottípus',
@@ -2243,7 +2233,6 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSystemFiles/Widget.tt
         'Permissions' => 'Jogosultságok',
-        'Package' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSystemMaintenance.tt
         'System Maintenance Management' => 'Rendszerkarbantartás kezelés',
@@ -2282,18 +2271,6 @@ sub Data {
         'Delete this entry' => 'Bejegyzés törlése',
         'Do you really want to delete this template?' => 'Valóban törölni szeretné ezt a sablont?',
         'A standard template with this name already exists!' => 'Már létezik ilyen nevű szabványos sablon!',
-        'To get the first 20 characters of the subject of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            'A jelenlegi vagy a legfrissebb ügyintézői bejegyzés tárgyának első 20 karakterének lekéréséhez (jelenlegi a válasznál és továbbításnál, a legfrissebb a jegyzet sablontípusnál). Ez a címke nem támogatott más sablontípusoknál.',
-        'To get the first 5 lines of the body of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            'A jelenlegi vagy a legfrissebb ügyintézői bejegyzés törzsének első 5 sorának lekéréséhez (jelenlegi a válasznál és továbbításnál, a legfrissebb a jegyzet sablontípusnál). Ez a címke nem támogatott más sablontípusoknál.',
-        'To get the first 20 characters of the subject of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            'A jelenlegi vagy a legfrissebb bejegyzés tárgyának első 20 karakterének lekéréséhez (jelenlegi a válasznál és továbbításnál, a legfrissebb a jegyzet sablontípusnál). Ez a címke nem támogatott más sablontípusoknál.',
-        'To get the first 5 lines of the body of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            'A jelenlegi vagy a legfrissebb bejegyzés törzsének első 5 sorának lekéréséhez (jelenlegi a válasznál és továbbításnál, a legfrissebb a jegyzet sablontípusnál). Ez a címke nem támogatott más sablontípusoknál.',
-        'Create type templates only supports this smart tags' => 'Típussablonok létrehozása, amelyek csak ezeket az intelligens címkéket támogatják',
-        'Example template' => 'Példa sablon',
-        'The current ticket state is' => 'A jegy jelenlegi állapota',
-        'Your email address is' => 'Az e-mail címe',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminTemplateAttachment.tt
         'Manage Template-Attachment Relations' => 'Sablon–Melléklet kapcsolatok kezelése',
@@ -2322,6 +2299,7 @@ sub Data {
         'Edit Type' => 'Típus szerkesztése',
         'Filter for Types' => 'Szűrő a típusokhoz',
         'Filter for types' => 'Szűrő a típusokhoz',
+        'Configure Type Visibility and Defaults' => '',
         'A type with this name already exists!' => 'Már létezik ilyen nevű típus!',
         'This type is present in a SysConfig setting, confirmation for updating settings to point to the new type is needed!' =>
             'Ez a típus megtalálható egy rendszerbállításban, az új típusra mutató beállítások frissítésének megerősítése szükséges!',
@@ -2551,6 +2529,7 @@ sub Data {
         'Assigned to customer user' => 'Hozzárendelve az ügyfél-felhasználóhoz',
         'Accessible for customer user' => 'Hozzáférhető az ügyfél-felhasználónak',
         'My locked tickets' => 'Saját zárolt jegyek',
+        'My Owned Tickets' => '',
         'My watched tickets' => 'Saját megfigyelt jegyek',
         'My responsibilities' => 'Saját felelősségek',
         'Tickets in My Queues' => 'Jegyek a várólistáimban',
@@ -2797,6 +2776,13 @@ sub Data {
         'New Queue' => 'Új várólista',
         'Move' => 'Áthelyezés',
 
+        # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketNoteToLinkedTicket.tt
+        'Add note to linked %s%s%s' => '',
+        'Note to linked Ticket' => '',
+        'LinkList invalid.' => '',
+        'Note to origin Ticket' => '',
+        'NoteToTicket invalid.' => '',
+
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewMedium.tt
         'No ticket data found.' => 'Nem található jegyadat.',
         'Open / Close ticket action menu' => 'Jegyművelet menü megnyitása vagy bezárása',
@@ -2805,6 +2791,8 @@ sub Data {
         'First Response Time' => 'Első válaszidő',
         'Update Time' => 'Frissítés ideje',
         'Solution Time' => 'Megoldás ideje',
+        'Impact' => 'Hatás',
+        'CustomerID' => 'Ügyfél-azonosító',
         'Move ticket to a different queue' => 'Jegy áthelyezése egy másik várólistába',
         'Change queue' => 'Várólista módosítása',
 
@@ -3050,7 +3038,6 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/CustomerTicketSearch.tt
         'Profile' => 'Profil',
         'e. g. 10*5155 or 105658*' => 'például 10*5155 vagy 105658*',
-        'CustomerID' => 'Ügyfél-azonosító',
         'Fulltext Search in Tickets (e. g. "John*n" or "Will*")' => 'Szabad-szavas keresés a jegyekben (például „Kata*n” vagy „Gerg*”)',
         'Types' => 'Típusok',
         'Time Restrictions' => 'Idő megkötések',
@@ -3282,6 +3269,61 @@ sub Data {
             'Ez az OTRS alapértelmezett nyilvános felülete! Nem került megadásra műveleti paraméter.',
         'You could install a custom public module (via the package manager), for example the FAQ module, which has a public interface.' =>
             'Telepíthetne egy olyan egyéni nyilvános modult (a csomagkezelőn keresztül), amelynek van nyilvános felülete, mint például a GyIK modulnak.',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAppointmentNotificationEvent.tt
+        'To get the appointment attribute' => 'Az időpont jellemzőjének lekéréséhez',
+        ' e. g.' => ' például',
+        'To get the first 20 character of the appointment title.' => 'Az időpontcím első 20 karakterének lekéréséhez.',
+        'To get the calendar attribute' => 'A naptár jellemzőjének lekéréséhez',
+        'Attributes of the recipient user for the notification' => 'A címzett felhasználó jellemzői az értesítésnél',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAutoResponse.tt
+        'To get the first 20 character of the subject.' => 'A tárgy első 20 karakterének lekéréséhez.',
+        'To get the first 5 lines of the email.' => 'Az e-mail első 5 sorának lekéréséhez.',
+        'To get the name of the ticket\'s customer user (if given).' => 'A jegy ügyfél-felhasználója nevének lekéréséhez (ha meg van adva).',
+        'To get the article attribute' => 'A bejegyzés jellemzőjének lekéréséhez',
+        'Options of the current customer user data' => 'A jelenlegi ügyfél-felhasználó adatainak beállításai',
+        'Ticket owner options' => 'Jegytulajdonos beállításai',
+        'Options of the ticket data' => 'A jegy adatainak beállításai',
+        'Options of ticket dynamic fields internal key values' => 'A jegy dinamikus mezői belső kulcs értékeinek beállításai',
+        'Options of ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
+            'A jegy dinamikus mezői megjelenített értékeinek beállításai, legördülő és többválasztós mezőknél hasznos',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminNotificationEvent.tt
+        'To get the first 20 character of the subject (of the latest agent article).' =>
+            '(A legutóbbi ügyintéző bejegyzés) tárgya első 20 karakterének lekéréséhez.',
+        'To get the first 5 lines of the body (of the latest agent article).' =>
+            '(A legutóbbi ügyintéző bejegyzés) törzse első 5 sorának lekéréséhez.',
+        'To get the first 20 character of the subject (of the latest customer article).' =>
+            '(A legutóbbi ügyfél bejegyzés) tárgya első 20 karakterének lekéréséhez.',
+        'To get the first 5 lines of the body (of the latest customer article).' =>
+            '(A legutóbbi ügyfél bejegyzés) törzse első 5 sorának lekéréséhez.',
+        'Attributes of the current customer user data' => 'A jelenlegi ügyfél-felhasználó adatainak jellemzői',
+        'Attributes of the current ticket owner user data' => 'A jelenlegi jegytulajdonos felhasználóadatainak jellemzői',
+        'Attributes of the ticket data' => 'A jegy adatainak jellemzői',
+        'Ticket dynamic fields internal key values' => 'A jegy dinamikus mezőinek belső kulcs értékei',
+        'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
+            'A jegy dinamikus mezőinek megjelenített értékei, legördülő és többválasztós mezőknél hasznos',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminSalutation.tt
+        'e. g.' => 'például',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminTemplate.tt
+        'To get the first 20 characters of the subject of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            'A jelenlegi vagy a legfrissebb ügyintézői bejegyzés tárgyának első 20 karakterének lekéréséhez (jelenlegi a válasznál és továbbításnál, a legfrissebb a jegyzet sablontípusnál). Ez a címke nem támogatott más sablontípusoknál.',
+        'To get the first 5 lines of the body of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            'A jelenlegi vagy a legfrissebb ügyintézői bejegyzés törzsének első 5 sorának lekéréséhez (jelenlegi a válasznál és továbbításnál, a legfrissebb a jegyzet sablontípusnál). Ez a címke nem támogatott más sablontípusoknál.',
+        'To get the first 20 characters of the subject of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            'A jelenlegi vagy a legfrissebb bejegyzés tárgyának első 20 karakterének lekéréséhez (jelenlegi a válasznál és továbbításnál, a legfrissebb a jegyzet sablontípusnál). Ez a címke nem támogatott más sablontípusoknál.',
+        'To get the first 5 lines of the body of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            'A jelenlegi vagy a legfrissebb bejegyzés törzsének első 5 sorának lekéréséhez (jelenlegi a válasznál és továbbításnál, a legfrissebb a jegyzet sablontípusnál). Ez a címke nem támogatott más sablontípusoknál.',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/Default.tt
+        'Tag Reference' => 'Címke hivatkozás',
+        'You can use the following tags' => 'A következő címkéket használhatja',
+        'Ticket responsible options' => 'Jegyfelelős beállításai',
+        'Options of the current user who requested this action' => 'A jelenlegi felhasználó beállításai, aki ezt a műveletet kérte',
+        'Config options' => 'Konfigurációs beállítások',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/Statistics/GeneralSpecificationsWidget.tt
         'You can select one or more groups to define access for different agents.' =>
@@ -3579,9 +3621,6 @@ sub Data {
         'All agents with write permission for the appointment (calendar)' =>
             'Az összes ügyintéző, akiknek írási jogosultságuk van az időponthoz (naptárhoz)',
         'Yes, but require at least one active notification method.' => 'Igen, de legalább egy aktív értesítési módszert igényel.',
-
-        # Perl Module: Kernel/Modules/AdminAttachment.pm
-        'Attachment added!' => 'Melléklet hozzáadva!',
 
         # Perl Module: Kernel/Modules/AdminAutoResponse.pm
         'Auto Response added!' => 'Automatikus válasz hozzáadva!',
@@ -3883,7 +3922,7 @@ sub Data {
         'Customer user of the ticket' => 'A jegy ügyfél-felhasználója',
         'All recipients of the first article' => 'Az első bejegyzés összes címzettje',
         'All recipients of the last article' => 'Az utolsó bejegyzés összes címzettje',
-        'All users who are mentioned in a ticket' => '',
+        'All agents who are mentioned in the ticket' => '',
         'Invisible to customer' => 'Láthatatlan az ügyfélnek',
         'Visible to customer' => 'Látható az ügyfélnek',
 
@@ -4138,7 +4177,6 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminTemplate.pm
         'Template updated!' => 'Sablon frissítve!',
-        'Template added!' => 'Sablon hozzáadva!',
 
         # Perl Module: Kernel/Modules/AdminTemplateAttachment.pm
         'Change Attachment Relations for Template' => 'Mellékletkapcsolatok megváltoztatása egy sablonnál',
@@ -4339,9 +4377,6 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AgentTicketMove.pm
         'You need move permissions!' => 'Áthelyezés jogosultságokra van szüksége!',
-
-        # Perl Module: Kernel/Modules/AgentTicketOwnerView.pm
-        'My Owned Tickets' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketPhone.pm
         'Chat is not active.' => 'A csevegés nem aktív.',
@@ -4637,6 +4672,10 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketNote.pm
         'Reply to note' => 'Válasz a jegyzetre',
 
+        # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketNoteToLinkedTicket.pm
+        'Create notice for linked ticket' => '',
+        'Transfer notice' => '',
+
         # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketPhone.pm
         'Split this article' => 'Bejegyzés felosztása',
 
@@ -4855,6 +4894,10 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/Preferences/Language.pm
         '(in process)' => '(folyamatban)',
+
+        # Perl Module: Kernel/Output/HTML/Preferences/MaxArticlesPerPage.pm
+        'Max. number of articles per page must be between 1 and 1000 or empty.' =>
+            '',
 
         # Perl Module: Kernel/Output/HTML/Preferences/OutOfOffice.pm
         'Please specify an end date that is after the start date.' => 'Olyan befejezési dátumot adjon meg, amely a kezdődátum után van.',
@@ -5359,6 +5402,11 @@ sub Data {
         'Legacy configuration backup files are no longer needed for the installed packages, please remove them from Kernel/Config/Backups folder.' =>
             'Az örökölt konfigurációs biztonsági mentés fájlok többé nem szükségesek a telepített csomagokhoz, távolítsa el azokat a Kernel/Config/Backups mappából.',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/MultipleJSFileLoad.pm
+        'Views with multiple loaded JavaScript files' => '',
+        'The following JavaScript files loaded multiple times:' => '',
+        'Files' => '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageDeployment.pm
         'Package Installation Status' => 'Csomagtelepítési állapot',
         'Some packages have locally modified files.' => 'Néhány csomag helyileg módosított fájlokkal rendelkezik.',
@@ -5761,6 +5809,7 @@ sub Data {
             'Meghatározza a RichText szerkesztő komponens magasságát. Szám (képpont) vagy százalék (relatív) értéket adjon meg.',
         'Defines the selectable font sizes in the rich text editor.' => '',
         'Defines the selectable fonts in the rich text editor.' => '',
+        'Defines the selectable format tags in the rich text editor.' => '',
         'Defines additional plugins for use in the rich text editor.' => '',
         'Defines extra content that is allowed for use in the rich text editor.' =>
             '',
@@ -6707,6 +6756,14 @@ sub Data {
             'A jegykeresés képernyő jellemzőinél használt alapértelmezett adatok. Például: „TicketCreateTimePointFormat=year;TicketCreateTimePointStart=Last;TicketCreateTimePoint=2;”.',
         'Default data to use on attribute for ticket search screen. Example: "TicketCreateTimeStartYear=2010;TicketCreateTimeStartMonth=10;TicketCreateTimeStartDay=4;TicketCreateTimeStopYear=2010;TicketCreateTimeStopMonth=11;TicketCreateTimeStopDay=3;".' =>
             'A jegykeresés képernyő jellemzőinél használt alapértelmezett adatok. Például: „TicketCreateTimeStartYear=2010;TicketCreateTimeStartMonth=10;TicketCreateTimeStartDay=4;TicketCreateTimeStopYear=2010;TicketCreateTimeStopMonth=11;TicketCreateTimeStopDay=3;”.',
+        'Default data to use on attribute for ticket search screen. Example: "TicketLastChangeTimePointFormat=year;TicketLastChangeTimePointStart=Last;TicketLastChangeTimePoint=2;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketLastChangeTimeStartYear=2010;TicketLastChangeTimeStartMonth=10;TicketLastChangeTimeStartDay=4;TicketLastChangeTimeStopYear=2010;TicketLastChangeTimeMonth=11;TicketLastChangeTimeStopDay=3;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketPendingTimePointFormat=year;TicketPendingTimePointStart=Last;TicketPendingTimePoint=2;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketPendingTimeStartYear=2010;TicketPendingTimeStartMonth=10;TicketPendingTimeStartDay=4;TicketPendingTimeStopYear=2010;TicketPendingTimeMonth=11;TicketPendingTimeStopDay=3;".' =>
+            '',
         'Defines the default ticket attribute for ticket sorting in the locked ticket view of the agent interface.' =>
             'Meghatározza az alapértelmezett jegyjellemzőt a jegyrendezéshez az ügyintézői felület zárolt jegy nézetében.',
         'Defines the default ticket order in the ticket locked view of the agent interface. Up: oldest on top. Down: latest on top.' =>
@@ -7813,7 +7870,7 @@ sub Data {
             '',
         'Ticket event module that stores values of the selected web service record into the configured additional dynamic fields.' =>
             '',
-        'It might happen that a dynamic field of type WebserviceText or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
+        'It might happen that a dynamic field of type WebserviceDropdown or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
             '',
         'Mapping for field values received from form. This setting is necessary for the correct identification of the form fields. Key means value type, value means possible representation in views.' =>
             '',
@@ -7954,6 +8011,57 @@ sub Data {
         'Agent interface notification module to show the number of mentions.' =>
             '',
         'Module to grant access to the mentioned agents of a ticket.' => '',
+        'Mapping of non-standard time zones to official ones.' => '',
+        'Start date (YYYYMMDD) of the range to use when parsing ICS files. The used CPAN module iCal::Parser needs this to be able to parse ICS files with events in a year before the current one. The end date of the range is automatically set to 10 years in the future from the time of parsing/execution.' =>
+            '',
+        'Define a mapping between variables of the customer company data (keys) and dynamic fields of a ticket (values). The purpose is to store customer company data in ticket dynamic fields. The dynamic fields must be present in the system and should be enabled for AgentTicketFreeText, so that they can be set/updated manually by the agent. They mustn\'t be enabled for AgentTicketPhone, AgentTicketEmail and AgentTicketCustomer. If they were, they would have precedence over the automatically set values. To use this mapping, you have to also activate the Ticket::EventModulePost###4100-DynamicFieldFromCustomerCompany setting.' =>
+            '',
+        'This event module stores attributes from customer companies in ticket dynamic fields. Please see DynamicFieldFromCustomerCompany::Mapping setting for how to configure the mapping.' =>
+            '',
+        'Required permissions to use the NoteToLinkedTicket screen in the agent interface.' =>
+            '',
+        'Sets the state of the selected linked ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the default next state of a ticket after adding a note in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Activates the selection if a note in NoteToLinkedTicket screen should be created in this origin ticket.' =>
+            '',
+        'Defines the default value if a note in NoteToLinkedTicket screen should be created in this origin ticket.' =>
+            '',
+        'Sets the default subject for notes added in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the default body text for notes added in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Allows adding notes in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets if a note in NoteToLinkedTicket screen must be filled in by the agent.' =>
+            '',
+        'Defines the history type for the NoteToLinkedTicket screen, which will be used for ticket history in the agent interface.' =>
+            '',
+        'Defines the history comment for the NoteToLinkedTicket screen, which will be used for ticket history in the agent interface.' =>
+            '',
+        'Defines if the note in the NoteToLinkedTicket screen of the agent interface is visible for the customer by default.' =>
+            '',
+        'Sets the ticket type in the NoteToLinkedTicket screen of the agent interface (Ticket::Type needs to be activated).' =>
+            '',
+        'Sets the service in the NoteToLinkedTicket screen of the agent interface (Ticket::Service needs to be activated).' =>
+            '',
+        'Sets the queue in the NoteToLinkedTicket screen of a zoomed ticket in the agent interface.' =>
+            '',
+        'Sets the ticket owner in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the responsible agent of the ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the next state of a ticket after adding a note in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Shows the ticket priority options in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the default ticket priority in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Shows the title field in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
 
         # XML Definition: scripts/database/initial_insert.xml
         'invalid-temporarily' => 'átmenetileg érvénytelen',
@@ -8445,6 +8553,8 @@ sub Data {
         'The following files are not allowed to be uploaded: %s' => 'A következő fájlok nem engedélyezettek a feltöltéshez: %s',
         'The following files exceed the maximum allowed size per file of %s and were not uploaded: %s' =>
             'A következő fájlok túllépik a legnagyobb megengedett fájlonkénti %s méretet, és nem lettek feltöltve: %s',
+        'The names of the following files exceed the maximum allowed length of %s characters and were not uploaded: %s' =>
+            '',
         'The following files were already uploaded and have not been uploaded again: %s' =>
             'A következő fájlok már fel lettek töltve, és nem lesznek újra feltöltve: %s',
         'No space left for the following files: %s' => 'Nincs több hely a következő fájloknak: %s',
@@ -8524,7 +8634,6 @@ Az Ön segélyszolgálat csapata
         'AJAX functions for notification event transport web service.' =>
             '',
         'AJAX interface for the web service dynamic field backends.' => '',
-        'Access Control Lists (ACL)' => 'Hozzáférés-vezérlési listák (ACL)',
         'AccountedTime' => 'Elszámolt idő',
         'Activation of dynamic fields for screens.' => '',
         'ActivityID' => 'Tevékenység-azonosító',
@@ -8544,7 +8653,7 @@ Az Ön segélyszolgálat csapata
         'Admin' => 'Adminisztráció',
         'Admin Area.' => 'Adminisztrációs terület.',
         'Admin Notification' => 'Adminisztrátor értesítés',
-        'Admin configuration dialog for dynamic field types WebserviceText and WebserviceMultiselect' =>
+        'Admin configuration dialog for dynamic field types WebserviceDropdown and WebserviceMultiselect' =>
             '',
         'Admin modules overview.' => 'Adminisztrátori modulok áttekintője.',
         'Admin.' => 'Adminisztráció.',
@@ -8557,8 +8666,6 @@ Az Ön segélyszolgálat csapata
         'Agent Statistics.' => 'Ügyintézői statisztikák.',
         'Agent User Search' => 'Ügyintézői felhasználó-keresés',
         'Agent User Search.' => 'Ügyintézői felhasználó-keresés.',
-        'Agents ↔ Groups' => 'Ügyintézők ↔ Csoportok',
-        'Agents ↔ Roles' => 'Ügyintézők ↔ Szerepek',
         'All CustomerIDs of a customer user.' => 'Egy ügyfél-felhasználó összes ügyfél-azonosítója.',
         'All customer users of a CustomerID' => 'Egy ügyfél-azonosító minden ügyfél-felhasználója',
         'All escalated tickets' => 'Minden eszkalált jegy',
@@ -8578,6 +8685,7 @@ Az Ön segélyszolgálat csapata
         'Allows having a small format ticket overview (CustomerInfo => 1 - shows also the customer information).' =>
             'Lehetővé teszi a kis formátumú jegyáttekintőt (CustomerInfo => 1 – megjeleníti az ügyfél-információkat is).',
         'Always show RichText if available' => 'Mindig RichText szöveget jelenítsen meg, ha elérhető',
+        'An additional screen to add notes to a linked ticket.' => '',
         'Answer' => 'Válasz',
         'Appointment Calendar overview page.' => 'Időpontnaptár áttekintő oldal.',
         'Appointment Notifications' => 'Időpont-értesítések',
@@ -8707,9 +8815,6 @@ Az Ön segélyszolgálat csapata
         'Customer User Information Center search.' => 'Ügyfél-felhasználó információs-központ keresés.',
         'Customer User Information Center.' => 'Ügyfél-felhasználó információs-központ.',
         'Customer User-Customer Relations' => '',
-        'Customer Users ↔ Customers' => 'Ügyfél-felhasználók ↔ Ügyfelek',
-        'Customer Users ↔ Groups' => 'Ügyfél-felhasználók ↔ Csoportok',
-        'Customer Users ↔ Services' => 'Ügyfél-felhasználók ↔ Szolgáltatások',
         'Customer preferences.' => 'Ügyfélbeállítások.',
         'Customer ticket overview' => 'Ügyféljegy-áttekintő',
         'Customer ticket search.' => 'Ügyféljegykeresés.',
@@ -8718,7 +8823,6 @@ Az Ön segélyszolgálat csapata
         'CustomerID search' => 'Ügyfél-azonosító keresés',
         'CustomerName' => 'Ügyfélnév',
         'CustomerUser' => 'Ügyfél-felhasználó',
-        'Customers ↔ Groups' => 'Ügyfelek ↔ Csoportok',
         'Czech' => 'Cseh',
         'Danish' => 'Dán',
         'Dashboard overview.' => 'Vezérlőpult áttekintő.',
@@ -8760,7 +8864,6 @@ Az Ön segélyszolgálat csapata
         'Edit Customer Users.' => 'Ügyfél-felhasználók szerkesztése.',
         'Edit appointment' => 'Időpont szerkesztése',
         'Edit customer company' => 'Ügyfél-vállalat szerkesztése',
-        'Email Addresses' => 'E-mail címek',
         'Email Outbound' => 'Kimenő e-mail',
         'Email Resend' => 'E-mail újraküldés',
         'Email communication channel.' => 'E-mail kommunikációs csatorna.',
@@ -8913,6 +9016,7 @@ Az Ön segélyszolgálat csapata
         'Mark as Spam!' => 'Megjelölés szemétként!',
         'Mark this ticket as junk!' => 'Jegy megjelölése szemétként!',
         'Mattermost Username' => '',
+        'Max. number of articles per page in TicketZoom' => '',
         'Medium' => 'Közepes',
         'Mentioned in article' => '',
         'Mentioned in ticket' => '',
@@ -8989,7 +9093,6 @@ Az Ön segélyszolgálat csapata
         'Portuguese' => 'Portugál',
         'Portuguese (Brasil)' => 'Portugál (Brazil)',
         'PostMaster Filters' => 'Levelezési szűrők',
-        'PostMaster Mail Accounts' => 'Levelezési levélfiókok',
         'Print this ticket' => 'Jegy nyomtatása',
         'Priorities' => 'Prioritások',
         'Process Management Activity Dialog GUI' => 'Folyamatkezelés tevékenység párbeszéd grafikus felület',
@@ -9008,7 +9111,6 @@ Az Ön segélyszolgálat csapata
         'Public Calendar' => 'Nyilvános naptár',
         'Public calendar.' => 'Nyilvános naptár.',
         'Queue view' => 'Várólista nézet',
-        'Queues ↔ Auto Responses' => 'Várólisták ↔ Automatikus válaszok',
         'Refresh interval' => 'Frissítési időköz',
         'Reminder Tickets' => 'Emlékeztető jegyek',
         'Removed subscription for user "%s".' => 'Feliratkozás eltávolítva a következő felhasználónál: „%s”.',
@@ -9018,13 +9120,11 @@ Az Ön segélyszolgálat csapata
         'Responsible Tickets' => 'Felelős jegyek',
         'Responsible Tickets.' => 'Felelős jegyek.',
         'Right' => 'Jobb',
-        'Roles ↔ Groups' => 'Szerepek ↔ Csoportok',
         'Romanian' => 'Román',
         'Running Process Tickets' => 'Futó folyamatjegyek',
         'Russian' => 'Orosz',
         'S/MIME Certificates' => 'S/MIME tanúsítványok',
         'SMS' => 'SMS',
-        'Salutations' => 'Megszólítások',
         'Schedule a maintenance period.' => 'Egy karbantartási időszakot ütemez.',
         'Screen after new ticket' => 'Új jegy utáni képernyő',
         'Search Customer' => 'Ügyfél keresése',
@@ -9041,6 +9141,8 @@ Az Ön segélyszolgálat csapata
         'Select how many tickets should be shown in overviews by default.' =>
             'Annak kiválasztása, hogy alapértelmezetten hány jegyet kell megjeleníteni az áttekintőkben.',
         'Select the main interface language.' => 'A felület fő nyelvének kiválasztása.',
+        'Select the maximum articles per page shown in TicketZoom. System default value will apply when entered empty value.' =>
+            '',
         'Select the separator character used in CSV files (stats and searches). If you don\'t select a separator here, the default separator for your language will be used.' =>
             'Válassza ki a CSV fájlokban (statisztikák és keresések) használt elválasztó karaktert. Ha nem választ ki elválasztót itt, a nyelvének megfelelő alapértelmezett elválasztó lesz használva.',
         'Select where to display the last views.' => '',
@@ -9062,7 +9164,6 @@ Az Ön segélyszolgálat csapata
         'Sent notification to "%s".' => 'Értesítés elküldve neki: „%s”.',
         'Serbian Cyrillic' => 'Szerb (cirill)',
         'Serbian Latin' => 'Szerb (latin)',
-        'Service Level Agreements' => 'Szolgáltatási megállapodások',
         'Service view' => 'Szolgáltatás nézet',
         'ServiceView' => 'Szolgáltatás nézet',
         'Set a new password by filling in your current password and a new one.' =>
@@ -9077,7 +9178,6 @@ Az Ön segélyszolgálat csapata
         'Shows information on how to start OTRS Daemon' => 'Információkat jelenít meg arról, hogy hogyan indítsa az OTRS démont',
         'Shows last mention of tickets.' => '',
         'Signature data.' => 'Aláírási adatok.',
-        'Signatures' => 'Aláírások',
         'Simple' => 'Egyszerű',
         'Skin' => 'Felszín',
         'Slovak' => 'Szlovák',
@@ -9112,8 +9212,6 @@ Az Ön segélyszolgálat csapata
         'System Configuration Deployment' => 'Rendszer-konfigurációs üzembe állítás',
         'System Configuration Group' => 'Rendszerbeállítások csoport',
         'System Maintenance' => 'Rendszerkarbantartás',
-        'Templates ↔ Attachments' => 'Sablonok ↔ Mellékletek',
-        'Templates ↔ Queues' => 'Sablonok ↔ Várólisták',
         'Textarea' => 'Szövegdoboz',
         'Thai' => 'Thai',
         'The PGP signature is expired.' => 'A PGP-aláírás lejárt.',
@@ -9201,8 +9299,8 @@ Az Ön segélyszolgálat csapata
         'We are performing scheduled maintenance. We should be back online shortly.' =>
             'Ütemezett karbantartást végzünk. Rövidesen ismét elérhetőnek kell lennünk.',
         'Web Services' => 'Webszolgáltatások',
+        'Web service (Dropdown)' => '',
         'Web service (Multiselect)' => '',
-        'Web service (Text)' => '',
         'Web service dynamic field AJAX interface' => '',
         'Webservice' => '',
         'Yes, but hide archived tickets' => 'Igen, de az archivált jegyek elrejtése',
@@ -9262,6 +9360,7 @@ Az Ön segélyszolgálat csapata
         'Agent',
         'All occurrences',
         'All-day',
+        'An Error Occurred',
         'An error occurred during communication.',
         'An error occurred! Please check the browser error log for more details!',
         'An item with this name is already present.',
@@ -9544,6 +9643,7 @@ Az Ön segélyszolgálat csapata
         'The following files were already uploaded and have not been uploaded again: %s',
         'The item you\'re currently viewing is part of a not-yet-deployed configuration setting, which makes it impossible to edit it in its current state. Please wait until the setting has been deployed. If you\'re unsure what to do next, please contact your system administrator.',
         'The key must not be empty.',
+        'The names of the following files exceed the maximum allowed length of %s characters and were not uploaded: %s',
         'There are currently no elements available to select from.',
         'There are no more drafts available.',
         'There is a package upgrade process running, click here to see status information about the upgrade progress.',

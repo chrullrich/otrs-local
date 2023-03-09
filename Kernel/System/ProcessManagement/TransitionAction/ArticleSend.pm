@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -160,12 +160,11 @@ sub Run {
     # get from address for the mail
     $Param{Config}->{From} = $Self->FromGet(%Param);
 
-    # check for selected Attachments
-    if ( $Param{Config}->{Attachments} eq '1' ) {
+    # attachments
+    if ( $Param{Config}->{AttachmentsReuse} ) {
         $Param{Config}->{Attachment} = $Self->_GetAttachments(%Param);
     }
 
-    # get attachments for the mail
     if ( $Param{Config}->{Attachments} || $Param{Config}->{AttachmentIDs} ) {
         my @AttachmentIDs = split /\s*,\s*/, ( $Param{Config}->{AttachmentIDs} || '' );
 
