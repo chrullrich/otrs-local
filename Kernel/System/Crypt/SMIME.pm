@@ -1,6 +1,6 @@
 # --
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -2898,7 +2898,7 @@ sub _FetchAttributesFromCert {
         # look for every attribute by filter
         FILTER:
         for my $Filter ( sort keys %Filters ) {
-            next FILTER if $Line !~ m{ \A $Filters{$Filter} \z }xms;
+            next FILTER if $Line !~ m{ \A $Filters{$Filter} \z }xmsi;
             my $Match = $1 || '';
 
             # email filter is allowed to match multiple times for alternate names (SubjectAltName)

@@ -1,6 +1,6 @@
 # --
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -86,11 +86,11 @@ To find tickets in your system.
         Locks   => ['unlock'],
         LockIDs => [1, 2, 3],
 
-        OwnerIDs => [1, 12, 455, 32]
+        OwnerIDs => [1, 12, 455, 32],
 
-        ResponsibleIDs => [1, 12, 455, 32]
+        ResponsibleIDs => [1, 12, 455, 32],
 
-        WatchUserIDs => [1, 12, 455, 32]
+        WatchUserIDs => [1, 12, 455, 32],
 
         # CustomerID (optional) as STRING or as ARRAYREF
         # The value will be treated as a SQL query expression.
@@ -141,7 +141,7 @@ To find tickets in your system.
             GreaterThanEquals => '2001-01-01 01:01:01',
             SmallerThan       => '2002-02-02 02:02:02',
             SmallerThanEquals => '2002-02-02 02:02:02',
-        }
+        },
 
         # User ID for searching tickets by ticket flags (optional, defaults to UserID)
         TicketFlagUserID => 1,
@@ -149,7 +149,7 @@ To find tickets in your system.
         # search for ticket flags
         TicketFlag => {
             Seen => 1,
-        }
+        },
 
         # search for ticket flag that is absent, or a different value than the
         # one given:

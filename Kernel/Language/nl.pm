@@ -6,7 +6,7 @@
 # Copyright (C) 2005-2007 Richard Hinkamp <richard 'at' besite.nl>
 # Copyright (C) 2010 Ton van Boven <ton 'at' avebo.nl>
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -31,7 +31,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D-%M-%Y';
     $Self->{DateInputFormat}     = '%D-%M-%Y';
     $Self->{DateInputFormatLong} = '%D-%M-%Y - %T';
-    $Self->{Completeness}        = 0.514049049861946;
+    $Self->{Completeness}        = 0.50805412371134;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -230,16 +230,6 @@ sub Data {
         'Message body' => 'Berichttekst',
         'Add new notification language' => 'Voeg nieuwe taal voor meldingen toe',
         'Save Changes' => 'Wijzigingen opslaan',
-        'Tag Reference' => 'Tag verwijzing',
-        'Notifications are sent to an agent.' => 'Meldingen zijn verzonden naar de behandelaar.',
-        'You can use the following tags' => 'U kunt de volgende tags gebruiken',
-        'To get the first 20 character of the appointment title.' => '',
-        'To get the appointment attribute' => 'Om de afspraak eigenschap te krijgen',
-        ' e. g.' => ' bijv.',
-        'To get the calendar attribute' => '',
-        'Attributes of the recipient user for the notification' => 'Eigenschappen van de ontvanger voor deze melding',
-        'Config options' => 'Attributen van de configuratie',
-        'Example notification' => 'Voorbeeld van de melding',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminAppointmentNotificationEventTransportEmailSettings.tt
         'Additional recipient email addresses' => 'Aanvullende ontvanger e-mailadres',
@@ -261,6 +251,9 @@ sub Data {
         'Edit Attachment' => 'Bijlage bewerken',
         'Filter for Attachments' => 'Filter op bijlagen',
         'Filter for attachments' => 'Filter op bijlagen',
+        'Related Actions' => '',
+        'Templates' => 'Sjablonen',
+        'Templates ↔ Attachments' => 'Sjablonen ↔ Bijlagen',
         'Filename' => 'Bestandsnaam',
         'Download file' => 'Download bijlage',
         'Delete this attachment' => 'Verwijder bijlage',
@@ -273,22 +266,9 @@ sub Data {
         'Edit Auto Response' => 'Bewerk automatisch antwoord',
         'Filter for Auto Responses' => 'Filter op automatische antwoorden',
         'Filter for auto responses' => 'Filter op automatische antwoorden',
+        'Queues ↔ Auto Responses' => 'Wachtrijen ↔ Automatische antwoorden',
         'Response' => 'Antwoord',
         'Auto response from' => 'Automatisch antwoord van',
-        'Reference' => 'Referentie',
-        'To get the first 20 character of the subject.' => 'Voor de eerste 20 tekens van het onderwerp.',
-        'To get the first 5 lines of the email.' => 'Voor de eerste vijf regels van het e-mail bericht.',
-        'To get the name of the ticket\'s customer user (if given).' => 'Om de naam van de klant te verkrijgen (indien gegeven)',
-        'To get the article attribute' => 'Voor de attributen van de interactie',
-        'Options of the current customer user data' => 'Attributen van de huidige klant',
-        'Ticket owner options' => 'Attributen van de ticket eigenaar',
-        'Ticket responsible options' => 'Attributen van de verantwoordelijke',
-        'Options of the current user who requested this action' => 'Attributen van de huidige gebruiker',
-        'Options of the ticket data' => 'Attributen van het ticket',
-        'Options of ticket dynamic fields internal key values' => 'Attributen van dynamische velden, interne waarden',
-        'Options of ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
-            'Waarden van dynamische velden, voor Dropdown en Multiselect velden',
-        'Example response' => 'Voorbeeld',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminCloudServiceSupportDataCollector.tt
         'Cloud Service Management' => 'Cloud Service Beheer',
@@ -398,6 +378,8 @@ sub Data {
         'Search' => 'Zoeken',
         'Wildcards like \'*\' are allowed.' => 'Wildcards zijn toegestaan.',
         'Select' => 'Selecteer',
+        'Customer Users' => 'Klanten',
+        'Customers ↔ Groups' => 'Bedrijven ↔ Groepen',
         'List (only %s shown - more available)' => 'Lijst (slechts %s getoond - meer beschikbaar)',
         'total' => 'totaal',
         'Please enter a search term to look for customers.' => 'Typ om te zoeken naar klanten.',
@@ -420,15 +402,16 @@ sub Data {
         'Select the customer:group permissions.' => 'Selecteer de permissies voor bedrijf:groep.',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             'Als niets geselecteerd is, zijn er geen permissies in deze groep (de klant zal geen tickets kunnen zien).',
-        'Search Results' => 'Zoekresultaat',
         'Customers' => 'Bedrijven',
         'Groups' => 'Groepen',
+        'Search Results' => 'Zoekresultaat',
         'Change Group Relations for Customer' => 'Bewerk gekoppelde groepen voor deze klant',
         'Change Customer Relations for Group' => 'Bewerk gekoppelde klanten voor deze groep',
         'Toggle %s Permission for all' => '%s permissies aan/uit',
         'Toggle %s permission for %s' => '%s permissies aan/uit voor %s',
         'Customer Default Groups:' => 'Standaard groepen',
         'No changes can be made to these groups.' => 'Deze groepen kunnen niet gewijzigd worden.',
+        'Reference' => 'Referentie',
         'ro' => 'alleen lezen',
         'Read only access to the ticket in this group/queue.' => 'Leesrechten op de tickets in deze groep/wachtrij.',
         'rw' => 'lezen + schrijven',
@@ -442,6 +425,9 @@ sub Data {
         'Back to search results' => 'Terug naar zoekresultaat',
         'Customer user are needed to have a customer history and to login via customer panel.' =>
             'Klanten zijn nodig om een historie te kunnen inzien en om in te loggen via het klantenscherm.',
+        'Customer Users ↔ Customers' => 'Klanten ↔ Bedrijven',
+        'Customer Users ↔ Groups' => 'Klanten ↔ Groepen',
+        'Customer Users ↔ Services' => 'Klanten ↔ Services',
         'List (%s total)' => 'Lijst (%s in totaal)',
         'Username' => 'Gebruikersnaam',
         'Email' => 'E-mail',
@@ -473,7 +459,6 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminCustomerUserCustomer.tt
         'Manage Customer User-Customer Relations' => 'Beheer Klant Gebruiker-Klant koppelingen',
         'Select the customer user:customer relations.' => 'Selecteer de klant gebruiker:klant relaties.',
-        'Customer Users' => 'Klanten',
         'Change Customer Relations for Customer User' => 'Bewerk Klan Relaties voor Klant gebruiker',
         'Change Customer User Relations for Customer' => 'Wijzig Klant Gebruiker koppelingen voor Klant',
         'Toggle active state for all' => 'Alles actief aan/uit',
@@ -501,6 +486,7 @@ sub Data {
         'Filter for Services' => 'Filter op services',
         'Filter for services' => 'Filter voor Services',
         'Services' => 'Services',
+        'Service Level Agreements' => 'Service Level Agreements',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminDynamicField.tt
         'Dynamic Fields Management' => 'Beheer van dynamische velden',
@@ -515,6 +501,7 @@ sub Data {
         'Overwrite existing configurations' => '',
         'Import configurations' => '',
         'Export configurations' => '',
+        'Process Management' => 'Procesbeheer',
         'Dynamic fields ↔ Screens' => '',
         'Dynamic Fields List' => 'Lijst met dynamische velden',
         'Dynamic fields per page' => 'Dynamische velden per pagina',
@@ -1363,6 +1350,8 @@ sub Data {
         'Create new groups to handle access permissions for different groups of agent (e. g. purchasing department, support department, sales department, ...). ' =>
             'Maak nieuwe groepen aan om tickets te kunnen scheiden en de juiste wachtrijen aan behandelaars te tonen (bijv. support, sales, management).',
         'It\'s useful for ASP solutions. ' => 'Bruikbaar voor ASP situaties.',
+        'Agents ↔ Groups' => '',
+        'Roles ↔ Groups' => 'Rollen ↔ Groepen',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminLog.tt
         'System Log' => 'Logboek',
@@ -1434,24 +1423,6 @@ sub Data {
             'Verstuur slechts éénmaal per dag over één ticket via de geselecteerde methode',
         'This field is required and must have less than 4000 characters.' =>
             'Dit veld is vereist en mag maximaal 4000 tekens bevatten.',
-        'Notifications are sent to an agent or a customer.' => 'Meldingen worden verstuurd naar een behandelaar.',
-        'To get the first 20 character of the subject (of the latest agent article).' =>
-            'Om de eerste 20 karakters van het onderwerp van de nieuwste behandelaars-interactie te tonen.',
-        'To get the first 5 lines of the body (of the latest agent article).' =>
-            'Om de eerste vijf regels van de tekst van de nieuwste behandelaars-interactie te tonen.',
-        'To get the first 20 character of the subject (of the latest customer article).' =>
-            'Om de eerste 20 karakters van het onderwerp van de nieuwste klant-interactie te tonen.',
-        'To get the first 5 lines of the body (of the latest customer article).' =>
-            'Om de eerste vijf regels van de tekst van de nieuwste klant-interactie te tonen.',
-        'Attributes of the current customer user data' => 'Attributen van de huidige klantengegevens',
-        'Attributes of the current ticket owner user data' => 'Eigenschappen van de huidige ticket eigenaar',
-        'Attributes of the current ticket responsible user data' => 'Eigenschappen van de huidige ticket responsible',
-        'Attributes of the current agent user who requested this action' =>
-            'Eigenschappen van de agent die deze actie uitvoert',
-        'Attributes of the ticket data' => 'Eigenschappen van de ticket gegevens',
-        'Ticket dynamic fields internal key values' => 'Ticket dynamisch veld voor interne sleutelwaarden',
-        'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
-            'Ticket dynamisch veld weergave waarden, handig voor dropdown en multiselect velden',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminNotificationEventTransportEmailSettings.tt
         'Use comma or semicolon to separate email addresses.' => '',
@@ -1645,6 +1616,12 @@ sub Data {
             'Als u meer vragen heeft beantwoorden we deze graag.',
         'Install Package' => 'Installeer pakket',
         'Update Package' => 'Update pakket',
+        'Package' => '',
+        'Required package %s is already installed.' => '',
+        'Required Perl module %s is already installed.' => '',
+        'Required package %s needs to get installed!' => '',
+        'Required package %s needs to get updated to version %s!' => '',
+        'Required Perl module %s needs to get installed or updated!' => '',
         'Continue' => 'Doorgaan',
         'Please make sure your database accepts packages over %s MB in size (it currently only accepts packages up to %s MB). Please adapt the max_allowed_packet setting of your database in order to avoid errors.' =>
             'Zorg dat uw database pakketten van groter dan %s MB accepteert. Op dit moment is de maximale grootte %s MB. Pas de waarde voor max_allowed_packet in het mysql configuratiebestand aan om problemen te voorkomen.',
@@ -1734,12 +1711,12 @@ sub Data {
         'Edit Priority' => 'Bewerk prioriteit',
         'Filter for Priorities' => 'Filter voor Prioriteiten',
         'Filter for priorities' => 'Filter voor prioriteiten',
+        'Configure Priority Visibility and Defaults' => '',
         'This priority is present in a SysConfig setting, confirmation for updating settings to point to the new priority is needed!' =>
             '',
         'This priority is used in the following config settings:' => 'Deze prioriteit wordt gebruikt in de volgende configuratieinstellingen:',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagement.tt
-        'Process Management' => 'Procesbeheer',
         'Filter for Processes' => 'Filter op processen',
         'Filter for processes' => 'Filter voor processen',
         'Create New Process' => 'Nieuw proces',
@@ -1756,6 +1733,9 @@ sub Data {
             'Om een nieuw proces aan te maken kunt u een bestand importeren, aangemaakt op een ander systeem, of een compleet nieuw proces aanmaken.',
         'Changes to the Processes here only affect the behavior of the system, if you synchronize the Process data. By synchronizing the Processes, the newly made changes will be written to the Configuration.' =>
             'Wijzigingen aan de processen hebben alleen invloed op het systeem als u de proces-data synchroniseert. Door het synchroniseren van de processen worden de wijzigingen weggeschreven naar de configuratie.',
+        'Access Control Lists (ACL)' => 'Access Control Lists (ACL)',
+        'Generic Agent' => '',
+        'Manage Process Widiget Groups' => '',
         'Processes' => 'Processen',
         'Process name' => 'Naam',
         'Print' => 'Afdrukken',
@@ -1910,6 +1890,13 @@ sub Data {
         'Edit Queue' => 'Bewerk wachtrij',
         'Filter for Queues' => 'Filter op wachtrijen',
         'Filter for queues' => 'Filter op wachtrijen',
+        'Email Addresses' => 'E-mailadressen',
+        'PostMaster Mail Accounts' => 'E-mail accounts',
+        'Salutations' => 'Aanheffen',
+        'Signatures' => 'Handtekeningen',
+        'Templates ↔ Queues' => 'Sjablonen ↔ Wachtrijen',
+        'Configure Working Hours' => '',
+        'Configure Queue Related Settings' => '',
         'A queue with this name already exists!' => 'Er bestaat al een wachtrij met deze naam',
         'This queue is present in a SysConfig setting, confirmation for updating settings to point to the new queue is needed!' =>
             'Deze wachtrij is beschikbaar in een SysConfig instelling, bevestiging voor het updaten van instellingen naar de nieuwe wachtrij is nodig!',
@@ -1958,7 +1945,6 @@ sub Data {
         'Manage Template-Queue Relations' => 'Beheer Sjabloon - Wachtrij koppelingen',
         'Filter for Templates' => 'Filter op sjablonen',
         'Filter for templates' => 'Filter op sjablonen',
-        'Templates' => 'Sjablonen',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminRole.tt
         'Role Management' => 'Beheer rollen',
@@ -1968,6 +1954,7 @@ sub Data {
         'Filter for roles' => '',
         'Create a role and put groups in it. Then add the role to the users.' =>
             'Maak een nieuwe rol en koppel deze aan groepen. Vervolgens kunt u rollen toewijzen aan gebruikers.',
+        'Agents ↔ Roles' => 'Behandelaars ↔ Rollen',
         'There are no roles defined. Please use the \'Add\' button to create a new role.' =>
             'Er zijn geen rollen gedefiniëerd. Maak een nieuwe aan.',
 
@@ -2004,7 +1991,9 @@ sub Data {
         'Edit SLA' => 'Bewerk SLA',
         'Add SLA' => 'Nieuwe SLA',
         'Filter for SLAs' => '',
+        'Configure SLA Visibility and Defaults' => '',
         'Please write only numbers!' => 'Gebruik alleen cijfers.',
+        'Minimum Time Between Incidents' => 'Minimale Tijd Tussen Incidenten',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSMIME.tt
         'S/MIME Management' => 'S/MIME beheer',
@@ -2052,8 +2041,6 @@ sub Data {
         'Edit Salutation' => 'Bewerk aanhef',
         'Filter for Salutations' => '',
         'Filter for salutations' => '',
-        'e. g.' => 'bijv.',
-        'Example salutation' => 'Aanhef voorbeeld',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSecureMode.tt
         'Secure Mode Needs to be Enabled!' => '',
@@ -2085,9 +2072,11 @@ sub Data {
         'Service Management' => 'Service beheer',
         'Add Service' => 'Nieuwe service',
         'Edit Service' => 'Bewerk Service',
+        'Configure Service Visibility and Defaults' => '',
         'Service name maximum length is 200 characters (with Sub-service).' =>
             '',
         'Sub-service of' => 'Onderdeel van',
+        'Criticality' => 'Urgentie',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSession.tt
         'Session Management' => 'Sessies',
@@ -2111,7 +2100,6 @@ sub Data {
         'Edit Signature' => 'Bewerk handtekening',
         'Filter for Signatures' => '',
         'Filter for signatures' => '',
-        'Example signature' => 'Handtekening-voorbeeld',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminState.tt
         'State Management' => 'Status beheer',
@@ -2121,6 +2109,8 @@ sub Data {
         'Filter for states' => '',
         'Attention' => 'Let op',
         'Please also update the states in SysConfig where needed.' => 'Pas ook de namen van de status aan in SysConfig waar nodig.',
+        'Configure State Visibility and Defaults' => '',
+        'Configure State Type Visibility and Defaults' => '',
         'This state is present in a SysConfig setting, confirmation for updating settings to point to the new type is needed!' =>
             '',
         'State type' => 'Status type',
@@ -2243,7 +2233,6 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSystemFiles/Widget.tt
         'Permissions' => 'Permissies',
-        'Package' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSystemMaintenance.tt
         'System Maintenance Management' => 'Systeem onderhoudsbeheer.',
@@ -2282,18 +2271,6 @@ sub Data {
         'Delete this entry' => 'Verwijder antwoord',
         'Do you really want to delete this template?' => 'Wilt u deze template echt verwijderen?',
         'A standard template with this name already exists!' => 'Er bestaat al een standaard template met deze naam!',
-        'To get the first 20 characters of the subject of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'To get the first 5 lines of the body of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'To get the first 20 characters of the subject of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'To get the first 5 lines of the body of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'Create type templates only supports this smart tags' => 'Sjablonen van het type \'Aanmaken\' ondersteunen alleen deze tags',
-        'Example template' => 'Voorbeeld-sjabloon',
-        'The current ticket state is' => 'De huidige ticketstatus is',
-        'Your email address is' => 'Uw e-mailadres is',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminTemplateAttachment.tt
         'Manage Template-Attachment Relations' => '',
@@ -2322,6 +2299,7 @@ sub Data {
         'Edit Type' => 'Bewerk type',
         'Filter for Types' => 'Filter voor Types',
         'Filter for types' => 'Filter voor types',
+        'Configure Type Visibility and Defaults' => '',
         'A type with this name already exists!' => 'Er bestaat al een type met deze naam!',
         'This type is present in a SysConfig setting, confirmation for updating settings to point to the new type is needed!' =>
             '',
@@ -2551,6 +2529,7 @@ sub Data {
         'Assigned to customer user' => '',
         'Accessible for customer user' => '',
         'My locked tickets' => 'Mijn vergrendelde tickets',
+        'My Owned Tickets' => '',
         'My watched tickets' => 'Mijn gevolgde tickets',
         'My responsibilities' => 'Tickets waarvoor ik verantwoordelijk ben',
         'Tickets in My Queues' => 'Tickets in mijn wachtrijen',
@@ -2797,6 +2776,13 @@ sub Data {
         'New Queue' => 'Nieuwe wachtrij',
         'Move' => 'Verplaatsen',
 
+        # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketNoteToLinkedTicket.tt
+        'Add note to linked %s%s%s' => '',
+        'Note to linked Ticket' => '',
+        'LinkList invalid.' => '',
+        'Note to origin Ticket' => '',
+        'NoteToTicket invalid.' => '',
+
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewMedium.tt
         'No ticket data found.' => 'Geen tickets gevonden.',
         'Open / Close ticket action menu' => 'Open / Sluit ticket actie menu',
@@ -2805,6 +2791,8 @@ sub Data {
         'First Response Time' => 'Eerste reactie',
         'Update Time' => 'Vervolg tijd',
         'Solution Time' => 'Oplossingstijd',
+        'Impact' => 'Impact',
+        'CustomerID' => 'Klantcode',
         'Move ticket to a different queue' => 'Verplaats naar nieuwe wachtrij',
         'Change queue' => 'Verplaats naar wachtrij',
 
@@ -3050,7 +3038,6 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/CustomerTicketSearch.tt
         'Profile' => 'Sjabloon',
         'e. g. 10*5155 or 105658*' => 'bijv. 2010*5155 of 20100802*',
-        'CustomerID' => 'Klantcode',
         'Fulltext Search in Tickets (e. g. "John*n" or "Will*")' => '',
         'Types' => 'Typen',
         'Time Restrictions' => '',
@@ -3282,6 +3269,61 @@ sub Data {
             '',
         'You could install a custom public module (via the package manager), for example the FAQ module, which has a public interface.' =>
             '',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAppointmentNotificationEvent.tt
+        'To get the appointment attribute' => 'Om de afspraak eigenschap te krijgen',
+        ' e. g.' => ' bijv.',
+        'To get the first 20 character of the appointment title.' => '',
+        'To get the calendar attribute' => '',
+        'Attributes of the recipient user for the notification' => 'Eigenschappen van de ontvanger voor deze melding',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAutoResponse.tt
+        'To get the first 20 character of the subject.' => 'Voor de eerste 20 tekens van het onderwerp.',
+        'To get the first 5 lines of the email.' => 'Voor de eerste vijf regels van het e-mail bericht.',
+        'To get the name of the ticket\'s customer user (if given).' => 'Om de naam van de klant te verkrijgen (indien gegeven)',
+        'To get the article attribute' => 'Voor de attributen van de interactie',
+        'Options of the current customer user data' => 'Attributen van de huidige klant',
+        'Ticket owner options' => 'Attributen van de ticket eigenaar',
+        'Options of the ticket data' => 'Attributen van het ticket',
+        'Options of ticket dynamic fields internal key values' => 'Attributen van dynamische velden, interne waarden',
+        'Options of ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
+            'Waarden van dynamische velden, voor Dropdown en Multiselect velden',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminNotificationEvent.tt
+        'To get the first 20 character of the subject (of the latest agent article).' =>
+            'Om de eerste 20 karakters van het onderwerp van de nieuwste behandelaars-interactie te tonen.',
+        'To get the first 5 lines of the body (of the latest agent article).' =>
+            'Om de eerste vijf regels van de tekst van de nieuwste behandelaars-interactie te tonen.',
+        'To get the first 20 character of the subject (of the latest customer article).' =>
+            'Om de eerste 20 karakters van het onderwerp van de nieuwste klant-interactie te tonen.',
+        'To get the first 5 lines of the body (of the latest customer article).' =>
+            'Om de eerste vijf regels van de tekst van de nieuwste klant-interactie te tonen.',
+        'Attributes of the current customer user data' => 'Attributen van de huidige klantengegevens',
+        'Attributes of the current ticket owner user data' => 'Eigenschappen van de huidige ticket eigenaar',
+        'Attributes of the ticket data' => 'Eigenschappen van de ticket gegevens',
+        'Ticket dynamic fields internal key values' => 'Ticket dynamisch veld voor interne sleutelwaarden',
+        'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
+            'Ticket dynamisch veld weergave waarden, handig voor dropdown en multiselect velden',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminSalutation.tt
+        'e. g.' => 'bijv.',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminTemplate.tt
+        'To get the first 20 characters of the subject of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 5 lines of the body of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 20 characters of the subject of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 5 lines of the body of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/Default.tt
+        'Tag Reference' => 'Tag verwijzing',
+        'You can use the following tags' => 'U kunt de volgende tags gebruiken',
+        'Ticket responsible options' => 'Attributen van de verantwoordelijke',
+        'Options of the current user who requested this action' => 'Attributen van de huidige gebruiker',
+        'Config options' => 'Attributen van de configuratie',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/Statistics/GeneralSpecificationsWidget.tt
         'You can select one or more groups to define access for different agents.' =>
@@ -3579,9 +3621,6 @@ sub Data {
         'All agents with write permission for the appointment (calendar)' =>
             '',
         'Yes, but require at least one active notification method.' => 'Ja, maar er is minimaal één actieve melding methode nodig.',
-
-        # Perl Module: Kernel/Modules/AdminAttachment.pm
-        'Attachment added!' => 'Bijlage toegevoegd.',
 
         # Perl Module: Kernel/Modules/AdminAutoResponse.pm
         'Auto Response added!' => '',
@@ -3883,7 +3922,7 @@ sub Data {
         'Customer user of the ticket' => 'Klantgebruiker van het ticket',
         'All recipients of the first article' => 'Alle ontvangers van het eerste artikel',
         'All recipients of the last article' => 'Alle ontvangers van het laatste artikel',
-        'All users who are mentioned in a ticket' => '',
+        'All agents who are mentioned in the ticket' => '',
         'Invisible to customer' => 'Onzichtbaar voor klant',
         'Visible to customer' => 'Zichtbaar voor klant',
 
@@ -4138,7 +4177,6 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminTemplate.pm
         'Template updated!' => 'Sjabloon bijgewerkt!',
-        'Template added!' => 'Sjabloon toegevoegd!',
 
         # Perl Module: Kernel/Modules/AdminTemplateAttachment.pm
         'Change Attachment Relations for Template' => 'Verander gekoppelde bijlagen voor sjabloon',
@@ -4339,9 +4377,6 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AgentTicketMove.pm
         'You need move permissions!' => '',
-
-        # Perl Module: Kernel/Modules/AgentTicketOwnerView.pm
-        'My Owned Tickets' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketPhone.pm
         'Chat is not active.' => '',
@@ -4637,6 +4672,10 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketNote.pm
         'Reply to note' => 'Notitie beantwoorden',
 
+        # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketNoteToLinkedTicket.pm
+        'Create notice for linked ticket' => '',
+        'Transfer notice' => '',
+
         # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketPhone.pm
         'Split this article' => 'Splits deze interactie',
 
@@ -4855,6 +4894,10 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/Preferences/Language.pm
         '(in process)' => '',
+
+        # Perl Module: Kernel/Output/HTML/Preferences/MaxArticlesPerPage.pm
+        'Max. number of articles per page must be between 1 and 1000 or empty.' =>
+            '',
 
         # Perl Module: Kernel/Output/HTML/Preferences/OutOfOffice.pm
         'Please specify an end date that is after the start date.' => 'Geef een einddatum op die na de startdatum ligt.',
@@ -5359,6 +5402,11 @@ sub Data {
         'Legacy configuration backup files are no longer needed for the installed packages, please remove them from Kernel/Config/Backups folder.' =>
             '',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/MultipleJSFileLoad.pm
+        'Views with multiple loaded JavaScript files' => '',
+        'The following JavaScript files loaded multiple times:' => '',
+        'Files' => '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageDeployment.pm
         'Package Installation Status' => 'Pakket installatie status',
         'Some packages have locally modified files.' => '',
@@ -5761,6 +5809,7 @@ sub Data {
             '',
         'Defines the selectable font sizes in the rich text editor.' => '',
         'Defines the selectable fonts in the rich text editor.' => '',
+        'Defines the selectable format tags in the rich text editor.' => '',
         'Defines additional plugins for use in the rich text editor.' => '',
         'Defines extra content that is allowed for use in the rich text editor.' =>
             '',
@@ -6706,6 +6755,14 @@ sub Data {
         'Default data to use on attribute for ticket search screen. Example: "TicketCreateTimePointFormat=year;TicketCreateTimePointStart=Last;TicketCreateTimePoint=2;".' =>
             '',
         'Default data to use on attribute for ticket search screen. Example: "TicketCreateTimeStartYear=2010;TicketCreateTimeStartMonth=10;TicketCreateTimeStartDay=4;TicketCreateTimeStopYear=2010;TicketCreateTimeStopMonth=11;TicketCreateTimeStopDay=3;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketLastChangeTimePointFormat=year;TicketLastChangeTimePointStart=Last;TicketLastChangeTimePoint=2;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketLastChangeTimeStartYear=2010;TicketLastChangeTimeStartMonth=10;TicketLastChangeTimeStartDay=4;TicketLastChangeTimeStopYear=2010;TicketLastChangeTimeMonth=11;TicketLastChangeTimeStopDay=3;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketPendingTimePointFormat=year;TicketPendingTimePointStart=Last;TicketPendingTimePoint=2;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketPendingTimeStartYear=2010;TicketPendingTimeStartMonth=10;TicketPendingTimeStartDay=4;TicketPendingTimeStopYear=2010;TicketPendingTimeMonth=11;TicketPendingTimeStopDay=3;".' =>
             '',
         'Defines the default ticket attribute for ticket sorting in the locked ticket view of the agent interface.' =>
             '',
@@ -7813,7 +7870,7 @@ sub Data {
             '',
         'Ticket event module that stores values of the selected web service record into the configured additional dynamic fields.' =>
             '',
-        'It might happen that a dynamic field of type WebserviceText or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
+        'It might happen that a dynamic field of type WebserviceDropdown or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
             '',
         'Mapping for field values received from form. This setting is necessary for the correct identification of the form fields. Key means value type, value means possible representation in views.' =>
             '',
@@ -7954,6 +8011,57 @@ sub Data {
         'Agent interface notification module to show the number of mentions.' =>
             '',
         'Module to grant access to the mentioned agents of a ticket.' => '',
+        'Mapping of non-standard time zones to official ones.' => '',
+        'Start date (YYYYMMDD) of the range to use when parsing ICS files. The used CPAN module iCal::Parser needs this to be able to parse ICS files with events in a year before the current one. The end date of the range is automatically set to 10 years in the future from the time of parsing/execution.' =>
+            '',
+        'Define a mapping between variables of the customer company data (keys) and dynamic fields of a ticket (values). The purpose is to store customer company data in ticket dynamic fields. The dynamic fields must be present in the system and should be enabled for AgentTicketFreeText, so that they can be set/updated manually by the agent. They mustn\'t be enabled for AgentTicketPhone, AgentTicketEmail and AgentTicketCustomer. If they were, they would have precedence over the automatically set values. To use this mapping, you have to also activate the Ticket::EventModulePost###4100-DynamicFieldFromCustomerCompany setting.' =>
+            '',
+        'This event module stores attributes from customer companies in ticket dynamic fields. Please see DynamicFieldFromCustomerCompany::Mapping setting for how to configure the mapping.' =>
+            '',
+        'Required permissions to use the NoteToLinkedTicket screen in the agent interface.' =>
+            '',
+        'Sets the state of the selected linked ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the default next state of a ticket after adding a note in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Activates the selection if a note in NoteToLinkedTicket screen should be created in this origin ticket.' =>
+            '',
+        'Defines the default value if a note in NoteToLinkedTicket screen should be created in this origin ticket.' =>
+            '',
+        'Sets the default subject for notes added in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the default body text for notes added in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Allows adding notes in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets if a note in NoteToLinkedTicket screen must be filled in by the agent.' =>
+            '',
+        'Defines the history type for the NoteToLinkedTicket screen, which will be used for ticket history in the agent interface.' =>
+            '',
+        'Defines the history comment for the NoteToLinkedTicket screen, which will be used for ticket history in the agent interface.' =>
+            '',
+        'Defines if the note in the NoteToLinkedTicket screen of the agent interface is visible for the customer by default.' =>
+            '',
+        'Sets the ticket type in the NoteToLinkedTicket screen of the agent interface (Ticket::Type needs to be activated).' =>
+            '',
+        'Sets the service in the NoteToLinkedTicket screen of the agent interface (Ticket::Service needs to be activated).' =>
+            '',
+        'Sets the queue in the NoteToLinkedTicket screen of a zoomed ticket in the agent interface.' =>
+            '',
+        'Sets the ticket owner in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the responsible agent of the ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the next state of a ticket after adding a note in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Shows the ticket priority options in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the default ticket priority in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Shows the title field in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
 
         # XML Definition: scripts/database/initial_insert.xml
         'invalid-temporarily' => 'tijdelijk ongeldig',
@@ -8445,6 +8553,8 @@ sub Data {
         'The following files are not allowed to be uploaded: %s' => '',
         'The following files exceed the maximum allowed size per file of %s and were not uploaded: %s' =>
             '',
+        'The names of the following files exceed the maximum allowed length of %s characters and were not uploaded: %s' =>
+            '',
         'The following files were already uploaded and have not been uploaded again: %s' =>
             '',
         'No space left for the following files: %s' => '',
@@ -8524,7 +8634,6 @@ Het Helpdesk Team
         'AJAX functions for notification event transport web service.' =>
             '',
         'AJAX interface for the web service dynamic field backends.' => '',
-        'Access Control Lists (ACL)' => 'Access Control Lists (ACL)',
         'AccountedTime' => 'AccountedTime',
         'Activation of dynamic fields for screens.' => '',
         'ActivityID' => 'ActivityID',
@@ -8544,7 +8653,7 @@ Het Helpdesk Team
         'Admin' => 'Beheer',
         'Admin Area.' => '',
         'Admin Notification' => 'Melding van de beheerder',
-        'Admin configuration dialog for dynamic field types WebserviceText and WebserviceMultiselect' =>
+        'Admin configuration dialog for dynamic field types WebserviceDropdown and WebserviceMultiselect' =>
             '',
         'Admin modules overview.' => '',
         'Admin.' => '',
@@ -8557,8 +8666,6 @@ Het Helpdesk Team
         'Agent Statistics.' => '',
         'Agent User Search' => '',
         'Agent User Search.' => '',
-        'Agents ↔ Groups' => '',
-        'Agents ↔ Roles' => 'Behandelaars ↔ Rollen',
         'All CustomerIDs of a customer user.' => '',
         'All customer users of a CustomerID' => 'Alle klanten accounts van een CustomerID',
         'All escalated tickets' => 'Alle geëscaleerde tickets',
@@ -8578,6 +8685,7 @@ Het Helpdesk Team
         'Allows having a small format ticket overview (CustomerInfo => 1 - shows also the customer information).' =>
             '',
         'Always show RichText if available' => '',
+        'An additional screen to add notes to a linked ticket.' => '',
         'Answer' => 'Antwoord',
         'Appointment Calendar overview page.' => '',
         'Appointment Notifications' => '',
@@ -8707,9 +8815,6 @@ Het Helpdesk Team
         'Customer User Information Center search.' => 'Zoeken in klant gebruikersinformatie.',
         'Customer User Information Center.' => 'Klant gebruiker informatie overzicht.',
         'Customer User-Customer Relations' => '',
-        'Customer Users ↔ Customers' => 'Klanten ↔ Bedrijven',
-        'Customer Users ↔ Groups' => 'Klanten ↔ Groepen',
-        'Customer Users ↔ Services' => 'Klanten ↔ Services',
         'Customer preferences.' => '',
         'Customer ticket overview' => 'Klant ticket overview',
         'Customer ticket search.' => '',
@@ -8718,7 +8823,6 @@ Het Helpdesk Team
         'CustomerID search' => '',
         'CustomerName' => '',
         'CustomerUser' => '',
-        'Customers ↔ Groups' => 'Bedrijven ↔ Groepen',
         'Czech' => '',
         'Danish' => 'Deens',
         'Dashboard overview.' => '',
@@ -8760,7 +8864,6 @@ Het Helpdesk Team
         'Edit Customer Users.' => '',
         'Edit appointment' => '',
         'Edit customer company' => 'Bedrijf aanpassen',
-        'Email Addresses' => 'E-mailadressen',
         'Email Outbound' => '',
         'Email Resend' => '',
         'Email communication channel.' => '',
@@ -8913,6 +9016,7 @@ Het Helpdesk Team
         'Mark as Spam!' => 'Markeer als spam',
         'Mark this ticket as junk!' => 'Markeer het ticket als junk!',
         'Mattermost Username' => '',
+        'Max. number of articles per page in TicketZoom' => '',
         'Medium' => 'Middel',
         'Mentioned in article' => '',
         'Mentioned in ticket' => '',
@@ -8989,7 +9093,6 @@ Het Helpdesk Team
         'Portuguese' => '',
         'Portuguese (Brasil)' => '',
         'PostMaster Filters' => 'E-mail filters',
-        'PostMaster Mail Accounts' => 'E-mail accounts',
         'Print this ticket' => 'Print dit ticket',
         'Priorities' => 'Prioriteiten',
         'Process Management Activity Dialog GUI' => 'Procesbeheer dialoog',
@@ -9008,7 +9111,6 @@ Het Helpdesk Team
         'Public Calendar' => 'Publieke Kalender',
         'Public calendar.' => 'Publieke kalender.',
         'Queue view' => 'Wachtrijoverzicht',
-        'Queues ↔ Auto Responses' => 'Wachtrijen ↔ Automatische antwoorden',
         'Refresh interval' => 'Interval',
         'Reminder Tickets' => 'Tickets met herinnering',
         'Removed subscription for user "%s".' => 'Removed subscription for user "%s".',
@@ -9018,13 +9120,11 @@ Het Helpdesk Team
         'Responsible Tickets' => 'Verantwoordelijke tickets',
         'Responsible Tickets.' => 'Verantwoordelijke tickets.',
         'Right' => '',
-        'Roles ↔ Groups' => 'Rollen ↔ Groepen',
         'Romanian' => '',
         'Running Process Tickets' => '',
         'Russian' => '',
         'S/MIME Certificates' => 'S/MIME Certificaten',
         'SMS' => '',
-        'Salutations' => 'Aanheffen',
         'Schedule a maintenance period.' => 'Plan een nieuw systeem onderhoudstijdsvak.',
         'Screen after new ticket' => 'Scherm na nieuw ticket',
         'Search Customer' => 'Klanten zoeken',
@@ -9041,6 +9141,8 @@ Het Helpdesk Team
         'Select how many tickets should be shown in overviews by default.' =>
             '',
         'Select the main interface language.' => 'Selecteer uw standaard taal.',
+        'Select the maximum articles per page shown in TicketZoom. System default value will apply when entered empty value.' =>
+            '',
         'Select the separator character used in CSV files (stats and searches). If you don\'t select a separator here, the default separator for your language will be used.' =>
             'Selecteer het scheidingsteken voor CSV bestanden. Als u geen scheidingsteken kiest zal het standaard scheidingsteken voor uw taal gebruikt worden.',
         'Select where to display the last views.' => '',
@@ -9062,7 +9164,6 @@ Het Helpdesk Team
         'Sent notification to "%s".' => '',
         'Serbian Cyrillic' => '',
         'Serbian Latin' => '',
-        'Service Level Agreements' => 'Service Level Agreements',
         'Service view' => '',
         'ServiceView' => '',
         'Set a new password by filling in your current password and a new one.' =>
@@ -9077,7 +9178,6 @@ Het Helpdesk Team
         'Shows information on how to start OTRS Daemon' => '',
         'Shows last mention of tickets.' => '',
         'Signature data.' => '',
-        'Signatures' => 'Handtekeningen',
         'Simple' => '',
         'Skin' => 'Skin',
         'Slovak' => '',
@@ -9112,8 +9212,6 @@ Het Helpdesk Team
         'System Configuration Deployment' => '',
         'System Configuration Group' => '',
         'System Maintenance' => 'Systeemonderhoud',
-        'Templates ↔ Attachments' => 'Sjablonen ↔ Bijlagen',
-        'Templates ↔ Queues' => 'Sjablonen ↔ Wachtrijen',
         'Textarea' => 'Tekstvak',
         'Thai' => '',
         'The PGP signature is expired.' => '',
@@ -9201,8 +9299,8 @@ Het Helpdesk Team
         'We are performing scheduled maintenance. We should be back online shortly.' =>
             'Er vindt op dit moment gepland onderhoud plaats. We zullen snel weer online zijn.',
         'Web Services' => 'Webservices',
+        'Web service (Dropdown)' => '',
         'Web service (Multiselect)' => '',
-        'Web service (Text)' => '',
         'Web service dynamic field AJAX interface' => '',
         'Webservice' => '',
         'Yes, but hide archived tickets' => '',
@@ -9262,6 +9360,7 @@ Het Helpdesk Team
         'Agent',
         'All occurrences',
         'All-day',
+        'An Error Occurred',
         'An error occurred during communication.',
         'An error occurred! Please check the browser error log for more details!',
         'An item with this name is already present.',
@@ -9544,6 +9643,7 @@ Het Helpdesk Team
         'The following files were already uploaded and have not been uploaded again: %s',
         'The item you\'re currently viewing is part of a not-yet-deployed configuration setting, which makes it impossible to edit it in its current state. Please wait until the setting has been deployed. If you\'re unsure what to do next, please contact your system administrator.',
         'The key must not be empty.',
+        'The names of the following files exceed the maximum allowed length of %s characters and were not uploaded: %s',
         'There are currently no elements available to select from.',
         'There are no more drafts available.',
         'There is a package upgrade process running, click here to see status information about the upgrade progress.',

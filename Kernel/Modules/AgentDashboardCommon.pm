@@ -1,6 +1,6 @@
 # --
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -486,30 +486,19 @@ sub Run {
 
     }
     elsif ( $Self->{Subaction} eq 'ToolbarFetch' ) {
-        my $JSONObject = $Kernel::OM->Get('Kernel::System::JSON');
-
-        my @ToolbarItems = ( $LayoutObject->Header() =~ m{<li class="(.*?)"\>}sg );
-        my %ToolbarItems;
-
-        TOOLBARITEM:
-        for my $ToolbarItem (@ToolbarItems) {
-            next TOOLBARITEM if $ToolbarItem eq 'UserAvatar';
-
-            ( my $ToolbarItemCSS ) = $LayoutObject->Header() =~ m{<li class="$ToolbarItem">(.*?)<\/li>}s;
-
-            $ToolbarItems{Icons}->{$ToolbarItem} = $ToolbarItemCSS;
+        my $ToolBarModule = $ConfigObject->Get('Frontend::ToolBarModule');
+        my $ToolbarItems;
+        if ( IsHashRefWithData($ToolBarModule) ) {
+            $ToolbarItems = $LayoutObject->ToolbarModules(
+                ToolBarModule => $ToolBarModule,
+                ReturnResult  => 1,
+            );
         }
-
-        $ToolbarItems{IconsOrder} = \@ToolbarItems;
-
-        my $JSONEncodedToolbarItems = $JSONObject->Encode(
-            Data => \%ToolbarItems,
-        );
 
         return $LayoutObject->Attachment(
             ContentType => 'text/html',
             Charset     => $LayoutObject->{UserCharset},
-            Content     => $JSONEncodedToolbarItems,
+            Content     => $ToolbarItems,
             Type        => 'inline',
             NoCache     => 1,
         );

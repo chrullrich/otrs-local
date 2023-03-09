@@ -1,7 +1,7 @@
 # --
 # Kernel/Language/cs.pm - provides Czech language translation
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
 # Copyright (C) 2003 Lukas Vicanek alias networ <lulka at centrum dot cz>
 # Copyright (C) 2004 BENETA.cz, s.r.o. (Marta Macalkova, Vadim Buzek, Petr Ocasek) <info at beneta dot cz>
 # Copyright (C) 2010 O2BS.com, s r.o. Jakub Hanus
@@ -32,7 +32,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.250121812571057;
+    $Self->{Completeness}        = 0.247583762886598;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -231,16 +231,6 @@ sub Data {
         'Message body' => 'Tělo zprávy',
         'Add new notification language' => '',
         'Save Changes' => 'Uložit změny',
-        'Tag Reference' => '',
-        'Notifications are sent to an agent.' => '',
-        'You can use the following tags' => '',
-        'To get the first 20 character of the appointment title.' => '',
-        'To get the appointment attribute' => '',
-        ' e. g.' => 'např.',
-        'To get the calendar attribute' => '',
-        'Attributes of the recipient user for the notification' => '',
-        'Config options' => '',
-        'Example notification' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminAppointmentNotificationEventTransportEmailSettings.tt
         'Additional recipient email addresses' => '',
@@ -262,6 +252,9 @@ sub Data {
         'Edit Attachment' => 'Upravit přílohu',
         'Filter for Attachments' => '',
         'Filter for attachments' => '',
+        'Related Actions' => '',
+        'Templates' => 'Šablony',
+        'Templates ↔ Attachments' => '',
         'Filename' => 'Název souboru',
         'Download file' => 'Stáhnout soubor',
         'Delete this attachment' => 'Smazat tuto přílohu',
@@ -274,22 +267,9 @@ sub Data {
         'Edit Auto Response' => 'Upravit automatickou odpověď',
         'Filter for Auto Responses' => '',
         'Filter for auto responses' => '',
+        'Queues ↔ Auto Responses' => '',
         'Response' => 'Odpověď',
         'Auto response from' => 'Automatická odpověď od',
-        'Reference' => '',
-        'To get the first 20 character of the subject.' => 'pro získáni prvních 20ti znaků z předmětu',
-        'To get the first 5 lines of the email.' => 'pro získáni prvních 5ti řádků z emailu',
-        'To get the name of the ticket\'s customer user (if given).' => '',
-        'To get the article attribute' => 'Získat atributy článku',
-        'Options of the current customer user data' => '',
-        'Ticket owner options' => 'Nastavení vlastníka tiketu',
-        'Ticket responsible options' => '',
-        'Options of the current user who requested this action' => '',
-        'Options of the ticket data' => '',
-        'Options of ticket dynamic fields internal key values' => '',
-        'Options of ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
-            '',
-        'Example response' => 'Vzorová odpověď',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminCloudServiceSupportDataCollector.tt
         'Cloud Service Management' => '',
@@ -399,6 +379,8 @@ sub Data {
         'Search' => 'Vyhledat',
         'Wildcards like \'*\' are allowed.' => 'Pseudoznaky jako \'*\' jsou povolené',
         'Select' => 'Vybrat',
+        'Customer Users' => 'Uživatelé zákazníka',
+        'Customers ↔ Groups' => '',
         'List (only %s shown - more available)' => 'Seznam (zobrazeno pouze %s položek - více k dispozici)',
         'total' => 'Celkem',
         'Please enter a search term to look for customers.' => 'Prosím vložte hledaný výraz pro hledání zákazníků.',
@@ -421,15 +403,16 @@ sub Data {
         'Select the customer:group permissions.' => 'Vybrat práva pro zákazníka:skupinu.',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             '',
-        'Search Results' => 'Výsledek vyhledávání',
         'Customers' => 'Zákazníci',
         'Groups' => 'Skupiny',
+        'Search Results' => 'Výsledek vyhledávání',
         'Change Group Relations for Customer' => '',
         'Change Customer Relations for Group' => '',
         'Toggle %s Permission for all' => '',
         'Toggle %s permission for %s' => '',
         'Customer Default Groups:' => '',
         'No changes can be made to these groups.' => '',
+        'Reference' => '',
         'ro' => 'jen pro čtení',
         'Read only access to the ticket in this group/queue.' => 'Přístup pouze pro čtení tiketu v této skupině/frontě.',
         'rw' => 'čtení/psaní',
@@ -443,6 +426,9 @@ sub Data {
         'Back to search results' => 'Zpět na výsledek vyhledávání',
         'Customer user are needed to have a customer history and to login via customer panel.' =>
             '',
+        'Customer Users ↔ Customers' => '',
+        'Customer Users ↔ Groups' => '',
+        'Customer Users ↔ Services' => '',
         'List (%s total)' => '',
         'Username' => 'Uživatelské jméno',
         'Email' => 'Email',
@@ -474,7 +460,6 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminCustomerUserCustomer.tt
         'Manage Customer User-Customer Relations' => '',
         'Select the customer user:customer relations.' => '',
-        'Customer Users' => 'Uživatelé zákazníka',
         'Change Customer Relations for Customer User' => '',
         'Change Customer User Relations for Customer' => '',
         'Toggle active state for all' => '',
@@ -502,6 +487,7 @@ sub Data {
         'Filter for Services' => 'Filtr pro služby',
         'Filter for services' => 'Filtr pro služby',
         'Services' => 'Služby',
+        'Service Level Agreements' => 'Servisní smlouvy SLA',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminDynamicField.tt
         'Dynamic Fields Management' => '',
@@ -516,6 +502,7 @@ sub Data {
         'Overwrite existing configurations' => '',
         'Import configurations' => '',
         'Export configurations' => '',
+        'Process Management' => '',
         'Dynamic fields ↔ Screens' => '',
         'Dynamic Fields List' => '',
         'Dynamic fields per page' => '',
@@ -1364,6 +1351,8 @@ sub Data {
         'Create new groups to handle access permissions for different groups of agent (e. g. purchasing department, support department, sales department, ...). ' =>
             '',
         'It\'s useful for ASP solutions. ' => '',
+        'Agents ↔ Groups' => '',
+        'Roles ↔ Groups' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminLog.tt
         'System Log' => 'Log systému',
@@ -1434,24 +1423,6 @@ sub Data {
         'Notify user just once per day about a single ticket using a selected transport.' =>
             '',
         'This field is required and must have less than 4000 characters.' =>
-            '',
-        'Notifications are sent to an agent or a customer.' => 'Oznámení jsou odeslána agentovi nebo zákazníkovi',
-        'To get the first 20 character of the subject (of the latest agent article).' =>
-            'pro získáni prvních 20ti znaků z předmětu (z nejnovějšího článku Řešitele)',
-        'To get the first 5 lines of the body (of the latest agent article).' =>
-            'pro získáni prvních 5ti řádků z těla (z nejnovějšího článku Řešitele)',
-        'To get the first 20 character of the subject (of the latest customer article).' =>
-            'pro získáni prvních 20ti znaků z předmětu (z nejnovějšího článku Zákazníka)',
-        'To get the first 5 lines of the body (of the latest customer article).' =>
-            'pro získáni prvních 5ti řádků z těla (z nejnovějšího článku Zákazníka)',
-        'Attributes of the current customer user data' => '',
-        'Attributes of the current ticket owner user data' => '',
-        'Attributes of the current ticket responsible user data' => '',
-        'Attributes of the current agent user who requested this action' =>
-            '',
-        'Attributes of the ticket data' => '',
-        'Ticket dynamic fields internal key values' => '',
-        'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
             '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminNotificationEventTransportEmailSettings.tt
@@ -1646,6 +1617,12 @@ sub Data {
             '',
         'Install Package' => 'Instaluj balíček',
         'Update Package' => 'Aktualizovat balíček',
+        'Package' => '',
+        'Required package %s is already installed.' => '',
+        'Required Perl module %s is already installed.' => '',
+        'Required package %s needs to get installed!' => '',
+        'Required package %s needs to get updated to version %s!' => '',
+        'Required Perl module %s needs to get installed or updated!' => '',
         'Continue' => 'Pokračovat',
         'Please make sure your database accepts packages over %s MB in size (it currently only accepts packages up to %s MB). Please adapt the max_allowed_packet setting of your database in order to avoid errors.' =>
             '',
@@ -1735,12 +1712,12 @@ sub Data {
         'Edit Priority' => 'Upravit prioritu',
         'Filter for Priorities' => '',
         'Filter for priorities' => '',
+        'Configure Priority Visibility and Defaults' => '',
         'This priority is present in a SysConfig setting, confirmation for updating settings to point to the new priority is needed!' =>
             '',
         'This priority is used in the following config settings:' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagement.tt
-        'Process Management' => '',
         'Filter for Processes' => '',
         'Filter for processes' => '',
         'Create New Process' => '',
@@ -1757,6 +1734,9 @@ sub Data {
             '',
         'Changes to the Processes here only affect the behavior of the system, if you synchronize the Process data. By synchronizing the Processes, the newly made changes will be written to the Configuration.' =>
             '',
+        'Access Control Lists (ACL)' => 'Seznamy řízení přístupu (ACL)',
+        'Generic Agent' => '',
+        'Manage Process Widiget Groups' => '',
         'Processes' => 'Procesy',
         'Process name' => '',
         'Print' => 'Tisknout',
@@ -1911,6 +1891,13 @@ sub Data {
         'Edit Queue' => 'Upravit frontu',
         'Filter for Queues' => 'Filtr pro fronty',
         'Filter for queues' => 'Filtr pro fronty',
+        'Email Addresses' => 'Emailové Adresy',
+        'PostMaster Mail Accounts' => '',
+        'Salutations' => 'Pozdrav',
+        'Signatures' => 'Podpisy',
+        'Templates ↔ Queues' => '',
+        'Configure Working Hours' => '',
+        'Configure Queue Related Settings' => '',
         'A queue with this name already exists!' => '',
         'This queue is present in a SysConfig setting, confirmation for updating settings to point to the new queue is needed!' =>
             '',
@@ -1959,7 +1946,6 @@ sub Data {
         'Manage Template-Queue Relations' => '',
         'Filter for Templates' => 'Filtr pro šablony',
         'Filter for templates' => 'Filtr pro šablony',
-        'Templates' => 'Šablony',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminRole.tt
         'Role Management' => 'Správa Rolí',
@@ -1969,6 +1955,7 @@ sub Data {
         'Filter for roles' => '',
         'Create a role and put groups in it. Then add the role to the users.' =>
             'Vytvořit Roli a vložit do ní Skupiny. Následně přiřadit Roli Uživatelům.',
+        'Agents ↔ Roles' => '',
         'There are no roles defined. Please use the \'Add\' button to create a new role.' =>
             '',
 
@@ -2005,7 +1992,9 @@ sub Data {
         'Edit SLA' => '',
         'Add SLA' => 'Přidat SLA',
         'Filter for SLAs' => '',
+        'Configure SLA Visibility and Defaults' => '',
         'Please write only numbers!' => '',
+        'Minimum Time Between Incidents' => 'Minimální čas mezi incidenty',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSMIME.tt
         'S/MIME Management' => 'Správa S/MIME',
@@ -2053,8 +2042,6 @@ sub Data {
         'Edit Salutation' => 'Upravit Oslovení',
         'Filter for Salutations' => '',
         'Filter for salutations' => '',
-        'e. g.' => 'např.',
-        'Example salutation' => 'Příklad oslovení',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSecureMode.tt
         'Secure Mode Needs to be Enabled!' => '',
@@ -2086,9 +2073,11 @@ sub Data {
         'Service Management' => 'Správa Služeb',
         'Add Service' => 'Přidat Službu',
         'Edit Service' => 'Upravit Službu',
+        'Configure Service Visibility and Defaults' => '',
         'Service name maximum length is 200 characters (with Sub-service).' =>
             '',
         'Sub-service of' => '',
+        'Criticality' => 'Kritičnost',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSession.tt
         'Session Management' => 'Správa relace',
@@ -2112,7 +2101,6 @@ sub Data {
         'Edit Signature' => 'Upravit podpis',
         'Filter for Signatures' => '',
         'Filter for signatures' => '',
-        'Example signature' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminState.tt
         'State Management' => 'Správa Stavu',
@@ -2122,6 +2110,8 @@ sub Data {
         'Filter for states' => '',
         'Attention' => 'Upozornění',
         'Please also update the states in SysConfig where needed.' => '',
+        'Configure State Visibility and Defaults' => '',
+        'Configure State Type Visibility and Defaults' => '',
         'This state is present in a SysConfig setting, confirmation for updating settings to point to the new type is needed!' =>
             '',
         'State type' => '',
@@ -2244,7 +2234,6 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSystemFiles/Widget.tt
         'Permissions' => 'Oprávnění',
-        'Package' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSystemMaintenance.tt
         'System Maintenance Management' => '',
@@ -2283,18 +2272,6 @@ sub Data {
         'Delete this entry' => '',
         'Do you really want to delete this template?' => 'Opravdu chcete smazat tuto šablonu?',
         'A standard template with this name already exists!' => '',
-        'To get the first 20 characters of the subject of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'To get the first 5 lines of the body of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'To get the first 20 characters of the subject of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'To get the first 5 lines of the body of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'Create type templates only supports this smart tags' => '',
-        'Example template' => '',
-        'The current ticket state is' => 'Aktuální stav tiketu je',
-        'Your email address is' => 'Vaše e-mailová adresa je',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminTemplateAttachment.tt
         'Manage Template-Attachment Relations' => '',
@@ -2323,6 +2300,7 @@ sub Data {
         'Edit Type' => 'Upravit typ',
         'Filter for Types' => '',
         'Filter for types' => '',
+        'Configure Type Visibility and Defaults' => '',
         'A type with this name already exists!' => '',
         'This type is present in a SysConfig setting, confirmation for updating settings to point to the new type is needed!' =>
             '',
@@ -2552,6 +2530,7 @@ sub Data {
         'Assigned to customer user' => 'Přiřazen uživateli zákazníka',
         'Accessible for customer user' => '',
         'My locked tickets' => 'Moje uzamčené tikety',
+        'My Owned Tickets' => '',
         'My watched tickets' => 'Moje sledované tikety',
         'My responsibilities' => 'Moje odpovědné tikety',
         'Tickets in My Queues' => 'Tikety v mých frontách',
@@ -2798,6 +2777,13 @@ sub Data {
         'New Queue' => 'Nová fronta',
         'Move' => 'Přesunout',
 
+        # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketNoteToLinkedTicket.tt
+        'Add note to linked %s%s%s' => '',
+        'Note to linked Ticket' => '',
+        'LinkList invalid.' => '',
+        'Note to origin Ticket' => '',
+        'NoteToTicket invalid.' => '',
+
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewMedium.tt
         'No ticket data found.' => 'žádné',
         'Open / Close ticket action menu' => '',
@@ -2806,6 +2792,8 @@ sub Data {
         'First Response Time' => 'Čas první reakce',
         'Update Time' => 'Čas Aktualizace',
         'Solution Time' => 'Čas Řešení',
+        'Impact' => 'Vliv',
+        'CustomerID' => 'ID zákazníka',
         'Move ticket to a different queue' => 'Přesuň tiket do jiné fronty',
         'Change queue' => 'Změnit frontu',
 
@@ -3051,7 +3039,6 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/CustomerTicketSearch.tt
         'Profile' => 'Profil',
         'e. g. 10*5155 or 105658*' => 'např. 10*5155 or 105658*',
-        'CustomerID' => 'ID zákazníka',
         'Fulltext Search in Tickets (e. g. "John*n" or "Will*")' => '',
         'Types' => '',
         'Time Restrictions' => '',
@@ -3283,6 +3270,61 @@ sub Data {
             '',
         'You could install a custom public module (via the package manager), for example the FAQ module, which has a public interface.' =>
             '',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAppointmentNotificationEvent.tt
+        'To get the appointment attribute' => '',
+        ' e. g.' => 'např.',
+        'To get the first 20 character of the appointment title.' => '',
+        'To get the calendar attribute' => '',
+        'Attributes of the recipient user for the notification' => '',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAutoResponse.tt
+        'To get the first 20 character of the subject.' => 'pro získáni prvních 20ti znaků z předmětu',
+        'To get the first 5 lines of the email.' => 'pro získáni prvních 5ti řádků z emailu',
+        'To get the name of the ticket\'s customer user (if given).' => '',
+        'To get the article attribute' => 'Získat atributy článku',
+        'Options of the current customer user data' => '',
+        'Ticket owner options' => 'Nastavení vlastníka tiketu',
+        'Options of the ticket data' => '',
+        'Options of ticket dynamic fields internal key values' => '',
+        'Options of ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
+            '',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminNotificationEvent.tt
+        'To get the first 20 character of the subject (of the latest agent article).' =>
+            'pro získáni prvních 20ti znaků z předmětu (z nejnovějšího článku Řešitele)',
+        'To get the first 5 lines of the body (of the latest agent article).' =>
+            'pro získáni prvních 5ti řádků z těla (z nejnovějšího článku Řešitele)',
+        'To get the first 20 character of the subject (of the latest customer article).' =>
+            'pro získáni prvních 20ti znaků z předmětu (z nejnovějšího článku Zákazníka)',
+        'To get the first 5 lines of the body (of the latest customer article).' =>
+            'pro získáni prvních 5ti řádků z těla (z nejnovějšího článku Zákazníka)',
+        'Attributes of the current customer user data' => '',
+        'Attributes of the current ticket owner user data' => '',
+        'Attributes of the ticket data' => '',
+        'Ticket dynamic fields internal key values' => '',
+        'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
+            '',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminSalutation.tt
+        'e. g.' => 'např.',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminTemplate.tt
+        'To get the first 20 characters of the subject of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 5 lines of the body of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 20 characters of the subject of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 5 lines of the body of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/Default.tt
+        'Tag Reference' => '',
+        'You can use the following tags' => '',
+        'Ticket responsible options' => '',
+        'Options of the current user who requested this action' => '',
+        'Config options' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/Statistics/GeneralSpecificationsWidget.tt
         'You can select one or more groups to define access for different agents.' =>
@@ -3580,9 +3622,6 @@ sub Data {
         'All agents with write permission for the appointment (calendar)' =>
             '',
         'Yes, but require at least one active notification method.' => '',
-
-        # Perl Module: Kernel/Modules/AdminAttachment.pm
-        'Attachment added!' => 'Příloha připojena!',
 
         # Perl Module: Kernel/Modules/AdminAutoResponse.pm
         'Auto Response added!' => '',
@@ -3884,7 +3923,7 @@ sub Data {
         'Customer user of the ticket' => '',
         'All recipients of the first article' => '',
         'All recipients of the last article' => '',
-        'All users who are mentioned in a ticket' => '',
+        'All agents who are mentioned in the ticket' => '',
         'Invisible to customer' => '',
         'Visible to customer' => '',
 
@@ -4139,7 +4178,6 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminTemplate.pm
         'Template updated!' => '',
-        'Template added!' => '',
 
         # Perl Module: Kernel/Modules/AdminTemplateAttachment.pm
         'Change Attachment Relations for Template' => '',
@@ -4340,9 +4378,6 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AgentTicketMove.pm
         'You need move permissions!' => '',
-
-        # Perl Module: Kernel/Modules/AgentTicketOwnerView.pm
-        'My Owned Tickets' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketPhone.pm
         'Chat is not active.' => '',
@@ -4638,6 +4673,10 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketNote.pm
         'Reply to note' => 'Odpověď na poznámku',
 
+        # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketNoteToLinkedTicket.pm
+        'Create notice for linked ticket' => '',
+        'Transfer notice' => '',
+
         # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketPhone.pm
         'Split this article' => 'Rozdělit tuto zprávu',
 
@@ -4856,6 +4895,10 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/Preferences/Language.pm
         '(in process)' => '',
+
+        # Perl Module: Kernel/Output/HTML/Preferences/MaxArticlesPerPage.pm
+        'Max. number of articles per page must be between 1 and 1000 or empty.' =>
+            '',
 
         # Perl Module: Kernel/Output/HTML/Preferences/OutOfOffice.pm
         'Please specify an end date that is after the start date.' => '',
@@ -5360,6 +5403,11 @@ sub Data {
         'Legacy configuration backup files are no longer needed for the installed packages, please remove them from Kernel/Config/Backups folder.' =>
             '',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/MultipleJSFileLoad.pm
+        'Views with multiple loaded JavaScript files' => '',
+        'The following JavaScript files loaded multiple times:' => '',
+        'Files' => '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageDeployment.pm
         'Package Installation Status' => '',
         'Some packages have locally modified files.' => '',
@@ -5762,6 +5810,7 @@ sub Data {
             '',
         'Defines the selectable font sizes in the rich text editor.' => '',
         'Defines the selectable fonts in the rich text editor.' => '',
+        'Defines the selectable format tags in the rich text editor.' => '',
         'Defines additional plugins for use in the rich text editor.' => '',
         'Defines extra content that is allowed for use in the rich text editor.' =>
             '',
@@ -6707,6 +6756,14 @@ sub Data {
         'Default data to use on attribute for ticket search screen. Example: "TicketCreateTimePointFormat=year;TicketCreateTimePointStart=Last;TicketCreateTimePoint=2;".' =>
             '',
         'Default data to use on attribute for ticket search screen. Example: "TicketCreateTimeStartYear=2010;TicketCreateTimeStartMonth=10;TicketCreateTimeStartDay=4;TicketCreateTimeStopYear=2010;TicketCreateTimeStopMonth=11;TicketCreateTimeStopDay=3;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketLastChangeTimePointFormat=year;TicketLastChangeTimePointStart=Last;TicketLastChangeTimePoint=2;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketLastChangeTimeStartYear=2010;TicketLastChangeTimeStartMonth=10;TicketLastChangeTimeStartDay=4;TicketLastChangeTimeStopYear=2010;TicketLastChangeTimeMonth=11;TicketLastChangeTimeStopDay=3;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketPendingTimePointFormat=year;TicketPendingTimePointStart=Last;TicketPendingTimePoint=2;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketPendingTimeStartYear=2010;TicketPendingTimeStartMonth=10;TicketPendingTimeStartDay=4;TicketPendingTimeStopYear=2010;TicketPendingTimeMonth=11;TicketPendingTimeStopDay=3;".' =>
             '',
         'Defines the default ticket attribute for ticket sorting in the locked ticket view of the agent interface.' =>
             '',
@@ -7814,7 +7871,7 @@ sub Data {
             '',
         'Ticket event module that stores values of the selected web service record into the configured additional dynamic fields.' =>
             '',
-        'It might happen that a dynamic field of type WebserviceText or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
+        'It might happen that a dynamic field of type WebserviceDropdown or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
             '',
         'Mapping for field values received from form. This setting is necessary for the correct identification of the form fields. Key means value type, value means possible representation in views.' =>
             '',
@@ -7955,6 +8012,57 @@ sub Data {
         'Agent interface notification module to show the number of mentions.' =>
             '',
         'Module to grant access to the mentioned agents of a ticket.' => '',
+        'Mapping of non-standard time zones to official ones.' => '',
+        'Start date (YYYYMMDD) of the range to use when parsing ICS files. The used CPAN module iCal::Parser needs this to be able to parse ICS files with events in a year before the current one. The end date of the range is automatically set to 10 years in the future from the time of parsing/execution.' =>
+            '',
+        'Define a mapping between variables of the customer company data (keys) and dynamic fields of a ticket (values). The purpose is to store customer company data in ticket dynamic fields. The dynamic fields must be present in the system and should be enabled for AgentTicketFreeText, so that they can be set/updated manually by the agent. They mustn\'t be enabled for AgentTicketPhone, AgentTicketEmail and AgentTicketCustomer. If they were, they would have precedence over the automatically set values. To use this mapping, you have to also activate the Ticket::EventModulePost###4100-DynamicFieldFromCustomerCompany setting.' =>
+            '',
+        'This event module stores attributes from customer companies in ticket dynamic fields. Please see DynamicFieldFromCustomerCompany::Mapping setting for how to configure the mapping.' =>
+            '',
+        'Required permissions to use the NoteToLinkedTicket screen in the agent interface.' =>
+            '',
+        'Sets the state of the selected linked ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the default next state of a ticket after adding a note in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Activates the selection if a note in NoteToLinkedTicket screen should be created in this origin ticket.' =>
+            '',
+        'Defines the default value if a note in NoteToLinkedTicket screen should be created in this origin ticket.' =>
+            '',
+        'Sets the default subject for notes added in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the default body text for notes added in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Allows adding notes in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets if a note in NoteToLinkedTicket screen must be filled in by the agent.' =>
+            '',
+        'Defines the history type for the NoteToLinkedTicket screen, which will be used for ticket history in the agent interface.' =>
+            '',
+        'Defines the history comment for the NoteToLinkedTicket screen, which will be used for ticket history in the agent interface.' =>
+            '',
+        'Defines if the note in the NoteToLinkedTicket screen of the agent interface is visible for the customer by default.' =>
+            '',
+        'Sets the ticket type in the NoteToLinkedTicket screen of the agent interface (Ticket::Type needs to be activated).' =>
+            '',
+        'Sets the service in the NoteToLinkedTicket screen of the agent interface (Ticket::Service needs to be activated).' =>
+            '',
+        'Sets the queue in the NoteToLinkedTicket screen of a zoomed ticket in the agent interface.' =>
+            '',
+        'Sets the ticket owner in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the responsible agent of the ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the next state of a ticket after adding a note in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Shows the ticket priority options in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the default ticket priority in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Shows the title field in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
 
         # XML Definition: scripts/database/initial_insert.xml
         'invalid-temporarily' => 'neplatný-dočasně',
@@ -8446,6 +8554,8 @@ sub Data {
         'The following files are not allowed to be uploaded: %s' => '',
         'The following files exceed the maximum allowed size per file of %s and were not uploaded: %s' =>
             '',
+        'The names of the following files exceed the maximum allowed length of %s characters and were not uploaded: %s' =>
+            '',
         'The following files were already uploaded and have not been uploaded again: %s' =>
             '',
         'No space left for the following files: %s' => '',
@@ -8514,7 +8624,6 @@ Thanks for your help!
         'AJAX functions for notification event transport web service.' =>
             '',
         'AJAX interface for the web service dynamic field backends.' => '',
-        'Access Control Lists (ACL)' => 'Seznamy řízení přístupu (ACL)',
         'AccountedTime' => '',
         'Activation of dynamic fields for screens.' => '',
         'ActivityID' => '',
@@ -8534,7 +8643,7 @@ Thanks for your help!
         'Admin' => '',
         'Admin Area.' => '',
         'Admin Notification' => 'Admin Notifikace',
-        'Admin configuration dialog for dynamic field types WebserviceText and WebserviceMultiselect' =>
+        'Admin configuration dialog for dynamic field types WebserviceDropdown and WebserviceMultiselect' =>
             '',
         'Admin modules overview.' => '',
         'Admin.' => 'Administrátor',
@@ -8547,8 +8656,6 @@ Thanks for your help!
         'Agent Statistics.' => '',
         'Agent User Search' => '',
         'Agent User Search.' => '',
-        'Agents ↔ Groups' => '',
-        'Agents ↔ Roles' => '',
         'All CustomerIDs of a customer user.' => '',
         'All customer users of a CustomerID' => '',
         'All escalated tickets' => 'Všechny eskalované tikety',
@@ -8568,6 +8675,7 @@ Thanks for your help!
         'Allows having a small format ticket overview (CustomerInfo => 1 - shows also the customer information).' =>
             '',
         'Always show RichText if available' => '',
+        'An additional screen to add notes to a linked ticket.' => '',
         'Answer' => 'Odpověd',
         'Appointment Calendar overview page.' => '',
         'Appointment Notifications' => '',
@@ -8697,9 +8805,6 @@ Thanks for your help!
         'Customer User Information Center search.' => '',
         'Customer User Information Center.' => '',
         'Customer User-Customer Relations' => '',
-        'Customer Users ↔ Customers' => '',
-        'Customer Users ↔ Groups' => '',
-        'Customer Users ↔ Services' => '',
         'Customer preferences.' => '',
         'Customer ticket overview' => '',
         'Customer ticket search.' => '',
@@ -8708,7 +8813,6 @@ Thanks for your help!
         'CustomerID search' => '',
         'CustomerName' => 'Jméno zákazníka',
         'CustomerUser' => '',
-        'Customers ↔ Groups' => '',
         'Czech' => '',
         'Danish' => '',
         'Dashboard overview.' => '',
@@ -8750,7 +8854,6 @@ Thanks for your help!
         'Edit Customer Users.' => '',
         'Edit appointment' => '',
         'Edit customer company' => '',
-        'Email Addresses' => 'Emailové Adresy',
         'Email Outbound' => 'Odchozí email',
         'Email Resend' => '',
         'Email communication channel.' => '',
@@ -8903,6 +9006,7 @@ Thanks for your help!
         'Mark as Spam!' => 'Označit jako SPAM',
         'Mark this ticket as junk!' => '',
         'Mattermost Username' => '',
+        'Max. number of articles per page in TicketZoom' => '',
         'Medium' => 'Střední',
         'Mentioned in article' => '',
         'Mentioned in ticket' => '',
@@ -8979,7 +9083,6 @@ Thanks for your help!
         'Portuguese' => '',
         'Portuguese (Brasil)' => '',
         'PostMaster Filters' => '',
-        'PostMaster Mail Accounts' => '',
         'Print this ticket' => 'Vytisknout tiket',
         'Priorities' => 'Priority',
         'Process Management Activity Dialog GUI' => '',
@@ -8998,7 +9101,6 @@ Thanks for your help!
         'Public Calendar' => '',
         'Public calendar.' => '',
         'Queue view' => 'Zobrazit frontu',
-        'Queues ↔ Auto Responses' => '',
         'Refresh interval' => 'Interval obnovy',
         'Reminder Tickets' => 'Upozornění na Tikety',
         'Removed subscription for user "%s".' => 'Poznámka pro uživatele odebrána "%s".',
@@ -9008,13 +9110,11 @@ Thanks for your help!
         'Responsible Tickets' => '',
         'Responsible Tickets.' => '',
         'Right' => '',
-        'Roles ↔ Groups' => '',
         'Romanian' => '',
         'Running Process Tickets' => '',
         'Russian' => '',
         'S/MIME Certificates' => 'S/MIME certifikáty',
         'SMS' => '',
-        'Salutations' => 'Pozdrav',
         'Schedule a maintenance period.' => '',
         'Screen after new ticket' => 'Zobrazení po Novém Tiketu',
         'Search Customer' => 'Vyhledat Zákazníka',
@@ -9031,6 +9131,8 @@ Thanks for your help!
         'Select how many tickets should be shown in overviews by default.' =>
             '',
         'Select the main interface language.' => '',
+        'Select the maximum articles per page shown in TicketZoom. System default value will apply when entered empty value.' =>
+            '',
         'Select the separator character used in CSV files (stats and searches). If you don\'t select a separator here, the default separator for your language will be used.' =>
             'Zvolte oddělovací znak použitý v CSV souborech (stavy a vyhledávání). Pokud nebude zvolen, použije se výchozí pro váš jazyk.',
         'Select where to display the last views.' => '',
@@ -9052,7 +9154,6 @@ Thanks for your help!
         'Sent notification to "%s".' => '',
         'Serbian Cyrillic' => '',
         'Serbian Latin' => '',
-        'Service Level Agreements' => 'Servisní smlouvy SLA',
         'Service view' => 'Zobrazit službu',
         'ServiceView' => '',
         'Set a new password by filling in your current password and a new one.' =>
@@ -9067,7 +9168,6 @@ Thanks for your help!
         'Shows information on how to start OTRS Daemon' => '',
         'Shows last mention of tickets.' => '',
         'Signature data.' => '',
-        'Signatures' => 'Podpisy',
         'Simple' => '',
         'Skin' => '',
         'Slovak' => '',
@@ -9102,8 +9202,6 @@ Thanks for your help!
         'System Configuration Deployment' => '',
         'System Configuration Group' => '',
         'System Maintenance' => 'Údržba systému',
-        'Templates ↔ Attachments' => '',
-        'Templates ↔ Queues' => '',
         'Textarea' => 'Textové pole',
         'Thai' => '',
         'The PGP signature is expired.' => '',
@@ -9191,8 +9289,8 @@ Thanks for your help!
         'We are performing scheduled maintenance. We should be back online shortly.' =>
             '',
         'Web Services' => 'Webové služby',
+        'Web service (Dropdown)' => '',
         'Web service (Multiselect)' => '',
-        'Web service (Text)' => '',
         'Web service dynamic field AJAX interface' => '',
         'Webservice' => '',
         'Yes, but hide archived tickets' => '',
@@ -9252,6 +9350,7 @@ Thanks for your help!
         'Agent',
         'All occurrences',
         'All-day',
+        'An Error Occurred',
         'An error occurred during communication.',
         'An error occurred! Please check the browser error log for more details!',
         'An item with this name is already present.',
@@ -9534,6 +9633,7 @@ Thanks for your help!
         'The following files were already uploaded and have not been uploaded again: %s',
         'The item you\'re currently viewing is part of a not-yet-deployed configuration setting, which makes it impossible to edit it in its current state. Please wait until the setting has been deployed. If you\'re unsure what to do next, please contact your system administrator.',
         'The key must not be empty.',
+        'The names of the following files exceed the maximum allowed length of %s characters and were not uploaded: %s',
         'There are currently no elements available to select from.',
         'There are no more drafts available.',
         'There is a package upgrade process running, click here to see status information about the upgrade progress.',

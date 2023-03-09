@@ -1,6 +1,6 @@
 # --
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
 # Copyright (C) 2010 Milorad Jovanovic <j.milorad at gmail.com>
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -31,7 +31,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.92707487412701;
+    $Self->{Completeness}        = 0.917686855670103;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -230,16 +230,6 @@ sub Data {
         'Message body' => 'Sadržaj poruke',
         'Add new notification language' => 'Ukloni novi jezik obaveštenja',
         'Save Changes' => 'Sačuvaj promene',
-        'Tag Reference' => 'Referenca oznake',
-        'Notifications are sent to an agent.' => 'Obaveštenje će biti poslato operateru.',
-        'You can use the following tags' => 'Možete koristiti sledeće oznake',
-        'To get the first 20 character of the appointment title.' => 'Da vidite prvih 20 karaktera naslova termina.',
-        'To get the appointment attribute' => 'Da vidite atribute termina',
-        ' e. g.' => ' npr.',
-        'To get the calendar attribute' => 'Da vidite atribute kalendara',
-        'Attributes of the recipient user for the notification' => 'Atributi korisnika primaoca za obaveštenje',
-        'Config options' => 'Konfiguracione opcije',
-        'Example notification' => 'Primer obaveštenja',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminAppointmentNotificationEventTransportEmailSettings.tt
         'Additional recipient email addresses' => 'Imejl adresa dodatnog primaoca',
@@ -261,6 +251,9 @@ sub Data {
         'Edit Attachment' => 'Uredi prilog',
         'Filter for Attachments' => 'Filter za priloge',
         'Filter for attachments' => 'Filter za priloge',
+        'Related Actions' => '',
+        'Templates' => 'Šabloni',
+        'Templates ↔ Attachments' => 'Šabloni ↔ prilozi',
         'Filename' => 'Naziv datoteke',
         'Download file' => 'Preuzmi datoteku',
         'Delete this attachment' => 'Obriši ovaj prilog',
@@ -273,22 +266,9 @@ sub Data {
         'Edit Auto Response' => 'Uredi Automatski Odgovor',
         'Filter for Auto Responses' => 'Filter za automatske odgovore',
         'Filter for auto responses' => 'Filter za automatske odgovore',
+        'Queues ↔ Auto Responses' => 'Redovi ↔ automatski odgovori',
         'Response' => 'Odgovor',
         'Auto response from' => 'Automatski odgovor od',
-        'Reference' => 'Referenca',
-        'To get the first 20 character of the subject.' => 'Da vidite prvih 20 slova predmeta.',
-        'To get the first 5 lines of the email.' => 'Da vidite prvih 5 linija imejla.',
-        'To get the name of the ticket\'s customer user (if given).' => 'Da pribavite naziv klijenta korisnika za tiket (ako je dat).',
-        'To get the article attribute' => 'Da vidite atribute članka',
-        'Options of the current customer user data' => 'Opcije podataka o aktuelnom klijentu korisniku',
-        'Ticket owner options' => 'Opcije vlasnika tiketa',
-        'Ticket responsible options' => 'Opcije odgovornog za tiket',
-        'Options of the current user who requested this action' => 'Opcije aktuelnog korisnika koji je tražio ovu akciju',
-        'Options of the ticket data' => 'Opcije podataka o tiketu',
-        'Options of ticket dynamic fields internal key values' => 'Opcije za vrednosti internih ključeva dinamičkih polja tiketa',
-        'Options of ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
-            'Opcije za prikazane vrednosti dinamičkih polja tiketa, korisno za polja Dropdown i Multiselect',
-        'Example response' => 'Primer odgovora',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminCloudServiceSupportDataCollector.tt
         'Cloud Service Management' => 'Upravljanje servisima u oblaku',
@@ -398,6 +378,8 @@ sub Data {
         'Search' => 'Traži',
         'Wildcards like \'*\' are allowed.' => 'Džokerski znaci kao \'*\' su dozvoljeni.',
         'Select' => 'Izaberi',
+        'Customer Users' => 'Klijenti korisnici',
+        'Customers ↔ Groups' => 'Klijenti ↔ grupe',
         'List (only %s shown - more available)' => 'Lista (samo %s je prikazano - raspoloživo više)',
         'total' => 'ukupno',
         'Please enter a search term to look for customers.' => 'Molimo unesite pojam pretrage za pronalaženje klijenata.',
@@ -420,15 +402,16 @@ sub Data {
         'Select the customer:group permissions.' => 'Izaberi klijent:grupa dozvole.',
         'If nothing is selected, then there are no permissions in this group (tickets will not be available for the customer).' =>
             'Ako ništa nije izabrano, onda nema dozvola u ovoj grupi (tiketi neće biti dostupni klijentu).',
-        'Search Results' => 'Rezultat pretrage',
         'Customers' => 'Klijenti',
         'Groups' => 'Grupe',
+        'Search Results' => 'Rezultat pretrage',
         'Change Group Relations for Customer' => 'Promeni veze sa grupama za klijenta',
         'Change Customer Relations for Group' => 'Promeni veze sa klijentima za grupu',
         'Toggle %s Permission for all' => 'Promeni %s dozvole za sve',
         'Toggle %s permission for %s' => 'Promeni %s dozvole za %s',
         'Customer Default Groups:' => 'Podrazumevane grupe za klijenta:',
         'No changes can be made to these groups.' => 'Na ovim grupama promene nisu moguće.',
+        'Reference' => 'Referenca',
         'ro' => 'ro',
         'Read only access to the ticket in this group/queue.' => 'Pristup ograničen samo na čitanje za tikete u ovim grupama/redovima.',
         'rw' => 'rw',
@@ -442,6 +425,9 @@ sub Data {
         'Back to search results' => 'Vrati se na rezultate pretrage',
         'Customer user are needed to have a customer history and to login via customer panel.' =>
             'Klijent klijent treba da ima klijentski istorijat i da se prijavi preko klijentskog panela.',
+        'Customer Users ↔ Customers' => 'Klijent korisnici ↔ klijenti',
+        'Customer Users ↔ Groups' => 'Klijenti korisnici ↔ Grupe',
+        'Customer Users ↔ Services' => 'Klijent korisnici ↔ servisi',
         'List (%s total)' => 'Lista (%s ukupno)',
         'Username' => 'Korisničko ime',
         'Email' => 'Imejl',
@@ -473,7 +459,6 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminCustomerUserCustomer.tt
         'Manage Customer User-Customer Relations' => 'Upravljanje relacijama klijent korisnik-klijent',
         'Select the customer user:customer relations.' => 'Odaberite klijent korisnik:klijent relacije.',
-        'Customer Users' => 'Klijenti korisnici',
         'Change Customer Relations for Customer User' => 'Promeni relacije sa klijentima za klijent korisnika',
         'Change Customer User Relations for Customer' => 'Promeni relacije sa klijent korisnicima za klijenta',
         'Toggle active state for all' => 'Promeni aktivno stanje za sve',
@@ -501,6 +486,7 @@ sub Data {
         'Filter for Services' => 'Filter za servise',
         'Filter for services' => 'Filter za servise',
         'Services' => 'Usluge',
+        'Service Level Agreements' => 'Sporazumi o nivou usluga',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminDynamicField.tt
         'Dynamic Fields Management' => 'Upravljanje dinamičkim poljima',
@@ -515,6 +501,7 @@ sub Data {
         'Overwrite existing configurations' => '',
         'Import configurations' => '',
         'Export configurations' => '',
+        'Process Management' => 'Upravljanje procesima',
         'Dynamic fields ↔ Screens' => '',
         'Dynamic Fields List' => 'Lista dinamičkih polja',
         'Dynamic fields per page' => 'Broj dinamičkih polja po strani',
@@ -1363,6 +1350,8 @@ sub Data {
         'Create new groups to handle access permissions for different groups of agent (e. g. purchasing department, support department, sales department, ...). ' =>
             'Napravi nove grupe za rukovanje pravima pristupa raznim grupama operatera (npr. odeljenje nabavke, tehnička podrška, prodaja, ...). ',
         'It\'s useful for ASP solutions. ' => 'Korisno za ASP rešenja. ',
+        'Agents ↔ Groups' => 'Operateri ↔ grupe',
+        'Roles ↔ Groups' => 'Uloge ↔ grupe',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminLog.tt
         'System Log' => 'Sistemski dnevnik',
@@ -1434,24 +1423,6 @@ sub Data {
             'Obaveti korisnika samo jednom dnevno o pojedinom tiketu korišćenjem izabranog transporta.',
         'This field is required and must have less than 4000 characters.' =>
             'Ovo polje je obavezno i ne sme biti duže od 4000 karaktera.',
-        'Notifications are sent to an agent or a customer.' => 'Obaveštenje poslato operateru ili klijentu.',
-        'To get the first 20 character of the subject (of the latest agent article).' =>
-            'Da vidite prvih 20 slova predmeta (poslednjeg članka operatera).',
-        'To get the first 5 lines of the body (of the latest agent article).' =>
-            'Da vidite prvih 5 linija poruke (poslednjeg članka operatera).',
-        'To get the first 20 character of the subject (of the latest customer article).' =>
-            'Da vidite prvih 20 slova predmeta (poslednjeg članka klijenta).',
-        'To get the first 5 lines of the body (of the latest customer article).' =>
-            'Da vidite prvih 5 linija poruke (poslednjeg članka klijenta).',
-        'Attributes of the current customer user data' => 'Atributi podataka aktuelnog klijenta korisnika',
-        'Attributes of the current ticket owner user data' => 'Atributi podataka korisnika vlasnika aktuelnog tiketa',
-        'Attributes of the current ticket responsible user data' => 'Atributi podataka odgovornog korisnika aktuelnog tiketa',
-        'Attributes of the current agent user who requested this action' =>
-            'Atributi aktuelnog korisnika operatera koji je tražio ovu akciju',
-        'Attributes of the ticket data' => 'Atributi podataka tiketa',
-        'Ticket dynamic fields internal key values' => 'Vrednosti internih ključeva dinamičkih polja tiketa',
-        'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
-            'Prikazane vrednosti dinamičkih polja, korisno za padajuća i polja sa višestrukim izborom',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminNotificationEventTransportEmailSettings.tt
         'Use comma or semicolon to separate email addresses.' => 'Koristite zarez ili tačku-zarez za odvajanje imejl adresa.',
@@ -1645,6 +1616,12 @@ sub Data {
             'U slučaju da imate dodtana pitanja, biće nam zadovoljstvo da odgovorimo na njih.',
         'Install Package' => 'Instaliraj paket',
         'Update Package' => 'Ažuriraj paket',
+        'Package' => '',
+        'Required package %s is already installed.' => '',
+        'Required Perl module %s is already installed.' => '',
+        'Required package %s needs to get installed!' => '',
+        'Required package %s needs to get updated to version %s!' => '',
+        'Required Perl module %s needs to get installed or updated!' => '',
         'Continue' => 'Nastavi',
         'Please make sure your database accepts packages over %s MB in size (it currently only accepts packages up to %s MB). Please adapt the max_allowed_packet setting of your database in order to avoid errors.' =>
             'Molimo vas da budete sigurni da vaša baza podataka prihvata pakete veličine preko %s MB (trenutno prihvata samo pakete do %s MB). Molimo vas da prilagodite podešavanja \'max_allowed_packet\' na vašoj bazi podataka, da bi ste izbegli greške.',
@@ -1734,12 +1711,12 @@ sub Data {
         'Edit Priority' => 'Uredi Prioritet',
         'Filter for Priorities' => 'Filter za prioritete',
         'Filter for priorities' => 'Filter za prioritete',
+        'Configure Priority Visibility and Defaults' => '',
         'This priority is present in a SysConfig setting, confirmation for updating settings to point to the new priority is needed!' =>
             'Ovaj prioritet se koristi u sistemskoj konfiguraciji, neophodna je dodatna potvrda za promenu podešavanja na novu vrednost!',
         'This priority is used in the following config settings:' => 'Ovaj prioritet se koristi u sledećim sistemskim podešavanjima:',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminProcessManagement.tt
-        'Process Management' => 'Upravljanje procesima',
         'Filter for Processes' => 'Filter procesa',
         'Filter for processes' => 'Filter procesa',
         'Create New Process' => 'Kreiraj novi proces',
@@ -1756,6 +1733,9 @@ sub Data {
             'Za kreiranje novog procesa možete ili uvesti proces koji je izvezen iz drugog sistema ili kreirati kompletno nov.',
         'Changes to the Processes here only affect the behavior of the system, if you synchronize the Process data. By synchronizing the Processes, the newly made changes will be written to the Configuration.' =>
             'Promene u procesima jedino utiču na ponašanje sistema, ako sinhronizujete podatke procesa. Sinhronizovanjem procesa, novonapravljene promene će biti upisane u konfiguraciju.',
+        'Access Control Lists (ACL)' => 'Liste za kontrolu pristupa (ACL)',
+        'Generic Agent' => '',
+        'Manage Process Widiget Groups' => '',
         'Processes' => 'Procesi',
         'Process name' => 'Naziv procesa',
         'Print' => 'Štampaj',
@@ -1910,6 +1890,13 @@ sub Data {
         'Edit Queue' => 'Uredi Red',
         'Filter for Queues' => 'Filter za redove',
         'Filter for queues' => 'Filter za redove',
+        'Email Addresses' => 'Imejl adrese',
+        'PostMaster Mail Accounts' => 'PostMaster mejl nalozi',
+        'Salutations' => 'Pozdravi',
+        'Signatures' => 'Potpisi',
+        'Templates ↔ Queues' => 'Šabloni ↔ redovi',
+        'Configure Working Hours' => '',
+        'Configure Queue Related Settings' => '',
         'A queue with this name already exists!' => 'Red sa ovim nazivom već postoji!',
         'This queue is present in a SysConfig setting, confirmation for updating settings to point to the new queue is needed!' =>
             'Ovaj red se koristi u sistemskoj konfiguraciji, neophodna je dodatna potvrda za promenu podešavanja na novu vrednost!',
@@ -1958,7 +1945,6 @@ sub Data {
         'Manage Template-Queue Relations' => 'Upravljanje odnosom šablon-red',
         'Filter for Templates' => 'Filter za šablone',
         'Filter for templates' => 'Filter za šablone',
-        'Templates' => 'Šabloni',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminRole.tt
         'Role Management' => 'Upravljanje ulogama',
@@ -1968,6 +1954,7 @@ sub Data {
         'Filter for roles' => 'Filter za uloge',
         'Create a role and put groups in it. Then add the role to the users.' =>
             'Napravi ulogu i dodaj grupe u nju. Onda dodaj ulogu korisnicima.',
+        'Agents ↔ Roles' => 'Operateri ↔ uloge',
         'There are no roles defined. Please use the \'Add\' button to create a new role.' =>
             'Nema definisanih uloga. upotrebite dugme \'Add\' za kreiranje nove uloge.',
 
@@ -2004,7 +1991,9 @@ sub Data {
         'Edit SLA' => 'Uredi SLA',
         'Add SLA' => 'Dodaj SLA',
         'Filter for SLAs' => 'Filter za SLA',
+        'Configure SLA Visibility and Defaults' => '',
         'Please write only numbers!' => 'Molimo pišite samo brojeve!',
+        'Minimum Time Between Incidents' => 'Minimalno vreme između incidenata',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSMIME.tt
         'S/MIME Management' => 'S/MIME upravljanje',
@@ -2052,8 +2041,6 @@ sub Data {
         'Edit Salutation' => 'Uredi Pozdrav',
         'Filter for Salutations' => 'Filter za pozdrave',
         'Filter for salutations' => 'Filter za pozdrave',
-        'e. g.' => 'npr.',
-        'Example salutation' => 'Primer pozdrava',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSecureMode.tt
         'Secure Mode Needs to be Enabled!' => 'Potrebno je da siguran mod bude uključen!',
@@ -2085,9 +2072,11 @@ sub Data {
         'Service Management' => 'Upravljanje uslugama',
         'Add Service' => 'Dodaj uslugu',
         'Edit Service' => 'Uredi uslugu',
+        'Configure Service Visibility and Defaults' => '',
         'Service name maximum length is 200 characters (with Sub-service).' =>
             'Maksimalna dužina naziva usluge je 200 karaktera (sa pod-uslugom).',
         'Sub-service of' => 'Pod-usluga od',
+        'Criticality' => 'Značaj',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSession.tt
         'Session Management' => 'Upravljanje sesijama',
@@ -2111,7 +2100,6 @@ sub Data {
         'Edit Signature' => 'Uredi Potpis',
         'Filter for Signatures' => 'Filter za potpise',
         'Filter for signatures' => 'Filter za potpise',
-        'Example signature' => 'Primer potpisa',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminState.tt
         'State Management' => 'Upravljanje statusima',
@@ -2121,6 +2109,8 @@ sub Data {
         'Filter for states' => 'Filter za stanja',
         'Attention' => 'Pažnja',
         'Please also update the states in SysConfig where needed.' => 'Molimo da ažurirate stause i u sistemskoj konfiguraciji gde je to potrebno.',
+        'Configure State Visibility and Defaults' => '',
+        'Configure State Type Visibility and Defaults' => '',
         'This state is present in a SysConfig setting, confirmation for updating settings to point to the new type is needed!' =>
             'Ovo stanje se koristi u sistemskoj konfiguraciji, neophodna je dodatna potvrda za promenu podešavanja na novu vrednost! ',
         'State type' => 'Tip statusa',
@@ -2243,7 +2233,6 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSystemFiles/Widget.tt
         'Permissions' => 'Dozvole',
-        'Package' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminSystemMaintenance.tt
         'System Maintenance Management' => 'Upravljanje sistemom održavanja',
@@ -2282,18 +2271,6 @@ sub Data {
         'Delete this entry' => 'Obriši ovaj unos',
         'Do you really want to delete this template?' => 'Da li stvarno želite da obrišete ovaj šablon?',
         'A standard template with this name already exists!' => 'Standardni šablon sa ovim nazivom već postoji!',
-        'To get the first 20 characters of the subject of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'To get the first 5 lines of the body of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'To get the first 20 characters of the subject of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'To get the first 5 lines of the body of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
-            '',
-        'Create type templates only supports this smart tags' => 'Kreiraj tip šablona koji podržavaju samo ove pametne oznake.',
-        'Example template' => 'Primer šablona',
-        'The current ticket state is' => 'Trenutni staus tiketa je',
-        'Your email address is' => 'Vaša imejl adresa je',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AdminTemplateAttachment.tt
         'Manage Template-Attachment Relations' => 'Upravljanje relacijama šabloni-prilozi',
@@ -2322,6 +2299,7 @@ sub Data {
         'Edit Type' => 'Uredi Tip',
         'Filter for Types' => 'Filter za tipove',
         'Filter for types' => 'Filter za tipove',
+        'Configure Type Visibility and Defaults' => '',
         'A type with this name already exists!' => 'Tip sa ovim nazivom već postoji!',
         'This type is present in a SysConfig setting, confirmation for updating settings to point to the new type is needed!' =>
             'Ovaj tip se koristi u sistemskoj konfiguraciji, neophodna je dodatna potvrda za promenu podešavanja na novu vrednost!',
@@ -2551,6 +2529,7 @@ sub Data {
         'Assigned to customer user' => 'Dodeljeni klijent korisnik',
         'Accessible for customer user' => 'Dozvoljen pristup za klijent korisnika',
         'My locked tickets' => 'Moji zaključani tiketi',
+        'My Owned Tickets' => '',
         'My watched tickets' => 'Moji praćeni tiketi',
         'My responsibilities' => 'Odgovoran sam za',
         'Tickets in My Queues' => 'Tiketi u mojim redovima',
@@ -2797,6 +2776,13 @@ sub Data {
         'New Queue' => 'Novi Red',
         'Move' => 'Premesti',
 
+        # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketNoteToLinkedTicket.tt
+        'Add note to linked %s%s%s' => '',
+        'Note to linked Ticket' => '',
+        'LinkList invalid.' => '',
+        'Note to origin Ticket' => '',
+        'NoteToTicket invalid.' => '',
+
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewMedium.tt
         'No ticket data found.' => 'Nisu nađeni podaci o tiketu',
         'Open / Close ticket action menu' => 'Akcioni meni Otvaranja / Zatvaranja tiketa',
@@ -2805,6 +2791,8 @@ sub Data {
         'First Response Time' => 'Vreme prvog odgovora',
         'Update Time' => 'Vreme ažuriranja',
         'Solution Time' => 'Vreme rešavanja',
+        'Impact' => 'Uticaj',
+        'CustomerID' => 'ID klijenta',
         'Move ticket to a different queue' => 'Premesti tiket u drugi red',
         'Change queue' => 'Promeni red',
 
@@ -3050,7 +3038,6 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/CustomerTicketSearch.tt
         'Profile' => 'Profil',
         'e. g. 10*5155 or 105658*' => 'npr. 10*5155 ili 105658*',
-        'CustomerID' => 'ID klijenta',
         'Fulltext Search in Tickets (e. g. "John*n" or "Will*")' => 'Tekstualno pretraživanje u tiketima (npr. "John*n" ili "Will*")',
         'Types' => 'Tipovi',
         'Time Restrictions' => 'Vremenska ograničenja',
@@ -3282,6 +3269,61 @@ sub Data {
             'Ovo je podrazumevani javni interfejs za OTRS! Nema datih akcionih parametara.',
         'You could install a custom public module (via the package manager), for example the FAQ module, which has a public interface.' =>
             'Možete instalirati dodatni modul (vidite upravljanje paketima), npr. FAQ, koji ima javni interfejs.',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAppointmentNotificationEvent.tt
+        'To get the appointment attribute' => 'Da vidite atribute termina',
+        ' e. g.' => ' npr.',
+        'To get the first 20 character of the appointment title.' => 'Da vidite prvih 20 karaktera naslova termina.',
+        'To get the calendar attribute' => 'Da vidite atribute kalendara',
+        'Attributes of the recipient user for the notification' => 'Atributi korisnika primaoca za obaveštenje',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminAutoResponse.tt
+        'To get the first 20 character of the subject.' => 'Da vidite prvih 20 slova predmeta.',
+        'To get the first 5 lines of the email.' => 'Da vidite prvih 5 linija imejla.',
+        'To get the name of the ticket\'s customer user (if given).' => 'Da pribavite naziv klijenta korisnika za tiket (ako je dat).',
+        'To get the article attribute' => 'Da vidite atribute članka',
+        'Options of the current customer user data' => 'Opcije podataka o aktuelnom klijentu korisniku',
+        'Ticket owner options' => 'Opcije vlasnika tiketa',
+        'Options of the ticket data' => 'Opcije podataka o tiketu',
+        'Options of ticket dynamic fields internal key values' => 'Opcije za vrednosti internih ključeva dinamičkih polja tiketa',
+        'Options of ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
+            'Opcije za prikazane vrednosti dinamičkih polja tiketa, korisno za polja Dropdown i Multiselect',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminNotificationEvent.tt
+        'To get the first 20 character of the subject (of the latest agent article).' =>
+            'Da vidite prvih 20 slova predmeta (poslednjeg članka operatera).',
+        'To get the first 5 lines of the body (of the latest agent article).' =>
+            'Da vidite prvih 5 linija poruke (poslednjeg članka operatera).',
+        'To get the first 20 character of the subject (of the latest customer article).' =>
+            'Da vidite prvih 20 slova predmeta (poslednjeg članka klijenta).',
+        'To get the first 5 lines of the body (of the latest customer article).' =>
+            'Da vidite prvih 5 linija poruke (poslednjeg članka klijenta).',
+        'Attributes of the current customer user data' => 'Atributi podataka aktuelnog klijenta korisnika',
+        'Attributes of the current ticket owner user data' => 'Atributi podataka korisnika vlasnika aktuelnog tiketa',
+        'Attributes of the ticket data' => 'Atributi podataka tiketa',
+        'Ticket dynamic fields internal key values' => 'Vrednosti internih ključeva dinamičkih polja tiketa',
+        'Ticket dynamic fields display values, useful for Dropdown and Multiselect fields' =>
+            'Prikazane vrednosti dinamičkih polja, korisno za padajuća i polja sa višestrukim izborom',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminSalutation.tt
+        'e. g.' => 'npr.',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/AdminTemplate.tt
+        'To get the first 20 characters of the subject of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 5 lines of the body of the current/latest agent article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 20 characters of the subject of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+        'To get the first 5 lines of the body of the current/latest article (current for Answer and Forward, latest for Note template type). This tag is not supported for other template types.' =>
+            '',
+
+        # TT Template: Kernel/Output/HTML/Templates/Standard/SmartTags/Default.tt
+        'Tag Reference' => 'Referenca oznake',
+        'You can use the following tags' => 'Možete koristiti sledeće oznake',
+        'Ticket responsible options' => 'Opcije odgovornog za tiket',
+        'Options of the current user who requested this action' => 'Opcije aktuelnog korisnika koji je tražio ovu akciju',
+        'Config options' => 'Konfiguracione opcije',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/Statistics/GeneralSpecificationsWidget.tt
         'You can select one or more groups to define access for different agents.' =>
@@ -3579,9 +3621,6 @@ sub Data {
         'All agents with write permission for the appointment (calendar)' =>
             'Svi operateri sa dozvolom pisanja u terminu (kalendaru)',
         'Yes, but require at least one active notification method.' => 'Da, ali traži bar jedan aktivni metod obaveštavanja.',
-
-        # Perl Module: Kernel/Modules/AdminAttachment.pm
-        'Attachment added!' => 'Dodat prilog!',
 
         # Perl Module: Kernel/Modules/AdminAutoResponse.pm
         'Auto Response added!' => 'Automatski odgovor dodat!',
@@ -3883,7 +3922,7 @@ sub Data {
         'Customer user of the ticket' => 'Klijent korisnik tiketa',
         'All recipients of the first article' => 'Svi primaoci prvog članka',
         'All recipients of the last article' => 'Svi primaoci poslednjeg članka',
-        'All users who are mentioned in a ticket' => '',
+        'All agents who are mentioned in the ticket' => '',
         'Invisible to customer' => 'Nevidljivo klijentu',
         'Visible to customer' => 'Vidljivo klijentu',
 
@@ -4138,7 +4177,6 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AdminTemplate.pm
         'Template updated!' => 'Šablon ažuriran!',
-        'Template added!' => 'Šablon dodat!',
 
         # Perl Module: Kernel/Modules/AdminTemplateAttachment.pm
         'Change Attachment Relations for Template' => 'Promeni relacije sa prilozima za šablon',
@@ -4339,9 +4377,6 @@ sub Data {
 
         # Perl Module: Kernel/Modules/AgentTicketMove.pm
         'You need move permissions!' => 'Neophodna vam je dozvola za premeštanje!',
-
-        # Perl Module: Kernel/Modules/AgentTicketOwnerView.pm
-        'My Owned Tickets' => '',
 
         # Perl Module: Kernel/Modules/AgentTicketPhone.pm
         'Chat is not active.' => 'Ćaskanje nije aktivno.',
@@ -4637,6 +4672,10 @@ sub Data {
         # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketNote.pm
         'Reply to note' => 'Odgovori na napomenu',
 
+        # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketNoteToLinkedTicket.pm
+        'Create notice for linked ticket' => '',
+        'Transfer notice' => '',
+
         # Perl Module: Kernel/Output/HTML/ArticleAction/AgentTicketPhone.pm
         'Split this article' => 'Podeli ovaj članak',
 
@@ -4855,6 +4894,10 @@ sub Data {
 
         # Perl Module: Kernel/Output/HTML/Preferences/Language.pm
         '(in process)' => '(u toku)',
+
+        # Perl Module: Kernel/Output/HTML/Preferences/MaxArticlesPerPage.pm
+        'Max. number of articles per page must be between 1 and 1000 or empty.' =>
+            '',
 
         # Perl Module: Kernel/Output/HTML/Preferences/OutOfOffice.pm
         'Please specify an end date that is after the start date.' => 'Molimo da odredite datum završetka koji je posle datuma početka.',
@@ -5359,6 +5402,11 @@ sub Data {
         'Legacy configuration backup files are no longer needed for the installed packages, please remove them from Kernel/Config/Backups folder.' =>
             'Rezervne kopije prošlih konfiguracija više nisu neophodne za rad instaliranih paketa, molimo uklonite ih iz Kernel/Config/Backups.',
 
+        # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/MultipleJSFileLoad.pm
+        'Views with multiple loaded JavaScript files' => '',
+        'The following JavaScript files loaded multiple times:' => '',
+        'Files' => '',
+
         # Perl Module: Kernel/System/SupportDataCollector/Plugin/OTRS/PackageDeployment.pm
         'Package Installation Status' => 'Status instalacije paketa',
         'Some packages have locally modified files.' => 'Neki paketi sadrže lokalno izmenjene datoteke.',
@@ -5761,6 +5809,7 @@ sub Data {
             'Određuje visinu za komponentu Rich Text Editor. Unesi broj (pikseli) ili procentualnu vrednost (relativnu).',
         'Defines the selectable font sizes in the rich text editor.' => '',
         'Defines the selectable fonts in the rich text editor.' => '',
+        'Defines the selectable format tags in the rich text editor.' => '',
         'Defines additional plugins for use in the rich text editor.' => '',
         'Defines extra content that is allowed for use in the rich text editor.' =>
             '',
@@ -6707,6 +6756,14 @@ sub Data {
             'Podrazumevani podaci za korišćenje na atributima za prikaz pretrage tiketa. Primer: "TicketCreateTimePointFormat=year;TicketCreateTimePointStart=Last;TicketCreateTimePoint=2;".',
         'Default data to use on attribute for ticket search screen. Example: "TicketCreateTimeStartYear=2010;TicketCreateTimeStartMonth=10;TicketCreateTimeStartDay=4;TicketCreateTimeStopYear=2010;TicketCreateTimeStopMonth=11;TicketCreateTimeStopDay=3;".' =>
             'Podrazumevani podaci za korišćenje na atributima za prikaz pretrage tiketa. Primer: "TicketCreateTimeStartYear=2010;TicketCreateTimeStartMonth=10;TicketCreateTimeStartDay=4;TicketCreateTimeStopYear=2010;TicketCreateTimeStopMonth=11;TicketCreateTimeStopDay=3;".',
+        'Default data to use on attribute for ticket search screen. Example: "TicketLastChangeTimePointFormat=year;TicketLastChangeTimePointStart=Last;TicketLastChangeTimePoint=2;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketLastChangeTimeStartYear=2010;TicketLastChangeTimeStartMonth=10;TicketLastChangeTimeStartDay=4;TicketLastChangeTimeStopYear=2010;TicketLastChangeTimeMonth=11;TicketLastChangeTimeStopDay=3;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketPendingTimePointFormat=year;TicketPendingTimePointStart=Last;TicketPendingTimePoint=2;".' =>
+            '',
+        'Default data to use on attribute for ticket search screen. Example: "TicketPendingTimeStartYear=2010;TicketPendingTimeStartMonth=10;TicketPendingTimeStartDay=4;TicketPendingTimeStopYear=2010;TicketPendingTimeMonth=11;TicketPendingTimeStopDay=3;".' =>
+            '',
         'Defines the default ticket attribute for ticket sorting in the locked ticket view of the agent interface.' =>
             'Definiše podrazumevani atribut tiketa za sortiranje tiketa u pregledu zaključanog tiketa interfejsa operatera.',
         'Defines the default ticket order in the ticket locked view of the agent interface. Up: oldest on top. Down: latest on top.' =>
@@ -7813,7 +7870,7 @@ sub Data {
             '',
         'Ticket event module that stores values of the selected web service record into the configured additional dynamic fields.' =>
             '',
-        'It might happen that a dynamic field of type WebserviceText or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
+        'It might happen that a dynamic field of type WebserviceDropdown or WebserviceMultiselect will be set to a value fetched from a configured web service table but the web service record will not have a value set in the field that is configured as displayed value. Enable this setting to hide those dynamic fields in the ticket information widget of AgentTicketZoom so that they will not be shown as empty.' =>
             '',
         'Mapping for field values received from form. This setting is necessary for the correct identification of the form fields. Key means value type, value means possible representation in views.' =>
             '',
@@ -7954,6 +8011,57 @@ sub Data {
         'Agent interface notification module to show the number of mentions.' =>
             '',
         'Module to grant access to the mentioned agents of a ticket.' => '',
+        'Mapping of non-standard time zones to official ones.' => '',
+        'Start date (YYYYMMDD) of the range to use when parsing ICS files. The used CPAN module iCal::Parser needs this to be able to parse ICS files with events in a year before the current one. The end date of the range is automatically set to 10 years in the future from the time of parsing/execution.' =>
+            '',
+        'Define a mapping between variables of the customer company data (keys) and dynamic fields of a ticket (values). The purpose is to store customer company data in ticket dynamic fields. The dynamic fields must be present in the system and should be enabled for AgentTicketFreeText, so that they can be set/updated manually by the agent. They mustn\'t be enabled for AgentTicketPhone, AgentTicketEmail and AgentTicketCustomer. If they were, they would have precedence over the automatically set values. To use this mapping, you have to also activate the Ticket::EventModulePost###4100-DynamicFieldFromCustomerCompany setting.' =>
+            '',
+        'This event module stores attributes from customer companies in ticket dynamic fields. Please see DynamicFieldFromCustomerCompany::Mapping setting for how to configure the mapping.' =>
+            '',
+        'Required permissions to use the NoteToLinkedTicket screen in the agent interface.' =>
+            '',
+        'Sets the state of the selected linked ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the default next state of a ticket after adding a note in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Activates the selection if a note in NoteToLinkedTicket screen should be created in this origin ticket.' =>
+            '',
+        'Defines the default value if a note in NoteToLinkedTicket screen should be created in this origin ticket.' =>
+            '',
+        'Sets the default subject for notes added in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the default body text for notes added in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Allows adding notes in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets if a note in NoteToLinkedTicket screen must be filled in by the agent.' =>
+            '',
+        'Defines the history type for the NoteToLinkedTicket screen, which will be used for ticket history in the agent interface.' =>
+            '',
+        'Defines the history comment for the NoteToLinkedTicket screen, which will be used for ticket history in the agent interface.' =>
+            '',
+        'Defines if the note in the NoteToLinkedTicket screen of the agent interface is visible for the customer by default.' =>
+            '',
+        'Sets the ticket type in the NoteToLinkedTicket screen of the agent interface (Ticket::Type needs to be activated).' =>
+            '',
+        'Sets the service in the NoteToLinkedTicket screen of the agent interface (Ticket::Service needs to be activated).' =>
+            '',
+        'Sets the queue in the NoteToLinkedTicket screen of a zoomed ticket in the agent interface.' =>
+            '',
+        'Sets the ticket owner in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the responsible agent of the ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Sets the state of a ticket in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the next state of a ticket after adding a note in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Shows the ticket priority options in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Defines the default ticket priority in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
+        'Shows the title field in the NoteToLinkedTicket screen of the agent interface.' =>
+            '',
 
         # XML Definition: scripts/database/initial_insert.xml
         'invalid-temporarily' => 'nevažeći-privremeno',
@@ -8445,6 +8553,8 @@ sub Data {
         'The following files are not allowed to be uploaded: %s' => 'Nije dozvoljeno otpremanje sledećih datoteka: %s',
         'The following files exceed the maximum allowed size per file of %s and were not uploaded: %s' =>
             'Sledeće datoteke premašuju najveću dozvoljenu veličinu od %s i nisu bile otpremljene: %s',
+        'The names of the following files exceed the maximum allowed length of %s characters and were not uploaded: %s' =>
+            '',
         'The following files were already uploaded and have not been uploaded again: %s' =>
             'Sledeće datoteke su već bile otpremljene i nisu dodate ponovo: %s',
         'No space left for the following files: %s' => 'Za sledeće datoteke nema više mesta: %s',
@@ -8524,7 +8634,6 @@ Vaša tehnička podrška
         'AJAX functions for notification event transport web service.' =>
             '',
         'AJAX interface for the web service dynamic field backends.' => '',
-        'Access Control Lists (ACL)' => 'Liste za kontrolu pristupa (ACL)',
         'AccountedTime' => 'Obračunato vreme',
         'Activation of dynamic fields for screens.' => '',
         'ActivityID' => 'ID aktivnosti',
@@ -8544,7 +8653,7 @@ Vaša tehnička podrška
         'Admin' => 'Admin',
         'Admin Area.' => 'Administrativni prostor.',
         'Admin Notification' => 'Administratorska obaveštenja',
-        'Admin configuration dialog for dynamic field types WebserviceText and WebserviceMultiselect' =>
+        'Admin configuration dialog for dynamic field types WebserviceDropdown and WebserviceMultiselect' =>
             '',
         'Admin modules overview.' => 'Pregled administratorskih modula.',
         'Admin.' => 'Admin.',
@@ -8557,8 +8666,6 @@ Vaša tehnička podrška
         'Agent Statistics.' => 'Statistike za interfejs operatera.',
         'Agent User Search' => 'Pretraga korisnika za operatere',
         'Agent User Search.' => 'Pretraga korisnika za operatere.',
-        'Agents ↔ Groups' => 'Operateri ↔ grupe',
-        'Agents ↔ Roles' => 'Operateri ↔ uloge',
         'All CustomerIDs of a customer user.' => 'Svi klijent ID klijent korisnika.',
         'All customer users of a CustomerID' => 'Svi klijenti korisnici za CustomerID',
         'All escalated tickets' => 'Svi eskalirani tiketi',
@@ -8578,6 +8685,7 @@ Vaša tehnička podrška
         'Allows having a small format ticket overview (CustomerInfo => 1 - shows also the customer information).' =>
             'Dozvoljava posedovanje malog formata pregleda tiketa ( CustomerInfo => 1  - takođe prikazuje informacije o klijentu).',
         'Always show RichText if available' => 'Uvek prikaži RichText ako je dostupan',
+        'An additional screen to add notes to a linked ticket.' => '',
         'Answer' => 'Odgovor',
         'Appointment Calendar overview page.' => 'Stranica za pregled kalendara.',
         'Appointment Notifications' => 'Obaveštenja o terminu',
@@ -8707,9 +8815,6 @@ Vaša tehnička podrška
         'Customer User Information Center search.' => 'Pretraga klijent korisničkog informativnog centra.',
         'Customer User Information Center.' => 'Klijent-korisnički informativni centar.',
         'Customer User-Customer Relations' => '',
-        'Customer Users ↔ Customers' => 'Klijent korisnici ↔ klijenti',
-        'Customer Users ↔ Groups' => 'Klijenti korisnici ↔ Grupe',
-        'Customer Users ↔ Services' => 'Klijent korisnici ↔ servisi',
         'Customer preferences.' => 'Klijentske postavke.',
         'Customer ticket overview' => 'Klijentski pregled tiketa',
         'Customer ticket search.' => 'Klijentska pretraga tiketa.',
@@ -8718,7 +8823,6 @@ Vaša tehnička podrška
         'CustomerID search' => 'Pretraga ID klijenata',
         'CustomerName' => 'Naziv klijenta',
         'CustomerUser' => 'Klijent korisnik',
-        'Customers ↔ Groups' => 'Klijenti ↔ grupe',
         'Czech' => 'Češki',
         'Danish' => 'Danski',
         'Dashboard overview.' => 'Pregled komandne table.',
@@ -8760,7 +8864,6 @@ Vaša tehnička podrška
         'Edit Customer Users.' => 'Uredi klijente korisnike.',
         'Edit appointment' => 'Izmena termina',
         'Edit customer company' => 'Izmeni firmu klijenta',
-        'Email Addresses' => 'Imejl adrese',
         'Email Outbound' => 'Odlazni imejl',
         'Email Resend' => 'Pošalji ponovo imejl',
         'Email communication channel.' => 'Komunikacioni kanal imejla.',
@@ -8913,6 +9016,7 @@ Vaša tehnička podrška
         'Mark as Spam!' => 'Označi kao Spam!',
         'Mark this ticket as junk!' => 'Označi ovaj tiket kao besmislen junk!',
         'Mattermost Username' => '',
+        'Max. number of articles per page in TicketZoom' => '',
         'Medium' => 'Srednje',
         'Mentioned in article' => '',
         'Mentioned in ticket' => '',
@@ -8989,7 +9093,6 @@ Vaša tehnička podrška
         'Portuguese' => 'Portugalski',
         'Portuguese (Brasil)' => 'Portugalski (Brazil)',
         'PostMaster Filters' => 'PostMaster filteri',
-        'PostMaster Mail Accounts' => 'PostMaster mejl nalozi',
         'Print this ticket' => 'Odštampaj ovaj tiket',
         'Priorities' => 'Prioriteti',
         'Process Management Activity Dialog GUI' => 'Grafički interfejs dijaloga aktivnosti u procesima',
@@ -9008,7 +9111,6 @@ Vaša tehnička podrška
         'Public Calendar' => 'Javni kalendar',
         'Public calendar.' => 'Javni kalendar.',
         'Queue view' => 'Pregled reda',
-        'Queues ↔ Auto Responses' => 'Redovi ↔ automatski odgovori',
         'Refresh interval' => 'Interval osvežavanja',
         'Reminder Tickets' => 'Tiketi podsetnika',
         'Removed subscription for user "%s".' => 'Pretplata za korisnika "%s" je isključena.',
@@ -9018,13 +9120,11 @@ Vaša tehnička podrška
         'Responsible Tickets' => 'Odgovorni tiketi',
         'Responsible Tickets.' => 'Odgovorni tiketi.',
         'Right' => 'Desno',
-        'Roles ↔ Groups' => 'Uloge ↔ grupe',
         'Romanian' => 'Rumunski',
         'Running Process Tickets' => 'Aktivni proces tiketi',
         'Russian' => 'Ruski',
         'S/MIME Certificates' => 'S/MIME sertifikati',
         'SMS' => 'SMS',
-        'Salutations' => 'Pozdravi',
         'Schedule a maintenance period.' => 'Planiranje perioda održavanja.',
         'Screen after new ticket' => 'Prikaz ekrana posle otvaranja novog tiketa',
         'Search Customer' => 'Traži klijenta',
@@ -9041,6 +9141,8 @@ Vaša tehnička podrška
         'Select how many tickets should be shown in overviews by default.' =>
             'Izaberite koji broj tiketa će biti podrazumevano prikazan u pregledima.',
         'Select the main interface language.' => 'Izaberite glavni jezik interfejsa.',
+        'Select the maximum articles per page shown in TicketZoom. System default value will apply when entered empty value.' =>
+            '',
         'Select the separator character used in CSV files (stats and searches). If you don\'t select a separator here, the default separator for your language will be used.' =>
             'Izaberite separator koji će se koristi u CSV datotekama (statistika i pretrage). Ako ovde ne izaberete separator, koristiće se podrazumevani separator za vaš jezik',
         'Select where to display the last views.' => '',
@@ -9062,7 +9164,6 @@ Vaša tehnička podrška
         'Sent notification to "%s".' => 'Poslato obaveštenje na "%s".',
         'Serbian Cyrillic' => 'Srpski ćirilica',
         'Serbian Latin' => 'Srpski latinica',
-        'Service Level Agreements' => 'Sporazumi o nivou usluga',
         'Service view' => 'Pregled usluge',
         'ServiceView' => 'ServiceView',
         'Set a new password by filling in your current password and a new one.' =>
@@ -9077,7 +9178,6 @@ Vaša tehnička podrška
         'Shows information on how to start OTRS Daemon' => 'Prikazuje informacije kako pokrenuti OTRS sistemski servis',
         'Shows last mention of tickets.' => '',
         'Signature data.' => '',
-        'Signatures' => 'Potpisi',
         'Simple' => 'Jednostavno',
         'Skin' => 'Izgled',
         'Slovak' => 'Slovački',
@@ -9112,8 +9212,6 @@ Vaša tehnička podrška
         'System Configuration Deployment' => 'Raspoređivanje sistemske konfiguracije',
         'System Configuration Group' => 'Kategorija sistemske konfiguracije',
         'System Maintenance' => 'Održavanje sistema',
-        'Templates ↔ Attachments' => 'Šabloni ↔ prilozi',
-        'Templates ↔ Queues' => 'Šabloni ↔ redovi',
         'Textarea' => 'Oblast teksta',
         'Thai' => 'Tajlandski',
         'The PGP signature is expired.' => '',
@@ -9201,8 +9299,8 @@ Vaša tehnička podrška
         'We are performing scheduled maintenance. We should be back online shortly.' =>
             'Izvršavamo planirano održavanje. uskoro ćemo biti ponovo aktivni.',
         'Web Services' => 'Veb servisi',
+        'Web service (Dropdown)' => '',
         'Web service (Multiselect)' => '',
-        'Web service (Text)' => '',
         'Web service dynamic field AJAX interface' => '',
         'Webservice' => '',
         'Yes, but hide archived tickets' => 'Da, ali skloni arhivirane tikete',
@@ -9262,6 +9360,7 @@ Vaša tehnička podrška
         'Agent',
         'All occurrences',
         'All-day',
+        'An Error Occurred',
         'An error occurred during communication.',
         'An error occurred! Please check the browser error log for more details!',
         'An item with this name is already present.',
@@ -9544,6 +9643,7 @@ Vaša tehnička podrška
         'The following files were already uploaded and have not been uploaded again: %s',
         'The item you\'re currently viewing is part of a not-yet-deployed configuration setting, which makes it impossible to edit it in its current state. Please wait until the setting has been deployed. If you\'re unsure what to do next, please contact your system administrator.',
         'The key must not be empty.',
+        'The names of the following files exceed the maximum allowed length of %s characters and were not uploaded: %s',
         'There are currently no elements available to select from.',
         'There are no more drafts available.',
         'There is a package upgrade process running, click here to see status information about the upgrade progress.',

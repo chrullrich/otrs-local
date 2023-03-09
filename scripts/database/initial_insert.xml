@@ -3932,7 +3932,7 @@ Please note, that the delivery of an email article of [<OTRS_CONFIG_Ticket::Hook
 Error Message:
 <OTRS_AGENT_TransmissionStatusMessage>
 
-<OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>;ArticleID=<OTRS_AGENT_ArticleID>
+<OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>;ArticleID=<OTRS_TICKET_LAST_ARTICLE_ID>
 
 -- <OTRS_CONFIG_NotificationSenderName>]]></Data>
     </Insert>
@@ -3949,7 +3949,7 @@ Felhívjuk a figyelmét, hogy a(z) [<OTRS_CONFIG_Ticket::Hook><OTRS_CONFIG_Ticke
 Hibaüzenet:
 <OTRS_AGENT_TransmissionStatusMessage>
 
-<OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>;ArticleID=<OTRS_AGENT_ArticleID>
+<OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>;ArticleID=<OTRS_TICKET_LAST_ARTICLE_ID>
 
 -- <OTRS_CONFIG_NotificationSenderName>]]></Data>
     </Insert>
@@ -3961,6 +3961,8 @@ Hibaüzenet:
         <Data Key="subject" Type="Quote"><![CDATA[Mention in ticket: <OTRS_TICKET_Title>]]></Data>
         <Data Key="text" Type="Quote"><![CDATA[You have been mentioned in ticket <OTRS_TICKET_NUMBER>
 <OTRS_AGENT_BODY[5]>
+
+<OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
             ]]></Data>
     </Insert>
     <Insert Table="notification_event_message">
@@ -3971,6 +3973,8 @@ Hibaüzenet:
         <Data Key="subject" Type="Quote"><![CDATA[Erwähnung in Ticket: <OTRS_TICKET_Title>]]></Data>
         <Data Key="text" Type="Quote"><![CDATA[Sie wurden erwähnt in Ticket <OTRS_TICKET_NUMBER>
 <OTRS_AGENT_BODY[5]>
+
+<OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom;TicketID=<OTRS_TICKET_TicketID>
             ]]></Data>
     </Insert>
 

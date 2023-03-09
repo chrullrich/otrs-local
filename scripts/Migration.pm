@@ -1,6 +1,6 @@
 # --
 # Copyright (C) 2001-2021 OTRS AG, https://otrs.com/
-# Copyright (C) 2021-2022 Znuny GmbH, https://znuny.org/
+# Copyright (C) 2021 Znuny GmbH, https://znuny.org/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -218,19 +218,14 @@ sub _TasksGet {
             Module  => 'scripts::Migration::Base::PerlModulesCheck',
         },
         {
-            Message => 'Check installed CPAN modules for known vulnerabilities',
-            Module  => 'scripts::Migration::Base::CPANAuditCheck',
-        },
-        {
             Message => 'Check if database has been backed up',
             Module  => 'scripts::Migration::Base::DatabaseBackupCheck',
         },
 
-        # Znuny specific migration modules
-        {
-            Message => 'Upgrade database structure',
-            Module  => 'scripts::Migration::Znuny::UpgradeDatabaseStructure',
-        },
+        #         {
+        #             Message => 'Upgrade database structure',
+        #             Module  => 'scripts::Migration::Znuny::UpgradeDatabaseStructure',
+        #         },
         {
             Message => 'Rebuild configuration',
             Module  => 'scripts::Migration::Base::RebuildConfig',
@@ -240,16 +235,20 @@ sub _TasksGet {
             Module  => 'scripts::Migration::Znuny::MigrateSysConfigSettings',
         },
         {
-            Message => 'Reindex S/MIME certificates',
-            Module  => 'scripts::Migration::Znuny::ReindexSMIMECertificates',
+            Message => 'Migrate DBCRUD UUID columns',
+            Module  => 'scripts::Migration::Znuny::MigrateDBCRUDUUIDColumns',
         },
         {
-            Message => "Add dynamic fields 'TicketCalendarStartTime' and 'TicketCalendarEndTime'.",
-            Module  => 'scripts::Migration::Znuny::AddTicketCalendarDynamicFields',
+            Message => 'Migrate dynamic fields',
+            Module  => 'scripts::Migration::Znuny::MigrateDynamicFields',
         },
         {
-            Message => 'Migrate web service configuration',
-            Module  => 'scripts::Migration::Znuny::MigrateWebserviceConfiguration',
+            Message => 'Migrate notification events',
+            Module  => 'scripts::Migration::Znuny::MigrateNotificationEvents',
+        },
+        {
+            Message => 'Integrate Znuny-NoteToLinkedTicket',
+            Module  => 'scripts::Migration::Znuny::IntegrateZnunyNoteToLinkedTicket',
         },
 
         # NOTE: UninstallMergedPackages has to be called only after
@@ -258,7 +257,6 @@ sub _TasksGet {
             Message => 'Uninstall merged packages',
             Module  => 'scripts::Migration::Znuny::UninstallMergedPackages',
         },
-
         {
             Message => 'Initialize default cron jobs',
             Module  => 'scripts::Migration::Base::InitializeDefaultCronjobs',

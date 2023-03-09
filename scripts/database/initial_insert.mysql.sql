@@ -3191,7 +3191,7 @@ Please note, that the delivery of an email article of [<OTRS_CONFIG_Ticket::Hook
 Error Message:
 <OTRS_AGENT_TransmissionStatusMessage>
 
-<OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom\;TicketID=<OTRS_TICKET_TicketID>\;ArticleID=<OTRS_AGENT_ArticleID>
+<OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom\;TicketID=<OTRS_TICKET_TicketID>\;ArticleID=<OTRS_TICKET_LAST_ARTICLE_ID>
 
 -- <OTRS_CONFIG_NotificationSenderName>');
 # ----------------------------------------------------------
@@ -3206,7 +3206,7 @@ Felhívjuk a figyelmét, hogy a(z) [<OTRS_CONFIG_Ticket::Hook><OTRS_CONFIG_Ticke
 Hibaüzenet:
 <OTRS_AGENT_TransmissionStatusMessage>
 
-<OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom\;TicketID=<OTRS_TICKET_TicketID>\;ArticleID=<OTRS_AGENT_ArticleID>
+<OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom\;TicketID=<OTRS_TICKET_TicketID>\;ArticleID=<OTRS_TICKET_LAST_ARTICLE_ID>
 
 -- <OTRS_CONFIG_NotificationSenderName>');
 # ----------------------------------------------------------
@@ -3216,6 +3216,8 @@ INSERT INTO notification_event_message (id, notification_id, content_type, langu
     VALUES
     (112, 16, 'text/plain', 'en', 'Mention in ticket: <OTRS_TICKET_Title>', 'You have been mentioned in ticket <OTRS_TICKET_NUMBER>
 <OTRS_AGENT_BODY[5]>
+
+<OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom\;TicketID=<OTRS_TICKET_TicketID>
             ');
 # ----------------------------------------------------------
 #  insert into table notification_event_message
@@ -3224,6 +3226,8 @@ INSERT INTO notification_event_message (id, notification_id, content_type, langu
     VALUES
     (113, 16, 'text/plain', 'de', 'Erwähnung in Ticket: <OTRS_TICKET_Title>', 'Sie wurden erwähnt in Ticket <OTRS_TICKET_NUMBER>
 <OTRS_AGENT_BODY[5]>
+
+<OTRS_CONFIG_HttpType>://<OTRS_CONFIG_FQDN>/<OTRS_CONFIG_ScriptAlias>index.pl?Action=AgentTicketZoom\;TicketID=<OTRS_TICKET_TicketID>
             ');
 # ----------------------------------------------------------
 #  insert into table dynamic_field
