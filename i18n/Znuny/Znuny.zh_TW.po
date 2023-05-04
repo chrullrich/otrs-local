@@ -7223,7 +7223,7 @@ msgid "My locked tickets"
 msgstr "我鎖定的工單"
 
 #. TT Template: Kernel/Output/HTML/Templates/Standard/AgentDashboardTicketGeneric.tt
-msgid "My Owned Tickets"
+msgid "My owned tickets"
 msgstr ""
 
 #. TT Template: Kernel/Output/HTML/Templates/Standard/AgentDashboardTicketGeneric.tt
@@ -9266,10 +9266,6 @@ msgstr ""
 #. TT Template: Kernel/Output/HTML/Templates/Standard/NotificationEvent/Email/Alert.tt
 msgid "Powered by"
 msgstr "Powered by"
-
-#. TT Template: Kernel/Output/HTML/Templates/Standard/Notify.tt
-msgid " Close this message"
-msgstr ""
 
 #. TT Template: Kernel/Output/HTML/Templates/Standard/Pagination.tt
 msgid "Show first page"
@@ -24229,5 +24225,13 @@ msgstr "倒序"
 
 #. SysConfig
 msgid "stats"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminACL.tt
+msgid "Show Valid"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminACL.tt
+msgid "Show All"
 msgstr ""
 

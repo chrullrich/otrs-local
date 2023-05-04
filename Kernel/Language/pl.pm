@@ -29,7 +29,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y-%M-%D';
     $Self->{DateInputFormat}     = '%Y-%M-%D';
     $Self->{DateInputFormatLong} = '%Y-%M-%D - %T';
-    $Self->{Completeness}        = 0.640614672835426;
+    $Self->{Completeness}        = 0.645134643978193;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -60,6 +60,8 @@ sub Data {
         'ACL Management' => 'Zarządzanie ACL',
         'ACLs' => 'ACLe',
         'Filter' => 'Filtr',
+        'Show Valid' => '',
+        'Show All' => '',
         'Please note: This table represents the execution order of the ACLs. If you need to change the order in which ACLs are executed, please change the names of the affected ACLs.' =>
             'Proszę zapamiętaj: Ta tabela reprezentuje kolejność wykonania ACLi. Jeśli potrzebujesz by kolejność była inna wówczas proszę zmień odpowiednio ich nazwy.',
         'ACL name' => 'Nazwa ACL',
@@ -199,11 +201,11 @@ sub Data {
         'Send to these agents' => 'Wyślij do tych agentów',
         'Send to all group members (agents only)' => ' Wyślij do wszystkich członków grupy (tylko agenci)',
         'Send to all role members' => 'Wyślij do wszystkich członków roli',
-        'Send on out of office' => 'Wyślij powiadomienie o nieobecności w biurze',
         'Also send if the user is currently out of office.' => 'Wyślij również, jeśli użytkownik jest aktualnie poza biurem',
-        'Once per day' => 'Jeden na dzień',
+        'Send on out of office' => 'Wyślij powiadomienie o nieobecności w biurze',
         'Notify user just once per day about a single appointment using a selected transport.' =>
             'Powiadamiaj użytkownika o pojedynczym wydarzeniu, przy użyciu wybranego transportu, tylko raz dziennie.',
+        'Once per day' => 'Jeden na dzień',
         'Notification Methods' => 'Metoda powiadomienia',
         'These are the possible methods that can be used to send this notification to each of the recipients. Please select at least one method below.' =>
             'To są metody, które mogą zostać użyte do wysłania tego powiadomienia do każdego z odbiorców. Wybierz przynajmniej jedną metodę poniżej.',
@@ -1685,7 +1687,7 @@ sub Data {
         'Available Fields' => 'Dostępne pola',
         'Filter available fields' => 'Filtruj dostępne pola',
         'Assigned Fields' => 'Przypisane pola',
-        ' Filter assigned fields' => '',
+        ' Filter assigned fields' => ' Filtruj przypisane pola',
         'Communication Channel' => 'Kanał Komunikacji',
         'Is visible for customer' => 'Jest widoczna dla klienta',
         'Text Template' => 'Tekst szablonu',
@@ -2362,22 +2364,22 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentDashboardCommon.tt
         'No Data Available.' => '',
-        ' Show or hide the content' => '',
+        ' Show or hide the content' => ' Pokaż lub ukryj treść',
         'Search inactive widgets' => '',
         'Active Widgets' => '',
-        ' Save changes' => '',
-        ' Save' => '',
+        ' Save changes' => ' Zapisz zmiany',
+        ' Save' => ' Zapisz',
         'Save changes' => '',
-        ' Settings' => '',
-        ' Refresh' => '',
-        ' Close this widget' => '',
+        ' Settings' => ' Ustawienia',
+        ' Refresh' => ' Odśwież',
+        ' Close this widget' => ' Zamknij widżet',
         'Hide' => '',
-        ' Cancel' => '',
+        ' Cancel' => ' Anuluj',
         'more' => 'więcej',
         'Available Columns' => 'Dostępne kolumny',
-        ' Filter available fields' => '',
+        ' Filter available fields' => ' Filtruj dostępne pola',
         'Visible Columns (order by drag & drop)' => 'Widoczne kolumny (sortuj poprzez przeciągnij i upuść)',
-        ' Submit' => '',
+        ' Submit' => ' Akceptuj',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentDashboardCustomerIDList.tt
         'Change Customer Relations' => '',
@@ -2430,7 +2432,7 @@ sub Data {
         'Assigned to customer user' => 'Przypisane do użytkownika klienta',
         'Accessible for customer user' => 'Dostępne dla użytkownika klienta',
         'My locked tickets' => 'Zablokowane',
-        'My Owned Tickets' => 'Posiadane zgłoszenia',
+        'My owned tickets' => 'Posiadane zgłoszenia',
         'My watched tickets' => 'Obserwowane',
         'My responsibilities' => 'Odpowiedzialny',
         'Tickets in My Queues' => 'Zgłoszenia w Moich Kolejkach',
@@ -2606,7 +2608,7 @@ sub Data {
         'Compose Answer for %s%s%s' => 'Utwórz Odpowiedź dla %s%s%s',
         'Date Invalid!' => 'Niepoprawna data!',
         ' Select one or more recipients from the customer user address book.' =>
-            '',
+            ' Wybierz jednego lub więcej odbiorców z książki adresowej użytkowników klientów',
         'Customer user address book' => '',
         'This address is registered as system address and cannot be used: %s' =>
             'Ten adres został zarejestrowany jako adres systemowy i nie może zostać użyty: %s',
@@ -2615,12 +2617,12 @@ sub Data {
         'Please remove this entry and enter a new one with the correct value.' =>
             'Usuń ten wpis i wprowadź nowy z poprawną wartością.',
         'This address already exists on the address list.' => 'Ten adres juz istnieje na liście adresów.',
-        ' Cc' => '',
+        ' Cc' => ' Dw',
         'Remove Cc' => 'Usuń DW',
         'Bcc' => 'UDW',
-        ' Bcc' => '',
+        ' Bcc' => ' Udw',
         'Remove Bcc' => 'Usuń UDW',
-        ' Send mail' => '',
+        ' Send mail' => ' Wyślij wiadomość',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketCustomer.tt
         'Change Customer of %s%s%s' => 'Zmień klienta dla %s%s%s',
@@ -2629,18 +2631,18 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketEmail.tt
         'Create New Email Ticket' => 'Utwórz nowe zgłoszenie e-mail',
-        ' Example Template' => '',
+        ' Example Template' => ' Przykładowy szablon',
         'Example Template' => 'Przykładowy szablon',
         'To customer user' => 'Do użytkownika klienta',
-        ' To' => '',
+        ' To' => ' Do',
         'Please include at least one customer user for the ticket.' => 'Proszę dodaj przynajmniej jednego użytkownika do zgłoszenia.',
-        ' Select this customer as the main customer.' => '',
-        ' To customer user' => '',
+        ' Select this customer as the main customer.' => ' Wybierz tego klienta jako głównego klienta.',
+        ' To customer user' => ' Do użytkownika klienta',
         'Remove Ticket Customer User' => 'Usuń zgłoszenie użytkownika klienta',
         'From queue' => 'Do kolejki',
-        ' Get all' => '',
+        ' Get all' => ' Pobierz wszystko',
         'Get all' => 'Pobierz wszystkich',
-        ' Message body' => '',
+        ' Message body' => ' Treść wiadomości',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketEmailOutbound.tt
         'Outbound Email for %s%s%s' => 'Zewnętrzny Email dla %s%s%s',
@@ -2698,10 +2700,10 @@ sub Data {
         'NoteToTicket invalid.' => 'Notatka nieprawidłowa.',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewMedium.tt
-        ' Select all' => '',
+        ' Select all' => ' Zaznacz wszystko',
         'No ticket data found.' => 'Nie odnaleziono danych zgłoszenia.',
-        ' Open / Close ticket action menu' => '',
-        ' Select this ticket' => '',
+        ' Open / Close ticket action menu' => ' Menu akcji otwartych / zamkniętych zgłoszeń',
+        ' Select this ticket' => ' Wybierz to zgłoszenie',
         'Sender' => 'Nadawca',
         'Impact' => 'Wpływ',
         'CustomerID' => 'Identyfikator klienta',
@@ -2709,7 +2711,7 @@ sub Data {
         'Solution Time' => 'Czas pozostały do rozwiązania',
         'First Response Time' => 'Czas pozostały do pierwszej odpowiedzi',
         ' Service Time' => '',
-        ' Move ticket to a different queue' => '',
+        ' Move ticket to a different queue' => ' Przenieś zgłoszenie na inną kolejkę',
         'Change queue' => 'Zmień kolejkę',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewNavBar.tt
@@ -2720,7 +2722,7 @@ sub Data {
         'Filter assigned fields' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewPreview.tt
-        ' Missing channel' => '',
+        ' Missing channel' => ' Brakujący kanał',
         'Missing channel' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketOverviewSmall.tt
@@ -2744,7 +2746,7 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketProcess.tt
         'Create New Process Ticket' => 'Utwórz nowe zgłoszenie do procesu',
-        ' Loading' => '',
+        ' Loading' => ' Ładowanie',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/AgentTicketProcessSmall.tt
         'Enroll Ticket into a Process' => 'Zapisz zgłoszenie jako proces',
@@ -2932,9 +2934,9 @@ sub Data {
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/CustomerTicketMessage.tt
         'New Ticket' => 'Nowe zgłoszenie',
-        ' Service level agreement' => '',
+        ' Service level agreement' => ' Gwarantowany poziom świadczenia usług (SLA)',
         'Dymanic Info' => '',
-        ' Subject' => '',
+        ' Subject' => ' Temat',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/CustomerTicketOverview.tt
         'Welcome!' => 'Witaj!',
@@ -3149,9 +3151,6 @@ sub Data {
         # TT Template: Kernel/Output/HTML/Templates/Standard/NotificationEvent/Email/Alert.tt
         'Alert' => '',
         'Powered by' => 'Oparte na',
-
-        # TT Template: Kernel/Output/HTML/Templates/Standard/Notify.tt
-        ' Close this message' => '',
 
         # TT Template: Kernel/Output/HTML/Templates/Standard/Pagination.tt
         'Show first page' => 'Pokaż pierwszą stronę',
@@ -9172,6 +9171,7 @@ Twój Zespół Helpdesk.
         'Clone web service',
         'Close preview',
         'Close this dialog',
+        'Close this message',
         'Complex %s with %s arguments',
         'Confirm',
         'Could not open popup window. Please disable any popup blockers for this application.',

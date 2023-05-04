@@ -7226,7 +7226,7 @@ msgid "My locked tickets"
 msgstr "ตั๋วที่ถูกล็อคของฉัน"
 
 #. TT Template: Kernel/Output/HTML/Templates/Standard/AgentDashboardTicketGeneric.tt
-msgid "My Owned Tickets"
+msgid "My owned tickets"
 msgstr ""
 
 #. TT Template: Kernel/Output/HTML/Templates/Standard/AgentDashboardTicketGeneric.tt
@@ -9268,10 +9268,6 @@ msgstr ""
 #. TT Template: Kernel/Output/HTML/Templates/Standard/NotificationEvent/Email/Alert.tt
 msgid "Powered by"
 msgstr "ให้การสนับสนุนโดย"
-
-#. TT Template: Kernel/Output/HTML/Templates/Standard/Notify.tt
-msgid " Close this message"
-msgstr ""
 
 #. TT Template: Kernel/Output/HTML/Templates/Standard/Pagination.tt
 msgid "Show first page"
@@ -24244,5 +24240,13 @@ msgstr "ย้อนกลับ"
 
 #. SysConfig
 msgid "stats"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminACL.tt
+msgid "Show Valid"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminACL.tt
+msgid "Show All"
 msgstr ""
 

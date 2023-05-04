@@ -7223,7 +7223,7 @@ msgid "My locked tickets"
 msgstr "درخواست‎های قفل شده من"
 
 #. TT Template: Kernel/Output/HTML/Templates/Standard/AgentDashboardTicketGeneric.tt
-msgid "My Owned Tickets"
+msgid "My owned tickets"
 msgstr ""
 
 #. TT Template: Kernel/Output/HTML/Templates/Standard/AgentDashboardTicketGeneric.tt
@@ -9265,10 +9265,6 @@ msgstr ""
 #. TT Template: Kernel/Output/HTML/Templates/Standard/NotificationEvent/Email/Alert.tt
 msgid "Powered by"
 msgstr " قدرت گرفته از "
-
-#. TT Template: Kernel/Output/HTML/Templates/Standard/Notify.tt
-msgid " Close this message"
-msgstr ""
 
 #. TT Template: Kernel/Output/HTML/Templates/Standard/Pagination.tt
 msgid "Show first page"
@@ -24238,5 +24234,13 @@ msgstr "برگردان"
 
 #. SysConfig
 msgid "stats"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminACL.tt
+msgid "Show Valid"
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminACL.tt
+msgid "Show All"
 msgstr ""
 

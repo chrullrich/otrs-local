@@ -1,3 +1,12 @@
+# 7.0.3 2023-04-19
+ - 2023-04-05 Fixed format of returned filename in function Kernel::System::Stats::StringAndTimestamp2Filename.
+ - 2023-04-05 AdminSLA: Sub-services will now be shown as invalid if SLA is set to invalid.
+ - 2023-04-04 Translatable buttons for AdminValidFilter. Thanks to Renée Bäcker @reneeb. [PR#358](https://github.com/znuny/Znuny/pull/358)
+ - 2023-04-03 GUI-Redesign changes - CSS, TT and JS.
+ - 2023-04-03 Updated Agent/Notification.html.tmpl and changed position of agent notifications.
+ - 2023-04-03 Fixed issue 'Ticket notifications not sent'. Fixed return value of GetTransportRecipients. [#361](https://github.com/znuny/Znuny/issues/361)
+ - 2023-03-02 Fixed handling of time zone for DateTime objects created with string in ISO 8601 format (e.g. '2017-05-09T07:00:09+0400').
+
 # 7.0.2 2023-03-30
  - 2023-03-30 Fixed path in setting Frontend::WebPath.
 
@@ -32,10 +41,14 @@
  - 2022-08-08 Admin - Added counter of AdminSettingPages per widget and additional focus by filter.
  - 2022-07-15 Frontend::ToolBarModule - Refactored the Toolbar registration, position and view.
 
-# 6.5.2 2023-??-??
+# 6.5.2 2023-04-19
+ - 2023-04-13 Activated information section and modal dialog for ICS calendar events in AgentTicketZoom view.
+ - 2023-04-05 Fixed format of returned filename in function Kernel::System::Stats::StringAndTimestamp2Filename.
+ - 2023-04-03 AdminSLA: Sub-services will now be shown as invalid if SLA is set to invalid.
  - 2023-03-20 Fixed handling of article attachments in generic interface operations TicketCreate and TicketUpdate.
  - 2023-03-16 Added Appointment::EventModulePost Entry in XML. Thanks to Kevin Janssen (@BuTzZ). [PR#315](https://github.com/znuny/Znuny/pull/315)
  - 2023-03-10 Fixed notification about empty subject for article drafts in AgentTicketCompose and AgentTicketEmailOutbound.
+ - 2023-03-02 Fixed handling of time zone for DateTime objects created with string in ISO 8601 format (e.g. '2017-05-09T07:00:09+0400').
 
 # 6.5.1 2023-03-09
  - 2023-02-28 Added options tickets-created-before-date and tickets-created-before-days to console command Admin::Article::StorageSwitch.
