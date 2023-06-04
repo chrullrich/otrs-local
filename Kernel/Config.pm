@@ -90,7 +90,7 @@ sub Load {
         },
 
         # customer unique id
-        CustomerKey => 'email',
+        CustomerKey => 'login',
 
         # customer #
         CustomerID    => 'customer_id',
