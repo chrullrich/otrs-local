@@ -1,3 +1,13 @@
+# 6.5.3 2023-06-14
+ - 2023-05-31 Added removal of protocol-relative URLs to Kernel::System::HTMLUtils::Safety. Thanks to Tim Püttmanns (@tipue-dev), maxence, for reporting the issue.
+ - 2023-05-31 Added security relevant check for content type of article and attachments to generic interface operations TicketCreate and TicketUpdate. Thanks to Tim Püttmanns (@tipue-dev), maxence, for reporting the issue.
+ - 2023-05-31 Process management: Added missing scope filter for transition actions.
+ - 2023-05-30 Updated CPAN library Sisimai to version 4.25.16. [#391](https://github.com/znuny/Znuny/issues/391)
+ - 2023-05-25 Changed article action 'note to linked ticket' to only be visible/usable in agent ticket zoom.
+ - 2023-05-24 Selected value in a dynamic field web service dropdown field can now be removed with 'x' button.
+ - 2023-05-23 Fixed event handling for DBCRUD history entries.
+ - 2023-05-05 Fixed html element id of forward templates in AgentTicketZoom. [#351](https://github.com/znuny/Znuny/issues/351)
+
 # 6.5.2 2023-04-19
  - 2023-04-13 Activated information section and modal dialog for ICS calendar events in AgentTicketZoom view.
  - 2023-04-05 Fixed format of returned filename in function Kernel::System::Stats::StringAndTimestamp2Filename.
@@ -2069,7 +2079,7 @@
  - 2016-06-27 Followup for bug#[12078](http://bugs.otrs.org/show_bug.cgi?id=12078) - Change wording for better translation, thanks to Balázs Úr.
  - 2016-06-24 Don't write error log entry on first LDAP user login, thanks to Pawel Boguslawski.
  - 2016-06-24 Fixed bug#[9000](http://bugs.otrs.org/show_bug.cgi?id=9000) - shm errors on OTRS server startup.
- - 2016-06-23 Fixed bug#[11981](http://bugs.otrs.org/show_bug.cgi?id=11981) - GenericTicketConnector ignoring "<ContentSearch>OR</ContentSearch>" in full text search.
+ - 2016-06-23 Fixed bug#[11981](http://bugs.otrs.org/show_bug.cgi?id=11981) - GenericTicketConnector ignoring `<ContentSearch>OR</ContentSearch>` in full text search.
 
 # 5.0.11 2016-06-28
  - 2016-08-03 Updated translations, thanks to all translators.
@@ -2130,7 +2140,7 @@
  - 2016-05-04 Fixed bug#[12040](http://bugs.otrs.org/show_bug.cgi?id=12040) - Emails are incorrectly attached to tickets.
  - 2016-05-04 Fixed bug#[12044](http://bugs.otrs.org/show_bug.cgi?id=12044) - PostMaster process crashed if a non existent ticket type is set via PostMaster filter.
  - 2016-05-04 Fixed bug#[12031](http://bugs.otrs.org/show_bug.cgi?id=12031) - SubSelected class not applied to My Tickets in CustomerTicketOverview Navigation.
- - 2016-05-04 Fixed bug#[12048](http://bugs.otrs.org/show_bug.cgi?id=12048) - error message with HTML <br> code.
+ - 2016-05-04 Fixed bug#[12048](http://bugs.otrs.org/show_bug.cgi?id=12048) - error message with HTML `<br>` code.
  - 2016-05-04 Fixed bug#[12049](http://bugs.otrs.org/show_bug.cgi?id=12049) - Encoding problems in REST transport.
  - 2016-04-29 Fixed bug#[11614](http://bugs.otrs.org/show_bug.cgi?id=11614) - LDAP Auth loses Agent-Group relationships every 2nd login.
  - 2016-04-29 Fixed bug#[12036](http://bugs.otrs.org/show_bug.cgi?id=12036) - Escalation Notification % does not work for short intervals.
