@@ -34,7 +34,7 @@ did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
     --font-size-lg: 18px;
     --font-size-md: 16px;
     --main-font-size: 14px;
-    --font-size-sm: 12px;
+    --font-size-sm: 14px;
     --font-size-xs: 10px;
     --font-size-xxs: 8px;
 
@@ -72,31 +72,31 @@ did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
     --border-width: 1px;
     --border-width-md: 2px;
     --border-width-lg: 5px;
-    --border-radius-menu-mobile: 50px;
-    --border-radius-menu-mobile-active: 30px;
-    --border-radius-xxl: 100px;
-    --border-radius-xl: 50px;
-    --border-radius-lg: 20px;
-    --border-radius-md: 15px;
-    --border-radius-sm: 10px;
-    --border-radius-xs: 8px;
-    --border-radius-xxs: 5px;
+    --border-radius-menu-mobile: 0px;
+    --border-radius-menu-mobile-active: 0px;
+    --border-radius-xxl: 0px;
+    --border-radius-xl: 0px;
+    --border-radius-lg: 0px;
+    --border-radius-md: 0px;
+    --border-radius-sm: 0px;
+    --border-radius-xs: 0px;
+    --border-radius-xxs: 0px;
 
     /* Margins */
-    --margin-xxl: 30px;
-    --margin-xl: 25px;
-    --margin-lg: 20px;
-    --margin-md: 15px;
-    --margin-sm: 10px;
-    --margin-xs: 5px;
+    --margin-xxl: 12px;
+    --margin-xl: 9px;
+    --margin-lg: 6px;
+    --margin-md: 3px;
+    --margin-sm: 2px;
+    --margin-xs: 1px;
 
     /* Paddings */
-    --padding-xxl: 30px;
-    --padding-xl: 25px;
-    --padding-lg: 20px;
-    --padding-md: 15px;
-    --padding-sm: 10px;
-    --padding-xs: 5px;
+    --padding-xxl: 12px;
+    --padding-xl: 9px;
+    --padding-lg: 6px;
+    --padding-md: 3px;
+    --padding-sm: 2px;
+    --padding-xs: 1px;
 
     /* Box Shadow */
     --menu-box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;

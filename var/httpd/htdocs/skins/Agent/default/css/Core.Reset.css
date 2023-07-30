@@ -43,7 +43,7 @@ table, caption, tbody, tfoot, thead, tr, th, td, hr {
 }
 
 body {
-    line-height: 1;
+    line-height: 1.3;
     color: black;
     background: white;
     text-align: left;
