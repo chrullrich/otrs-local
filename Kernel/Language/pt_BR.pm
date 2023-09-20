@@ -30,7 +30,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.883904164656697;
+    $Self->{Completeness}        = 0.883705967508445;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -599,7 +599,7 @@ sub Data {
         'Assignment of dynamic fields to screens' => '',
         'Overview' => 'Visão Geral',
         'Screens' => 'Telas',
-        'Default columns' => 'Colunas padrão',
+        'Overview Default Columns' => '',
         'Add dynamic field' => 'Adicionar campo dinâmico',
         'Filter' => 'Filtro',
         'You can assign elements by dragging and dropping them to the lists of available, disabled, assigned and required elements.' =>
@@ -6131,7 +6131,6 @@ sub Data {
             'Permite que usuários possam sobrescrever o caracter de separação de arquivos CSV, definidos nos arquivos de tradução. Observação: definindo \'Active\' como 0 só irá prevenir que agentes editem definições deste grupo nas preferências pessoais, mas administradores ainda poderão editar estas definições em nome de outros usuários. Utilize \'PreferenceGroup\' para controlar em qual área estas dedinições devem ser exibidas na interface de usuário.',
         'Defines the users avatar. Please note: setting \'Active\' to 0 will only prevent agents from editing settings of this group in their personal preferences, but will still allow administrators to edit the settings of another user\'s behalf. Use \'PreferenceGroup\' to control in which area these settings should be shown in the user interface.' =>
             'Define o avatar do usuário. Favor observar: definindo \'Active\' como 0 só irá prevenir agentes de editar definições deste grupo em suas preferências pessoais, mas ainda irá permitir que administradores editem definições em nome de outros usuários. Utilize \'PreferenceGroup\' para controlar em quais áreas estas definições deveriam ser exibidas na interface de usuário.',
-        'Defines the global users popup profile.' => '',
         'Defines the user identifier for the customer panel.' => '',
         'Activates support for customer and customer user groups.' => 'Ativa suporte a grupos de cliente e usuário cliente.',
         'Defines the groups every customer user will be in (if CustomerGroupSupport is enabled and you don\'t want to manage every customer user for these groups).' =>
@@ -6285,8 +6284,10 @@ sub Data {
         'Defines all the possible stats output formats.' => 'Define todos os formatos possíveis de saída de estatísticas.',
         'Allows agents to exchange the axis of a stat if they generate one.' =>
             'Permite que atendentes troquem o eixo de uma estatística durante a geração de uma.',
-        'Allows agents to generate individual-related stats.' => 'Permite que atendentes gerem estatística individualmente relacionadas.',
-        'Allows invalid agents to generate individual-related stats.' => 'Permitr agentes inválidos para gerar estatísticas relacionadas com indivíduos.',
+        'Adds the following elements for use in stats: "Agent/Owner", "Created by Agent/Owner", "Responsible", "Accounted time by Agent".' =>
+            '',
+        'Allows invalid agents to be used in stats. Stats::UseAgentElementInStats must be active.' =>
+            '',
         'Shows all the customer identifiers in a multi-select field (not useful if you have a lot of customer identifiers).' =>
             'Mostra todos identificadores de cliente em um campo de multiseleção (não é útil se você tiver diversos identificadores de cliente).',
         'Shows all the customer user identifiers in a multi-select field (not useful if you have a lot of customer user identifiers).' =>
@@ -8079,6 +8080,7 @@ sub Data {
         'Group for default access.' => 'Grupo de acesso padrão',
         'Group of all administrators.' => 'Grupo de todos os administradores.',
         'Group for statistics access.' => 'Grupo para acessar estatísticas',
+        'Group for time accounting web service access.' => '',
         'new' => 'novo',
         'All new state types (default: viewable).' => 'Todos os tipos de estado (padrão: visível).',
         'open' => 'aberto',
@@ -8723,7 +8725,6 @@ Obrigado pela ajuda!
         'Change the priority for this ticket' => 'Alterar a Prioridade Para Este Chamado',
         'Change the responsible for this ticket' => 'Alterar o responsável por este chamado',
         'Change your avatar image.' => 'Alterar a imagem do seu avatar.',
-        'Change your default popup profile settings.' => '',
         'Change your password and more.' => 'Alterar sua senha e mais.',
         'Changed SLA to "%s" (%s).' => 'Alterado SLA para "%s" (%s).',
         'Changed archive state to "%s".' => 'Alterado estado de arquivamento para "%s".',
@@ -9101,7 +9102,6 @@ Obrigado pela ajuda!
         'Plugin search' => 'Pesquisar Plugin',
         'Plugin search module for autocomplete.' => 'Módulo de pesquisa de autocompletar.',
         'Polish' => 'Polonês',
-        'Popup Profile' => '',
         'Portuguese' => 'Português',
         'Portuguese (Brasil)' => 'Português (Brasil)',
         'PostMaster Filters' => 'Filtros PostMaster',

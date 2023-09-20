@@ -31,7 +31,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.616658626788873;
+    $Self->{Completeness}        = 0.616535306417886;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -600,7 +600,7 @@ sub Data {
         'Assignment of dynamic fields to screens' => '',
         'Overview' => 'Resumen',
         'Screens' => '',
-        'Default columns' => '',
+        'Overview Default Columns' => '',
         'Add dynamic field' => '',
         'Filter' => 'Filtro',
         'You can assign elements by dragging and dropping them to the lists of available, disabled, assigned and required elements.' =>
@@ -6133,7 +6133,6 @@ sub Data {
             '',
         'Defines the users avatar. Please note: setting \'Active\' to 0 will only prevent agents from editing settings of this group in their personal preferences, but will still allow administrators to edit the settings of another user\'s behalf. Use \'PreferenceGroup\' to control in which area these settings should be shown in the user interface.' =>
             '',
-        'Defines the global users popup profile.' => '',
         'Defines the user identifier for the customer panel.' => '',
         'Activates support for customer and customer user groups.' => '',
         'Defines the groups every customer user will be in (if CustomerGroupSupport is enabled and you don\'t want to manage every customer user for these groups).' =>
@@ -6287,8 +6286,10 @@ sub Data {
         'Defines all the possible stats output formats.' => 'Define todos los formatos de salida posibles para las estadísticas.',
         'Allows agents to exchange the axis of a stat if they generate one.' =>
             'Permite a los agentes intercambiar el eje de una estadística si generan una.',
-        'Allows agents to generate individual-related stats.' => 'Permite a los agentes generar estadísticas individualmente relacionadas .',
-        'Allows invalid agents to generate individual-related stats.' => 'Permite a agentes no válidos el generar estadísticas relacionadas individualmente.',
+        'Adds the following elements for use in stats: "Agent/Owner", "Created by Agent/Owner", "Responsible", "Accounted time by Agent".' =>
+            '',
+        'Allows invalid agents to be used in stats. Stats::UseAgentElementInStats must be active.' =>
+            '',
         'Shows all the customer identifiers in a multi-select field (not useful if you have a lot of customer identifiers).' =>
             '',
         'Shows all the customer user identifiers in a multi-select field (not useful if you have a lot of customer user identifiers).' =>
@@ -8087,6 +8088,7 @@ El control del acceso adicional para demostrar o no demostrar éste enlace puede
         'Group for default access.' => 'Grupo para acceso por defecto.',
         'Group of all administrators.' => 'Grupo de todos los administradores.',
         'Group for statistics access.' => 'Grupo para acceso a estadísticas.',
+        'Group for time accounting web service access.' => '',
         'new' => 'nuevo',
         'All new state types (default: viewable).' => 'Todos los nuevos tipos de estado (por defecto: visible). ',
         'open' => 'abierto',
@@ -8731,7 +8733,6 @@ Tu Equipo de Soporte
         'Change the priority for this ticket' => 'Cambiar la prioridad de este ticket',
         'Change the responsible for this ticket' => 'Cambiar el responsable para este ticket',
         'Change your avatar image.' => '',
-        'Change your default popup profile settings.' => '',
         'Change your password and more.' => '',
         'Changed SLA to "%s" (%s).' => '',
         'Changed archive state to "%s".' => '',
@@ -9109,7 +9110,6 @@ Tu Equipo de Soporte
         'Plugin search' => 'Búsqueda de plug-ins',
         'Plugin search module for autocomplete.' => 'Módulo Plug-in de búsqueda para auto-completar.',
         'Polish' => 'Polaco',
-        'Popup Profile' => '',
         'Portuguese' => 'Portugués',
         'Portuguese (Brasil)' => 'Portugués (Brasileño)',
         'PostMaster Filters' => 'Filtros de Correo Electrónico',

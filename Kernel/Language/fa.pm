@@ -28,7 +28,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.634989548158868;
+    $Self->{Completeness}        = 0.634872124819045;
 
     # csv separator
     $Self->{Separator}         = '';
@@ -600,7 +600,7 @@ sub Data {
         'Assignment of dynamic fields to screens' => '',
         'Overview' => 'پیش نمایش',
         'Screens' => '',
-        'Default columns' => '',
+        'Overview Default Columns' => '',
         'Add dynamic field' => '',
         'Filter' => 'فیلتر',
         'You can assign elements by dragging and dropping them to the lists of available, disabled, assigned and required elements.' =>
@@ -6132,7 +6132,6 @@ sub Data {
             '',
         'Defines the users avatar. Please note: setting \'Active\' to 0 will only prevent agents from editing settings of this group in their personal preferences, but will still allow administrators to edit the settings of another user\'s behalf. Use \'PreferenceGroup\' to control in which area these settings should be shown in the user interface.' =>
             '',
-        'Defines the global users popup profile.' => '',
         'Defines the user identifier for the customer panel.' => 'تعریف می کند که شناسه کاربر برای پنل مشتری می باشد.',
         'Activates support for customer and customer user groups.' => '',
         'Defines the groups every customer user will be in (if CustomerGroupSupport is enabled and you don\'t want to manage every customer user for these groups).' =>
@@ -6286,8 +6285,10 @@ sub Data {
         'Defines all the possible stats output formats.' => 'تعریف می کند همه امکانات فرمت آمار خروجی.',
         'Allows agents to exchange the axis of a stat if they generate one.' =>
             'اجازه می دهد تا عوامل به تبادل محور یک آمار اگر آنها تولید یک.',
-        'Allows agents to generate individual-related stats.' => 'اجازه می دهد تا عوامل به آمار و ارقام مربوط به فرد.',
-        'Allows invalid agents to generate individual-related stats.' => 'اجازه تولید به  عوامل نامعتبر برای آمار و ارقام مربوط به فرد را میدهد. ',
+        'Adds the following elements for use in stats: "Agent/Owner", "Created by Agent/Owner", "Responsible", "Accounted time by Agent".' =>
+            '',
+        'Allows invalid agents to be used in stats. Stats::UseAgentElementInStats must be active.' =>
+            '',
         'Shows all the customer identifiers in a multi-select field (not useful if you have a lot of customer identifiers).' =>
             'همه شناسه های مشتری در یک میدان چند را انتخاب کنید (مفید می کنید اگر شما یک مقدار زیادی از شناسه مشتری).',
         'Shows all the customer user identifiers in a multi-select field (not useful if you have a lot of customer user identifiers).' =>
@@ -8080,6 +8081,7 @@ sub Data {
         'Group for default access.' => 'گروه برای دسترسی پیش فرض.',
         'Group of all administrators.' => 'گروه از همه مدیران.',
         'Group for statistics access.' => 'گروه برای دسترسی آمار.',
+        'Group for time accounting web service access.' => '',
         'new' => 'جدید',
         'All new state types (default: viewable).' => 'تمام انواع حالت جدید (به طور پیش فرض: قابل مشاهده).',
         'open' => 'باز',
@@ -8724,7 +8726,6 @@ Thanks for your help!
         'Change the priority for this ticket' => 'تغییر اولویت  برای این درخواست',
         'Change the responsible for this ticket' => 'تغییر مسئول برای این درخواست',
         'Change your avatar image.' => '',
-        'Change your default popup profile settings.' => '',
         'Change your password and more.' => '',
         'Changed SLA to "%s" (%s).' => '',
         'Changed archive state to "%s".' => '',
@@ -9102,7 +9103,6 @@ Thanks for your help!
         'Plugin search' => '',
         'Plugin search module for autocomplete.' => '',
         'Polish' => 'لهستانی',
-        'Popup Profile' => '',
         'Portuguese' => 'پرتغالی',
         'Portuguese (Brasil)' => 'پرتغالی (برزیل)',
         'PostMaster Filters' => 'فیلترهای پستی',
