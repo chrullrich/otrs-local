@@ -25,7 +25,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.620678565685802;
+    $Self->{Completeness}        = 0.620556538523404;
 
     # csv separator
     $Self->{Separator}         = ',';
@@ -594,7 +594,7 @@ sub Data {
         'Assignment of dynamic fields to screens' => '',
         'Overview' => 'Peninjauan luas',
         'Screens' => '',
-        'Default columns' => '',
+        'Overview Default Columns' => '',
         'Add dynamic field' => '',
         'Filter' => 'Saringan',
         'You can assign elements by dragging and dropping them to the lists of available, disabled, assigned and required elements.' =>
@@ -6128,7 +6128,6 @@ bin/otrs.Daemon.pl status\').',
             '',
         'Defines the users avatar. Please note: setting \'Active\' to 0 will only prevent agents from editing settings of this group in their personal preferences, but will still allow administrators to edit the settings of another user\'s behalf. Use \'PreferenceGroup\' to control in which area these settings should be shown in the user interface.' =>
             '',
-        'Defines the global users popup profile.' => '',
         'Defines the user identifier for the customer panel.' => 'Mendefinisikan identifier pengguna untuk panel pelanggan',
         'Activates support for customer and customer user groups.' => '',
         'Defines the groups every customer user will be in (if CustomerGroupSupport is enabled and you don\'t want to manage every customer user for these groups).' =>
@@ -6282,8 +6281,10 @@ bin/otrs.Daemon.pl status\').',
         'Defines all the possible stats output formats.' => 'Mendefinisikan semua kemungkinan format statistik output.',
         'Allows agents to exchange the axis of a stat if they generate one.' =>
             'Memungkinkan agen untuk mengubah sumbu bintang jika mereka menghasilkan satu.',
-        'Allows agents to generate individual-related stats.' => 'Memungkinkan agen untuk menghasilkan statistik individu terkait.',
-        'Allows invalid agents to generate individual-related stats.' => 'Memungkinkan agen yang tidak valid untuk menghasilkan statistik individu terkait.',
+        'Adds the following elements for use in stats: "Agent/Owner", "Created by Agent/Owner", "Responsible", "Accounted time by Agent".' =>
+            '',
+        'Allows invalid agents to be used in stats. Stats::UseAgentElementInStats must be active.' =>
+            '',
         'Shows all the customer identifiers in a multi-select field (not useful if you have a lot of customer identifiers).' =>
             'Menunjukkan semua pengidentifikasi pelanggan dalam bidang multi-pilih (tidak berguna jika Anda memiliki banyak pengenal pelanggan).',
         'Shows all the customer user identifiers in a multi-select field (not useful if you have a lot of customer user identifiers).' =>
@@ -8077,6 +8078,7 @@ bin/otrs.Daemon.pl status\').',
         'Group for default access.' => 'Kelompok untuk akses default.',
         'Group of all administrators.' => 'Grup semua administrator',
         'Group for statistics access.' => 'Grup untuk akses statistik',
+        'Group for time accounting web service access.' => '',
         'new' => 'baru',
         'All new state types (default: viewable).' => 'Semua jenis state (default: paparkan).',
         'open' => 'buka',
@@ -8721,7 +8723,6 @@ Helpdesk Team Anda
         'Change the priority for this ticket' => 'Mengubah tingkat prioritas untuk tiket ini',
         'Change the responsible for this ticket' => 'Mengubah ertanggung jawaban untuk tiket ini',
         'Change your avatar image.' => '',
-        'Change your default popup profile settings.' => '',
         'Change your password and more.' => '',
         'Changed SLA to "%s" (%s).' => '',
         'Changed archive state to "%s".' => '',
@@ -9099,7 +9100,6 @@ Helpdesk Team Anda
         'Plugin search' => '',
         'Plugin search module for autocomplete.' => '',
         'Polish' => 'Polandia',
-        'Popup Profile' => '',
         'Portuguese' => 'Portugis',
         'Portuguese (Brasil)' => 'Portugis (Brasil)',
         'PostMaster Filters' => 'Filter PostMaster',

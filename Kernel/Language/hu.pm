@@ -31,7 +31,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%Y-%M-%D';
     $Self->{DateInputFormat}     = '%Y-%M-%D';
     $Self->{DateInputFormatLong} = '%Y-%M-%D - %T';
-    $Self->{Completeness}        = 0.919601222061425;
+    $Self->{Completeness}        = 0.919736207173878;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -600,7 +600,7 @@ sub Data {
         'Assignment of dynamic fields to screens' => '',
         'Overview' => 'Áttekintés',
         'Screens' => '',
-        'Default columns' => '',
+        'Overview Default Columns' => '',
         'Add dynamic field' => 'Dinamikus mező hozzáadása',
         'Filter' => 'Szűrő',
         'You can assign elements by dragging and dropping them to the lists of available, disabled, assigned and required elements.' =>
@@ -2283,7 +2283,7 @@ sub Data {
         'Edit ticket attribute relations' => '',
         'Import CSV or Excel file' => '',
         'Attribute' => 'Jellemző',
-        'Last update' => '',
+        'Last update' => 'Utolsó frissítés',
         'Are you sure you want to delete entry \'%s\'?' => '',
         'Download previously imported file' => '',
         'The file needs to be in CSV (UTF-8) or Excel format. Both header columns need to contain the names of valid ticket attributes. The name of the uploaded file must be unique and must not be in use by another ticket attribute relations record.' =>
@@ -6132,7 +6132,6 @@ sub Data {
             'Megadja a végfelhasználóknak azt a lehetőséget, hogy felülírják a CSV fájloknál a fordítási fájlokban meghatározott elválasztó karaktert. Ne feledje: az „Active” 0-ra állításával csak az ügyintézőknek akadályozza meg ezen csoport beállításainak szerkesztését a személyes beállításaikban, de az adminisztrátoroknak továbbra is lehetővé teszi a beállítások szerkesztését egy másik felhasználó nevében. Használja a „PreferenceGroup” kulcsot annak szabályozásához, hogy ezeknek a beállításoknak mely területen kell megjelenniük a felhasználói felületen.',
         'Defines the users avatar. Please note: setting \'Active\' to 0 will only prevent agents from editing settings of this group in their personal preferences, but will still allow administrators to edit the settings of another user\'s behalf. Use \'PreferenceGroup\' to control in which area these settings should be shown in the user interface.' =>
             'Meghatározza a felhasználók profilképét. Ne feledje: az „Active” 0-ra állításával csak az ügyintézőknek akadályozza meg ezen csoport beállításainak szerkesztését a személyes beállításaikban, de az adminisztrátoroknak továbbra is lehetővé teszi a beállítások szerkesztését egy másik felhasználó nevében. Használja a „PreferenceGroup” kulcsot annak szabályozásához, hogy ezeknek a beállításoknak mely területen kell megjelenniük a felhasználói felületen.',
-        'Defines the global users popup profile.' => '',
         'Defines the user identifier for the customer panel.' => 'Meghatározza a felhasználói azonosítót az ügyfélpanelhez.',
         'Activates support for customer and customer user groups.' => 'Támogatást aktivál az ügyfelekhez és ügyfél-felhasználó csoportokhoz.',
         'Defines the groups every customer user will be in (if CustomerGroupSupport is enabled and you don\'t want to manage every customer user for these groups).' =>
@@ -6286,8 +6285,10 @@ sub Data {
         'Defines all the possible stats output formats.' => 'Meghatározza az összes lehetséges statisztikai kimeneti formátumot.',
         'Allows agents to exchange the axis of a stat if they generate one.' =>
             'Lehetővé teszi az ügyintézőknek egy statisztika tengelyeinek felcserélését, ha előállítanak egyet.',
-        'Allows agents to generate individual-related stats.' => 'Lehetővé teszi az ügyintézőknek egyénhez kapcsolódó statisztikák előállítását.',
-        'Allows invalid agents to generate individual-related stats.' => 'Lehetővé teszi az érvénytelen ügyintézőknek egyénhez kapcsolódó statisztikák előállítását.',
+        'Adds the following elements for use in stats: "Agent/Owner", "Created by Agent/Owner", "Responsible", "Accounted time by Agent".' =>
+            '',
+        'Allows invalid agents to be used in stats. Stats::UseAgentElementInStats must be active.' =>
+            '',
         'Shows all the customer identifiers in a multi-select field (not useful if you have a lot of customer identifiers).' =>
             'Megjeleníti az összes ügyfél-azonosítót egy többválasztós mezőben (nem hasznos, ha nagyon sok ügyfél-azonosítója van).',
         'Shows all the customer user identifiers in a multi-select field (not useful if you have a lot of customer user identifiers).' =>
@@ -8080,6 +8081,7 @@ sub Data {
         'Group for default access.' => 'Csoport az alapértelmezett hozzáféréshez.',
         'Group of all administrators.' => 'Az összes adminisztrátor csoportja.',
         'Group for statistics access.' => 'Csoport a statisztikák hozzáféréshez.',
+        'Group for time accounting web service access.' => '',
         'new' => 'új',
         'All new state types (default: viewable).' => 'Minden új állapottípus (alapértelmezett: megtekinthető).',
         'open' => 'nyitott',
@@ -8724,7 +8726,6 @@ Az Ön segélyszolgálat csapata
         'Change the priority for this ticket' => 'Prioritás módosítása ennél a jegynél',
         'Change the responsible for this ticket' => 'Felelős módosítása ennél a jegynél',
         'Change your avatar image.' => 'A profilkép megváltoztatása.',
-        'Change your default popup profile settings.' => '',
         'Change your password and more.' => 'Jelszó és egyebek megváltoztatása.',
         'Changed SLA to "%s" (%s).' => 'SLA megváltoztatva erre: „%s” (%s).',
         'Changed archive state to "%s".' => 'Archívumállapot megváltoztatva erre: „%s”.',
@@ -9102,7 +9103,6 @@ Az Ön segélyszolgálat csapata
         'Plugin search' => 'Bővítmény keresés',
         'Plugin search module for autocomplete.' => 'Bővítmény keresési modul az automatikus kiegészítéshez.',
         'Polish' => 'Lengyel',
-        'Popup Profile' => '',
         'Portuguese' => 'Portugál',
         'Portuguese (Brasil)' => 'Portugál (Brazil)',
         'PostMaster Filters' => 'Levelezési szűrők',

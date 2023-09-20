@@ -26,7 +26,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D/%M/%Y';
     $Self->{DateInputFormat}     = '%D/%M/%Y';
     $Self->{DateInputFormatLong} = '%D/%M/%Y - %T';
-    $Self->{Completeness}        = 0.322559897089564;
+    $Self->{Completeness}        = 0.322502814862474;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -595,7 +595,7 @@ sub Data {
         'Assignment of dynamic fields to screens' => '',
         'Overview' => 'Resumen',
         'Screens' => '',
-        'Default columns' => '',
+        'Overview Default Columns' => '',
         'Add dynamic field' => '',
         'Filter' => 'Filtro',
         'You can assign elements by dragging and dropping them to the lists of available, disabled, assigned and required elements.' =>
@@ -6127,7 +6127,6 @@ sub Data {
             '',
         'Defines the users avatar. Please note: setting \'Active\' to 0 will only prevent agents from editing settings of this group in their personal preferences, but will still allow administrators to edit the settings of another user\'s behalf. Use \'PreferenceGroup\' to control in which area these settings should be shown in the user interface.' =>
             '',
-        'Defines the global users popup profile.' => '',
         'Defines the user identifier for the customer panel.' => 'Define el identificador de usuario para la interfaz del cliente.',
         'Activates support for customer and customer user groups.' => '',
         'Defines the groups every customer user will be in (if CustomerGroupSupport is enabled and you don\'t want to manage every customer user for these groups).' =>
@@ -6281,8 +6280,10 @@ sub Data {
         'Defines all the possible stats output formats.' => 'Define todos los formatos de salida posibles de las estadísticas.',
         'Allows agents to exchange the axis of a stat if they generate one.' =>
             'Permite a los agentes intercambiar los ejes de la estadística al generar una.',
-        'Allows agents to generate individual-related stats.' => 'Permite a los agentes generar estadísticas relacionadas individualmente.',
-        'Allows invalid agents to generate individual-related stats.' => '',
+        'Adds the following elements for use in stats: "Agent/Owner", "Created by Agent/Owner", "Responsible", "Accounted time by Agent".' =>
+            '',
+        'Allows invalid agents to be used in stats. Stats::UseAgentElementInStats must be active.' =>
+            '',
         'Shows all the customer identifiers in a multi-select field (not useful if you have a lot of customer identifiers).' =>
             'Muestra todos los identificadores de clientes en un campo de selección múltiple (no es útil si existen muchos identificadores).',
         'Shows all the customer user identifiers in a multi-select field (not useful if you have a lot of customer user identifiers).' =>
@@ -8075,6 +8076,7 @@ sub Data {
         'Group for default access.' => '',
         'Group of all administrators.' => '',
         'Group for statistics access.' => '',
+        'Group for time accounting web service access.' => '',
         'new' => 'nuevo',
         'All new state types (default: viewable).' => '',
         'open' => 'abierto',
@@ -8708,7 +8710,6 @@ Thanks for your help!
         'Change the priority for this ticket' => '',
         'Change the responsible for this ticket' => '',
         'Change your avatar image.' => '',
-        'Change your default popup profile settings.' => '',
         'Change your password and more.' => '',
         'Changed SLA to "%s" (%s).' => '',
         'Changed archive state to "%s".' => '',
@@ -9086,7 +9087,6 @@ Thanks for your help!
         'Plugin search' => 'Búsqueda de plug-ins',
         'Plugin search module for autocomplete.' => 'Módulo Plug-in de búsqueda para auto-completar.',
         'Polish' => '',
-        'Popup Profile' => '',
         'Portuguese' => '',
         'Portuguese (Brasil)' => '',
         'PostMaster Filters' => 'Filtros del Administrador de Correos',

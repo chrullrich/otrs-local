@@ -25,7 +25,7 @@ sub Data {
     $Self->{DateFormatShort}     = '%D.%M.%Y';
     $Self->{DateInputFormat}     = '%D.%M.%Y';
     $Self->{DateInputFormatLong} = '%D.%M.%Y - %T';
-    $Self->{Completeness}        = 0.916063675832127;
+    $Self->{Completeness}        = 0.916036673636802;
 
     # csv separator
     $Self->{Separator}         = ';';
@@ -594,7 +594,7 @@ sub Data {
         'Assignment of dynamic fields to screens' => '',
         'Overview' => 'Преглед',
         'Screens' => '',
-        'Default columns' => '',
+        'Overview Default Columns' => '',
         'Add dynamic field' => 'Додај динамичко поље',
         'Filter' => 'Филтер',
         'You can assign elements by dragging and dropping them to the lists of available, disabled, assigned and required elements.' =>
@@ -6126,7 +6126,6 @@ sub Data {
             'Омогућава крајњим корисницима да замене сепаратор за CSV датотеке, дефинисан у датотекама превода. Напомена: подешавање \'Active\' на 0 ће само онемогућити оператерима да мењају своја лична подешавања из ове групе, али ће администратори и даље моћи да их мењају у њихово име. Подесите \'PreferenceGroup\' да бисте одредили у ком делу интерфејса ова подешавања треба да буду приказана.',
         'Defines the users avatar. Please note: setting \'Active\' to 0 will only prevent agents from editing settings of this group in their personal preferences, but will still allow administrators to edit the settings of another user\'s behalf. Use \'PreferenceGroup\' to control in which area these settings should be shown in the user interface.' =>
             'Дефинише корисникову аватар сличицу. Напомена: подешавање \'Active\' на 0 ће само онемогућити оператерима да мењају своја лична подешавања из ове групе, али ће администратори и даље моћи да их мењају у њихово име. Подесите \'PreferenceGroup\' да бисте одредили у ком делу интерфејса ова подешавања треба да буду приказана.',
-        'Defines the global users popup profile.' => '',
         'Defines the user identifier for the customer panel.' => 'Одређује идентификатор клијента за клијентски панел.',
         'Activates support for customer and customer user groups.' => 'Активира подршку за клијентске и клијент корисничке групе.',
         'Defines the groups every customer user will be in (if CustomerGroupSupport is enabled and you don\'t want to manage every customer user for these groups).' =>
@@ -6280,8 +6279,10 @@ sub Data {
         'Defines all the possible stats output formats.' => 'Дефинише све могуће излазне формате статистике.',
         'Allows agents to exchange the axis of a stat if they generate one.' =>
             'Дозвољава оператерима да замене осе на статистици ако је генеришу.',
-        'Allows agents to generate individual-related stats.' => 'Дозвољава оператерима да генеришу индивидуалну статистику.',
-        'Allows invalid agents to generate individual-related stats.' => 'Дозвољава неважећим оператерима да генеришу индивидуално повезане статистике.',
+        'Adds the following elements for use in stats: "Agent/Owner", "Created by Agent/Owner", "Responsible", "Accounted time by Agent".' =>
+            '',
+        'Allows invalid agents to be used in stats. Stats::UseAgentElementInStats must be active.' =>
+            '',
         'Shows all the customer identifiers in a multi-select field (not useful if you have a lot of customer identifiers).' =>
             'Приказује све клијентске идентификаторе у пољу вишеструког избора (није корисно ако имате много клијентских идентификатора).',
         'Shows all the customer user identifiers in a multi-select field (not useful if you have a lot of customer user identifiers).' =>
@@ -8074,6 +8075,7 @@ sub Data {
         'Group for default access.' => 'Група за подразумеван приступ.',
         'Group of all administrators.' => 'Група свих администратора.',
         'Group for statistics access.' => 'Група за приступ статистици.',
+        'Group for time accounting web service access.' => '',
         'new' => 'ново',
         'All new state types (default: viewable).' => 'Сви нови типови стања (подразумевано: видљиво).',
         'open' => 'отворени',
@@ -8718,7 +8720,6 @@ Thanks for your help!
         'Change the priority for this ticket' => 'Промени приоритете за овај тикет.',
         'Change the responsible for this ticket' => 'Промени одговорног за овај тикет',
         'Change your avatar image.' => 'Промените вашу аватар сличицу.',
-        'Change your default popup profile settings.' => '',
         'Change your password and more.' => 'Промените лозинку и слично.',
         'Changed SLA to "%s" (%s).' => 'Промењен SLA на "%s" (%s).',
         'Changed archive state to "%s".' => 'Промењено стање архивирања на "%s".',
@@ -9096,7 +9097,6 @@ Thanks for your help!
         'Plugin search' => 'Модул претраге',
         'Plugin search module for autocomplete.' => 'Модул претраге за аутоматско допуњавање.',
         'Polish' => 'Пољски',
-        'Popup Profile' => '',
         'Portuguese' => 'Португалски',
         'Portuguese (Brasil)' => 'Португалски (Бразил)',
         'PostMaster Filters' => 'PostMaster филтери',

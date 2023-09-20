@@ -16592,10 +16592,6 @@ msgid "Allows agents to exchange the axis of a stat if they generate one."
 msgstr "اجازه می دهد تا عوامل به تبادل محور یک آمار اگر آنها تولید یک."
 
 #. XML Definition: Kernel/Config/Files/XML/Framework.xml
-msgid "Allows agents to generate individual-related stats."
-msgstr "اجازه می دهد تا عوامل به آمار و ارقام مربوط به فرد."
-
-#. XML Definition: Kernel/Config/Files/XML/Framework.xml
 msgid "Allows choosing between showing the attachments of a ticket in the browser (inline) or just make them downloadable (attachment)."
 msgstr "اجازه می دهد تا انتخاب بین نشان دادن فایل پیوست یک بلیط در مرورگر (خطی) یا فقط آنها را دانلود (فایل پیوست) است."
 
@@ -25744,5 +25740,21 @@ msgstr ""
 
 #. Perl Module: Kernel/Modules/AdminNotificationEvent.pm
 msgid "All agents who are mentioned in the ticket"
+msgstr ""
+
+#. XML Definition: scripts/database/initial_insert.xml
+msgid "Group for time accounting web service access."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Framework.xml
+msgid "Adds the following elements for use in stats: \"Agent/Owner\", \"Created by Agent/Owner\", \"Responsible\", \"Accounted time by Agent\"."
+msgstr ""
+
+#. XML Definition: Kernel/Config/Files/XML/Framework.xml
+msgid "Allows invalid agents to be used in stats. Stats::UseAgentElementInStats must be active."
+msgstr ""
+
+#. TT Template: Kernel/Output/HTML/Templates/Standard/AdminDynamicFieldScreenConfiguration.tt
+msgid "Overview Default Columns"
 msgstr ""
 
